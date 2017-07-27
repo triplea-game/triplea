@@ -191,6 +191,10 @@ class SelectionComponentFactory {
       boolean isValid() {
         final String value = component.getText();
 
+        if (value.trim().isEmpty()) {
+          return true;
+        }
+
         try {
           final int intValue = Integer.parseInt(value);
           return intValue >= lo && intValue <= hi;
@@ -332,6 +336,7 @@ class SelectionComponentFactory {
 
   static SelectionComponent selectionBox(final ClientSetting clientSetting, final List<String> availableOptions) {
     final JComboBox<String> comboBox = new JComboBox<>(availableOptions.toArray(new String[availableOptions.size()]));
+    comboBox.setSelectedItem(clientSetting.value());
 
     return new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = -8969206423938554118L;

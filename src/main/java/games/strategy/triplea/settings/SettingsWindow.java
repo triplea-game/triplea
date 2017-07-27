@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagLayout;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.WindowConstants;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -135,10 +132,12 @@ enum SettingsWindow {
         if (setting.isValid()) {
           // read and save all settings
           setting.readValues().forEach((settingKey,settingValue) -> {
-            settingKey.save(settingValue);
-            successMsg.append(String.format("%s was updated to: %s\n", setting.title, settingValue));
-            ClientSetting.flush();
+            if (!settingKey.value().equals(settingValue)) {
+              settingKey.save(settingValue);
+              successMsg.append(String.format("%s was updated to: %s\n", setting.title, settingValue));
+            }
           });
+          ClientSetting.flush();
         } else if (!setting.isValid()) {
           final Map<ClientSetting, String> values = setting.readValues();
           values.forEach((entry, value) -> {
@@ -159,7 +158,7 @@ enum SettingsWindow {
       } else if (success.isEmpty()) {
         JOptionPane.showMessageDialog(outerPanel, fail, "No changes saved", JOptionPane.WARNING_MESSAGE);
       } else {
-        JOptionPane.showMessageDialog(outerPanel, success + "<br />" + fail, "Some changes were not saved",
+        JOptionPane.showMessageDialog(outerPanel, success + "\n" + fail, "Some changes were not saved",
             JOptionPane.WARNING_MESSAGE);
       }
     });
