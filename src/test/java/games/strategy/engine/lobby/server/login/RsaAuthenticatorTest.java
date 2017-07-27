@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.server.login;
 
 import static java.util.Collections.singletonMap;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -11,9 +10,11 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class RsaAuthenticatorTest {
@@ -33,22 +34,22 @@ public class RsaAuthenticatorTest {
 
   @Test
   public void testPublicKeysAreExpungedAfterLookup() {
+    final Cache<String, PrivateKey> rsaKeyCache = CacheBuilder.newBuilder().build();
+    final RsaAuthenticator rsaAuthenticator = new RsaAuthenticator(rsaKeyCache);
     final String publicKey = "something";
     final Map<String, String> challenge = new HashMap<>();
     challenge.put(RsaAuthenticator.RSA_PUBLIC_KEY, publicKey);
 
-    RsaAuthenticator.invalidateAll();
+    assertFalse("There are no public keys in a pristine instance, so we expect key lookup to fail",
+        rsaAuthenticator.getPrivateKey(challenge).isPresent());
 
-    assertTrue("There are no public keys after an invalidateAll, so we expect key lookup to fail",
-        !RsaAuthenticator.getPrivateKey(challenge).isPresent());
-
-    RsaAuthenticator.putKey(publicKey, mockPrivateKey);
+    rsaKeyCache.put(publicKey, mockPrivateKey);
 
     assertTrue("We just added a matching public key, we expect to find it",
-        RsaAuthenticator.getPrivateKey(challenge).isPresent());
+        rsaAuthenticator.getPrivateKey(challenge).isPresent());
 
-    assertTrue("A second lookup should now fail, the public key should be "
+    assertFalse("A second lookup should now fail, the public key should be "
         + "purged after the previous successful lookup.",
-        !RsaAuthenticator.getPrivateKey(challenge).isPresent());
+        rsaAuthenticator.getPrivateKey(challenge).isPresent());
   }
 }

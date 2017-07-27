@@ -44,6 +44,8 @@ public class LobbyLoginValidator implements ILoginValidator {
   private static final String INVALID_MAC = "Invalid mac address.";
   private static final Logger logger = Logger.getLogger(LobbyLoginValidator.class.getName());
 
+  private final RsaAuthenticator rsaAuthenticator = new RsaAuthenticator();
+
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     // we need to give the user the salt key for the username
@@ -52,7 +54,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (password != null && Strings.emptyToNull(password.value) != null) {
       rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
-    rVal.putAll(RsaAuthenticator.generatePublicKey());
+    rVal.putAll(rsaAuthenticator.generatePublicKey());
     return rVal;
   }
 
@@ -72,7 +74,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     return error;
   }
 
-  private static String verifyConnectionInternal(final Map<String, String> propertiesSentToClient,
+  private String verifyConnectionInternal(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient,
       final String clientName, final String hashedMac) {
     if (propertiesReadFromClient == null) {
@@ -160,7 +162,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     return new BadWordController().list();
   }
 
-  private static String validatePassword(final Map<String, String> propertiesSentToClient,
+  private String validatePassword(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String clientName) {
     final String errorMessage = "Incorrect username or password";
     final UserDao userDao = new DbUserController();
@@ -169,8 +171,7 @@ public class LobbyLoginValidator implements ILoginValidator {
       return errorMessage;
     }
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
-      final Optional<PrivateKey> key = RsaAuthenticator.getPrivateKey(propertiesSentToClient);
-
+      final Optional<PrivateKey> key = rsaAuthenticator.getPrivateKey(propertiesSentToClient);
       if (!key.isPresent()) {
         return errorMessage;
       }
@@ -219,7 +220,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     return null;
   }
 
-  private static String createUser(final Map<String, String> propertiesSentToClient,
+  private String createUser(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String userName) {
     final DBUser user = new DBUser(
         new DBUser.UserName(userName),
@@ -232,11 +233,11 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (new DbUserController().doesUserExist(user.getName())) {
       return "That user name has already been taken";
     }
-    final Optional<PrivateKey> privateKey = RsaAuthenticator.getPrivateKey(propertiesSentToClient);
+
+    final Optional<PrivateKey> privateKey = rsaAuthenticator.getPrivateKey(propertiesSentToClient);
     if (!privateKey.isPresent()) {
       return "Decryption error, could not create account";
     }
-
 
     final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {

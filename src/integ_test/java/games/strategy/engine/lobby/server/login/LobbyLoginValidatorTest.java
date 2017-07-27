@@ -28,6 +28,7 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 public class LobbyLoginValidatorTest {
+  private final ILoginValidator loginValidator = new LobbyLoginValidator();
 
   @Test
   public void testLegacyCreateNewUser() {
@@ -150,24 +151,23 @@ public class LobbyLoginValidatorTest {
     new DbUserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
   }
 
-  private static ChallengeResultFunction generateChallenge(final HashedPassword password) {
+  private ChallengeResultFunction generateChallenge(final HashedPassword password) {
     return generateChallenge(Util.createUniqueTimeStamp(), password);
   }
 
-  private static ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
-    final ILoginValidator validator = new LobbyLoginValidator();
+  private ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
     final SocketAddress address = new InetSocketAddress(5000);
     final String mac = MacFinder.getHashedMacAddress();
     final String email = "none@none.none";
     if (password != null) {
       createUser(name, email, password);
     }
-    final Map<String, String> challenge = validator.getChallengeProperties(name, address);
+    final Map<String, String> challenge = loginValidator.getChallengeProperties(name, address);
     return responseGetter -> {
       final Map<String, String> response = responseGetter.apply(challenge);
       response.putIfAbsent(LobbyLoginValidator.EMAIL_KEY, email);
       response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-      return new LobbyLoginValidator().verifyConnection(challenge, response, name, mac, address);
+      return loginValidator.verifyConnection(challenge, response, name, mac, address);
     };
   }
 
