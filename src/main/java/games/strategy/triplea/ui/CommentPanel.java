@@ -120,12 +120,11 @@ public class CommentPanel extends JPanel {
   }
 
   private void readHistoryTreeEvent(final TreeModelEvent e) {
-    final TreeModelEvent tme = e;
     final Runnable runner = () -> {
       data.acquireReadLock();
       try {
         final Document doc = text.getDocument();
-        final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
+        final HistoryNode node = (HistoryNode) (e.getTreePath().getLastPathComponent());
         final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
         final String title =
             child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())

@@ -96,6 +96,8 @@ public class SwingComponents {
     };
   }
 
+
+
   public enum KeyDownMask {
     META_DOWN(InputEvent.META_DOWN_MASK),
     CTRL_DOWN(InputEvent.CTRL_DOWN_MASK);
@@ -105,6 +107,14 @@ public class SwingComponents {
     KeyDownMask(final int code) {
       this.code = code;
     }
+  }
+
+  public static void addSpaceKeyListener(final JComponent component, final Runnable runnable) {
+    addKeyListener(component, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), runnable);
+  }
+
+  public static void addEnterKeyListener(final JComponent component, final Runnable runnable) {
+    addKeyListener(component, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), runnable);
   }
 
   public static void addEscapeKeyListener(
@@ -122,6 +132,11 @@ public class SwingComponents {
     if (component.getRootPane() != null) {
       addKeyListener(component.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
     }
+  }
+  public static void addKeyListenerWithMetaAndCtrlMasks(
+      final JFrame component, final char key, final Runnable action) {
+    addKeyListener((JComponent) component.getContentPane(), key, KeyDownMask.CTRL_DOWN, action);
+    addKeyListener((JComponent) component.getContentPane(), key, KeyDownMask.META_DOWN, action);
   }
 
   public static void addKeyListener(

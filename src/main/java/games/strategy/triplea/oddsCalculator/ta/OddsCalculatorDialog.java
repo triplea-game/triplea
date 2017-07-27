@@ -19,6 +19,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 
 public class OddsCalculatorDialog extends JDialog {
   private static final long serialVersionUID = -7625420355087851930L;
@@ -40,14 +41,11 @@ public class OddsCalculatorDialog extends JDialog {
       }
     });
     // close when hitting the escape key
-    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-    final Action closeAction = SwingAction.of(e -> {
+    SwingComponents.addEscapeKeyListener(dialog, () -> {
       dialog.setVisible(false);
       dialog.dispose();
     });
-    final String key = "odds.calc.invoke.close";
-    dialog.getRootPane().getActionMap().put(key, closeAction);
-    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
+
     dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     if (lastPosition == null) {
       dialog.setLocationRelativeTo(taFrame);

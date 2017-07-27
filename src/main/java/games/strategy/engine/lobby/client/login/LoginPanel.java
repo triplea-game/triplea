@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 
 class LoginPanel extends JPanel {
@@ -114,12 +115,8 @@ class LoginPanel extends JPanel {
     });
     cancel.addActionListener(e -> dialog.setVisible(false));
     anonymous.addActionListener(e -> setWidgetActivation());
-    // close when hitting the escape key
-    final Action enterAction = SwingAction.of(e -> logonPressed());
-    final String key = "logon.through.enter.key";
-    getActionMap().put(key, enterAction);
-    getActionMap().put(key, enterAction);
-    getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), key);
+
+    SwingComponents.addEnterKeyListener(this, this::logonPressed);
   }
 
   private void logonPressed() {

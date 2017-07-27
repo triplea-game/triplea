@@ -508,9 +508,7 @@ public class TripleAFrame extends MainGameFrame {
         setScale(getScale() + 10);
       }
     };
-    SwingComponents.addKeyListener((JComponent) getContentPane(), '+', SwingComponents.KeyDownMask.META_DOWN, zoomIn);
-    SwingComponents.addKeyListener((JComponent) getContentPane(), '+', SwingComponents.KeyDownMask.CTRL_DOWN, zoomIn);
-
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '+', zoomIn);
 
     final Runnable zoomOut = () -> {
       if (getScale() > 16) {
@@ -518,8 +516,7 @@ public class TripleAFrame extends MainGameFrame {
       }
     };
 
-    SwingComponents.addKeyListener((JComponent) getContentPane(), '-', SwingComponents.KeyDownMask.CTRL_DOWN, zoomOut);
-    SwingComponents.addKeyListener((JComponent) getContentPane(), '-', SwingComponents.KeyDownMask.META_DOWN, zoomOut);
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '-', zoomOut);
   }
 
   /**
