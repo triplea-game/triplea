@@ -3,19 +3,18 @@ package games.strategy.engine.config.client;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
+
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.config.PropertyFileReader;
-import games.strategy.engine.config.client.backup.BackupPropertyFetcher;
 import games.strategy.engine.config.client.remote.LobbyServerPropertiesFetcher;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
