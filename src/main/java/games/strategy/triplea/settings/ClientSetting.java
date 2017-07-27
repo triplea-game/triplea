@@ -91,9 +91,12 @@ public enum ClientSetting {
   }
 
   public static void showSettingsWindow() {
-    SettingsWindow.show();
+    SettingsWindow.INSTANCE.open();
   }
 
+  /**
+   * Persists user preferences s
+   */
   public static void flush() {
     try {
       Preferences.userNodeForPackage(ClientSetting.class).flush();

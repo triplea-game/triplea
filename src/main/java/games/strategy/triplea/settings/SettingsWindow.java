@@ -5,8 +5,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagLayout;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -34,20 +36,34 @@ import games.strategy.ui.SwingComponents;
  * one tab per non-hidden {@code SettingType}.
  * All data needed to render the settings UI is pulled from the {@code ClientSetting} enum.
  */
-class SettingsWindow {
+enum SettingsWindow {
+  INSTANCE;
+
+  private JDialog dialog;
+
   SettingsWindow() {
   }
 
-  public static void main(final String[] args) {
-    show();
+  public synchronized void close() {
+    if (dialog != null) {
+      dialog.dispose();
+      dialog = null;
+    }
   }
 
-  static void show() {
-    final JDialog dialog = new JDialog((Frame) null, "Settings");
-    dialog.setContentPane(createContents(dialog::dispose));
-    dialog.setMinimumSize(new Dimension(300,250));
-    dialog.pack();
-    dialog.setVisible(true);
+  public synchronized void open() {
+    if (dialog == null) {
+      dialog = new JDialog((Frame) null, "Settings");
+      dialog.setContentPane(createContents(this::close));
+      dialog.setMinimumSize(new Dimension(300, 250));
+      dialog.pack();
+      dialog.setVisible(true);
+      SwingComponents.addWindowClosingListener(dialog, this::close);
+    } else {
+      dialog.toFront();
+      Preconditions.checkState(dialog.isVisible());
+      dialog.setVisible(true);
+    }
   }
 
   private static JComponent createContents(final Runnable closerListener) {
