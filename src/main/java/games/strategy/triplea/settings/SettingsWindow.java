@@ -25,6 +25,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.ui.SwingComponents;
+import swinglib.GridBagHelper;
 import swinglib.JButtonModal;
 
 
@@ -81,10 +82,9 @@ enum SettingsWindow {
 
     final JPanel contents = new JPanel(new GridBagLayout());
 
-    final SwingComponents.GridBagHelper grid = new SwingComponents.GridBagHelper(contents,3);
+    final GridBagHelper grid = new GridBagHelper(contents,3);
 
     settings.forEach(setting -> {
-
       final JPanel panel = SwingComponents.newJPanelWithHorizontalBoxLayout();
       final JLabel label = new JLabel(setting.title);
       label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
