@@ -29,9 +29,6 @@ public class GameEnginePropertyReaderTest {
   @Mock
   private LobbyServerPropertiesFetcher mockLobbyServerPropertiesFetcher;
 
-  @Mock
-  private BackupPropertyFetcher mockBackupPropertyFetcher;
-
   @InjectMocks
   private GameEnginePropertyReader testObj;
 
@@ -71,33 +68,10 @@ public class GameEnginePropertyReaderTest {
         .when(mockPropertyFileReader).readProperty(GameEnginePropertyReader.PropertyKeys.ENGINE_VERSION);
   }
 
-  @Test
-  public void lobbyServerPropertiesUsingBackupCase() throws Exception {
-    givenSuccessfullyParsedPropertiesUrl();
-
-    when(mockLobbyServerPropertiesFetcher.downloadAndParseRemoteFile(TestData.fakePropUrl, TestData.fakeVersion))
-        .thenThrow(new IOException("simulated io exception"));
-
-    givenSuccessfullyParsedBackupValues();
-
-    final LobbyServerProperties result = testObj.fetchLobbyServerProperties();
-
-    assertThat(result, sameInstance(TestData.fakeProps));
-  }
-
-  private void givenSuccessfullyParsedBackupValues() {
-    doReturn(TestData.backupAddress)
-        .when(mockPropertyFileReader).readProperty(GameEnginePropertyReader.PropertyKeys.LOBBY_BACKUP_HOST_ADDRESS);
-
-    when(mockBackupPropertyFetcher.parseBackupValuesFromEngineConfig(TestData.backupAddress))
-        .thenReturn(TestData.fakeProps);
-  }
-
   private interface TestData {
     String fakeVersionString = "12.12.12.12";
     Version fakeVersion = new Version(fakeVersionString);
     String fakePropUrl = "http://fake";
-    String backupAddress = "backup";
     LobbyServerProperties fakeProps = new LobbyServerProperties("host", 123);
   }
 }
