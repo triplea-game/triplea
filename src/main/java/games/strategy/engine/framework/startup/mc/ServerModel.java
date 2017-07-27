@@ -70,7 +70,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
-  static final String PLAYERNAME = "PlayerName";
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
     return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
@@ -194,8 +193,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       System.setProperty(GameRunner.TRIPLEA_STARTED, "true");
       return props;
     }
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    final String playername = prefs.get(PLAYERNAME, System.getProperty("user.name"));
+    final String playername = ClientSetting.PLAYER_NAME.value();
     final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
@@ -206,7 +204,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     final String name = options.getName();
     logger.log(Level.FINE, "Server playing as:" + name);
     // save the name! -- lnxduk
-    prefs.put(PLAYERNAME, name);
+    ClientSetting.PLAYER_NAME.save(name);
+    ClientSetting.flush();
     final int port = options.getPort();
     if (port >= 65536 || port == 0) {
       if (headless) {

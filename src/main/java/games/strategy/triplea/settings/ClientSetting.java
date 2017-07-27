@@ -68,7 +68,8 @@ public enum ClientSetting {
   TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
   TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME,
   USER_MAPS_FOLDER_PATH(new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps")),
-  WHEEL_SCROLL_AMOUNT(60);
+  WHEEL_SCROLL_AMOUNT(60),
+  PLAYER_NAME(System.getProperty("user.name"));
 
   private final String defaultValue;
 
