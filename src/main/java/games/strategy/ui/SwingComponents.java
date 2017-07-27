@@ -31,13 +31,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -406,17 +404,6 @@ public class SwingComponents {
   public static void showDialog(final String title, final String message) {
     SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, title,
         JOptionPane.INFORMATION_MESSAGE));
-  }
-
-  public static JDialog newJDialogModal(final JFrame parent, final String title, final JComponent contents) {
-    final JDialog dialog = new JDialog(parent, title, true);
-    dialog.getContentPane().add(contents);
-    final Action closeAction = SwingAction.of("", e -> dialog.setVisible(false));
-    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-    final String key = "dialog.close";
-    dialog.getRootPane().getActionMap().put(key, closeAction);
-    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
-    return dialog;
   }
 
 

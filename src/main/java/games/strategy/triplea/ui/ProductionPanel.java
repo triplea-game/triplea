@@ -39,8 +39,9 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
+import swinglib.jdialog.JDialogBuilder;
+import swinglib.jdialog.JDialogModel;
 
 public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
@@ -83,9 +84,11 @@ public class ProductionPanel extends JPanel {
   public IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
     if (parent != null) {
-      final String title = "Produce";
-      final JPanel contents = this;
-      dialog = SwingComponents.newJDialogModal(parent, title, contents);
+      dialog = JDialogBuilder.newJDialogModal(JDialogModel.builder()
+          .withParentFrame(parent)
+          .withContents(this)
+          .withTitle("Produce")
+          .build());
     }
     this.bid = bid;
     this.data = data;
@@ -269,7 +272,7 @@ public class ProductionPanel extends JPanel {
         }
       }
       final int numberOfUnitsGiven = rule.getResults().totalValues();
-      String text;
+      final String text;
       if (numberOfUnitsGiven > 1) {
         text = "<html> x " + ResourceCollection.toStringForHTML(cost, data) + "<br>" + "for " + numberOfUnitsGiven
             + "<br>" + " units</html>";
