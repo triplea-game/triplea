@@ -40,6 +40,7 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.OptionalUtils;
+import swinglib.JButtonModal;
 
 /** Window that allows for map downloads and removal. */
 public class DownloadMapsWindow extends JFrame {
@@ -478,24 +479,28 @@ public class DownloadMapsWindow extends JFrame {
 
     buttonsPanel.add(Box.createGlue());
 
-    String toolTip = "Click this button to learn more about the map download feature in TripleA";
-    final JButton helpButton = SwingComponents.newJButton("Help", toolTip,
-        e -> JOptionPane.showMessageDialog(this, new MapDownloadHelpPanel()));
-    buttonsPanel.add(helpButton);
+    buttonsPanel.add(JButtonModal.builder()
+        .withTitle("Help")
+        .withToolTip("Click this button to learn more about the map download feature in TripleA")
+        .withActionListener(() -> JOptionPane.showMessageDialog(this, new MapDownloadHelpPanel()))
+        .swingComponent());
 
-    toolTip = "Click this button to submit map comments and bug reports back to the map makers";
-    final JButton mapFeedbackButton = SwingComponents.newJButton("Give Map Feedback", toolTip,
-        e -> FeedbackDialog.showFeedbackDialog(gamesList.getSelectedValuesList(), maps));
-    buttonsPanel.add(mapFeedbackButton);
+    buttonsPanel.add(JButtonModal.builder()
+        .withTitle("Give Map Feedback")
+        .withToolTip("Click this button to submit map comments and bug reports back to the map makers")
+        .withActionListener(() -> FeedbackDialog.showFeedbackDialog(gamesList.getSelectedValuesList(), maps))
+        .swingComponent());
 
     buttonsPanel.add(Box.createGlue());
 
-    toolTip = "Click this button to close the map download window and cancel any in-progress downloads.";
-    final JButton closeButton = SwingComponents.newJButton("Close", toolTip, e -> {
-      setVisible(false);
-      dispose();
-    });
-    buttonsPanel.add(closeButton);
+    buttonsPanel.add(JButtonModal.builder()
+        .withTitle("Close")
+        .withToolTip("Click this button to close the map download window and cancel any in-progress downloads.")
+        .withActionListener(() -> {
+          setVisible(false);
+          dispose();
+        })
+        .swingComponent());
 
     return buttonsPanel;
   }
@@ -510,24 +515,24 @@ public class DownloadMapsWindow extends JFrame {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
-      actionButton = SwingComponents.newJButton("Remove", removeAction(gamesList, maps, listModel));
-
-      final String hoverText =
-          "Click this button to remove the maps selected above from your computer. " + MULTIPLE_SELECT_MSG;
-      actionButton.setToolTipText(hoverText);
+      actionButton = JButtonModal.builder()
+          .withTitle("Remove")
+          .withToolTip("Click this button to remove the maps selected above from your computer. " + MULTIPLE_SELECT_MSG)
+          .withActionListener(removeAction(gamesList, maps, listModel))
+          .swingComponent();
     } else {
-      final String buttonText = (action == MapAction.INSTALL) ? "Install" : "Update";
-      actionButton = SwingComponents.newJButton(buttonText, installAction(gamesList, maps, listModel));
-      final String hoverText =
-          "Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG;
-      actionButton.setToolTipText(hoverText);
+      actionButton = JButtonModal.builder()
+          .withTitle((action == MapAction.INSTALL) ? "Install" : "Update")
+          .withToolTip("Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG)
+          .withActionListener(installAction(gamesList, maps, listModel))
+          .swingComponent();
     }
     return actionButton;
   }
 
-  private static ActionListener removeAction(final JList<String> gamesList, final List<DownloadFileDescription> maps,
+  private static Runnable removeAction(final JList<String> gamesList, final List<DownloadFileDescription> maps,
       final DefaultListModel<String> listModel) {
-    return (e) -> {
+    return () -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> selectedMaps =
           maps.stream().filter(map -> selectedValues.contains(map.getMapName()))
@@ -538,9 +543,9 @@ public class DownloadMapsWindow extends JFrame {
     };
   }
 
-  private ActionListener installAction(final JList<String> gamesList, final List<DownloadFileDescription> maps,
+  private Runnable installAction(final JList<String> gamesList, final List<DownloadFileDescription> maps,
       final DefaultListModel<String> listModel) {
-    return e -> {
+    return () -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
       final List<DownloadFileDescription> downloadList = new ArrayList<>();
       for (final DownloadFileDescription map : maps) {

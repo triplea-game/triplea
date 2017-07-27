@@ -34,7 +34,6 @@ import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -93,8 +92,6 @@ public class SwingComponents {
       }
     };
   }
-
-
 
   public enum KeyDownMask {
     META_DOWN(InputEvent.META_DOWN_MASK),
@@ -270,22 +267,6 @@ public class SwingComponents {
     final JPanel panel = new JPanel();
     panel.setLayout(new GridLayout(rows, columns));
     return panel;
-  }
-
-  public static JButton newJButton(final String title, final String toolTip, final Runnable actionListener) {
-    return newJButton(title, toolTip, SwingAction.of(e -> actionListener.run()));
-  }
-
-  public static JButton newJButton(final String title, final String toolTip, final ActionListener actionListener) {
-    final JButton button = newJButton(title, actionListener);
-    button.setToolTipText(toolTip);
-    return button;
-  }
-
-  public static JButton newJButton(final String title, final ActionListener actionListener) {
-    final JButton button = new JButton(title);
-    button.addActionListener(actionListener);
-    return button;
   }
 
 

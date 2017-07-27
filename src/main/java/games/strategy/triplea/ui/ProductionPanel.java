@@ -40,8 +40,7 @@ import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
-import swinglib.jdialog.JDialogBuilder;
-import swinglib.jdialog.JDialogModel;
+import swinglib.JDialogModel;
 
 public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
@@ -84,11 +83,11 @@ public class ProductionPanel extends JPanel {
   public IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
     if (parent != null) {
-      dialog = JDialogBuilder.newJDialogModal(JDialogModel.builder()
+      dialog = JDialogModel.builder()
           .withParentFrame(parent)
           .withContents(this)
           .withTitle("Produce")
-          .build());
+          .swingComponent();
     }
     this.bid = bid;
     this.data = data;

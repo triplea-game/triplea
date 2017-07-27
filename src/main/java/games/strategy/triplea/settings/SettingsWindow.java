@@ -25,6 +25,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.ui.SwingComponents;
+import swinglib.JButtonModal;
 
 
 /**
@@ -120,61 +121,68 @@ enum SettingsWindow {
     bottomPanel.add(buttonPanel);
     bottomPanel.add(Box.createHorizontalGlue());
 
-    final JButton saveButton = SwingComponents.newJButton("Save", e -> {
-      final StringBuilder successMsg = new StringBuilder();
-      final StringBuilder failMsg = new StringBuilder();
+    final JButton saveButton = JButtonModal.builder()
+        .withTitle("Save")
+        .withActionListener(() -> {
+          final StringBuilder successMsg = new StringBuilder();
+          final StringBuilder failMsg = new StringBuilder();
 
-      // save all the values, save stuff that is valid and that was updated
-      settings.forEach(setting -> {
-        if (setting.isValid()) {
-          // read and save all settings
-          setting.readValues().forEach((settingKey,settingValue) -> {
-            if (!settingKey.value().equals(settingValue)) {
-              settingKey.save(settingValue);
-              successMsg.append(String.format("%s was updated to: %s\n", setting.title, settingValue));
+          // save all the values, save stuff that is valid and that was updated
+          settings.forEach(setting -> {
+            if (setting.isValid()) {
+              // read and save all settings
+              setting.readValues().forEach((settingKey, settingValue) -> {
+                if (!settingKey.value().equals(settingValue)) {
+                  settingKey.save(settingValue);
+                  successMsg.append(String.format("%s was updated to: %s\n", setting.title, settingValue));
+                }
+              });
+              ClientSetting.flush();
+            } else if (!setting.isValid()) {
+              final Map<ClientSetting, String> values = setting.readValues();
+              values.forEach((entry, value) -> {
+                failMsg.append(String.format("Could not set %s to %s, %s\n",
+                    setting.title, value, setting.validValueDescription()));
+              });
             }
           });
           ClientSetting.flush();
-        } else if (!setting.isValid()) {
-          final Map<ClientSetting, String> values = setting.readValues();
-          values.forEach((entry, value) -> {
-            failMsg.append(String.format("Could not set %s to %s, %s\n",
-                setting.title, value, setting.validValueDescription()));
-          });
-        }
-      });
-      ClientSetting.flush();
 
-      final String success = successMsg.toString();
-      final String fail = failMsg.toString();
-      if (success.isEmpty() && fail.isEmpty()) {
-        JOptionPane.showMessageDialog(outerPanel, "No changes to save", "No changes saved",
-            JOptionPane.WARNING_MESSAGE);
-      } else if (fail.isEmpty()) {
-        JOptionPane.showMessageDialog(outerPanel, success, "Success", JOptionPane.INFORMATION_MESSAGE);
-      } else if (success.isEmpty()) {
-        JOptionPane.showMessageDialog(outerPanel, fail, "No changes saved", JOptionPane.WARNING_MESSAGE);
-      } else {
-        JOptionPane.showMessageDialog(outerPanel, success + "\n" + fail, "Some changes were not saved",
-            JOptionPane.WARNING_MESSAGE);
-      }
-    });
+          final String success = successMsg.toString();
+          final String fail = failMsg.toString();
+          if (success.isEmpty() && fail.isEmpty()) {
+            JOptionPane.showMessageDialog(outerPanel, "No changes to save", "No changes saved",
+                JOptionPane.WARNING_MESSAGE);
+          } else if (fail.isEmpty()) {
+            JOptionPane.showMessageDialog(outerPanel, success, "Success", JOptionPane.INFORMATION_MESSAGE);
+          } else if (success.isEmpty()) {
+            JOptionPane.showMessageDialog(outerPanel, fail, "No changes saved", JOptionPane.WARNING_MESSAGE);
+          } else {
+            JOptionPane.showMessageDialog(outerPanel, success + "\n" + fail, "Some changes were not saved",
+                JOptionPane.WARNING_MESSAGE);
+          }
+        }).swingComponent();
 
     buttonPanel.add(saveButton);
 
     buttonPanel.add(Box.createHorizontalStrut(40));
 
-    buttonPanel.add(SwingComponents.newJButton("Close", event -> closeListener.run()));
+    buttonPanel.add(JButtonModal.builder()
+        .withTitle("Close")
+        .withActionListener(closeListener)
+        .swingComponent());
 
     buttonPanel.add(Box.createHorizontalStrut(40));
 
-    final JButton restoreDefaultsButton =
-        SwingComponents.newJButton("Restore Defaults", e -> {
+    final JButton restoreDefaultsButton = JButtonModal.builder()
+        .withTitle("Restore Defaults")
+        .withActionListener(() -> {
           settings.forEach(ClientSettingUiBinding::resetToDefault);
           ClientSetting.flush();
           JOptionPane.showMessageDialog(null,
               "All " + settings.get(0).type.tabTitle + " settings were restored to their default values.");
-        });
+        }).swingComponent();
+
     buttonPanel.add(restoreDefaultsButton);
 
     return outerPanel;
