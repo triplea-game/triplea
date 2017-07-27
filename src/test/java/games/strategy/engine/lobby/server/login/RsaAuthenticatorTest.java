@@ -1,20 +1,25 @@
 package games.strategy.engine.lobby.server.login;
 
-import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
 import static java.util.Collections.singletonMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
 public class RsaAuthenticatorTest {
+
+  @Mock
+  private PrivateKey mockPrivateKey;
 
   @Test
   public void testCanProcess() {
@@ -27,37 +32,23 @@ public class RsaAuthenticatorTest {
   }
 
   @Test
-  public void testExpire() {
+  public void testPublicKeysAreExpungedAfterLookup() {
+    final String publicKey = "something";
     final Map<String, String> challenge = new HashMap<>();
-    challenge.putAll(RsaAuthenticator.generatePublicKey());
+    challenge.put(RsaAuthenticator.RSA_PUBLIC_KEY, publicKey);
+
     RsaAuthenticator.invalidateAll();
-    final Map<String, String> response = new HashMap<>();
-    response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, "something"));
-    final String errorMessage = RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
-      fail("The password should never be successfully encrypted");
-      return null;
-    });
-    assertNotNull(errorMessage);
-    assertTrue(errorMessage.toLowerCase().contains("timeout"));
-  }
 
-  @Test
-  public void testKeyExpirationAfterAuthentication() {
-    final Map<String, String> challenge = new HashMap<>();
-    challenge.putAll(RsaAuthenticator.generatePublicKey());
-    final Map<String, String> response = new HashMap<>();
-    final String password = "something";
-    response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
+    assertTrue("There are no public keys after an invalidateAll, so we expect key lookup to fail",
+        !RsaAuthenticator.getPrivateKey(challenge).isPresent());
 
-    assertNull(RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
-      assertEquals(hashPasswordWithSalt(password), pass);
-      return null;
-    }));
-    final String errorMessage = RsaAuthenticator.decryptPasswordForAction(challenge, response, pass -> {
-      fail("The password should never be successfully encrypted");
-      return null;
-    });
-    assertNotNull(errorMessage);
-    assertTrue(errorMessage.toLowerCase().contains("timeout"));
+    RsaAuthenticator.putKey(publicKey, mockPrivateKey);
+
+    assertTrue("We just added a matching public key, we expect to find it",
+        RsaAuthenticator.getPrivateKey(challenge).isPresent());
+
+    assertTrue("A second lookup should now fail, the public key should be "
+        + "purged after the previous successful lookup.",
+        !RsaAuthenticator.getPrivateKey(challenge).isPresent());
   }
 }

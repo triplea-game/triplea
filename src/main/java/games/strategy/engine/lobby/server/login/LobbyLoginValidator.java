@@ -2,10 +2,12 @@ package games.strategy.engine.lobby.server.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.security.PrivateKey;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -167,7 +169,13 @@ public class LobbyLoginValidator implements ILoginValidator {
       return errorMessage;
     }
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
-      return RsaAuthenticator.decryptPasswordForAction(propertiesSentToClient, propertiesReadFromClient, pass -> {
+      final Optional<PrivateKey> key = RsaAuthenticator.getPrivateKey(propertiesSentToClient);
+
+      if (!key.isPresent()) {
+        return errorMessage;
+      }
+
+      return RsaAuthenticator.decryptPasswordForAction(key.get(), propertiesReadFromClient, pass -> {
         if (hashedPassword.isBcrypted()) {
           return userDao.login(clientName, new HashedPassword(pass)) ? null : errorMessage;
         } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
@@ -224,9 +232,15 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (new DbUserController().doesUserExist(user.getName())) {
       return "That user name has already been taken";
     }
+    final Optional<PrivateKey> privateKey = RsaAuthenticator.getPrivateKey(propertiesSentToClient);
+    if (!privateKey.isPresent()) {
+      return "Decryption error, could not create account";
+    }
+
+
     final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
-      return RsaAuthenticator.decryptPasswordForAction(propertiesSentToClient, propertiesReadFromClient, pass -> {
+      return RsaAuthenticator.decryptPasswordForAction(privateKey.get(), propertiesReadFromClient, pass -> {
         final UserDao userDao = new DbUserController();
         final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt()));
         if (password.isValidSyntax()) {
