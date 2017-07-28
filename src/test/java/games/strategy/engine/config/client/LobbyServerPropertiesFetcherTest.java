@@ -25,8 +25,6 @@ public class LobbyServerPropertiesFetcherTest {
   private static final Version fakeVersion = new Version("0.0.0.0");
 
   @Mock
-  private LobbyPropertyFileParser mockLobbyPropertyFileParser;
-  @Mock
   private LobbyLocationFileDownloader mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
@@ -36,9 +34,7 @@ public class LobbyServerPropertiesFetcherTest {
    */
   @Before
   public void setup() {
-    testObj = new LobbyServerPropertiesFetcher(
-        mockLobbyPropertyFileParser,
-        mockFileDownloader);
+    testObj = new LobbyServerPropertiesFetcher(mockFileDownloader);
   }
 
   /**

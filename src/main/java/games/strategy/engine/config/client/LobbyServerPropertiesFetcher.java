@@ -16,7 +16,6 @@ import games.strategy.util.Version;
 
 public class LobbyServerPropertiesFetcher {
 
-  private final LobbyPropertyFileParser lobbyPropertyFileParser;
   private final LobbyLocationFileDownloader fileDownloader;
 
   /**
@@ -25,16 +24,11 @@ public class LobbyServerPropertiesFetcher {
    * Those properties then tell the game client how/where to connect to the lobby.
    */
   public LobbyServerPropertiesFetcher() {
-    this(
-        new LobbyPropertyFileParser(),
-        LobbyLocationFileDownloader.defaultDownloader);
+    this(LobbyLocationFileDownloader.defaultDownloader);
   }
 
   @VisibleForTesting
-  LobbyServerPropertiesFetcher(
-      final LobbyPropertyFileParser lobbyPropertyFileParser,
-      final LobbyLocationFileDownloader fileDownloader) {
-    this.lobbyPropertyFileParser = lobbyPropertyFileParser;
+  LobbyServerPropertiesFetcher(final LobbyLocationFileDownloader fileDownloader) {
     this.fileDownloader = fileDownloader;
   }
 

@@ -67,11 +67,13 @@ public class JPanelBuilderTest {
 
     assertThat(JPanelBuilder.builder()
         .gridBagLayout()
-        .build(),
+        .build()
+        .getLayout(),
         instanceOf(GridBagLayout.class));
 
     assertThat(JPanelBuilder.builder()
-        .build(),
+        .build()
+        .getLayout(),
         instanceOf(BorderLayout.class));
   }
 }
