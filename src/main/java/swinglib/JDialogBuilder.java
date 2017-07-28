@@ -60,7 +60,7 @@ public final class JDialogBuilder {
   }
 
   public JDialogBuilder parentFrame(final JFrame parentFrame) {
-    this.parentFrame = Preconditions.checkNotNull(parentFrame);
+    this.parentFrame = parentFrame;
     return this;
   }
 

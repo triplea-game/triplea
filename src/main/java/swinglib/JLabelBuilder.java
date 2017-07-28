@@ -2,6 +2,7 @@ package swinglib;
 
 import java.awt.Dimension;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import com.google.common.base.Preconditions;
@@ -33,6 +34,10 @@ public class JLabelBuilder {
   public JLabel build() {
     Preconditions.checkNotNull(text);
     Preconditions.checkState(!text.trim().isEmpty());
+
+    final JLabel label = new JLabel(text);
+
+    label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
     return new JLabel();
   }
 
