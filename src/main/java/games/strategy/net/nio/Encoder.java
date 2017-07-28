@@ -15,7 +15,7 @@ import games.strategy.net.Node;
  * Encodes data to be written by a writer.
  */
 class Encoder {
-  private static final Logger s_logger = Logger.getLogger(Encoder.class.getName());
+  private static final Logger logger = Logger.getLogger(Encoder.class.getName());
   private final NIOWriter m_writer;
   private final IObjectStreamFactory m_objectStreamFactory;
   private final NIOSocket m_nioSocket;
@@ -27,8 +27,8 @@ class Encoder {
   }
 
   void write(final SocketChannel to, final MessageHeader header) {
-    if (s_logger.isLoggable(Level.FINEST)) {
-      s_logger.log(Level.FINEST, "Encoding msg:" + header + " to:" + to);
+    if (logger.isLoggable(Level.FINEST)) {
+      logger.log(Level.FINEST, "Encoding msg:" + header + " to:" + to);
     }
     if (header.getFrom() == null) {
       throw new IllegalArgumentException("No from node");
@@ -44,11 +44,11 @@ class Encoder {
     } catch (final Exception e) {
       // we arent doing any io, just writing in memory
       // so something is very wrong
-      s_logger.log(Level.SEVERE, "Error writing object:" + header, e);
+      logger.log(Level.SEVERE, "Error writing object:" + header, e);
       return;
     }
-    if (s_logger.isLoggable(Level.FINER)) {
-      s_logger.log(Level.FINER, "encoded  msg:" + header.getMessage() + " size:" + data.size());
+    if (logger.isLoggable(Level.FINER)) {
+      logger.log(Level.FINER, "encoded  msg:" + header.getMessage() + " size:" + data.size());
     }
     m_writer.enque(data, to);
   }

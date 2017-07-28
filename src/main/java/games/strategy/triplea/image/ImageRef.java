@@ -15,16 +15,16 @@ import games.strategy.debug.ClientLogger;
  * getImage method ensures that the image will be loaded before returning.
  */
 class ImageRef {
-  public static final ReferenceQueue<Image> s_referenceQueue = new ReferenceQueue<>();
-  public static final Logger s_logger = Logger.getLogger(ImageRef.class.getName());
-  private static final AtomicInteger s_imageCount = new AtomicInteger();
+  private static final ReferenceQueue<Image> referenceQueue = new ReferenceQueue<>();
+  private static final Logger logger = Logger.getLogger(ImageRef.class.getName());
+  private static final AtomicInteger imageCount = new AtomicInteger();
 
   static {
     final Runnable r = () -> {
       while (true) {
         try {
-          s_referenceQueue.remove();
-          s_logger.finer("Removed soft reference image. Image count:" + s_imageCount.decrementAndGet());
+          referenceQueue.remove();
+          logger.finer("Removed soft reference image. Image count:" + imageCount.decrementAndGet());
         } catch (final InterruptedException e) {
           ClientLogger.logQuietly(e);
         }
@@ -39,9 +39,9 @@ class ImageRef {
 
   // private final Object m_hardRef;
   public ImageRef(final Image image) {
-    m_image = new SoftReference<>(image, s_referenceQueue);
+    m_image = new SoftReference<>(image, referenceQueue);
     // m_hardRef = image;
-    s_logger.finer("Added soft reference image. Image count:" + s_imageCount.incrementAndGet());
+    logger.finer("Added soft reference image. Image count:" + imageCount.incrementAndGet());
   }
 
   public Image getImage() {

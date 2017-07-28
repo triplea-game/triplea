@@ -29,7 +29,7 @@ import games.strategy.util.CountUpAndDownLatch;
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
  */
 public class ConcurrentOddsCalculator implements IOddsCalculator {
-  private static final Logger s_logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());
+  private static final Logger logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());
   private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
 
   private int currentThreads = MAX_THREADS;
@@ -58,7 +58,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   public ConcurrentOddsCalculator(final String threadNamePrefix) {
     executor = Executors.newFixedThreadPool(MAX_THREADS,
         new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
-    s_logger.fine("Initialized executor thread pool with size: " + MAX_THREADS);
+    logger.fine("Initialized executor thread pool with size: " + MAX_THREADS);
   }
 
   @Override
@@ -190,7 +190,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     latchWorkerThreadsCreation.countDown();
     // allow calcing and other stuff to go ahead
     latchSetData.countDown();
-    s_logger.fine("Initialized worker thread pool with size: " + workers.size());
+    logger.fine("Initialized worker thread pool with size: " + workers.size());
   }
 
   @Override
@@ -290,7 +290,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       }
       // we don't want to scare the user with 8+ errors all for the same thing
       if (!interruptExceptions.isEmpty()) {
-        s_logger.log(Level.SEVERE, interruptExceptions.size() + " Battle results workers interrupted",
+        logger.log(Level.SEVERE, interruptExceptions.size() + " Battle results workers interrupted",
             interruptExceptions.iterator().next());
       }
       if (!executionExceptions.isEmpty()) {
@@ -298,7 +298,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         for (final Set<ExecutionException> entry : executionExceptions.values()) {
           if (!entry.isEmpty()) {
             e = entry.iterator().next();
-            s_logger.log(Level.SEVERE, entry.size() + " Battle results workers aborted by exception", e.getCause());
+            logger.log(Level.SEVERE, entry.size() + " Battle results workers aborted by exception", e.getCause());
           }
         }
         if (e != null) {

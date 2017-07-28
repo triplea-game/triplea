@@ -64,7 +64,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   public static final RemoteName CLIENT_READY_CHANNEL =
       new RemoteName("games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL", IServerReady.class);
-  private static final Logger s_logger = Logger.getLogger(ClientModel.class.getName());
+  private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
   private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
   private IChannelMessenger m_channelMessenger;
   private IRemoteMessenger m_remoteMessenger;
@@ -140,7 +140,7 @@ public class ClientModel implements IMessengerErrorListener {
       return false;
     }
     final String name = props.getName();
-    s_logger.log(Level.FINE, "Client playing as:" + name);
+    logger.log(Level.FINE, "Client playing as:" + name);
     // save the name! -- lnxduk
     prefs.put(ServerModel.PLAYERNAME, name);
     final int port = props.getPort();

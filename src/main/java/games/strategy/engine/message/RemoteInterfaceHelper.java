@@ -9,13 +9,13 @@ import java.util.logging.Logger;
 import games.strategy.util.Tuple;
 
 class RemoteInterfaceHelper {
-  private static final Logger s_logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
+  private static final Logger logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
 
   static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
-    if (s_logger.isLoggable(Level.FINEST)) {
-      s_logger.fine("Sorted methods:" + Arrays.asList(methods));
+    if (logger.isLoggable(Level.FINEST)) {
+      logger.fine("Sorted methods:" + Arrays.asList(methods));
     }
     for (int i = 0; i < methods.length; i++) {
       if (methods[i].getName().equals(methodName)) {
@@ -43,8 +43,8 @@ class RemoteInterfaceHelper {
   static Tuple<String, Class<?>[]> getMethodInfo(final int methodNumber, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
-    if (s_logger.isLoggable(Level.FINEST)) {
-      s_logger.fine("Sorted methods:" + Arrays.asList(methods));
+    if (logger.isLoggable(Level.FINEST)) {
+      logger.fine("Sorted methods:" + Arrays.asList(methods));
     }
     return Tuple.of(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
   }

@@ -29,9 +29,9 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 public class Tile {
-  public static final LockUtil S_TILE_LOCKUTIL = LockUtil.INSTANCE;
+  public static final LockUtil LOCK_UTIL = LockUtil.INSTANCE;
   private static final boolean DRAW_DEBUG = false;
-  private static final Logger s_logger = Logger.getLogger(Tile.class.getName());
+  private static final Logger logger = Logger.getLogger(Tile.class.getName());
 
   // allow the gc to implement memory management
   private SoftReference<Image> imageRef;
@@ -60,11 +60,11 @@ public class Tile {
   }
 
   public void acquireLock() {
-    S_TILE_LOCKUTIL.acquireLock(lock);
+    LOCK_UTIL.acquireLock(lock);
   }
 
   public void releaseLock() {
-    S_TILE_LOCKUTIL.releaseLock(lock);
+    LOCK_UTIL.releaseLock(lock);
   }
 
   public Image getImage(final GameData data, final MapData mapData) {
@@ -121,7 +121,7 @@ public class Tile {
     } else {
       scaled = unscaled;
     }
-    final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + bounds);
+    final Stopwatch stopWatch = new Stopwatch(logger, Level.FINEST, "Drawing Tile at" + bounds);
     // clear
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));

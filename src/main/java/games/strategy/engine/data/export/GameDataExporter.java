@@ -103,7 +103,7 @@ public class GameDataExporter {
           for (final TechAdvance tech : frontier.getTechs()) {
             String name = tech.getName();
             final String cat = tech.getProperty();
-            for (final String definedName : TechAdvance.s_allPreDefinedTechnologyNames) {
+            for (final String definedName : TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES) {
               if (definedName.equals(name)) {
                 name = cat;
               }
@@ -127,7 +127,7 @@ public class GameDataExporter {
         final String cat = tech.getProperty();
         // definedAdvances are handled differently by gameparser, they are set in xml with the category as the name but
         // stored in java with the normal category and name, this causes an xml bug when exporting.
-        for (final String definedName : TechAdvance.s_allPreDefinedTechnologyNames) {
+        for (final String definedName : TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES) {
           if (definedName.equals(name)) {
             name = cat;
           }

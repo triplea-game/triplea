@@ -54,12 +54,12 @@ public abstract class TechAdvance extends NamedAttachable {
   public static final String TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY = "industrialTechnology";
   public static final String TECH_NAME_DESTROYER_BOMBARD = "Destroyer Bombard";
   public static final String TECH_PROPERTY_DESTROYER_BOMBARD = "destroyerBombard";
-  public static final List<String> s_allPreDefinedTechnologyNames = Collections.unmodifiableList(
+  public static final List<String> ALL_PREDEFINED_TECHNOLOGY_NAMES = Collections.unmodifiableList(
       Arrays.asList(TECH_NAME_SUPER_SUBS, TECH_NAME_JET_POWER, TECH_NAME_IMPROVED_SHIPYARDS, TECH_NAME_AA_RADAR,
           TECH_NAME_LONG_RANGE_AIRCRAFT, TECH_NAME_HEAVY_BOMBER, TECH_NAME_IMPROVED_ARTILLERY_SUPPORT,
           TECH_NAME_ROCKETS, TECH_NAME_PARATROOPERS, TECH_NAME_INCREASED_FACTORY_PRODUCTION, TECH_NAME_WAR_BONDS,
           TECH_NAME_MECHANIZED_INFANTRY, TECH_NAME_INDUSTRIAL_TECHNOLOGY, TECH_NAME_DESTROYER_BOMBARD));
-  private static final Map<String, Class<? extends TechAdvance>> s_allPreDefinedTechnologies =
+  private static final Map<String, Class<? extends TechAdvance>> ALL_PREDEFINED_TECHNOLOGIES =
       createPreDefinedTechnologyMap();
 
   private static Map<String, Class<? extends TechAdvance>> createPreDefinedTechnologyMap() {
@@ -164,7 +164,7 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   public static TechAdvance findDefinedAdvanceAndCreateAdvance(final String s, final GameData data) {
-    final Class<? extends TechAdvance> clazz = s_allPreDefinedTechnologies.get(s);
+    final Class<? extends TechAdvance> clazz = ALL_PREDEFINED_TECHNOLOGIES.get(s);
     if (clazz == null) {
       throw new IllegalArgumentException(s + " is not a valid technology");
     }
