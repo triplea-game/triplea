@@ -5,7 +5,7 @@ import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -13,9 +13,19 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.math3.util.Pair;
 
+/**
+ * Example usage:
+ * <code><pre>
+ *   final JPanel panel = JPanelBuilder.builder()
+ *       .gridLayout(2, 1)
+ *       .add(new JLabel("")
+ *       .add(new JLabel("")
+ *       .build();
+ * </pre></code>
+ */
 public class JPanelBuilder {
 
-  private final List<Pair<Component, BorderLayoutPosition>> components = new ArrayList<>();
+  private final Collection<Pair<Component, BorderLayoutPosition>> components = new ArrayList<>();
   private Layout layout = Layout.DEFAULT;
   private int gridRows;
   private int gridColumns;
@@ -28,6 +38,10 @@ public class JPanelBuilder {
     return new JPanelBuilder();
   }
 
+  /**
+   * Constructs a Swing JPanel using current builder values.
+   * Values that must be set: (requires no values to be set)
+   */
   public JPanel build() {
     final JPanel panel = new JPanel();
     if (borderType != null) {
@@ -41,6 +55,7 @@ public class JPanelBuilder {
     switch (layout) {
       case GRID:
         panel.setLayout(new GridLayout(gridRows, gridColumns));
+        break;
       case GRID_BAG:
         panel.setLayout(new GridBagLayout());
         break;
@@ -58,7 +73,7 @@ public class JPanelBuilder {
       if (child.getSecond() == BorderLayoutPosition.DEFAULT) {
         panel.add(child.getFirst());
       } else {
-        switch(child.getSecond()) {
+        switch (child.getSecond()) {
           case CENTER:
             panel.add(child.getFirst(), BorderLayout.CENTER);
             break;
@@ -98,7 +113,6 @@ public class JPanelBuilder {
     return this;
   }
 
-
   public JPanelBuilder addNorth(final Component child) {
     components.add(new Pair<>(child, BorderLayoutPosition.NORTH));
     return this;
@@ -130,7 +144,12 @@ public class JPanelBuilder {
     return this;
   }
 
-
+  /**
+   * Specify a grid layout with a given number of rows and columns.
+   * 
+   * @param rows First parameter for 'new GridLayout'
+   * @param columns Second parameter for 'new GridLayout'
+   */
   public JPanelBuilder gridLayout(final int rows, final int columns) {
     layout = Layout.GRID;
     this.gridRows = rows;
@@ -142,6 +161,7 @@ public class JPanelBuilder {
     this.borderType = borderType;
     return this;
   }
+
   public JPanelBuilder borderWidth(final int borderWidth) {
     this.borderWidth = borderWidth;
     return this;
@@ -151,29 +171,9 @@ public class JPanelBuilder {
     DEFAULT, GRID, GRID_BAG, BOX_LAYOUT_HORIZONTAL, BOX_LAYOUT_VERTICAL
   }
 
-  /**
-   * Creates a JPanel with BorderLayout and adds a west component and an east component.
-   *
-   * public static JPanel horizontalJPanel(final Component westComponent, final Component eastComponent) {
-   * final JPanel panel = new JPanel();
-   * panel.setLayout(new BorderLayout());
-   * panel.add(westComponent, BorderLayout.WEST);
-   * panel.add(eastComponent, BorderLayout.EAST);
-   * return panel;
-   * }
-   * public static JPanel newBorderedPanel(final int borderWidth) {
-   * final JPanel panel = new JPanel();
-   * panel.setLayout(new BorderLayout());
-   * panel.setBorder(newEmptyBorder(borderWidth));
-   * return panel;
-   * }
-   *
-   *
-   */
   public enum BorderLayoutPosition {
     DEFAULT, CENTER, SOUTH, NORTH, WEST, EAST
   }
-
 
   public enum BorderType {
     EMPTY

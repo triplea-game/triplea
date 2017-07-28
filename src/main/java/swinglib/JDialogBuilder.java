@@ -13,6 +13,21 @@ import com.google.common.base.Strings;
 
 import games.strategy.ui.SwingAction;
 
+/**
+ * Example usage:
+ * <code><pre>
+ *   JDialog dialog = JDialogBuilder.builder()
+ *     .parentFrame(parent)
+ *     .contents(this)
+ *     .title("Produce")
+ *     .build();
+ *   dialog.pack();
+ *   dialog.setLocationRelativeTo(parent);
+ *   dialog.setVisible(true);
+ *   // making the dialog visible will block until it is closed
+ *   dialog.dispose();
+ * </pre></code>
+ */
 public final class JDialogBuilder {
 
   private JFrame parentFrame;
@@ -26,6 +41,10 @@ public final class JDialogBuilder {
     return new JDialogBuilder();
   }
 
+  /**
+   * Constructs a Swing JDialog using current builder values.
+   * Values that must be set: title, contents
+   */
   public JDialog build() {
     Preconditions.checkNotNull(title);
     Preconditions.checkNotNull(contents);

@@ -120,6 +120,7 @@ enum SettingsWindow {
       grid.add(JPanelBuilder.builder()
           .add(
               JTextAreaBuilder.builder()
+                  .text(setting.description)
                   .rows(2)
                   .columns(40)
                   .maximumSize(120, 50)

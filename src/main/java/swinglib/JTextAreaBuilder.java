@@ -2,8 +2,27 @@ package swinglib;
 
 import javax.swing.JTextArea;
 
+import com.google.common.base.Preconditions;
+
+/**
+ * Example usage:
+ * <code><pre>
+ *   JTextAreaBuilder textArea = JTextAreaBuilder.builder()
+ *     .text(setting.description)
+ *     .rows(2)
+ *     .columns(40)
+ *     .maximumSize(120, 50)
+ *     .readOnly()
+ *     .borderWidth(1)
+ *     .build();
+ * </pre></code>
+ */
 public final class JTextAreaBuilder {
 
+
+  private String text;
+  private int rows;
+  private int columns;
 
   private JTextAreaBuilder() {
 
@@ -13,19 +32,17 @@ public final class JTextAreaBuilder {
     return new JTextAreaBuilder();
   }
 
+  /**
+   * Constructs a Swing JTextArea using current builder values.
+   * Values that must be set: text, rows, columns
+   * By default the JTextArea will have line wrapping turned on.
+   */
   public JTextArea build() {
+    Preconditions.checkNotNull(text);
+    Preconditions.checkState(rows > 0);
+    Preconditions.checkState(columns > 0);
+
     final JTextArea textArea = new JTextArea();
-
-
-    /*
-     * final JTextArea description = new JTextArea(setting.description, 2, 40);
-     * description.setEditable(false);
-     * description.setWrapStyleWord(true);
-     *
-     * description.setMaximumSize(new Dimension(120, 50));
-     * description.setEditable(false);
-     * description.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-     */
     textArea.setWrapStyleWord(true);
     textArea.setLineWrap(true);
     return textArea;
@@ -53,6 +70,11 @@ public final class JTextAreaBuilder {
   }
 
   public JTextAreaBuilder columns(final int value) {
+    return this;
+  }
+
+  public JTextAreaBuilder text(final String text) {
+    this.text = text;
     return this;
   }
 }

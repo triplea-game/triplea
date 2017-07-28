@@ -88,6 +88,13 @@ public class ProductionPanel extends JPanel {
           .contents(this)
           .title("Produce")
           .build();
+      dialog.pack();
+      dialog.setLocationRelativeTo(parent);
+      dialog.setVisible(true);
+      // making the dialog visible will block until it is closed
+      dialog.dispose();
+
+
     }
     this.bid = bid;
     this.data = data;

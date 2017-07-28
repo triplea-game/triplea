@@ -7,11 +7,21 @@ import javax.swing.JButton;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
+/**
+ * Example usage:
+ * <code><pre>
+ *   JButton button = JButtonBuilder.builder()
+ *     .text("button text")
+ *     .actionListener(() -> handleClickAction())
+ *     .build();
+ * </pre></code>
+ */
 public class JButtonBuilder {
 
   private String title;
   private String toolTip;
   private Runnable actionListener;
+
   private JButtonBuilder() {}
 
   public static JButtonBuilder builder() {
@@ -38,7 +48,14 @@ public class JButtonBuilder {
     return this;
   }
 
+  /**
+   * Constructs a Swing JButton using current builder values.
+   * Values that must be set: title, actionlistener
+   */
   public JButton build() {
+    Preconditions.checkNotNull(title);
+    Preconditions.checkNotNull(actionListener);
+
     final JButton button = new JButton(title);
     if (toolTip != null) {
       button.setToolTipText(toolTip);

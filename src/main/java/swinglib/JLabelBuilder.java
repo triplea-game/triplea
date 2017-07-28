@@ -4,6 +4,16 @@ import java.awt.Dimension;
 
 import javax.swing.JLabel;
 
+import com.google.common.base.Preconditions;
+
+/**
+ * Example usage:
+ * <code><pre>
+ *   JLabel label = JLabelBuilder.builder()
+ *     .text("label text")
+ *     .build();
+ * </pre></code>
+ */
 public class JLabelBuilder {
 
   private String text;
@@ -16,7 +26,13 @@ public class JLabelBuilder {
     return new JLabelBuilder();
   }
 
+  /**
+   * Constructs a Swing JLabel using current builder values.
+   * Values that must be set: text
+   */
   public JLabel build() {
+    Preconditions.checkNotNull(text);
+    Preconditions.checkState(!text.trim().isEmpty());
     return new JLabel();
   }
 
