@@ -15,7 +15,7 @@ import games.strategy.util.Tuple;
  * Utilitiy class to create/read/delete banned usernames (there is no update).
  */
 public class BannedUsernameController {
-  private static final Logger s_logger = Logger.getLogger(BannedUsernameController.class.getName());
+  private static final Logger logger = Logger.getLogger(BannedUsernameController.class.getName());
 
   /**
    * Ban the username permanently.
@@ -39,7 +39,7 @@ public class BannedUsernameController {
     if (banTill != null) {
       banTillTs = new Timestamp(banTill.toEpochMilli());
     }
-    s_logger.fine("Banning username:" + username);
+    logger.fine("Banning username:" + username);
     final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps =
@@ -53,10 +53,10 @@ public class BannedUsernameController {
       if (sqle.getErrorCode() == 30000) {
         // this is ok
         // the username is banned as expected
-        s_logger.info("Tried to create duplicate banned username:" + username + " error:" + sqle.getMessage());
+        logger.info("Tried to create duplicate banned username:" + username + " error:" + sqle.getMessage());
         return;
       }
-      s_logger.log(Level.SEVERE, "Error inserting banned username:" + username, sqle);
+      logger.log(Level.SEVERE, "Error inserting banned username:" + username, sqle);
       throw new IllegalStateException(sqle.getMessage());
     } finally {
       DbUtil.closeConnection(con);
@@ -64,7 +64,7 @@ public class BannedUsernameController {
   }
 
   private void removeBannedUsername(final String username) {
-    s_logger.fine("Removing banned username:" + username);
+    logger.fine("Removing banned username:" + username);
     final Connection con = Database.getDerbyConnection();
     try {
       final PreparedStatement ps = con.prepareStatement("delete from banned_usernames where username = ?");
@@ -73,7 +73,7 @@ public class BannedUsernameController {
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
-      s_logger.log(Level.SEVERE, "Error deleting banned username:" + username, sqle);
+      logger.log(Level.SEVERE, "Error deleting banned username:" + username, sqle);
       throw new IllegalStateException(sqle.getMessage());
     } finally {
       DbUtil.closeConnection(con);
@@ -99,14 +99,14 @@ public class BannedUsernameController {
       if (found) {
         banTill = rs.getTimestamp(2);
         if (banTill != null && banTill.getTime() < System.currentTimeMillis()) {
-          s_logger.fine("Ban expired for:" + username);
+          logger.fine("Ban expired for:" + username);
           expired = true;
         }
       }
       rs.close();
       ps.close();
     } catch (final SQLException sqle) {
-      s_logger.info("Error for testing banned username existence:" + username + " error:" + sqle.getMessage());
+      logger.info("Error for testing banned username existence:" + username + " error:" + sqle.getMessage());
       throw new IllegalStateException(sqle.getMessage());
     } finally {
       DbUtil.closeConnection(con);

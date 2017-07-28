@@ -58,7 +58,7 @@ import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
 
 public class TileManager {
-  private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
+  private static final Logger logger = Logger.getLogger(TileManager.class.getName());
   public static final int TILE_SIZE = 256;
 
   private List<Tile> tiles = new ArrayList<>();
@@ -142,11 +142,11 @@ public class TileManager {
   }
 
   private void acquireLock() {
-    Tile.S_TILE_LOCKUTIL.acquireLock(lock);
+    Tile.LOCK_UTIL.acquireLock(lock);
   }
 
   private void releaseLock() {
-    Tile.S_TILE_LOCKUTIL.releaseLock(lock);
+    Tile.LOCK_UTIL.releaseLock(lock);
   }
 
   Collection<UnitsDrawer> getUnitDrawables() {
@@ -239,7 +239,7 @@ public class TileManager {
     try {
       acquireLock();
       try {
-        s_logger.log(Level.FINER, "Updating " + territory.getName());
+        logger.log(Level.FINER, "Updating " + territory.getName());
         clearTerritory(territory);
         drawTerritory(territory, data, mapData);
       } finally {

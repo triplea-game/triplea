@@ -24,7 +24,7 @@ public class DiceImageFactory {
   public int DIE_HEIGHT = 32;
   private final int m_diceSides;
   private final ResourceLoader m_resourceLoader;
-  private static final Color s_ignored = new Color(100, 100, 100, 200);
+  private static final Color IGNORED = new Color(100, 100, 100, 200);
   // maps Integer -> Image
   private final Map<Integer, Image> m_images = new HashMap<>();
   private final Map<Integer, Image> m_imagesHit = new HashMap<>();
@@ -36,7 +36,7 @@ public class DiceImageFactory {
     m_resourceLoader = loader;
     generateDice(pipSize, Color.black, m_images);
     generateDice(pipSize, Color.red, m_imagesHit);
-    generateDice(pipSize, s_ignored, m_imagesIgnored);
+    generateDice(pipSize, IGNORED, m_imagesIgnored);
   }
 
   private void generateDice(final int pipSize, final Color color, final Map<Integer, Image> images) {
@@ -49,7 +49,7 @@ public class DiceImageFactory {
           img = iFactory.getImage("dice/" + i + ".png", false);
         } else if (color == Color.red) {
           img = iFactory.getImage("dice/" + i + "_hit.png", false);
-        } else if (color == s_ignored) {
+        } else if (color == IGNORED) {
           img = iFactory.getImage("dice/" + i + "_ignored.png", false);
         }
       }
@@ -118,7 +118,7 @@ public class DiceImageFactory {
           graphics.setColor(Color.BLACK);
           break;
         case IGNORED:
-          graphics.setColor(s_ignored);
+          graphics.setColor(IGNORED);
           break;
         default:
           throw new IllegalStateException("??");

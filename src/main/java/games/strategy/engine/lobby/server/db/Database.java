@@ -40,8 +40,8 @@ import games.strategy.util.ThreadUtil;
  * </p>
  */
 public class Database {
-  private static final Logger s_logger = Logger.getLogger(Database.class.getName());
-  private static final Object s_dbSetupLock = new Object();
+  private static final Logger logger = Logger.getLogger(Database.class.getName());
+  private static final Object dbSetupLock = new Object();
   private static boolean s_isDbSetup = false;
   private static boolean s_areDBTablesCreated = false;
 
@@ -109,7 +109,7 @@ public class Database {
    * The connection passed in to this method is not closed, except in case of error.
    */
   private static void ensureDbTablesAreCreated(final Connection conn) {
-    synchronized (s_dbSetupLock) {
+    synchronized (dbSetupLock) {
       try {
         if (s_areDBTablesCreated) {
           return;
@@ -176,7 +176,7 @@ public class Database {
         } catch (final SQLException e) {
           // ignore close errors
         }
-        s_logger.log(Level.SEVERE, sqle.getMessage(), sqle);
+        logger.log(Level.SEVERE, sqle.getMessage(), sqle);
         throw new IllegalStateException("Could not create tables");
       }
     }
@@ -186,7 +186,7 @@ public class Database {
    * Set up folders and environment variables for database.
    */
   private static void ensureDbIsSetup() {
-    synchronized (s_dbSetupLock) {
+    synchronized (dbSetupLock) {
       if (s_isDbSetup) {
         return;
       }
@@ -231,10 +231,10 @@ public class Database {
     final File backupRootDir = getBackupDir();
     final File backupDir = new File(backupRootDir, backupDirName);
     if (!backupDir.mkdirs()) {
-      s_logger.severe("Could not create backup dir" + backupDirName);
+      logger.severe("Could not create backup dir" + backupDirName);
       return;
     }
-    s_logger.log(Level.INFO, "Backing up database to " + backupDir.getAbsolutePath());
+    logger.log(Level.INFO, "Backing up database to " + backupDir.getAbsolutePath());
     try (final Connection con = getDerbyConnection()) {
       // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
       final String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
@@ -243,9 +243,9 @@ public class Database {
       cs.execute();
       cs.close();
     } catch (final Exception e) {
-      s_logger.log(Level.SEVERE, "Could not back up database", e);
+      logger.log(Level.SEVERE, "Could not back up database", e);
     }
-    s_logger.log(Level.INFO, "Done backing up database");
+    logger.log(Level.INFO, "Done backing up database");
   }
 
   private static File getBackupDir() {
@@ -257,9 +257,9 @@ public class Database {
       DriverManager.getConnection("jdbc:derby:ta_users;shutdown=true");
     } catch (final SQLException se) {
       if (se.getErrorCode() != 45000) {
-        s_logger.log(Level.WARNING, se.getMessage(), se);
+        logger.log(Level.WARNING, se.getMessage(), se);
       }
     }
-    s_logger.info("Databse shut down");
+    logger.info("Databse shut down");
   }
 }

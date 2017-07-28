@@ -32,7 +32,7 @@ import games.strategy.util.ThreadUtil;
  * based on it.
  */
 public class UnifiedMessenger {
-  private static final Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
+  private static final Logger logger = Logger.getLogger(UnifiedMessenger.class.getName());
 
   private static final ExecutorService threadPool = Executors.newFixedThreadPool(15);
   // the messenger we are based on
@@ -121,7 +121,7 @@ public class UnifiedMessenger {
     try {
       latch.await();
     } catch (final InterruptedException e) {
-      s_logger.log(Level.WARNING, e.getMessage());
+      logger.log(Level.WARNING, e.getMessage());
     }
 
     synchronized (m_pendingLock) {
@@ -153,7 +153,7 @@ public class UnifiedMessenger {
       for (final RemoteMethodCallResults r : results) {
         if (r.getException() != null) {
           // don't swallow errors
-          s_logger.log(Level.WARNING, r.getException().getMessage(), r.getException());
+          logger.log(Level.WARNING, r.getException().getMessage(), r.getException());
         }
       }
     }

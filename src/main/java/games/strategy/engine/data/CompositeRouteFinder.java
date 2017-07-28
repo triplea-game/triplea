@@ -13,7 +13,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
 public class CompositeRouteFinder {
-  private static final Logger s_logger = Logger.getLogger(CompositeRouteFinder.class.getName());
+  private static final Logger logger = Logger.getLogger(CompositeRouteFinder.class.getName());
 
   private final GameMap m_map;
   private final Map<Match<Territory>, Integer> m_matches;
@@ -35,7 +35,7 @@ public class CompositeRouteFinder {
   public CompositeRouteFinder(final GameMap map, final Map<Match<Territory>, Integer> matches) {
     m_map = map;
     m_matches = matches;
-    s_logger.finer("Initializing CompositeRouteFinderClass...");
+    logger.finer("Initializing CompositeRouteFinderClass...");
   }
 
   Route findRoute(final Territory start, final Territory end) {

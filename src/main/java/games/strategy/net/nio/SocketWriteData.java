@@ -19,11 +19,11 @@ import java.util.logging.Logger;
  * </p>
  */
 class SocketWriteData {
-  private static final Logger s_logger = Logger.getLogger(SocketWriteData.class.getName());
-  private static final AtomicInteger s_counter = new AtomicInteger();
+  private static final Logger logger = Logger.getLogger(SocketWriteData.class.getName());
+  private static final AtomicInteger counter = new AtomicInteger();
   private final ByteBuffer m_size;
   private final ByteBuffer m_content;
-  private final int m_number = s_counter.incrementAndGet();
+  private final int m_number = counter.incrementAndGet();
   // how many times we called write before we finished writing ourselves
   private int m_writeCalls = 0;
 
@@ -58,8 +58,8 @@ class SocketWriteData {
       if (count == -1) {
         throw new IOException("triplea: end of stream detected");
       }
-      if (s_logger.isLoggable(Level.FINEST)) {
-        s_logger.finest("wrote size_buffer bytes:" + count);
+      if (logger.isLoggable(Level.FINEST)) {
+        logger.finest("wrote size_buffer bytes:" + count);
       }
       // we could not write everything
       if (m_size.hasRemaining()) {
@@ -70,8 +70,8 @@ class SocketWriteData {
     if (count == -1) {
       throw new IOException("triplea: end of stream detected");
     }
-    if (s_logger.isLoggable(Level.FINEST)) {
-      s_logger.finest("wrote content bytes:" + count);
+    if (logger.isLoggable(Level.FINEST)) {
+      logger.finest("wrote content bytes:" + count);
     }
     return !m_content.hasRemaining();
   }

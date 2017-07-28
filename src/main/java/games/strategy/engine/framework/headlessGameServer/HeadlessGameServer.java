@@ -43,7 +43,7 @@ import games.strategy.util.Util;
  */
 public class HeadlessGameServer {
 
-  static final Logger s_logger = Logger.getLogger(HeadlessGameServer.class.getName());
+  private static final Logger logger = Logger.getLogger(HeadlessGameServer.class.getName());
   private static HeadlessGameServer s_instance = null;
   private final AvailableGames m_availableGames;
   private final GameSelectorModel m_gameSelectorModel;
@@ -390,7 +390,7 @@ public class HeadlessGameServer {
     }
     s_instance = this;
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      s_logger.info("Running ShutdownHook.");
+      logger.info("Running ShutdownHook.");
       shutdown();
     }));
     m_availableGames = new AvailableGames();
@@ -432,7 +432,7 @@ public class HeadlessGameServer {
         restartLobbyWatcher(m_setupPanelModel, m_iGame);
       }
     }, reconnect, reconnect, TimeUnit.SECONDS);
-    s_logger.info("Game Server initialized");
+    logger.info("Game Server initialized");
   }
 
   private static synchronized void restartLobbyWatcher(

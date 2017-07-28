@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * Packets are sent to the sockets in the order that they are received.
  */
 class NIOWriter {
-  private static final Logger s_logger = Logger.getLogger(NIOWriter.class.getName());
+  private static final Logger logger = Logger.getLogger(NIOWriter.class.getName());
   private final Selector m_selector;
   private final IErrorReporter m_errorReporter;
   // this is the data we are writing
@@ -40,7 +40,7 @@ class NIOWriter {
     try {
       m_selector = Selector.open();
     } catch (final IOException e) {
-      s_logger.log(Level.SEVERE, "Could not create Selector", e);
+      logger.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
     final Thread t = new Thread(() -> loop(), "NIO Writer - " + threadSuffix);
@@ -52,7 +52,7 @@ class NIOWriter {
     try {
       m_selector.close();
     } catch (final IOException e) {
-      s_logger.log(Level.WARNING, "error closing selector", e);
+      logger.log(Level.WARNING, "error closing selector", e);
     }
   }
 
@@ -69,7 +69,7 @@ class NIOWriter {
       try {
         channel.register(m_selector, SelectionKey.OP_WRITE);
       } catch (final ClosedChannelException e) {
-        s_logger.log(Level.FINEST, "socket already closed", e);
+        logger.log(Level.FINEST, "socket already closed", e);
       }
     }
   }
@@ -77,15 +77,15 @@ class NIOWriter {
   private void loop() {
     while (m_running) {
       try {
-        if (s_logger.isLoggable(Level.FINEST)) {
-          s_logger.finest("selecting...");
+        if (logger.isLoggable(Level.FINEST)) {
+          logger.finest("selecting...");
         }
         try {
           // exceptions can be thrown here, nothing we can do
           // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
           m_selector.select();
         } catch (final Exception e) {
-          s_logger.log(Level.INFO, "error reading selection", e);
+          logger.log(Level.INFO, "error reading selection", e);
         }
         if (!m_running) {
           continue;
@@ -93,8 +93,8 @@ class NIOWriter {
         // select any new sockets that can be written to
         addNewSocketsToSelector();
         final Set<SelectionKey> selected = m_selector.selectedKeys();
-        if (s_logger.isLoggable(Level.FINEST)) {
-          s_logger.finest("selected:" + selected.size());
+        if (logger.isLoggable(Level.FINEST)) {
+          logger.finest("selected:" + selected.size());
         }
         final Iterator<SelectionKey> iter = selected.iterator();
         while (iter.hasNext()) {
@@ -105,13 +105,13 @@ class NIOWriter {
             final SocketWriteData packet = getData(channel);
             if (packet != null) {
               try {
-                if (s_logger.isLoggable(Level.FINEST)) {
-                  s_logger.finest("writing packet:" + packet + " to:" + channel.socket().getRemoteSocketAddress());
+                if (logger.isLoggable(Level.FINEST)) {
+                  logger.finest("writing packet:" + packet + " to:" + channel.socket().getRemoteSocketAddress());
                 }
                 final boolean done = packet.write(channel);
                 if (done) {
                   m_totalBytes += packet.size();
-                  if (s_logger.isLoggable(Level.FINE)) {
+                  if (logger.isLoggable(Level.FINE)) {
                     String remote = "null";
                     final Socket s = channel.socket();
                     SocketAddress sa = null;
@@ -121,13 +121,13 @@ class NIOWriter {
                     if (sa != null) {
                       remote = sa.toString();
                     }
-                    s_logger.log(Level.FINE, " done writing to:" + remote + " size:" + packet.size() + " writeCalls;"
+                    logger.log(Level.FINE, " done writing to:" + remote + " size:" + packet.size() + " writeCalls;"
                         + packet.getWriteCalls() + " total:" + m_totalBytes);
                   }
                   removeLast(channel);
                 }
               } catch (final Exception e) {
-                s_logger.log(Level.FINER, "exception writing", e);
+                logger.log(Level.FINER, "exception writing", e);
                 m_errorReporter.error(channel, e);
                 key.cancel();
               }
@@ -142,7 +142,7 @@ class NIOWriter {
       } catch (final Exception e) {
         // catch unhandles exceptions to that the writer
         // thread doesnt die
-        s_logger.log(Level.WARNING, "error in writer", e);
+        logger.log(Level.WARNING, "error in writer", e);
       }
     }
   }
@@ -164,7 +164,7 @@ class NIOWriter {
     synchronized (m_mutex) {
       final List<SocketWriteData> values = m_writing.get(to);
       if (values == null) {
-        s_logger.log(Level.SEVERE, "NO socket data to:" + to + " all:" + values);
+        logger.log(Level.SEVERE, "NO socket data to:" + to + " all:" + values);
         return;
       }
       values.remove(0);

@@ -58,7 +58,7 @@ import games.strategy.util.Tuple;
  */
 public class ProAI extends AbstractAI {
 
-  private static final Logger s_logger = Logger.getLogger(ProAI.class.getName());
+  private static final Logger logger = Logger.getLogger(ProAI.class.getName());
 
   // Odds calculator
   private static final IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator("ProAI");
@@ -114,7 +114,7 @@ public class ProAI extends AbstractAI {
   }
 
   public static Logger getLogger() {
-    return s_logger;
+    return logger;
   }
 
   public static void gameOverClearCache() {
