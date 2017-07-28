@@ -58,7 +58,7 @@ public class GridBagHelperTest {
     assertThat(helper.nextConstraint().gridx, is(2));
     assertThat(helper.nextConstraint().gridy, is(2));
 
-    helper.add(buildComponent(), buildComponent(), buildComponent());
+    helper.addAll(buildComponent(), buildComponent(), buildComponent());
     assertThat(helper.nextConstraint().gridx, is(2));
     assertThat(helper.nextConstraint().gridy, is(3));
   }

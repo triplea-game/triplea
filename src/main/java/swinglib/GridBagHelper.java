@@ -4,14 +4,18 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JComponent;
-import javax.swing.SpringLayout;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 /**
  * Helper class for gridbag layouts with a fixed number of columns.
+ * To use this class, you construct it using a component that has a GridBagLayout, and you specify
+ * how many columns you want. Then just add components and they'll be added to the appropriate column
+ * wrapping to the next row when needed.
+ * <p>
  * Example usage:
+ * </p>
  * <code><pre>
  * JPanel panelToHaveGridBag = new JPanel();
  * int columnCount = 2;
@@ -37,11 +41,18 @@ public final class GridBagHelper {
   }
 
   /**
-   * Adds components to the parent component used when constructing the {@code GridBagHelper}.
-   * Components are added as rows in a grid bag layout and wrap to the next column when appropriate.
-   * You can call this method multiple times and keep appending components.
+   * Adds a child component to the parent component passed in to the GridBagHelper constructor.
+   * The child component is added to the grid bag layout at the next column (left to right), wrapping
+   * to the next row when needed.
    */
-  public void add(final JComponent ... children) {
+  public void add(final JComponent child) {
+    addAll(child);
+  }
+
+  /**
+   * Adds many components in one go, a convenience api {@see add}
+   */
+  public void addAll(final JComponent ... children) {
     Preconditions.checkArgument(children.length > 0);
     for (final JComponent child : children) {
       parent.add(child, nextConstraint());
