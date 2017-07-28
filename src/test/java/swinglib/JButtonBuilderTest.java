@@ -12,7 +12,7 @@ import org.hamcrest.core.Is;
 
 import org.junit.Test;
 
-public class JButtonModelTest {
+public class JButtonBuilderTest {
 
   @Test
   public void testBuild() {
