@@ -336,7 +336,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
       byte[] bytes = null;
       try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000)) {
-        new GameDataManager().saveGame(sink, data);
+        GameDataManager.saveGame(sink, data);
         bytes = sink.toByteArray();
       } catch (final IOException e) {
         ClientLogger.logQuietly(e);

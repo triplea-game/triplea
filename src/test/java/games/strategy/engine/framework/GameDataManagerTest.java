@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 
 import org.junit.Test;
 
@@ -24,57 +25,56 @@ public class GameDataManagerTest {
   @Test
   public void testLoadStoreKeepsGameUuid() throws IOException {
     final GameData data = new GameData();
-    final GameDataManager m = new GameDataManager();
     final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-    m.saveGame(sink, data);
-    final GameData loaded = m.loadGame(new ByteArrayInputStream(sink.toByteArray()), null);
+    GameDataManager.saveGame(sink, data);
+    final GameData loaded = GameDataManager.loadGame(new ByteArrayInputStream(sink.toByteArray()), null);
     assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
   }
 
   @Test
-  public void shouldBeAbleToRoundTripSerializableGameData() throws Exception {
+  public void shouldBeAbleToRoundTripGameDataInNewFormat() throws Exception {
     final GameData expected = TestGameDataFactory.newValidGameData();
 
-    final byte[] bytes = saveSerializableGame(expected);
-    final GameData actual = loadSerializableGame(bytes);
+    final byte[] bytes = saveGameInNewFormat(expected);
+    final GameData actual = loadGameInNewFormat(bytes);
 
     assertThat(actual, is(equalToGameData(expected)));
   }
 
-  private static byte[] saveSerializableGame(final GameData gameData) throws Exception {
+  private static byte[] saveGameInNewFormat(final GameData gameData) throws Exception {
     try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-      GameDataManager.saveSerializableGame(baos, gameData);
+      GameDataManager.saveGameInNewFormat(baos, gameData, Collections.emptyMap());
       return baos.toByteArray();
     }
   }
 
-  private static GameData loadSerializableGame(final byte[] bytes) throws Exception {
+  private static GameData loadGameInNewFormat(final byte[] bytes) throws Exception {
     try (final ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-      return GameDataManager.loadSerializableGame(bais);
+      return GameDataManager.loadGameInNewFormat(bais);
     }
   }
 
   @Test
-  public void loadSerializableGame_ShouldNotCloseInputStream() throws Exception {
-    try (final InputStream is = spy(newSerializableGameInputStream())) {
-      GameDataManager.loadSerializableGame(is);
+  public void loadGameInNewFormat_ShouldNotCloseInputStream() throws Exception {
+    try (final InputStream is = spy(newInputStreamWithGameInNewFormat())) {
+      GameDataManager.loadGameInNewFormat(is);
 
       verify(is, never()).close();
     }
   }
 
-  private static InputStream newSerializableGameInputStream() throws Exception {
+  private static InputStream newInputStreamWithGameInNewFormat() throws Exception {
     final GameData gameData = TestGameDataFactory.newValidGameData();
-    final byte[] bytes = saveSerializableGame(gameData);
+    final byte[] bytes = saveGameInNewFormat(gameData);
     return new ByteArrayInputStream(bytes);
   }
 
   @Test
-  public void saveSerializableGame_ShouldNotCloseOutputStream() throws Exception {
+  public void saveGameInNewFormat_ShouldNotCloseOutputStream() throws Exception {
     final OutputStream os = mock(OutputStream.class);
     final GameData gameData = TestGameDataFactory.newValidGameData();
 
-    GameDataManager.saveSerializableGame(os, gameData);
+    GameDataManager.saveGameInNewFormat(os, gameData, Collections.emptyMap());
 
     verify(os, never()).close();
   }

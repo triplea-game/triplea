@@ -1732,7 +1732,7 @@ public class TripleAFrame extends MainGameFrame {
                 }
               }
               datacopy.getSequence().setRoundAndStep(round, stepDisplayName, currentPlayer);
-              new GameDataManager().saveGame(fout, datacopy);
+              GameDataManager.saveGame(fout, datacopy);
               JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",
                   JOptionPane.INFORMATION_MESSAGE);
             } catch (final IOException e) {

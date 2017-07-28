@@ -12,15 +12,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import javax.annotation.Nullable;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -40,35 +45,85 @@ import games.strategy.util.memento.MementoImportException;
 import games.strategy.util.memento.MementoImporter;
 
 /**
- * <p>
- * Title: TripleA
- * </p>
- * <p>
- * Description: Responsible for loading saved games, new games from xml, and saving games.
- * </p>
+ * Responsible for loading saved games, new games from xml, and saving games.
  */
-public class GameDataManager {
+public final class GameDataManager {
   private static final String DELEGATE_START = "<DelegateStart>";
   private static final String DELEGATE_DATA_NEXT = "<DelegateData>";
   private static final String DELEGATE_LIST_END = "<EndDelegateList>";
 
-  public GameDataManager() {}
+  private GameDataManager() {}
 
-  public GameData loadGame(final File savedGameFile) throws IOException {
-    try (
-        FileInputStream fileInputStream = new FileInputStream(savedGameFile);
-        InputStream input = new BufferedInputStream(fileInputStream)) {
-      String path;
-      try {
-        path = savedGameFile.getCanonicalPath();
-      } catch (final IOException e) {
-        path = savedGameFile.getPath();
-      }
-      return loadGame(input, path);
+  /**
+   * Loads game data from the specified file.
+   *
+   * @param file The file from which the game data will be loaded.
+   *
+   * @return The loaded game data.
+   *
+   * @throws IOException If an error occurs while loading the game.
+   */
+  public static GameData loadGame(final File file) throws IOException {
+    checkNotNull(file);
+
+    try (final FileInputStream fis = new FileInputStream(file);
+        final InputStream is = new BufferedInputStream(fis)) {
+      return loadGame(is, getPath(file));
     }
   }
 
-  public GameData loadGame(final InputStream inputStream, final String savegamePath) throws IOException {
+  /**
+   * Loads game data from the specified stream.
+   *
+   * @param is The stream from which the game data will be loaded. The caller is responsible for closing this stream; it
+   *        will not be closed when this method returns.
+   * @param path The path to the file from which the game data originated or {@code null} if none.
+   *
+   * @return The loaded game data.
+   *
+   * @throws IOException If an error occurs while loading the game.
+   */
+  public static GameData loadGame(final InputStream is, final @Nullable String path) throws IOException {
+    checkNotNull(is);
+
+    return ClientContext.gameEnginePropertyReader().useNewSaveGameFormat()
+        ? loadGameInNewFormat(is)
+        : loadGameInCurrentFormat(is, path);
+  }
+
+  private static String getPath(final File file) {
+    try {
+      return file.getCanonicalPath();
+    } catch (final IOException e) {
+      return file.getPath();
+    }
+  }
+
+  @VisibleForTesting
+  static GameData loadGameInNewFormat(final InputStream is) throws IOException {
+    return fromMemento(loadMemento(new CloseShieldInputStream(is)));
+  }
+
+  private static Memento loadMemento(final InputStream is) throws IOException {
+    try (final GZIPInputStream gzipis = new GZIPInputStream(is);
+        final ObjectInputStream ois = new ObjectInputStream(gzipis)) {
+      return (Memento) ois.readObject();
+    } catch (final ClassNotFoundException e) {
+      throw new IOException(e);
+    }
+  }
+
+  private static GameData fromMemento(final Memento memento) throws IOException {
+    try {
+      final MementoImporter<GameData> mementoImporter = GameDataMemento.newImporter();
+      return mementoImporter.importMemento(memento);
+    } catch (final MementoImportException e) {
+      throw new IOException(e);
+    }
+  }
+
+  private static GameData loadGameInCurrentFormat(final InputStream inputStream, final @Nullable String savegamePath)
+      throws IOException {
     final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
     try {
       final Version readVersion = (Version) input.readObject();
@@ -175,8 +230,11 @@ public class GameDataManager {
    * FYI: Engine version numbers work like this with regards to savegames:
    * Any changes to the first 3 digits means that the savegame is not compatible between different engines.
    * While any change only to the 4th (last) digit means that the savegame must be compatible between different engines.
+   *
+   * @param originalEngineVersion The engine version used to save the specified game data.
+   * @param data The game data to be updated.
    */
-  private void updateDataToBeCompatibleWithNewEngine(final Version originalEngineVersion, final GameData data) {
+  private static void updateDataToBeCompatibleWithNewEngine(final Version originalEngineVersion, final GameData data) {
     // whenever this gets out of date, just comment out (but keep as an example, by commenting out)
     /*
      * example1:
@@ -225,11 +283,70 @@ public class GameDataManager {
     }
   }
 
-  public void saveGame(final OutputStream sink, final GameData data) throws IOException {
-    saveGame(sink, data, true);
+  /**
+   * Saves the specified game data to the specified stream.
+   *
+   * @param os The stream to which the game data will be saved. The caller is responsible for closing this stream; it
+   *        will not be closed when this method returns.
+   * @param gameData The game data to save.
+   *
+   * @throws IOException If an error occurs while saving the game.
+   */
+  public static void saveGame(final OutputStream os, final GameData gameData) throws IOException {
+    checkNotNull(os);
+    checkNotNull(gameData);
+
+    saveGame(os, gameData, true);
   }
 
-  void saveGame(final OutputStream sink, final GameData data, final boolean saveDelegateInfo) throws IOException {
+  static void saveGame(
+      final OutputStream os,
+      final GameData gameData,
+      final boolean includeDelegates)
+      throws IOException {
+    if (ClientContext.gameEnginePropertyReader().useNewSaveGameFormat()) {
+      saveGameInNewFormat(
+          os,
+          gameData,
+          Collections.singletonMap(GameDataMemento.ExportOptionName.EXCLUDE_DELEGATES, !includeDelegates));
+    } else {
+      saveGameInCurrentFormat(os, gameData, includeDelegates);
+    }
+  }
+
+  @VisibleForTesting
+  static void saveGameInNewFormat(
+      final OutputStream os,
+      final GameData gameData,
+      final Map<GameDataMemento.ExportOptionName, Object> optionsByName)
+      throws IOException {
+    saveMemento(new CloseShieldOutputStream(os), toMemento(gameData, optionsByName));
+  }
+
+  private static Memento toMemento(
+      final GameData gameData,
+      final Map<GameDataMemento.ExportOptionName, Object> optionsByName)
+      throws IOException {
+    try {
+      final MementoExporter<GameData> mementoExporter = GameDataMemento.newExporter(optionsByName);
+      return mementoExporter.exportMemento(gameData);
+    } catch (final MementoExportException e) {
+      throw new IOException(e);
+    }
+  }
+
+  private static void saveMemento(final OutputStream os, final Memento memento) throws IOException {
+    try (final GZIPOutputStream gzipos = new GZIPOutputStream(os);
+        final ObjectOutputStream oos = new ProxyableObjectOutputStream(gzipos, ProxyRegistries.GAME_DATA_MEMENTO)) {
+      oos.writeObject(memento);
+    }
+  }
+
+  private static void saveGameInCurrentFormat(
+      final OutputStream sink,
+      final GameData data,
+      final boolean saveDelegateInfo)
+      throws IOException {
     // write internally first in case of error
     final ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
     final ObjectOutputStream outStream = new ObjectOutputStream(bytes);
@@ -265,71 +382,5 @@ public class GameDataManager {
     }
     // mark end of delegate section
     out.writeObject(DELEGATE_LIST_END);
-  }
-
-  /**
-   * Loads game data from the specified stream, which is expected to be in serializable format.
-   *
-   * @param is The stream from which the game data will be loaded. The caller is responsible for closing this stream; it
-   *        will not be closed when this method returns.
-   *
-   * @return The loaded game data.
-   *
-   * @throws IOException If an error occurs while loading the game.
-   */
-  public static GameData loadSerializableGame(final InputStream is) throws IOException {
-    checkNotNull(is);
-
-    return fromMemento(loadMemento(new CloseShieldInputStream(is)));
-  }
-
-  private static Memento loadMemento(final InputStream is) throws IOException {
-    try (final GZIPInputStream gzipis = new GZIPInputStream(is);
-        final ObjectInputStream ois = new ObjectInputStream(gzipis)) {
-      return (Memento) ois.readObject();
-    } catch (final ClassNotFoundException e) {
-      throw new IOException(e);
-    }
-  }
-
-  private static GameData fromMemento(final Memento memento) throws IOException {
-    try {
-      final MementoImporter<GameData> mementoImporter = GameDataMemento.newImporter();
-      return mementoImporter.importMemento(memento);
-    } catch (final MementoImportException e) {
-      throw new IOException(e);
-    }
-  }
-
-  /**
-   * Saves the specified game data to the specified stream in serializable format.
-   *
-   * @param os The stream to which the game data will be saved. The caller is responsible for closing this stream; it
-   *        will not be closed when this method returns.
-   * @param gameData The game data to save.
-   *
-   * @throws IOException If an error occurs while saving the game.
-   */
-  public static void saveSerializableGame(final OutputStream os, final GameData gameData) throws IOException {
-    checkNotNull(os);
-    checkNotNull(gameData);
-
-    saveMemento(new CloseShieldOutputStream(os), toMemento(gameData));
-  }
-
-  private static Memento toMemento(final GameData gameData) throws IOException {
-    try {
-      final MementoExporter<GameData> mementoExporter = GameDataMemento.newExporter();
-      return mementoExporter.exportMemento(gameData);
-    } catch (final MementoExportException e) {
-      throw new IOException(e);
-    }
-  }
-
-  private static void saveMemento(final OutputStream os, final Memento memento) throws IOException {
-    try (final GZIPOutputStream gzipos = new GZIPOutputStream(os);
-        final ObjectOutputStream oos = new ProxyableObjectOutputStream(gzipos, ProxyRegistries.GAME_DATA_MEMENTO)) {
-      oos.writeObject(memento);
-    }
   }
 }

@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -93,7 +95,6 @@ public class GameSelectorModel extends Observable {
       }
       return;
     }
-    final GameDataManager manager = new GameDataManager();
     final GameData newData;
     final AtomicReference<String> gameName = new AtomicReference<>();
     try {
@@ -104,7 +105,7 @@ public class GameSelectorModel extends Observable {
         }
       } else {
         // try to load it as a saved game whatever the extension
-        newData = manager.loadGame(file);
+        newData = GameDataManager.loadGame(file);
       }
       if (newData != null) {
         m_fileName = file.getName();
@@ -127,10 +128,9 @@ public class GameSelectorModel extends Observable {
   }
 
   public GameData getGameData(final InputStream input) {
-    final GameDataManager manager = new GameDataManager();
     final GameData newData;
     try {
-      newData = manager.loadGame(input, null);
+      newData = GameDataManager.loadGame(input, null);
       if (newData != null) {
         return newData;
       }

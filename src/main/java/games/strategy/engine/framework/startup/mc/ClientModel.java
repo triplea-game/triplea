@@ -304,7 +304,7 @@ public class ClientModel implements IMessengerErrorListener {
     try {
       // this normally takes a couple seconds, but can take
       // up to 60 seconds for a freaking huge game
-      data = new GameDataManager().loadGame(new ByteArrayInputStream(gameData), null);
+      data = GameDataManager.loadGame(new ByteArrayInputStream(gameData), null);
     } catch (final IOException ex) {
       ClientLogger.logQuietly(ex);
       return;

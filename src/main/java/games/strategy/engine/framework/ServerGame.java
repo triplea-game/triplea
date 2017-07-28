@@ -383,7 +383,7 @@ public class ServerGame extends AbstractGame {
       throw new IOException(ie.getMessage());
     }
     try {
-      new GameDataManager().saveGame(out, m_data);
+      GameDataManager.saveGame(out, m_data);
     } finally {
       m_delegateExecutionManager.resumeDelegateExecution();
     }
