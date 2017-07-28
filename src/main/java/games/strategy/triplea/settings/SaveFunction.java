@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
@@ -10,7 +9,7 @@ public class SaveFunction {
   /**
    * Returns a result message after persisting settings.
    */
-  public SaveResult saveSettings(final List<ClientSettingUiBinding> settings) {
+  static SaveResult saveSettings(final Iterable<ClientSettingUiBinding> settings) {
 
     final StringBuilder successMsg = new StringBuilder();
     final StringBuilder failMsg = new StringBuilder();
@@ -48,8 +47,7 @@ public class SaveFunction {
     }
   }
 
-
-  public class SaveResult {
+  static class SaveResult {
     final String message;
     final int dialogType;
 
