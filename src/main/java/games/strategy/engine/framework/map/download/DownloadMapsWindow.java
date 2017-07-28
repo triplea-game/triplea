@@ -39,7 +39,8 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.OptionalUtils;
-import swinglib.JButtonModel;
+import swinglib.JButtonBuilder;
+import swinglib.JPanelBuilder;
 
 /** Window that allows for map downloads and removal. */
 public class DownloadMapsWindow extends JFrame {
@@ -340,7 +341,10 @@ public class DownloadMapsWindow extends JFrame {
       final List<DownloadFileDescription> unsortedMaps, final MapAction action) {
 
     final List<DownloadFileDescription> maps = MapDownloadListSort.sortByMapName(unsortedMaps);
-    final JPanel main = SwingComponents.newBorderedPanel(30);
+    final JPanel main = JPanelBuilder.builder()
+        .borderWidth(30)
+        .border(JPanelBuilder.BorderType.EMPTY)
+      .build();
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
     main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
 
@@ -358,9 +362,11 @@ public class DownloadMapsWindow extends JFrame {
       DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
-      final JPanel southPanel = SwingComponents.newJPanelWithGridLayout(2, 1);
-      southPanel.add(mapSizeLabel);
-      southPanel.add(createButtonsPanel(action, gamesList, maps, model));
+      final JPanel southPanel = JPanelBuilder.builder()
+          .gridLayout(2, 1)
+          .add(mapSizeLabel)
+          .add(createButtonsPanel(action, gamesList, maps, model))
+          .build();
       main.add(southPanel, BorderLayout.SOUTH);
     }
 
@@ -469,39 +475,33 @@ public class DownloadMapsWindow extends JFrame {
   private JPanel createButtonsPanel(final MapAction action, final JList<String> gamesList,
       final List<DownloadFileDescription> maps,
       final DefaultListModel<String> listModel) {
-    final JPanel buttonsPanel = SwingComponents.newJPanelWithGridLayout(1, 5);
 
-    buttonsPanel.setBorder(SwingComponents.newEmptyBorder(20));
-
-
-    buttonsPanel.add(buildMapActionButton(action, gamesList, maps, listModel));
-
-    buttonsPanel.add(Box.createGlue());
-
-    buttonsPanel.add(JButtonModel.builder()
-        .withTitle("Help")
-        .withToolTip("Click this button to learn more about the map download feature in TripleA")
-        .withActionListener(() -> JOptionPane.showMessageDialog(this, new MapDownloadHelpPanel()))
-        .swingComponent());
-
-    buttonsPanel.add(JButtonModel.builder()
-        .withTitle("Give Map Feedback")
-        .withToolTip("Click this button to submit map comments and bug reports back to the map makers")
-        .withActionListener(() -> FeedbackDialog.showFeedbackDialog(gamesList.getSelectedValuesList(), maps))
-        .swingComponent());
-
-    buttonsPanel.add(Box.createGlue());
-
-    buttonsPanel.add(JButtonModel.builder()
-        .withTitle("Close")
-        .withToolTip("Click this button to close the map download window and cancel any in-progress downloads.")
-        .withActionListener(() -> {
-          setVisible(false);
-          dispose();
-        })
-        .swingComponent());
-
-    return buttonsPanel;
+    return JPanelBuilder.builder()
+        .gridLayout(1, 5)
+        .border(JPanelBuilder.BorderType.EMPTY)
+        .borderWidth(20)
+        .add(buildMapActionButton(action, gamesList, maps, listModel))
+        .add(Box.createGlue())
+        .add(JButtonBuilder.builder()
+            .title("Help")
+            .toolTip("Click this button to learn more about the map download feature in TripleA")
+            .actionListener(() -> JOptionPane.showMessageDialog(this, new MapDownloadHelpPanel()))
+            .build())
+        .add(JButtonBuilder.builder()
+            .title("Give Map Feedback")
+            .toolTip("Click this button to submit map comments and bug reports back to the map makers")
+            .actionListener(() -> FeedbackDialog.showFeedbackDialog(gamesList.getSelectedValuesList(), maps))
+            .build())
+        .add(Box.createGlue())
+        .add(JButtonBuilder.builder()
+            .title("Close")
+            .toolTip("Click this button to close the map download window and cancel any in-progress downloads.")
+            .actionListener(() -> {
+              setVisible(false);
+              dispose();
+            })
+            .build())
+        .build();
   }
 
 
@@ -514,17 +514,17 @@ public class DownloadMapsWindow extends JFrame {
     final JButton actionButton;
 
     if (action == MapAction.REMOVE) {
-      actionButton = JButtonModel.builder()
-          .withTitle("Remove")
-          .withToolTip("Click this button to remove the maps selected above from your computer. " + MULTIPLE_SELECT_MSG)
-          .withActionListener(removeAction(gamesList, maps, listModel))
-          .swingComponent();
+      actionButton = JButtonBuilder.builder()
+          .title("Remove")
+          .toolTip("Click this button to remove the maps selected above from your computer. " + MULTIPLE_SELECT_MSG)
+          .actionListener(removeAction(gamesList, maps, listModel))
+          .build();
     } else {
-      actionButton = JButtonModel.builder()
-          .withTitle((action == MapAction.INSTALL) ? "Install" : "Update")
-          .withToolTip("Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG)
-          .withActionListener(installAction(gamesList, maps, listModel))
-          .swingComponent();
+      actionButton = JButtonBuilder.builder()
+          .title((action == MapAction.INSTALL) ? "Install" : "Update")
+          .toolTip("Click this button to download and install the maps selected above. " + MULTIPLE_SELECT_MSG)
+          .actionListener(installAction(gamesList, maps, listModel))
+          .build();
     }
     return actionButton;
   }

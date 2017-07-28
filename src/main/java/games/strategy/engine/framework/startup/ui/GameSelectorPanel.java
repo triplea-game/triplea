@@ -39,7 +39,7 @@ import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.triplea.settings.ClientSetting;
-import swinglib.JButtonModel;
+import swinglib.JButtonBuilder;
 
 public class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
@@ -176,11 +176,11 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     add(loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
 
-    final JButton downloadMapButton = JButtonModel.builder()
-        .withTitle("Download Maps")
-        .withToolTip("Click this button to install additional maps")
-        .withActionListener(DownloadMapsWindow::showDownloadMapsWindow)
-        .swingComponent();
+    final JButton downloadMapButton = JButtonBuilder.builder()
+        .title("Download Maps")
+        .toolTip("Click this button to install additional maps")
+        .actionListener(DownloadMapsWindow::showDownloadMapsWindow)
+        .build();
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
     add(gameOptions, buildGridRow(0, 9, new Insets(25, 10, 10, 10)));

@@ -25,40 +25,40 @@ public class GridBagHelperTest {
     assertThat(helper.nextConstraint().gridy, is(0));
 
 
-    helper.addComponents(buildComponent());
+    helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(1));
     assertThat(helper.nextConstraint().gridy, is(0));
 
 
-    helper.addComponents(buildComponent());
+    helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(2));
     assertThat(helper.nextConstraint().gridy, is(0));
 
-    helper.addComponents(buildComponent());
+    helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(0));
     assertThat(helper.nextConstraint().gridy, is(1));
 
-    helper.addComponents(buildComponent());
+    helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(1));
     assertThat(helper.nextConstraint().gridy, is(1));
 
-    helper.addComponents(buildComponent());
+    helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(2));
     assertThat(helper.nextConstraint().gridy, is(1));
 
-    helper.addComponents(buildComponent());
+    helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(0));
     assertThat(helper.nextConstraint().gridy, is(2));
 
-    helper.addComponents(buildComponent());
+    helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(1));
     assertThat(helper.nextConstraint().gridy, is(2));
 
-    helper.addComponents(buildComponent());
+    helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(2));
     assertThat(helper.nextConstraint().gridy, is(2));
 
-    helper.addComponents(buildComponent(), buildComponent(), buildComponent());
+    helper.add(buildComponent(), buildComponent(), buildComponent());
     assertThat(helper.nextConstraint().gridx, is(2));
     assertThat(helper.nextConstraint().gridy, is(3));
   }

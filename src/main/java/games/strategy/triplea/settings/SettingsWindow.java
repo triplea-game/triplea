@@ -1,33 +1,28 @@
 package games.strategy.triplea.settings;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridBagLayout;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.ui.SwingComponents;
 import swinglib.GridBagHelper;
-import swinglib.JButtonModel;
-import swinglib.JPanelModel;
+import swinglib.JButtonBuilder;
+import swinglib.JLabelBuilder;
+import swinglib.JPanelBuilder;
+import swinglib.JTextAreaBuilder;
 
 
 /**
@@ -63,132 +58,119 @@ enum SettingsWindow {
     }
   }
 
-  private static JComponent createContents(final Runnable closerListener) {
+  private static JComponent createContents(final Runnable closeListener) {
     final JTabbedPane tabbedPane = SwingComponents.newJTabbedPane(1000, 400);
 
-    Arrays.stream(SettingType.values()).forEach(settingType ->
-        tabbedPane.add(settingType.tabTitle, createSettingsTab(settingType, closerListener)));
+    Arrays.stream(SettingType.values()).forEach(settingType -> {
+      final List<ClientSettingUiBinding> settings = getSettingsByType(settingType);
+      verifySettings(settings);
+
+      final JComponent tab = buildTab(settings, closeListener);
+      tabbedPane.add(settingType.tabTitle, tab);
+    });
     return tabbedPane;
   }
 
-  private static JComponent createSettingsTab(final SettingType settingType, final Runnable closeListener) {
-    final List<ClientSettingUiBinding> settings = Arrays.stream(ClientSettingUiBinding.values())
-        .filter(setting -> setting.type == settingType)
+  private static List<ClientSettingUiBinding> getSettingsByType(final SettingType type) {
+    return Arrays.stream(ClientSettingUiBinding.values())
+        .filter(setting -> setting.type == type)
         .collect(Collectors.toList());
+  }
 
+  private static void verifySettings(final List<ClientSettingUiBinding> settings) {
+    // do some basic integrity/data validity check.
     settings.forEach(setting -> {
       Preconditions.checkNotNull(Strings.emptyToNull(setting.title));
       Preconditions.checkNotNull(setting.selectionComponent.getJComponent());
     });
+  }
 
-    final JPanel contents = JPanelModel.builder()
-        .withGridBagLayout()
-        .swingComponent();
+  private static JComponent buildTab(final List<ClientSettingUiBinding> settings, final Runnable closeListener) {
+    return JPanelBuilder.builder()
+        .addCenter(tabMainContents(settings))
+        .addSouth(buttonPanel(settings, closeListener))
+        .build();
+  }
 
-    final GridBagHelper grid = new GridBagHelper(contents,3);
+
+
+  private static JComponent tabMainContents(final List<ClientSettingUiBinding> settings) {
+    final JPanel contents = JPanelBuilder.builder()
+        .gridBagLayout()
+        .build();
+
+    final GridBagHelper grid = new GridBagHelper(contents, 3);
+
+    // Add settings, one per row, columns of 3:
+    // setting title (JLabel)  |  input component (eg: radio buttons) | description (JTextArea)}
 
     settings.forEach(setting -> {
-      final JPanel panel = SwingComponents.newJPanelWithHorizontalBoxLayout();
-      final JLabel label = new JLabel(setting.title);
-      label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-      label.setMaximumSize(new Dimension(200, 50));
-      panel.add(label);
+      grid.add(JPanelBuilder.builder()
+          .horizontalBoxLayout()
+          .add(
+              JLabelBuilder.builder()
+                  .text(setting.title)
+                  .leftAlign()
+                  .maximumSize(200, 50)
+                  .build())
+          .build());
 
-      final JComponent component = setting.selectionComponent.getJComponent();
+      grid.add(setting.selectionComponent.getJComponent());
 
-      final JTextArea description = new JTextArea(setting.description, 2, 40);
-      description.setMaximumSize(new Dimension(120, 50));
-      description.setEditable(false);
-      description.setWrapStyleWord(true);
-      description.setLineWrap(true);
-      description.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-
-      // this 'borderPanel' will create some extra padding around the description text area
-      final JPanel borderPanel = new JPanel();
-      borderPanel.add(description);
-      grid.addComponents(panel, component, borderPanel);
+      grid.add(JPanelBuilder.builder()
+          .add(
+              JTextAreaBuilder.builder()
+                  .rows(2)
+                  .columns(40)
+                  .maximumSize(120, 50)
+                  .readOnly()
+                  .borderWidth(1)
+                  .build())
+          .build());
     });
+    return SwingComponents.newJScrollPane(contents);
+}
 
-    final JPanel outerPanel = new JPanel();
-    outerPanel.setLayout(new BorderLayout());
-    outerPanel.add(SwingComponents.newJScrollPane(contents), BorderLayout.CENTER);
-
-    final JPanel bottomPanel = SwingComponents.newJPanelWithHorizontalBoxLayout();
-    outerPanel.add(bottomPanel, BorderLayout.SOUTH);
-
-
-    bottomPanel.add(Box.createHorizontalGlue());
-
-    final JPanel buttonPanel = SwingComponents.newJPanelWithHorizontalBoxLayout();
+  private static JPanel buttonPanel(final List<ClientSettingUiBinding> settings, final Runnable closeListener) {
+    final JPanel buttonPanel = JPanelBuilder.builder()
+        .horizontalBoxLayout()
+        .build();
     buttonPanel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    bottomPanel.add(buttonPanel);
-    bottomPanel.add(Box.createHorizontalGlue());
 
-    final JButton saveButton = JButtonModel.builder()
-        .withTitle("Save")
-        .withActionListener(() -> {
-          final StringBuilder successMsg = new StringBuilder();
-          final StringBuilder failMsg = new StringBuilder();
-
-          // save all the values, save stuff that is valid and that was updated
-          settings.forEach(setting -> {
-            if (setting.isValid()) {
-              // read and save all settings
-              setting.readValues().forEach((settingKey, settingValue) -> {
-                if (!settingKey.value().equals(settingValue)) {
-                  settingKey.save(settingValue);
-                  successMsg.append(String.format("%s was updated to: %s\n", setting.title, settingValue));
-                }
-              });
-              ClientSetting.flush();
-            } else if (!setting.isValid()) {
-              final Map<ClientSetting, String> values = setting.readValues();
-              values.forEach((entry, value) -> {
-                failMsg.append(String.format("Could not set %s to %s, %s\n",
-                    setting.title, value, setting.validValueDescription()));
-              });
-            }
-          });
-          ClientSetting.flush();
-
-          final String success = successMsg.toString();
-          final String fail = failMsg.toString();
-          if (success.isEmpty() && fail.isEmpty()) {
-            JOptionPane.showMessageDialog(outerPanel, "No changes to save", "No changes saved",
-                JOptionPane.WARNING_MESSAGE);
-          } else if (fail.isEmpty()) {
-            JOptionPane.showMessageDialog(outerPanel, success, "Success", JOptionPane.INFORMATION_MESSAGE);
-          } else if (success.isEmpty()) {
-            JOptionPane.showMessageDialog(outerPanel, fail, "No changes saved", JOptionPane.WARNING_MESSAGE);
-          } else {
-            JOptionPane.showMessageDialog(outerPanel, success + "\n" + fail, "Some changes were not saved",
-                JOptionPane.WARNING_MESSAGE);
-          }
-        }).swingComponent();
-
-    buttonPanel.add(saveButton);
+    buttonPanel.add(JButtonBuilder.builder()
+        .title("Save")
+        .actionListener(() -> {
+          SaveFunction.SaveResult saveResult = new SaveFunction().saveSettings(settings);
+          JOptionPane.showMessageDialog(null, saveResult.message, "Results", saveResult.dialogType);
+        })
+        .build());
 
     buttonPanel.add(Box.createHorizontalStrut(40));
 
-    buttonPanel.add(JButtonModel.builder()
-        .withTitle("Close")
-        .withActionListener(closeListener)
-        .swingComponent());
+    buttonPanel.add(JButtonBuilder.builder()
+        .title("Close")
+        .actionListener(closeListener)
+        .build());
 
     buttonPanel.add(Box.createHorizontalStrut(40));
 
-    final JButton restoreDefaultsButton = JButtonModel.builder()
-        .withTitle("Restore Defaults")
-        .withActionListener(() -> {
-          settings.forEach(ClientSettingUiBinding::resetToDefault);
-          ClientSetting.flush();
+    final JButton restoreDefaultsButton = JButtonBuilder.builder()
+        .title("Restore Defaults")
+        .actionListener(() -> {
+          new ResetFunction().resetSettings(settings);
           JOptionPane.showMessageDialog(null,
               "All " + settings.get(0).type.tabTitle + " settings were restored to their default values.");
-        }).swingComponent();
+        })
+        .build();
 
     buttonPanel.add(restoreDefaultsButton);
 
-    return outerPanel;
-  }
 
+    return JPanelBuilder.builder()
+        .horizontalBoxLayout()
+        .add(Box.createHorizontalGlue())
+        .add(buttonPanel)
+        .add(Box.createHorizontalGlue())
+        .build();
+  }
 }

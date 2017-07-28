@@ -27,6 +27,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
+import swinglib.JPanelBuilder;
 
 public class TabbedProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 3481282212500641144L;
@@ -174,7 +175,10 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   private JPanel getRulesPanel(final List<Rule> rules) {
-    final JPanel panel = SwingComponents.newJPanelWithGridLayout(rows, columns);
+    final JPanel panel = JPanelBuilder.builder()
+        .gridLayout(rows, columns)
+        .build();
+
     final JPanel[][] panelHolder = new JPanel[rows][columns];
     for (int m = 0; m < rows; m++) {
       for (int n = 0; n < columns; n++) {

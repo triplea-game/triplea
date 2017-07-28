@@ -45,11 +45,11 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 import games.strategy.ui.Util.Task;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ThreadUtil;
+import swinglib.JPanelBuilder;
 
 /**
  * UI for fighting battles.
@@ -126,8 +126,10 @@ public class BattlePanel extends ActionPanel {
         removeAll();
         actionLabel.setText(id.getName() + " battle");
         setLayout(new BorderLayout());
-        final JPanel panel = SwingComponents.newJPanelWithGridLayout(0, 1);
-        panel.add(actionLabel);
+        final JPanel panel = JPanelBuilder.builder()
+            .gridLayout(0, 1)
+            .add(actionLabel)
+            .build();
         for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
           for (final Territory t : entry.getValue()) {
             addBattleActions(panel, t, entry.getKey().isBombingRun(), entry.getKey());

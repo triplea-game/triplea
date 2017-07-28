@@ -6,12 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
@@ -31,7 +27,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -42,7 +37,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -57,7 +51,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.OpenFileUtility;
@@ -191,20 +184,6 @@ public class SwingComponents {
     return tabbedPane;
   }
 
-  public static JPanel newJPanelWithVerticalBoxLayout() {
-    return newJPanelWithBoxLayout(BoxLayout.Y_AXIS);
-  }
-
-  private static JPanel newJPanelWithBoxLayout(final int layout) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, layout));
-    return panel;
-  }
-
-  public static JPanel newJPanelWithHorizontalBoxLayout() {
-    return newJPanelWithBoxLayout(BoxLayout.X_AXIS);
-  }
-
   public static ButtonGroup createButtonGroup(final JRadioButton... radioButtons) {
     final ButtonGroup group = new ButtonGroup();
     for (final JRadioButton radioButton : Arrays.asList(radioButtons)) {
@@ -249,24 +228,6 @@ public class SwingComponents {
     int getSwingKeyEventCode() {
       return keyEventCode;
     }
-  }
-
-
-  /**
-   * Creates a JPanel with BorderLayout and adds a west component and an east component.
-   */
-  public static JPanel horizontalJPanel(final Component westComponent, final Component eastComponent) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BorderLayout());
-    panel.add(westComponent, BorderLayout.WEST);
-    panel.add(eastComponent, BorderLayout.EAST);
-    return panel;
-  }
-
-  public static JPanel newJPanelWithGridLayout(final int rows, final int columns) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new GridLayout(rows, columns));
-    return panel;
   }
 
 
@@ -362,12 +323,6 @@ public class SwingComponents {
     return m_descriptionPane;
   }
 
-  public static JPanel newBorderedPanel(final int borderWidth) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BorderLayout());
-    panel.setBorder(newEmptyBorder(borderWidth));
-    return panel;
-  }
 
   public static Border newEmptyBorder(final int borderWidth) {
     return new EmptyBorder(borderWidth, borderWidth, borderWidth, borderWidth);

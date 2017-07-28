@@ -21,7 +21,8 @@ import com.google.common.base.Strings;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.ui.SwingComponents;
-import swinglib.JButtonModel;
+import swinglib.JButtonBuilder;
+import swinglib.JPanelBuilder;
 
 /**
  * Logic for building UI components that "bind" to ClientSettings.
@@ -45,23 +46,22 @@ class SelectionComponentFactory {
         new JRadioButton("Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
 
 
-
     SwingComponents.createButtonGroup(noneButton, systemButton, userButton);
 
 
-    final JPanel radioPanel = SwingComponents.newJPanelWithVerticalBoxLayout();
-    radioPanel.add(noneButton);
-    radioPanel.add(systemButton);
-    radioPanel.add(userButton);
-
-
     final JTextField hostText = new JTextField(ClientSetting.PROXY_HOST.value(), 20);
-    radioPanel.add(new JLabel("Proxy Host: "));
-    radioPanel.add(hostText);
-
     final JTextField portText = new JTextField(ClientSetting.PROXY_PORT.value(), 6);
-    radioPanel.add(new JLabel("Proxy Port: "));
-    radioPanel.add(portText);
+
+    final JPanel radioPanel = JPanelBuilder.builder()
+        .verticalBoxLayout()
+        .add(noneButton)
+        .add(systemButton)
+        .add(userButton)
+        .add(new JLabel("Proxy Host: "))
+        .add(hostText)
+        .add(new JLabel("Proxy Port: "))
+        .add(portText)
+        .build();
 
     final ActionListener enableUserSettings = e -> {
       if (userButton.isSelected()) {
@@ -249,9 +249,11 @@ class SelectionComponentFactory {
 
     SwingComponents.createButtonGroup(yesButton, noButton);
 
-    final JPanel buttonPanel = SwingComponents.newJPanelWithHorizontalBoxLayout();
-    buttonPanel.add(yesButton);
-    buttonPanel.add(noButton);
+    final JPanel buttonPanel = JPanelBuilder.builder()
+        .horizontalBoxLayout()
+        .add(yesButton)
+        .add(noButton)
+        .build();
 
     return new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = 6104513062312556269L;
@@ -300,23 +302,24 @@ class SelectionComponentFactory {
     final JTextField field = new JTextField(clientSetting.value(), expectedLength);
     field.setEditable(false);
 
-    final JButton button = JButtonModel.builder()
-        .withTitle("Select")
-        .withActionListener(
+    final JButton button = JButtonBuilder.builder()
+        .title("Select")
+        .actionListener(
             () -> SwingComponents.showJFileChooser(folderSelectionMode)
                 .ifPresent(file -> field.setText(file.getAbsolutePath())))
-        .swingComponent();
+        .build();
 
     return new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = -1775099967925891332L;
 
       @Override
       JComponent getJComponent() {
-        final JPanel panel = SwingComponents.newJPanelWithHorizontalBoxLayout();
-        panel.add(field);
-        panel.add(Box.createHorizontalStrut(10));
-        panel.add(button);
-        return panel;
+        return JPanelBuilder.builder()
+            .horizontalBoxLayout()
+            .add(field)
+            .add(Box.createHorizontalStrut(10))
+            .add(button)
+            .build();
       }
 
       @Override

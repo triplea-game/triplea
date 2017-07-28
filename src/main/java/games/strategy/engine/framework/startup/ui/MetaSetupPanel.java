@@ -21,7 +21,7 @@ import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingComponents;
-import swinglib.JButtonModel;
+import swinglib.JButtonBuilder;
 import tools.map.making.MapCreator;
 import tools.map.xml.creator.MapXmlCreator;
 
@@ -105,24 +105,24 @@ public class MetaSetupPanel extends SetupPanel {
         new Insets(00, 0, 0, 0), 0, 0));
 
     if (ClientSetting.SHOW_BETA_FEATURES.booleanValue()) {
-      final JButton mapCreator = JButtonModel.builder()
-          .withTitle("Run the Map Creator")
-          .withActionListener(() -> ProcessRunnerUtil.runClass(MapCreator.class))
-          .swingComponent();
+      final JButton mapCreator = JButtonBuilder.builder()
+          .title("Run the Map Creator")
+          .actionListener(() -> ProcessRunnerUtil.runClass(MapCreator.class))
+          .build();
       add(mapCreator, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, 0, 0, 0), 0, 0));
 
-      final JButton mapXmlCreator = JButtonModel.builder()
-          .withTitle("[Beta] Run the Map Creator")
-          .withActionListener(() -> ProcessRunnerUtil.runClass(MapXmlCreator.class))
-          .swingComponent();
+      final JButton mapXmlCreator = JButtonBuilder.builder()
+          .title("[Beta] Run the Map Creator")
+          .actionListener(() -> ProcessRunnerUtil.runClass(MapXmlCreator.class))
+          .build();
       add(mapXmlCreator, new GridBagConstraints(0,  11, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, 0, 0, 0), 0, 0));
 
-      final JButton console = JButtonModel.builder()
-          .withTitle("Show Console")
-          .withActionListener(() -> ErrorConsole.getConsole().setVisible(true))
-          .swingComponent();
+      final JButton console = JButtonBuilder.builder()
+          .title("Show Console")
+          .actionListener(() -> ErrorConsole.getConsole().setVisible(true))
+          .build();
       add(console, new GridBagConstraints(0, 12, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, 0, 0, 0), 0, 0));
     }

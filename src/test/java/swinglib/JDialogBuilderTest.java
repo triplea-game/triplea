@@ -14,15 +14,15 @@ import org.hamcrest.core.Is;
 
 import org.junit.Test;
 
-public class JDialogModelTest {
+public class JDialogBuilderTest {
 
   @Test
   public void testBuild() {
     try {
-      final JDialog dialog = JDialogModel.builder()
-          .withContents(new JPanel())
-          .withTitle("title")
-          .swingComponent();
+      final JDialog dialog = JDialogBuilder.builder()
+          .contents(new JPanel())
+          .title("title")
+          .build();
 
       assertThat(dialog.getTitle(), Is.is("title"));
     } catch (final HeadlessException e) {
@@ -34,11 +34,11 @@ public class JDialogModelTest {
   public void buildWithAllParams() {
     try {
       MatcherAssert.assertThat(
-          JDialogModel.builder()
-              .withContents(new JPanel())
-              .withTitle("abc")
-              .withParentFrame(new JFrame())
-              .swingComponent(),
+          JDialogBuilder.builder()
+              .contents(new JPanel())
+              .title("abc")
+              .parentFrame(new JFrame())
+              .build(),
           notNullValue());
     } catch (final HeadlessException e) {
       // this is okay, we'll see this in travis
@@ -47,24 +47,24 @@ public class JDialogModelTest {
 
   @Test(expected = NullPointerException.class)
   public void nullParentFrameNotAllowed() {
-    JDialogModel.builder()
-        .withParentFrame(null)
-        .withTitle("title")
-        .withContents(new JPanel())
-        .swingComponent();
+    JDialogBuilder.builder()
+        .parentFrame(null)
+        .title("title")
+        .contents(new JPanel())
+        .build();
   }
 
   @Test(expected = NullPointerException.class)
   public void contentsIsRequired() {
-    JDialogModel.builder()
-        .withTitle("title")
-        .swingComponent();
+    JDialogBuilder.builder()
+        .title("title")
+        .build();
   }
 
   @Test(expected = NullPointerException.class)
   public void titleIsRequired() {
-    JDialogModel.builder()
-        .withContents(new JPanel())
-        .swingComponent();
+    JDialogBuilder.builder()
+        .contents(new JPanel())
+        .build();
   }
 }

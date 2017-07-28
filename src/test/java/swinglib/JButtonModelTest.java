@@ -18,11 +18,11 @@ public class JButtonModelTest {
   public void testBuild() {
     // button action will be to add one to our integer, we'll fire the button action and verify we get the +1
     final AtomicInteger integer = new AtomicInteger(0);
-    final JButton button = JButtonModel.builder()
-        .withTitle("title")
-        .withActionListener(integer::incrementAndGet)
-        .withToolTip("toolTip")
-        .swingComponent();
+    final JButton button = JButtonBuilder.builder()
+        .title("title")
+        .actionListener(integer::incrementAndGet)
+        .toolTip("toolTip")
+        .build();
 
     assertThat(button.getText(), Is.is("title"));
 
@@ -35,28 +35,28 @@ public class JButtonModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void titleIsRequired() {
-    JButtonModel.builder()
-        .withTitle("")
-        .withActionListener(() -> {
+    JButtonBuilder.builder()
+        .title("")
+        .actionListener(() -> {
         })
-        .swingComponent();
+        .build();
   }
 
   @Test(expected = NullPointerException.class)
   public void actionIsRequired() {
-    JButtonModel.builder()
-        .withTitle("title")
-        .withActionListener(null)
-        .swingComponent();
+    JButtonBuilder.builder()
+        .title("title")
+        .actionListener(null)
+        .build();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void toolTipCannotBeEmpty() {
-    JButtonModel.builder()
-        .withTitle("title")
-        .withToolTip("")
-        .withActionListener(() -> {
+    JButtonBuilder.builder()
+        .title("title")
+        .toolTip("")
+        .actionListener(() -> {
         })
-        .swingComponent();
+        .build();
   }
 }

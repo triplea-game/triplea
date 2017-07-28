@@ -41,7 +41,7 @@ public final class GridBagHelper {
    * Components are added as rows in a grid bag layout and wrap to the next column when appropriate.
    * You can call this method multiple times and keep appending components.
    */
-  public void addComponents(final JComponent ... children) {
+  public void add(final JComponent ... children) {
     Preconditions.checkArgument(children.length > 0);
     for (final JComponent child : children) {
       parent.add(child, nextConstraint());
