@@ -211,29 +211,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
     unitsLeftToPlace.sort(getUnitConstructionComparator());
 
-    final boolean hasRemainingProduction = (unitsLeftToPlace.size() < maxPlaceableMap.totalValues());
     final List<Unit> remainingUnitsToPlace = new ArrayList<>(m_player.getUnits().getUnits());
     remainingUnitsToPlace.removeAll(unitsLeftToPlace);
-    final boolean hasRemainingNonConstructionUnitsToPlace =
-        Match.anyMatch(remainingUnitsToPlace, Matches.UnitIsNotConstruction);
     while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
-
       // Get next producer territory
-      Territory producer = producers.get(0);
-      final boolean isCarrierLeftAndCanMoveExistingFightersToCarrier =
-          Match.anyMatch(unitsLeftToPlace, Matches.UnitIsCarrier) && canMoveExistingFightersToNewCarriers()
-              && !Properties.getLHTRCarrierProductionRules(getData());
-      final boolean cantAdjustUnitPlacements =
-          isUnitPlacementRestrictions() && Match.anyMatch(unitsLeftToPlace, Matches.UnitRequiresUnitsOnCreation);
-      if (producers.size() > 1
-          && (isCarrierLeftAndCanMoveExistingFightersToCarrier
-              || (hasRemainingProduction && hasRemainingNonConstructionUnitsToPlace && cantAdjustUnitPlacements))) {
-        producer = getRemotePlayer().selectProducerTerritoryForUnits(producers, at);
-        if (producer == null) {
-          break;
-        }
-      }
-      producers.remove(producer);
+      final Territory producer = producers.remove(0);
 
       int maxPlaceable = maxPlaceableMap.getInt(producer);
       if (maxPlaceable == 0) {
