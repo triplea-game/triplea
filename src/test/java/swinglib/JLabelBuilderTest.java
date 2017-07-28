@@ -11,7 +11,7 @@ import org.junit.Test;
 public class JLabelBuilderTest {
 
   @Test
-  public void testMinimumBuild() {
+  public void text() {
     final String value = "some text";
     final JLabel label = JLabelBuilder.builder()
         .text(value)
@@ -20,7 +20,7 @@ public class JLabelBuilderTest {
   }
 
   @Test
-  public void testBuild() {
+  public void leftAlign() {
     final JLabel label = JLabelBuilder.builder()
         .text("value")
         .leftAlign()
@@ -32,7 +32,6 @@ public class JLabelBuilderTest {
   public void textIsRequired() {
     JLabelBuilder.builder().build();
   }
-
 
   @Test
   public void maxSize() {

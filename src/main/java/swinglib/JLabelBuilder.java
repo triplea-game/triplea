@@ -37,8 +37,20 @@ public class JLabelBuilder {
 
     final JLabel label = new JLabel(text);
 
-    label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-    return new JLabel();
+    if (alignment != null) {
+      switch (alignment) {
+        case LEFT:
+        default:
+          label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+          break;
+      }
+    }
+
+    if (maxSize != null) {
+      label.setMaximumSize(maxSize);
+    }
+
+    return label;
   }
 
   public JLabelBuilder leftAlign() {
