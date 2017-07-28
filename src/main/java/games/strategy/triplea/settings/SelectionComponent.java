@@ -22,7 +22,7 @@ abstract class SelectionComponent implements Serializable {
    * Reads values stored in the UI components, returns a map of preference keys and the value represented in
    * the corresponding UI component.
    */
-  abstract Map<ClientSetting, String> readValues();
+  abstract Map<GameSetting, String> readValues();
 
   /**
    * UI component should update to show an error, eg: background turn red.

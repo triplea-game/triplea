@@ -21,7 +21,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
  * typically it will be 1:1, and not all {@code ClientSettings} will be available in the UI.
  * </p>
  */
-enum ClientSettingUiBinding {
+enum ClientSettingUiBinding implements UiBinding {
   AI_PAUSE_DURATION_BINDING(
       "AI Pause Duration",
       SettingType.AI,
@@ -165,19 +165,28 @@ enum ClientSettingUiBinding {
     this(title, type, SelectionComponentFactory.booleanRadioButtons(clientSetting), description);
   }
 
-  boolean isValid() {
+  @Override
+  public boolean isValid() {
     return selectionComponent.isValid();
   }
 
-  Map<ClientSetting, String> readValues() {
+  @Override
+  public Map<GameSetting, String> readValues() {
     return selectionComponent.readValues();
   }
 
-  String validValueDescription() {
+  @Override
+  public String validValueDescription() {
     return selectionComponent.validValueDescription();
   }
 
-  void resetToDefault() {
+  @Override
+  public void resetToDefault() {
     selectionComponent.resetToDefault();
+  }
+
+  @Override
+  public String getTitle() {
+    return title;
   }
 }

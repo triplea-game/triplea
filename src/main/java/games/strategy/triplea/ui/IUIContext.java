@@ -21,7 +21,6 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.util.CountDownLatchHandler;
 
-// TODO: move as much as possible from this class to ClientSetting framework!
 public interface IUIContext {
   Cursor getCursor();
 

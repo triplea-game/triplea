@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -31,6 +32,7 @@ public class JPanelBuilder {
   private int gridColumns;
   private BorderType borderType;
   private int borderWidth;
+  private Float xAlignment;
 
   private JPanelBuilder() {}
 
@@ -94,6 +96,9 @@ public class JPanelBuilder {
             break;
         }
       }
+    }
+    if(xAlignment != null) {
+      panel.setAlignmentX(xAlignment);
     }
     return panel;
   }
@@ -164,6 +169,11 @@ public class JPanelBuilder {
 
   public JPanelBuilder borderWidth(final int borderWidth) {
     this.borderWidth = borderWidth;
+    return this;
+  }
+
+  public JPanelBuilder xAlignmentCenter() {
+    this.xAlignment = JComponent.CENTER_ALIGNMENT;
     return this;
   }
 

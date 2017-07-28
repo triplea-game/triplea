@@ -119,8 +119,8 @@ class SelectionComponentFactory {
       }
 
       @Override
-      Map<ClientSetting, String> readValues() {
-        final Map<ClientSetting, String> values = new HashMap<>();
+      Map<GameSetting, String> readValues() {
+        final Map<GameSetting, String> values = new HashMap<>();
         if (noneButton.isSelected()) {
           values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString());
         } else if (systemButton.isSelected()) {
@@ -220,8 +220,8 @@ class SelectionComponentFactory {
       }
 
       @Override
-      Map<ClientSetting, String> readValues() {
-        final Map<ClientSetting, String> map = new HashMap<>();
+      Map<GameSetting, String> readValues() {
+        final Map<GameSetting, String> map = new HashMap<>();
         map.put(clientSetting, component.getText());
         return map;
       }
@@ -264,9 +264,9 @@ class SelectionComponentFactory {
       }
 
       @Override
-      Map<ClientSetting, String> readValues() {
+      Map<GameSetting, String> readValues() {
         final String value = yesButton.isSelected() ? String.valueOf(true) : String.valueOf(false);
-        final Map<ClientSetting, String> settingMap = new HashMap<>();
+        final Map<GameSetting, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
         return settingMap;
       }
@@ -323,9 +323,9 @@ class SelectionComponentFactory {
       }
 
       @Override
-      Map<ClientSetting, String> readValues() {
+      Map<GameSetting, String> readValues() {
         final String value = field.getText();
-        final Map<ClientSetting, String> settingMap = new HashMap<>();
+        final Map<GameSetting, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
         return settingMap;
       }
@@ -353,9 +353,9 @@ class SelectionComponentFactory {
       }
 
       @Override
-      Map<ClientSetting, String> readValues() {
+      Map<GameSetting, String> readValues() {
         final String value = String.valueOf(comboBox.getSelectedItem());
-        final Map<ClientSetting, String> settingMap = new HashMap<>();
+        final Map<GameSetting, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
         return settingMap;
       }
@@ -380,8 +380,8 @@ class SelectionComponentFactory {
       }
 
       @Override
-      Map<ClientSetting, String> readValues() {
-        final Map<ClientSetting,String> map = new HashMap<>();
+      Map<GameSetting, String> readValues() {
+        final Map<GameSetting,String> map = new HashMap<>();
         map.put(clientSetting, textField.getText());
         return map;
       }
@@ -389,7 +389,7 @@ class SelectionComponentFactory {
       @Override
       void resetToDefault() {
         clientSetting.restoreToDefaultValue();
-        clientSetting.flush();
+        ClientSetting.flush();
         textField.setText(clientSetting.value());
       }
     };

@@ -33,7 +33,7 @@ import games.strategy.engine.ClientFileSystemHelper;
  * ClientSetting.flush();
  * </pre></code>
  */
-public enum ClientSetting {
+public enum ClientSetting implements GameSetting {
   AI_PAUSE_DURATION(400),
   ARROW_KEY_SCROLL_SPEED(70),
   BATTLE_CALC_SIMULATION_COUNT_DICE(2000),
@@ -99,13 +99,6 @@ public enum ClientSetting {
   }
 
   /**
-   * Returns true if a value has been set for the current property.
-   */
-  public boolean isSet() {
-    return !Strings.nullToEmpty(value()).trim().isEmpty();
-  }
-
-  /**
    * Persists user preferences. Note: 'value()' read calls will not pick up any new
    * values saved values until after 'flush' has been called.
    */
@@ -117,31 +110,26 @@ public enum ClientSetting {
     }
   }
 
+  /**
+   * Returns true if a value has been set for the current property.
+   */
+  @Override
+  public boolean isSet() {
+    return !value().trim().isEmpty();
+  }
+
+  @Override
   public void save(final String newValue) {
     Preferences.userNodeForPackage(ClientSetting.class).put(name(), newValue);
   }
 
-  public void save(final int newValue) {
-    save(String.valueOf(newValue));
-  }
-
-  public void save(final boolean newValue) {
-    save(String.valueOf(newValue));
-  }
-
+  @Override
   public void restoreToDefaultValue() {
     save(defaultValue);
   }
 
+  @Override
   public String value() {
-    return Preferences.userNodeForPackage(ClientSetting.class).get(name(), defaultValue);
-  }
-
-  public int intValue() {
-    return Integer.valueOf(value());
-  }
-
-  public boolean booleanValue() {
-    return Boolean.valueOf(value());
+    return Strings.nullToEmpty(Preferences.userNodeForPackage(ClientSetting.class).get(name(), defaultValue));
   }
 }

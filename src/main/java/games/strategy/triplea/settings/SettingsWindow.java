@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.Box;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -77,7 +76,7 @@ enum SettingsWindow {
         .collect(Collectors.toList());
   }
 
-  private static void verifySettings(final List<ClientSettingUiBinding> settings) {
+  private static void verifySettings(final Iterable<ClientSettingUiBinding> settings) {
     // do some basic integrity/data validity check.
     settings.forEach(setting -> {
       Preconditions.checkNotNull(Strings.emptyToNull(setting.title));
@@ -92,9 +91,7 @@ enum SettingsWindow {
         .build();
   }
 
-
-
-  private static JComponent tabMainContents(final List<ClientSettingUiBinding> settings) {
+  private static JComponent tabMainContents(final Iterable<ClientSettingUiBinding> settings) {
     final JPanel contents = JPanelBuilder.builder()
         .gridBagLayout()
         .build();
@@ -102,7 +99,7 @@ enum SettingsWindow {
     final GridBagHelper grid = new GridBagHelper(contents, 3);
 
     // Add settings, one per row, columns of 3:
-    // setting title (JLabel)  |  input component (eg: radio buttons) | description (JTextArea)}
+    // setting title (JLabel) | input component (eg: radio buttons) | description (JTextArea)}
 
     settings.forEach(setting -> {
       grid.add(JPanelBuilder.builder()
@@ -130,47 +127,34 @@ enum SettingsWindow {
           .build());
     });
     return SwingComponents.newJScrollPane(contents);
-}
+  }
 
   private static JPanel buttonPanel(final List<ClientSettingUiBinding> settings, final Runnable closeListener) {
-    final JPanel buttonPanel = JPanelBuilder.builder()
-        .horizontalBoxLayout()
-        .build();
-    buttonPanel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-
-    buttonPanel.add(JButtonBuilder.builder()
-        .title("Save")
-        .actionListener(() -> {
-          SaveFunction.SaveResult saveResult = SaveFunction.saveSettings(settings);
-          JOptionPane.showMessageDialog(null, saveResult.message, "Results", saveResult.dialogType);
-        })
-        .build());
-
-    buttonPanel.add(Box.createHorizontalStrut(40));
-
-    buttonPanel.add(JButtonBuilder.builder()
-        .title("Close")
-        .actionListener(closeListener)
-        .build());
-
-    buttonPanel.add(Box.createHorizontalStrut(40));
-
-    final JButton restoreDefaultsButton = JButtonBuilder.builder()
-        .title("Restore Defaults")
-        .actionListener(() -> {
-          new ResetFunction().resetSettings(settings);
-          JOptionPane.showMessageDialog(null,
-              "All " + settings.get(0).type.tabTitle + " settings were restored to their default values.");
-        })
-        .build();
-
-    buttonPanel.add(restoreDefaultsButton);
-
-
     return JPanelBuilder.builder()
         .horizontalBoxLayout()
+        .xAlignmentCenter()
         .add(Box.createHorizontalGlue())
-        .add(buttonPanel)
+        .add(JButtonBuilder.builder()
+            .title("Save")
+            .actionListener(() -> {
+              SaveFunction.SaveResult saveResult = SaveFunction.saveSettings(settings, ClientSetting::flush);
+              JOptionPane.showMessageDialog(null, saveResult.message, "Results", saveResult.dialogType);
+            })
+            .build())
+        .add(Box.createHorizontalStrut(40))
+        .add(JButtonBuilder.builder()
+            .title("Close")
+            .actionListener(closeListener)
+            .build())
+        .add(Box.createHorizontalStrut(40))
+        .add(JButtonBuilder.builder()
+            .title("Restore Defaults")
+            .actionListener(() -> {
+              new ResetFunction().resetSettings(settings);
+              JOptionPane.showMessageDialog(null,
+                  "All " + settings.get(0).type.tabTitle + " settings were restored to their default values.");
+            })
+            .build())
         .add(Box.createHorizontalGlue())
         .build();
   }

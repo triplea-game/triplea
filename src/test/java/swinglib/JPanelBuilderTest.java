@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.Arrays;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -41,6 +42,14 @@ public class JPanelBuilderTest {
     assertThat(borderInsets.bottom, Is.is(borderWidth));
     assertThat(borderInsets.left, Is.is(borderWidth));
     assertThat(borderInsets.right, Is.is(borderWidth));
+  }
+
+  @Test
+  public void xAlignmentCenter() {
+    final JPanel panel = JPanelBuilder.builder()
+        .xAlignmentCenter()
+        .build();
+    assertThat(panel.getAlignmentX(), Is.is(JComponent.CENTER_ALIGNMENT));
   }
 
   @Test
