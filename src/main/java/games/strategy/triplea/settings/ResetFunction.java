@@ -1,10 +1,15 @@
 package games.strategy.triplea.settings;
 
-import java.util.List;
-
-public class ResetFunction {
-  public void resetSettings(final List<ClientSettingUiBinding> settings) {
-    settings.forEach(ClientSettingUiBinding::resetToDefault);
-    ClientSetting.flush();
+/**
+ * Function to reset a set of given settings back to their default values.
+ */
+interface ResetFunction {
+  /**
+   * @param settings The set of settings to be restored back to default.
+   * @param settingsFlusher Runnable that will persist any setting changes to disk.
+   */
+  static void resetSettings(final Iterable<? extends UiBinding> settings, final Runnable settingsFlusher) {
+    settings.forEach(UiBinding::resetToDefault);
+    settingsFlusher.run();
   }
 }

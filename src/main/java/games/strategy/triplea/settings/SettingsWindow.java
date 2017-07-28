@@ -150,7 +150,7 @@ enum SettingsWindow {
         .add(JButtonBuilder.builder()
             .title("Restore Defaults")
             .actionListener(() -> {
-              new ResetFunction().resetSettings(settings);
+              ResetFunction.resetSettings(settings, ClientSetting::flush);
               JOptionPane.showMessageDialog(null,
                   "All " + settings.get(0).type.tabTitle + " settings were restored to their default values.");
             })

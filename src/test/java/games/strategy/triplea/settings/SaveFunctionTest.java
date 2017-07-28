@@ -48,7 +48,7 @@ public class SaveFunctionTest {
     Mockito.when(mockBinding.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
     Mockito.when(mockSetting.value()).thenReturn("");
     Mockito.when(mockBinding2.isValid()).thenReturn(second);
-    Mockito.when(mockBinding2.readValues()).thenReturn(ImmutableMap.of());
+    Mockito.when(mockBinding2.readValues()).thenReturn(ImmutableMap.of(mockSetting, "abc"));
   }
 
   @Test

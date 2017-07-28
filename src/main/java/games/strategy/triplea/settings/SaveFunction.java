@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  * Side effects: value of each setting is read from UI, validated, and valid values are persisted to system settings
  * </p>
  */
-class SaveFunction {
+interface SaveFunction {
 
   /**
    * Returns a result message after persisting settings.
