@@ -228,13 +228,11 @@
   version: 3
   img: http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png
   description: |
+    <br> by Sieg
     <br>
-    <br>=WORLD AT WAR=
-    <br> by sieg
+    <br>Very large WW2 anachronistic map based primarily on Revised rules.
     <br>
-    <br>Very large WW2 map based primarily on revised rules. 
-    <br>
-    <br>Includes World at War 1940 Mod by Ice
+    <br>Includes WAW 1940 mod by ice.
 - mapName: The Rising Sun
   mapCategory: BEST
   url: https://github.com/triplea-maps/the_rising_sun/archive/master.zip
