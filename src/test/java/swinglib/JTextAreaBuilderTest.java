@@ -15,7 +15,6 @@ public class JTextAreaBuilderTest {
     final JTextArea area = JTextAreaBuilder.builder()
         .build();
 
-    assertThat(area.getLineWrap(), Is.is(true));
     assertThat(area.getWrapStyleWord(), Is.is(true));
     assertThat(area.isEditable(), Is.is(true));
   }

@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 /**
@@ -45,9 +46,10 @@ public final class JTextAreaBuilder {
    * By default the JTextArea will have line wrapping turned on.
    */
   public JTextArea build() {
+    Preconditions.checkArgument(rows > 0);
+    Preconditions.checkArgument(columns > 0);
     final JTextArea textArea = new JTextArea(Strings.nullToEmpty(text), rows, columns);
     textArea.setWrapStyleWord(true);
-    textArea.setLineWrap(true);
 
     if (borderWidth > 0) {
       textArea.setBorder(BorderFactory.createLineBorder(Color.black, borderWidth));
