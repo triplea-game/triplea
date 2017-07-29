@@ -225,16 +225,14 @@
 - mapName: World At War
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_at_war/archive/master.zip
-  version: 2
+  version: 3
   img: http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png
   description: |
     <br>
     <br>=WORLD AT WAR=
     <br> by sieg
     <br>
-    <br>Very large file, over 40mb, download could take a while.
-    <br>If link does not work, download manually from:
-    <br>https://sourceforge.net/projects/tripleamaps/files/
+    <br>Very large WW2 map based primarily on revised rules. 
     <br>
     <br>Includes World at War 1940 Mod by Ice
 - mapName: The Rising Sun
