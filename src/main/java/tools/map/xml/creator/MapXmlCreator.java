@@ -306,7 +306,7 @@ public class MapXmlCreator extends JFrame {
   }
 
   MapXmlCreator() {
-    super("TripleA Map XML Creator");
+    super("TripleA XML Creator");
 
     mapFolderLocation = getDefaultMapFolderLocation();
 
