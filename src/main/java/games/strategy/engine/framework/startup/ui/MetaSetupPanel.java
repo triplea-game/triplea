@@ -98,20 +98,23 @@ public class MetaSetupPanel extends SetupPanel {
         GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
     add(ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(helpButton, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+
+    final JButton mapCreator = JButtonBuilder.builder()
+        .title("Run the Map Creator")
+        .actionListener(() -> ProcessRunnerUtil.runClass(MapCreator.class))
+        .build();
+
+    add(mapCreator, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
+
+    add(helpButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(10, 0, 0, 0), 0, 0));
+
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(00, 0, 0, 0), 0, 0));
 
     if (ClientSetting.SHOW_BETA_FEATURES.booleanValue()) {
-      final JButton mapCreator = JButtonBuilder.builder()
-          .title("Run the Map Creator")
-          .actionListener(() -> ProcessRunnerUtil.runClass(MapCreator.class))
-          .build();
-      add(mapCreator, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-          new Insets(10, 0, 0, 0), 0, 0));
-
       final JButton mapXmlCreator = JButtonBuilder.builder()
           .title("[Beta] Run the Map Creator")
           .actionListener(() -> ProcessRunnerUtil.runClass(MapXmlCreator.class))
