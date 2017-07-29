@@ -39,7 +39,6 @@ import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
 import tools.map.making.MapCreator;
-import tools.map.xml.creator.MapXmlCreator;
 
 /**
  * Class for holding various engine related options and preferences.
@@ -55,7 +54,6 @@ class EnginePreferences extends JDialog {
   private JButton m_console;
   // private JButton m_runAutoHost;
   private JButton m_mapCreator;
-  private JButton m_mapXmlCreator;
 
   private EnginePreferences(final Frame parentFrame) {
     super(parentFrame, "Edit TripleA Engine Preferences", true);
@@ -80,7 +78,6 @@ class EnginePreferences extends JDialog {
     m_hostWaitTime = new JButton("Set Max Host Wait Time for Clients and Observers");
     m_setMaxMemory = new JButton("Set Max Memory Usage");
     m_mapCreator = new JButton("Run the Map Creator");
-    m_mapXmlCreator = new JButton("[Beta] Run the Map Creator");
     m_console = new JButton("Show Console");
   }
 
@@ -108,8 +105,6 @@ class EnginePreferences extends JDialog {
     buttonsPanel.add(new JLabel(" "));
 
     buttonsPanel.add(m_mapCreator);
-    buttonsPanel.add(new JLabel(" "));
-    buttonsPanel.add(m_mapXmlCreator);
     buttonsPanel.add(new JLabel(" "));
     buttonsPanel.add(m_console);
     buttonsPanel.add(new JLabel(" "));
@@ -216,8 +211,6 @@ class EnginePreferences extends JDialog {
     }));
     m_mapCreator
         .addActionListener(SwingAction.of("Run the Map Creator", e -> ProcessRunnerUtil.runClass(MapCreator.class)));
-    m_mapXmlCreator.addActionListener(
-        SwingAction.of("[Beta] Run the Map Creator", e -> ProcessRunnerUtil.runClass(MapXmlCreator.class)));
     m_console.addActionListener(SwingAction.of("Show Console", e -> {
       ErrorConsole.getConsole().setVisible(true);
       reportMemoryUsageToConsole();
