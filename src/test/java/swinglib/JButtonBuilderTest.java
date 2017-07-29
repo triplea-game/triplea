@@ -15,7 +15,7 @@ import org.junit.Test;
 public class JButtonBuilderTest {
 
   @Test
-  public void checkTitle() {
+  public void title() {
     final String value = "testing title";
     final JButton button = JButtonBuilder.builder()
         .title(value)
@@ -43,9 +43,17 @@ public class JButtonBuilderTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void titleIsRequired() {
+  public void titleCannotBeEmpty() {
     JButtonBuilder.builder()
         .title("")
+        .actionListener(() -> {
+        })
+        .build();
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void titleIsRequired() {
+    JButtonBuilder.builder()
         .actionListener(() -> {
         })
         .build();

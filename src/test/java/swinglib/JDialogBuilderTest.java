@@ -40,4 +40,12 @@ public class JDialogBuilderTest {
         .contents(new JPanel())
         .build();
   }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void titleCanNotBeEmpty() {
+    JDialogBuilder.builder()
+        .contents(new JPanel())
+        .title(" ")
+        .build();
+  }
 }
