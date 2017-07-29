@@ -18,7 +18,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1201,12 +1200,8 @@ public class MapXmlCreator extends JFrame {
 
   private static GameStep loadXmlFromFilePath(final String gameXmlPath)
       throws SAXException, IOException, ParserConfigurationException {
-    final FileInputStream in = new FileInputStream(gameXmlPath);
-
     // parse using builder to get DOM representation of the XML file
-    final org.w3c.dom.Document dom = new GameParser(gameXmlPath).getDocument(in);
-
-    GameStep goToStep = MapXmlHelper.parseValuesFromXml(dom);
+    GameStep goToStep = MapXmlHelper.parseValuesFromXml(gameXmlPath);
 
     // set map file, image file and map folder
     MapXmlHelper.setMapXmlFile(new File(gameXmlPath));
