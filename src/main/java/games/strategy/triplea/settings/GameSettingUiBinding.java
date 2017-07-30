@@ -7,7 +7,7 @@ import java.util.Map;
  * initial value from the ClientSetting they represent, the only 'write' operation is 'resetToDefault'.
  * The rest of the operations here are essentially 'read' operations.
  */
-public interface UiBinding {
+public interface GameSettingUiBinding {
   /**
    * Reads the value set in the UI and return true if it is valid, false otherwise.
    */

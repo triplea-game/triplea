@@ -21,7 +21,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
  * typically it will be 1:1, and not all {@code ClientSettings} will be available in the UI.
  * </p>
  */
-enum ClientSettingUiBinding implements UiBinding {
+enum ClientSettingUiBinding implements GameSettingUiBinding {
   AI_PAUSE_DURATION_BINDING(
       "AI Pause Duration",
       SettingType.AI,

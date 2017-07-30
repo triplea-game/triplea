@@ -23,10 +23,10 @@ import com.google.common.collect.ImmutableMap;
 public class SaveFunctionTest {
 
   @Mock
-  private UiBinding mockBinding;
+  private GameSettingUiBinding mockBinding;
 
   @Mock
-  private UiBinding mockBinding2;
+  private GameSettingUiBinding mockBinding2;
 
   @Mock
   private GameSetting mockSetting;

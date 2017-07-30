@@ -17,10 +17,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class ResetFunctionTest {
 
   @Mock
-  private UiBinding mockBinding;
+  private GameSettingUiBinding mockBinding;
 
   @Mock
-  private UiBinding mockBinding2;
+  private GameSettingUiBinding mockBinding2;
 
   @Test
   public void resetSettings() throws Exception {
