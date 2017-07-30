@@ -1,11 +1,10 @@
 package games.strategy.triplea.settings;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.hamcrest.core.Is;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +29,7 @@ public class ResetFunctionTest {
 
     ResetFunction.resetSettings(Arrays.asList(mockBinding, mockBinding2), callCount::incrementAndGet);
 
-    assertThat(callCount.get(), Is.is(1));
+    assertThat(callCount.get(), is(1));
 
     Mockito.verify(mockBinding, Mockito.times(1)).resetToDefault();
     Mockito.verify(mockBinding2, Mockito.times(1)).resetToDefault();

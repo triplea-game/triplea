@@ -1,10 +1,11 @@
 package swinglib;
 
+import static org.hamcrest.core.Is.is;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.Is;
 
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ public class JLabelBuilderTest {
     final JLabel label = JLabelBuilder.builder()
         .text(value)
         .build();
-    MatcherAssert.assertThat(label.getText(), Is.is(value));
+    MatcherAssert.assertThat(label.getText(), is(value));
   }
 
   @Test
@@ -25,7 +26,7 @@ public class JLabelBuilderTest {
         .text("value")
         .leftAlign()
         .build();
-    MatcherAssert.assertThat(label.getAlignmentX(), Is.is(JComponent.LEFT_ALIGNMENT));
+    MatcherAssert.assertThat(label.getAlignmentX(), is(JComponent.LEFT_ALIGNMENT));
   }
 
   @Test(expected = NullPointerException.class)
@@ -42,7 +43,7 @@ public class JLabelBuilderTest {
         .maximumSize(maxWidth, maxHeight)
         .build();
 
-    MatcherAssert.assertThat(label.getMaximumSize().width, Is.is(maxWidth));
-    MatcherAssert.assertThat(label.getMaximumSize().height, Is.is(maxHeight));
+    MatcherAssert.assertThat(label.getMaximumSize().width, is(maxWidth));
+    MatcherAssert.assertThat(label.getMaximumSize().height, is(maxHeight));
   }
 }

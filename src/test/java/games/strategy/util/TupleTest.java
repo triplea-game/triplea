@@ -3,13 +3,13 @@ package games.strategy.util;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import org.hamcrest.core.IsNot;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;

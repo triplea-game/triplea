@@ -1,5 +1,7 @@
 package games.strategy.triplea.settings;
 
+import static org.hamcrest.core.Is.is;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -7,7 +9,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JOptionPane;
 
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.Is;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,9 +39,9 @@ public class SaveFunctionTest {
         });
 
     MatcherAssert.assertThat("There will always be a message back to the user",
-        result.message.isEmpty(), Is.is(false));
+        result.message.isEmpty(), is(false));
     MatcherAssert.assertThat("All valid, message type should informational",
-        result.dialogType, Is.is(JOptionPane.INFORMATION_MESSAGE));
+        result.dialogType, is(JOptionPane.INFORMATION_MESSAGE));
   }
 
   private void givenValidationResults(final boolean first, final boolean second) {
@@ -59,8 +60,8 @@ public class SaveFunctionTest {
         Arrays.asList(mockBinding, mockBinding2), () -> {
         });
 
-    MatcherAssert.assertThat(result.message.isEmpty(), Is.is(false));
-    MatcherAssert.assertThat(result.dialogType, Is.is(JOptionPane.WARNING_MESSAGE));
+    MatcherAssert.assertThat(result.message.isEmpty(), is(false));
+    MatcherAssert.assertThat(result.dialogType, is(JOptionPane.WARNING_MESSAGE));
   }
 
   @Test
@@ -71,9 +72,9 @@ public class SaveFunctionTest {
         Arrays.asList(mockBinding, mockBinding2), () -> {
         });
 
-    MatcherAssert.assertThat(result.message.isEmpty(), Is.is(false));
+    MatcherAssert.assertThat(result.message.isEmpty(), is(false));
     MatcherAssert.assertThat("At least one value was not updated, should be warning message type",
-        result.dialogType, Is.is(JOptionPane.WARNING_MESSAGE));
+        result.dialogType, is(JOptionPane.WARNING_MESSAGE));
   }
 
   @Test
@@ -90,7 +91,7 @@ public class SaveFunctionTest {
 
     MatcherAssert.assertThat("Make sure we flushed! A call count of '1' means our runnable was called,"
         + "which should only happen when settings were successfully saved.",
-        callCount.get(), Is.is(1));
+        callCount.get(), is(1));
 
     Mockito.verify(mockSetting, Mockito.times(1)).save(TestData.fakeValue);
   }
@@ -105,7 +106,7 @@ public class SaveFunctionTest {
 
     MatcherAssert.assertThat("The one setting value was not valid, nothing should be saved, our "
         + "increment value runnable should not have been called, callCount should still be at zero.",
-        callCount.get(), Is.is(0));
+        callCount.get(), is(0));
   }
 
   private interface TestData {

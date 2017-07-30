@@ -1,14 +1,13 @@
 package swinglib;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JButton;
-
-import org.hamcrest.core.Is;
 
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ public class JButtonBuilderTest {
         .actionListener(() -> {
         })
         .build();
-    assertThat(button.getText(), Is.is(value));
+    assertThat(button.getText(), is(value));
   }
 
   @Test
@@ -37,9 +36,9 @@ public class JButtonBuilderTest {
 
     Arrays.stream(button.getActionListeners())
         .forEach(listener -> listener.actionPerformed(new ActionEvent(new Object(), 0, "")));
-    assertThat(integer.get(), Is.is(1));
+    assertThat(integer.get(), is(1));
 
-    assertThat(button.getToolTipText(), Is.is("toolTip"));
+    assertThat(button.getToolTipText(), is("toolTip"));
   }
 
   @Test(expected = IllegalArgumentException.class)

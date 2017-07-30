@@ -3,6 +3,7 @@ package swinglib;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import java.awt.BorderLayout;
@@ -15,8 +16,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import org.hamcrest.core.Is;
 
 import org.junit.Test;
 
@@ -38,10 +37,10 @@ public class JPanelBuilderTest {
     assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
 
     final Insets borderInsets = ((EmptyBorder) panel.getBorder()).getBorderInsets();
-    assertThat(borderInsets.top, Is.is(borderWidth));
-    assertThat(borderInsets.bottom, Is.is(borderWidth));
-    assertThat(borderInsets.left, Is.is(borderWidth));
-    assertThat(borderInsets.right, Is.is(borderWidth));
+    assertThat(borderInsets.top, is(borderWidth));
+    assertThat(borderInsets.bottom, is(borderWidth));
+    assertThat(borderInsets.left, is(borderWidth));
+    assertThat(borderInsets.right, is(borderWidth));
   }
 
   @Test
@@ -49,7 +48,7 @@ public class JPanelBuilderTest {
     final JPanel panel = JPanelBuilder.builder()
         .xAlignmentCenter()
         .build();
-    assertThat(panel.getAlignmentX(), Is.is(JComponent.CENTER_ALIGNMENT));
+    assertThat(panel.getAlignmentX(), is(JComponent.CENTER_ALIGNMENT));
   }
 
   @Test
@@ -70,8 +69,8 @@ public class JPanelBuilderTest {
         .gridLayout(1, 2)
         .build()
         .getLayout();
-    assertThat(result.getRows(), Is.is(1));
-    assertThat(result.getColumns(), Is.is(2));
+    assertThat(result.getRows(), is(1));
+    assertThat(result.getColumns(), is(2));
 
 
     assertThat(JPanelBuilder.builder()

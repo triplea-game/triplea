@@ -1,10 +1,9 @@
 package swinglib;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 import javax.swing.JTextArea;
-
-import org.hamcrest.core.Is;
 
 import org.junit.Test;
 
@@ -15,8 +14,8 @@ public class JTextAreaBuilderTest {
     final JTextArea area = JTextAreaBuilder.builder()
         .build();
 
-    assertThat(area.getWrapStyleWord(), Is.is(true));
-    assertThat(area.isEditable(), Is.is(true));
+    assertThat(area.getWrapStyleWord(), is(true));
+    assertThat(area.isEditable(), is(true));
   }
 
 
@@ -26,7 +25,7 @@ public class JTextAreaBuilderTest {
         .text("value")
         .build();
 
-    assertThat(area.getText(), Is.is("value"));
+    assertThat(area.getText(), is("value"));
   }
 
   @Test
@@ -35,7 +34,7 @@ public class JTextAreaBuilderTest {
         .rows(5)
         .build();
 
-    assertThat(area.getRows(), Is.is(5));
+    assertThat(area.getRows(), is(5));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -52,7 +51,7 @@ public class JTextAreaBuilderTest {
         .columns(20)
         .build();
 
-    assertThat(area.getColumns(), Is.is(20));
+    assertThat(area.getColumns(), is(20));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -68,8 +67,8 @@ public class JTextAreaBuilderTest {
     final JTextArea area = JTextAreaBuilder.builder()
         .maximumSize(maxWidth, maxHeight)
         .build();
-    assertThat(area.getMaximumSize().width, Is.is(maxWidth));
-    assertThat(area.getMaximumSize().height, Is.is(maxHeight));
+    assertThat(area.getMaximumSize().width, is(maxWidth));
+    assertThat(area.getMaximumSize().height, is(maxHeight));
   }
 
   @Test
@@ -77,7 +76,7 @@ public class JTextAreaBuilderTest {
     final JTextArea area = JTextAreaBuilder.builder()
         .readOnly()
         .build();
-    assertThat(area.isEditable(), Is.is(false));
+    assertThat(area.isEditable(), is(false));
   }
 
 
