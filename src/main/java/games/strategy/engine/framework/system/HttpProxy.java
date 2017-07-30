@@ -53,6 +53,7 @@ public class HttpProxy {
 
     ClientSetting.PROXY_HOST.save(host);
     ClientSetting.PROXY_PORT.save(port);
+    ClientSetting.flush();
   }
 
   private static Optional<InetSocketAddress> getSystemProxy() {
