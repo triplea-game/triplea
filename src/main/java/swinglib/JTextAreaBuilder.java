@@ -86,6 +86,7 @@ public final class JTextAreaBuilder {
   }
 
   public JTextAreaBuilder columns(final int value) {
+    Preconditions.checkArgument(value > 0);
     this.columns = value;
     return this;
   }

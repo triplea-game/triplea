@@ -2,6 +2,7 @@ package games.strategy.util;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
 
 import static org.junit.Assert.assertFalse;
@@ -47,7 +48,7 @@ public class TupleTest {
 
     assertThat(nullTuple.getFirst(), nullValue());
     assertThat(nullTuple.getSecond(), nullValue());
-    assertThat(nullTuple, IsNot.not(Tuple.of("something else", (String) null)));
+    assertThat(nullTuple, not(Tuple.of("something else", (String) null)));
   }
 
   @Test
