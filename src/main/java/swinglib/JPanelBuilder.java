@@ -68,6 +68,7 @@ public class JPanelBuilder {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         break;
       case DEFAULT:
+      default:
         panel.setLayout(new BorderLayout());
         break;
     }
@@ -97,7 +98,7 @@ public class JPanelBuilder {
         }
       }
     }
-    if(horizontalAlignment != null) {
+    if (horizontalAlignment != null) {
       panel.setAlignmentX(horizontalAlignment);
     }
     return panel;
@@ -172,7 +173,7 @@ public class JPanelBuilder {
     return this;
   }
 
-  public JPanelBuilder xAlignmentCenter() {
+  public JPanelBuilder horizontalAlignmentCenter() {
     this.horizontalAlignment = JComponent.CENTER_ALIGNMENT;
     return this;
   }
@@ -181,10 +182,14 @@ public class JPanelBuilder {
     DEFAULT, GRID, GRID_BAG, BOX_LAYOUT_HORIZONTAL, BOX_LAYOUT_VERTICAL
   }
 
-  public enum BorderLayoutPosition {
+  private enum BorderLayoutPosition {
     DEFAULT, CENTER, SOUTH, NORTH, WEST, EAST
   }
 
+
+  /**
+   * Enumeration of the different types of borders that can be chosen.
+   */
   public enum BorderType {
     EMPTY
   }

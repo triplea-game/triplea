@@ -132,7 +132,7 @@ enum SettingsWindow {
   private static JPanel buttonPanel(final List<ClientSettingUiBinding> settings, final Runnable closeListener) {
     return JPanelBuilder.builder()
         .horizontalBoxLayout()
-        .xAlignmentCenter()
+        .horizontalAlignmentCenter()
         .add(Box.createHorizontalGlue())
         .add(JButtonBuilder.builder()
             .title("Save")

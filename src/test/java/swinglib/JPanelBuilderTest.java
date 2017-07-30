@@ -46,7 +46,7 @@ public class JPanelBuilderTest {
   @Test
   public void xAlignmentCenter() {
     final JPanel panel = JPanelBuilder.builder()
-        .xAlignmentCenter()
+        .horizontalAlignmentCenter()
         .build();
     assertThat(panel.getAlignmentX(), is(JComponent.CENTER_ALIGNMENT));
   }
