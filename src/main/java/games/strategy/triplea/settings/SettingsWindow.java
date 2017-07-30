@@ -96,7 +96,7 @@ enum SettingsWindow {
         .gridBagLayout()
         .build();
 
-    final GridBagHelper grid = new GridBagHelper(contents, 3);
+    final GridBagHelper grid = new GridBagHelper(contents, 4);
 
     // Add settings, one per row, columns of 3:
     // setting title (JLabel) | input component (eg: radio buttons) | description (JTextArea)}
@@ -120,10 +120,15 @@ enum SettingsWindow {
                   .text(setting.description)
                   .rows(2)
                   .columns(40)
-                  .maximumSize(120, 50)
+                  .maximumSize(60, 50)
                   .readOnly()
                   .borderWidth(1)
                   .build())
+          .build());
+
+      grid.add(JButtonBuilder.builder()
+          .title("Reset to Default")
+          .actionListener(setting::resetToDefault)
           .build());
     });
     return SwingComponents.newJScrollPane(contents);
@@ -145,15 +150,6 @@ enum SettingsWindow {
         .add(JButtonBuilder.builder()
             .title("Close")
             .actionListener(closeListener)
-            .build())
-        .add(Box.createHorizontalStrut(40))
-        .add(JButtonBuilder.builder()
-            .title("Restore Defaults")
-            .actionListener(() -> {
-              ResetFunction.resetSettings(settings, ClientSetting::flush);
-              JOptionPane.showMessageDialog(null,
-                  "All " + settings.get(0).type.tabTitle + " settings were restored to their default values.");
-            })
             .build())
         .add(Box.createHorizontalGlue())
         .build();
