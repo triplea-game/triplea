@@ -32,7 +32,7 @@ public class JPanelBuilder {
   private int gridColumns;
   private BorderType borderType;
   private int borderWidth;
-  private Float xAlignment;
+  private Float horizontalAlignment;
 
   private JPanelBuilder() {}
 
@@ -97,8 +97,8 @@ public class JPanelBuilder {
         }
       }
     }
-    if(xAlignment != null) {
-      panel.setAlignmentX(xAlignment);
+    if(horizontalAlignment != null) {
+      panel.setAlignmentX(horizontalAlignment);
     }
     return panel;
   }
@@ -173,7 +173,7 @@ public class JPanelBuilder {
   }
 
   public JPanelBuilder xAlignmentCenter() {
-    this.xAlignment = JComponent.CENTER_ALIGNMENT;
+    this.horizontalAlignment = JComponent.CENTER_ALIGNMENT;
     return this;
   }
 
