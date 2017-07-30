@@ -60,6 +60,7 @@ public class LobbyServerPropertiesFetcher {
           LobbyPropertyFileParser::parse);
       ClientSetting.LOBBY_LAST_USED_HOST.save(downloadedProps.host);
       ClientSetting.LOBBY_LAST_USED_PORT.save(downloadedProps.port);
+      ClientSetting.flush();
       return downloadedProps;
     } catch (final IOException e) {
 
