@@ -8,8 +8,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
