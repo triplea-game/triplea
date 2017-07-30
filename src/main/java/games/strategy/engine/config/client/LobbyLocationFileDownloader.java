@@ -1,12 +1,15 @@
 package games.strategy.engine.config.client;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.framework.map.download.DownloadUtils;
 
 /**
  * Humble object pattern. Wraps file downloading.
  */
 @FunctionalInterface
-public interface LobbyLocationFileDownloader {
+@VisibleForTesting
+interface LobbyLocationFileDownloader {
 
   DownloadUtils.FileDownloadResult download(final String url);
 

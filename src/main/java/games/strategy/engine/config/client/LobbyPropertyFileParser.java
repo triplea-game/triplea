@@ -19,7 +19,7 @@ import games.strategy.util.Version;
  * Parses a downloaded lobby properties file (yaml format expected).
  * Lobby properties include IP address and port of the lobby.
  */
-public class LobbyPropertyFileParser {
+class LobbyPropertyFileParser {
 
 
   public static LobbyServerProperties parse(final File file, final Version currentVersion) {
