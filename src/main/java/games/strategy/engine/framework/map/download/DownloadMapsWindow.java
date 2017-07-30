@@ -344,7 +344,7 @@ public class DownloadMapsWindow extends JFrame {
     final JPanel main = JPanelBuilder.builder()
         .borderWidth(30)
         .border(JPanelBuilder.BorderType.EMPTY)
-      .build();
+        .build();
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
     main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
 
