@@ -50,7 +50,7 @@ public final class GridBagHelper {
   }
 
   /**
-   * Adds many components in one go, a convenience api {@see add}
+   * Adds many components in one go, a convenience api {@see add}.
    */
   public void addAll(final JComponent ... children) {
     Preconditions.checkArgument(children.length > 0);

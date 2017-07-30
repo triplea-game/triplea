@@ -86,6 +86,10 @@ public class SwingComponents {
     };
   }
 
+  /**
+   * Enum for swing codes that represent key events. In this case holding control or the
+   * meta keys.
+   */
   public enum KeyDownMask {
     META_DOWN(InputEvent.META_DOWN_MASK),
     CTRL_DOWN(InputEvent.CTRL_DOWN_MASK);
@@ -105,13 +109,20 @@ public class SwingComponents {
     addKeyListener(component, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), runnable);
   }
 
+  /**
+   * To a given dialog, adds a key listener that is fired if a key is pressed.
+   */
   public static void addEscapeKeyListener(
       final RootPaneContainer dialog,
       final Runnable keyDownAction) {
-    if(dialog.getRootPane() != null) {
+    if (dialog.getRootPane() != null) {
       addKeyListener(dialog.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
     }
   }
+
+  /**
+   * To a given component, adds a key listener that is fired if a key is pressed.
+   */
   public static void addEscapeKeyListener(
       final JComponent component,
       final Runnable keyDownAction) {
@@ -121,13 +132,14 @@ public class SwingComponents {
       addKeyListener(component.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
     }
   }
+
   public static void addKeyListenerWithMetaAndCtrlMasks(
       final JFrame component, final char key, final Runnable action) {
     addKeyListener((JComponent) component.getContentPane(), key, KeyDownMask.CTRL_DOWN, action);
     addKeyListener((JComponent) component.getContentPane(), key, KeyDownMask.META_DOWN, action);
   }
 
-  public static void addKeyListener(
+  private static void addKeyListener(
       final JComponent component,
       final char key,
       final KeyDownMask keyDownMask,
@@ -342,8 +354,6 @@ public class SwingComponents {
         JOptionPane.INFORMATION_MESSAGE));
   }
 
-
-
   public static JMenu newJMenu(final String menuTitle, final KeyboardCode keyboardCode) {
     final JMenu menu = new JMenu(menuTitle);
     menu.setMnemonic(keyboardCode.getSwingKeyEventCode());
@@ -352,14 +362,6 @@ public class SwingComponents {
 
   public enum FolderSelectionMode {
     FILES, DIRECTORIES
-  }
-
-  public static Optional<File> showJFileChooserForFiles() {
-    return showJFileChooser(FolderSelectionMode.FILES);
-  }
-
-  public static Optional<File> showJFileChooserForFolders() {
-    return showJFileChooser(FolderSelectionMode.DIRECTORIES);
   }
 
   /**

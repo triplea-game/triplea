@@ -42,7 +42,7 @@ public class JButtonBuilder {
     return this;
   }
 
-  /** request, the event that occurs when the button is clicked */
+  /** request, the event that occurs when the button is clicked. */
   public JButtonBuilder actionListener(final Runnable actionListener) {
     this.actionListener = checkNotNull(actionListener);
     return this;

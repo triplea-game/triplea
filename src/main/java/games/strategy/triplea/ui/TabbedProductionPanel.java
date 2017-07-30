@@ -24,7 +24,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.util.ResourceCollectionUtils;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 import swinglib.JPanelBuilder;
