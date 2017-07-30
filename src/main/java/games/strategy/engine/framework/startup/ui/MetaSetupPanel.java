@@ -155,7 +155,7 @@ public class MetaSetupPanel extends SetupPanel {
     final LobbyServerProperties lobbyServerProperties = new LobbyServerPropertiesFetcher().fetchLobbyServerProperties();
     final LobbyLogin login = new LobbyLogin(
         JOptionPane.getFrameForComponent(this),
-        lobbyServerProperties );
+        lobbyServerProperties);
     final LobbyClient client = login.login();
     if (client == null) {
       return;

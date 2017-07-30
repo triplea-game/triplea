@@ -57,9 +57,7 @@ public class JTextAreaBuilderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void columnsNonZero() {
-    JTextAreaBuilder.builder()
-        .columns(0)
-        .build();
+    JTextAreaBuilder.builder().columns(0);
   }
 
   @Test

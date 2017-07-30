@@ -44,11 +44,7 @@ public class JButtonBuilderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void titleCannotBeEmpty() {
-    JButtonBuilder.builder()
-        .title("")
-        .actionListener(() -> {
-        })
-        .build();
+    JButtonBuilder.builder().title("");
   }
 
   @Test(expected = NullPointerException.class)
@@ -61,18 +57,11 @@ public class JButtonBuilderTest {
 
   @Test(expected = NullPointerException.class)
   public void actionListenerIsRequired() {
-    JButtonBuilder.builder()
-        .title("title")
-        .actionListener(null)
-        .build();
+    JButtonBuilder.builder().actionListener(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void toolTipCanNotBeEmptyIfSpecified() {
-    JButtonBuilder.builder()
-        .title("title")
-        .toolTip("")
-        .actionListener(() -> {
-        }).build();
+    JButtonBuilder.builder().toolTip("");
   }
 }
