@@ -21,7 +21,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
@@ -383,8 +382,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
 
     @Override
-    public void changeToLatestAutosave(final SaveGameFileChooser.AutoSaveType autoSaveType) {
-      if (HeadlessGameServer.getInstance() == null || autoSaveType == SaveGameFileChooser.AutoSaveType.AUTOSAVE2) {
+    public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE autoSaveType) {
+      if (HeadlessGameServer.getInstance() == null || autoSaveType == SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2) {
         return;
       }
       final File save = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());

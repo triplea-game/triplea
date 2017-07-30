@@ -302,10 +302,10 @@ public class ClientSetupPanel extends SetupPanel {
     rVal.add(clientModel.getHostBotSetMapClientAction(this));
     rVal.add(clientModel.getHostBotChangeGameOptionsClientAction(this));
     rVal.add(clientModel.getHostBotChangeGameToSaveGameClientAction());
-    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AutoSaveType.AUTOSAVE));
-    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AutoSaveType.AUTOSAVE2));
-    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AutoSaveType.AUTOSAVE_ODD));
-    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AutoSaveType.AUTOSAVE_EVEN));
+    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
+    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
+    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
     rVal.add(clientModel.getHostBotGetGameSaveClientAction(this));
     return rVal;
   }

@@ -233,13 +233,13 @@ public class GameSelectorPanel extends JPanel implements Observer {
           final JPopupMenu menu = new JPopupMenu();
           menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction());
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AutoSaveType.AUTOSAVE));
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AutoSaveType.AUTOSAVE2));
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AutoSaveType.AUTOSAVE_ODD));
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AutoSaveType.AUTOSAVE_EVEN));
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
           menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
           final Point point = loadSavedGame.getLocation();
           menu.show(GameSelectorPanel.this, point.x + loadSavedGame.getWidth(), point.y);

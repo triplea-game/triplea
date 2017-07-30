@@ -14,10 +14,10 @@ public class ChangeToAutosaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1972868158345085949L;
   private final Component m_parent;
   private final IClientMessenger m_clientMessenger;
-  private final SaveGameFileChooser.AutoSaveType m_typeOfAutosave;
+  private final SaveGameFileChooser.AUTOSAVE_TYPE m_typeOfAutosave;
 
   public ChangeToAutosaveClientAction(final Component parent, final IClientMessenger clientMessenger,
-      final SaveGameFileChooser.AutoSaveType typeOfAutosave) {
+      final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave) {
     super("Change To " + typeOfAutosave.toString().toLowerCase());
     m_parent = JOptionPane.getFrameForComponent(parent);
     m_clientMessenger = clientMessenger;
