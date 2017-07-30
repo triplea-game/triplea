@@ -25,6 +25,11 @@ import swinglib.JButtonBuilder;
 import tools.map.making.MapCreator;
 import tools.map.xml.creator.MapXmlCreator;
 
+/**
+ * This is the main welcome panel with 'play online' buttons etc...
+ * The panel does not include the 'play' and 'quit' buttons, and does include the left hand panel
+ * that has map data on it.
+ */
 public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
