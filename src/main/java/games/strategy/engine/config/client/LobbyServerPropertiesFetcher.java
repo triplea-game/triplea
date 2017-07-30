@@ -95,7 +95,8 @@ public class LobbyServerPropertiesFetcher {
    *         or IO problem once we downloaded the remote file to a temp file and are then
    *         reading it..
    */
-  public LobbyServerProperties downloadAndParseRemoteFile(
+  @VisibleForTesting
+  LobbyServerProperties downloadAndParseRemoteFile(
       final String lobbyPropFileUrl,
       final Version currentVersion,
       final BiFunction<File, Version, LobbyServerProperties> propertyParser)
