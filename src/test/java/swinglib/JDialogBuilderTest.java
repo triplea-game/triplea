@@ -6,6 +6,7 @@ import static org.hamcrest.core.Is.is;
 import java.awt.HeadlessException;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.junit.Test;
@@ -18,8 +19,8 @@ public class JDialogBuilderTest {
       final JDialog dialog = JDialogBuilder.builder()
           .contents(new JPanel())
           .title("title")
+          .parentFrame(new JFrame())
           .build();
-
       assertThat(dialog.getTitle(), is("title"));
     } catch (final HeadlessException e) {
       // this is okay, we'll see this in travis
@@ -28,20 +29,35 @@ public class JDialogBuilderTest {
 
   @Test(expected = NullPointerException.class)
   public void contentsIsRequired() {
-    JDialogBuilder.builder()
-        .title("title")
-        .build();
+    try {
+      JDialogBuilder.builder()
+          .title("title")
+          .parentFrame(new JFrame())
+          .build();
+    } catch (final HeadlessException e) {
+      // this is okay, we'll see this in travis
+    }
   }
 
   @Test(expected = NullPointerException.class)
   public void titleIsRequired() {
-    JDialogBuilder.builder()
-        .contents(new JPanel())
-        .build();
+    try {
+      JDialogBuilder.builder()
+          .contents(new JPanel())
+          .parentFrame(new JFrame())
+          .build();
+    } catch (final HeadlessException e) {
+      // this is okay, we'll see this in travis
+    }
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void titleCanNotBeEmpty() {
     JDialogBuilder.builder().title(" ");
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void parentCanNotBeNull() {
+    JDialogBuilder.builder().parentFrame(null);
   }
 }

@@ -1,5 +1,7 @@
 package swinglib;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
@@ -46,8 +48,9 @@ public final class JDialogBuilder {
    * Values that must be set: title, contents
    */
   public JDialog build() {
-    Preconditions.checkNotNull(title);
-    Preconditions.checkNotNull(contents);
+    checkNotNull(title);
+    checkNotNull(contents);
+    checkNotNull(parentFrame);
 
     final JDialog dialog = new JDialog(parentFrame, title, true);
     dialog.getContentPane().add(contents);
@@ -60,10 +63,15 @@ public final class JDialogBuilder {
   }
 
   public JDialogBuilder parentFrame(final JFrame parentFrame) {
-    this.parentFrame = parentFrame;
+    this.parentFrame = checkNotNull(parentFrame);
     return this;
   }
 
+  /**
+   *
+   * @param title
+   * @return
+   */
   public JDialogBuilder title(final String title) {
     Preconditions.checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
     this.title = title;
@@ -71,7 +79,7 @@ public final class JDialogBuilder {
   }
 
   public JDialogBuilder contents(final JComponent contents) {
-    this.contents = Preconditions.checkNotNull(contents);
+    this.contents = checkNotNull(contents);
     return this;
   }
 }

@@ -335,11 +335,6 @@ public class SwingComponents {
     return m_descriptionPane;
   }
 
-
-  public static Border newEmptyBorder(final int borderWidth) {
-    return new EmptyBorder(borderWidth, borderWidth, borderWidth, borderWidth);
-  }
-
   public static void newOpenUrlConfirmationDialog(final UrlConstants url) {
     newOpenUrlConfirmationDialog(url.toString());
   }
@@ -354,12 +349,18 @@ public class SwingComponents {
         JOptionPane.INFORMATION_MESSAGE));
   }
 
+  /**
+   * Builds a new menu item with title and keyboard shortcut key.
+   */
   public static JMenu newJMenu(final String menuTitle, final KeyboardCode keyboardCode) {
     final JMenu menu = new JMenu(menuTitle);
     menu.setMnemonic(keyboardCode.getSwingKeyEventCode());
     return menu;
   }
 
+  /**
+   * Flag for file selection component, whether to allow selection of files only or folders only.
+   */
   public enum FolderSelectionMode {
     FILES, DIRECTORIES
   }
