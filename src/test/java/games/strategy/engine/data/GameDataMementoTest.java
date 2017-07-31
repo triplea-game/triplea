@@ -33,7 +33,7 @@ public final class GameDataMementoTest {
   }
 
   @Test
-  public void mementoImporter_ShouldThrowExceptionWhenRequiredPropertyIsAbsent() {
+  public void mementoImporter_ShouldThrowExceptionWhenRequiredPropertyIsAbsent() throws Exception {
     final Memento memento = TestGameDataMementoFactory.newMementoWithoutProperty(GameDataMemento.PropertyNames.VERSION);
 
     catchException(() -> mementoImporter.importMemento(memento));
@@ -46,7 +46,7 @@ public final class GameDataMementoTest {
   }
 
   @Test
-  public void mementoImporter_ShouldThrowExceptionWhenPropertyValueHasWrongType() {
+  public void mementoImporter_ShouldThrowExceptionWhenPropertyValueHasWrongType() throws Exception {
     final Memento memento =
         TestGameDataMementoFactory.newMementoWithProperty(GameDataMemento.PropertyNames.VERSION, "1.2.3.4");
 
