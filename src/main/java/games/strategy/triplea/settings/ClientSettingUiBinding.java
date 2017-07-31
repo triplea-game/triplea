@@ -98,7 +98,8 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
       SettingType.TESTING,
       ClientSetting.SHOW_BETA_FEATURES,
       "Toggles whether to show 'beta' features. These are game features that are still "
-          + "under development and potentially may not be working yet."),
+          + "under development and potentially may not be working yet.\n"
+          + "Restart to fully activate"),
   MAP_LIST_OVERRIDE_BINDING(
       "Map List Override",
       SettingType.TESTING,
