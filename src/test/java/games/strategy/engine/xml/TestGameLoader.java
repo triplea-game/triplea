@@ -11,7 +11,10 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 
-public class TestGameLoader implements IGameLoader {
+/**
+ * Fake implementation of {@link IGameLoader} that does nothing.
+ */
+public final class TestGameLoader implements IGameLoader {
   private static final long serialVersionUID = -8019996788216172034L;
 
   /**
