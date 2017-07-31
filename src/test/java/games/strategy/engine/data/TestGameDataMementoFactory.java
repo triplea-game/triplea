@@ -6,9 +6,6 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-
 import games.strategy.util.memento.Memento;
 import games.strategy.util.memento.PropertyBagMemento;
 
@@ -25,8 +22,10 @@ public final class TestGameDataMementoFactory {
    * @param value The property value.
    *
    * @return A new game data memento.
+   *
+   * @throws Exception If the game data memento cannot be created.
    */
-  public static Memento newMementoWithProperty(final String name, final @Nullable Object value) {
+  public static Memento newMementoWithProperty(final String name, final @Nullable Object value) throws Exception {
     checkNotNull(name);
 
     final Map<String, Object> propertiesByName = newValidMementoPropertiesByName();
@@ -34,13 +33,10 @@ public final class TestGameDataMementoFactory {
     return newMementoWithProperties(propertiesByName);
   }
 
-  private static Map<String, Object> newValidMementoPropertiesByName() {
-    final GameData gameData = TestGameDataFactory.newValidGameData();
-    return Maps.newHashMap(ImmutableMap.<String, Object>builder()
-        .put(GameDataMemento.PropertyNames.NAME, gameData.getGameName())
-        .put(GameDataMemento.PropertyNames.VERSION, gameData.getGameVersion())
-        // TODO: handle other properties
-        .build());
+  private static Map<String, Object> newValidMementoPropertiesByName() throws Exception {
+    return GameDataMemento.newExporterInternal()
+        .exportMemento(TestGameDataFactory.newValidGameData())
+        .getPropertiesByName();
   }
 
   private static PropertyBagMemento newMementoWithProperties(final Map<String, Object> propertiesByName) {
@@ -53,8 +49,10 @@ public final class TestGameDataMementoFactory {
    * @param name The property name.
    *
    * @return A new game data memento.
+   *
+   * @throws Exception If the game data memento cannot be created.
    */
-  public static Memento newMementoWithoutProperty(final String name) {
+  public static Memento newMementoWithoutProperty(final String name) throws Exception {
     checkNotNull(name);
 
     final Map<String, Object> propertiesByName = newValidMementoPropertiesByName();

@@ -15,6 +15,7 @@ public final class TestGameDataFactory {
    */
   public static GameData newValidGameData() {
     final GameData gameData = new GameData();
+    gameData.setDiceSides(42);
     gameData.setGameName("name");
     gameData.setGameVersion(new Version(1, 2, 3, 4));
     // TODO: initialize other attributes

@@ -509,7 +509,9 @@ public class GameData implements Serializable {
   public String toString() {
     final StringBuilder sb = new StringBuilder();
     sb.append("GameData[");
-    sb.append("gameName=");
+    sb.append("diceSides=");
+    sb.append(diceSides);
+    sb.append(", gameName=");
     sb.append(gameName);
     sb.append(", gameVersion=");
     sb.append(gameVersion);
