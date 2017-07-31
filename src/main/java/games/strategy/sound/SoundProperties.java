@@ -43,7 +43,7 @@ class SoundProperties {
       instance = new SoundProperties(loader);
       timestamp = Instant.now();
     }
-    return s_op;
+    return instance;
   }
 
   String getDefaultEraFolder() {

@@ -6,11 +6,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
@@ -21,11 +19,9 @@ import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
 import tools.map.making.MapCreator;
-import tools.map.xml.creator.MapXmlCreator;
 
 /**
  * This is the main welcome panel with 'play online' buttons etc...
@@ -119,22 +115,6 @@ public class MetaSetupPanel extends SetupPanel {
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(00, 0, 0, 0), 0, 0));
-
-    if (ClientSetting.SHOW_BETA_FEATURES.booleanValue()) {
-      final JButton mapXmlCreator = JButtonBuilder.builder()
-          .title("[Beta] Run the Map Creator")
-          .actionListener(() -> ProcessRunnerUtil.runClass(MapXmlCreator.class))
-          .build();
-      add(mapXmlCreator, new GridBagConstraints(0,  11, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-          new Insets(10, 0, 0, 0), 0, 0));
-
-      final JButton console = JButtonBuilder.builder()
-          .title("Show Console")
-          .actionListener(() -> ErrorConsole.getConsole().setVisible(true))
-          .build();
-      add(console, new GridBagConstraints(0, 12, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-          new Insets(10, 0, 0, 0), 0, 0));
-    }
   }
 
   private void setupListeners() {
