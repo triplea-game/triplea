@@ -27,14 +27,6 @@ public final class TestGameLoader implements IGameLoader {
   }
 
   /**
-   * Return an array of player types that can play on the client.
-   * This array must not contain any entries that could play on the server.
-   */
-  public String[] getClientPlayerTypes() {
-    return null;
-  }
-
-  /**
    * The game is about to start.
    */
   @Override
