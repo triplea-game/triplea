@@ -45,7 +45,7 @@ import games.strategy.util.Match;
 @AutoSave(afterStepEnd = true)
 public class MoveDelegate extends AbstractMoveDelegate {
 
-  public static String CLEANING_UP_DURING_MOVEMENT_PHASE = "Cleaning up during movement phase";
+  public static final String CLEANING_UP_DURING_MOVEMENT_PHASE = "Cleaning up during movement phase";
 
   // needToInitialize means we only do certain things once, so that if a game is saved then
   // loaded, they aren't done again

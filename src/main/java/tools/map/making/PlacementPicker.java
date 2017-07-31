@@ -69,12 +69,12 @@ public class PlacementPicker extends JFrame {
   private Map<String, List<Point>> placements;
   private List<Point> currentPlacements;
   private String currentCountry;
-  private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static int PLACEHEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private static int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private static int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static boolean placeDimensionsSet = false;
-  private static double unit_zoom_percent = 1;
-  private static int unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static int unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private static double unitZoomPercent = 1;
+  private static int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private static int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
@@ -157,9 +157,9 @@ public class PlacementPicker extends JFrame {
           file = new File(new File(mapName).getParent() + File.separator + "map.properties");
         }
         if (file.exists()) {
-          double scale = unit_zoom_percent;
-          int width = unit_width;
-          int height = unit_height;
+          double scale = unitZoomPercent;
+          int width = unitWidth;
+          int height = unitHeight;
           boolean found = false;
           final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
           final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
@@ -210,9 +210,9 @@ public class PlacementPicker extends JFrame {
                 "File Suggestion", 1);
 
             if (result == 0) {
-              unit_zoom_percent = scale;
-              PLACEWIDTH = (int) (unit_zoom_percent * width);
-              PLACEHEIGHT = (int) (unit_zoom_percent * height);
+              unitZoomPercent = scale;
+              placeWidth = (int) (unitZoomPercent * width);
+              placeHeight = (int) (unitZoomPercent * height);
               placeDimensionsSet = true;
             }
           }
@@ -222,14 +222,14 @@ public class PlacementPicker extends JFrame {
       }
     }
     if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
-        "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), "
+        "Placement Box Size already set (" + placeWidth + "x" + placeHeight + "), "
             + "do you wish to continue with this?\r\n"
             + "Select Yes to continue, Select No to override and change the size.",
         "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
       try {
         final String result = getUnitsScale();
         try {
-          unit_zoom_percent = Double.parseDouble(result.toLowerCase());
+          unitZoomPercent = Double.parseDouble(result.toLowerCase());
         } catch (final NumberFormatException ex) {
           // ignore malformed input
         }
@@ -237,7 +237,7 @@ public class PlacementPicker extends JFrame {
             "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
         if (width != null) {
           try {
-            PLACEWIDTH = (int) (unit_zoom_percent * Integer.parseInt(width));
+            placeWidth = (int) (unitZoomPercent * Integer.parseInt(width));
           } catch (final NumberFormatException ex) {
             // ignore malformed input
           }
@@ -246,7 +246,7 @@ public class PlacementPicker extends JFrame {
             "Enter the unit's image height in pixels (unscaled / without zoom).\r\n(e.g. 48)");
         if (height != null) {
           try {
-            PLACEHEIGHT = (int) (unit_zoom_percent * Integer.parseInt(height));
+            placeHeight = (int) (unitZoomPercent * Integer.parseInt(height));
           } catch (final NumberFormatException ex) {
             // ignore malformed input
           }
@@ -426,10 +426,10 @@ public class PlacementPicker extends JFrame {
             final Iterator<Point> pointIter = entry.getValue().iterator();
             while (pointIter.hasNext()) {
               final Point item = pointIter.next();
-              g.fillRect(item.x, item.y, PLACEWIDTH, PLACEHEIGHT);
+              g.fillRect(item.x, item.y, placeWidth, placeHeight);
               if (showOverflowMode && !pointIter.hasNext()) {
                 g.setColor(Color.gray);
-                g.fillRect(item.x + PLACEWIDTH, item.y + PLACEHEIGHT / 2, PLACEWIDTH, 4);
+                g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
                 g.setColor(Color.yellow);
               }
             }
@@ -458,7 +458,7 @@ public class PlacementPicker extends JFrame {
         }
         g.setColor(Color.red);
         if (currentSquare != null) {
-          g.drawRect(currentSquare.x, currentSquare.y, PLACEWIDTH, PLACEHEIGHT);
+          g.drawRect(currentSquare.x, currentSquare.y, placeWidth, placeHeight);
         }
         if (currentPlacements == null) {
           return;
@@ -466,10 +466,10 @@ public class PlacementPicker extends JFrame {
         final Iterator<Point> pointIter = currentPlacements.iterator();
         while (pointIter.hasNext()) {
           final Point item = pointIter.next();
-          g.fillRect(item.x, item.y, PLACEWIDTH, PLACEHEIGHT);
+          g.fillRect(item.x, item.y, placeWidth, placeHeight);
           if (showOverflowMode && !pointIter.hasNext()) {
             g.setColor(Color.gray);
-            g.fillRect(item.x + PLACEWIDTH, item.y + PLACEHEIGHT / 2, PLACEWIDTH, 4);
+            g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
             g.setColor(Color.red);
           }
         }
@@ -663,8 +663,8 @@ public class PlacementPicker extends JFrame {
     final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
-        unit_zoom_percent = Double.parseDouble(zoomString);
-        System.out.println("Unit Zoom Percent to use: " + unit_zoom_percent);
+        unitZoomPercent = Double.parseDouble(zoomString);
+        System.out.println("Unit Zoom Percent to use: " + unitZoomPercent);
         placeDimensionsSet = true;
       } catch (final Exception ex) {
         System.err.println("Not a decimal percentage: " + zoomString);
@@ -673,8 +673,8 @@ public class PlacementPicker extends JFrame {
     final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
     if (widthString != null && widthString.length() > 0) {
       try {
-        unit_width = Integer.parseInt(widthString);
-        System.out.println("Unit Width to use: " + unit_width);
+        unitWidth = Integer.parseInt(widthString);
+        System.out.println("Unit Width to use: " + unitWidth);
         placeDimensionsSet = true;
       } catch (final Exception ex) {
         System.err.println("Not an integer: " + widthString);
@@ -683,17 +683,17 @@ public class PlacementPicker extends JFrame {
     final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
     if (heightString != null && heightString.length() > 0) {
       try {
-        unit_height = Integer.parseInt(heightString);
-        System.out.println("Unit Height to use: " + unit_height);
+        unitHeight = Integer.parseInt(heightString);
+        System.out.println("Unit Height to use: " + unitHeight);
         placeDimensionsSet = true;
       } catch (final Exception ex) {
         System.err.println("Not an integer: " + heightString);
       }
     }
     if (placeDimensionsSet) {
-      PLACEWIDTH = (int) (unit_zoom_percent * unit_width);
-      PLACEHEIGHT = (int) (unit_zoom_percent * unit_height);
-      System.out.println("Place Dimensions to use: " + PLACEWIDTH + "x" + PLACEHEIGHT);
+      placeWidth = (int) (unitZoomPercent * unitWidth);
+      placeHeight = (int) (unitZoomPercent * unitHeight);
+      System.out.println("Place Dimensions to use: " + placeWidth + "x" + placeHeight);
     }
   }
 }

@@ -31,7 +31,7 @@ import games.strategy.util.UrlStreams;
  */
 public class ResourceLoader implements Closeable {
   private final URLClassLoader m_loader;
-  public static String RESOURCE_FOLDER = "assets";
+  public static final String RESOURCE_FOLDER = "assets";
 
   private final ResourceLocationTracker resourceLocationTracker;
 

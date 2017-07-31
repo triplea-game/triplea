@@ -41,7 +41,7 @@ public class TileImageReconstructor {
       "TileImageReconstructor Log\r\n\r\n", "", "TileImageReconstructor Log", null, 500, 300, true, 1, null);
   private static int sizeX = -1;
   private static int sizeY = -1;
-  private static Map<String, List<Polygon>> m_polygons = new HashMap<>();
+  private static Map<String, List<Polygon>> polygons = new HashMap<>();
 
   public static void main(final String[] args) throws Exception {
     handleCommandLineArgs(args);
@@ -115,7 +115,7 @@ public class TileImageReconstructor {
         final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyName != null) {
           final FileInputStream in = new FileInputStream(polyName);
-          m_polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+          polygons = PointFileReaderWriter.readOneToManyPolygons(in);
         }
       } catch (final Exception ex) {
         ClientLogger.logQuietly(ex);
@@ -147,10 +147,10 @@ public class TileImageReconstructor {
         textOptionPane.appendNewLine("Drew " + tileName);
       }
     }
-    if (m_polygons != null && !m_polygons.isEmpty()) {
+    if (polygons != null && !polygons.isEmpty()) {
       graphics.setColor(Color.black);
       textOptionPane.appendNewLine("Drawing Polygons");
-      for (final Entry<String, List<Polygon>> entry : m_polygons.entrySet()) {
+      for (final Entry<String, List<Polygon>> entry : polygons.entrySet()) {
         for (final Polygon poly : entry.getValue()) {
           graphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
         }
