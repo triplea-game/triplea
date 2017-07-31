@@ -29,14 +29,14 @@ public class UnitImageFactory {
    * Width of all icons.
    * You probably want getUnitImageWidth(), which takes scale factor into account.
    */
-  private static int UNIT_ICON_WIDTH = DEFAULT_UNIT_ICON_SIZE;
+  private static int unitIconWidth = DEFAULT_UNIT_ICON_SIZE;
   /**
    * Height of all icons.
    * You probably want getUnitImageHeight(), which takes scale factor into account.
    **/
-  private static int UNIT_ICON_HEIGHT = DEFAULT_UNIT_ICON_SIZE;
-  private static int UNIT_COUNTER_OFFSET_WIDTH = DEFAULT_UNIT_ICON_SIZE / 4;
-  private static int UNIT_COUNTER_OFFSET_HEIGHT = UNIT_ICON_HEIGHT;
+  private static int unitIconHeight = DEFAULT_UNIT_ICON_SIZE;
+  private static int unitCounterOffsetWidth = DEFAULT_UNIT_ICON_SIZE / 4;
+  private static int unitCounterOffsetHeight = unitIconHeight;
   private static final String FILE_NAME_BASE = "units/";
   // maps Point -> image
   private final Map<String, Image> m_images = new HashMap<>();
@@ -51,10 +51,10 @@ public class UnitImageFactory {
 
   public void setResourceLoader(final ResourceLoader loader, final double scaleFactor, final int initialUnitWidth,
       final int initialUnitHeight, final int initialUnitCounterOffsetWidth, final int initialUnitCounterOffsetHeight) {
-    UNIT_ICON_WIDTH = initialUnitWidth;
-    UNIT_ICON_HEIGHT = initialUnitHeight;
-    UNIT_COUNTER_OFFSET_WIDTH = initialUnitCounterOffsetWidth;
-    UNIT_COUNTER_OFFSET_HEIGHT = initialUnitCounterOffsetHeight;
+    unitIconWidth = initialUnitWidth;
+    unitIconHeight = initialUnitHeight;
+    unitCounterOffsetWidth = initialUnitCounterOffsetWidth;
+    unitCounterOffsetHeight = initialUnitCounterOffsetHeight;
     m_scaleFactor = scaleFactor;
     m_resourceLoader = loader;
     clearImageCache();
@@ -81,22 +81,22 @@ public class UnitImageFactory {
    * Return the width of scaled units.
    */
   public int getUnitImageWidth() {
-    return (int) (m_scaleFactor * UNIT_ICON_WIDTH);
+    return (int) (m_scaleFactor * unitIconWidth);
   }
 
   /**
    * Return the height of scaled units.
    */
   public int getUnitImageHeight() {
-    return (int) (m_scaleFactor * UNIT_ICON_HEIGHT);
+    return (int) (m_scaleFactor * unitIconHeight);
   }
 
   public int getUnitCounterOffsetWidth() {
-    return (int) (m_scaleFactor * UNIT_COUNTER_OFFSET_WIDTH);
+    return (int) (m_scaleFactor * unitCounterOffsetWidth);
   }
 
   public int getUnitCounterOffsetHeight() {
-    return (int) (m_scaleFactor * UNIT_COUNTER_OFFSET_HEIGHT);
+    return (int) (m_scaleFactor * unitCounterOffsetHeight);
   }
 
   // Clear the image and icon cache

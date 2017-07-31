@@ -23,8 +23,8 @@ import games.strategy.util.Match;
  */
 public class ProTerritoryValueUtils {
 
-  private static int MIN_FACTORY_CHECK_DISTANCE = 9;
-  private static int MAX_FACTORY_CHECK_DISTANCE = 30;
+  private static final int MIN_FACTORY_CHECK_DISTANCE = 9;
+  private static final int MAX_FACTORY_CHECK_DISTANCE = 30;
 
   public static double findTerritoryAttackValue(final PlayerID player, final Territory t) {
     final GameData data = ProData.getData();

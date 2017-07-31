@@ -11,8 +11,8 @@ import games.strategy.engine.history.Step;
 import games.strategy.triplea.Constants;
 
 public abstract class BaseEditDelegate extends BasePersistentDelegate {
-  public static String EDITMODE_ON = "Turning on Edit Mode";
-  public static String EDITMODE_OFF = "Turning off Edit Mode";
+  private static final String EDITMODE_ON = "Turning on Edit Mode";
+  private static final String EDITMODE_OFF = "Turning off Edit Mode";
 
   /**
    * Called before the delegate will run, AND before "start" is called.

@@ -77,7 +77,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     Collections.sort(m_territories, TERRITORY_GRID_ORDERING);
   }
 
-  private static Comparator<Territory> TERRITORY_GRID_ORDERING = (t1, t2) -> {
+  private static final Comparator<Territory> TERRITORY_GRID_ORDERING = (t1, t2) -> {
     if ((t1 == null && t2 == null) || t1 == t2) {
       return 0;
     }

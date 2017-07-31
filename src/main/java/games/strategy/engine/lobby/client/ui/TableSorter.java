@@ -72,7 +72,7 @@ class TableSorter extends AbstractTableModel {
   private TableModel tableModel;
   static final int DESCENDING = -1;
   private static final int NOT_SORTED = 0;
-  private static Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
+  private static final Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
   // TODO needs to be rewritten in order to remove the warning
   @SuppressWarnings("unchecked")
   private static final Comparator<Object> COMPARABLE_COMAPRATOR =
