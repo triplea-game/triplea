@@ -62,13 +62,13 @@ import tools.image.FileSave;
  */
 public class MapPropertiesMaker extends JFrame {
   private static final long serialVersionUID = 8182821091131994702L;
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
   private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
   private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
   private static final MapProperties mapProperties = new MapProperties();
-  private static JPanel s_playerColorChooser = new JPanel();
+  private static final JPanel playerColorChooser = new JPanel();
 
   public static String[] getProperties() {
     return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
@@ -79,18 +79,18 @@ public class MapPropertiesMaker extends JFrame {
     // JOptionPane.showMessageDialog(null, new JLabel("<html>" + "This is the MapPropertiesMaker, it will create a
     // map.properties file for
     // you. " + "</html>"));
-    if (s_mapFolderLocation == null) {
+    if (mapFolderLocation == null) {
       System.out.println("Select the map folder");
-      final String path = new FileSave("Where is your map's folder?", null, s_mapFolderLocation).getPathString();
+      final String path = new FileSave("Where is your map's folder?", null, mapFolderLocation).getPathString();
       if (path != null) {
         final File mapFolder = new File(path);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
-          System.setProperty(TRIPLEA_MAP_FOLDER, s_mapFolderLocation.getPath());
+          mapFolderLocation = mapFolder;
+          System.setProperty(TRIPLEA_MAP_FOLDER, mapFolderLocation.getPath());
         }
       }
     }
-    if (s_mapFolderLocation != null) {
+    if (mapFolderLocation != null) {
       final MapPropertiesMaker maker = new MapPropertiesMaker();
       maker.setSize(800, 800);
       maker.setLocationRelativeTo(null);
@@ -213,7 +213,7 @@ public class MapPropertiesMaker extends JFrame {
     panel.add(new JLabel("Create Players and Click on the Color to set their Color: "), new GridBagConstraints(0, row++,
         2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 50, 20, 50), 0, 0));
     createPlayerColorChooser();
-    panel.add(s_playerColorChooser, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER,
+    panel.add(playerColorChooser, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER,
         GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
     final JButton showMore = new JButton("Show All Options");
     showMore.addActionListener(SwingAction.of("Show All Options", e -> {
@@ -232,11 +232,11 @@ public class MapPropertiesMaker extends JFrame {
   }
 
   private void createPlayerColorChooser() {
-    s_playerColorChooser.removeAll();
-    s_playerColorChooser.setLayout(new GridBagLayout());
+    playerColorChooser.removeAll();
+    playerColorChooser.setLayout(new GridBagLayout());
     int row = 0;
     for (final Entry<String, Color> entry : mapProperties.getColorMap().entrySet()) {
-      s_playerColorChooser.add(new JLabel(entry.getKey()), new GridBagConstraints(0, row, 1, 1, 1, 1,
+      playerColorChooser.add(new JLabel(entry.getKey()), new GridBagConstraints(0, row, 1, 1, 1, 1,
           GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
       final JLabel label = new JLabel(entry.getKey()) {
         private static final long serialVersionUID = 5624227155029721033L;
@@ -272,7 +272,7 @@ public class MapPropertiesMaker extends JFrame {
         @Override
         public void mouseReleased(final MouseEvent e) {}
       });
-      s_playerColorChooser.add(label, new GridBagConstraints(1, row, 1, 1, 1, 1, GridBagConstraints.CENTER,
+      playerColorChooser.add(label, new GridBagConstraints(1, row, 1, 1, 1, 1, GridBagConstraints.CENTER,
           GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
       final JButton removePlayer = new JButton("Remove " + entry.getKey());
       removePlayer.addActionListener(new AbstractAction("Remove " + entry.getKey()) {
@@ -286,7 +286,7 @@ public class MapPropertiesMaker extends JFrame {
           MapPropertiesMaker.this.repaint();
         }
       });
-      s_playerColorChooser.add(removePlayer, new GridBagConstraints(2, row, 1, 1, 1, 1, GridBagConstraints.WEST,
+      playerColorChooser.add(removePlayer, new GridBagConstraints(2, row, 1, 1, 1, 1, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
       row++;
     }
@@ -302,9 +302,9 @@ public class MapPropertiesMaker extends JFrame {
       MapPropertiesMaker.this.repaint();
 
     }));
-    s_playerColorChooser.add(addPlayer, new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST,
+    playerColorChooser.add(addPlayer, new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-    s_playerColorChooser.add(nameTextField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST,
+    playerColorChooser.add(nameTextField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
   }
 
@@ -313,7 +313,7 @@ public class MapPropertiesMaker extends JFrame {
     try {
       System.out.println("Load a properties file");
       final String centerName =
-          new FileOpen("Load A Properties File", s_mapFolderLocation, ".properties").getPathString();
+          new FileOpen("Load A Properties File", mapFolderLocation, ".properties").getPathString();
       if (centerName == null) {
         return;
       }
@@ -337,7 +337,7 @@ public class MapPropertiesMaker extends JFrame {
   private static void saveProperties() {
     try {
       final String fileName =
-          new FileSave("Where To Save map.properties ?", "map.properties", s_mapFolderLocation).getPathString();
+          new FileSave("Where To Save map.properties ?", "map.properties", mapFolderLocation).getPathString();
       if (fileName == null) {
         return;
       }
@@ -414,7 +414,7 @@ public class MapPropertiesMaker extends JFrame {
     if (folderString != null && folderString.length() > 0) {
       final File mapFolder = new File(folderString);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + folderString);
       }

@@ -27,14 +27,14 @@ public class MyFormatter {
   /**
    * Some exceptions to the rules.
    */
-  private static Map<String, String> s_plural;
+  private static final Map<String, String> plural;
 
   static {
-    s_plural = new HashMap<>();
-    s_plural.put("armour", "armour");
-    s_plural.put("infantry", "infantry");
-    s_plural.put("artillery", "artilleries");
-    s_plural.put("factory", "factories");
+    plural = new HashMap<>();
+    plural.put("armour", "armour");
+    plural.put("infantry", "infantry");
+    plural.put("artillery", "artilleries");
+    plural.put("factory", "factories");
   }
 
   public static String unitsToTextNoOwner(final Collection<Unit> units) {
@@ -112,8 +112,8 @@ public class MyFormatter {
   }
 
   public static String pluralize(final String in) {
-    if (s_plural.containsKey(in)) {
-      return s_plural.get(in);
+    if (plural.containsKey(in)) {
+      return plural.get(in);
     }
     if (in.endsWith("man")) {
       return in.substring(0, in.lastIndexOf("man")) + "men";

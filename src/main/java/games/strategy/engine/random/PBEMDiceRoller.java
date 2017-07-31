@@ -31,7 +31,7 @@ import games.strategy.ui.Util;
 public class PBEMDiceRoller implements IRandomSource {
   private final String m_gameUUID;
   private final IRemoteDiceServer m_remoteDiceServer;
-  private static Frame s_focusWindow;
+  private static Frame focusWindow;
 
   /**
    * If the game has multiple frames, allows the ui to
@@ -40,7 +40,7 @@ public class PBEMDiceRoller implements IRandomSource {
    * focused window (or a visble window if none are focused).
    */
   public static void setFocusWindow(final Frame w) {
-    s_focusWindow = w;
+    focusWindow = w;
   }
 
   public PBEMDiceRoller(final IRemoteDiceServer diceServer, final String gameUuid) {
@@ -79,8 +79,8 @@ public class PBEMDiceRoller implements IRandomSource {
   }
 
   private static Frame getFocusedFrame() {
-    if (s_focusWindow != null) {
-      return s_focusWindow;
+    if (focusWindow != null) {
+      return focusWindow;
     }
     final Frame[] frames = Frame.getFrames();
     Frame focusedFrame = null;

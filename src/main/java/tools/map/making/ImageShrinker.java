@@ -21,7 +21,7 @@ import tools.image.FileOpen;
  * Takes an image and shrinks it. Used for making small images.
  */
 public class ImageShrinker {
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder"; // TODO: find other duplications of this value.
 
   public static void main(final String[] args) throws Exception {
@@ -33,12 +33,12 @@ public class ImageShrinker {
             + "<br>So we suggest you instead shrink the image with paint.net or photoshop or gimp, etc, then clean it "
             + "up before saving."
             + "</html>"));
-    final File mapFile = new FileOpen("Select The Large Image", s_mapFolderLocation, ".gif", ".png").getFile();
+    final File mapFile = new FileOpen("Select The Large Image", mapFolderLocation, ".gif", ".png").getFile();
     if (mapFile == null || !mapFile.exists()) {
       throw new IllegalStateException(mapFile + "File does not exist");
     }
-    if (s_mapFolderLocation == null) {
-      s_mapFolderLocation = mapFile.getParentFile();
+    if (mapFolderLocation == null) {
+      mapFolderLocation = mapFile.getParentFile();
     }
     final String input = JOptionPane.showInputDialog(null, "Select scale");
     final float scale = Float.parseFloat(input);
@@ -86,7 +86,7 @@ public class ImageShrinker {
       }
       final File mapFolder = new File(value);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + value);
       }
@@ -94,12 +94,12 @@ public class ImageShrinker {
       System.out.println("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }

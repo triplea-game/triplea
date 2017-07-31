@@ -6,10 +6,10 @@ import games.strategy.net.INode;
 
 public class VaultID implements Serializable {
   private static final long serialVersionUID = 8863728184933393296L;
-  private static long s_currentID;
+  private static long currentId;
 
   private static synchronized long getNextID() {
-    return s_currentID++;
+    return currentId++;
   }
 
   private final INode m_generatedOn;

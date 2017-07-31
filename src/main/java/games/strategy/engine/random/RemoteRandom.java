@@ -10,14 +10,14 @@ import games.strategy.engine.vault.Vault;
 import games.strategy.engine.vault.VaultID;
 
 public class RemoteRandom implements IRemoteRandom {
-  private static List<VerifiedRandomNumbers> s_verifiedRandomNumbers = new ArrayList<>();
+  private static final List<VerifiedRandomNumbers> verifiedRandomNumbers = new ArrayList<>();
 
   public static synchronized List<VerifiedRandomNumbers> getVerifiedRandomNumbers() {
-    return new ArrayList<>(s_verifiedRandomNumbers);
+    return new ArrayList<>(verifiedRandomNumbers);
   }
 
   private static synchronized void addVerifiedRandomNumber(final VerifiedRandomNumbers number) {
-    s_verifiedRandomNumbers.add(number);
+    verifiedRandomNumbers.add(number);
   }
 
   private final PlainRandomSource m_plainRandom = new PlainRandomSource();
