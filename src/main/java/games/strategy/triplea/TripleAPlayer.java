@@ -626,12 +626,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   @Override
-  public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
-      final Territory unitTerritory) {
-    return ui.selectProducerTerritoryForUnits(candidates, unitTerritory);
-  }
-
-  @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
     return ui.moveFightersToCarrier(fightersThatCanBeMoved, from);

@@ -19,7 +19,7 @@ class SoundProperties {
   static final String PROPERTY_DEFAULT_FOLDER = "Sound.Default.Folder";
   static final String DEFAULT_ERA_FOLDER = "ww2";
   static final String GENERIC_FOLDER = "generic";
-  private static SoundProperties s_op = null;
+  private static SoundProperties instance = null;
   private static Instant timestamp = Instant.EPOCH;
   private final Properties m_properties = new Properties();
 
@@ -39,8 +39,8 @@ class SoundProperties {
 
   static SoundProperties getInstance(final ResourceLoader loader) {
     // cache properties for 1 second
-    if (s_op == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
-      s_op = new SoundProperties(loader);
+    if (instance == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
+      instance = new SoundProperties(loader);
       timestamp = Instant.now();
     }
     return s_op;

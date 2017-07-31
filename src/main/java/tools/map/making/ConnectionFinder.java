@@ -40,7 +40,7 @@ import tools.image.FileSave;
  */
 // TODO: get this moved to its own package tree
 public class ConnectionFinder {
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final String LINE_THICKNESS = "triplea.map.lineThickness";
   private static final String SCALE_PIXELS = "triplea.map.scalePixels";
@@ -66,21 +66,21 @@ public class ConnectionFinder {
             + "</html>"));
     System.out.println("Select polygons.txt");
     File polyFile = null;
-    if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
-      polyFile = new File(s_mapFolderLocation, "polygons.txt");
+    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+      polyFile = new File(mapFolderLocation, "polygons.txt");
     }
     if (polyFile != null && polyFile.exists() && JOptionPane.showConfirmDialog(null,
         "A polygons.txt file was found in the map's folder, do you want to use it?", "File Suggestion", 1) == 0) {
       // yay
     } else {
-      polyFile = new FileOpen("Select The polygons.txt file", s_mapFolderLocation, ".txt").getFile();
+      polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
     }
     if (polyFile == null || !polyFile.exists()) {
       System.out.println("No polygons.txt Selected. Shutting down.");
       System.exit(0);
     }
-    if (s_mapFolderLocation == null && polyFile != null) {
-      s_mapFolderLocation = polyFile.getParentFile();
+    if (mapFolderLocation == null && polyFile != null) {
+      mapFolderLocation = polyFile.getParentFile();
     }
     final Map<String, List<Area>> territoryAreas = new HashMap<>();
     Map<String, List<Polygon>> mapOfPolygons = null;
@@ -176,7 +176,7 @@ public class ConnectionFinder {
     }
     try {
       final String fileName = new FileSave("Where To Save connections.txt ? (cancel to print to console)",
-          "connections.txt", s_mapFolderLocation).getPathString();
+          "connections.txt", mapFolderLocation).getPathString();
       final StringBuffer connectionsString = convertToXml(connections);
       if (fileName == null) {
         System.out.println();
@@ -385,7 +385,7 @@ public class ConnectionFinder {
       if (arg.startsWith(TRIPLEA_MAP_FOLDER)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }
@@ -404,12 +404,12 @@ public class ConnectionFinder {
       }
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }

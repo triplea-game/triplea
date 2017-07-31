@@ -13,7 +13,7 @@ import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 
 public class ClientQuarantineConversation extends QuarantineConversation {
-  private static final Logger s_logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
+  private static final Logger logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
 
   private enum STEP {
     READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
@@ -97,8 +97,8 @@ public class ClientQuarantineConversation extends QuarantineConversation {
         case READ_CHALLENGE:
           // read name, send challenge
           final Map<String, String> challenge = (Map<String, String>) o;
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "read challenge:" + challenge);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "read challenge:" + challenge);
           }
           if (challenge != null) {
             challengeProperties = challenge;
@@ -111,14 +111,14 @@ public class ClientQuarantineConversation extends QuarantineConversation {
             if (isClosed) {
               return ACTION.NONE;
             }
-            if (s_logger.isLoggable(Level.FINER)) {
-              s_logger.log(Level.FINER, "writing response" + challengeResponse);
+            if (logger.isLoggable(Level.FINER)) {
+              logger.log(Level.FINER, "writing response" + challengeResponse);
             }
             send((Serializable) challengeResponse);
           } else {
             showLatch.countDown();
-            if (s_logger.isLoggable(Level.FINER)) {
-              s_logger.log(Level.FINER, "sending null response");
+            if (logger.isLoggable(Level.FINER)) {
+              logger.log(Level.FINER, "sending null response");
             }
             send(null);
           }
@@ -126,8 +126,8 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           return ACTION.NONE;
         case READ_ERROR:
           if (o != null) {
-            if (s_logger.isLoggable(Level.FINER)) {
-              s_logger.log(Level.FINER, "error:" + o);
+            if (logger.isLoggable(Level.FINER)) {
+              logger.log(Level.FINER, "error:" + o);
             }
             errorMessage = (String) o;
             // acknowledge the error
@@ -138,8 +138,8 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           return ACTION.NONE;
         case READ_NAMES:
           final String[] strings = ((String[]) o);
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "new local name:" + strings[0]);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "new local name:" + strings[0]);
           }
           localName = strings[0];
           serverName = strings[1];
@@ -151,11 +151,11 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           // this is the address the server thinks he is
           networkVisibleAddress = address[0];
           serverLocalAddress = address[1];
-          if (s_logger.isLoggable(Level.FINE)) {
-            s_logger.log(Level.FINE, "Server local address:" + serverLocalAddress);
-            s_logger.log(Level.FINE, "channel remote address:" + channel.socket().getRemoteSocketAddress());
-            s_logger.log(Level.FINE, "network visible address:" + networkVisibleAddress);
-            s_logger.log(Level.FINE, "channel local adresss:" + channel.socket().getLocalSocketAddress());
+          if (logger.isLoggable(Level.FINE)) {
+            logger.log(Level.FINE, "Server local address:" + serverLocalAddress);
+            logger.log(Level.FINE, "channel remote address:" + channel.socket().getRemoteSocketAddress());
+            logger.log(Level.FINE, "network visible address:" + networkVisibleAddress);
+            logger.log(Level.FINE, "channel local adresss:" + channel.socket().getLocalSocketAddress());
           }
           return ACTION.UNQUARANTINE;
         default:
@@ -165,7 +165,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
       isClosed = true;
       showLatch.countDown();
       doneShowLatch.countDown();
-      s_logger.log(Level.SEVERE, "error with connection", t);
+      logger.log(Level.SEVERE, "error with connection", t);
       return ACTION.TERMINATE;
     }
   }

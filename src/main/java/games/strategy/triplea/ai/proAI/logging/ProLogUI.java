@@ -10,7 +10,7 @@ import games.strategy.triplea.ui.TripleAFrame;
  * Class to manage log window display.
  */
 public class ProLogUI {
-  private static ProLogWindow s_settingsWindow = null;
+  private static ProLogWindow settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;
 
@@ -18,38 +18,38 @@ public class ProLogUI {
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread, should be running on AWT thread.");
     }
-    s_settingsWindow = new ProLogWindow(frame);
+    settingsWindow = new ProLogWindow(frame);
   }
 
   public static void clearCachedInstances() {
-    if (s_settingsWindow != null) {
-      s_settingsWindow.clear();
+    if (settingsWindow != null) {
+      settingsWindow.clear();
     }
-    s_settingsWindow = null;
+    settingsWindow = null;
   }
 
   public static void showSettingsWindow() {
-    if (s_settingsWindow == null) {
+    if (settingsWindow == null) {
       return;
     }
-    s_settingsWindow.setVisible(true);
+    settingsWindow.setVisible(true);
   }
 
   static void notifyAILogMessage(final Level level, final String message) {
-    if (s_settingsWindow == null) {
+    if (settingsWindow == null) {
       return;
     }
-    s_settingsWindow.addMessage(level, message);
+    settingsWindow.addMessage(level, message);
   }
 
   public static void notifyStartOfRound(final int round, final String name) {
-    if (s_settingsWindow == null) {
+    if (settingsWindow == null) {
       return;
     }
     if (round != currentRound || !name.equals(currentName)) {
       currentRound = round;
       currentName = name;
-      s_settingsWindow.notifyNewRound(round, name);
+      settingsWindow.notifyNewRound(round, name);
     }
   }
 }

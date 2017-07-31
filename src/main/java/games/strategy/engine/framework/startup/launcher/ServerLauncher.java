@@ -48,7 +48,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ThreadUtil;
 
 public class ServerLauncher extends AbstractLauncher {
-  private static final Logger s_logger = Logger.getLogger(ServerLauncher.class.getName());
+  private static final Logger logger = Logger.getLogger(ServerLauncher.class.getName());
   public static final String SERVER_ROOT_DIR_PROPERTY = "triplea.server.root.dir";
   private final int m_clientCount;
   private final IRemoteMessenger m_remoteMessenger;
@@ -131,7 +131,7 @@ public class ServerLauncher extends AbstractLauncher {
       }
       m_remoteMessenger.registerRemote(m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
       m_gameData.doPreGameStartDataModifications(m_playerListing);
-      s_logger.fine("Starting server");
+      logger.fine("Starting server");
       m_abortLaunch = testShouldWeAbort();
       final byte[] gameDataAsBytes;
       try {

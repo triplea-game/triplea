@@ -45,7 +45,7 @@ import games.strategy.util.Util;
  * A very weak ai, based on some simple rules.<p>
  */
 public class WeakAI extends AbstractAI {
-  private static final Logger s_logger = Logger.getLogger(WeakAI.class.getName());
+  private static final Logger logger = Logger.getLogger(WeakAI.class.getName());
 
   /** Creates new WeakAI. */
   public WeakAI(final String name, final String type) {
@@ -242,7 +242,7 @@ public class WeakAI extends AbstractAI {
       pause();
       if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null
           || moveRoutes.get(i).hasNoSteps()) {
-        s_logger.fine("Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
+        logger.fine("Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
         continue;
       }
       final String result;
@@ -252,7 +252,7 @@ public class WeakAI extends AbstractAI {
         result = moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
       }
       if (result != null) {
-        s_logger.fine("could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because : " + result);
+        logger.fine("could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because : " + result);
       }
     }
   }
@@ -379,7 +379,7 @@ public class WeakAI extends AbstractAI {
           ourStrength += AIUtils.strength(owned.getUnits().getMatches(attackable), true, true);
         }
         if (ourStrength > 1.32 * enemyStrength) {
-          s_logger.fine("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength);
+          logger.fine("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength);
           for (final Territory owned : attackFrom) {
             if (dontMoveFrom.contains(owned)) {
               continue;
@@ -686,7 +686,7 @@ public class WeakAI extends AbstractAI {
               moveRoutes.add(data.getMap().getRoute(owned, enemy));
             }
           }
-          s_logger.fine("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength
+          logger.fine("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength
               + " remaining strength needed " + remainingStrengthNeeded);
         }
       }
@@ -1055,8 +1055,8 @@ public class WeakAI extends AbstractAI {
   private void doPlace(final Territory where, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     final String message = del.placeUnits(new ArrayList<>(toPlace), where, IAbstractPlaceDelegate.BidMode.NOT_BID);
     if (message != null) {
-      s_logger.fine(message);
-      s_logger.fine("Attempt was at:" + where + " with:" + toPlace);
+      logger.fine(message);
+      logger.fine("Attempt was at:" + where + " with:" + toPlace);
     }
     pause();
   }

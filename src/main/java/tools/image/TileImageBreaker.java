@@ -32,7 +32,7 @@ public class TileImageBreaker {
   private static String location = null;
   private static JFrame observer = new JFrame();
   private boolean baseMap;
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
       "TileImageBreaker Log\r\n\r\n", "", "TileImageBreaker Log", null, 500, 300, true, 1, null);
@@ -55,10 +55,10 @@ public class TileImageBreaker {
             + "<br>For the base image (the one used to make centers.txt, etc), please save it to a folder called "
             + "baseTiles"
             + "<br>For the relief image, please save it to a folder called reliefTiles" + "</html>"));
-    final FileSave locationSelection = new FileSave("Where to save Tile Images?", null, s_mapFolderLocation);
+    final FileSave locationSelection = new FileSave("Where to save Tile Images?", null, mapFolderLocation);
     location = locationSelection.getPathString();
-    if (s_mapFolderLocation == null && locationSelection.getFile() != null) {
-      s_mapFolderLocation = locationSelection.getFile().getParentFile();
+    if (mapFolderLocation == null && locationSelection.getFile() != null) {
+      mapFolderLocation = locationSelection.getFile().getParentFile();
     }
     if (location == null) {
       System.out.println("You need to select a folder to save the tiles in for this to work");
@@ -123,7 +123,7 @@ public class TileImageBreaker {
    */
   private static Image loadImage() {
     System.out.println("Select the map");
-    final String mapName = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png").getPathString();
+    final String mapName = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getPathString();
     if (mapName != null) {
       final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
       final MediaTracker tracker = new MediaTracker(new Panel());
@@ -159,7 +159,7 @@ public class TileImageBreaker {
       }
       final File mapFolder = new File(value);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + value);
       }
@@ -167,12 +167,12 @@ public class TileImageBreaker {
       System.out.println("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }

@@ -1938,44 +1938,6 @@ public class TripleAFrame extends MainGameFrame {
     }
   };
 
-  /**
-   * Prompt user for which producer territory (factory) to use when producing units in sea
-   * zones that have multiple adjacent factories.
-   * 
-   * @param candidates
-   *        - list of producer territories to choose from
-   * @param unitTerritory
-   *        - territory units are being placed
-   * @return territory selected to use for production or null if one isn't selected
-   */
-  public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
-      final Territory unitTerritory) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
-    messageAndDialogThreadPool.waitForAll();
-    mapPanel.centerOn(unitTerritory);
-    final AtomicReference<Territory> selected = new AtomicReference<>();
-    SwingAction.invokeAndWait(() -> {
-      final JList<Territory> list = new JList<>(new Vector<>(candidates));
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      list.setSelectedIndex(0);
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BorderLayout());
-      final JScrollPane scroll = new JScrollPane(list);
-      panel.add(scroll, BorderLayout.CENTER);
-      panel.add(BorderLayout.NORTH, new JLabel("Producer territory for units in " + unitTerritory.getName()));
-      final String[] options = {"OK", "Cancel"};
-      final String message = "Select Producer Territory";
-      final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-      if (selection == 0) {
-        selected.set(list.getSelectedValue());
-      }
-    });
-    return selected.get();
-  }
-
   public Collection<Unit> moveFightersToCarrier(final Collection<Unit> fighters, final Territory where) {
     if (messageAndDialogThreadPool == null) {
       return null;

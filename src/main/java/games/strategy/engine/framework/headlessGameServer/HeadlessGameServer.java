@@ -43,8 +43,8 @@ import games.strategy.util.Util;
  */
 public class HeadlessGameServer {
 
-  static final Logger s_logger = Logger.getLogger(HeadlessGameServer.class.getName());
-  private static HeadlessGameServer s_instance = null;
+  private static final Logger logger = Logger.getLogger(HeadlessGameServer.class.getName());
+  private static HeadlessGameServer instance = null;
   private final AvailableGames m_availableGames;
   private final GameSelectorModel m_gameSelectorModel;
   private SetupPanelModel m_setupPanelModel = null;
@@ -54,7 +54,7 @@ public class HeadlessGameServer {
   private final String startDate = TimeManager.getFullUtcString(Instant.now());
 
   public static synchronized HeadlessGameServer getInstance() {
-    return s_instance;
+    return instance;
   }
 
   public static synchronized boolean headless() {
@@ -385,12 +385,12 @@ public class HeadlessGameServer {
 
   private HeadlessGameServer() {
     super();
-    if (s_instance != null) {
+    if (instance != null) {
       throw new IllegalStateException("Instance already exists");
     }
-    s_instance = this;
+    instance = this;
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      s_logger.info("Running ShutdownHook.");
+      logger.info("Running ShutdownHook.");
       shutdown();
     }));
     m_availableGames = new AvailableGames();
@@ -432,7 +432,7 @@ public class HeadlessGameServer {
         restartLobbyWatcher(m_setupPanelModel, m_iGame);
       }
     }, reconnect, reconnect, TimeUnit.SECONDS);
-    s_logger.info("Game Server initialized");
+    logger.info("Game Server initialized");
   }
 
   private static synchronized void restartLobbyWatcher(
@@ -543,7 +543,7 @@ public class HeadlessGameServer {
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
-    s_instance = null;
+    instance = null;
     m_setupPanelModel = null;
     m_iGame = null;
     System.out.println("Shutdown Script Finished.");

@@ -35,7 +35,7 @@ import games.strategy.util.PointFileReaderWriter;
 public class TileImageReconstructor {
   private static String baseTileLocation = null;
   private static String imageSaveLocation = null;
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
       "TileImageReconstructor Log\r\n\r\n", "", "TileImageReconstructor Log", null, 500, 300, true, 1, null);
@@ -52,10 +52,10 @@ public class TileImageReconstructor {
             + "<br>You must know the size of the map image before you begin, this is normally found in the "
             + "map.properties file. "
             + "</html>"));
-    final FileSave baseTileLocationSelection = new FileSave("Where are the Tile Images?", null, s_mapFolderLocation);
+    final FileSave baseTileLocationSelection = new FileSave("Where are the Tile Images?", null, mapFolderLocation);
     baseTileLocation = baseTileLocationSelection.getPathString();
-    if (s_mapFolderLocation == null && baseTileLocationSelection.getFile() != null) {
-      s_mapFolderLocation = baseTileLocationSelection.getFile().getParentFile();
+    if (mapFolderLocation == null && baseTileLocationSelection.getFile() != null) {
+      mapFolderLocation = baseTileLocationSelection.getFile().getParentFile();
     }
     if (baseTileLocation == null) {
       System.out.println("You need to select a folder where the basetiles are for this to work");
@@ -63,8 +63,8 @@ public class TileImageReconstructor {
       System.exit(0);
       return;
     }
-    final FileSave imageSaveLocationSelection = new FileSave("Save Map Image As?", null, s_mapFolderLocation,
-        JFileChooser.FILES_ONLY, new File(s_mapFolderLocation, "map.png"), new FileFilter() {
+    final FileSave imageSaveLocationSelection = new FileSave("Save Map Image As?", null, mapFolderLocation,
+        JFileChooser.FILES_ONLY, new File(mapFolderLocation, "map.png"), new FileFilter() {
           @Override
           public boolean accept(final File f) {
             if (f.isDirectory()) {
@@ -112,7 +112,7 @@ public class TileImageReconstructor {
         "Do Not Also Draw Polygons?", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
       try {
         System.out.println("Load a polygon file");
-        final String polyName = new FileOpen("Load A Polygon File", s_mapFolderLocation, ".txt").getPathString();
+        final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyName != null) {
           final FileInputStream in = new FileInputStream(polyName);
           m_polygons = PointFileReaderWriter.readOneToManyPolygons(in);
@@ -189,7 +189,7 @@ public class TileImageReconstructor {
       }
       final File mapFolder = new File(value);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + value);
       }
@@ -197,12 +197,12 @@ public class TileImageReconstructor {
       System.out.println("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }

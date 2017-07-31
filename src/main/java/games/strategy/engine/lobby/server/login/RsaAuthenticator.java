@@ -33,8 +33,7 @@ import games.strategy.util.Util;
  * A class which implements the TripleA-Lobby-Login authentication system using RSA encryption
  * for passwords.
  */
-public class RsaAuthenticator {
-  private static final Cache<String, PrivateKey> rsaKeyMap = buildCache();
+public final class RsaAuthenticator {
   private static final String RSA = "RSA";
   private static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
   private static final String PSEUDO_SALT = "TripleA";
@@ -45,8 +44,15 @@ public class RsaAuthenticator {
   @VisibleForTesting
   static final String RSA_PUBLIC_KEY = "RSAPUBLICKEY";
 
-  private static Cache<String, PrivateKey> buildCache() {
-    return CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build();
+  private final Cache<String, PrivateKey> rsaKeyCache;
+
+  RsaAuthenticator() {
+    this(CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build());
+  }
+
+  @VisibleForTesting
+  RsaAuthenticator(final Cache<String, PrivateKey> rsaKeyCache) {
+    this.rsaKeyCache = rsaKeyCache;
   }
 
   /**
@@ -67,18 +73,18 @@ public class RsaAuthenticator {
    * Adds public key of a generated key-pair to the challenge map
    * and stores the private key in a map.
    */
-  static Map<String, String> generatePublicKey() {
+  Map<String, String> generatePublicKey() {
     return Collections.singletonMap(RSA_PUBLIC_KEY, storeKeyPair());
   }
 
-  private static String storeKeyPair() {
+  private String storeKeyPair() {
     KeyPair keyPair;
     String publicKey;
     do {
       keyPair = generateKeyPair();
       publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-    } while (rsaKeyMap.getIfPresent(publicKey) != null);
-    rsaKeyMap.put(publicKey, keyPair.getPrivate());
+    } while (rsaKeyCache.getIfPresent(publicKey) != null);
+    rsaKeyCache.put(publicKey, keyPair.getPrivate());
     return publicKey;
   }
 
@@ -92,22 +98,21 @@ public class RsaAuthenticator {
     }
   }
 
-
   /**
    * Looks up a public key from the 'challenge' param map that was original sent to the client, and
    * then we return any matching private keys stored under that public key. If we find a private key,
    * it is purged from cache before being returned.
    */
-  static Optional<PrivateKey> getPrivateKey(final Map<String, String> challenge) {
+  Optional<PrivateKey> getPrivateKey(final Map<String, String> challenge) {
     final String publicKey = challenge.get(RSA_PUBLIC_KEY);
-    final PrivateKey privateKey = rsaKeyMap.getIfPresent(publicKey);
-    rsaKeyMap.invalidate(publicKey);
+    final PrivateKey privateKey = rsaKeyCache.getIfPresent(publicKey);
+    rsaKeyCache.invalidate(publicKey);
     return Optional.ofNullable(privateKey);
   }
 
   /**
    * Attempts to decrypt the given password using the challenge and response parameters.
-   * 
+   *
    * @param privateKey PrivateKey that was used to encrypted the password stored in the response param.
    * @param response The response map containing the encrypte password.
    * @param successfullDecryptionAction A {@link Function} which is executed if the password is successfully
@@ -172,25 +177,5 @@ public class RsaAuthenticator {
       final Map<String, String> challenge,
       final String password) {
     return Collections.singletonMap(ENCRYPTED_PASSWORD_KEY, encryptPassword(challenge.get(RSA_PUBLIC_KEY), password));
-  }
-
-  /**
-   * This method exists only to help support test.
-   * @deprecated Avoid calling this method, instead we should rework how this class is structured
-   */
-  @Deprecated
-  @VisibleForTesting
-  static void invalidateAll() {
-    rsaKeyMap.invalidateAll();
-  }
-
-  /**
-   * This method exists only to help support test.
-   * @deprecated Avoid calling this method, instead we should rework how this class is structured
-   */
-  @Deprecated
-  @VisibleForTesting
-  static void putKey(final String publicKey, final PrivateKey privateKey) {
-    rsaKeyMap.put(publicKey, privateKey);
   }
 }

@@ -71,7 +71,7 @@ import games.strategy.util.Tuple;
  */
 public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAPlayer {
 
-  private static final Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
+  private static final Logger logger = Logger.getLogger(AbstractAI.class.getName());
 
   public AbstractAI(final String name, final String type) {
     super(name, type);
@@ -155,12 +155,6 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       return potentialTargets.iterator().next();
     }
     return factories.iterator().next();
-  }
-
-  @Override
-  public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
-      final Territory unitTerritory) {
-    return candidates.iterator().next();
   }
 
   @Override
@@ -585,7 +579,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         for (final Territory current : entry.getValue()) {
           final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
           if (error != null) {
-            s_logger.fine(error);
+            logger.fine(error);
           }
         }
       }

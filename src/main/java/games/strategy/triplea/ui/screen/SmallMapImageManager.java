@@ -21,7 +21,7 @@ import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
 
 public class SmallMapImageManager {
-  private static final Logger s_logger = Logger.getLogger(SmallMapImageManager.class.getName());
+  private static final Logger logger = Logger.getLogger(SmallMapImageManager.class.getName());
   private final ImageScrollerSmallView view;
   private static final int UNIT_BOX_SIZE = 4;
   private Image offscreen;
@@ -40,7 +40,7 @@ public class SmallMapImageManager {
   }
 
   public void update(final GameData data, final MapData mapData) {
-    final Stopwatch stopwatch = new Stopwatch(s_logger, Level.FINEST, "Small map updating took");
+    final Stopwatch stopwatch = new Stopwatch(logger, Level.FINEST, "Small map updating took");
     final Graphics onScreenGraphics = view.getOffScreenImage().getGraphics();
     onScreenGraphics.drawImage(offscreen, 0, 0, null);
     for (final UnitsDrawer drawer : new ArrayList<>(tileManager.getUnitDrawables())) {

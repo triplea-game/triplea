@@ -19,7 +19,7 @@ import games.strategy.net.MessageHeader;
  * by threads calling this object.
  */
 public class NIOSocket implements IErrorReporter {
-  private static final Logger s_logger = Logger.getLogger(NIOSocket.class.getName());
+  private static final Logger logger = Logger.getLogger(NIOSocket.class.getName());
   private final Encoder m_encoder;
   private final Decoder m_decoder;
   private final NIOWriter m_writer;
@@ -102,7 +102,7 @@ public class NIOSocket implements IErrorReporter {
       }
       channel.close();
     } catch (final IOException e1) {
-      s_logger.log(Level.FINE, "error closing channel", e1);
+      logger.log(Level.FINE, "error closing channel", e1);
     }
     m_decoder.closed(channel);
     m_writer.closed(channel);
