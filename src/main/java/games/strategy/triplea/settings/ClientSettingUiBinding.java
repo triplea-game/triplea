@@ -1,6 +1,9 @@
 package games.strategy.triplea.settings;
 
 import java.util.Map;
+import java.util.function.Supplier;
+
+import javax.swing.JComponent;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -143,17 +146,18 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
   final SettingType type;
   final String title;
   final String description;
-  final SelectionComponent selectionComponent;
+  private final Supplier<SelectionComponent> selectionComponentBuilder;
 
+  private SelectionComponent selectionComponent;
 
   ClientSettingUiBinding(
       final String title,
       final SettingType type,
-      final SelectionComponent selectionComponent,
+      final Supplier<SelectionComponent> selectionComponent,
       final String description) {
     this.title = Preconditions.checkNotNull(Strings.emptyToNull(title));
     this.type = Preconditions.checkNotNull(type);
-    this.selectionComponent = Preconditions.checkNotNull(selectionComponent);
+    this.selectionComponentBuilder = selectionComponent;
     this.description = Preconditions.checkNotNull(Strings.emptyToNull(description));
   }
 
@@ -162,27 +166,43 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
       final SettingType type,
       final ClientSetting clientSetting,
       final String description) {
-    this(title, type, SelectionComponentFactory.booleanRadioButtons(clientSetting), description);
+    this(title, type, () -> SelectionComponentFactory.booleanRadioButtons(clientSetting), description);
+  }
+
+  @Override
+  public JComponent buildSelectionComponent() {
+    return current().getJComponent();
+  }
+
+  private synchronized SelectionComponent current() {
+    if (selectionComponent == null) {
+      selectionComponent = selectionComponentBuilder.get();
+    }
+    return selectionComponent;
+  }
+
+  public void dispose() {
+    selectionComponent = null;
   }
 
   @Override
   public boolean isValid() {
-    return selectionComponent.isValid();
+    return current().isValid();
   }
 
   @Override
   public Map<GameSetting, String> readValues() {
-    return selectionComponent.readValues();
+    return current().readValues();
   }
 
   @Override
   public String validValueDescription() {
-    return selectionComponent.validValueDescription();
+    return current().validValueDescription();
   }
 
   @Override
   public void resetToDefault() {
-    selectionComponent.resetToDefault();
+    current().resetToDefault();
   }
 
   @Override

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 import com.google.common.base.Strings;

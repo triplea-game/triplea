@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -20,6 +21,7 @@ import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
 import tools.map.making.MapCreator;
@@ -27,8 +29,7 @@ import tools.map.xml.creator.MapXmlCreator;
 
 /**
  * This is the main welcome panel with 'play online' buttons etc...
- * The panel does not include the 'play' and 'quit' buttons, and does include the left hand panel
- * that has map data on it.
+ * The panel does not include the 'play
  */
 public class MetaSetupPanel extends SetupPanel {
 

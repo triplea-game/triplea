@@ -39,6 +39,8 @@ enum SettingsWindow {
     if (dialog != null) {
       dialog.dispose();
       dialog = null;
+      Arrays.stream(ClientSettingUiBinding.values())
+          .forEach(ClientSettingUiBinding::dispose);
     }
   }
 
@@ -62,7 +64,6 @@ enum SettingsWindow {
 
     Arrays.stream(SettingType.values()).forEach(settingType -> {
       final List<ClientSettingUiBinding> settings = getSettingsByType(settingType);
-      verifySettings(settings);
 
       final JComponent tab = buildTab(settings, closeListener);
       tabbedPane.add(settingType.tabTitle, tab);
@@ -74,14 +75,6 @@ enum SettingsWindow {
     return Arrays.stream(ClientSettingUiBinding.values())
         .filter(setting -> setting.type == type)
         .collect(Collectors.toList());
-  }
-
-  private static void verifySettings(final Iterable<ClientSettingUiBinding> settings) {
-    // do some basic integrity/data validity check.
-    settings.forEach(setting -> {
-      Preconditions.checkNotNull(Strings.emptyToNull(setting.title));
-      Preconditions.checkNotNull(setting.selectionComponent.getJComponent());
-    });
   }
 
   private static JComponent buildTab(final List<ClientSettingUiBinding> settings, final Runnable closeListener) {
@@ -112,7 +105,7 @@ enum SettingsWindow {
                   .build())
           .build());
 
-      grid.add(setting.selectionComponent.getJComponent());
+      grid.add(setting.buildSelectionComponent());
 
       grid.add(JPanelBuilder.builder()
           .add(

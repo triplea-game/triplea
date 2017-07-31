@@ -2,12 +2,18 @@ package games.strategy.triplea.settings;
 
 import java.util.Map;
 
+import javax.swing.JComponent;
+
 /**
  * Interface for UI components used to update ClientSetting values. Since the components can get their
  * initial value from the ClientSetting they represent, the only 'write' operation is 'resetToDefault'.
  * The rest of the operations here are essentially 'read' operations.
  */
 public interface GameSettingUiBinding {
+  /**
+   * Builds or rebuilds the underlying UI component from current settings.
+   */
+  JComponent buildSelectionComponent();
   /**
    * Reads the value set in the UI and return true if it is valid, false otherwise.
    */

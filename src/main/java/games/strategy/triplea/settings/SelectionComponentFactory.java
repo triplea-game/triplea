@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 import javax.swing.Box;
@@ -30,63 +31,54 @@ import swinglib.JPanelBuilder;
  * class. This class takes care of the UI code to ensure we render the proper swing component with validation.
  */
 class SelectionComponentFactory {
-  static SelectionComponent proxySettings() {
-    final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-
-
-    final HttpProxy.ProxyChoice proxyChoice =
-        HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
-
-    final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
-
-    final JRadioButton systemButton =
-        new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
-
-    final JRadioButton userButton =
-        new JRadioButton("Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-
-
-    SwingComponents.createButtonGroup(noneButton, systemButton, userButton);
-
-
-    final JTextField hostText = new JTextField(ClientSetting.PROXY_HOST.value(), 20);
-    final JTextField portText = new JTextField(ClientSetting.PROXY_PORT.value(), 6);
-
-    final JPanel radioPanel = JPanelBuilder.builder()
-        .verticalBoxLayout()
-        .add(noneButton)
-        .add(systemButton)
-        .add(userButton)
-        .add(new JLabel("Proxy Host: "))
-        .add(hostText)
-        .add(new JLabel("Proxy Port: "))
-        .add(portText)
-        .build();
-
-    final ActionListener enableUserSettings = e -> {
-      if (userButton.isSelected()) {
-        hostText.setEnabled(true);
-        hostText.setBackground(Color.WHITE);
-        portText.setEnabled(true);
-        portText.setBackground(Color.WHITE);
-      } else {
-        hostText.setEnabled(false);
-        hostText.setBackground(Color.DARK_GRAY);
-        portText.setEnabled(false);
-        portText.setBackground(Color.DARK_GRAY);
-      }
-    };
-    enableUserSettings.actionPerformed(null);
-    userButton.addActionListener(enableUserSettings);
-    noneButton.addActionListener(enableUserSettings);
-    systemButton.addActionListener(enableUserSettings);
-
-    return new SelectionComponent() {
-
+  static Supplier<SelectionComponent> proxySettings() {
+    return () -> new SelectionComponent() {
       private static final long serialVersionUID = -8485825527073729683L;
+      final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
+      final HttpProxy.ProxyChoice proxyChoice =
+          HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
+      final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
+      final JRadioButton systemButton =
+          new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
+
+
+      final JRadioButton userButton =
+          new JRadioButton("Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+      final JTextField hostText = new JTextField(ClientSetting.PROXY_HOST.value(), 20);
+      final JTextField portText = new JTextField(ClientSetting.PROXY_PORT.value(), 6);
+      final JPanel radioPanel = JPanelBuilder.builder()
+          .verticalBoxLayout()
+          .add(noneButton)
+          .add(systemButton)
+          .add(userButton)
+          .add(new JLabel("Proxy Host: "))
+          .add(hostText)
+          .add(new JLabel("Proxy Port: "))
+          .add(portText)
+          .build();
+
+      final ActionListener enableUserSettings = e -> {
+        if (userButton.isSelected()) {
+          hostText.setEnabled(true);
+          hostText.setBackground(Color.WHITE);
+          portText.setEnabled(true);
+          portText.setBackground(Color.WHITE);
+        } else {
+          hostText.setEnabled(false);
+          hostText.setBackground(Color.DARK_GRAY);
+          portText.setEnabled(false);
+          portText.setBackground(Color.DARK_GRAY);
+        }
+      };
 
       @Override
       JComponent getJComponent() {
+        SwingComponents.createButtonGroup(noneButton, systemButton, userButton);
+        enableUserSettings.actionPerformed(null);
+        userButton.addActionListener(enableUserSettings);
+        noneButton.addActionListener(enableUserSettings);
+        systemButton.addActionListener(enableUserSettings);
+
         return radioPanel;
       }
 
@@ -167,11 +159,11 @@ class SelectionComponentFactory {
   /**
    * Text field that only accepts numbers between a certain range.
    */
-  static SelectionComponent intValueRange(final ClientSetting clientSetting, final int lo, final int hi) {
-    final JTextField component = new JTextField(clientSetting.value(), String.valueOf(hi).length());
-
-    return new SelectionComponent() {
+  static Supplier<SelectionComponent> intValueRange(final ClientSetting clientSetting, final int lo, final int hi) {
+    return () -> new SelectionComponent() {
       private static final long serialVersionUID = 8195633990481917808L;
+      String value = clientSetting.value();
+      final JTextField component = new JTextField(value, String.valueOf(hi).length());
 
       @Override
       JComponent getJComponent() {
@@ -239,27 +231,22 @@ class SelectionComponentFactory {
    * yes/no radio buttons.
    */
   static SelectionComponent booleanRadioButtons(final ClientSetting clientSetting) {
-    final boolean initialSelection = clientSetting.booleanValue();
-
-    final JRadioButton yesButton = new JRadioButton("True");
-    yesButton.setSelected(initialSelection);
-
-    final JRadioButton noButton = new JRadioButton("False");
-    noButton.setSelected(!initialSelection);
-
-    SwingComponents.createButtonGroup(yesButton, noButton);
-
-    final JPanel buttonPanel = JPanelBuilder.builder()
-        .horizontalBoxLayout()
-        .add(yesButton)
-        .add(noButton)
-        .build();
-
     return new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = 6104513062312556269L;
+      final boolean initialSelection = clientSetting.booleanValue();
+      final JRadioButton yesButton = new JRadioButton("True");
+      final JRadioButton noButton = new JRadioButton("False");
+      final JPanel buttonPanel = JPanelBuilder.builder()
+          .horizontalBoxLayout()
+          .add(yesButton)
+          .add(noButton)
+          .build();
 
       @Override
       JComponent getJComponent() {
+        yesButton.setSelected(initialSelection);
+        noButton.setSelected(!initialSelection);
+        SwingComponents.createButtonGroup(yesButton, noButton);
         return buttonPanel;
       }
 
@@ -284,36 +271,28 @@ class SelectionComponentFactory {
   /**
    * File selection prompt.
    */
-  static SelectionComponent filePath(final ClientSetting clientSetting) {
+  static Supplier<SelectionComponent> filePath(final ClientSetting clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.FILES);
   }
 
-  /**
-   * Folder selection prompt.
-   */
-  static SelectionComponent folderPath(final ClientSetting clientSetting) {
-    return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
-  }
-
-  private static SelectionComponent selectFile(
+  private static Supplier<SelectionComponent> selectFile(
       final ClientSetting clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
-    final int expectedLength = 20;
-    final JTextField field = new JTextField(clientSetting.value(), expectedLength);
-    field.setEditable(false);
-
-    final JButton button = JButtonBuilder.builder()
-        .title("Select")
-        .actionListener(
-            () -> SwingComponents.showJFileChooser(folderSelectionMode)
-                .ifPresent(file -> field.setText(file.getAbsolutePath())))
-        .build();
-
-    return new AlwaysValidInputSelectionComponent() {
+    return () -> new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = -1775099967925891332L;
+      final int expectedLength = 20;
+      final JTextField field = new JTextField(clientSetting.value(), expectedLength);
+      final JButton button = JButtonBuilder.builder()
+          .title("Select")
+          .actionListener(
+              () -> SwingComponents.showJFileChooser(folderSelectionMode)
+                  .ifPresent(file -> field.setText(file.getAbsolutePath())))
+          .build();
 
       @Override
       JComponent getJComponent() {
+        field.setEditable(false);
+
         return JPanelBuilder.builder()
             .horizontalBoxLayout()
             .add(field)
@@ -339,16 +318,21 @@ class SelectionComponentFactory {
     };
   }
 
+  /**
+   * Folder selection prompt.
+   */
+  static Supplier<SelectionComponent> folderPath(final ClientSetting clientSetting) {
+    return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
+  }
 
-  static SelectionComponent selectionBox(final ClientSetting clientSetting, final List<String> availableOptions) {
-    final JComboBox<String> comboBox = new JComboBox<>(availableOptions.toArray(new String[availableOptions.size()]));
-    comboBox.setSelectedItem(clientSetting.value());
-
-    return new AlwaysValidInputSelectionComponent() {
+  static Supplier<SelectionComponent> selectionBox(final ClientSetting clientSetting, final List<String> availableOptions) {
+    return () -> new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = -8969206423938554118L;
+      final JComboBox<String> comboBox = new JComboBox<>(availableOptions.toArray(new String[availableOptions.size()]));
 
       @Override
       JComponent getJComponent() {
+        comboBox.setSelectedItem(clientSetting.value());
         return comboBox;
       }
 
@@ -369,10 +353,10 @@ class SelectionComponentFactory {
     };
   }
 
-  static SelectionComponent textField(final ClientSetting clientSetting) {
-    final JTextField textField = new JTextField(clientSetting.value(), 20);
-    return new AlwaysValidInputSelectionComponent() {
+  static Supplier<SelectionComponent> textField(final ClientSetting clientSetting) {
+    return () -> new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = 7549165488576728952L;
+      final JTextField textField = new JTextField(clientSetting.value(), 20);
 
       @Override
       JComponent getJComponent() {
@@ -381,7 +365,7 @@ class SelectionComponentFactory {
 
       @Override
       Map<GameSetting, String> readValues() {
-        final Map<GameSetting,String> map = new HashMap<>();
+        final Map<GameSetting, String> map = new HashMap<>();
         map.put(clientSetting, textField.getText());
         return map;
       }
