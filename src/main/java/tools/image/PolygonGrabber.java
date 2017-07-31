@@ -62,7 +62,7 @@ import games.strategy.util.PointFileReaderWriter;
  */
 public class PolygonGrabber extends JFrame {
   private static final long serialVersionUID = 6381498094805120687L;
-  private static boolean s_islandMode;
+  private static boolean islandMode;
   private final JCheckBoxMenuItem modeItem;
   // the current set of polyongs
   private List<Polygon> current;
@@ -74,7 +74,7 @@ public class PolygonGrabber extends JFrame {
   // holds the centers for the polygons
   private Map<String, Point> centers;
   private final JLabel location = new JLabel();
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 
   /**
@@ -88,10 +88,10 @@ public class PolygonGrabber extends JFrame {
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
     System.out.println("Select the map");
-    final FileOpen mapSelection = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png");
+    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
-    if (s_mapFolderLocation == null && mapSelection.getFile() != null) {
-      s_mapFolderLocation = mapSelection.getFile().getParentFile();
+    if (mapFolderLocation == null && mapSelection.getFile() != null) {
+      mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
       System.out.println("Map : " + mapName);
@@ -133,8 +133,8 @@ public class PolygonGrabber extends JFrame {
     super("Polygon grabber");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     File file = null;
-    if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
-      file = new File(s_mapFolderLocation, "centers.txt");
+    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+      file = new File(mapFolderLocation, "centers.txt");
     }
     if (file == null || !file.exists()) {
       file = new File(new File(mapName).getParent() + File.separator + "centers.txt");
@@ -153,7 +153,7 @@ public class PolygonGrabber extends JFrame {
     } else {
       try {
         System.out.println("Select the Centers file");
-        final String centerPath = new FileOpen("Select A Center File", s_mapFolderLocation, ".txt").getPathString();
+        final String centerPath = new FileOpen("Select A Center File", mapFolderLocation, ".txt").getPathString();
         if (centerPath != null) {
           System.out.println("Centers : " + centerPath);
           centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
@@ -269,12 +269,12 @@ public class PolygonGrabber extends JFrame {
     final JMenuItem saveItem = new JMenuItem(saveAction);
     saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
     final JMenuItem exitItem = new JMenuItem(exitAction);
-    s_islandMode = false;
+    islandMode = false;
     modeItem = new JCheckBoxMenuItem("Island Mode", false);
     modeItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent event) {
-        s_islandMode = modeItem.getState();
+        islandMode = modeItem.getState();
         repaint();
       }
     });
@@ -338,7 +338,7 @@ public class PolygonGrabber extends JFrame {
         while (iter.hasNext()) {
           final Collection<Polygon> polygons = iter.next().getValue();
           final Iterator<Polygon> iter2 = polygons.iterator();
-          if (s_islandMode) {
+          if (islandMode) {
             while (iter2.hasNext()) {
               final Polygon item = iter2.next();
               g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
@@ -370,7 +370,7 @@ public class PolygonGrabber extends JFrame {
    */
   private void savePolygons() {
     final String polyName =
-        new FileSave("Where To Save Polygons.txt ?", "polygons.txt", s_mapFolderLocation).getPathString();
+        new FileSave("Where To Save Polygons.txt ?", "polygons.txt", mapFolderLocation).getPathString();
     try {
       if (polyName == null) {
         return;
@@ -391,7 +391,7 @@ public class PolygonGrabber extends JFrame {
    */
   private void loadPolygons() {
     System.out.println("Load a polygon file");
-    final String polyName = new FileOpen("Load A Polygon File", s_mapFolderLocation, ".txt").getPathString();
+    final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
     try {
       if (polyName == null) {
         return;
@@ -746,7 +746,7 @@ public class PolygonGrabber extends JFrame {
       }
       final File mapFolder = new File(value);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + value);
       }
@@ -754,12 +754,12 @@ public class PolygonGrabber extends JFrame {
       System.out.println("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }

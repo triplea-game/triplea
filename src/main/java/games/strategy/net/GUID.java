@@ -20,17 +20,17 @@ public class GUID implements Externalizable {
   // the local identifier
   // this coupled with the unique vm prefix comprise
   // our unique id
-  private static AtomicInteger s_lastID = new AtomicInteger();
+  private static AtomicInteger lastId = new AtomicInteger();
   private int m_id;
   private VMID m_prefix;
 
   public GUID() {
-    m_id = s_lastID.getAndIncrement();
+    m_id = lastId.getAndIncrement();
     m_prefix = vm_prefix;
     // handle wrap around if needed
     if (m_id < 0) {
       vm_prefix = new VMID();
-      s_lastID = new AtomicInteger();
+      lastId = new AtomicInteger();
     }
   }
 

@@ -39,7 +39,7 @@ import games.strategy.util.Util;
 public class TripleAWarClubForumPoster extends AbstractForumPoster {
   private static final long serialVersionUID = -4017550807078258152L;
   private static final String WAR_CLUB_FORUM_URL = "http://www.tripleawarclub.org/modules/newbb";
-  private static Pattern s_XOOPS_TOKEN_REQUEST =
+  private static final Pattern XOOPS_TOKEN_REQUEST_PATTERN =
       Pattern.compile(".*XOOPS_TOKEN_REQUEST[^>]*value=\"([^\"]*)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
   /**
@@ -109,7 +109,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
           throw new Exception("Could not load reply page: " + url + ". Site returned " + status);
         }
         final String body = Util.getStringFromInputStream(response.getEntity().getContent());
-        final Matcher m = s_XOOPS_TOKEN_REQUEST.matcher(body);
+        final Matcher m = XOOPS_TOKEN_REQUEST_PATTERN.matcher(body);
         if (!m.matches()) {
           throw new Exception("Unable to find 'XOOPS_TOKEN_REQUEST' form field on reply page");
         }

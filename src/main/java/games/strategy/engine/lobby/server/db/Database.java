@@ -42,8 +42,8 @@ import games.strategy.util.ThreadUtil;
 public class Database {
   private static final Logger logger = Logger.getLogger(Database.class.getName());
   private static final Object dbSetupLock = new Object();
-  private static boolean s_isDbSetup = false;
-  private static boolean s_areDBTablesCreated = false;
+  private static boolean isDbSetup = false;
+  private static boolean areDbTablesCreated = false;
 
   private static File getCurrentDataBaseDir() {
     final File dbRootDir = getDBRoot();
@@ -111,7 +111,7 @@ public class Database {
   private static void ensureDbTablesAreCreated(final Connection conn) {
     synchronized (dbSetupLock) {
       try {
-        if (s_areDBTablesCreated) {
+        if (areDbTablesCreated) {
           return;
         }
         final ResultSet rs = conn.getMetaData().getTables(null, null, null, null);
@@ -168,7 +168,7 @@ public class Database {
           s.execute("create table bad_words" + "(" + "word varchar(40) NOT NULL PRIMARY KEY " + ")");
           s.close();
         }
-        s_areDBTablesCreated = true;
+        areDbTablesCreated = true;
       } catch (final SQLException sqle) {
         // only close if an error occurs
         try {
@@ -187,14 +187,14 @@ public class Database {
    */
   private static void ensureDbIsSetup() {
     synchronized (dbSetupLock) {
-      if (s_isDbSetup) {
+      if (isDbSetup) {
         return;
       }
       // setup the derby location
       System.getProperties().setProperty("derby.system.home", getCurrentDataBaseDir().getAbsolutePath());
       // shut the database down on finish
       Runtime.getRuntime().addShutdownHook(new Thread(() -> shutDownDB()));
-      s_isDbSetup = true;
+      isDbSetup = true;
     }
     // we want to backup the database on occassion
     final Thread backupThread = new Thread(() -> {

@@ -147,11 +147,11 @@ public class Unit extends GameDataComponent {
    * TODO: fix the root cause of this deserialization issue (probably a circular dependency somewhere)
    */
   public static class UnitDeserializationErrorLazyMessage {
-    private static transient boolean s_shownError = false;
+    private static boolean shownError = false;
 
     private static void printError(final String errorMessage) {
-      if (s_shownError == false) {
-        s_shownError = true;
+      if (shownError == false) {
+        shownError = true;
         System.err.println(errorMessage);
       }
     }

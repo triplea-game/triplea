@@ -26,7 +26,7 @@ import games.strategy.net.IMessenger;
  */
 public class ChatPanel extends JPanel implements IChatPanel {
   private static final long serialVersionUID = -6177517517279779486L;
-  static int s_divider_size = 5;
+  private static final int DIVIDER_SIZE = 5;
   private ChatPlayerPanel chatPlayerPanel;
   private ChatMessagePanel chatMessagePanel;
 
@@ -89,7 +89,7 @@ public class ChatPanel extends JPanel implements IChatPanel {
     split.setLeftComponent(chatMessagePanel);
     split.setRightComponent(chatPlayerPanel);
     split.setOneTouchExpandable(false);
-    split.setDividerSize(s_divider_size);
+    split.setDividerSize(DIVIDER_SIZE);
     split.setResizeWeight(1);
     content.add(split, BorderLayout.CENTER);
   }

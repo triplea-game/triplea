@@ -33,12 +33,12 @@ import games.strategy.util.PointFileReaderWriter;
 public class AutoPlacementFinder {
   private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static int PLACEHEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static MapData s_mapData;
+  private static MapData mapData;
   private static boolean placeDimensionsSet = false;
   private static double unit_zoom_percent = 1;
   private static int unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static int unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
   private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
@@ -78,15 +78,15 @@ public class AutoPlacementFinder {
     // create hash map of placements
     final Map<String, Collection<Point>> m_placements = new HashMap<>();
     // ask user where the map is
-    final String mapDir = s_mapFolderLocation == null ? getMapDirectory() : s_mapFolderLocation.getName();
+    final String mapDir = mapFolderLocation == null ? getMapDirectory() : mapFolderLocation.getName();
     if (mapDir == null) {
       System.out.println("You need to specify a map name for this to work");
       System.out.println("Shutting down");
       System.exit(0);
     }
     final File file = getMapPropertiesFile(mapDir);
-    if (file.exists() && s_mapFolderLocation == null) {
-      s_mapFolderLocation = file.getParentFile();
+    if (file.exists() && mapFolderLocation == null) {
+      mapFolderLocation = file.getParentFile();
     }
     if (!placeDimensionsSet) {
       try {
@@ -192,7 +192,7 @@ public class AutoPlacementFinder {
     }
     try {
       // makes TripleA read all the text data files for the map.
-      s_mapData = new MapData(mapDir);
+      mapData = new MapData(mapDir);
     } catch (final Exception ex) {
       JOptionPane.showMessageDialog(null, new JLabel(
           "Could not find map. Make sure it is in finalized location and contains centers.txt and polygons.txt"));
@@ -205,21 +205,21 @@ public class AutoPlacementFinder {
     textOptionPane.show();
     textOptionPane.appendNewLine("Place Dimensions in pixels, being used: " + PLACEWIDTH + "x" + PLACEHEIGHT + "\r\n");
     textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
-    final Iterator<String> terrIter = s_mapData.getTerritories().iterator();
+    final Iterator<String> terrIter = mapData.getTerritories().iterator();
     while (terrIter.hasNext()) {
       final String name = terrIter.next();
       List<Point> points;
-      if (s_mapData.hasContainedTerritory(name)) {
+      if (mapData.hasContainedTerritory(name)) {
         final Set<Polygon> containedPolygons = new HashSet<>();
-        for (final String containedName : s_mapData.getContainedTerritory(name)) {
-          containedPolygons.addAll(s_mapData.getPolygons(containedName));
+        for (final String containedName : mapData.getContainedTerritory(name)) {
+          containedPolygons.addAll(mapData.getPolygons(containedName));
         }
-        points = getPlacementsStartingAtTopLeft(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name),
-            s_mapData.getCenter(name), containedPolygons);
+        points = getPlacementsStartingAtTopLeft(mapData.getPolygons(name), mapData.getBoundingRect(name),
+            mapData.getCenter(name), containedPolygons);
         m_placements.put(name, points);
       } else {
-        points = getPlacementsStartingAtMiddle(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name),
-            s_mapData.getCenter(name));
+        points = getPlacementsStartingAtMiddle(mapData.getPolygons(name), mapData.getBoundingRect(name),
+            mapData.getCenter(name));
         m_placements.put(name, points);
       }
       textOptionPane.appendNewLine(name + ": " + points.size());
@@ -228,7 +228,7 @@ public class AutoPlacementFinder {
     textOptionPane.countDown();
     try {
       final String fileName =
-          new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
+          new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
       if (fileName == null) {
         textOptionPane.appendNewLine("You chose not to save, Shutting down");
         textOptionPane.dispose();
@@ -536,7 +536,7 @@ public class AutoPlacementFinder {
     if (folderString != null && folderString.length() > 0) {
       final File mapFolder = new File(folderString);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + folderString);
       }
