@@ -21,12 +21,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
@@ -59,6 +57,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.ServerMessenger;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Version;
 
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
@@ -70,7 +69,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
-  static final String PLAYERNAME = "PlayerName";
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
     return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
@@ -194,8 +192,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       System.setProperty(GameRunner.TRIPLEA_STARTED, "true");
       return props;
     }
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    final String playername = prefs.get(PLAYERNAME, System.getProperty("user.name"));
+    final String playername = ClientSetting.PLAYER_NAME.value();
     final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
@@ -206,7 +203,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     final String name = options.getName();
     logger.log(Level.FINE, "Server playing as:" + name);
     // save the name! -- lnxduk
-    prefs.put(PLAYERNAME, name);
+    ClientSetting.PLAYER_NAME.save(name);
+    ClientSetting.flush();
     final int port = options.getPort();
     if (port >= 65536 || port == 0) {
       if (headless) {
@@ -384,27 +382,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
 
     @Override
-    public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave) {
-      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null) {
+    public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE autoSaveType) {
+      if (HeadlessGameServer.getInstance() == null || autoSaveType == SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2) {
         return;
       }
-      final File save;
-      if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE.equals(typeOfAutosave)) {
-        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
-      } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD.equals(typeOfAutosave)) {
-        save = new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveOddFileName());
-      } else if (SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN.equals(typeOfAutosave)) {
-        save =
-            new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveEvenFileName());
-      } else {
+      final File save = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());
+      if (!save.exists()) {
         return;
       }
-      if (save == null || !save.exists()) {
-        return;
-      }
-      System.out.println("Changing to autosave of type: " + typeOfAutosave.toString());
-      headless.loadGameSave(save);
+      HeadlessGameServer.getInstance().loadGameSave(save);
     }
 
     @Override
@@ -415,7 +401,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (headless == null || bytes == null) {
         return;
       }
-      System.out.println("Changing to user savegame: " + fileName);
       try (ByteArrayInputStream input = new ByteArrayInputStream(bytes);
           InputStream oinput = new BufferedInputStream(input)) {
         headless.loadGameSave(oinput, fileName);

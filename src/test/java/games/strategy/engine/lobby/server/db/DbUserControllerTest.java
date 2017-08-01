@@ -3,8 +3,7 @@ package games.strategy.engine.lobby.server.db;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import org.hamcrest.core.Is;
+import static org.hamcrest.core.Is.is;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +45,7 @@ public class DbUserControllerTest {
     final boolean loginResult = testObj.login(TestData.userName, TestData.password);
 
     assertThat("expect successful login against our new (secondary) shiny DB, yay!",
-        loginResult, Is.is(true));
+        loginResult, is(true));
 
     Mockito.verify(mockMigrationCounter, Mockito.times(1)).secondaryLoginSuccess();
   }
@@ -68,7 +67,7 @@ public class DbUserControllerTest {
     final boolean loginResult = testObj.login(TestData.userName, TestData.password);
 
     assertThat("we expect a successful login against the now legacy DB (primary)",
-        loginResult, Is.is(true));
+        loginResult, is(true));
 
     Mockito.verify(mockMigrationCounter, Mockito.times(1)).primaryLoginSuccess();
 
@@ -89,7 +88,7 @@ public class DbUserControllerTest {
     final boolean loginResult = testObj.login(TestData.userName, TestData.password);
 
     assertThat("no successful login, not found in primary nor secondary",
-        loginResult, Is.is(false));
+        loginResult, is(false));
 
     Mockito.verify(mockMigrationCounter, Mockito.times(1))
         .loginFailure();
@@ -101,7 +100,7 @@ public class DbUserControllerTest {
     Mockito.when(mockSecondary.doesUserExist(TestData.userName))
         .thenReturn(true);
 
-    assertThat(testObj.doesUserExist(TestData.userName), Is.is(true));
+    assertThat(testObj.doesUserExist(TestData.userName), is(true));
   }
 
   @Test
@@ -111,7 +110,7 @@ public class DbUserControllerTest {
     Mockito.when(mockPrimary.doesUserExist(TestData.userName))
         .thenReturn(true);
 
-    assertThat(testObj.doesUserExist(TestData.userName), Is.is(true));
+    assertThat(testObj.doesUserExist(TestData.userName), is(true));
   }
 
   @Test
@@ -121,7 +120,7 @@ public class DbUserControllerTest {
     Mockito.when(mockPrimary.doesUserExist(TestData.userName))
         .thenReturn(false);
 
-    assertThat(testObj.doesUserExist(TestData.userName), Is.is(false));
+    assertThat(testObj.doesUserExist(TestData.userName), is(false));
   }
 
   @Test

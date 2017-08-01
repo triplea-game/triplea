@@ -15,7 +15,6 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +42,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -76,6 +74,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -639,16 +638,14 @@ public class BattleDisplay extends JPanel {
     }
     setDefaultWidths(defenderTable);
     setDefaultWidths(attackerTable);
-    final Action continueAction = SwingAction.of(e -> {
+
+    // press space to continue
+    SwingComponents.addSpaceKeyListener(this, () -> {
       final Action a = actionButton.getAction();
       if (a != null) {
         a.actionPerformed(null);
       }
     });
-    // press space to continue
-    final String key = "battle.display.press.space.to.continue";
-    getActionMap().put(key, continueAction);
-    getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), key);
   }
 
   /**

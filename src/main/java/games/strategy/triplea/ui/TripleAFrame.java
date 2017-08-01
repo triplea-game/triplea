@@ -17,7 +17,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -61,7 +60,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolTip;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
@@ -77,7 +75,6 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
@@ -141,7 +138,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.settings.scrolling.ScrollSettings;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
@@ -151,6 +148,7 @@ import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
@@ -206,13 +204,11 @@ public class TripleAFrame extends MainGameFrame {
   private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool;
   private final TripleAMenuBar menu;
-  private final ScrollSettings scrollSettings;
   private boolean isCtrlPressed = false;
 
   /** Creates new TripleAFrame. */
   public TripleAFrame(final IGame game, final LocalPlayers players) {
     super("TripleA - " + game.getData().getGameName(), players);
-    scrollSettings = ClientContext.scrollSettings();
     this.game = game;
     data = game.getData();
     messageAndDialogThreadPool = new ThreadPool(1);
@@ -505,41 +501,20 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private void addZoomKeyboardShortcuts() {
-    final String zoom_map_in = "zoom_map_in";
-    // do both = and + (since = is what you get when you hit ctrl+ )
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('+', InputEvent.META_DOWN_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('+', InputEvent.CTRL_DOWN_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('=', InputEvent.META_DOWN_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('=', InputEvent.CTRL_DOWN_MASK), zoom_map_in);
-    ((JComponent) getContentPane()).getActionMap().put(zoom_map_in, new AbstractAction(zoom_map_in) {
-      private static final long serialVersionUID = -7565304172320049817L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (getScale() < 100) {
-          setScale(getScale() + 10);
-        }
+    final Runnable zoomIn = () -> {
+      if (getScale() < 100) {
+        setScale(getScale() + 10);
       }
-    });
-    final String zoom_map_out = "zoom_map_out";
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('-', InputEvent.META_DOWN_MASK), zoom_map_out);
-    ((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('-', InputEvent.CTRL_DOWN_MASK), zoom_map_out);
-    ((JComponent) getContentPane()).getActionMap().put(zoom_map_out, new AbstractAction(zoom_map_out) {
-      private static final long serialVersionUID = 7677111833274819304L;
+    };
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '+', zoomIn);
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (getScale() > 16) {
-          setScale(getScale() - 10);
-        }
+    final Runnable zoomOut = () -> {
+      if (getScale() > 16) {
+        setScale(getScale() - 10);
       }
-    });
+    };
+
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '-', zoomOut);
   }
 
   /**
@@ -1580,15 +1555,9 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private int computeScrollSpeed() {
-    int multiplier = 1;
-
-    if (isCtrlPressed) {
-      multiplier = scrollSettings.getFasterArrowKeyScrollMultiplier();
-    }
-
-
-    final int starterDiffPixel = scrollSettings.getArrowKeyScrollSpeed();
-    return (starterDiffPixel * multiplier);
+    return isCtrlPressed
+        ? ClientSetting.ARROW_KEY_SCROLL_SPEED.intValue() * ClientSetting.FASTER_ARROW_KEY_SCROLL_MULTIPLIER.intValue()
+        : ClientSetting.ARROW_KEY_SCROLL_SPEED.intValue();
   }
 
   private void showEditMode() {

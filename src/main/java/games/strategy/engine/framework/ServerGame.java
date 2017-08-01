@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -51,6 +50,7 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.settings.ClientSetting;
 
 /**
  * Represents a running game.
@@ -188,7 +188,7 @@ public class ServerGame extends AbstractGame {
         }
       }, "Waiting on observer to finish joining: " + newNode.getName())).start();
       try {
-        if (!waitOnObserver.await(GameRunner.getServerObserverJoinWaitTime(), TimeUnit.SECONDS)) {
+        if (!waitOnObserver.await(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");
         }
       } catch (final InterruptedException e) {
@@ -347,8 +347,8 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSave(final String fileName) {
-    SaveGameFileChooser.ensureMapsFolderExists();
-    final File autoSaveDir = new File(ClientContext.folderSettings().getSaveGamePath()
+    final File autoSaveDir = new File(
+        ClientSetting.SAVE_GAMES_FOLDER_PATH.value()
         + (SystemProperties.isWindows() ? "\\" : "/" + "autoSave"));
     if (!autoSaveDir.exists()) {
       autoSaveDir.mkdirs();

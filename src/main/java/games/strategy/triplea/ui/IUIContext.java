@@ -122,10 +122,6 @@ public interface IUIContext {
 
   void setShowTriggerChanceFailure(boolean value);
 
-  boolean getShowBattlesBetweenAIs();
-
-  void setShowBattlesBetweenAIs(boolean showBattlesBetweenAis);
-
   LocalPlayers getLocalPlayers();
 
   void setLocalPlayers(LocalPlayers players);

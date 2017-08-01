@@ -1,25 +1,74 @@
 package games.strategy.engine.framework.lookandfeel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
+import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.triplea.settings.SystemPreferenceKey;
-import games.strategy.triplea.settings.SystemPreferences;
-import games.strategy.triplea.ui.menubar.TripleAMenuBar;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 
 public class LookAndFeel {
+
+  public static List<String> getLookAndFeelAvailableList() {
+    final List<String> substanceLooks = new ArrayList<>();
+    for (final UIManager.LookAndFeelInfo look : UIManager.getInstalledLookAndFeels()) {
+      substanceLooks.add(look.getClassName());
+    }
+    substanceLooks.addAll(Arrays.asList(SubstanceAutumnLookAndFeel.class.getName(),
+        SubstanceBusinessBlackSteelLookAndFeel.class.getName(), SubstanceBusinessBlueSteelLookAndFeel.class.getName(),
+        SubstanceBusinessLookAndFeel.class.getName(), SubstanceCeruleanLookAndFeel.class.getName(),
+        SubstanceChallengerDeepLookAndFeel.class.getName(), SubstanceCremeCoffeeLookAndFeel.class.getName(),
+        SubstanceCremeLookAndFeel.class.getName(), SubstanceDustCoffeeLookAndFeel.class.getName(),
+        SubstanceDustLookAndFeel.class.getName(), SubstanceEmeraldDuskLookAndFeel.class.getName(),
+        SubstanceGeminiLookAndFeel.class.getName(), SubstanceGraphiteAquaLookAndFeel.class.getName(),
+        SubstanceGraphiteGlassLookAndFeel.class.getName(), SubstanceGraphiteLookAndFeel.class.getName(),
+        SubstanceMagellanLookAndFeel.class.getName(), SubstanceMarinerLookAndFeel.class.getName(),
+        SubstanceMistAquaLookAndFeel.class.getName(), SubstanceMistSilverLookAndFeel.class.getName(),
+        SubstanceModerateLookAndFeel.class.getName(), SubstanceNebulaBrickWallLookAndFeel.class.getName(),
+        SubstanceNebulaLookAndFeel.class.getName(), SubstanceOfficeBlack2007LookAndFeel.class.getName(),
+        SubstanceOfficeBlue2007LookAndFeel.class.getName(), SubstanceOfficeSilver2007LookAndFeel.class.getName(),
+        SubstanceRavenLookAndFeel.class.getName(), SubstanceSaharaLookAndFeel.class.getName(),
+        SubstanceTwilightLookAndFeel.class.getName()));
+    return substanceLooks;
+  }
+
   public static void setupLookAndFeel() {
     SwingAction.invokeAndWait(() -> {
       try {
-        UIManager.setLookAndFeel(getDefaultLookAndFeel());
+        UIManager.setLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
         // FYI if you are getting a null pointer exception in Substance, like this:
         // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
         // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
@@ -38,39 +87,4 @@ public class LookAndFeel {
     });
   }
 
-  private static String getDefaultLookAndFeel() {
-    String defaultLookAndFeel = SubstanceGraphiteLookAndFeel.class.getName();
-
-    if (SystemProperties.isMac()) {
-      // stay consistent with mac look and feel if we are on a mac
-      defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
-    }
-
-    String userDefault = SystemPreferences.get(SystemPreferenceKey.LOOK_AND_FEEL_PREF, defaultLookAndFeel);
-    final List<String> availableSkins = TripleAMenuBar.getLookAndFeelAvailableList();
-
-    if (availableSkins.contains(userDefault)) {
-      return userDefault;
-    }
-    if (availableSkins.contains(defaultLookAndFeel)) {
-      setDefaultLookAndFeel(defaultLookAndFeel);
-      return defaultLookAndFeel;
-    }
-    return UIManager.getSystemLookAndFeelClassName();
-  }
-
-  public static void setDefaultLookAndFeel(final String lookAndFeelClassName) {
-    try {
-      UIManager.setLookAndFeel(lookAndFeelClassName);
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-        | UnsupportedLookAndFeelException e) {
-      ClientLogger.logError("Unable to load look and feel: " + lookAndFeelClassName
-          + ", retaining the old look and feel. Please do not select this look and feel, it does not work."
-          + " Please do report this to the developers so the look and feel can be addressed. When doing so, please"
-          + " include this list of installed look and feel debug data: "
-          + Arrays.asList(UIManager.getInstalledLookAndFeels()) , e);
-      return;
-    }
-    SystemPreferences.put(SystemPreferenceKey.LOOK_AND_FEEL_PREF, lookAndFeelClassName);
-  }
 }

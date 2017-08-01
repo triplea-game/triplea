@@ -43,7 +43,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.oddscalculator.ta.BattleResults;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -1099,15 +1099,15 @@ public class BattleTracker implements Serializable {
    * air battle and SBR phase, and to enforce game rules that these phases are fought first before any other combat.
    */
   void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge) {
-    boolean bombing = true;
+    final boolean bombing = true;
     fightAirRaidsAndStrategicBombing(delegateBridge, () -> getPendingBattleSites(bombing),
         (territory, battleType) -> getPendingBattle(territory, bombing, battleType));
   }
 
   @VisibleForTesting
   void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge,
-      Supplier<Collection<Territory>> pendingBattleSiteSupplier,
-      BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
+      final Supplier<Collection<Territory>> pendingBattleSiteSupplier,
+      final BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
     // First we'll fight all of the air battles (air raids)
     // Then we will have a wave of battles for the SBR. AA guns will shoot, and we'll roll for damage.
     // CAUTION: air raid battles when completed will potentially spawn new bombing raids. Would be good to refactor

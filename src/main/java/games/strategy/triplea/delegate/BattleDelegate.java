@@ -39,7 +39,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.oddscalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;

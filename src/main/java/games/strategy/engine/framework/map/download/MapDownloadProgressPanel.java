@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 import com.google.common.collect.Maps;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.ui.SwingComponents;
+import swinglib.JPanelBuilder;
 
 
 /** A small non-modal window that holds the progress bars for the current and pending map downloads. */
@@ -28,8 +28,12 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
    * Maintain grids that are placed east and west.
    * This gives us a minimal and uniform width for each column.
    */
-  private final JPanel labelGrid = SwingComponents.gridPanel(0, 1);
-  private final JPanel progressGrid = SwingComponents.gridPanel(0, 1);
+  private final JPanel labelGrid = JPanelBuilder.builder()
+      .gridLayout(0, 1)
+      .build();
+  private final JPanel progressGrid = JPanelBuilder.builder()
+      .gridLayout(0, 1)
+      .build();
 
   private final List<DownloadFileDescription> downloadList = new ArrayList<>();
   private final Map<DownloadFileDescription, JLabel> labels = Maps.newHashMap();
@@ -89,7 +93,10 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
 
     final int itemCount = downloadList.size();
     this.removeAll();
-    add(SwingComponents.horizontalJPanel(labelGrid, progressGrid));
+    add(JPanelBuilder.builder()
+        .addWest(labelGrid)
+        .addEast(progressGrid)
+        .build());
     labelGrid.setLayout(new GridLayout(itemCount, 1));
     progressGrid.setLayout(new GridLayout(itemCount, 1));
 

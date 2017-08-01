@@ -5,10 +5,10 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.triplea.settings.ClientSetting;
 
 public class SaveGameFileChooser extends JFileChooser {
   private static final long serialVersionUID = 1548668790891292106L;
@@ -18,7 +18,20 @@ public class SaveGameFileChooser extends JFileChooser {
   private static SaveGameFileChooser instance;
 
   public enum AUTOSAVE_TYPE {
-    AUTOSAVE, AUTOSAVE2, AUTOSAVE_ODD, AUTOSAVE_EVEN
+    AUTOSAVE(getAutoSaveFileName()),
+    AUTOSAVE2(""),
+    AUTOSAVE_ODD(getAutoSaveOddFileName()),
+    AUTOSAVE_EVEN(getAutoSaveEvenFileName());
+
+    private final String fileName;
+
+    AUTOSAVE_TYPE(final String fileName) {
+      this.fileName = fileName;
+    }
+
+    public String getFileName() {
+      return fileName;
+    }
   }
 
   public static String getAutoSaveFileName() {
@@ -64,12 +77,8 @@ public class SaveGameFileChooser extends JFileChooser {
   private SaveGameFileChooser() {
     super();
     setFileFilter(createGameDataFileFilter());
-    ensureMapsFolderExists();
-    setCurrentDirectory(new File(ClientContext.folderSettings().getSaveGamePath()));
-  }
-
-  public static void ensureMapsFolderExists() {
-    ensureDirectoryExists(new File(ClientContext.folderSettings().getSaveGamePath()));
+    ensureDirectoryExists(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()));
+    setCurrentDirectory(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()));
   }
 
   private static void ensureDirectoryExists(final File f) {

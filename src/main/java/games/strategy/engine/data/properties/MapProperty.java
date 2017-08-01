@@ -86,14 +86,12 @@ public class MapProperty<T, U> extends AEditableProperty {
 
   @Override
   public JComponent getEditorComponent() {
-    final PropertiesUI ui = new PropertiesUI(m_properties, true);
-    return ui;
+    return new PropertiesUI(m_properties, true);
   }
 
   @Override
   public JComponent getViewComponent() {
-    final PropertiesUI ui = new PropertiesUI(m_properties, false);
-    return ui;
+    return new PropertiesUI(m_properties, false);
   }
 
   @Override
@@ -106,7 +104,7 @@ public class MapProperty<T, U> extends AEditableProperty {
       try {
         @SuppressWarnings("unchecked")
         final Map<T, U> test = (Map<T, U>) value;
-        if (m_map != null && !m_map.isEmpty() && test != null && !test.isEmpty()) {
+        if (m_map != null && !m_map.isEmpty() && !test.isEmpty()) {
           T key = null;
           U val = null;
           for (final Entry<T, U> entry : m_map.entrySet()) {

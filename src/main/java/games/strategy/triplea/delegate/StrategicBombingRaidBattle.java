@@ -33,7 +33,7 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.oddscalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -228,7 +228,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // TODO remove the reference to the constant.japanese- replace with a rule
         if (isPacificTheater() || isSBRVictoryPoints()) {
           if (m_defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
-            Change changeVp;
+            final Change changeVp;
             final PlayerAttachment pa = PlayerAttachment.get(m_defender);
             if (pa != null) {
               changeVp =
@@ -334,7 +334,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     Collection<Unit> validAttackingUnitsForThisRoll;
     boolean determineAttackers;
 
-    public FireAA(Collection<Unit> attackers) {
+    public FireAA(final Collection<Unit> attackers) {
       validAttackingUnitsForThisRoll = attackers;
       determineAttackers = false;
     }
@@ -703,7 +703,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       // limit to maxDamage
       for (final Unit attacker : m_attackingUnits) {
         final UnitAttachment ua = UnitAttachment.get(attacker.getType());
-        int rolls;
+        final int rolls;
         rolls = BattleCalculator.getRolls(attacker, m_attacker, false, true, m_territoryEffects);
         int costThisUnit = 0;
         if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {

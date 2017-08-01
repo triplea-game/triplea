@@ -12,9 +12,9 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
-import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
-import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorListener;
+import games.strategy.triplea.oddscalculator.ta.AggregateResults;
+import games.strategy.triplea.oddscalculator.ta.IOddsCalculator;
+import games.strategy.triplea.oddscalculator.ta.OddsCalculatorListener;
 
 public class FastOddsEstimator implements IOddsCalculator {
 

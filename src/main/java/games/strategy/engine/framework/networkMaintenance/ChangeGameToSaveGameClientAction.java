@@ -2,6 +2,7 @@ package games.strategy.engine.framework.networkMaintenance;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+
 import javax.swing.AbstractAction;
 
 import games.strategy.engine.framework.startup.ui.GameSelectorPanel;

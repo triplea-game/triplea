@@ -38,7 +38,8 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.ui.SwingComponents;
+import games.strategy.triplea.settings.ClientSetting;
+import swinglib.JButtonBuilder;
 
 public class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
@@ -175,9 +176,11 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     add(loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
 
-    final JButton downloadMapButton =
-        SwingComponents.newJButton("Download Maps", "Click this button to install additional maps",
-            DownloadMapsWindow::showDownloadMapsWindow);
+    final JButton downloadMapButton = JButtonBuilder.builder()
+        .title("Download Maps")
+        .toolTip("Click this button to install additional maps")
+        .actionListener(DownloadMapsWindow::showDownloadMapsWindow)
+        .build();
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
     add(gameOptions, buildGridRow(0, 9, new Insets(25, 10, 10, 10)));
@@ -350,8 +353,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     if (SystemProperties.isMac()) {
       final FileDialog fileDialog = GameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
-      SaveGameFileChooser.ensureMapsFolderExists();
-      fileDialog.setDirectory(new File(ClientContext.folderSettings().getSaveGamePath()).getPath());
+      fileDialog.setDirectory(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()).getPath());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();

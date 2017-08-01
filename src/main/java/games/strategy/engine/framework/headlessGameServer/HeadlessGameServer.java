@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
@@ -33,6 +32,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.TimeManager;
@@ -199,10 +199,10 @@ public class HeadlessGameServer {
       if (iGame != null) {
         (new Thread(() -> {
           System.out.println("Remote Stop Game Initiated.");
-          SaveGameFileChooser.ensureMapsFolderExists();
           try {
             iGame.saveGame(new File(
-                ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName()));
+                ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
+                SaveGameFileChooser.getAutoSaveFileName()));
           } catch (final Exception e) {
             ClientLogger.logQuietly(e);
           }
@@ -242,7 +242,7 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     // (48 hours max)
-    Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
+    final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
     if (encryptedPassword.equals(hashedPassword)) {
       (new Thread(() -> {
         if (getServerModel() == null) {
@@ -743,36 +743,10 @@ public class HeadlessGameServer {
           + (2 * GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
       printUsage = true;
     }
-    // no passwords allowed for bots
-    // take any actions or commit to preferences
-    final String clientWait = System.getProperty(GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, "");
-    final String observerWait = System.getProperty(GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, "");
-    if (clientWait.length() > 0) {
-      try {
-        final int wait = Integer.parseInt(clientWait);
-        GameRunner.setServerStartGameSyncWaitTime(wait);
-      } catch (final NumberFormatException e) {
-        System.out.println(
-            "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-        printUsage = true;
-      }
-    }
-    if (observerWait.length() > 0) {
-      try {
-        final int wait = Integer.parseInt(observerWait);
-        GameRunner.setServerObserverJoinWaitTime(wait);
-      } catch (final NumberFormatException e) {
-        System.out.println(
-            "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-        printUsage = true;
-      }
-    }
 
     if (printUsage) {
       usage();
       System.exit(-1);
     }
-
-
   }
 }

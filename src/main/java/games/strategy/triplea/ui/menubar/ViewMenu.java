@@ -15,6 +15,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
+
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -22,7 +23,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -43,7 +43,6 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.AbstractUIContext;
@@ -53,9 +52,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.CountDownLatchHandler;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Triple;
 
 class ViewMenu {
   private JCheckBoxMenuItem showMapDetails;
@@ -92,10 +88,8 @@ class ViewMenu {
     // The menuItem to turn TabbedProduction on or off
     addTabbedProduction(menuView);
     addShowGameUuid(menuView);
-    addSetLookAndFeel(menuView);
 
     showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
-
   }
 
   private void addShowCommentLog(final JMenu parentMenu) {
@@ -128,31 +122,6 @@ class ViewMenu {
           JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
     })).setMnemonic(KeyEvent.VK_U);
   }
-
-  private void addSetLookAndFeel(final JMenu menuView) {
-    final String lookAndFeelTitle = "Set Look and Feel";
-    menuView.add(SwingAction.of(lookAndFeelTitle, e -> {
-      final Triple<JList<String>, Map<String, String>, String> lookAndFeel = TripleAMenuBar.getLookAndFeelList();
-      final JList<String> list = lookAndFeel.getFirst();
-      final String currentKey = lookAndFeel.getThird();
-      final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
-      if (JOptionPane.showConfirmDialog(frame, list, lookAndFeelTitle,
-          JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-        final String selectedValue = list.getSelectedValue();
-        if (selectedValue == null) {
-          return;
-        }
-        if (selectedValue.equals(currentKey)) {
-          return;
-        }
-        LookAndFeel.setDefaultLookAndFeel(lookAndFeels.get(selectedValue));
-        EventThreadJOptionPane.showMessageDialog(frame, "The look and feel will update when you restart TripleA",
-            new CountDownLatchHandler(true));
-      }
-    })).setMnemonic(KeyEvent.VK_F);
-  }
-
-
 
   private void addZoomMenu(final JMenu menuGame) {
     final Action mapZoom = SwingAction.of("Map Zoom", e -> {

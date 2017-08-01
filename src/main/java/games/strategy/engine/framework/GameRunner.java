@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -50,8 +49,7 @@ import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.settings.SystemPreferenceKey;
-import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -98,18 +96,6 @@ public class GameRunner {
   public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
-  private static final int DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME =
-      Math.max(MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, 25);
-  // need time for network transmission of a large game data
-  public static final int MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME = MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10;
-  private static final int DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME =
-      Math.max(DEFAULT_CLIENT_GAMEDATA_LOAD_GRACE_TIME + 10, 35);
-  public static final int ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME = 10;
-  public static final int MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME =
-      MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110;
-  private static final int DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME =
-      Math.max(Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, 900),
-          DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME + ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME + 110);
 
   public static final String MAP_FOLDER = "mapFolder";
 
@@ -122,8 +108,8 @@ public class GameRunner {
       {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
           TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
           TRIPLEA_LOBBY_PORT_PROPERTY,
-          LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN, HttpProxy.PROXY_HOST,
-          HttpProxy.PROXY_PORT, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER};
+          LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN,
+          TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER};
 
 
   /**
@@ -139,9 +125,12 @@ public class GameRunner {
       usage();
       return;
     }
-    SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
 
-    HttpProxy.setupProxies();
+    LookAndFeel.setupLookAndFeel();
+
+    if (HttpProxy.isUsingSystemProxy()) {
+      HttpProxy.updateSystemProxy();
+    }
 
     final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
     final Version engineVersion = ClientContext.engineVersion();
@@ -166,12 +155,12 @@ public class GameRunner {
     if (ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
       TripleA.launch(args);
     } else {
-      SwingUtilities.invokeLater(LookAndFeel::setupLookAndFeel);
       SwingUtilities.invokeLater(() -> {
         setupPanelModel.showSelectType();
         final MainPanel mainPanel = new MainPanel(setupPanelModel);
         mainFrame = SwingComponents.newJFrame("TripleA", mainPanel);
       });
+
       showMainFrame();
       new Thread(GameRunner::setupLogging).start();
       new Thread(GameRunner::checkLocalSystem).start();
@@ -332,40 +321,6 @@ public class GameRunner {
     });
   }
 
-  public static int getServerStartGameSyncWaitTime() {
-    return Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, Preferences.userNodeForPackage(GameRunner.class)
-        .getInt(TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME));
-  }
-
-  public static void resetServerStartGameSyncWaitTime() {
-    setServerStartGameSyncWaitTime(DEFAULT_SERVER_START_GAME_SYNC_WAIT_TIME);
-  }
-
-  public static void setServerStartGameSyncWaitTime(final int seconds) {
-    final int wait = Math.max(MINIMUM_SERVER_START_GAME_SYNC_WAIT_TIME, seconds);
-    if (wait == getServerStartGameSyncWaitTime()) {
-      return;
-    }
-    SystemPreferences.put(SystemPreferenceKey.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, wait);
-  }
-
-  public static int getServerObserverJoinWaitTime() {
-    return Math.max(MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME, Preferences.userNodeForPackage(GameRunner.class)
-        .getInt(TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME));
-  }
-
-  public static void resetServerObserverJoinWaitTime() {
-    setServerObserverJoinWaitTime(DEFAULT_SERVER_OBSERVER_JOIN_WAIT_TIME);
-  }
-
-  public static void setServerObserverJoinWaitTime(final int seconds) {
-    final int wait = Math.max(MINIMUM_SERVER_OBSERVER_JOIN_WAIT_TIME, seconds);
-    if (wait == getServerObserverJoinWaitTime()) {
-      return;
-    }
-    SystemPreferences.put(SystemPreferenceKey.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, wait);
-  }
-
   private static void checkForUpdates() {
     new Thread(() -> {
       // do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
@@ -404,14 +359,13 @@ public class GameRunner {
    */
   private static boolean checkForLatestEngineVersionOut() {
     try {
-      final boolean firstTimeThisVersion =
-          SystemPreferences.get(SystemPreferenceKey.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true);
+      final boolean firstTimeThisVersion = ClientSetting.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY.booleanValue();
       // check at most once per 2 days (but still allow a 'first run message' for a new version of triplea)
       final LocalDateTime localDateTime = LocalDateTime.now();
       final int year = localDateTime.get(ChronoField.YEAR);
       final int day = localDateTime.get(ChronoField.DAY_OF_YEAR);
       // format year:day
-      final String lastCheckTime = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, "");
+      final String lastCheckTime = ClientSetting.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE.value();
       if (!firstTimeThisVersion && lastCheckTime != null && lastCheckTime.trim().length() > 0) {
         final String[] yearDay = lastCheckTime.split(":");
         if (Integer.parseInt(yearDay[0]) >= year && Integer.parseInt(yearDay[1]) + 1 >= day) {
@@ -419,7 +373,8 @@ public class GameRunner {
         }
       }
 
-      SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE, year + ":" + day);
+      ClientSetting.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE.save(year + ":" + day);
+      ClientSetting.flush();
 
       final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
       if (latestEngineOut == null) {
@@ -433,7 +388,7 @@ public class GameRunner {
         return true;
       }
     } catch (final Exception e) {
-      System.out.println("Error while checking for engine updates: " + e.getMessage());
+      ClientLogger.logError("Error while checking for engine updates", e);
     }
     return false;
   }

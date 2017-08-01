@@ -56,6 +56,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
@@ -110,8 +111,7 @@ public class ClientModel implements IMessengerErrorListener {
       return props;
     }
     // load in the saved name!
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    final String playername = prefs.get(ServerModel.PLAYERNAME, System.getProperty("user.name"));
+    final String playername = ClientSetting.PLAYER_NAME.value();
     final ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
@@ -141,8 +141,8 @@ public class ClientModel implements IMessengerErrorListener {
     }
     final String name = props.getName();
     logger.log(Level.FINE, "Client playing as:" + name);
-    // save the name! -- lnxduk
-    prefs.put(ServerModel.PLAYERNAME, name);
+    ClientSetting.PLAYER_NAME.save(name);
+    ClientSetting.flush();
     final int port = props.getPort();
     if (port >= 65536 || port <= 0) {
       EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE,
