@@ -17,7 +17,9 @@ interface SaveFunction {
   /**
    * Returns a result message after persisting settings.
    */
-  static SaveResult saveSettings(final Iterable<? extends GameSettingUiBinding> settings, final Runnable settingsFlushToDisk) {
+  static SaveResult saveSettings(
+      final Iterable<? extends GameSettingUiBinding> settings,
+      final Runnable settingsFlushToDisk) {
     final StringBuilder successMsg = new StringBuilder();
     final StringBuilder failMsg = new StringBuilder();
 

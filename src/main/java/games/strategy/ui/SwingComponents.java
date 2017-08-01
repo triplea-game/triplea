@@ -45,8 +45,6 @@ import javax.swing.KeyStroke;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 

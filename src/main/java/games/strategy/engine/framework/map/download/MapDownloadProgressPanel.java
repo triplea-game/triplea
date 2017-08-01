@@ -14,7 +14,6 @@ import javax.swing.SwingUtilities;
 import com.google.common.collect.Maps;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.ui.SwingComponents;
 import swinglib.JPanelBuilder;
 
 

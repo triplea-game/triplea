@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.IGame;
-import games.strategy.ui.SwingComponents;
 import swinglib.JPanelBuilder;
 
 /**
