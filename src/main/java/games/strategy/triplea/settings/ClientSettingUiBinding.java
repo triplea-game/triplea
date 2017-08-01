@@ -154,11 +154,11 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
   ClientSettingUiBinding(
       final String title,
       final SettingType type,
-      final Supplier<SelectionComponent> selectionComponent,
+      final Supplier<SelectionComponent> selectionComponentBuilder,
       final String description) {
     this.title = Preconditions.checkNotNull(Strings.emptyToNull(title));
     this.type = Preconditions.checkNotNull(type);
-    this.selectionComponentBuilder = selectionComponent;
+    this.selectionComponentBuilder = Preconditions.checkNotNull(selectionComponentBuilder);
     this.description = Preconditions.checkNotNull(Strings.emptyToNull(description));
   }
 
