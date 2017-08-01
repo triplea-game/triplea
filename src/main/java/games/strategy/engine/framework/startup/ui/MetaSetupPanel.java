@@ -24,8 +24,9 @@ import swinglib.JButtonBuilder;
 import tools.map.making.MapCreator;
 
 /**
- * This is the main welcome panel with 'play online' buttons etc...
- * The panel does not include the 'play
+ * This is the main welcome panel with 'play online' button.
+ * This panel is just the upper right of the main screen, it does not include the map information
+ * nor the 'play' and 'quit' buttons.
  */
 public class MetaSetupPanel extends SetupPanel {
 
