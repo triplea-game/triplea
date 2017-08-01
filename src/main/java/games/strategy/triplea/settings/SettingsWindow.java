@@ -12,6 +12,9 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+
+import com.google.common.base.Preconditions;
 
 import games.strategy.ui.SwingComponents;
 import swinglib.GridBagHelper;
@@ -32,7 +35,7 @@ enum SettingsWindow {
 
   private JDialog dialog;
 
-  public synchronized void close() {
+  public void close() {
     if (dialog != null) {
       dialog.dispose();
       dialog = null;
@@ -41,7 +44,8 @@ enum SettingsWindow {
     }
   }
 
-  public synchronized void open() {
+  public void open() {
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread());
     if (dialog == null) {
       dialog = new JDialog((Frame) null, "Settings");
       dialog.setContentPane(createContents(this::close));
