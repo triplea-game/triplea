@@ -3,6 +3,8 @@ package games.strategy.engine.xml;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 
 public class TestAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 4886924951201479496L;
@@ -18,6 +20,7 @@ public class TestAttachment extends DefaultAttachment {
     return null;
   }
 
+  @InternalDoNotExport
   @Override
   public void setAttachedTo(final Attachable unused) {}
 
@@ -26,15 +29,21 @@ public class TestAttachment extends DefaultAttachment {
     return null;
   }
 
+  @InternalDoNotExport
   @Override
   public void setName(final String name) {}
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setValue(final String value) {
     m_value = value;
   }
 
   public String getValue() {
     return m_value;
+  }
+
+  public void resetValue() {
+    m_value = null;
   }
 
   @Override

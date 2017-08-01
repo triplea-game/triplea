@@ -140,7 +140,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         continue;
       }
       final String fieldName = Introspector.decapitalize(propertyName);
-      final Field field = PropertyUtil.getFieldIncludingFromSuperClasses(object.getClass(), fieldName, false);
+      final Field field = PropertyUtil.getPropertyField(fieldName, object.getClass());
       final Object currentValue;
       try {
         currentValue = field.get(object);

@@ -36,4 +36,17 @@ public @interface GameProperty {
    * @return true that this property identifies an adder instead of a setter
    */
   boolean adds();
+
+  /**
+   * Indicates the property is virtual and either has no backing field or uses one or more backing fields associated
+   * with other non-virtual properties.
+   *
+   * <p>
+   * A virtual property is typically used for so-called "convenience" properties that are used to initialize multiple
+   * properties at once. Properties of this type are not required to have get, reset, or clear methods.
+   * </p>
+   *
+   * @return {@code true} if the property is virtual; otherwise {@code false}.
+   */
+  boolean virtual() default false;
 }

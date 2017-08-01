@@ -518,9 +518,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     RelationshipType alliedType = null;
     RelationshipType warType = null;
     for (final RelationshipType type : allTypes) {
-      if (type.getRelationshipTypeAttachment().getIsDefaultWarPosition()) {
+      if (type.getRelationshipTypeAttachment().isDefaultWarPosition()) {
         warType = type;
-      } else if (type.getRelationshipTypeAttachment().getAlliancesCanChainTogether()) {
+      } else if (type.getRelationshipTypeAttachment().canAlliancesChainTogether()) {
         alliedType = type;
       }
     }

@@ -36,6 +36,7 @@ public final class GameDataMemento {
 
   @VisibleForTesting
   interface PropertyNames {
+    String DICE_SIDES = "diceSides";
     String NAME = "name";
     String VERSION = "version";
   }
@@ -51,7 +52,7 @@ public final class GameDataMemento {
    * @return A new game data memento exporter.
    */
   public static MementoExporter<GameData> newExporter() {
-    return newExporter(DEFAULT_EXPORT_OPTIONS_BY_NAME);
+    return newExporterInternal();
   }
 
   /**
@@ -64,6 +65,16 @@ public final class GameDataMemento {
   public static MementoExporter<GameData> newExporter(final Map<ExportOptionName, Object> optionsByName) {
     checkNotNull(optionsByName);
 
+    return newExporterInternal(optionsByName);
+  }
+
+  @VisibleForTesting
+  static PropertyBagMementoExporter<GameData> newExporterInternal() {
+    return newExporterInternal(DEFAULT_EXPORT_OPTIONS_BY_NAME);
+  }
+
+  @VisibleForTesting
+  static PropertyBagMementoExporter<GameData> newExporterInternal(final Map<ExportOptionName, Object> optionsByName) {
     return new PropertyBagMementoExporter<>(SCHEMA_ID, new ExportHandler(optionsByName));
   }
 
@@ -88,6 +99,7 @@ public final class GameDataMemento {
 
     @Override
     public void exportProperties(final GameData gameData, final Map<String, Object> propertiesByName) {
+      propertiesByName.put(PropertyNames.DICE_SIDES, gameData.getDiceSides());
       propertiesByName.put(PropertyNames.NAME, gameData.getGameName());
       propertiesByName.put(PropertyNames.VERSION, gameData.getGameVersion());
       // TODO: handle remaining properties
@@ -107,6 +119,7 @@ public final class GameDataMemento {
     @Override
     public GameData importProperties(final Map<String, Object> propertiesByName) throws MementoImportException {
       final GameData gameData = new GameData();
+      gameData.setDiceSides(getRequiredProperty(propertiesByName, PropertyNames.DICE_SIDES, Integer.class));
       gameData.setGameName(getRequiredProperty(propertiesByName, PropertyNames.NAME, String.class));
       gameData.setGameVersion(getRequiredProperty(propertiesByName, PropertyNames.VERSION, Version.class));
       // TODO: handle remaining properties

@@ -111,6 +111,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_unitType = value;
   }
 
+  public void resetUnitType() {
+    m_unitType = null;
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setFaction(final String faction) throws GameParseException {
     m_faction = faction;

@@ -44,7 +44,8 @@ public final class Matchers {
 
     @Override
     protected boolean matchesSafely(final GameData actual) {
-      return Objects.equals(expected.getGameName(), actual.getGameName())
+      return (expected.getDiceSides() == actual.getDiceSides())
+          && Objects.equals(expected.getGameName(), actual.getGameName())
           && Objects.equals(expected.getGameVersion(), actual.getGameVersion());
       // TODO: include remaining fields
     }

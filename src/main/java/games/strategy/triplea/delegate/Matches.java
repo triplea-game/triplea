@@ -1822,7 +1822,7 @@ public class Matches {
       Match.of(relationship -> relationship.getRelationshipType().getRelationshipTypeAttachment().isWar());
 
   public static final Match<RelationshipType> RelationshipTypeCanMoveLandUnitsOverOwnedLand =
-      Match.of(relationship -> relationship.getRelationshipTypeAttachment().getCanMoveLandUnitsOverOwnedLand());
+      Match.of(relationship -> relationship.getRelationshipTypeAttachment().canMoveLandUnitsOverOwnedLand());
 
   /**
    * If the territory is not land, returns true. Else, tests relationship of the owners.
@@ -1842,7 +1842,7 @@ public class Matches {
   }
 
   public static final Match<RelationshipType> RelationshipTypeCanMoveAirUnitsOverOwnedLand =
-      Match.of(relationship -> relationship.getRelationshipTypeAttachment().getCanMoveAirUnitsOverOwnedLand());
+      Match.of(relationship -> relationship.getRelationshipTypeAttachment().canMoveAirUnitsOverOwnedLand());
 
   /**
    * If the territory is not land, returns true. Else, tests relationship of the owners.
@@ -1862,22 +1862,22 @@ public class Matches {
   }
 
   public static final Match<RelationshipType> RelationshipTypeCanLandAirUnitsOnOwnedLand =
-      Match.of(relationship -> relationship.getRelationshipTypeAttachment().getCanLandAirUnitsOnOwnedLand());
+      Match.of(relationship -> relationship.getRelationshipTypeAttachment().canLandAirUnitsOnOwnedLand());
 
   public static final Match<RelationshipType> RelationshipTypeCanTakeOverOwnedTerritory =
-      Match.of(relationship -> relationship.getRelationshipTypeAttachment().getCanTakeOverOwnedTerritory());
+      Match.of(relationship -> relationship.getRelationshipTypeAttachment().canTakeOverOwnedTerritory());
 
   public static final Match<RelationshipType> RelationshipTypeGivesBackOriginalTerritories =
-      Match.of(relationship -> relationship.getRelationshipTypeAttachment().getGivesBackOriginalTerritories());
+      Match.of(relationship -> relationship.getRelationshipTypeAttachment().givesBackOriginalTerritories());
 
   public static final Match<RelationshipType> RelationshipTypeCanMoveIntoDuringCombatMove =
-      Match.of(relationship -> relationship.getRelationshipTypeAttachment().getCanMoveIntoDuringCombatMove());
+      Match.of(relationship -> relationship.getRelationshipTypeAttachment().canMoveIntoDuringCombatMove());
 
   public static final Match<RelationshipType> RelationshipTypeCanMoveThroughCanals =
-      Match.of(relationship -> relationship.getRelationshipTypeAttachment().getCanMoveThroughCanals());
+      Match.of(relationship -> relationship.getRelationshipTypeAttachment().canMoveThroughCanals());
 
   public static final Match<RelationshipType> RelationshipTypeRocketsCanFlyOver =
-      Match.of(relationship -> relationship.getRelationshipTypeAttachment().getRocketsCanFlyOver());
+      Match.of(relationship -> relationship.getRelationshipTypeAttachment().canRocketsFlyOver());
 
   public static Match<String> isValidRelationshipName(final GameData data) {
     return Match.of(relationshipName -> data.getRelationshipTypeList().getRelationshipType(relationshipName) != null);
@@ -2010,11 +2010,11 @@ public class Matches {
   }
 
   public static final Match<RelationshipType> RelationshipTypeIsAlliedAndAlliancesCanChainTogether = Match.of(rt -> {
-    return RelationshipTypeIsAllied.match(rt) && rt.getRelationshipTypeAttachment().getAlliancesCanChainTogether();
+    return RelationshipTypeIsAllied.match(rt) && rt.getRelationshipTypeAttachment().canAlliancesChainTogether();
   });
 
   public static final Match<RelationshipType> RelationshipTypeIsDefaultWarPosition =
-      Match.of(rt -> rt.getRelationshipTypeAttachment().getIsDefaultWarPosition());
+      Match.of(rt -> rt.getRelationshipTypeAttachment().isDefaultWarPosition());
 
   /**
    * If player is null, this match Will return true if ANY of the relationship changes match the conditions. (since
