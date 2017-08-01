@@ -175,7 +175,7 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
     return current().getJComponent();
   }
 
-  private synchronized SelectionComponent current() {
+  private SelectionComponent current() {
     if (selectionComponent == null) {
       selectionComponent = selectionComponentBuilder.get();
     }
