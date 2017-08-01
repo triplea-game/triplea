@@ -13,9 +13,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-
 import games.strategy.ui.SwingComponents;
 import swinglib.GridBagHelper;
 import swinglib.JButtonBuilder;
