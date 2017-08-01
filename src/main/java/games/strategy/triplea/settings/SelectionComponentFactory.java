@@ -220,8 +220,6 @@ class SelectionComponentFactory {
 
       @Override
       void resetToDefault() {
-        clientSetting.restoreToDefaultValue();
-        ClientSetting.flush();
         component.setText(clientSetting.value());
       }
     };

@@ -24,7 +24,6 @@ interface GameSetting {
     save(String.valueOf(newValue));
   }
 
-
   /**
    * Returns the current persisted value of the setting.
    */
@@ -37,9 +36,4 @@ interface GameSetting {
   default boolean booleanValue() {
     return Boolean.valueOf(value());
   }
-
-  /**
-   * Reset the GameSetting value back to default.
-   */
-  void restoreToDefaultValue();
 }

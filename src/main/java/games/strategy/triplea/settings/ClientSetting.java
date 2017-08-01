@@ -99,7 +99,7 @@ public enum ClientSetting implements GameSetting {
   }
 
   /**
-   * Persists user preferences. Note: 'value()' read calls will not pick up any new
+   * Persists user preferences.x Note: 'value()' read calls will not pick up any new
    * values saved values until after 'flush' has been called.
    */
   public static void flush() {
@@ -121,11 +121,6 @@ public enum ClientSetting implements GameSetting {
   @Override
   public void save(final String newValue) {
     Preferences.userNodeForPackage(ClientSetting.class).put(name(), newValue);
-  }
-
-  @Override
-  public void restoreToDefaultValue() {
-    save(defaultValue);
   }
 
   @Override
