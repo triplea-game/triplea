@@ -299,6 +299,10 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_chance;
   }
 
+  public void resetChance() {
+    m_chance = DEFAULT_CHANCE;
+  }
+
   public int getChanceToHit() {
     return getInt(getChance().split(":")[0]);
   }
@@ -316,6 +320,10 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_chanceIncrementOnFailure;
   }
 
+  public void resetChanceIncrementOnFailure() {
+    m_chanceIncrementOnFailure = 0;
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setChanceDecrementOnSuccess(final String value) {
     m_chanceDecrementOnSuccess = getInt(value);
@@ -323,6 +331,10 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   public int getChanceDecrementOnSuccess() {
     return m_chanceDecrementOnSuccess;
+  }
+
+  public void resetChanceDecrementOnSuccess() {
+    m_chanceDecrementOnSuccess = 0;
   }
 
   public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge delegateBridge,
