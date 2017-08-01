@@ -14,6 +14,7 @@ public interface GameSettingUiBinding {
    * Builds or rebuilds the underlying UI component from current settings.
    */
   JComponent buildSelectionComponent();
+
   /**
    * Reads the value set in the UI and return true if it is valid, false otherwise.
    */

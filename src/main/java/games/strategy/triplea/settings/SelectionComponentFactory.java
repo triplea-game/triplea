@@ -325,7 +325,9 @@ class SelectionComponentFactory {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
   }
 
-  static Supplier<SelectionComponent> selectionBox(final ClientSetting clientSetting, final List<String> availableOptions) {
+  static Supplier<SelectionComponent> selectionBox(
+      final GameSetting clientSetting,
+      final List<String> availableOptions) {
     return () -> new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = -8969206423938554118L;
       final JComboBox<String> comboBox = new JComboBox<>(availableOptions.toArray(new String[availableOptions.size()]));

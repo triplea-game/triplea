@@ -68,9 +68,7 @@ public final class JDialogBuilder {
   }
 
   /**
-   *
-   * @param title
-   * @return
+   * Sets the value that will be displayed in the dialog window title bar.
    */
   public JDialogBuilder title(final String title) {
     Preconditions.checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
