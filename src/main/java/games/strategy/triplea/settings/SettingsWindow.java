@@ -90,7 +90,7 @@ enum SettingsWindow {
         .gridBagLayout()
         .build();
 
-    final GridBagHelper grid = new GridBagHelper(contents, 4);
+    final GridBagHelper grid = new GridBagHelper(contents, 3);
 
     // Add settings, one per row, columns of 3:
     // setting title (JLabel) | input component (eg: radio buttons) | description (JTextArea)}
@@ -119,11 +119,6 @@ enum SettingsWindow {
                   .borderWidth(1)
                   .build())
           .build());
-
-      grid.add(JButtonBuilder.builder()
-          .title("Reset to Default")
-          .actionListener(setting::resetToDefault)
-          .build());
     });
     return SwingComponents.newJScrollPane(contents);
   }
@@ -144,6 +139,18 @@ enum SettingsWindow {
         .add(JButtonBuilder.builder()
             .title("Close")
             .actionListener(closeListener)
+            .build())
+        .add(Box.createHorizontalStrut(40))
+        .add(JButtonBuilder.builder()
+            .title("Reset")
+            .actionListener(() -> settings.forEach(
+                ClientSettingUiBinding::reset))
+            .build())
+        .add(Box.createHorizontalStrut(40))
+        .add(JButtonBuilder.builder()
+            .title("Reset To Default")
+            .actionListener(() -> settings.forEach(
+                ClientSettingUiBinding::resetToDefault))
             .build())
         .add(Box.createHorizontalGlue())
         .build();

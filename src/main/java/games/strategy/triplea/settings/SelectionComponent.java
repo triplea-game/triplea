@@ -35,5 +35,7 @@ abstract class SelectionComponent implements Serializable {
   abstract void clearError();
 
   abstract void resetToDefault();
+
+  abstract void reset();
 }
 

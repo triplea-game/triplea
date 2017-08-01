@@ -33,7 +33,7 @@ public interface GameSettingUiBinding {
   /**
    * Reset any settings that are bound, and reset the UI.
    */
-  void resetToDefault();
+  void reset();
 
   /**
    * The title describing the setting that can be updated in 2 or 3 words. The space for this value is very
@@ -43,4 +43,6 @@ public interface GameSettingUiBinding {
    *         is updated by which control.
    */
   String getTitle();
+
+  void resetToDefault();
 }

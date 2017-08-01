@@ -238,12 +238,6 @@ public class GameSelectorModel extends Observable {
     super.clearChanged();
   }
 
-  private void resetDefaultGame() {
-    ClientSetting.DEFAULT_GAME_NAME_PREF.restoreToDefaultValue();
-    ClientSetting.DEFAULT_GAME_URI_PREF.restoreToDefaultValue();
-    ClientSetting.flush();
-  }
-
   public void loadDefaultGame(final Component ui) {
     // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game
     // at this point)
@@ -262,8 +256,7 @@ public class GameSelectorModel extends Observable {
     // load the previously saved value
     if (forceFactoryDefault) {
       // we don't refresh the game chooser model because we have just removed a bad map from it
-      resetDefaultGame();
-      ClientSetting.DEFAULT_GAME_URI_PREF.restoreToDefaultValue();
+      ClientSetting.DEFAULT_GAME_URI_PREF.save(ClientSetting.DEFAULT_GAME_URI_PREF.defaultValue);
       ClientSetting.flush();
     }
     final String userPreferredDefaultGameUri = ClientSetting.DEFAULT_GAME_URI_PREF.value();
@@ -305,7 +298,7 @@ public class GameSelectorModel extends Observable {
 
   private NewGameChooserEntry selectByName(final Component ui, final boolean forceFactoryDefault) {
     if (forceFactoryDefault) {
-      ClientSetting.DEFAULT_GAME_NAME_PREF.restoreToDefaultValue();
+      ClientSetting.DEFAULT_GAME_NAME_PREF.save(ClientSetting.DEFAULT_GAME_NAME_PREF.defaultValue);
       ClientSetting.flush();
     }
     final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();

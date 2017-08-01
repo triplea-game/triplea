@@ -145,13 +145,18 @@ class SelectionComponentFactory {
 
       @Override
       void resetToDefault() {
-        ClientSetting.PROXY_CHOICE.restoreToDefaultValue();
-        ClientSetting.PROXY_HOST.restoreToDefaultValue();
-        ClientSetting.PROXY_PORT.restoreToDefaultValue();
         ClientSetting.flush();
-        hostText.setText("");
-        portText.setText("");
-        noneButton.setSelected(true);
+        hostText.setText(ClientSetting.PROXY_HOST.defaultValue);
+        portText.setText(ClientSetting.PROXY_PORT.defaultValue);
+        noneButton.setSelected(Boolean.valueOf(ClientSetting.PROXY_CHOICE.defaultValue));
+      }
+
+      @Override
+      void reset() {
+        ClientSetting.flush();
+        hostText.setText(ClientSetting.PROXY_HOST.value());
+        portText.setText(ClientSetting.PROXY_PORT.value());
+        noneButton.setSelected(ClientSetting.PROXY_CHOICE.booleanValue());
       }
     };
   }
@@ -220,7 +225,14 @@ class SelectionComponentFactory {
 
       @Override
       void resetToDefault() {
+        component.setText(clientSetting.defaultValue);
+        clearError();
+      }
+
+      @Override
+      void reset() {
         component.setText(clientSetting.value());
+        clearError();
       }
     };
   }
@@ -258,8 +270,12 @@ class SelectionComponentFactory {
 
       @Override
       void resetToDefault() {
-        clientSetting.restoreToDefaultValue();
-        ClientSetting.flush();
+        yesButton.setSelected(Boolean.valueOf(clientSetting.defaultValue));
+        noButton.setSelected(!Boolean.valueOf(clientSetting.defaultValue));
+      }
+
+      @Override
+      void reset() {
         yesButton.setSelected(clientSetting.booleanValue());
         noButton.setSelected(!clientSetting.booleanValue());
       }
@@ -309,9 +325,14 @@ class SelectionComponentFactory {
 
       @Override
       void resetToDefault() {
-        clientSetting.restoreToDefaultValue();
-        ClientSetting.flush();
+        field.setText(clientSetting.defaultValue);
+        clearError();
+      }
+
+      @Override
+      void reset() {
         field.setText(clientSetting.value());
+        clearError();
       }
     };
   }
@@ -324,7 +345,7 @@ class SelectionComponentFactory {
   }
 
   static Supplier<SelectionComponent> selectionBox(
-      final GameSetting clientSetting,
+      final ClientSetting clientSetting,
       final List<String> availableOptions) {
     return () -> new AlwaysValidInputSelectionComponent() {
       private static final long serialVersionUID = -8969206423938554118L;
@@ -346,9 +367,14 @@ class SelectionComponentFactory {
 
       @Override
       void resetToDefault() {
-        clientSetting.restoreToDefaultValue();
-        ClientSetting.flush();
         comboBox.setSelectedItem(clientSetting.value());
+        clearError();
+      }
+
+      @Override
+      void reset() {
+        comboBox.setSelectedItem(clientSetting.defaultValue);
+        clearError();
       }
     };
   }
@@ -371,10 +397,15 @@ class SelectionComponentFactory {
       }
 
       @Override
-      void resetToDefault() {
-        clientSetting.restoreToDefaultValue();
-        ClientSetting.flush();
+      void reset() {
         textField.setText(clientSetting.value());
+        clearError();
+      }
+
+      @Override
+      void resetToDefault() {
+        textField.setText(clientSetting.defaultValue);
+        clearError();
       }
     };
   }

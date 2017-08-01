@@ -202,6 +202,11 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
   }
 
   @Override
+  public void reset() {
+    current().reset();
+  }
+
+  @Override
   public void resetToDefault() {
     current().resetToDefault();
   }
