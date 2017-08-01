@@ -44,7 +44,7 @@ public class JPanelBuilderTest {
   }
 
   @Test
-  public void xAlignmentCenter() {
+  public void horizontalAlignmentCenter() {
     final JPanel panel = JPanelBuilder.builder()
         .horizontalAlignmentCenter()
         .build();
