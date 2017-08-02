@@ -133,6 +133,12 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
       SelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 99999),
       "Specifies the port for connecting to a test lobby."),
 
+  TEST_USE_NEW_SAVE_GAME_FORMAT_BINDING(
+      "Use New Save Game Format",
+      SettingType.TESTING,
+      ClientSetting.TEST_USE_NEW_SAVE_GAME_FORMAT,
+      "Specifies whether or not to use the new save game format."),
+
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(
       "Show First Time Prompts",
       SettingType.GAME,

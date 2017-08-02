@@ -36,6 +36,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.persistence.serializable.ProxyableObjectOutputStream;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 import games.strategy.util.memento.Memento;
@@ -86,7 +87,7 @@ public final class GameDataManager {
   public static GameData loadGame(final InputStream is, final @Nullable String path) throws IOException {
     checkNotNull(is);
 
-    return ClientContext.gameEnginePropertyReader().useNewSaveGameFormat()
+    return ClientSetting.TEST_USE_NEW_SAVE_GAME_FORMAT.booleanValue()
         ? loadGameInNewFormat(is)
         : loadGameInCurrentFormat(is, path);
   }
@@ -304,7 +305,7 @@ public final class GameDataManager {
       final GameData gameData,
       final boolean includeDelegates)
       throws IOException {
-    if (ClientContext.gameEnginePropertyReader().useNewSaveGameFormat()) {
+    if (ClientSetting.TEST_USE_NEW_SAVE_GAME_FORMAT.booleanValue()) {
       saveGameInNewFormat(
           os,
           gameData,

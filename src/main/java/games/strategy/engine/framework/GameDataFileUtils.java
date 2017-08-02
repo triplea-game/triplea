@@ -9,7 +9,7 @@ import org.apache.commons.io.IOCase;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.ClientContext;
+import games.strategy.triplea.settings.ClientSetting;
 
 /**
  * A collection of utilities for working with game data files.
@@ -17,12 +17,13 @@ import games.strategy.engine.ClientContext;
 public final class GameDataFileUtils {
   private static final IOCase DEFAULT_IO_CASE = IOCase.SYSTEM;
 
-  private static final SaveGameFormat DEFAULT_SAVE_GAME_FORMAT =
-      ClientContext.gameEnginePropertyReader().useNewSaveGameFormat()
-          ? SaveGameFormat.NEW
-          : SaveGameFormat.CURRENT;
-
   private GameDataFileUtils() {}
+
+  private static SaveGameFormat getDefaultSaveGameFormat() {
+    return ClientSetting.TEST_USE_NEW_SAVE_GAME_FORMAT.booleanValue()
+        ? SaveGameFormat.NEW
+        : SaveGameFormat.CURRENT;
+  }
 
   @VisibleForTesting
   enum SaveGameFormat {
@@ -39,7 +40,7 @@ public final class GameDataFileUtils {
   public static String addExtension(final String fileName) {
     checkNotNull(fileName);
 
-    return addExtension(fileName, DEFAULT_SAVE_GAME_FORMAT);
+    return addExtension(fileName, getDefaultSaveGameFormat());
   }
 
   @VisibleForTesting
@@ -58,7 +59,7 @@ public final class GameDataFileUtils {
   public static String addExtensionIfAbsent(final String fileName) {
     checkNotNull(fileName);
 
-    return addExtensionIfAbsent(fileName, DEFAULT_SAVE_GAME_FORMAT, DEFAULT_IO_CASE);
+    return addExtensionIfAbsent(fileName, getDefaultSaveGameFormat(), DEFAULT_IO_CASE);
   }
 
   @VisibleForTesting
@@ -99,7 +100,7 @@ public final class GameDataFileUtils {
    * @return The game data file extension including the leading period.
    */
   public static String getExtension() {
-    return getExtension(DEFAULT_SAVE_GAME_FORMAT);
+    return getExtension(getDefaultSaveGameFormat());
   }
 
   private static String getExtension(final SaveGameFormat saveGameFormat) {
@@ -131,7 +132,7 @@ public final class GameDataFileUtils {
   public static boolean isCandidateFileName(final String fileName) {
     checkNotNull(fileName);
 
-    return isCandidateFileName(fileName, DEFAULT_SAVE_GAME_FORMAT, DEFAULT_IO_CASE);
+    return isCandidateFileName(fileName, getDefaultSaveGameFormat(), DEFAULT_IO_CASE);
   }
 
   @VisibleForTesting
