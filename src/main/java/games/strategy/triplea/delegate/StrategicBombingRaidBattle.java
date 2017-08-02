@@ -812,10 +812,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
         }
         // get resources
-        final Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
-        final int have = m_defender.getResources().getQuantity(PUs);
+        final Resource pus = m_data.getResourceList().getResource(Constants.PUS);
+        final int have = m_defender.getResources().getQuantity(pus);
         final int toRemove = Math.min(cost, have);
-        final Change change = ChangeFactory.changeResourcesChange(m_defender, PUs, -toRemove);
+        final Change change = ChangeFactory.changeResourcesChange(m_defender, pus, -toRemove);
         bridge.addChange(change);
         bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " rolls: "
             + MyFormatter.asDice(m_dice) + " and costs: " + cost + " " + MyFormatter.pluralize("PU", cost) + ".");

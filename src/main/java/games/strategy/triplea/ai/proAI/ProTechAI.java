@@ -48,11 +48,11 @@ final class ProTechAI {
     }
     final boolean capDanger = myStrength < (eStrength * 1.25F + 3.0F);
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
-    final int PUs = player.getResources().getQuantity(pus);
+    final int pusRemaining = player.getResources().getQuantity(pus);
     final Resource techtokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
     final int TechTokens = player.getResources().getQuantity(techtokens);
     int tokensToBuy = 0;
-    if (!capDanger && TechTokens < 3 && PUs > Math.random() * 160) {
+    if (!capDanger && TechTokens < 3 && pusRemaining > Math.random() * 160) {
       tokensToBuy = 1;
     }
     if (TechTokens > 0 || tokensToBuy > 0) {

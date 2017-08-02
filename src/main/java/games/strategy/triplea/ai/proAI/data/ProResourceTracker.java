@@ -58,8 +58,8 @@ public class ProResourceTracker {
   }
 
   public int getTempPUs(final GameData data) {
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    return tempPurchases.getInt(PUs);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    return tempPurchases.getInt(pus);
   }
 
   @Override

@@ -733,7 +733,7 @@ public class WeakAI extends AbstractAI {
       final GameData data, final PlayerID player) {
     if (purchaseForBid) {
       // bid will only buy land units, due to weak ai placement for bid not being able to handle sea units
-      final Resource PUs = data.getResourceList().getResource(Constants.PUS);
+      final Resource pus = data.getResourceList().getResource(Constants.PUS);
       int leftToSpend = pusToSpend;
       final List<ProductionRule> rules = player.getProductionFrontier().getRules();
       final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
@@ -754,7 +754,7 @@ public class WeakAI extends AbstractAI {
               || Matches.unitTypeIsStatic(player).match(results)) {
             continue;
           }
-          final int cost = rule.getCosts().getInt(PUs);
+          final int cost = rule.getCosts().getInt(pus);
           if (cost < 1) {
             continue;
           }
@@ -785,8 +785,8 @@ public class WeakAI extends AbstractAI {
     if (isAmphib && amphibRoute != null) {
       defUnitsAtAmpibRoute = amphibRoute.getEnd().getUnits().getUnitCount();
     }
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final int totalPu = player.getResources().getQuantity(PUs);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final int totalPu = player.getResources().getQuantity(pus);
     int leftToSpend = totalPu;
     final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
@@ -954,7 +954,7 @@ public class WeakAI extends AbstractAI {
             continue;
           }
         }
-        final int cost = rule.getCosts().getInt(PUs);
+        final int cost = rule.getCosts().getInt(pus);
         if (cost < 1) {
           continue;
         }

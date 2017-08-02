@@ -544,10 +544,10 @@ public class BattleTracker implements Serializable {
     // if neutral, we may charge money to enter
     if (territory.getOwner().isNull() && !territory.isWater()
         && Properties.getNeutralCharge(data) >= 0) {
-      final Resource PUs = data.getResourceList().getResource(Constants.PUS);
+      final Resource pus = data.getResourceList().getResource(Constants.PUS);
       final int puChargeIdeal = -Properties.getNeutralCharge(data);
-      final int puChargeReal = Math.min(0, Math.max(puChargeIdeal, -id.getResources().getQuantity(PUs)));
-      final Change neutralFee = ChangeFactory.changeResourcesChange(id, PUs, puChargeReal);
+      final int puChargeReal = Math.min(0, Math.max(puChargeIdeal, -id.getResources().getQuantity(pus)));
+      final Change neutralFee = ChangeFactory.changeResourcesChange(id, pus, puChargeReal);
       bridge.addChange(neutralFee);
       if (changeTracker != null) {
         changeTracker.addChange(neutralFee);
@@ -580,8 +580,8 @@ public class BattleTracker implements Serializable {
         bridge.getHistoryWriter()
             .addChildToEvent(id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
       } else if (whoseCapital.equals(territory.getOwner())) {
-        final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-        final int capturedPuCount = whoseCapital.getResources().getQuantity(PUs);
+        final Resource pus = data.getResourceList().getResource(Constants.PUS);
+        final int capturedPuCount = whoseCapital.getResources().getQuantity(pus);
         if (pa != null) {
           if (isPacificTheater(data)) {
             final Change changeVp =
@@ -592,7 +592,7 @@ public class BattleTracker implements Serializable {
             }
           }
         }
-        final Change remove = ChangeFactory.changeResourcesChange(whoseCapital, PUs, -capturedPuCount);
+        final Change remove = ChangeFactory.changeResourcesChange(whoseCapital, pus, -capturedPuCount);
         bridge.addChange(remove);
         if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs()) {
           bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys " + capturedPuCount
@@ -606,7 +606,7 @@ public class BattleTracker implements Serializable {
           if (changeTracker != null) {
             changeTracker.addChange(remove);
           }
-          final Change add = ChangeFactory.changeResourcesChange(id, PUs, capturedPuCount);
+          final Change add = ChangeFactory.changeResourcesChange(id, pus, capturedPuCount);
           bridge.addChange(add);
           if (changeTracker != null) {
             changeTracker.addChange(add);
