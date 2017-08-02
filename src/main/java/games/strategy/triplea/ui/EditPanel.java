@@ -257,7 +257,7 @@ class EditPanel extends ActionPanel {
         } finally {
           getData().releaseReadLock();
         }
-        if (techs == null || techs.isEmpty()) {
+        if (techs.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;
         }
@@ -320,7 +320,7 @@ class EditPanel extends ActionPanel {
         } finally {
           getData().releaseReadLock();
         }
-        if (techs == null || techs.isEmpty()) {
+        if (techs.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;
         }

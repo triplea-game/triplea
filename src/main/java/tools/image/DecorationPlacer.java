@@ -586,11 +586,11 @@ public class DecorationPlacer extends JFrame {
   private static void loadImageFolder() {
     System.out.println("Load an image folder (eg: 'misc' or 'territoryNames', etc)");
     File folder = new File(s_mapFolderLocation, s_imagePointType.getFolderName());
-    if (folder == null || !folder.exists()) {
+    if (!folder.exists()) {
       folder = s_mapFolderLocation;
     }
     final FileSave imageFolder = new FileSave("Load an Image Folder", null, folder);
-    if (imageFolder == null || imageFolder.getPathString() == null || imageFolder.getFile() == null
+    if (imageFolder.getPathString() == null || imageFolder.getFile() == null
         || !imageFolder.getFile().exists()) {
       s_currentImageFolderLocation = null;
     } else {
@@ -604,8 +604,7 @@ public class DecorationPlacer extends JFrame {
       final FileOpen centerName = new FileOpen("Load an Image Points Text File", s_mapFolderLocation,
           new File(s_mapFolderLocation, s_imagePointType.getFileName()), ".txt");
       s_currentImagePointsTextFile = centerName.getFile();
-      if (centerName != null && centerName.getFile() != null && centerName.getFile().exists()
-          && centerName.getPathString() != null) {
+      if (centerName.getFile() != null && centerName.getFile().exists() && centerName.getPathString() != null) {
         final FileInputStream in = new FileInputStream(centerName.getPathString());
         currentPoints = PointFileReaderWriter.readOneToMany(in);
       } else {
@@ -620,17 +619,17 @@ public class DecorationPlacer extends JFrame {
     s_staticImageForPlacing = null;
     File image = new File(s_mapFolderLocation + File.separator + s_imagePointType.getFolderName(),
         s_imagePointType.getImageName());
-    if (image == null || !image.exists()) {
+    if (!image.exists()) {
       image = new File(ClientFileSystemHelper.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER
           + File.separator + s_imagePointType.getFolderName(), s_imagePointType.getImageName());
     }
-    if (image == null || !image.exists()) {
+    if (!image.exists()) {
       image = null;
     }
     while (s_staticImageForPlacing == null) {
       final FileOpen imageSelection = new FileOpen("Select Example Image To Use",
           (image == null ? s_mapFolderLocation : new File(image.getParent())), image, ".gif", ".png");
-      if (imageSelection == null || imageSelection.getFile() == null || !imageSelection.getFile().exists()) {
+      if (imageSelection.getFile() == null || !imageSelection.getFile().exists()) {
         continue;
       }
       s_staticImageForPlacing = createImage(imageSelection.getPathString());

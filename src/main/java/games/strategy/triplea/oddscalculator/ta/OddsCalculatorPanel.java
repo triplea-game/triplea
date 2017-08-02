@@ -424,7 +424,7 @@ class OddsCalculatorPanel extends JPanel {
     // swing event thread
     dialog.setVisible(true);
     // results.get() could be null if we cancelled to quickly or something weird like that.
-    if (results == null || results.get() == null) {
+    if (results.get() == null) {
       setResultsToBlank();
     } else {
       attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));

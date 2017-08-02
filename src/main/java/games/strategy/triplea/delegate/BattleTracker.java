@@ -516,7 +516,7 @@ public class BattleTracker implements Serializable {
       }
     }
     // If it was a Convoy Route- check ownership of the associated neighboring territory and set message
-    if (ta != null && ta.getConvoyRoute()) {
+    if (ta.getConvoyRoute()) {
       // we could be part of a convoy route for another territory
       final Collection<Territory> attachedConvoyTo =
           TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
@@ -567,7 +567,7 @@ public class BattleTracker implements Serializable {
     // if its a capital we take the money
     // NOTE: this is not checking to see if it is an enemy.
     // instead it is relying on the fact that the capital should be owned by the person it is attached to
-    if (ta != null && isTerritoryOwnerAnEnemy && ta.getCapital() != null) {
+    if (isTerritoryOwnerAnEnemy && ta.getCapital() != null) {
       // if the capital is owned by the capitols player take the money
       final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
       final PlayerAttachment pa = PlayerAttachment.get(id);
@@ -649,8 +649,7 @@ public class BattleTracker implements Serializable {
     }
     // if we have specially set this territory to have whenCapturedByGoesTo,
     // then we set that here (except we don't set it if we are liberating allied owned territory)
-    if (ta != null && isTerritoryOwnerAnEnemy && newOwner.equals(id)
-        && Matches.territoryHasWhenCapturedByGoesTo().match(territory)) {
+    if (isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.territoryHasWhenCapturedByGoesTo().match(territory)) {
       for (final String value : ta.getWhenCapturedByGoesTo()) {
         final String[] s = value.split(":");
         final PlayerID capturingPlayer = data.getPlayerList().getPlayerID(s[0]);
@@ -664,7 +663,7 @@ public class BattleTracker implements Serializable {
         }
       }
     }
-    if (isTerritoryOwnerAnEnemy && ta != null) {
+    if (isTerritoryOwnerAnEnemy) {
       final Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
       bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
       bridge.addChange(takeOver);
@@ -676,7 +675,7 @@ public class BattleTracker implements Serializable {
       if (territory.isWater()) {
         // should probably see if there is something actually happening for water
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id);
-      } else if (ta != null && ta.getCapital() != null) {
+      } else if (ta.getCapital() != null) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id);
       } else if (m_blitzed.contains(territory) && Match.anyMatch(arrivedUnits, Matches.UnitCanBlitz)) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id);
@@ -702,7 +701,7 @@ public class BattleTracker implements Serializable {
     captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker);
     // is this territory our capitol or a capitol of our ally
     // Also check to make sure playerAttachment even HAS a capital to fix abend
-    if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta != null && ta.getCapital() != null
+    if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta.getCapital() != null
         && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(territory)
         && relationshipTracker.isAllied(terrOrigOwner, id)) {
       // if it is give it back to the original owner
