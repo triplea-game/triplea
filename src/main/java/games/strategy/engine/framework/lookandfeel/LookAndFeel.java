@@ -1,39 +1,9 @@
 package games.strategy.engine.framework.lookandfeel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.UIManager;
-
-import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
@@ -47,21 +17,6 @@ public class LookAndFeel {
     for (final UIManager.LookAndFeelInfo look : UIManager.getInstalledLookAndFeels()) {
       substanceLooks.add(look.getClassName());
     }
-    substanceLooks.addAll(Arrays.asList(SubstanceAutumnLookAndFeel.class.getName(),
-        SubstanceBusinessBlackSteelLookAndFeel.class.getName(), SubstanceBusinessBlueSteelLookAndFeel.class.getName(),
-        SubstanceBusinessLookAndFeel.class.getName(), SubstanceCeruleanLookAndFeel.class.getName(),
-        SubstanceChallengerDeepLookAndFeel.class.getName(), SubstanceCremeCoffeeLookAndFeel.class.getName(),
-        SubstanceCremeLookAndFeel.class.getName(), SubstanceDustCoffeeLookAndFeel.class.getName(),
-        SubstanceDustLookAndFeel.class.getName(), SubstanceEmeraldDuskLookAndFeel.class.getName(),
-        SubstanceGeminiLookAndFeel.class.getName(), SubstanceGraphiteAquaLookAndFeel.class.getName(),
-        SubstanceGraphiteGlassLookAndFeel.class.getName(), SubstanceGraphiteLookAndFeel.class.getName(),
-        SubstanceMagellanLookAndFeel.class.getName(), SubstanceMarinerLookAndFeel.class.getName(),
-        SubstanceMistAquaLookAndFeel.class.getName(), SubstanceMistSilverLookAndFeel.class.getName(),
-        SubstanceModerateLookAndFeel.class.getName(), SubstanceNebulaBrickWallLookAndFeel.class.getName(),
-        SubstanceNebulaLookAndFeel.class.getName(), SubstanceOfficeBlack2007LookAndFeel.class.getName(),
-        SubstanceOfficeBlue2007LookAndFeel.class.getName(), SubstanceOfficeSilver2007LookAndFeel.class.getName(),
-        SubstanceRavenLookAndFeel.class.getName(), SubstanceSaharaLookAndFeel.class.getName(),
-        SubstanceTwilightLookAndFeel.class.getName()));
     return substanceLooks;
   }
 

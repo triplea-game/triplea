@@ -14,6 +14,7 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.random.IRandomSource;
+import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;
@@ -24,6 +25,10 @@ public class LocalLauncher extends AbstractLauncher {
   private final IRandomSource m_randomSource;
   private final PlayerListing m_playerListing;
 
+  public LocalLauncher(final GameSelectorModel gameSelectorModel,
+      final PlayerListing playerListing) {
+    this(gameSelectorModel, new PlainRandomSource(), playerListing);
+  }
   public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource,
       final PlayerListing playerListing) {
     super(gameSelectorModel);

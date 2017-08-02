@@ -24,7 +24,7 @@ import games.strategy.ui.SwingAction;
 
 public abstract class SetupPanel extends JPanel implements ISetupPanel {
   private static final long serialVersionUID = 4001323470187210773L;
-  private static final String SET_ALL_DEFAULT_LABEL = "Default";
+  public static final String SET_ALL_DEFAULT_LABEL = "Default";
 
   private final List<Observer> listeners = new ArrayList<>();
 
@@ -84,7 +84,7 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
     return new ArrayList<>();
   }
 
-  void layoutPlayerComponents(JPanel panel, List<PlayerSelectorRow> playerRows, GameData data) {
+  void layoutPlayerComponents(final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameData data) {
     panel.removeAll();
     playerRows.clear();
     panel.setLayout(new GridBagLayout());

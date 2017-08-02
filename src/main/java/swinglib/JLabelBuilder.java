@@ -20,6 +20,8 @@ public class JLabelBuilder {
   private String text;
   private Alignment alignment;
   private Dimension maxSize;
+  private int maxTextLength;
+  private String tooltip;
 
   private JLabelBuilder() {}
 
@@ -35,7 +37,10 @@ public class JLabelBuilder {
     Preconditions.checkNotNull(text);
     Preconditions.checkState(!text.trim().isEmpty());
 
-    final JLabel label = new JLabel(text);
+    final String truncated = maxTextLength  > 0 && text.length() > maxTextLength ?
+        text.substring(0, maxTextLength) + "..." : text;
+
+    final JLabel label = new JLabel(truncated);
 
     if (alignment != null) {
       switch (alignment) {
@@ -46,6 +51,9 @@ public class JLabelBuilder {
       }
     }
 
+    if(tooltip != null) {
+      label.setToolTipText(tooltip);
+    }
     if (maxSize != null) {
       label.setMaximumSize(maxSize);
     }
@@ -65,6 +73,17 @@ public class JLabelBuilder {
 
   public JLabelBuilder maximumSize(final int width, final int height) {
     maxSize = new Dimension(width, height);
+    return this;
+  }
+
+  public JLabelBuilder tooltip(final String tooltip) {
+    this.tooltip = tooltip;
+    return this;
+  }
+
+  public JLabelBuilder textWithMaxLength(final String text, final int maxTextLength ) {
+    this.maxTextLength = maxTextLength;
+    this.text = text;
     return this;
   }
 

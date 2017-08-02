@@ -2,6 +2,8 @@ package swinglib;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.awt.Font;
+
 import javax.swing.JButton;
 
 import com.google.common.base.Preconditions;
@@ -21,6 +23,11 @@ public class JButtonBuilder {
   private String title;
   private String toolTip;
   private Runnable actionListener;
+  // TODO: test me
+  private boolean visible = true;
+  private boolean enabled = true;
+
+  private boolean biggerFont = false;
 
   private JButtonBuilder() {}
 
@@ -33,6 +40,11 @@ public class JButtonBuilder {
     Preconditions.checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
     this.title = title;
     return this;
+  }
+  public JButtonBuilder biggerFont() {
+    biggerFont = true;
+    return this;
+
   }
 
   /** optional, but potentially required in the future. This is the hover text when hovering on the button. */
@@ -61,7 +73,27 @@ public class JButtonBuilder {
       button.setToolTipText(toolTip);
     }
     button.addActionListener(e -> actionListener.run());
+    button.setVisible(visible);
+    button.setEnabled(enabled);
+
+    if (biggerFont) {
+      button.setFont(
+          new Font(
+              button.getFont().getName(),
+              button.getFont().getStyle(),
+              button.getFont().getSize() + 5));
+    }
+
     return button;
   }
 
+  public JButtonBuilder visible(final boolean visible) {
+    this.visible = visible;
+    return this;
+  }
+
+  public JButtonBuilder enabled(final boolean enabled) {
+    this.enabled = enabled;
+    return this;
+  }
 }
