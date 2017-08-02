@@ -43,9 +43,6 @@ public class GameEnginePropertyReader {
   interface PropertyKeys {
     String ENGINE_VERSION = "engine_version";
     String JAVAFX_UI = "javafx_ui";
-    String LOBBY_BACKUP_HOST_ADDRESS = "lobby_backup_url";
-    String LOBBY_PROP_FILE_URL = "lobby_properties_file_url";
-    String MAP_LISTING_SOURCE_FILE = "map_list_file";
     String NEW_SAVE_GAME_FORMAT = "new_save_game_format";
   }
 }
