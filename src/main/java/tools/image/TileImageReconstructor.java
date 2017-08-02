@@ -134,7 +134,7 @@ public class TileImageReconstructor {
       for (int y = 0; (y) * TileManager.TILE_SIZE < sizeY; y++) {
         final String tileName = x + "_" + y + ".png";
         final File tileFile = new File(baseTileLocation, tileName);
-        if (tileFile == null || !tileFile.exists()) {
+        if (!tileFile.exists()) {
           continue;
         }
         final Image tile = Toolkit.getDefaultToolkit().createImage(tileFile.getPath());

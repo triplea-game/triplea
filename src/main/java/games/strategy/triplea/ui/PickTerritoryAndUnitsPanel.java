@@ -211,7 +211,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         return;
       }
       if (currentAction == selectTerritoryAction) {
-        if (territory == null || !territoryChoices.contains(territory)) {
+        if (!territoryChoices.contains(territory)) {
           EventThreadJOptionPane.showMessageDialog(parent,
               "Must Pick An Unowned Territory (will have a white highlight)", "Must Pick An Unowned Territory",
               JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));
