@@ -109,14 +109,14 @@ public class IndividualUnitPanelGrouped extends JPanel {
     this.setLayout(new GridBagLayout());
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    final JButton m_selectNoneButton = new JButton("None");
-    m_selectNoneButton.setPreferredSize(buttonSize);
-    final JButton m_autoSelectButton = new JButton("Max");
-    m_autoSelectButton.setPreferredSize(buttonSize);
+    final JButton selectNoneButton = new JButton("None");
+    selectNoneButton.setPreferredSize(buttonSize);
+    final JButton autoSelectButton = new JButton("Max");
+    autoSelectButton.setPreferredSize(buttonSize);
     add(title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
-    m_selectNoneButton.addActionListener(e -> selectNone());
-    m_autoSelectButton.addActionListener(e -> autoSelect());
+    selectNoneButton.addActionListener(e -> selectNone());
+    autoSelectButton.addActionListener(e -> autoSelect());
     final JPanel entries = new JPanel();
     entries.setLayout(new FlowLayout());
     entries.setBorder(BorderFactory.createEmptyBorder());
@@ -155,7 +155,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
         nullInsets, 0, 0));
     rowIndex++;
     if (showSelectAll) {
-      add(m_autoSelectButton, new GridBagConstraints(0, 2, 7, 1, 0, 0.5, GridBagConstraints.CENTER,
+      add(autoSelectButton, new GridBagConstraints(0, 2, 7, 1, 0, 0.5, GridBagConstraints.CENTER,
           GridBagConstraints.NONE, nullInsets, 0, 0));
       rowIndex++;
     }

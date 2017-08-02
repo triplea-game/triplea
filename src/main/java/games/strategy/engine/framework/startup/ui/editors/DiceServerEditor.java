@@ -51,8 +51,8 @@ public class DiceServerEditor extends EditorPanel {
       row++;
     }
     if (remoteDiceServer.supportsGameId()) {
-      final JLabel m_gameIdLabel = new JLabel("Game ID:");
-      add(m_gameIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+      final JLabel gameIdLabel = new JLabel("Game ID:");
+      add(gameIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
           new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
       add(gameId, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
           new Insets(0, 0, bottomSpace, 0), 0, 0));

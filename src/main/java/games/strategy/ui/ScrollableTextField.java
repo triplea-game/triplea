@@ -44,7 +44,7 @@ public class ScrollableTextField extends JPanel {
       inset = new Insets(2, 0, 2, 0);
     }
     upButton = new JButton(up);
-    final Action m_incrementAction = new AbstractAction("inc") {
+    final Action incrementAction = new AbstractAction("inc") {
       private static final long serialVersionUID = 2125871167112459475L;
 
       @Override
@@ -55,11 +55,11 @@ public class ScrollableTextField extends JPanel {
         }
       }
     };
-    upButton.addActionListener(m_incrementAction);
+    upButton.addActionListener(incrementAction);
     upButton.setMargin(inset);
     downButton = new JButton(down);
     downButton.setMargin(inset);
-    final Action m_decrementAction = new AbstractAction("dec") {
+    final Action decrementAction = new AbstractAction("dec") {
       private static final long serialVersionUID = 787758939168986726L;
 
       @Override
@@ -70,10 +70,10 @@ public class ScrollableTextField extends JPanel {
         }
       }
     };
-    downButton.addActionListener(m_decrementAction);
+    downButton.addActionListener(decrementAction);
     maxButton = new JButton(max);
     maxButton.setMargin(inset);
-    final Action m_maxAction = new AbstractAction("max") {
+    final Action maxAction = new AbstractAction("max") {
       private static final long serialVersionUID = -3899827439573519512L;
 
       @Override
@@ -84,10 +84,10 @@ public class ScrollableTextField extends JPanel {
         }
       }
     };
-    maxButton.addActionListener(m_maxAction);
+    maxButton.addActionListener(maxAction);
     minButton = new JButton(min);
     minButton.setMargin(inset);
-    final Action m_minAction = new AbstractAction("min") {
+    final Action minAction = new AbstractAction("min") {
       private static final long serialVersionUID = 5785321239855254848L;
 
       @Override
@@ -98,7 +98,7 @@ public class ScrollableTextField extends JPanel {
         }
       }
     };
-    minButton.addActionListener(m_minAction);
+    minButton.addActionListener(minAction);
     final JPanel upDown = new JPanel();
     upDown.setLayout(new BoxLayout(upDown, BoxLayout.Y_AXIS));
     upDown.add(upButton);
@@ -109,8 +109,8 @@ public class ScrollableTextField extends JPanel {
     maxMin.add(minButton);
     add(upDown);
     add(maxMin);
-    final IntTextFieldChangeListener m_textListener = field -> notifyListeners();
-    text.addChangeListener(m_textListener);
+    final IntTextFieldChangeListener textListener = field -> notifyListeners();
+    text.addChangeListener(textListener);
     setWidgetActivation();
   }
 

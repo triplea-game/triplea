@@ -2585,12 +2585,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // defender, and if the
     // units in m_attackingUnits are allied with the attacker? Does it really matter?
     final Match<Unit> alliedDefendingAir = Match.allOf(Matches.UnitIsAir, Matches.UnitWasScrambled.invert());
-    final Collection<Unit> m_defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
+    final Collection<Unit> defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
     // no planes, exit
-    if (m_defendingAir.isEmpty()) {
+    if (defendingAir.isEmpty()) {
       return;
     }
-    int carrierCost = AirMovementValidator.carrierCost(m_defendingAir);
+    int carrierCost = AirMovementValidator.carrierCost(defendingAir);
     final int carrierCapacity = AirMovementValidator.carrierCapacity(m_defendingUnits, m_battleSite);
     // add dependant air to carrier cost
     carrierCost +=
@@ -2605,18 +2605,18 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // add dependant air to carrier cost
     carrierCost +=
         AirMovementValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits), alliedDefendingAir));
-    for (final Unit currentUnit : new ArrayList<>(m_defendingAir)) {
+    for (final Unit currentUnit : new ArrayList<>(defendingAir)) {
       if (!Matches.UnitCanLandOnCarrier.match(currentUnit)) {
-        m_defendingAir.remove(currentUnit);
+        defendingAir.remove(currentUnit);
         continue;
       }
       carrierCost += UnitAttachment.get(currentUnit.getType()).getCarrierCost();
       if (carrierCapacity >= carrierCost) {
-        m_defendingAir.remove(currentUnit);
+        defendingAir.remove(currentUnit);
       }
     }
     // Moved this choosing to after all battles, as we legally should be able to land in a territory if we win there.
-    m_battleTracker.addToDefendingAirThatCanNotLand(m_defendingAir, m_battleSite);
+    m_battleTracker.addToDefendingAirThatCanNotLand(defendingAir, m_battleSite);
   }
 
   static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,

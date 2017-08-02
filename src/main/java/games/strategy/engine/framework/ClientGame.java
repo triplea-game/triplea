@@ -110,7 +110,7 @@ public class ClientGame extends AbstractGame {
       }
     };
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
-    final IGameStepAdvancer m_gameStepAdvancer = (stepName, player) -> {
+    final IGameStepAdvancer gameStepAdvancer = (stepName, player) -> {
       if (m_isGameOver) {
         return;
       }
@@ -152,7 +152,7 @@ public class ClientGame extends AbstractGame {
       }
       gp.start(stepName);
     };
-    m_remoteMessenger.registerRemote(m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
+    m_remoteMessenger.registerRemote(gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
     for (final PlayerID player : m_gamePlayers.keySet()) {
       final IRemoteRandom remoteRandom = new RemoteRandom(this);
       m_remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));

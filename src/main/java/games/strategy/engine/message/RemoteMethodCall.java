@@ -147,8 +147,8 @@ public class RemoteMethodCall implements Externalizable {
       out.writeByte(Byte.MAX_VALUE);
     } else {
       out.writeByte(m_args.length);
-      for (final Object m_arg : m_args) {
-        out.writeObject(m_arg);
+      for (final Object arg : m_args) {
+        out.writeObject(arg);
       }
     }
   }

@@ -229,7 +229,7 @@ public class TripleAFrame extends MainGameFrame {
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
     showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
-    final AbstractAction m_showCommentLogAction = new AbstractAction() {
+    final AbstractAction showCommentLogAction = new AbstractAction() {
       private static final long serialVersionUID = 3964381772343872268L;
 
       @Override
@@ -269,7 +269,7 @@ public class TripleAFrame extends MainGameFrame {
         }
       }
     };
-    showCommentLogButtonModel.addActionListener(m_showCommentLogAction);
+    showCommentLogButtonModel.addActionListener(showCommentLogAction);
     showCommentLogButtonModel.setSelected(false);
     menu = new TripleAMenuBar(this);
     this.setJMenuBar(menu);

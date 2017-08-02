@@ -97,8 +97,8 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build()) {
       HttpContext httpContext = login(client);
       // load the reply page
-      final String s_forumId = "20";
-      final String url = WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id="
+      final String forumId = "20";
+      final String url = WAR_CLUB_FORUM_URL + "/reply.php?forum=" + forumId + "&topic_id="
           + URLEncoder.encode(m_topicId, StandardCharsets.UTF_8.name());
       String xoopsTokenRequest;
       HttpGet httpGet = new HttpGet(url);
@@ -119,7 +119,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       MultipartEntityBuilder builder = MultipartEntityBuilder.create()
           .addTextBody("subject", subject)
           .addTextBody("message", summary)
-          .addTextBody("forum", s_forumId)
+          .addTextBody("forum", forumId)
           .addTextBody("topic_id", m_topicId)
           .addTextBody("XOOPS_TOKEN_REQUEST", xoopsTokenRequest)
           .addTextBody("xoops_upload_file[]", "userfile")
@@ -147,7 +147,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
           throw new Exception("Posting summary failed, the server didn't respond with thank you message");
         }
         m_turnSummaryRef =
-            "www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=" + m_topicId + "&forum=" + s_forumId;
+            "www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=" + m_topicId + "&forum=" + forumId;
       }
       // now logout, this is just to be nice, so we don't care if this fails
       try {

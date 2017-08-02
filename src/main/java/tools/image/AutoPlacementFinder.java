@@ -76,7 +76,7 @@ public class AutoPlacementFinder {
    */
   static void calculate() {
     // create hash map of placements
-    final Map<String, Collection<Point>> m_placements = new HashMap<>();
+    final Map<String, Collection<Point>> placements = new HashMap<>();
     // ask user where the map is
     final String mapDir = mapFolderLocation == null ? getMapDirectory() : mapFolderLocation.getName();
     if (mapDir == null) {
@@ -216,11 +216,11 @@ public class AutoPlacementFinder {
         }
         points = getPlacementsStartingAtTopLeft(mapData.getPolygons(name), mapData.getBoundingRect(name),
             mapData.getCenter(name), containedPolygons);
-        m_placements.put(name, points);
+        placements.put(name, points);
       } else {
         points = getPlacementsStartingAtMiddle(mapData.getPolygons(name), mapData.getBoundingRect(name),
             mapData.getCenter(name));
-        m_placements.put(name, points);
+        placements.put(name, points);
       }
       textOptionPane.appendNewLine(name + ": " + points.size());
     } // while
@@ -234,7 +234,7 @@ public class AutoPlacementFinder {
         textOptionPane.dispose();
         System.exit(0);
       }
-      PointFileReaderWriter.writeOneToMany(new FileOutputStream(fileName), m_placements);
+      PointFileReaderWriter.writeOneToMany(new FileOutputStream(fileName), placements);
       textOptionPane.appendNewLine("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final Exception ex) {
       ex.printStackTrace();

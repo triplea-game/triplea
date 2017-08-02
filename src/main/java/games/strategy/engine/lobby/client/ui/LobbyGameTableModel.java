@@ -37,8 +37,6 @@ class LobbyGameTableModel extends AbstractTableModel {
     gameList = new ArrayList<>();
 
     m_messenger = messenger;
-    final IChannelMessenger m_channelMessenger = channelMessenger;
-    final IRemoteMessenger m_remoteMessenger = remoteMessenger;
     lobbyGameBroadcaster = new ILobbyGameBroadcaster() {
       @Override
       public void gameUpdated(final GUID gameId, final GameDescription description) {
@@ -52,10 +50,10 @@ class LobbyGameTableModel extends AbstractTableModel {
         removeGame(gameId);
       }
     };
-    m_channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
+    channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
 
     final Map<GUID, GameDescription> games =
-        ((ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE)).listGames();
+        ((ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE)).listGames();
     for (final GUID id : games.keySet()) {
       updateGame(id, games.get(id));
     }

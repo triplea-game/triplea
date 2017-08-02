@@ -52,7 +52,7 @@ class PlayerSelectorRow {
     name = new JLabel(playerName + ":");
 
     enabledCheckBox = new JCheckBox();
-    final ActionListener m_disablePlayerActionListener = new ActionListener() {
+    final ActionListener disablePlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (enabledCheckBox.isSelected()) {
@@ -67,7 +67,7 @@ class PlayerSelectorRow {
         setWidgetActivation();
       }
     };
-    enabledCheckBox.addActionListener(m_disablePlayerActionListener);
+    enabledCheckBox.addActionListener(disablePlayerActionListener);
     enabledCheckBox.setSelected(playersEnablementListing.get(playerName));
     enabledCheckBox.setEnabled(disableable.contains(playerName));
 
