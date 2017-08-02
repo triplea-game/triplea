@@ -20,11 +20,11 @@ import games.strategy.engine.ClientFileSystemHelper;
  * Note: After saving values, `ClientSetting.flush()` needs to be called to persist those values.
  * </p>
  *
- *
  * <p>
  * Typical usage:
- * </p><code><pre>
+ * </p>
  *
+ * <code><pre>
  * // loading a value
  * String value = ClientSetting.AI_PAUSE_DURATION.value();
  *
@@ -35,40 +35,75 @@ import games.strategy.engine.ClientFileSystemHelper;
  */
 public enum ClientSetting implements GameSetting {
   AI_PAUSE_DURATION(400),
+
   ARROW_KEY_SCROLL_SPEED(70),
+
   BATTLE_CALC_SIMULATION_COUNT_DICE(2000),
+
   BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK(5000),
+
   CONFIRM_DEFENSIVE_ROLLS(false),
+
   CONFIRM_ENEMY_CASUALTIES(false),
+
   DEFAULT_GAME_NAME_PREF("Big World : 1942"),
+
   DEFAULT_GAME_URI_PREF,
+
   FASTER_ARROW_KEY_SCROLL_MULTIPLIER(2),
+
   SPACE_BAR_CONFIRMS_CASUALTIES(true),
+
   LOBBY_LAST_USED_HOST,
+
   LOBBY_LAST_USED_PORT,
+
   LOOK_AND_FEEL_PREF(UIManager.getSystemLookAndFeelClassName()),
+
   MAP_EDGE_SCROLL_SPEED(30),
+
   MAP_EDGE_SCROLL_ZONE_SIZE(30),
+
   MAP_FOLDER_OVERRIDE,
+
   MAP_LIST_OVERRIDE,
+
   PROXY_CHOICE,
+
   PROXY_HOST,
+
   PROXY_PORT,
+
   SAVE_GAMES_FOLDER_PATH(new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames")),
+
   SERVER_OBSERVER_JOIN_WAIT_TIME(180),
+
   SERVER_START_GAME_SYNC_WAIT_TIME(180),
+
   SHOW_BATTLES_WHEN_OBSERVING(true),
+
   SHOW_BETA_FEATURES(false),
+
   TEST_LOBBY_HOST,
+
   TEST_LOBBY_PORT,
+
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY(true),
+
   TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE,
+
   TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES,
+
   TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP,
+
   TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
+
   TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME,
+
   USER_MAPS_FOLDER_PATH(new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps")),
+
   WHEEL_SCROLL_AMOUNT(60),
+
   PLAYER_NAME(System.getProperty("user.name"));
 
   public final String defaultValue;
