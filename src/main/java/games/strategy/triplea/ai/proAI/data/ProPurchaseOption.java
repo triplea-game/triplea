@@ -62,8 +62,8 @@ public class ProPurchaseOption {
     this.unitType = unitType;
     this.player = player;
     final UnitAttachment unitAttachment = UnitAttachment.get(unitType);
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    cost = productionRule.getCosts().getInt(PUs);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    cost = productionRule.getCosts().getInt(pus);
     costs = productionRule.getCosts();
     movement = unitAttachment.getMovement(player);
     quantity = productionRule.getResults().totalValues();

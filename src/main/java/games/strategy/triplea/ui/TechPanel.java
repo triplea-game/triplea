@@ -121,9 +121,9 @@ public class TechPanel extends ActionPanel {
       }
       advance = list.getSelectedValue();
     }
-    final int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
+    final int pus = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
     final String message = "Roll Tech";
-    final TechRollPanel techRollPanel = new TechRollPanel(PUs, getCurrentPlayer());
+    final TechRollPanel techRollPanel = new TechRollPanel(pus, getCurrentPlayer());
     final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techRollPanel, message,
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
     if (choice != JOptionPane.OK_OPTION) {
@@ -183,7 +183,7 @@ public class TechPanel extends ActionPanel {
         JOptionPane.PLAIN_MESSAGE);
     final TechnologyFrontier category = list.getSelectedValue();
 
-    final int PUs = currentPlayer.getResources().getQuantity(Constants.PUS);
+    final int pus = currentPlayer.getResources().getQuantity(Constants.PUS);
     final String message = "Purchase Tech Tokens";
     // see if anyone will help us to pay
     Collection<PlayerID> helpPay;
@@ -193,7 +193,7 @@ public class TechPanel extends ActionPanel {
     } else {
       helpPay = null;
     }
-    final TechTokenPanel techTokenPanel = new TechTokenPanel(PUs, currTokens, currentPlayer, helpPay);
+    final TechTokenPanel techTokenPanel = new TechTokenPanel(pus, currTokens, currentPlayer, helpPay);
     final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message,
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
     if (choice != JOptionPane.OK_OPTION) {

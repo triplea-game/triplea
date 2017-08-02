@@ -294,15 +294,15 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   boolean checkEnoughMoney(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch) {
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
-      final int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+      final int has = m_bridge.getPlayerID().getResources().getQuantity(pus);
       return has >= cost;
     } else {
       int runningTotal = 0;
       for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet()) {
-        final int has = entry.getKey().getResources().getQuantity(PUs);
+        final int has = entry.getKey().getResources().getQuantity(pus);
         final int paying = entry.getValue();
         if (paying > has) {
           return false;
@@ -314,12 +314,12 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private void chargeForTechRolls(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch) {
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
       final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " on tech rolls";
       m_bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
+      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), pus, -cost);
       m_bridge.addChange(charge);
     } else {
       for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet()) {
@@ -331,7 +331,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         cost -= pays;
         final String transcriptText = p.getName() + " spend " + pays + " on tech rolls";
         m_bridge.getHistoryWriter().startEvent(transcriptText);
-        final Change charge = ChangeFactory.changeResourcesChange(p, PUs, -pays);
+        final Change charge = ChangeFactory.changeResourcesChange(p, pus, -pays);
         m_bridge.addChange(charge);
       }
     }

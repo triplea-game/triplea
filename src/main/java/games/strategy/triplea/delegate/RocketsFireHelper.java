@@ -182,7 +182,7 @@ public class RocketsFireHelper {
       final Territory attackFrom) {
     final GameData data = bridge.getData();
     final PlayerID attacked = attackedTerritory.getOwner();
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
@@ -397,14 +397,14 @@ public class RocketsFireHelper {
       getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost,
           "Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
       // Trying to remove more PUs than the victim has is A Bad Thing[tm]
-      final int availForRemoval = attacked.getResources().getQuantity(PUs);
+      final int availForRemoval = attacked.getResources().getQuantity(pus);
       if (cost > availForRemoval) {
         cost = availForRemoval;
       }
       final String transcriptText =
           attacked.getName() + " lost " + cost + " PUs to rocket attack by " + player.getName();
       bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, PUs, -cost);
+      final Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, pus, -cost);
       bridge.addChange(rocketCharge);
     }
     bridge.getHistoryWriter().addChildToEvent(transcript, rockets == null ? null : new ArrayList<>(rockets));

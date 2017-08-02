@@ -265,7 +265,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    *        the politicalactionattachment this the money is charged for.
    */
   private void chargeForAction(final PoliticalActionAttachment paa) {
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = paa.getCostPU();
     if (cost > 0) {
       // don't notify user of spending money anymore
@@ -273,7 +273,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on Political Action: "
           + MyFormatter.attachmentNameToText(paa.getName());
       m_bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
+      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), pus, -cost);
       m_bridge.addChange(charge);
     } else {
       final String transcriptText = m_bridge.getPlayerID().getName() + " takes Political Action: "
@@ -289,9 +289,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * @return false if the player can't afford the action
    */
   private boolean checkEnoughMoney(final PoliticalActionAttachment paa) {
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = paa.getCostPU();
-    final int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+    final int has = m_bridge.getPlayerID().getResources().getQuantity(pus);
     return has >= cost;
   }
 
