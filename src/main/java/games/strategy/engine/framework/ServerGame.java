@@ -149,7 +149,7 @@ public class ServerGame extends AbstractGame {
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     setupDelegateMessaging(data);
     m_randomStats = new RandomStats(m_remoteMessenger);
-    final IServerRemote m_serverRemote = () -> {
+    final IServerRemote serverRemote = () -> {
       final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
       try {
         saveGame(sink);
@@ -159,7 +159,7 @@ public class ServerGame extends AbstractGame {
       }
       return sink.toByteArray();
     };
-    m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
+    m_remoteMessenger.registerRemote(serverRemote, SERVER_REMOTE);
   }
 
   public void addObserver(final IObserverWaitingToJoin blockingObserver,

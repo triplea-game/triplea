@@ -326,11 +326,11 @@ public class SwingComponents {
   }
 
   public static JEditorPane newHtmlJEditorPane() {
-    final JEditorPane m_descriptionPane = new JEditorPane();
-    m_descriptionPane.setEditable(false);
-    m_descriptionPane.setContentType("text/html");
-    m_descriptionPane.setBackground(new JLabel().getBackground());
-    return m_descriptionPane;
+    final JEditorPane descriptionPane = new JEditorPane();
+    descriptionPane.setEditable(false);
+    descriptionPane.setContentType("text/html");
+    descriptionPane.setBackground(new JLabel().getBackground());
+    return descriptionPane;
   }
 
   public static void newOpenUrlConfirmationDialog(final UrlConstants url) {

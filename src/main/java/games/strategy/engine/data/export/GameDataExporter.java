@@ -531,9 +531,9 @@ public class GameDataExporter {
     xmlfile.append("        <sequence>\n");
     for (final GameStep step : data.getSequence()) {
       try {
-        final Field mDelegateField = GameStep.class.getDeclaredField("m_delegate"); // TODO: unchecked reflection
-        mDelegateField.setAccessible(true);
-        final String delegate = (String) mDelegateField.get(step);
+        final Field delegateField = GameStep.class.getDeclaredField("m_delegate"); // TODO: unchecked reflection
+        delegateField.setAccessible(true);
+        final String delegate = (String) delegateField.get(step);
         xmlfile.append("            <step name=\"").append(step.getName()).append("\" delegate=\"").append(delegate)
             .append("\"");
       } catch (final NullPointerException | NoSuchFieldException | IllegalArgumentException

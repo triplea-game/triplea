@@ -317,13 +317,13 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     playerRows = new ArrayList<>();
     final Map<String, String> players = model.getPlayersToNodeListing();
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
-    final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder =
+    final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
         model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
     final Map<String, String> reloadSelections = PlayerID.currentPlayers(gameSelectorModel.getGameData());
-    final Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
+    final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
       final PlayerRow newPlayerRow =
-          new PlayerRow(name, reloadSelections, m_playerNamesAndAlliancesInTurnOrder.get(name),
+          new PlayerRow(name, reloadSelections, playerNamesAndAlliancesInTurnOrder.get(name),
               gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
       playerRows.add(newPlayerRow);
       newPlayerRow.update(players, playersEnabled);

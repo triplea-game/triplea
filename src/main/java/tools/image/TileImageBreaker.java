@@ -93,9 +93,9 @@ public class TileImageBreaker {
       for (int y = 0; (y) * TileManager.TILE_SIZE < map.getHeight(null); y++) {
         final Rectangle bounds = new Rectangle(x * TileManager.TILE_SIZE, y * TileManager.TILE_SIZE,
             TileManager.TILE_SIZE, TileManager.TILE_SIZE);
-        final GraphicsConfiguration m_localGraphicSystem =
+        final GraphicsConfiguration localGraphicSystem =
             GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-        final BufferedImage relief = m_localGraphicSystem.createCompatibleImage(TileManager.TILE_SIZE,
+        final BufferedImage relief = localGraphicSystem.createCompatibleImage(TileManager.TILE_SIZE,
             TileManager.TILE_SIZE, baseMap ? Transparency.BITMASK : Transparency.TRANSLUCENT);
         relief.getGraphics().drawImage(map, 0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE, bounds.x, bounds.y,
             bounds.x + TileManager.TILE_SIZE, bounds.y + TileManager.TILE_SIZE, observer);

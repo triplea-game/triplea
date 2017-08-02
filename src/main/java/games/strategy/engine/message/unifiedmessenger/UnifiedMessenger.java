@@ -60,11 +60,11 @@ public class UnifiedMessenger {
    */
   public UnifiedMessenger(final IMessenger messenger) {
     m_messenger = messenger;
-    final IMessageListener m_messageListener = (msg, from) -> UnifiedMessenger.this.messageReceived(msg, from);
-    m_messenger.addMessageListener(m_messageListener);
-    final IMessengerErrorListener m_messengerErrorListener =
+    final IMessageListener messageListener = (msg, from) -> UnifiedMessenger.this.messageReceived(msg, from);
+    m_messenger.addMessageListener(messageListener);
+    final IMessengerErrorListener messengerErrorListener =
         (messenger1, reason) -> UnifiedMessenger.this.messengerInvalid();
-    m_messenger.addErrorListener(m_messengerErrorListener);
+    m_messenger.addErrorListener(messengerErrorListener);
     if (m_messenger.isServer()) {
       m_hub = new UnifiedMessengerHub(m_messenger, this);
     }

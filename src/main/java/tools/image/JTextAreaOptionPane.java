@@ -41,8 +41,8 @@ class JTextAreaOptionPane {
     layout.setVgap(30);
     windowFrame.setLayout(layout);
     windowFrame.setTitle(title);
-    final JLabel m_label = new JLabel();
-    m_label.setText(labelText);
+    final JLabel label = new JLabel();
+    label.setText(labelText);
     okButton.setText("OK");
     okButton.setEnabled(false);
     editor.setEditable(false);
@@ -53,7 +53,7 @@ class JTextAreaOptionPane {
     }
     editor.setCaretPosition(0);
     windowFrame.setPreferredSize(new Dimension(editorSizeX, editorSizeY));
-    windowFrame.getContentPane().add(m_label, BorderLayout.NORTH);
+    windowFrame.getContentPane().add(label, BorderLayout.NORTH);
     windowFrame.getContentPane().add(new JScrollPane(editor), BorderLayout.CENTER);
     windowFrame.getContentPane().add(okButton, BorderLayout.SOUTH);
     okButton.addActionListener(e -> {

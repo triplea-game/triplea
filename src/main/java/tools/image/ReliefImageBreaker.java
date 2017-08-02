@@ -189,9 +189,9 @@ public class ReliefImageBreaker {
       item.translate(-bounds.x, -bounds.y);
       alphaChannelImage.getGraphics().fillPolygon(item);
     }
-    final GraphicsConfiguration m_localGraphicSystem =
+    final GraphicsConfiguration localGraphicSystem =
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-    final BufferedImage relief = m_localGraphicSystem.createCompatibleImage(width, height,
+    final BufferedImage relief = localGraphicSystem.createCompatibleImage(width, height,
         seaZoneOnly ? Transparency.BITMASK : Transparency.TRANSLUCENT);
     relief.getGraphics().drawImage(map, 0, 0, width, height, bounds.x, bounds.y, bounds.x + width, bounds.y + height,
         observer);

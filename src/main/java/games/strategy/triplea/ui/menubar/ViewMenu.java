@@ -172,7 +172,7 @@ class ViewMenu {
   }
 
   private void addUnitSizeMenu(final JMenu parentMenu) {
-    final NumberFormat s_decimalFormat = new DecimalFormat("00.##");
+    final NumberFormat decimalFormat = new DecimalFormat("00.##");
     // This is the action listener used
     class UnitSizeAction extends AbstractAction {
       private static final long serialVersionUID = -6280511505686687867L;
@@ -180,7 +180,7 @@ class ViewMenu {
 
       public UnitSizeAction(final double scaleFactor) {
         this.scaleFactor = scaleFactor;
-        putValue(Action.NAME, s_decimalFormat.format(scaleFactor * 100) + "%");
+        putValue(Action.NAME, decimalFormat.format(scaleFactor * 100) + "%");
       }
 
       @Override

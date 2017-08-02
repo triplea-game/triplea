@@ -76,19 +76,19 @@ public class TabbedProductionPanel extends ProductionPanel {
   private void calculateRowsAndColumns(final ProductionTabsProperties properties, final int largestList) {
     if (properties == null || properties.getRows() == 0 || properties.getColumns() == 0
         || properties.getRows() * properties.getColumns() < largestList) {
-      final int m_maxColumns;
+      final int maxColumns;
       if (largestList <= 36) {
-        m_maxColumns = Math.max(8,
+        maxColumns = Math.max(8,
             Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3), RoundingMode.UP).intValue()));
       } else if (largestList <= 64) {
-        m_maxColumns = Math.max(8,
+        maxColumns = Math.max(8,
             Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(4), RoundingMode.UP).intValue()));
       } else {
-        m_maxColumns = Math.max(8,
+        maxColumns = Math.max(8,
             Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5), RoundingMode.UP).intValue()));
       }
       rows =
-          Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(m_maxColumns), RoundingMode.UP).intValue());
+          Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(maxColumns), RoundingMode.UP).intValue());
       columns =
           Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(rows), RoundingMode.UP).intValue());
     } else {

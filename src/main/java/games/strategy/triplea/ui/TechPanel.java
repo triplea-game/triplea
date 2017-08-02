@@ -284,9 +284,9 @@ public class TechPanel extends ActionPanel {
       final JLabel title = new JLabel("Select the number of tech rolls:");
       title.setBorder(new EmptyBorder(5, 5, 5, 5));
       textField = new ScrollableTextField(0, pus / TechTracker.getTechCost(player));
-      final ScrollableTextFieldListener m_listener =
+      final ScrollableTextFieldListener listener =
           stf -> setLabel(this.pus - (TechTracker.getTechCost(this.player) * textField.getValue()));
-      textField.addChangeListener(m_listener);
+      textField.addChangeListener(listener);
       final JLabel costLabel = new JLabel("x" + TechTracker.getTechCost(this.player));
       setLabel(pus);
       final int space = 0;
@@ -338,11 +338,11 @@ public class TechPanel extends ActionPanel {
       title.setBorder(new EmptyBorder(5, 5, 5, 5));
       final int techCost = TechTracker.getTechCost(this.player);
       textField = new ScrollableTextField(0, totalPus / techCost);
-      final ScrollableTextFieldListener m_listener = stf -> {
+      final ScrollableTextFieldListener listener = stf -> {
         setLabel(TechTracker.getTechCost(this.player) * textField.getValue());
         setWidgetActivation();
       };
-      textField.addChangeListener(m_listener);
+      textField.addChangeListener(listener);
       final JLabel costLabel = new JLabel("x" + techCost + " cost per token");
       setLabel(0);
       setTokens(currTokens);

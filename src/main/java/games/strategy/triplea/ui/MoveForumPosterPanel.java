@@ -14,8 +14,8 @@ public class MoveForumPosterPanel extends AbstractForumPosterPanel {
 
   MoveForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    final AbstractAction m_doneAction = SwingAction.of("Done", e -> release());
-    forumPosterComponent = new ForumPosterComponent(getData(), m_doneAction, getTitle());
+    final AbstractAction doneAction = SwingAction.of("Done", e -> release());
+    forumPosterComponent = new ForumPosterComponent(getData(), doneAction, getTitle());
 
   }
 
