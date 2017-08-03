@@ -50,7 +50,6 @@ class ProLogWindow extends JDialog {
 
   private void initComponents() {
     final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    GridBagConstraints gridBagConstraints;
     final JPanel panel7 = new JPanel();
     final JButton restoreDefaultsButton = new JButton();
     final JButton settingsDetailsButton = new JButton();
@@ -93,7 +92,7 @@ class ProLogWindow extends JDialog {
     restoreDefaultsButton.setName("restoreDefaultsButton");
     restoreDefaultsButton.setPreferredSize(new Dimension(118, 23));
     restoreDefaultsButton.addActionListener(evt -> restoreDefaultsButtonActionPerformed());
-    gridBagConstraints = new GridBagConstraints();
+    GridBagConstraints gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.anchor = GridBagConstraints.WEST;
