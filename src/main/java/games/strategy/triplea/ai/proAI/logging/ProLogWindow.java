@@ -36,6 +36,15 @@ import games.strategy.ui.SwingAction;
 class ProLogWindow extends JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
 
+  private JTextArea currentLogTextArea = null;
+  private JTextArea aiOutputLogArea;
+  private JCheckBox enableAiLogging;
+  private JCheckBox limitLogHistoryCheckBox;
+  private JSpinner limitLogHistoryToSpinner;
+  private JComboBox<String> logDepth;
+  private JTabbedPane logHolderTabbedPane;
+  private JTabbedPane tabPaneMain;
+
   /** Creates new form ProLogWindow. */
   ProLogWindow(final TripleAFrame frame) {
     super(frame);
@@ -367,8 +376,6 @@ class ProLogWindow extends JDialog {
     dialog.setVisible(true);
   }
 
-  private JTextArea currentLogTextArea = null;
-
   void addMessage(final Level level, final String message) {
     try {
       if (currentLogTextArea == null) {
@@ -424,12 +431,4 @@ class ProLogWindow extends JDialog {
       });
     }
   }
-
-  private JTextArea aiOutputLogArea;
-  private JCheckBox enableAiLogging;
-  private JCheckBox limitLogHistoryCheckBox;
-  private JSpinner limitLogHistoryToSpinner;
-  private JComboBox<String> logDepth;
-  private JTabbedPane logHolderTabbedPane;
-  private JTabbedPane tabPaneMain;
 }
