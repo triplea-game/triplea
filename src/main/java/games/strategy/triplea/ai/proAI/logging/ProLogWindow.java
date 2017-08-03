@@ -44,8 +44,8 @@ class ProLogWindow extends JDialog {
 
   void clear() {
     this.dispose();
-    v_tabPaneMain = null;
-    v_logHolderTabbedPane = null;
+    tabPaneMain = null;
+    logHolderTabbedPane = null;
   }
 
   private void initComponents() {
@@ -57,17 +57,17 @@ class ProLogWindow extends JDialog {
     final JPanel panel13 = new JPanel();
     final JButton cancelButton = new JButton();
     final JButton okButton = new JButton();
-    v_tabPaneMain = new JTabbedPane();
+    tabPaneMain = new JTabbedPane();
     final JPanel panel8 = new JPanel();
-    v_logHolderTabbedPane = new JTabbedPane();
+    logHolderTabbedPane = new JTabbedPane();
     final JPanel panel9 = new JPanel();
     final JScrollPane aiOutputLogAreaScrollPane = new JScrollPane();
-    v_aiOutputLogArea = new JTextArea();
-    v_enableAILogging = new JCheckBox();
+    aiOutputLogArea = new JTextArea();
+    enableAiLogging = new JCheckBox();
     final JLabel label15 = new JLabel();
-    v_logDepth = new JComboBox<>();
-    v_limitLogHistoryToSpinner = new JSpinner();
-    v_limitLogHistoryCB = new JCheckBox();
+    logDepth = new JComboBox<>();
+    limitLogHistoryToSpinner = new JSpinner();
+    limitLogHistoryCheckBox = new JCheckBox();
     final JLabel label46 = new JLabel();
     final JPanel pauseAIs = new JPanel();
     setTitle("Hard AI Settings");
@@ -146,26 +146,26 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.insets = new Insets(0, 7, 0, 7);
     getContentPane().add(panel7, gridBagConstraints);
-    v_tabPaneMain.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-    v_tabPaneMain.setName("v_tabPaneMain");
-    v_tabPaneMain.setPreferredSize(new Dimension(500, screenSize.height - 200));
+    tabPaneMain.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+    tabPaneMain.setName("tabPaneMain");
+    tabPaneMain.setPreferredSize(new Dimension(500, screenSize.height - 200));
     panel8.setName("panel8");
     panel8.setPreferredSize(new Dimension(500, 314));
     panel8.setLayout(new GridBagLayout());
-    v_logHolderTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-    v_logHolderTabbedPane.setFont(new Font("Segoe UI", 0, 10));
-    v_logHolderTabbedPane.setName("v_logHolderTabbedPane");
+    logHolderTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+    logHolderTabbedPane.setFont(new Font("Segoe UI", 0, 10));
+    logHolderTabbedPane.setName("logHolderTabbedPane");
     panel9.setName("panel9");
     panel9.setLayout(new GridLayout(1, 0));
     aiOutputLogAreaScrollPane.setName("aiOutputLogAreaScrollPane");
-    v_aiOutputLogArea.setColumns(20);
-    v_aiOutputLogArea.setEditable(false);
-    v_aiOutputLogArea.setFont(new Font("Segoe UI", 0, 10));
-    v_aiOutputLogArea.setRows(5);
-    v_aiOutputLogArea.setName("v_aiOutputLogArea");
-    aiOutputLogAreaScrollPane.setViewportView(v_aiOutputLogArea);
+    aiOutputLogArea.setColumns(20);
+    aiOutputLogArea.setEditable(false);
+    aiOutputLogArea.setFont(new Font("Segoe UI", 0, 10));
+    aiOutputLogArea.setRows(5);
+    aiOutputLogArea.setName("aiOutputLogArea");
+    aiOutputLogAreaScrollPane.setViewportView(aiOutputLogArea);
     panel9.add(aiOutputLogAreaScrollPane);
-    v_logHolderTabbedPane.addTab("Pre-Game", panel9);
+    logHolderTabbedPane.addTab("Pre-Game", panel9);
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
@@ -175,16 +175,16 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.weighty = 99.0;
     gridBagConstraints.insets = new Insets(7, 7, 7, 7);
-    panel8.add(v_logHolderTabbedPane, gridBagConstraints);
-    v_enableAILogging.setSelected(true);
-    v_enableAILogging.setText("Enable AI Logging");
-    v_enableAILogging.setName("v_enableAILogging");
-    v_enableAILogging.addChangeListener(evt -> enableAiLoggingStateChanged());
+    panel8.add(logHolderTabbedPane, gridBagConstraints);
+    enableAiLogging.setSelected(true);
+    enableAiLogging.setText("Enable AI Logging");
+    enableAiLogging.setName("enableAiLogging");
+    enableAiLogging.addChangeListener(evt -> enableAiLoggingStateChanged());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 7, 0, 0);
-    panel8.add(v_enableAILogging, gridBagConstraints);
+    panel8.add(enableAiLogging, gridBagConstraints);
     label15.setText("Log Depth:");
     label15.setName("label15");
     gridBagConstraints = new GridBagConstraints();
@@ -192,33 +192,33 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 12, 0, 0);
     panel8.add(label15, gridBagConstraints);
-    v_logDepth.setModel(new DefaultComboBoxModel<>(new String[] {"Fine", "Finer", "Finest"}));
-    v_logDepth.setSelectedItem(v_logDepth.getItemAt(2));
-    v_logDepth.setName("v_logDepth");
+    logDepth.setModel(new DefaultComboBoxModel<>(new String[] {"Fine", "Finer", "Finest"}));
+    logDepth.setSelectedItem(logDepth.getItemAt(2));
+    logDepth.setName("logDepth");
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 5, 0, 0);
-    panel8.add(v_logDepth, gridBagConstraints);
-    v_limitLogHistoryToSpinner.setModel(new SpinnerNumberModel(5, 1, 100, 1));
-    v_limitLogHistoryToSpinner.setMinimumSize(new Dimension(60, 20));
-    v_limitLogHistoryToSpinner.setName("v_limitLogHistoryToSpinner");
-    v_limitLogHistoryToSpinner.setPreferredSize(new Dimension(60, 20));
+    panel8.add(logDepth, gridBagConstraints);
+    limitLogHistoryToSpinner.setModel(new SpinnerNumberModel(5, 1, 100, 1));
+    limitLogHistoryToSpinner.setMinimumSize(new Dimension(60, 20));
+    limitLogHistoryToSpinner.setName("limitLogHistoryToSpinner");
+    limitLogHistoryToSpinner.setPreferredSize(new Dimension(60, 20));
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 5;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.ipadx = 10;
     gridBagConstraints.insets = new Insets(7, 0, 0, 0);
-    panel8.add(v_limitLogHistoryToSpinner, gridBagConstraints);
-    v_limitLogHistoryCB.setSelected(true);
-    v_limitLogHistoryCB.setText("Limit Log History To:");
-    v_limitLogHistoryCB.setName("v_limitLogHistoryCB");
-    v_limitLogHistoryCB.addChangeListener(evt -> limitLogHistoryCbStateChanged());
+    panel8.add(limitLogHistoryToSpinner, gridBagConstraints);
+    limitLogHistoryCheckBox.setSelected(true);
+    limitLogHistoryCheckBox.setText("Limit Log History To:");
+    limitLogHistoryCheckBox.setName("limitLogHistoryCheckBox");
+    limitLogHistoryCheckBox.addChangeListener(evt -> limitLogHistoryCbStateChanged());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 0, 0, 12);
-    panel8.add(v_limitLogHistoryCB, gridBagConstraints);
+    panel8.add(limitLogHistoryCheckBox, gridBagConstraints);
     label46.setText("rounds");
     label46.setName("label46");
     gridBagConstraints = new GridBagConstraints();
@@ -232,7 +232,7 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.insets = new Insets(7, 0, 0, 0);
     panel8.add(pauseAIs, gridBagConstraints);
-    v_tabPaneMain.addTab("Debugging", panel8);
+    tabPaneMain.addTab("Debugging", panel8);
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -240,7 +240,7 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.weighty = 99.0;
     gridBagConstraints.insets = new Insets(7, 7, 0, 7);
-    getContentPane().add(v_tabPaneMain, gridBagConstraints);
+    getContentPane().add(tabPaneMain, gridBagConstraints);
     setBounds((screenSize.width - 800), 25, 775, 401);
   }
 
@@ -253,30 +253,30 @@ class ProLogWindow extends JDialog {
    * Loads the settings provided and displays it in this settings window.
    */
   private void loadSettings(final ProLogSettings settings) {
-    v_enableAILogging.setSelected(settings.EnableAILogging);
+    enableAiLogging.setSelected(settings.EnableAILogging);
     if (settings.AILoggingDepth.equals(Level.FINE)) {
-      v_logDepth.setSelectedIndex(0);
+      logDepth.setSelectedIndex(0);
     } else if (settings.AILoggingDepth.equals(Level.FINER)) {
-      v_logDepth.setSelectedIndex(1);
+      logDepth.setSelectedIndex(1);
     } else if (settings.AILoggingDepth.equals(Level.FINEST)) {
-      v_logDepth.setSelectedIndex(2);
+      logDepth.setSelectedIndex(2);
     }
-    v_limitLogHistoryCB.setSelected(settings.LimitLogHistory);
-    v_limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
+    limitLogHistoryCheckBox.setSelected(settings.LimitLogHistory);
+    limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
   }
 
   ProLogSettings createSettings() {
     final ProLogSettings settings = new ProLogSettings();
-    settings.EnableAILogging = v_enableAILogging.isSelected();
-    if (v_logDepth.getSelectedIndex() == 0) {
+    settings.EnableAILogging = enableAiLogging.isSelected();
+    if (logDepth.getSelectedIndex() == 0) {
       settings.AILoggingDepth = Level.FINE;
-    } else if (v_logDepth.getSelectedIndex() == 1) {
+    } else if (logDepth.getSelectedIndex() == 1) {
       settings.AILoggingDepth = Level.FINER;
-    } else if (v_logDepth.getSelectedIndex() == 2) {
+    } else if (logDepth.getSelectedIndex() == 2) {
       settings.AILoggingDepth = Level.FINEST;
     }
-    settings.LimitLogHistory = v_limitLogHistoryCB.isSelected();
-    settings.LimitLogHistoryTo = Integer.parseInt(v_limitLogHistoryToSpinner.getValue().toString());
+    settings.LimitLogHistory = limitLogHistoryCheckBox.isSelected();
+    settings.LimitLogHistoryTo = Integer.parseInt(limitLogHistoryToSpinner.getValue().toString());
     return settings;
   }
 
@@ -294,12 +294,12 @@ class ProLogWindow extends JDialog {
   }
 
   private void enableAiLoggingStateChanged() {
-    v_logDepth.setEnabled(v_enableAILogging.isSelected());
-    v_limitLogHistoryCB.setEnabled(v_enableAILogging.isSelected());
+    logDepth.setEnabled(enableAiLogging.isSelected());
+    limitLogHistoryCheckBox.setEnabled(enableAiLogging.isSelected());
   }
 
   private void limitLogHistoryCbStateChanged() {
-    v_limitLogHistoryToSpinner.setEnabled(v_limitLogHistoryCB.isSelected() && v_enableAILogging.isSelected());
+    limitLogHistoryToSpinner.setEnabled(limitLogHistoryCheckBox.isSelected() && enableAiLogging.isSelected());
   }
 
   private void formWindowClosing() {
@@ -321,7 +321,7 @@ class ProLogWindow extends JDialog {
   private void settingsDetailsButtonActionPerformed() {
     final JDialog dialog = new JDialog(this, "Pro AI - Settings Details");
     String message = "";
-    if (v_tabPaneMain.getSelectedIndex() == 0) { // Debugging
+    if (tabPaneMain.getSelectedIndex() == 0) { // Debugging
       message = "Debugging\r\n" + "\r\n"
           + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see "
           + "exactly what the AI is thinking.\r\n"
@@ -372,7 +372,7 @@ class ProLogWindow extends JDialog {
   void addMessage(final Level level, final String message) {
     try {
       if (currentLogTextArea == null) {
-        currentLogTextArea = v_aiOutputLogArea;
+        currentLogTextArea = aiOutputLogArea;
       }
       currentLogTextArea.append(message + "\r\n");
     } catch (final NullPointerException ex) { // This is bad, but we don't want TripleA crashing because of this...
@@ -393,7 +393,7 @@ class ProLogWindow extends JDialog {
       newScrollPane.setViewportView(newTextArea);
       newPanel.setLayout(new GridLayout());
       newPanel.add(newScrollPane);
-      v_logHolderTabbedPane.addTab(Integer.toString(roundNumber) + "-" + name, newPanel);
+      logHolderTabbedPane.addTab(Integer.toString(roundNumber) + "-" + name, newPanel);
       currentLogTextArea = newTextArea;
     });
     // Now remove round logging that has 'expired'.
@@ -413,11 +413,11 @@ class ProLogWindow extends JDialog {
         maxHistoryRounds = 1; // If we're not logging, trim to 1
       }
       SwingAction.invokeAndWait(() -> {
-        for (int i = 0; i < v_logHolderTabbedPane.getTabCount(); i++) {
+        for (int i = 0; i < logHolderTabbedPane.getTabCount(); i++) {
           // Remember, we never remove last tab, in case user turns logging back on in the middle of a round
-          if (i != 0 && i < v_logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
+          if (i != 0 && i < logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
             // Remove the tab and decrease i by one, so the next component will be checked
-            v_logHolderTabbedPane.removeTabAt(i);
+            logHolderTabbedPane.removeTabAt(i);
             i--;
           }
         }
@@ -425,11 +425,11 @@ class ProLogWindow extends JDialog {
     }
   }
 
-  private JTextArea v_aiOutputLogArea;
-  private JCheckBox v_enableAILogging;
-  private JCheckBox v_limitLogHistoryCB;
-  private JSpinner v_limitLogHistoryToSpinner;
-  private JComboBox<String> v_logDepth;
-  private JTabbedPane v_logHolderTabbedPane;
-  private JTabbedPane v_tabPaneMain;
+  private JTextArea aiOutputLogArea;
+  private JCheckBox enableAiLogging;
+  private JCheckBox limitLogHistoryCheckBox;
+  private JSpinner limitLogHistoryToSpinner;
+  private JComboBox<String> logDepth;
+  private JTabbedPane logHolderTabbedPane;
+  private JTabbedPane tabPaneMain;
 }
