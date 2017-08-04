@@ -322,7 +322,8 @@ public class ConnectionFinder {
     int lastMoveToIndex = -1;
     while (!pathIterator.isDone()) {
       final double[] coordinates = new double[6];
-      switch (pathIterator.currentSegment(coordinates)) {
+      final int segmentType = pathIterator.currentSegment(coordinates);
+      switch (segmentType) {
         case PathIterator.SEG_MOVETO:
           pointList.add(new Point2D.Double(coordinates[0], coordinates[1]));
           lastMoveToIndex++;
@@ -344,6 +345,8 @@ public class ConnectionFinder {
             pointList.add(pointList.get(lastMoveToIndex));
           }
           break;
+        default:
+          throw new AssertionError("unknown path iterator segment type: " + segmentType);
       }
       pathIterator.next();
     }
