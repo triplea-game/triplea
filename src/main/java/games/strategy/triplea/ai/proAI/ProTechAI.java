@@ -105,7 +105,6 @@ final class ProTechAI {
       float secondStrength = 0.0F;
       float blitzStrength = 0.0F;
       float strength = 0.0F;
-      float airStrength = 0.0F;
       enemyPlayer = playerIter.next();
       final Match<Unit> enemyPlane = Match.allOf(
           Matches.UnitIsAir,
@@ -122,7 +121,6 @@ final class ProTechAI {
       final Match<Unit> aTransport = Match.allOf(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> eFTerrs = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
-      int maxBomberDistance = 0;
       // should change this to read production frontier and tech
       // reality is 99% of time units considered will have full move.
       // and likely player will have at least 1 max move plane.
@@ -134,11 +132,6 @@ final class ProTechAI {
       maxFighterDistance--;
       if (maxFighterDistance < 0) {
         maxFighterDistance = 0;
-      }
-      // must be able to land...won't miss anything here...unless special bombers that can land on carrier per above
-      maxBomberDistance--;
-      if (maxBomberDistance < 0) {
-        maxBomberDistance = 0;
       }
       final List<Territory> eTTerrs = findUnitTerr(data, aTransport);
       int maxTransportDistance = 0;
@@ -179,7 +172,7 @@ final class ProTechAI {
       }
       final List<Unit> attackPlanes =
           findPlaneAttackersThatCanLand(location, maxFighterDistance, enemyPlayer, data, ignoreTerr, checked);
-      airStrength += allairstrength(attackPlanes, true);
+      final float airStrength = allairstrength(attackPlanes, true);
       if (Matches.territoryHasWaterNeighbor(data).match(location) && Matches.TerritoryIsLand.match(location)) {
         for (final Territory t4 : data.getMap().getNeighbors(location, maxTransportDistance)) {
           if (!t4.isWater()) {

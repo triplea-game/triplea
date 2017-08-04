@@ -158,7 +158,6 @@ public class HistoryLog extends JFrame {
     final PrintWriter logWriter = printWriter;
     final String moreIndent = "    ";
     // print out the parent nodes
-    DefaultMutableTreeNode curNode = printNode;
     final TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
     PlayerID currentPlayer = null;
     if (parentPath != null) {
@@ -186,6 +185,7 @@ public class HistoryLog extends JFrame {
     }
     final List<String> moveList = new ArrayList<>();
     boolean moving = false;
+    DefaultMutableTreeNode curNode = printNode;
     do {
       // keep track of conquered territory during combat
       String conquerStr = "";
