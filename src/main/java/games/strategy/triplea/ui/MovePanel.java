@@ -1407,6 +1407,9 @@ public class MovePanel extends AbstractMovePanel {
               undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
             }
             break;
+          default:
+            // ignore key
+            break;
         }
       }
 

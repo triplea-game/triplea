@@ -130,6 +130,8 @@ public class UnitsDrawer implements IDrawable {
                 null);
           }
           break;
+        default:
+          throw new AssertionError("unknown unit flag draw mode: " + drawUnitNationMode);
       }
     } else {
       if (img.isPresent()) {

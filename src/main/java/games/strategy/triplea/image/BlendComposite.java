@@ -172,8 +172,9 @@ class BlendComposite implements Composite {
                   Math.min(255, src[3] + dst[3])};
             }
           };
+        default:
+          throw new IllegalArgumentException("Blender not implemented for " + composite.getMode());
       }
-      throw new IllegalArgumentException("Blender not implement for " + composite.getMode().name());
     }
   }
 }
