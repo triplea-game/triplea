@@ -9,6 +9,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
+import games.strategy.engine.framework.IGameLoader;
 import games.strategy.util.Version;
 import games.strategy.util.memento.MementoExporter;
 import games.strategy.util.memento.MementoImportException;
@@ -37,6 +38,7 @@ public final class GameDataMemento {
   @VisibleForTesting
   interface PropertyNames {
     String DICE_SIDES = "diceSides";
+    String LOADER = "loader";
     String NAME = "name";
     String VERSION = "version";
   }
@@ -100,6 +102,7 @@ public final class GameDataMemento {
     @Override
     public void exportProperties(final GameData gameData, final Map<String, Object> propertiesByName) {
       propertiesByName.put(PropertyNames.DICE_SIDES, gameData.getDiceSides());
+      propertiesByName.put(PropertyNames.LOADER, gameData.getGameLoader());
       propertiesByName.put(PropertyNames.NAME, gameData.getGameName());
       propertiesByName.put(PropertyNames.VERSION, gameData.getGameVersion());
       // TODO: handle remaining properties
@@ -120,6 +123,7 @@ public final class GameDataMemento {
     public GameData importProperties(final Map<String, Object> propertiesByName) throws MementoImportException {
       final GameData gameData = new GameData();
       gameData.setDiceSides(getRequiredProperty(propertiesByName, PropertyNames.DICE_SIDES, Integer.class));
+      gameData.setGameLoader(getRequiredProperty(propertiesByName, PropertyNames.LOADER, IGameLoader.class));
       gameData.setGameName(getRequiredProperty(propertiesByName, PropertyNames.NAME, String.class));
       gameData.setGameVersion(getRequiredProperty(propertiesByName, PropertyNames.VERSION, Version.class));
       // TODO: handle remaining properties

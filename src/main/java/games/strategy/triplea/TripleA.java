@@ -183,4 +183,9 @@ public class TripleA implements IGameLoader {
       }
     };
   }
+
+  @Override
+  public String toString() {
+    return "TripleA[]";
+  }
 }

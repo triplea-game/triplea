@@ -515,6 +515,8 @@ public class GameData implements Serializable {
     sb.append(gameName);
     sb.append(", gameVersion=");
     sb.append(gameVersion);
+    sb.append(", loader=");
+    sb.append(loader);
     // TODO: include remaining significant fields
     sb.append("]");
     return sb.toString();

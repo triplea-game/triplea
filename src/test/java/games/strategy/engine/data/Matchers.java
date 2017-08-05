@@ -45,9 +45,14 @@ public final class Matchers {
     @Override
     protected boolean matchesSafely(final GameData actual) {
       return (expected.getDiceSides() == actual.getDiceSides())
+          && areBothNullOrBothNotNull(expected.getGameLoader(), actual.getGameLoader())
           && Objects.equals(expected.getGameName(), actual.getGameName())
           && Objects.equals(expected.getGameVersion(), actual.getGameVersion());
       // TODO: include remaining fields
+    }
+
+    private static boolean areBothNullOrBothNotNull(final Object expected, final Object actual) {
+      return (expected == null) == (actual == null);
     }
   }
 }
