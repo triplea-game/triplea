@@ -2,12 +2,10 @@ package games.strategy.engine.config.client;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -30,29 +28,5 @@ public class GameEnginePropertyReaderTest {
         .thenReturn("1.0.1.3");
 
     assertThat(testObj.getEngineVersion(), is(new Version(1, 0, 1, 3)));
-  }
-
-  @Test
-  public void useNewSaveGameFormat_ShouldReturnTrueWhenPropertyValueIsCaseSensitiveTrue() {
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.NEW_SAVE_GAME_FORMAT))
-        .thenReturn("true");
-
-    assertThat(testObj.useNewSaveGameFormat(), is(true));
-  }
-
-  @Test
-  public void useNewSaveGameFormat_ShouldReturnTrueWhenPropertyValueIsCaseInsensitiveTrue() {
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.NEW_SAVE_GAME_FORMAT))
-        .thenReturn("True");
-
-    assertThat(testObj.useNewSaveGameFormat(), is(true));
-  }
-
-  @Test
-  public void useNewSaveGameFormat_ShouldReturnFalseWhenPropertyValueIsAbsent() {
-    when(mockPropertyFileReader.readProperty(GameEnginePropertyReader.PropertyKeys.NEW_SAVE_GAME_FORMAT))
-        .thenReturn("");
-
-    assertThat(testObj.useNewSaveGameFormat(), is(false));
   }
 }
