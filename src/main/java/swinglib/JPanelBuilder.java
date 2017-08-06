@@ -2,17 +2,34 @@ package swinglib;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.LayoutManager;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 
 import org.apache.commons.math3.util.Pair;
+
+import com.google.common.base.Preconditions;
+
+import games.strategy.debug.ClientLogger;
+import games.strategy.triplea.ResourceLoader;
 
 /**
  * Example usage:
@@ -27,12 +44,15 @@ import org.apache.commons.math3.util.Pair;
 public class JPanelBuilder {
 
   private final Collection<Pair<Component, BorderLayoutPosition>> components = new ArrayList<>();
-  private Layout layout = Layout.DEFAULT;
-  private int gridRows;
-  private int gridColumns;
-  private BorderType borderType;
-  private int borderWidth;
-  private Float horizontalAlignment;
+  private Float xAlignment;
+  private String backgroundImage;
+  private Border border;
+  private LayoutManager layout;
+  private BoxLayoutType boxLayoutType = null;
+
+  private boolean useGridBagHelper = false;
+  private int gridBagHelperColumns;
+
 
   private JPanelBuilder() {}
 
@@ -45,36 +65,57 @@ public class JPanelBuilder {
    * Values that must be set: (requires no values to be set)
    */
   public JPanel build() {
-    final JPanel panel = new JPanel();
-    if (borderType != null) {
-      switch (borderType) {
-        case EMPTY:
-        default:
-          panel.setBorder(new EmptyBorder(borderWidth, borderWidth, borderWidth, borderWidth));
-          break;
+
+    JPanel panel = new JPanel();
+
+    panel.setOpaque(false);
+
+    if (backgroundImage != null) {
+      final URL backgroundImageUrl = ResourceLoader.getGameEngineAssetLoader().getResource(backgroundImage);
+
+      try {
+        final BufferedImage bufferedImaged = ImageIO.read(backgroundImageUrl);
+        panel = new JPanel() {
+          private static final long serialVersionUID = -5926048824903223767L;
+
+          @Override
+          protected void paintComponent(final Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(bufferedImaged, 50, 200, null);
+          }
+        };
+      } catch (final IOException e) {
+        ClientLogger.logError("Could not load image: " + backgroundImage, e);
       }
     }
-    switch (layout) {
-      case GRID:
-        panel.setLayout(new GridLayout(gridRows, gridColumns));
-        break;
-      case GRID_BAG:
-        panel.setLayout(new GridBagLayout());
-        break;
-      case BOX_LAYOUT_HORIZONTAL:
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        break;
-      case BOX_LAYOUT_VERTICAL:
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        break;
-      case DEFAULT:
-      default:
-        panel.setLayout(new BorderLayout());
-        break;
+
+
+    if (border != null) {
+      panel.setBorder(border);
     }
+
+    if (layout != null) {
+    } else if (boxLayoutType != null) {
+      final int boxDirection = boxLayoutType == BoxLayoutType.HORIZONTAL ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS;
+      layout = new BoxLayout(panel, boxDirection);
+    } else {
+      layout =new BorderLayout();
+    }
+
+    panel.setLayout(layout);
+
+    GridBagHelper gridBagHelper = null;
+    if (useGridBagHelper) {
+      gridBagHelper = new GridBagHelper(panel, gridBagHelperColumns);
+    }
+
     for (final Pair<Component, BorderLayoutPosition> child : components) {
       if (child.getSecond() == BorderLayoutPosition.DEFAULT) {
-        panel.add(child.getFirst());
+        if (gridBagHelper != null) {
+          gridBagHelper.add(child.getFirst());
+        } else {
+          panel.add(child.getFirst());
+        }
       } else {
         switch (child.getSecond()) {
           case CENTER:
@@ -93,29 +134,31 @@ public class JPanelBuilder {
             panel.add(child.getFirst(), BorderLayout.EAST);
             break;
           default:
+            Preconditions.checkState(layout != null);
             panel.add(child.getFirst());
             break;
         }
       }
     }
-    if (horizontalAlignment != null) {
-      panel.setAlignmentX(horizontalAlignment);
+    if (xAlignment != null) {
+      panel.setAlignmentX(xAlignment);
     }
+
     return panel;
   }
 
   public JPanelBuilder gridBagLayout() {
-    layout = Layout.GRID_BAG;
+    layout = new GridBagLayout();
     return this;
   }
 
   public JPanelBuilder horizontalBoxLayout() {
-    layout = Layout.BOX_LAYOUT_HORIZONTAL;
+    boxLayoutType = BoxLayoutType.HORIZONTAL;
     return this;
   }
 
   public JPanelBuilder verticalBoxLayout() {
-    layout = Layout.BOX_LAYOUT_VERTICAL;
+    boxLayoutType = BoxLayoutType.VERTICAL;
     return this;
   }
 
@@ -139,11 +182,25 @@ public class JPanelBuilder {
     return this;
   }
 
+  public JPanelBuilder addWestIf(final boolean condition, final Supplier<Component> componentSupplier) {
+    if(condition) {
+      addWest(componentSupplier.get());
+    }
+    return this;
+  }
+
+  public JPanelBuilder addCenterIf(final boolean condition, final Supplier<Component> componentSupplier) {
+    if(condition) {
+      addCenter(componentSupplier.get());
+    }
+    return this;
+  }
+
+
   public JPanelBuilder addCenter(final Component child) {
     components.add(new Pair<>(child, BorderLayoutPosition.CENTER));
     return this;
   }
-
 
   public JPanelBuilder add(final Component component) {
     components.add(new Pair<>(component, BorderLayoutPosition.DEFAULT));
@@ -152,45 +209,78 @@ public class JPanelBuilder {
 
   /**
    * Specify a grid layout with a given number of rows and columns.
-   * 
+   *
    * @param rows First parameter for 'new GridLayout'
    * @param columns Second parameter for 'new GridLayout'
    */
   public JPanelBuilder gridLayout(final int rows, final int columns) {
-    layout = Layout.GRID;
-    this.gridRows = rows;
-    this.gridColumns = columns;
+    layout = new GridLayout(rows, columns);
     return this;
   }
 
-  public JPanelBuilder border(final BorderType borderType) {
-    this.borderType = borderType;
+  public JPanelBuilder borderEmpty(final int borderWidth) {
+    border = new EmptyBorder(borderWidth, borderWidth, borderWidth, borderWidth);
     return this;
   }
 
-  public JPanelBuilder borderWidth(final int borderWidth) {
-    this.borderWidth = borderWidth;
+  public JPanelBuilder borderEtched() {
+    border = new EtchedBorder();
     return this;
   }
 
   public JPanelBuilder horizontalAlignmentCenter() {
-    this.horizontalAlignment = JComponent.CENTER_ALIGNMENT;
+    this.xAlignment = JComponent.CENTER_ALIGNMENT;
     return this;
   }
 
-  private enum Layout {
-    DEFAULT, GRID, GRID_BAG, BOX_LAYOUT_HORIZONTAL, BOX_LAYOUT_VERTICAL
+  public JPanelBuilder backgroundImage(final String imagePath) {
+    this.backgroundImage = imagePath;
+    return this;
   }
 
-  private enum BorderLayoutPosition {
-    DEFAULT, CENTER, SOUTH, NORTH, WEST, EAST
+  public JPanelBuilder flowLayout() {
+    layout = new FlowLayout();
+    return this;
+  }
+
+  public JPanelBuilder addEach(final List<? extends Component> components) {
+    components.forEach(this::add);
+    return this;
+  }
+
+  public JPanelBuilder addEach(final Component component, final Component other) {
+    add(component);
+    add(other);
+    return this;
+  }
+
+  public <T> JPanelBuilder addEach(final Iterable<? extends T> components,
+      final Function<T, Component> componentFunction) {
+    components.forEach(value -> this.add(componentFunction.apply(value)));
+    return this;
+  }
+
+  public JPanelBuilder withGridBagHelper(final int gridBagHelperColumns) {
+    this.useGridBagHelper = true;
+    this.gridBagHelperColumns = gridBagHelperColumns;
+    return this;
   }
 
 
   /**
-   * Enumeration of the different types of borders that can be chosen.
+   * BoxLayout needs a reference to the panel component that is using the layout, so we cannot create the layout
+   * until after we create the component. Thus we use a flag to create it, rather than creating and storing
+   * the layout manager directly as we do for the other layouts such as gridLayout.
    */
+  private enum BoxLayoutType {
+    NONE, HORIZONTAL, VERTICAL
+  }
+
+  public enum BorderLayoutPosition {
+    DEFAULT, CENTER, SOUTH, NORTH, WEST, EAST
+  }
+
   public enum BorderType {
-    EMPTY
+    EMPTY, ETCHED
   }
 }

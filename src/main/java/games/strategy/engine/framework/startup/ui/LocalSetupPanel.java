@@ -25,7 +25,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
 
   public LocalSetupPanel(final GameSelectorModel model) {
-    gameSelectorModel = model;
+    gameSelectorModel = model == null ? new GameSelectorModel() : model;
     layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData());
     setupListeners();
     setWidgetActivation();
@@ -84,7 +84,6 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public ILauncher getLauncher() {
-    final IRandomSource randomSource = new PlainRandomSource();
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PlayerSelectorRow player : this.playerTypes) {
@@ -96,7 +95,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     final PlayerListing pl =
         new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
-    final LocalLauncher launcher = new LocalLauncher(gameSelectorModel, randomSource, pl);
+    final LocalLauncher launcher = new LocalLauncher(gameSelectorModel, pl);
     return launcher;
   }
 

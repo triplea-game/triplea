@@ -22,7 +22,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 
-class PlayerSelectorRow {
+public class PlayerSelectorRow {
 
   private static final String PLAYER_TYPE_AI = "AI";
   private static final String PLAYER_TYPE_DOES_NOTHING = "DoesNothing";
@@ -41,7 +41,7 @@ class PlayerSelectorRow {
   private final Collection<String> disableable;
   private final SetupPanel parent;
 
-  PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerID player,
+  public PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerID player,
       final Map<String, String> reloadSelections, final Collection<String> disableable,
       final HashMap<String, Boolean> playersEnablementListing, final Collection<String> playerAlliances,
       final String[] types, final SetupPanel parent, final GameProperties gameProperties) {
@@ -114,7 +114,7 @@ class PlayerSelectorRow {
     setWidgetActivation();
   }
 
-  void layout(final int row, final Container container) {
+  public void layout(final int row, final Container container) {
     int gridx = 0;
     if (!disableable.isEmpty()) {
       container.add(enabledCheckBox, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
@@ -147,7 +147,7 @@ class PlayerSelectorRow {
     }
   }
 
-  void setResourceModifiersVisble(final boolean isVisible) {
+  public void setResourceModifiersVisble(final boolean isVisible) {
     // TODO: remove null check for next incompatible release
     if (incomePercentage != null) {
       incomePercentage.setVisible(isVisible);
@@ -160,7 +160,7 @@ class PlayerSelectorRow {
     }
   }
 
-  void setPlayerType(final String playerType) {
+  public void setPlayerType(final String playerType) {
     if (enabled && !player.isHidden()) {
       playerTypes.setSelectedItem(playerType);
     }

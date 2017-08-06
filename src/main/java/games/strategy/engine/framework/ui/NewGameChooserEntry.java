@@ -58,7 +58,7 @@ public class NewGameChooserEntry {
     }
   }
 
-  public void fullyParseGameData() throws GameParseException {
+  public GameData fullyParseGameData() throws GameParseException {
     // TODO: We should be setting this in the the constructor. At this point, you have to call methods in the
     // correct order for things to work, and that is bads.
     gameData = null;
@@ -67,13 +67,13 @@ public class NewGameChooserEntry {
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (!inputStream.isPresent()) {
-      return;
+      return gameData;
     }
 
     try (InputStream input = inputStream.get()) {
       gameData = new GameParser(url.toString()).parse(input, gameName, false);
       gameDataFullyLoaded = true;
-
+      return gameData;
     } catch (final EngineVersionException e) {
       ClientLogger.logQuietly(e);
       throw new GameParseException(e.getMessage());

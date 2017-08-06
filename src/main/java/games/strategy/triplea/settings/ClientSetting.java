@@ -69,7 +69,8 @@ public enum ClientSetting implements GameSetting {
   TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME,
   USER_MAPS_FOLDER_PATH(new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps")),
   WHEEL_SCROLL_AMOUNT(60),
-  PLAYER_NAME(System.getProperty("user.name"));
+  PLAYER_NAME(System.getProperty("user.name")),
+  SELECTED_GAME_LOCATION;
 
   public final String defaultValue;
 
@@ -127,4 +128,5 @@ public enum ClientSetting implements GameSetting {
   public String value() {
     return Strings.nullToEmpty(Preferences.userNodeForPackage(ClientSetting.class).get(name(), defaultValue));
   }
+
 }

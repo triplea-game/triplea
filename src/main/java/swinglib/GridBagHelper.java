@@ -1,5 +1,6 @@
 package swinglib;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -49,12 +50,24 @@ public final class GridBagHelper {
     addAll(child);
   }
 
+  public void add(final Component child) {
+    addAll(child);
+  }
+
   /**
    * Adds many components in one go, a convenience api {@see add}.
    */
   public void addAll(final JComponent ... children) {
     Preconditions.checkArgument(children.length > 0);
     for (final JComponent child : children) {
+      parent.add(child, nextConstraint());
+      elementCount++;
+    }
+  }
+
+  public void addAll(final Component ... children) {
+    Preconditions.checkArgument(children.length > 0);
+    for (final Component child : children) {
       parent.add(child, nextConstraint());
       elementCount++;
     }
