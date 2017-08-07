@@ -53,7 +53,7 @@ public class MovePanel extends AbstractMovePanel {
   private static final int defaultMinTransportCost = 5;
   /**
    * @param deselectNumber
-   *        adds or removes 10 units (used to remove 1/s_deselectNumber of total units (useful for splitting large
+   *        adds or removes 10 units (used to remove 1/deselectNumber of total units (useful for splitting large
    *        armies), but changed it
    *        after feedback).
    */
@@ -70,7 +70,7 @@ public class MovePanel extends AbstractMovePanel {
   private Point mouseLastUpdatePoint;
   // use a LinkedHashSet because we want to know the order
   private final Set<Unit> selectedUnits = new LinkedHashSet<>();
-  private static Map<Unit, Collection<Unit>> s_dependentUnits = new HashMap<>();
+  private static Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
   // the must move with details for the currently selected territory
   // note this is kept in sync because we do not modify selectedTerritory directly
   // instead we only do so through the private setter
@@ -95,14 +95,14 @@ public class MovePanel extends AbstractMovePanel {
   public static void clearDependents(final Collection<Unit> units) {
     for (final Unit unit : units) {
       if (Matches.UnitIsAirTransport.match(unit)) {
-        s_dependentUnits.remove(unit);
+        dependentUnits.remove(unit);
       }
     }
   }
 
   @Override
   protected void clearDependencies() {
-    s_dependentUnits.clear();
+    dependentUnits.clear();
   }
 
   public void setMoveType(final MoveType moveType) {
@@ -449,7 +449,7 @@ public class MovePanel extends AbstractMovePanel {
     getMap().hideMouseCursor();
     // TODO kev check for already loaded airTransports
     Collection<Unit> transportsToLoad = Collections.emptyList();
-    if (MoveValidator.isLoad(units, s_dependentUnits, route, getData(), getCurrentPlayer())) {
+    if (MoveValidator.isLoad(units, dependentUnits, route, getData(), getCurrentPlayer())) {
       transportsToLoad = route.getEnd().getUnits().getMatches(
           Match.allOf(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), getData())));
     }
@@ -467,7 +467,7 @@ public class MovePanel extends AbstractMovePanel {
     getData().acquireReadLock();
     try {
       allResults = AbstractMoveDelegate.validateMove(moveType, bestWithDependents, route, getCurrentPlayer(),
-          transportsToLoad, s_dependentUnits, nonCombat, getUndoableMoves(), getData());
+          transportsToLoad, dependentUnits, nonCombat, getUndoableMoves(), getData());
     } finally {
       getData().releaseReadLock();
     }
@@ -479,13 +479,13 @@ public class MovePanel extends AbstractMovePanel {
         best = Match.getMatches(best, Matches.UnitCanInvade);
         bestWithDependents = addMustMoveWith(best);
         lastResults = AbstractMoveDelegate.validateMove(moveType, bestWithDependents, route, getCurrentPlayer(),
-            transportsToLoad, s_dependentUnits, nonCombat, getUndoableMoves(), getData());
+            transportsToLoad, dependentUnits, nonCombat, getUndoableMoves(), getData());
       }
       while (!best.isEmpty() && !lastResults.isMoveValid()) {
         best = best.subList(1, best.size());
         bestWithDependents = addMustMoveWith(best);
         lastResults = AbstractMoveDelegate.validateMove(moveType, bestWithDependents, route, getCurrentPlayer(),
-            transportsToLoad, s_dependentUnits, nonCombat, getUndoableMoves(), getData());
+            transportsToLoad, dependentUnits, nonCombat, getUndoableMoves(), getData());
       }
     }
     if (allResults.isMoveValid()) {
@@ -565,7 +565,7 @@ public class MovePanel extends AbstractMovePanel {
     final Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
     final PlayerID unitOwner = getUnitOwner(unitsToLoad);
     final MustMoveWithDetails endMustMoveWith =
-        MoveValidator.getMustMoveWith(route.getEnd(), endOwnedUnits, s_dependentUnits, getData(), unitOwner);
+        MoveValidator.getMustMoveWith(route.getEnd(), endOwnedUnits, dependentUnits, getData(), unitOwner);
     int minTransportCost = defaultMinTransportCost;
     for (final Unit unit : unitsToLoad) {
       minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
@@ -854,8 +854,8 @@ public class MovePanel extends AbstractMovePanel {
           final Collection<Unit> unitsToLoad =
               Match.getMatches(route.getStart().getUnits().getUnits(), unitsToLoadMatchBuilder.all());
           unitsToLoad.removeAll(selectedUnits);
-          for (final Unit u : s_dependentUnits.keySet()) {
-            unitsToLoad.removeAll(s_dependentUnits.get(u));
+          for (final Unit u : dependentUnits.keySet()) {
+            unitsToLoad.removeAll(dependentUnits.get(u));
           }
           // Get the potential air transports to load
           final Match.CompositeBuilder<Unit> candidateAirTransportsMatchBuilder = Match.newCompositeBuilder(
@@ -866,7 +866,7 @@ public class MovePanel extends AbstractMovePanel {
           final Collection<Unit> candidateAirTransports =
               Match.getMatches(t.getUnits().getMatches(unitsToMoveMatch), candidateAirTransportsMatchBuilder.all());
           // candidateAirTransports.removeAll(selectedUnits);
-          candidateAirTransports.removeAll(s_dependentUnits.keySet());
+          candidateAirTransports.removeAll(dependentUnits.keySet());
           if (unitsToLoad.size() > 0 && candidateAirTransports.size() > 0) {
             final Collection<Unit> airTransportsToLoad = getAirTransportsToLoad(candidateAirTransports);
             selectedUnits.addAll(airTransportsToLoad);
@@ -875,7 +875,7 @@ public class MovePanel extends AbstractMovePanel {
                   getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
               selectedUnits.addAll(loadedAirTransports);
               final MoveDescription message =
-                  new MoveDescription(loadedAirTransports, route, airTransportsToLoad, s_dependentUnits);
+                  new MoveDescription(loadedAirTransports, route, airTransportsToLoad, dependentUnits);
               setMoveMessage(message);
             }
           }
@@ -895,7 +895,7 @@ public class MovePanel extends AbstractMovePanel {
         return (airTransports.size() <= candidateAirTransports.size());
       });
       // Allow player to select which to load.
-      final UnitChooser chooser = new UnitChooser(candidateAirTransports, defaultSelections, s_dependentUnits,
+      final UnitChooser chooser = new UnitChooser(candidateAirTransports, defaultSelections, dependentUnits,
           /* categorizeMovement */true, /* categorizeTransportCost */false, getGameData(), /* allowTwoHit */false,
           getMap().getUiContext(), transportsToLoadMatch);
       chooser.setTitle("Select air transports to load");
@@ -956,12 +956,12 @@ public class MovePanel extends AbstractMovePanel {
           final Collection<Unit> unitsColl = new ArrayList<>();
           unitsColl.add(unit);
           final Unit airTransport = mapping.get(unit);
-          if (s_dependentUnits.containsKey(airTransport)) {
-            unitsColl.addAll(s_dependentUnits.get(airTransport));
+          if (dependentUnits.containsKey(airTransport)) {
+            unitsColl.addAll(dependentUnits.get(airTransport));
           }
-          s_dependentUnits.put(airTransport, unitsColl);
+          dependentUnits.put(airTransport, unitsColl);
           mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(),
-              route.getStart().getUnits().getUnits(), s_dependentUnits, getData(), player);
+              route.getStart().getUnits().getUnits(), dependentUnits, getData(), player);
         }
       }
       return loadedUnits;
@@ -986,8 +986,8 @@ public class MovePanel extends AbstractMovePanel {
         if (me.isControlDown()) {
           selectedUnits.clear();
           // Clear the stored dependents for AirTransports
-          if (!s_dependentUnits.isEmpty()) {
-            s_dependentUnits.clear();
+          if (!dependentUnits.isEmpty()) {
+            dependentUnits.clear();
           }
         } else if (!unitsWithoutDependents.isEmpty()) {
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
@@ -996,11 +996,11 @@ public class MovePanel extends AbstractMovePanel {
           for (int i = 0; i < iterCount; i++) {
             unitsToRemove.add(unitsWithoutDependents.get(unitsWithoutDependents.size() - 1));
             // Clear the stored dependents for AirTransports
-            if (!s_dependentUnits.isEmpty()) {
+            if (!dependentUnits.isEmpty()) {
               for (final Unit airTransport : unitsWithoutDependents) {
-                if (s_dependentUnits.containsKey(airTransport)) {
-                  unitsToRemove.addAll(s_dependentUnits.get(airTransport));
-                  s_dependentUnits.remove(airTransport);
+                if (dependentUnits.containsKey(airTransport)) {
+                  unitsToRemove.addAll(dependentUnits.get(airTransport));
+                  dependentUnits.remove(airTransport);
                 }
               }
             }
@@ -1011,11 +1011,11 @@ public class MovePanel extends AbstractMovePanel {
         if (me.isControlDown()) {
           unitsToRemove.addAll(units);
           // Clear the stored dependents for AirTransports
-          if (!s_dependentUnits.isEmpty()) {
+          if (!dependentUnits.isEmpty()) {
             for (final Unit airTransport : unitsWithoutDependents) {
-              if (s_dependentUnits.containsKey(airTransport)) {
-                unitsToRemove.addAll(s_dependentUnits.get(airTransport));
-                s_dependentUnits.remove(airTransport);
+              if (dependentUnits.containsKey(airTransport)) {
+                unitsToRemove.addAll(dependentUnits.get(airTransport));
+                dependentUnits.remove(airTransport);
               }
             }
           }
@@ -1026,17 +1026,17 @@ public class MovePanel extends AbstractMovePanel {
           // doesn't matter which unit we remove since units are assigned to routes later
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
           // changed to just remove 10 units
-          // (int) Math.max(1, Math.floor(units.size() / s_deselectNumber))
+          // (int) Math.max(1, Math.floor(units.size() / deselectNumber))
           final int iterCount = (me.isAltDown()) ? deselectNumber : 1;
           int remCount = 0;
           for (final Unit unit : units) {
             if (selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
               unitsToRemove.add(unit);
               // Clear the stored dependents for AirTransports
-              if (!s_dependentUnits.isEmpty()) {
+              if (!dependentUnits.isEmpty()) {
                 for (final Unit airTransport : unitsWithoutDependents) {
-                  if (s_dependentUnits.containsKey(airTransport)) {
-                    s_dependentUnits.get(airTransport).remove(unit);
+                  if (dependentUnits.containsKey(airTransport)) {
+                    dependentUnits.get(airTransport).remove(unit);
                   }
                 }
               }
@@ -1136,7 +1136,7 @@ public class MovePanel extends AbstractMovePanel {
           return;
         }
       }
-      final MoveDescription message = new MoveDescription(units, route, transports, s_dependentUnits);
+      final MoveDescription message = new MoveDescription(units, route, transports, dependentUnits);
       setMoveMessage(message);
       setFirstSelectedTerritory(null);
       setSelectedEndpointTerritory(null);
@@ -1300,7 +1300,7 @@ public class MovePanel extends AbstractMovePanel {
       mustMoveWithDetails = null;
     } else {
       mustMoveWithDetails = MoveValidator.getMustMoveWith(firstSelectedTerritory,
-          firstSelectedTerritory.getUnits().getUnits(), s_dependentUnits, getData(), getCurrentPlayer());
+          firstSelectedTerritory.getUnits().getUnits(), dependentUnits, getData(), getCurrentPlayer());
     }
   }
 
@@ -1324,7 +1324,7 @@ public class MovePanel extends AbstractMovePanel {
       final Match<Collection<Unit>> unitsToLoadMatch, final List<Unit> unitsToLoad, final String title,
       final String action) {
     // Allow player to select which to load.
-    final UnitChooser chooser = new UnitChooser(unitsToLoad, defaultSelections, s_dependentUnits,
+    final UnitChooser chooser = new UnitChooser(unitsToLoad, defaultSelections, dependentUnits,
         /* categorizeMovement */false, /* categorizeTransportCost */true, getGameData(), /* allowTwoHit */false,
         getMap().getUiContext(), unitsToLoadMatch);
     chooser.setTitle(title);
