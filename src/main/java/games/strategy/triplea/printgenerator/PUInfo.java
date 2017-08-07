@@ -16,12 +16,11 @@ public class PUInfo {
   private final Map<PlayerID, Map<Resource, Integer>> infoMap = new HashMap<>();
 
   protected void saveToFile(final PrintGenerationData printData) {
-    final GameData m_data = printData.getData();
-    final PrintGenerationData m_printData = printData;
-    Iterator<PlayerID> playerIterator = m_data.getPlayerList().iterator();
+    final GameData gameData = printData.getData();
+    Iterator<PlayerID> playerIterator = gameData.getPlayerList().iterator();
     while (playerIterator.hasNext()) {
       final PlayerID currentPlayer = playerIterator.next();
-      final Iterator<Resource> resourceIterator = m_data.getResourceList().getResources().iterator();
+      final Iterator<Resource> resourceIterator = gameData.getResourceList().getResources().iterator();
       final Map<Resource, Integer> resourceMap = new HashMap<>();
       while (resourceIterator.hasNext()) {
         final Resource currentResource = resourceIterator.next();
@@ -32,10 +31,10 @@ public class PUInfo {
     }
     FileWriter resourceWriter = null;
     try {
-      final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
+      final File outFile = new File(printData.getOutDir(), "General Information.csv");
       resourceWriter = new FileWriter(outFile, true);
       // Print Title
-      final int numResources = m_data.getResourceList().size();
+      final int numResources = gameData.getResourceList().size();
       for (int i = 0; i < numResources / 2 - 1 + numResources % 2; i++) {
         resourceWriter.write(",");
       }
@@ -45,7 +44,7 @@ public class PUInfo {
       }
       resourceWriter.write("\r\n");
       // Print Resources
-      final Iterator<Resource> resourceIterator = m_data.getResourceList().getResources().iterator();
+      final Iterator<Resource> resourceIterator = gameData.getResourceList().getResources().iterator();
       resourceWriter.write(",");
       while (resourceIterator.hasNext()) {
         final Resource currentResource = resourceIterator.next();
@@ -53,7 +52,7 @@ public class PUInfo {
       }
       resourceWriter.write("\r\n");
       // Print Player's and Resource Amount's
-      playerIterator = m_data.getPlayerList().iterator();
+      playerIterator = gameData.getPlayerList().iterator();
       while (playerIterator.hasNext()) {
         final PlayerID currentPlayer = playerIterator.next();
         resourceWriter.write(currentPlayer.getName());

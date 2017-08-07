@@ -34,10 +34,10 @@ class PUChart {
   private final File outDir;
 
   PUChart(final PrintGenerationData printData) {
-    final GameData m_data = printData.getData();
-    playerIterator = m_data.getPlayerList().iterator();
+    final GameData gameData = printData.getData();
+    playerIterator = gameData.getPlayerList().iterator();
     moneyMap = new IntegerMap<>();
-    numPlayers = m_data.getPlayerList().size();
+    numPlayers = gameData.getPlayerList().size();
     playerArray = new PlayerID[numPlayers];
     moneyArray = new Integer[numPlayers];
     avoidMap = new HashMap<>();
