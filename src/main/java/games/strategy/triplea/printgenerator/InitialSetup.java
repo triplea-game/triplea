@@ -23,28 +23,27 @@ public class InitialSetup {
    * @param boolean useOriginalState
    */
   protected void run(final PrintGenerationData printData, final boolean useOriginalState) {
-    final GameData m_data = printData.getData();
-    final PrintGenerationData m_printData = printData;
+    final GameData gameData = printData.getData();
     if (useOriginalState) {
-      final HistoryNode root = (HistoryNode) m_data.getHistory().getRoot();
-      m_data.getHistory().gotoNode(root);
+      final HistoryNode root = (HistoryNode) gameData.getHistory().getRoot();
+      gameData.getHistory().gotoNode(root);
     }
-    final Iterator<UnitType> m_unitTypeIterator = m_data.getUnitTypeList().iterator();
-    while (m_unitTypeIterator.hasNext()) {
-      final UnitType currentType = m_unitTypeIterator.next();
+    final Iterator<UnitType> unitTypeIterator = gameData.getUnitTypeList().iterator();
+    while (unitTypeIterator.hasNext()) {
+      final UnitType currentType = unitTypeIterator.next();
       final UnitAttachment currentTypeUnitAttachment = UnitAttachment.get(currentType);
       unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
-    new UnitInformation().saveToFile(m_printData, unitInfoMap);
-    final Iterator<PlayerID> m_playerIterator = m_data.getPlayerList().iterator();
-    while (m_playerIterator.hasNext()) {
-      final PlayerID currentPlayer = m_playerIterator.next();
-      new CountryChart().saveToFile(currentPlayer, m_printData);
+    new UnitInformation().saveToFile(printData, unitInfoMap);
+    final Iterator<PlayerID> playerIterator = gameData.getPlayerList().iterator();
+    while (playerIterator.hasNext()) {
+      final PlayerID currentPlayer = playerIterator.next();
+      new CountryChart().saveToFile(currentPlayer, printData);
     }
-    new PUInfo().saveToFile(m_printData);
+    new PUInfo().saveToFile(printData);
     try {
-      new PlayerOrder().saveToFile(m_printData);
-      new PUChart(m_printData).saveToFile();
+      new PlayerOrder().saveToFile(printData);
+      new PUChart(printData).saveToFile();
     } catch (final IOException e) {
       ClientLogger.logQuietly(e);
     }

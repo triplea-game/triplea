@@ -25,10 +25,7 @@ public class TripleADisplay implements ITripleADisplay {
   }
 
   @Override
-  public void initialize(final IDisplayBridge bridge) {
-    final IDisplayBridge m_displayBridge = bridge;
-    m_displayBridge.toString();
-  }
+  public void initialize(final IDisplayBridge bridge) {}
 
   // TODO: unit_dependents and battleTitle are both likely not used, they have been removed
   // from BattlePane().showBattle( .. ) already

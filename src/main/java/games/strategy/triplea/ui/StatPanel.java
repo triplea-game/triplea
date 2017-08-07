@@ -87,21 +87,21 @@ public class StatPanel extends AbstractStatPanel {
     if (!hasTech) {
       return;
     }
-    final JTable m_techTable = new JTable(techModel);
-    m_techTable.getTableHeader().setReorderingAllowed(false);
-    m_techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
+    final JTable techTable = new JTable(techModel);
+    techTable.getTableHeader().setReorderingAllowed(false);
+    techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
     // setupIconHeaders(m_techTable);
     // show icons for players:
     final TableCellRenderer componentRenderer = new JComponentTableCellRenderer();
-    for (int i = 1; i < m_techTable.getColumnCount(); i++) {
-      final TableColumn column = m_techTable.getColumnModel().getColumn(i);
+    for (int i = 1; i < techTable.getColumnCount(); i++) {
+      final TableColumn column = techTable.getColumnModel().getColumn(i);
       column.setHeaderRenderer(componentRenderer);
-      final String player = m_techTable.getColumnName(i);
+      final String player = techTable.getColumnName(i);
       final JLabel value = new JLabel("", getIcon(player), SwingConstants.CENTER);
       value.setToolTipText(player);
       column.setHeaderValue(value);
     }
-    scroll = new JScrollPane(m_techTable);
+    scroll = new JScrollPane(techTable);
     add(scroll);
   }
 

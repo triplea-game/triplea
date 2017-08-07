@@ -26,11 +26,10 @@ public class PlayerOrder {
   }
 
   protected void saveToFile(final PrintGenerationData printData) throws IOException {
-    final GameData m_data = printData.getData();
-    final PrintGenerationData m_printData = printData;
-    final Iterator<GameStep> m_gameStepIterator = m_data.getSequence().iterator();
-    while (m_gameStepIterator.hasNext()) {
-      final GameStep currentStep = m_gameStepIterator.next();
+    final GameData gameData = printData.getData();
+    final Iterator<GameStep> gameStepIterator = gameData.getSequence().iterator();
+    while (gameStepIterator.hasNext()) {
+      final GameStep currentStep = gameStepIterator.next();
       if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {
         final String delegateClassName = currentStep.getDelegate().getClass().getName();
         if (delegateClassName.equals(InitializationDelegate.class.getName())
@@ -49,8 +48,8 @@ public class PlayerOrder {
       }
     }
     FileWriter turnWriter = null;
-    m_printData.getOutDir().mkdir();
-    final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
+    printData.getOutDir().mkdir();
+    final File outFile = new File(printData.getOutDir(), "General Information.csv");
     turnWriter = new FileWriter(outFile, true);
     turnWriter.write("Turn Order\r\n");
     final Set<PlayerID> noDuplicates = removeDups(playerSet);

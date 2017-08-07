@@ -92,7 +92,7 @@ class EditPanel extends ActionPanel {
   EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
-    final JLabel m_actionLabel = new JLabel();
+    final JLabel actionLabel = new JLabel();
     performMoveAction = new AbstractAction("Perform Move or Other Actions") {
       private static final long serialVersionUID = 2205085537962024476L;
 
@@ -504,10 +504,10 @@ class EditPanel extends ActionPanel {
         cancelEditAction.actionPerformed(null);
       }
     };
-    m_actionLabel.setText("Edit Mode Actions");
+    actionLabel.setText("Edit Mode Actions");
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
-    add(m_actionLabel);
+    add(actionLabel);
     final JButton performMove = new JButton(performMoveAction);
     performMove.setToolTipText("<html>When in Edit Mode, you can perform special actions according to whatever phase "
         + "you are in, by switching back to the 'Action' tab.<br /> "
