@@ -49,7 +49,15 @@ public abstract class AbstractMovePanel extends ActionPanel {
   };
 
   private final Action doneMoveAction = new WeakAction("Done", doneMove);
-  private final Action cancelMoveAction = SwingComponents.newAbstractAction("Cancel", this::cancelMove);
+
+  private final Action cancelMoveAction = new AbstractAction("Cancel") {
+    private static final long serialVersionUID = -257745862234175428L;
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      cancelMove();
+    }
+  };
 
   AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);

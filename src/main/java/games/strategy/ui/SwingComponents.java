@@ -63,28 +63,6 @@ public class SwingComponents {
   private static final Collection<String> visiblePrompts = new HashSet<>();
 
   /**
-   * Convenience method to create {@code AbstractAction} instances using lambdas.
-   * Example usage:
-   * <code><pre>
-   *   AbstractAction action = SwingComponents.newAbstractAction("Something", () -> {
-   *    if (value) {
-   *      doSomething();
-   *    }
-   *   });
-   * </pre></code>
-   */
-  public static AbstractAction newAbstractAction(final String name, final Runnable action) {
-    return new AbstractAction(name) {
-      private static final long serialVersionUID = -280371946771796597L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        action.run();
-      }
-    };
-  }
-
-  /**
    * Enum for swing codes that represent key events. In this case holding control or the
    * meta keys.
    */
