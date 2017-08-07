@@ -49,13 +49,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
   };
 
   private final Action doneMoveAction = new WeakAction("Done", doneMove);
-
-  private boolean cancelMoveEnabled = false;
+  private final Action cancelMoveAction = SwingComponents.newAbstractAction("Cancel", this::cancelMove);
 
   AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
-    cancelMoveEnabled = false;
+    cancelMoveAction.setEnabled(false);
     undoableMoves = Collections.emptyList();
   }
 
@@ -103,7 +102,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   final void enableCancelButton() {
-    cancelMoveEnabled = true;
+    cancelMoveAction.setEnabled(true);
   }
 
   protected final GameData getGameData() {
@@ -121,13 +120,13 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   final void cancelMove() {
-    if (cancelMoveEnabled) {
+    if (cancelMoveAction.isEnabled()) {
       cancelMoveAction();
       if (frame != null) {
         frame.clearStatusMessage();
       }
       this.setEnabled(false);
-      cancelMoveEnabled = false;
+      cancelMoveAction.setEnabled(false);
     }
   }
 
@@ -220,7 +219,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       listening = false;
       cleanUpSpecific();
       bridge = null;
-      cancelMoveEnabled = false;
+      cancelMoveAction.setEnabled(false);
       removeAll();
       refresh.run();
     });
@@ -244,7 +243,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       this.actionLabel.setText(id.getName() + actionLabel);
       add(leftBox(this.actionLabel));
       if (setCancelButton()) {
-        add(leftBox(new JButton(SwingComponents.newAbstractAction("Cancel", this::cancelMove))));
+        add(leftBox(new JButton(cancelMoveAction)));
       }
       add(leftBox(new JButton(doneMoveAction)));
       addAdditionalButtons();
