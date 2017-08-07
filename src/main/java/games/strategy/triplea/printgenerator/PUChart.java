@@ -62,7 +62,7 @@ class PUChart {
       for (int j = i + 1; j < numPlayers; j++) {
         // i = firstPlayerMoney ; j = secondPlayerMoney
         if (moneyArray[i].equals(moneyArray[j])) {
-          // s_avoidMap.put(s_playerArray[i], s_playerArray[j]);
+          // avoidMap.put(playerArray[i], playerArray[j]);
           avoidMap.put(i, j);
         }
       }

@@ -579,7 +579,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     private static final String PROPERTY_FILE = "objectives.properties";
     static final String GROUP_PROPERTY = "TABLEGROUP";
     static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
-    private static ObjectiveProperties s_op = null;
+    private static ObjectiveProperties instance = null;
     private static Instant timestamp = Instant.EPOCH;
     private final Properties properties = new Properties();
 
@@ -600,11 +600,11 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     public static ObjectiveProperties getInstance() {
       // cache properties for 1 second
-      if (s_op == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
-        s_op = new ObjectiveProperties();
+      if (instance == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
+        instance = new ObjectiveProperties();
         timestamp = Instant.now();
       }
-      return s_op;
+      return instance;
     }
 
     public String getProperty(final String objectiveKey) {

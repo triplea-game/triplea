@@ -59,7 +59,7 @@ public class BattleCalculator {
   }
 
   // There is a problem with this variable, that it isn't
-  // private static IntegerMap<UnitType> s_costsForTuvForAllPlayersMergedAndAveraged;
+  // private static IntegerMap<UnitType> costsForTuvForAllPlayersMergedAndAveraged;
   // being cleared out when we switch maps.
   // we want to sort in a determined way so that those looking at the dice results
   // can tell what dice is for who
@@ -999,7 +999,7 @@ public class BattleCalculator {
       costs.put(ut, averagedCost);
     }
     // There is a problem with this variable, that it isn't being cleared out when we
-    // s_costsForTuvForAllPlayersMergedAndAveraged = costs;
+    // costsForTuvForAllPlayersMergedAndAveraged = costs;
     // switch maps.
     return costs;
   }
