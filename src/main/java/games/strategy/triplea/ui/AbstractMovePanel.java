@@ -26,6 +26,7 @@ import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
 import games.strategy.ui.SwingComponents;
+import swinglib.JButtonBuilder;
 
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
@@ -50,14 +51,10 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   private final Action doneMoveAction = new WeakAction("Done", doneMove);
 
-  private final Action cancelMoveAction = new AbstractAction("Cancel") {
-    private static final long serialVersionUID = -257745862234175428L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      cancelMove();
-    }
-  };
+  private final JButton cancelMoveButton = JButtonBuilder.builder()
+      .title("Cancel")
+      .actionListener(this::cancelMove)
+      .build();
 
   AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
@@ -110,11 +107,11 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   final void enableCancelButton() {
-    cancelMoveAction.setEnabled(true);
+    cancelMoveButton.setEnabled(true);
   }
 
   private void disableCancelButton() {
-    cancelMoveAction.setEnabled(false);
+    cancelMoveButton.setEnabled(false);
   }
 
   protected final GameData getGameData() {
@@ -253,7 +250,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       this.actionLabel.setText(id.getName() + actionLabel);
       add(leftBox(this.actionLabel));
       if (setCancelButton()) {
-        add(leftBox(new JButton(cancelMoveAction)));
+        add(leftBox(cancelMoveButton));
       }
       add(leftBox(new JButton(doneMoveAction)));
       addAdditionalButtons();
