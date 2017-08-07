@@ -23,7 +23,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
    * the message before
    * closing the socket).
    */
-  private static final Logger s_logger = Logger.getLogger(ServerQuarantineConversation.class.getName());
+  private static final Logger logger = Logger.getLogger(ServerQuarantineConversation.class.getName());
 
   private enum STEP {
     READ_NAME, READ_MAC, CHALLENGE, ACK_ERROR
@@ -61,22 +61,22 @@ public class ServerQuarantineConversation extends QuarantineConversation {
         case READ_NAME:
           // read name, send challent
           m_remoteName = (String) o;
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "read name:" + m_remoteName);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "read name:" + m_remoteName);
           }
           m_step = STEP.READ_MAC;
           return ACTION.NONE;
         case READ_MAC:
           // read name, send challent
           m_remoteMac = (String) o;
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "read mac:" + m_remoteMac);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "read mac:" + m_remoteMac);
           }
           if (m_validator != null) {
             challenge = m_validator.getChallengeProperties(m_remoteName, m_channel.socket().getRemoteSocketAddress());
           }
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "writing challenge:" + challenge);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "writing challenge:" + challenge);
           }
           send((Serializable) challenge);
           m_step = STEP.CHALLENGE;
@@ -84,14 +84,14 @@ public class ServerQuarantineConversation extends QuarantineConversation {
         case CHALLENGE:
           @SuppressWarnings("unchecked")
           final Map<String, String> response = (Map<String, String>) o;
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "read challenge response:" + response);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "read challenge response:" + response);
           }
           if (m_validator != null) {
             final String error = m_validator.verifyConnection(challenge, response, m_remoteName, m_remoteMac,
                 m_channel.socket().getRemoteSocketAddress());
-            if (s_logger.isLoggable(Level.FINER)) {
-              s_logger.log(Level.FINER, "error:" + error);
+            if (logger.isLoggable(Level.FINER)) {
+              logger.log(Level.FINER, "error:" + error);
             }
             send(error);
             if (error != null) {
@@ -103,8 +103,8 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           }
           // get a unique name
           m_remoteName = m_serverMessenger.getUniqueName(m_remoteName);
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "Sending name:" + m_remoteName);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "Sending name:" + m_remoteName);
           }
           // send the node its name and our name
           send(new String[] {m_remoteName, m_serverMessenger.getLocalNode().getName()});
@@ -122,7 +122,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           throw new IllegalStateException("Invalid state");
       }
     } catch (final Throwable t) {
-      s_logger.log(Level.SEVERE, "Error with connection", t);
+      logger.log(Level.SEVERE, "Error with connection", t);
       return ACTION.TERMINATE;
     }
   }
