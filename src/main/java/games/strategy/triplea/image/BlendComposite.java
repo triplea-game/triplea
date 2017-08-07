@@ -16,11 +16,6 @@ class BlendComposite implements Composite {
     NORMAL, OVERLAY, MULTIPLY, DIFFERENCE, LINEAR_LIGHT
   }
 
-  public static final BlendComposite Normal = new BlendComposite(BlendingMode.NORMAL);
-  public static final BlendComposite Overlay = new BlendComposite(BlendingMode.OVERLAY);
-  public static final BlendComposite Multiply = new BlendComposite(BlendingMode.MULTIPLY);
-  public static final BlendComposite Difference = new BlendComposite(BlendingMode.DIFFERENCE);
-  public static final BlendComposite Linear_Light = new BlendComposite(BlendingMode.LINEAR_LIGHT);
   private float alpha;
   private final BlendingMode mode;
 
