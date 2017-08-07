@@ -244,7 +244,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       this.actionLabel.setText(id.getName() + actionLabel);
       add(leftBox(this.actionLabel));
       if (setCancelButton()) {
-        add(leftBox(new JButton(SwingComponents.newAbstractAction(this::cancelMove))));
+        add(leftBox(new JButton(SwingComponents.newAbstractAction("Cancel", this::cancelMove))));
       }
       add(leftBox(new JButton(doneMoveAction)));
       addAdditionalButtons();

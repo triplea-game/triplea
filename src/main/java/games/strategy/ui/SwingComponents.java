@@ -66,15 +66,15 @@ public class SwingComponents {
    * Convenience method to create {@code AbstractAction} instances using lambdas.
    * Example usage:
    * <code><pre>
-   *   AbstractAction action = SwingComponents.newAbstractionAction(() -> {
+   *   AbstractAction action = SwingComponents.newAbstractAction("Something", () -> {
    *    if (value) {
    *      doSomething();
    *    }
    *   });
    * </pre></code>
    */
-  public static AbstractAction newAbstractAction(final Runnable action) {
-    return new AbstractAction() {
+  public static AbstractAction newAbstractAction(final String name, final Runnable action) {
+    return new AbstractAction(name) {
       private static final long serialVersionUID = -280371946771796597L;
 
       @Override
