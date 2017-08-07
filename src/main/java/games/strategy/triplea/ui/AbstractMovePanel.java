@@ -54,7 +54,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
-    cancelMoveAction.setEnabled(false);
+    disableCancelButton();
     undoableMoves = Collections.emptyList();
   }
 
@@ -105,6 +105,10 @@ public abstract class AbstractMovePanel extends ActionPanel {
     cancelMoveAction.setEnabled(true);
   }
 
+  private void disableCancelButton() {
+    cancelMoveAction.setEnabled(false);
+  }
+
   protected final GameData getGameData() {
     return bridge.getGameData();
   }
@@ -120,14 +124,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   final void cancelMove() {
-    if (cancelMoveAction.isEnabled()) {
-      cancelMoveAction();
-      if (frame != null) {
-        frame.clearStatusMessage();
-      }
-      this.setEnabled(false);
-      cancelMoveAction.setEnabled(false);
+    cancelMoveAction();
+    if (frame != null) {
+      frame.clearStatusMessage();
     }
+    this.setEnabled(false);
+    disableCancelButton();
   }
 
   final String undoMove(final int moveIndex) {
@@ -219,7 +221,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       listening = false;
       cleanUpSpecific();
       bridge = null;
-      cancelMoveAction.setEnabled(false);
+      disableCancelButton();
       removeAll();
       refresh.run();
     });
