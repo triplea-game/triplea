@@ -99,16 +99,16 @@ public final class ScreenshotExporter {
       if (titleColor == null) {
         titleColor = Color.BLACK;
       }
-      final String s_title_x = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
-      final String s_title_y = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
-      final String s_title_size = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
+      final String encodedTitleX = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
+      final String encodedTitleY = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
+      final String encodedTitleSize = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
       int titleX;
       int titleY;
       int titleSize;
       try {
-        titleX = (int) (Integer.parseInt(s_title_x) * scale);
-        titleY = (int) (Integer.parseInt(s_title_y) * scale);
-        titleSize = Integer.parseInt(s_title_size);
+        titleX = (int) (Integer.parseInt(encodedTitleX) * scale);
+        titleY = (int) (Integer.parseInt(encodedTitleY) * scale);
+        titleSize = Integer.parseInt(encodedTitleSize);
       } catch (final NumberFormatException nfe) {
         // choose safe defaults
         titleX = (int) (15 * scale);
