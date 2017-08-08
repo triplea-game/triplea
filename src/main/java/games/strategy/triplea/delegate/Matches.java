@@ -461,7 +461,7 @@ public class Matches {
   public static final Match<Unit> UnitCanNotMoveDuringCombatMove =
       Match.of(obj -> UnitTypeCanNotMoveDuringCombatMove.match(obj.getType()));
 
-  public static Match<Unit> unitIsAaThatCanHitTheseUnits(final Collection<Unit> targets,
+  private static Match<Unit> unitIsAaThatCanHitTheseUnits(final Collection<Unit> targets,
       final Match<Unit> typeOfAa, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed) {
     return Match.of(obj -> {
       if (!typeOfAa.match(obj)) {
@@ -761,7 +761,7 @@ public class Matches {
     return Match.of(t -> data.getMap().getNeighbors(t, TerritoryIsWater).size() > 0);
   }
 
-  public static Match<Territory> territoryIsAlliedAndHasAlliedUnitMatching(final GameData data, final PlayerID player,
+  private static Match<Territory> territoryIsAlliedAndHasAlliedUnitMatching(final GameData data, final PlayerID player,
       final Match<Unit> unitMatch) {
     return Match.of(t -> {
       if (!data.getRelationshipTracker().isAllied(t.getOwner(), player)) {
