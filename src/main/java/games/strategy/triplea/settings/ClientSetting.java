@@ -147,9 +147,6 @@ public enum ClientSetting implements GameSetting {
     }
   }
 
-  /**
-   * Returns true if a value has been set for the current property.
-   */
   @Override
   public boolean isSet() {
     return !value().trim().isEmpty();
