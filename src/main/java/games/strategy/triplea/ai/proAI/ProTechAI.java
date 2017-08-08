@@ -118,7 +118,7 @@ final class ProTechAI {
           Matches.UnitCanMove);
       final Match<Unit> enemyTransportable = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
           Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitCanMove);
-      final Match<Unit> aTransport = Match.allOf(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
+      final Match<Unit> transport = Match.allOf(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> eFTerrs = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
       // should change this to read production frontier and tech
@@ -133,10 +133,10 @@ final class ProTechAI {
       if (maxFighterDistance < 0) {
         maxFighterDistance = 0;
       }
-      final List<Territory> eTTerrs = findUnitTerr(data, aTransport);
+      final List<Territory> eTTerrs = findUnitTerr(data, transport);
       int maxTransportDistance = 0;
       for (final Territory eTTerr : eTTerrs) {
-        final List<Unit> eTUnits = eTTerr.getUnits().getMatches(aTransport);
+        final List<Unit> eTUnits = eTTerr.getUnits().getMatches(transport);
         maxTransportDistance = Math.max(maxTransportDistance, MoveValidator.getMaxMovement(eTUnits));
       }
       final List<Unit> alreadyLoaded = new ArrayList<>();
@@ -224,20 +224,20 @@ final class ProTechAI {
             final Set<Territory> transNeighbors =
                 data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer, data));
             for (final Territory xN : transNeighbors) {
-              final List<Unit> aTransUnits = xN.getUnits().getMatches(enemyTransportable);
-              aTransUnits.removeAll(alreadyLoaded);
-              final List<Unit> availTransUnits = sortTransportUnits(aTransUnits);
-              for (final Unit aTUnit : availTransUnits) {
-                if (availInf > 0 && Matches.UnitIsInfantry.match(aTUnit)) {
+              final List<Unit> transUnits = xN.getUnits().getMatches(enemyTransportable);
+              transUnits.removeAll(alreadyLoaded);
+              final List<Unit> availTransUnits = sortTransportUnits(transUnits);
+              for (final Unit transUnit : availTransUnits) {
+                if (availInf > 0 && Matches.UnitIsInfantry.match(transUnit)) {
                   availInf--;
-                  loadedUnits.add(aTUnit);
-                  alreadyLoaded.add(aTUnit);
+                  loadedUnits.add(transUnit);
+                  alreadyLoaded.add(transUnit);
                 }
-                if (availInf > 0 && availOther > 0 && Matches.UnitIsNotInfantry.match(aTUnit)) {
+                if (availInf > 0 && availOther > 0 && Matches.UnitIsNotInfantry.match(transUnit)) {
                   availInf--;
                   availOther--;
-                  loadedUnits.add(aTUnit);
-                  alreadyLoaded.add(aTUnit);
+                  loadedUnits.add(transUnit);
+                  alreadyLoaded.add(transUnit);
                 }
               }
             }

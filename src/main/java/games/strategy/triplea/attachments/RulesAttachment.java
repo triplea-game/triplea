@@ -887,8 +887,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * @return whether all relationships as are required are set correctly.
    */
   private boolean checkRelationships() {
-    for (final String aRelationCheck : m_relationship) {
-      final String[] relationCheck = aRelationCheck.split(":");
+    for (final String encodedRelationCheck : m_relationship) {
+      final String[] relationCheck = encodedRelationCheck.split(":");
       final PlayerID p1 = getData().getPlayerList().getPlayerID(relationCheck[0]);
       final PlayerID p2 = getData().getPlayerList().getPlayerID(relationCheck[1]);
       final int relationshipsExistance = Integer.parseInt(relationCheck[3]);

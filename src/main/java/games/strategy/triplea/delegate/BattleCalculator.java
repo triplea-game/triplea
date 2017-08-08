@@ -593,8 +593,8 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Match<Unit> aMatch = Match.allOf(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
-    killedNonAmphibUnits.addAll(Match.getMatches(killed, aMatch));
+    final Match<Unit> match = Match.allOf(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
+    killedNonAmphibUnits.addAll(Match.getMatches(killed, match));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
       return killed;
