@@ -87,9 +87,9 @@ public final class GameDataManager {
   public static GameData loadGame(final InputStream is, final @Nullable String path) throws IOException {
     checkNotNull(is);
 
-    return ClientSetting.TEST_USE_NEW_SAVE_GAME_FORMAT.booleanValue()
-        ? loadGameInNewFormat(is)
-        : loadGameInCurrentFormat(is, path);
+    return ClientSetting.TEST_USE_PROXY_SERIALIZATION.booleanValue()
+        ? loadGameInProxySerializationFormat(is)
+        : loadGameInSerializationFormat(is, path);
   }
 
   private static String getPath(final File file) {
@@ -101,7 +101,7 @@ public final class GameDataManager {
   }
 
   @VisibleForTesting
-  static GameData loadGameInNewFormat(final InputStream is) throws IOException {
+  static GameData loadGameInProxySerializationFormat(final InputStream is) throws IOException {
     return fromMemento(loadMemento(new CloseShieldInputStream(is)));
   }
 
@@ -123,7 +123,9 @@ public final class GameDataManager {
     }
   }
 
-  private static GameData loadGameInCurrentFormat(final InputStream inputStream, final @Nullable String savegamePath)
+  private static GameData loadGameInSerializationFormat(
+      final InputStream inputStream,
+      final @Nullable String savegamePath)
       throws IOException {
     final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
     try {
@@ -305,18 +307,18 @@ public final class GameDataManager {
       final GameData gameData,
       final boolean includeDelegates)
       throws IOException {
-    if (ClientSetting.TEST_USE_NEW_SAVE_GAME_FORMAT.booleanValue()) {
-      saveGameInNewFormat(
+    if (ClientSetting.TEST_USE_PROXY_SERIALIZATION.booleanValue()) {
+      saveGameInProxySerializationFormat(
           os,
           gameData,
           Collections.singletonMap(GameDataMemento.ExportOptionName.EXCLUDE_DELEGATES, !includeDelegates));
     } else {
-      saveGameInCurrentFormat(os, gameData, includeDelegates);
+      saveGameInSerializationFormat(os, gameData, includeDelegates);
     }
   }
 
   @VisibleForTesting
-  static void saveGameInNewFormat(
+  static void saveGameInProxySerializationFormat(
       final OutputStream os,
       final GameData gameData,
       final Map<GameDataMemento.ExportOptionName, Object> optionsByName)
@@ -343,7 +345,7 @@ public final class GameDataManager {
     }
   }
 
-  private static void saveGameInCurrentFormat(
+  private static void saveGameInSerializationFormat(
       final OutputStream sink,
       final GameData data,
       final boolean saveDelegateInfo)
