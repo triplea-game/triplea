@@ -88,7 +88,7 @@ public enum ClientSetting implements GameSetting {
 
   TEST_LOBBY_PORT,
 
-  TEST_USE_NEW_SAVE_GAME_FORMAT(false),
+  TEST_USE_PROXY_SERIALIZATION(false),
 
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY(true),
 

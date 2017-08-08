@@ -20,14 +20,14 @@ public final class GameDataFileUtils {
   private GameDataFileUtils() {}
 
   private static SaveGameFormat getDefaultSaveGameFormat() {
-    return ClientSetting.TEST_USE_NEW_SAVE_GAME_FORMAT.booleanValue()
-        ? SaveGameFormat.NEW
-        : SaveGameFormat.CURRENT;
+    return ClientSetting.TEST_USE_PROXY_SERIALIZATION.booleanValue()
+        ? SaveGameFormat.PROXY_SERIALIZATION
+        : SaveGameFormat.SERIALIZATION;
   }
 
   @VisibleForTesting
   enum SaveGameFormat {
-    CURRENT, NEW;
+    SERIALIZATION, PROXY_SERIALIZATION;
   }
 
   /**
@@ -71,27 +71,27 @@ public final class GameDataFileUtils {
 
   private static Collection<String> getCandidateExtensions(final SaveGameFormat saveGameFormat) {
     switch (saveGameFormat) {
-      case CURRENT:
-        return getCurrentCandidateExtensions();
-      case NEW:
-        return getNewCandidateExtensions();
+      case SERIALIZATION:
+        return getSerializationCandidateExtensions();
+      case PROXY_SERIALIZATION:
+        return getProxySerializationCandidateExtensions();
       default:
         throw new AssertionError(String.format("unknown save game format (%s)", saveGameFormat));
     }
   }
 
-  private static Collection<String> getCurrentCandidateExtensions() {
+  private static Collection<String> getSerializationCandidateExtensions() {
     final String legacyExtension = ".svg";
 
     // Macs download a game data file as "tsvg.gz", so that extension must be used when evaluating candidate game data
     // files.
     final String macOsAlternativeExtension = "tsvg.gz";
 
-    return Arrays.asList(getExtension(SaveGameFormat.CURRENT), legacyExtension, macOsAlternativeExtension);
+    return Arrays.asList(getExtension(SaveGameFormat.SERIALIZATION), legacyExtension, macOsAlternativeExtension);
   }
 
-  private static Collection<String> getNewCandidateExtensions() {
-    return Arrays.asList(getExtension(SaveGameFormat.NEW));
+  private static Collection<String> getProxySerializationCandidateExtensions() {
+    return Arrays.asList(getExtension(SaveGameFormat.PROXY_SERIALIZATION));
   }
 
   /**
@@ -105,20 +105,20 @@ public final class GameDataFileUtils {
 
   private static String getExtension(final SaveGameFormat saveGameFormat) {
     switch (saveGameFormat) {
-      case CURRENT:
-        return getCurrentExtension();
-      case NEW:
-        return getNewExtension();
+      case SERIALIZATION:
+        return getSerializationExtension();
+      case PROXY_SERIALIZATION:
+        return getProxySerializationExtension();
       default:
         throw new AssertionError(String.format("unknown save game format (%s)", saveGameFormat));
     }
   }
 
-  private static String getCurrentExtension() {
+  private static String getSerializationExtension() {
     return ".tsvg";
   }
 
-  private static String getNewExtension() {
+  private static String getProxySerializationExtension() {
     return ".tsvgx";
   }
 
