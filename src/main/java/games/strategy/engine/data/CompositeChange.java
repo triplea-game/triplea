@@ -24,9 +24,9 @@ public class CompositeChange extends Change {
   }
 
   public void add(final Change... changes) {
-    for (final Change aChange : changes) {
-      if (!aChange.isEmpty()) {
-        m_changes.add(aChange);
+    for (final Change change : changes) {
+      if (!change.isEmpty()) {
+        m_changes.add(change);
       }
     }
   }
