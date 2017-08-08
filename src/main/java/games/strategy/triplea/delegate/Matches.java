@@ -74,8 +74,6 @@ import games.strategy.util.Util;
  * </p>
  */
 public class Matches {
-  public static final Match<Object> IsTerritory = Match.of(o -> o != null && o instanceof Territory);
-
   public static final Match<UnitType> UnitTypeHasMoreThanOneHitPointTotal =
       Match.of(ut -> UnitAttachment.get(ut).getHitPoints() > 1);
 
@@ -85,9 +83,6 @@ public class Matches {
   public static final Match<Unit> UnitHasTakenSomeDamage = Match.of(unit -> unit.getHits() > 0);
 
   public static final Match<Unit> UnitHasNotTakenAnyDamage = UnitHasTakenSomeDamage.invert();
-
-  public static final Match<Unit> UnitHasOnlyOneHitPointLeft =
-      Match.of(unit -> UnitAttachment.get(unit.getType()).getHitPoints() - unit.getHits() <= 1);
 
   public static final Match<Unit> UnitIsSea = Match.of(unit -> UnitAttachment.get(unit.getType()).getIsSea());
 
@@ -154,8 +149,6 @@ public class Matches {
     return ua.getCarrierCost() != -1;
   });
 
-  public static final Match<UnitType> UnitTypeCannotLandOnCarrier = UnitTypeCanLandOnCarrier.invert();
-
   public static final Match<Unit> unitHasMoved = Match.of(unit -> TripleAUnit.get(unit).getAlreadyMoved() > 0);
 
   public static final Match<Unit> unitHasNotMoved = unitHasMoved.invert();
@@ -192,9 +185,6 @@ public class Matches {
     final UnitAttachment ua = UnitAttachment.get(type);
     return ua.getIsSea() || ua.getIsAir();
   });
-
-  public static final Match<UnitType> UnitTypeIsCarrier =
-      Match.of(type -> UnitAttachment.get(type).getCarrierCapacity() != -1);
 
   public static final Match<Unit> UnitIsAir = Match.of(unit -> UnitAttachment.get(unit.getType()).getIsAir());
 
@@ -425,8 +415,6 @@ public class Matches {
   public static final Match<Unit> UnitCanBeTransported =
       Match.of(unit -> UnitAttachment.get(unit.getType()).getTransportCost() != -1);
 
-  public static final Match<Unit> UnitCanNotBeTransported = UnitCanBeTransported.invert();
-
   public static final Match<Unit> UnitWasAmphibious = Match.of(obj -> ((TripleAUnit) obj).getWasAmphibious());
 
   public static final Match<Unit> UnitWasNotAmphibious = UnitWasAmphibious.invert();
@@ -443,22 +431,10 @@ public class Matches {
   public static final Match<Unit> UnitCanTransport =
       Match.of(unit -> UnitAttachment.get(unit.getType()).getTransportCapacity() != -1);
 
-  public static final Match<UnitType> UnitTypeCanTransport =
-      Match.of(type -> UnitAttachment.get(type).getTransportCapacity() != -1);
-
-  public static final Match<UnitType> UnitTypeCanBeTransported =
-      Match.of(type -> UnitAttachment.get(type).getTransportCost() != -1);
-
   public static final Match<UnitType> UnitTypeCanProduceUnits =
       Match.of(obj -> UnitAttachment.get(obj).getCanProduceUnits());
 
   public static final Match<Unit> UnitCanProduceUnits = Match.of(obj -> UnitTypeCanProduceUnits.match(obj.getType()));
-
-  public static final Match<Unit> UnitCanNotProduceUnits = UnitCanProduceUnits.invert();
-
-  public static final Match<UnitType> UnitTypeIsInfantry = Match.of(type -> UnitAttachment.get(type).getIsInfantry());
-
-  public static final Match<UnitType> UnitTypeIsArtillery = Match.of(type -> UnitAttachment.get(type).getArtillery());
 
   public static final Match<UnitType> UnitTypeHasMaxBuildRestrictions =
       Match.of(type -> UnitAttachment.get(type).getMaxBuiltPerPlayer() >= 0);
@@ -466,12 +442,6 @@ public class Matches {
   public static final Match<UnitType> UnitTypeIsRocket = Match.of(obj -> UnitAttachment.get(obj).getIsRocket());
 
   public static final Match<Unit> UnitIsRocket = Match.of(obj -> UnitTypeIsRocket.match(obj.getType()));
-
-  public static final Match<Unit> UnitHasPlacementLimit = Match.of(obj -> {
-    final UnitType type = obj.getUnitType();
-    final UnitAttachment ua = UnitAttachment.get(type);
-    return ua.getPlacementLimit() != null;
-  });
 
   public static final Match<Unit> UnitHasMovementLimit = Match.of(obj -> {
     final UnitType type = obj.getUnitType();
@@ -607,24 +577,6 @@ public class Matches {
 
   public static final Match<Unit> UnitIsNotInfantry = UnitIsInfantry.invert();
 
-  public static final Match<Unit> UnitHasMarinePositiveBonus = Match.of(obj -> {
-    final UnitType type = obj.getUnitType();
-    final UnitAttachment ua = UnitAttachment.get(type);
-    return ua.getIsMarine() > 0;
-  });
-
-  public static final Match<Unit> UnitHasMarineNegativeBonus = Match.of(obj -> {
-    final UnitType type = obj.getUnitType();
-    final UnitAttachment ua = UnitAttachment.get(type);
-    return ua.getIsMarine() < 0;
-  });
-
-  public static final Match<Unit> UnitIsNotMarine = Match.of(obj -> {
-    final UnitType type = obj.getUnitType();
-    final UnitAttachment ua = UnitAttachment.get(type);
-    return ua.getIsMarine() == 0;
-  });
-
   public static final Match<Unit> UnitIsAirTransportable = Match.of(obj -> {
     final TechAttachment ta = TechAttachment.get(obj.getOwner());
     if (ta == null || !ta.getParatroopers()) {
@@ -646,8 +598,6 @@ public class Matches {
     final UnitAttachment ua = UnitAttachment.get(type);
     return ua.getIsAirTransport();
   });
-
-  public static final Match<Unit> UnitIsNotAirTransport = UnitIsAirTransport.invert();
 
   public static final Match<Unit> UnitIsArtillery = Match.of(obj -> {
     final UnitType type = obj.getUnitType();
@@ -724,21 +674,6 @@ public class Matches {
 
   public static Match<Territory> territoryHasNeighborMatching(final GameData data, final Match<Territory> match) {
     return Match.of(t -> data.getMap().getNeighbors(t, match).size() > 0);
-  }
-
-  public static Match<Territory> territoryHasEnemyLandNeighbor(final GameData data, final PlayerID player) {
-    return Match.of(t -> {
-      // This method will still return true if territory t is an impassable or restricted territory With enemy
-      // neighbors. Makes sure your
-      // AI does not include any impassable or restricted territories by using this:
-      // CompositeMatch<Territory> territoryHasEnemyLandNeighborAndIsNotImpassableOrRestricted = new
-      // CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player),
-      // Matches.territoryHasEnemyLandNeighbor(data,
-      // player));
-      final Match<Territory> condition = Match.allOf(Matches.TerritoryIsLand,
-          Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
-      return data.getMap().getNeighbors(t, condition).size() > 0;
-    });
   }
 
   public static Match<Territory> territoryHasAlliedNeighborWithAlliedUnitMatching(final GameData data,
@@ -904,8 +839,6 @@ public class Matches {
     }
     return t.getOwner().equals(PlayerID.NULL_PLAYERID);
   });
-
-  public static final Match<Territory> TerritoryIsNotNeutralButCouldBeWater = TerritoryIsNeutralButNotWater.invert();
 
   public static final Match<Territory> TerritoryIsImpassable = Match.of(t -> {
     if (t.isWater()) {
@@ -1111,8 +1044,6 @@ public class Matches {
   private static Match<UnitType> unitTypeCanMove(final PlayerID player) {
     return Match.of(obj -> UnitAttachment.get(obj).getMovement(player) > 0);
   }
-
-  public static final Match<Unit> UnitIsStatic = UnitCanMove.invert();
 
   public static Match<UnitType> unitTypeIsStatic(final PlayerID id) {
     return Match.of(unitType -> !unitTypeCanMove(id).match(unitType));
@@ -1778,12 +1709,9 @@ public class Matches {
 
   public static final Match<Unit> UnitIsNotConstruction = UnitIsConstruction.invert();
 
-  public static final Match<Unit> UnitCanProduceUnitsAndIsConstruction =
-      Match.allOf(UnitCanProduceUnits, UnitIsConstruction);
-  public static final Match<UnitType> UnitTypeCanProduceUnitsAndIsConstruction =
-      Match.allOf(UnitTypeCanProduceUnits, UnitTypeIsConstruction);
   public static final Match<Unit> UnitCanProduceUnitsAndIsInfrastructure =
       Match.allOf(UnitCanProduceUnits, UnitIsInfrastructure);
+
   public static final Match<Unit> UnitCanProduceUnitsAndCanBeDamaged =
       Match.allOf(UnitCanProduceUnits, UnitCanBeDamaged);
 
@@ -1806,14 +1734,8 @@ public class Matches {
   public static final Match<RelationshipType> RelationshipTypeIsAllied =
       Match.of(relationship -> relationship.getRelationshipTypeAttachment().isAllied());
 
-  public static final Match<Relationship> RelationshipIsAllied =
-      Match.of(relationship -> relationship.getRelationshipType().getRelationshipTypeAttachment().isAllied());
-
   public static final Match<RelationshipType> RelationshipTypeIsNeutral =
       Match.of(relationship -> relationship.getRelationshipTypeAttachment().isNeutral());
-
-  public static final Match<Relationship> RelationshipIsNeutral =
-      Match.of(relationship -> relationship.getRelationshipType().getRelationshipTypeAttachment().isNeutral());
 
   public static final Match<RelationshipType> RelationshipTypeIsAtWar =
       Match.of(relationship -> relationship.getRelationshipTypeAttachment().isWar());
