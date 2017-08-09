@@ -16,12 +16,14 @@ public class WaitWindow extends JWindow {
   private boolean m_finished = false;
 
   public WaitWindow() {
-    setSize(200, 80);
-    final WaitPanel mainPanel = new WaitPanel("Loading game, please wait.");
+    final WaitPanel mainPanel = new WaitPanel("Loading game, please wait...");
     setLocationRelativeTo(null);
     mainPanel.setBorder(new LineBorder(Color.BLACK));
     setLayout(new BorderLayout());
     add(mainPanel, BorderLayout.CENTER);
+
+    pack();
+    setSize(getSize().width, 80);
   }
 
   public void showWait() {
