@@ -1346,6 +1346,7 @@ public class MovePanel extends AbstractMovePanel {
     selectedUnits.clear();
     updateRouteAndMouseShadowUnits(null);
     forced = null;
+    getMap().showMouseCursor();
   }
 
   @Override

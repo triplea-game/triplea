@@ -26,6 +26,7 @@ import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
 import games.strategy.ui.SwingComponents;
+import swinglib.JButtonBuilder;
 
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
@@ -50,12 +51,15 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   private final Action doneMoveAction = new WeakAction("Done", doneMove);
 
-  private boolean cancelMoveEnabled = false;
+  private final JButton cancelMoveButton = JButtonBuilder.builder()
+      .title("Cancel")
+      .actionListener(this::cancelMove)
+      .build();
 
   AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
-    cancelMoveEnabled = false;
+    disableCancelButton();
     undoableMoves = Collections.emptyList();
   }
 
@@ -103,7 +107,11 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   final void enableCancelButton() {
-    cancelMoveEnabled = true;
+    cancelMoveButton.setEnabled(true);
+  }
+
+  private void disableCancelButton() {
+    cancelMoveButton.setEnabled(false);
   }
 
   protected final GameData getGameData() {
@@ -121,14 +129,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
   }
 
   final void cancelMove() {
-    if (cancelMoveEnabled) {
-      cancelMoveAction();
-      if (frame != null) {
-        frame.clearStatusMessage();
-      }
-      this.setEnabled(false);
-      cancelMoveEnabled = false;
+    cancelMoveAction();
+    if (frame != null) {
+      frame.clearStatusMessage();
     }
+    this.setEnabled(false);
+    disableCancelButton();
   }
 
   final String undoMove(final int moveIndex) {
@@ -220,7 +226,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       listening = false;
       cleanUpSpecific();
       bridge = null;
-      cancelMoveEnabled = false;
+      disableCancelButton();
       removeAll();
       refresh.run();
     });
@@ -244,7 +250,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
       this.actionLabel.setText(id.getName() + actionLabel);
       add(leftBox(this.actionLabel));
       if (setCancelButton()) {
-        add(leftBox(new JButton(SwingComponents.newAbstractAction(this::cancelMove))));
+        add(leftBox(cancelMoveButton));
       }
       add(leftBox(new JButton(doneMoveAction)));
       addAdditionalButtons();
