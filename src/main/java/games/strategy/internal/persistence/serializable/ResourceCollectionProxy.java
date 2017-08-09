@@ -2,8 +2,6 @@ package games.strategy.internal.persistence.serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Map;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -23,17 +21,17 @@ public final class ResourceCollectionProxy implements Proxy {
       ProxyFactory.newInstance(ResourceCollection.class, ResourceCollectionProxy::new);
 
   private final GameData gameData;
-  private final Map<Resource, Integer> quantitiesByResource;
+  private final IntegerMap<Resource> resources;
 
   public ResourceCollectionProxy(final ResourceCollection resourceCollection) {
     checkNotNull(resourceCollection);
 
     gameData = resourceCollection.getData();
-    quantitiesByResource = resourceCollection.getResourcesCopy().toMap();
+    resources = resourceCollection.getResourcesCopy();
   }
 
   @Override
   public Object readResolve() {
-    return new ResourceCollection(gameData, new IntegerMap<>(quantitiesByResource));
+    return new ResourceCollection(gameData, resources);
   }
 }

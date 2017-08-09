@@ -44,6 +44,7 @@ public final class ResourceCollectionProxyAsProxyTest extends AbstractProxyTestC
   @Override
   protected Collection<ProxyFactory> getProxyFactories() {
     return TestProxyFactoryCollectionBuilder.forGameData()
+        .add(IntegerMapProxy.FACTORY)
         .add(ResourceProxy.FACTORY)
         .add(ResourceCollectionProxy.FACTORY)
         .build();
