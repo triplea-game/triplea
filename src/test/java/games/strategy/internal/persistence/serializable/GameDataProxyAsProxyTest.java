@@ -33,10 +33,6 @@ public final class GameDataProxyAsProxyTest extends AbstractProxyTestCase<GameDa
 
   @Override
   protected Collection<ProxyFactory> getProxyFactories() {
-    return Arrays.asList(
-        GameDataProxy.FACTORY,
-        PropertyBagMementoProxy.FACTORY,
-        TripleAProxy.FACTORY,
-        VersionProxy.FACTORY);
+    return TestProxyFactoryCollectionBuilder.forGameData().build();
   }
 }

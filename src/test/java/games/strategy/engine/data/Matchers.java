@@ -55,4 +55,40 @@ public final class Matchers {
       return (expected == null) == (actual == null);
     }
   }
+
+  /**
+   * Creates a matcher that matches when the examined {@link Resource} is logically equal to the specified
+   * {@link Resource}.
+   *
+   * @param expected The expected {@link Resource} value.
+   *
+   * @return A new matcher.
+   */
+  public static Matcher<Resource> equalToResource(final Resource expected) {
+    checkNotNull(expected);
+
+    return new IsResourceEqual(expected);
+  }
+
+  private static final class IsResourceEqual extends TypeSafeMatcher<Resource> {
+    private final Resource expected;
+
+    IsResourceEqual(final Resource expected) {
+      assert expected != null;
+
+      this.expected = expected;
+    }
+
+    @Override
+    public void describeTo(final Description description) {
+      description.appendValue(expected);
+    }
+
+    @Override
+    protected boolean matchesSafely(final Resource actual) {
+      return Objects.equals(expected.getAttachments(), actual.getAttachments())
+          && equalToGameData(expected.getData()).matches(actual.getData())
+          && Objects.equals(expected.getName(), actual.getName());
+    }
+  }
 }
