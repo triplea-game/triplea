@@ -13,10 +13,11 @@ import javax.swing.border.LineBorder;
  * A window that is displayed while loading a game to provide visual feedback to the user during this potentially
  * long-running operation.
  */
-public class WaitWindow extends JWindow {
+public final class WaitWindow extends JWindow {
   private static final long serialVersionUID = -8134956690669346954L;
-  private final Object m_mutex = new Object();
-  private Timer m_timer = new Timer();
+
+  private final Object mutex = new Object();
+  private Timer timer = new Timer();
 
   public WaitWindow() {
     final WaitPanel mainPanel = new WaitPanel("Loading game, please wait...");
@@ -40,9 +41,9 @@ public class WaitWindow extends JWindow {
       }
     };
 
-    synchronized (m_mutex) {
-      if (m_timer != null) {
-        m_timer.schedule(task, 15, 15);
+    synchronized (mutex) {
+      if (timer != null) {
+        timer.schedule(task, 15, 15);
       }
     }
   }
@@ -51,10 +52,10 @@ public class WaitWindow extends JWindow {
    * Hides the wait window.
    */
   public void doneWait() {
-    synchronized (m_mutex) {
-      if (m_timer != null) {
-        m_timer.cancel();
-        m_timer = null;
+    synchronized (mutex) {
+      if (timer != null) {
+        timer.cancel();
+        timer = null;
       }
     }
     SwingUtilities.invokeLater(() -> {
