@@ -33,7 +33,6 @@ import swinglib.JPanelBuilder;
 class SelectionComponentFactory {
   static Supplier<SelectionComponent> proxySettings() {
     return () -> new SelectionComponent() {
-      private static final long serialVersionUID = -8485825527073729683L;
       final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
       final HttpProxy.ProxyChoice proxyChoice =
           HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
@@ -166,7 +165,6 @@ class SelectionComponentFactory {
    */
   static Supplier<SelectionComponent> intValueRange(final ClientSetting clientSetting, final int lo, final int hi) {
     return () -> new SelectionComponent() {
-      private static final long serialVersionUID = 8195633990481917808L;
       String value = clientSetting.value();
       final JTextField component = new JTextField(value, String.valueOf(hi).length());
 
@@ -242,7 +240,6 @@ class SelectionComponentFactory {
    */
   static SelectionComponent booleanRadioButtons(final ClientSetting clientSetting) {
     return new AlwaysValidInputSelectionComponent() {
-      private static final long serialVersionUID = 6104513062312556269L;
       final boolean initialSelection = clientSetting.booleanValue();
       final JRadioButton yesButton = new JRadioButton("True");
       final JRadioButton noButton = new JRadioButton("False");
@@ -293,7 +290,6 @@ class SelectionComponentFactory {
       final ClientSetting clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
     return () -> new AlwaysValidInputSelectionComponent() {
-      private static final long serialVersionUID = -1775099967925891332L;
       final int expectedLength = 20;
       final JTextField field = new JTextField(clientSetting.value(), expectedLength);
       final JButton button = JButtonBuilder.builder()
@@ -348,7 +344,6 @@ class SelectionComponentFactory {
       final ClientSetting clientSetting,
       final List<String> availableOptions) {
     return () -> new AlwaysValidInputSelectionComponent() {
-      private static final long serialVersionUID = -8969206423938554118L;
       final JComboBox<String> comboBox = new JComboBox<>(availableOptions.toArray(new String[availableOptions.size()]));
 
       @Override
@@ -381,7 +376,6 @@ class SelectionComponentFactory {
 
   static Supplier<SelectionComponent> textField(final ClientSetting clientSetting) {
     return () -> new AlwaysValidInputSelectionComponent() {
-      private static final long serialVersionUID = 7549165488576728952L;
       final JTextField textField = new JTextField(clientSetting.value(), 20);
 
       @Override
@@ -410,10 +404,7 @@ class SelectionComponentFactory {
     };
   }
 
-
   private abstract static class AlwaysValidInputSelectionComponent extends SelectionComponent {
-    private static final long serialVersionUID = 6848335387637901069L;
-
     @Override
     void indicateError() {
       // no-op, component only allows valid selections
@@ -434,5 +425,4 @@ class SelectionComponentFactory {
       return "";
     }
   }
-
 }
