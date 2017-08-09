@@ -17,7 +17,6 @@ public class WaitWindow extends JWindow {
   private static final long serialVersionUID = -8134956690669346954L;
   private final Object m_mutex = new Object();
   private Timer m_timer = new Timer();
-  private boolean m_finished = false;
 
   public WaitWindow() {
     final WaitPanel mainPanel = new WaitPanel("Loading game, please wait...");
@@ -63,10 +62,5 @@ public class WaitWindow extends JWindow {
       removeAll();
       dispose();
     });
-    m_finished = true;
-  }
-
-  public boolean isFinished() {
-    return m_finished;
   }
 }
