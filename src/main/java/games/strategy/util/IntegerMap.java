@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -61,6 +61,14 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
     for (final IntegerMap<T> integerMap : integerMaps) {
       this.add(integerMap);
     }
+  }
+
+  public IntegerMap(final Map<T, Integer> map) {
+    mapValues = new HashMap<>(map);
+  }
+
+  public Map<T, Integer> toMap() {
+    return new HashMap<>(mapValues);
   }
 
   public int size() {
@@ -221,7 +229,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
     }
     int maxValue = Integer.MIN_VALUE;
     T maxKey = null;
-    for (final Entry<T, Integer> entry : mapValues.entrySet()) {
+    for (final Map.Entry<T, Integer> entry : mapValues.entrySet()) {
       if (entry.getValue() > maxValue) {
         maxValue = entry.getValue();
         maxKey = entry.getKey();
@@ -239,7 +247,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
     }
     int minValue = Integer.MAX_VALUE;
     T minKey = null;
-    for (final Entry<T, Integer> entry : mapValues.entrySet()) {
+    for (final Map.Entry<T, Integer> entry : mapValues.entrySet()) {
       if (entry.getValue() < minValue) {
         minValue = entry.getValue();
         minKey = entry.getKey();
@@ -351,7 +359,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
     return mapValues.isEmpty();
   }
 
-  public Set<Entry<T, Integer>> entrySet() {
+  public Set<Map.Entry<T, Integer>> entrySet() {
     return mapValues.entrySet();
   }
 

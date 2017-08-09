@@ -2,7 +2,6 @@ package games.strategy.internal.persistence.serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import games.strategy.engine.data.GameData;
@@ -28,7 +27,7 @@ public final class ResourceProxy implements Proxy {
   public ResourceProxy(final Resource resource) {
     checkNotNull(resource);
 
-    attachments = new HashMap<>(resource.getAttachments());
+    attachments = resource.getAttachments();
     gameData = resource.getData();
     name = resource.getName();
   }

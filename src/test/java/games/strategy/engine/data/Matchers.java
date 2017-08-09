@@ -91,4 +91,38 @@ public final class Matchers {
           && Objects.equals(expected.getName(), actual.getName());
     }
   }
+
+  /**
+   * Creates a matcher that matches when the examined {@link ResourceCollection} is logically equal to the specified
+   * {@link ResourceCollection}.
+   *
+   * @param expected The expected {@link ResourceCollection} value.
+   *
+   * @return A new matcher.
+   */
+  public static Matcher<ResourceCollection> equalToResourceCollection(final ResourceCollection expected) {
+    checkNotNull(expected);
+
+    return new IsResourceCollectionEqual(expected);
+  }
+
+  private static final class IsResourceCollectionEqual extends TypeSafeMatcher<ResourceCollection> {
+    private final ResourceCollection expected;
+
+    IsResourceCollectionEqual(final ResourceCollection expected) {
+      assert expected != null;
+
+      this.expected = expected;
+    }
+
+    @Override
+    public void describeTo(final Description description) {
+      description.appendValue(expected);
+    }
+
+    @Override
+    protected boolean matchesSafely(final ResourceCollection actual) {
+      return Objects.equals(expected.getResourcesCopy(), actual.getResourcesCopy());
+    }
+  }
 }

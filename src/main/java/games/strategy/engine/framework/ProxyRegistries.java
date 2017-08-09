@@ -2,6 +2,7 @@ package games.strategy.engine.framework;
 
 import games.strategy.internal.persistence.serializable.GameDataProxy;
 import games.strategy.internal.persistence.serializable.PropertyBagMementoProxy;
+import games.strategy.internal.persistence.serializable.ResourceCollectionProxy;
 import games.strategy.internal.persistence.serializable.ResourceProxy;
 import games.strategy.internal.persistence.serializable.TripleAProxy;
 import games.strategy.internal.persistence.serializable.VersionProxy;
@@ -20,6 +21,7 @@ final class ProxyRegistries {
         GameDataProxy.FACTORY,
         PropertyBagMementoProxy.FACTORY,
         ResourceProxy.FACTORY,
+        ResourceCollectionProxy.FACTORY,
         TripleAProxy.FACTORY,
         VersionProxy.FACTORY);
   }
