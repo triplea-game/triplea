@@ -9,6 +9,10 @@ import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+/**
+ * A window that is displayed while loading a game to provide visual feedback to the user during this potentially
+ * long-running operation.
+ */
 public class WaitWindow extends JWindow {
   private static final long serialVersionUID = -8134956690669346954L;
   private final Object m_mutex = new Object();
@@ -26,6 +30,9 @@ public class WaitWindow extends JWindow {
     setSize(getSize().width, 80);
   }
 
+  /**
+   * Shows the wait window.
+   */
   public void showWait() {
     final TimerTask task = new TimerTask() {
       @Override
@@ -41,6 +48,9 @@ public class WaitWindow extends JWindow {
     }
   }
 
+  /**
+   * Hides the wait window.
+   */
   public void doneWait() {
     synchronized (m_mutex) {
       if (m_timer != null) {
