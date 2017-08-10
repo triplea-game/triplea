@@ -30,7 +30,9 @@ import swinglib.JPanelBuilder;
  * For example, if we have a setting that needs a number, we could create an integer text field with this
  * class. This class takes care of the UI code to ensure we render the proper swing component with validation.
  */
-class SelectionComponentFactory {
+final class SelectionComponentFactory {
+  private SelectionComponentFactory() {}
+
   static Supplier<SelectionComponent> proxySettings() {
     return () -> new SelectionComponent() {
       final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
@@ -71,7 +73,7 @@ class SelectionComponentFactory {
       };
 
       @Override
-      JComponent getJComponent() {
+      public JComponent getJComponent() {
         SwingComponents.createButtonGroup(noneButton, systemButton, userButton);
         enableUserSettings.actionPerformed(null);
         userButton.addActionListener(enableUserSettings);
@@ -82,7 +84,7 @@ class SelectionComponentFactory {
       }
 
       @Override
-      boolean isValid() {
+      public boolean isValid() {
         return !userButton.isSelected() || (isHostTextValid() && isPortTextValid());
       }
 
@@ -103,14 +105,13 @@ class SelectionComponentFactory {
         }
       }
 
-
       @Override
-      String validValueDescription() {
+      public String validValueDescription() {
         return "Proxy host can be a network name or an IP address, port should be number, usually 4 to 5 digits.";
       }
 
       @Override
-      Map<GameSetting, String> readValues() {
+      public Map<GameSetting, String> readValues() {
         final Map<GameSetting, String> values = new HashMap<>();
         if (noneButton.isSelected()) {
           values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString());
@@ -126,7 +127,7 @@ class SelectionComponentFactory {
       }
 
       @Override
-      void indicateError() {
+      public void indicateError() {
         if (!isHostTextValid()) {
           hostText.setBackground(Color.RED);
         }
@@ -136,14 +137,13 @@ class SelectionComponentFactory {
       }
 
       @Override
-      void clearError() {
+      public void clearError() {
         hostText.setBackground(Color.WHITE);
         portText.setBackground(Color.WHITE);
-
       }
 
       @Override
-      void resetToDefault() {
+      public void resetToDefault() {
         ClientSetting.flush();
         hostText.setText(ClientSetting.PROXY_HOST.defaultValue);
         portText.setText(ClientSetting.PROXY_PORT.defaultValue);
@@ -151,7 +151,7 @@ class SelectionComponentFactory {
       }
 
       @Override
-      void reset() {
+      public void reset() {
         ClientSetting.flush();
         hostText.setText(ClientSetting.PROXY_HOST.value());
         portText.setText(ClientSetting.PROXY_PORT.value());
@@ -169,7 +169,7 @@ class SelectionComponentFactory {
       final JTextField component = new JTextField(value, String.valueOf(hi).length());
 
       @Override
-      JComponent getJComponent() {
+      public JComponent getJComponent() {
         component.setToolTipText(validValueDescription());
 
         SwingComponents.addTextFieldFocusLostListener(component, () -> {
@@ -184,7 +184,7 @@ class SelectionComponentFactory {
       }
 
       @Override
-      boolean isValid() {
+      public boolean isValid() {
         final String value = component.getText();
 
         if (value.trim().isEmpty()) {
@@ -200,35 +200,35 @@ class SelectionComponentFactory {
       }
 
       @Override
-      String validValueDescription() {
+      public String validValueDescription() {
         return "Number between " + lo + " and " + hi;
       }
 
       @Override
-      void indicateError() {
+      public void indicateError() {
         component.setBackground(Color.RED);
       }
 
       @Override
-      void clearError() {
+      public void clearError() {
         component.setBackground(Color.WHITE);
       }
 
       @Override
-      Map<GameSetting, String> readValues() {
+      public Map<GameSetting, String> readValues() {
         final Map<GameSetting, String> map = new HashMap<>();
         map.put(clientSetting, component.getText());
         return map;
       }
 
       @Override
-      void resetToDefault() {
+      public void resetToDefault() {
         component.setText(clientSetting.defaultValue);
         clearError();
       }
 
       @Override
-      void reset() {
+      public void reset() {
         component.setText(clientSetting.value());
         clearError();
       }
@@ -250,7 +250,7 @@ class SelectionComponentFactory {
           .build();
 
       @Override
-      JComponent getJComponent() {
+      public JComponent getJComponent() {
         yesButton.setSelected(initialSelection);
         noButton.setSelected(!initialSelection);
         SwingComponents.createButtonGroup(yesButton, noButton);
@@ -258,7 +258,7 @@ class SelectionComponentFactory {
       }
 
       @Override
-      Map<GameSetting, String> readValues() {
+      public Map<GameSetting, String> readValues() {
         final String value = yesButton.isSelected() ? String.valueOf(true) : String.valueOf(false);
         final Map<GameSetting, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
@@ -266,13 +266,13 @@ class SelectionComponentFactory {
       }
 
       @Override
-      void resetToDefault() {
+      public void resetToDefault() {
         yesButton.setSelected(Boolean.valueOf(clientSetting.defaultValue));
         noButton.setSelected(!Boolean.valueOf(clientSetting.defaultValue));
       }
 
       @Override
-      void reset() {
+      public void reset() {
         yesButton.setSelected(clientSetting.booleanValue());
         noButton.setSelected(!clientSetting.booleanValue());
       }
@@ -300,7 +300,7 @@ class SelectionComponentFactory {
           .build();
 
       @Override
-      JComponent getJComponent() {
+      public JComponent getJComponent() {
         field.setEditable(false);
 
         return JPanelBuilder.builder()
@@ -312,7 +312,7 @@ class SelectionComponentFactory {
       }
 
       @Override
-      Map<GameSetting, String> readValues() {
+      public Map<GameSetting, String> readValues() {
         final String value = field.getText();
         final Map<GameSetting, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
@@ -320,13 +320,13 @@ class SelectionComponentFactory {
       }
 
       @Override
-      void resetToDefault() {
+      public void resetToDefault() {
         field.setText(clientSetting.defaultValue);
         clearError();
       }
 
       @Override
-      void reset() {
+      public void reset() {
         field.setText(clientSetting.value());
         clearError();
       }
@@ -347,13 +347,13 @@ class SelectionComponentFactory {
       final JComboBox<String> comboBox = new JComboBox<>(availableOptions.toArray(new String[availableOptions.size()]));
 
       @Override
-      JComponent getJComponent() {
+      public JComponent getJComponent() {
         comboBox.setSelectedItem(clientSetting.value());
         return comboBox;
       }
 
       @Override
-      Map<GameSetting, String> readValues() {
+      public Map<GameSetting, String> readValues() {
         final String value = String.valueOf(comboBox.getSelectedItem());
         final Map<GameSetting, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
@@ -361,13 +361,13 @@ class SelectionComponentFactory {
       }
 
       @Override
-      void resetToDefault() {
+      public void resetToDefault() {
         comboBox.setSelectedItem(clientSetting.value());
         clearError();
       }
 
       @Override
-      void reset() {
+      public void reset() {
         comboBox.setSelectedItem(clientSetting.defaultValue);
         clearError();
       }
@@ -379,49 +379,49 @@ class SelectionComponentFactory {
       final JTextField textField = new JTextField(clientSetting.value(), 20);
 
       @Override
-      JComponent getJComponent() {
+      public JComponent getJComponent() {
         return textField;
       }
 
       @Override
-      Map<GameSetting, String> readValues() {
+      public Map<GameSetting, String> readValues() {
         final Map<GameSetting, String> map = new HashMap<>();
         map.put(clientSetting, textField.getText());
         return map;
       }
 
       @Override
-      void reset() {
+      public void reset() {
         textField.setText(clientSetting.value());
         clearError();
       }
 
       @Override
-      void resetToDefault() {
+      public void resetToDefault() {
         textField.setText(clientSetting.defaultValue);
         clearError();
       }
     };
   }
 
-  private abstract static class AlwaysValidInputSelectionComponent extends SelectionComponent {
+  private abstract static class AlwaysValidInputSelectionComponent implements SelectionComponent {
     @Override
-    void indicateError() {
+    public void indicateError() {
       // no-op, component only allows valid selections
     }
 
     @Override
-    void clearError() {
+    public void clearError() {
       // also a no-op
     }
 
     @Override
-    boolean isValid() {
+    public boolean isValid() {
       return true;
     }
 
     @Override
-    String validValueDescription() {
+    public String validValueDescription() {
       return "";
     }
   }
