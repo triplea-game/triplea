@@ -238,11 +238,11 @@ public class GameSelectorModel extends Observable {
     super.clearChanged();
   }
 
-  public void loadDefaultGame(final Component ui) {
+  public void loadDefaultGame() {
     // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game
     // at this point)
     ProAI.gameOverClearCache();
-    new Thread(() -> loadDefaultGame(ui, false)).start();
+    new Thread(() -> loadDefaultGame(false)).start();
   }
 
   /**
@@ -252,7 +252,7 @@ public class GameSelectorModel extends Observable {
    *        we only call with
    *        'true' if loading the user preferred map failed).
    */
-  public void loadDefaultGame(final Component ui, final boolean forceFactoryDefault) {
+  public void loadDefaultGame(final boolean forceFactoryDefault) {
     // load the previously saved value
     if (forceFactoryDefault) {
       // we don't refresh the game chooser model because we have just removed a bad map from it
@@ -274,7 +274,7 @@ public class GameSelectorModel extends Observable {
         final URI defaultUri = new URI(userPreferredDefaultGameUri);
         selectedGame = new NewGameChooserEntry(defaultUri);
       } catch (final Exception e) {
-        selectedGame = selectByName(ui, forceFactoryDefault);
+        selectedGame = selectByName(forceFactoryDefault);
         if (selectedGame == null) {
           return;
         }
@@ -283,12 +283,12 @@ public class GameSelectorModel extends Observable {
         try {
           selectedGame.fullyParseGameData();
         } catch (final GameParseException e) {
-          loadDefaultGame(ui, true);
+          loadDefaultGame(true);
           return;
         }
       }
     } else {
-      selectedGame = selectByName(ui, forceFactoryDefault);
+      selectedGame = selectByName(forceFactoryDefault);
       if (selectedGame == null) {
         return;
       }
@@ -296,7 +296,7 @@ public class GameSelectorModel extends Observable {
     load(selectedGame);
   }
 
-  private NewGameChooserEntry selectByName(final Component ui, final boolean forceFactoryDefault) {
+  private NewGameChooserEntry selectByName(final boolean forceFactoryDefault) {
     if (forceFactoryDefault) {
       ClientSetting.DEFAULT_GAME_NAME_PREF.save(ClientSetting.DEFAULT_GAME_NAME_PREF.defaultValue);
       ClientSetting.flush();
@@ -321,7 +321,7 @@ public class GameSelectorModel extends Observable {
         // Load real default game...
         selectedGame.delayParseGameData();
         model.removeEntry(selectedGame);
-        loadDefaultGame(ui, true);
+        loadDefaultGame(true);
         return null;
       }
     }

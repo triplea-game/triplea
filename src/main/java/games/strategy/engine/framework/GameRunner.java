@@ -248,7 +248,7 @@ public class GameRunner {
 
       ProAI.gameOverClearCache();
       new Thread(() -> {
-        gameSelectorModel.loadDefaultGame(mainFrame, false);
+        gameSelectorModel.loadDefaultGame(false);
         final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
         if (fileName.length() > 0) {
           gameSelectorModel.load(new File(fileName), mainFrame);
