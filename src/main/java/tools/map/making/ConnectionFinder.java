@@ -267,12 +267,12 @@ public class ConnectionFinder {
    * @return a double that represents the area of the given point array of a polygon
    */
   private static double calcSignedPolygonArea(final Point2D[] pointArray) {
-    final int N = pointArray.length;
+    final int length = pointArray.length;
     int i;
     int j;
     double area = 0;
-    for (i = 0; i < N; i++) {
-      j = (i + 1) % N;
+    for (i = 0; i < length; i++) {
+      j = (i + 1) % length;
       area += pointArray[i].getX() * pointArray[j].getY();
       area -= pointArray[i].getY() * pointArray[j].getX();
     }
@@ -288,7 +288,7 @@ public class ConnectionFinder {
    * @return a Point2D object that represents the center of mass of the given point array
    */
   private static Point2D calcCenterOfMass(final Point2D[] pointArray) {
-    final int N = pointArray.length;
+    final int length = pointArray.length;
     double cx = 0;
     double cy = 0;
     double area = calcSignedPolygonArea(pointArray);
@@ -296,8 +296,8 @@ public class ConnectionFinder {
     int i;
     int j;
     double factor = 0;
-    for (i = 0; i < N; i++) {
-      j = (i + 1) % N;
+    for (i = 0; i < length; i++) {
+      j = (i + 1) % length;
       factor = (pointArray[i].getX() * pointArray[j].getY() - pointArray[j].getX() * pointArray[i].getY());
       cx += (pointArray[i].getX() + pointArray[j].getX()) * factor;
       cy += (pointArray[i].getY() + pointArray[j].getY()) * factor;

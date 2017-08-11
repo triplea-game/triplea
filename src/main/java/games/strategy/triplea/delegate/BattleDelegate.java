@@ -269,10 +269,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
         if (!battles.isEmpty()) {
           final Collection<Unit> bombardUnits = t.getUnits().getMatches(ownedAndCanBombard);
-          final List<Unit> ListedBombardUnits = new ArrayList<>();
-          ListedBombardUnits.addAll(bombardUnits);
-          sortUnitsToBombard(ListedBombardUnits, attacker);
-          final Iterator<Unit> bombarding = ListedBombardUnits.iterator();
+          final List<Unit> listedBombardUnits = new ArrayList<>();
+          listedBombardUnits.addAll(bombardUnits);
+          sortUnitsToBombard(listedBombardUnits, attacker);
+          final Iterator<Unit> bombarding = listedBombardUnits.iterator();
           if (!bombardUnits.isEmpty()) {
             // ask if they want to bombard
             if (!remotePlayer.selectShoreBombard(t)) {

@@ -290,9 +290,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   private static void changeUnitOwnership(final IDelegateBridge bridge) {
-    final PlayerID Player = bridge.getPlayerID();
-    final PlayerAttachment pa = PlayerAttachment.get(Player);
-    final Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();
+    final PlayerID player = bridge.getPlayerID();
+    final PlayerAttachment pa = PlayerAttachment.get(player);
+    final Collection<PlayerID> possibleNewOwners = pa.getGiveUnitControl();
     final Collection<Territory> territories = bridge.getData().getMap().getTerritories();
     final CompositeChange change = new CompositeChange();
     final Collection<Tuple<Territory, Collection<Unit>>> changeList =
@@ -303,10 +303,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       if (ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty()) {
         final Collection<PlayerID> terrNewOwners = ta.getChangeUnitOwners();
         for (final PlayerID terrNewOwner : terrNewOwners) {
-          if (PossibleNewOwners.contains(terrNewOwner)) {
+          if (possibleNewOwners.contains(terrNewOwner)) {
             // PlayerOwnerChange
             final Collection<Unit> units =
-                currTerritory.getUnits().getMatches(Match.allOf(Matches.unitOwnedBy(Player),
+                currTerritory.getUnits().getMatches(Match.allOf(Matches.unitOwnedBy(player),
                     Matches.unitCanBeGivenByTerritoryTo(terrNewOwner)));
             if (!units.isEmpty()) {
               change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));

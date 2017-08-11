@@ -169,8 +169,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (null != (result = checkEditMode())) {
       return result;
     }
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-    final int oldTotal = player.getResources().getQuantity(PUs);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
+    final int oldTotal = player.getResources().getQuantity(pus);
     if (oldTotal == newTotal) {
       return "New PUs total is unchanged";
     }
@@ -178,7 +178,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return "New PUs total is invalid";
     }
     logEvent("Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
-    m_bridge.addChange(ChangeFactory.changeResourcesChange(player, PUs, (newTotal - oldTotal)));
+    m_bridge.addChange(ChangeFactory.changeResourcesChange(player, pus, (newTotal - oldTotal)));
     return null;
   }
 

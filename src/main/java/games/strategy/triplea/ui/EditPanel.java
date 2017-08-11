@@ -213,16 +213,16 @@ class EditPanel extends ActionPanel {
         }
         final int oldTotal = player.getResources().getQuantity(pus);
         int newTotal = oldTotal;
-        final JTextField PUsField = new JTextField(String.valueOf(oldTotal), 4);
-        PUsField.setMaximumSize(PUsField.getPreferredSize());
-        final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField),
+        final JTextField pusField = new JTextField(String.valueOf(oldTotal), 4);
+        pusField.setMaximumSize(pusField.getPreferredSize());
+        final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(pusField),
             "Select new number of PUs", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (option != JOptionPane.OK_OPTION) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         try {
-          newTotal = Integer.parseInt(PUsField.getText());
+          newTotal = Integer.parseInt(pusField.getText());
         } catch (final Exception e) {
           // ignore malformed input
         }

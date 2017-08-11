@@ -89,10 +89,10 @@ class AAInMoveUtil implements Serializable {
     final List<Unit> defendingAa = territory.getUnits().getMatches(Matches.unitIsAaThatCanFire(units,
         airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
     // comes ordered alphabetically already
-    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAa);
+    final List<String> aaTypes = UnitAttachment.getAllOfTypeAAs(defendingAa);
     // stacks are backwards
-    Collections.reverse(AAtypes);
-    for (final String currentTypeAa : AAtypes) {
+    Collections.reverse(aaTypes);
+    for (final String currentTypeAa : aaTypes) {
       final Collection<Unit> currentPossibleAa = Match.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
       final Set<UnitType> targetUnitTypesForThisTypeAa =
           UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());

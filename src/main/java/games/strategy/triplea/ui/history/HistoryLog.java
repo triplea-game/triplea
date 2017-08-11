@@ -498,9 +498,9 @@ public class HistoryLog extends JFrame {
     }
     logWriter.println("Production/PUs Summary :\n");
     for (final PlayerID player : players) {
-      final int PUs = player.getResources().getQuantity(pus);
+      final int pusQuantity = player.getResources().getQuantity(pus);
       final int production = getProduction(player, data);
-      logWriter.println("    " + player.getName() + " : " + production + " / " + PUs);
+      logWriter.println("    " + player.getName() + " : " + production + " / " + pusQuantity);
     }
     logWriter.println();
     logWriter.println();
