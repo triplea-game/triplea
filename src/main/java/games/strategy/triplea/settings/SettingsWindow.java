@@ -21,8 +21,8 @@ import swinglib.GridBagHelper;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
+import swinglib.JScrollPaneBuilder;
 import swinglib.JTextAreaBuilder;
-
 
 /**
  * UI window with controls to update game settings and preferences, {@see ClientSetting}.
@@ -108,16 +108,13 @@ enum SettingsWindow {
 
       grid.add(setting.buildSelectionComponent());
 
-      grid.add(JPanelBuilder.builder()
-          .add(
-              JTextAreaBuilder.builder()
-                  .text(setting.description)
-                  .rows(2)
-                  .columns(40)
-                  .maximumSize(60, 50)
-                  .readOnly()
-                  .borderWidth(1)
-                  .build())
+      grid.add(JScrollPaneBuilder.builder()
+          .view(JTextAreaBuilder.builder()
+              .text(setting.description)
+              .rows(2)
+              .columns(40)
+              .readOnly()
+              .build())
           .build());
     });
     return SwingComponents.newJScrollPane(contents);
