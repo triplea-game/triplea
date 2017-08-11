@@ -183,7 +183,7 @@ public class RocketsFireHelper {
     final GameData data = bridge.getData();
     final PlayerID attacked = attackedTerritory.getOwner();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
-    final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+    final boolean damageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
         Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
@@ -204,7 +204,7 @@ public class RocketsFireHelper {
       return;
     }
     final String transcript;
-    if (DamageFromBombingDoneToUnits) {
+    if (damageFromBombingDoneToUnits) {
       // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc
       // etc.
       final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
@@ -355,7 +355,7 @@ public class RocketsFireHelper {
       }
     }
     int territoryProduction = TerritoryAttachment.getProduction(attackedTerritory);
-    if (DamageFromBombingDoneToUnits && !targets.isEmpty()) {
+    if (damageFromBombingDoneToUnits && !targets.isEmpty()) {
       // we are doing damage to 'target', not to the territory
       final Unit target = targets.iterator().next();
       // UnitAttachment ua = UnitAttachment.get(target.getType());
@@ -384,7 +384,7 @@ public class RocketsFireHelper {
     }
     // Record the PUs lost
     DelegateFinder.moveDelegate(data).pusLost(attackedTerritory, cost);
-    if (DamageFromBombingDoneToUnits && !targets.isEmpty()) {
+    if (damageFromBombingDoneToUnits && !targets.isEmpty()) {
       getRemote(bridge).reportMessage(
           "Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to "
               + targets.iterator().next(),

@@ -50,23 +50,23 @@ final class ProTechAI {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
     final Resource techtokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-    final int TechTokens = player.getResources().getQuantity(techtokens);
+    final int techTokensQuantity = player.getResources().getQuantity(techtokens);
     int tokensToBuy = 0;
-    if (!capDanger && TechTokens < 3 && pusRemaining > Math.random() * 160) {
+    if (!capDanger && techTokensQuantity < 3 && pusRemaining > Math.random() * 160) {
       tokensToBuy = 1;
     }
-    if (TechTokens > 0 || tokensToBuy > 0) {
+    if (techTokensQuantity > 0 || tokensToBuy > 0) {
       final List<TechnologyFrontier> cats = TechAdvance.getPlayerTechCategories(data, player);
       // retaining 65% chance of choosing land advances using basic ww2v3 model.
       if (data.getTechnologyFrontier().isEmpty()) {
         if (Math.random() > 0.35) {
-          techDelegate.rollTech(TechTokens + tokensToBuy, cats.get(1), tokensToBuy, null);
+          techDelegate.rollTech(techTokensQuantity + tokensToBuy, cats.get(1), tokensToBuy, null);
         } else {
-          techDelegate.rollTech(TechTokens + tokensToBuy, cats.get(0), tokensToBuy, null);
+          techDelegate.rollTech(techTokensQuantity + tokensToBuy, cats.get(0), tokensToBuy, null);
         }
       } else {
         final int rand = (int) (Math.random() * cats.size());
-        techDelegate.rollTech(TechTokens + tokensToBuy, cats.get(rand), tokensToBuy, null);
+        techDelegate.rollTech(techTokensQuantity + tokensToBuy, cats.get(rand), tokensToBuy, null);
       }
     }
   }

@@ -186,9 +186,9 @@ class GameMenu {
   }
 
   private void addRollDice(final JMenu parentMenu) {
-    final JMenuItem RollDiceBox = new JMenuItem("Roll Dice");
-    RollDiceBox.setMnemonic(KeyEvent.VK_R);
-    RollDiceBox.addActionListener(e -> {
+    final JMenuItem rollDiceBox = new JMenuItem("Roll Dice");
+    rollDiceBox.setMnemonic(KeyEvent.VK_R);
+    rollDiceBox.addActionListener(e -> {
       final IntTextField numberOfText = new IntTextField(0, 100);
       final IntTextField diceSidesText = new IntTextField(1, 200);
       numberOfText.setText(String.valueOf(0));
@@ -229,7 +229,7 @@ class GameMenu {
         // ignore malformed input
       }
     });
-    parentMenu.add(RollDiceBox);
+    parentMenu.add(rollDiceBox);
   }
 
   private void addBattleCalculatorMenu(final JMenu menuGame) {
