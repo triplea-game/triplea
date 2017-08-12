@@ -14,7 +14,7 @@ import java.util.Set;
  *
  * @param <T> The type of the map key.
  */
-public class IntegerMap<T> implements Cloneable, Serializable {
+public final class IntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
   private final HashMap<T, Integer> mapValues;
 
@@ -381,26 +381,14 @@ public class IntegerMap<T> implements Cloneable, Serializable {
    * then a and b are not equal.
    */
   @Override
-  @SuppressWarnings("unchecked")
   public boolean equals(final Object o) {
     if (this == o) {
       return true;
-    }
-    if (o == null || !(o instanceof IntegerMap)) {
+    } else if (!(o instanceof IntegerMap)) {
       return false;
     }
-    final IntegerMap<T> map = (IntegerMap<T>) o;
-    if (!map.keySet().equals(this.keySet())) {
-      return false;
-    }
-    if (!map.mapValues.equals(this.mapValues)) {
-      return false;
-    }
-    for (final T key : map.keySet()) {
-      if (!(this.getInt(key) == map.getInt(key))) {
-        return false;
-      }
-    }
-    return true;
+
+    final IntegerMap<?> other = (IntegerMap<?>) o;
+    return mapValues.equals(other.mapValues);
   }
 }

@@ -15,7 +15,7 @@ import java.util.Set;
  *
  * @param <T> The type of the map key.
  */
-public class LinkedIntegerMap<T> implements Cloneable, Serializable {
+public final class LinkedIntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
   private final LinkedHashMap<T, Integer> m_values;
 
@@ -390,26 +390,14 @@ public class LinkedIntegerMap<T> implements Cloneable, Serializable {
    * then a and b are not equal.
    */
   @Override
-  @SuppressWarnings("unchecked")
   public boolean equals(final Object o) {
     if (this == o) {
       return true;
-    }
-    if (o == null || !(o instanceof LinkedIntegerMap)) {
+    } else if (!(o instanceof LinkedIntegerMap)) {
       return false;
     }
-    final LinkedIntegerMap<T> map = (LinkedIntegerMap<T>) o;
-    if (!map.keySet().equals(this.keySet())) {
-      return false;
-    }
-    if (!map.m_values.equals(this.m_values)) {
-      return false;
-    }
-    for (final T key : map.keySet()) {
-      if (!(this.getInt(key) == map.getInt(key))) {
-        return false;
-      }
-    }
-    return true;
+
+    final LinkedIntegerMap<?> other = (LinkedIntegerMap<?>) o;
+    return m_values.equals(other.m_values);
   }
 }
