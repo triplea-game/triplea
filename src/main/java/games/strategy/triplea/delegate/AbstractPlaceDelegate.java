@@ -307,11 +307,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Change place = ChangeFactory.addUnits(at, placeableUnits);
     change.add(remove);
     change.add(place);
-    final UndoablePlacement current_placement = new UndoablePlacement(change, producer, at, placeableUnits);
-    m_placements.add(current_placement);
+    final UndoablePlacement currentPlacement = new UndoablePlacement(change, producer, at, placeableUnits);
+    m_placements.add(currentPlacement);
     updateUndoablePlacementIndexes();
     final String transcriptText = MyFormatter.unitsToTextNoOwner(placeableUnits) + " placed in " + at.getName();
-    m_bridge.getHistoryWriter().startEvent(transcriptText, current_placement.getDescriptionObject());
+    m_bridge.getHistoryWriter().startEvent(transcriptText, currentPlacement.getDescriptionObject());
     if (movedAirTranscriptTextForHistory != null) {
       m_bridge.getHistoryWriter().addChildToEvent(movedAirTranscriptTextForHistory);
     }
