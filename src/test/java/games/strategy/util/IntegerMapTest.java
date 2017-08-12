@@ -1,14 +1,34 @@
 package games.strategy.util;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
 public class IntegerMapTest {
   private final Object v1 = new Object();
   private final Object v2 = new Object();
   private final Object v3 = new Object();
+
+  @Test
+  public void shouldBeEquatableAndHashable() {
+    EqualsVerifier.forClass(IntegerMap.class)
+        .suppress(Warning.NULL_FIELDS)
+        .verify();
+
+    // We need to explicitly test this case because EqualsVerifier's internal prefab values for HashMap use the
+    // same value for all key/value pairs
+    assertThat(
+        "should not be equal when keys are equal but values are not equal",
+        new IntegerMap<>(v1, 1),
+        is(not(new IntegerMap<>(v1, 2))));
+  }
 
   @Test
   public void testAdd() {
