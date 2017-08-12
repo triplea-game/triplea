@@ -18,7 +18,6 @@ public class JTextAreaBuilderTest {
     assertThat(area.isEditable(), is(true));
   }
 
-
   @Test
   public void text() {
     final JTextArea area = JTextAreaBuilder.builder()
@@ -39,11 +38,8 @@ public class JTextAreaBuilderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void rowsNonZero() {
-    JTextAreaBuilder.builder()
-        .rows(0)
-        .build();
+    JTextAreaBuilder.builder().rows(0);
   }
-
 
   @Test
   public void columns() {
@@ -60,24 +56,10 @@ public class JTextAreaBuilderTest {
   }
 
   @Test
-  public void maximumSize() {
-    final int maxWidth = 1000;
-    final int maxHeight = 33;
-
-    final JTextArea area = JTextAreaBuilder.builder()
-        .maximumSize(maxWidth, maxHeight)
-        .build();
-    assertThat(area.getMaximumSize().width, is(maxWidth));
-    assertThat(area.getMaximumSize().height, is(maxHeight));
-  }
-
-  @Test
   public void readOnly() {
     final JTextArea area = JTextAreaBuilder.builder()
         .readOnly()
         .build();
     assertThat(area.isEditable(), is(false));
   }
-
-
 }
