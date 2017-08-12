@@ -236,8 +236,8 @@ public class ProductionPanel extends JPanel {
 
     protected JPanel getPanelComponent() {
       final JPanel panel = new JPanel();
-      final ScrollableTextField i_text = new ScrollableTextField(0, Integer.MAX_VALUE);
-      i_text.setValue(quantity);
+      final ScrollableTextField textField = new ScrollableTextField(0, Integer.MAX_VALUE);
+      textField.setValue(quantity);
       panel.setLayout(new GridBagLayout());
       final JLabel info = new JLabel("  ");
       final JLabel name = new JLabel("  ");
@@ -298,10 +298,10 @@ public class ProductionPanel extends JPanel {
           new Insets(5, space, space, space), 0, 0));
       panel.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(5, space, space, space), 0, 0));
-      panel.add(i_text, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+      panel.add(textField, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, space, space, space), 0, 0));
-      i_text.addChangeListener(listener);
-      textFields.add(i_text);
+      textField.addChangeListener(listener);
+      textFields.add(textField);
       panel.setBorder(new EtchedBorder());
       return panel;
     }

@@ -422,10 +422,10 @@ public class MapPropertiesMaker extends JFrame {
     final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
-        final double unit_zoom_percent = Double.parseDouble(zoomString);
+        final double unitZoomPercent = Double.parseDouble(zoomString);
         // mapProperties.setUNITS_SCALE(unit_zoom_percent);
         mapProperties.setUnitsScale(zoomString);
-        System.out.println("Unit Zoom Percent to use: " + unit_zoom_percent);
+        System.out.println("Unit Zoom Percent to use: " + unitZoomPercent);
       } catch (final Exception ex) {
         System.err.println("Not a decimal percentage: " + zoomString);
       }
@@ -433,10 +433,10 @@ public class MapPropertiesMaker extends JFrame {
     final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
     if (widthString != null && widthString.length() > 0) {
       try {
-        final int unit_width = Integer.parseInt(widthString);
-        mapProperties.setUnitsWidth(unit_width);
-        mapProperties.setUnitsCounterOffsetWidth(unit_width / 4);
-        System.out.println("Unit Width to use: " + unit_width);
+        final int unitWidth = Integer.parseInt(widthString);
+        mapProperties.setUnitsWidth(unitWidth);
+        mapProperties.setUnitsCounterOffsetWidth(unitWidth / 4);
+        System.out.println("Unit Width to use: " + unitWidth);
       } catch (final Exception ex) {
         System.err.println("Not an integer: " + widthString);
       }
@@ -444,10 +444,10 @@ public class MapPropertiesMaker extends JFrame {
     final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
     if (heightString != null && heightString.length() > 0) {
       try {
-        final int unit_height = Integer.parseInt(heightString);
-        mapProperties.setUnitsHeight(unit_height);
-        mapProperties.setUnitsCounterOffsetHeight(unit_height);
-        System.out.println("Unit Height to use: " + unit_height);
+        final int unitHeight = Integer.parseInt(heightString);
+        mapProperties.setUnitsHeight(unitHeight);
+        mapProperties.setUnitsCounterOffsetHeight(unitHeight);
+        System.out.println("Unit Height to use: " + unitHeight);
       } catch (final Exception ex) {
         System.err.println("Not an integer: " + heightString);
       }

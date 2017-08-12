@@ -640,18 +640,18 @@ public class GameDataExporter {
     xmlfile.append("    </map>\n");
   }
 
-  private class Connection {
-    private final Territory _t1;
-    private final Territory _t2;
+  private static final class Connection {
+    private final Territory territory1;
+    private final Territory territory2;
 
     private Connection(final Territory t1, final Territory t2) {
-      _t1 = t1;
-      _t2 = t2;
+      territory1 = t1;
+      territory2 = t2;
     }
 
     @Override
     public int hashCode() {
-      return _t1.hashCode() + _t2.hashCode();
+      return territory1.hashCode() + territory2.hashCode();
     }
 
     @Override
@@ -660,7 +660,7 @@ public class GameDataExporter {
         return false;
       }
       final Connection con = (Connection) o;
-      return (_t1 == con._t1 && _t2 == con._t2);
+      return (territory1 == con.territory1 && territory2 == con.territory2);
     }
   }
 

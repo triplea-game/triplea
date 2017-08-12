@@ -98,10 +98,10 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   protected void logEvent(final String message, final Object renderingObject) {
     // find last event node
     boolean foundChild = false;
-    final GameData game_data = getData();
-    game_data.acquireReadLock();
+    final GameData gameData = getData();
+    gameData.acquireReadLock();
     try {
-      HistoryNode curNode = game_data.getHistory().getLastNode();
+      HistoryNode curNode = gameData.getHistory().getLastNode();
       while (!(curNode instanceof Step) && !(curNode instanceof Event)) {
         if (curNode instanceof EventChild) {
           foundChild = true;
@@ -110,7 +110,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
         curNode = (HistoryNode) curNode.getPreviousNode();
       }
     } finally {
-      game_data.releaseReadLock();
+      gameData.releaseReadLock();
     }
     if (foundChild) {
       m_bridge.getHistoryWriter().addChildToEvent(message, renderingObject);
