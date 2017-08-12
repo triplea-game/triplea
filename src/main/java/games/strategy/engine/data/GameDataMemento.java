@@ -101,11 +101,16 @@ public final class GameDataMemento {
 
     @Override
     public void exportProperties(final GameData gameData, final Map<String, Object> propertiesByName) {
-      propertiesByName.put(PropertyNames.DICE_SIDES, gameData.getDiceSides());
-      propertiesByName.put(PropertyNames.LOADER, gameData.getGameLoader());
-      propertiesByName.put(PropertyNames.NAME, gameData.getGameName());
-      propertiesByName.put(PropertyNames.VERSION, gameData.getGameVersion());
-      // TODO: handle remaining properties
+      gameData.acquireReadLock();
+      try {
+        propertiesByName.put(PropertyNames.DICE_SIDES, gameData.getDiceSides());
+        propertiesByName.put(PropertyNames.LOADER, gameData.getGameLoader());
+        propertiesByName.put(PropertyNames.NAME, gameData.getGameName());
+        propertiesByName.put(PropertyNames.VERSION, gameData.getGameVersion());
+        // TODO: handle remaining properties
+      } finally {
+        gameData.releaseReadLock();
+      }
     }
   }
 
@@ -122,11 +127,16 @@ public final class GameDataMemento {
     @Override
     public GameData importProperties(final Map<String, Object> propertiesByName) throws MementoImportException {
       final GameData gameData = new GameData();
-      gameData.setDiceSides(getRequiredProperty(propertiesByName, PropertyNames.DICE_SIDES, Integer.class));
-      gameData.setGameLoader(getRequiredProperty(propertiesByName, PropertyNames.LOADER, IGameLoader.class));
-      gameData.setGameName(getRequiredProperty(propertiesByName, PropertyNames.NAME, String.class));
-      gameData.setGameVersion(getRequiredProperty(propertiesByName, PropertyNames.VERSION, Version.class));
-      // TODO: handle remaining properties
+      gameData.acquireWriteLock();
+      try {
+        gameData.setDiceSides(getRequiredProperty(propertiesByName, PropertyNames.DICE_SIDES, Integer.class));
+        gameData.setGameLoader(getRequiredProperty(propertiesByName, PropertyNames.LOADER, IGameLoader.class));
+        gameData.setGameName(getRequiredProperty(propertiesByName, PropertyNames.NAME, String.class));
+        gameData.setGameVersion(getRequiredProperty(propertiesByName, PropertyNames.VERSION, Version.class));
+        // TODO: handle remaining properties
+      } finally {
+        gameData.releaseWriteLock();
+      }
       return gameData;
     }
 
