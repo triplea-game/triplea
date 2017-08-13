@@ -1,6 +1,7 @@
 package games.strategy.persistence.serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -80,7 +81,9 @@ public abstract class AbstractProxyTestCase<T> {
 
   @Test
   public void shouldBeAbleToRoundTripPrincipal() throws Exception {
-    for (final T expected : createPrincipals()) {
+    final Collection<T> principals = createPrincipals();
+    assertThat(principals, is(not(empty())));
+    for (final T expected : principals) {
       assertThat(expected, is(not(nullValue())));
       final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 

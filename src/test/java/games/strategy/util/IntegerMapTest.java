@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMap;
+
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
@@ -15,6 +17,28 @@ public class IntegerMapTest {
   private final Object v1 = new Object();
   private final Object v2 = new Object();
   private final Object v3 = new Object();
+
+  @Test
+  public void shouldBeConstructableFromJavaMap() {
+    final IntegerMap<Object> expected = new IntegerMap<>();
+    expected.add(v1, 1);
+    expected.add(v2, 2);
+    expected.add(v3, 3);
+
+    final IntegerMap<Object> actual = new IntegerMap<>(ImmutableMap.of(v1, 1, v2, 2, v3, 3));
+
+    assertThat(actual, is(expected));
+  }
+
+  @Test
+  public void toMap_ShouldReturnEquivalentJavaMap() {
+    final IntegerMap<Object> map = new IntegerMap<>();
+    map.add(v1, 1);
+    map.add(v2, 2);
+    map.add(v3, 3);
+
+    assertThat(map.toMap(), is(ImmutableMap.of(v1, 1, v2, 2, v3, 3)));
+  }
 
   @Test
   public void shouldBeEquatableAndHashable() {
