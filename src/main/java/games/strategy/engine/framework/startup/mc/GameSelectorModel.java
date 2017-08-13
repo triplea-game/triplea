@@ -118,7 +118,7 @@ public class GameSelectorModel extends Observable {
       }
       message = "Exception while parsing: " + file.getName() + " : "
           + (gameName.get() != null ? gameName.get() + " : " : "") + message;
-      System.out.println(message);
+      ClientLogger.logQuietly(e);
       if (ui != null) {
         error(message + "\r\nPlease see console for full error log!", ui);
       }

@@ -2,7 +2,7 @@ package games.strategy.triplea.ai.fastAI;
 
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.ai.proAI.util.ProOddsCalculator;
-import games.strategy.triplea.oddscalculator.ta.IOddsCalculator;
+import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 
 /**
  * Fast AI.

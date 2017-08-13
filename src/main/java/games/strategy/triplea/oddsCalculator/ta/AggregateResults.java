@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddscalculator.ta;
+package games.strategy.triplea.oddsCalculator.ta;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddscalculator.ta;
+package games.strategy.triplea.oddsCalculator.ta;
 
 /**
  * Listener for Odds Calculator events.
