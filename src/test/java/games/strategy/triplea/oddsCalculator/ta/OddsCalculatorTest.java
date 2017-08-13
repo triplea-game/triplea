@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddscalculator.ta;
+package games.strategy.triplea.oddsCalculator.ta;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
