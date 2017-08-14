@@ -40,17 +40,17 @@ public class DiceImageFactory {
   }
 
   private void generateDice(final int pipSize, final Color color, final Map<Integer, Image> images) {
-    final ImageFactory iFactory = new ImageFactory();
-    iFactory.setResourceLoader(m_resourceLoader);
+    final ImageFactory imageFactory = new ImageFactory();
+    imageFactory.setResourceLoader(m_resourceLoader);
     for (int i = 1; i <= m_diceSides; i++) {
       Image img = null;
       if (m_resourceLoader != null) {
         if (color == Color.black) {
-          img = iFactory.getImage("dice/" + i + ".png", false);
+          img = imageFactory.getImage("dice/" + i + ".png", false);
         } else if (color == Color.red) {
-          img = iFactory.getImage("dice/" + i + "_hit.png", false);
+          img = imageFactory.getImage("dice/" + i + "_hit.png", false);
         } else if (color == IGNORED) {
-          img = iFactory.getImage("dice/" + i + "_ignored.png", false);
+          img = imageFactory.getImage("dice/" + i + "_ignored.png", false);
         }
       }
       if (img != null) {

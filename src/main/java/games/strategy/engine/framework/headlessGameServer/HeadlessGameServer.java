@@ -195,18 +195,18 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
-      final ServerGame iGame = m_iGame;
-      if (iGame != null) {
+      final ServerGame serverGame = m_iGame;
+      if (serverGame != null) {
         (new Thread(() -> {
           System.out.println("Remote Stop Game Initiated.");
           try {
-            iGame.saveGame(new File(
+            serverGame.saveGame(new File(
                 ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
                 SaveGameFileChooser.getAutoSaveFileName()));
           } catch (final Exception e) {
             ClientLogger.logQuietly(e);
           }
-          iGame.stopGame();
+          serverGame.stopGame();
         })).start();
       }
       return null;

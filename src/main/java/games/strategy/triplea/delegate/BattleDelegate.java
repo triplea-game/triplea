@@ -763,12 +763,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       for (final HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer
           .get(terrPlayer)) {
         // verify that we didn't already scramble any of these units
-        final Iterator<Territory> tIter = scramblers.keySet().iterator();
-        while (tIter.hasNext()) {
-          final Territory t = tIter.next();
+        final Iterator<Territory> territoryIter = scramblers.keySet().iterator();
+        while (territoryIter.hasNext()) {
+          final Territory t = territoryIter.next();
           scramblers.get(t).getSecond().retainAll(t.getUnits().getUnits());
           if (scramblers.get(t).getSecond().isEmpty()) {
-            tIter.remove();
+            territoryIter.remove();
           }
         }
         if (scramblers.isEmpty()) {
@@ -1332,8 +1332,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (possibleUnits == null || !possibleUnits.containsAll(territoryEntry.getValue().keySet())) {
           throw new IllegalStateException("Player has chosen illegal units during Kamikaze Suicide Attacks");
         }
-        for (final IntegerMap<Resource> rMap : territoryEntry.getValue().values()) {
-          attackTokens.subtract(rMap);
+        for (final IntegerMap<Resource> resourceMap : territoryEntry.getValue().values()) {
+          attackTokens.subtract(resourceMap);
         }
       }
       if (!attackTokens.isPositive()) {

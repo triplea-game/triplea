@@ -276,16 +276,16 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         if (attackTokens.size() <= 0) {
           continue;
         }
-        final IntegerMap<Resource> rMap = new IntegerMap<>();
+        final IntegerMap<Resource> resourceMap = new IntegerMap<>();
         final Resource r = attackTokens.keySet().iterator().next();
         final int num = Math.min(attackTokens.getInt(r),
             (UnitAttachment.get(u.getType()).getHitPoints() * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
-        rMap.put(r, num);
+        resourceMap.put(r, num);
         HashMap<Unit, IntegerMap<Resource>> attMap = rVal.get(t);
         if (attMap == null) {
           attMap = new HashMap<>();
         }
-        attMap.put(u, rMap);
+        attMap.put(u, resourceMap);
         rVal.put(t, attMap);
         attackTokens.add(r, -num);
         if (attackTokens.getInt(r) <= 0) {
@@ -587,7 +587,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   }
 
   protected void politicalActions() {
-    final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
+    final IPoliticsDelegate remotePoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
     final GameData data = getGameData();
     final PlayerID id = getPlayerID();
     final float numPlayers = data.getPlayerList().getPlayers().size();
@@ -622,7 +622,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           if (i > maxWarActionsPerTurn) {
             break;
           }
-          iPoliticsDelegate.attemptAction(action);
+          remotePoliticsDelegate.attemptAction(action);
         }
       }
     } else {
@@ -649,7 +649,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           if (i > maxOtherActionsPerTurn) {
             break;
           }
-          iPoliticsDelegate.attemptAction(action);
+          remotePoliticsDelegate.attemptAction(action);
         }
       }
     }

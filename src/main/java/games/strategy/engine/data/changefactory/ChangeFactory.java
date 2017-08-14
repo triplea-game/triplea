@@ -117,11 +117,11 @@ public class ChangeFactory {
   }
 
   public static Change removeResourceCollection(final PlayerID id, final ResourceCollection resourceCollection) {
-    final CompositeChange cChange = new CompositeChange();
+    final CompositeChange compositeChange = new CompositeChange();
     for (final Resource r : resourceCollection.getResourcesCopy().keySet()) {
-      cChange.add(new ChangeResourceChange(id, r, -resourceCollection.getQuantity(r)));
+      compositeChange.add(new ChangeResourceChange(id, r, -resourceCollection.getQuantity(r)));
     }
-    return cChange;
+    return compositeChange;
   }
 
   public static Change setProperty(final String property, final Object value, final GameData data) {

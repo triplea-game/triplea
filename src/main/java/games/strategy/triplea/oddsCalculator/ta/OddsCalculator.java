@@ -648,46 +648,46 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
         final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
         final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
         final boolean allowMultipleHitsPerUnit) {
-      final List<Unit> rDamaged = new ArrayList<>(defaultCasualties.getDamaged());
-      final List<Unit> rKilled = new ArrayList<>(defaultCasualties.getKilled());
+      final List<Unit> damagedUnits = new ArrayList<>(defaultCasualties.getDamaged());
+      final List<Unit> killedUnits = new ArrayList<>(defaultCasualties.getKilled());
       if (keepAtLeastOneLand) {
         final List<Unit> notKilled = new ArrayList<>(selectFrom);
-        notKilled.removeAll(rKilled);
+        notKilled.removeAll(killedUnits);
         // no land units left, but we have a non land unit to kill and land unit was killed
         if (!Match.anyMatch(notKilled, Matches.UnitIsLand) && Match.anyMatch(notKilled, Matches.UnitIsNotLand)
-            && Match.anyMatch(rKilled, Matches.UnitIsLand)) {
+            && Match.anyMatch(killedUnits, Matches.UnitIsLand)) {
           final List<Unit> notKilledAndNotLand = Match.getMatches(notKilled, Matches.UnitIsNotLand);
           // sort according to cost
           Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());
           // remove the last killed unit, this should be the strongest
-          rKilled.remove(rKilled.size() - 1);
+          killedUnits.remove(killedUnits.size() - 1);
           // add the cheapest unit
-          rKilled.add(notKilledAndNotLand.get(0));
+          killedUnits.add(notKilledAndNotLand.get(0));
         }
       }
-      if (orderOfLosses != null && !orderOfLosses.isEmpty() && !rKilled.isEmpty()) {
+      if (orderOfLosses != null && !orderOfLosses.isEmpty() && !killedUnits.isEmpty()) {
         final List<Unit> orderOfLosses = new ArrayList<>(this.orderOfLosses);
         orderOfLosses.retainAll(selectFrom);
         if (!orderOfLosses.isEmpty()) {
-          int killedSize = rKilled.size();
-          rKilled.clear();
+          int killedSize = killedUnits.size();
+          killedUnits.clear();
           while (killedSize > 0 && !orderOfLosses.isEmpty()) {
-            rKilled.add(orderOfLosses.get(0));
+            killedUnits.add(orderOfLosses.get(0));
             orderOfLosses.remove(0);
             killedSize--;
           }
           if (killedSize > 0) {
             final List<Unit> defaultKilled = new ArrayList<>(defaultCasualties.getKilled());
-            defaultKilled.removeAll(rKilled);
+            defaultKilled.removeAll(killedUnits);
             while (killedSize > 0) {
-              rKilled.add(defaultKilled.get(0));
+              killedUnits.add(defaultKilled.get(0));
               defaultKilled.remove(0);
               killedSize--;
             }
           }
         }
       }
-      final CasualtyDetails casualtyDetails = new CasualtyDetails(rKilled, rDamaged, false);
+      final CasualtyDetails casualtyDetails = new CasualtyDetails(killedUnits, damagedUnits, false);
       return casualtyDetails;
     }
 

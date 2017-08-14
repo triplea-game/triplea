@@ -697,9 +697,9 @@ public class Matches {
    */
   public static Match<Territory> territoryHasRouteToEnemyCapital(final GameData data, final PlayerID player) {
     return Match.of(t -> {
-      for (final PlayerID ePlayer : data.getPlayerList().getPlayers()) {
+      for (final PlayerID otherPlayer : data.getPlayerList().getPlayers()) {
         final List<Territory> capitalsListOwned =
-            new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
+            new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
         for (final Territory current : capitalsListOwned) {
           if (!data.getRelationshipTracker().isAtWar(player, current.getOwner())) {
             continue;
@@ -721,9 +721,9 @@ public class Matches {
    */
   public static Match<Territory> territoryHasLandRouteToEnemyCapital(final GameData data, final PlayerID player) {
     return Match.of(t -> {
-      for (final PlayerID ePlayer : data.getPlayerList().getPlayers()) {
+      for (final PlayerID otherPlayer : data.getPlayerList().getPlayers()) {
         final List<Territory> capitalsListOwned =
-            new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
+            new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
         for (final Territory current : capitalsListOwned) {
           if (!data.getRelationshipTracker().isAtWar(player, current.getOwner())) {
             continue;
@@ -1755,11 +1755,11 @@ public class Matches {
       if (!Matches.TerritoryIsLand.match(t)) {
         return true;
       }
-      final PlayerID tOwner = t.getOwner();
-      if (tOwner == null) {
+      final PlayerID territoryOwner = t.getOwner();
+      if (territoryOwner == null) {
         return true;
       }
-      return data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(tOwner, ownerOfUnitsMoving);
+      return data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
     });
   }
 
@@ -1775,11 +1775,11 @@ public class Matches {
       if (!Matches.TerritoryIsLand.match(t)) {
         return true;
       }
-      final PlayerID tOwner = t.getOwner();
-      if (tOwner == null) {
+      final PlayerID territoryOwner = t.getOwner();
+      if (territoryOwner == null) {
         return true;
       }
-      return data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(tOwner, ownerOfUnitsMoving);
+      return data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
     });
   }
 

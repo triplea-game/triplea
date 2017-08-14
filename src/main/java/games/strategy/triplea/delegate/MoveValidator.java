@@ -355,8 +355,8 @@ public class MoveValidator {
           if (Matches.UnitIsInfantry.match(unit)) {
             continue;
           }
-          final TripleAUnit tAUnit = (TripleAUnit) unit;
-          if (wasStartFoughtOver || tAUnit.getWasInCombat() || route.anyMatch(notEndOrFriendlyTerrs)
+          final TripleAUnit taUnit = (TripleAUnit) unit;
+          if (wasStartFoughtOver || taUnit.getWasInCombat() || route.anyMatch(notEndOrFriendlyTerrs)
               || route.anyMatch(notEndWasFought)) {
             result.addDisallowedUnit(NOT_ALL_UNITS_CAN_BLITZ, unit);
           }
@@ -1442,15 +1442,15 @@ public class MoveValidator {
     final Collection<Unit> canCarry = new ArrayList<>();
     int available = ua.getCarrierCapacity();
     final Iterator<Unit> iter = selectFrom.iterator();
-    final TripleAUnit tACarrier = (TripleAUnit) carrier;
+    final TripleAUnit taCarrier = (TripleAUnit) carrier;
     while (iter.hasNext()) {
       final Unit plane = iter.next();
-      final TripleAUnit tAPlane = (TripleAUnit) plane;
+      final TripleAUnit taPlane = (TripleAUnit) plane;
       final UnitAttachment planeAttachment = UnitAttachment.get(plane.getUnitType());
       final int cost = planeAttachment.getCarrierCost();
       if (available >= cost) {
         // this is to test if they started in the same sea zone or not, and its not a very good way of testing it.
-        if ((tACarrier.getAlreadyMoved() == tAPlane.getAlreadyMoved())
+        if ((taCarrier.getAlreadyMoved() == taPlane.getAlreadyMoved())
             || (Matches.unitHasNotMoved.match(plane) && Matches.unitHasNotMoved.match(carrier))
             || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).invert().match(plane) && Matches.alliedUnit(
                 playerWhoIsDoingTheMovement, data).match(plane))) {

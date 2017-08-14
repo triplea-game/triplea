@@ -89,11 +89,11 @@ public final class ScreenshotExporter {
     try {
       // workaround to get the whole map
       // (otherwise the map is cut if current window is not on top of map)
-      final int xOffset = mapPanel.getXOffset();
-      final int yOffset = mapPanel.getYOffset();
+      final int offsetX = mapPanel.getXOffset();
+      final int offsetY = mapPanel.getYOffset();
       mapPanel.setTopLeft(0, 0);
       mapPanel.drawMapImage(mapGraphics);
-      mapPanel.setTopLeft(xOffset, yOffset);
+      mapPanel.setTopLeft(offsetX, offsetY);
       // overlay title
       Color titleColor = iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
       if (titleColor == null) {

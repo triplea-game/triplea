@@ -87,11 +87,11 @@ class Utils {
   // returns all territories that are water territories (veqryn)
   static List<Territory> onlyWaterTerr(final List<Territory> allTerr) {
     final List<Territory> water = new ArrayList<>(allTerr);
-    final Iterator<Territory> wFIter = water.iterator();
-    while (wFIter.hasNext()) {
-      final Territory waterFact = wFIter.next();
+    final Iterator<Territory> waterFactIter = water.iterator();
+    while (waterFactIter.hasNext()) {
+      final Territory waterFact = waterFactIter.next();
       if (!Matches.TerritoryIsWater.match(waterFact)) {
-        wFIter.remove();
+        waterFactIter.remove();
       }
     }
     return water;
@@ -105,8 +105,8 @@ class Utils {
     // Return territories containing a certain unit or set of Units
     final Match<Unit> limitShips = Match.allOf(unitCondition);
     final List<Territory> shipTerr = new ArrayList<>();
-    final Collection<Territory> tNeighbors = data.getMap().getTerritories();
-    for (final Territory t2 : tNeighbors) {
+    final Collection<Territory> neighbors = data.getMap().getTerritories();
+    for (final Territory t2 : neighbors) {
       if (t2.getUnits().anyMatch(limitShips)) {
         shipTerr.add(t2);
       }

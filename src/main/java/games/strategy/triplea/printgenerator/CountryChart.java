@@ -74,10 +74,10 @@ class CountryChart {
         final Iterator<Map<UnitType, Integer>> mapIterator = currentList.iterator();
         while (mapIterator.hasNext()) {
           final Map<UnitType, Integer> currentMap = mapIterator.next();
-          final Iterator<UnitType> uIter = currentMap.keySet().iterator();
-          while (uIter.hasNext()) {
-            final UnitType uHere = uIter.next();
-            final int here = currentMap.get(uHere);
+          final Iterator<UnitType> unitTypeIter = currentMap.keySet().iterator();
+          while (unitTypeIter.hasNext()) {
+            final UnitType unitTypeHere = unitTypeIter.next();
+            final int here = currentMap.get(unitTypeHere);
             countryFileWriter.write("," + here);
           }
         }

@@ -71,8 +71,8 @@ public class ProductionTabsProperties {
       return ruleLists;
     }
     ruleLists = new ArrayList<>();
-    final int iTabs = getNumberOfTabs();
-    for (int i = 1; i <= iTabs; i++) {
+    final int numberOfTabs = getNumberOfTabs();
+    for (int i = 1; i <= numberOfTabs; i++) {
       final String tabName = properties.getProperty(TAB_NAME + "." + i);
       final List<String> tabValues = Arrays.asList(properties.getProperty(TAB_UNITS + "." + i).split(":"));
       final List<Rule> ruleList = new ArrayList<>();

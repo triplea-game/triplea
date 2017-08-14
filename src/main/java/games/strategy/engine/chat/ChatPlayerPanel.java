@@ -111,8 +111,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     final List<INode> onlinePlayers = chat.getOnlinePlayers();
     int maxNameLength = 0;
     final FontMetrics fontMetrics = this.getFontMetrics(UIManager.getFont("TextField.font"));
-    for (final INode iNode : onlinePlayers) {
-      maxNameLength = Math.max(maxNameLength, fontMetrics.stringWidth(iNode.getName()));
+    for (final INode onlinePlayer : onlinePlayers) {
+      maxNameLength = Math.max(maxNameLength, fontMetrics.stringWidth(onlinePlayer.getName()));
     }
     int iconCounter = 0;
     if (setCellRenderer instanceof PlayerChatRenderer) {

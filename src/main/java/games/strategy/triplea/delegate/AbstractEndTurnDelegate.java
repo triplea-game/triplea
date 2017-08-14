@@ -254,9 +254,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     // take first one
     PlayerID giveWarBondsTo = null;
     for (final PlayerID p : shareWith) {
-      final int pCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
-      final int pSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
-      if (pSides <= 0 && pCount <= 0) {
+      final int diceCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
+      final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
+      if (diceSides <= 0 && diceCount <= 0) {
         // if both are zero, then it must mean we did not share our war bonds tech with them, even though we are sharing
         // all tech (because
         // they cannot have this tech)

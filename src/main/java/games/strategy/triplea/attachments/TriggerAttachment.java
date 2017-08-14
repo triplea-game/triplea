@@ -2163,18 +2163,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           rule = rule.replaceFirst("-", "");
           add = false;
         }
-        final ProductionRule pRule = data.getProductionRuleList().getProductionRule(rule);
+        final ProductionRule productionRule = data.getProductionRuleList().getProductionRule(rule);
         if (add) {
-          if (!front.getRules().contains(pRule)) {
-            change.add(ChangeFactory.addProductionRule(pRule, front));
-            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + pRule.getName()
-                + " added to " + front.getName());
+          if (!front.getRules().contains(productionRule)) {
+            change.add(ChangeFactory.addProductionRule(productionRule, front));
+            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
+                + productionRule.getName() + " added to " + front.getName());
           }
         } else {
-          if (front.getRules().contains(pRule)) {
-            change.add(ChangeFactory.removeProductionRule(pRule, front));
-            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + pRule.getName()
-                + " removed from " + front.getName());
+          if (front.getRules().contains(productionRule)) {
+            change.add(ChangeFactory.removeProductionRule(productionRule, front));
+            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
+                + productionRule.getName() + " removed from " + front.getName());
           }
         }
       }

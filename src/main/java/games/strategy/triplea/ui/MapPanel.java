@@ -763,8 +763,8 @@ public class MapPanel extends ImageScrollerLargeView {
         movementLeft.getFirst() + (movementLeft.getSecond() > movementLeft.getFirst() ? "+" : "");
     final Set<UnitCategory> categories = UnitSeperator.categorize(units);
     final int iconWidth = uiContext.getUnitImageFactory().getUnitImageWidth();
-    final int xSpace = 5;
-    final BufferedImage img = Util.createImage(categories.size() * (xSpace + iconWidth),
+    final int horizontalSpace = 5;
+    final BufferedImage img = Util.createImage(categories.size() * (horizontalSpace + iconWidth),
         uiContext.getUnitImageFactory().getUnitImageHeight(), true);
     final Graphics2D g = img.createGraphics();
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
@@ -776,7 +776,7 @@ public class MapPanel extends ImageScrollerLargeView {
     try {
       int i = 0;
       for (final UnitCategory category : categories) {
-        final Point place = new Point(i * (iconWidth + xSpace), 0);
+        final Point place = new Point(i * (iconWidth + horizontalSpace), 0);
         final UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(),
             category.getOwner().getName(), place, category.getDamaged(), category.getBombingDamage(),
             category.getDisabled(), false, "", uiContext);
