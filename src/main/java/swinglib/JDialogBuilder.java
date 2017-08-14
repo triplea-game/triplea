@@ -36,7 +36,6 @@ public final class JDialogBuilder {
   private String title;
   private JComponent contents;
 
-
   private JDialogBuilder() {}
 
   public static JDialogBuilder builder() {
@@ -50,7 +49,6 @@ public final class JDialogBuilder {
   public JDialog build() {
     checkNotNull(title);
     checkNotNull(contents);
-    checkNotNull(parentFrame);
 
     final JDialog dialog = new JDialog(parentFrame, title, true);
     dialog.getContentPane().add(contents);
