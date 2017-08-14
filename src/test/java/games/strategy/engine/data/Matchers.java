@@ -57,6 +57,43 @@ public final class Matchers {
   }
 
   /**
+   * Creates a matcher that matches when the examined {@link ProductionRule} is logically equal to the specified
+   * {@link ProductionRule}.
+   *
+   * @param expected The expected {@link ProductionRule} value.
+   *
+   * @return A new matcher.
+   */
+  public static Matcher<ProductionRule> equalToProductionRule(final ProductionRule expected) {
+    checkNotNull(expected);
+
+    return new IsProductionRuleEqual(expected);
+  }
+
+  private static final class IsProductionRuleEqual extends TypeSafeMatcher<ProductionRule> {
+    private final ProductionRule expected;
+
+    IsProductionRuleEqual(final ProductionRule expected) {
+      assert expected != null;
+
+      this.expected = expected;
+    }
+
+    @Override
+    public void describeTo(final Description description) {
+      description.appendValue(expected);
+    }
+
+    @Override
+    protected boolean matchesSafely(final ProductionRule actual) {
+      return equalToGameData(expected.getData()).matches(actual.getData())
+          && Objects.equals(expected.getName(), actual.getName())
+          && Objects.equals(expected.getCosts(), actual.getCosts())
+          && Objects.equals(expected.getResults(), actual.getResults());
+    }
+  }
+
+  /**
    * Creates a matcher that matches when the examined {@link Resource} is logically equal to the specified
    * {@link Resource}.
    *
