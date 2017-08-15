@@ -39,12 +39,12 @@ import games.strategy.triplea.ai.proAI.util.ProTransportUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -444,7 +444,7 @@ class ProPurchaseAI {
         placeTerritory.setMinBattleResult(result);
         double holdValue = 0;
         if (t.isWater()) {
-          final double unitValue = BattleCalculator.getTUV(
+          final double unitValue = TuvUtils.getTUV(
               Match.getMatches(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player)),
               ProData.unitValueMap);
           holdValue = unitValue / 8;
@@ -488,7 +488,7 @@ class ProPurchaseAI {
       }
 
       // Determine defending unit value
-      double defendingUnitValue = BattleCalculator.getTUV(placeTerritory.getDefendingUnits(), ProData.unitValueMap);
+      double defendingUnitValue = TuvUtils.getTUV(placeTerritory.getDefendingUnits(), ProData.unitValueMap);
       if (t.isWater() && Match.noneMatch(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player))) {
         defendingUnitValue = 0;
       }

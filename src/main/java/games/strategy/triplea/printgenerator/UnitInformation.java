@@ -15,8 +15,8 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.util.TuvUtils;
 
 class UnitInformation {
   private GameData data;
@@ -97,9 +97,9 @@ class UnitInformation {
         }
       }
     } else {
-      if (BattleCalculator.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
+      if (TuvUtils.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
           .getInt(type) > 0) {
-        return BattleCalculator.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
+        return TuvUtils.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
             .getInt(type);
       }
     }

@@ -35,6 +35,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -245,8 +246,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           m_attackingUnits.removeAll(suicideUnits);
           final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
           final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
-          final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-          final int tuvLostAttacker = BattleCalculator.getTUV(suicideUnits, m_attacker, costs, m_data);
+          final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_attacker, m_data);
+          final int tuvLostAttacker = TuvUtils.getTUV(suicideUnits, m_attacker, costs, m_data);
           m_attackerLostTUV += tuvLostAttacker;
           bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
           bridge.addChange(removeSuicide);
@@ -260,8 +261,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             // m_targets.removeAll(unitsCanDie);
             final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
             final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + m_battleSite.getName();
-            final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_defender, m_data);
-            final int tuvLostDefender = BattleCalculator.getTUV(unitsCanDie, m_defender, costs, m_data);
+            final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_defender, m_data);
+            final int tuvLostDefender = TuvUtils.getTUV(unitsCanDie, m_defender, costs, m_data);
             m_defenderLostTUV += tuvLostDefender;
             bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
             bridge.addChange(removeDead);
@@ -525,8 +526,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (!killed.isEmpty()) {
       bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(killed) + " killed by " + currentTypeAa,
           new ArrayList<>(killed));
-      final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-      final int tuvLostAttacker = BattleCalculator.getTUV(killed, m_attacker, costs, m_data);
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_attacker, m_data);
+      final int tuvLostAttacker = TuvUtils.getTUV(killed, m_attacker, costs, m_data);
       m_attackerLostTUV += tuvLostAttacker;
       // m_attackingUnits.removeAll(casualties);
       removeAttackers(killed, false);

@@ -21,6 +21,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -104,7 +105,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (randomTerritories) {
         pos += hitRandom[i];
         i++;
-        final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_currentPickingPlayer, data);
+        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_currentPickingPlayer, data);
         final List<Unit> units = new ArrayList<>(m_currentPickingPlayer.getUnits().getUnits());
         Collections.sort(units, new UnitCostComparator(costs));
         final Set<Unit> unitsToPlace = new HashSet<>();
@@ -251,7 +252,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     }
 
     public UnitCostComparator(final PlayerID player, final GameData data) {
-      m_costs = BattleCalculator.getCostsForTUV(player, data);
+      m_costs = TuvUtils.getCostsForTUV(player, data);
     }
 
     @Override

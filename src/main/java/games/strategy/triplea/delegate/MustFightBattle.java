@@ -36,6 +36,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TransportUtils;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -2648,10 +2649,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     // a handy summary of all the units killed
-    IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-    final int tuvLostAttacker = BattleCalculator.getTUV(m_killed, m_attacker, costs, m_data);
-    costs = BattleCalculator.getCostsForTUV(m_defender, m_data);
-    final int tuvLostDefender = BattleCalculator.getTUV(m_killed, m_defender, costs, m_data);
+    IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_attacker, m_data);
+    final int tuvLostAttacker = TuvUtils.getTUV(m_killed, m_attacker, costs, m_data);
+    costs = TuvUtils.getCostsForTUV(m_defender, m_data);
+    final int tuvLostDefender = TuvUtils.getTUV(m_killed, m_defender, costs, m_data);
     final int tuvChange = tuvLostDefender - tuvLostAttacker;
     bridge.getHistoryWriter().addChildToEvent(
         "Battle casualty summary: Battle score (TUV change) for attacker is " + tuvChange,
@@ -2750,8 +2751,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       remove(lost, bridge, m_battleSite, false);
     }
     if (m_attackingUnits.isEmpty()) {
-      final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-      final int tuvLostAttacker = (withdrawn ? 0 : BattleCalculator.getTUV(lost, m_attacker, costs, m_data));
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_attacker, m_data);
+      final int tuvLostAttacker = (withdrawn ? 0 : TuvUtils.getTUV(lost, m_attacker, costs, m_data));
       m_attackerLostTUV += tuvLostAttacker;
       m_whoWon = WhoWon.DEFENDER;
       if (!m_headless) {

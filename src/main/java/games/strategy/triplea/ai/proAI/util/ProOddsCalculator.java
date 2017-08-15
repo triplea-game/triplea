@@ -11,11 +11,11 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.Match;
 
 /**
@@ -144,14 +144,14 @@ public class ProOddsCalculator {
         Match.getMatches(defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, false, true, true));
     double tuvSwing = results.getAverageTUVswing(attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
     if (Matches.TerritoryIsNeutralButNotWater.match(t)) { // Set TUV swing for neutrals
-      final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, ProData.unitValueMap);
+      final double attackingUnitValue = TuvUtils.getTUV(mainCombatAttackers, ProData.unitValueMap);
       final double remainingUnitValue =
           results.getAverageTUVofUnitsLeftOver(ProData.unitValueMap, ProData.unitValueMap).getFirst();
       tuvSwing = remainingUnitValue - attackingUnitValue;
     }
     final List<Unit> defendingTransportedUnits = Match.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) { // Add TUV swing for transported units
-      final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, ProData.unitValueMap);
+      final double transportedUnitValue = TuvUtils.getTUV(defendingTransportedUnits, ProData.unitValueMap);
       tuvSwing += transportedUnitValue * winPercentage / 100;
     }
 
