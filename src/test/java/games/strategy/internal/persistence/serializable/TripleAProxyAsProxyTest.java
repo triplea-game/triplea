@@ -1,6 +1,5 @@
 package games.strategy.internal.persistence.serializable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -17,9 +16,6 @@ public final class TripleAProxyAsProxyTest extends AbstractProxyTestCase<TripleA
 
   @Override
   protected void assertPrincipalEquals(final TripleA expected, final TripleA actual) {
-    checkNotNull(expected);
-    checkNotNull(actual);
-
     assertTrue("no persistent state; all non-null instances are considered equal", true);
   }
 
