@@ -44,6 +44,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -1161,7 +1162,7 @@ public class BattleTracker implements Serializable {
     final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
         Matches.unitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
     Collections.sort(sortedUnitsList,
-        new UnitBattleComparator(false, BattleCalculator.getCostsForTUV(bridge.getPlayerID(), gameData),
+        new UnitBattleComparator(false, TuvUtils.getCostsForTUV(bridge.getPlayerID(), gameData),
             TerritoryEffectHelper.getEffects(territory), gameData, false, false));
     Collections.reverse(sortedUnitsList);
     return sortedUnitsList;

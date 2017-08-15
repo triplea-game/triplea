@@ -52,7 +52,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -62,6 +61,7 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -371,7 +371,7 @@ class EditPanel extends ActionPanel {
         }
         sortUnitsToRemove(units);
         Collections.sort(units, new UnitBattleComparator(false,
-            BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
+            TuvUtils.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
@@ -418,7 +418,7 @@ class EditPanel extends ActionPanel {
         }
         sortUnitsToRemove(units);
         Collections.sort(units, new UnitBattleComparator(false,
-            BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
+            TuvUtils.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =

@@ -33,9 +33,9 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.LocalizeHtml;
@@ -126,7 +126,7 @@ public class HelpMenu {
     try {
       gameData.acquireReadLock();
       final Map<PlayerID, Map<UnitType, ResourceCollection>> costs =
-          BattleCalculator.getResourceCostsForTUV(gameData, true);
+          TuvUtils.getResourceCostsForTUV(gameData, true);
       final Map<PlayerID, List<UnitType>> playerUnitTypes =
           UnitType.getAllPlayerUnitsWithImages(gameData, iuiContext, true);
       for (final Map.Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {

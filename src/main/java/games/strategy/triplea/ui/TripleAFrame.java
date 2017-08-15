@@ -122,7 +122,6 @@ import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BaseEditDelegate;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -146,6 +145,7 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.HelpMenu;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -1051,7 +1051,7 @@ public class TripleAFrame extends MainGameFrame {
         for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
           final List<Unit> units = new ArrayList<>(entry.getValue());
           Collections.sort(units,
-              new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(data),
+              new UnitBattleComparator(false, TuvUtils.getCostsForTuvForAllPlayersMergedAndAveraged(data),
                   TerritoryEffectHelper.getEffects(entry.getKey()), data, true, false));
           Collections.reverse(units);
           possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);

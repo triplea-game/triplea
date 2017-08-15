@@ -9,7 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
@@ -87,8 +87,8 @@ public class AggregateResults implements Serializable {
     double attackerTuv = 0;
     double defenderTuv = 0;
     for (final BattleResults result : m_results) {
-      attackerTuv += BattleCalculator.getTUV(result.getRemainingAttackingUnits(), attackerCostsForTuv);
-      defenderTuv += BattleCalculator.getTUV(result.getRemainingDefendingUnits(), defenderCostsForTuv);
+      attackerTuv += TuvUtils.getTUV(result.getRemainingAttackingUnits(), attackerCostsForTuv);
+      defenderTuv += TuvUtils.getTUV(result.getRemainingDefendingUnits(), defenderCostsForTuv);
     }
     return Tuple.of(attackerTuv / m_results.size(), defenderTuv / m_results.size());
   }
@@ -98,10 +98,10 @@ public class AggregateResults implements Serializable {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
-    final IntegerMap<UnitType> attackerCostsForTuv = BattleCalculator.getCostsForTUV(attacker, data);
-    final IntegerMap<UnitType> defenderCostsForTuv = BattleCalculator.getCostsForTUV(defender, data);
-    final int attackerTuv = BattleCalculator.getTUV(attackers, attackerCostsForTuv);
-    final int defenderTuv = BattleCalculator.getTUV(defenders, defenderCostsForTuv);
+    final IntegerMap<UnitType> attackerCostsForTuv = TuvUtils.getCostsForTUV(attacker, data);
+    final IntegerMap<UnitType> defenderCostsForTuv = TuvUtils.getCostsForTUV(defender, data);
+    final int attackerTuv = TuvUtils.getTUV(attackers, attackerCostsForTuv);
+    final int defenderTuv = TuvUtils.getTUV(defenders, defenderCostsForTuv);
     // could we possibly cause a bug by comparing UnitType's from one game data, to a different game data's UnitTypes?
     final Tuple<Double, Double> average = getAverageTUVofUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
     final double attackerLost = attackerTuv - average.getFirst();

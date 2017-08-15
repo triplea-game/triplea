@@ -20,6 +20,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -142,8 +143,8 @@ public class FinishedBattle extends AbstractBattle {
        * bridge.addChange(change);
        */
       if (m_attackingUnits.isEmpty()) {
-        final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-        final int tuvLostAttacker = (withdrawn ? 0 : BattleCalculator.getTUV(lost, m_attacker, costs, m_data));
+        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_attacker, m_data);
+        final int tuvLostAttacker = (withdrawn ? 0 : TuvUtils.getTUV(lost, m_attacker, costs, m_data));
         m_attackerLostTUV += tuvLostAttacker;
         // scripted?
         m_whoWon = WhoWon.DEFENDER;
