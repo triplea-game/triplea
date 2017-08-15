@@ -82,20 +82,14 @@ public class ProductionPanel extends JPanel {
    */
   public IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
+    final JDialogBuilder dialogBuilder = JDialogBuilder.builder()
+        .contents(this)
+        .title("Produce");
     if (parent != null) {
-      dialog = JDialogBuilder.builder()
-          .parentFrame(parent)
-          .contents(this)
-          .title("Produce")
-          .build();
-      dialog.pack();
-      dialog.setLocationRelativeTo(parent);
-      dialog.setVisible(true);
-      // making the dialog visible will block until it is closed
-      dialog.dispose();
-
-
+      dialogBuilder.parentFrame(parent);
     }
+    dialog = dialogBuilder.build();
+
     this.bid = bid;
     this.data = data;
     this.initRules(id, data, initialPurchase);
