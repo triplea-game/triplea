@@ -436,8 +436,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       if (!(p1.equals(player) || p2.equals(player))) {
         continue;
       }
-      final PlayerID pOther = (p1.equals(player) ? p2 : p1);
-      if (!p1AlliedWith.contains(pOther)) {
+      final PlayerID otherPlayer = (p1.equals(player) ? p2 : p1);
+      if (!p1AlliedWith.contains(otherPlayer)) {
         continue;
       }
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
@@ -478,21 +478,21 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       if (!(p1.equals(player) || p2.equals(player))) {
         continue;
       }
-      final PlayerID pOther = (p1.equals(player) ? p2 : p1);
+      final PlayerID otherPlayer = (p1.equals(player) ? p2 : p1);
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
       final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
       if (Matches.RelationshipTypeIsAtWar.match(currentType)
           && Matches.RelationshipTypeIsAtWar.invert().match(newType)) {
-        final Collection<PlayerID> pOtherAlliedWith =
-            Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(pOther, data));
-        if (!pOtherAlliedWith.contains(pOther)) {
-          pOtherAlliedWith.add(pOther);
+        final Collection<PlayerID> otherPlayersAlliedWith =
+            Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(otherPlayer, data));
+        if (!otherPlayersAlliedWith.contains(otherPlayer)) {
+          otherPlayersAlliedWith.add(otherPlayer);
         }
         if (!p1AlliedWith.contains(player)) {
           p1AlliedWith.add(player);
         }
         for (final PlayerID p3 : p1AlliedWith) {
-          for (final PlayerID p4 : pOtherAlliedWith) {
+          for (final PlayerID p4 : otherPlayersAlliedWith) {
             final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, p4);
             if (!currentOther.equals(newType) && Matches.RelationshipTypeIsAtWar.match(currentOther)) {
               change.add(ChangeFactory.relationshipChange(p3, p4, currentOther, newType));

@@ -81,16 +81,16 @@ class PUChart {
   protected void saveToFile() throws IOException {
     initializeMap();
     initializeAvoidMap();
-    final int yDimension = 6;
-    final int xDimension = 7;
-    final int numChartsNeeded = (int) Math.ceil(((double) moneyMap.totalValues()) / (xDimension * yDimension));
+    final int rows = 6;
+    final int cols = 7;
+    final int numChartsNeeded = (int) Math.ceil(((double) moneyMap.totalValues()) / (cols * rows));
     for (int i = 0; i < numChartsNeeded; i++) {
       g2d.setColor(Color.black);
       // Draw Country Names
       for (int z = 0; z < playerArray.length; z++) {
         final int valMod42 = moneyArray[z] % 42;
-        final int valModXDim = valMod42 % xDimension;
-        final int valFloorXDim = valMod42 / xDimension;
+        final int valModXDim = valMod42 % cols;
+        final int valFloorXDim = valMod42 / cols;
         if (avoidMap.containsKey(z) && moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
@@ -106,16 +106,16 @@ class PUChart {
         }
       }
       // Draw Ellipses and Numbers
-      for (int j = 0; j < yDimension; j++) {
-        for (int k = 0; k < xDimension; k++) {
-          final int numberincircle = xDimension * yDimension * i + xDimension * j + k;
+      for (int j = 0; j < rows; j++) {
+        for (int k = 0; k < cols; k++) {
+          final int numberincircle = cols * rows * i + cols * j + k;
           final String string = "" + numberincircle;
           drawEllipseAndString(k, j, string);
         }
       }
       // Write to file
-      final int firstnum = xDimension * yDimension * i;
-      final int secondnum = xDimension * yDimension * (i + 1) - 1;
+      final int firstnum = cols * rows * i;
+      final int secondnum = cols * rows * (i + 1) - 1;
       final File outputfile = new File(outDir, "PUchart" + firstnum + "-" + secondnum + ".png");
       ImageIO.write(puImage, "png", outputfile);
       final Color transparent = new Color(0, 0, 0, 0);

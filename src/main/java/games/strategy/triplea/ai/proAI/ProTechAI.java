@@ -40,13 +40,13 @@ final class ProTechAI {
       return;
     }
     final Territory myCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    final float eStrength = getStrengthOfPotentialAttackers(myCapitol, data, player, false, true, null);
+    final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player, false, true, null);
     float myStrength = strength(myCapitol.getUnits().getUnits(), false, false, false);
     final List<Territory> areaStrength = getNeighboringLandTerritories(data, player, myCapitol);
     for (final Territory areaTerr : areaStrength) {
       myStrength += strength(areaTerr.getUnits().getUnits(), false, false, false) * 0.75F;
     }
-    final boolean capDanger = myStrength < (eStrength * 1.25F + 3.0F);
+    final boolean capDanger = myStrength < (enemyStrength * 1.25F + 3.0F);
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
     final Resource techtokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
@@ -88,7 +88,7 @@ final class ProTechAI {
       final List<Territory> ignoreTerr) {
     PlayerID enemyPlayer = null;
     final List<PlayerID> enemyPlayers = getEnemyPlayers(data, player);
-    final HashMap<PlayerID, Float> ePAttackMap = new HashMap<>();
+    final HashMap<PlayerID, Float> enemyPlayerAttackMap = new HashMap<>();
     final Iterator<PlayerID> playerIter = enemyPlayers.iterator();
     if (location == null) {
       return -1000.0F;
@@ -119,25 +119,25 @@ final class ProTechAI {
       final Match<Unit> enemyTransportable = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
           Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitCanMove);
       final Match<Unit> transport = Match.allOf(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
-      final List<Territory> eFTerrs = findUnitTerr(data, enemyPlane);
+      final List<Territory> enemyFighterTerritories = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
       // should change this to read production frontier and tech
       // reality is 99% of time units considered will have full move.
       // and likely player will have at least 1 max move plane.
-      for (final Territory eFTerr : eFTerrs) {
-        final List<Unit> eFUnits = eFTerr.getUnits().getMatches(enemyPlane);
-        maxFighterDistance = Math.max(maxFighterDistance, MoveValidator.getMaxMovement(eFUnits));
+      for (final Territory enemyFighterTerritory : enemyFighterTerritories) {
+        final List<Unit> enemyFighterUnits = enemyFighterTerritory.getUnits().getMatches(enemyPlane);
+        maxFighterDistance = Math.max(maxFighterDistance, MoveValidator.getMaxMovement(enemyFighterUnits));
       }
       // must be able to land...we will miss fighters who have a Carrier that can reach same sea zone...C'est la vie
       maxFighterDistance--;
       if (maxFighterDistance < 0) {
         maxFighterDistance = 0;
       }
-      final List<Territory> eTTerrs = findUnitTerr(data, transport);
+      final List<Territory> enemyTransportTerritories = findUnitTerr(data, transport);
       int maxTransportDistance = 0;
-      for (final Territory eTTerr : eTTerrs) {
-        final List<Unit> eTUnits = eTTerr.getUnits().getMatches(transport);
-        maxTransportDistance = Math.max(maxTransportDistance, MoveValidator.getMaxMovement(eTUnits));
+      for (final Territory enemyTransportTerritory : enemyTransportTerritories) {
+        final List<Unit> enemyTransportUnits = enemyTransportTerritory.getUnits().getMatches(transport);
+        maxTransportDistance = Math.max(maxTransportDistance, MoveValidator.getMaxMovement(enemyTransportUnits));
       }
       final List<Unit> alreadyLoaded = new ArrayList<>();
       final List<Route> blitzTerrRoutes = new ArrayList<>();
@@ -198,8 +198,8 @@ final class ProTechAI {
             final List<Unit> loadedUnits = new ArrayList<>();
             int availInf = 0;
             int availOther = 0;
-            for (final Unit xTrans : transports) {
-              final Collection<Unit> thisTransUnits = TransportTracker.transporting(xTrans);
+            for (final Unit candidateTransport : transports) {
+              final Collection<Unit> thisTransUnits = TransportTracker.transporting(candidateTransport);
               if (thisTransUnits == null) {
                 availInf += 2;
                 availOther += 1;
@@ -223,8 +223,8 @@ final class ProTechAI {
             }
             final Set<Territory> transNeighbors =
                 data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer, data));
-            for (final Territory xN : transNeighbors) {
-              final List<Unit> transUnits = xN.getUnits().getMatches(enemyTransportable);
+            for (final Territory transNeighbor : transNeighbors) {
+              final List<Unit> transUnits = transNeighbor.getUnits().getMatches(enemyTransportable);
               transUnits.removeAll(alreadyLoaded);
               final List<Unit> availTransUnits = sortTransportUnits(transUnits);
               for (final Unit transUnit : availTransUnits) {
@@ -251,9 +251,9 @@ final class ProTechAI {
         strength += airStrength;
       }
       if (onWater) {
-        final Iterator<Unit> eWaterIter = enemyWaterUnits.iterator();
-        while (eWaterIter.hasNext() && !nonTransportsInAttack) {
-          if (Matches.UnitIsNotTransport.match(eWaterIter.next())) {
+        final Iterator<Unit> enemyWaterUnitsIter = enemyWaterUnits.iterator();
+        while (enemyWaterUnitsIter.hasNext() && !nonTransportsInAttack) {
+          if (Matches.UnitIsNotTransport.match(enemyWaterUnitsIter.next())) {
             nonTransportsInAttack = true;
           }
         }
@@ -261,19 +261,19 @@ final class ProTechAI {
       if (!nonTransportsInAttack) {
         strength = 0.0F;
       }
-      ePAttackMap.put(enemyPlayer, strength);
+      enemyPlayerAttackMap.put(enemyPlayer, strength);
     }
     float maxStrength = 0.0F;
-    for (final PlayerID xP : enemyPlayers) {
-      if (ePAttackMap.get(xP) > maxStrength) {
-        enemyPlayer = xP;
-        maxStrength = ePAttackMap.get(xP);
+    for (final PlayerID enemyPlayerCandidate : enemyPlayers) {
+      if (enemyPlayerAttackMap.get(enemyPlayerCandidate) > maxStrength) {
+        enemyPlayer = enemyPlayerCandidate;
+        maxStrength = enemyPlayerAttackMap.get(enemyPlayerCandidate);
       }
     }
-    for (final PlayerID xP : enemyPlayers) {
-      if (enemyPlayer != xP) {
+    for (final PlayerID enemyPlayerCandidate : enemyPlayers) {
+      if (enemyPlayer != enemyPlayerCandidate) {
         // give 40% of other players...this is will affect a lot of decisions by AI
-        maxStrength += ePAttackMap.get(xP) * 0.40F;
+        maxStrength += enemyPlayerAttackMap.get(enemyPlayerCandidate) * 0.40F;
       }
     }
     return maxStrength;
@@ -568,9 +568,9 @@ final class ProTechAI {
     if (r == null || r.getEnd() == null) {
       return null;
     }
-    final int rDist = r.numberOfSteps();
+    final int routeDistance = r.numberOfSteps();
     Route route2 = new Route();
-    if (rDist <= maxDistance) {
+    if (routeDistance <= maxDistance) {
       route2 = r;
     } else {
       route2.setStart(start);
@@ -666,8 +666,8 @@ final class ProTechAI {
     // Return territories containing a certain unit or set of Units
     final Match<Unit> limitShips = Match.allOf(unitCondition);
     final List<Territory> shipTerr = new ArrayList<>();
-    final Collection<Territory> tNeighbors = data.getMap().getTerritories();
-    for (final Territory t2 : tNeighbors) {
+    final Collection<Territory> neighbors = data.getMap().getTerritories();
+    for (final Territory t2 : neighbors) {
       if (t2.getUnits().anyMatch(limitShips)) {
         shipTerr.add(t2);
       }

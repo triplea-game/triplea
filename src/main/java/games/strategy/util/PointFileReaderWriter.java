@@ -280,14 +280,14 @@ public class PointFileReaderWriter {
   }
 
   private static void createPolygonFromPoints(final Collection<Polygon> polygons, final ArrayList<Point> points) {
-    final int[] xPoints = new int[points.size()];
-    final int[] yPoints = new int[points.size()];
+    final int[] pointsX = new int[points.size()];
+    final int[] pointsY = new int[points.size()];
     for (int i = 0; i < points.size(); i++) {
       final Point p = points.get(i);
-      xPoints[i] = p.x;
-      yPoints[i] = p.y;
+      pointsX[i] = p.x;
+      pointsY[i] = p.y;
     }
-    polygons.add(new Polygon(xPoints, yPoints, xPoints.length));
+    polygons.add(new Polygon(pointsX, pointsY, pointsX.length));
   }
 
   private static void readMultiple(final String line, final HashMap<String, List<Point>> mapping) throws IOException {
@@ -298,13 +298,13 @@ public class PointFileReaderWriter {
     }
     final List<Point> points = new ArrayList<>();
     while (tokens.hasMoreTokens()) {
-      final String xString = tokens.nextToken(",(), ");
+      final String stringX = tokens.nextToken(",(), ");
       if (!tokens.hasMoreTokens()) {
         continue;
       }
-      final String yString = tokens.nextToken(",() ");
-      final int x = Integer.parseInt(xString);
-      final int y = Integer.parseInt(yString);
+      final String stringY = tokens.nextToken(",() ");
+      final int x = Integer.parseInt(stringX);
+      final int y = Integer.parseInt(stringY);
       points.add(new Point(x, y));
     }
     mapping.put(name, points);

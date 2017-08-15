@@ -209,11 +209,11 @@ public class BattleDisplay extends JPanel {
    *        player kills belongs to
    */
   private Collection<Unit> updateKilledUnits(final Collection<Unit> killedUnits, final PlayerID playerId) {
-    final JPanel lCausalityPanel;
+    final JPanel casualtyPanel;
     if (playerId.equals(defender)) {
-      lCausalityPanel = casualtiesInstantPanelDefender;
+      casualtyPanel = casualtiesInstantPanelDefender;
     } else {
-      lCausalityPanel = casualtiesInstantPanelAttacker;
+      casualtyPanel = casualtiesInstantPanelAttacker;
     }
     Map<Unit, Collection<Unit>> dependentsMap;
     gameData.acquireReadLock();
@@ -239,7 +239,7 @@ public class BattleDisplay extends JPanel {
         // TODO this size is of the transport collection size, not the transportED collection size.
         panel.add(new JLabel("x " + category.getUnits().size()));
       }
-      lCausalityPanel.add(panel);
+      casualtyPanel.add(panel);
     }
     return dependentUnitsReturned;
   }
@@ -615,18 +615,18 @@ public class BattleDisplay extends JPanel {
     casualtiesInstantPanelDefender.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
     casualtiesInstantPanelDefender.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
     casualtiesInstantPanelDefender.add(labelNoneDefender);
-    final JPanel lInstantCasualtiesPanel = new JPanel();
-    lInstantCasualtiesPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-    lInstantCasualtiesPanel.setLayout(new GridBagLayout());
-    final JLabel lCausalities = new JLabel("Casualties", SwingConstants.CENTER);
-    lCausalities.setFont(getPlayerComponent(attacker).getFont().deriveFont(Font.BOLD, 14));
-    lInstantCasualtiesPanel.add(lCausalities, new GridBagConstraints(0, 0, 2, 1, 1.0d, 1.0d, GridBagConstraints.CENTER,
-        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    lInstantCasualtiesPanel.add(casualtiesInstantPanelAttacker, new GridBagConstraints(0, 2, 1, 1, 1.0d, 1.0d,
+    final JPanel instantCasualtiesPanel = new JPanel();
+    instantCasualtiesPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+    instantCasualtiesPanel.setLayout(new GridBagLayout());
+    final JLabel casualtiesLabel = new JLabel("Casualties", SwingConstants.CENTER);
+    casualtiesLabel.setFont(getPlayerComponent(attacker).getFont().deriveFont(Font.BOLD, 14));
+    instantCasualtiesPanel.add(casualtiesLabel, new GridBagConstraints(0, 0, 2, 1, 1.0d, 1.0d,
         GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    lInstantCasualtiesPanel.add(casualtiesInstantPanelDefender, new GridBagConstraints(1, 2, 1, 1, 1.0d, 1.0d,
+    instantCasualtiesPanel.add(casualtiesInstantPanelAttacker, new GridBagConstraints(0, 2, 1, 1, 1.0d, 1.0d,
         GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    diceAndSteps.add(lInstantCasualtiesPanel, BorderLayout.SOUTH);
+    instantCasualtiesPanel.add(casualtiesInstantPanelDefender, new GridBagConstraints(1, 2, 1, 1, 1.0d, 1.0d,
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    diceAndSteps.add(instantCasualtiesPanel, BorderLayout.SOUTH);
     setLayout(new BorderLayout());
     add(north, BorderLayout.NORTH);
     add(diceAndSteps, BorderLayout.CENTER);

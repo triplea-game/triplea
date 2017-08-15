@@ -156,9 +156,9 @@ public class ProOddsCalculator {
     }
 
     // Create battle result object
-    final List<Territory> tList = new ArrayList<>();
-    tList.add(t);
-    if (!tList.isEmpty() && Match.allMatch(tList, Matches.TerritoryIsLand)) {
+    final List<Territory> territoryList = new ArrayList<>();
+    territoryList.add(t);
+    if (!territoryList.isEmpty() && Match.allMatch(territoryList, Matches.TerritoryIsLand)) {
       return new ProBattleResult(winPercentage, tuvSwing,
           Match.anyMatch(averageAttackersRemaining, Matches.UnitIsLand), averageAttackersRemaining,
           averageDefendersRemaining, results.getAverageBattleRoundsFought());

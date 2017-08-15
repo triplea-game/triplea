@@ -192,9 +192,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final IPoliticsDelegate iPoliticsDelegate;
+    final IPoliticsDelegate politicsDelegate;
     try {
-      iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
+      politicsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
@@ -203,9 +203,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
 
     final PoliticalActionAttachment actionChoice =
-        ui.getPoliticalActionChoice(getPlayerID(), firstRun, iPoliticsDelegate);
+        ui.getPoliticalActionChoice(getPlayerID(), firstRun, politicsDelegate);
     if (actionChoice != null) {
-      iPoliticsDelegate.attemptAction(actionChoice);
+      politicsDelegate.attemptAction(actionChoice);
       politics(false);
     }
   }
@@ -214,9 +214,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final IUserActionDelegate iUserActionDelegate;
+    final IUserActionDelegate userActionDelegate;
     try {
-      iUserActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemoteDelegate();
+      userActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemoteDelegate();
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
@@ -225,9 +225,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
-    final UserActionAttachment actionChoice = ui.getUserActionChoice(getPlayerID(), firstRun, iUserActionDelegate);
+    final UserActionAttachment actionChoice = ui.getUserActionChoice(getPlayerID(), firstRun, userActionDelegate);
     if (actionChoice != null) {
-      iUserActionDelegate.attemptAction(actionChoice);
+      userActionDelegate.attemptAction(actionChoice);
       userActions(false);
     }
   }

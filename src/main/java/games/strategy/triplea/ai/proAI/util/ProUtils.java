@@ -143,8 +143,8 @@ public class ProUtils {
 
   public static List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) {
     final List<Territory> enemyCapitals = new ArrayList<>();
-    final List<PlayerID> ePlayers = getEnemyPlayers(player);
-    for (final PlayerID otherPlayer : ePlayers) {
+    final List<PlayerID> enemyPlayers = getEnemyPlayers(player);
+    for (final PlayerID otherPlayer : enemyPlayers) {
       enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
     }
     enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
