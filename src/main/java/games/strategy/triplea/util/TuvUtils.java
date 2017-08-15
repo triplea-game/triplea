@@ -24,6 +24,9 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
+/**
+ * Utility class with static methods to assist in determining TUV.
+ */
 public class TuvUtils {
 
   /**
