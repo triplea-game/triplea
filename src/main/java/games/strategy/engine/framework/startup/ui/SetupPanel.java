@@ -22,7 +22,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.ui.SwingAction;
 
-public abstract class SetupPanel extends JPanel implements ISetupPanel {
+abstract class SetupPanel extends JPanel implements ISetupPanel {
   private static final long serialVersionUID = 4001323470187210773L;
   private static final String SET_ALL_DEFAULT_LABEL = "Default";
 
@@ -170,5 +170,4 @@ public abstract class SetupPanel extends JPanel implements ISetupPanel {
     panel.validate();
     panel.invalidate();
   }
-
 }
