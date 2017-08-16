@@ -1,5 +1,7 @@
 package games.strategy.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
@@ -8,7 +10,6 @@ import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
-
 
 /**
  * Builder class for using Lambda expressions to create 'AbstractAction'
@@ -60,17 +61,28 @@ public class SwingAction {
     };
   }
 
+  /**
+   * Synchronously executes the specified action on the Swing event dispatch thread.
+   *
+   * <p>
+   * This method may safely be called from any thread, including the Swing event dispatch thread.
+   * </p>
+   *
+   * @param action The action to execute.
+   */
   public static void invokeAndWait(final Runnable action) {
+    checkNotNull(action);
+
     try {
       if (SwingUtilities.isEventDispatchThread()) {
         action.run();
       } else {
-        SwingUtilities.invokeAndWait(() -> action.run());
+        SwingUtilities.invokeAndWait(action);
       }
     } catch (final InvocationTargetException e) {
       ClientLogger.logError(e);
     } catch (final InterruptedException e) {
-      ClientLogger.logQuietly(e);
+      Thread.currentThread().interrupt();
     }
   }
 }
