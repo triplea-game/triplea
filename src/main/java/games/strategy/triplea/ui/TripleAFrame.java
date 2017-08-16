@@ -793,10 +793,7 @@ public class TripleAFrame extends MainGameFrame {
       return true;
     }
     messageAndDialogThreadPool.waitForAll();
-    final String airUnitPlural = (airCantLand.size() == 1) ? "" : "s";
-    final String territoryPlural = (airCantLand.size() == 1) ? "y" : "ies";
-    final StringBuilder sb = new StringBuilder("<html>" + airCantLand.size() + " air unit" + airUnitPlural
-        + " cannot land in the following territor" + territoryPlural + ":<ul> ");
+    final StringBuilder sb = new StringBuilder("<html>Air units cannot land in:<ul> ");
     for (final Territory t : airCantLand) {
       sb.append("<li>").append(t.getName()).append("</li>");
     }
