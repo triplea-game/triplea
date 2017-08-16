@@ -507,7 +507,7 @@ public class BattleDisplay extends JPanel {
       final boolean plural = isEditMode || (count > 1);
       final String countStr = isEditMode ? "" : "" + count;
       final String btnText =
-          hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
+          hit.getName() + " select " + countStr + (plural ? " casualties" : " casualty");
       actionButton.setAction(new AbstractAction(btnText) {
         private static final long serialVersionUID = -2156028313292233568L;
         private UnitChooser chooser;
