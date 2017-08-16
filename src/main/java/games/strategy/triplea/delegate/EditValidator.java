@@ -260,7 +260,7 @@ class EditValidator {
     if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (units.isEmpty() || !Match.allMatch(units, Matches.UnitCanBeDamaged)) {
+    if (units.isEmpty() || !Match.allMatch(units, Matches.unitCanBeDamaged())) {
       return "Not all units can take bombing damage";
     }
     for (final Unit u : units) {

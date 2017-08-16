@@ -1472,7 +1472,7 @@ public class WW2V3Year41Test {
   @Test
   public void testRepair() {
     final Territory germany = territory("Germany", gameData);
-    final Unit factory = germany.getUnits().getMatches(Matches.UnitCanBeDamaged).get(0);
+    final Unit factory = germany.getUnits().getMatches(Matches.unitCanBeDamaged()).get(0);
     final PurchaseDelegate del = purchaseDelegate(gameData);
     del.setDelegateBridgeAndPlayer(getDelegateBridge(germans(gameData)));
     del.start();
@@ -1488,7 +1488,7 @@ public class WW2V3Year41Test {
     IntegerMap<RepairRule> repairs = new IntegerMap<>();
     repairs.put(repair, 1);
     String error = del.purchaseRepair(Collections.singletonMap(
-        Match.getMatches(germany.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairs));
+        Match.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(), repairs));
     assertValid(error);
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
     // Find cost
@@ -1510,7 +1510,7 @@ public class WW2V3Year41Test {
     repairs = new IntegerMap<>();
     repairs.put(repair, 2);
     error = del.purchaseRepair(Collections.singletonMap(
-        Match.getMatches(germany.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairs));
+        Match.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(), repairs));
     assertValid(error);
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
     // Find cost
@@ -1521,7 +1521,7 @@ public class WW2V3Year41Test {
   @Test
   public void testRepairMoreThanDamaged() {
     final Territory germany = territory("Germany", gameData);
-    final Unit factory = germany.getUnits().getMatches(Matches.UnitCanBeDamaged).get(0);
+    final Unit factory = germany.getUnits().getMatches(Matches.unitCanBeDamaged()).get(0);
     final PurchaseDelegate del = purchaseDelegate(gameData);
     del.setDelegateBridgeAndPlayer(getDelegateBridge(germans(gameData)));
     del.start();
@@ -1535,7 +1535,7 @@ public class WW2V3Year41Test {
     // we have 1 damaged marker, but trying to repair 2
     repairs.put(repair, 2);
     final String error = del.purchaseRepair(Collections.singletonMap(
-        Match.getMatches(germany.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairs));
+        Match.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(), repairs));
     // it is no longer an error, we just math max 0 it
     assertValid(error);
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);

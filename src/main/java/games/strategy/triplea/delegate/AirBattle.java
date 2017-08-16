@@ -166,19 +166,19 @@ public class AirBattle extends AbstractBattle {
           m_defendingWaitingToDie.clear();
           // kill any suicide attackers (veqryn)
           final Match.CompositeBuilder<Unit> attackerSuicideBuilder = Match.newCompositeBuilder(
-              Matches.UnitIsSuicide);
+              Matches.unitIsSuicide());
           if (m_isBombingRun) {
             attackerSuicideBuilder.add(Matches.unitIsNotStrategicBomber());
           }
           if (Match.anyMatch(m_attackingUnits, attackerSuicideBuilder.all())) {
-            final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
+            final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.unitIsSuicide());
             m_attackingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
             tuvLostAttacker = TuvUtils.getTUV(suicideUnits, m_attacker, attackerCosts, m_data);
             m_attackerLostTUV += tuvLostAttacker;
           }
-          if (Match.anyMatch(m_defendingUnits, Matches.UnitIsSuicide)) {
-            final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
+          if (Match.anyMatch(m_defendingUnits, Matches.unitIsSuicide())) {
+            final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.unitIsSuicide());
             m_defendingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
             tuvLostDefender = TuvUtils.getTUV(suicideUnits, m_defender, defenderCosts, m_data);
@@ -647,9 +647,9 @@ public class AirBattle extends AbstractBattle {
     final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
         Matches.unitCanAirBattle,
         Matches.unitIsEnemyOf(data, attacker),
-        Matches.UnitWasInAirBattle.invert());
+        Matches.unitWasInAirBattle().invert());
     if (!Properties.getCanScrambleIntoAirBattles(data)) {
-      matchBuilder.add(Matches.UnitWasScrambled.invert());
+      matchBuilder.add(Matches.unitWasScrambled().invert());
     }
     return matchBuilder.all();
   }
@@ -658,9 +658,9 @@ public class AirBattle extends AbstractBattle {
     final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
         Matches.unitCanIntercept,
         Matches.unitIsEnemyOf(data, attacker),
-        Matches.UnitWasInAirBattle.invert());
+        Matches.unitWasInAirBattle().invert());
     if (!Properties.getCanScrambleIntoAirBattles(data)) {
-      matchBuilder.add(Matches.UnitWasScrambled.invert());
+      matchBuilder.add(Matches.unitWasScrambled().invert());
     }
     return matchBuilder.all();
   }

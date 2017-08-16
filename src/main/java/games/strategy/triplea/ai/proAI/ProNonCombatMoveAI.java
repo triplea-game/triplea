@@ -906,7 +906,7 @@ class ProNonCombatMoveAI {
         if (!t.isWater() && !t.equals(ProData.myCapital)
             && !ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
           double totalValue = 0.0;
-          final List<Unit> nonAirDefenders = Match.getMatches(moveMap.get(t).getTempUnits(), Matches.UnitIsNotAir);
+          final List<Unit> nonAirDefenders = Match.getMatches(moveMap.get(t).getTempUnits(), Matches.unitIsNotAir());
           for (final Unit u : nonAirDefenders) {
             totalValue += territoryValueMap.get(unitTerritoryMap.get(u));
           }
@@ -1733,7 +1733,7 @@ class ProNonCombatMoveAI {
     // Move air units to safe territory with most attack options
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
       final Unit u = it.next();
-      if (Matches.UnitIsNotAir.match(u)) {
+      if (Matches.unitIsNotAir().match(u)) {
         continue;
       }
       double maxAirValue = 0;
@@ -1814,7 +1814,7 @@ class ProNonCombatMoveAI {
     // Move air units to safest territory
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
       final Unit u = it.next();
-      if (Matches.UnitIsNotAir.match(u)) {
+      if (Matches.unitIsNotAir().match(u)) {
         continue;
       }
       double minStrengthDifference = Double.POSITIVE_INFINITY;

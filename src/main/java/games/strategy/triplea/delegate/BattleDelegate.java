@@ -603,7 +603,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       for (final PlayerID p : enemyPlayers) {
         final Match<Unit> canPreventCapture = Match.allOf(Matches.unitIsEnemyOf(data, p),
-            Matches.UnitIsNotAir, Matches.UnitIsNotInfrastructure);
+            Matches.unitIsNotAir(), Matches.UnitIsNotInfrastructure);
         enemyUnitsOfAbandonedToUnits.addAll(territory.getUnits().getMatches(canPreventCapture));
       }
       // only look at bombing battles, because otherwise the normal attack will determine the ownership of the territory
@@ -647,15 +647,15 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
     }
     final Match<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, m_player),
-        Matches.UnitIsAirBase, Matches.UnitIsNotDisabled, Matches.unitIsBeingTransported().invert());
+        Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().invert());
     final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.newCompositeBuilder(
         Match.anyOf(
             Matches.TerritoryIsWater,
             Matches.isTerritoryEnemy(m_player, data)),
         Matches.territoryHasUnitsThatMatch(Match.allOf(
-            Matches.UnitCanScramble,
+            Matches.unitCanScramble(),
             Matches.unitIsEnemyOf(data, m_player),
-            Matches.UnitIsNotDisabled)),
+            Matches.unitIsNotDisabled())),
         Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
     if (fromIslandOnly) {
       canScrambleBuilder.add(Matches.TerritoryIsIsland);
@@ -733,8 +733,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final int maxCanScramble = getMaxScrambleCount(airbases);
         final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.TerritoryIsNotImpassable);
         final Collection<Unit> canScrambleAir = from.getUnits()
-            .getMatches(Match.allOf(Matches.unitIsEnemyOf(data, m_player), Matches.UnitCanScramble,
-                Matches.UnitIsNotDisabled, Matches.UnitWasScrambled.invert(),
+            .getMatches(Match.allOf(Matches.unitIsEnemyOf(data, m_player), Matches.unitCanScramble(),
+                Matches.unitIsNotDisabled(), Matches.unitWasScrambled().invert(),
                 Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
         if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
           scramblers.put(from, Tuple.of(airbases, canScrambleAir));
@@ -951,7 +951,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   public static int getMaxScrambleCount(final Collection<Unit> airbases) {
     if (airbases.isEmpty()
-        || !Match.allMatch(airbases, Match.allOf(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled))) {
+        || !Match.allMatch(airbases, Match.allOf(Matches.unitIsAirBase(), Matches.unitIsNotDisabled()))) {
       throw new IllegalStateException("All units must be viable airbases");
     }
     // find how many is the max this territory can scramble
@@ -975,7 +975,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final boolean mustReturnToBase = Properties.getScrambled_Units_Return_To_Base(data);
     for (final Territory t : data.getMap().getTerritories()) {
       int carrierCostOfCurrentTerr = 0;
-      final Collection<Unit> wasScrambled = t.getUnits().getMatches(Matches.UnitWasScrambled);
+      final Collection<Unit> wasScrambled = t.getUnits().getMatches(Matches.unitWasScrambled());
       for (final Unit u : wasScrambled) {
         final CompositeChange change = new CompositeChange();
         final Territory originatedFrom = TripleAUnit.get(u).getOriginatedFrom();
@@ -1024,7 +1024,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> airbases = t.getUnits().getMatches(Matches.UnitIsAirBase);
+      final Collection<Unit> airbases = t.getUnits().getMatches(Matches.unitIsAirBase());
       for (final Unit u : airbases) {
         final UnitAttachment ua = UnitAttachment.get(u.getType());
         final int currentMax = ((TripleAUnit) u).getMaxScrambleCount();
@@ -1047,7 +1047,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      for (final Unit u : t.getUnits().getMatches(Matches.UnitWasInAirBattle)) {
+      for (final Unit u : t.getUnits().getMatches(Matches.unitWasInAirBattle())) {
         change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_IN_AIR_BATTLE));
       }
     }
@@ -1062,7 +1062,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Map<Territory, Collection<Unit>> defendingAirThatCanNotLand = m_battleTracker.getDefendingAirThatCanNotLand();
     final boolean isWW2v2orIsSurvivingAirMoveToLand = Properties.getWW2V2(data)
         || Properties.getSurvivingAirMoveToLand(data);
-    final Match<Unit> alliedDefendingAir = Match.allOf(Matches.UnitIsAir, Matches.UnitWasScrambled.invert());
+    final Match<Unit> alliedDefendingAir = Match.allOf(Matches.UnitIsAir, Matches.unitWasScrambled().invert());
     for (final Entry<Territory, Collection<Unit>> entry : defendingAirThatCanNotLand.entrySet()) {
       final Territory battleSite = entry.getKey();
       final Collection<Unit> defendingAir = entry.getValue();

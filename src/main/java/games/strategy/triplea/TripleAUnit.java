@@ -341,7 +341,7 @@ public class TripleAUnit extends Unit {
    * Will return 0 if the unit cannot be damaged, or is at max damage.
    */
   public int getHowMuchMoreDamageCanThisUnitTake(final Unit u, final Territory t) {
-    if (!Matches.UnitCanBeDamaged.match(u)) {
+    if (!Matches.unitCanBeDamaged().match(u)) {
       return 0;
     }
     final TripleAUnit taUnit = (TripleAUnit) u;
@@ -357,7 +357,7 @@ public class TripleAUnit extends Unit {
    * Will return -1 if the unit is of the type that cannot be damaged
    */
   public int getHowMuchDamageCanThisUnitTakeTotal(final Unit u, final Territory t) {
-    if (!Matches.UnitCanBeDamaged.match(u)) {
+    if (!Matches.unitCanBeDamaged().match(u)) {
       return -1;
     }
     final UnitAttachment ua = UnitAttachment.get(u.getType());

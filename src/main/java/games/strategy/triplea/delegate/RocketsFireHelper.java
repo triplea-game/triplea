@@ -144,7 +144,7 @@ public class RocketsFireHelper {
   }
 
   Match<Unit> rocketMatch(final PlayerID player, final GameData data) {
-    return Match.allOf(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsNotDisabled,
+    return Match.allOf(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.unitIsNotDisabled(),
         Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert(), Matches.unitHasNotMoved());
   }
 
@@ -419,8 +419,8 @@ public class RocketsFireHelper {
       }
     }
     // kill any units that can die if they have reached max damage (veqryn)
-    if (Match.anyMatch(targets, Matches.UnitCanDieFromReachingMaxDamage)) {
-      final List<Unit> unitsCanDie = Match.getMatches(targets, Matches.UnitCanDieFromReachingMaxDamage);
+    if (Match.anyMatch(targets, Matches.unitCanDieFromReachingMaxDamage())) {
+      final List<Unit> unitsCanDie = Match.getMatches(targets, Matches.unitCanDieFromReachingMaxDamage());
       unitsCanDie
           .retainAll(Match.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
       if (!unitsCanDie.isEmpty()) {

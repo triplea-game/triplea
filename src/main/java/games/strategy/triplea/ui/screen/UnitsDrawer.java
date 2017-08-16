@@ -173,7 +173,7 @@ public class UnitsDrawer implements IDrawable {
     }
     displayHitDamage(bounds, graphics);
     // Display Factory Damage
-    if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.UnitTypeCanBeDamaged.match(type)) {
+    if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.unitTypeCanBeDamaged().match(type)) {
       displayFactoryDamage(bounds, graphics);
     }
   }
@@ -222,9 +222,9 @@ public class UnitsDrawer implements IDrawable {
       selectedUnitsBuilder.add(Matches.unitHasNotTakenAnyDamage());
     }
     if (bombingUnitDamage > 0) {
-      selectedUnitsBuilder.add(Matches.UnitHasTakenSomeBombingUnitDamage);
+      selectedUnitsBuilder.add(Matches.unitHasTakenSomeBombingUnitDamage());
     } else {
-      selectedUnitsBuilder.add(Matches.UnitHasNotTakenAnyBombingUnitDamage);
+      selectedUnitsBuilder.add(Matches.unitHasNotTakenAnyBombingUnitDamage());
     }
     final List<Unit> rVal = t.getUnits().getMatches(selectedUnitsBuilder.all());
     return Tuple.of(t, rVal);
