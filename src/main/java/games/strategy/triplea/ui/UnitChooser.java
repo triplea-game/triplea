@@ -31,7 +31,7 @@ import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
-public class UnitChooser extends JPanel {
+final class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
   private final List<ChooserEntry> entries = new ArrayList<>();
   private final Map<Unit, Collection<Unit>> dependents;
@@ -45,13 +45,12 @@ public class UnitChooser extends JPanel {
   private final IUIContext uiContext;
   private final Match<Collection<Unit>> match;
 
-  /** Creates new UnitChooser. */
-  public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data,
+  UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data,
       final boolean allowTwoHit, final IUIContext uiContext) {
     this(units, Collections.emptyList(), dependent, data, allowTwoHit, uiContext);
   }
 
-  public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
+  UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit,
       final IUIContext uiContext) {
     this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
@@ -98,7 +97,7 @@ public class UnitChooser extends JPanel {
   /**
    * Set the maximum number of units that we can choose.
    */
-  public void setMax(final int max) {
+  void setMax(final int max) {
     total = max;
     textFieldListener.changedValue(null);
     autoSelectButton.setVisible(false);
@@ -111,7 +110,7 @@ public class UnitChooser extends JPanel {
     autoSelectButton.setText("Max");
   }
 
-  public void setTitle(final String title) {
+  void setTitle(final String title) {
     this.title.setText(title);
   }
 
@@ -228,7 +227,7 @@ public class UnitChooser extends JPanel {
     }
   }
 
-  public Collection<Unit> getSelected() {
+  Collection<Unit> getSelected() {
     return getSelected(true);
   }
 
@@ -236,7 +235,7 @@ public class UnitChooser extends JPanel {
    * get the units selected.
    * If units are two hit enabled, returns those with two hits (ie: those killed).
    */
-  public List<Unit> getSelected(final boolean selectDependents) {
+  List<Unit> getSelected(final boolean selectDependents) {
     final List<Unit> selectedUnits = new ArrayList<>();
     for (final ChooserEntry entry : entries) {
       addToCollection(selectedUnits, entry, entry.getFinalHit(), selectDependents);
@@ -247,7 +246,7 @@ public class UnitChooser extends JPanel {
   /**
    * Only applicable if this dialog was constructed using multiple hit points.
    */
-  public List<Unit> getSelectedDamagedMultipleHitPointUnits() {
+  List<Unit> getSelectedDamagedMultipleHitPointUnits() {
     final List<Unit> selectedUnits = new ArrayList<>();
     for (ChooserEntry chooserEntry : entries) {
       if (chooserEntry.hasMultipleHitPoints()) {
