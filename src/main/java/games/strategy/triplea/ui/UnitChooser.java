@@ -112,6 +112,7 @@ final class UnitChooser extends JPanel {
 
   void setTitle(final String title) {
     this.title.setText(title);
+    this.title.setVisible(true);
   }
 
   private void updateLeft() {
@@ -196,10 +197,11 @@ final class UnitChooser extends JPanel {
 
   private void layoutEntries() {
     this.setLayout(new GridBagLayout());
-    title = new JTextArea("Choose units");
+    title = new JTextArea();
     title.setBackground(this.getBackground());
     title.setEditable(false);
     title.setWrapStyleWord(true);
+    title.setVisible(false);
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
     selectNoneButton = new JButton("None");
