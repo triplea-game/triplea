@@ -159,6 +159,6 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     setAllTypes.setAction(setAllTypesAction);
 
     panel.validate();
-    panel.invalidate();
+    panel.repaint();
   }
 }
