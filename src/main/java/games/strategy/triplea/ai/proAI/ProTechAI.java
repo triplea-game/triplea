@@ -253,7 +253,7 @@ final class ProTechAI {
       if (onWater) {
         final Iterator<Unit> enemyWaterUnitsIter = enemyWaterUnits.iterator();
         while (enemyWaterUnitsIter.hasNext() && !nonTransportsInAttack) {
-          if (Matches.UnitIsNotTransport.match(enemyWaterUnitsIter.next())) {
+          if (Matches.unitIsNotTransport().match(enemyWaterUnitsIter.next())) {
             nonTransportsInAttack = true;
           }
         }

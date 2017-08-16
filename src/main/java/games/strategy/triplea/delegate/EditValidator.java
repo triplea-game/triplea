@@ -226,7 +226,7 @@ class EditValidator {
     if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (units.isEmpty() || !Match.allMatch(units, Matches.UnitHasMoreThanOneHitPointTotal)) {
+    if (units.isEmpty() || !Match.allMatch(units, Matches.unitHasMoreThanOneHitPointTotal())) {
       return "Not all units have more than one total hitpoints";
     }
     for (final Unit u : units) {

@@ -217,9 +217,9 @@ public class UnitsDrawer implements IDrawable {
         Matches.unitIsOfType(type),
         Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(playerName)));
     if (damaged > 0) {
-      selectedUnitsBuilder.add(Matches.UnitHasTakenSomeDamage);
+      selectedUnitsBuilder.add(Matches.unitHasTakenSomeDamage());
     } else {
-      selectedUnitsBuilder.add(Matches.UnitHasNotTakenAnyDamage);
+      selectedUnitsBuilder.add(Matches.unitHasNotTakenAnyDamage());
     }
     if (bombingUnitDamage > 0) {
       selectedUnitsBuilder.add(Matches.UnitHasTakenSomeBombingUnitDamage);

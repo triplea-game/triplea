@@ -507,7 +507,7 @@ public class ProMatches {
       if (isCombatMove && Matches.UnitCanNotMoveDuringCombatMove.match(u)) {
         return false;
       }
-      final Match<Unit> match = Match.allOf(unitIsOwnedTransportableUnit(player), Matches.unitHasNotMoved,
+      final Match<Unit> match = Match.allOf(unitIsOwnedTransportableUnit(player), Matches.unitHasNotMoved(),
           Matches.unitHasMovementLeft, Matches.unitIsBeingTransported().invert());
       return match.match(u);
     });

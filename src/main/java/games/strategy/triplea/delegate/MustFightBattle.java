@@ -600,7 +600,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         steps.add(AIR_ATTACK_NON_SUBS);
       }
     }
-    if (Match.anyMatch(m_attackingUnits, Matches.UnitIsNotSub)) {
+    if (Match.anyMatch(m_attackingUnits, Matches.unitIsNotSub())) {
       steps.add(m_attacker.getName() + FIRE);
       steps.add(m_defender.getName() + SELECT_CASUALTIES);
     }
@@ -628,7 +628,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         steps.add(AIR_DEFEND_NON_SUBS);
       }
     }
-    if (Match.anyMatch(m_defendingUnits, Matches.UnitIsNotSub)) {
+    if (Match.anyMatch(m_defendingUnits, Matches.unitIsNotSub())) {
       steps.add(m_defender.getName() + FIRE);
       steps.add(m_attacker.getName() + SELECT_CASUALTIES);
     }
@@ -849,7 +849,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             // Get all allied transports in the territory
             final Match<Unit> matchAllied = Match.allOf(
                 Matches.UnitIsTransport,
-                Matches.UnitIsNotCombatTransport,
+                Matches.unitIsNotCombatTransport(),
                 Matches.isUnitAllied(m_attacker, m_data));
             final List<Unit> alliedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);
             // If no transports, just end the battle
@@ -1220,10 +1220,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         Matches.unitIsBeingTransported().invert(),
         Matches.UnitIsSubmerged.invert());
     if (Properties.getIgnoreSubInMovement(m_data)) {
-      enemyUnitsThatPreventRetreatBuilder.add(Matches.UnitIsNotSub);
+      enemyUnitsThatPreventRetreatBuilder.add(Matches.unitIsNotSub());
     }
     if (Properties.getIgnoreTransportInMovement(m_data)) {
-      enemyUnitsThatPreventRetreatBuilder.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
+      enemyUnitsThatPreventRetreatBuilder.add(Matches.unitIsNotTransportButCouldBeCombatTransport());
     }
     Collection<Territory> possible = Match.getMatches(m_attackingFrom,
         Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreatBuilder.all()).invert());
@@ -1272,7 +1272,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return false;
     }
     return !m_defendingUnits.isEmpty()
-        && Match.allMatch(m_defendingUnits, Matches.UnitIsTransportButNotCombatTransport);
+        && Match.allMatch(m_defendingUnits, Matches.unitIsTransportButNotCombatTransport());
   }
 
   private boolean canAttackerRetreatSubs() {
@@ -1736,7 +1736,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // Get all allied transports in the territory
     final Match<Unit> matchAllied = Match.allOf(
         Matches.UnitIsTransport,
-        Matches.UnitIsNotCombatTransport,
+        Matches.unitIsNotCombatTransport(),
         Matches.isUnitAllied(player, m_data),
         Matches.UnitIsSea);
     final List<Unit> alliedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);
@@ -1840,7 +1840,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     Collection<Unit> units = new ArrayList<>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
     units.addAll(m_defendingUnits);
     units.addAll(m_defendingWaitingToDie);
-    units = Match.getMatches(units, Matches.UnitIsNotSub);
+    units = Match.getMatches(units, Matches.unitIsNotSub());
     // if restricted, remove aircraft from attackers
     if (isAirAttackSubRestricted() && !canAirAttackSubs(m_attackingUnits, units)) {
       units.removeAll(Match.getMatches(units, Matches.UnitIsAir));
@@ -1869,7 +1869,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (!canAirAttackSubs(m_defendingUnits, units)) {
       units = Match.getMatches(units, Matches.UnitIsAir);
-      final Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_defendingUnits, Matches.UnitIsNotSub);
+      final Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_defendingUnits, Matches.unitIsNotSub());
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
       allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingWaitingToDie);
@@ -1893,7 +1893,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
     if (!canAirAttackSubs(m_attackingUnits, units)) {
       units = Match.getMatches(units, Matches.UnitIsAir);
-      final Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
+      final Collection<Unit> enemyUnitsNotSubs = Match.getMatches(m_attackingUnits, Matches.unitIsNotSub());
       if (enemyUnitsNotSubs.isEmpty()) {
         return;
       }
@@ -1911,8 +1911,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_defendingUnits.size() == 0) {
       return;
     }
-    Collection<Unit> units = Match.getMatches(m_attackingUnits, Matches.UnitIsNotSub);
-    units.addAll(Match.getMatches(m_attackingWaitingToDie, Matches.UnitIsNotSub));
+    Collection<Unit> units = Match.getMatches(m_attackingUnits, Matches.unitIsNotSub());
+    units.addAll(Match.getMatches(m_attackingWaitingToDie, Matches.unitIsNotSub()));
     // See if allied air can participate in combat
     if (!isAlliedAirIndependent()) {
       units = Match.getMatches(units, Matches.unitIsOwnedBy(m_attacker));
@@ -1986,7 +1986,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       } else {
         m_attackingWaitingToDie.addAll(Match.getMatches(killed, Matches.UnitIsSub));
       }
-      remove(Match.getMatches(killed, Matches.UnitIsNotSub), bridge, m_battleSite, defender);
+      remove(Match.getMatches(killed, Matches.unitIsNotSub()), bridge, m_battleSite, defender);
     } else if (returnFire == ReturnFire.NONE) {
       remove(killed, bridge, m_battleSite, defender);
     }

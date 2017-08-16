@@ -413,8 +413,8 @@ public class MoveValidator {
         Match.anyOf(Matches.TerritoryIsNeutralButNotWater,
             Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
     // final CompositeMatch<Unit> transportsCanNotControl = new
-    // CompositeMatchAnd<Unit>(Matches.UnitIsTransportAndNotDestroyer,
-    // Matches.UnitIsTransportButNotCombatTransport);
+    // CompositeMatchAnd<Unit>(Matches.unitIsTransportAndNotDestroyer(),
+    // Matches.unitIsTransportButNotCombatTransport());
     final boolean navalMayNotNonComIntoControlled =
         isWW2V2(data) || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
     // TODO need to account for subs AND transports that are ignored, not just OR
@@ -600,8 +600,8 @@ public class MoveValidator {
       for (final Unit unit : moveTest) {
         if (!hasEnoughMovementForRoute.match(unit)) {
           boolean unitOk = false;
-          if ((Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved.match(unit))
-              && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved.match(unit) && Matches.UnitIsInfantry
+          if ((Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved().match(unit))
+              && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().match(unit) && Matches.UnitIsInfantry
                   .match(unit))) {
             // we have paratroopers and mechanized infantry, so we must check for both
             // simple: if it movement group contains an air-transport, then assume we are doing paratroopers. else,
@@ -620,7 +620,7 @@ public class MoveValidator {
             } else {
               mechanizedSupportAvailable--;
             }
-          } else if (Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved.match(unit)) {
+          } else if (Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved().match(unit)) {
             for (final Unit airTransport : dependencies.keySet()) {
               if (dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit)) {
                 unitOk = true;
@@ -630,11 +630,11 @@ public class MoveValidator {
             if (!unitOk) {
               result.addDisallowedUnit("Not all units have enough movement", unit);
             }
-          } else if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved.match(unit)
+          } else if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().match(unit)
               && Matches.UnitIsInfantry.match(unit)) {
             mechanizedSupportAvailable--;
           } else if (Matches.unitIsOwnedBy(player).invert().match(unit) && Matches.alliedUnit(player, data).match(unit)
-              && Matches.UnitTypeCanLandOnCarrier.match(unit.getType())
+              && Matches.unitTypeCanLandOnCarrier().match(unit.getType())
               && Match.anyMatch(moveTest, Matches.unitIsAlliedCarrier(unit.getOwner(), data))) {
             // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
             // (shouldn't it be a dependant in this case??)
@@ -772,10 +772,10 @@ public class MoveValidator {
     final Match<Unit> subOnly =
         Match.anyOf(Matches.UnitIsInfrastructure, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
     final Match<Unit> transportOnly =
-        Match.anyOf(Matches.UnitIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport,
+        Match.anyOf(Matches.UnitIsInfrastructure, Matches.unitIsTransportButNotCombatTransport(),
             Matches.UnitIsLand, Matches.enemyUnit(player, data).invert());
     final Match<Unit> transportOrSubOnly =
-        Match.anyOf(Matches.UnitIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport,
+        Match.anyOf(Matches.UnitIsInfrastructure, Matches.unitIsTransportButNotCombatTransport(),
             Matches.UnitIsLand, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
     final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
@@ -982,7 +982,7 @@ public class MoveValidator {
       final Match<Unit> enemySubmarineMatch = Match.allOf(Matches.unitIsEnemyOf(data, player), Matches.UnitIsSub);
       final Match<Unit> ownedSeaNonTransportMatch =
           Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsSea,
-              Matches.UnitIsNotTransportButCouldBeCombatTransport);
+              Matches.unitIsNotTransportButCouldBeCombatTransport());
       for (final Unit transport : transports) {
         if (!isNonCombat && route.numberOfStepsIncludingStart() == 2) {
           if (Matches.territoryHasEnemyUnits(player, data).match(routeEnd)
@@ -1102,7 +1102,7 @@ public class MoveValidator {
       // Matches.UnitCanBeTransported);
       while (!isEditMode && iter.hasNext()) {
         final TripleAUnit unit = (TripleAUnit) iter.next();
-        if (Matches.unitHasMoved.match(unit)) {
+        if (Matches.unitHasMoved().match(unit)) {
           result.addDisallowedUnit("Units cannot move before loading onto transports", unit);
         }
         final Unit transport = unitsToTransports.get(unit);
@@ -1234,17 +1234,17 @@ public class MoveValidator {
       final Map<Unit, Unit> airTransportsAndParatroops =
           TransportUtils.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
       for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
-        if (Matches.unitHasMoved.match(paratroop)) {
+        if (Matches.unitHasMoved().match(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
         final Unit transport = airTransportsAndParatroops.get(paratroop);
-        if (Matches.unitHasMoved.match(transport)) {
+        if (Matches.unitHasMoved().match(transport)) {
           result.addDisallowedUnit("Cannot move then transport paratroops", transport);
         }
       }
       final Territory routeEnd = route.getEnd();
       for (final Unit paratroop : paratroopsRequiringTransport) {
-        if (Matches.unitHasMoved.match(paratroop)) {
+        if (Matches.unitHasMoved().match(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
         if (Matches.isTerritoryFriendly(player, data).match(routeEnd)
@@ -1451,7 +1451,7 @@ public class MoveValidator {
       if (available >= cost) {
         // this is to test if they started in the same sea zone or not, and its not a very good way of testing it.
         if ((taCarrier.getAlreadyMoved() == taPlane.getAlreadyMoved())
-            || (Matches.unitHasNotMoved.match(plane) && Matches.unitHasNotMoved.match(carrier))
+            || (Matches.unitHasNotMoved().match(plane) && Matches.unitHasNotMoved().match(carrier))
             || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).invert().match(plane) && Matches.alliedUnit(
                 playerWhoIsDoingTheMovement, data).match(plane))) {
           available -= cost;

@@ -889,12 +889,12 @@ class OddsCalculatorPanel extends JPanel {
       final Match<UnitType> predicate;
       if (land) {
         if (defender) {
-          predicate = Matches.UnitTypeIsNotSea;
+          predicate = Matches.unitTypeIsNotSea();
         } else {
-          predicate = Match.anyOf(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
+          predicate = Match.anyOf(Matches.unitTypeIsNotSea(), Matches.unitTypeCanBombard(id));
         }
       } else {
-        predicate = Matches.UnitTypeIsSeaOrAir;
+        predicate = Matches.unitTypeIsSeaOrAir();
       }
       final IntegerMap<UnitType> costs;
       try {
@@ -1183,7 +1183,7 @@ class OddsCalculatorPanel extends JPanel {
         for (final UnitCategory category : categories) {
           // no duplicates or infrastructure allowed. no sea if land, no land if sea.
           if (typesUsed.contains(category.getType()) || Matches.UnitTypeIsInfrastructure.match(category.getType())
-              || (land && Matches.UnitTypeIsSea.match(category.getType()))
+              || (land && Matches.unitTypeIsSea().match(category.getType()))
               || (!land && Matches.UnitTypeIsLand.match(category.getType()))) {
             continue;
           }

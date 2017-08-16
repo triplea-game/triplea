@@ -788,7 +788,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         }
       }
       // make sure all units are land
-      if (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsNotSea)) {
+      if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsNotSea())) {
         return "Cant place sea units on land";
       }
     }
@@ -981,7 +981,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         final int requiredNumber = requiredUnitsMap.getInt(ut);
         final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = Match.allOf(
             Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsOfType(ut),
-            Matches.UnitHasNotTakenAnyBombingUnitDamage, Matches.UnitHasNotTakenAnyDamage, Matches.UnitIsNotDisabled);
+            Matches.UnitHasNotTakenAnyBombingUnitDamage, Matches.unitHasNotTakenAnyDamage(), Matches.UnitIsNotDisabled);
         final Collection<Unit> unitsBeingRemoved =
             Match.getNMatches(unitsAtStartOfTurnInTo, requiredNumber, unitIsOwnedByAndOfTypeAndNotDamaged);
         unitsAtStartOfTurnInTo.removeAll(unitsBeingRemoved);

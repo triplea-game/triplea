@@ -799,13 +799,13 @@ public class WW2V3Year41Test {
     final Territory sz12 = territory("12 Sea Zone", gameData);
     final Route r = new Route(sz14, sz13, sz12);
     // move the battleship
-    move(sz14.getUnits().getMatches(Matches.UnitHasMoreThanOneHitPointTotal), r);
+    move(sz14.getUnits().getMatches(Matches.unitHasMoreThanOneHitPointTotal()), r);
     // move everything
-    move(sz14.getUnits().getMatches(Matches.UnitIsNotTransport), r);
+    move(sz14.getUnits().getMatches(Matches.unitIsNotTransport()), r);
     // undo it
     move.undoMove(1);
     // move again
-    move(sz14.getUnits().getMatches(Matches.UnitIsNotTransport), r);
+    move(sz14.getUnits().getMatches(Matches.unitIsNotTransport()), r);
     final MustFightBattle mfb =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz12, false, null);
     // only 3 attacking units

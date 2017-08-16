@@ -140,7 +140,7 @@ public class PlacePanel extends AbstractMovePanel {
           units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {
-        units = Match.getMatches(units, Matches.UnitIsNotSea);
+        units = Match.getMatches(units, Matches.unitIsNotSea());
       }
       if (units.isEmpty()) {
         return Collections.emptyList();

@@ -33,7 +33,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
     if (Properties.getBattleshipsRepairAtEndOfRound(data)
         || Properties.getBattleshipsRepairAtBeginningOfRound(data)) {
       for (final UnitType ut : data.getUnitTypeList()) {
-        if (Matches.UnitTypeHasMoreThanOneHitPointTotal.match(ut)) {
+        if (Matches.unitTypeHasMoreThanOneHitPointTotal().match(ut)) {
           m_multiHitpointCanRepair.add(ut);
         }
       }

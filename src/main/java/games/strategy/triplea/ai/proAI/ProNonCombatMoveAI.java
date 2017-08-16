@@ -462,7 +462,7 @@ class ProNonCombatMoveAI {
       double unitOwnerMultiplier = 1;
       if (Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.unitIsOwnedBy(player))) {
         if (t.isWater()
-            && Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.UnitIsTransportButNotCombatTransport)) {
+            && Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.unitIsTransportButNotCombatTransport())) {
           unitOwnerMultiplier = 0;
         } else {
           unitOwnerMultiplier = 0.5;
