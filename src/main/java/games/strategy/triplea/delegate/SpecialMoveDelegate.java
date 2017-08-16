@@ -229,7 +229,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         result.addDisallowedUnit("Can Only Launch Airborne Forces", u);
       } else if (Matches.UnitIsDisabled.match(u)) {
         result.addDisallowedUnit("Must Not Be Disabled", u);
-      } else if (!Matches.unitHasNotMoved.match(u)) {
+      } else if (!Matches.unitHasNotMoved().match(u)) {
         result.addDisallowedUnit("Must Not Have Previously Moved Airborne Forces", u);
       } else if (Matches.UnitIsAirborne.match(u)) {
         result.addDisallowedUnit("Cannot Move Units Already Airborne", u);
@@ -292,7 +292,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
 
   private static Match<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
     return Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
-        Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
+        Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved(),
         Matches.UnitIsAirborne.invert());
   }
 

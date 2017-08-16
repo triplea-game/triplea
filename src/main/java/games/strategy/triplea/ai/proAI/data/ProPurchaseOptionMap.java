@@ -89,7 +89,7 @@ public class ProPurchaseOptionMap {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         airOptions.add(ppo);
         ProLogger.debug("Air: " + ppo);
-      } else if (Matches.UnitTypeIsSea.match(unitType)) {
+      } else if (Matches.unitTypeIsSea().match(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         if (!ppo.isSub()) {
           seaDefenseOptions.add(ppo);

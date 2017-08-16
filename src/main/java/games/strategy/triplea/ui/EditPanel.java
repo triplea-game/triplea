@@ -358,7 +358,7 @@ class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         currentAction = this;
         setWidgetActivation();
-        final List<Unit> units = Match.getMatches(selectedUnits, Matches.UnitHasMoreThanOneHitPointTotal);
+        final List<Unit> units = Match.getMatches(selectedUnits, Matches.unitHasMoreThanOneHitPointTotal());
         if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
@@ -526,7 +526,7 @@ class EditPanel extends ActionPanel {
     data.acquireReadLock();
     try {
       final Set<UnitType> allUnitTypes = data.getUnitTypeList().getAllUnitTypes();
-      if (Match.anyMatch(allUnitTypes, Matches.UnitTypeHasMoreThanOneHitPointTotal)) {
+      if (Match.anyMatch(allUnitTypes, Matches.unitTypeHasMoreThanOneHitPointTotal())) {
         add(new JButton(changeUnitHitDamageAction));
       }
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)

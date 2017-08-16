@@ -272,7 +272,7 @@ public class WeakAI extends AbstractAI {
     firstSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(0);
     lastSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(amphibRoute.numberOfSteps() - 1);
     final Match<Unit> ownedAndNotMoved =
-        Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved, Transporting);
+        Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved(), Transporting);
     final List<Unit> unitsToMove = new ArrayList<>();
     final List<Unit> transports = firstSeaZoneOnAmphib.getUnits().getMatches(ownedAndNotMoved);
     if (transports.size() <= maxTrans) {
@@ -303,7 +303,7 @@ public class WeakAI extends AbstractAI {
       firstSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(1);
       lastSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(amphibRoute.numberOfSteps() - 1);
     }
-    final Match<Unit> ownedAndNotMoved = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved);
+    final Match<Unit> ownedAndNotMoved = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved());
     for (final Territory t : data.getMap()) {
       // move sea units to the capitol, unless they are loaded transports
       if (t.isWater()) {
@@ -411,7 +411,7 @@ public class WeakAI extends AbstractAI {
         continue;
       }
       final Match<Unit> ownedTransports =
-          Match.allOf(Matches.UnitCanTransport, Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved);
+          Match.allOf(Matches.UnitCanTransport, Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved());
       final Match<Territory> enemyTerritory =
           Match.allOf(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsLand,
               Matches.TerritoryIsNeutralButNotWater.invert(), Matches.TerritoryIsEmpty);
@@ -647,7 +647,7 @@ public class WeakAI extends AbstractAI {
             Matches.UnitCanMove,
             Matches.UnitIsNotInfrastructure,
             Matches.UnitCanNotMoveDuringCombatMove.invert(),
-            Matches.UnitIsNotSea);
+            Matches.unitIsNotSea());
         final Set<Territory> dontMoveFrom = new HashSet<>();
         // find our strength that we can attack with
         int ourStrength = 0;
@@ -747,7 +747,7 @@ public class WeakAI extends AbstractAI {
             continue;
           }
           final UnitType results = (UnitType) resourceOrUnit;
-          if (Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results)
+          if (Matches.unitTypeIsSea().match(results) || Matches.UnitTypeIsAir.match(results)
               || Matches.UnitTypeIsInfrastructure.match(results) || Matches.UnitTypeIsAAforAnything.match(results)
               || Matches.UnitTypeHasMaxBuildRestrictions.match(results)
               || Matches.UnitTypeConsumesUnitsOnCreation.match(results)
@@ -949,7 +949,7 @@ public class WeakAI extends AbstractAI {
         }
         final int transportCapacity = UnitAttachment.get(results).getTransportCapacity();
         // buy transports if we can be amphibious
-        if (Matches.UnitTypeIsSea.match(results)) {
+        if (Matches.unitTypeIsSea().match(results)) {
           if (!isAmphib || transportCapacity <= 0) {
             continue;
           }

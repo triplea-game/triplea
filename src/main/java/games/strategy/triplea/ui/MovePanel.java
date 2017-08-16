@@ -362,7 +362,7 @@ public class MovePanel extends AbstractMovePanel {
         movableBuilder.add(Matches.UnitIsNotLand);
       }
       if (!water) {
-        movableBuilder.add(Matches.UnitIsNotSea);
+        movableBuilder.add(Matches.unitIsNotSea());
       }
     }
     if (units != null && !units.isEmpty()) {
@@ -843,14 +843,14 @@ public class MovePanel extends AbstractMovePanel {
         // Load Bombers with paratroops
         if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))
             && TechAttachment.isAirTransportable(getCurrentPlayer())
-            && Match.anyMatch(selectedUnits, Match.allOf(Matches.UnitIsAirTransport, Matches.unitHasNotMoved))) {
+            && Match.anyMatch(selectedUnits, Match.allOf(Matches.UnitIsAirTransport, Matches.unitHasNotMoved()))) {
           final PlayerID player = getCurrentPlayer();
           // TODO Transporting allied units
           // Get the potential units to load
           final Match.CompositeBuilder<Unit> unitsToLoadMatchBuilder = Match.newCompositeBuilder(
               Matches.UnitIsAirTransportable,
               Matches.unitIsOwnedBy(player),
-              Matches.unitHasNotMoved);
+              Matches.unitHasNotMoved());
           final Collection<Unit> unitsToLoad =
               Match.getMatches(route.getStart().getUnits().getUnits(), unitsToLoadMatchBuilder.all());
           unitsToLoad.removeAll(selectedUnits);
@@ -861,7 +861,7 @@ public class MovePanel extends AbstractMovePanel {
           final Match.CompositeBuilder<Unit> candidateAirTransportsMatchBuilder = Match.newCompositeBuilder(
               Matches.UnitIsAirTransport,
               Matches.unitIsOwnedBy(player),
-              Matches.unitHasNotMoved,
+              Matches.unitHasNotMoved(),
               Matches.transportIsNotTransporting());
           final Collection<Unit> candidateAirTransports =
               Match.getMatches(t.getUnits().getMatches(unitsToMoveMatch), candidateAirTransportsMatchBuilder.all());

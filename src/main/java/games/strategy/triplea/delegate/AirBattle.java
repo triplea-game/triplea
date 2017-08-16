@@ -167,7 +167,7 @@ public class AirBattle extends AbstractBattle {
           final Match.CompositeBuilder<Unit> attackerSuicideBuilder = Match.newCompositeBuilder(
               Matches.UnitIsSuicide);
           if (m_isBombingRun) {
-            attackerSuicideBuilder.add(Matches.UnitIsNotStrategicBomber);
+            attackerSuicideBuilder.add(Matches.unitIsNotStrategicBomber());
           }
           if (Match.anyMatch(m_attackingUnits, attackerSuicideBuilder.all())) {
             final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);

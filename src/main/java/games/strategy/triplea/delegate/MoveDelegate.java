@@ -402,7 +402,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final boolean repairOnlyOwn =
         Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData());
     final Match<Unit> damagedUnits =
-        Match.allOf(Matches.UnitHasMoreThanOneHitPointTotal, Matches.UnitHasTakenSomeDamage);
+        Match.allOf(Matches.unitHasMoreThanOneHitPointTotal(), Matches.unitHasTakenSomeDamage());
     final Match<Unit> damagedUnitsOwned = Match.allOf(damagedUnits, Matches.unitIsOwnedBy(player));
     final Map<Territory, Set<Unit>> damagedMap = new HashMap<>();
     final Iterator<Territory> iterTerritories = data.getMap().getTerritories().iterator();

@@ -761,7 +761,7 @@ class ProPurchaseAI {
       final List<ProPlaceTerritory> prioritizedLandTerritories, final ProPurchaseOptionMap purchaseOptions,
       final Map<Territory, Double> territoryValueMap) {
 
-    final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.UnitIsNotSea);
+    final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.unitIsNotSea());
     if (resourceTracker.isEmpty() && unplacedUnits.isEmpty()) {
       return;
     }
@@ -1068,7 +1068,7 @@ class ProPurchaseAI {
       units.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
       final List<Unit> myUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
       final int numMyTransports = Match.countMatches(myUnits, Matches.UnitIsTransport);
-      final int numSeaDefenders = Match.countMatches(units, Matches.UnitIsNotTransport);
+      final int numSeaDefenders = Match.countMatches(units, Matches.unitIsNotTransport());
 
       // Determine needed defense strength
       int needDefenders = 0;
@@ -1779,7 +1779,7 @@ class ProPurchaseAI {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final ProPurchaseOptionMap purchaseOptions) {
 
     ProLogger.info("Populate production rule map");
-    final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.UnitIsNotSea);
+    final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.unitIsNotSea());
     final IntegerMap<ProductionRule> purchaseMap = new IntegerMap<>();
     for (final ProPurchaseOption ppo : purchaseOptions.getAllOptions()) {
       int numUnits = 0;

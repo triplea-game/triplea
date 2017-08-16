@@ -82,7 +82,7 @@ public class ProBattleUtils {
     List<Unit> unitsThatCanFight =
         Match.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
     if (Properties.getTransportCasualtiesRestricted(data)) {
-      unitsThatCanFight = Match.getMatches(unitsThatCanFight, Matches.UnitIsTransportButNotCombatTransport.invert());
+      unitsThatCanFight = Match.getMatches(unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().invert());
     }
     final int myHitPoints = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
     final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);

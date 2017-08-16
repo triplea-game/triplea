@@ -501,8 +501,8 @@ public class BattleTracker implements Serializable {
           - Match.countMatches(arrivedUnits, Matches.UnitIsSubmerged);
       // If transports are restricted from controlling sea zones, subtract them
       final Match<Unit> transportsCanNotControl = Match.allOf(
-          Matches.UnitIsTransportAndNotDestroyer,
-          Matches.UnitIsTransportButNotCombatTransport);
+          Matches.unitIsTransportAndNotDestroyer(),
+          Matches.unitIsTransportButNotCombatTransport());
       if (!Properties.getTransportControlSeaZone(data)) {
         totalMatches -= Match.countMatches(arrivedUnits, transportsCanNotControl);
       }
