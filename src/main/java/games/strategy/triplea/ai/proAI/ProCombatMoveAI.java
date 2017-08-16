@@ -407,7 +407,7 @@ class ProCombatMoveAI {
 
       // Determine whether its worth trying to hold territory
       double totalValue = 0.0;
-      final List<Unit> nonAirAttackers = Match.getMatches(patd.getMaxUnits(), Matches.UnitIsNotAir);
+      final List<Unit> nonAirAttackers = Match.getMatches(patd.getMaxUnits(), Matches.unitIsNotAir());
       for (final Unit u : nonAirAttackers) {
         totalValue += territoryValueMap.get(ProData.unitTerritoryMap.get(u));
       }

@@ -748,7 +748,7 @@ public class WeakAI extends AbstractAI {
           }
           final UnitType results = (UnitType) resourceOrUnit;
           if (Matches.unitTypeIsSea().match(results) || Matches.UnitTypeIsAir.match(results)
-              || Matches.UnitTypeIsInfrastructure.match(results) || Matches.UnitTypeIsAAforAnything.match(results)
+              || Matches.unitTypeIsInfrastructure().match(results) || Matches.UnitTypeIsAAforAnything.match(results)
               || Matches.UnitTypeHasMaxBuildRestrictions.match(results)
               || Matches.UnitTypeConsumesUnitsOnCreation.match(results)
               || Matches.unitTypeIsStatic(player).match(results)) {
@@ -817,7 +817,7 @@ public class WeakAI extends AbstractAI {
         }
         final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(
             Match.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
-        if (Matches.UnitHasTakenSomeBombingUnitDamage.match(possibleFactoryNeedingRepair)) {
+        if (Matches.unitHasTakenSomeBombingUnitDamage().match(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }
         final TripleAUnit taUnit = (TripleAUnit) possibleFactoryNeedingRepair;
@@ -941,7 +941,7 @@ public class WeakAI extends AbstractAI {
           continue;
         }
         final UnitType results = (UnitType) resourceOrUnit;
-        if (Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsInfrastructure.match(results)
+        if (Matches.UnitTypeIsAir.match(results) || Matches.unitTypeIsInfrastructure().match(results)
             || Matches.UnitTypeIsAAforAnything.match(results) || Matches.UnitTypeHasMaxBuildRestrictions.match(results)
             || Matches.UnitTypeConsumesUnitsOnCreation.match(results)
             || Matches.unitTypeIsStatic(player).match(results)) {

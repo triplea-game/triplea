@@ -79,7 +79,7 @@ public class WW2V3Year42Test {
     when(dummyPlayer.shouldBomberBomb(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     // remove the russian units
-    removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.UnitCanBeDamaged.invert()));
+    removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.unitCanBeDamaged().invert()));
     // move the bomber to attack
     move(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber), new Route(germany, sz5, karrelia));
     // move an infantry to invade

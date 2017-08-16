@@ -103,7 +103,7 @@ public class MoveValidator {
     // dont let the user move out of a battle zone
     // the exception is air units and unloading units into a battle zone
     if (AbstractMoveDelegate.getBattleTracker(data).hasPendingBattle(route.getStart(), false)
-        && Match.anyMatch(units, Matches.UnitIsNotAir)) {
+        && Match.anyMatch(units, Matches.unitIsNotAir())) {
       // if the units did not move into the territory, then they can move out
       // this will happen if there is a submerged sub in the area, and
       // a different unit moved into the sea zone setting up a battle
@@ -283,7 +283,7 @@ public class MoveValidator {
           && (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsAir))) {
         return result.setErrorReturnResult("Cannot blitz out of a battle further into enemy territory");
       }
-      for (final Unit u : Match.getMatches(units, Match.allOf(Matches.UnitCanBlitz.invert(), Matches.UnitIsNotAir))) {
+      for (final Unit u : Match.getMatches(units, Match.allOf(Matches.UnitCanBlitz.invert(), Matches.unitIsNotAir()))) {
         result.addDisallowedUnit("Not all units can blitz out of empty enemy territory", u);
       }
     }
@@ -730,7 +730,7 @@ public class MoveValidator {
   private static int getMechanizedSupportAvail(final Collection<Unit> units, final PlayerID player) {
     int mechanizedSupportAvailable = 0;
     if (TechAttachment.isMechanizedInfantry(player)) {
-      final Match<Unit> transportLand = Match.allOf(Matches.UnitIsLandTransport, Matches.unitIsOwnedBy(player));
+      final Match<Unit> transportLand = Match.allOf(Matches.unitIsLandTransport(), Matches.unitIsOwnedBy(player));
       mechanizedSupportAvailable = Match.countMatches(units, transportLand);
     }
     return mechanizedSupportAvailable;

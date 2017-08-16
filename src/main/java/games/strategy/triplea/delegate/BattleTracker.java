@@ -386,14 +386,14 @@ public class BattleTracker implements Serializable {
     final GameData data = bridge.getData();
     final Collection<Unit> canConquer = Match.getMatches(units,
         Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).invert());
-    if (Match.noneMatch(canConquer, Matches.UnitIsNotAir)) {
+    if (Match.noneMatch(canConquer, Matches.unitIsNotAir())) {
       return;
     }
     final Collection<Unit> presentFromStartTilEnd = new ArrayList<>(canConquer);
     if (unitsNotUnloadedTilEndOfRoute != null) {
       presentFromStartTilEnd.removeAll(unitsNotUnloadedTilEndOfRoute);
     }
-    final boolean canConquerMiddleSteps = Match.anyMatch(presentFromStartTilEnd, Matches.UnitIsNotAir);
+    final boolean canConquerMiddleSteps = Match.anyMatch(presentFromStartTilEnd, Matches.unitIsNotAir());
     final boolean scramblingEnabled = Properties.getScramble_Rules_In_Effect(data);
     final Match<Territory> conquerable = Match.allOf(
         Matches.territoryIsEmptyOfCombatUnits(data, id),
@@ -687,7 +687,7 @@ public class BattleTracker implements Serializable {
     // Remove any bombing raids against captured territory
     // TODO: see if necessary
     if (Match.anyMatch(territory.getUnits().getUnits(),
-        Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.UnitCanBeDamaged))) {
+        Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.unitCanBeDamaged()))) {
       final IBattle bombingBattle = getPendingBattle(territory, true, null);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -772,7 +772,7 @@ public class BattleTracker implements Serializable {
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
     final Match<Unit> enemyToBeDestroyed = Match.allOf(Matches.enemyUnit(id, data),
-        Matches.UnitIsDisabled, Matches.UnitIsInfrastructure.invert());
+        Matches.unitIsDisabled(), Matches.UnitIsInfrastructure.invert());
     final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
     if (!destroyed.isEmpty()) {
       final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);

@@ -67,7 +67,8 @@ public class ProPurchaseOptionMap {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
         ProLogger.debug("Special: " + ppo);
-      } else if (Matches.UnitTypeCanProduceUnits.match(unitType) && Matches.UnitTypeIsInfrastructure.match(unitType)) {
+      } else if (Matches.UnitTypeCanProduceUnits.match(unitType)
+          && Matches.unitTypeIsInfrastructure().match(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         factoryOptions.add(ppo);
         ProLogger.debug("Factory: " + ppo);

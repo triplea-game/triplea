@@ -980,8 +980,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       for (final UnitType ut : requiredUnits) {
         final int requiredNumber = requiredUnitsMap.getInt(ut);
         final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = Match.allOf(
-            Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsOfType(ut),
-            Matches.UnitHasNotTakenAnyBombingUnitDamage, Matches.unitHasNotTakenAnyDamage(), Matches.UnitIsNotDisabled);
+            Matches.unitIsOwnedBy(unit.getOwner()),
+            Matches.unitIsOfType(ut),
+            Matches.unitHasNotTakenAnyBombingUnitDamage(),
+            Matches.unitHasNotTakenAnyDamage(),
+            Matches.unitIsNotDisabled());
         final Collection<Unit> unitsBeingRemoved =
             Match.getNMatches(unitsAtStartOfTurnInTo, requiredNumber, unitIsOwnedByAndOfTypeAndNotDamaged);
         unitsAtStartOfTurnInTo.removeAll(unitsBeingRemoved);

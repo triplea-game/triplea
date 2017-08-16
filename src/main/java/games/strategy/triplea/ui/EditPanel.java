@@ -405,7 +405,7 @@ class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         currentAction = this;
         setWidgetActivation();
-        final List<Unit> units = Match.getMatches(selectedUnits, Matches.UnitCanBeDamaged);
+        final List<Unit> units = Match.getMatches(selectedUnits, Matches.unitCanBeDamaged());
         if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
@@ -530,7 +530,7 @@ class EditPanel extends ActionPanel {
         add(new JButton(changeUnitHitDamageAction));
       }
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
-          && Match.anyMatch(allUnitTypes, Matches.UnitTypeCanBeDamaged)) {
+          && Match.anyMatch(allUnitTypes, Matches.unitTypeCanBeDamaged())) {
         add(new JButton(changeUnitBombingDamageAction));
       }
     } finally {

@@ -88,7 +88,7 @@ class ProPurchaseAI {
         }
         final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(
             Match.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
-        if (Matches.UnitHasTakenSomeBombingUnitDamage.match(possibleFactoryNeedingRepair)) {
+        if (Matches.unitHasTakenSomeBombingUnitDamage().match(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }
       }

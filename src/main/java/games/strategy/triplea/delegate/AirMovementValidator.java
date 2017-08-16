@@ -519,7 +519,7 @@ public class AirMovementValidator {
   private static List<Unit> getAirUnitsToValidate(final Collection<Unit> units, final Route route,
       final PlayerID player) {
     final Match<Unit> ownedAirMatch =
-        Match.allOf(Matches.UnitIsAir, Matches.unitOwnedBy(player), Matches.UnitIsKamikaze.invert());
+        Match.allOf(Matches.UnitIsAir, Matches.unitOwnedBy(player), Matches.unitIsKamikaze().invert());
     final List<Unit> ownedAir = new ArrayList<>();
     ownedAir.addAll(Match.getMatches(route.getEnd().getUnits().getUnits(), ownedAirMatch));
     ownedAir.addAll(Match.getMatches(units, ownedAirMatch));

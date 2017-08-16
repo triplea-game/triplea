@@ -263,7 +263,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     addDependentUnits(dependencies);
     // mark units with no movement
     // for all but air
-    Collection<Unit> nonAir = Match.getMatches(attackingUnits, Matches.UnitIsNotAir);
+    Collection<Unit> nonAir = Match.getMatches(attackingUnits, Matches.unitIsNotAir());
     // we dont want to change the movement of transported land units if this is a sea battle
     // so restrict non air to remove land units
     if (m_battleSite.isWater()) {
@@ -505,11 +505,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         steps.add(NAVAL_BOMBARDMENT);
         steps.add(SELECT_NAVAL_BOMBARDMENT_CASUALTIES);
       }
-      if (Match.anyMatch(m_attackingUnits, Matches.UnitIsSuicide)) {
+      if (Match.anyMatch(m_attackingUnits, Matches.unitIsSuicide())) {
         steps.add(SUICIDE_ATTACK);
         steps.add(m_defender.getName() + SELECT_CASUALTIES_SUICIDE);
       }
-      if (Match.anyMatch(m_defendingUnits, Matches.UnitIsSuicide) && !isDefendingSuicideAndMunitionUnitsDoNotFire()) {
+      if (Match.anyMatch(m_defendingUnits, Matches.unitIsSuicide()) && !isDefendingSuicideAndMunitionUnitsDoNotFire()) {
         steps.add(SUICIDE_DEFEND);
         steps.add(m_attacker.getName() + SELECT_CASUALTIES_SUICIDE);
       }
@@ -1614,7 +1614,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final IDelegateBridge bridge) {
     retreating.addAll(getDependentUnits(retreating));
     // our own air units dont retreat with land units
-    final Match<Unit> notMyAir = Match.anyOf(Matches.UnitIsNotAir, Matches.unitIsOwnedBy(m_attacker).invert());
+    final Match<Unit> notMyAir = Match.anyOf(Matches.unitIsNotAir(), Matches.unitIsOwnedBy(m_attacker).invert());
     retreating = Match.getMatches(retreating, notMyAir);
     final String transcriptText;
     // in WW2V1, defending subs can retreat so show owner
@@ -1663,7 +1663,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // retreating.addAll(getDependentUnits(retreating));
     retreating.addAll(getDependentUnits(units));
     // our own air units dont retreat with land units
-    final Match<Unit> notMyAir = Match.anyOf(Matches.UnitIsNotAir, Matches.unitIsOwnedBy(m_attacker).invert());
+    final Match<Unit> notMyAir = Match.anyOf(Matches.unitIsNotAir(), Matches.unitIsOwnedBy(m_attacker).invert());
     final Collection<Unit> nonAirRetreating = Match.getMatches(retreating, notMyAir);
     final String transcriptText = MyFormatter.unitsToTextNoOwner(nonAirRetreating) + " retreated to " + to.getName();
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(nonAirRetreating));
@@ -1711,13 +1711,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private void checkSuicideUnits(final IDelegateBridge bridge) {
     if (isDefendingSuicideAndMunitionUnitsDoNotFire()) {
-      final List<Unit> deadUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
+      final List<Unit> deadUnits = Match.getMatches(m_attackingUnits, Matches.unitIsSuicide());
       getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
       remove(deadUnits, bridge, m_battleSite, false);
     } else {
       final List<Unit> deadUnits = new ArrayList<>();
-      deadUnits.addAll(Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide));
-      deadUnits.addAll(Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide));
+      deadUnits.addAll(Match.getMatches(m_defendingUnits, Matches.unitIsSuicide()));
+      deadUnits.addAll(Match.getMatches(m_attackingUnits, Matches.unitIsSuicide()));
       getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
       getDisplay(bridge).deadUnitNotification(m_battleID, m_defender, deadUnits, m_dependentUnits);
       remove(deadUnits, bridge, m_battleSite, null);
@@ -1936,7 +1936,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (firing.isEmpty()) {
       return;
     }
-    final Collection<Unit> attacked = Match.getMatches(m_defendingUnits, Matches.UnitIsNotAir);
+    final Collection<Unit> attacked = Match.getMatches(m_defendingUnits, Matches.unitIsNotAir());
     // if there are destroyers in the attacked units, we can return fire.
     final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
     allEnemyUnitsAliveOrWaitingToDie.addAll(m_defendingUnits);
@@ -1956,7 +1956,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (firing.isEmpty()) {
       return;
     }
-    final Collection<Unit> attacked = Match.getMatches(m_attackingUnits, Matches.UnitIsNotAir);
+    final Collection<Unit> attacked = Match.getMatches(m_attackingUnits, Matches.unitIsNotAir());
     if (attacked.isEmpty()) {
       return;
     }
@@ -2031,8 +2031,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // TODO: add a global toggle for returning fire (Veqryn)
     final Match<Unit> attackableUnits = Match.allOf(
         Matches.unitIsNotInfrastructureAndNotCapturedOnEntering(m_attacker, m_battleSite, m_data),
-        Matches.UnitIsSuicide.invert(), Matches.unitIsBeingTransported().invert());
-    final Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
+        Matches.unitIsSuicide().invert(), Matches.unitIsBeingTransported().invert());
+    final Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.unitIsSuicide());
     final Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
     // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't
     // attack subs with
@@ -2062,8 +2062,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // TODO: add a global toggle for returning fire (Veqryn)
     final Match<Unit> attackableUnits = Match.allOf(Matches.UnitIsNotInfrastructure,
-        Matches.UnitIsSuicide.invert(), Matches.unitIsBeingTransported().invert());
-    final Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
+        Matches.unitIsSuicide().invert(), Matches.unitIsBeingTransported().invert());
+    final Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.unitIsSuicide());
     final Collection<Unit> attackedAttackers = Match.getMatches(m_attackingUnits, attackableUnits);
     // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't
     // attack subs with
@@ -2316,7 +2316,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             (removeForNextRound ? m_round + 1 : m_round), true, doNotIncludeAa, doNotIncludeSeaBombardmentUnits)
             .invert()));
     // remove any disabled units from combat
-    unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsDisabled));
+    unitList.removeAll(Match.getMatches(unitList, Matches.unitIsDisabled()));
     // remove capturableOnEntering units (veqryn)
     unitList.removeAll(Match.getMatches(unitList,
         Matches.unitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));
@@ -2324,7 +2324,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     unitList.removeAll(Match.getMatches(unitList, Match.allOf(Matches.unitIsBeingTransported(),
         Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
     // remove any units that were in air combat (veqryn)
-    unitList.removeAll(Match.getMatches(unitList, Matches.UnitWasInAirBattle));
+    unitList.removeAll(Match.getMatches(unitList, Matches.unitWasInAirBattle()));
     return unitList;
   }
 
@@ -2518,7 +2518,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     // do we need to change ownership
-    if (Match.anyMatch(m_attackingUnits, Matches.UnitIsNotAir)) {
+    if (Match.anyMatch(m_attackingUnits, Matches.unitIsNotAir())) {
       if (Matches.isTerritoryEnemyAndNotUnownedWater(m_attacker, m_data).match(m_battleSite)) {
         m_battleTracker.addToConquered(m_battleSite);
       }
@@ -2585,7 +2585,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // TODO: why do we keep checking throughout this entire class if the units in m_defendingUnits are allied with
     // defender, and if the
     // units in m_attackingUnits are allied with the attacker? Does it really matter?
-    final Match<Unit> alliedDefendingAir = Match.allOf(Matches.UnitIsAir, Matches.UnitWasScrambled.invert());
+    final Match<Unit> alliedDefendingAir = Match.allOf(Matches.UnitIsAir, Matches.unitWasScrambled().invert());
     final Collection<Unit> defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
     // no planes, exit
     if (defendingAir.isEmpty()) {
