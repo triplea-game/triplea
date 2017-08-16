@@ -45,23 +45,14 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     }
   }
 
-  /**
-   * Subclasses that have chat override this.
-   */
   @Override
   public IChatPanel getChatPanel() {
     return null;
   }
 
-  /**
-   * Cleanup should occur here that occurs when we cancel.
-   */
   @Override
   public abstract void cancel();
 
-  /**
-   * Indicates we can start the game.
-   */
   @Override
   public abstract boolean canGameStart();
 
