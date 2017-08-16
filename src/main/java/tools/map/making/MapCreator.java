@@ -75,10 +75,13 @@ public class MapCreator extends JFrame {
 
   public static void main(final String[] args) {
     LookAndFeel.setupLookAndFeel();
-    final MapCreator creator = new MapCreator();
-    creator.setSize(800, 600);
-    creator.setLocationRelativeTo(null);
-    creator.setVisible(true);
+
+    SwingAction.invokeAndWait(() -> {
+      final MapCreator creator = new MapCreator();
+      creator.setSize(800, 600);
+      creator.setLocationRelativeTo(null);
+      creator.setVisible(true);
+    });
   }
 
   private MapCreator() {
