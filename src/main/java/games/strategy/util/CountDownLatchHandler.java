@@ -83,17 +83,8 @@ public class CountDownLatchHandler {
    * Releases the latch and removes it from the latches being handled by this handler.
    */
   public void removeShutdownLatch(final CountDownLatch latch) {
-    removeShutdownLatch(latch, false);
-  }
-
-  /**
-   * Removes the latch from the latches being handled by this handler, and will not release it if doNotRelease is true.
-   */
-  public void removeShutdownLatch(final CountDownLatch latch, final boolean doNotRelease) {
     synchronized (this) {
-      if (!doNotRelease) {
-        releaseLatch(latch);
-      }
+      releaseLatch(latch);
       latchesToCloseOnShutdown.remove(latch);
     }
   }
