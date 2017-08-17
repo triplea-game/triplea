@@ -25,22 +25,6 @@ public class CountDownLatchHandler {
   }
 
   /**
-   * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then interruptAll
-   * will release and
-   * remove all current latches.
-   * Otherwise does nothing.
-   */
-  public void interruptAll() {
-    if (releaseLatchOnInterrupt) {
-      synchronized (this) {
-        for (final CountDownLatch latch : latchesToCloseOnShutdown) {
-          removeShutdownLatch(latch);
-        }
-      }
-    }
-  }
-
-  /**
    * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then
    * interruptLatch will release and
    * remove the latch.
@@ -49,17 +33,6 @@ public class CountDownLatchHandler {
   public void interruptLatch(final CountDownLatch latch) {
     if (releaseLatchOnInterrupt) {
       removeShutdownLatch(latch);
-    }
-  }
-
-  /**
-   * Indicates this handler has been shut down.
-   *
-   * @return {@code true} if this handler has been shutdown; otherwise {@code false}.
-   */
-  public boolean isShutDown() {
-    synchronized (this) {
-      return isShutDown;
     }
   }
 
