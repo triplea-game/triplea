@@ -4,17 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * A handler for CountDownLatch's with methods to release latches being waited on from outside of their threads.
- * Is Thread Safe.
  */
+@ThreadSafe
 public class CountDownLatchHandler {
+  @GuardedBy("this")
   private final List<CountDownLatch> latchesToCloseOnShutdown = new ArrayList<>();
-  private volatile boolean isShutDown = false;
+
+  @GuardedBy("this")
+  private boolean isShutDown = false;
+
   private final boolean releaseLatchOnInterrupt;
 
   public CountDownLatchHandler(final boolean releaseLatchOnInterrupt) {
-    super();
     this.releaseLatchOnInterrupt = releaseLatchOnInterrupt;
   }
 
@@ -26,8 +32,10 @@ public class CountDownLatchHandler {
    */
   public void interruptAll() {
     if (releaseLatchOnInterrupt) {
-      for (final CountDownLatch latch : latchesToCloseOnShutdown) {
-        removeShutdownLatch(latch);
+      synchronized (this) {
+        for (final CountDownLatch latch : latchesToCloseOnShutdown) {
+          removeShutdownLatch(latch);
+        }
       }
     }
   }
@@ -44,8 +52,15 @@ public class CountDownLatchHandler {
     }
   }
 
+  /**
+   * Indicates this handler has been shut down.
+   *
+   * @return {@code true} if this handler has been shutdown; otherwise {@code false}.
+   */
   public boolean isShutDown() {
-    return isShutDown;
+    synchronized (this) {
+      return isShutDown;
+    }
   }
 
   /**
@@ -57,11 +72,12 @@ public class CountDownLatchHandler {
         return;
       }
       isShutDown = true;
+
+      for (final CountDownLatch latch : latchesToCloseOnShutdown) {
+        releaseLatch(latch);
+      }
+      latchesToCloseOnShutdown.clear();
     }
-    for (final CountDownLatch latch : latchesToCloseOnShutdown) {
-      releaseLatch(latch);
-    }
-    latchesToCloseOnShutdown.clear();
   }
 
   /**
