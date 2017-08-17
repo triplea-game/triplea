@@ -3,8 +3,7 @@ package games.strategy.persistence.serializable;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
-
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A fake non-serializable class used for testing the object serialization streams.

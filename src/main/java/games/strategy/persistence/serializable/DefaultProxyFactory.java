@@ -2,7 +2,7 @@ package games.strategy.persistence.serializable;
 
 import java.util.function.Function;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 @Immutable
 final class DefaultProxyFactory<T> implements ProxyFactory {

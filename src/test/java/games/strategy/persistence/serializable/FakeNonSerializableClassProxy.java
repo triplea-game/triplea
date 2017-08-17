@@ -2,7 +2,7 @@ package games.strategy.persistence.serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A serializable proxy for the {@code FakeNonSerializableClass} class.
