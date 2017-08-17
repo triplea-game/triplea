@@ -4,12 +4,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Map;
 
+import javax.annotation.concurrent.Immutable;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.Resource;
 import games.strategy.persistence.serializable.Proxy;
 import games.strategy.persistence.serializable.ProxyFactory;
-import net.jcip.annotations.Immutable;
 
 /**
  * A serializable proxy for the {@link Resource} class.

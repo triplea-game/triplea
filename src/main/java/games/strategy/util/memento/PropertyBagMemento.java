@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import net.jcip.annotations.Immutable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Implementation of {@link Memento} that represents the originator state as a collection of name-value pairs.

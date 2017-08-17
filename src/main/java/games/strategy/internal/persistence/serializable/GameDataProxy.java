@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.InvalidObjectException;
 
+import javax.annotation.concurrent.Immutable;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataMemento;
 import games.strategy.persistence.serializable.Proxy;
@@ -11,7 +13,6 @@ import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.memento.Memento;
 import games.strategy.util.memento.MementoExportException;
 import games.strategy.util.memento.MementoImportException;
-import net.jcip.annotations.Immutable;
 
 /**
  * A serializable proxy for the {@link GameData} class.
