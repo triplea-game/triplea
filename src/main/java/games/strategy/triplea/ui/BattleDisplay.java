@@ -496,7 +496,7 @@ public class BattleDisplay extends JPanel {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This method should not be run in the event dispatch thread");
     }
-    final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<>();
+    final AtomicReference<CasualtyDetails> casualtyDetails = new AtomicReference<>(new CasualtyDetails());
     final CountDownLatch continueLatch = new CountDownLatch(1);
     SwingUtilities.invokeLater(() -> {
       final boolean isEditMode = (dice == null);
