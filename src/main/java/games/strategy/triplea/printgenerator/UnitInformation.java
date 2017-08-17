@@ -65,7 +65,7 @@ class UnitInformation {
             + (currentAttachment.getCanProduceUnits() == false ? "-" : "true") + ","
             + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine()) + ","
             + (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
-            + (Matches.UnitTypeIsAAforAnything.match(currentType) == false ? "-" : "true") + ","
+            + (Matches.unitTypeIsAaForAnything().match(currentType) == false ? "-" : "true") + ","
             + (currentAttachment.getIsAir() == false ? "-" : "true") + ","
             + (currentAttachment.getIsStrategicBomber() == false ? "-" : "true") + ","
             + (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + ","

@@ -117,7 +117,7 @@ final class ProTechAI {
           Matches.UnitIsSea,
           Matches.UnitCanMove);
       final Match<Unit> enemyTransportable = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
-          Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitCanMove);
+          Matches.unitCanBeTransported(), Matches.UnitIsNotAA, Matches.UnitCanMove);
       final Match<Unit> transport = Match.allOf(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> enemyFighterTerritories = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;

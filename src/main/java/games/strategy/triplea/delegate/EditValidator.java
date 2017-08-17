@@ -78,7 +78,7 @@ class EditValidator {
               Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
-          if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.UnitCanBeTransported)) {
+          if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
@@ -138,13 +138,13 @@ class EditValidator {
       return result;
     }
     // if transport selected, all transported units must be deleted too
-    for (final Unit unit : Match.getMatches(units, Matches.UnitCanTransport)) {
+    for (final Unit unit : Match.getMatches(units, Matches.unitCanTransport())) {
       if (!units.containsAll(TransportTracker.transporting(unit))) {
         return "Can't remove transport without removing transported units";
       }
     }
     // if transported units selected, transport must be deleted too
-    for (final Unit unit : Match.getMatches(units, Matches.UnitCanBeTransported)) {
+    for (final Unit unit : Match.getMatches(units, Matches.unitCanBeTransported())) {
       final Unit transport = TransportTracker.transportedBy(unit);
       if (transport != null && !units.contains(transport)) {
         return "Can't remove transported units without removing transport";

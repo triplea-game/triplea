@@ -359,7 +359,7 @@ class ProNonCombatMoveAI {
       patd.setMaxEnemyUnits(new ArrayList<>(enemyAttackingUnits));
       patd.setMaxEnemyBombardUnits(enemyAttackOptions.getMax(t).getMaxBombardUnits());
       final List<Unit> minDefendingUnitsAndNotAa =
-          Match.getMatches(patd.getCantMoveUnits(), Matches.UnitIsAAforAnything.invert());
+          Match.getMatches(patd.getCantMoveUnits(), Matches.unitIsAaForAnything().invert());
       final ProBattleResult minResult = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits),
           minDefendingUnitsAndNotAa, enemyAttackOptions.getMax(t).getMaxBombardUnits());
       patd.setMinBattleResult(minResult);
@@ -375,7 +375,8 @@ class ProNonCombatMoveAI {
       final Set<Unit> defendingUnits = new HashSet<>(patd.getMaxUnits());
       defendingUnits.addAll(patd.getMaxAmphibUnits());
       defendingUnits.addAll(patd.getCantMoveUnits());
-      final List<Unit> defendingUnitsAndNotAa = Match.getMatches(defendingUnits, Matches.UnitIsAAforAnything.invert());
+      final List<Unit> defendingUnitsAndNotAa =
+          Match.getMatches(defendingUnits, Matches.unitIsAaForAnything().invert());
       final ProBattleResult result = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits),
           defendingUnitsAndNotAa, enemyAttackOptions.getMax(t).getMaxBombardUnits());
       int isFactory = 0;
@@ -1927,7 +1928,7 @@ class ProNonCombatMoveAI {
       final Territory currentTerritory = unitTerritoryMap.get(u);
 
       // Only check AA units whose territory can't be held and don't have factories
-      if (Matches.UnitIsAAforAnything.match(u) && !moveMap.get(currentTerritory).isCanHold()
+      if (Matches.unitIsAaForAnything().match(u) && !moveMap.get(currentTerritory).isCanHold()
           && !ProMatches.territoryHasInfraFactoryAndIsLand().match(currentTerritory)) {
         Territory maxValueTerritory = null;
         double maxValue = 0;
@@ -1948,7 +1949,7 @@ class ProNonCombatMoveAI {
           // Find value and try to move to territory that doesn't already have AA
           final List<Unit> units = new ArrayList<>(moveMap.get(t).getCantMoveUnits());
           units.addAll(moveMap.get(t).getUnits());
-          final boolean hasAa = Match.anyMatch(units, Matches.UnitIsAAforAnything);
+          final boolean hasAa = Match.anyMatch(units, Matches.unitIsAaForAnything());
           double value = moveMap.get(t).getValue();
           if (hasAa) {
             value *= 0.01;

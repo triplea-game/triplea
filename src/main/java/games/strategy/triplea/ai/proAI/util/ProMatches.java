@@ -352,7 +352,7 @@ public class ProMatches {
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedAir(final PlayerID player, final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.UnitCanNotMoveDuringCombatMove.match(u)) {
+      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.UnitIsAir);
@@ -362,7 +362,7 @@ public class ProMatches {
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedLand(final PlayerID player, final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.UnitCanNotMoveDuringCombatMove.match(u)) {
+      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.UnitIsLand,
@@ -373,7 +373,7 @@ public class ProMatches {
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedSea(final PlayerID player, final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.UnitCanNotMoveDuringCombatMove.match(u)) {
+      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.UnitIsSea);
@@ -383,7 +383,7 @@ public class ProMatches {
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedTransport(final PlayerID player, final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.UnitCanNotMoveDuringCombatMove.match(u)) {
+      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.UnitIsTransport);
@@ -393,7 +393,7 @@ public class ProMatches {
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedBombard(final PlayerID player) {
     return Match.of(u -> {
-      if (Matches.UnitCanNotMoveDuringCombatMove.match(u)) {
+      if (Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitCanBombard(player));
@@ -403,7 +403,7 @@ public class ProMatches {
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedNonCombatInfra(final PlayerID player) {
     return Match.allOf(unitCanBeMovedAndIsOwned(player),
-        Matches.UnitCanNotMoveDuringCombatMove, Matches.UnitIsInfrastructure);
+        Matches.unitCanNotMoveDuringCombatMove(), Matches.UnitIsInfrastructure);
   }
 
   public static Match<Unit> unitCantBeMovedAndIsAlliedDefender(final PlayerID player, final GameData data,
@@ -445,7 +445,7 @@ public class ProMatches {
   }
 
   public static Match<Unit> unitIsEnemyAndNotAA(final PlayerID player, final GameData data) {
-    return Match.allOf(Matches.enemyUnit(player, data), Matches.UnitIsAAforAnything.invert());
+    return Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsAaForAnything().invert());
   }
 
   public static Match<Unit> unitIsEnemyAndNotInfa(final PlayerID player, final GameData data) {
@@ -493,18 +493,18 @@ public class ProMatches {
   }
 
   public static Match<Unit> unitIsOwnedTransportableUnit(final PlayerID player) {
-    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitCanMove);
+    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCanBeTransported(), Matches.UnitCanMove);
   }
 
   public static Match<Unit> unitIsOwnedCombatTransportableUnit(final PlayerID player) {
-    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported,
-        Matches.UnitCanNotMoveDuringCombatMove.invert(), Matches.UnitCanMove);
+    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCanBeTransported(),
+        Matches.unitCanNotMoveDuringCombatMove().invert(), Matches.UnitCanMove);
   }
 
   public static Match<Unit> unitIsOwnedTransportableUnitAndCanBeLoaded(final PlayerID player,
       final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.UnitCanNotMoveDuringCombatMove.match(u)) {
+      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitIsOwnedTransportableUnit(player), Matches.unitHasNotMoved(),

@@ -300,7 +300,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
     m_defendingAA = Match.getMatches(canFire, Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed,
-        m_attacker, Matches.UnitIsAAforCombatOnly, m_round, true, m_data));
+        m_attacker, Matches.unitIsAaForCombatOnly(), m_round, true, m_data));
     // comes ordered alphabetically
     m_defendingAAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
     // stacks are backwards
@@ -313,7 +313,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     canFire.addAll(m_attackingWaitingToDie);
     // no airborne targets for offensive aa
     m_offensiveAA = Match.getMatches(canFire, Matches.unitIsAaThatCanFire(m_defendingUnits,
-        new HashMap<>(), m_defender, Matches.UnitIsAAforCombatOnly, m_round, false, m_data));
+        new HashMap<>(), m_defender, Matches.unitIsAaForCombatOnly(), m_round, false, m_data));
     // comes ordered alphabetically
     m_offensiveAAtypes = UnitAttachment.getAllOfTypeAAs(m_offensiveAA);
     // stacks are backwards
@@ -432,7 +432,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       // If any attacking transports are in the battle, set their status to later restrict load/unload
       if (current.equals(m_attacker)) {
         final CompositeChange change = new CompositeChange();
-        final Collection<Unit> transports = Match.getMatches(attackingUnits, Matches.UnitCanTransport);
+        final Collection<Unit> transports = Match.getMatches(attackingUnits, Matches.unitCanTransport());
         final Iterator<Unit> attackTranIter = transports.iterator();
         while (attackTranIter.hasNext()) {
           change.add(ChangeFactory.unitPropertyChange(attackTranIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
@@ -1401,7 +1401,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     } else if (planes) {
       units = Match.getMatches(units, Matches.UnitIsAir);
     } else if (partialAmphib) {
-      units = Match.getMatches(units, Matches.UnitWasNotAmphibious);
+      units = Match.getMatches(units, Matches.unitWasNotAmphibious());
     }
     if (Match.anyMatch(units, Matches.UnitIsSea)) {
       availableTerritories = Match.getMatches(availableTerritories, Matches.TerritoryIsWater);
@@ -1481,7 +1481,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         }
         // remove amphib units from those retreating
-        units = Match.getMatches(units, Matches.UnitWasNotAmphibious);
+        units = Match.getMatches(units, Matches.unitWasNotAmphibious());
         retreatUnitsAndPlanes(units, retreatTo, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " retreats non-amphibious units";
         getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
@@ -1560,7 +1560,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   void reLoadTransports(final Collection<Unit> units, final CompositeChange change) {
-    final Collection<Unit> transports = Match.getMatches(units, Matches.UnitCanTransport);
+    final Collection<Unit> transports = Match.getMatches(units, Matches.unitCanTransport());
     // Put units back on their transports
     for (final Unit transport : transports) {
       final Collection<Unit> unloaded = TransportTracker.unloaded(transport);
@@ -2390,7 +2390,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return Collections.emptyList();
     }
     final Collection<Unit> dependents = new ArrayList<>();
-    if (Match.anyMatch(targets, Matches.UnitCanTransport)) {
+    if (Match.anyMatch(targets, Matches.unitCanTransport())) {
       // just worry about transports
       for (final Unit target : targets) {
         dependents.addAll(TransportTracker.transportingAndUnloaded(target));
@@ -2535,7 +2535,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if (!dependents.isEmpty()) {
         for (final Unit unit : dependents) {
           // clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
-          if (Matches.UnitWasUnloadedThisTurn.match(unit)) {
+          if (Matches.unitWasUnloadedThisTurn().match(unit)) {
             change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
           }
         }

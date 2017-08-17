@@ -339,7 +339,7 @@ public class MovePanel extends AbstractMovePanel {
       movableBuilder.add(Matches.UnitCanMove);
     }
     if (!nonCombat) {
-      movableBuilder.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
+      movableBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());
     }
     if (route != null) {
       final Match<Unit> enoughMovement = Match.of(u -> {
@@ -1077,7 +1077,7 @@ public class MovePanel extends AbstractMovePanel {
           Matches.unitIsOwnedBy(getCurrentPlayer()),
           Matches.UnitIsLand);
       if (nonCombat) {
-        unloadableBuilder.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
+        unloadableBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());
       }
       return unloadableBuilder.all();
     }
@@ -1449,7 +1449,7 @@ public class MovePanel extends AbstractMovePanel {
         Matches.unitHasMovementLeft);
     if (!nonCombat) {
       // if not non combat, cannot move aa units
-      moveableUnitOwnedByMeBuilder.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
+      moveableUnitOwnedByMeBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());
     }
     final int size = allTerritories.size();
     // new focused index is 1 greater
@@ -1498,7 +1498,7 @@ public class MovePanel extends AbstractMovePanel {
         Matches.unitHasMovementLeft);
     if (!nonCombat) {
       // if not non combat, cannot move aa units
-      moveableUnitOwnedByMeBuilder.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
+      moveableUnitOwnedByMeBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());
     }
     final Map<Territory, List<Unit>> highlight = new HashMap<>();
     for (final Territory t : allTerritories) {

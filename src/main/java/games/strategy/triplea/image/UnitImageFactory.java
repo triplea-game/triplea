@@ -211,10 +211,10 @@ public class UnitImageFactory {
         if (TechTracker.hasRocket(id) && UnitAttachment.get(type).getIsRocket()) {
           name = new StringBuilder("rockets");
         }
-        if (TechTracker.hasAARadar(id) && Matches.UnitTypeIsAAforAnything.match(type)) {
+        if (TechTracker.hasAARadar(id) && Matches.unitTypeIsAaForAnything().match(type)) {
           name.append("_r");
         }
-      } else if (UnitAttachment.get(type).getIsRocket() && Matches.UnitTypeIsAAforAnything.match(type)) {
+      } else if (UnitAttachment.get(type).getIsRocket() && Matches.unitTypeIsAaForAnything().match(type)) {
         if (TechTracker.hasRocket(id)) {
           name.append("_rockets");
         }
@@ -225,7 +225,7 @@ public class UnitImageFactory {
         if (TechTracker.hasRocket(id)) {
           name.append("_rockets");
         }
-      } else if (Matches.UnitTypeIsAAforAnything.match(type)) {
+      } else if (Matches.unitTypeIsAaForAnything().match(type)) {
         if (TechTracker.hasAARadar(id)) {
           name.append("_r");
         }

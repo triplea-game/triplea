@@ -108,8 +108,8 @@ public class TransportUtils {
   public static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
       final Collection<Unit> transports) {
 
-    final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
-    final Collection<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+    final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.unitCanBeTransported());
+    final Collection<Unit> canTransport = Match.getMatches(transports, Matches.unitCanTransport());
 
     final Map<Unit, Unit> mapping = new HashMap<>();
     for (final Unit currentTransported : canBeTransported) {
@@ -193,7 +193,7 @@ public class TransportUtils {
       final int movementLeft2 = TripleAUnit.get(o2).getMovementLeft();
       return Integer.compare(movementLeft2, movementLeft1);
     };
-    final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+    final List<Unit> canTransport = Match.getMatches(transports, Matches.unitCanTransport());
     Collections.sort(canTransport, transportCapacityComparator);
     return canTransport;
   }
@@ -204,7 +204,7 @@ public class TransportUtils {
       final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
       return Integer.compare(cost2, cost1);
     };
-    final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
+    final List<Unit> canBeTransported = Match.getMatches(units, Matches.unitCanBeTransported());
     Collections.sort(canBeTransported, transportCostComparator);
     return canBeTransported;
   }
@@ -239,8 +239,8 @@ public class TransportUtils {
 
   private static Map<Unit, List<Unit>> findTransportsThatUnitsCouldUnloadFrom(final Collection<Unit> units,
       final Collection<Unit> transports) {
-    final List<Unit> canBeTransported = Match.getMatches(units, Matches.UnitCanBeTransported);
-    final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
+    final List<Unit> canBeTransported = Match.getMatches(units, Matches.unitCanBeTransported());
+    final List<Unit> canTransport = Match.getMatches(transports, Matches.unitCanTransport());
     final Map<Unit, List<Unit>> result = new LinkedHashMap<>();
     for (final Unit unit : canBeTransported) {
       final List<Unit> transportOptions = new ArrayList<>();
