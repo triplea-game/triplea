@@ -105,7 +105,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (randomTerritories) {
         pos += hitRandom[i];
         i++;
-        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_currentPickingPlayer, data);
+        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_currentPickingPlayer, data);
         final List<Unit> units = new ArrayList<>(m_currentPickingPlayer.getUnits().getUnits());
         Collections.sort(units, new UnitCostComparator(costs));
         final Set<Unit> unitsToPlace = new HashSet<>();
@@ -252,7 +252,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     }
 
     public UnitCostComparator(final PlayerID player, final GameData data) {
-      m_costs = TuvUtils.getCostsForTUV(player, data);
+      m_costs = TuvUtils.getCostsForTuv(player, data);
     }
 
     @Override

@@ -97,9 +97,9 @@ class UnitInformation {
         }
       }
     } else {
-      if (TuvUtils.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
+      if (TuvUtils.getCostsForTuv(data.getPlayerList().getPlayers().iterator().next(), data)
           .getInt(type) > 0) {
-        return TuvUtils.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
+        return TuvUtils.getCostsForTuv(data.getPlayerList().getPlayers().iterator().next(), data)
             .getInt(type);
       }
     }

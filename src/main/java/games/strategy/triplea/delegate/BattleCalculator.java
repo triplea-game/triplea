@@ -508,7 +508,7 @@ public class BattleCalculator {
       return new CasualtyDetails(killed, Collections.emptyList(), true);
     }
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do it here.
-    final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(player, data);
+    final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
     final Tuple<CasualtyList, List<Unit>> defaultCasualtiesAndSortedTargets = getDefaultCasualties(targetsToPickFrom,
         hitsRemaining, defending, player, enemyUnits, amphibious, amphibiousLandAttackers,
         battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, true);

@@ -494,12 +494,12 @@ public class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(player, data);
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
       final Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
       int tuv = 0;
       for (final Territory place : data.getMap().getTerritories()) {
         final Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
-        tuv += TuvUtils.getTUV(owned, costs);
+        tuv += TuvUtils.getTuv(owned, costs);
       }
       return tuv;
     }

@@ -763,17 +763,17 @@ class OddsCalculatorPanel extends JPanel {
           Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
       attackerUnitsTotalNumber.setText("Units: " + attackers.size());
       defenderUnitsTotalNumber.setText("Units: " + defenders.size());
-      attackerUnitsTotalTUV.setText("TUV: " + TuvUtils.getTUV(attackers, getAttacker(),
-          TuvUtils.getCostsForTUV(getAttacker(), data), data));
-      defenderUnitsTotalTUV.setText("TUV: " + TuvUtils.getTUV(defenders, getDefender(),
-          TuvUtils.getCostsForTUV(getDefender(), data), data));
+      attackerUnitsTotalTUV.setText("TUV: " + TuvUtils.getTuv(attackers, getAttacker(),
+          TuvUtils.getCostsForTuv(getAttacker(), data), data));
+      defenderUnitsTotalTUV.setText("TUV: " + TuvUtils.getTuv(defenders, getDefender(),
+          TuvUtils.getCostsForTuv(getDefender(), data), data));
       final int attackHitPoints = BattleCalculator.getTotalHitpointsLeft(attackers);
       final int defenseHitPoints = BattleCalculator.getTotalHitpointsLeft(defenders);
       attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);
       defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
       final boolean isAmphibiousBattle = isAmphibiousBattle();
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(getAttacker(), data);
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       Collections.sort(attackers, new UnitBattleComparator(false, costs, territoryEffects, data, false, false));
       Collections.reverse(attackers);
       final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, defenders,
@@ -899,7 +899,7 @@ class OddsCalculatorPanel extends JPanel {
       final IntegerMap<UnitType> costs;
       try {
         data.acquireReadLock();
-        costs = TuvUtils.getCostsForTUV(id, data);
+        costs = TuvUtils.getCostsForTuv(id, data);
       } finally {
         data.releaseReadLock();
       }

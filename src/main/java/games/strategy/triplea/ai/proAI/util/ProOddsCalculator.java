@@ -144,14 +144,14 @@ public class ProOddsCalculator {
         Match.getMatches(defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, false, true, true));
     double tuvSwing = results.getAverageTUVswing(attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
     if (Matches.TerritoryIsNeutralButNotWater.match(t)) { // Set TUV swing for neutrals
-      final double attackingUnitValue = TuvUtils.getTUV(mainCombatAttackers, ProData.unitValueMap);
+      final double attackingUnitValue = TuvUtils.getTuv(mainCombatAttackers, ProData.unitValueMap);
       final double remainingUnitValue =
           results.getAverageTUVofUnitsLeftOver(ProData.unitValueMap, ProData.unitValueMap).getFirst();
       tuvSwing = remainingUnitValue - attackingUnitValue;
     }
     final List<Unit> defendingTransportedUnits = Match.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) { // Add TUV swing for transported units
-      final double transportedUnitValue = TuvUtils.getTUV(defendingTransportedUnits, ProData.unitValueMap);
+      final double transportedUnitValue = TuvUtils.getTuv(defendingTransportedUnits, ProData.unitValueMap);
       tuvSwing += transportedUnitValue * winPercentage / 100;
     }
 
