@@ -269,6 +269,7 @@ check {
 
 checkstyle {
     toolVersion = "7.6.1"
+    configProperties = [samedir: "${rootDir}/config/checkstyle"]
 }
 
 checkstyleIntegTest {
