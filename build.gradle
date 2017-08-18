@@ -269,7 +269,7 @@ check {
 
 checkstyle {
     toolVersion = "7.6.1"
-    configProperties = [samedir: "${rootDir}/config/checkstyle"]
+    configProperties = [samedir: configFile.parent]
 }
 
 checkstyleIntegTest {
