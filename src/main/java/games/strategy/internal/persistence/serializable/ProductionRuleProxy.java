@@ -2,6 +2,8 @@ package games.strategy.internal.persistence.serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import javax.annotation.concurrent.Immutable;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
@@ -9,7 +11,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.persistence.serializable.Proxy;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.util.IntegerMap;
-import net.jcip.annotations.Immutable;
 
 /**
  * A serializable proxy for the {@link ProductionRule} class.
