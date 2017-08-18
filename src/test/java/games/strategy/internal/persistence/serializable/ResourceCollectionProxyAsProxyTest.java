@@ -1,7 +1,6 @@
 package games.strategy.internal.persistence.serializable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static games.strategy.engine.data.Matchers.equalToResourceCollection;
+import static games.strategy.engine.data.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -22,10 +21,7 @@ public final class ResourceCollectionProxyAsProxyTest extends AbstractProxyTestC
 
   @Override
   protected void assertPrincipalEquals(final ResourceCollection expected, final ResourceCollection actual) {
-    checkNotNull(expected);
-    checkNotNull(actual);
-
-    assertThat(actual, is(equalToResourceCollection(expected)));
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Override

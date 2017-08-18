@@ -3,7 +3,7 @@ package games.strategy.engine.data;
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
-import static games.strategy.engine.data.Matchers.equalToGameData;
+import static games.strategy.engine.data.Matchers.equalTo;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
@@ -29,7 +29,7 @@ public final class GameDataMementoTest {
     final Memento memento = mementoExporter.exportMemento(expected);
     final GameData actual = mementoImporter.importMemento(memento);
 
-    assertThat(actual, is(equalToGameData(expected)));
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test

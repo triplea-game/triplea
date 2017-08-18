@@ -1,7 +1,6 @@
 package games.strategy.internal.persistence.serializable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static games.strategy.engine.data.Matchers.equalToGameData;
+import static games.strategy.engine.data.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -20,10 +19,7 @@ public final class GameDataProxyAsProxyTest extends AbstractProxyTestCase<GameDa
 
   @Override
   protected void assertPrincipalEquals(final GameData expected, final GameData actual) {
-    checkNotNull(expected);
-    checkNotNull(actual);
-
-    assertThat(actual, is(equalToGameData(expected)));
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Override

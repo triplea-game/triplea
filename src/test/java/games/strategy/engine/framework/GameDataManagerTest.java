@@ -1,6 +1,6 @@
 package games.strategy.engine.framework;
 
-import static games.strategy.engine.data.Matchers.equalToGameData;
+import static games.strategy.engine.data.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -38,7 +38,7 @@ public class GameDataManagerTest {
     final byte[] bytes = saveGameInProxySerializationFormat(expected);
     final GameData actual = loadGameInProxySerializationFormat(bytes);
 
-    assertThat(actual, is(equalToGameData(expected)));
+    assertThat(actual, is(equalTo(expected)));
   }
 
   private static byte[] saveGameInProxySerializationFormat(final GameData gameData) throws Exception {

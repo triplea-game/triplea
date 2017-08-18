@@ -46,9 +46,6 @@ public abstract class AbstractProxyTestCase<T> {
    * @throws AssertionError If the two principals are not equal.
    */
   protected void assertPrincipalEquals(final T expected, final T actual) {
-    checkNotNull(expected);
-    checkNotNull(actual);
-
     assertThat(actual, is(expected));
   }
 
