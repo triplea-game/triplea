@@ -64,7 +64,7 @@ public class ProData {
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     myUnitTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     unitTerritoryMap = ProUtils.createUnitTerritoryMap();
-    unitValueMap = TuvUtils.getCostsForTUV(player, data);
+    unitValueMap = TuvUtils.getCostsForTuv(player, data);
     purchaseOptions = new ProPurchaseOptionMap(player, data);
     minCostPerHitPoint = getMinCostPerHitPoint(purchaseOptions.getLandOptions());
   }

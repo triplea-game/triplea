@@ -143,8 +143,8 @@ public class FinishedBattle extends AbstractBattle {
        * bridge.addChange(change);
        */
       if (m_attackingUnits.isEmpty()) {
-        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_attacker, m_data);
-        final int tuvLostAttacker = (withdrawn ? 0 : TuvUtils.getTUV(lost, m_attacker, costs, m_data));
+        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
+        final int tuvLostAttacker = (withdrawn ? 0 : TuvUtils.getTuv(lost, m_attacker, costs, m_data));
         m_attackerLostTUV += tuvLostAttacker;
         // scripted?
         m_whoWon = WhoWon.DEFENDER;

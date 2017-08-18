@@ -126,7 +126,7 @@ public class HelpMenu {
     try {
       gameData.acquireReadLock();
       final Map<PlayerID, Map<UnitType, ResourceCollection>> costs =
-          TuvUtils.getResourceCostsForTUV(gameData, true);
+          TuvUtils.getResourceCostsForTuv(gameData, true);
       final Map<PlayerID, List<UnitType>> playerUnitTypes =
           UnitType.getAllPlayerUnitsWithImages(gameData, iuiContext, true);
       for (final Map.Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {

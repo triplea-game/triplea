@@ -246,8 +246,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           m_attackingUnits.removeAll(suicideUnits);
           final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
           final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
-          final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_attacker, m_data);
-          final int tuvLostAttacker = TuvUtils.getTUV(suicideUnits, m_attacker, costs, m_data);
+          final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
+          final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, costs, m_data);
           m_attackerLostTUV += tuvLostAttacker;
           bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
           bridge.addChange(removeSuicide);
@@ -262,8 +262,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             // m_targets.removeAll(unitsCanDie);
             final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
             final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + m_battleSite.getName();
-            final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_defender, m_data);
-            final int tuvLostDefender = TuvUtils.getTUV(unitsCanDie, m_defender, costs, m_data);
+            final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_defender, m_data);
+            final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, m_defender, costs, m_data);
             m_defenderLostTUV += tuvLostDefender;
             bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
             bridge.addChange(removeDead);
@@ -527,8 +527,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (!killed.isEmpty()) {
       bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(killed) + " killed by " + currentTypeAa,
           new ArrayList<>(killed));
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTUV(m_attacker, m_data);
-      final int tuvLostAttacker = TuvUtils.getTUV(killed, m_attacker, costs, m_data);
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
+      final int tuvLostAttacker = TuvUtils.getTuv(killed, m_attacker, costs, m_data);
       m_attackerLostTUV += tuvLostAttacker;
       // m_attackingUnits.removeAll(casualties);
       removeAttackers(killed, false);

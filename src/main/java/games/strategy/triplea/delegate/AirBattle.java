@@ -152,15 +152,15 @@ public class AirBattle extends AbstractBattle {
           if (!m_intercept) {
             return;
           }
-          final IntegerMap<UnitType> defenderCosts = TuvUtils.getCostsForTUV(m_defender, m_data);
-          final IntegerMap<UnitType> attackerCosts = TuvUtils.getCostsForTUV(m_attacker, m_data);
+          final IntegerMap<UnitType> defenderCosts = TuvUtils.getCostsForTuv(m_defender, m_data);
+          final IntegerMap<UnitType> attackerCosts = TuvUtils.getCostsForTuv(m_attacker, m_data);
           m_attackingUnits.removeAll(m_attackingWaitingToDie);
           remove(m_attackingWaitingToDie, bridge, m_battleSite);
           m_defendingUnits.removeAll(m_defendingWaitingToDie);
           remove(m_defendingWaitingToDie, bridge, m_battleSite);
-          int tuvLostAttacker = TuvUtils.getTUV(m_attackingWaitingToDie, m_attacker, attackerCosts, m_data);
+          int tuvLostAttacker = TuvUtils.getTuv(m_attackingWaitingToDie, m_attacker, attackerCosts, m_data);
           m_attackerLostTUV += tuvLostAttacker;
-          int tuvLostDefender = TuvUtils.getTUV(m_defendingWaitingToDie, m_defender, defenderCosts, m_data);
+          int tuvLostDefender = TuvUtils.getTuv(m_defendingWaitingToDie, m_defender, defenderCosts, m_data);
           m_defenderLostTUV += tuvLostDefender;
           m_attackingWaitingToDie.clear();
           m_defendingWaitingToDie.clear();
@@ -174,14 +174,14 @@ public class AirBattle extends AbstractBattle {
             final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.unitIsSuicide());
             m_attackingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
-            tuvLostAttacker = TuvUtils.getTUV(suicideUnits, m_attacker, attackerCosts, m_data);
+            tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, attackerCosts, m_data);
             m_attackerLostTUV += tuvLostAttacker;
           }
           if (Match.anyMatch(m_defendingUnits, Matches.unitIsSuicide())) {
             final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.unitIsSuicide());
             m_defendingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
-            tuvLostDefender = TuvUtils.getTUV(suicideUnits, m_defender, defenderCosts, m_data);
+            tuvLostDefender = TuvUtils.getTuv(suicideUnits, m_defender, defenderCosts, m_data);
             m_defenderLostTUV += tuvLostDefender;
           }
         }

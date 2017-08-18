@@ -29,6 +29,8 @@ import games.strategy.util.Match;
  */
 public class TuvUtils {
 
+  private TuvUtils() {}
+
   /**
    * Return map where keys are unit types and values are PU costs of that unit type, based on a player.
    * Any production rule that produces multiple units
@@ -42,7 +44,7 @@ public class TuvUtils {
    *        The game data.
    * @return a map of unit types to PU cost
    */
-  public static IntegerMap<UnitType> getCostsForTUV(final PlayerID player, final GameData data) {
+  public static IntegerMap<UnitType> getCostsForTuv(final PlayerID player, final GameData data) {
     final Resource pus;
     data.acquireReadLock();
     try {
@@ -124,9 +126,6 @@ public class TuvUtils {
       final int averagedCost = (int) Math.round(((double) totalCosts / (double) costsForType.size()));
       costs.put(ut, averagedCost);
     }
-    // There is a problem with this variable, that it isn't being cleared out when we
-    // costsForTuvForAllPlayersMergedAndAveraged = costs;
-    // switch maps.
     return costs;
   }
 
@@ -137,12 +136,11 @@ public class TuvUtils {
    * will have their costs rounded up on a per unit basis.
    * Therefore, this map should NOT be used for Purchasing information!
    */
-  public static Map<PlayerID, Map<UnitType, ResourceCollection>> getResourceCostsForTUV(final GameData data,
+  public static Map<PlayerID, Map<UnitType, ResourceCollection>> getResourceCostsForTuv(final GameData data,
       final boolean includeAverageForMissingUnits) {
-    final LinkedHashMap<PlayerID, Map<UnitType, ResourceCollection>> rVal =
-        new LinkedHashMap<>();
+    final HashMap<PlayerID, Map<UnitType, ResourceCollection>> result = new LinkedHashMap<>();
     final Map<UnitType, ResourceCollection> average = includeAverageForMissingUnits
-        ? TuvUtils.getResourceCostsForTUVForAllPlayersMergedAndAveraged(data)
+        ? TuvUtils.getResourceCostsForTuvForAllPlayersMergedAndAveraged(data)
         : new HashMap<>();
     final List<PlayerID> players = data.getPlayerList().getPlayers();
     players.add(PlayerID.NULL_PLAYERID);
@@ -150,13 +148,13 @@ public class TuvUtils {
       final ProductionFrontier frontier = p.getProductionFrontier();
       // any one will do then
       if (frontier == null) {
-        rVal.put(p, average);
+        result.put(p, average);
         continue;
       }
-      Map<UnitType, ResourceCollection> current = rVal.get(p);
+      Map<UnitType, ResourceCollection> current = result.get(p);
       if (current == null) {
         current = new LinkedHashMap<>();
-        rVal.put(p, current);
+        result.put(p, current);
       }
       for (final ProductionRule rule : frontier.getRules()) {
         if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null
@@ -193,8 +191,8 @@ public class TuvUtils {
         }
       }
     }
-    rVal.put(null, average);
-    return rVal;
+    result.put(null, average);
+    return result;
   }
 
   /**
@@ -204,7 +202,7 @@ public class TuvUtils {
    * will have their costs rounded up on a per unit basis.
    * Therefore, this map should NOT be used for Purchasing information!
    */
-  private static Map<UnitType, ResourceCollection> getResourceCostsForTUVForAllPlayersMergedAndAveraged(
+  private static Map<UnitType, ResourceCollection> getResourceCostsForTuvForAllPlayersMergedAndAveraged(
       final GameData data) {
     final Map<UnitType, ResourceCollection> average = new HashMap<>();
     final Resource pus;
@@ -265,7 +263,7 @@ public class TuvUtils {
       }
       backupAveraged.put(entry.getKey(), avgCost);
     }
-    final Map<PlayerID, Map<UnitType, ResourceCollection>> allPlayersCurrent = getResourceCostsForTUV(data, false);
+    final Map<PlayerID, Map<UnitType, ResourceCollection>> allPlayersCurrent = getResourceCostsForTuv(data, false);
     allPlayersCurrent.remove(null);
     for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
       final List<ResourceCollection> costs = new ArrayList<>();
@@ -301,7 +299,7 @@ public class TuvUtils {
    *        An integer map of unit types to costs.
    * @return the total unit value.
    */
-  public static int getTUV(final Collection<Unit> units, final IntegerMap<UnitType> costs) {
+  public static int getTuv(final Collection<Unit> units, final IntegerMap<UnitType> costs) {
     int tuv = 0;
     for (final Unit u : units) {
       final int unitValue = costs.getInt(u.getType());
@@ -321,10 +319,10 @@ public class TuvUtils {
    *        An integer map of unit types to costs
    * @return the total unit value.
    */
-  public static int getTUV(final Collection<Unit> units, final PlayerID player, final IntegerMap<UnitType> costs,
+  public static int getTuv(final Collection<Unit> units, final PlayerID player, final IntegerMap<UnitType> costs,
       final GameData data) {
     final Collection<Unit> playerUnits = Match.getMatches(units, Matches.alliedUnit(player, data));
-    return getTUV(playerUnits, costs);
+    return getTuv(playerUnits, costs);
   }
 
 }

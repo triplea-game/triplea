@@ -444,7 +444,7 @@ class ProPurchaseAI {
         placeTerritory.setMinBattleResult(result);
         double holdValue = 0;
         if (t.isWater()) {
-          final double unitValue = TuvUtils.getTUV(
+          final double unitValue = TuvUtils.getTuv(
               Match.getMatches(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player)),
               ProData.unitValueMap);
           holdValue = unitValue / 8;
@@ -488,7 +488,7 @@ class ProPurchaseAI {
       }
 
       // Determine defending unit value
-      double defendingUnitValue = TuvUtils.getTUV(placeTerritory.getDefendingUnits(), ProData.unitValueMap);
+      double defendingUnitValue = TuvUtils.getTuv(placeTerritory.getDefendingUnits(), ProData.unitValueMap);
       if (t.isWater() && Match.noneMatch(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player))) {
         defendingUnitValue = 0;
       }
