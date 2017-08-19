@@ -140,7 +140,7 @@ public class WW2V3Year41Test {
     final Collection<Unit> planes = bomber(gameData).create(3, british(gameData));
     planes.addAll(fighter(gameData).create(3, british(gameData)));
     final Collection<Unit> defendingAa =
-        territory("Germany", gameData).getUnits().getMatches(Matches.UnitIsAAforAnything);
+        territory("Germany", gameData).getUnits().getMatches(Matches.unitIsAaForAnything());
     // don't allow rolling, 6 of each is deterministic
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
     final DiceRoll roll =
@@ -169,7 +169,7 @@ public class WW2V3Year41Test {
     final Collection<Unit> planes = bomber(gameData).create(4, british(gameData));
     planes.addAll(fighter(gameData).create(4, british(gameData)));
     final Collection<Unit> defendingAa =
-        territory("Germany", gameData).getUnits().getMatches(Matches.UnitIsAAforAnything);
+        territory("Germany", gameData).getUnits().getMatches(Matches.unitIsAaForAnything());
     // 1 roll, a hit
     // then a dice to select the casualty
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, 1});
@@ -202,7 +202,7 @@ public class WW2V3Year41Test {
     final Collection<Unit> planes = bomber(gameData).create(4, british(gameData));
     planes.addAll(fighter(gameData).create(4, british(gameData)));
     final Collection<Unit> defendingAa =
-        territory("Germany", gameData).getUnits().getMatches(Matches.UnitIsAAforAnything);
+        territory("Germany", gameData).getUnits().getMatches(Matches.unitIsAaForAnything());
     // 1 roll, a miss
     // then a dice to select the casualty
     final ScriptedRandomSource randomSource =
@@ -465,7 +465,7 @@ public class WW2V3Year41Test {
      * Move one
      */
     String errorResults =
-        moveDelegate.move(poland.getUnits().getMatches(Matches.UnitIsAAforAnything), new Route(poland, germany));
+        moveDelegate.move(poland.getUnits().getMatches(Matches.unitIsAaForAnything()), new Route(poland, germany));
     assertValid(errorResults);
     assertEquals(germany.getUnits().getUnitCount(), preCount + 1);
     /*
@@ -480,11 +480,11 @@ public class WW2V3Year41Test {
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // load the trn
-    errorResults = moveDelegate.move(finland.getUnits().getMatches(Matches.UnitIsAAforAnything),
+    errorResults = moveDelegate.move(finland.getUnits().getMatches(Matches.unitIsAaForAnything()),
         new Route(finland, sz5), sz5.getUnits().getMatches(Matches.UnitIsTransport));
     assertValid(errorResults);
     // unload the trn
-    errorResults = moveDelegate.move(sz5.getUnits().getMatches(Matches.UnitIsAAforAnything), new Route(sz5, germany));
+    errorResults = moveDelegate.move(sz5.getUnits().getMatches(Matches.unitIsAaForAnything()), new Route(sz5, germany));
     assertValid(errorResults);
     assertEquals(germany.getUnits().getUnitCount(), preCount + 2);
     /*

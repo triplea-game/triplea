@@ -67,12 +67,12 @@ public class ProPurchaseOptionMap {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
         ProLogger.debug("Special: " + ppo);
-      } else if (Matches.UnitTypeCanProduceUnits.match(unitType)
+      } else if (Matches.unitTypeCanProduceUnits().match(unitType)
           && Matches.unitTypeIsInfrastructure().match(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         factoryOptions.add(ppo);
         ProLogger.debug("Factory: " + ppo);
-      } else if (Matches.UnitTypeIsAAforBombingThisUnitOnly.match(unitType)) {
+      } else if (Matches.unitTypeIsAaForBombingThisUnitOnly().match(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         aaOptions.add(ppo);
         ProLogger.debug("AA: " + ppo);
@@ -86,7 +86,7 @@ public class ProPurchaseOptionMap {
           landDefenseOptions.add(ppo);
         }
         ProLogger.debug("Land: " + ppo);
-      } else if (Matches.UnitTypeIsAir.match(unitType)) {
+      } else if (Matches.unitTypeIsAir().match(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         airOptions.add(ppo);
         ProLogger.debug("Air: " + ppo);

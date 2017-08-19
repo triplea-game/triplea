@@ -95,13 +95,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final Match<Unit> defenders = Match.allOf(Matches.enemyUnit(m_attacker, m_data),
         Match.anyOf(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
             Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
-                Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data)));
+                Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data)));
     if (m_targets.isEmpty()) {
       m_defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
     } else {
       final List<Unit> targets =
           Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(m_attackingUnits,
-              airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data));
+              airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
       targets.addAll(m_targets.keySet());
       m_defendingUnits = targets;
     }
@@ -183,7 +183,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
     m_defendingAA = m_battleSite.getUnits().getMatches(Matches.unitIsAaThatCanFire(m_attackingUnits,
-        airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data));
+        airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
     m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
     // reverse since stacks are in reverse order
     Collections.reverse(m_AAtypes);
@@ -469,7 +469,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
     final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
     final boolean allowMultipleHitsPerUnit =
-        !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
+        !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isEditMode) {
       final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
       final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker,

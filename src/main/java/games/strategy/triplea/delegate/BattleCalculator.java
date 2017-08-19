@@ -102,7 +102,7 @@ public class BattleCalculator {
     }
     final GameData data = bridge.getData();
     final boolean allowMultipleHitsPerUnit =
-        !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
+        !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isChooseAA(data)) {
       final String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return selectCasualties(null, hitPlayer, planes, allFriendlyUnits, firingPlayer, allEnemyUnits, amphibious,
@@ -586,15 +586,15 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Match<Unit> match = Match.allOf(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
+    final Match<Unit> match = Match.allOf(Matches.UnitIsLand, Matches.unitWasNotAmphibious());
     killedNonAmphibUnits.addAll(Match.getMatches(killed, match));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
       return killed;
     }
     // Get a list of all units that are amphibious and remove those that are killed
-    allAmphibUnits.addAll(Match.getMatches(targets, Matches.UnitWasAmphibious));
-    allAmphibUnits.removeAll(Match.getMatches(killed, Matches.UnitWasAmphibious));
+    allAmphibUnits.addAll(Match.getMatches(targets, Matches.unitWasAmphibious()));
+    allAmphibUnits.removeAll(Match.getMatches(killed, Matches.unitWasAmphibious()));
     final Iterator<Unit> allAmphibUnitsIter = allAmphibUnits.iterator();
     // Get a collection of the unit types of the amphib units
     while (allAmphibUnitsIter.hasNext()) {

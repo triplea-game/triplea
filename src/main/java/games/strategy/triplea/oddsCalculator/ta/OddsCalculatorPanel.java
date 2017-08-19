@@ -872,8 +872,8 @@ class OddsCalculatorPanel extends JPanel {
           if (u1.getIsSea() != u2.getIsSea()) {
             return u1.getIsSea() ? 1 : -1;
           }
-          if (Matches.UnitTypeIsAAforAnything.match(ut1) != Matches.UnitTypeIsAAforAnything.match(ut2)) {
-            return Matches.UnitTypeIsAAforAnything.match(ut1) ? 1 : -1;
+          if (Matches.unitTypeIsAaForAnything().match(ut1) != Matches.unitTypeIsAaForAnything().match(ut2)) {
+            return Matches.unitTypeIsAaForAnything().match(ut1) ? 1 : -1;
           }
           if (u1.getIsAir() != u2.getIsAir()) {
             return u1.getIsAir() ? 1 : -1;

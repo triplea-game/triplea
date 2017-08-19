@@ -411,7 +411,7 @@ public class WeakAI extends AbstractAI {
         continue;
       }
       final Match<Unit> ownedTransports =
-          Match.allOf(Matches.UnitCanTransport, Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved());
+          Match.allOf(Matches.unitCanTransport(), Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved());
       final Match<Territory> enemyTerritory =
           Match.allOf(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsLand,
               Matches.TerritoryIsNeutralButNotWater.invert(), Matches.TerritoryIsEmpty);
@@ -613,7 +613,7 @@ public class WeakAI extends AbstractAI {
           for (final Unit unit : unitsSortedByCost) {
             final Match<Unit> match = Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsLand,
                 Matches.UnitIsNotInfrastructure, Matches.UnitCanMove, Matches.UnitIsNotAA,
-                Matches.UnitCanNotMoveDuringCombatMove.invert());
+                Matches.unitCanNotMoveDuringCombatMove().invert());
             if (!unitsAlreadyMoved.contains(unit) && match.match(unit)) {
               moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
               // if unloading units, unload all of them,
@@ -646,7 +646,7 @@ public class WeakAI extends AbstractAI {
             Matches.UnitIsNotAA,
             Matches.UnitCanMove,
             Matches.UnitIsNotInfrastructure,
-            Matches.UnitCanNotMoveDuringCombatMove.invert(),
+            Matches.unitCanNotMoveDuringCombatMove().invert(),
             Matches.unitIsNotSea());
         final Set<Territory> dontMoveFrom = new HashSet<>();
         // find our strength that we can attack with
@@ -747,9 +747,9 @@ public class WeakAI extends AbstractAI {
             continue;
           }
           final UnitType results = (UnitType) resourceOrUnit;
-          if (Matches.unitTypeIsSea().match(results) || Matches.UnitTypeIsAir.match(results)
-              || Matches.unitTypeIsInfrastructure().match(results) || Matches.UnitTypeIsAAforAnything.match(results)
-              || Matches.UnitTypeHasMaxBuildRestrictions.match(results)
+          if (Matches.unitTypeIsSea().match(results) || Matches.unitTypeIsAir().match(results)
+              || Matches.unitTypeIsInfrastructure().match(results) || Matches.unitTypeIsAaForAnything().match(results)
+              || Matches.unitTypeHasMaxBuildRestrictions().match(results)
               || Matches.UnitTypeConsumesUnitsOnCreation.match(results)
               || Matches.unitTypeIsStatic(player).match(results)) {
             continue;
@@ -941,8 +941,10 @@ public class WeakAI extends AbstractAI {
           continue;
         }
         final UnitType results = (UnitType) resourceOrUnit;
-        if (Matches.UnitTypeIsAir.match(results) || Matches.unitTypeIsInfrastructure().match(results)
-            || Matches.UnitTypeIsAAforAnything.match(results) || Matches.UnitTypeHasMaxBuildRestrictions.match(results)
+        if (Matches.unitTypeIsAir().match(results)
+            || Matches.unitTypeIsInfrastructure().match(results)
+            || Matches.unitTypeIsAaForAnything().match(results)
+            || Matches.unitTypeHasMaxBuildRestrictions().match(results)
             || Matches.UnitTypeConsumesUnitsOnCreation.match(results)
             || Matches.unitTypeIsStatic(player).match(results)) {
           continue;

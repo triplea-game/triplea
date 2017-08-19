@@ -144,7 +144,7 @@ public class RocketsFireHelper {
   }
 
   Match<Unit> rocketMatch(final PlayerID player, final GameData data) {
-    return Match.allOf(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.unitIsNotDisabled(),
+    return Match.allOf(Matches.unitIsRocket(), Matches.unitIsOwnedBy(player), Matches.unitIsNotDisabled(),
         Matches.unitIsBeingTransported().invert(), Matches.UnitIsSubmerged.invert(), Matches.unitHasNotMoved());
   }
 

@@ -714,7 +714,7 @@ class ProPurchaseAI {
       final boolean enemyCanBomb =
           Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsStrategicBomber);
       final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
-      final boolean hasAaBombingDefense = t.getUnits().anyMatch(Matches.UnitIsAAforBombingThisUnitOnly);
+      final boolean hasAaBombingDefense = t.getUnits().anyMatch(Matches.unitIsAaForBombingThisUnitOnly());
       ProLogger.debug(t + ", enemyCanBomb=" + enemyCanBomb + ", territoryCanBeBombed=" + territoryCanBeBombed
           + ", hasAABombingDefense=" + hasAaBombingDefense);
       if (!enemyCanBomb || !territoryCanBeBombed || hasAaBombingDefense) {
@@ -734,7 +734,7 @@ class ProPurchaseAI {
       ProPurchaseOption bestAaOption = null;
       int minCost = Integer.MAX_VALUE;
       for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
-        final boolean isAaForBombing = Matches.UnitTypeIsAAforBombingThisUnitOnly.match(ppo.getUnitType());
+        final boolean isAaForBombing = Matches.unitTypeIsAaForBombingThisUnitOnly().match(ppo.getUnitType());
         if (isAaForBombing && ppo.getCost() < minCost
             && !Matches.UnitTypeConsumesUnitsOnCreation.match(ppo.getUnitType())) {
           bestAaOption = ppo;
