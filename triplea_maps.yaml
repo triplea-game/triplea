@@ -1075,13 +1075,11 @@
 - mapName: Global War2
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_war2/archive/master.zip
-  version: 1
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_global_war_2_mini.png
   description: |
     <br>Global War 2
     <br>Created by Dagon81
-    <br>
-    <br>Filesize is huge, at 64mb, so it may take a while to download.  Now comes with relief tiles, thx dagon.
     <br>
     <br>Converted up to TripleA 1.2.x.x by Veqryn
 - mapName: New World Order Lebowski Edition
