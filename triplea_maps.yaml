@@ -1670,7 +1670,7 @@
 - mapName: Pacific
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/pacific/archive/master.zip
-  version: 1
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_pacific_mini.png
   description: |
     <br>
@@ -1678,8 +1678,6 @@
     <br>
     <br>Created by Triplelk and ComradeKev
     <br>TripleA adaption of WW2 Pacific (from the WW2 Revised era). Alpha stage.
-    <br>
-    <br>abandoned
     <br>
 - mapName: Europe
   mapCategory: EXPERIMENTAL
