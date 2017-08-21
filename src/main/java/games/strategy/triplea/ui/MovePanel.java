@@ -1446,7 +1446,7 @@ public class MovePanel extends AbstractMovePanel {
     }
     final Match.CompositeBuilder<Unit> moveableUnitOwnedByMeBuilder = Match.newCompositeBuilder(
         Matches.unitIsOwnedBy(getCurrentPlayer()),
-        Matches.unitHasMovementLeft);
+        Matches.unitHasMovementLeft());
     if (!nonCombat) {
       // if not non combat, cannot move aa units
       moveableUnitOwnedByMeBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());
@@ -1495,7 +1495,7 @@ public class MovePanel extends AbstractMovePanel {
     }
     final Match.CompositeBuilder<Unit> moveableUnitOwnedByMeBuilder = Match.newCompositeBuilder(
         Matches.unitIsOwnedBy(getCurrentPlayer()),
-        Matches.unitHasMovementLeft);
+        Matches.unitHasMovementLeft());
     if (!nonCombat) {
       // if not non combat, cannot move aa units
       moveableUnitOwnedByMeBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());

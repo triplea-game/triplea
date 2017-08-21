@@ -156,7 +156,7 @@ public class RocketsFireHelper {
     final Match.CompositeBuilder<Territory> allowedBuilder = Match.newCompositeBuilder(
         Matches.territoryAllowsRocketsCanFlyOver(player, data));
     if (!isRocketsCanFlyOverImpassables(data)) {
-      allowedBuilder.add(Matches.TerritoryIsNotImpassable);
+      allowedBuilder.add(Matches.territoryIsNotImpassable());
     }
     final Match<Unit> attackableUnits =
         Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());

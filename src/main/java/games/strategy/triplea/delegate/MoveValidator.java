@@ -352,7 +352,7 @@ public class MoveValidator {
           if (Matches.UnitIsAirTransportable.match(unit)) {
             continue;
           }
-          if (Matches.UnitIsInfantry.match(unit)) {
+          if (Matches.unitIsInfantry().match(unit)) {
             continue;
           }
           final TripleAUnit taUnit = (TripleAUnit) unit;
@@ -366,7 +366,7 @@ public class MoveValidator {
     if (Match.anyMatch(units, Matches.UnitIsAir)) { // check aircraft
       if (route.hasSteps()
           && (!Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
-        if (Match.anyMatch(route.getMiddleSteps(), Matches.TerritoryIsNeutralButNotWater)) {
+        if (Match.anyMatch(route.getMiddleSteps(), Matches.territoryIsNeutralButNotWater())) {
           return result.setErrorReturnResult("Air units cannot fly over neutral territories");
         }
       }
@@ -403,14 +403,14 @@ public class MoveValidator {
     if (getEditMode(data)) {
       return result;
     }
-    if (route.anyMatch(Matches.TerritoryIsImpassable)) {
+    if (route.anyMatch(Matches.territoryIsImpassable())) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
     if (!route.anyMatch(Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
     }
     final Match<Territory> neutralOrEnemy =
-        Match.anyOf(Matches.TerritoryIsNeutralButNotWater,
+        Match.anyOf(Matches.territoryIsNeutralButNotWater(),
             Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
     // final CompositeMatch<Unit> transportsCanNotControl = new
     // CompositeMatchAnd<Unit>(Matches.unitIsTransportAndNotDestroyer(),
@@ -454,7 +454,7 @@ public class MoveValidator {
       // if there are non-paratroopers present, then we cannot fly over stuff
       // if there are neutral territories in the middle, we cannot fly over (unless allowed to)
       // otherwise we can generally fly over anything in noncombat
-      if (route.anyMatch(Match.allOf(Matches.TerritoryIsNeutralButNotWater, Matches.TerritoryIsWater.invert()))
+      if (route.anyMatch(Match.allOf(Matches.territoryIsNeutralButNotWater(), Matches.TerritoryIsWater.invert()))
           && (!Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
         return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
       }
@@ -601,7 +601,7 @@ public class MoveValidator {
         if (!hasEnoughMovementForRoute.match(unit)) {
           boolean unitOk = false;
           if ((Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved().match(unit))
-              && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().match(unit) && Matches.UnitIsInfantry
+              && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().match(unit) && Matches.unitIsInfantry()
                   .match(unit))) {
             // we have paratroopers and mechanized infantry, so we must check for both
             // simple: if it movement group contains an air-transport, then assume we are doing paratroopers. else,
@@ -631,7 +631,7 @@ public class MoveValidator {
               result.addDisallowedUnit("Not all units have enough movement", unit);
             }
           } else if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().match(unit)
-              && Matches.UnitIsInfantry.match(unit)) {
+              && Matches.unitIsInfantry().match(unit)) {
             mechanizedSupportAvailable--;
           } else if (Matches.unitIsOwnedBy(player).invert().match(unit) && Matches.alliedUnit(player, data).match(unit)
               && Matches.unitTypeCanLandOnCarrier().match(unit.getType())
@@ -714,14 +714,14 @@ public class MoveValidator {
       }
     }
     // don't allow move through impassable territories
-    if (!isEditMode && route.anyMatch(Matches.TerritoryIsImpassable)) {
+    if (!isEditMode && route.anyMatch(Matches.territoryIsImpassable())) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
     if (canCrossNeutralTerritory(data, route, player, result).getError() != null) {
       return result;
     }
     if (isNeutralsImpassable(data) && !isNeutralsBlitzable(data)
-        && !route.getMatches(Matches.TerritoryIsNeutralButNotWater).isEmpty()) {
+        && !route.getMatches(Matches.territoryIsNeutralButNotWater()).isEmpty()) {
       return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
     }
     return result;
@@ -1193,7 +1193,7 @@ public class MoveValidator {
     if (units.isEmpty() || !Match.allMatch(units, Match.anyOf(Matches.UnitIsAir, Matches.UnitIsLand))) {
       return true;
     }
-    for (final Unit unit : Match.getMatches(units, Matches.UnitIsNotAirTransportable)) {
+    for (final Unit unit : Match.getMatches(units, Matches.unitIsNotAirTransportable())) {
       if (Matches.UnitIsLand.match(unit)) {
         return true;
       }
@@ -1478,7 +1478,7 @@ public class MoveValidator {
     // Ignore the end territory in our tests. it must be in the route, so it shouldn't affect the route choice
     // final Match<Territory> territoryIsEnd = Matches.territoryIs(end);
     // No neutral countries on route predicate
-    final Match<Territory> noNeutral = Matches.TerritoryIsNeutralButNotWater.invert();
+    final Match<Territory> noNeutral = Matches.territoryIsNeutralButNotWater().invert();
     // No aa guns on route predicate
     final Match<Territory> noAa = Matches.territoryHasEnemyAaForAnything(player, data).invert();
     // no enemy units on the route predicate
@@ -1508,8 +1508,8 @@ public class MoveValidator {
       // at least try for a route without impassable territories, but allowing restricted territories, since there is a
       // chance politics may change in the future.
       defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end,
-          (isNeutralsImpassable ? Match.allOf(noNeutral, Matches.TerritoryIsImpassable)
-              : Matches.TerritoryIsImpassable));
+          (isNeutralsImpassable ? Match.allOf(noNeutral, Matches.territoryIsImpassable())
+              : Matches.territoryIsImpassable()));
       // ok, so there really is nothing, so just return any route, without conditions
       if (defaultRoute == null) {
         return data.getMap().getRoute(start, end);

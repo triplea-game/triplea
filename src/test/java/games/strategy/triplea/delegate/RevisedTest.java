@@ -375,9 +375,9 @@ public class RevisedTest {
     // start a battle in se
     removeFrom(sz14, sz14.getUnits().getUnits());
     addTo(sz15, transport(gameData).create(1, british));
-    load(egypt.getUnits().getMatches(Matches.UnitIsInfantry), new Route(egypt, sz15));
+    load(egypt.getUnits().getMatches(Matches.unitIsInfantry()), new Route(egypt, sz15));
     move(sz15.getUnits().getUnits(), new Route(sz15, sz14));
-    move(sz14.getUnits().getMatches(Matches.UnitIsInfantry), new Route(sz14, se));
+    move(sz14.getUnits().getMatches(Matches.unitIsInfantry()), new Route(sz14, se));
     final Route route = new Route(uk, territory("7 Sea Zone", gameData), we, se);
     move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
     // the aa gun should have fired and hit
@@ -1304,7 +1304,7 @@ public class RevisedTest {
     move.start();
     // remove the russians units in caucasus so we can blitz
     final Territory cauc = territory("Caucasus", gameData);
-    removeFrom(cauc, cauc.getUnits().getMatches(Matches.UnitIsNotAA));
+    removeFrom(cauc, cauc.getUnits().getMatches(Matches.unitIsNotAa()));
     // blitz
     final Territory wr = territory("West Russia", gameData);
     move(wr.getUnits().getMatches(Matches.UnitCanBlitz), new Route(wr, cauc));

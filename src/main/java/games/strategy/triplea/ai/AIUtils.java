@@ -105,8 +105,8 @@ public class AIUtils {
       }
     }
     if (attacking) {
-      final int art = Match.countMatches(units, Matches.UnitIsArtillery);
-      final int artSupport = Match.countMatches(units, Matches.UnitIsArtillerySupportable);
+      final int art = Match.countMatches(units, Matches.unitIsArtillery());
+      final int artSupport = Match.countMatches(units, Matches.unitIsArtillerySupportable());
       strength += Math.min(art, artSupport);
     }
     return strength;

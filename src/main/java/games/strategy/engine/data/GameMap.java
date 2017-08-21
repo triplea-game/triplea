@@ -345,7 +345,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return the shortest route between two territories or null if no route exists.
    */
   public Route getRoute(final Territory t1, final Territory t2) {
-    return getRoute(t1, t2, Matches.TerritoryIsLandOrWater);
+    return getRoute(t1, t2, Matches.territoryIsLandOrWater());
   }
 
   /**
@@ -441,7 +441,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return the distance between two territories or -1 if they are not connected.
    */
   public int getDistance(final Territory t1, final Territory t2) {
-    return getDistance(t1, t2, Matches.TerritoryIsLandOrWater);
+    return getDistance(t1, t2, Matches.territoryIsLandOrWater());
   }
 
   /**

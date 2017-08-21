@@ -266,7 +266,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final Territory t = territories.next();
       if (!m_battleTracker.hasPendingBattle(t, false)) {
         Collection<IBattle> battles = adjBombardment.get(t);
-        battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
+        battles = Match.getMatches(battles, Matches.battleIsAmphibious());
         if (!battles.isEmpty()) {
           final Collection<Unit> bombardUnits = t.getUnits().getMatches(ownedAndCanBombard);
           final List<Unit> listedBombardUnits = new ArrayList<>();
@@ -658,7 +658,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             Matches.unitIsNotDisabled())),
         Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
     if (fromIslandOnly) {
-      canScrambleBuilder.add(Matches.TerritoryIsIsland);
+      canScrambleBuilder.add(Matches.territoryIsIsland());
     }
     final Match<Territory> canScramble = canScrambleBuilder.all();
     final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();
@@ -731,7 +731,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // find how many is the max this territory can scramble
         final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
-        final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.TerritoryIsNotImpassable);
+        final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
         final Collection<Unit> canScrambleAir = from.getUnits()
             .getMatches(Match.allOf(Matches.unitIsEnemyOf(data, m_player), Matches.unitCanScramble(),
                 Matches.unitIsNotDisabled(), Matches.unitWasScrambled().invert(),

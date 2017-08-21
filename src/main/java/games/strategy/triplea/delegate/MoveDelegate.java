@@ -239,7 +239,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
     // right now, land units on transports have movement taken away when they their transport moves
     moveableUnitOwnedByMeBuilder.add(Match.anyOf(
-        Matches.unitHasMovementLeft,
+        Matches.unitHasMovementLeft(),
         Match.allOf(
             Matches.UnitIsLand,
             Matches.unitIsBeingTransported())));
@@ -326,7 +326,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
     final Match<Unit> ownedFightersMatch =
         Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsAir,
-            Matches.UnitCanLandOnCarrier, Matches.unitHasMovementLeft);
+            Matches.UnitCanLandOnCarrier, Matches.unitHasMovementLeft());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> ownedFighters = t.getUnits().getMatches(ownedFightersMatch);
@@ -571,7 +571,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   static Collection<Territory> getEmptyNeutral(final Route route) {
-    final Match<Territory> emptyNeutral = Match.allOf(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutralButNotWater);
+    final Match<Territory> emptyNeutral = Match.allOf(
+        Matches.territoryIsEmpty(),
+        Matches.territoryIsNeutralButNotWater());
     final Collection<Territory> neutral = route.getMatches(emptyNeutral);
     return neutral;
   }

@@ -128,8 +128,8 @@ public class DiceRoll implements Externalizable {
       }
     }
     final List<Unit> defendingAa = Match.getMatches(defendingAaForThisRoll,
-        (defending ? Matches.UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero
-            : Matches.UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero));
+        (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
+            : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
     if (defendingAa.isEmpty()) {
       return new DiceRoll(new ArrayList<>(0), 0);
     }
@@ -187,8 +187,8 @@ public class DiceRoll implements Externalizable {
       final Collection<Unit> defendingAaForThisRoll, final Collection<Unit> validAttackingUnitsForThisRoll,
       final GameData data, final boolean fillInSortedDiceAndRecordHits) {
     final List<Unit> defendingAa = Match.getMatches(defendingAaForThisRoll,
-        (defending ? Matches.UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero
-            : Matches.UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero));
+        (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
+            : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
     if (defendingAa.size() <= 0) {
       return Triple.of(0, 0, false);
     }
@@ -211,8 +211,8 @@ public class DiceRoll implements Externalizable {
     // any sense)
     // set up all 3 groups of aa guns
     final List<Unit> normalNonInfiniteAa = new ArrayList<>(defendingAa);
-    final List<Unit> infiniteAa = Match.getMatches(defendingAa, Matches.UnitMaxAAattacksIsInfinite);
-    final List<Unit> overstackAa = Match.getMatches(defendingAa, Matches.UnitMayOverStackAA);
+    final List<Unit> infiniteAa = Match.getMatches(defendingAa, Matches.unitMaxAaAttacksIsInfinite());
+    final List<Unit> overstackAa = Match.getMatches(defendingAa, Matches.unitMayOverStackAa());
     overstackAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(overstackAa);

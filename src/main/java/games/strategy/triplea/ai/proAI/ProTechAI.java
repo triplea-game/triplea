@@ -117,7 +117,7 @@ final class ProTechAI {
           Matches.UnitIsSea,
           Matches.UnitCanMove);
       final Match<Unit> enemyTransportable = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
-          Matches.unitCanBeTransported(), Matches.UnitIsNotAA, Matches.UnitCanMove);
+          Matches.unitCanBeTransported(), Matches.unitIsNotAa(), Matches.UnitCanMove);
       final Match<Unit> transport = Match.allOf(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
       final List<Territory> enemyFighterTerritories = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
@@ -208,10 +208,10 @@ final class ProTechAI {
                 int inf = 2;
                 int other = 1;
                 for (final Unit checkUnit : thisTransUnits) {
-                  if (Matches.UnitIsInfantry.match(checkUnit)) {
+                  if (Matches.unitIsInfantry().match(checkUnit)) {
                     inf--;
                   }
-                  if (Matches.UnitIsNotInfantry.match(checkUnit)) {
+                  if (Matches.unitIsNotInfantry().match(checkUnit)) {
                     inf--;
                     other--;
                   }
@@ -228,12 +228,12 @@ final class ProTechAI {
               transUnits.removeAll(alreadyLoaded);
               final List<Unit> availTransUnits = sortTransportUnits(transUnits);
               for (final Unit transUnit : availTransUnits) {
-                if (availInf > 0 && Matches.UnitIsInfantry.match(transUnit)) {
+                if (availInf > 0 && Matches.unitIsInfantry().match(transUnit)) {
                   availInf--;
                   loadedUnits.add(transUnit);
                   alreadyLoaded.add(transUnit);
                 }
-                if (availInf > 0 && availOther > 0 && Matches.UnitIsNotInfantry.match(transUnit)) {
+                if (availInf > 0 && availOther > 0 && Matches.unitIsNotInfantry().match(transUnit)) {
                   availInf--;
                   availOther--;
                   loadedUnits.add(transUnit);
@@ -330,8 +330,8 @@ final class ProTechAI {
       }
     }
     if (attacking && !sea) {
-      final int art = Match.countMatches(units, Matches.UnitIsArtillery);
-      final int artSupport = Match.countMatches(units, Matches.UnitIsArtillerySupportable);
+      final int art = Match.countMatches(units, Matches.unitIsArtillery());
+      final int artSupport = Match.countMatches(units, Matches.unitIsArtillerySupportable());
       strength += Math.min(art, artSupport);
     }
     return strength;
@@ -608,9 +608,9 @@ final class ProTechAI {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
     final Match.CompositeBuilder<Territory> endCondBuilder = Match.newCompositeBuilder(
-        Matches.TerritoryIsImpassable.invert());
+        Matches.territoryIsImpassable().invert());
     if (!neutral || Properties.getNeutralsImpassable(data)) {
-      endCondBuilder.add(Matches.TerritoryIsNeutralButNotWater.invert());
+      endCondBuilder.add(Matches.territoryIsNeutralButNotWater().invert());
     }
     return findFontier(territory, endCondBuilder.all(), Match.always(), distance, data);
   }
@@ -685,9 +685,9 @@ final class ProTechAI {
     final List<Unit> armor = new ArrayList<>();
     final List<Unit> others = new ArrayList<>();
     for (final Unit x : transUnits) {
-      if (Matches.UnitIsArtillerySupportable.match(x)) {
+      if (Matches.unitIsArtillerySupportable().match(x)) {
         infantry.add(x);
-      } else if (Matches.UnitIsArtillery.match(x)) {
+      } else if (Matches.unitIsArtillery().match(x)) {
         artillery.add(x);
       } else if (Matches.UnitCanBlitz.match(x)) {
         armor.add(x);
@@ -738,6 +738,6 @@ final class ProTechAI {
    * Assumes that water is passable to air units always.
    */
   private static Match<Territory> territoryIsImpassableToAirUnits() {
-    return Match.allOf(Matches.TerritoryIsLand, Matches.TerritoryIsImpassable);
+    return Match.allOf(Matches.TerritoryIsLand, Matches.territoryIsImpassable());
   }
 }

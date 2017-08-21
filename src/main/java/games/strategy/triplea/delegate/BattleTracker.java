@@ -980,7 +980,7 @@ public class BattleTracker implements Serializable {
     if (dependent == null) {
       return Collections.emptyList();
     }
-    return Match.getMatches(dependent, Matches.BattleIsEmpty.invert());
+    return Match.getMatches(dependent, Matches.battleIsEmpty().invert());
   }
 
   /**
