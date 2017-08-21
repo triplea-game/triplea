@@ -192,6 +192,13 @@ public class GameDataTestUtil {
   }
 
   /**
+   * Returns a factory_upgrade UnitType object for the specified GameData object.
+   */
+  public static UnitType factoryUpgrade(final GameData data) {
+    return unitType("factory_upgrade", data);
+  }
+
+  /**
    * Returns a UnitType object matching the given name for the specified GameData object if present.
    */
   private static UnitType unitType(final String name, final GameData data) {
