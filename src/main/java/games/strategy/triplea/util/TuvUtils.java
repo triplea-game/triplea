@@ -20,6 +20,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -59,12 +60,12 @@ public class TuvUtils {
       return TuvUtils.getCostsForTuvForAllPlayersMergedAndAveraged(data);
     }
     for (final ProductionRule rule : frontier.getRules()) {
-      final int costPerGroup = rule.getCosts().getInt(pus);
       final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
       if (!(resourceOrUnit instanceof UnitType)) {
         continue;
       }
       final UnitType type = (UnitType) resourceOrUnit;
+      final int costPerGroup = rule.getCosts().getInt(pus);
       final int numberProduced = rule.getResults().getInt(type);
       // we average the cost for a single unit, rounding up
       final int roundedCostPerSingle = (int) Math.ceil((double) costPerGroup / (double) numberProduced);
@@ -78,7 +79,26 @@ public class TuvUtils {
         costs.put(ut, costsAll.getInt(ut));
       }
     }
+
+    // Add value for consumesUnits
+    for (final UnitType unitType : costs.keySet()) {
+      costs.put(unitType, getTotalTuv(unitType, costs));
+    }
+
     return costs;
+  }
+
+  // TODO: consider cycles
+  private static int getTotalTuv(UnitType unitType, IntegerMap<UnitType> costs) {
+    int tuv = costs.getInt(unitType);
+    final UnitAttachment ua = UnitAttachment.get(unitType);
+    if (ua == null || ua.getConsumesUnits().isEmpty()) {
+      return tuv;
+    }
+    for (final UnitType ut : ua.getConsumesUnits().keySet()) {
+      tuv += getTotalTuv(ut, costs);
+    }
+    return tuv;
   }
 
   /**
