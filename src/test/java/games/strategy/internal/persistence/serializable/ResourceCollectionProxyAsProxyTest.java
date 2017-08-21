@@ -1,27 +1,22 @@
 package games.strategy.internal.persistence.serializable;
 
-import static games.strategy.engine.data.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.util.Arrays;
 import java.util.Collection;
 
+import games.strategy.engine.data.EngineDataEqualityComparators;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
 import games.strategy.engine.data.TestGameDataComponentFactory;
 import games.strategy.engine.data.TestGameDataFactory;
 import games.strategy.persistence.serializable.AbstractProxyTestCase;
 import games.strategy.persistence.serializable.ProxyFactory;
+import games.strategy.test.EqualityComparator;
+import games.strategy.util.CoreEqualityComparators;
 
 public final class ResourceCollectionProxyAsProxyTest extends AbstractProxyTestCase<ResourceCollection> {
   public ResourceCollectionProxyAsProxyTest() {
     super(ResourceCollection.class);
-  }
-
-  @Override
-  protected void assertPrincipalEquals(final ResourceCollection expected, final ResourceCollection actual) {
-    assertThat(actual, is(equalTo(expected)));
   }
 
   @Override
@@ -35,6 +30,15 @@ public final class ResourceCollectionProxyAsProxyTest extends AbstractProxyTestC
     resourceCollection.addResource(TestGameDataComponentFactory.newResource(gameData, "resource1"), 11);
     resourceCollection.addResource(TestGameDataComponentFactory.newResource(gameData, "resource2"), 22);
     return resourceCollection;
+  }
+
+  @Override
+  protected Collection<EqualityComparator> getEqualityComparators() {
+    return TestEqualityComparatorCollectionBuilder.forGameData()
+        .add(CoreEqualityComparators.INTEGER_MAP)
+        .add(EngineDataEqualityComparators.RESOURCE)
+        .add(EngineDataEqualityComparators.RESOURCE_COLLECTION)
+        .build();
   }
 
   @Override
