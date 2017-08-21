@@ -13,14 +13,14 @@ addons:
 install: ./.travis/setup_lobby_database
 services:
 - postgresql
-script: ./gradlew check jacocoTestReport
+script: JAVA_OPTS=-Xmx1G ./gradlew check jacocoTestReport
 after_success: 
 - ./.travis/update_checkstyle_thresholds
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 before_deploy:
 - ./.travis/install_install4j
 - ENGINE_VERSION="$(grep engine_version game_engine.properties | sed 's/.*= *//g').$TRAVIS_BUILD_NUMBER"
-- ./gradlew -PengineVersion="$ENGINE_VERSION" release
+- JAVA_OPTS=-Xmx1G ./gradlew -PengineVersion="$ENGINE_VERSION" release
 - ./.travis/push_tag $ENGINE_VERSION
 - ./.travis/push_maps
 deploy:
