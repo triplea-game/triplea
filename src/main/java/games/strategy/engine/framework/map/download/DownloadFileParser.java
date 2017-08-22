@@ -51,7 +51,7 @@ final class DownloadFileParser {
         mapCategory = DownloadFileDescription.MapCategory.valueOf(mapCategoryString);
       }
 
-      final String img = yaml.optString(Tags.img.toString(), "");
+      final String img = yaml.optString(Tags.img.toString());
       final DownloadFileDescription dl =
           new DownloadFileDescription(url, description, mapName, version, downloadType, mapCategory, img);
       rVal.add(dl);
