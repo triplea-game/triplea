@@ -1,7 +1,6 @@
 package games.strategy.util;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,17 +48,6 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
     mapValues = new HashMap<>(integerMap.size());
     for (final T t : integerMap.keySet()) {
       mapValues.put(t, integerMap.getInt(t));
-    }
-  }
-
-  /**
-   * This will make a new IntegerMap.
-   * The Objects will be linked, but the integers mapped to them will not be linked.
-   */
-  public IntegerMap(final IntegerMap<T>[] integerMaps) {
-    mapValues = new HashMap<>();
-    for (final IntegerMap<T> integerMap : integerMaps) {
-      this.add(integerMap);
     }
   }
 
@@ -149,28 +137,6 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
     return mapValues.keySet();
   }
 
-  public Collection<Integer> values() {
-    return mapValues.values();
-  }
-
-  /**
-   * If empty, will return false.
-   *
-   * @return true if at least one value and all values are the same.
-   */
-  public boolean allValuesAreSame() {
-    if (mapValues.isEmpty()) {
-      return false;
-    }
-    final int first = mapValues.values().iterator().next();
-    for (final int value : mapValues.values()) {
-      if (first != value) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   /**
    * If empty, will return false.
    *
@@ -186,56 +152,6 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
       }
     }
     return true;
-  }
-
-  /**
-   * Will return zero if empty.
-   */
-  public int highestValue() {
-    if (mapValues.isEmpty()) {
-      return 0;
-    }
-    int max = Integer.MIN_VALUE;
-    for (final int value : mapValues.values()) {
-      if (value > max) {
-        max = value;
-      }
-    }
-    return max;
-  }
-
-  /**
-   * Will return zero if empty.
-   */
-  public int lowestValue() {
-    if (mapValues.isEmpty()) {
-      return 0;
-    }
-    int min = Integer.MAX_VALUE;
-    for (final int value : mapValues.values()) {
-      if (value < min) {
-        min = value;
-      }
-    }
-    return min;
-  }
-
-  /**
-   * Will return null if empty.
-   */
-  public T highestKey() {
-    if (mapValues.isEmpty()) {
-      return null;
-    }
-    int maxValue = Integer.MIN_VALUE;
-    T maxKey = null;
-    for (final Map.Entry<T, Integer> entry : mapValues.entrySet()) {
-      if (entry.getValue() > maxValue) {
-        maxValue = entry.getValue();
-        maxKey = entry.getKey();
-      }
-    }
-    return maxKey;
   }
 
   /**
@@ -322,33 +238,8 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
     }
   }
 
-  private Collection<T> getKeyMatches(final Match<T> matcher) {
-    final Collection<T> values = new ArrayList<>();
-    for (final T obj : mapValues.keySet()) {
-      if (matcher.match(obj)) {
-        values.add(obj);
-      }
-    }
-    return values;
-  }
-
-  public void removeNonMatchingKeys(final Match<T> match) {
-    removeMatchingKeys(match.invert());
-  }
-
-  public void removeMatchingKeys(final Match<T> match) {
-    final Collection<T> badKeys = getKeyMatches(match);
-    removeKeys(badKeys);
-  }
-
   public void removeKey(final T key) {
     mapValues.remove(key);
-  }
-
-  private void removeKeys(final Collection<T> keys) {
-    for (final T key : keys) {
-      removeKey(key);
-    }
   }
 
   public boolean containsKey(final T key) {
