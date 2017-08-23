@@ -21,40 +21,40 @@ import java.util.logging.Logger;
 class SocketWriteData {
   private static final Logger logger = Logger.getLogger(SocketWriteData.class.getName());
   private static final AtomicInteger counter = new AtomicInteger();
-  private final ByteBuffer m_size;
-  private final ByteBuffer m_content;
-  private final int m_number = counter.incrementAndGet();
+  private final ByteBuffer size;
+  private final ByteBuffer content;
+  private final int number = counter.incrementAndGet();
   // how many times we called write before we finished writing ourselves
-  private int m_writeCalls = 0;
+  private int writeCalls = 0;
 
   SocketWriteData(final byte[] data, int count) {
-    m_content = ByteBuffer.allocate(count);
-    m_content.put(data, 0, count);
-    m_size = ByteBuffer.allocate(4);
+    content = ByteBuffer.allocate(count);
+    content.put(data, 0, count);
+    size = ByteBuffer.allocate(4);
     if (count < 0 || count > SocketReadData.MAX_MESSAGE_SIZE) {
       throw new IllegalStateException("Invalid message size:" + count);
     }
     count = count ^ SocketReadData.MAGIC;
-    m_size.putInt(count);
-    m_size.flip();
-    m_content.flip();
+    size.putInt(count);
+    size.flip();
+    content.flip();
   }
 
   int size() {
-    return m_size.capacity() + m_content.capacity();
+    return size.capacity() + content.capacity();
   }
 
   int getWriteCalls() {
-    return m_writeCalls;
+    return writeCalls;
   }
 
   /**
    * @return true if the write has written the entire message.
    */
   boolean write(final SocketChannel channel) throws IOException {
-    m_writeCalls++;
-    if (m_size.hasRemaining()) {
-      final int count = channel.write(m_size);
+    writeCalls++;
+    if (size.hasRemaining()) {
+      final int count = channel.write(size);
       if (count == -1) {
         throw new IOException("triplea: end of stream detected");
       }
@@ -62,22 +62,22 @@ class SocketWriteData {
         logger.finest("wrote size_buffer bytes:" + count);
       }
       // we could not write everything
-      if (m_size.hasRemaining()) {
+      if (size.hasRemaining()) {
         return false;
       }
     }
-    final int count = channel.write(m_content);
+    final int count = channel.write(content);
     if (count == -1) {
       throw new IOException("triplea: end of stream detected");
     }
     if (logger.isLoggable(Level.FINEST)) {
       logger.finest("wrote content bytes:" + count);
     }
-    return !m_content.hasRemaining();
+    return !content.hasRemaining();
   }
 
   @Override
   public String toString() {
-    return "<id:" + m_number + " size:" + m_content.capacity() + ">";
+    return "<id:" + number + " size:" + content.capacity() + ">";
   }
 }

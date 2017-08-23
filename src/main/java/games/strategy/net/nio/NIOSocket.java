@@ -20,26 +20,26 @@ import games.strategy.net.MessageHeader;
  */
 public class NIOSocket implements IErrorReporter {
   private static final Logger logger = Logger.getLogger(NIOSocket.class.getName());
-  private final Encoder m_encoder;
-  private final Decoder m_decoder;
-  private final NIOWriter m_writer;
-  private final NIOReader m_reader;
-  private final NIOSocketListener m_listener;
+  private final Encoder encoder;
+  private final Decoder decoder;
+  private final NIOWriter writer;
+  private final NIOReader reader;
+  private final NIOSocketListener listener;
 
   public NIOSocket(final IObjectStreamFactory factory, final NIOSocketListener listener, final String name) {
-    m_listener = listener;
-    m_writer = new NIOWriter(this, name);
-    m_reader = new NIOReader(this, name);
-    m_decoder = new Decoder(this, m_reader, this, factory, name);
-    m_encoder = new Encoder(this, m_writer, factory);
+    this.listener = listener;
+    writer = new NIOWriter(this, name);
+    reader = new NIOReader(this, name);
+    decoder = new Decoder(this, reader, this, factory, name);
+    encoder = new Encoder(this, writer, factory);
   }
 
   INode getLocalNode() {
-    return m_listener.getLocalNode();
+    return listener.getLocalNode();
   }
 
   INode getRemoteNode(final SocketChannel channel) {
-    return m_listener.getRemoteNode(channel);
+    return listener.getRemoteNode(channel);
   }
 
   /**
@@ -47,9 +47,9 @@ public class NIOSocket implements IErrorReporter {
    * This does not close the sockets we are connected to.
    */
   public void shutDown() {
-    m_writer.shutDown();
-    m_reader.shutDown();
-    m_decoder.shutDown();
+    writer.shutDown();
+    reader.shutDown();
+    decoder.shutDown();
   }
 
   public void send(final SocketChannel to, final MessageHeader header) {
@@ -59,7 +59,7 @@ public class NIOSocket implements IErrorReporter {
     if (header == null) {
       throw new IllegalArgumentException("header cant be null");
     }
-    m_encoder.write(to, header);
+    encoder.write(to, header);
   }
 
   /**
@@ -71,18 +71,18 @@ public class NIOSocket implements IErrorReporter {
       throw new IllegalArgumentException("Channel is blocking");
     }
     // add the decoder first, so it can quarantine the messages!
-    m_decoder.add(channel, conversation);
-    m_reader.add(channel);
+    decoder.add(channel, conversation);
+    reader.add(channel);
   }
 
   void unquarantine(final SocketChannel channel, final QuarantineConversation conversation) {
-    m_listener.socketUnqaurantined(channel, conversation);
+    listener.socketUnqaurantined(channel, conversation);
   }
 
   @Override
   public void error(final SocketChannel channel, final Exception e) {
     close(channel);
-    m_listener.socketError(channel, e);
+    listener.socketError(channel, e);
   }
 
   /**
@@ -104,12 +104,12 @@ public class NIOSocket implements IErrorReporter {
     } catch (final IOException e1) {
       logger.log(Level.FINE, "error closing channel", e1);
     }
-    m_decoder.closed(channel);
-    m_writer.closed(channel);
-    m_reader.closed(channel);
+    decoder.closed(channel);
+    writer.closed(channel);
+    reader.closed(channel);
   }
 
   void messageReceived(final MessageHeader header, final SocketChannel channel) {
-    m_listener.messageReceived(header, channel);
+    listener.messageReceived(header, channel);
   }
 }
