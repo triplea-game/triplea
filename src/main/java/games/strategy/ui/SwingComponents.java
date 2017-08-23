@@ -2,7 +2,6 @@ package games.strategy.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -50,7 +49,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 
@@ -147,19 +145,6 @@ public class SwingComponents {
         keyDownAction.run();
       }
     });
-  }
-
-
-  public static JFrame newJFrame(final String title, final JComponent contents) {
-    final JFrame frame = new JFrame(title);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-    frame.setIconImage(GameRunner.getGameIcon(frame));
-    frame.getContentPane().add(contents, BorderLayout.CENTER);
-    frame.pack();
-
-    frame.setLocationRelativeTo(null);
-    return frame;
   }
 
   public static JTabbedPane newJTabbedPane() {

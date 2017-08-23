@@ -157,8 +157,7 @@ public class GameRunner {
     } else {
       SwingUtilities.invokeLater(() -> {
         setupPanelModel.showSelectType();
-        final MainPanel mainPanel = new MainPanel(setupPanelModel);
-        mainFrame = SwingComponents.newJFrame("TripleA", mainPanel);
+        mainFrame = newMainFrame();
       });
 
       showMainFrame();
@@ -166,6 +165,19 @@ public class GameRunner {
       new Thread(GameRunner::checkLocalSystem).start();
       new Thread(GameRunner::checkForUpdates).start();
     }
+  }
+
+  private static JFrame newMainFrame() {
+    final JFrame frame = new JFrame("TripleA");
+
+    frame.add(new MainPanel(setupPanelModel));
+    frame.pack();
+
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setIconImage(getGameIcon(frame));
+    frame.setLocationRelativeTo(null);
+
+    return frame;
   }
 
   public static FileDialog newFileDialog() {
