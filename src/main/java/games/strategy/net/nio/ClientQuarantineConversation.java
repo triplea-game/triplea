@@ -15,7 +15,7 @@ import games.strategy.net.Node;
 public class ClientQuarantineConversation extends QuarantineConversation {
   private static final Logger logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
 
-  private enum STEP {
+  private enum Step {
     READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
   }
 
@@ -25,7 +25,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private final CountDownLatch showLatch = new CountDownLatch(1);
   private final CountDownLatch doneShowLatch = new CountDownLatch(1);
   private final String macAddress;
-  private STEP step = STEP.READ_CHALLENGE;
+  private Step step = Step.READ_CHALLENGE;
   private String localName;
   private String serverName;
   private InetSocketAddress networkVisibleAddress;
@@ -122,7 +122,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
             }
             send(null);
           }
-          step = STEP.READ_ERROR;
+          step = Step.READ_ERROR;
           return ACTION.NONE;
         case READ_ERROR:
           if (o != null) {
@@ -134,7 +134,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
             send(null);
             return ACTION.TERMINATE;
           }
-          step = STEP.READ_NAMES;
+          step = Step.READ_NAMES;
           return ACTION.NONE;
         case READ_NAMES:
           final String[] strings = ((String[]) o);
@@ -143,7 +143,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           }
           localName = strings[0];
           serverName = strings[1];
-          step = STEP.READ_ADDRESS;
+          step = Step.READ_ADDRESS;
           return ACTION.NONE;
         case READ_ADDRESS:
           // this is the adress that others see us as
