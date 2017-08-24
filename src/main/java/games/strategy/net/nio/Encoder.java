@@ -16,11 +16,11 @@ import games.strategy.net.Node;
  */
 class Encoder {
   private static final Logger logger = Logger.getLogger(Encoder.class.getName());
-  private final NIOWriter writer;
+  private final NioWriter writer;
   private final IObjectStreamFactory objectStreamFactory;
-  private final NIOSocket nioSocket;
+  private final NioSocket nioSocket;
 
-  Encoder(final NIOSocket nioSocket, final NIOWriter writer, final IObjectStreamFactory objectStreamFactory) {
+  Encoder(final NioSocket nioSocket, final NioWriter writer, final IObjectStreamFactory objectStreamFactory) {
     this.nioSocket = nioSocket;
     this.writer = writer;
     this.objectStreamFactory = objectStreamFactory;

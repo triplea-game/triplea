@@ -20,18 +20,18 @@ import games.strategy.net.INode;
 import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
-import games.strategy.net.nio.QuarantineConversation.ACTION;
+import games.strategy.net.nio.QuarantineConversation.Action;
 
 /**
  * A thread to Decode messages from a reader.
  */
 class Decoder {
   private static final Logger logger = Logger.getLogger(Decoder.class.getName());
-  private final NIOReader reader;
+  private final NioReader reader;
   private volatile boolean running = true;
   private final IErrorReporter errorReporter;
   private final IObjectStreamFactory objectStreamFactory;
-  private final NIOSocket nioSocket;
+  private final NioSocket nioSocket;
   /**
    * These sockets are quarantined. They have not logged in, and messages
    * read from them are not passed outside of the quarantine conversation.
@@ -40,7 +40,7 @@ class Decoder {
       new ConcurrentHashMap<>();
   private final Thread thread;
 
-  Decoder(final NIOSocket nioSocket, final NIOReader reader, final IErrorReporter reporter,
+  Decoder(final NioSocket nioSocket, final NioReader reader, final IErrorReporter reporter,
       final IObjectStreamFactory objectStreamFactory, final String threadSuffix) {
     this.reader = reader;
     errorReporter = reporter;
@@ -113,15 +113,15 @@ class Decoder {
 
   private void sendQuarantine(final SocketChannel channel, final QuarantineConversation conversation,
       final MessageHeader header) {
-    final ACTION a = conversation.message(header.getMessage());
-    if (a == ACTION.TERMINATE) {
+    final Action a = conversation.message(header.getMessage());
+    if (a == Action.TERMINATE) {
       if (logger.isLoggable(Level.FINER)) {
         logger.log(Level.FINER, "Terminating quarantined connection to:" + channel.socket().getRemoteSocketAddress());
       }
       conversation.close();
       // we need to indicate the channel was closed
       errorReporter.error(channel, new CouldNotLogInException());
-    } else if (a == ACTION.UNQUARANTINE) {
+    } else if (a == Action.UNQUARANTINE) {
       if (logger.isLoggable(Level.FINER)) {
         logger.log(Level.FINER, "Accepting quarantined connection to:" + channel.socket().getRemoteSocketAddress());
       }

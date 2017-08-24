@@ -21,8 +21,8 @@ import java.util.logging.Logger;
  * Data is written in packets that are enqued on our buffer.
  * Packets are sent to the sockets in the order that they are received.
  */
-class NIOWriter {
-  private static final Logger logger = Logger.getLogger(NIOWriter.class.getName());
+class NioWriter {
+  private static final Logger logger = Logger.getLogger(NioWriter.class.getName());
   private final Selector selector;
   private final IErrorReporter errorReporter;
   // this is the data we are writing
@@ -34,7 +34,7 @@ class NIOWriter {
   private long totalBytes = 0;
   private volatile boolean running = true;
 
-  NIOWriter(final IErrorReporter reporter, final String threadSuffix) {
+  NioWriter(final IErrorReporter reporter, final String threadSuffix) {
     errorReporter = reporter;
     try {
       selector = Selector.open();

@@ -18,18 +18,18 @@ import games.strategy.net.MessageHeader;
  * serializing (encoding) objects to be written across the network is done
  * by threads calling this object.
  */
-public class NIOSocket implements IErrorReporter {
-  private static final Logger logger = Logger.getLogger(NIOSocket.class.getName());
+public class NioSocket implements IErrorReporter {
+  private static final Logger logger = Logger.getLogger(NioSocket.class.getName());
   private final Encoder encoder;
   private final Decoder decoder;
-  private final NIOWriter writer;
-  private final NIOReader reader;
-  private final NIOSocketListener listener;
+  private final NioWriter writer;
+  private final NioReader reader;
+  private final NioSocketListener listener;
 
-  public NIOSocket(final IObjectStreamFactory factory, final NIOSocketListener listener, final String name) {
+  public NioSocket(final IObjectStreamFactory factory, final NioSocketListener listener, final String name) {
     this.listener = listener;
-    writer = new NIOWriter(this, name);
-    reader = new NIOReader(this, name);
+    writer = new NioWriter(this, name);
+    reader = new NioReader(this, name);
     decoder = new Decoder(this, reader, this, factory, name);
     encoder = new Encoder(this, writer, factory);
   }

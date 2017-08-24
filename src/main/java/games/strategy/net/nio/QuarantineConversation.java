@@ -16,14 +16,14 @@ package games.strategy.net.nio;
  * </p>
  */
 public abstract class QuarantineConversation {
-  public enum ACTION {
+  public enum Action {
     NONE, TERMINATE, UNQUARANTINE
   }
 
   /**
    * A message has been read. What should we do?
    */
-  public abstract ACTION message(Object o);
+  public abstract Action message(Object o);
 
   /**
    * called if this conversation has been removed, either after a TERMINATE was

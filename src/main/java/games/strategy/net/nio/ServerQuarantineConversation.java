@@ -31,7 +31,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
 
   private final ILoginValidator validator;
   private final SocketChannel channel;
-  private final NIOSocket socket;
+  private final NioSocket socket;
   private Step step = Step.READ_NAME;
   private String remoteName;
   private String remoteMac;
@@ -39,7 +39,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private final ServerMessenger serverMessenger;
 
   public ServerQuarantineConversation(final ILoginValidator validator, final SocketChannel channel,
-      final NIOSocket socket, final ServerMessenger serverMessenger) {
+      final NioSocket socket, final ServerMessenger serverMessenger) {
     this.validator = validator;
     this.socket = socket;
     this.channel = channel;
@@ -55,7 +55,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   }
 
   @Override
-  public ACTION message(final Object o) {
+  public Action message(final Object o) {
     try {
       switch (step) {
         case READ_NAME:
@@ -65,7 +65,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
             logger.log(Level.FINER, "read name:" + remoteName);
           }
           step = Step.READ_MAC;
-          return ACTION.NONE;
+          return Action.NONE;
         case READ_MAC:
           // read name, send challent
           remoteMac = (String) o;
@@ -80,7 +80,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           }
           send((Serializable) challenge);
           step = Step.CHALLENGE;
-          return ACTION.NONE;
+          return Action.NONE;
         case CHALLENGE:
           @SuppressWarnings("unchecked")
           final Map<String, String> response = (Map<String, String>) o;
@@ -96,7 +96,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
             send(error);
             if (error != null) {
               step = Step.ACK_ERROR;
-              return ACTION.NONE;
+              return Action.NONE;
             }
           } else {
             send(null);
@@ -115,15 +115,15 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           serverMessenger.notifyPlayerLogin(remoteName, channel.socket().getInetAddress().getHostAddress(),
               remoteMac);
           // We are good
-          return ACTION.UNQUARANTINE;
+          return Action.UNQUARANTINE;
         case ACK_ERROR:
-          return ACTION.TERMINATE;
+          return Action.TERMINATE;
         default:
           throw new IllegalStateException("Invalid state");
       }
     } catch (final Throwable t) {
       logger.log(Level.SEVERE, "Error with connection", t);
-      return ACTION.TERMINATE;
+      return Action.TERMINATE;
     }
   }
 
