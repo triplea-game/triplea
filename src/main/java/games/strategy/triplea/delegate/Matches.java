@@ -623,8 +623,8 @@ public final class Matches {
         Matches.unitIsAaThatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAa, airborneTechTargetsAllowed),
         Matches.unitIsAaThatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).invert(),
         Matches.unitIsAaThatCanFireOnRound(battleRoundNumber),
-        (defending ? UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero
-            : UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero));
+        (defending ? unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
+            : unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
   }
 
   private static Match<UnitType> unitTypeIsAaForCombatOnly() {
@@ -665,36 +665,47 @@ public final class Matches {
     return Match.of(obj -> unitTypeIsAaForAnything().match(obj.getType()));
   }
 
-  public static final Match<Unit> UnitIsNotAA = unitIsAaForAnything().invert();
+  public static Match<Unit> unitIsNotAa() {
+    return unitIsAaForAnything().invert();
+  }
 
-  public static final Match<UnitType> UnitTypeMaxAAattacksIsInfinite =
-      Match.of(obj -> UnitAttachment.get(obj).getMaxAAattacks() == -1);
+  private static Match<UnitType> unitTypeMaxAaAttacksIsInfinite() {
+    return Match.of(obj -> UnitAttachment.get(obj).getMaxAAattacks() == -1);
+  }
 
-  public static final Match<Unit> UnitMaxAAattacksIsInfinite =
-      Match.of(obj -> UnitTypeMaxAAattacksIsInfinite.match(obj.getType()));
+  static Match<Unit> unitMaxAaAttacksIsInfinite() {
+    return Match.of(obj -> unitTypeMaxAaAttacksIsInfinite().match(obj.getType()));
+  }
 
-  public static final Match<UnitType> UnitTypeMayOverStackAA =
-      Match.of(obj -> UnitAttachment.get(obj).getMayOverStackAA());
+  private static Match<UnitType> unitTypeMayOverStackAa() {
+    return Match.of(obj -> UnitAttachment.get(obj).getMayOverStackAA());
+  }
 
-  public static final Match<Unit> UnitMayOverStackAA = Match.of(obj -> UnitTypeMayOverStackAA.match(obj.getType()));
+  static Match<Unit> unitMayOverStackAa() {
+    return Match.of(obj -> unitTypeMayOverStackAa().match(obj.getType()));
+  }
 
-  public static final Match<Unit> UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero = Match.of(obj -> {
-    final UnitAttachment ua = UnitAttachment.get(obj.getType());
-    return ua.getAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
-  });
+  static Match<Unit> unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
+    return Match.of(obj -> {
+      final UnitAttachment ua = UnitAttachment.get(obj.getType());
+      return ua.getAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
+    });
+  }
 
-  public static final Match<Unit> UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero = Match.of(obj -> {
-    final UnitAttachment ua = UnitAttachment.get(obj.getType());
-    return ua.getOffensiveAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
-  });
+  static Match<Unit> unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
+    return Match.of(obj -> {
+      final UnitAttachment ua = UnitAttachment.get(obj.getType());
+      return ua.getOffensiveAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
+    });
+  }
 
-  public static final Match<Unit> UnitIsInfantry = Match.of(obj -> {
-    final UnitType type = obj.getUnitType();
-    final UnitAttachment ua = UnitAttachment.get(type);
-    return ua.getIsInfantry();
-  });
+  public static Match<Unit> unitIsInfantry() {
+    return Match.of(obj -> UnitAttachment.get(obj.getUnitType()).getIsInfantry());
+  }
 
-  public static final Match<Unit> UnitIsNotInfantry = UnitIsInfantry.invert();
+  public static Match<Unit> unitIsNotInfantry() {
+    return unitIsInfantry().invert();
+  }
 
   public static final Match<Unit> UnitIsAirTransportable = Match.of(obj -> {
     final TechAttachment ta = TechAttachment.get(obj.getOwner());
@@ -706,7 +717,9 @@ public final class Matches {
     return ua.getIsAirTransportable();
   });
 
-  public static final Match<Unit> UnitIsNotAirTransportable = UnitIsAirTransportable.invert();
+  static Match<Unit> unitIsNotAirTransportable() {
+    return UnitIsAirTransportable.invert();
+  }
 
   public static final Match<Unit> UnitIsAirTransport = Match.of(obj -> {
     final TechAttachment ta = TechAttachment.get(obj.getOwner());
@@ -718,39 +731,49 @@ public final class Matches {
     return ua.getIsAirTransport();
   });
 
-  public static final Match<Unit> UnitIsArtillery = Match.of(obj -> {
-    final UnitType type = obj.getUnitType();
-    final UnitAttachment ua = UnitAttachment.get(type);
-    return ua.getArtillery();
-  });
+  public static Match<Unit> unitIsArtillery() {
+    return Match.of(obj -> UnitAttachment.get(obj.getUnitType()).getArtillery());
+  }
 
-  public static final Match<Unit> UnitIsArtillerySupportable = Match.of(obj -> {
-    final UnitType type = obj.getUnitType();
-    final UnitAttachment ua = UnitAttachment.get(type);
-    return ua.getArtillerySupportable();
-  });
+  public static Match<Unit> unitIsArtillerySupportable() {
+    return Match.of(obj -> UnitAttachment.get(obj.getUnitType()).getArtillerySupportable());
+  }
 
   // TODO: CHECK whether this makes any sense
-  public static final Match<Territory> TerritoryIsLandOrWater = Match.of(Objects::nonNull);
+  public static Match<Territory> territoryIsLandOrWater() {
+    return Match.of(Objects::nonNull);
+  }
 
   public static final Match<Territory> TerritoryIsWater = Match.of(Territory::isWater);
 
-  public static final Match<Territory> TerritoryIsIsland = Match.of(t -> {
-    final Collection<Territory> neighbors = t.getData().getMap().getNeighbors(t);
-    return neighbors.size() == 1 && TerritoryIsWater.match(neighbors.iterator().next());
-  });
+  /**
+   * Returns a match indicating the specified territory is an island.
+   */
+  public static Match<Territory> territoryIsIsland() {
+    return Match.of(t -> {
+      final Collection<Territory> neighbors = t.getData().getMap().getNeighbors(t);
+      return neighbors.size() == 1 && TerritoryIsWater.match(neighbors.iterator().next());
+    });
+  }
 
-  public static final Match<Territory> TerritoryIsVictoryCity = Match.of(t -> {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    if (ta == null) {
-      return false;
-    }
-    return ta.getVictoryCity() != 0;
-  });
+  /**
+   * Returns a match indicating the specified territory is a victory city.
+   */
+  public static Match<Territory> territoryIsVictoryCity() {
+    return Match.of(t -> {
+      final TerritoryAttachment ta = TerritoryAttachment.get(t);
+      if (ta == null) {
+        return false;
+      }
+      return ta.getVictoryCity() != 0;
+    });
+  }
 
   public static final Match<Territory> TerritoryIsLand = TerritoryIsWater.invert();
 
-  public static final Match<Territory> TerritoryIsEmpty = Match.of(t -> t.getUnits().size() == 0);
+  public static Match<Territory> territoryIsEmpty() {
+    return Match.of(t -> t.getUnits().size() == 0);
+  }
 
   /**
    * Tests for Land, Convoys Centers and Convoy Routes, and Contested Territories.
@@ -952,22 +975,34 @@ public final class Matches {
     });
   }
 
-  public static final Match<Territory> TerritoryIsNeutralButNotWater = Match.of(t -> {
-    if (t.isWater()) {
-      return false;
-    }
-    return t.getOwner().equals(PlayerID.NULL_PLAYERID);
-  });
+  /**
+   * Returns a match indicating the specified territory is neutral and not water.
+   */
+  public static Match<Territory> territoryIsNeutralButNotWater() {
+    return Match.of(t -> {
+      if (t.isWater()) {
+        return false;
+      }
+      return t.getOwner().equals(PlayerID.NULL_PLAYERID);
+    });
+  }
 
-  public static final Match<Territory> TerritoryIsImpassable = Match.of(t -> {
-    if (t.isWater()) {
-      return false;
-    }
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    return ta != null && ta.getIsImpassable();
-  });
+  /**
+   * Returns a match indicating the specified territory is impassable.
+   */
+  public static Match<Territory> territoryIsImpassable() {
+    return Match.of(t -> {
+      if (t.isWater()) {
+        return false;
+      }
+      final TerritoryAttachment ta = TerritoryAttachment.get(t);
+      return ta != null && ta.getIsImpassable();
+    });
+  }
 
-  public static final Match<Territory> TerritoryIsNotImpassable = TerritoryIsImpassable.invert();
+  public static Match<Territory> territoryIsNotImpassable() {
+    return territoryIsImpassable().invert();
+  }
 
   static Match<Territory> seaCanMoveOver(final PlayerID player, final GameData data) {
     return Match.of(t -> {
@@ -981,7 +1016,7 @@ public final class Matches {
   static Match<Territory> airCanFlyOver(final PlayerID player, final GameData data,
       final boolean areNeutralsPassableByAir) {
     return Match.of(t -> {
-      if (!areNeutralsPassableByAir && TerritoryIsNeutralButNotWater.match(t)) {
+      if (!areNeutralsPassableByAir && territoryIsNeutralButNotWater().match(t)) {
         return false;
       }
       if (!territoryIsPassableAndNotRestricted(player, data).match(t)) {
@@ -994,7 +1029,7 @@ public final class Matches {
 
   public static Match<Territory> territoryIsPassableAndNotRestricted(final PlayerID player, final GameData data) {
     return Match.of(t -> {
-      if (Matches.TerritoryIsImpassable.match(t)) {
+      if (Matches.territoryIsImpassable().match(t)) {
         return false;
       }
       if (!Properties.getMovementByTerritoryRestricted(data)) {
@@ -1046,11 +1081,11 @@ public final class Matches {
     final boolean areNeutralsPassableByAir =
         neutralsPassable && Properties.getNeutralFlyoverAllowed(data);
     return Match.of(t -> {
-      if (Matches.TerritoryIsImpassable.match(t)) {
+      if (Matches.territoryIsImpassable().match(t)) {
         return false;
       }
       if ((!neutralsPassable || (hasAirUnitsNotBeingTransported && !areNeutralsPassableByAir))
-          && TerritoryIsNeutralButNotWater.match(t)) {
+          && territoryIsNeutralButNotWater().match(t)) {
         return false;
       }
       if (Properties.getMovementByTerritoryRestricted(data)) {
@@ -1092,9 +1127,13 @@ public final class Matches {
     });
   }
 
-  public static final Match<IBattle> BattleIsEmpty = Match.of(IBattle::isEmpty);
+  static Match<IBattle> battleIsEmpty() {
+    return Match.of(IBattle::isEmpty);
+  }
 
-  public static final Match<IBattle> BattleIsAmphibious = Match.of(IBattle::isAmphibious);
+  static Match<IBattle> battleIsAmphibious() {
+    return Match.of(IBattle::isAmphibious);
+  }
 
   public static Match<Unit> unitHasEnoughMovementForRoutes(final List<Route> route) {
     return unitHasEnoughMovementForRoute(Route.create(route));
@@ -1156,7 +1195,9 @@ public final class Matches {
   /**
    * Match units that have at least 1 movement left.
    */
-  public static final Match<Unit> unitHasMovementLeft = Match.of(o -> TripleAUnit.get(o).getMovementLeft() >= 1);
+  public static Match<Unit> unitHasMovementLeft() {
+    return Match.of(o -> TripleAUnit.get(o).getMovementLeft() >= 1);
+  }
 
   public static final Match<Unit> UnitCanMove = Match.of(u -> unitTypeCanMove(u.getOwner()).match(u.getType()));
 
@@ -1528,7 +1569,9 @@ public final class Matches {
 
   public static final Match<Unit> UnitIsLand = Match.allOf(unitIsNotSea(), unitIsNotAir());
 
-  public static final Match<UnitType> UnitTypeIsLand = Match.allOf(unitTypeIsNotSea(), unitTypeIsNotAir());
+  public static Match<UnitType> unitTypeIsLand() {
+    return Match.allOf(unitTypeIsNotSea(), unitTypeIsNotAir());
+  }
 
   public static final Match<Unit> UnitIsNotLand = UnitIsLand.invert();
 
@@ -2223,13 +2266,13 @@ public final class Matches {
             canBeInBattle.add(Matches.unitTypeIsSea().invert());
           }
         } else { // is sea battle
-          canBeInBattle.add(Matches.UnitTypeIsLand.invert());
+          canBeInBattle.add(Matches.unitTypeIsLand().invert());
         }
       } else { // defense
         if (isLandBattle) {
           canBeInBattle.add(Matches.unitTypeIsSea().invert());
         } else { // is sea battle
-          canBeInBattle.add(Matches.UnitTypeIsLand.invert());
+          canBeInBattle.add(Matches.unitTypeIsLand().invert());
         }
       }
 

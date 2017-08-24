@@ -1184,7 +1184,7 @@ class OddsCalculatorPanel extends JPanel {
           // no duplicates or infrastructure allowed. no sea if land, no land if sea.
           if (typesUsed.contains(category.getType()) || Matches.unitTypeIsInfrastructure().match(category.getType())
               || (land && Matches.unitTypeIsSea().match(category.getType()))
-              || (!land && Matches.UnitTypeIsLand.match(category.getType()))) {
+              || (!land && Matches.unitTypeIsLand().match(category.getType()))) {
             continue;
           }
           final String unitName =

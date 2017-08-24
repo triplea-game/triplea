@@ -226,7 +226,7 @@ public class ProMatches {
 
   private static Match<Territory> territoryHasNonMobileInfraFactory() {
     final Match<Unit> nonMobileInfraFactoryMatch = Match.allOf(Matches.UnitCanProduceUnits,
-        Matches.UnitIsInfrastructure, Matches.unitHasMovementLeft.invert());
+        Matches.UnitIsInfrastructure, Matches.unitHasMovementLeft().invert());
     return Matches.territoryHasUnitsThatMatch(nonMobileInfraFactoryMatch);
   }
 
@@ -276,13 +276,13 @@ public class ProMatches {
   }
 
   public static Match<Territory> territoryIsEnemyNotNeutralLand(final PlayerID player, final GameData data) {
-    return Match.allOf(territoryIsEnemyLand(player, data), Matches.TerritoryIsNeutralButNotWater.invert());
+    return Match.allOf(territoryIsEnemyLand(player, data), Matches.territoryIsNeutralButNotWater().invert());
   }
 
   public static Match<Territory> territoryIsOrAdjacentToEnemyNotNeutralLand(final PlayerID player,
       final GameData data) {
     final Match<Territory> isMatch =
-        Match.allOf(territoryIsEnemyLand(player, data), Matches.TerritoryIsNeutralButNotWater.invert());
+        Match.allOf(territoryIsEnemyLand(player, data), Matches.territoryIsNeutralButNotWater().invert());
     final Match<Territory> adjacentMatch = Match.allOf(territoryCanMoveLandUnits(player, data, false),
         Matches.territoryHasNeighborMatching(data, isMatch));
     return Match.anyOf(isMatch, adjacentMatch);
@@ -347,7 +347,7 @@ public class ProMatches {
   }
 
   private static Match<Unit> unitCanBeMovedAndIsOwned(final PlayerID player) {
-    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft);
+    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft());
   }
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedAir(final PlayerID player, final boolean isCombatMove) {
@@ -409,7 +409,7 @@ public class ProMatches {
   public static Match<Unit> unitCantBeMovedAndIsAlliedDefender(final PlayerID player, final GameData data,
       final Territory t) {
     final Match<Unit> myUnitHasNoMovementMatch =
-        Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft.invert());
+        Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft().invert());
     final Match<Unit> alliedUnitMatch =
         Match.allOf(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data),
             Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(t.getUnits().getUnits(), null, player,
@@ -508,7 +508,7 @@ public class ProMatches {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitIsOwnedTransportableUnit(player), Matches.unitHasNotMoved(),
-          Matches.unitHasMovementLeft, Matches.unitIsBeingTransported().invert());
+          Matches.unitHasMovementLeft(), Matches.unitIsBeingTransported().invert());
       return match.match(u);
     });
   }

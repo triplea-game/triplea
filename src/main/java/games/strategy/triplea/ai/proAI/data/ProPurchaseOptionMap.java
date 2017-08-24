@@ -76,7 +76,7 @@ public class ProPurchaseOptionMap {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         aaOptions.add(ppo);
         ProLogger.debug("AA: " + ppo);
-      } else if (Matches.UnitTypeIsLand.match(unitType)) {
+      } else if (Matches.unitTypeIsLand().match(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         landFodderOptions.add(ppo);
         if (ppo.getAttack() >= ppo.getDefense() || ppo.isAttackSupport() || ppo.getMovement() > 1) {

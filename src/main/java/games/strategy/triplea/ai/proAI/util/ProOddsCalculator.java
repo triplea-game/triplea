@@ -143,7 +143,7 @@ public class ProOddsCalculator {
     final List<Unit> mainCombatDefenders =
         Match.getMatches(defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, false, true, true));
     double tuvSwing = results.getAverageTUVswing(attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
-    if (Matches.TerritoryIsNeutralButNotWater.match(t)) { // Set TUV swing for neutrals
+    if (Matches.territoryIsNeutralButNotWater().match(t)) { // Set TUV swing for neutrals
       final double attackingUnitValue = TuvUtils.getTuv(mainCombatAttackers, ProData.unitValueMap);
       final double remainingUnitValue =
           results.getAverageTUVofUnitsLeftOver(ProData.unitValueMap, ProData.unitValueMap).getFirst();

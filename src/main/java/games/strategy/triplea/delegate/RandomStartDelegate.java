@@ -222,8 +222,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   public Match<Territory> getTerritoryPickableMatch() {
-    return Match.allOf(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
-        Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.TerritoryIsEmpty);
+    return Match.allOf(Matches.TerritoryIsLand, Matches.territoryIsNotImpassable(),
+        Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.territoryIsEmpty());
   }
 
   private Match<PlayerID> getPlayerCanPickMatch() {
