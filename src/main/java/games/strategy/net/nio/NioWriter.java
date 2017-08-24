@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 class NioWriter {
   private static final Logger logger = Logger.getLogger(NioWriter.class.getName());
   private final Selector selector;
-  private final IErrorReporter errorReporter;
+  private final ErrorReporter errorReporter;
   // this is the data we are writing
   private final Map<SocketChannel, List<SocketWriteData>> writing = new HashMap<>();
   // these are the sockets we arent selecting on, but should now
@@ -34,7 +34,7 @@ class NioWriter {
   private long totalBytes = 0;
   private volatile boolean running = true;
 
-  NioWriter(final IErrorReporter reporter, final String threadSuffix) {
+  NioWriter(final ErrorReporter reporter, final String threadSuffix) {
     errorReporter = reporter;
     try {
       selector = Selector.open();

@@ -18,7 +18,7 @@ import games.strategy.net.MessageHeader;
  * serializing (encoding) objects to be written across the network is done
  * by threads calling this object.
  */
-public class NioSocket implements IErrorReporter {
+public class NioSocket implements ErrorReporter {
   private static final Logger logger = Logger.getLogger(NioSocket.class.getName());
   private final Encoder encoder;
   private final Decoder decoder;

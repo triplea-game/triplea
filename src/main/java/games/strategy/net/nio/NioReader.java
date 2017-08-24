@@ -28,13 +28,13 @@ class NioReader {
   private final LinkedBlockingQueue<SocketReadData> outputQueue = new LinkedBlockingQueue<>();
   private volatile boolean running = true;
   private final Map<SocketChannel, SocketReadData> reading = new ConcurrentHashMap<>();
-  private final IErrorReporter errorReporter;
+  private final ErrorReporter errorReporter;
   private final Selector selector;
   private final Object socketsToAddMutex = new Object();
   private final List<SocketChannel> socketsToAdd = new ArrayList<>();
   private long totalBytes;
 
-  NioReader(final IErrorReporter reporter, final String threadSuffix) {
+  NioReader(final ErrorReporter reporter, final String threadSuffix) {
     errorReporter = reporter;
     try {
       selector = Selector.open();

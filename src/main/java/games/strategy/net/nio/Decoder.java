@@ -29,7 +29,7 @@ class Decoder {
   private static final Logger logger = Logger.getLogger(Decoder.class.getName());
   private final NioReader reader;
   private volatile boolean running = true;
-  private final IErrorReporter errorReporter;
+  private final ErrorReporter errorReporter;
   private final IObjectStreamFactory objectStreamFactory;
   private final NioSocket nioSocket;
   /**
@@ -40,7 +40,7 @@ class Decoder {
       new ConcurrentHashMap<>();
   private final Thread thread;
 
-  Decoder(final NioSocket nioSocket, final NioReader reader, final IErrorReporter reporter,
+  Decoder(final NioSocket nioSocket, final NioReader reader, final ErrorReporter reporter,
       final IObjectStreamFactory objectStreamFactory, final String threadSuffix) {
     this.reader = reader;
     errorReporter = reporter;
