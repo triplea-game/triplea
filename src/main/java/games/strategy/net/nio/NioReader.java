@@ -19,22 +19,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A thread that reads socket data using NIO from a collection of sockets.<br>
- * Data is read in packets, and placed in the output queye.<br>
+ * A thread that reads socket data using NIO from a collection of sockets.
+ * Data is read in packets, and placed in the output queue.
  * Packets are placed in the output queue in order they are read from the socket.
  */
-class NIOReader {
-  private static final Logger logger = Logger.getLogger(NIOReader.class.getName());
+class NioReader {
+  private static final Logger logger = Logger.getLogger(NioReader.class.getName());
   private final LinkedBlockingQueue<SocketReadData> outputQueue = new LinkedBlockingQueue<>();
   private volatile boolean running = true;
   private final Map<SocketChannel, SocketReadData> reading = new ConcurrentHashMap<>();
-  private final IErrorReporter errorReporter;
+  private final ErrorReporter errorReporter;
   private final Selector selector;
   private final Object socketsToAddMutex = new Object();
   private final List<SocketChannel> socketsToAdd = new ArrayList<>();
   private long totalBytes;
 
-  NIOReader(final IErrorReporter reporter, final String threadSuffix) {
+  NioReader(final ErrorReporter reporter, final String threadSuffix) {
     errorReporter = reporter;
     try {
       selector = Selector.open();

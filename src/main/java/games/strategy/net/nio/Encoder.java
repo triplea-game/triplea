@@ -1,5 +1,6 @@
 package games.strategy.net.nio;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -16,11 +17,11 @@ import games.strategy.net.Node;
  */
 class Encoder {
   private static final Logger logger = Logger.getLogger(Encoder.class.getName());
-  private final NIOWriter writer;
+  private final NioWriter writer;
   private final IObjectStreamFactory objectStreamFactory;
-  private final NIOSocket nioSocket;
+  private final NioSocket nioSocket;
 
-  Encoder(final NIOSocket nioSocket, final NIOWriter writer, final IObjectStreamFactory objectStreamFactory) {
+  Encoder(final NioSocket nioSocket, final NioWriter writer, final IObjectStreamFactory objectStreamFactory) {
     this.nioSocket = nioSocket;
     this.writer = writer;
     this.objectStreamFactory = objectStreamFactory;
@@ -89,5 +90,18 @@ class Encoder {
       out.writeObject(header.getMessage());
     }
     out.reset();
+  }
+
+  /**
+   * Provide access to the raw buffer.
+   */
+  private static final class ByteArrayOutputStream2 extends ByteArrayOutputStream {
+    ByteArrayOutputStream2(final int size) {
+      super(size);
+    }
+
+    byte[] getBuffer() {
+      return buf;
+    }
   }
 }

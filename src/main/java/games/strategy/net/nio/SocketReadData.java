@@ -99,11 +99,11 @@ class SocketReadData {
    * This method can only be called once.
    */
   public byte[] getData() {
-    final byte[] rVal = new byte[contentBuffer.capacity()];
+    final byte[] data = new byte[contentBuffer.capacity()];
     contentBuffer.flip();
-    contentBuffer.get(rVal);
+    contentBuffer.get(data);
     contentBuffer = null;
-    return rVal;
+    return data;
   }
 
   public int size() {

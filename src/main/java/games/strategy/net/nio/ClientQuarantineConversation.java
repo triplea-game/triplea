@@ -12,6 +12,9 @@ import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 
+/**
+ * Client-side implementation of {@link QuarantineConversation}.
+ */
 public class ClientQuarantineConversation extends QuarantineConversation {
   private static final Logger logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
 
@@ -21,7 +24,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
 
   private final IConnectionLogin login;
   private final SocketChannel channel;
-  private final NIOSocket socket;
+  private final NioSocket socket;
   private final CountDownLatch showLatch = new CountDownLatch(1);
   private final CountDownLatch doneShowLatch = new CountDownLatch(1);
   private final String macAddress;
@@ -35,7 +38,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private volatile boolean isClosed = false;
   private volatile String errorMessage;
 
-  public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NIOSocket socket,
+  public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NioSocket socket,
       final String localName, final String mac) {
     this.login = login;
     this.localName = localName;
@@ -64,8 +67,11 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     return serverName;
   }
 
+  /**
+   * Prompts the user to enter their credentials.
+   */
   public void showCredentials() {
-    /**
+    /*
      * We need to do this in the thread that created the socket, since
      * the thread that creates the socket will often be, or will block the
      * swing event thread, but the getting of a username/password
@@ -91,7 +97,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
 
   @Override
   @SuppressWarnings("unchecked")
-  public ACTION message(final Object o) {
+  public Action message(final Object o) {
     try {
       switch (step) {
         case READ_CHALLENGE:
@@ -109,7 +115,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
               // ignore
             }
             if (isClosed) {
-              return ACTION.NONE;
+              return Action.NONE;
             }
             if (logger.isLoggable(Level.FINER)) {
               logger.log(Level.FINER, "writing response" + challengeResponse);
@@ -123,7 +129,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
             send(null);
           }
           step = Step.READ_ERROR;
-          return ACTION.NONE;
+          return Action.NONE;
         case READ_ERROR:
           if (o != null) {
             if (logger.isLoggable(Level.FINER)) {
@@ -132,10 +138,10 @@ public class ClientQuarantineConversation extends QuarantineConversation {
             errorMessage = (String) o;
             // acknowledge the error
             send(null);
-            return ACTION.TERMINATE;
+            return Action.TERMINATE;
           }
           step = Step.READ_NAMES;
-          return ACTION.NONE;
+          return Action.NONE;
         case READ_NAMES:
           final String[] strings = ((String[]) o);
           if (logger.isLoggable(Level.FINER)) {
@@ -144,7 +150,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           localName = strings[0];
           serverName = strings[1];
           step = Step.READ_ADDRESS;
-          return ACTION.NONE;
+          return Action.NONE;
         case READ_ADDRESS:
           // this is the adress that others see us as
           final InetSocketAddress[] address = (InetSocketAddress[]) o;
@@ -157,7 +163,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
             logger.log(Level.FINE, "network visible address:" + networkVisibleAddress);
             logger.log(Level.FINE, "channel local adresss:" + channel.socket().getLocalSocketAddress());
           }
-          return ACTION.UNQUARANTINE;
+          return Action.UNQUARANTINE;
         default:
           throw new IllegalStateException("Invalid state");
       }
@@ -166,7 +172,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
       showLatch.countDown();
       doneShowLatch.countDown();
       logger.log(Level.SEVERE, "error with connection", t);
-      return ACTION.TERMINATE;
+      return Action.TERMINATE;
     }
   }
 

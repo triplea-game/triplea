@@ -8,7 +8,7 @@ import games.strategy.net.MessageHeader;
 /**
  * Call backs for an NIO Socket.
  */
-public interface NIOSocketListener {
+public interface NioSocketListener {
   /**
    * This connection will leave quarantine.
    * Messages on this channel will not be read until after this method returns, allowing for setup of the

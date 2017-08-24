@@ -17,14 +17,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A thread that writes socket data using NIO .<br>
- * Data is written in packets that are enqued on our buffer.
+ * A thread that writes socket data using NIO .
+ * Data is written in packets that are enqueued on our buffer.
  * Packets are sent to the sockets in the order that they are received.
  */
-class NIOWriter {
-  private static final Logger logger = Logger.getLogger(NIOWriter.class.getName());
+class NioWriter {
+  private static final Logger logger = Logger.getLogger(NioWriter.class.getName());
   private final Selector selector;
-  private final IErrorReporter errorReporter;
+  private final ErrorReporter errorReporter;
   // this is the data we are writing
   private final Map<SocketChannel, List<SocketWriteData>> writing = new HashMap<>();
   // these are the sockets we arent selecting on, but should now
@@ -34,7 +34,7 @@ class NIOWriter {
   private long totalBytes = 0;
   private volatile boolean running = true;
 
-  NIOWriter(final IErrorReporter reporter, final String threadSuffix) {
+  NioWriter(final ErrorReporter reporter, final String threadSuffix) {
     errorReporter = reporter;
     try {
       selector = Selector.open();

@@ -20,18 +20,18 @@ import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.nio.ClientQuarantineConversation;
-import games.strategy.net.nio.NIOSocket;
-import games.strategy.net.nio.NIOSocketListener;
+import games.strategy.net.nio.NioSocket;
+import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.util.ThreadUtil;
 
-public class ClientMessenger implements IClientMessenger, NIOSocketListener {
+public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode m_node;
   private final List<IMessageListener> m_listeners = new CopyOnWriteArrayList<>();
   private final List<IMessengerErrorListener> m_errorListeners = new CopyOnWriteArrayList<>();
   private final CountDownLatch m_initLatch = new CountDownLatch(1);
   private Exception m_connectionRefusedError;
-  private final NIOSocket m_socket;
+  private final NioSocket m_socket;
   private final SocketChannel m_socketChannel;
   private INode m_serverNode;
   private volatile boolean m_shutDown = false;
@@ -94,7 +94,7 @@ public class ClientMessenger implements IClientMessenger, NIOSocketListener {
     }
     final Socket socket = m_socketChannel.socket();
     socket.setKeepAlive(true);
-    m_socket = new NIOSocket(streamFact, this, name);
+    m_socket = new NioSocket(streamFact, this, name);
     final ClientQuarantineConversation conversation =
         new ClientQuarantineConversation(login, m_socketChannel, m_socket, name, mac);
     m_socket.add(m_socketChannel, conversation);

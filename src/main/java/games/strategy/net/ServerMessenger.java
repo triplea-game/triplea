@@ -34,21 +34,21 @@ import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.SpokeInvoke;
-import games.strategy.net.nio.NIOSocket;
-import games.strategy.net.nio.NIOSocketListener;
+import games.strategy.net.nio.NioSocket;
+import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.net.nio.ServerQuarantineConversation;
 
 /**
  * A Messenger that can have many clients connected to it.
  */
-public class ServerMessenger implements IServerMessenger, NIOSocketListener {
+public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private static final Logger logger = Logger.getLogger(ServerMessenger.class.getName());
   private final Selector acceptorSelector;
   private final ServerSocketChannel socketChannel;
   private final Node node;
   private boolean shutdown = false;
-  private final NIOSocket nioSocket;
+  private final NioSocket nioSocket;
   private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
   private final List<IMessengerErrorListener> errorListeners = new CopyOnWriteArrayList<>();
   private final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
@@ -65,7 +65,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener {
     socketChannel.configureBlocking(false);
     socketChannel.socket().setReuseAddress(true);
     socketChannel.socket().bind(new InetSocketAddress(portNumber), 10);
-    nioSocket = new NIOSocket(streamFactory, this, "Server");
+    nioSocket = new NioSocket(streamFactory, this, "Server");
     acceptorSelector = Selector.open();
     if (IPFinder.findInetAddress() != null) {
       node = new Node(name, IPFinder.findInetAddress(), portNumber);
