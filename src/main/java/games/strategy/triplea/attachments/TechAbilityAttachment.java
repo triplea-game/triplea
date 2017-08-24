@@ -1260,7 +1260,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allSubs =
-              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsSub);
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsSub());
           for (final UnitType sub : allSubs) {
             taa.setAttackBonus("1:" + sub.getName());
           }

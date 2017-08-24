@@ -453,7 +453,7 @@ public class ProMatches {
   }
 
   public static Match<Unit> unitIsEnemyNotLand(final PlayerID player, final GameData data) {
-    return Match.allOf(Matches.enemyUnit(player, data), Matches.UnitIsNotLand);
+    return Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsNotLand());
   }
 
   static Match<Unit> unitIsEnemyNotNeutral(final PlayerID player, final GameData data) {
@@ -485,7 +485,7 @@ public class ProMatches {
   }
 
   public static Match<Unit> unitIsOwnedNotLand(final PlayerID player) {
-    return Match.allOf(Matches.UnitIsNotLand, Matches.unitIsOwnedBy(player));
+    return Match.allOf(Matches.unitIsNotLand(), Matches.unitIsOwnedBy(player));
   }
 
   public static Match<Unit> unitIsOwnedTransport(final PlayerID player) {
@@ -493,12 +493,12 @@ public class ProMatches {
   }
 
   public static Match<Unit> unitIsOwnedTransportableUnit(final PlayerID player) {
-    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCanBeTransported(), Matches.UnitCanMove);
+    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCanBeTransported(), Matches.unitCanMove());
   }
 
   public static Match<Unit> unitIsOwnedCombatTransportableUnit(final PlayerID player) {
     return Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCanBeTransported(),
-        Matches.unitCanNotMoveDuringCombatMove().invert(), Matches.UnitCanMove);
+        Matches.unitCanNotMoveDuringCombatMove().invert(), Matches.unitCanMove());
   }
 
   public static Match<Unit> unitIsOwnedTransportableUnitAndCanBeLoaded(final PlayerID player,
@@ -522,7 +522,7 @@ public class ProMatches {
    */
   public static Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory t) {
     return Match.of(unitWhichRequiresUnits -> {
-      if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits)) {
+      if (!Matches.unitRequiresUnitsOnCreation().match(unitWhichRequiresUnits)) {
         return true;
       }
       final Collection<Unit> unitsAtStartOfTurnInProducer = t.getUnits().getUnits();

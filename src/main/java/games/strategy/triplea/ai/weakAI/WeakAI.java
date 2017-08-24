@@ -449,7 +449,7 @@ public class WeakAI extends AbstractAI {
           Matches.unitIsOwnedBy(player),
           Matches.unitIsNotAa(),
           // we can never move factories
-          Matches.UnitCanMove,
+          Matches.unitCanMove(),
           Matches.UnitIsNotInfrastructure,
           Matches.UnitIsLand);
       final Match<Territory> moveThrough =
@@ -612,7 +612,7 @@ public class WeakAI extends AbstractAI {
           Collections.sort(unitsSortedByCost, AIUtils.getCostComparator());
           for (final Unit unit : unitsSortedByCost) {
             final Match<Unit> match = Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsLand,
-                Matches.UnitIsNotInfrastructure, Matches.UnitCanMove, Matches.unitIsNotAa(),
+                Matches.UnitIsNotInfrastructure, Matches.unitCanMove(), Matches.unitIsNotAa(),
                 Matches.unitCanNotMoveDuringCombatMove().invert());
             if (!unitsAlreadyMoved.contains(unit) && match.match(unit)) {
               moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
@@ -644,7 +644,7 @@ public class WeakAI extends AbstractAI {
             Matches.UnitIsStrategicBomber.invert(),
             Match.of(o -> !unitsAlreadyMoved.contains(o)),
             Matches.unitIsNotAa(),
-            Matches.UnitCanMove,
+            Matches.unitCanMove(),
             Matches.UnitIsNotInfrastructure,
             Matches.unitCanNotMoveDuringCombatMove().invert(),
             Matches.unitIsNotSea());
@@ -750,7 +750,7 @@ public class WeakAI extends AbstractAI {
           if (Matches.unitTypeIsSea().match(results) || Matches.unitTypeIsAir().match(results)
               || Matches.unitTypeIsInfrastructure().match(results) || Matches.unitTypeIsAaForAnything().match(results)
               || Matches.unitTypeHasMaxBuildRestrictions().match(results)
-              || Matches.UnitTypeConsumesUnitsOnCreation.match(results)
+              || Matches.unitTypeConsumesUnitsOnCreation().match(results)
               || Matches.unitTypeIsStatic(player).match(results)) {
             continue;
           }
@@ -945,7 +945,7 @@ public class WeakAI extends AbstractAI {
             || Matches.unitTypeIsInfrastructure().match(results)
             || Matches.unitTypeIsAaForAnything().match(results)
             || Matches.unitTypeHasMaxBuildRestrictions().match(results)
-            || Matches.UnitTypeConsumesUnitsOnCreation.match(results)
+            || Matches.unitTypeConsumesUnitsOnCreation().match(results)
             || Matches.unitTypeIsStatic(player).match(results)) {
           continue;
         }

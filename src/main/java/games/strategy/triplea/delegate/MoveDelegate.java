@@ -478,7 +478,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Set<Unit> repairUnitsForThisUnit = new HashSet<>();
     final PlayerID owner = unitToBeRepaired.getOwner();
     final Match<Unit> repairUnit = Match.allOf(Matches.alliedUnit(owner, data),
-        Matches.UnitCanRepairOthers, Matches.unitCanRepairThisUnit(unitToBeRepaired));
+        Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired));
     repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
     if (Matches.UnitIsSea.match(unitToBeRepaired)) {
       final Match<Unit> repairUnitLand = Match.allOf(repairUnit, Matches.UnitIsLand);

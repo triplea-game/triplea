@@ -436,7 +436,7 @@ public class MoveValidator {
       if (!onlyIgnoredUnitsOnPath(route, player, data, false)) {
         final Match<Unit> friendlyOrSubmerged = Match.anyOf(
             Matches.enemyUnit(player, data).invert(),
-            Matches.UnitIsSubmerged);
+            Matches.unitIsSubmerged());
         if (!end.getUnits().allMatch(friendlyOrSubmerged)
             && !(!units.isEmpty() && Match.allMatch(units, Matches.UnitIsAir) && end.isWater())) {
           if (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsSub)
@@ -753,7 +753,7 @@ public class MoveValidator {
    */
   static boolean noEnemyUnitsOnPathMiddleSteps(final Route route, final PlayerID player, final GameData data) {
     final Match<Unit> alliedOrNonCombat =
-        Match.anyOf(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data).invert(), Matches.UnitIsSubmerged);
+        Match.anyOf(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data).invert(), Matches.unitIsSubmerged());
     // Submerged units do not interfere with movement
     for (final Territory current : route.getMiddleSteps()) {
       if (!current.getUnits().allMatch(alliedOrNonCombat)) {
@@ -1087,7 +1087,7 @@ public class MoveValidator {
         return result.setErrorReturnResult("Units cannot move before loading onto transports");
       }
       final Match<Unit> enemyNonSubmerged =
-          Match.allOf(Matches.enemyUnit(player, data), Matches.UnitIsSubmerged.invert());
+          Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsSubmerged().invert());
       if (route.getEnd().getUnits().anyMatch(enemyNonSubmerged) && nonParatroopersPresent(player, landAndAir)) {
         if (!onlyIgnoredUnitsOnPath(route, player, data, false)) {
           if (!AbstractMoveDelegate.getBattleTracker(data).didAllThesePlayersJustGoToWarThisTurn(player,
