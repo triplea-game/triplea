@@ -45,8 +45,8 @@ public class UserController implements UserDao {
       ps.close();
       return returnValue == null ? null : new HashedPassword(returnValue);
     } catch (final SQLException sqle) {
-      logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      logger.log(Level.SEVERE, "Error for testing user existence:" + userName, sqle);
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -65,8 +65,8 @@ public class UserController implements UserDao {
       ps.close();
       return found;
     } catch (final SQLException sqle) {
-      logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      logger.log(Level.SEVERE, "Error for testing user existence:" + userName, sqle);
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -153,7 +153,7 @@ public class UserController implements UserDao {
     } catch (final SQLException sqle) {
       logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword.mask(),
           sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     }
   }
 
@@ -176,8 +176,8 @@ public class UserController implements UserDao {
       ps.close();
       return user;
     } catch (final SQLException sqle) {
-      logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      logger.log(Level.SEVERE, "Error for testing user existence:" + userName, sqle);
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

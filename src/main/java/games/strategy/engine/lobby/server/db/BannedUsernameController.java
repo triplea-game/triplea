@@ -57,7 +57,7 @@ public class BannedUsernameController {
         return;
       }
       logger.log(Level.SEVERE, "Error inserting banned username:" + username, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -74,7 +74,7 @@ public class BannedUsernameController {
       con.commit();
     } catch (final SQLException sqle) {
       logger.log(Level.SEVERE, "Error deleting banned username:" + username, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -106,8 +106,8 @@ public class BannedUsernameController {
       rs.close();
       ps.close();
     } catch (final SQLException sqle) {
-      logger.info("Error for testing banned username existence:" + username + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      logger.log(Level.SEVERE, "Error for testing banned username existence:" + username, sqle);
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

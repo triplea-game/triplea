@@ -56,7 +56,7 @@ public class BannedMacController {
         return;
       }
       logger.log(Level.SEVERE, "Error inserting banned mac:" + mac, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -73,7 +73,7 @@ public class BannedMacController {
       con.commit();
     } catch (final SQLException sqle) {
       logger.log(Level.SEVERE, "Error deleting banned mac:" + mac, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -105,8 +105,8 @@ public class BannedMacController {
       rs.close();
       ps.close();
     } catch (final SQLException sqle) {
-      logger.info("Error for testing banned mac existence:" + mac + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      logger.log(Level.SEVERE, "Error for testing banned mac existence:" + mac, sqle);
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

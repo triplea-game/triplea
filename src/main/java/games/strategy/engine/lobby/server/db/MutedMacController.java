@@ -54,7 +54,7 @@ public class MutedMacController {
         return;
       }
       logger.log(Level.SEVERE, "Error inserting muted mac:" + mac, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -71,7 +71,7 @@ public class MutedMacController {
       con.commit();
     } catch (final SQLException sqle) {
       logger.log(Level.SEVERE, "Error deleting muted mac:" + mac, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -112,8 +112,8 @@ public class MutedMacController {
       rs.close();
       ps.close();
     } catch (final SQLException sqle) {
-      logger.info("Error for testing muted mac existence:" + mac + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      logger.log(Level.SEVERE, "Error for testing muted mac existence:" + mac, sqle);
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

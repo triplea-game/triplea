@@ -170,7 +170,7 @@ class BattleStepsPanel extends JPanel implements Active {
       if (listModel.indexOf(step) != -1) {
         targetStep = step;
       } else {
-        log.info("Could not find step name:" + step);
+        log.warning("Could not find step name:" + step);
       }
     }
     goToTarget();

@@ -32,7 +32,7 @@ public class BadWordController {
         return;
       }
       logger.log(Level.SEVERE, "Error inserting banned word:" + word, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -49,7 +49,7 @@ public class BadWordController {
       con.commit();
     } catch (final SQLException sqle) {
       logger.log(Level.SEVERE, "Error deleting banned word:" + word, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -69,8 +69,8 @@ public class BadWordController {
       ps.close();
       return rVal;
     } catch (final SQLException sqle) {
-      logger.info("Error reading bad words error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      logger.log(Level.SEVERE, "Error reading bad words", sqle);
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

@@ -55,7 +55,7 @@ public class MutedUsernameController {
         return;
       }
       logger.log(Level.SEVERE, "Error inserting muted username:" + username, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -72,7 +72,7 @@ public class MutedUsernameController {
       con.commit();
     } catch (final SQLException sqle) {
       logger.log(Level.SEVERE, "Error deleting muted username:" + username, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -113,8 +113,8 @@ public class MutedUsernameController {
       rs.close();
       ps.close();
     } catch (final SQLException sqle) {
-      logger.info("Error for testing muted username existence:" + username + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      logger.log(Level.SEVERE, "Error for testing muted username existence:" + username, sqle);
+      throw new IllegalStateException(sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
