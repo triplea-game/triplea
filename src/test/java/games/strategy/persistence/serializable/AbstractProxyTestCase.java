@@ -1,6 +1,7 @@
 package games.strategy.persistence.serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.test.Matchers.equalTo;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -13,9 +14,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Test;
+
+import games.strategy.test.EqualityComparator;
+import games.strategy.test.EqualityComparatorRegistry;
 
 /**
  * A fixture for testing the basic aspects of proxy classes.
@@ -23,6 +28,9 @@ import org.junit.Test;
  * @param <T> The type of the principal to be proxied.
  */
 public abstract class AbstractProxyTestCase<T> {
+  private final EqualityComparatorRegistry equalityComparatorRegistry =
+      EqualityComparatorRegistry.newInstance(getEqualityComparators());
+
   private final Class<T> principalType;
 
   private final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance(getProxyFactories());
@@ -37,7 +45,9 @@ public abstract class AbstractProxyTestCase<T> {
    * Asserts that the specified principals are equal.
    *
    * <p>
-   * This implementation compares the two objects using the {@code equals} method.
+   * This implementation compares the two objects using the {@link games.strategy.test.Matchers#equalTo(Object)} matcher
+   * with an equality comparator registry composed of the items from {@link #getEqualityComparators()}. Subclasses may
+   * override and are not required to call the superclass implementation.
    * </p>
    *
    * @param expected The expected principal.
@@ -46,7 +56,7 @@ public abstract class AbstractProxyTestCase<T> {
    * @throws AssertionError If the two principals are not equal.
    */
   protected void assertPrincipalEquals(final T expected, final T actual) {
-    assertThat(actual, is(expected));
+    assertThat(actual, equalTo(expected).withEqualityComparatorRegistry(equalityComparatorRegistry));
   }
 
   /**
@@ -55,6 +65,21 @@ public abstract class AbstractProxyTestCase<T> {
    * @return The collection of principals to be tested.
    */
   protected abstract Collection<T> createPrincipals();
+
+  /**
+   * Gets the collection of equality comparators required to compare two instances of the principal type for equality.
+   *
+   * <p>
+   * This implementation returns an empty collection. Subclasses may override and are not required to call the
+   * superclass implementation.
+   * </p>
+   *
+   * @return The collection of equality comparators required to compare two instances of the principal type for
+   *         equality.
+   */
+  protected Collection<EqualityComparator> getEqualityComparators() {
+    return Arrays.asList();
+  }
 
   /**
    * Gets the collection of proxy factories required for the principal to be persisted.
