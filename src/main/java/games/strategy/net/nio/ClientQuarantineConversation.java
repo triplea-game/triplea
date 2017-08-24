@@ -12,6 +12,9 @@ import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 
+/**
+ * Client-side implementation of {@link QuarantineConversation}.
+ */
 public class ClientQuarantineConversation extends QuarantineConversation {
   private static final Logger logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
 
@@ -64,8 +67,11 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     return serverName;
   }
 
+  /**
+   * Prompts the user to enter their credentials.
+   */
   public void showCredentials() {
-    /**
+    /*
      * We need to do this in the thread that created the socket, since
      * the thread that creates the socket will often be, or will block the
      * swing event thread, but the getting of a username/password

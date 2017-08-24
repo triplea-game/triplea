@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A thread that writes socket data using NIO .<br>
- * Data is written in packets that are enqued on our buffer.
+ * A thread that writes socket data using NIO .
+ * Data is written in packets that are enqueued on our buffer.
  * Packets are sent to the sockets in the order that they are received.
  */
 class NioWriter {

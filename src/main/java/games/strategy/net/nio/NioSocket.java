@@ -52,6 +52,12 @@ public class NioSocket implements IErrorReporter {
     decoder.shutDown();
   }
 
+  /**
+   * Sends the specified message header through the specified channel.
+   *
+   * @param to The destination channel.
+   * @param header The message header to send.
+   */
   public void send(final SocketChannel to, final MessageHeader header) {
     if (to == null) {
       throw new IllegalArgumentException("to cant be null!");

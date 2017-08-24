@@ -12,8 +12,11 @@ import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
 
+/**
+ * Server-side implementation of {@link QuarantineConversation}.
+ */
 public class ServerQuarantineConversation extends QuarantineConversation {
-  /**
+  /*
    * Communication sequence
    * 1) server reads client name
    * 2) server sends challenge (or null if no challenge is to be made)

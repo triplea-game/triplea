@@ -19,8 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A thread that reads socket data using NIO from a collection of sockets.<br>
- * Data is read in packets, and placed in the output queye.<br>
+ * A thread that reads socket data using NIO from a collection of sockets.
+ * Data is read in packets, and placed in the output queue.
  * Packets are placed in the output queue in order they are read from the socket.
  */
 class NioReader {

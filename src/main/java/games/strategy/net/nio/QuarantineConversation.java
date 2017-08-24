@@ -4,7 +4,7 @@ package games.strategy.net.nio;
  * When a connection is first made, it is quarantined until it logs in.
  *
  * <p>
- * When quaratined, all messages sent by the node are sent to this quarntine conversation.
+ * When quarantined, all messages sent by the node are sent to this quarantine conversation.
  * </p>
  *
  * <p>
@@ -16,6 +16,9 @@ package games.strategy.net.nio;
  * </p>
  */
 public abstract class QuarantineConversation {
+  /**
+   * The action to be performed after reading a message.
+   */
   public enum Action {
     NONE, TERMINATE, UNQUARANTINE
   }
