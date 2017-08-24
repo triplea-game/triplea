@@ -1,5 +1,6 @@
 package games.strategy.net.nio;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -89,5 +90,18 @@ class Encoder {
       out.writeObject(header.getMessage());
     }
     out.reset();
+  }
+
+  /**
+   * Provide access to the raw buffer.
+   */
+  private static final class ByteArrayOutputStream2 extends ByteArrayOutputStream {
+    ByteArrayOutputStream2(final int size) {
+      super(size);
+    }
+
+    byte[] getBuffer() {
+      return buf;
+    }
   }
 }
