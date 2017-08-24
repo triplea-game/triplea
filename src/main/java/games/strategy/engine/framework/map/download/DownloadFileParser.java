@@ -34,7 +34,7 @@ final class DownloadFileParser {
       final JSONObject yaml = yamlData.getJSONObject(i);
       final String url = yaml.getString(Tags.url.toString());
       final String description = yaml.getString(Tags.description.toString());
-      final String mapName = yaml.optString(Tags.mapName.toString());
+      final String mapName = yaml.getString(Tags.mapName.toString());
 
       final Object versionObject = yaml.opt(Tags.version.toString());
       final Version version = versionObject != null ? new Version(versionObject.toString()) : null;

@@ -66,6 +66,7 @@ public class DownloadFileParserTest {
     xml += "     <pre>Some notes about the game, simple html allowed.\n";
     xml += "     </pre>\n";
     xml += "- url: http://example.com/games/mod.zip\n";
+    xml += "  mapName: modName\n";
     // missing map type defaults to map
     xml += "  description: |\n";
     xml += "      map mod\n";
