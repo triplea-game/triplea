@@ -736,7 +736,7 @@ class ProPurchaseAI {
       for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
         final boolean isAaForBombing = Matches.unitTypeIsAaForBombingThisUnitOnly().match(ppo.getUnitType());
         if (isAaForBombing && ppo.getCost() < minCost
-            && !Matches.UnitTypeConsumesUnitsOnCreation.match(ppo.getUnitType())) {
+            && !Matches.unitTypeConsumesUnitsOnCreation().match(ppo.getUnitType())) {
           bestAaOption = ppo;
           minCost = ppo.getCost();
         }
@@ -1877,7 +1877,7 @@ class ProPurchaseAI {
 
     Match<Unit> unitMatch = Matches.UnitIsNotConstruction;
     if (isConstruction) {
-      unitMatch = Matches.UnitIsConstruction;
+      unitMatch = Matches.unitIsConstruction();
     }
 
     // Loop through prioritized territories and place land units

@@ -360,7 +360,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         final Territory placeTerritory = placement.getPlaceTerritory();
         // units with requiresUnits are too difficult to mess with logically, so do not move them around at all
         if (placeTerritory.isWater() && !placeTerritory.equals(producer) && (!isUnitPlacementRestrictions()
-            || !Match.anyMatch(placement.getUnits(), Matches.UnitRequiresUnitsOnCreation))) {
+            || !Match.anyMatch(placement.getUnits(), Matches.unitRequiresUnitsOnCreation()))) {
           // found placement move of producer that can be taken over
           // remember move and amount of placements in that territory
           redoPlacements.add(placement);
@@ -622,7 +622,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getOwner().equals(player)) {
       // sea constructions require either owning the sea zone or owning a surrounding land territory
       if (producer.isWater()
-          && Match.anyMatch(testUnits, Match.allOf(Matches.UnitIsSea, Matches.UnitIsConstruction))) {
+          && Match.anyMatch(testUnits, Match.allOf(Matches.UnitIsSea, Matches.unitIsConstruction()))) {
         boolean ownedNeighbor = false;
         for (final Territory current : getData().getMap().getNeighbors(to, Matches.TerritoryIsLand)) {
           if (current.getOwner().equals(player) && (canProduceInConquered || !wasConquered(current))) {
@@ -666,7 +666,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return null;
     }
     // check to see if we are producing a factory or construction
-    if (Match.anyMatch(testUnits, Matches.UnitIsConstruction)) {
+    if (Match.anyMatch(testUnits, Matches.unitIsConstruction())) {
       if (howManyOfEachConstructionCanPlace(to, producer, testUnits, player).totalValues() > 0) {
         return null;
       }
@@ -752,7 +752,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return "Cannot place these units in " + to.getName();
     }
     final IntegerMap<String> constructionMap = howManyOfEachConstructionCanPlace(to, to, units, player);
-    for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction)) {
+    for (final Unit currentUnit : Match.getMatches(units, Matches.unitIsConstruction())) {
       final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
       /*
        * if (ua.getIsFactory() && !ua.getIsConstruction())
@@ -890,10 +890,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
       }
     }
-    if (Match.anyMatch(units, Matches.UnitIsConstruction)) {
+    if (Match.anyMatch(units, Matches.unitIsConstruction())) {
       final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
       final Collection<Unit> skipUnits = new ArrayList<>();
-      for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction)) {
+      for (final Unit currentUnit : Match.getMatches(units, Matches.unitIsConstruction())) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
           // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
@@ -908,8 +908,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
     }
     // remove any units that require other units to be consumed on creation, if we don't have enough to consume (veqryn)
-    if (Match.anyMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation)) {
-      final Collection<Unit> unitsWhichConsume = Match.getMatches(placeableUnits, Matches.UnitConsumesUnitsOnCreation);
+    if (Match.anyMatch(placeableUnits, Matches.unitConsumesUnitsOnCreation())) {
+      final Collection<Unit> unitsWhichConsume =
+          Match.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {
         if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
           placeableUnits.remove(unit);
@@ -963,7 +964,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     boolean weCanConsume = true;
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> removedUnits = new ArrayList<>();
-    final Collection<Unit> unitsWhichConsume = Match.getMatches(units, Matches.UnitConsumesUnitsOnCreation);
+    final Collection<Unit> unitsWhichConsume = Match.getMatches(units, Matches.unitConsumesUnitsOnCreation());
     for (final Unit unit : unitsWhichConsume) {
       if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
         weCanConsume = false;
@@ -1135,7 +1136,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (production < 0) {
       return 0;
     }
-    production += Match.countMatches(alreadProducedUnits, Matches.UnitIsConstruction);
+    production += Match.countMatches(alreadProducedUnits, Matches.unitIsConstruction());
     // Now we check if units we have already produced here could be produced by a different producer
     int unitCountHaveToAndHaveBeenBeProducedHere = unitCountAlreadyProduced;
     if (countSwitchedProductionToNeighbors && unitCountAlreadyProduced > 0) {
@@ -1158,7 +1159,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           // logically, so we ignore them
           // for our special 'move shit around' methods.
           if (!placeTerritory.isWater() || (isUnitPlacementRestrictions()
-              && Match.anyMatch(unitsPlacedByCurrentPlacementMove, Matches.UnitRequiresUnitsOnCreation))) {
+              && Match.anyMatch(unitsPlacedByCurrentPlacementMove, Matches.unitRequiresUnitsOnCreation()))) {
             productionCanNotBeMoved += unitsPlacedByCurrentPlacementMove.size();
           } else {
             final int maxProductionThatCanBeTakenOverFromThisPlacement = unitsPlacedByCurrentPlacementMove.size();
@@ -1241,7 +1242,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Collection<Unit> units, final PlayerID player) {
     // constructions can ONLY be produced BY the same territory that they are going into!
     if (!to.equals(producer) || units == null || units.isEmpty()
-        || !Match.anyMatch(units, Matches.UnitIsConstruction)) {
+        || !Match.anyMatch(units, Matches.unitIsConstruction())) {
       return new IntegerMap<>();
     }
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
@@ -1253,7 +1254,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final IntegerMap<String> unitMapMaxType = new IntegerMap<>();
     final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<>();
     final int maxFactory = Properties.getFactoriesPerCountry(getData());
-    final Iterator<Unit> unitHeldIter = Match.getMatches(units, Matches.UnitIsConstruction).iterator();
+    final Iterator<Unit> unitHeldIter = Match.getMatches(units, Matches.unitIsConstruction()).iterator();
     // Can be null!
     final TerritoryAttachment terrAttachment = TerritoryAttachment.get(to);
     int toProduction = 0;
@@ -1279,7 +1280,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         }
       }
       // remove any units that require other units to be consumed on creation (veqryn)
-      if (Matches.UnitConsumesUnitsOnCreation.match(currentUnit)
+      if (Matches.unitConsumesUnitsOnCreation().match(currentUnit)
           && Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(currentUnit)) {
         continue;
       }
@@ -1298,8 +1299,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
     // build an integer map of each construction unit in the territory
     final IntegerMap<String> unitMapTo = new IntegerMap<>();
-    if (Match.anyMatch(unitsInTo, Matches.UnitIsConstruction)) {
-      for (final Unit currentUnit : Match.getMatches(unitsInTo, Matches.UnitIsConstruction)) {
+    if (Match.anyMatch(unitsInTo, Matches.unitIsConstruction())) {
+      for (final Unit currentUnit : Match.getMatches(unitsInTo, Matches.unitIsConstruction())) {
         final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
         /*
          * if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
@@ -1328,7 +1329,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
     }
     // deal with already placed units
-    final Iterator<Unit> unitAlready = Match.getMatches(unitsPlacedAlready, Matches.UnitIsConstruction).iterator();
+    final Iterator<Unit> unitAlready = Match.getMatches(unitsPlacedAlready, Matches.unitIsConstruction()).iterator();
     while (unitAlready.hasNext()) {
       final Unit currentUnit = unitAlready.next();
       final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
@@ -1372,7 +1373,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
     return Match.of(unitWhichRequiresUnits -> {
-      if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits)) {
+      if (!Matches.unitRequiresUnitsOnCreation().match(unitWhichRequiresUnits)) {
         return true;
       }
       final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
@@ -1398,7 +1399,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   private boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to) {
-    if (!isUnitPlacementRestrictions() || !Match.anyMatch(units, Matches.UnitRequiresUnitsOnCreation)) {
+    if (!isUnitPlacementRestrictions() || !Match.anyMatch(units, Matches.unitRequiresUnitsOnCreation())) {
       return true;
     }
     final IntegerMap<Territory> producersMap = getMaxUnitsToBePlacedMap(units, to, m_player, true);
@@ -1459,8 +1460,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   protected Comparator<Unit> getUnitConstructionComparator() {
     return (u1, u2) -> {
-      final boolean construction1 = Matches.UnitIsConstruction.match(u1);
-      final boolean construction2 = Matches.UnitIsConstruction.match(u2);
+      final boolean construction1 = Matches.unitIsConstruction().match(u1);
+      final boolean construction2 = Matches.unitIsConstruction().match(u2);
       if (construction1 == construction2) {
         return 0;
       } else if (construction1) {

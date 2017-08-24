@@ -109,16 +109,16 @@ final class ProTechAI {
       final Match<Unit> enemyPlane = Match.allOf(
           Matches.UnitIsAir,
           Matches.unitIsOwnedBy(enemyPlayer),
-          Matches.UnitCanMove);
+          Matches.unitCanMove());
       final Match<Unit> enemyTransport = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
-          Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
+          Matches.UnitIsSea, Matches.UnitIsTransport, Matches.unitCanMove());
       final Match<Unit> enemyShip = Match.allOf(
           Matches.unitIsOwnedBy(enemyPlayer),
           Matches.UnitIsSea,
-          Matches.UnitCanMove);
+          Matches.unitCanMove());
       final Match<Unit> enemyTransportable = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
-          Matches.unitCanBeTransported(), Matches.unitIsNotAa(), Matches.UnitCanMove);
-      final Match<Unit> transport = Match.allOf(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.UnitCanMove);
+          Matches.unitCanBeTransported(), Matches.unitIsNotAa(), Matches.unitCanMove());
+      final Match<Unit> transport = Match.allOf(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.unitCanMove());
       final List<Territory> enemyFighterTerritories = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
       // should change this to read production frontier and tech
@@ -366,7 +366,7 @@ final class ProTechAI {
     final HashSet<Integer> ignore = new HashSet<>();
     ignore.add(1);
     final Match<Unit> blitzUnit =
-        Match.allOf(Matches.unitIsOwnedBy(enemyPlayer), Matches.UnitCanBlitz, Matches.UnitCanMove);
+        Match.allOf(Matches.unitIsOwnedBy(enemyPlayer), Matches.UnitCanBlitz, Matches.unitCanMove());
     final Match<Territory> validBlitzRoute = Match.allOf(
         Matches.territoryHasNoEnemyUnits(enemyPlayer, data),
         Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data));
@@ -461,9 +461,9 @@ final class ProTechAI {
     final Queue<Territory> q = new LinkedList<>();
     Territory lz = null;
     Territory ac = null;
-    final Match<Unit> enemyPlane = Match.allOf(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
+    final Match<Unit> enemyPlane = Match.allOf(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.unitCanMove());
     final Match<Unit> enemyCarrier =
-        Match.allOf(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player), Matches.UnitCanMove);
+        Match.allOf(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player), Matches.unitCanMove());
     q.add(start);
     Territory current = null;
     distance.put(start, 0);

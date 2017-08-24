@@ -267,7 +267,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // we dont want to change the movement of transported land units if this is a sea battle
     // so restrict non air to remove land units
     if (m_battleSite.isWater()) {
-      nonAir = Match.getMatches(nonAir, Matches.UnitIsNotLand);
+      nonAir = Match.getMatches(nonAir, Matches.unitIsNotLand());
     }
     // TODO This checks for ignored sub/trns and skips the set of the attackers to 0 movement left
     // If attacker stops in an occupied territory, movement stops (battle is optional)
@@ -1218,7 +1218,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         Matches.enemyUnit(m_attacker, m_data),
         Matches.UnitIsNotInfrastructure,
         Matches.unitIsBeingTransported().invert(),
-        Matches.UnitIsSubmerged.invert());
+        Matches.unitIsSubmerged().invert());
     if (Properties.getIgnoreSubInMovement(m_data)) {
       enemyUnitsThatPreventRetreatBuilder.add(Matches.unitIsNotSub());
     }
@@ -1747,15 +1747,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // Get all ALLIED, sea & air units in the territory (that are NOT submerged)
     final Match<Unit> alliedUnitsMatch = Match.allOf(
         Matches.isUnitAllied(player, m_data),
-        Matches.UnitIsNotLand,
-        Matches.UnitIsSubmerged.invert());
+        Matches.unitIsNotLand(),
+        Matches.unitIsSubmerged().invert());
     final Collection<Unit> alliedUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), alliedUnitsMatch);
     // If transports are unescorted, check opposing forces to see if the Trns die automatically
     if (alliedTransports.size() == alliedUnits.size()) {
       // Get all the ENEMY sea and air units (that can attack) in the territory
       final Match<Unit> enemyUnitsMatch = Match.allOf(
-          Matches.UnitIsNotLand,
-          Matches.UnitIsSubmerged.invert(),
+          Matches.unitIsNotLand(),
+          Matches.unitIsSubmerged().invert(),
           Matches.unitCanAttack(player));
       final Collection<Unit> enemyUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), enemyUnitsMatch);
       // If there are attackers set their movement to 0 and kill the transports
@@ -1778,7 +1778,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     final Match.CompositeBuilder<Unit> notSubmergedAndTypeBuilder = Match.newCompositeBuilder(
-        Matches.UnitIsSubmerged.invert());
+        Matches.unitIsSubmerged().invert());
     if (Matches.TerritoryIsLand.match(m_battleSite)) {
       notSubmergedAndTypeBuilder.add(Matches.UnitIsSea.invert());
     } else {

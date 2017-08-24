@@ -1199,7 +1199,9 @@ public final class Matches {
     return Match.of(o -> TripleAUnit.get(o).getMovementLeft() >= 1);
   }
 
-  public static final Match<Unit> UnitCanMove = Match.of(u -> unitTypeCanMove(u.getOwner()).match(u.getType()));
+  public static Match<Unit> unitCanMove() {
+    return Match.of(u -> unitTypeCanMove(u.getOwner()).match(u.getType()));
+  }
 
   private static Match<UnitType> unitTypeCanMove(final PlayerID player) {
     return Match.of(obj -> UnitAttachment.get(obj).getMovement(player) > 0);
@@ -1449,7 +1451,7 @@ public final class Matches {
   }
 
   static Match<Territory> territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data) {
-    final Match<Unit> match = Match.allOf(enemyUnit(player, data), UnitIsSubmerged.invert());
+    final Match<Unit> match = Match.allOf(enemyUnit(player, data), unitIsSubmerged().invert());
     return Match.of(t -> t.getUnits().anyMatch(match));
   }
 
@@ -1573,7 +1575,9 @@ public final class Matches {
     return Match.allOf(unitTypeIsNotSea(), unitTypeIsNotAir());
   }
 
-  public static final Match<Unit> UnitIsNotLand = UnitIsLand.invert();
+  public static Match<Unit> unitIsNotLand() {
+    return UnitIsLand.invert();
+  }
 
   public static Match<Unit> unitIsOfType(final UnitType type) {
     return Match.of(unit -> unit.getType().equals(type));
@@ -1592,9 +1596,13 @@ public final class Matches {
     return Match.of(t -> tracker.wasBattleFought(t) || tracker.wasBlitzed(t));
   }
 
-  public static final Match<Unit> UnitIsSubmerged = Match.of(u -> TripleAUnit.get(u).getSubmerged());
+  static Match<Unit> unitIsSubmerged() {
+    return Match.of(u -> TripleAUnit.get(u).getSubmerged());
+  }
 
-  public static final Match<UnitType> UnitTypeIsSub = Match.of(type -> UnitAttachment.get(type).getIsSub());
+  public static Match<UnitType> unitTypeIsSub() {
+    return Match.of(type -> UnitAttachment.get(type).getIsSub());
+  }
 
   static Match<Unit> unitOwnerHasImprovedArtillerySupportTech() {
     return Match.of(u -> TechTracker.hasImprovedArtillerySupport(u.getOwner()));
@@ -1623,19 +1631,21 @@ public final class Matches {
         Matches.TerritoryIsWater);
   }
 
-  public static final Match<Unit> UnitCanRepairOthers = Match.of(unit -> {
-    if (unitIsDisabled().match(unit)) {
-      return false;
-    }
-    if (Matches.unitIsBeingTransported().match(unit)) {
-      return false;
-    }
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
-    if (ua.getRepairsUnits() == null) {
-      return false;
-    }
-    return !ua.getRepairsUnits().isEmpty();
-  });
+  static Match<Unit> unitCanRepairOthers() {
+    return Match.of(unit -> {
+      if (unitIsDisabled().match(unit)) {
+        return false;
+      }
+      if (Matches.unitIsBeingTransported().match(unit)) {
+        return false;
+      }
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      if (ua.getRepairsUnits() == null) {
+        return false;
+      }
+      return !ua.getRepairsUnits().isEmpty();
+    });
+  }
 
   static Match<Unit> unitCanRepairThisUnit(final Unit damagedUnit) {
     return Match.of(unitCanRepair -> {
@@ -1667,7 +1677,7 @@ public final class Matches {
         return false;
       }
       final Match<Unit> repairUnit = Match.allOf(Matches.alliedUnit(player, data),
-          Matches.UnitCanRepairOthers, Matches.unitCanRepairThisUnit(damagedUnit));
+          Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(damagedUnit));
       if (Match.anyMatch(territory.getUnits().getUnits(), repairUnit)) {
         return true;
       }
@@ -1694,23 +1704,25 @@ public final class Matches {
     });
   }
 
-  public static final Match<Unit> UnitCanGiveBonusMovement = Match.of(unit -> {
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
-    if (ua == null) {
-      return false;
-    }
-    return ua.getGivesMovement().size() > 0 && Matches.unitIsBeingTransported().invert().match(unit);
-  });
-
-  static Match<Unit> unitCanGiveBonusMovementToThisUnit(final Unit unitWhichWillGetBonus) {
-    return Match.of(unitCanGiveBonusMovement -> {
-      if (unitIsDisabled().match(unitCanGiveBonusMovement)) {
+  private static Match<Unit> unitCanGiveBonusMovement() {
+    return Match.of(unit -> {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      if (ua == null) {
         return false;
       }
-      final UnitType type = unitCanGiveBonusMovement.getUnitType();
+      return ua.getGivesMovement().size() > 0 && Matches.unitIsBeingTransported().invert().match(unit);
+    });
+  }
+
+  static Match<Unit> unitCanGiveBonusMovementToThisUnit(final Unit unitWhichWillGetBonus) {
+    return Match.of(unitWhichCanGiveBonusMovement -> {
+      if (unitIsDisabled().match(unitWhichCanGiveBonusMovement)) {
+        return false;
+      }
+      final UnitType type = unitWhichCanGiveBonusMovement.getUnitType();
       final UnitAttachment ua = UnitAttachment.get(type);
       // TODO: make sure the unit is operational
-      return UnitCanGiveBonusMovement.match(unitCanGiveBonusMovement)
+      return unitCanGiveBonusMovement().match(unitWhichCanGiveBonusMovement)
           && ua.getGivesMovement().getInt(unitWhichWillGetBonus.getType()) != 0;
     });
   }
@@ -1749,41 +1761,52 @@ public final class Matches {
     });
   }
 
-  public static final Match<Unit> UnitCreatesUnits = Match.of(unit -> {
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
-    if (ua == null) {
-      return false;
-    }
-    return (ua.getCreatesUnitsList() != null && ua.getCreatesUnitsList().size() > 0);
-  });
+  static Match<Unit> unitCreatesUnits() {
+    return Match.of(unit -> {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      if (ua == null) {
+        return false;
+      }
+      return ua.getCreatesUnitsList() != null && ua.getCreatesUnitsList().size() > 0;
+    });
+  }
 
-  public static final Match<Unit> UnitCreatesResources = Match.of(unit -> {
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
-    if (ua == null) {
-      return false;
-    }
-    return (ua.getCreatesResourcesList() != null && ua.getCreatesResourcesList().size() > 0);
-  });
+  static Match<Unit> unitCreatesResources() {
+    return Match.of(unit -> {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      if (ua == null) {
+        return false;
+      }
+      return ua.getCreatesResourcesList() != null && ua.getCreatesResourcesList().size() > 0;
+    });
+  }
 
-  public static final Match<UnitType> UnitTypeConsumesUnitsOnCreation = Match.of(unit -> {
-    final UnitAttachment ua = UnitAttachment.get(unit);
-    if (ua == null) {
-      return false;
-    }
-    return (ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0);
-  });
+  /**
+   * Returns a match indicating the specified unit type consumes at least one type of unit upon creation.
+   */
+  public static Match<UnitType> unitTypeConsumesUnitsOnCreation() {
+    return Match.of(unit -> {
+      final UnitAttachment ua = UnitAttachment.get(unit);
+      if (ua == null) {
+        return false;
+      }
+      return ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
+    });
+  }
 
-  public static final Match<Unit> UnitConsumesUnitsOnCreation = Match.of(unit -> {
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
-    if (ua == null) {
-      return false;
-    }
-    return (ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0);
-  });
+  static Match<Unit> unitConsumesUnitsOnCreation() {
+    return Match.of(unit -> {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      if (ua == null) {
+        return false;
+      }
+      return ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
+    });
+  }
 
   static Match<Unit> unitWhichConsumesUnitsHasRequiredUnits(final Collection<Unit> unitsInTerritoryAtStartOfTurn) {
     return Match.of(unitWhichRequiresUnits -> {
-      if (!Matches.UnitConsumesUnitsOnCreation.match(unitWhichRequiresUnits)) {
+      if (!Matches.unitConsumesUnitsOnCreation().match(unitWhichRequiresUnits)) {
         return true;
       }
       final UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
@@ -1811,18 +1834,23 @@ public final class Matches {
     });
   }
 
-  public static final Match<Unit> UnitRequiresUnitsOnCreation = Match.of(unit -> {
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
-    if (ua == null) {
-      return false;
-    }
-    return (ua.getRequiresUnits() != null && ua.getRequiresUnits().size() > 0);
-  });
+  /**
+   * Returns a match indicating the specified unit requires at least one type of unit upon creation.
+   */
+  public static Match<Unit> unitRequiresUnitsOnCreation() {
+    return Match.of(unit -> {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      if (ua == null) {
+        return false;
+      }
+      return ua.getRequiresUnits() != null && ua.getRequiresUnits().size() > 0;
+    });
+  }
 
   public static Match<Unit> unitWhichRequiresUnitsHasRequiredUnitsInList(
       final Collection<Unit> unitsInTerritoryAtStartOfTurn) {
     return Match.of(unitWhichRequiresUnits -> {
-      if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits)) {
+      if (!Matches.unitRequiresUnitsOnCreation().match(unitWhichRequiresUnits)) {
         return true;
       }
       final Match<Unit> unitIsOwnedByAndNotDisabled = Match.allOf(
@@ -1856,25 +1884,34 @@ public final class Matches {
     });
   }
 
-  public static final Match<Territory> territoryIsBlockadeZone = Match.of(t -> {
-    final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    if (ta != null) {
-      return ta.getBlockadeZone();
-    }
-    return false;
-  });
-
-  public static final Match<UnitType> UnitTypeIsConstruction = Match.of(type -> {
-    final UnitAttachment ua = UnitAttachment.get(type);
-    if (ua == null) {
+  static Match<Territory> territoryIsBlockadeZone() {
+    return Match.of(t -> {
+      final TerritoryAttachment ta = TerritoryAttachment.get(t);
+      if (ta != null) {
+        return ta.getBlockadeZone();
+      }
       return false;
-    }
-    return ua.getIsConstruction();
-  });
+    });
+  }
 
-  public static final Match<Unit> UnitIsConstruction = Match.of(obj -> UnitTypeIsConstruction.match(obj.getType()));
+  /**
+   * Returns a match indicating the specified unit type is a construction unit type.
+   */
+  public static Match<UnitType> unitTypeIsConstruction() {
+    return Match.of(type -> {
+      final UnitAttachment ua = UnitAttachment.get(type);
+      if (ua == null) {
+        return false;
+      }
+      return ua.getIsConstruction();
+    });
+  }
 
-  public static final Match<Unit> UnitIsNotConstruction = UnitIsConstruction.invert();
+  public static Match<Unit> unitIsConstruction() {
+    return Match.of(obj -> unitTypeIsConstruction().match(obj.getType()));
+  }
+
+  public static final Match<Unit> UnitIsNotConstruction = unitIsConstruction().invert();
 
   public static final Match<Unit> UnitCanProduceUnitsAndIsInfrastructure =
       Match.allOf(UnitCanProduceUnits, UnitIsInfrastructure);

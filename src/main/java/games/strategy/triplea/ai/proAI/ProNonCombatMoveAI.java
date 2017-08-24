@@ -1348,7 +1348,7 @@ class ProNonCombatMoveAI {
             if (moveMap.get(t).isCanHold() && !moveMap.get(t).getAllDefenders().isEmpty()
                 && Match.anyMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransport(player))) {
               final List<Unit> defendingUnits =
-                  Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.UnitIsNotLand);
+                  Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.unitIsNotLand());
               if (moveMap.get(t).getBattleResult() == null) {
                 moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                     moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
@@ -1392,7 +1392,7 @@ class ProNonCombatMoveAI {
                 continue;
               }
               final List<Unit> defendingUnits =
-                  Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.UnitIsNotLand);
+                  Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.unitIsNotLand());
               if (moveMap.get(t).getBattleResult() == null) {
                 moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                     moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));

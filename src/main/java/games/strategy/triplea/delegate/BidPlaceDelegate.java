@@ -119,10 +119,10 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     final Match<Unit> airUnits = Match.allOf(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
     placeableUnits.addAll(Match.getMatches(units, groundUnits));
     placeableUnits.addAll(Match.getMatches(units, airUnits));
-    if (Match.anyMatch(units, Matches.UnitIsConstruction)) {
+    if (Match.anyMatch(units, Matches.unitIsConstruction())) {
       final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
       final Collection<Unit> skipUnit = new ArrayList<>();
-      for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction)) {
+      for (final Unit currentUnit : Match.getMatches(units, Matches.unitIsConstruction())) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
           // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
@@ -137,8 +137,9 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
     }
     // remove any units that require other units to be consumed on creation (veqryn)
-    if (Match.anyMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation)) {
-      final Collection<Unit> unitsWhichConsume = Match.getMatches(placeableUnits, Matches.UnitConsumesUnitsOnCreation);
+    if (Match.anyMatch(placeableUnits, Matches.unitConsumesUnitsOnCreation())) {
+      final Collection<Unit> unitsWhichConsume =
+          Match.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {
         if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
           placeableUnits.remove(unit);

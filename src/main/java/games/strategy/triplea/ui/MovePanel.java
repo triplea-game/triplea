@@ -336,7 +336,7 @@ public class MovePanel extends AbstractMovePanel {
      * this will restrict selection to units with 1 or more movement
      */
     if (!Properties.getSelectableZeroMovementUnits(getData())) {
-      movableBuilder.add(Matches.UnitCanMove);
+      movableBuilder.add(Matches.unitCanMove());
     }
     if (!nonCombat) {
       movableBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());
@@ -349,7 +349,7 @@ public class MovePanel extends AbstractMovePanel {
         return TripleAUnit.get(u).getMovementLeft() >= route.getMovementCost(u);
       });
       if (route.isUnload()) {
-        final Match<Unit> notLandAndCanMove = Match.allOf(enoughMovement, Matches.UnitIsNotLand);
+        final Match<Unit> notLandAndCanMove = Match.allOf(enoughMovement, Matches.unitIsNotLand());
         final Match<Unit> landOrCanMove = Match.anyOf(Matches.UnitIsLand, notLandAndCanMove);
         movableBuilder.add(landOrCanMove);
       } else {
@@ -359,7 +359,7 @@ public class MovePanel extends AbstractMovePanel {
     if (route != null && route.getEnd() != null) {
       final boolean water = route.getEnd().isWater();
       if (water && !route.isLoad()) {
-        movableBuilder.add(Matches.UnitIsNotLand);
+        movableBuilder.add(Matches.unitIsNotLand());
       }
       if (!water) {
         movableBuilder.add(Matches.unitIsNotSea());
@@ -1231,7 +1231,7 @@ public class MovePanel extends AbstractMovePanel {
         return;
       }
       final PlayerID owner = getUnitOwner(selectedUnits);
-      final Match<Unit> match = Match.allOf(Matches.unitIsOwnedBy(owner), Matches.UnitCanMove);
+      final Match<Unit> match = Match.allOf(Matches.unitIsOwnedBy(owner), Matches.unitCanMove());
       final boolean someOwned = Match.anyMatch(units, match);
       final boolean isCorrectTerritory = firstSelectedTerritory == null || firstSelectedTerritory == territory;
       if (someOwned && isCorrectTerritory) {

@@ -363,7 +363,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return 0;
     }
     final GameMap map = data.getMap();
-    final Collection<Territory> blockable = Match.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone);
+    final Collection<Territory> blockable = Match.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone());
     if (blockable.isEmpty()) {
       return 0;
     }
