@@ -88,20 +88,6 @@ public class TuvUtils {
     return costs;
   }
 
-  private static int getTotalTuv(UnitType unitType, IntegerMap<UnitType> costs, Set<UnitType> alreadyAdded) {
-    int tuv = costs.getInt(unitType);
-    final UnitAttachment ua = UnitAttachment.get(unitType);
-    if (ua == null || ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
-      return tuv;
-    }
-    alreadyAdded.add(unitType);
-    for (final UnitType ut : ua.getConsumesUnits().keySet()) {
-      tuv += getTotalTuv(ut, costs, alreadyAdded);
-    }
-    alreadyAdded.remove(unitType);
-    return tuv;
-  }
-
   /**
    * Return a map where key are unit types and values are the AVERAGED for all RULES (not for all players).
    * Any production rule that produces multiple units
@@ -109,7 +95,7 @@ public class TuvUtils {
    * will have their costs rounded up on a per unit basis.
    * Therefore, this map should NOT be used for Purchasing information!
    */
-  public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
+  private static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
     final Resource pus;
     data.acquireReadLock();
     try {
@@ -148,6 +134,20 @@ public class TuvUtils {
       costs.put(ut, averagedCost);
     }
     return costs;
+  }
+
+  private static int getTotalTuv(UnitType unitType, IntegerMap<UnitType> costs, Set<UnitType> alreadyAdded) {
+    int tuv = costs.getInt(unitType);
+    final UnitAttachment ua = UnitAttachment.get(unitType);
+    if (ua == null || ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
+      return tuv;
+    }
+    alreadyAdded.add(unitType);
+    for (final UnitType ut : ua.getConsumesUnits().keySet()) {
+      tuv += getTotalTuv(ut, costs, alreadyAdded);
+    }
+    alreadyAdded.remove(unitType);
+    return tuv;
   }
 
   /**

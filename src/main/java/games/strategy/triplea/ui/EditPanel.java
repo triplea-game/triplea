@@ -364,14 +364,15 @@ class EditPanel extends ActionPanel {
           return;
         }
         // all owned by one player
-        units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(units.iterator().next().getOwner())));
+        final PlayerID player = units.get(0).getOwner();
+        units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(player)));
         if (units.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         sortUnitsToRemove(units);
         Collections.sort(units, new UnitBattleComparator(false,
-            TuvUtils.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
+            TuvUtils.getCostsForTuv(player, getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
@@ -411,14 +412,15 @@ class EditPanel extends ActionPanel {
           return;
         }
         // all owned by one player
-        units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(units.iterator().next().getOwner())));
+        final PlayerID player = units.get(0).getOwner();
+        units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(player)));
         if (units.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         sortUnitsToRemove(units);
         Collections.sort(units, new UnitBattleComparator(false,
-            TuvUtils.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
+            TuvUtils.getCostsForTuv(player, getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
