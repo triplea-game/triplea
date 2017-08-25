@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -17,9 +15,6 @@ import games.strategy.engine.lobby.server.userDB.DBUser;
 
 // TODO: Lobby DB Migration - merge with DbUserController once completed
 public class UserController implements UserDao {
-
-  private static final Logger logger = Logger.getLogger(DbUserController.class.getName());
-
   private final Supplier<Connection> connectionSupplier;
 
   UserController(final Supplier<Connection> connectionSupplier) {
@@ -45,8 +40,7 @@ public class UserController implements UserDao {
       ps.close();
       return returnValue == null ? null : new HashedPassword(returnValue);
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error getting password for user:" + userName, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error getting password for user:" + userName, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -65,8 +59,7 @@ public class UserController implements UserDao {
       ps.close();
       return found;
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error testing for existence of user:" + userName, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error testing for existence of user:" + userName, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -87,9 +80,9 @@ public class UserController implements UserDao {
       }
       con.commit();
     } catch (final SQLException e) {
-      logger.log(Level.SEVERE,
-          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + hashedPassword.mask(), e);
-      throw new IllegalStateException(e);
+      throw new IllegalStateException(
+          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + hashedPassword.mask(),
+          e);
     }
   }
 
@@ -111,9 +104,11 @@ public class UserController implements UserDao {
       }
       con.commit();
     } catch (final SQLException e) {
-      logger.log(Level.SEVERE, String.format("Error inserting name: %s, email: %s, (masked) pwd: %s", user.getName(),
-          user.getEmail(), hashedPassword.mask()), e);
-      throw new RuntimeException(e);
+      throw new RuntimeException(
+          String.format(
+              "Error inserting name: %s, email: %s, (masked) pwd: %s",
+              user.getName(), user.getEmail(), hashedPassword.mask()),
+          e);
     }
   }
 
@@ -151,9 +146,9 @@ public class UserController implements UserDao {
         return true;
       }
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword.mask(),
+      throw new IllegalStateException(
+          "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword.mask(),
           sqle);
-      throw new IllegalStateException(sqle);
     }
   }
 
@@ -176,8 +171,7 @@ public class UserController implements UserDao {
       ps.close();
       return user;
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error getting user:" + userName, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error getting user:" + userName, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

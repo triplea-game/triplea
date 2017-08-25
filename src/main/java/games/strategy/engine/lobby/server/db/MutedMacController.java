@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -53,8 +52,7 @@ public class MutedMacController {
         logger.info("Tried to create duplicate muted mac:" + mac + " error:" + sqle.getMessage());
         return;
       }
-      logger.log(Level.SEVERE, "Error inserting muted mac:" + mac, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error inserting muted mac:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -70,8 +68,7 @@ public class MutedMacController {
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error deleting muted mac:" + mac, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error deleting muted mac:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -112,8 +109,7 @@ public class MutedMacController {
       rs.close();
       ps.close();
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error for testing muted mac existence:" + mac, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error for testing muted mac existence:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

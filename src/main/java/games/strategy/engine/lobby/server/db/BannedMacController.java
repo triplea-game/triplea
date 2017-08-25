@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import games.strategy.util.Tuple;
@@ -55,8 +54,7 @@ public class BannedMacController {
         logger.info("Tried to create duplicate banned mac:" + mac + " error:" + sqle.getMessage());
         return;
       }
-      logger.log(Level.SEVERE, "Error inserting banned mac:" + mac, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error inserting banned mac:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -72,8 +70,7 @@ public class BannedMacController {
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error deleting banned mac:" + mac, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error deleting banned mac:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -105,8 +102,7 @@ public class BannedMacController {
       rs.close();
       ps.close();
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error for testing banned mac existence:" + mac, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error for testing banned mac existence:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

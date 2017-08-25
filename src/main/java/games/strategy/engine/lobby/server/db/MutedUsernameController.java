@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -54,8 +53,7 @@ public class MutedUsernameController {
         logger.info("Tried to create duplicate muted username:" + username + " error:" + sqle.getMessage());
         return;
       }
-      logger.log(Level.SEVERE, "Error inserting muted username:" + username, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error inserting muted username:" + username, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -71,8 +69,7 @@ public class MutedUsernameController {
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error deleting muted username:" + username, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error deleting muted username:" + username, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -113,8 +110,7 @@ public class MutedUsernameController {
       rs.close();
       ps.close();
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error for testing muted username existence:" + username, sqle);
-      throw new IllegalStateException(sqle);
+      throw new IllegalStateException("Error for testing muted username existence:" + username, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
