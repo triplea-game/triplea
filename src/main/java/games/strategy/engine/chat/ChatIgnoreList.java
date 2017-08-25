@@ -9,7 +9,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 class ChatIgnoreList {
-  private static final Logger log = Logger.getLogger(ChatIgnoreList.class.getName());
+  private static final Logger logger = Logger.getLogger(ChatIgnoreList.class.getName());
   private final Object lock = new Object();
   private final Set<String> ignore = new HashSet<>();
 
@@ -18,7 +18,7 @@ class ChatIgnoreList {
     try {
       Collections.addAll(ignore, prefs.keys());
     } catch (final BackingStoreException e) {
-      log.log(Level.FINE, e.getMessage(), e);
+      logger.log(Level.FINE, e.getMessage(), e);
     }
   }
 
@@ -30,7 +30,7 @@ class ChatIgnoreList {
       try {
         prefs.flush();
       } catch (final BackingStoreException e) {
-        log.log(Level.FINE, e.getMessage(), e);
+        logger.log(Level.FINE, e.getMessage(), e);
       }
     }
   }
@@ -47,7 +47,7 @@ class ChatIgnoreList {
       try {
         prefs.flush();
       } catch (final BackingStoreException e) {
-        log.log(Level.FINE, e.getMessage(), e);
+        logger.log(Level.FINE, e.getMessage(), e);
       }
     }
   }
