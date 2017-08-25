@@ -1633,10 +1633,7 @@ public final class Matches {
 
   static Match<Unit> unitCanRepairOthers() {
     return Match.of(unit -> {
-      if (unitIsDisabled().match(unit)) {
-        return false;
-      }
-      if (Matches.unitIsBeingTransported().match(unit)) {
+      if (unitIsDisabled().match(unit) || unitIsBeingTransported().match(unit)) {
         return false;
       }
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -1707,10 +1704,7 @@ public final class Matches {
   private static Match<Unit> unitCanGiveBonusMovement() {
     return Match.of(unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null) {
-        return false;
-      }
-      return ua.getGivesMovement().size() > 0 && Matches.unitIsBeingTransported().invert().match(unit);
+      return ua != null && ua.getGivesMovement().size() > 0 && unitIsBeingTransported().invert().match(unit);
     });
   }
 
@@ -1764,20 +1758,14 @@ public final class Matches {
   static Match<Unit> unitCreatesUnits() {
     return Match.of(unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null) {
-        return false;
-      }
-      return ua.getCreatesUnitsList() != null && ua.getCreatesUnitsList().size() > 0;
+      return ua != null && ua.getCreatesUnitsList() != null && ua.getCreatesUnitsList().size() > 0;
     });
   }
 
   static Match<Unit> unitCreatesResources() {
     return Match.of(unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null) {
-        return false;
-      }
-      return ua.getCreatesResourcesList() != null && ua.getCreatesResourcesList().size() > 0;
+      return ua != null && ua.getCreatesResourcesList() != null && ua.getCreatesResourcesList().size() > 0;
     });
   }
 
@@ -1787,20 +1775,14 @@ public final class Matches {
   public static Match<UnitType> unitTypeConsumesUnitsOnCreation() {
     return Match.of(unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit);
-      if (ua == null) {
-        return false;
-      }
-      return ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
+      return ua != null && ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
     });
   }
 
   static Match<Unit> unitConsumesUnitsOnCreation() {
     return Match.of(unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null) {
-        return false;
-      }
-      return ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
+      return ua != null && ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
     });
   }
 
@@ -1840,10 +1822,7 @@ public final class Matches {
   public static Match<Unit> unitRequiresUnitsOnCreation() {
     return Match.of(unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null) {
-        return false;
-      }
-      return ua.getRequiresUnits() != null && ua.getRequiresUnits().size() > 0;
+      return ua != null && ua.getRequiresUnits() != null && ua.getRequiresUnits().size() > 0;
     });
   }
 
@@ -1887,10 +1866,7 @@ public final class Matches {
   static Match<Territory> territoryIsBlockadeZone() {
     return Match.of(t -> {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta != null) {
-        return ta.getBlockadeZone();
-      }
-      return false;
+      return ta != null && ta.getBlockadeZone();
     });
   }
 
@@ -1900,10 +1876,7 @@ public final class Matches {
   public static Match<UnitType> unitTypeIsConstruction() {
     return Match.of(type -> {
       final UnitAttachment ua = UnitAttachment.get(type);
-      if (ua == null) {
-        return false;
-      }
-      return ua.getIsConstruction();
+      return ua != null && ua.getIsConstruction();
     });
   }
 
