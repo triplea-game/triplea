@@ -1,5 +1,7 @@
 package games.strategy.triplea.attachments;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -144,6 +146,11 @@ public class TerritoryAttachment extends DefaultAttachment {
       throw new IllegalStateException("No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
     }
     return rVal;
+  }
+
+  public static void remove(final Territory territory) {
+    checkNotNull(territory);
+    territory.removeAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
   }
 
   /**
