@@ -37,21 +37,20 @@ class Encoder {
     if (to == null) {
       throw new IllegalArgumentException("No to channel!");
     }
-    final ByteArrayOutputStream2 sink = new ByteArrayOutputStream2(512);
-    SocketWriteData data;
     try {
+      final ByteArrayOutputStream sink = new ByteArrayOutputStream(512);
       write(header, objectStreamFactory.create(sink), to);
-      data = new SocketWriteData(sink.getBuffer(), sink.size());
-    } catch (final Exception e) {
+      final SocketWriteData data = new SocketWriteData(sink.toByteArray(), sink.size());
+      if (logger.isLoggable(Level.FINER)) {
+        logger.log(Level.FINER, "encoded  msg:" + header.getMessage() + " size:" + data.size());
+      }
+      writer.enque(data, to);
+    } catch (final IOException e) {
       // we arent doing any io, just writing in memory
       // so something is very wrong
       logger.log(Level.SEVERE, "Error writing object:" + header, e);
       return;
     }
-    if (logger.isLoggable(Level.FINER)) {
-      logger.log(Level.FINER, "encoded  msg:" + header.getMessage() + " size:" + data.size());
-    }
-    writer.enque(data, to);
   }
 
   private void write(final MessageHeader header, final ObjectOutputStream out, final SocketChannel remote)
@@ -90,18 +89,5 @@ class Encoder {
       out.writeObject(header.getMessage());
     }
     out.reset();
-  }
-
-  /**
-   * Provide access to the raw buffer.
-   */
-  private static final class ByteArrayOutputStream2 extends ByteArrayOutputStream {
-    ByteArrayOutputStream2(final int size) {
-      super(size);
-    }
-
-    byte[] getBuffer() {
-      return buf;
-    }
   }
 }
