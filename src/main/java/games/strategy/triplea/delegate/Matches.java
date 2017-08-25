@@ -1475,9 +1475,6 @@ public final class Matches {
   static Match<Territory> territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyAndIsNotUnownedWater(
       final PlayerID player, final GameData data) {
     return Match.of(t -> {
-      if (t.getOwner() == null) {
-        return false;
-      }
       if (t.isWater() && TerritoryAttachment.get(t) == null && t.getOwner().isNull()) {
         return false;
       }

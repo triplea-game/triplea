@@ -9,7 +9,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -69,15 +68,6 @@ public final class MatchesTests {
       seaTerritory = gameData.getMap().getTerritory("Baltic Sea Zone");
       seaTerritory.setOwner(player);
       seaTerritory.getUnits().clear();
-    }
-
-    @Ignore("territory owner cannot be set to null")
-    @Test
-    public void shouldNotMatchWhenTerritoryOwnerIsNull() {
-      landTerritory.setOwner(null);
-      landTerritory.getUnits().add(newLandUnitFor(enemyPlayer));
-
-      assertThat(newMatch(), notMatches(landTerritory));
     }
 
     @Test
