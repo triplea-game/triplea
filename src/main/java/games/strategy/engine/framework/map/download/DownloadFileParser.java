@@ -37,18 +37,15 @@ final class DownloadFileParser {
       final String mapName = yaml.getString(Tags.mapName.toString());
 
       final Version version = new Version(yaml.getInt(Tags.version.toString()), 0);
-      DownloadFileDescription.DownloadType downloadType = DownloadFileDescription.DownloadType.MAP;
+      final DownloadFileDescription.DownloadType downloadType = yaml.optEnum(
+          DownloadFileDescription.DownloadType.class,
+          Tags.mapType.toString(),
+          DownloadFileDescription.DownloadType.MAP);
 
-      final String mapTypeString = yaml.optString(Tags.mapType.toString(), null);
-      if (mapTypeString != null) {
-        downloadType = DownloadFileDescription.DownloadType.valueOf(mapTypeString);
-      }
-
-      DownloadFileDescription.MapCategory mapCategory = DownloadFileDescription.MapCategory.EXPERIMENTAL;
-      final String mapCategoryString = yaml.optString(Tags.mapCategory.toString(), null);
-      if (mapCategoryString != null) {
-        mapCategory = DownloadFileDescription.MapCategory.valueOf(mapCategoryString);
-      }
+      final DownloadFileDescription.MapCategory mapCategory = yaml.optEnum(
+          DownloadFileDescription.MapCategory.class,
+          Tags.mapCategory.toString(),
+          DownloadFileDescription.MapCategory.EXPERIMENTAL);
 
       final String img = yaml.optString(Tags.img.toString());
       final DownloadFileDescription dl =
