@@ -31,8 +31,7 @@ public class TuvUtilsTest {
   public void testCostsForTuvWithConsumesUnit() {
     final PlayerID british = GameDataTestUtil.british(gameData);
     final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(british, gameData);
-    System.out.println(result);
-    assertEquals(20, result.getInt(GameDataTestUtil.factoryUpgrade(gameData)));
+    assertEquals(32, result.getInt(GameDataTestUtil.factoryUpgrade(gameData)));
   }
 
 }
