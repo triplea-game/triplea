@@ -54,6 +54,7 @@ public class LobbyPropertyFileParserTest {
     testProps.port = TestData.port;
     testProps.errorMessage = TestData.errorMessage;
     testProps.message = TestData.message;
+    testProps.version = TestData.clientCurrentVersion;
 
     final File testFile = createTempFile(testProps);
 
@@ -67,8 +68,8 @@ public class LobbyPropertyFileParserTest {
 
   private static File createTempFile(final TestProps... testProps) throws Exception {
     final File f = File.createTempFile("testing", ".tmp");
-    for (final TestProps testProp : Arrays.asList(testProps)) {
-      try (FileWriter writer = new FileWriter(f)) {
+    try (FileWriter writer = new FileWriter(f)) {
+      for (final TestProps testProp : Arrays.asList(testProps)) {
         writer.write(testProp.toYaml());
       }
     }

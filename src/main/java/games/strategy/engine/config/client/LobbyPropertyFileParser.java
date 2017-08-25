@@ -37,7 +37,7 @@ class LobbyPropertyFileParser {
 
     return StreamSupport.stream(lobbyProps.spliterator(), false)
         .map(JSONObject.class::cast)
-        .filter(props -> currentVersion.equals(props.opt("version")))
+        .filter(props -> currentVersion.equals(new Version(props.getString("version"))))
         .findFirst()
         .orElse(lobbyProps.getJSONObject(0));
   }
