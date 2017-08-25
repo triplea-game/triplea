@@ -36,8 +36,7 @@ final class DownloadFileParser {
       final String description = yaml.getString(Tags.description.toString());
       final String mapName = yaml.getString(Tags.mapName.toString());
 
-      final Object versionObject = yaml.opt(Tags.version.toString());
-      final Version version = versionObject != null ? new Version(versionObject.toString()) : null;
+      final Version version = new Version(yaml.getInt(Tags.version.toString()), 0);
       DownloadFileDescription.DownloadType downloadType = DownloadFileDescription.DownloadType.MAP;
 
       final String mapTypeString = yaml.optString(Tags.mapType.toString(), null);

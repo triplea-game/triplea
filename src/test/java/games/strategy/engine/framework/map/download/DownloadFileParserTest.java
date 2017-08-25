@@ -61,22 +61,26 @@ public class DownloadFileParserTest {
     String xml = "";
     xml += "- url: http://example.com/games/game.zip\n";
     xml += "  mapName: " + GAME_NAME + "\n";
+    xml += "  version: 1\n";
     xml += createTypeTag(DownloadFileParser.ValueType.MAP);
     xml += "  description: |\n";
     xml += "     <pre>Some notes about the game, simple html allowed.\n";
     xml += "     </pre>\n";
     xml += "- url: http://example.com/games/mod.zip\n";
     xml += "  mapName: modName\n";
+    xml += "  version: 1\n";
     // missing map type defaults to map
     xml += "  description: |\n";
     xml += "      map mod\n";
     xml += "- url: http://example.com/games/skin.zip\n";
     xml += "  mapName: skin\n";
+    xml += "  version: 1\n";
     xml += createTypeTag(DownloadFileParser.ValueType.MAP_SKIN);
     xml += "  description: |\n";
     xml += "      map skin\n";
     xml += "- url: http://example.com/games/tool.zip\n";
     xml += "  mapName: mapToolName\n";
+    xml += "  version: 1\n";
     xml += createTypeTag(DownloadFileParser.ValueType.MAP_TOOL);
     xml += "  description: |\n";
     xml += "       <pre>\n";
@@ -100,6 +104,7 @@ public class DownloadFileParserTest {
     String xml = "";
     xml += "- url: http://example.com/games/mod.zip\n";
     xml += "  mapName: " + GAME_NAME + "\n";
+    xml += "  version: 1\n";
     xml += "  description: |\n";
     xml += "      description\n";
     return xml.getBytes();
