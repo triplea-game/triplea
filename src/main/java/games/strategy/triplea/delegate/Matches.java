@@ -1472,7 +1472,7 @@ public final class Matches {
    * necessarily so in an FFA type
    * game) and is not unowned water.
    */
-  public static Match<Territory> territoryHasEnemyUnitsThatCanCaptureTerritoryAndTerritoryOwnedByTheirEnemyAndIsNotUnownedWater(
+  static Match<Territory> territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyAndIsNotUnownedWater(
       final PlayerID player, final GameData data) {
     return Match.of(t -> {
       if (t.getOwner() == null) {
