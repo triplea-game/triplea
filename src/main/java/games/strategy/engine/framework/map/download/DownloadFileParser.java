@@ -3,6 +3,7 @@ package games.strategy.engine.framework.map.download;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,8 +31,7 @@ final class DownloadFileParser {
     final JSONArray yamlData = new JSONArray(new Yaml().loadAs(is, List.class));
 
     final List<DownloadFileDescription> rVal = new ArrayList<>();
-    for (int i = 0; i < yamlData.length(); i++) {
-      final JSONObject yaml = yamlData.getJSONObject(i);
+    StreamSupport.stream(yamlData.spliterator(), false).map(JSONObject.class::cast).forEach(yaml -> {
       final String url = yaml.getString(Tags.url.toString());
       final String description = yaml.getString(Tags.description.toString());
       final String mapName = yaml.getString(Tags.mapName.toString());
@@ -51,7 +51,7 @@ final class DownloadFileParser {
       final DownloadFileDescription dl =
           new DownloadFileDescription(url, description, mapName, version, downloadType, mapCategory, img);
       rVal.add(dl);
-    }
+    });
     return rVal;
   }
 }
