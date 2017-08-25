@@ -260,6 +260,6 @@ public class Database {
         logger.log(Level.WARNING, se.getMessage(), se);
       }
     }
-    logger.info("Databse shut down");
+    logger.info("Database shut down");
   }
 }
