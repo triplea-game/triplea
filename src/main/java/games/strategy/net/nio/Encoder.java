@@ -45,7 +45,7 @@ class Encoder {
         logger.log(Level.FINER, "encoded  msg:" + header.getMessage() + " size:" + data.size());
       }
       writer.enque(data, to);
-    } catch (final Exception e) {
+    } catch (final IOException e) {
       // we arent doing any io, just writing in memory
       // so something is very wrong
       logger.log(Level.SEVERE, "Error writing object:" + header, e);
