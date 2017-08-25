@@ -82,22 +82,23 @@ public class TuvUtils {
 
     // Add value for consumesUnits
     for (final UnitType unitType : costs.keySet()) {
-      costs.put(unitType, getTotalTuv(unitType, costs));
+      costs.put(unitType, getTotalTuv(unitType, costs, new HashSet<>()));
     }
 
     return costs;
   }
 
-  // TODO: consider cycles
-  private static int getTotalTuv(UnitType unitType, IntegerMap<UnitType> costs) {
+  private static int getTotalTuv(UnitType unitType, IntegerMap<UnitType> costs, Set<UnitType> alreadyAdded) {
     int tuv = costs.getInt(unitType);
     final UnitAttachment ua = UnitAttachment.get(unitType);
-    if (ua == null || ua.getConsumesUnits().isEmpty()) {
+    if (ua == null || ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
       return tuv;
     }
+    alreadyAdded.add(unitType);
     for (final UnitType ut : ua.getConsumesUnits().keySet()) {
-      tuv += getTotalTuv(ut, costs);
+      tuv += getTotalTuv(ut, costs, alreadyAdded);
     }
+    alreadyAdded.remove(unitType);
     return tuv;
   }
 
