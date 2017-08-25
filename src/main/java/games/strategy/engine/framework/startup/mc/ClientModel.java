@@ -15,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
+
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -132,7 +132,6 @@ public class ClientModel implements IMessengerErrorListener {
     ui = JOptionPane.getFrameForComponent(ui);
     m_ui = ui;
     // load in the saved name!
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     final ClientProps props = getProps(ui);
     if (props == null) {
       m_gameSelectorModel.setCanSelect(true);
