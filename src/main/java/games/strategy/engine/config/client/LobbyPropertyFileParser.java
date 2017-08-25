@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,28 +24,22 @@ class LobbyPropertyFileParser {
 
 
   public static LobbyServerProperties parse(final File file, final Version currentVersion) {
-    final JSONArray lobbyProperties;
     try {
-      lobbyProperties = loadYaml(file);
+      return new LobbyServerProperties(matchCurrentVersion(loadYaml(file), currentVersion).toMap());
     } catch (final IOException e) {
       throw new RuntimeException("Failed loading file: " + file.getAbsolutePath() + ", please try again, if the "
           + "problem does not go away please report a bug: " + UrlConstants.GITHUB_ISSUES);
     }
-    return new LobbyServerProperties(matchCurrentVersion(lobbyProperties, currentVersion).toMap());
   }
 
-  private static JSONObject matchCurrentVersion(
-      final JSONArray lobbyProps,
-      final Version currentVersion) {
+  private static JSONObject matchCurrentVersion(final JSONArray lobbyProps, final Version currentVersion) {
     checkNotNull(lobbyProps);
 
-    for (int i = 0; i < lobbyProps.length(); i++) {
-      final JSONObject currentObject = lobbyProps.getJSONObject(i);
-      if (currentVersion.equals(currentObject.opt("version"))) {
-        return currentObject;
-      }
-    }
-    return lobbyProps.getJSONObject(0);
+    return StreamSupport.stream(lobbyProps.spliterator(), false)
+        .map(JSONObject.class::cast)
+        .filter(props -> currentVersion.equals(props.opt("version")))
+        .findFirst()
+        .orElse(lobbyProps.getJSONObject(0));
   }
 
   private static JSONArray loadYaml(final File yamlFile) throws IOException {
