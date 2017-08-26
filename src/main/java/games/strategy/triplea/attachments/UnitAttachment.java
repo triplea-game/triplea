@@ -225,6 +225,8 @@ public class UnitAttachment extends DefaultAttachment {
   private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<>();
   // currently used for: placement in original territories only
   private HashSet<String> m_special = new HashSet<>();
+  // Manually set TUV
+  private int m_tuv = -1;
 
   /** Creates new UnitAttachment. */
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -2562,6 +2564,24 @@ public class UnitAttachment extends DefaultAttachment {
     m_placementLimit = null;
   }
 
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setTuv(final String s) {
+    m_tuv = getInt(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setTuv(final Integer s) {
+    m_tuv = s;
+  }
+
+  public int getTuv() {
+    return m_tuv;
+  }
+
+  public void resetTuv() {
+    m_tuv = -1;
+  }
+
   public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(final String limitType, final UnitType ut,
       final Territory t, final PlayerID owner, final GameData data) {
     final UnitAttachment ua = UnitAttachment.get(ut);
@@ -2791,12 +2811,10 @@ public class UnitAttachment extends DefaultAttachment {
     // should cover ALL fields stored in UnitAttachment
     // remember to test for null and fix arrays
     // the stats exporter relies on this toString having two spaces after each entry, so do not change this please,
-    // except to add new
-    // abilities onto the end
+    // except to add new abilities onto the end
     return this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:" + "  isAir:"
         + m_isAir + "  isSea:" + m_isSea + "  movement:" + m_movement + "  attack:" + m_attack + "  defense:"
         + m_defense + "  hitPoints:" + m_hitPoints
-        // + " isFactory:" + m_isFactory
         + "  canBlitz:" + m_canBlitz + "  artillerySupportable:" + m_artillerySupportable + "  artillery:" + m_artillery
         + "  unitSupportCount:" + m_unitSupportCount + "  attackRolls:" + m_attackRolls + "  defenseRolls:"
         + m_defenseRolls + "  chooseBestRoll:" + m_chooseBestRoll + "  isMarine:" + m_isMarine + "  isInfantry:"
@@ -2872,7 +2890,8 @@ public class UnitAttachment extends DefaultAttachment {
         + m_canNotMoveDuringCombatMove + "  movementLimit:"
         + (m_movementLimit != null ? m_movementLimit.toString() : "null") + "  attackingLimit:"
         + (m_attackingLimit != null ? m_attackingLimit.toString() : "null") + "  placementLimit:"
-        + (m_placementLimit != null ? m_placementLimit.toString() : "null");
+        + (m_placementLimit != null ? m_placementLimit.toString() : "null")
+        + "  tuv:" + m_tuv;
   }
 
   public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHtml,
