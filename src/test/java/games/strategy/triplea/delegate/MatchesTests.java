@@ -59,179 +59,6 @@ public final class MatchesTests {
     };
   }
 
-  public static final class TerritoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyAndIsNotUnownedWaterTest {
-    private GameData gameData;
-    private PlayerID player;
-    private PlayerID alliedPlayer;
-    private PlayerID enemyPlayer;
-    private Territory landTerritory;
-    private Territory seaTerritory;
-
-    private Match<Territory> newMatch() {
-      return Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyAndIsNotUnownedWater(player, gameData);
-    }
-
-    private Unit newAirUnitFor(final PlayerID player) {
-      return GameDataTestUtil.fighter(gameData).create(player);
-    }
-
-    private Unit newInfrastructureUnitFor(final PlayerID player) {
-      return GameDataTestUtil.aaGun(gameData).create(player);
-    }
-
-    private Unit newLandUnitFor(final PlayerID player) {
-      return GameDataTestUtil.infantry(gameData).create(player);
-    }
-
-    private Unit newSeaUnitFor(final PlayerID player) {
-      return GameDataTestUtil.battleship(gameData).create(player);
-    }
-
-    @Before
-    public void setUp() throws Exception {
-      gameData = TestMapGameData.DELEGATE_TEST.getGameData();
-
-      player = GameDataTestUtil.germans(gameData);
-      alliedPlayer = GameDataTestUtil.japanese(gameData);
-      assertThat(gameData.getRelationshipTracker().isAtWar(player, alliedPlayer), is(false));
-      enemyPlayer = GameDataTestUtil.russians(gameData);
-      assertThat(gameData.getRelationshipTracker().isAtWar(player, enemyPlayer), is(true));
-
-      landTerritory = gameData.getMap().getTerritory("Germany");
-      landTerritory.setOwner(player);
-      landTerritory.getUnits().clear();
-
-      seaTerritory = gameData.getMap().getTerritory("Baltic Sea Zone");
-      seaTerritory.setOwner(player);
-      seaTerritory.getUnits().clear();
-    }
-
-    @Test
-    public void shouldNotMatchWhenLandTerritoryContainsOnlyAlliedLandUnits() {
-      landTerritory.getUnits().add(newLandUnitFor(alliedPlayer));
-
-      assertThat(newMatch(), notMatches(landTerritory));
-    }
-
-    @Test
-    public void shouldMatchWhenLandTerritoryContainsOnlyEnemyLandUnits() {
-      landTerritory.getUnits().add(newLandUnitFor(enemyPlayer));
-
-      assertThat(newMatch(), matches(landTerritory));
-    }
-
-    @Test
-    public void shouldMatchWhenLandTerritoryContainsEnemyLandUnitsAndIsUnowned() {
-      landTerritory.setOwner(PlayerID.NULL_PLAYERID);
-      TerritoryAttachment.remove(landTerritory);
-      landTerritory.getUnits().add(newLandUnitFor(enemyPlayer));
-
-      assertThat(newMatch(), matches(landTerritory));
-    }
-
-    @Test
-    public void shouldNotMatchWhenLandTerritoryContainsOnlyEnemyAirUnits() {
-      landTerritory.getUnits().add(newAirUnitFor(enemyPlayer));
-
-      assertThat(newMatch(), notMatches(landTerritory));
-    }
-
-    @Test
-    public void shouldNotMatchWhenLandTerritoryContainsOnlyEnemyInfrastructureUnits() {
-      landTerritory.getUnits().add(newInfrastructureUnitFor(enemyPlayer));
-
-      assertThat(newMatch(), notMatches(landTerritory));
-    }
-
-    @Test
-    public void shouldNotMatchWhenSeaTerritoryContainsOnlyAlliedSeaUnits() {
-      seaTerritory.getUnits().add(newSeaUnitFor(alliedPlayer));
-
-      assertThat(newMatch(), notMatches(seaTerritory));
-    }
-
-    @Test
-    public void shouldMatchWhenSeaTerritoryContainsOnlyEnemySeaUnits() {
-      seaTerritory.getUnits().add(newSeaUnitFor(enemyPlayer));
-
-      assertThat(newMatch(), matches(seaTerritory));
-    }
-
-    @Test
-    public void shouldNotMatchWhenSeaTerritoryContainsEnemySeaUnitsAndIsUnowned() {
-      seaTerritory.setOwner(PlayerID.NULL_PLAYERID);
-      TerritoryAttachment.remove(seaTerritory);
-      seaTerritory.getUnits().add(newSeaUnitFor(enemyPlayer));
-
-      assertThat(newMatch(), notMatches(seaTerritory));
-    }
-
-    @Test
-    public void shouldNotMatchWhenSeaTerritoryContainsOnlyEnemyAirUnits() {
-      seaTerritory.getUnits().add(newAirUnitFor(enemyPlayer));
-
-      assertThat(newMatch(), notMatches(seaTerritory));
-    }
-
-    @Test
-    public void shouldNotMatchWhenSeaTerritoryContainsOnlyEnemyInfrastructureUnits() {
-      seaTerritory.getUnits().add(newInfrastructureUnitFor(enemyPlayer));
-
-      assertThat(newMatch(), notMatches(seaTerritory));
-    }
-  }
-
-  public static final class TerritoryIsNotUnownedWaterTest {
-    private GameData gameData;
-    private PlayerID player;
-    private Territory landTerritory;
-    private Territory seaTerritory;
-
-    private static Match<Territory> newMatch() {
-      return Matches.territoryIsNotUnownedWater();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-      gameData = TestMapGameData.DELEGATE_TEST.getGameData();
-
-      player = GameDataTestUtil.germans(gameData);
-
-      landTerritory = gameData.getMap().getTerritory("Germany");
-      seaTerritory = gameData.getMap().getTerritory("Baltic Sea Zone");
-    }
-
-    @Test
-    public void shouldMatchWhenLandTerritoryIsOwned() {
-      landTerritory.setOwner(player);
-
-      assertThat(newMatch(), matches(landTerritory));
-    }
-
-    @Test
-    public void shouldMatchWhenLandTerritoryIsUnowned() {
-      landTerritory.setOwner(PlayerID.NULL_PLAYERID);
-      TerritoryAttachment.remove(landTerritory);
-
-      assertThat(newMatch(), matches(landTerritory));
-    }
-
-    @Test
-    public void shouldMatchWhenSeaTerritoryIsOwned() {
-      seaTerritory.setOwner(player);
-
-      assertThat(newMatch(), matches(seaTerritory));
-    }
-
-    @Test
-    public void shouldNotMatchWhenSeaTerritoryIsUnowned() {
-      seaTerritory.setOwner(PlayerID.NULL_PLAYERID);
-      TerritoryAttachment.remove(seaTerritory);
-
-      assertThat(newMatch(), notMatches(seaTerritory));
-    }
-  }
-
   public static final class TerritoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyTest {
     private GameData gameData;
     private PlayerID player;
@@ -296,6 +123,57 @@ public final class MatchesTests {
       territory.getUnits().add(newInfrastructureUnitFor(enemyPlayer));
 
       assertThat(newMatch(), notMatches(territory));
+    }
+  }
+
+  public static final class TerritoryIsNotUnownedWaterTest {
+    private GameData gameData;
+    private PlayerID player;
+    private Territory landTerritory;
+    private Territory seaTerritory;
+
+    private static Match<Territory> newMatch() {
+      return Matches.territoryIsNotUnownedWater();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+      gameData = TestMapGameData.DELEGATE_TEST.getGameData();
+
+      player = GameDataTestUtil.germans(gameData);
+
+      landTerritory = gameData.getMap().getTerritory("Germany");
+      seaTerritory = gameData.getMap().getTerritory("Baltic Sea Zone");
+    }
+
+    @Test
+    public void shouldMatchWhenLandTerritoryIsOwned() {
+      landTerritory.setOwner(player);
+
+      assertThat(newMatch(), matches(landTerritory));
+    }
+
+    @Test
+    public void shouldMatchWhenLandTerritoryIsUnowned() {
+      landTerritory.setOwner(PlayerID.NULL_PLAYERID);
+      TerritoryAttachment.remove(landTerritory);
+
+      assertThat(newMatch(), matches(landTerritory));
+    }
+
+    @Test
+    public void shouldMatchWhenSeaTerritoryIsOwned() {
+      seaTerritory.setOwner(player);
+
+      assertThat(newMatch(), matches(seaTerritory));
+    }
+
+    @Test
+    public void shouldNotMatchWhenSeaTerritoryIsUnowned() {
+      seaTerritory.setOwner(PlayerID.NULL_PLAYERID);
+      TerritoryAttachment.remove(seaTerritory);
+
+      assertThat(newMatch(), notMatches(seaTerritory));
     }
   }
 }

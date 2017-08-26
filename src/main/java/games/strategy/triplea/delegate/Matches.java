@@ -1468,18 +1468,6 @@ public final class Matches {
     return Match.of(t -> t.getUnits().anyMatch(enemyUnit(player, data)));
   }
 
-  /**
-   * The territory is owned by the enemy of those enemy units (ie: probably owned by you or your ally, but not
-   * necessarily so in an FFA type
-   * game) and is not unowned water.
-   */
-  static Match<Territory> territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyAndIsNotUnownedWater(
-      final PlayerID player, final GameData data) {
-    return Match.allOf(
-        territoryIsNotUnownedWater(),
-        territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player, data));
-  }
-
   static Match<Territory> territoryIsNotUnownedWater() {
     return Match.of(t -> !(t.isWater() && TerritoryAttachment.get(t) == null && t.getOwner().isNull()));
   }
