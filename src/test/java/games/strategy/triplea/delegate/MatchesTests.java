@@ -1,7 +1,11 @@
 package games.strategy.triplea.delegate;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+
+import java.util.Arrays;
 
 import javax.annotation.Nullable;
 
@@ -82,6 +86,10 @@ public final class MatchesTests {
       return GameDataTestUtil.infantry(gameData).create(player);
     }
 
+    private Unit newSeaUnitFor(final PlayerID player) {
+      return GameDataTestUtil.battleship(gameData).create(player);
+    }
+
     @Before
     public void setUp() throws Exception {
       gameData = TestMapGameData.DELEGATE_TEST.getGameData();
@@ -105,8 +113,23 @@ public final class MatchesTests {
     }
 
     @Test
-    public void shouldMatchWhenTerritoryContainsOnlyEnemyLandUnits() {
-      territory.getUnits().add(newLandUnitFor(enemyPlayer));
+    public void shouldMatchWhenTerritoryContainsEnemyLandUnits() {
+      territory.getUnits().addAll(Arrays.asList(
+          newLandUnitFor(player),
+          newLandUnitFor(enemyPlayer),
+          newAirUnitFor(enemyPlayer),
+          newInfrastructureUnitFor(enemyPlayer)));
+
+      assertThat(newMatch(), matches(territory));
+    }
+
+    @Test
+    public void shouldMatchWhenTerritoryContainsEnemySeaUnits() {
+      territory.getUnits().addAll(Arrays.asList(
+          newSeaUnitFor(player),
+          newSeaUnitFor(enemyPlayer),
+          newAirUnitFor(enemyPlayer),
+          newInfrastructureUnitFor(enemyPlayer)));
 
       assertThat(newMatch(), matches(territory));
     }
@@ -143,18 +166,37 @@ public final class MatchesTests {
       player = GameDataTestUtil.germans(gameData);
 
       landTerritory = gameData.getMap().getTerritory("Germany");
+      landTerritory.setOwner(player);
+      assertThat(TerritoryAttachment.get(landTerritory), is(notNullValue()));
+
       seaTerritory = gameData.getMap().getTerritory("Baltic Sea Zone");
+      seaTerritory.setOwner(player);
+      assertThat(TerritoryAttachment.get(seaTerritory), is(nullValue()));
+      TerritoryAttachment.add(seaTerritory, new TerritoryAttachment("name", seaTerritory, gameData));
+      assertThat(TerritoryAttachment.get(seaTerritory), is(notNullValue()));
     }
 
     @Test
-    public void shouldMatchWhenLandTerritoryIsOwned() {
-      landTerritory.setOwner(player);
+    public void shouldMatchWhenLandTerritoryIsOwnedAndHasTerritoryAttachment() {
+      assertThat(newMatch(), matches(landTerritory));
+    }
+
+    @Test
+    public void shouldMatchWhenLandTerritoryIsOwnedAndDoesNotHaveTerritoryAttachment() {
+      TerritoryAttachment.remove(landTerritory);
 
       assertThat(newMatch(), matches(landTerritory));
     }
 
     @Test
-    public void shouldMatchWhenLandTerritoryIsUnowned() {
+    public void shouldMatchWhenLandTerritoryIsUnownedAndHasTerritoryAttachment() {
+      landTerritory.setOwner(PlayerID.NULL_PLAYERID);
+
+      assertThat(newMatch(), matches(landTerritory));
+    }
+
+    @Test
+    public void shouldMatchWhenLandTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
       landTerritory.setOwner(PlayerID.NULL_PLAYERID);
       TerritoryAttachment.remove(landTerritory);
 
@@ -162,14 +204,26 @@ public final class MatchesTests {
     }
 
     @Test
-    public void shouldMatchWhenSeaTerritoryIsOwned() {
-      seaTerritory.setOwner(player);
+    public void shouldMatchWhenSeaTerritoryIsOwnedAndHasTerritoryAttachment() {
+      assertThat(newMatch(), matches(seaTerritory));
+    }
+
+    @Test
+    public void shouldMatchWhenSeaTerritoryIsOwnedAndDoesNotHaveTerritoryAttachment() {
+      TerritoryAttachment.remove(seaTerritory);
 
       assertThat(newMatch(), matches(seaTerritory));
     }
 
     @Test
-    public void shouldNotMatchWhenSeaTerritoryIsUnowned() {
+    public void shouldMatchWhenSeaTerritoryIsUnownedAndHasTerritoryAttachment() {
+      seaTerritory.setOwner(PlayerID.NULL_PLAYERID);
+
+      assertThat(newMatch(), matches(seaTerritory));
+    }
+
+    @Test
+    public void shouldNotMatchWhenSeaTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
       seaTerritory.setOwner(PlayerID.NULL_PLAYERID);
       TerritoryAttachment.remove(seaTerritory);
 

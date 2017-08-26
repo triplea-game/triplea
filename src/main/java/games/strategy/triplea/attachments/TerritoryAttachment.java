@@ -148,8 +148,27 @@ public class TerritoryAttachment extends DefaultAttachment {
     return rVal;
   }
 
+  /**
+   * Adds the specified territory attachment to the specified territory.
+   *
+   * @param territory The territory that will receive the territory attachment.
+   * @param territoryAttachment The territory attachment.
+   */
+  public static void add(final Territory territory, final TerritoryAttachment territoryAttachment) {
+    checkNotNull(territory);
+    checkNotNull(territoryAttachment);
+
+    territory.addAttachment(Constants.TERRITORY_ATTACHMENT_NAME, territoryAttachment);
+  }
+
+  /**
+   * Removes any territory attachment from the specified territory.
+   *
+   * @param territory The territory from which the attachment will be removed.
+   */
   public static void remove(final Territory territory) {
     checkNotNull(territory);
+
     territory.removeAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
   }
 
