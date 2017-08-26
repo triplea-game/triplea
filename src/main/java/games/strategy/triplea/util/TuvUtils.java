@@ -80,7 +80,7 @@ public class TuvUtils {
       }
     }
 
-    // Add value for consumesUnits
+    // Override with XML TUV or consumesUnit sum
     for (final UnitType unitType : costs.keySet()) {
       costs.put(unitType, getTotalTuv(unitType, costs, new HashSet<>()));
     }
@@ -138,8 +138,11 @@ public class TuvUtils {
 
   private static int getTotalTuv(final UnitType unitType, final IntegerMap<UnitType> costs,
       final Set<UnitType> alreadyAdded) {
-    int tuv = costs.getInt(unitType);
     final UnitAttachment ua = UnitAttachment.get(unitType);
+    if (ua.getTuv() > -1) {
+      return ua.getTuv();
+    }
+    int tuv = costs.getInt(unitType);
     if (ua == null || ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
       return tuv;
     }
