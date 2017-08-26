@@ -76,6 +76,7 @@ public class GameRunner {
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
   public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
+  public static final String TRIPLEA_MAP_DOWNLOAD_PROPERTY = "triplea.map.download";
   public static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
   public static final String TRIPLEA_CLIENT_PROPERTY = "triplea.client";
   public static final String TRIPLEA_HOST_PROPERTY = "triplea.host";
@@ -105,7 +106,8 @@ public class GameRunner {
   private static JFrame mainFrame;
 
   private static final String[] COMMAND_LINE_ARGS =
-      {TRIPLEA_GAME_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_HOST_PROPERTY,
+      {TRIPLEA_GAME_PROPERTY, TRIPLEA_MAP_DOWNLOAD_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY,
+          TRIPLEA_HOST_PROPERTY,
           TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED,
           TRIPLEA_LOBBY_PORT_PROPERTY,
           LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN,
@@ -264,6 +266,10 @@ public class GameRunner {
         final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
         if (fileName.length() > 0) {
           gameSelectorModel.load(new File(fileName), mainFrame);
+        }
+        final String downloadableMap = System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
+        if (!downloadableMap.isEmpty()) {
+          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
         }
       }).start();
 

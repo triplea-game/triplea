@@ -5,15 +5,23 @@ import java.util.Arrays;
 import games.strategy.triplea.settings.ClientSetting;
 
 public class ArgParser {
+
+  private static final String TRIPLEA_PROTOCOL = "triplea:";
+
   /**
    * Move command line arguments to System.properties
+   * 
    * @return Return true if all args were valid and accepted, false otherwise.
    */
   public static boolean handleCommandLineArgs(
       final String[] args, final String[] availableProperties) {
     if (args.length == 1 && !args[0].contains("=")) {
       // assume a default single arg, convert the format so we can process as normally.
-      args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
+      if (args[0].startsWith(TRIPLEA_PROTOCOL)) {
+        args[0] = GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY + "=" + args[0].substring(TRIPLEA_PROTOCOL.length());
+      } else {
+        args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
+      }
     }
 
     for (final String arg : args) {
