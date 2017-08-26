@@ -26,10 +26,9 @@ public final class ProductionFrontierProxyAsProxyTest extends AbstractProxyTestC
 
   private static ProductionFrontier newProductionFrontier() {
     final GameData gameData = TestGameDataFactory.newValidGameData();
-    final ProductionFrontier productionFrontier = new ProductionFrontier("productionFrontier", gameData);
-    productionFrontier.addRule(TestGameDataComponentFactory.newProductionRule(gameData, "productionRule1"));
-    productionFrontier.addRule(TestGameDataComponentFactory.newProductionRule(gameData, "productionRule2"));
-    return productionFrontier;
+    return new ProductionFrontier("productionFrontier", gameData, Arrays.asList(
+        TestGameDataComponentFactory.newProductionRule(gameData, "productionRule1"),
+        TestGameDataComponentFactory.newProductionRule(gameData, "productionRule2")));
   }
 
   @Override
