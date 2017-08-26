@@ -59,10 +59,18 @@ public class ArgParserTest {
   }
 
   @Test
-  public void singleArgIsAssumedToBeGameProperty() {
+  public void singleFileArgIsAssumedToBeGameProperty() {
     ArgParser.handleCommandLineArgs(new String[] {TestData.propValue}, new String[] {GameRunner.TRIPLEA_GAME_PROPERTY});
     assertThat("if we pass only one arg, it is assumed to mean we are specifying the 'game property'",
         System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY), is(TestData.propValue));
+  }
+  
+  @Test
+  public void singleUrlArgIsAssumedToBeMapDownloadProperty() {
+    final String testUrl = "triplea:" + TestData.propValue;
+    ArgParser.handleCommandLineArgs(new String[] {testUrl}, new String[] {GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY});
+    assertThat("if we pass only one arg, it is assumed to mean we are specifying the 'game property'",
+        System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY), is(TestData.propValue));
   }
 
   @Test
