@@ -148,7 +148,7 @@ public class TuvUtils {
     }
     alreadyAdded.add(unitType);
     for (final UnitType ut : ua.getConsumesUnits().keySet()) {
-      tuv += getTotalTuv(ut, costs, alreadyAdded);
+      tuv += ua.getConsumesUnits().getInt(ut) * getTotalTuv(ut, costs, alreadyAdded);
     }
     alreadyAdded.remove(unitType);
     return tuv;
