@@ -32,6 +32,12 @@ public final class EngineDataEqualityComparators {
           && context.equals(o1.getCosts(), o2.getCosts())
           && context.equals(o1.getResults(), o2.getResults()));
 
+  public static final EqualityComparator REPAIR_FRONTIER = EqualityComparator.newInstance(
+      RepairFrontier.class,
+      (context, o1, o2) -> context.equals(o1.getData(), o2.getData())
+          && context.equals(o1.getName(), o2.getName())
+          && context.equals(o1.getRules(), o2.getRules()));
+
   public static final EqualityComparator REPAIR_RULE = EqualityComparator.newInstance(
       RepairRule.class,
       (context, o1, o2) -> context.equals(o1.getData(), o2.getData())

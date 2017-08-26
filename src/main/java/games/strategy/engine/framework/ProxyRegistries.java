@@ -5,6 +5,7 @@ import games.strategy.internal.persistence.serializable.IntegerMapProxy;
 import games.strategy.internal.persistence.serializable.ProductionFrontierProxy;
 import games.strategy.internal.persistence.serializable.ProductionRuleProxy;
 import games.strategy.internal.persistence.serializable.PropertyBagMementoProxy;
+import games.strategy.internal.persistence.serializable.RepairFrontierProxy;
 import games.strategy.internal.persistence.serializable.RepairRuleProxy;
 import games.strategy.internal.persistence.serializable.ResourceCollectionProxy;
 import games.strategy.internal.persistence.serializable.ResourceProxy;
@@ -27,6 +28,7 @@ final class ProxyRegistries {
         ProductionFrontierProxy.FACTORY,
         ProductionRuleProxy.FACTORY,
         PropertyBagMementoProxy.FACTORY,
+        RepairFrontierProxy.FACTORY,
         RepairRuleProxy.FACTORY,
         ResourceProxy.FACTORY,
         ResourceCollectionProxy.FACTORY,
