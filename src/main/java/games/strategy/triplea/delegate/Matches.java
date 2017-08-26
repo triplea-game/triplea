@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
@@ -1474,16 +1475,30 @@ public final class Matches {
    */
   static Match<Territory> territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyAndIsNotUnownedWater(
       final PlayerID player, final GameData data) {
+    return Match.allOf(
+        territoryIsNotUnownedWater(),
+        territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player, data));
+  }
+
+  static Match<Territory> territoryIsNotUnownedWater() {
+    return Match.of(t -> !(t.isWater() && TerritoryAttachment.get(t) == null && t.getOwner().isNull()));
+  }
+
+  /**
+   * The territory is owned by the enemy of those enemy units (i.e. probably owned by you or your ally, but not
+   * necessarily so in an FFA type game).
+   */
+  static Match<Territory> territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(
+      final PlayerID player, final GameData gameData) {
     return Match.of(t -> {
-      if (t.isWater() && TerritoryAttachment.get(t) == null && t.getOwner().isNull()) {
-        return false;
-      }
-      final Set<PlayerID> enemies = new HashSet<>();
-      for (final Unit u : t.getUnits()
-          .getMatches(Match.allOf(enemyUnit(player, data), unitIsNotAir(), UnitIsNotInfrastructure))) {
-        enemies.add(u.getOwner());
-      }
-      return (Matches.isAtWarWithAnyOfThesePlayers(enemies, data)).match(t.getOwner());
+      final List<Unit> enemyUnits = t.getUnits().getMatches(Match.allOf(
+          enemyUnit(player, gameData),
+          unitIsNotAir(),
+          UnitIsNotInfrastructure));
+      final Collection<PlayerID> enemyPlayers = enemyUnits.stream()
+          .map(Unit::getOwner)
+          .collect(Collectors.toSet());
+      return isAtWarWithAnyOfThesePlayers(enemyPlayers, gameData).match(t.getOwner());
     });
   }
 
