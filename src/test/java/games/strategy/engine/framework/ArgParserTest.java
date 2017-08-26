@@ -27,8 +27,8 @@ public class ArgParserTest {
         TestData.sampleArgInput, TestData.samplePropertyNameSet);
 
     assertThat("prop key was supplied as an available value, "
-            + " which was passed as a test value - everything should "
-            + "have parsed well, expect true result",
+        + " which was passed as a test value - everything should "
+        + "have parsed well, expect true result",
         result, is(true));
     assertThat("system property should now be set to our test value",
         System.getProperty(TestData.propKey), is(TestData.propValue));
@@ -59,10 +59,19 @@ public class ArgParserTest {
   }
 
   @Test
-  public void singleArgIsAssumedToBeGameProperty() {
+  public void singleFileArgIsAssumedToBeGameProperty() {
     ArgParser.handleCommandLineArgs(new String[] {TestData.propValue}, new String[] {GameRunner.TRIPLEA_GAME_PROPERTY});
     assertThat("if we pass only one arg, it is assumed to mean we are specifying the 'game property'",
         System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY), is(TestData.propValue));
+  }
+
+  @Test
+  public void singleUrlArgIsAssumedToBeMapDownloadProperty() {
+    final String testUrl = "triplea:" + TestData.propValue;
+    ArgParser.handleCommandLineArgs(new String[] {testUrl}, new String[] {GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY});
+    assertThat("if we pass only one arg prefixed with 'triplea:',"
+        + " it's assumed to mean we are specifying the 'map download property'",
+        System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY), is(TestData.propValue));
   }
 
   @Test
@@ -75,10 +84,9 @@ public class ArgParserTest {
         new String[] {"a=valid", "notMapped=test"},
         new String[] {"a=valid", "notMapped=test", "b=valid"},
         new String[] {"a=valid", "b=valid", "notMapped=test"})
-        .forEach(invalidInput ->
-            assertThat("A key in the input is not in the valid key set, expecting this to be seen"
-                    + "as invalid: " + Arrays.asList(invalidInput),
-                ArgParser.handleCommandLineArgs(invalidInput, validKeys), is(false)));
+        .forEach(invalidInput -> assertThat("A key in the input is not in the valid key set, expecting this to be seen"
+            + "as invalid: " + Arrays.asList(invalidInput),
+            ArgParser.handleCommandLineArgs(invalidInput, validKeys), is(false)));
   }
 
 
