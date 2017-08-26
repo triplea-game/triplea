@@ -136,7 +136,8 @@ public class TuvUtils {
     return costs;
   }
 
-  private static int getTotalTuv(UnitType unitType, IntegerMap<UnitType> costs, Set<UnitType> alreadyAdded) {
+  private static int getTotalTuv(final UnitType unitType, final IntegerMap<UnitType> costs,
+      final Set<UnitType> alreadyAdded) {
     int tuv = costs.getInt(unitType);
     final UnitAttachment ua = UnitAttachment.get(unitType);
     if (ua == null || ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
