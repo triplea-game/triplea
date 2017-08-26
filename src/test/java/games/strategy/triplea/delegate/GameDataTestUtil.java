@@ -41,6 +41,15 @@ public class GameDataTestUtil {
   }
 
   /**
+   * Get the german PlayerID for the given GameData object.
+   *
+   * @return A german PlayerID.
+   */
+  public static PlayerID germany(final GameData data) {
+    return data.getPlayerList().getPlayerID("Germany");
+  }
+
+  /**
    * Get the italian PlayerID for the given GameData object.
    *
    * @return A italian PlayerID.
@@ -136,6 +145,13 @@ public class GameDataTestUtil {
   }
 
   /**
+   * Returns a germanBattleship UnitType object for the specified GameData object.
+   */
+  public static UnitType germanBattleship(final GameData data) {
+    return unitType("germanBattleship", data);
+  }
+
+  /**
    * Returns a carrier UnitType object for the specified GameData object.
    */
   public static UnitType carrier(final GameData data) {
@@ -178,6 +194,13 @@ public class GameDataTestUtil {
   }
 
   /**
+   * Returns a germanInfantry UnitType object for the specified GameData object.
+   */
+  public static UnitType germanInfantry(final GameData data) {
+    return unitType("germanInfantry", data);
+  }
+
+  /**
    * Returns a bomber UnitType object for the specified GameData object.
    */
   public static UnitType bomber(final GameData data) {
@@ -189,6 +212,13 @@ public class GameDataTestUtil {
    */
   public static UnitType factory(final GameData data) {
     return unitType(Constants.UNIT_TYPE_FACTORY, data);
+  }
+
+  /**
+   * Returns a germanFactory UnitType object for the specified GameData object.
+   */
+  public static UnitType germanFactory(final GameData data) {
+    return unitType("germanFactory", data);
   }
 
   /**
