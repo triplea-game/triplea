@@ -36,8 +36,6 @@ public final class ProductionFrontierProxy implements Proxy {
 
   @Override
   public Object readResolve() {
-    final ProductionFrontier productionFrontier = new ProductionFrontier(name, gameData);
-    rules.forEach(productionFrontier::addRule);
-    return productionFrontier;
+    return new ProductionFrontier(name, gameData, rules);
   }
 }

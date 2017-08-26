@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -7,19 +9,19 @@ import java.util.List;
 
 public class ProductionFrontier extends DefaultNamed implements Iterable<ProductionRule> {
   private static final long serialVersionUID = -5967251608158552892L;
-  private final List<ProductionRule> m_rules = new ArrayList<>();
+  private final List<ProductionRule> m_rules;
   private List<ProductionRule> m_cachedRules;
 
-  /**
-   * Creates new ProductionFrontier.
-   *
-   * @param name
-   *        name of production frontier
-   * @param data
-   *        game data
-   */
   public ProductionFrontier(final String name, final GameData data) {
+    this(name, data, Collections.emptyList());
+  }
+
+  public ProductionFrontier(final String name, final GameData data, final List<ProductionRule> rules) {
     super(name, data);
+
+    checkNotNull(rules);
+
+    m_rules = new ArrayList<>(rules);
   }
 
   public void addRule(final ProductionRule rule) {
