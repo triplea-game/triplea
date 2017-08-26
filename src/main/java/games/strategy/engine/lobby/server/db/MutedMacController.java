@@ -39,11 +39,11 @@ public class MutedMacController {
     logger.fine("Muting mac:" + mac);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)");
-      ps.setString(1, mac);
-      ps.setTimestamp(2, muteTillTs);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)")) {
+        ps.setString(1, mac);
+        ps.setTimestamp(2, muteTillTs);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       if (sqle.getErrorCode() == 30000) {
@@ -62,10 +62,10 @@ public class MutedMacController {
     logger.fine("Removing muted mac:" + mac);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac = ?");
-      ps.setString(1, mac);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac = ?")) {
+        ps.setString(1, mac);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error deleting muted mac:" + mac, sqle);
@@ -92,22 +92,22 @@ public class MutedMacController {
     final String sql = "select mac, mute_till from muted_macs where mac = ?";
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, mac);
-      final ResultSet rs = ps.executeQuery();
-      final boolean found = rs.next();
-      if (found) {
-        final Timestamp muteTill = rs.getTimestamp(2);
-        result = muteTill.getTime();
-        if (result < System.currentTimeMillis()) {
-          logger.fine("Mute expired for:" + mac);
-          expired = true;
+      try (final PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, mac);
+        try (final ResultSet rs = ps.executeQuery()) {
+          final boolean found = rs.next();
+          if (found) {
+            final Timestamp muteTill = rs.getTimestamp(2);
+            result = muteTill.getTime();
+            if (result < System.currentTimeMillis()) {
+              logger.fine("Mute expired for:" + mac);
+              expired = true;
+            }
+          } else {
+            result = -1;
+          }
         }
-      } else {
-        result = -1;
       }
-      rs.close();
-      ps.close();
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing muted mac existence:" + mac, sqle);
     } finally {

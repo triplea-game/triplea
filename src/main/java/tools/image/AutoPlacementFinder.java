@@ -98,43 +98,44 @@ public class AutoPlacementFinder {
           final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
           final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
           final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-          final FileReader reader = new FileReader(file);
-          final LineNumberReader reader2 = new LineNumberReader(reader);
-          int i = 0;
-          while (true) {
-            reader2.setLineNumber(i);
-            final String line = reader2.readLine();
-            if (line == null) {
-              break;
-            }
-            if (line.contains(scaleProperty)) {
-              try {
-                scale = Double.parseDouble(line.substring(line.indexOf(scaleProperty) + scaleProperty.length()).trim());
-                found = true;
-              } catch (final NumberFormatException ex) {
-                // ignore malformed input
+          try (final FileReader reader = new FileReader(file);
+              final LineNumberReader reader2 = new LineNumberReader(reader)) {
+            int i = 0;
+            while (true) {
+              reader2.setLineNumber(i);
+              final String line = reader2.readLine();
+              if (line == null) {
+                break;
+              }
+              if (line.contains(scaleProperty)) {
+                try {
+                  scale =
+                      Double.parseDouble(line.substring(line.indexOf(scaleProperty) + scaleProperty.length()).trim());
+                  found = true;
+                } catch (final NumberFormatException ex) {
+                  // ignore malformed input
+                }
+              }
+              if (line.contains(widthProperty)) {
+                try {
+                  width = Integer.parseInt(line.substring(line.indexOf(widthProperty) + widthProperty.length()).trim());
+                  found = true;
+                } catch (final NumberFormatException ex) {
+                  // ignore malformed input
+                }
+              }
+              if (line.contains(heightProperty)) {
+                try {
+                  height =
+                      Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
+                  found = true;
+                } catch (final NumberFormatException ex) {
+                  // ignore malformed input
+                }
               }
             }
-            if (line.contains(widthProperty)) {
-              try {
-                width = Integer.parseInt(line.substring(line.indexOf(widthProperty) + widthProperty.length()).trim());
-                found = true;
-              } catch (final NumberFormatException ex) {
-                // ignore malformed input
-              }
-            }
-            if (line.contains(heightProperty)) {
-              try {
-                height =
-                    Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
-                found = true;
-              } catch (final NumberFormatException ex) {
-                // ignore malformed input
-              }
-            }
+            i++;
           }
-          reader2.close();
-          i++;
           if (found) {
             final int result = JOptionPane.showConfirmDialog(new JPanel(),
                 "A map.properties file was found in the map's folder, "

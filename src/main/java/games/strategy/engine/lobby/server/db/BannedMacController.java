@@ -41,11 +41,11 @@ public class BannedMacController {
     logger.fine("Banning mac:" + mac);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)");
-      ps.setString(1, mac);
-      ps.setTimestamp(2, banTillTs);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)")) {
+        ps.setString(1, mac);
+        ps.setTimestamp(2, banTillTs);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       if (sqle.getErrorCode() == 30000) {
@@ -64,10 +64,10 @@ public class BannedMacController {
     logger.fine("Removing banned mac:" + mac);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?");
-      ps.setString(1, mac);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?")) {
+        ps.setString(1, mac);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error deleting banned mac:" + mac, sqle);
@@ -87,20 +87,20 @@ public class BannedMacController {
     final String sql = "select mac, ban_till from banned_macs where mac = ?";
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, mac);
-      final ResultSet rs = ps.executeQuery();
-      found = rs.next();
-      // If the ban has expired, allow the mac
-      if (found) {
-        banTill = rs.getTimestamp(2);
-        if (banTill != null && banTill.getTime() < System.currentTimeMillis()) {
-          logger.fine("Ban expired for:" + mac);
-          expired = true;
+      try (final PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, mac);
+        try (final ResultSet rs = ps.executeQuery()) {
+          found = rs.next();
+          // If the ban has expired, allow the mac
+          if (found) {
+            banTill = rs.getTimestamp(2);
+            if (banTill != null && banTill.getTime() < System.currentTimeMillis()) {
+              logger.fine("Ban expired for:" + mac);
+              expired = true;
+            }
+          }
         }
       }
-      rs.close();
-      ps.close();
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing banned mac existence:" + mac, sqle);
     } finally {

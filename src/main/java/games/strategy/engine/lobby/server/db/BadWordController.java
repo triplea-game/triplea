@@ -18,10 +18,10 @@ public class BadWordController {
     logger.fine("Adding bad word word:" + word);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?)");
-      ps.setString(1, word);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?)")) {
+        ps.setString(1, word);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       if (sqle.getErrorCode() == 30000) {
@@ -40,10 +40,10 @@ public class BadWordController {
     logger.fine("Removing banned word:" + word);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?");
-      ps.setString(1, word);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
+        ps.setString(1, word);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error deleting banned word:" + word, sqle);
@@ -56,15 +56,14 @@ public class BadWordController {
     final String sql = "select word from bad_words";
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      final ResultSet rs = ps.executeQuery();
-      final List<String> rVal = new ArrayList<>();
-      while (rs.next()) {
-        rVal.add(rs.getString(1));
+      try (final PreparedStatement ps = con.prepareStatement(sql);
+          final ResultSet rs = ps.executeQuery()) {
+        final List<String> rVal = new ArrayList<>();
+        while (rs.next()) {
+          rVal.add(rs.getString(1));
+        }
+        return rVal;
       }
-      rs.close();
-      ps.close();
-      return rVal;
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error reading bad words", sqle);
     } finally {

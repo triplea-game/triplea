@@ -47,19 +47,18 @@ public class PlayerOrder {
         playerSet.add(currentPlayerId);
       }
     }
-    FileWriter turnWriter = null;
     printData.getOutDir().mkdir();
     final File outFile = new File(printData.getOutDir(), "General Information.csv");
-    turnWriter = new FileWriter(outFile, true);
-    turnWriter.write("Turn Order\r\n");
-    final Set<PlayerID> noDuplicates = removeDups(playerSet);
-    final Iterator<PlayerID> playerIterator = noDuplicates.iterator();
-    int count = 1;
-    while (playerIterator.hasNext()) {
-      final PlayerID currentPlayerId = playerIterator.next();
-      turnWriter.write(count + ". " + currentPlayerId.getName() + "\r\n");
-      count++;
+    try (final FileWriter turnWriter = new FileWriter(outFile, true)) {
+      turnWriter.write("Turn Order\r\n");
+      final Set<PlayerID> noDuplicates = removeDups(playerSet);
+      final Iterator<PlayerID> playerIterator = noDuplicates.iterator();
+      int count = 1;
+      while (playerIterator.hasNext()) {
+        final PlayerID currentPlayerId = playerIterator.next();
+        turnWriter.write(count + ". " + currentPlayerId.getName() + "\r\n");
+        count++;
+      }
     }
-    turnWriter.close();
   }
 }

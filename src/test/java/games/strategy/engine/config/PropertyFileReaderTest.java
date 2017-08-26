@@ -23,13 +23,11 @@ public class PropertyFileReaderTest {
     final File tempFile = File.createTempFile("test", "tmp");
     tempFile.deleteOnExit();
 
-    final FileWriter writer = new FileWriter(tempFile);
-
-    writer.write("a=b\n");
-    writer.write(" 1 = 2 \n");
-    writer.write("whitespace =      \n");
-
-    writer.close();
+    try (final FileWriter writer = new FileWriter(tempFile)) {
+      writer.write("a=b\n");
+      writer.write(" 1 = 2 \n");
+      writer.write("whitespace =      \n");
+    }
 
     testObj = new PropertyFileReader(tempFile);
   }

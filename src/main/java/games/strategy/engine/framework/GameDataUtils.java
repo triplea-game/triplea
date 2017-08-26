@@ -40,10 +40,9 @@ public class GameDataUtils {
   public static <T> T translateIntoOtherGameData(final T object, final GameData translateInto) {
     try {
       ByteArrayOutputStream sink = new ByteArrayOutputStream(1024);
-      final GameObjectOutputStream out = new GameObjectOutputStream(sink);
-      out.writeObject(object);
-      out.flush();
-      out.close();
+      try (final GameObjectOutputStream out = new GameObjectOutputStream(sink)) {
+        out.writeObject(object);
+      }
       final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
       sink = null;
       final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);

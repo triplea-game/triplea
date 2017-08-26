@@ -27,16 +27,14 @@ public class SerializationTest {
 
   private Object serialize(final Object anObject) throws Exception {
     final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-    final ObjectOutputStream output = new GameObjectOutputStream(sink);
-    output.writeObject(anObject);
-    output.flush();
+    try (final ObjectOutputStream output = new GameObjectOutputStream(sink)) {
+      output.writeObject(anObject);
+    }
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());
-    final ObjectInputStream input =
-        new GameObjectInputStream(new GameObjectStreamFactory(gameDataSource), source);
-    final Object obj = input.readObject();
-    input.close();
-    output.close();
-    return obj;
+    try (final ObjectInputStream input =
+        new GameObjectInputStream(new GameObjectStreamFactory(gameDataSource), source)) {
+      return input.readObject();
+    }
   }
 
   @Test

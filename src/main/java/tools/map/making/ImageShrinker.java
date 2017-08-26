@@ -55,14 +55,14 @@ public class ImageShrinker {
     graphics2D.drawImage(baseImg, 0, 0, thumbWidth, thumbHeight, null);
     // save thumbnail image to OUTFILE
     final File file = new File(new File(mapFile.getPath()).getParent() + File.separatorChar + "smallMap.jpeg");
-    final FileImageOutputStream out = new FileImageOutputStream(file);
-    final ImageWriter encoder = ImageIO.getImageWritersByFormatName("JPEG").next();
-    final JPEGImageWriteParam param = new JPEGImageWriteParam(null);
-    param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-    param.setCompressionQuality((float) 1.0);
-    encoder.setOutput(out);
-    encoder.write(null, new IIOImage(thumbImage, null, null), param);
-    out.close();
+    try (final FileImageOutputStream out = new FileImageOutputStream(file)) {
+      final ImageWriter encoder = ImageIO.getImageWritersByFormatName("JPEG").next();
+      final JPEGImageWriteParam param = new JPEGImageWriteParam(null);
+      param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+      param.setCompressionQuality((float) 1.0);
+      encoder.setOutput(out);
+      encoder.write(null, new IIOImage(thumbImage, null, null), param);
+    }
     System.out.println("Image successfully written to " + file.getPath());
     System.exit(0);
   }
