@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import games.strategy.util.Tuple;
@@ -56,8 +55,7 @@ public class BannedUsernameController {
         logger.info("Tried to create duplicate banned username:" + username + " error:" + sqle.getMessage());
         return;
       }
-      logger.log(Level.SEVERE, "Error inserting banned username:" + username, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error inserting banned username:" + username, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -73,8 +71,7 @@ public class BannedUsernameController {
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error deleting banned username:" + username, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error deleting banned username:" + username, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -106,8 +103,7 @@ public class BannedUsernameController {
       rs.close();
       ps.close();
     } catch (final SQLException sqle) {
-      logger.info("Error for testing banned username existence:" + username + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error for testing banned username existence:" + username, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

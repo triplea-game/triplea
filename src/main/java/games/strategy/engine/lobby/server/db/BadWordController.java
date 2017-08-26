@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -31,8 +30,7 @@ public class BadWordController {
         logger.info("Tried to create duplicate banned word:" + word + " error:" + sqle.getMessage());
         return;
       }
-      logger.log(Level.SEVERE, "Error inserting banned word:" + word, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error inserting banned word:" + word, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -48,8 +46,7 @@ public class BadWordController {
       ps.close();
       con.commit();
     } catch (final SQLException sqle) {
-      logger.log(Level.SEVERE, "Error deleting banned word:" + word, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error deleting banned word:" + word, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -69,8 +66,7 @@ public class BadWordController {
       ps.close();
       return rVal;
     } catch (final SQLException sqle) {
-      logger.info("Error reading bad words error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error reading bad words", sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

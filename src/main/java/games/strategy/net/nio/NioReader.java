@@ -92,7 +92,7 @@ class NioReader {
           // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
           selector.select();
         } catch (final Exception e) {
-          logger.log(Level.INFO, "error reading selection", e);
+          logger.log(Level.SEVERE, "error reading selection", e);
         }
         if (!running) {
           continue;

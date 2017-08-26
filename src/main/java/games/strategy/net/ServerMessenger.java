@@ -662,7 +662,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     notifyPlayerRemoval(nodeToRemove);
     final SocketChannel channel = nodeToChannel.remove(nodeToRemove);
     if (channel == null) {
-      logger.info("Could not remove connection to node:" + nodeToRemove);
+      logger.warning("Could not remove connection to node:" + nodeToRemove);
       return;
     }
     channelToNode.remove(channel);

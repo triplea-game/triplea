@@ -49,7 +49,7 @@ public class DownloadMapsWindow extends JFrame {
   }
 
   private static final long serialVersionUID = -1542210716764178580L;
-  private static final Logger LOGGER = Logger.getLogger(DownloadMapsWindow.class.getName());
+  private static final Logger logger = Logger.getLogger(DownloadMapsWindow.class.getName());
   private static final int WINDOW_WIDTH = 1200;
   private static final int WINDOW_HEIGHT = 700;
   private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 150;
@@ -182,7 +182,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private static void logMapDownloadRequestIgnored(final Collection<String> mapNames) {
     if (!mapNames.isEmpty()) {
-      LOGGER.info("ignoring request to download maps because window initialization has already started");
+      logger.info("ignoring request to download maps because window initialization has already started");
     }
   }
 

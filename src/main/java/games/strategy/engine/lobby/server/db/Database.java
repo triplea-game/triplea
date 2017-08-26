@@ -234,7 +234,7 @@ public class Database {
       logger.severe("Could not create backup dir" + backupDirName);
       return;
     }
-    logger.log(Level.INFO, "Backing up database to " + backupDir.getAbsolutePath());
+    logger.info("Backing up database to " + backupDir.getAbsolutePath());
     try (final Connection con = getDerbyConnection()) {
       // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
       final String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
@@ -245,7 +245,7 @@ public class Database {
     } catch (final Exception e) {
       logger.log(Level.SEVERE, "Could not back up database", e);
     }
-    logger.log(Level.INFO, "Done backing up database");
+    logger.info("Done backing up database");
   }
 
   private static File getBackupDir() {
@@ -260,6 +260,6 @@ public class Database {
         logger.log(Level.WARNING, se.getMessage(), se);
       }
     }
-    logger.info("Databse shut down");
+    logger.info("Database shut down");
   }
 }
