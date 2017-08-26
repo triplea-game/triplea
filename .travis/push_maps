@@ -15,7 +15,7 @@ rm ./website/_maps/*
 ## do git stuff, check if there is a diff, if so, commit and push it
 cd website
 if ! git diff-index --quiet HEAD --; then
-  git add _maps/*
+  git add  --all _maps/
   git commit -m "Bot: update map files after game engine build $VERSION_NUMBER"
   git push -fq origin master
 fi
