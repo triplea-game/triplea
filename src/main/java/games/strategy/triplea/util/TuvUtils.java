@@ -139,7 +139,7 @@ public class TuvUtils {
   private static int getTotalTuv(final UnitType unitType, final IntegerMap<UnitType> costs,
       final Set<UnitType> alreadyAdded) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
-    if (ua.getTuv() > -1) {
+    if (ua.getTuv() > 0) {
       return ua.getTuv();
     }
     int tuv = costs.getInt(unitType);
