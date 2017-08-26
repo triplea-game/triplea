@@ -22,13 +22,34 @@ public final class TestGameDataComponentFactory {
     checkNotNull(gameData);
     checkNotNull(name);
 
-    final IntegerMap<NamedAttachable> resources = new IntegerMap<>();
-    resources.add(newResource(gameData, "resource1"), 11);
-    resources.add(newResource(gameData, "resource2"), 22);
+    final IntegerMap<NamedAttachable> results = new IntegerMap<>();
+    results.add(newResource(gameData, "resource1"), 11);
+    results.add(newResource(gameData, "resource2"), 22);
     final IntegerMap<Resource> costs = new IntegerMap<>();
     costs.add(newResource(gameData, "resource3"), 33);
     costs.add(newResource(gameData, "resource4"), 44);
-    return new ProductionRule(name, gameData, resources, costs);
+    return new ProductionRule(name, gameData, results, costs);
+  }
+
+  /**
+   * Creates a new {@link RepairRule} instance.
+   *
+   * @param gameData The game data associated with the repair rule.
+   * @param name The repair rule name.
+   *
+   * @return A new {@link RepairRule} instance.
+   */
+  public static RepairRule newRepairRule(final GameData gameData, final String name) {
+    checkNotNull(gameData);
+    checkNotNull(name);
+
+    final IntegerMap<NamedAttachable> results = new IntegerMap<>();
+    results.add(newResource(gameData, "resource1"), 11);
+    results.add(newResource(gameData, "resource2"), 22);
+    final IntegerMap<Resource> costs = new IntegerMap<>();
+    costs.add(newResource(gameData, "resource3"), 33);
+    costs.add(newResource(gameData, "resource4"), 44);
+    return new RepairRule("repairRule", gameData, results, costs);
   }
 
   /**
