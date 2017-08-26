@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.util.Version;
 
 class MapDownloadList {
@@ -16,7 +18,12 @@ class MapDownloadList {
   private final List<DownloadFileDescription> installed = new ArrayList<>();
   private final List<DownloadFileDescription> outOfDate = new ArrayList<>();
 
-  MapDownloadList(final List<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
+  MapDownloadList(final Collection<DownloadFileDescription> downloads) {
+    this(downloads, new FileSystemAccessStrategy());
+  }
+
+  @VisibleForTesting
+  MapDownloadList(final Collection<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
     for (final DownloadFileDescription download : downloads) {
       if (download == null) {
         return;
@@ -56,5 +63,9 @@ class MapDownloadList {
     return outOfDate.stream()
         .filter(not(excluded::contains))
         .collect(Collectors.toList());
+  }
+
+  boolean isInstalled(final DownloadFileDescription download) {
+    return installed.contains(download);
   }
 }
