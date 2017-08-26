@@ -25,7 +25,8 @@ public enum TestMapGameData {
   GLOBAL1940("ww2_g40_balanced.xml"),
   TEST("Test.xml"),
   DELEGATE_TEST("DelegateTest.xml"),
-  GAME_EXAMPLE("GameExample.xml");
+  GAME_EXAMPLE("GameExample.xml"),
+  TWW("Total_World_War_Dec1941.xml");
 
   private static final String TEST_MAP_XML_PATH = "src/test/resources/";
 
