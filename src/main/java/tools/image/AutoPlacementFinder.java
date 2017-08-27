@@ -396,8 +396,8 @@ public class AutoPlacementFinder {
       final Collection<Polygon> containedCountryPolygons, final List<Rectangle2D> placementRects,
       final List<Point> placementPoints, final Rectangle2D place, final int x, final int y) {
     place.setFrame(x, y, placeWidth, placeHeight);
-    if (containedIn(place, countryPolygons) && !intersectsOneOf(place, placementRects)
     // make sure it is not in or intersects the contained country
+    if (containedIn(place, countryPolygons) && !intersectsOneOf(place, placementRects)
         && (!containedIn(place, containedCountryPolygons) && !intersectsOneOf(place, containedCountryPolygons))) {
       placementPoints.add(new Point((int) place.getX(), (int) place.getY()));
       final Rectangle2D newRect = new Rectangle2D.Double();
