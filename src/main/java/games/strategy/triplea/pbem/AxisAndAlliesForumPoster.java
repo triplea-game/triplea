@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
@@ -25,6 +24,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.AbstractForumPoster;
@@ -84,7 +84,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
       int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
-        final String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+        final String body = EntityUtils.toString(response.getEntity());
         if (body.toLowerCase().contains("password incorrect")) {
           throw new Exception("Incorrect Password");
         }
@@ -127,7 +127,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
       HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
         int status = response.getStatusLine().getStatusCode();
-        String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+        String body = EntityUtils.toString(response.getEntity());
         if (status == 200) {
           String numReplies;
           String seqNum;
@@ -184,7 +184,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           HttpProxy.addProxy(httpPost);
           try (CloseableHttpResponse response2 = client.execute(httpPost, httpContext)) {
             status = response2.getStatusLine().getStatusCode();
-            body = IOUtils.toString(response2.getEntity().getContent(), StandardCharsets.UTF_8);
+            body = EntityUtils.toString(response2.getEntity());
             if (status == HttpURLConnection.HTTP_MOVED_TEMP) {
               // site responds with a 302 redirect back to the forum index (board=40)
               // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the

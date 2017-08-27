@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -33,6 +31,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -152,8 +151,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       final HttpHost hostConfig = new HttpHost(host, port);
       HttpProxy.addProxy(httpPost);
       try (CloseableHttpResponse response = httpClient.execute(hostConfig, httpPost)) {
-        final HttpEntity entity = response.getEntity();
-        return IOUtils.toString(entity.getContent(), StandardCharsets.UTF_8);
+        return EntityUtils.toString(response.getEntity());
       }
     }
   }
