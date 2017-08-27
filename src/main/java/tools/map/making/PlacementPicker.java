@@ -19,9 +19,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.swing.Action;
@@ -164,15 +163,9 @@ public class PlacementPicker extends JFrame {
           final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
           final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
           final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-          try (final FileReader reader = new FileReader(file);
-              final LineNumberReader reader2 = new LineNumberReader(reader)) {
-            int i = 0;
-            while (true) {
-              reader2.setLineNumber(i);
-              final String line = reader2.readLine();
-              if (line == null) {
-                break;
-              }
+          try (final Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+              final String line = scanner.nextLine();
               if (line.contains(scaleProperty)) {
                 try {
                   scale =
@@ -200,7 +193,6 @@ public class PlacementPicker extends JFrame {
                 }
               }
             }
-            i++;
           }
           if (found) {
             final int result = JOptionPane.showConfirmDialog(new JPanel(),
