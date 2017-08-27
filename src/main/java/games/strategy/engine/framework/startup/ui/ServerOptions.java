@@ -18,8 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 
@@ -157,10 +155,6 @@ public class ServerOptions extends JDialog {
     passwordField.setEnabled(requirePasswordCheckBox.isSelected());
     final Color backGround = passwordField.isEnabled() ? portField.getBackground() : getBackground();
     passwordField.setBackground(backGround);
-    if (ClientFileSystemHelper.areWeOldExtraJar()
-        && System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
-      setNameEditable(false);
-    }
   }
 
   private final Action m_okAction = SwingAction.of("OK", e -> {

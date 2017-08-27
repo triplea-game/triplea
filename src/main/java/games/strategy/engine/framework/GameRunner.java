@@ -11,11 +11,9 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +30,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.debug.LoggingConfiguration;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -341,10 +338,6 @@ public class GameRunner {
 
   private static void checkForUpdates() {
     new Thread(() -> {
-      // do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
-      if (ClientFileSystemHelper.areWeOldExtraJar()) {
-        return;
-      }
       if (System.getProperty(TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
         return;
       }
@@ -521,44 +514,12 @@ public class GameRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     String newClassPath = null;
-    final boolean sameVersion =
-        ClientContext.engineVersion().equals(engineVersionOfGameToJoin);
+    final boolean sameVersion = ClientContext.engineVersion().equals(engineVersionOfGameToJoin);
     if (!sameVersion) {
-      try {
-        newClassPath = findOldJar(engineVersionOfGameToJoin, false);
-      } catch (final Exception e) {
-        if (ClientFileSystemHelper.areWeOldExtraJar()) {
-          JOptionPane.showMessageDialog(parent,
-              "<html>Please run the default TripleA and try joining the online lobby for it instead. "
-                  + "<br>This TripleA engine is old and kept only for backwards compatibility and can only play with "
-                  + "people using the exact same version as this one. "
-                  + "<br><br>Host is using a different engine than you, and cannot find correct engine: "
-                  + engineVersionOfGameToJoin.toStringFull("_") + "</html>",
-              "Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
-        } else {
-          JOptionPane.showMessageDialog(parent,
-              "Host is using a different engine than you, and cannot find correct engine: "
-                  + engineVersionOfGameToJoin.toStringFull("_"),
-              "Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
-        }
-        return;
-      }
-      // ask user if we really want to do this?
-      final String messageString = "<html>This TripleA engine is version "
-          + ClientContext.engineVersion()
-          + " and you are trying to join a game made with version " + engineVersionOfGameToJoin.toString()
-          + "<br>However, this TripleA can only play with engines that are the exact same version as itself (x_x_x_x)."
-          + "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. "
-          + "This is a new feature and is in 'beta' stage."
-          + "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance "
-          + "will join the host's game."
-          + "<br>Your current instance will not be closed. Please report any bugs or issues."
-          + "<br><br>Do you wish to continue?</html>";
-      final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to join hosted game?",
-          JOptionPane.YES_NO_OPTION);
-      if (answer != JOptionPane.YES_OPTION) {
-        return;
-      }
+      JOptionPane.showMessageDialog(parent,
+          "Host is using version " + engineVersionOfGameToJoin.toStringFull("_")
+              + ". You need to have the same engine version in order to join this game.",
+          "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
     }
     joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), newClassPath, messengers);
   }
@@ -575,97 +536,6 @@ public class GameRunner {
     commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
     commands.add(GameRunner.class.getName());
     ProcessRunnerUtil.exec(commands);
-  }
-
-  static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException {
-    if (ClientContext.engineVersion().equals(oldVersionNeeded, ignoreMicro)) {
-      return System.getProperty("java.class.path");
-    }
-    // first, see if the default/main triplea can run it
-    if (ClientFileSystemHelper.areWeOldExtraJar()) {
-      final String version = System.getProperty(GameRunner.TRIPLEA_ENGINE_VERSION_BIN);
-      if (version != null && version.length() > 0) {
-        Version defaultVersion = null;
-        try {
-          defaultVersion = new Version(version);
-        } catch (final Exception e) {
-          // nothing, just continue
-        }
-        if (defaultVersion != null) {
-          if (defaultVersion.equals(oldVersionNeeded, ignoreMicro)) {
-            final String jarName = "triplea.jar";
-            // windows is in 'bin' folder, mac is in 'Java' folder.
-            File binFolder = new File(ClientFileSystemHelper.getRootFolder(), "bin/");
-            if (!binFolder.exists()) {
-              binFolder = new File(ClientFileSystemHelper.getRootFolder(), "Java/");
-            }
-            if (binFolder.exists()) {
-              final File[] files = binFolder.listFiles();
-              if (files == null) {
-                throw new IOException("Cannot find 'bin' engine jars folder");
-              }
-              File ourBinJar = null;
-              for (final File f : Arrays.asList(files)) {
-                if (!f.exists()) {
-                  continue;
-                }
-                final String jarPath = f.getCanonicalPath();
-                if (jarPath.contains(jarName)) {
-                  ourBinJar = f;
-                  break;
-                }
-              }
-              if (ourBinJar == null) {
-                throw new IOException(
-                    "Cannot find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
-              }
-              final String newClassPath = ourBinJar.getCanonicalPath();
-              if (newClassPath.length() <= 0) {
-                throw new IOException(
-                    "Cannot find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
-              }
-              return newClassPath;
-            } else {
-              System.err.println("Cannot find 'bin' or 'Java' folder, where main triplea.jar should be.");
-            }
-          }
-        }
-      }
-    }
-    // so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same
-    // engine as was used
-    // for this savegame, and if so try to run it
-    // we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0
-    // savegames.
-    final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);
-    final File oldJarsFolder = new File(ClientFileSystemHelper.getRootFolder(), "old/");
-    if (!oldJarsFolder.exists()) {
-      throw new IOException("Cannot find 'old' engine jars folder");
-    }
-    final File[] files = oldJarsFolder.listFiles();
-    if (files == null) {
-      throw new IOException("Cannot find 'old' engine jars folder");
-    }
-    File ourOldJar = null;
-    for (final File f : Arrays.asList(files)) {
-      if (!f.exists()) {
-        continue;
-      }
-      // final String jarPath = f.getCanonicalPath();
-      final String name = f.getName();
-      if (name.contains(jarName) && name.contains(".jar")) {
-        ourOldJar = f;
-        break;
-      }
-    }
-    if (ourOldJar == null) {
-      throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
-    }
-    final String newClassPath = ourOldJar.getCanonicalPath();
-    if (newClassPath.length() <= 0) {
-      throw new IOException("Cannot find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
-    }
-    return newClassPath;
   }
 
 

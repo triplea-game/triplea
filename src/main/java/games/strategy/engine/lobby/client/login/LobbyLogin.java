@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
 
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
@@ -46,22 +45,11 @@ public class LobbyLogin {
       return null;
     }
     if (lobbyServerProperties.port == -1) {
-      if (ClientFileSystemHelper.areWeOldExtraJar()) {
-        JOptionPane.showMessageDialog(parentWindow,
-            "<html>Could not find lobby server for this version of TripleA, <br>"
-                + "Please make sure you are using the latest version: "
-                + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
-                + "<br /><br />This is because you are using an old engine that is kept for backwards compatibility. "
-                + "<br /><b>In order to load your Old savegames in the New lobby, you must First join the lobby with "
-                + "the latest engine, Then host a game, Then load the old savegame!</b></html>",
-            "Could not connect to server", JOptionPane.ERROR_MESSAGE);
-      } else {
-        JOptionPane.showMessageDialog(parentWindow,
-            "<html>Could not find lobby server for this version of TripleA, <br>"
-                + "Please make sure you are using the latest version: " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
-                + "</html>",
-            "Could not connect to server", JOptionPane.ERROR_MESSAGE);
-      }
+      JOptionPane.showMessageDialog(parentWindow,
+          "<html>Could not find lobby server for this version of TripleA, <br>"
+              + "Please make sure you are using the latest version: " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
+              + "</html>",
+          "Could not connect to server", JOptionPane.ERROR_MESSAGE);
       return null;
     }
     return loginToServer();
