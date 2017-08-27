@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
@@ -30,7 +31,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
-import games.strategy.util.Util;
 
 /**
  * A poster for www.tripleawarclub.org forum
@@ -67,7 +67,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       if (status != HttpURLConnection.HTTP_OK) {
         throw new Exception("Login failed, server returned status: " + status);
       }
-      final String body = Util.getStringFromInputStream(response.getEntity().getContent());
+      final String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
       final String lowerBody = body.toLowerCase();
       if (lowerBody.contains("incorrect login!")) {
         throw new Exception("Incorrect login credentials");
@@ -108,7 +108,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         if (status != HttpURLConnection.HTTP_OK) {
           throw new Exception("Could not load reply page: " + url + ". Site returned " + status);
         }
-        final String body = Util.getStringFromInputStream(response.getEntity().getContent());
+        final String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
         final Matcher m = XOOPS_TOKEN_REQUEST_PATTERN.matcher(body);
         if (!m.matches()) {
           throw new Exception("Unable to find 'XOOPS_TOKEN_REQUEST' form field on reply page");
@@ -142,7 +142,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         if (status != HttpURLConnection.HTTP_OK) {
           throw new Exception("Posting summary failed, the server returned status: " + status);
         }
-        final String body = Util.getStringFromInputStream(response.getEntity().getContent());
+        final String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
         if (!body.toLowerCase().contains("thanks for your submission!")) {
           throw new Exception("Posting summary failed, the server didn't respond with thank you message");
         }

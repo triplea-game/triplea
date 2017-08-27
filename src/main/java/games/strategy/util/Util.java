@@ -2,7 +2,6 @@ package games.strategy.util;
 
 import static games.strategy.util.PredicateUtils.not;
 
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -120,16 +118,6 @@ public class Util {
         return -1;
       }
     });
-  }
-
-  public static String getStringFromInputStream(InputStream in) {
-    StringBuilder builder = new StringBuilder();
-    try (Scanner scanner = new Scanner(in)) {
-      while (scanner.hasNextLine()) {
-        builder.append(scanner.nextLine()).append("\n");
-      }
-    }
-    return builder.toString();
   }
 
   /**
