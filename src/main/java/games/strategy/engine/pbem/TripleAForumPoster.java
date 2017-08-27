@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -18,6 +17,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -74,7 +74,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     try (CloseableHttpResponse response = client.execute(fileUpload)) {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
-        final String json = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+        final String json = EntityUtils.toString(response.getEntity());
         return "\n[Savegame](" + new JSONArray(json).getJSONObject(0).getString("url") + ")";
       }
       throw new Exception("Failed to upload savegame, server returned Error Code " + status);
@@ -113,7 +113,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
         StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      final String rawJson = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+      final String rawJson = EntityUtils.toString(response.getEntity());
       return new JSONObject(rawJson);
     }
   }
@@ -133,7 +133,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
         StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      final String rawJson = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+      final String rawJson = EntityUtils.toString(response.getEntity());
       final JSONObject jsonObject = new JSONObject(rawJson);
       if (jsonObject.has("code")) {
         final String code = jsonObject.getString("code");
