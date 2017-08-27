@@ -476,7 +476,7 @@ public class MovePanel extends AbstractMovePanel {
       // if the player is invading only consider units that can invade
       if (!nonCombat && route.isUnload()
           && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).match(route.getEnd())) {
-        best = Match.getMatches(best, Matches.UnitCanInvade);
+        best = Match.getMatches(best, Matches.unitCanInvade());
         bestWithDependents = addMustMoveWith(best);
         lastResults = AbstractMoveDelegate.validateMove(moveType, bestWithDependents, route, getCurrentPlayer(),
             transportsToLoad, dependentUnits, nonCombat, getUndoableMoves(), getData());
@@ -848,7 +848,7 @@ public class MovePanel extends AbstractMovePanel {
           // TODO Transporting allied units
           // Get the potential units to load
           final Match.CompositeBuilder<Unit> unitsToLoadMatchBuilder = Match.newCompositeBuilder(
-              Matches.UnitIsAirTransportable,
+              Matches.unitIsAirTransportable(),
               Matches.unitIsOwnedBy(player),
               Matches.unitHasNotMoved());
           final Collection<Unit> unitsToLoad =
@@ -933,7 +933,7 @@ public class MovePanel extends AbstractMovePanel {
       final Set<Unit> defaultSelections = new HashSet<>();
       // Check to see if there's room for the selected units
       final Match<Collection<Unit>> unitsToLoadMatch = Match.of(units -> {
-        final Collection<Unit> unitsToLoad = Match.getMatches(units, Matches.UnitIsAirTransportable);
+        final Collection<Unit> unitsToLoad = Match.getMatches(units, Matches.unitIsAirTransportable());
         final Map<Unit, Unit> unitMap = TransportUtils.mapTransportsToLoad(unitsToLoad, airTransportsToLoad);
         boolean ableToLoad = true;
         for (final Unit unit : unitsToLoad) {
@@ -1093,7 +1093,7 @@ public class MovePanel extends AbstractMovePanel {
       Collection<Unit> transports = null;
       final Match.CompositeBuilder<Unit> paratroopNBombersBuilder = Match.newCompositeBuilder(
           Matches.UnitIsAirTransport,
-          Matches.UnitIsAirTransportable);
+          Matches.unitIsAirTransportable());
       final boolean paratroopsLanding = Match.anyMatch(units, paratroopNBombersBuilder.all());
       if (route.isLoad() && Match.anyMatch(units, Matches.UnitIsLand)) {
         transports = getTransportsToLoad(route, units, false);

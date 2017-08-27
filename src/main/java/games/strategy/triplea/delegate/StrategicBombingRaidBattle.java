@@ -359,7 +359,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         if (determineAttackers) {
           validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, Match.anyOf(
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-              Match.allOf(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+              Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
 
         final IExecutable roll = new IExecutable() {

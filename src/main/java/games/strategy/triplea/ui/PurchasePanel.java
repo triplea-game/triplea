@@ -183,7 +183,7 @@ public class PurchasePanel extends ActionPanel {
         }
         final PlayerID player = getCurrentPlayer();
         final Collection<Unit> unitsNeedingFactory =
-            Match.getMatches(player.getUnits().getUnits(), Matches.UnitIsNotConstruction);
+            Match.getMatches(player.getUnits().getUnits(), Matches.unitIsNotConstruction());
         if (!bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
           final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size())
               + " units, and can only place " + totalProd + " of them. Continue with purchase?";

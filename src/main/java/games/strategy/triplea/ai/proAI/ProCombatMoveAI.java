@@ -719,7 +719,7 @@ class ProCombatMoveAI {
         Optional<Territory> maxBombingTerritory = Optional.empty();
         int maxBombingScore = MIN_BOMBING_SCORE;
         for (final Territory t : bomberMoveMap.get(unit)) {
-          final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
+          final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.unitCanProduceUnitsAndCanBeDamaged());
           if (territoryCanBeBombed && canAirSafelyLandAfterAttack(unit, t)) {
             final int noAaBombingDefense = t.getUnits().anyMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
             int maxDamage = 0;

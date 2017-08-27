@@ -349,7 +349,7 @@ public class MoveValidator {
             .getUnitTypesThatLostBlitz((wasStartFoughtOver ? route.getAllTerritories() : route.getSteps())))));
         for (final Unit unit : nonBlitzingUnits) {
           // TODO: we need to actually test if the units is being air transported, or mech-land-transported.
-          if (Matches.UnitIsAirTransportable.match(unit)) {
+          if (Matches.unitIsAirTransportable().match(unit)) {
             continue;
           }
           if (Matches.unitIsInfantry().match(unit)) {
@@ -390,7 +390,7 @@ public class MoveValidator {
     }
     // See if we are doing invasions in combat phase, with units or transports that can't do invasion.
     if (route.isUnload() && Matches.isTerritoryEnemy(player, data).match(route.getEnd())) {
-      for (final Unit unit : Match.getMatches(units, Matches.UnitCanInvade.invert())) {
+      for (final Unit unit : Match.getMatches(units, Matches.unitCanInvade().invert())) {
         result.addDisallowedUnit(unit.getUnitType().getName() + " can't invade from "
             + TripleAUnit.get(unit).getTransportedBy().getUnitType().getName(), unit);
       }
@@ -600,7 +600,7 @@ public class MoveValidator {
       for (final Unit unit : moveTest) {
         if (!hasEnoughMovementForRoute.match(unit)) {
           boolean unitOk = false;
-          if ((Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved().match(unit))
+          if ((Matches.unitIsAirTransportable().match(unit) && Matches.unitHasNotMoved().match(unit))
               && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().match(unit) && Matches.unitIsInfantry()
                   .match(unit))) {
             // we have paratroopers and mechanized infantry, so we must check for both
@@ -620,7 +620,7 @@ public class MoveValidator {
             } else {
               mechanizedSupportAvailable--;
             }
-          } else if (Matches.UnitIsAirTransportable.match(unit) && Matches.unitHasNotMoved().match(unit)) {
+          } else if (Matches.unitIsAirTransportable().match(unit) && Matches.unitHasNotMoved().match(unit)) {
             for (final Unit airTransport : dependencies.keySet()) {
               if (dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit)) {
                 unitOk = true;
@@ -851,7 +851,7 @@ public class MoveValidator {
       final List<Unit> transports =
           Match.getMatches(units, Match.anyOf(Matches.UnitIsTransport, Matches.UnitIsAirTransport));
       final List<Unit> transportable =
-          Match.getMatches(units, Match.anyOf(Matches.unitCanBeTransported(), Matches.UnitIsAirTransportable));
+          Match.getMatches(units, Match.anyOf(Matches.unitCanBeTransported(), Matches.unitIsAirTransportable()));
       // Check if there are transports in the group to be checked
       if (alreadyLoaded.keySet().containsAll(transports)) {
         // Check each transportable unit -vs those already loaded.
@@ -1164,14 +1164,14 @@ public class MoveValidator {
   static boolean allLandUnitsAreBeingParatroopered(final Collection<Unit> units) {
     // some units that can't be paratrooped
     if (units.isEmpty()
-        || !Match.allMatch(units, Match.anyOf(Matches.UnitIsAirTransportable, Matches.UnitIsAirTransport,
+        || !Match.allMatch(units, Match.anyOf(Matches.unitIsAirTransportable(), Matches.UnitIsAirTransport,
             Matches.UnitIsAir))) {
       return false;
     }
     // final List<Unit> paratroopsRequiringTransport = getParatroopsRequiringTransport(units, route);
     // due to various problems with units like tanks, we will assume that if we are in this method, then all the land
     // units need transports
-    final List<Unit> paratroopsRequiringTransport = Match.getMatches(units, Matches.UnitIsAirTransportable);
+    final List<Unit> paratroopsRequiringTransport = Match.getMatches(units, Matches.unitIsAirTransportable());
     if (paratroopsRequiringTransport.isEmpty()) {
       return false;
     }
@@ -1202,7 +1202,7 @@ public class MoveValidator {
   }
 
   private static List<Unit> getParatroopsRequiringTransport(final Collection<Unit> units, final Route route) {
-    return Match.getMatches(units, Match.allOf(Matches.UnitIsAirTransportable, Match.of(u -> {
+    return Match.getMatches(units, Match.allOf(Matches.unitIsAirTransportable(), Match.of(u -> {
       return TripleAUnit.get(u).getMovementLeft() < route.getMovementCost(u) || route.crossesWater()
           || route.getEnd().isWater();
     })));
@@ -1213,7 +1213,8 @@ public class MoveValidator {
     if (!TechAttachment.isAirTransportable(player)) {
       return result;
     }
-    if (Match.noneMatch(units, Matches.UnitIsAirTransportable) || Match.noneMatch(units, Matches.UnitIsAirTransport)) {
+    if (Match.noneMatch(units, Matches.unitIsAirTransportable())
+        || Match.noneMatch(units, Matches.UnitIsAirTransport)) {
       return result;
     }
     if (nonCombat && !isAirTransportableCanMoveDuringNonCombat(data)) {

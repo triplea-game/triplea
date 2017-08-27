@@ -2005,11 +2005,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         final RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
         if (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
             || (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
-                && Matches.RelationshipTypeIsNeutral.match(currentRelation))
+                && Matches.relationshipTypeIsNeutral().match(currentRelation))
             || (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
-                && Matches.RelationshipTypeIsAllied.match(currentRelation))
+                && Matches.relationshipTypeIsAllied().match(currentRelation))
             || (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-                && Matches.RelationshipTypeIsAtWar.match(currentRelation))
+                && Matches.relationshipTypeIsAtWar().match(currentRelation))
             || currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[2]))) {
           final RelationshipType triggerNewRelation = data.getRelationshipTypeList().getRelationshipType(s[3]);
           change.add(ChangeFactory.relationshipChange(player1, player2, currentRelation, triggerNewRelation));
@@ -2022,7 +2022,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           /*
            * creation of new battles is handled at the beginning of the battle delegate, in
            * "setupUnitsInSameTerritoryBattles", not here.
-           * if (Matches.RelationshipTypeIsAtWar.match(triggerNewRelation))
+           * if (Matches.relationshipTypeIsAtWar().match(triggerNewRelation))
            * triggerMustFightBattle(player1, player2, aBridge);
            */
         }

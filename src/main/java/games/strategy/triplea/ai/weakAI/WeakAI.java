@@ -696,7 +696,7 @@ public class WeakAI extends AbstractAI {
   private static void populateBomberCombat(final GameData data, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final PlayerID player) {
     final Match<Territory> enemyFactory = Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player,
-        Matches.UnitCanProduceUnitsAndCanBeDamaged);
+        Matches.unitCanProduceUnitsAndCanBeDamaged());
     final Match<Unit> ownBomber = Match.allOf(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> bombers = t.getUnits().getMatches(ownBomber);
@@ -811,7 +811,7 @@ public class WeakAI extends AbstractAI {
       // we should sort this
       Collections.shuffle(rfactories);
       for (final Territory fixTerr : rfactories) {
-        if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+        if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
             .match(fixTerr)) {
           continue;
         }
@@ -845,7 +845,7 @@ public class WeakAI extends AbstractAI {
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {
             continue;
           }
-          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
               .match(capitol)) {
             continue;
           }
@@ -884,7 +884,7 @@ public class WeakAI extends AbstractAI {
             if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
               continue;
             }
-            if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+            if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
                 .match(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
               continue;
             }

@@ -122,7 +122,7 @@ public class ProUtils {
     for (final Iterator<PlayerID> it = otherPlayers.iterator(); it.hasNext();) {
       final PlayerID otherPlayer = it.next();
       final RelationshipType relation = data.getRelationshipTracker().getRelationshipType(player, otherPlayer);
-      if (Matches.RelationshipTypeIsAllied.match(relation) || isNeutralPlayer(otherPlayer)) {
+      if (Matches.relationshipTypeIsAllied().match(relation) || isNeutralPlayer(otherPlayer)) {
         it.remove();
       }
     }

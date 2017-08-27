@@ -231,7 +231,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         result.addDisallowedUnit("Must Not Be Disabled", u);
       } else if (!Matches.unitHasNotMoved().match(u)) {
         result.addDisallowedUnit("Must Not Have Previously Moved Airborne Forces", u);
-      } else if (Matches.UnitIsAirborne.match(u)) {
+      } else if (Matches.unitIsAirborne().match(u)) {
         result.addDisallowedUnit("Cannot Move Units Already Airborne", u);
       } else {
         airborne.add(u);
@@ -293,7 +293,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private static Match<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
     return Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
         Matches.unitIsOfTypes(types), Matches.unitIsNotDisabled(), Matches.unitHasNotMoved(),
-        Matches.UnitIsAirborne.invert());
+        Matches.unitIsAirborne().invert());
   }
 
   private static Change getNewAssignmentOfNumberLaunchedChange(int newNumberLaunched, final Collection<Unit> bases,

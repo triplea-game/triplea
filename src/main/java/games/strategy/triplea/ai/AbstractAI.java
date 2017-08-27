@@ -150,7 +150,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   @Override
   public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
-    final Collection<Unit> factories = Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
+    final Collection<Unit> factories = Match.getMatches(potentialTargets, Matches.unitCanProduceUnitsAndCanBeDamaged());
     if (factories.isEmpty()) {
       return potentialTargets.iterator().next();
     }
@@ -603,7 +603,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         final double random = Math.random();
         int maxWarActionsPerTurn = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
         if ((maxWarActionsPerTurn > 0)
-            && (Match.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.RelationshipIsAtWar))
+            && (Match.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.relationshipIsAtWar()))
                 / numPlayers < 0.4) {
           if (Math.random() < .9) {
             maxWarActionsPerTurn = 0;

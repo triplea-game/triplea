@@ -1887,7 +1887,7 @@ class ProNonCombatMoveAI {
             final int production = TerritoryAttachment.get(t).getProduction();
             double value = 0.1 * moveMap.get(t).getValue();
             if (ProMatches.territoryIsNotConqueredOwnedLand(player, data).match(t)
-                && Match.noneMatch(units, Matches.UnitCanProduceUnitsAndIsInfrastructure)) {
+                && Match.noneMatch(units, Matches.unitCanProduceUnitsAndIsInfrastructure())) {
               value = moveMap.get(t).getValue() * production + 0.01 * production;
             }
             ProLogger.trace(t.getName() + " has value=" + value + ", strategicValue=" + moveMap.get(t).getValue()
