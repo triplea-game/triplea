@@ -16,21 +16,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GUID implements Externalizable {
   private static final long serialVersionUID = 8426441559602874190L;
   // this prefix is unique across vms
-  private static VMID vm_prefix = new java.rmi.dgc.VMID();
+  private static VMID vmPrefix = new VMID();
   // the local identifier
   // this coupled with the unique vm prefix comprise
   // our unique id
-  private static AtomicInteger s_lastID = new AtomicInteger();
+  private static AtomicInteger lastId = new AtomicInteger();
   private int m_id;
   private VMID m_prefix;
 
   public GUID() {
-    m_id = s_lastID.getAndIncrement();
-    m_prefix = vm_prefix;
+    m_id = lastId.getAndIncrement();
+    m_prefix = vmPrefix;
     // handle wrap around if needed
     if (m_id < 0) {
-      vm_prefix = new VMID();
-      s_lastID = new AtomicInteger();
+      vmPrefix = new VMID();
+      lastId = new AtomicInteger();
     }
   }
 

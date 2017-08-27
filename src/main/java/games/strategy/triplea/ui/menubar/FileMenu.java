@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
@@ -36,7 +37,7 @@ class FileMenu {
     fileMenu.add(createSaveMenu());
 
     if (PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
-      fileMenu.add(addPostPBEM());
+      fileMenu.add(addPostPbem());
     }
 
     fileMenu.addSeparator();
@@ -54,11 +55,11 @@ class FileMenu {
     }));
     menuFileSave.setMnemonic(KeyEvent.VK_S);
     menuFileSave.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     return menuFileSave;
   }
 
-  JMenuItem addPostPBEM() {
+  private JMenuItem addPostPbem() {
     final JMenuItem menuPbem = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
       if (gameData == null || !PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
         return;
@@ -80,7 +81,7 @@ class FileMenu {
     }));
     menuPbem.setMnemonic(KeyEvent.VK_P);
     menuPbem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_P, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     return menuPbem;
   }
 
@@ -91,10 +92,10 @@ class FileMenu {
     if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
       // so set the command-L key combo for the Leave Game action
       leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(KeyEvent.VK_L, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+          KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     } else { // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
       leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(KeyEvent.VK_Q, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+          KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
     parentMenu.add(leaveGameMenuExit);
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,

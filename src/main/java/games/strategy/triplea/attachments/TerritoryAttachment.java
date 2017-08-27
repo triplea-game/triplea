@@ -1,5 +1,7 @@
 package games.strategy.triplea.attachments;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +20,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 
 @MapSupport
@@ -146,6 +149,30 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
+   * Adds the specified territory attachment to the specified territory.
+   *
+   * @param territory The territory that will receive the territory attachment.
+   * @param territoryAttachment The territory attachment.
+   */
+  public static void add(final Territory territory, final TerritoryAttachment territoryAttachment) {
+    checkNotNull(territory);
+    checkNotNull(territoryAttachment);
+
+    territory.addAttachment(Constants.TERRITORY_ATTACHMENT_NAME, territoryAttachment);
+  }
+
+  /**
+   * Removes any territory attachment from the specified territory.
+   *
+   * @param territory The territory from which the attachment will be removed.
+   */
+  public static void remove(final Territory territory) {
+    checkNotNull(territory);
+
+    territory.removeAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+  }
+
+  /**
    * Convenience method since TerritoryAttachment.get could return null.
    */
   public static int getProduction(final Territory t) {
@@ -251,6 +278,10 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_isImpassable;
   }
 
+  public void resetIsImpassable() {
+    m_isImpassable = false;
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCapital(final String value) throws GameParseException {
     if (value == null) {
@@ -298,6 +329,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_originalFactory;
   }
 
+  public void resetOriginalFactory() {
+    m_originalFactory = false;
+  }
 
   /**
    * Sets production and unitProduction (or just "production" in a map xml)
@@ -324,9 +358,18 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
+   * Resets production and unitProduction (or just "production" in a map xml) of a territory to the default value.
+   */
+  public void resetProduction() {
+    m_production = 0;
+    // do NOT remove. unitProduction should always default to production
+    m_unitProduction = m_production;
+  }
+
+  /**
    * Sets only m_production.
    */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setProductionOnly(final String value) {
     m_production = getInt(value);
   }
@@ -334,6 +377,10 @@ public class TerritoryAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUnitProduction(final String value) {
     m_unitProduction = Integer.parseInt(value);
+  }
+
+  public void resetUnitProduction() {
+    m_unitProduction = 0;
   }
 
   /**
@@ -719,7 +766,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
     sb.append(br);
     if (!t.isWater() && m_unitProduction > 0
-        && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
+        && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       sb.append("Base Unit Production: ");
       sb.append(m_unitProduction);
       sb.append(br);

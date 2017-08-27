@@ -9,6 +9,7 @@ import java.awt.geom.AffineTransform;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -31,7 +32,7 @@ public class KamikazeZoneDrawable implements IDrawable {
     final Territory terr = data.getMap().getTerritory(location);
     final TerritoryAttachment ta = TerritoryAttachment.get(terr);
     PlayerID owner = null;
-    if (games.strategy.triplea.Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data)) {
+    if (Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data)) {
       owner = terr.getOwner();
       if (owner == null) {
         owner = PlayerID.NULL_PLAYERID;

@@ -39,8 +39,8 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
+import swinglib.JDialogBuilder;
 
 public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
@@ -82,11 +82,14 @@ public class ProductionPanel extends JPanel {
    */
   public IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
+    final JDialogBuilder dialogBuilder = JDialogBuilder.builder()
+        .contents(this)
+        .title("Produce");
     if (parent != null) {
-      final String title = "Produce";
-      final JPanel contents = this;
-      dialog = SwingComponents.newJDialogModal(parent, title, contents);
+      dialogBuilder.parentFrame(parent);
     }
+    dialog = dialogBuilder.build();
+
     this.bid = bid;
     this.data = data;
     this.initRules(id, data, initialPurchase);
@@ -163,7 +166,7 @@ public class ProductionPanel extends JPanel {
     // final int startY = m_rules.size() / rows;
     this.add(left, new GridBagConstraints(0, 2, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(8, 8, 0, 12), 0, 0));
-    done = new JButton(done_action);
+    done = new JButton(doneAction);
     this.add(done, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 8, 0), 0, 0));
     this.setMaximumSize(new Dimension(availWidth, availHeight));
@@ -176,7 +179,7 @@ public class ProductionPanel extends JPanel {
         totalUnits, ResourceCollectionUtils.getProductionResources(left)));
   }
 
-  Action done_action = SwingAction.of("Done", e -> dialog.setVisible(false));
+  Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
 
   // This method can be overridden by subclasses
   protected void calculateLimits() {
@@ -219,23 +222,23 @@ public class ProductionPanel extends JPanel {
   }
 
   class Rule {
-    private final IntegerMap<Resource> m_cost;
-    private int m_quantity;
-    private final ProductionRule m_rule;
+    private final IntegerMap<Resource> cost;
+    private int quantity;
+    private final ProductionRule rule;
     private final PlayerID id;
-    private final Set<ScrollableTextField> m_textFields = new HashSet<>();
+    private final Set<ScrollableTextField> textFields = new HashSet<>();
 
     protected JPanel getPanelComponent() {
       final JPanel panel = new JPanel();
-      final ScrollableTextField i_text = new ScrollableTextField(0, Integer.MAX_VALUE);
-      i_text.setValue(m_quantity);
+      final ScrollableTextField textField = new ScrollableTextField(0, Integer.MAX_VALUE);
+      textField.setValue(quantity);
       panel.setLayout(new GridBagLayout());
       final JLabel info = new JLabel("  ");
       final JLabel name = new JLabel("  ");
       final Color defaultForegroundLabelColor = name.getForeground();
       Optional<ImageIcon> icon = Optional.empty();
       final StringBuilder tooltip = new StringBuilder();
-      final Set<NamedAttachable> results = new HashSet<>(m_rule.getResults().keySet());
+      final Set<NamedAttachable> results = new HashSet<>(rule.getResults().keySet());
       final Iterator<NamedAttachable> iter = results.iterator();
       while (iter.hasNext()) {
         final NamedAttachable resourceOrUnit = iter.next();
@@ -268,13 +271,13 @@ public class ProductionPanel extends JPanel {
           tooltip.append("<br /><br /><br /><br />");
         }
       }
-      final int numberOfUnitsGiven = m_rule.getResults().totalValues();
-      String text;
+      final int numberOfUnitsGiven = rule.getResults().totalValues();
+      final String text;
       if (numberOfUnitsGiven > 1) {
-        text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, data) + "<br>" + "for " + numberOfUnitsGiven
+        text = "<html> x " + ResourceCollection.toStringForHTML(cost, data) + "<br>" + "for " + numberOfUnitsGiven
             + "<br>" + " units</html>";
       } else {
-        text = "<html> x " + ResourceCollection.toStringForHTML(m_cost, data) + "</html>";
+        text = "<html> x " + ResourceCollection.toStringForHTML(cost, data) + "</html>";
       }
       final JLabel label =
           icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);
@@ -289,31 +292,31 @@ public class ProductionPanel extends JPanel {
           new Insets(5, space, space, space), 0, 0));
       panel.add(info, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(5, space, space, space), 0, 0));
-      panel.add(i_text, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+      panel.add(textField, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, space, space, space), 0, 0));
-      i_text.addChangeListener(m_listener);
-      m_textFields.add(i_text);
+      textField.addChangeListener(listener);
+      textFields.add(textField);
       panel.setBorder(new EtchedBorder());
       return panel;
     }
 
     Rule(final ProductionRule rule, final PlayerID id) {
-      m_rule = rule;
-      m_cost = rule.getCosts();
+      this.rule = rule;
+      cost = rule.getCosts();
       this.id = id;
     }
 
     IntegerMap<Resource> getCost() {
-      return m_cost;
+      return cost;
     }
 
     int getQuantity() {
-      return m_quantity;
+      return quantity;
     }
 
     void setQuantity(final int quantity) {
-      m_quantity = quantity;
-      for (final ScrollableTextField textField : m_textFields) {
+      this.quantity = quantity;
+      for (final ScrollableTextField textField : textFields) {
         if (textField.getValue() != quantity) {
           textField.setValue(quantity);
         }
@@ -321,24 +324,24 @@ public class ProductionPanel extends JPanel {
     }
 
     ProductionRule getProductionRule() {
-      return m_rule;
+      return rule;
     }
 
     void setMax(final int max) {
-      for (final ScrollableTextField textField : m_textFields) {
+      for (final ScrollableTextField textField : textFields) {
         textField.setMax(max);
       }
     }
 
-    private final ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener() {
+    private final ScrollableTextFieldListener listener = new ScrollableTextFieldListener() {
       @Override
       public void changedValue(final ScrollableTextField stf) {
-        if (stf.getValue() != m_quantity) {
-          m_quantity = stf.getValue();
+        if (stf.getValue() != quantity) {
+          quantity = stf.getValue();
           calculateLimits();
-          for (final ScrollableTextField textField : m_textFields) {
+          for (final ScrollableTextField textField : textFields) {
             if (!stf.equals(textField)) {
-              textField.setValue(m_quantity);
+              textField.setValue(quantity);
             }
           }
         }

@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import games.strategy.util.Tuple;
@@ -15,7 +14,7 @@ import games.strategy.util.Tuple;
  * Utilitiy class to create/read/delete banned macs (there is no update).
  */
 public class BannedMacController {
-  private static final Logger s_logger = Logger.getLogger(BannedMacController.class.getName());
+  private static final Logger logger = Logger.getLogger(BannedMacController.class.getName());
 
   /**
    * Ban the mac permanently.
@@ -39,41 +38,39 @@ public class BannedMacController {
     if (banTill != null) {
       banTillTs = new Timestamp(banTill.toEpochMilli());
     }
-    s_logger.fine("Banning mac:" + mac);
+    logger.fine("Banning mac:" + mac);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)");
-      ps.setString(1, mac);
-      ps.setTimestamp(2, banTillTs);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)")) {
+        ps.setString(1, mac);
+        ps.setTimestamp(2, banTillTs);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       if (sqle.getErrorCode() == 30000) {
         // this is ok
         // the mac is banned as expected
-        s_logger.info("Tried to create duplicate banned mac:" + mac + " error:" + sqle.getMessage());
+        logger.info("Tried to create duplicate banned mac:" + mac + " error:" + sqle.getMessage());
         return;
       }
-      s_logger.log(Level.SEVERE, "Error inserting banned mac:" + mac, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error inserting banned mac:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
   }
 
   private void removeBannedMac(final String mac) {
-    s_logger.fine("Removing banned mac:" + mac);
+    logger.fine("Removing banned mac:" + mac);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?");
-      ps.setString(1, mac);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?")) {
+        ps.setString(1, mac);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
-      s_logger.log(Level.SEVERE, "Error deleting banned mac:" + mac, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error deleting banned mac:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -90,23 +87,22 @@ public class BannedMacController {
     final String sql = "select mac, ban_till from banned_macs where mac = ?";
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, mac);
-      final ResultSet rs = ps.executeQuery();
-      found = rs.next();
-      // If the ban has expired, allow the mac
-      if (found) {
-        banTill = rs.getTimestamp(2);
-        if (banTill != null && banTill.getTime() < System.currentTimeMillis()) {
-          s_logger.fine("Ban expired for:" + mac);
-          expired = true;
+      try (final PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, mac);
+        try (final ResultSet rs = ps.executeQuery()) {
+          found = rs.next();
+          // If the ban has expired, allow the mac
+          if (found) {
+            banTill = rs.getTimestamp(2);
+            if (banTill != null && banTill.getTime() < System.currentTimeMillis()) {
+              logger.fine("Ban expired for:" + mac);
+              expired = true;
+            }
+          }
         }
       }
-      rs.close();
-      ps.close();
     } catch (final SQLException sqle) {
-      s_logger.info("Error for testing banned mac existence:" + mac + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error for testing banned mac existence:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

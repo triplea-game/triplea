@@ -19,12 +19,11 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
+import games.strategy.debug.DebugUtils;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameDataManager;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -45,10 +44,11 @@ import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ThreadUtil;
 
 public class ServerLauncher extends AbstractLauncher {
-  private static final Logger s_logger = Logger.getLogger(ServerLauncher.class.getName());
+  private static final Logger logger = Logger.getLogger(ServerLauncher.class.getName());
   public static final String SERVER_ROOT_DIR_PROPERTY = "triplea.server.root.dir";
   private final int m_clientCount;
   private final IRemoteMessenger m_remoteMessenger;
@@ -131,9 +131,9 @@ public class ServerLauncher extends AbstractLauncher {
       }
       m_remoteMessenger.registerRemote(m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
       m_gameData.doPreGameStartDataModifications(m_playerListing);
-      s_logger.fine("Starting server");
+      logger.fine("Starting server");
       m_abortLaunch = testShouldWeAbort();
-      byte[] gameDataAsBytes;
+      final byte[] gameDataAsBytes;
       try {
         gameDataAsBytes = gameDataToBytes(m_gameData);
       } catch (final IOException e) {
@@ -179,7 +179,7 @@ public class ServerLauncher extends AbstractLauncher {
       if (m_abortLaunch) {
         m_serverReady.countDownAll();
       }
-      if (!m_serverReady.await(GameRunner.getServerStartGameSyncWaitTime(), TimeUnit.SECONDS)) {
+      if (!m_serverReady.await(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
         System.out.println("Waiting for clients to be ready timed out!");
         m_abortLaunch = true;
       }
@@ -222,8 +222,7 @@ public class ServerLauncher extends AbstractLauncher {
             try {
               // we are already aborting the launch
               if (!m_abortLaunch) {
-                if (!m_errorLatch.await(GameRunner.getServerObserverJoinWaitTime()
-                    + GameRunner.ADDITIONAL_SERVER_ERROR_DISCONNECTION_WAIT_TIME, TimeUnit.SECONDS)) {
+                if (!m_errorLatch.await(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
                   System.err.println("Waiting on error latch timed out!");
                 }
               }
@@ -234,7 +233,7 @@ public class ServerLauncher extends AbstractLauncher {
           } catch (final Exception e) {
             e.printStackTrace(System.err);
             if (m_headless) {
-              System.out.println(games.strategy.debug.DebugUtils.getThreadDumps());
+              System.out.println(DebugUtils.getThreadDumps());
               HeadlessGameServer.sendChat("If this is a repeatable issue or error, please make a copy of this savegame "
                   + "and contact a Mod and/or file a bug report.");
             }
@@ -247,13 +246,12 @@ public class ServerLauncher extends AbstractLauncher {
           if (m_headless) {
             try {
               System.out.println("Game ended, going back to waiting.");
-              if (m_serverModel != null) {
-                // if we do not do this, we can get into an infinite loop of launching a game,
-                // then crashing out, then launching, etc.
-                m_serverModel.setAllPlayersToNullNodes();
-              }
-              final File f1 =
-                  new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName());
+              // if we do not do this, we can get into an infinite loop of launching a game,
+              // then crashing out, then launching, etc.
+              m_serverModel.setAllPlayersToNullNodes();
+              final File f1 = new File(
+                  ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
+                  SaveGameFileChooser.getAutoSaveFileName());
               if (f1.exists()) {
                 m_gameSelectorModel.load(f1, null);
               } else {
@@ -264,7 +262,7 @@ public class ServerLauncher extends AbstractLauncher {
               m_gameSelectorModel.resetGameDataToNull();
             }
           } else {
-            m_gameSelectorModel.loadDefaultGame(parent);
+            m_gameSelectorModel.loadDefaultGame();
           }
           if (parent != null) {
             SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
@@ -323,9 +321,7 @@ public class ServerLauncher extends AbstractLauncher {
 
   private static byte[] gameDataToBytes(final GameData data) throws IOException {
     final ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
-    new GameDataManager().saveGame(sink, data);
-    sink.flush();
-    sink.close();
+    GameDataManager.saveGame(sink, data);
     return sink.toByteArray();
   }
 
@@ -370,11 +366,10 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   private void saveAndEndGame(final INode node) {
-    SaveGameFileChooser.ensureMapsFolderExists();
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f = m_headless
-        ? new File(ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName())
-        : new File(ClientContext.folderSettings().getSaveGamePath(), getConnectionLostFileName());
+        ? new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), SaveGameFileChooser.getAutoSaveFileName())
+        : new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), getConnectionLostFileName());
     try {
       m_serverGame.saveGame(f);
     } catch (final Exception e) {
@@ -402,44 +397,44 @@ public class ServerLauncher extends AbstractLauncher {
     return GameDataFileUtils.addExtension(
         "connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(LocalDateTime.now()));
   }
-}
 
+  static class ServerReady implements IServerReady {
+    private final CountDownLatch m_latch;
+    private final int m_clients;
 
-class ServerReady implements IServerReady {
-  private final CountDownLatch m_latch;
-  private final int m_clients;
+    ServerReady(final int waitCount) {
+      m_clients = waitCount;
+      m_latch = new CountDownLatch(m_clients);
+    }
 
-  ServerReady(final int waitCount) {
-    m_clients = waitCount;
-    m_latch = new CountDownLatch(m_clients);
-  }
-
-  @Override
-  public void clientReady() {
-    m_latch.countDown();
-  }
-
-  public void countDownAll() {
-    for (int i = 0; i < m_clients; i++) {
+    @Override
+    public void clientReady() {
       m_latch.countDown();
     }
-  }
 
-  public void await() {
-    try {
-      m_latch.await();
-    } catch (final InterruptedException e) {
-      ClientLogger.logQuietly(e);
+    public void countDownAll() {
+      for (int i = 0; i < m_clients; i++) {
+        m_latch.countDown();
+      }
     }
-  }
 
-  public boolean await(final long timeout, final TimeUnit timeUnit) {
-    boolean didNotTimeOut = false;
-    try {
-      didNotTimeOut = m_latch.await(timeout, timeUnit);
-    } catch (final InterruptedException e) {
-      ClientLogger.logQuietly(e);
+    public void await() {
+      try {
+        m_latch.await();
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly(e);
+      }
     }
-    return didNotTimeOut;
+
+    public boolean await(final long timeout, final TimeUnit timeUnit) {
+      boolean didNotTimeOut = false;
+      try {
+        didNotTimeOut = m_latch.await(timeout, timeUnit);
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly(e);
+      }
+      return didNotTimeOut;
+    }
   }
 }
+

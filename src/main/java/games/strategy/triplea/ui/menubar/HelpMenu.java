@@ -33,12 +33,12 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.LocalizeHTML;
+import games.strategy.util.LocalizeHtml;
 
 public class HelpMenu {
 
@@ -126,7 +126,7 @@ public class HelpMenu {
     try {
       gameData.acquireReadLock();
       final Map<PlayerID, Map<UnitType, ResourceCollection>> costs =
-          BattleCalculator.getResourceCostsForTUV(gameData, true);
+          TuvUtils.getResourceCostsForTuv(gameData, true);
       final Map<PlayerID, List<UnitType>> playerUnitTypes =
           UnitType.getAllPlayerUnitsWithImages(gameData, iuiContext, true);
       for (final Map.Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {
@@ -139,7 +139,7 @@ public class HelpMenu {
         for (final UnitType ut : entry.getValue()) {
           i++;
           hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-              .append(">").append("<td>").append(getUnitImageURL(ut, player, iuiContext)).append("</td>").append("<td>")
+              .append(">").append("<td>").append(getUnitImageUrl(ut, player, iuiContext)).append("</td>").append("<td>")
               .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHTML())
               .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
         }
@@ -154,7 +154,7 @@ public class HelpMenu {
     return hints.toString();
   }
 
-  private static String getUnitImageURL(final UnitType unitType, final PlayerID player, final IUIContext iuiContext) {
+  private static String getUnitImageUrl(final UnitType unitType, final PlayerID player, final IUIContext iuiContext) {
     final UnitImageFactory unitImageFactory = iuiContext.getUnitImageFactory();
     if (player == null || unitImageFactory == null) {
       return "no image";
@@ -225,7 +225,7 @@ public class HelpMenu {
     // displays whatever is in the notes field in html
     final String notesProperty = gameData.getProperties().get("notes", "");
     if (notesProperty != null && notesProperty.trim().length() != 0) {
-      final String notes = LocalizeHTML.localizeImgLinksInHTML(notesProperty.trim());
+      final String notes = LocalizeHtml.localizeImgLinksInHtml(notesProperty.trim());
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);

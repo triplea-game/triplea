@@ -43,6 +43,7 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleA;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -161,7 +162,7 @@ public class GameParser {
     data.getRelationshipTracker().setSelfRelations();
     // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
     // options/properties)
-    if (data.getGameLoader() instanceof games.strategy.triplea.TripleA) {
+    if (data.getGameLoader() instanceof TripleA) {
       checkThatAllUnitsHaveAttachments(data);
       TechAbilityAttachment.setDefaultTechnologyAttachments(data);
     }
@@ -551,18 +552,18 @@ public class GameParser {
       throw new GameParseException(mapName,
           "diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
-    final int x_size = Integer.valueOf(xs);
-    final int y_size;
+    final int sizeX = Integer.valueOf(xs);
+    final int sizeY;
     if (ys != null) {
-      y_size = Integer.valueOf(ys);
+      sizeY = Integer.valueOf(ys);
     } else {
-      y_size = 0;
+      sizeY = 0;
     }
-    map.setGridDimensions(x_size, y_size);
+    map.setGridDimensions(sizeX, sizeY);
     if (gridType.equals("square")) {
       // Add territories
-      for (int y = 0; y < y_size; y++) {
-        for (int x = 0; x < x_size; x++) {
+      for (int y = 0; y < sizeY; y++) {
+        for (int x = 0; x < sizeX; x++) {
           final boolean isWater;
           isWater = water.contains(x + "-" + y);
           final Territory newTerritory = new Territory(name + "_" + x + "_" + y, isWater, data, x, y);
@@ -577,32 +578,32 @@ public class GameParser {
       }
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {
-        for (int y = 0; y < y_size; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 0; y < sizeY; y++) {
+          for (int x = 0; x < sizeX - 1; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x + 1, y));
           }
         }
       }
       // Add any implicit vertical connections
       if (verticalConnectionsImplict) {
-        for (int x = 0; x < x_size; x++) {
-          for (int y = 0; y < y_size - 1; y++) {
+        for (int x = 0; x < sizeX; x++) {
+          for (int y = 0; y < sizeY - 1; y++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x, y + 1));
           }
         }
       }
       // Add any implicit acute diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 0; y < y_size - 1; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 0; y < sizeY - 1; y++) {
+          for (int x = 0; x < sizeX - 1; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x + 1, y + 1));
           }
         }
       }
       // Add any implicit obtuse diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 0; y < y_size - 1; y++) {
-          for (int x = 1; x < x_size; x++) {
+        for (int y = 0; y < sizeY - 1; y++) {
+          for (int x = 1; x < sizeX; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x - 1, y + 1));
           }
         }
@@ -610,8 +611,8 @@ public class GameParser {
       // This type is a triangular grid of points and lines, used for in several rail games
     } else if (gridType.equals("points-and-lines")) {
       // Add territories
-      for (int y = 0; y < y_size; y++) {
-        for (int x = 0; x < x_size; x++) {
+      for (int y = 0; y < sizeY; y++) {
+        for (int x = 0; x < sizeX; x++) {
           final boolean isWater = false;
           if (!water.contains(x + "-" + y)) {
             final Territory newTerritory = new Territory(name + "_" + x + "_" + y, isWater, data, x, y);
@@ -627,8 +628,8 @@ public class GameParser {
       }
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {
-        for (int y = 0; y < y_size; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 0; y < sizeY; y++) {
+          for (int x = 0; x < sizeX - 1; x++) {
             final Territory from = map.getTerritoryFromCoordinates(x, y);
             final Territory to = map.getTerritoryFromCoordinates(x + 1, y);
             if (from != null && to != null) {
@@ -639,8 +640,8 @@ public class GameParser {
       }
       // Add any implicit acute diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 1; y < y_size; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 1; y < sizeY; y++) {
+          for (int x = 0; x < sizeX - 1; x++) {
             if (y % 4 == 0 || (y + 1) % 4 == 0) {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
               final Territory to = map.getTerritoryFromCoordinates(x, y - 1);
@@ -659,8 +660,8 @@ public class GameParser {
       }
       // Add any implicit obtuse diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 1; y < y_size; y++) {
-          for (int x = 0; x < x_size - 1; x++) {
+        for (int y = 1; y < sizeY; y++) {
+          for (int x = 0; x < sizeX - 1; x++) {
             if (y % 4 == 0 || (y + 1) % 4 == 0) {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
               final Territory to = map.getTerritoryFromCoordinates(x - 1, y - 1);

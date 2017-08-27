@@ -31,7 +31,7 @@ import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
-import games.strategy.triplea.settings.SettingsWindow;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -51,7 +51,7 @@ class GameMenu {
     this.frame = frame;
     game = frame.getGame();
     gameData = frame.getGame().getData();
-    iuiContext = frame.getUIContext();
+    iuiContext = frame.getUiContext();
 
     menuBar.add(createGameMenu());
   }
@@ -61,7 +61,7 @@ class GameMenu {
     addEditMode(menuGame);
 
     menuGame.addSeparator();
-    menuGame.add(SwingAction.of("Engine Settings", e -> SettingsWindow.showWindow()));
+    menuGame.add(SwingAction.of("Engine Settings", e -> ClientSetting.showSettingsWindow()));
     SoundOptions.addGlobalSoundSwitchMenu(menuGame);
     SoundOptions.addToMenu(menuGame);
     menuGame.addSeparator();
@@ -186,9 +186,9 @@ class GameMenu {
   }
 
   private void addRollDice(final JMenu parentMenu) {
-    final JMenuItem RollDiceBox = new JMenuItem("Roll Dice");
-    RollDiceBox.setMnemonic(KeyEvent.VK_R);
-    RollDiceBox.addActionListener(e -> {
+    final JMenuItem rollDiceBox = new JMenuItem("Roll Dice");
+    rollDiceBox.setMnemonic(KeyEvent.VK_R);
+    rollDiceBox.addActionListener(e -> {
       final IntTextField numberOfText = new IntTextField(0, 100);
       final IntTextField diceSidesText = new IntTextField(1, 200);
       numberOfText.setText(String.valueOf(0));
@@ -229,7 +229,7 @@ class GameMenu {
         // ignore malformed input
       }
     });
-    parentMenu.add(RollDiceBox);
+    parentMenu.add(rollDiceBox);
   }
 
   private void addBattleCalculatorMenu(final JMenu menuGame) {
@@ -237,6 +237,6 @@ class GameMenu {
     final JMenuItem showBattleMenuItem = menuGame.add(showBattleMenu);
     showBattleMenuItem.setMnemonic(KeyEvent.VK_B);
     showBattleMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 }

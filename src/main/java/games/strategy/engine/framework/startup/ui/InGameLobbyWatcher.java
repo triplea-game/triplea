@@ -239,7 +239,7 @@ public class InGameLobbyWatcher {
             if (JOptionPane.showConfirmDialog(parentComponent,
                 "Do you want to view the tutorial on how to host?  This will open in your internet browser.",
                 "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-              OpenFileUtility.openURL(UrlConstants.HOSTING_GUIDE.toString());
+              OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
             }
             System.exit(-1);
           });

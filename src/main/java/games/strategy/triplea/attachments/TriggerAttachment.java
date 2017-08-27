@@ -1612,7 +1612,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getPlayerProperty()) {
-        for (final PlayerID aPlayer : t.getPlayers()) {
+        for (final PlayerID player : t.getPlayers()) {
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
@@ -1622,7 +1622,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           }
           // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
           if (t.getPlayerAttachmentName().getFirst().equals("PlayerAttachment")) {
-            final PlayerAttachment attachment = PlayerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+            final PlayerAttachment attachment = PlayerAttachment.get(player, t.getPlayerAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1635,9 +1635,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
           } else if (t.getPlayerAttachmentName().getFirst().equals("RulesAttachment")) {
-            final RulesAttachment attachment = RulesAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+            final RulesAttachment attachment = RulesAttachment.get(player, t.getPlayerAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1650,10 +1650,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
           } else if (t.getPlayerAttachmentName().getFirst().equals("TriggerAttachment")) {
             final TriggerAttachment attachment =
-                TriggerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+                TriggerAttachment.get(player, t.getPlayerAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1666,9 +1666,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
           } else if (t.getPlayerAttachmentName().getFirst().equals("TechAttachment")) {
-            final TechAttachment attachment = TechAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+            final TechAttachment attachment = TechAttachment.get(player, t.getPlayerAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1681,10 +1681,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
           } else if (t.getPlayerAttachmentName().getFirst().equals("PoliticalActionAttachment")) {
             final PoliticalActionAttachment attachment =
-                PoliticalActionAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+                PoliticalActionAttachment.get(player, t.getPlayerAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1697,10 +1697,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
           } else if (t.getPlayerAttachmentName().getFirst().equals("UserActionAttachment")) {
             final UserActionAttachment attachment =
-                UserActionAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+                UserActionAttachment.get(player, t.getPlayerAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1713,7 +1713,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
           }
           // TODO add other attachment changes here if they attach to a player
         }
@@ -1743,7 +1743,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getRelationshipTypeProperty()) {
-        for (final RelationshipType aRelationshipType : t.getRelationshipTypes()) {
+        for (final RelationshipType relationshipType : t.getRelationshipTypes()) {
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
@@ -1754,7 +1754,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           // covers RelationshipTypeAttachment
           if (t.getRelationshipTypeAttachmentName().getFirst().equals("RelationshipTypeAttachment")) {
             final RelationshipTypeAttachment attachment =
-                RelationshipTypeAttachment.get(aRelationshipType, t.getRelationshipTypeAttachmentName().getSecond());
+                RelationshipTypeAttachment.get(relationshipType, t.getRelationshipTypeAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1766,7 +1766,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             }
             bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting "
                 + property.getFirst() + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                + t.getRelationshipTypeAttachmentName().getSecond() + " attached to " + aRelationshipType.getName());
+                + t.getRelationshipTypeAttachmentName().getSecond() + " attached to " + relationshipType.getName());
           }
           // TODO add other attachment changes here if they attach to a territory
         }
@@ -1797,8 +1797,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getTerritoryProperty()) {
-        for (final Territory aTerritory : t.getTerritories()) {
-          territoriesNeedingReDraw.add(aTerritory);
+        for (final Territory territory : t.getTerritories()) {
+          territoriesNeedingReDraw.add(territory);
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
@@ -1809,10 +1809,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           // covers TerritoryAttachment, CanalAttachment
           if (t.getTerritoryAttachmentName().getFirst().equals("TerritoryAttachment")) {
             final TerritoryAttachment attachment =
-                TerritoryAttachment.get(aTerritory, t.getTerritoryAttachmentName().getSecond());
+                TerritoryAttachment.get(territory, t.getTerritoryAttachmentName().getSecond());
             if (attachment == null) {
               // water territories may not have an attachment, so this could be null
-              throw new IllegalStateException("Triggers: No territory attachment for:" + aTerritory.getName());
+              throw new IllegalStateException("Triggers: No territory attachment for:" + territory.getName());
             }
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
@@ -1826,10 +1826,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getTerritoryAttachmentName().getSecond() + " attached to " + aTerritory.getName());
+                    + t.getTerritoryAttachmentName().getSecond() + " attached to " + territory.getName());
           } else if (t.getTerritoryAttachmentName().getFirst().equals("CanalAttachment")) {
             final CanalAttachment attachment =
-                CanalAttachment.get(aTerritory, t.getTerritoryAttachmentName().getSecond());
+                CanalAttachment.get(territory, t.getTerritoryAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1842,7 +1842,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getTerritoryAttachmentName().getSecond() + " attached to " + aTerritory.getName());
+                    + t.getTerritoryAttachmentName().getSecond() + " attached to " + territory.getName());
           }
           // TODO add other attachment changes here if they attach to a territory
         }
@@ -1850,8 +1850,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     if (!change.isEmpty()) {
       bridge.addChange(change);
-      for (final Territory aTerritory : territoriesNeedingReDraw) {
-        aTerritory.notifyAttachmentChanged();
+      for (final Territory territory : territoriesNeedingReDraw) {
+        territory.notifyAttachmentChanged();
       }
     }
   }
@@ -1875,7 +1875,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getTerritoryEffectProperty()) {
-        for (final TerritoryEffect aTerritoryEffect : t.getTerritoryEffects()) {
+        for (final TerritoryEffect territoryEffect : t.getTerritoryEffects()) {
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
@@ -1886,7 +1886,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           // covers TerritoryEffectAttachment
           if (t.getTerritoryEffectAttachmentName().getFirst().equals("TerritoryEffectAttachment")) {
             final TerritoryEffectAttachment attachment =
-                TerritoryEffectAttachment.get(aTerritoryEffect, t.getTerritoryEffectAttachmentName().getSecond());
+                TerritoryEffectAttachment.get(territoryEffect, t.getTerritoryEffectAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1899,7 +1899,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getTerritoryEffectAttachmentName().getSecond() + " attached to " + aTerritoryEffect.getName());
+                    + t.getTerritoryEffectAttachmentName().getSecond() + " attached to " + territoryEffect.getName());
           }
           // TODO add other attachment changes here if they attach to a territory
         }
@@ -1929,7 +1929,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getUnitProperty()) {
-        for (final UnitType aUnitType : t.getUnitType()) {
+        for (final UnitType unitType : t.getUnitType()) {
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
@@ -1939,7 +1939,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           }
           // covers UnitAttachment, UnitSupportAttachment
           if (t.getUnitAttachmentName().getFirst().equals("UnitAttachment")) {
-            final UnitAttachment attachment = UnitAttachment.get(aUnitType, t.getUnitAttachmentName().getSecond());
+            final UnitAttachment attachment = UnitAttachment.get(unitType, t.getUnitAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1952,10 +1952,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getUnitAttachmentName().getSecond() + " attached to " + aUnitType.getName());
+                    + t.getUnitAttachmentName().getSecond() + " attached to " + unitType.getName());
           } else if (t.getUnitAttachmentName().getFirst().equals("UnitSupportAttachment")) {
             final UnitSupportAttachment attachment =
-                UnitSupportAttachment.get(aUnitType, t.getUnitAttachmentName().getSecond());
+                UnitSupportAttachment.get(unitType, t.getUnitAttachmentName().getSecond());
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
@@ -1968,7 +1968,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             bridge.getHistoryWriter()
                 .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
                     + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getUnitAttachmentName().getSecond() + " attached to " + aUnitType.getName());
+                    + t.getUnitAttachmentName().getSecond() + " attached to " + unitType.getName());
           }
           // TODO add other attachment changes here if they attach to a unitType
         }
@@ -2050,22 +2050,22 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (useUses) {
         t.use(bridge);
       }
-      for (final PlayerID aPlayer : t.getPlayers()) {
+      for (final PlayerID player : t.getPlayers()) {
         for (final String cat : t.getAvailableTech().keySet()) {
-          final TechnologyFrontier tf = aPlayer.getTechnologyFrontierList().getTechnologyFrontier(cat);
+          final TechnologyFrontier tf = player.getTechnologyFrontierList().getTechnologyFrontier(cat);
           if (tf == null) {
-            throw new IllegalStateException("Triggers: tech category doesn't exist:" + cat + " for player:" + aPlayer);
+            throw new IllegalStateException("Triggers: tech category doesn't exist:" + cat + " for player:" + player);
           }
           for (final TechAdvance ta : t.getAvailableTech().get(cat).keySet()) {
             if (t.getAvailableTech().get(cat).get(ta)) {
               bridge.getHistoryWriter().startEvent(
-                  MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " gains access to " + ta);
-              final Change change = ChangeFactory.addAvailableTech(tf, ta, aPlayer);
+                  MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName() + " gains access to " + ta);
+              final Change change = ChangeFactory.addAvailableTech(tf, ta, player);
               bridge.addChange(change);
             } else {
               bridge.getHistoryWriter().startEvent(
-                  MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " loses access to " + ta);
-              final Change change = ChangeFactory.removeAvailableTech(tf, ta, aPlayer);
+                  MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName() + " loses access to " + ta);
+              final Change change = ChangeFactory.removeAvailableTech(tf, ta, player);
               bridge.addChange(change);
             }
           }
@@ -2092,14 +2092,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (useUses) {
         t.use(bridge);
       }
-      for (final PlayerID aPlayer : t.getPlayers()) {
+      for (final PlayerID player : t.getPlayers()) {
         for (final TechAdvance ta : t.getTech()) {
-          if (ta.hasTech(TechAttachment.get(aPlayer))) {
+          if (ta.hasTech(TechAttachment.get(player))) {
             continue;
           }
           bridge.getHistoryWriter().startEvent(
-              MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " activates " + ta);
-          TechTracker.addAdvance(aPlayer, bridge, ta);
+              MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName() + " activates " + ta);
+          TechTracker.addAdvance(player, bridge, ta);
         }
       }
     }
@@ -2123,9 +2123,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (useUses) {
         t.use(bridge);
       }
-      for (final PlayerID aPlayer : t.getPlayers()) {
-        change.add(ChangeFactory.changeProductionFrontier(aPlayer, t.getFrontier()));
-        bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName()
+      for (final PlayerID player : t.getPlayers()) {
+        change.add(ChangeFactory.changeProductionFrontier(player, t.getFrontier()));
+        bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName()
             + " has their production frontier changed to: " + t.getFrontier().getName());
       }
     }
@@ -2163,18 +2163,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           rule = rule.replaceFirst("-", "");
           add = false;
         }
-        final ProductionRule pRule = data.getProductionRuleList().getProductionRule(rule);
+        final ProductionRule productionRule = data.getProductionRuleList().getProductionRule(rule);
         if (add) {
-          if (!front.getRules().contains(pRule)) {
-            change.add(ChangeFactory.addProductionRule(pRule, front));
-            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + pRule.getName()
-                + " added to " + front.getName());
+          if (!front.getRules().contains(productionRule)) {
+            change.add(ChangeFactory.addProductionRule(productionRule, front));
+            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
+                + productionRule.getName() + " added to " + front.getName());
           }
         } else {
-          if (front.getRules().contains(pRule)) {
-            change.add(ChangeFactory.removeProductionRule(pRule, front));
-            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + pRule.getName()
-                + " removed from " + front.getName());
+          if (front.getRules().contains(productionRule)) {
+            change.add(ChangeFactory.removeProductionRule(productionRule, front));
+            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
+                + productionRule.getName() + " removed from " + front.getName());
           }
         }
       }
@@ -2203,7 +2203,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (useUses) {
         t.use(bridge);
       }
-      for (final PlayerID aPlayer : t.getPlayers()) {
+      for (final PlayerID player : t.getPlayers()) {
         for (final String usaString : t.getSupport().keySet()) {
           UnitSupportAttachment usa = null;
           for (final UnitSupportAttachment support : UnitSupportAttachment.get(data)) {
@@ -2216,19 +2216,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             throw new IllegalStateException("Could not find unitSupportAttachment. name:" + usaString);
           }
           final List<PlayerID> p = new ArrayList<>(usa.getPlayers());
-          if (p.contains(aPlayer)) {
+          if (p.contains(player)) {
             if (!t.getSupport().get(usa.getName())) {
-              p.remove(aPlayer);
+              p.remove(player);
               change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
               bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
-                  + aPlayer.getName() + " is removed from " + usa.toString());
+                  + player.getName() + " is removed from " + usa.toString());
             }
           } else {
             if (t.getSupport().get(usa.getName())) {
-              p.add(aPlayer);
+              p.add(player);
               change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
               bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
-                  + aPlayer.getName() + " is added to " + usa.toString());
+                  + player.getName() + " is added to " + usa.toString());
             }
           }
         }
@@ -2310,17 +2310,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
-      for (final PlayerID aPlayer : t.getPlayers()) {
+      for (final PlayerID player : t.getPlayers()) {
         for (int i = 0; i < eachMultiple; ++i) {
           final List<Unit> units = new ArrayList<>();
           for (final UnitType u : t.getPurchase().keySet()) {
-            units.addAll(u.create(t.getPurchase().getInt(u), aPlayer));
+            units.addAll(u.create(t.getPurchase().getInt(u), player));
           }
           if (!units.isEmpty()) {
             final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": "
-                + MyFormatter.unitsToTextNoOwner(units) + " gained by " + aPlayer;
+                + MyFormatter.unitsToTextNoOwner(units) + " gained by " + player;
             bridge.getHistoryWriter().startEvent(transcriptText, units);
-            final Change place = ChangeFactory.addUnits(aPlayer, units);
+            final Change place = ChangeFactory.addUnits(player, units);
             bridge.addChange(place);
           }
         }
@@ -2346,10 +2346,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
-      for (final PlayerID aPlayer : t.getPlayers()) {
+      for (final PlayerID player : t.getPlayers()) {
         for (final Territory ter : t.getRemoveUnits().keySet()) {
           for (int i = 0; i < eachMultiple; ++i) {
-            removeUnits(t, ter, t.getRemoveUnits().get(ter), aPlayer, bridge);
+            removeUnits(t, ter, t.getRemoveUnits().get(ter), player, bridge);
           }
         }
       }
@@ -2374,10 +2374,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
-      for (final PlayerID aPlayer : t.getPlayers()) {
+      for (final PlayerID player : t.getPlayers()) {
         for (final Territory ter : t.getPlacement().keySet()) {
           for (int i = 0; i < eachMultiple; ++i) {
-            placeUnits(t, ter, t.getPlacement().get(ter), aPlayer, bridge);
+            placeUnits(t, ter, t.getPlacement().get(ter), player, bridge);
           }
         }
       }
@@ -2404,20 +2404,20 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
-      for (final PlayerID aPlayer : t.getPlayers()) {
+      for (final PlayerID player : t.getPlayers()) {
         for (int i = 0; i < eachMultiple; ++i) {
           int toAdd = t.getResourceCount();
           if (t.getResource().equals(Constants.PUS)) {
             toAdd *= Properties.getPU_Multiplier(data);
           }
-          int total = aPlayer.getResources().getQuantity(t.getResource()) + toAdd;
+          int total = player.getResources().getQuantity(t.getResource()) + toAdd;
           if (total < 0) {
             toAdd -= total;
             total = 0;
           }
           bridge.addChange(
-              ChangeFactory.changeResourcesChange(aPlayer, data.getResourceList().getResource(t.getResource()), toAdd));
-          final String puMessage = MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName()
+              ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(t.getResource()), toAdd));
+          final String puMessage = MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName()
               + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()
               + "; end with " + total + " " + t.getResource();
           bridge.getHistoryWriter().startEvent(puMessage);

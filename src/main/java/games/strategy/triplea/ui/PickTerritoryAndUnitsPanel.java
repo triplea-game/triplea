@@ -152,7 +152,8 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         if (unitChoices.size() < unitsPerPick) {
           // if we have fewer units than the number we are supposed to pick, set it to all
           pickedUnits.addAll(unitChoices);
-        } else if (Match.allMatchNotEmpty(unitChoices, Matches.unitIsOfType(unitChoices.get(0).getType()))) {
+        } else if (!unitChoices.isEmpty()
+            && Match.allMatch(unitChoices, Matches.unitIsOfType(unitChoices.get(0).getType()))) {
           // if we have only 1 unit type, set it to that
           pickedUnits.clear();
           pickedUnits.addAll(Match.getNMatches(unitChoices, unitsPerPick, Match.always()));
@@ -181,7 +182,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       currentAction = selectUnitsAction;
       setWidgetActivation();
       final UnitChooser unitChooser = new UnitChooser(unitChoices, Collections.emptyMap(),
-          getData(), false, getMap().getUIContext());
+          getData(), false, getMap().getUiContext());
       unitChooser.setMaxAndShowMaxButton(unitsPerPick);
       if (JOptionPane.OK_OPTION == EventThreadJOptionPane.showConfirmDialog(parent, unitChooser, "Select Units",
           JOptionPane.OK_CANCEL_OPTION, new CountDownLatchHandler(true))) {
@@ -210,7 +211,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         return;
       }
       if (currentAction == selectTerritoryAction) {
-        if (territory == null || !territoryChoices.contains(territory)) {
+        if (!territoryChoices.contains(territory)) {
           EventThreadJOptionPane.showMessageDialog(parent,
               "Must Pick An Unowned Territory (will have a white highlight)", "Must Pick An Unowned Territory",
               JOptionPane.WARNING_MESSAGE, new CountDownLatchHandler(true));

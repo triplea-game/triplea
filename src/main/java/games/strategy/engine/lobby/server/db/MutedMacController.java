@@ -6,14 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete muted macs (there is no update).
  */
 public class MutedMacController {
-  private static final Logger s_logger = Logger.getLogger(MutedMacController.class.getName());
+  private static final Logger logger = Logger.getLogger(MutedMacController.class.getName());
 
   /**
    * Mute the mac permanently.
@@ -37,41 +36,39 @@ public class MutedMacController {
     if (muteTill != null) {
       muteTillTs = new Timestamp(muteTill.toEpochMilli());
     }
-    s_logger.fine("Muting mac:" + mac);
+    logger.fine("Muting mac:" + mac);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)");
-      ps.setString(1, mac);
-      ps.setTimestamp(2, muteTillTs);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)")) {
+        ps.setString(1, mac);
+        ps.setTimestamp(2, muteTillTs);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       if (sqle.getErrorCode() == 30000) {
         // this is ok
         // the mac is muted as expected
-        s_logger.info("Tried to create duplicate muted mac:" + mac + " error:" + sqle.getMessage());
+        logger.info("Tried to create duplicate muted mac:" + mac + " error:" + sqle.getMessage());
         return;
       }
-      s_logger.log(Level.SEVERE, "Error inserting muted mac:" + mac, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error inserting muted mac:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
   }
 
   private void removeMutedMac(final String mac) {
-    s_logger.fine("Removing muted mac:" + mac);
+    logger.fine("Removing muted mac:" + mac);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac = ?");
-      ps.setString(1, mac);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac = ?")) {
+        ps.setString(1, mac);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
-      s_logger.log(Level.SEVERE, "Error deleting muted mac:" + mac, sqle);
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error deleting muted mac:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }
@@ -95,25 +92,24 @@ public class MutedMacController {
     final String sql = "select mac, mute_till from muted_macs where mac = ?";
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, mac);
-      final ResultSet rs = ps.executeQuery();
-      final boolean found = rs.next();
-      if (found) {
-        final Timestamp muteTill = rs.getTimestamp(2);
-        result = muteTill.getTime();
-        if (result < System.currentTimeMillis()) {
-          s_logger.fine("Mute expired for:" + mac);
-          expired = true;
+      try (final PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, mac);
+        try (final ResultSet rs = ps.executeQuery()) {
+          final boolean found = rs.next();
+          if (found) {
+            final Timestamp muteTill = rs.getTimestamp(2);
+            result = muteTill.getTime();
+            if (result < System.currentTimeMillis()) {
+              logger.fine("Mute expired for:" + mac);
+              expired = true;
+            }
+          } else {
+            result = -1;
+          }
         }
-      } else {
-        result = -1;
       }
-      rs.close();
-      ps.close();
     } catch (final SQLException sqle) {
-      s_logger.info("Error for testing muted mac existence:" + mac + " error:" + sqle.getMessage());
-      throw new IllegalStateException(sqle.getMessage());
+      throw new IllegalStateException("Error for testing muted mac existence:" + mac, sqle);
     } finally {
       DbUtil.closeConnection(con);
     }

@@ -82,27 +82,27 @@ public class AirThatCantLandUtilTest {
   public void testCantLandWater() {
     final PlayerID player = americansPlayer;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
-    final Territory sz_55 = gameData.getMap().getTerritory("55 Sea Zone");
-    final Change addAir = ChangeFactory.addUnits(sz_55, fighterType.create(2, player));
+    final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
+    final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
-    assertEquals(sz_55, cantLand.iterator().next());
+    assertEquals(sz55, cantLand.iterator().next());
     airThatCantLandUtil.removeAirThatCantLand(player, false);
-    assertEquals(0, sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
+    assertEquals(0, sz55.getUnits().getMatches(Matches.UnitIsAir).size());
   }
 
   @Test
   public void testSpareNextToFactory() {
     final PlayerID player = americansPlayer;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
-    final Territory sz_55 = gameData.getMap().getTerritory("55 Sea Zone");
-    final Change addAir = ChangeFactory.addUnits(sz_55, fighterType.create(2, player));
+    final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
+    final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     airThatCantLandUtil.removeAirThatCantLand(player, true);
-    assertEquals(2, sz_55.getUnits().getMatches(Matches.UnitIsAir).size());
+    assertEquals(2, sz55.getUnits().getMatches(Matches.UnitIsAir).size());
   }
 
   @Test
@@ -110,16 +110,16 @@ public class AirThatCantLandUtilTest {
     // 1 carrier in the region, but three fighters, make sure we cant land
     final PlayerID player = americansPlayer;
     final ITestDelegateBridge bridge = getDelegateBridge(player);
-    final Territory sz_52 = gameData.getMap().getTerritory("52 Sea Zone");
-    final Change addAir = ChangeFactory.addUnits(sz_52, fighterType.create(2, player));
+    final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Change addAir = ChangeFactory.addUnits(sz52, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
-    assertEquals(sz_52, cantLand.iterator().next());
+    assertEquals(sz52, cantLand.iterator().next());
     airThatCantLandUtil.removeAirThatCantLand(player, false);
     // just the original american fighter, plus one that can land on the carrier
-    assertEquals(2, sz_52.getUnits().getMatches(Matches.UnitIsAir).size());
+    assertEquals(2, sz52.getUnits().getMatches(Matches.UnitIsAir).size());
   }
 
   @Test
@@ -134,25 +134,25 @@ public class AirThatCantLandUtilTest {
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz_44 = gameData.getMap().getTerritory("44 Sea Zone");
-    final Territory sz_45 = gameData.getMap().getTerritory("45 Sea Zone");
-    final Territory sz_52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Territory sz44 = gameData.getMap().getTerritory("44 Sea Zone");
+    final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
+    final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     // Add units for the test
-    gameData.performChange(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
-    gameData.performChange(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
-    gameData.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz45, subType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz44, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz44, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
-    final int preCountSz_52 = sz_52.getUnits().size();
-    final int preCountAirSz_44 = sz_44.getUnits().getMatches(Matches.UnitIsAir).size();
+    final int preCountSz52 = sz52.getUnits().size();
+    final int preCountAirSz44 = sz44.getUnits().getMatches(Matches.UnitIsAir).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz_45.getUnits().getUnits(), gameData.getMap().getRoute(sz_45, sz_44));
+    moveDelegate.move(sz45.getUnits().getUnits(), gameData.getMap().getRoute(sz45, sz44));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
@@ -162,10 +162,10 @@ public class AirThatCantLandUtilTest {
     battle.start();
     battle.end();
     // Get the total number of units that should be left after the planes retreat
-    final int expectedCountSz_52 = sz_52.getUnits().size();
-    final int postCountInt = preCountSz_52 + preCountAirSz_44;
+    final int expectedCountSz52 = sz52.getUnits().size();
+    final int postCountInt = preCountSz52 + preCountAirSz44;
     // Compare the expected count with the actual number of units in landing zone
-    assertEquals(expectedCountSz_52, postCountInt);
+    assertEquals(expectedCountSz52, postCountInt);
   }
 
   @Test
@@ -180,27 +180,27 @@ public class AirThatCantLandUtilTest {
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz_43 = gameData.getMap().getTerritory("43 Sea Zone");
-    final Territory sz_44 = gameData.getMap().getTerritory("44 Sea Zone");
-    final Territory sz_45 = gameData.getMap().getTerritory("45 Sea Zone");
-    final Territory sz_52 = gameData.getMap().getTerritory("52 Sea Zone");
+    final Territory sz43 = gameData.getMap().getTerritory("43 Sea Zone");
+    final Territory sz44 = gameData.getMap().getTerritory("44 Sea Zone");
+    final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
+    final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     // Add units for the test
-    gameData.performChange(ChangeFactory.addUnits(sz_45, subType.create(1, japanese)));
-    gameData.performChange(ChangeFactory.addUnits(sz_44, carrierType.create(1, americans)));
-    gameData.performChange(ChangeFactory.addUnits(sz_44, fighterType.create(3, americans)));
-    gameData.performChange(ChangeFactory.addUnits(sz_43, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz45, subType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz44, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz44, fighterType.create(3, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz43, carrierType.create(1, americans)));
     // Get total number of defending units before the battle
-    final int preCountSz_52 = sz_52.getUnits().size();
-    final int preCountSz_43 = sz_43.getUnits().size();
+    final int preCountSz52 = sz52.getUnits().size();
+    final int preCountSz43 = sz43.getUnits().size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz_45.getUnits().getUnits(), gameData.getMap().getRoute(sz_45, sz_44));
+    moveDelegate.move(sz45.getUnits().getUnits(), gameData.getMap().getRoute(sz45, sz44));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
@@ -210,13 +210,13 @@ public class AirThatCantLandUtilTest {
     battle.start();
     battle.end();
     // Get the total number of units that should be left after the planes retreat
-    final int expectedCountSz_52 = sz_52.getUnits().size();
-    final int expectedCountSz_43 = sz_43.getUnits().size();
-    final int postCountSz_52 = preCountSz_52 + 1;
-    final int postCountSz_43 = preCountSz_43 + 2;
+    final int expectedCountSz52 = sz52.getUnits().size();
+    final int expectedCountSz43 = sz43.getUnits().size();
+    final int postCountSz52 = preCountSz52 + 1;
+    final int postCountSz43 = preCountSz43 + 2;
     // Compare the expected count with the actual number of units in landing zone
-    assertEquals(expectedCountSz_52, postCountSz_52);
-    assertEquals(expectedCountSz_43, postCountSz_43);
+    assertEquals(expectedCountSz52, postCountSz52);
+    assertEquals(expectedCountSz43, postCountSz43);
   }
 
   @Test
@@ -231,25 +231,25 @@ public class AirThatCantLandUtilTest {
     initDel.start();
     initDel.end();
     // Get necessary sea zones and unit types for this test
-    final Territory sz_9 = gameData.getMap().getTerritory("9 Sea Zone");
+    final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
     final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
-    final Territory sz_11 = gameData.getMap().getTerritory("11 Sea Zone");
+    final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     // Add units for the test
-    gameData.performChange(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
-    gameData.performChange(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
-    gameData.performChange(ChangeFactory.addUnits(sz_9, fighterType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz11, subType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz9, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz9, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
     final int preCountCanada = eastCanada.getUnits().size();
-    final int preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();
+    final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.UnitIsAir).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz_11.getUnits().getUnits(), gameData.getMap().getRoute(sz_11, sz_9));
+    moveDelegate.move(sz11.getUnits().getUnits(), gameData.getMap().getRoute(sz11, sz9));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
@@ -260,7 +260,7 @@ public class AirThatCantLandUtilTest {
     battle.end();
     // Get the total number of units that should be left after the planes retreat
     final int expectedCountCanada = eastCanada.getUnits().size();
-    final int postCountInt = preCountCanada + preCountAirSz_9;
+    final int postCountInt = preCountCanada + preCountAirSz9;
     // Compare the expected count with the actual number of units in landing zone
     assertEquals(expectedCountCanada, postCountInt);
   }
@@ -271,20 +271,20 @@ public class AirThatCantLandUtilTest {
     final PlayerID americans = GameDataTestUtil.americans(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(japanese);
     // Get necessary sea zones and unit types for this test
-    final Territory sz_9 = gameData.getMap().getTerritory("9 Sea Zone");
+    final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
     final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
-    final Territory sz_11 = gameData.getMap().getTerritory("11 Sea Zone");
+    final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
     final UnitType subType = GameDataTestUtil.submarine(gameData);
     final UnitType carrierType = GameDataTestUtil.carrier(gameData);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     final UnitType transportType = GameDataTestUtil.transport(gameData);
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     // Add units for the test
-    gameData.performChange(ChangeFactory.addUnits(sz_11, subType.create(1, japanese)));
-    gameData.performChange(ChangeFactory.addUnits(sz_11, transportType.create(1, japanese)));
-    gameData.performChange(ChangeFactory.addUnits(sz_11, infantryType.create(1, japanese)));
-    gameData.performChange(ChangeFactory.addUnits(sz_9, carrierType.create(1, americans)));
-    gameData.performChange(ChangeFactory.addUnits(sz_9, fighterType.create(2, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz11, subType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz11, transportType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz11, infantryType.create(1, japanese)));
+    gameData.performChange(ChangeFactory.addUnits(sz9, carrierType.create(1, americans)));
+    gameData.performChange(ChangeFactory.addUnits(sz9, fighterType.create(2, americans)));
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -293,14 +293,14 @@ public class AirThatCantLandUtilTest {
     initDel.end();
     // Get total number of defending units before the battle
     final int preCountCanada = eastCanada.getUnits().size();
-    final int preCountAirSz_9 = sz_9.getUnits().getMatches(Matches.UnitIsAir).size();
+    final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.UnitIsAir).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz_11.getUnits().getUnits(), gameData.getMap().getRoute(sz_11, sz_9));
-    moveDelegate.move(sz_9.getUnits().getUnits(infantryType, 1), gameData.getMap().getRoute(sz_9, eastCanada));
+    moveDelegate.move(sz11.getUnits().getUnits(), gameData.getMap().getRoute(sz11, sz9));
+    moveDelegate.move(sz9.getUnits().getUnits(infantryType, 1), gameData.getMap().getRoute(sz9, eastCanada));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
@@ -308,11 +308,11 @@ public class AirThatCantLandUtilTest {
     battle.start();
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
     bridge.setRemote(getDummyPlayer());
-    fight(battle, sz_9, false);
+    fight(battle, sz9, false);
     battle.end();
     // Get the total number of units that should be left after the planes retreat
     final int expectedCountCanada = eastCanada.getUnits().size();
-    final int postCountInt = preCountCanada + preCountAirSz_9;
+    final int postCountInt = preCountCanada + preCountAirSz9;
     // Compare the expected count with the actual number of units in landing zone
     assertEquals(expectedCountCanada, postCountInt);
   }

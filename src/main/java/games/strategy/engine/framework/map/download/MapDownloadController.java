@@ -1,7 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -10,13 +11,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.settings.SystemPreferenceKey;
-import games.strategy.triplea.settings.SystemPreferences;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
 
@@ -32,19 +33,20 @@ public class MapDownloadController {
   public boolean checkDownloadedMapsAreLatest() {
     try {
       // check at most once per month
-      final Calendar calendar = Calendar.getInstance();
-      final int year = calendar.get(Calendar.YEAR);
-      final int month = calendar.get(Calendar.MONTH);
+      final LocalDateTime locaDateTime = LocalDateTime.now();
+      final int year = locaDateTime.get(ChronoField.YEAR);
+      final int month = locaDateTime.get(ChronoField.MONTH_OF_YEAR);
       // format year:month
-      final String lastCheckTime = SystemPreferences.get(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, "");
-      if (lastCheckTime != null && lastCheckTime.trim().length() > 0) {
+      final String lastCheckTime = ClientSetting.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES.value();
+      if (!Strings.nullToEmpty(lastCheckTime).trim().isEmpty()) {
         final String[] yearMonth = lastCheckTime.split(":");
         if (Integer.parseInt(yearMonth[0]) >= year && Integer.parseInt(yearMonth[1]) >= month) {
           return false;
         }
       }
 
-      SystemPreferences.put(SystemPreferenceKey.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES, year + ":" + month);
+      ClientSetting.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES.save(year + ":" + month);
+      ClientSetting.flush();
 
       final List<DownloadFileDescription> allDownloads = ClientContext.getMapDownloadList();
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads);
@@ -150,12 +152,13 @@ public class MapDownloadController {
     return new TutorialMapPreferences() {
       @Override
       public void preventPromptToDownload() {
-        SystemPreferences.put(SystemPreferenceKey.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP, false);
+        ClientSetting.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP.save(false);
+        ClientSetting.flush();
       }
 
       @Override
       public boolean canPromptToDownload() {
-        return SystemPreferences.get(SystemPreferenceKey.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP, true);
+        return ClientSetting.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP.booleanValue();
       }
     };
   }

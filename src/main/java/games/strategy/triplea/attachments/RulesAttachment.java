@@ -31,6 +31,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
@@ -886,8 +887,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * @return whether all relationships as are required are set correctly.
    */
   private boolean checkRelationships() {
-    for (final String aRelationCheck : m_relationship) {
-      final String[] relationCheck = aRelationCheck.split(":");
+    for (final String encodedRelationCheck : m_relationship) {
+      final String[] relationCheck = encodedRelationCheck.split(":");
       final PlayerID p1 = getData().getPlayerList().getPlayerID(relationCheck[0]);
       final PlayerID p2 = getData().getPlayerList().getPlayerID(relationCheck[1]);
       final int relationshipsExistance = Integer.parseInt(relationCheck[3]);
@@ -912,7 +913,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   private boolean relationShipExistsLongEnnough(final Relationship r, final int relationshipsExistance) {
     int roundCurrentRelationshipWasCreated = r.getRoundCreated();
-    roundCurrentRelationshipWasCreated += games.strategy.triplea.Properties.getRelationshipsLastExtraRounds(getData());
+    roundCurrentRelationshipWasCreated += Properties.getRelationshipsLastExtraRounds(getData());
     return getData().getSequence().getRound() - roundCurrentRelationshipWasCreated >= relationshipsExistance;
   }
 
@@ -1009,7 +1010,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory
         allUnits.retainAll(
             Match.getMatches(allUnits, Match.allOf(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
-                Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport)));
+                Matches.unitIsNotSub(), Matches.unitIsNotTransportButCouldBeCombatTransport())));
       } else {
         return false;
       }

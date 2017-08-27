@@ -11,11 +11,11 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.Match;
 
 /**
@@ -67,7 +67,7 @@ public class ProOddsCalculator {
     final double strengthDifference = ProBattleUtils.estimateStrengthDifference(t, attackingUnits, defendingUnits);
     if (strengthDifference > 55) {
       final boolean isLandAndCanOnlyBeAttackedByAir =
-          !t.isWater() && Match.allMatchNotEmpty(attackingUnits, Matches.UnitIsAir);
+          !t.isWater() && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
       return new ProBattleResult(100 + strengthDifference, 999 + strengthDifference, !isLandAndCanOnlyBeAttackedByAir,
           attackingUnits, new ArrayList<>(), 1);
     }
@@ -90,14 +90,15 @@ public class ProOddsCalculator {
 
     final boolean hasNoDefenders = Match.noneMatch(defendingUnits, Matches.UnitIsNotInfrastructure);
     final boolean isLandAndCanOnlyBeAttackedByAir =
-        !t.isWater() && Match.allMatchNotEmpty(attackingUnits, Matches.UnitIsAir);
+        !t.isWater() && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
     if (attackingUnits.size() == 0) {
       return new ProBattleResult();
     } else if (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir) {
       return new ProBattleResult();
     } else if (hasNoDefenders) {
       return new ProBattleResult(100, 0.1, true, attackingUnits, new ArrayList<>(), 0);
-    } else if (Properties.getSubRetreatBeforeBattle(data) && Match.allMatchNotEmpty(defendingUnits, Matches.UnitIsSub)
+    } else if (Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty()
+        && Match.allMatch(defendingUnits, Matches.UnitIsSub)
         && Match.noneMatch(attackingUnits, Matches.UnitIsDestroyer)) {
       return new ProBattleResult();
     }
@@ -142,22 +143,22 @@ public class ProOddsCalculator {
     final List<Unit> mainCombatDefenders =
         Match.getMatches(defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, false, true, true));
     double tuvSwing = results.getAverageTUVswing(attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
-    if (Matches.TerritoryIsNeutralButNotWater.match(t)) { // Set TUV swing for neutrals
-      final double attackingUnitValue = BattleCalculator.getTUV(mainCombatAttackers, ProData.unitValueMap);
+    if (Matches.territoryIsNeutralButNotWater().match(t)) { // Set TUV swing for neutrals
+      final double attackingUnitValue = TuvUtils.getTuv(mainCombatAttackers, ProData.unitValueMap);
       final double remainingUnitValue =
           results.getAverageTUVofUnitsLeftOver(ProData.unitValueMap, ProData.unitValueMap).getFirst();
       tuvSwing = remainingUnitValue - attackingUnitValue;
     }
     final List<Unit> defendingTransportedUnits = Match.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) { // Add TUV swing for transported units
-      final double transportedUnitValue = BattleCalculator.getTUV(defendingTransportedUnits, ProData.unitValueMap);
+      final double transportedUnitValue = TuvUtils.getTuv(defendingTransportedUnits, ProData.unitValueMap);
       tuvSwing += transportedUnitValue * winPercentage / 100;
     }
 
     // Create battle result object
-    final List<Territory> tList = new ArrayList<>();
-    tList.add(t);
-    if (Match.allMatchNotEmpty(tList, Matches.TerritoryIsLand)) {
+    final List<Territory> territoryList = new ArrayList<>();
+    territoryList.add(t);
+    if (!territoryList.isEmpty() && Match.allMatch(territoryList, Matches.TerritoryIsLand)) {
       return new ProBattleResult(winPercentage, tuvSwing,
           Match.anyMatch(averageAttackersRemaining, Matches.UnitIsLand), averageAttackersRemaining,
           averageDefendersRemaining, results.getAverageBattleRoundsFought());

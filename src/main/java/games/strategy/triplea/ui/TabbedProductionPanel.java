@@ -24,9 +24,9 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.util.ResourceCollectionUtils;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
+import swinglib.JPanelBuilder;
 
 public class TabbedProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 3481282212500641144L;
@@ -58,7 +58,7 @@ public class TabbedProductionPanel extends ProductionPanel {
         new Insets(8, 8, 8, 0), 0, 0));
     final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(id, rules);
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
-    calculateXY(properties, largestList(ruleLists));
+    calculateRowsAndColumns(properties, largestList(ruleLists));
     for (final Tuple<String, List<Rule>> ruleList : ruleLists) {
       if (ruleList.getSecond().size() > 0) {
         tabs.addTab(ruleList.getFirst(), new JScrollPane(getRulesPanel(ruleList.getSecond())));
@@ -66,29 +66,29 @@ public class TabbedProductionPanel extends ProductionPanel {
     }
     add(left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(8, 8, 0, 12), 0, 0));
-    done = new JButton(done_action);
+    done = new JButton(doneAction);
     add(done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 8, 0), 0, 0));
     tabs.validate();
     this.validate();
   }
 
-  private void calculateXY(final ProductionTabsProperties properties, final int largestList) {
+  private void calculateRowsAndColumns(final ProductionTabsProperties properties, final int largestList) {
     if (properties == null || properties.getRows() == 0 || properties.getColumns() == 0
         || properties.getRows() * properties.getColumns() < largestList) {
-      final int m_maxColumns;
+      final int maxColumns;
       if (largestList <= 36) {
-        m_maxColumns = Math.max(8,
+        maxColumns = Math.max(8,
             Math.min(12, new BigDecimal(largestList).divide(new BigDecimal(3), RoundingMode.UP).intValue()));
       } else if (largestList <= 64) {
-        m_maxColumns = Math.max(8,
+        maxColumns = Math.max(8,
             Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(4), RoundingMode.UP).intValue()));
       } else {
-        m_maxColumns = Math.max(8,
+        maxColumns = Math.max(8,
             Math.min(16, new BigDecimal(largestList).divide(new BigDecimal(5), RoundingMode.UP).intValue()));
       }
       rows =
-          Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(m_maxColumns), RoundingMode.UP).intValue());
+          Math.max(2, new BigDecimal(largestList).divide(new BigDecimal(maxColumns), RoundingMode.UP).intValue());
       columns =
           Math.max(3, new BigDecimal(largestList).divide(new BigDecimal(rows), RoundingMode.UP).intValue());
     } else {
@@ -174,7 +174,10 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   private JPanel getRulesPanel(final List<Rule> rules) {
-    final JPanel panel = SwingComponents.gridPanel(rows, columns);
+    final JPanel panel = JPanelBuilder.builder()
+        .gridLayout(rows, columns)
+        .build();
+
     final JPanel[][] panelHolder = new JPanel[rows][columns];
     for (int m = 0; m < rows; m++) {
       for (int n = 0; n < columns; n++) {

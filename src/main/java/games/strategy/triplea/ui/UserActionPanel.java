@@ -244,7 +244,7 @@ public class UserActionPanel extends ActionPanel {
   private JPanel getOtherPlayerFlags(final UserActionAttachment uaa) {
     final JPanel panel = new JPanel();
     for (final PlayerID p : uaa.getOtherPlayers()) {
-      panel.add(new JLabel(new ImageIcon(this.getMap().getUIContext().getFlagImageFactory().getFlag(p))));
+      panel.add(new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
     }
     return panel;
   }

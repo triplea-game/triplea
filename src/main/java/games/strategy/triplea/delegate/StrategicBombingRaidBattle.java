@@ -35,6 +35,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -94,13 +95,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final Match<Unit> defenders = Match.allOf(Matches.enemyUnit(m_attacker, m_data),
         Match.anyOf(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
             Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
-                Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data)));
+                Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data)));
     if (m_targets.isEmpty()) {
       m_defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
     } else {
       final List<Unit> targets =
           Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(m_attackingUnits,
-              airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data));
+              airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
       targets.addAll(m_targets.keySet());
       m_defendingUnits = targets;
     }
@@ -182,7 +183,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
     m_defendingAA = m_battleSite.getUnits().getMatches(Matches.unitIsAaThatCanFire(m_attackingUnits,
-        airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_round, true, m_data));
+        airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
     m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
     // reverse since stacks are in reverse order
     Collections.reverse(m_AAtypes);
@@ -228,7 +229,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // TODO remove the reference to the constant.japanese- replace with a rule
         if (isPacificTheater() || isSBRVictoryPoints()) {
           if (m_defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
-            Change changeVp;
+            final Change changeVp;
             final PlayerAttachment pa = PlayerAttachment.get(m_defender);
             if (pa != null) {
               changeVp =
@@ -240,28 +241,29 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
         }
         // kill any suicide attackers (veqryn)
-        if (Match.anyMatch(m_attackingUnits, Matches.UnitIsSuicide)) {
-          final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
+        if (Match.anyMatch(m_attackingUnits, Matches.unitIsSuicide())) {
+          final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.unitIsSuicide());
           m_attackingUnits.removeAll(suicideUnits);
           final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
           final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
-          final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-          final int tuvLostAttacker = BattleCalculator.getTUV(suicideUnits, m_attacker, costs, m_data);
+          final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
+          final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, costs, m_data);
           m_attackerLostTUV += tuvLostAttacker;
           bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
           bridge.addChange(removeSuicide);
         }
         // kill any units that can die if they have reached max damage (veqryn)
-        if (Match.anyMatch(m_targets.keySet(), Matches.UnitCanDieFromReachingMaxDamage)) {
-          final List<Unit> unitsCanDie = Match.getMatches(m_targets.keySet(), Matches.UnitCanDieFromReachingMaxDamage);
+        if (Match.anyMatch(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage())) {
+          final List<Unit> unitsCanDie =
+              Match.getMatches(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
           unitsCanDie
               .retainAll(Match.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
           if (!unitsCanDie.isEmpty()) {
             // m_targets.removeAll(unitsCanDie);
             final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
             final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + m_battleSite.getName();
-            final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_defender, m_data);
-            final int tuvLostDefender = BattleCalculator.getTUV(unitsCanDie, m_defender, costs, m_data);
+            final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_defender, m_data);
+            final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, m_defender, costs, m_data);
             m_defenderLostTUV += tuvLostDefender;
             bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
             bridge.addChange(removeDead);
@@ -334,7 +336,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     Collection<Unit> validAttackingUnitsForThisRoll;
     boolean determineAttackers;
 
-    public FireAA(Collection<Unit> attackers) {
+    public FireAA(final Collection<Unit> attackers) {
       validAttackingUnitsForThisRoll = attackers;
       determineAttackers = false;
     }
@@ -434,31 +436,31 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories() {
-    return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
   }
 
   private boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(m_data);
+    return Properties.getWW2V2(m_data);
   }
 
   private boolean isLimitSBRDamageToProduction() {
-    return games.strategy.triplea.Properties.getLimitRocketAndSBRDamageToProduction(m_data);
+    return Properties.getLimitRocketAndSBRDamageToProduction(m_data);
   }
 
   private static boolean isLimitSBRDamagePerTurn(final GameData data) {
-    return games.strategy.triplea.Properties.getLimitSBRDamagePerTurn(data);
+    return Properties.getLimitSBRDamagePerTurn(data);
   }
 
   private static boolean isPUCap(final GameData data) {
-    return games.strategy.triplea.Properties.getPUCap(data);
+    return Properties.getPUCap(data);
   }
 
   private boolean isSBRVictoryPoints() {
-    return games.strategy.triplea.Properties.getSBRVictoryPoint(m_data);
+    return Properties.getSBRVictoryPoint(m_data);
   }
 
   private boolean isPacificTheater() {
-    return games.strategy.triplea.Properties.getPacificTheater(m_data);
+    return Properties.getPacificTheater(m_data);
   }
 
   private CasualtyDetails calculateCasualties(final Collection<Unit> validAttackingUnitsForThisRoll,
@@ -467,7 +469,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
     final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
     final boolean allowMultipleHitsPerUnit =
-        Match.allMatchNotEmpty(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
+        !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isEditMode) {
       final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
       final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker,
@@ -525,8 +527,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (!killed.isEmpty()) {
       bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(killed) + " killed by " + currentTypeAa,
           new ArrayList<>(killed));
-      final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
-      final int tuvLostAttacker = BattleCalculator.getTUV(killed, m_attacker, costs, m_data);
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
+      final int tuvLostAttacker = TuvUtils.getTuv(killed, m_attacker, costs, m_data);
       m_attackerLostTUV += tuvLostAttacker;
       // m_attackingUnits.removeAll(casualties);
       removeAttackers(killed, false);
@@ -587,10 +589,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides());
       } else {
         final boolean doNotUseBombingBonus =
-            !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(m_data);
+            !Properties.getUseBombingMaxDiceSidesAndBonus(m_data);
         final String annotation = m_attacker.getName() + " rolling to allocate cost of strategic bombing raid against "
             + m_defender.getName() + " in " + m_battleSite.getName();
-        if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(m_data)) {
+        if (!Properties.getLL_DAMAGE_ONLY(m_data)) {
           if (doNotUseBombingBonus) {
             // no low luck, and no bonus, so just roll based on the map's dice sides
             m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, m_attacker, DiceType.BOMBING, annotation);
@@ -695,7 +697,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
       int damageLimit = TerritoryAttachment.getProduction(m_battleSite);
       int cost = 0;
-      final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
+      final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(m_data);
       int index = 0;
       final boolean limitDamage = isWW2V2() || isLimitSBRDamageToProduction();
       final List<Die> dice = new ArrayList<>();
@@ -703,7 +705,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       // limit to maxDamage
       for (final Unit attacker : m_attackingUnits) {
         final UnitAttachment ua = UnitAttachment.get(attacker.getType());
-        int rolls;
+        final int rolls;
         rolls = BattleCalculator.getRolls(attacker, m_attacker, false, true, m_territoryEffects);
         int costThisUnit = 0;
         if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
@@ -812,10 +814,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
         }
         // get resources
-        final Resource PUs = m_data.getResourceList().getResource(Constants.PUS);
-        final int have = m_defender.getResources().getQuantity(PUs);
+        final Resource pus = m_data.getResourceList().getResource(Constants.PUS);
+        final int have = m_defender.getResources().getQuantity(pus);
         final int toRemove = Math.min(cost, have);
-        final Change change = ChangeFactory.changeResourcesChange(m_defender, PUs, -toRemove);
+        final Change change = ChangeFactory.changeResourcesChange(m_defender, pus, -toRemove);
         bridge.addChange(change);
         bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " rolls: "
             + MyFormatter.asDice(m_dice) + " and costs: " + cost + " " + MyFormatter.pluralize("PU", cost) + ".");

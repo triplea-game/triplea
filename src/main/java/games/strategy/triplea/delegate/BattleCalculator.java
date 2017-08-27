@@ -7,20 +7,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionFrontier;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -28,7 +21,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
@@ -39,6 +31,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
@@ -59,7 +52,7 @@ public class BattleCalculator {
   }
 
   // There is a problem with this variable, that it isn't
-  // private static IntegerMap<UnitType> s_costsForTuvForAllPlayersMergedAndAveraged;
+  // private static IntegerMap<UnitType> costsForTuvForAllPlayersMergedAndAveraged;
   // being cleared out when we switch maps.
   // we want to sort in a determined way so that those looking at the dice results
   // can tell what dice is for who
@@ -109,7 +102,7 @@ public class BattleCalculator {
     }
     final GameData data = bridge.getData();
     final boolean allowMultipleHitsPerUnit =
-        Match.allMatchNotEmpty(defendingAa, Matches.UnitAAShotDamageableInsteadOfKillingInstantly);
+        !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isChooseAA(data)) {
       final String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return selectCasualties(null, hitPlayer, planes, allFriendlyUnits, firingPlayer, allEnemyUnits, amphibious,
@@ -515,7 +508,7 @@ public class BattleCalculator {
       return new CasualtyDetails(killed, Collections.emptyList(), true);
     }
     // Create production cost map, Maybe should do this elsewhere, but in case prices change, we do it here.
-    final IntegerMap<UnitType> costs = getCostsForTUV(player, data);
+    final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
     final Tuple<CasualtyList, List<Unit>> defaultCasualtiesAndSortedTargets = getDefaultCasualties(targetsToPickFrom,
         hitsRemaining, defending, player, enemyUnits, amphibious, amphibiousLandAttackers,
         battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, true);
@@ -593,15 +586,15 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Match<Unit> aMatch = Match.allOf(Matches.UnitIsLand, Matches.UnitWasNotAmphibious);
-    killedNonAmphibUnits.addAll(Match.getMatches(killed, aMatch));
+    final Match<Unit> match = Match.allOf(Matches.UnitIsLand, Matches.unitWasNotAmphibious());
+    killedNonAmphibUnits.addAll(Match.getMatches(killed, match));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
       return killed;
     }
     // Get a list of all units that are amphibious and remove those that are killed
-    allAmphibUnits.addAll(Match.getMatches(targets, Matches.UnitWasAmphibious));
-    allAmphibUnits.removeAll(Match.getMatches(killed, Matches.UnitWasAmphibious));
+    allAmphibUnits.addAll(Match.getMatches(targets, Matches.unitWasAmphibious()));
+    allAmphibUnits.removeAll(Match.getMatches(killed, Matches.unitWasAmphibious()));
     final Iterator<Unit> allAmphibUnitsIter = allAmphibUnits.iterator();
     // Get a collection of the unit types of the amphib units
     while (allAmphibUnitsIter.hasNext()) {
@@ -904,303 +897,6 @@ public class BattleCalculator {
   }
 
   /**
-   * Return map where keys are unit types and values are PU costs of that unit type, based on a player.
-   * Any production rule that produces multiple units
-   * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
-   * will have their costs rounded up on a per unit basis (so NWO artillery will become 4).
-   * Therefore, this map should NOT be used for Purchasing information!
-   *
-   * @param player
-   *        The player to get costs schedule for
-   * @param data
-   *        The game data.
-   * @return a map of unit types to PU cost
-   */
-  public static IntegerMap<UnitType> getCostsForTUV(final PlayerID player, final GameData data) {
-    final Resource pus;
-    data.acquireReadLock();
-    try {
-      pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
-    }
-    final IntegerMap<UnitType> costs = new IntegerMap<>();
-    final ProductionFrontier frontier = player.getProductionFrontier();
-    // any one will do then
-    if (frontier == null) {
-      return getCostsForTuvForAllPlayersMergedAndAveraged(data);
-    }
-    for (final ProductionRule rule : frontier.getRules()) {
-      final int costPerGroup = rule.getCosts().getInt(pus);
-      final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
-      if (!(resourceOrUnit instanceof UnitType)) {
-        continue;
-      }
-      final UnitType type = (UnitType) resourceOrUnit;
-      final int numberProduced = rule.getResults().getInt(type);
-      // we average the cost for a single unit, rounding up
-      final int roundedCostPerSingle = (int) Math.ceil((double) costPerGroup / (double) numberProduced);
-      costs.put(type, roundedCostPerSingle);
-    }
-    // since our production frontier may not cover all the units we control, and not the enemy units,
-    // we will add any unit types not in our list, based on the list for everyone
-    final IntegerMap<UnitType> costsAll = getCostsForTuvForAllPlayersMergedAndAveraged(data);
-    for (final UnitType ut : costsAll.keySet()) {
-      if (!costs.keySet().contains(ut)) {
-        costs.put(ut, costsAll.getInt(ut));
-      }
-    }
-    return costs;
-  }
-
-  /**
-   * Return a map where key are unit types and values are the AVERAGED for all RULES (not for all players).
-   * Any production rule that produces multiple units
-   * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
-   * will have their costs rounded up on a per unit basis.
-   * Therefore, this map should NOT be used for Purchasing information!
-   */
-  public static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
-    final Resource pus;
-    data.acquireReadLock();
-    try {
-      pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
-    }
-    final IntegerMap<UnitType> costs = new IntegerMap<>();
-    final HashMap<UnitType, List<Integer>> differentCosts = new HashMap<>();
-    for (final ProductionRule rule : data.getProductionRuleList().getProductionRules()) {
-      // only works for the first result, so we are assuming each purchase frontier only gives one type of unit
-      final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
-      if (!(resourceOrUnit instanceof UnitType)) {
-        continue;
-      }
-      final UnitType ut = (UnitType) resourceOrUnit;
-      final int numberProduced = rule.getResults().getInt(ut);
-      final int costPerGroup = rule.getCosts().getInt(pus);
-      // we round up the cost
-      final int roundedCostPerSingle = (int) Math.ceil((double) costPerGroup / (double) numberProduced);
-      if (differentCosts.containsKey(ut)) {
-        differentCosts.get(ut).add(roundedCostPerSingle);
-      } else {
-        final List<Integer> listTemp = new ArrayList<>();
-        listTemp.add(roundedCostPerSingle);
-        differentCosts.put(ut, listTemp);
-      }
-    }
-    for (final UnitType ut : differentCosts.keySet()) {
-      int totalCosts = 0;
-      final List<Integer> costsForType = differentCosts.get(ut);
-      for (final int cost : costsForType) {
-        totalCosts += cost;
-      }
-      final int averagedCost = (int) Math.round(((double) totalCosts / (double) costsForType.size()));
-      costs.put(ut, averagedCost);
-    }
-    // There is a problem with this variable, that it isn't being cleared out when we
-    // s_costsForTuvForAllPlayersMergedAndAveraged = costs;
-    // switch maps.
-    return costs;
-  }
-
-  /**
-   * Return map where keys are unit types and values are resource costs of that unit type, based on a player.
-   * Any production rule that produces multiple units
-   * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
-   * will have their costs rounded up on a per unit basis.
-   * Therefore, this map should NOT be used for Purchasing information!
-   */
-  public static Map<PlayerID, Map<UnitType, ResourceCollection>> getResourceCostsForTUV(final GameData data,
-      final boolean includeAverageForMissingUnits) {
-    final LinkedHashMap<PlayerID, Map<UnitType, ResourceCollection>> rVal =
-        new LinkedHashMap<>();
-    final Map<UnitType, ResourceCollection> average = includeAverageForMissingUnits
-        ? getResourceCostsForTUVForAllPlayersMergedAndAveraged(data) : new HashMap<>();
-    final List<PlayerID> players = data.getPlayerList().getPlayers();
-    players.add(PlayerID.NULL_PLAYERID);
-    for (final PlayerID p : players) {
-      final ProductionFrontier frontier = p.getProductionFrontier();
-      // any one will do then
-      if (frontier == null) {
-        rVal.put(p, average);
-        continue;
-      }
-      Map<UnitType, ResourceCollection> current = rVal.get(p);
-      if (current == null) {
-        current = new LinkedHashMap<>();
-        rVal.put(p, current);
-      }
-      for (final ProductionRule rule : frontier.getRules()) {
-        if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null
-            || rule.getCosts().isEmpty()) {
-          continue;
-        }
-        final IntegerMap<NamedAttachable> unitMap = rule.getResults();
-        final ResourceCollection costPerGroup = new ResourceCollection(data, rule.getCosts());
-        final Set<UnitType> units = new HashSet<>();
-        for (final NamedAttachable resourceOrUnit : unitMap.keySet()) {
-          if (!(resourceOrUnit instanceof UnitType)) {
-            continue;
-          }
-          units.add((UnitType) resourceOrUnit);
-        }
-        if (units.isEmpty()) {
-          continue;
-        }
-        final int totalProduced = unitMap.totalValues();
-        if (totalProduced == 1) {
-          current.put(units.iterator().next(), costPerGroup);
-        } else if (totalProduced > 1) {
-          costPerGroup.discount((double) 1 / (double) totalProduced);
-          for (final UnitType ut : units) {
-            current.put(ut, costPerGroup);
-          }
-        }
-      }
-      // since our production frontier may not cover all the units we control, and not the enemy units,
-      // we will add any unit types not in our list, based on the list for everyone
-      for (final UnitType ut : average.keySet()) {
-        if (!current.keySet().contains(ut)) {
-          current.put(ut, average.get(ut));
-        }
-      }
-    }
-    rVal.put(null, average);
-    return rVal;
-  }
-
-  /**
-   * Return a map where key are unit types and values are the AVERAGED for all players.
-   * Any production rule that produces multiple units
-   * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
-   * will have their costs rounded up on a per unit basis.
-   * Therefore, this map should NOT be used for Purchasing information!
-   */
-  private static Map<UnitType, ResourceCollection> getResourceCostsForTUVForAllPlayersMergedAndAveraged(
-      final GameData data) {
-    final Map<UnitType, ResourceCollection> average = new HashMap<>();
-    final Resource pus;
-    data.acquireReadLock();
-    try {
-      pus = data.getResourceList().getResource(Constants.PUS);
-    } finally {
-      data.releaseReadLock();
-    }
-    final IntegerMap<Resource> defaultMap = new IntegerMap<>();
-    defaultMap.put(pus, 1);
-    final ResourceCollection defaultResources = new ResourceCollection(data, defaultMap);
-    final Map<UnitType, List<ResourceCollection>> backups = new HashMap<>();
-    final Map<UnitType, ResourceCollection> backupAveraged = new HashMap<>();
-    for (final ProductionRule rule : data.getProductionRuleList().getProductionRules()) {
-      if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null
-          || rule.getCosts().isEmpty()) {
-        continue;
-      }
-      final IntegerMap<NamedAttachable> unitMap = rule.getResults();
-      final ResourceCollection costPerGroup = new ResourceCollection(data, rule.getCosts());
-      final Set<UnitType> units = new HashSet<>();
-      for (final NamedAttachable resourceOrUnit : unitMap.keySet()) {
-        if (!(resourceOrUnit instanceof UnitType)) {
-          continue;
-        }
-        units.add((UnitType) resourceOrUnit);
-      }
-      if (units.isEmpty()) {
-        continue;
-      }
-      final int totalProduced = unitMap.totalValues();
-      if (totalProduced == 1) {
-        final UnitType ut = units.iterator().next();
-        List<ResourceCollection> current = backups.get(ut);
-        if (current == null) {
-          current = new ArrayList<>();
-          backups.put(ut, current);
-        }
-        current.add(costPerGroup);
-      } else if (totalProduced > 1) {
-        costPerGroup.discount((double) 1 / (double) totalProduced);
-        for (final UnitType ut : units) {
-          List<ResourceCollection> current = backups.get(ut);
-          if (current == null) {
-            current = new ArrayList<>();
-            backups.put(ut, current);
-          }
-          current.add(costPerGroup);
-        }
-      }
-    }
-    for (final Entry<UnitType, List<ResourceCollection>> entry : backups.entrySet()) {
-      final ResourceCollection avgCost =
-          new ResourceCollection(entry.getValue().toArray(new ResourceCollection[entry.getValue().size()]), data);
-      if (entry.getValue().size() > 1) {
-        avgCost.discount((double) 1 / (double) entry.getValue().size());
-      }
-      backupAveraged.put(entry.getKey(), avgCost);
-    }
-    final Map<PlayerID, Map<UnitType, ResourceCollection>> allPlayersCurrent = getResourceCostsForTUV(data, false);
-    allPlayersCurrent.remove(null);
-    for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
-      final List<ResourceCollection> costs = new ArrayList<>();
-      for (final Map<UnitType, ResourceCollection> entry : allPlayersCurrent.values()) {
-        if (entry.get(ut) != null) {
-          costs.add(entry.get(ut));
-        }
-      }
-      if (costs.isEmpty()) {
-        final ResourceCollection backup = backupAveraged.get(ut);
-        if (backup != null) {
-          costs.add(backup);
-        } else {
-          costs.add(defaultResources);
-        }
-      }
-      final ResourceCollection avgCost =
-          new ResourceCollection(costs.toArray(new ResourceCollection[costs.size()]), data);
-      if (costs.size() > 1) {
-        avgCost.discount((double) 1 / (double) costs.size());
-      }
-      average.put(ut, avgCost);
-    }
-    return average;
-  }
-
-  /**
-   * Return the total unit value
-   *
-   * @param units
-   *        A collection of units
-   * @param costs
-   *        An integer map of unit types to costs.
-   * @return the total unit value.
-   */
-  public static int getTUV(final Collection<Unit> units, final IntegerMap<UnitType> costs) {
-    int tuv = 0;
-    for (final Unit u : units) {
-      final int unitValue = costs.getInt(u.getType());
-      tuv += unitValue;
-    }
-    return tuv;
-  }
-
-  /**
-   * Return the total unit value for a certain player and his allies
-   *
-   * @param units
-   *        A collection of units
-   * @param player
-   *        The player to calculate the TUV for.
-   * @param costs
-   *        An integer map of unit types to costs
-   * @return the total unit value.
-   */
-  public static int getTUV(final Collection<Unit> units, final PlayerID player, final IntegerMap<UnitType> costs,
-      final GameData data) {
-    final Collection<Unit> playerUnits = Match.getMatches(units, Matches.alliedUnit(player, data));
-    return getTUV(playerUnits, costs);
-  }
-
-  /**
    * Checks if the given collections target are all of one category as defined
    * by UnitSeperator.categorize and they are not two hit units.
    *
@@ -1293,35 +989,35 @@ public class BattleCalculator {
    * @return Can transports be used as cannon fodder.
    */
   private static boolean isTransportCasualtiesRestricted(final GameData data) {
-    return games.strategy.triplea.Properties.getTransportCasualtiesRestricted(data);
+    return Properties.getTransportCasualtiesRestricted(data);
   }
 
   /**
    * @return Random AA Casualties - casualties randomly assigned.
    */
   private static boolean isRandomAACasualties(final GameData data) {
-    return games.strategy.triplea.Properties.getRandomAACasualties(data);
+    return Properties.getRandomAACasualties(data);
   }
 
   /**
    * @return Roll AA Individually - roll against each aircraft.
    */
   private static boolean isRollAAIndividually(final GameData data) {
-    return games.strategy.triplea.Properties.getRollAAIndividually(data);
+    return Properties.getRollAAIndividually(data);
   }
 
   /**
    * @return Choose AA - attacker selects casualties.
    */
   private static boolean isChooseAA(final GameData data) {
-    return games.strategy.triplea.Properties.getChoose_AA_Casualties(data);
+    return Properties.getChoose_AA_Casualties(data);
   }
 
   /**
    * @return Can the attacker retreat non-amphibious units.
    */
   private static boolean isPartialAmphibiousRetreat(final GameData data) {
-    return games.strategy.triplea.Properties.getPartialAmphibiousRetreat(data);
+    return Properties.getPartialAmphibiousRetreat(data);
   }
 
   // nothing but static
@@ -1336,7 +1032,7 @@ public class BattleCalculator {
    */
   public static int getUnitPowerForSorting(final Unit current, final boolean defending, final GameData data,
       final Collection<TerritoryEffect> territoryEffects) {
-    final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
     final UnitAttachment ua = UnitAttachment.get(current.getType());
     final int rolls = (defending) ? ua.getDefenseRolls(current.getOwner()) : ua.getAttackRolls(current.getOwner());
     int strengthWithoutSupport = 0;

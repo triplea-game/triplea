@@ -1,5 +1,6 @@
 package games.strategy.engine.data.export;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +42,7 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
@@ -101,7 +103,7 @@ public class GameDataExporter {
           for (final TechAdvance tech : frontier.getTechs()) {
             String name = tech.getName();
             final String cat = tech.getProperty();
-            for (final String definedName : TechAdvance.s_allPreDefinedTechnologyNames) {
+            for (final String definedName : TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES) {
               if (definedName.equals(name)) {
                 name = cat;
               }
@@ -125,7 +127,7 @@ public class GameDataExporter {
         final String cat = tech.getProperty();
         // definedAdvances are handled differently by gameparser, they are set in xml with the category as the name but
         // stored in java with the normal category and name, this causes an xml bug when exporting.
-        for (final String definedName : TechAdvance.s_allPreDefinedTechnologyNames) {
+        for (final String definedName : TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES) {
           if (definedName.equals(name)) {
             name = cat;
           }
@@ -240,13 +242,13 @@ public class GameDataExporter {
   private void printConstantProperty(final String propName, final Object property) {
     xmlfile.append("        <property name=\"").append(propName).append("\" value=\"").append(property.toString())
         .append("\" editable=\"false\">\n");
-    if (property.getClass().equals(java.lang.String.class)) {
+    if (property.getClass().equals(String.class)) {
       xmlfile.append("            <string/>\n");
     }
-    if (property.getClass().equals(java.io.File.class)) {
+    if (property.getClass().equals(File.class)) {
       xmlfile.append("            <file/>\n");
     }
-    if (property.getClass().equals(java.lang.Boolean.class)) {
+    if (property.getClass().equals(Boolean.class)) {
       xmlfile.append("            <boolean/>\n");
     }
     xmlfile.append("        </property>\n");
@@ -359,9 +361,8 @@ public class GameDataExporter {
       }
     }
     // add occupiedTerrOf until we fix engine to only use originalOwner
-    if (!alreadyHasOccupiedTerrOf && attachment instanceof games.strategy.triplea.attachments.TerritoryAttachment) {
-      final games.strategy.triplea.attachments.TerritoryAttachment ta =
-          (games.strategy.triplea.attachments.TerritoryAttachment) attachment;
+    if (!alreadyHasOccupiedTerrOf && attachment instanceof TerritoryAttachment) {
+      final TerritoryAttachment ta = (TerritoryAttachment) attachment;
       if (ta.getOriginalOwner() != null) {
         sb.append("            <option name=\"occupiedTerrOf\" value=\"").append(ta.getOriginalOwner().getName())
             .append("\"/>\n");
@@ -530,9 +531,9 @@ public class GameDataExporter {
     xmlfile.append("        <sequence>\n");
     for (final GameStep step : data.getSequence()) {
       try {
-        final Field mDelegateField = GameStep.class.getDeclaredField("m_delegate"); // TODO: unchecked reflection
-        mDelegateField.setAccessible(true);
-        final String delegate = (String) mDelegateField.get(step);
+        final Field delegateField = GameStep.class.getDeclaredField("m_delegate"); // TODO: unchecked reflection
+        delegateField.setAccessible(true);
+        final String delegate = (String) delegateField.get(step);
         xmlfile.append("            <step name=\"").append(step.getName()).append("\" delegate=\"").append(delegate)
             .append("\"");
       } catch (final NullPointerException | NoSuchFieldException | IllegalArgumentException
@@ -639,18 +640,18 @@ public class GameDataExporter {
     xmlfile.append("    </map>\n");
   }
 
-  private class Connection {
-    private final Territory _t1;
-    private final Territory _t2;
+  private static final class Connection {
+    private final Territory territory1;
+    private final Territory territory2;
 
     private Connection(final Territory t1, final Territory t2) {
-      _t1 = t1;
-      _t2 = t2;
+      territory1 = t1;
+      territory2 = t2;
     }
 
     @Override
     public int hashCode() {
-      return _t1.hashCode() + _t2.hashCode();
+      return territory1.hashCode() + territory2.hashCode();
     }
 
     @Override
@@ -659,7 +660,7 @@ public class GameDataExporter {
         return false;
       }
       final Connection con = (Connection) o;
-      return (_t1 == con._t1 && _t2 == con._t2);
+      return (territory1 == con.territory1 && territory2 == con.territory2);
     }
   }
 

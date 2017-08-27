@@ -11,6 +11,7 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -68,16 +69,16 @@ class EditValidator {
     final PlayerID player = units.iterator().next().getOwner();
     // check land/water sanity
     if (territory.isWater()) {
-      if (!Match.allMatchNotEmpty(units, Matches.UnitIsSea)) {
+      if (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsSea)) {
         if (Match.anyMatch(units, Matches.UnitIsLand)) {
-          if (!Match.allMatchNotEmpty(units, Matches.alliedUnit(player, data))) {
+          if (units.isEmpty() || !Match.allMatch(units, Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
               Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
-          if (!Match.allMatchNotEmpty(landUnitsToAdd, Matches.UnitCanBeTransported)) {
+          if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
@@ -137,13 +138,13 @@ class EditValidator {
       return result;
     }
     // if transport selected, all transported units must be deleted too
-    for (final Unit unit : Match.getMatches(units, Matches.UnitCanTransport)) {
+    for (final Unit unit : Match.getMatches(units, Matches.unitCanTransport())) {
       if (!units.containsAll(TransportTracker.transporting(unit))) {
         return "Can't remove transport without removing transported units";
       }
     }
     // if transported units selected, transport must be deleted too
-    for (final Unit unit : Match.getMatches(units, Matches.UnitCanBeTransported)) {
+    for (final Unit unit : Match.getMatches(units, Matches.unitCanBeTransported())) {
       final Unit transport = TransportTracker.transportedBy(unit);
       if (transport != null && !units.contains(transport)) {
         return "Can't remove transported units without removing transport";
@@ -162,7 +163,7 @@ class EditValidator {
     if (player == null) {
       return "No player selected";
     }
-    if (!games.strategy.triplea.Properties.getTechDevelopment(data)) {
+    if (!Properties.getTechDevelopment(data)) {
       return "Technology not enabled";
     }
     if (player.getAttachment(Constants.TECH_ATTACHMENT_NAME) == null) {
@@ -187,7 +188,7 @@ class EditValidator {
     if (player == null) {
       return "No player selected";
     }
-    if (!games.strategy.triplea.Properties.getTechDevelopment(data)) {
+    if (!Properties.getTechDevelopment(data)) {
       return "Technology not enabled";
     }
     for (final TechAdvance tech : techs) {
@@ -222,10 +223,10 @@ class EditValidator {
     }
     final PlayerID player = units.iterator().next().getOwner();
     // all units should be same owner
-    if (!Match.allMatchNotEmpty(units, Matches.unitIsOwnedBy(player))) {
+    if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (!Match.allMatchNotEmpty(units, Matches.UnitHasMoreThanOneHitPointTotal)) {
+    if (units.isEmpty() || !Match.allMatch(units, Matches.unitHasMoreThanOneHitPointTotal())) {
       return "Not all units have more than one total hitpoints";
     }
     for (final Unit u : units) {
@@ -247,7 +248,7 @@ class EditValidator {
     if ((result = validateTerritoryBasic(data, territory)) != null) {
       return result;
     }
-    if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       return "Game does not allow bombing damage";
     }
     final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
@@ -256,10 +257,10 @@ class EditValidator {
     }
     final PlayerID player = units.iterator().next().getOwner();
     // all units should be same owner
-    if (!Match.allMatchNotEmpty(units, Matches.unitIsOwnedBy(player))) {
+    if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (!Match.allMatchNotEmpty(units, Matches.UnitCanBeDamaged)) {
+    if (units.isEmpty() || !Match.allMatch(units, Matches.unitCanBeDamaged())) {
       return "Not all units can take bombing damage";
     }
     for (final Unit u : units) {

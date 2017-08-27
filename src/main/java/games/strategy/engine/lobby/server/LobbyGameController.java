@@ -20,15 +20,14 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
 class LobbyGameController implements ILobbyGameController {
-  private static final Logger s_logger = Logger.getLogger(LobbyGameController.class.getName());
+  private static final Logger logger = Logger.getLogger(LobbyGameController.class.getName());
   private final Object m_mutex = new Object();
   private final Map<GUID, GameDescription> m_allGames = new HashMap<>();
   private final ILobbyGameBroadcaster m_broadcaster;
 
   LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IMessenger messenger) {
     m_broadcaster = broadcaster;
-    final IMessenger m_messenger = messenger;
-    ((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener() {
+    ((IServerMessenger) messenger).addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {
         connectionLost(to);
@@ -61,7 +60,7 @@ class LobbyGameController implements ILobbyGameController {
   public void postGame(final GUID gameId, final GameDescription description) {
     final INode from = MessageContext.getSender();
     assertCorrectHost(description, from);
-    s_logger.info("Game added:" + description);
+    logger.info("Game added:" + description);
     synchronized (m_mutex) {
       m_allGames.put(gameId, description);
     }
@@ -70,7 +69,7 @@ class LobbyGameController implements ILobbyGameController {
 
   private static void assertCorrectHost(final GameDescription description, final INode from) {
     if (!from.getAddress().getHostAddress().equals(description.getHostedBy().getAddress().getHostAddress())) {
-      s_logger.severe("Game modified from wrong host, from:" + from + " game host:" + description.getHostedBy());
+      logger.severe("Game modified from wrong host, from:" + from + " game host:" + description.getHostedBy());
       throw new IllegalStateException("Game from the wrong host");
     }
   }
@@ -79,8 +78,8 @@ class LobbyGameController implements ILobbyGameController {
   public void updateGame(final GUID gameId, final GameDescription description) {
     final INode from = MessageContext.getSender();
     assertCorrectHost(description, from);
-    if (s_logger.isLoggable(Level.FINE)) {
-      s_logger.fine("Game updated:" + description);
+    if (logger.isLoggable(Level.FINE)) {
+      logger.fine("Game updated:" + description);
     }
     synchronized (m_mutex) {
       final GameDescription oldDescription = m_allGames.get(gameId);
@@ -123,15 +122,13 @@ class LobbyGameController implements ILobbyGameController {
     assertCorrectHost(description, from);
     final int port = description.getPort();
     final String host = description.getHostedBy().getAddress().getHostAddress();
-    s_logger.fine("Testing game connection on host:" + host + " port:" + port);
-    final Socket s = new Socket();
-    try {
+    logger.fine("Testing game connection on host:" + host + " port:" + port);
+    try (final Socket s = new Socket()) {
       s.connect(new InetSocketAddress(host, port), 10 * 1000);
-      s.close();
-      s_logger.fine("Connection test passed for host:" + host + " port:" + port);
+      logger.fine("Connection test passed for host:" + host + " port:" + port);
       return null;
     } catch (final IOException e) {
-      s_logger.fine("Connection test failed for host:" + host + " port:" + port + " reason:" + e.getMessage());
+      logger.fine("Connection test failed for host:" + host + " port:" + port + " reason:" + e.getMessage());
       return "host:" + host + " " + " port:" + port;
     }
   }

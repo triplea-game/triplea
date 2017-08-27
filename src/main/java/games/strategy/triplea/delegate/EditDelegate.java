@@ -82,17 +82,17 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     final GameData data = getData();
     Map<Unit, Unit> mapLoading = null;
     if (territory.isWater()) {
-      if (!Match.allMatchNotEmpty(units, Matches.UnitIsSea)) {
+      if (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsSea)) {
         if (Match.anyMatch(units, Matches.UnitIsLand)) {
           // this should be exact same as the one in the EditValidator
-          if (!Match.allMatchNotEmpty(units, Matches.alliedUnit(player, data))) {
+          if (units.isEmpty() || !Match.allMatch(units, Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
               Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
-          if (!Match.allMatchNotEmpty(landUnitsToAdd, Matches.UnitCanBeTransported)) {
+          if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
@@ -169,8 +169,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (null != (result = checkEditMode())) {
       return result;
     }
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-    final int oldTotal = player.getResources().getQuantity(PUs);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
+    final int oldTotal = player.getResources().getQuantity(pus);
     if (oldTotal == newTotal) {
       return "New PUs total is unchanged";
     }
@@ -178,7 +178,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return "New PUs total is invalid";
     }
     logEvent("Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
-    m_bridge.addChange(ChangeFactory.changeResourcesChange(player, PUs, (newTotal - oldTotal)));
+    m_bridge.addChange(ChangeFactory.changeResourcesChange(player, pus, (newTotal - oldTotal)));
     return null;
   }
 

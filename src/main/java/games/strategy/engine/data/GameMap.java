@@ -77,7 +77,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     Collections.sort(m_territories, TERRITORY_GRID_ORDERING);
   }
 
-  private static Comparator<Territory> TERRITORY_GRID_ORDERING = (t1, t2) -> {
+  private static final Comparator<Territory> TERRITORY_GRID_ORDERING = (t1, t2) -> {
     if ((t1 == null && t2 == null) || t1 == t2) {
       return 0;
     }
@@ -345,7 +345,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return the shortest route between two territories or null if no route exists.
    */
   public Route getRoute(final Territory t1, final Territory t2) {
-    return getRoute(t1, t2, Matches.TerritoryIsLandOrWater);
+    return getRoute(t1, t2, Matches.territoryIsLandOrWater());
   }
 
   /**
@@ -441,7 +441,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return the distance between two territories or -1 if they are not connected.
    */
   public int getDistance(final Territory t1, final Territory t2) {
-    return getDistance(t1, t2, Matches.TerritoryIsLandOrWater);
+    return getDistance(t1, t2, Matches.territoryIsLandOrWater());
   }
 
   /**

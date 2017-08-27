@@ -51,14 +51,14 @@ import games.strategy.triplea.ui.screen.drawable.ReliefMapDrawable;
 import games.strategy.triplea.ui.screen.drawable.SeaZoneOutlineDrawable;
 import games.strategy.triplea.ui.screen.drawable.TerritoryEffectDrawable;
 import games.strategy.triplea.ui.screen.drawable.TerritoryNameDrawable;
-import games.strategy.triplea.ui.screen.drawable.VCDrawable;
+import games.strategy.triplea.ui.screen.drawable.VcDrawable;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
 
 public class TileManager {
-  private static final Logger s_logger = Logger.getLogger(TileManager.class.getName());
+  private static final Logger logger = Logger.getLogger(TileManager.class.getName());
   public static final int TILE_SIZE = 256;
 
   private List<Tile> tiles = new ArrayList<>();
@@ -142,11 +142,11 @@ public class TileManager {
   }
 
   private void acquireLock() {
-    Tile.S_TILE_LOCKUTIL.acquireLock(lock);
+    Tile.LOCK_UTIL.acquireLock(lock);
   }
 
   private void releaseLock() {
-    Tile.S_TILE_LOCKUTIL.releaseLock(lock);
+    Tile.LOCK_UTIL.releaseLock(lock);
   }
 
   Collection<UnitsDrawer> getUnitDrawables() {
@@ -239,7 +239,7 @@ public class TileManager {
     try {
       acquireLock();
       try {
-        s_logger.log(Level.FINER, "Updating " + territory.getName());
+        logger.log(Level.FINER, "Updating " + territory.getName());
         clearTerritory(territory);
         drawTerritory(territory, data, mapData);
       } finally {
@@ -313,7 +313,7 @@ public class TileManager {
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
     if (ta != null && (ta.getVictoryCity() != 0)) {
-      drawing.add(new VCDrawable(territory));
+      drawing.add(new VcDrawable(territory));
     }
     // add to the relevant tiles
     final Iterator<Tile> tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();

@@ -11,8 +11,8 @@ import games.strategy.engine.history.Step;
 import games.strategy.triplea.Constants;
 
 public abstract class BaseEditDelegate extends BasePersistentDelegate {
-  public static String EDITMODE_ON = "Turning on Edit Mode";
-  public static String EDITMODE_OFF = "Turning off Edit Mode";
+  private static final String EDITMODE_ON = "Turning on Edit Mode";
+  private static final String EDITMODE_OFF = "Turning off Edit Mode";
 
   /**
    * Called before the delegate will run, AND before "start" is called.
@@ -98,10 +98,10 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   protected void logEvent(final String message, final Object renderingObject) {
     // find last event node
     boolean foundChild = false;
-    final GameData game_data = getData();
-    game_data.acquireReadLock();
+    final GameData gameData = getData();
+    gameData.acquireReadLock();
     try {
-      HistoryNode curNode = game_data.getHistory().getLastNode();
+      HistoryNode curNode = gameData.getHistory().getLastNode();
       while (!(curNode instanceof Step) && !(curNode instanceof Event)) {
         if (curNode instanceof EventChild) {
           foundChild = true;
@@ -110,7 +110,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
         curNode = (HistoryNode) curNode.getPreviousNode();
       }
     } finally {
-      game_data.releaseReadLock();
+      gameData.releaseReadLock();
     }
     if (foundChild) {
       m_bridge.getHistoryWriter().addChildToEvent(message, renderingObject);

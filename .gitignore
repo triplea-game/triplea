@@ -10,5 +10,6 @@
 
 bin/
 build/
+out/
 derby_db/
 

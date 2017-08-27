@@ -50,7 +50,7 @@ public class CenterPicker extends JFrame {
   // hash map for polygon points
   private Map<String, List<Polygon>> polygons = new HashMap<>();
   private final JLabel locationLabel = new JLabel();
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 
   /**
@@ -64,10 +64,10 @@ public class CenterPicker extends JFrame {
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
     System.out.println("Select the map");
-    final FileOpen mapSelection = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png");
+    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
-    if (s_mapFolderLocation == null && mapSelection.getFile() != null) {
-      s_mapFolderLocation = mapSelection.getFile().getParentFile();
+    if (mapFolderLocation == null && mapSelection.getFile() != null) {
+      mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
       System.out.println("Map : " + mapName);
@@ -107,8 +107,8 @@ public class CenterPicker extends JFrame {
     super("Center Picker");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     File file = null;
-    if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
-      file = new File(s_mapFolderLocation, "polygons.txt");
+    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+      file = new File(mapFolderLocation, "polygons.txt");
     }
     if (file == null || !file.exists()) {
       file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
@@ -125,7 +125,7 @@ public class CenterPicker extends JFrame {
       }
     } else {
       try {
-        final String polyPath = new FileOpen("Select A Polygon File", s_mapFolderLocation, ".txt").getPathString();
+        final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
         }
@@ -232,14 +232,13 @@ public class CenterPicker extends JFrame {
   private void saveCenters() {
     try {
       final String fileName =
-          new FileSave("Where To Save centers.txt ?", "centers.txt", s_mapFolderLocation).getPathString();
+          new FileSave("Where To Save centers.txt ?", "centers.txt", mapFolderLocation).getPathString();
       if (fileName == null) {
         return;
       }
-      final FileOutputStream out = new FileOutputStream(fileName);
-      PointFileReaderWriter.writeOneToOne(out, centers);
-      out.flush();
-      out.close();
+      try (final FileOutputStream out = new FileOutputStream(fileName)) {
+        PointFileReaderWriter.writeOneToOne(out, centers);
+      }
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final Exception ex) {
       ClientLogger.logQuietly(ex);
@@ -253,7 +252,7 @@ public class CenterPicker extends JFrame {
   private void loadCenters() {
     try {
       System.out.println("Load a center file");
-      final String centerName = new FileOpen("Load A Center File", s_mapFolderLocation, ".txt").getPathString();
+      final String centerName = new FileOpen("Load A Center File", mapFolderLocation, ".txt").getPathString();
       if (centerName == null) {
         return;
       }
@@ -334,7 +333,7 @@ public class CenterPicker extends JFrame {
       }
       final File mapFolder = new File(value);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + value);
       }
@@ -342,12 +341,12 @@ public class CenterPicker extends JFrame {
       System.out.println("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }

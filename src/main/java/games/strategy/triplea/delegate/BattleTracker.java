@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +32,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -42,6 +44,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -49,7 +52,7 @@ import games.strategy.util.Tuple;
 /**
  * Used to keep track of where battles have occurred.
  */
-public class BattleTracker implements java.io.Serializable {
+public class BattleTracker implements Serializable {
   private static final long serialVersionUID = 8806010984321554662L;
   // List of pending battles
   private final Set<IBattle> m_pendingBattles = new HashSet<>();
@@ -292,7 +295,7 @@ public class BattleTracker implements java.io.Serializable {
     if (bombing) {
       // create only either an air battle OR a bombing battle.
       // (the air battle will create a bombing battle when done, if needed)
-      if (!airBattleCompleted && games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data)
+      if (!airBattleCompleted && Properties.getRaidsMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing)) {
         addAirBattle(route, units, id, data, true);
       } else {
@@ -302,7 +305,7 @@ public class BattleTracker implements java.io.Serializable {
       markWasInCombat(units, bridge, changeTracker);
     } else {
       // create both an air battle and a normal battle
-      if (!airBattleCompleted && games.strategy.triplea.Properties.getBattlesMayBePreceededByAirBattles(data)
+      if (!airBattleCompleted && Properties.getBattlesMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing)) {
         addAirBattle(route, Match.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts(id, data)), id, data,
             false);
@@ -312,8 +315,8 @@ public class BattleTracker implements java.io.Serializable {
       if (changeTracker != null) {
         changeTracker.addChange(change);
       }
-      if (games.strategy.util.Match.anyMatch(units, Matches.UnitIsLand)
-          || games.strategy.util.Match.anyMatch(units, Matches.UnitIsSea)) {
+      if (Match.anyMatch(units, Matches.UnitIsLand)
+          || Match.anyMatch(units, Matches.UnitIsSea)) {
         addEmptyBattle(route, units, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute);
       }
     }
@@ -383,15 +386,15 @@ public class BattleTracker implements java.io.Serializable {
     final GameData data = bridge.getData();
     final Collection<Unit> canConquer = Match.getMatches(units,
         Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).invert());
-    if (Match.noneMatch(canConquer, Matches.UnitIsNotAir)) {
+    if (Match.noneMatch(canConquer, Matches.unitIsNotAir())) {
       return;
     }
     final Collection<Unit> presentFromStartTilEnd = new ArrayList<>(canConquer);
     if (unitsNotUnloadedTilEndOfRoute != null) {
       presentFromStartTilEnd.removeAll(unitsNotUnloadedTilEndOfRoute);
     }
-    final boolean canConquerMiddleSteps = Match.anyMatch(presentFromStartTilEnd, Matches.UnitIsNotAir);
-    final boolean scramblingEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data);
+    final boolean canConquerMiddleSteps = Match.anyMatch(presentFromStartTilEnd, Matches.unitIsNotAir());
+    final boolean scramblingEnabled = Properties.getScramble_Rules_In_Effect(data);
     final Match<Territory> conquerable = Match.allOf(
         Matches.territoryIsEmptyOfCombatUnits(data, id),
         Match.anyOf(
@@ -496,17 +499,17 @@ public class BattleTracker implements java.io.Serializable {
       // Also subtract transports & subs (if they can't control sea zones)
       totalMatches = arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.UnitIsLand)
           - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
-          - Match.countMatches(arrivedUnits, Matches.UnitIsSubmerged);
+          - Match.countMatches(arrivedUnits, Matches.unitIsSubmerged());
       // If transports are restricted from controlling sea zones, subtract them
       final Match<Unit> transportsCanNotControl = Match.allOf(
-          Matches.UnitIsTransportAndNotDestroyer,
-          Matches.UnitIsTransportButNotCombatTransport);
-      if (!games.strategy.triplea.Properties.getTransportControlSeaZone(data)) {
+          Matches.unitIsTransportAndNotDestroyer(),
+          Matches.unitIsTransportButNotCombatTransport());
+      if (!Properties.getTransportControlSeaZone(data)) {
         totalMatches -= Match.countMatches(arrivedUnits, transportsCanNotControl);
       }
       // TODO check if istrn and NOT isDD
       // If subs are restricted from controlling sea zones, subtract them
-      if (games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data)) {
+      if (Properties.getSubControlSeaZoneRestricted(data)) {
         totalMatches -= Match.countMatches(arrivedUnits, Matches.UnitIsSub);
       }
       if (totalMatches == 0) {
@@ -514,7 +517,7 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // If it was a Convoy Route- check ownership of the associated neighboring territory and set message
-    if (ta != null && ta.getConvoyRoute()) {
+    if (ta.getConvoyRoute()) {
       // we could be part of a convoy route for another territory
       final Collection<Territory> attachedConvoyTo =
           TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
@@ -541,11 +544,11 @@ public class BattleTracker implements java.io.Serializable {
     }
     // if neutral, we may charge money to enter
     if (territory.getOwner().isNull() && !territory.isWater()
-        && games.strategy.triplea.Properties.getNeutralCharge(data) >= 0) {
-      final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-      final int puChargeIdeal = -games.strategy.triplea.Properties.getNeutralCharge(data);
-      final int puChargeReal = Math.min(0, Math.max(puChargeIdeal, -id.getResources().getQuantity(PUs)));
-      final Change neutralFee = ChangeFactory.changeResourcesChange(id, PUs, puChargeReal);
+        && Properties.getNeutralCharge(data) >= 0) {
+      final Resource pus = data.getResourceList().getResource(Constants.PUS);
+      final int puChargeIdeal = -Properties.getNeutralCharge(data);
+      final int puChargeReal = Math.min(0, Math.max(puChargeIdeal, -id.getResources().getQuantity(pus)));
+      final Change neutralFee = ChangeFactory.changeResourcesChange(id, pus, puChargeReal);
       bridge.addChange(neutralFee);
       if (changeTracker != null) {
         changeTracker.addChange(neutralFee);
@@ -565,7 +568,7 @@ public class BattleTracker implements java.io.Serializable {
     // if its a capital we take the money
     // NOTE: this is not checking to see if it is an enemy.
     // instead it is relying on the fact that the capital should be owned by the person it is attached to
-    if (ta != null && isTerritoryOwnerAnEnemy && ta.getCapital() != null) {
+    if (isTerritoryOwnerAnEnemy && ta.getCapital() != null) {
       // if the capital is owned by the capitols player take the money
       final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
       final PlayerAttachment pa = PlayerAttachment.get(id);
@@ -578,8 +581,8 @@ public class BattleTracker implements java.io.Serializable {
         bridge.getHistoryWriter()
             .addChildToEvent(id.getName() + " captures one of " + whoseCapital.getName() + " capitals");
       } else if (whoseCapital.equals(territory.getOwner())) {
-        final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-        final int capturedPuCount = whoseCapital.getResources().getQuantity(PUs);
+        final Resource pus = data.getResourceList().getResource(Constants.PUS);
+        final int capturedPuCount = whoseCapital.getResources().getQuantity(pus);
         if (pa != null) {
           if (isPacificTheater(data)) {
             final Change changeVp =
@@ -590,7 +593,7 @@ public class BattleTracker implements java.io.Serializable {
             }
           }
         }
-        final Change remove = ChangeFactory.changeResourcesChange(whoseCapital, PUs, -capturedPuCount);
+        final Change remove = ChangeFactory.changeResourcesChange(whoseCapital, pus, -capturedPuCount);
         bridge.addChange(remove);
         if (paWhoseCapital != null && paWhoseCapital.getDestroysPUs()) {
           bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys " + capturedPuCount
@@ -604,7 +607,7 @@ public class BattleTracker implements java.io.Serializable {
           if (changeTracker != null) {
             changeTracker.addChange(remove);
           }
-          final Change add = ChangeFactory.changeResourcesChange(id, PUs, capturedPuCount);
+          final Change add = ChangeFactory.changeResourcesChange(id, pus, capturedPuCount);
           bridge.addChange(add);
           if (changeTracker != null) {
             changeTracker.addChange(add);
@@ -613,8 +616,8 @@ public class BattleTracker implements java.io.Serializable {
         // remove all the tokens of the captured player
         final Resource tokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
         if (tokens != null) {
-          final int m_currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
-          final Change removeTokens = ChangeFactory.changeResourcesChange(whoseCapital, tokens, -m_currTokens);
+          final int currTokens = whoseCapital.getResources().getQuantity(Constants.TECH_TOKENS);
+          final Change removeTokens = ChangeFactory.changeResourcesChange(whoseCapital, tokens, -currTokens);
           bridge.addChange(removeTokens);
           if (changeTracker != null) {
             changeTracker.addChange(removeTokens);
@@ -647,8 +650,7 @@ public class BattleTracker implements java.io.Serializable {
     }
     // if we have specially set this territory to have whenCapturedByGoesTo,
     // then we set that here (except we don't set it if we are liberating allied owned territory)
-    if (ta != null && isTerritoryOwnerAnEnemy && newOwner.equals(id)
-        && Matches.territoryHasWhenCapturedByGoesTo().match(territory)) {
+    if (isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.territoryHasWhenCapturedByGoesTo().match(territory)) {
       for (final String value : ta.getWhenCapturedByGoesTo()) {
         final String[] s = value.split(":");
         final PlayerID capturingPlayer = data.getPlayerList().getPlayerID(s[0]);
@@ -662,7 +664,7 @@ public class BattleTracker implements java.io.Serializable {
         }
       }
     }
-    if (isTerritoryOwnerAnEnemy && ta != null) {
+    if (isTerritoryOwnerAnEnemy) {
       final Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
       bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
       bridge.addChange(takeOver);
@@ -674,7 +676,7 @@ public class BattleTracker implements java.io.Serializable {
       if (territory.isWater()) {
         // should probably see if there is something actually happening for water
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id);
-      } else if (ta != null && ta.getCapital() != null) {
+      } else if (ta.getCapital() != null) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id);
       } else if (m_blitzed.contains(territory) && Match.anyMatch(arrivedUnits, Matches.UnitCanBlitz)) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id);
@@ -685,7 +687,7 @@ public class BattleTracker implements java.io.Serializable {
     // Remove any bombing raids against captured territory
     // TODO: see if necessary
     if (Match.anyMatch(territory.getUnits().getUnits(),
-        Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.UnitCanBeDamaged))) {
+        Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.unitCanBeDamaged()))) {
       final IBattle bombingBattle = getPendingBattle(territory, true, null);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -700,7 +702,7 @@ public class BattleTracker implements java.io.Serializable {
     captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker);
     // is this territory our capitol or a capitol of our ally
     // Also check to make sure playerAttachment even HAS a capital to fix abend
-    if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta != null && ta.getCapital() != null
+    if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta.getCapital() != null
         && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(territory)
         && relationshipTracker.isAllied(terrOrigOwner, id)) {
       // if it is give it back to the original owner
@@ -741,7 +743,7 @@ public class BattleTracker implements java.io.Serializable {
       final IDelegateBridge bridge, final UndoableMove changeTracker) {
     final GameData data = bridge.getData();
     // destroy any units that should be destroyed on capture
-    if (games.strategy.triplea.Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
+    if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
       final Match<Unit> enemyToBeDestroyed =
           Match.allOf(Matches.enemyUnit(id, data), Matches.unitDestroyedWhenCapturedByOrFrom(id));
       final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
@@ -755,7 +757,7 @@ public class BattleTracker implements java.io.Serializable {
       }
     }
     // destroy any capture on entering units, IF the property to destroy them instead of capture is turned on
-    if (games.strategy.triplea.Properties.getOnEnteringUnitsDestroyedInsteadOfCaptured(data)) {
+    if (Properties.getOnEnteringUnitsDestroyedInsteadOfCaptured(data)) {
       final Collection<Unit> destroyed =
           territory.getUnits().getMatches(Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
       if (!destroyed.isEmpty()) {
@@ -770,7 +772,7 @@ public class BattleTracker implements java.io.Serializable {
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
     final Match<Unit> enemyToBeDestroyed = Match.allOf(Matches.enemyUnit(id, data),
-        Matches.UnitIsDisabled, Matches.UnitIsInfrastructure.invert());
+        Matches.unitIsDisabled(), Matches.UnitIsInfrastructure.invert());
     final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
     if (!destroyed.isEmpty()) {
       final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
@@ -786,7 +788,7 @@ public class BattleTracker implements java.io.Serializable {
         Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
     // change any units that change unit types on capture
-    if (games.strategy.triplea.Properties.getUnitsCanBeChangedOnCapture(data)) {
+    if (Properties.getUnitsCanBeChangedOnCapture(data)) {
       final Collection<Unit> toReplace =
           Match.getMatches(nonCom, Matches.unitWhenCapturedChangesIntoDifferentUnitType());
       for (final Unit u : toReplace) {
@@ -865,7 +867,7 @@ public class BattleTracker implements java.io.Serializable {
     }
     // if just an enemy factory &/or AA then no battle
     final Collection<Unit> enemyUnits = Match.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
-    if (route.getEnd() != null && Match.allMatchNotEmpty(enemyUnits, Matches.UnitIsInfrastructure)) {
+    if (route.getEnd() != null && !enemyUnits.isEmpty() && Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure)) {
       return ChangeFactory.EMPTY_CHANGE;
     }
     IBattle battle = getPendingBattle(site, false, BattleType.NORMAL);
@@ -978,7 +980,7 @@ public class BattleTracker implements java.io.Serializable {
     if (dependent == null) {
       return Collections.emptyList();
     }
-    return Match.getMatches(dependent, Matches.BattleIsEmpty.invert());
+    return Match.getMatches(dependent, Matches.battleIsEmpty().invert());
   }
 
   /**
@@ -1097,15 +1099,15 @@ public class BattleTracker implements java.io.Serializable {
    * air battle and SBR phase, and to enforce game rules that these phases are fought first before any other combat.
    */
   void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge) {
-    boolean bombing = true;
+    final boolean bombing = true;
     fightAirRaidsAndStrategicBombing(delegateBridge, () -> getPendingBattleSites(bombing),
         (territory, battleType) -> getPendingBattle(territory, bombing, battleType));
   }
 
   @VisibleForTesting
   void fightAirRaidsAndStrategicBombing(final IDelegateBridge delegateBridge,
-      Supplier<Collection<Territory>> pendingBattleSiteSupplier,
-      BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
+      final Supplier<Collection<Territory>> pendingBattleSiteSupplier,
+      final BiFunction<Territory, BattleType, IBattle> pendingBattleFunction) {
     // First we'll fight all of the air battles (air raids)
     // Then we will have a wave of battles for the SBR. AA guns will shoot, and we'll roll for damage.
     // CAUTION: air raid battles when completed will potentially spawn new bombing raids. Would be good to refactor
@@ -1160,7 +1162,7 @@ public class BattleTracker implements java.io.Serializable {
     final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
         Matches.unitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
     Collections.sort(sortedUnitsList,
-        new UnitBattleComparator(false, BattleCalculator.getCostsForTUV(bridge.getPlayerID(), gameData),
+        new UnitBattleComparator(false, TuvUtils.getCostsForTuv(bridge.getPlayerID(), gameData),
             TerritoryEffectHelper.getEffects(territory), gameData, false, false));
     Collections.reverse(sortedUnitsList);
     return sortedUnitsList;

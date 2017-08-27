@@ -30,7 +30,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
   /** Creates new DefaultPlayerBridge. */
   public DefaultPlayerBridge(final IGame game) {
     m_game = game;
-    final GameStepListener m_gameStepListener = (stepName, delegateName, player, round, displayName) -> {
+    final GameStepListener gameStepListener = (stepName, delegateName, player, round, displayName) -> {
       if (stepName == null) {
         throw new IllegalArgumentException("Null step");
       }
@@ -40,7 +40,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       m_currentStep = stepName;
       m_currentDelegate = delegateName;
     };
-    m_game.addGameStepListener(m_gameStepListener);
+    m_game.addGameStepListener(gameStepListener);
   }
 
   /**
@@ -144,30 +144,30 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     final GameOverInvocationHandler goih = new GameOverInvocationHandler(implementor, m_game);
     return (IRemote) Proxy.newProxyInstance(implementor.getClass().getClassLoader(), classes, goih);
   }
-}
 
+  static class GameOverInvocationHandler implements InvocationHandler {
+    private final Object m_delegate;
+    private final IGame m_game;
 
-class GameOverInvocationHandler implements InvocationHandler {
-  private final Object m_delegate;
-  private final IGame m_game;
+    public GameOverInvocationHandler(final Object delegate, final IGame game) {
+      m_delegate = delegate;
+      m_game = game;
+    }
 
-  public GameOverInvocationHandler(final Object delegate, final IGame game) {
-    m_delegate = delegate;
-    m_game = game;
-  }
-
-  @Override
-  public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-    try {
-      return method.invoke(m_delegate, args);
-    } catch (final InvocationTargetException ite) {
-      if (!m_game.isGameOver()) {
-        throw ite.getCause();
-      } else {
-        throw new GameOverException("Game Over Exception!");
+    @Override
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      try {
+        return method.invoke(m_delegate, args);
+      } catch (final InvocationTargetException ite) {
+        if (!m_game.isGameOver()) {
+          throw ite.getCause();
+        } else {
+          throw new GameOverException("Game Over Exception!");
+        }
+      } catch (final RemoteNotFoundException rnfe) {
+        throw new GameOverException("Game Over!");
       }
-    } catch (final RemoteNotFoundException rnfe) {
-      throw new GameOverException("Game Over!");
     }
   }
+
 }

@@ -1,14 +1,22 @@
 package games.strategy.test;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.IOException;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 
 import games.strategy.ui.SwingAction;
 
-public class TestUtil {
+/**
+ * A Utility class for test classes.
+ */
+public final class TestUtil {
+  private TestUtil() {}
 
   /** Create and returns a simple delete on exit temp file with contents equal to the String parameter. */
   public static File createTempFile(final String contents) {
@@ -62,5 +70,32 @@ public class TestUtil {
 
   public static Class<?>[] getClassArrayFrom(final Class<?>... classes) {
     return classes;
+  }
+
+  /**
+   * Indicates the specified objects are equal.
+   *
+   * <p>
+   * This method uses the equality comparators in the specified registry to determine if the objects are equal. If an
+   * equality comparator is not available for a specific type, {@link Object#equals(Object)} will be used instead.
+   * </p>
+   *
+   * <p>
+   * This method correctly handles circular references between objects involved in the equality test.
+   * </p>
+   *
+   * @param equalityComparatorRegistry The registry containing the equality comparators to use during the equality test.
+   * @param o1 The first object to compare.
+   * @param o2 The second object to compare.
+   *
+   * @return {@code true} if the specified objects are equal; otherwise {@code false}.
+   */
+  public static boolean equals(
+      final EqualityComparatorRegistry equalityComparatorRegistry,
+      final @Nullable Object o1,
+      final @Nullable Object o2) {
+    checkNotNull(equalityComparatorRegistry);
+
+    return new EqualsPredicate(equalityComparatorRegistry).test(o1, o2);
   }
 }

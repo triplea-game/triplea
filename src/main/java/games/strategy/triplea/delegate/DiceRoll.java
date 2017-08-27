@@ -25,6 +25,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
@@ -127,8 +128,8 @@ public class DiceRoll implements Externalizable {
       }
     }
     final List<Unit> defendingAa = Match.getMatches(defendingAaForThisRoll,
-        (defending ? Matches.UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero
-            : Matches.UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero));
+        (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
+            : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
     if (defendingAa.isEmpty()) {
       return new DiceRoll(new ArrayList<>(0), 0);
     }
@@ -146,7 +147,7 @@ public class DiceRoll implements Externalizable {
     final List<Die> sortedDice = new ArrayList<>();
     final String typeAa = UnitAttachment.get(defendingAa.get(0).getType()).getTypeAA();
     // LOW LUCK
-    if (games.strategy.triplea.Properties.getLow_Luck(data) || games.strategy.triplea.Properties.getLL_AA_ONLY(data)) {
+    if (Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
       final String annotation = "Roll " + typeAa + " in " + location.getName();
       final Triple<Integer, Integer, Boolean> triple = getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
           null, null, defending, defendingAa, validAttackingUnitsForThisRoll, data, false);
@@ -186,8 +187,8 @@ public class DiceRoll implements Externalizable {
       final Collection<Unit> defendingAaForThisRoll, final Collection<Unit> validAttackingUnitsForThisRoll,
       final GameData data, final boolean fillInSortedDiceAndRecordHits) {
     final List<Unit> defendingAa = Match.getMatches(defendingAaForThisRoll,
-        (defending ? Matches.UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero
-            : Matches.UnitOffensiveAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero));
+        (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
+            : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
     if (defendingAa.size() <= 0) {
       return Triple.of(0, 0, false);
     }
@@ -210,8 +211,8 @@ public class DiceRoll implements Externalizable {
     // any sense)
     // set up all 3 groups of aa guns
     final List<Unit> normalNonInfiniteAa = new ArrayList<>(defendingAa);
-    final List<Unit> infiniteAa = Match.getMatches(defendingAa, Matches.UnitMaxAAattacksIsInfinite);
-    final List<Unit> overstackAa = Match.getMatches(defendingAa, Matches.UnitMayOverStackAA);
+    final List<Unit> infiniteAa = Match.getMatches(defendingAa, Matches.unitMaxAaAttacksIsInfinite());
+    final List<Unit> overstackAa = Match.getMatches(defendingAa, Matches.unitMayOverStackAa());
     overstackAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(overstackAa);
@@ -364,7 +365,7 @@ public class DiceRoll implements Externalizable {
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     // Decide whether to use low luck rules or normal rules.
-    if (games.strategy.triplea.Properties.getLow_Luck(bridge.getData())) {
+    if (Properties.getLow_Luck(bridge.getData())) {
       return rollDiceLowLuck(units, defending, player, bridge, battle, annotation, territoryEffects,
           allEnemyUnitsAliveOrWaitingToDie);
     } else {
@@ -475,7 +476,7 @@ public class DiceRoll implements Externalizable {
         }
         if (ua.getIsSea() && isAmphibiousBattle && Matches.TerritoryIsLand.match(location)) {
           // change the strength to be bombard, not attack/defense, because this is a
-          strength = ua.getBombard(current.getOwner());
+          strength = ua.getBombard();
           // bombarding naval unit
         }
         strength += getSupport(current, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
@@ -518,8 +519,8 @@ public class DiceRoll implements Externalizable {
   private static Tuple<Integer, Integer> getTotalPowerAndRolls(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
     final int diceSides = data.getDiceSides();
-    final boolean lowLuck = games.strategy.triplea.Properties.getLow_Luck(data);
-    final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lowLuck = Properties.getLow_Luck(data);
+    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
     // bonus is normally 1 for most games
     final int extraRollBonus = Math.max(1, data.getDiceSides() / 6);
     int totalPower = 0;
@@ -846,7 +847,7 @@ public class DiceRoll implements Externalizable {
       }
     }
     final GameData data = bridge.getData();
-    final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
     final List<Unit> units = new ArrayList<>(unitsList);
     final int rollCount = AirBattle.getAirBattleRolls(unitsList, defending);
     if (rollCount == 0) {
@@ -855,7 +856,7 @@ public class DiceRoll implements Externalizable {
     int[] random;
     final List<Die> dice = new ArrayList<>();
     int hitCount = 0;
-    if (games.strategy.triplea.Properties.getLow_Luck(data)) {
+    if (Properties.getLow_Luck(data)) {
       // bonus is normally 1 for most games
       final int extraRollBonus = Math.max(1, data.getDiceSides() / 6);
       final Iterator<Unit> iter = units.iterator();
@@ -969,7 +970,7 @@ public class DiceRoll implements Externalizable {
       return new DiceRoll(new ArrayList<>(), 0);
     }
     final int[] random = bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
-    final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
     final List<Die> dice = new ArrayList<>();
     int hitCount = 0;
     int diceIndex = 0;

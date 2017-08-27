@@ -5,13 +5,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class WrappedInvocationHandler implements InvocationHandler {
-  private final Object m_delegate;
+  private final Object delegate;
 
   public WrappedInvocationHandler(final Object delegate) {
     if (delegate == null) {
       throw new IllegalArgumentException("delegate cant be null");
     }
-    m_delegate = delegate;
+    this.delegate = delegate;
   }
 
   private boolean wrappedEquals(final Object other) {
@@ -20,7 +20,7 @@ public class WrappedInvocationHandler implements InvocationHandler {
     }
     if (Proxy.isProxyClass(other.getClass()) && Proxy.getInvocationHandler(other) instanceof WrappedInvocationHandler) {
       final WrappedInvocationHandler otherWrapped = (WrappedInvocationHandler) Proxy.getInvocationHandler(other);
-      return otherWrapped.m_delegate.equals(m_delegate);
+      return otherWrapped.delegate.equals(delegate);
     }
     return false;
   }
@@ -45,7 +45,7 @@ public class WrappedInvocationHandler implements InvocationHandler {
   }
 
   public int wrappedashCode() {
-    return m_delegate.hashCode();
+    return delegate.hashCode();
   }
 
   @Override

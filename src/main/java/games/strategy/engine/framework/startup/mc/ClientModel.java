@@ -15,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
+
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -56,6 +56,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
@@ -64,7 +65,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   public static final RemoteName CLIENT_READY_CHANNEL =
       new RemoteName("games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL", IServerReady.class);
-  private static final Logger s_logger = Logger.getLogger(ClientModel.class.getName());
+  private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
   private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
   private IChannelMessenger m_channelMessenger;
   private IRemoteMessenger m_remoteMessenger;
@@ -110,8 +111,7 @@ public class ClientModel implements IMessengerErrorListener {
       return props;
     }
     // load in the saved name!
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    final String playername = prefs.get(ServerModel.PLAYERNAME, System.getProperty("user.name"));
+    final String playername = ClientSetting.PLAYER_NAME.value();
     final ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
@@ -132,7 +132,6 @@ public class ClientModel implements IMessengerErrorListener {
     ui = JOptionPane.getFrameForComponent(ui);
     m_ui = ui;
     // load in the saved name!
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     final ClientProps props = getProps(ui);
     if (props == null) {
       m_gameSelectorModel.setCanSelect(true);
@@ -140,9 +139,9 @@ public class ClientModel implements IMessengerErrorListener {
       return false;
     }
     final String name = props.getName();
-    s_logger.log(Level.FINE, "Client playing as:" + name);
-    // save the name! -- lnxduk
-    prefs.put(ServerModel.PLAYERNAME, name);
+    logger.log(Level.FINE, "Client playing as:" + name);
+    ClientSetting.PLAYER_NAME.save(name);
+    ClientSetting.flush();
     final int port = props.getPort();
     if (port >= 65536 || port <= 0) {
       EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE,
@@ -303,7 +302,7 @@ public class ClientModel implements IMessengerErrorListener {
     try {
       // this normally takes a couple seconds, but can take
       // up to 60 seconds for a freaking huge game
-      data = new GameDataManager().loadGame(new ByteArrayInputStream(gameData), null);
+      data = GameDataManager.loadGame(new ByteArrayInputStream(gameData), null);
     } catch (final IOException ex) {
       ClientLogger.logQuietly(ex);
       return;
@@ -469,35 +468,34 @@ public class ClientModel implements IMessengerErrorListener {
     sb.append(m_channelMessenger);
     return sb.toString();
   }
-}
 
+  static class ClientProps {
+    private int port;
+    private String name;
+    private String host;
 
-class ClientProps {
-  private int port;
-  private String name;
-  private String host;
+    public String getHost() {
+      return host;
+    }
 
-  public String getHost() {
-    return host;
-  }
+    public void setHost(final String host) {
+      this.host = host;
+    }
 
-  public void setHost(final String host) {
-    this.host = host;
-  }
+    public String getName() {
+      return name;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void setName(final String name) {
+      this.name = name;
+    }
 
-  public void setName(final String name) {
-    this.name = name;
-  }
+    public int getPort() {
+      return port;
+    }
 
-  public int getPort() {
-    return port;
-  }
-
-  public void setPort(final int port) {
-    this.port = port;
+    public void setPort(final int port) {
+      this.port = port;
+    }
   }
 }

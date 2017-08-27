@@ -12,8 +12,11 @@ import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
 
+/**
+ * Server-side implementation of {@link QuarantineConversation}.
+ */
 public class ServerQuarantineConversation extends QuarantineConversation {
-  /**
+  /*
    * Communication sequence
    * 1) server reads client name
    * 2) server sends challenge (or null if no challenge is to be made)
@@ -23,114 +26,114 @@ public class ServerQuarantineConversation extends QuarantineConversation {
    * the message before
    * closing the socket).
    */
-  private static final Logger s_logger = Logger.getLogger(ServerQuarantineConversation.class.getName());
+  private static final Logger logger = Logger.getLogger(ServerQuarantineConversation.class.getName());
 
-  private enum STEP {
+  private enum Step {
     READ_NAME, READ_MAC, CHALLENGE, ACK_ERROR
   }
 
-  private final ILoginValidator m_validator;
-  private final SocketChannel m_channel;
-  private final NIOSocket m_socket;
-  private STEP m_step = STEP.READ_NAME;
-  private String m_remoteName;
-  private String m_remoteMac;
+  private final ILoginValidator validator;
+  private final SocketChannel channel;
+  private final NioSocket socket;
+  private Step step = Step.READ_NAME;
+  private String remoteName;
+  private String remoteMac;
   private Map<String, String> challenge;
-  private final ServerMessenger m_serverMessenger;
+  private final ServerMessenger serverMessenger;
 
   public ServerQuarantineConversation(final ILoginValidator validator, final SocketChannel channel,
-      final NIOSocket socket, final ServerMessenger serverMessenger) {
-    m_validator = validator;
-    m_socket = socket;
-    m_channel = channel;
-    m_serverMessenger = serverMessenger;
+      final NioSocket socket, final ServerMessenger serverMessenger) {
+    this.validator = validator;
+    this.socket = socket;
+    this.channel = channel;
+    this.serverMessenger = serverMessenger;
   }
 
   public String getRemoteName() {
-    return m_remoteName;
+    return remoteName;
   }
 
   public String getRemoteMac() {
-    return m_remoteMac;
+    return remoteMac;
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public ACTION message(final Object o) {
+  public Action message(final Object o) {
     try {
-      switch (m_step) {
+      switch (step) {
         case READ_NAME:
           // read name, send challent
-          m_remoteName = (String) o;
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "read name:" + m_remoteName);
+          remoteName = (String) o;
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "read name:" + remoteName);
           }
-          m_step = STEP.READ_MAC;
-          return ACTION.NONE;
+          step = Step.READ_MAC;
+          return Action.NONE;
         case READ_MAC:
           // read name, send challent
-          m_remoteMac = (String) o;
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "read mac:" + m_remoteMac);
+          remoteMac = (String) o;
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "read mac:" + remoteMac);
           }
-          if (m_validator != null) {
-            challenge = m_validator.getChallengeProperties(m_remoteName, m_channel.socket().getRemoteSocketAddress());
+          if (validator != null) {
+            challenge = validator.getChallengeProperties(remoteName, channel.socket().getRemoteSocketAddress());
           }
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "writing challenge:" + challenge);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "writing challenge:" + challenge);
           }
           send((Serializable) challenge);
-          m_step = STEP.CHALLENGE;
-          return ACTION.NONE;
+          step = Step.CHALLENGE;
+          return Action.NONE;
         case CHALLENGE:
+          @SuppressWarnings("unchecked")
           final Map<String, String> response = (Map<String, String>) o;
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "read challenge response:" + response);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "read challenge response:" + response);
           }
-          if (m_validator != null) {
-            final String error = m_validator.verifyConnection(challenge, response, m_remoteName, m_remoteMac,
-                m_channel.socket().getRemoteSocketAddress());
-            if (s_logger.isLoggable(Level.FINER)) {
-              s_logger.log(Level.FINER, "error:" + error);
+          if (validator != null) {
+            final String error = validator.verifyConnection(challenge, response, remoteName, remoteMac,
+                channel.socket().getRemoteSocketAddress());
+            if (logger.isLoggable(Level.FINER)) {
+              logger.log(Level.FINER, "error:" + error);
             }
             send(error);
             if (error != null) {
-              m_step = STEP.ACK_ERROR;
-              return ACTION.NONE;
+              step = Step.ACK_ERROR;
+              return Action.NONE;
             }
           } else {
             send(null);
           }
           // get a unique name
-          m_remoteName = m_serverMessenger.getUniqueName(m_remoteName);
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "Sending name:" + m_remoteName);
+          remoteName = serverMessenger.getUniqueName(remoteName);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "Sending name:" + remoteName);
           }
           // send the node its name and our name
-          send(new String[] {m_remoteName, m_serverMessenger.getLocalNode().getName()});
+          send(new String[] {remoteName, serverMessenger.getLocalNode().getName()});
           // send the node its and our address as we see it
-          send(new InetSocketAddress[] {(InetSocketAddress) m_channel.socket().getRemoteSocketAddress(),
-              m_serverMessenger.getLocalNode().getSocketAddress()});
+          send(new InetSocketAddress[] {(InetSocketAddress) channel.socket().getRemoteSocketAddress(),
+              serverMessenger.getLocalNode().getSocketAddress()});
           // Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
-          m_serverMessenger.notifyPlayerLogin(m_remoteName, m_channel.socket().getInetAddress().getHostAddress(),
-              m_remoteMac);
+          serverMessenger.notifyPlayerLogin(remoteName, channel.socket().getInetAddress().getHostAddress(),
+              remoteMac);
           // We are good
-          return ACTION.UNQUARANTINE;
+          return Action.UNQUARANTINE;
         case ACK_ERROR:
-          return ACTION.TERMINATE;
+          return Action.TERMINATE;
         default:
           throw new IllegalStateException("Invalid state");
       }
     } catch (final Throwable t) {
-      s_logger.log(Level.SEVERE, "Error with connection", t);
-      return ACTION.TERMINATE;
+      logger.log(Level.SEVERE, "Error with connection", t);
+      return Action.TERMINATE;
     }
   }
 
   private void send(final Serializable object) {
     // this messenger is quarantined, so to and from dont matter
     final MessageHeader header = new MessageHeader(Node.NULL_NODE, Node.NULL_NODE, object);
-    m_socket.send(m_channel, header);
+    socket.send(channel, header);
   }
 
   @Override

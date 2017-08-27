@@ -36,10 +36,10 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -87,21 +87,21 @@ public class StatPanel extends AbstractStatPanel {
     if (!hasTech) {
       return;
     }
-    final JTable m_techTable = new JTable(techModel);
-    m_techTable.getTableHeader().setReorderingAllowed(false);
-    m_techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
+    final JTable techTable = new JTable(techModel);
+    techTable.getTableHeader().setReorderingAllowed(false);
+    techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
     // setupIconHeaders(m_techTable);
     // show icons for players:
     final TableCellRenderer componentRenderer = new JComponentTableCellRenderer();
-    for (int i = 1; i < m_techTable.getColumnCount(); i++) {
-      final TableColumn column = m_techTable.getColumnModel().getColumn(i);
+    for (int i = 1; i < techTable.getColumnCount(); i++) {
+      final TableColumn column = techTable.getColumnModel().getColumn(i);
       column.setHeaderRenderer(componentRenderer);
-      final String player = m_techTable.getColumnName(i);
+      final String player = techTable.getColumnName(i);
       final JLabel value = new JLabel("", getIcon(player), SwingConstants.CENTER);
       value.setToolTipText(player);
       column.setHeaderValue(value);
     }
-    scroll = new JScrollPane(m_techTable);
+    scroll = new JScrollPane(techTable);
     add(scroll);
   }
 
@@ -181,8 +181,8 @@ public class StatPanel extends AbstractStatPanel {
     }
 
     public void setStatCollums() {
-      stats = new IStat[] {new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat()};
-      if (Match.anyMatch(gameData.getMap().getTerritories(), Matches.TerritoryIsVictoryCity)) {
+      stats = new IStat[] {new PuStat(), new ProductionStat(), new UnitsStat(), new TuvStat()};
+      if (Match.anyMatch(gameData.getMap().getTerritories(), Matches.territoryIsVictoryCity())) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
         stats.add(new VictoryCityStat());
         StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);
@@ -190,7 +190,7 @@ public class StatPanel extends AbstractStatPanel {
       // only add the vps in pacific
       if (gameData.getProperties().get(Constants.PACIFIC_THEATER, false)) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
-        stats.add(new VPStat());
+        stats.add(new VpStat());
         StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);
       }
     }
@@ -463,8 +463,8 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class PUStat extends ResourceStat {
-    public PUStat() {
+  class PuStat extends ResourceStat {
+    public PuStat() {
       super(getResourcePUs(gameData));
     }
   }
@@ -486,7 +486,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class TUVStat extends AbstractStat {
+  class TuvStat extends AbstractStat {
     @Override
     public String getName() {
       return "TUV";
@@ -494,12 +494,12 @@ public class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
       final Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
       int tuv = 0;
       for (final Territory place : data.getMap().getTerritories()) {
         final Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
-        tuv += BattleCalculator.getTUV(owned, costs);
+        tuv += TuvUtils.getTuv(owned, costs);
       }
       return tuv;
     }
@@ -530,7 +530,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class VPStat extends AbstractStat {
+  class VpStat extends AbstractStat {
     @Override
     public String getName() {
       return "VPs";

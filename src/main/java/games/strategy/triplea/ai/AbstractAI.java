@@ -41,7 +41,7 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -71,7 +71,7 @@ import games.strategy.util.Tuple;
  */
 public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAPlayer {
 
-  private static final Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
+  private static final Logger logger = Logger.getLogger(AbstractAI.class.getName());
 
   public AbstractAI(final String name, final String type) {
     super(name, type);
@@ -155,12 +155,6 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       return potentialTargets.iterator().next();
     }
     return factories.iterator().next();
-  }
-
-  @Override
-  public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
-      final Territory unitTerritory) {
-    return candidates.iterator().next();
   }
 
   @Override
@@ -282,16 +276,16 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         if (attackTokens.size() <= 0) {
           continue;
         }
-        final IntegerMap<Resource> rMap = new IntegerMap<>();
+        final IntegerMap<Resource> resourceMap = new IntegerMap<>();
         final Resource r = attackTokens.keySet().iterator().next();
         final int num = Math.min(attackTokens.getInt(r),
             (UnitAttachment.get(u.getType()).getHitPoints() * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
-        rMap.put(r, num);
+        resourceMap.put(r, num);
         HashMap<Unit, IntegerMap<Resource>> attMap = rVal.get(t);
         if (attMap == null) {
           attMap = new HashMap<>();
         }
-        attMap.put(u, rMap);
+        attMap.put(u, resourceMap);
         rVal.put(t, attMap);
         attackTokens.add(r, -num);
         if (attackTokens.getInt(r) <= 0) {
@@ -461,8 +455,8 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       purchase(true, bidAmount, purchaseDelegate, getGameData(), id);
     } else if (name.endsWith("Purchase")) {
       final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
-      final Resource PUs = getGameData().getResourceList().getResource(Constants.PUS);
-      final int leftToSpend = id.getResources().getQuantity(PUs);
+      final Resource pus = getGameData().getResourceList().getResource(Constants.PUS);
+      final int leftToSpend = id.getResources().getQuantity(pus);
       purchase(false, leftToSpend, purchaseDelegate, getGameData(), id);
     } else if (name.endsWith("Tech")) {
       final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemoteDelegate();
@@ -585,7 +579,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         for (final Territory current : entry.getValue()) {
           final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
           if (error != null) {
-            s_logger.fine(error);
+            logger.fine(error);
           }
         }
       }
@@ -593,7 +587,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   }
 
   protected void politicalActions() {
-    final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
+    final IPoliticsDelegate remotePoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
     final GameData data = getGameData();
     final PlayerID id = getPlayerID();
     final float numPlayers = data.getPlayerList().getPlayers().size();
@@ -628,7 +622,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           if (i > maxWarActionsPerTurn) {
             break;
           }
-          iPoliticsDelegate.attemptAction(action);
+          remotePoliticsDelegate.attemptAction(action);
         }
       }
     } else {
@@ -655,7 +649,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           if (i > maxOtherActionsPerTurn) {
             break;
           }
-          iPoliticsDelegate.attemptAction(action);
+          remotePoliticsDelegate.attemptAction(action);
         }
       }
     }
@@ -664,8 +658,8 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   /**
    * Pause the game to allow the human player to see what is going on.
    */
-  protected void pause() {
-    ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
+  protected static void pause() {
+    ThreadUtil.sleep(ClientSetting.AI_PAUSE_DURATION.intValue());
   }
 
 }

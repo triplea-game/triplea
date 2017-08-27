@@ -152,10 +152,10 @@ public class CanalAttachment extends DefaultAttachment {
     m_excludedUnits = value;
   }
 
-  public HashSet<UnitType> getExcludedUnits(final GameData data) {
+  public HashSet<UnitType> getExcludedUnits() {
     if (m_excludedUnits == null) {
       return new HashSet<>(
-          Match.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAir));
+          Match.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
     }
     return m_excludedUnits;
   }

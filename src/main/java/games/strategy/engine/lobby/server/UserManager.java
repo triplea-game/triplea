@@ -10,7 +10,7 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
 
 public class UserManager implements IUserManager {
-  private static final Logger s_logger = Logger.getLogger(UserManager.class.getName());
+  private static final Logger logger = Logger.getLogger(UserManager.class.getName());
 
   public void register(final IRemoteMessenger messenger) {
     messenger.registerRemote(this, IUserManager.USER_MANAGER);
@@ -23,7 +23,7 @@ public class UserManager implements IUserManager {
   public String updateUser(final String userName, final String emailAddress, final String hashedPassword) {
     final INode remote = MessageContext.getSender();
     if (!userName.equals(remote.getName())) {
-      s_logger
+      logger
           .severe("Tried to update user permission, but not correct user, userName:" + userName + " node:" + remote);
       return "Sorry, but I can't let you do that";
     }
@@ -36,6 +36,9 @@ public class UserManager implements IUserManager {
     }
     final HashedPassword password = new HashedPassword(hashedPassword);
     if (!password.isValidSyntax()) {
+      //TODO: encrypt hashedPassword and pass it to updateUser
+      //new DbUserController().updateUser(user, decryptedPassword);
+      //return null;
       return "Password is not hashed correctly";
     }
 
@@ -54,7 +57,7 @@ public class UserManager implements IUserManager {
   public DBUser getUserInfo(final String userName) {
     final INode remote = MessageContext.getSender();
     if (!userName.equals(remote.getName())) {
-      s_logger.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
+      logger.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
       throw new IllegalStateException("Sorry, but I can't let you do that");
     }
     return new DbUserController().getUserByName(userName);

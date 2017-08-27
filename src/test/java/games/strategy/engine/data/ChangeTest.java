@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 
@@ -30,17 +31,14 @@ public class ChangeTest {
 
   private Change serialize(final Change change) throws Exception {
     final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-    final ObjectOutputStream output = new GameObjectOutputStream(sink);
-    output.writeObject(change);
-    output.flush();
-    // System.out.println("bytes:" + sink.toByteArray().length);
+    try (final ObjectOutputStream output = new GameObjectOutputStream(sink)) {
+      output.writeObject(change);
+    }
     final InputStream source = new ByteArrayInputStream(sink.toByteArray());
-    final ObjectInputStream input =
-        new GameObjectInputStream(new games.strategy.engine.framework.GameObjectStreamFactory(gameData), source);
-    final Change newChange = (Change) input.readObject();
-    input.close();
-    output.close();
-    return newChange;
+    try (final ObjectInputStream input =
+        new GameObjectInputStream(new GameObjectStreamFactory(gameData), source)) {
+      return (Change) input.readObject();
+    }
   }
 
   @Test

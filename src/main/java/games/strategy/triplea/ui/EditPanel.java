@@ -52,7 +52,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -62,6 +61,7 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -92,7 +92,7 @@ class EditPanel extends ActionPanel {
   EditPanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
     this.frame = frame;
-    final JLabel m_actionLabel = new JLabel();
+    final JLabel actionLabel = new JLabel();
     performMoveAction = new AbstractAction("Perform Move or Other Actions") {
       private static final long serialVersionUID = 2205085537962024476L;
 
@@ -154,7 +154,7 @@ class EditPanel extends ActionPanel {
         if (mustChoose) {
           final String chooserText = "Remove units from " + selectedTerritory + ":";
           final UnitChooser chooser = new UnitChooser(allUnits, selectedUnits, mustMoveWithDetails.getMustMoveWith(),
-              true, false, getData(), /* allowTwoHit= */false, getMap().getUIContext());
+              true, false, getData(), /* allowTwoHit= */false, getMap().getUiContext());
           final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, chooserText,
               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
           if (option != JOptionPane.OK_OPTION) {
@@ -192,7 +192,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+            new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner PUs to change");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
@@ -213,16 +213,16 @@ class EditPanel extends ActionPanel {
         }
         final int oldTotal = player.getResources().getQuantity(pus);
         int newTotal = oldTotal;
-        final JTextField PUsField = new JTextField(String.valueOf(oldTotal), 4);
-        PUsField.setMaximumSize(PUsField.getPreferredSize());
-        final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField),
+        final JTextField pusField = new JTextField(String.valueOf(oldTotal), 4);
+        pusField.setMaximumSize(pusField.getPreferredSize());
+        final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(pusField),
             "Select new number of PUs", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (option != JOptionPane.OK_OPTION) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         try {
-          newTotal = Integer.parseInt(PUsField.getText());
+          newTotal = Integer.parseInt(pusField.getText());
         } catch (final Exception e) {
           // ignore malformed input
         }
@@ -242,7 +242,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+            new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to get technology");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
@@ -257,7 +257,7 @@ class EditPanel extends ActionPanel {
         } finally {
           getData().releaseReadLock();
         }
-        if (techs == null || techs.isEmpty()) {
+        if (techs.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;
         }
@@ -296,7 +296,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+            new PlayerChooser(getData().getPlayerList(), getMap().getUiContext(), false);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to remove technology");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
@@ -320,7 +320,7 @@ class EditPanel extends ActionPanel {
         } finally {
           getData().releaseReadLock();
         }
-        if (techs == null || techs.isEmpty()) {
+        if (techs.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;
         }
@@ -358,20 +358,21 @@ class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         currentAction = this;
         setWidgetActivation();
-        final List<Unit> units = Match.getMatches(selectedUnits, Matches.UnitHasMoreThanOneHitPointTotal);
+        final List<Unit> units = Match.getMatches(selectedUnits, Matches.unitHasMoreThanOneHitPointTotal());
         if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         // all owned by one player
-        units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(units.iterator().next().getOwner())));
+        final PlayerID player = units.get(0).getOwner();
+        units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(player)));
         if (units.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         sortUnitsToRemove(units);
         Collections.sort(units, new UnitBattleComparator(false,
-            BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
+            TuvUtils.getCostsForTuv(player, getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
@@ -380,7 +381,7 @@ class EditPanel extends ActionPanel {
           currentDamageMap.put(u, Triple.of(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
         }
         final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Hit Damage",
-            getData(), getMap().getUIContext(), -1, true, true, null);
+            getData(), getMap().getUiContext(), -1, true, true, null);
         final JScrollPane scroll = new JScrollPane(unitPanel);
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Hit Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -405,20 +406,21 @@ class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         currentAction = this;
         setWidgetActivation();
-        final List<Unit> units = Match.getMatches(selectedUnits, Matches.UnitCanBeDamaged);
+        final List<Unit> units = Match.getMatches(selectedUnits, Matches.unitCanBeDamaged());
         if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         // all owned by one player
-        units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(units.iterator().next().getOwner())));
+        final PlayerID player = units.get(0).getOwner();
+        units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(player)));
         if (units.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         sortUnitsToRemove(units);
         Collections.sort(units, new UnitBattleComparator(false,
-            BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), null, getData(), true, false));
+            TuvUtils.getCostsForTuv(player, getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
         final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
@@ -429,7 +431,7 @@ class EditPanel extends ActionPanel {
                   ((TripleAUnit) u).getUnitDamage()));
         }
         final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Bombing Damage",
-            getData(), getMap().getUIContext(), -1, true, true, null);
+            getData(), getMap().getUiContext(), -1, true, true, null);
         final JScrollPane scroll = new JScrollPane(unitPanel);
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Bombing Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -475,7 +477,7 @@ class EditPanel extends ActionPanel {
             + "unintended consequences!</em></html>");
         panel.add(helpText, BorderLayout.NORTH);
         final PoliticalStateOverview pui =
-            new PoliticalStateOverview(getData(), EditPanel.this.frame.getUIContext(), true);
+            new PoliticalStateOverview(getData(), EditPanel.this.frame.getUiContext(), true);
         panel.add(pui, BorderLayout.CENTER);
         final JScrollPane scroll = new JScrollPane(panel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -504,10 +506,10 @@ class EditPanel extends ActionPanel {
         cancelEditAction.actionPerformed(null);
       }
     };
-    m_actionLabel.setText("Edit Mode Actions");
+    actionLabel.setText("Edit Mode Actions");
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
-    add(m_actionLabel);
+    add(actionLabel);
     final JButton performMove = new JButton(performMoveAction);
     performMove.setToolTipText("<html>When in Edit Mode, you can perform special actions according to whatever phase "
         + "you are in, by switching back to the 'Action' tab.<br /> "
@@ -526,11 +528,11 @@ class EditPanel extends ActionPanel {
     data.acquireReadLock();
     try {
       final Set<UnitType> allUnitTypes = data.getUnitTypeList().getAllUnitTypes();
-      if (Match.anyMatch(allUnitTypes, Matches.UnitTypeHasMoreThanOneHitPointTotal)) {
+      if (Match.anyMatch(allUnitTypes, Matches.unitTypeHasMoreThanOneHitPointTotal())) {
         add(new JButton(changeUnitHitDamageAction));
       }
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
-          && Match.anyMatch(allUnitTypes, Matches.UnitTypeCanBeDamaged)) {
+          && Match.anyMatch(allUnitTypes, Matches.unitTypeCanBeDamaged())) {
         add(new JButton(changeUnitBombingDamageAction));
       }
     } finally {
@@ -708,7 +710,7 @@ class EditPanel extends ActionPanel {
           }
           final String text = "Remove from " + t.getName();
           final UnitChooser chooser = new UnitChooser(unitsToMove, selectedUnits, null, false, false, getData(),
-              false, getMap().getUIContext());
+              false, getMap().getUiContext());
           final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
           if (option != JOptionPane.OK_OPTION) {
@@ -777,7 +779,7 @@ class EditPanel extends ActionPanel {
         // PlayerID defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
         final PlayerID defaultPlayer = ta.getOriginalOwner();
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), defaultPlayer, getMap().getUIContext(), true);
+            new PlayerChooser(getData().getPlayerList(), defaultPlayer, getMap().getUiContext(), true);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
@@ -792,14 +794,14 @@ class EditPanel extends ActionPanel {
       } else if (currentAction == addUnitsAction) {
         final boolean allowNeutral = doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, getData());
         final PlayerChooser playerChooser =
-            new PlayerChooser(getData().getPlayerList(), territory.getOwner(), getMap().getUIContext(), allowNeutral);
+            new PlayerChooser(getData().getPlayerList(), territory.getOwner(), getMap().getUiContext(), allowNeutral);
         final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
         dialog.setVisible(true);
         final PlayerID player = playerChooser.getSelected();
         if (player != null) {
           // open production panel for adding new units
           final IntegerMap<ProductionRule> production =
-              EditProductionPanel.getProduction(player, frame, getData(), getMap().getUIContext());
+              EditProductionPanel.getProduction(player, frame, getData(), getMap().getUiContext());
           final Collection<Unit> units = new ArrayList<>();
           for (final ProductionRule productionRule : production.keySet()) {
             final int quantity = production.getInt(productionRule);

@@ -1,6 +1,8 @@
 package games.strategy.engine.random;
 
-public class DiceStatistic implements java.io.Serializable {
+import java.io.Serializable;
+
+public class DiceStatistic implements Serializable {
   private static final long serialVersionUID = -1422839840110240480L;
   private final double m_average;
   private final int m_total;

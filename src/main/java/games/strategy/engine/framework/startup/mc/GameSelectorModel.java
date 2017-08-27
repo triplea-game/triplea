@@ -8,8 +8,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -25,6 +23,7 @@ import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.settings.ClientSetting;
 
 public class GameSelectorModel extends Observable {
   /**
@@ -32,10 +31,6 @@ public class GameSelectorModel extends Observable {
    * Example: returns "games" which would be the games folder of "triplea/maps/someMapFooBar/games"
    */
   public static final String DEFAULT_GAME_XML_DIRECTORY_NAME = "games";
-  private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
-  private static final String DEFAULT_GAME_NAME = "Big World : 1942";
-  private static final String DEFAULT_GAME_URI_PREF = "DefaultGameURI";
-  private static final String DEFAULT_GAME_URI = "";
   private GameData m_data = null;
   private String m_gameName = "";
   private String m_gameVersion = "";
@@ -74,16 +69,11 @@ public class GameSelectorModel extends Observable {
     }
     m_fileName = entry.getLocation();
     setGameData(entry.getGameData());
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     if (entry.getGameData() != null) {
-      prefs.put(DEFAULT_GAME_NAME_PREF, entry.getGameData().getGameName());
+      ClientSetting.DEFAULT_GAME_NAME_PREF.save(entry.getGameData().getGameName());
     }
-    prefs.put(DEFAULT_GAME_URI_PREF, entry.getURI().toString());
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException e) {
-      // ignore
-    }
+    ClientSetting.DEFAULT_GAME_URI_PREF.save(entry.getURI().toString());
+    ClientSetting.flush();
   }
 
   public void load(final File file, final Component ui) {
@@ -103,8 +93,7 @@ public class GameSelectorModel extends Observable {
       }
       return;
     }
-    final GameDataManager manager = new GameDataManager();
-    GameData newData;
+    final GameData newData;
     final AtomicReference<String> gameName = new AtomicReference<>();
     try {
       // if the file name is xml, load it as a new game
@@ -114,7 +103,7 @@ public class GameSelectorModel extends Observable {
         }
       } else {
         // try to load it as a saved game whatever the extension
-        newData = manager.loadGame(file);
+        newData = GameDataManager.loadGame(file);
       }
       if (newData != null) {
         m_fileName = file.getName();
@@ -129,7 +118,7 @@ public class GameSelectorModel extends Observable {
       }
       message = "Exception while parsing: " + file.getName() + " : "
           + (gameName.get() != null ? gameName.get() + " : " : "") + message;
-      System.out.println(message);
+      ClientLogger.logQuietly(e);
       if (ui != null) {
         error(message + "\r\nPlease see console for full error log!", ui);
       }
@@ -137,10 +126,9 @@ public class GameSelectorModel extends Observable {
   }
 
   public GameData getGameData(final InputStream input) {
-    final GameDataManager manager = new GameDataManager();
-    GameData newData;
+    final GameData newData;
     try {
-      newData = manager.loadGame(input, null);
+      newData = GameDataManager.loadGame(input, null);
       if (newData != null) {
         return newData;
       }
@@ -250,21 +238,11 @@ public class GameSelectorModel extends Observable {
     super.clearChanged();
   }
 
-  private void resetDefaultGame() {
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    prefs.put(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME);
-    prefs.put(DEFAULT_GAME_URI_PREF, DEFAULT_GAME_URI);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException e2) { // ignore
-    }
-  }
-
-  public void loadDefaultGame(final Component ui) {
+  public void loadDefaultGame() {
     // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game
     // at this point)
     ProAI.gameOverClearCache();
-    new Thread(() -> loadDefaultGame(ui, false)).start();
+    new Thread(() -> loadDefaultGame(false)).start();
   }
 
   /**
@@ -274,20 +252,19 @@ public class GameSelectorModel extends Observable {
    *        we only call with
    *        'true' if loading the user preferred map failed).
    */
-  public void loadDefaultGame(final Component ui, final boolean forceFactoryDefault) {
+  public void loadDefaultGame(final boolean forceFactoryDefault) {
     // load the previously saved value
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     if (forceFactoryDefault) {
       // we don't refresh the game chooser model because we have just removed a bad map from it
-      resetDefaultGame();
+      ClientSetting.DEFAULT_GAME_URI_PREF.save(ClientSetting.DEFAULT_GAME_URI_PREF.defaultValue);
+      ClientSetting.flush();
     }
-    NewGameChooserEntry selectedGame = null;
-    // just in case flush doesn't work, we still force it again here
-    final String userPreferredDefaultGameUri =
-        (forceFactoryDefault ? DEFAULT_GAME_URI : prefs.get(DEFAULT_GAME_URI_PREF, DEFAULT_GAME_URI));
+    final String userPreferredDefaultGameUri = ClientSetting.DEFAULT_GAME_URI_PREF.value();
+
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
     // version of triplea
     // was using running a game within its root folder, we shouldn't open it)
+    NewGameChooserEntry selectedGame = null;
     final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
     if (!forceFactoryDefault && userPreferredDefaultGameUri != null && userPreferredDefaultGameUri.length() > 0
         && userPreferredDefaultGameUri.contains(user)) {
@@ -297,7 +274,7 @@ public class GameSelectorModel extends Observable {
         final URI defaultUri = new URI(userPreferredDefaultGameUri);
         selectedGame = new NewGameChooserEntry(defaultUri);
       } catch (final Exception e) {
-        selectedGame = selectByName(ui, forceFactoryDefault);
+        selectedGame = selectByName(forceFactoryDefault);
         if (selectedGame == null) {
           return;
         }
@@ -306,12 +283,12 @@ public class GameSelectorModel extends Observable {
         try {
           selectedGame.fullyParseGameData();
         } catch (final GameParseException e) {
-          loadDefaultGame(ui, true);
+          loadDefaultGame(true);
           return;
         }
       }
     } else {
-      selectedGame = selectByName(ui, forceFactoryDefault);
+      selectedGame = selectByName(forceFactoryDefault);
       if (selectedGame == null) {
         return;
       }
@@ -319,16 +296,17 @@ public class GameSelectorModel extends Observable {
     load(selectedGame);
   }
 
-  private NewGameChooserEntry selectByName(final Component ui, final boolean forceFactoryDefault) {
-    NewGameChooserEntry selectedGame = null;
-    final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    // just in case flush doesn't work, we still force it again here
-    final String userPreferredDefaultGameName =
-        (forceFactoryDefault ? DEFAULT_GAME_NAME : prefs.get(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME));
+  private NewGameChooserEntry selectByName(final boolean forceFactoryDefault) {
+    if (forceFactoryDefault) {
+      ClientSetting.DEFAULT_GAME_NAME_PREF.save(ClientSetting.DEFAULT_GAME_NAME_PREF.defaultValue);
+      ClientSetting.flush();
+    }
+    final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();
+
     final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
-    selectedGame = model.findByName(userPreferredDefaultGameName);
+    NewGameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName);
     if (selectedGame == null) {
-      selectedGame = model.findByName(DEFAULT_GAME_NAME);
+      selectedGame = model.findByName(userPreferredDefaultGameName);
     }
     if (selectedGame == null && model.size() > 0) {
       selectedGame = model.get(0);
@@ -343,7 +321,7 @@ public class GameSelectorModel extends Observable {
         // Load real default game...
         selectedGame.delayParseGameData();
         model.removeEntry(selectedGame);
-        loadDefaultGame(ui, true);
+        loadDefaultGame(true);
         return null;
       }
     }

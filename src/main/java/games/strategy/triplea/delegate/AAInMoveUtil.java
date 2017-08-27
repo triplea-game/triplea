@@ -18,6 +18,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.sound.SoundPath;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -48,11 +49,11 @@ class AAInMoveUtil implements Serializable {
   }
 
   private boolean isAlwaysONAAEnabled() {
-    return games.strategy.triplea.Properties.getAlwaysOnAA(getData());
+    return Properties.getAlwaysOnAA(getData());
   }
 
   private boolean isAATerritoryRestricted() {
-    return games.strategy.triplea.Properties.getAATerritoryRestricted(getData());
+    return Properties.getAATerritoryRestricted(getData());
   }
 
   private ITripleAPlayer getRemotePlayer(final PlayerID id) {
@@ -86,12 +87,12 @@ class AAInMoveUtil implements Serializable {
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
     final List<Unit> defendingAa = territory.getUnits().getMatches(Matches.unitIsAaThatCanFire(units,
-        airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, 1, true, getData()));
+        airborneTechTargetsAllowed, movingPlayer, Matches.unitIsAaForFlyOverOnly(), 1, true, getData()));
     // comes ordered alphabetically already
-    final List<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAa);
+    final List<String> aaTypes = UnitAttachment.getAllOfTypeAAs(defendingAa);
     // stacks are backwards
-    Collections.reverse(AAtypes);
-    for (final String currentTypeAa : AAtypes) {
+    Collections.reverse(aaTypes);
+    for (final String currentTypeAa : aaTypes) {
       final Collection<Unit> currentPossibleAa = Match.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
       final Set<UnitType> targetUnitTypesForThisTypeAa =
           UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
@@ -195,7 +196,7 @@ class AAInMoveUtil implements Serializable {
     // that will be a battle
     // and handled else where in this tangled mess
     final Match<Unit> hasAa = Matches.unitIsAaThatCanFire(units, airborneTechTargetsAllowed, movingPlayer,
-        Matches.UnitIsAAforFlyOverOnly, 1, true, data);
+        Matches.unitIsAaForFlyOverOnly(), 1, true, data);
     // AA guns in transports shouldn't be able to fire
     final List<Territory> territoriesWhereAaWillFire = new ArrayList<>();
     for (final Territory current : route.getMiddleSteps()) {
@@ -203,7 +204,7 @@ class AAInMoveUtil implements Serializable {
         territoriesWhereAaWillFire.add(current);
       }
     }
-    if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(data)) {
+    if (Properties.getForceAAattacksForLastStepOfFlyOver(data)) {
       if (route.getEnd().getUnits().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(route.getEnd());
       }

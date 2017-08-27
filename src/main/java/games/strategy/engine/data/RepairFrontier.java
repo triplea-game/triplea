@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -7,19 +9,19 @@ import java.util.List;
 
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule> {
   private static final long serialVersionUID = -5148536624986056753L;
-  private final List<RepairRule> m_rules = new ArrayList<>();
+  private final List<RepairRule> m_rules;
   private List<RepairRule> m_cachedRules;
 
-  /**
-   * Creates new RepairFrontier.
-   *
-   * @param name
-   *        name of new repair frontier
-   * @param data
-   *        game data
-   */
   public RepairFrontier(final String name, final GameData data) {
+    this(name, data, Collections.emptyList());
+  }
+
+  public RepairFrontier(final String name, final GameData data, final List<RepairRule> rules) {
     super(name, data);
+
+    checkNotNull(rules);
+
+    m_rules = new ArrayList<>(rules);
   }
 
   void addRule(final RepairRule rule) {

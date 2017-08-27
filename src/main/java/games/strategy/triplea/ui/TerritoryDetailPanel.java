@@ -1,25 +1,19 @@
 package games.strategy.triplea.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -32,6 +26,7 @@ import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.OverlayIcon;
+import games.strategy.ui.SwingComponents;
 
 public class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;
@@ -62,22 +57,10 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
   protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
-    final String show_battle_calc = "show_battle_calc";
-    final Action showBattleCalc = new AbstractAction(show_battle_calc) {
-      private static final long serialVersionUID = -1863748437390486994L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        OddsCalculatorDialog.show(frame, currentTerritory);
-      }
-    };
-    showOdds.addActionListener(e -> showBattleCalc.actionPerformed(e));
-    final JComponent contentPane = (JComponent) frame.getContentPane();
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('B', InputEvent.META_DOWN_MASK), show_battle_calc);
-    contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke('B', InputEvent.CTRL_DOWN_MASK), show_battle_calc);
-    contentPane.getActionMap().put(show_battle_calc, showBattleCalc);
+    showOdds.addActionListener(e ->  OddsCalculatorDialog.show(frame, currentTerritory));
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
+        frame, 'B', () ->  OddsCalculatorDialog.show(frame, currentTerritory));
   }
 
   @Override

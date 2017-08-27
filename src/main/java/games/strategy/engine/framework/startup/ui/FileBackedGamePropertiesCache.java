@@ -46,9 +46,9 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
       if (!cache.getParentFile().exists()) {
         cache.getParentFile().mkdirs();
       }
-      final ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(cache));
-      out.writeObject(serializableMap);
-      out.close();
+      try (final ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(cache))) {
+        out.writeObject(serializableMap);
+      }
     } catch (final IOException e) {
       ClientLogger.logQuietly(e);
     }
@@ -67,15 +67,15 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
     final File cache = getCacheFile(gameData);
     try {
       if (cache.exists()) {
-        final ObjectInputStream in = new ObjectInputStream(new FileInputStream(cache));
-        final Map<String, Serializable> serializedMap = (Map<String, Serializable>) in.readObject();
-        for (final IEditableProperty property : gameData.getProperties().getEditableProperties()) {
-          final Serializable ser = serializedMap.get(property.getName());
-          if (ser != null) {
-            property.setValue(ser);
+        try (final ObjectInputStream in = new ObjectInputStream(new FileInputStream(cache))) {
+          final Map<String, Serializable> serializedMap = (Map<String, Serializable>) in.readObject();
+          for (final IEditableProperty property : gameData.getProperties().getEditableProperties()) {
+            final Serializable ser = serializedMap.get(property.getName());
+            if (ser != null) {
+              property.setValue(ser);
+            }
           }
         }
-        in.close();
       }
     } catch (IOException | ClassNotFoundException e) {
       ClientLogger.logQuietly(e);

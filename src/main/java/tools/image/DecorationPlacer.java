@@ -103,28 +103,28 @@ public class DecorationPlacer extends JFrame {
   // hash map for polygon points
   private Map<String, List<Polygon>> polygons = new HashMap<>();
   private final JLabel locationLabel = new JLabel();
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-  private static File s_currentImageFolderLocation = null;
-  private static File s_currentImagePointsTextFile = null;
+  private static File currentImageFolderLocation = null;
+  private static File currentImagePointsTextFile = null;
   private Point currentMousePoint = new Point(0, 0);
   private Triple<String, Image, Point> currentSelectedImage = null;
   private Map<String, Tuple<Image, List<Point>>> currentImagePoints = new HashMap<>();
-  private static boolean s_highlightAll = false;
-  private static boolean s_createNewImageOnRightClick = false;
-  private static Image s_staticImageForPlacing = null;
-  private static boolean s_showFromTopLeft = true;
-  private static ImagePointType s_imagePointType = ImagePointType.decorations;
-  private static boolean s_cheapMutex = false;
-  private static boolean s_showPointNames = false;
+  private static boolean highlightAll = false;
+  private static boolean createNewImageOnRightClick = false;
+  private static Image staticImageForPlacing = null;
+  private static boolean showFromTopLeft = true;
+  private static ImagePointType imagePointType = ImagePointType.decorations;
+  private static boolean cheapMutex = false;
+  private static boolean showPointNames = false;
 
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
     System.out.println("Select the map");
-    final FileOpen mapSelection = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png");
+    final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
-    if (s_mapFolderLocation == null && mapSelection.getFile() != null) {
-      s_mapFolderLocation = mapSelection.getFile().getParentFile();
+    if (mapFolderLocation == null && mapSelection.getFile() != null) {
+      mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
       System.out.println("Map : " + mapName);
@@ -183,10 +183,10 @@ public class DecorationPlacer extends JFrame {
     super("Decoration Placer");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLocationRelativeTo(null);
-    s_highlightAll = false;
+    highlightAll = false;
     File fileCenters = null;
-    if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
-      fileCenters = new File(s_mapFolderLocation, "centers.txt");
+    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+      fileCenters = new File(mapFolderLocation, "centers.txt");
     }
     if (fileCenters == null || !fileCenters.exists()) {
       fileCenters = new File(new File(mapName).getParent() + File.separator + "centers.txt");
@@ -206,7 +206,7 @@ public class DecorationPlacer extends JFrame {
     } else {
       try {
         System.out.println("Select the Centers file");
-        final String centerPath = new FileOpen("Select A Center File", s_mapFolderLocation, ".txt").getPathString();
+        final String centerPath = new FileOpen("Select A Center File", mapFolderLocation, ".txt").getPathString();
         if (centerPath != null) {
           System.out.println("Centers : " + centerPath);
           centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
@@ -222,8 +222,8 @@ public class DecorationPlacer extends JFrame {
       }
     }
     File filePoly = null;
-    if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
-      filePoly = new File(s_mapFolderLocation, "polygons.txt");
+    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+      filePoly = new File(mapFolderLocation, "polygons.txt");
     }
     if (filePoly == null || !filePoly.exists()) {
       filePoly = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
@@ -243,7 +243,7 @@ public class DecorationPlacer extends JFrame {
     } else {
       try {
         System.out.println("Select the Polygons file");
-        final String polyPath = new FileOpen("Select A Polygon File", s_mapFolderLocation, ".txt").getPathString();
+        final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
           System.out.println("Polygons : " + polyPath);
           polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
@@ -328,7 +328,7 @@ public class DecorationPlacer extends JFrame {
     highlightAllModeItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent event) {
-        s_highlightAll = highlightAllModeItem.getState();
+        highlightAll = highlightAllModeItem.getState();
         DecorationPlacer.this.repaint();
       }
     });
@@ -336,7 +336,7 @@ public class DecorationPlacer extends JFrame {
     showNamesModeItem.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent event) {
-        s_showPointNames = showNamesModeItem.getState();
+        showPointNames = showNamesModeItem.getState();
         DecorationPlacer.this.repaint();
       }
     });
@@ -387,7 +387,7 @@ public class DecorationPlacer extends JFrame {
   }
 
   private void paintToG(final Graphics g) {
-    if (s_cheapMutex) {
+    if (cheapMutex) {
       return;
     }
     g.drawImage(image, 0, 0, this);
@@ -395,34 +395,34 @@ public class DecorationPlacer extends JFrame {
     for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
       for (final Point p : entry.getValue().getSecond()) {
         g.drawImage(entry.getValue().getFirst(), p.x,
-            p.y - (s_showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)), null);
+            p.y - (showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)), null);
         if (currentSelectedImage != null && currentSelectedImage.getThird().equals(p)) {
           g.setColor(Color.green);
-          g.drawRect(p.x, p.y - (s_showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)),
+          g.drawRect(p.x, p.y - (showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)),
               entry.getValue().getFirst().getWidth(null), entry.getValue().getFirst().getHeight(null));
           g.setColor(Color.red);
-        } else if (s_highlightAll) {
-          g.drawRect(p.x, p.y - (s_showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)),
+        } else if (highlightAll) {
+          g.drawRect(p.x, p.y - (showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)),
               entry.getValue().getFirst().getWidth(null), entry.getValue().getFirst().getHeight(null));
         }
-        if (s_showPointNames) {
+        if (showPointNames) {
           g.drawString(entry.getKey(), p.x,
-              p.y - (s_showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)));
+              p.y - (showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)));
         }
       }
     }
     if (currentSelectedImage != null) {
       g.setColor(Color.green);
       g.drawImage(currentSelectedImage.getSecond(), currentMousePoint.x,
-          currentMousePoint.y - (s_showFromTopLeft ? 0 : currentSelectedImage.getSecond().getHeight(null)), null);
-      if (s_highlightAll) {
+          currentMousePoint.y - (showFromTopLeft ? 0 : currentSelectedImage.getSecond().getHeight(null)), null);
+      if (highlightAll) {
         g.drawRect(currentMousePoint.x,
-            currentMousePoint.y - (s_showFromTopLeft ? 0 : currentSelectedImage.getSecond().getHeight(null)),
+            currentMousePoint.y - (showFromTopLeft ? 0 : currentSelectedImage.getSecond().getHeight(null)),
             currentSelectedImage.getSecond().getWidth(null), currentSelectedImage.getSecond().getHeight(null));
       }
-      if (s_showPointNames) {
+      if (showPointNames) {
         g.drawString(currentSelectedImage.getFirst(), currentMousePoint.x,
-            currentMousePoint.y - (s_showFromTopLeft ? 0 : currentSelectedImage.getSecond().getHeight(null)));
+            currentMousePoint.y - (showFromTopLeft ? 0 : currentSelectedImage.getSecond().getHeight(null)));
       }
     }
   }
@@ -431,14 +431,14 @@ public class DecorationPlacer extends JFrame {
     final BufferedImage bufferedImage =
         new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
     final Graphics g = bufferedImage.getGraphics();
-    final boolean saveHighlight = s_highlightAll;
-    final boolean saveNames = s_showPointNames;
-    s_highlightAll = false;
-    s_showPointNames = false;
+    final boolean saveHighlight = highlightAll;
+    final boolean saveNames = showPointNames;
+    highlightAll = false;
+    showPointNames = false;
     paintToG(g);
     g.dispose();
-    s_highlightAll = saveHighlight;
-    s_showPointNames = saveNames;
+    highlightAll = saveHighlight;
+    showPointNames = saveNames;
     image = bufferedImage;
   }
 
@@ -458,16 +458,13 @@ public class DecorationPlacer extends JFrame {
     }
     try {
       final String fileName = new FileSave("Where To Save Image Points Text File?", JFileChooser.FILES_ONLY,
-          s_currentImagePointsTextFile, s_mapFolderLocation).getPathString();
+          currentImagePointsTextFile, mapFolderLocation).getPathString();
       if (fileName == null) {
         return;
       }
-      final FileOutputStream out = new FileOutputStream(fileName);
-
-      PointFileReaderWriter.writeOneToMany(out, new HashMap<>(currentPoints));
-
-      out.flush();
-      out.close();
+      try (final FileOutputStream out = new FileOutputStream(fileName)) {
+        PointFileReaderWriter.writeOneToMany(out, new HashMap<>(currentPoints));
+      }
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final Exception ex) {
       ClientLogger.logQuietly(ex);
@@ -484,7 +481,7 @@ public class DecorationPlacer extends JFrame {
     for (final ImagePointType type : ImagePointType.getTypes()) {
       final JRadioButton button = new JRadioButton(type.toString() + "      :      " + type.getDescription());
       button.setActionCommand(type.toString());
-      if (s_imagePointType == type) {
+      if (imagePointType == type) {
         button.setSelected(true);
       } else {
         button.setSelected(false);
@@ -498,7 +495,7 @@ public class DecorationPlacer extends JFrame {
     final String choice = selected.getActionCommand();
     for (final ImagePointType type : ImagePointType.getTypes()) {
       if (type.toString().equals(choice)) {
-        s_imagePointType = type;
+        imagePointType = type;
         System.out.println("Selected Type: " + choice);
         break;
       }
@@ -506,9 +503,9 @@ public class DecorationPlacer extends JFrame {
   }
 
   private void topLeftOrBottomLeft() {
-    final Object[] showFromTopLeft = {"Point is Top Left", "Point is Bottom Left"};
+    final Object[] options = {"Point is Top Left", "Point is Bottom Left"};
     System.out.println("Select Show images from top left or bottom left point?");
-    s_showFromTopLeft = JOptionPane.showOptionDialog(this,
+    showFromTopLeft = JOptionPane.showOptionDialog(this,
         "Are the images shown from the top left, or from the bottom left point? \r\n"
             + "All images are shown from the top left, except for 'name_place.txt', 'pu_place.txt', and "
             + "'comments.txt'. \r\n"
@@ -517,12 +514,12 @@ public class DecorationPlacer extends JFrame {
             + "[meaning bottom left]. \r\n"
             + "Do NOT change this from whatever the default has choosen, unless you know exactly what you are doing!",
         "Show images from top left or bottom left point?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-        null, showFromTopLeft,
-        showFromTopLeft[(s_imagePointType.isCanUseBottomLeftPoint() ? 1 : 0)]) != JOptionPane.NO_OPTION;
+        null, options,
+        options[(imagePointType.isCanUseBottomLeftPoint() ? 1 : 0)]) != JOptionPane.NO_OPTION;
   }
 
   private void loadImagesAndPoints() {
-    s_cheapMutex = true;
+    cheapMutex = true;
     currentImagePoints = new HashMap<>();
     currentSelectedImage = null;
     selectImagePointType();
@@ -537,12 +534,12 @@ public class DecorationPlacer extends JFrame {
             + "capitols.txt [flags], etc, basically all others) ?",
         "Folder full of images OR Text file full of points?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
         null, miscOrNamesOptions,
-        miscOrNamesOptions[(s_imagePointType.isUseFolder() ? 0 : 1)]) != JOptionPane.NO_OPTION) {
+        miscOrNamesOptions[(imagePointType.isUseFolder() ? 0 : 1)]) != JOptionPane.NO_OPTION) {
       // points are 'territory name' as opposed to exactly an image file name, like 'territory name.png' (everything but
       // decorations is a
       // territory name, while decorations are image file names)
       loadImageFolder();
-      if (s_currentImageFolderLocation == null) {
+      if (currentImageFolderLocation == null) {
         return;
       }
       loadImagePointTextFile();
@@ -558,9 +555,9 @@ public class DecorationPlacer extends JFrame {
               + "(name_place.txt) ?",
           "Points end in .png OR they do not?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           pointsAreNamesOptions,
-          pointsAreNamesOptions[(s_imagePointType.isEndInPng() ? 0 : 1)]) == JOptionPane.NO_OPTION);
-      s_createNewImageOnRightClick = false;
-      s_staticImageForPlacing = null;
+          pointsAreNamesOptions[(imagePointType.isEndInPng() ? 0 : 1)]) == JOptionPane.NO_OPTION);
+      createNewImageOnRightClick = false;
+      staticImageForPlacing = null;
     } else {
       loadImagePointTextFile();
       topLeftOrBottomLeft();
@@ -575,37 +572,36 @@ public class DecorationPlacer extends JFrame {
               + "(If you choose the later option, you must Right Click on a territory to create an image for that "
               + "territory.)",
           "Fill in all territories OR let you select them?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-          null, fillAllOptions, fillAllOptions[(s_imagePointType.isFillAll() ? 0 : 1)]) != JOptionPane.NO_OPTION);
+          null, fillAllOptions, fillAllOptions[(imagePointType.isFillAll() ? 0 : 1)]) != JOptionPane.NO_OPTION);
     }
-    s_cheapMutex = false;
+    cheapMutex = false;
     System.out.println("");
     repaint();
-    JOptionPane.showMessageDialog(this, new JLabel(s_imagePointType.getInstructions()));
+    JOptionPane.showMessageDialog(this, new JLabel(imagePointType.getInstructions()));
   }
 
   private static void loadImageFolder() {
     System.out.println("Load an image folder (eg: 'misc' or 'territoryNames', etc)");
-    File folder = new File(s_mapFolderLocation, s_imagePointType.getFolderName());
-    if (folder == null || !folder.exists()) {
-      folder = s_mapFolderLocation;
+    File folder = new File(mapFolderLocation, imagePointType.getFolderName());
+    if (!folder.exists()) {
+      folder = mapFolderLocation;
     }
     final FileSave imageFolder = new FileSave("Load an Image Folder", null, folder);
-    if (imageFolder == null || imageFolder.getPathString() == null || imageFolder.getFile() == null
+    if (imageFolder.getPathString() == null || imageFolder.getFile() == null
         || !imageFolder.getFile().exists()) {
-      s_currentImageFolderLocation = null;
+      currentImageFolderLocation = null;
     } else {
-      s_currentImageFolderLocation = imageFolder.getFile();
+      currentImageFolderLocation = imageFolder.getFile();
     }
   }
 
   private void loadImagePointTextFile() {
     try {
       System.out.println("Load the points text file (eg: decorations.txt or pu_place.txt, etc)");
-      final FileOpen centerName = new FileOpen("Load an Image Points Text File", s_mapFolderLocation,
-          new File(s_mapFolderLocation, s_imagePointType.getFileName()), ".txt");
-      s_currentImagePointsTextFile = centerName.getFile();
-      if (centerName != null && centerName.getFile() != null && centerName.getFile().exists()
-          && centerName.getPathString() != null) {
+      final FileOpen centerName = new FileOpen("Load an Image Points Text File", mapFolderLocation,
+          new File(mapFolderLocation, imagePointType.getFileName()), ".txt");
+      currentImagePointsTextFile = centerName.getFile();
+      if (centerName.getFile() != null && centerName.getFile().exists() && centerName.getPathString() != null) {
         final FileInputStream in = new FileInputStream(centerName.getPathString());
         currentPoints = PointFileReaderWriter.readOneToMany(in);
       } else {
@@ -617,28 +613,28 @@ public class DecorationPlacer extends JFrame {
   }
 
   private void fillCurrentImagePointsBasedOnTextFile(final boolean fillInAllTerritories) {
-    s_staticImageForPlacing = null;
-    File image = new File(s_mapFolderLocation + File.separator + s_imagePointType.getFolderName(),
-        s_imagePointType.getImageName());
-    if (image == null || !image.exists()) {
+    staticImageForPlacing = null;
+    File image = new File(mapFolderLocation + File.separator + imagePointType.getFolderName(),
+        imagePointType.getImageName());
+    if (!image.exists()) {
       image = new File(ClientFileSystemHelper.getRootFolder() + File.separator + ResourceLoader.RESOURCE_FOLDER
-          + File.separator + s_imagePointType.getFolderName(), s_imagePointType.getImageName());
+          + File.separator + imagePointType.getFolderName(), imagePointType.getImageName());
     }
-    if (image == null || !image.exists()) {
+    if (!image.exists()) {
       image = null;
     }
-    while (s_staticImageForPlacing == null) {
+    while (staticImageForPlacing == null) {
       final FileOpen imageSelection = new FileOpen("Select Example Image To Use",
-          (image == null ? s_mapFolderLocation : new File(image.getParent())), image, ".gif", ".png");
-      if (imageSelection == null || imageSelection.getFile() == null || !imageSelection.getFile().exists()) {
+          (image == null ? mapFolderLocation : new File(image.getParent())), image, ".gif", ".png");
+      if (imageSelection.getFile() == null || !imageSelection.getFile().exists()) {
         continue;
       }
-      s_staticImageForPlacing = createImage(imageSelection.getPathString());
+      staticImageForPlacing = createImage(imageSelection.getPathString());
     }
-    final int width = s_staticImageForPlacing.getWidth(null);
-    final int height = s_staticImageForPlacing.getHeight(null);
-    final int addY = (s_imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
-        : (s_imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
+    final int width = staticImageForPlacing.getWidth(null);
+    final int height = staticImageForPlacing.getHeight(null);
+    final int addY = (imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
+        : (imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
     if (fillInAllTerritories) {
       for (final Entry<String, Point> entry : centers.entrySet()) {
         List<Point> points = currentPoints.get(entry.getKey());
@@ -646,28 +642,28 @@ public class DecorationPlacer extends JFrame {
           System.out.println("Did NOT find point for: " + entry.getKey());
           points = new ArrayList<>();
           final Point p = new Point(entry.getValue().x - (width / 2),
-              entry.getValue().y + addY + ((s_showFromTopLeft ? -1 : 1) * (height / 2)));
+              entry.getValue().y + addY + ((showFromTopLeft ? -1 : 1) * (height / 2)));
           points.add(p);
         } else {
           System.out.println("Found point for: " + entry.getKey());
         }
-        currentImagePoints.put(entry.getKey(), Tuple.of(s_staticImageForPlacing, points));
+        currentImagePoints.put(entry.getKey(), Tuple.of(staticImageForPlacing, points));
       }
     } else {
       for (final Entry<String, List<Point>> entry : currentPoints.entrySet()) {
         currentImagePoints.put(entry.getKey(),
-            Tuple.of(s_staticImageForPlacing, entry.getValue()));
+            Tuple.of(staticImageForPlacing, entry.getValue()));
       }
     }
     // !fillInAllTerritories;
-    s_createNewImageOnRightClick = true;
+    createNewImageOnRightClick = true;
   }
 
   private void fillCurrentImagePointsBasedOnImageFolder(final boolean pointsAreExactlyTerritoryNames) {
-    final int addY = (s_imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
-        : (s_imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
+    final int addY = (imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
+        : (imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
     final List<String> allTerritories = new ArrayList<>(centers.keySet());
-    for (final File file : s_currentImageFolderLocation.listFiles()) {
+    for (final File file : currentImageFolderLocation.listFiles()) {
       if (!file.getPath().endsWith(".png") && !file.getPath().endsWith(".gif")) {
         continue;
       }
@@ -675,7 +671,8 @@ public class DecorationPlacer extends JFrame {
       final String possibleTerritoryName = imageName.substring(0, imageName.length() - 4);
       final Image image = createImage(file.getPath());
       List<Point> points = (currentPoints != null
-          ? currentPoints.get((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName)) : null);
+          ? currentPoints.get((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName))
+          : null);
       if (points == null) {
         points = new ArrayList<>();
         Point p = centers.get(possibleTerritoryName);
@@ -684,7 +681,7 @@ public class DecorationPlacer extends JFrame {
           points.add(new Point(50, 50));
         } else {
           p = new Point(p.x - (image.getWidth(null) / 2),
-              p.y + addY + ((s_showFromTopLeft ? -1 : 1) * (image.getHeight(null) / 2)));
+              p.y + addY + ((showFromTopLeft ? -1 : 1) * (image.getHeight(null) / 2)));
           points.add(p);
           allTerritories.remove(possibleTerritoryName);
           System.out.println("Found point for: " + possibleTerritoryName);
@@ -695,7 +692,7 @@ public class DecorationPlacer extends JFrame {
       currentImagePoints.put((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName),
           Tuple.of(image, points));
     }
-    if (!allTerritories.isEmpty() && s_imagePointType == ImagePointType.name_place) {
+    if (!allTerritories.isEmpty() && imagePointType == ImagePointType.name_place) {
       JOptionPane.showMessageDialog(this, new JLabel("Territory images not found in folder: " + allTerritories));
       System.out.println(allTerritories);
     }
@@ -710,7 +707,7 @@ public class DecorationPlacer extends JFrame {
    *        .lang.boolean rightMouse true if the right mouse button was hit
    */
   private void mouseEvent(final boolean ctrlDown, final boolean rightMouse) {
-    if (s_cheapMutex) {
+    if (cheapMutex) {
       return;
     }
     if (!rightMouse && !ctrlDown && currentSelectedImage == null) {
@@ -733,16 +730,16 @@ public class DecorationPlacer extends JFrame {
       currentImagePoints.put(currentSelectedImage.getFirst(),
           Tuple.of(currentSelectedImage.getSecond(), points));
       currentSelectedImage = null;
-    } else if (rightMouse && !ctrlDown && s_createNewImageOnRightClick && s_staticImageForPlacing != null
+    } else if (rightMouse && !ctrlDown && createNewImageOnRightClick && staticImageForPlacing != null
         && currentSelectedImage == null) {
       // create a new point here in this territory
       final Optional<String> territoryName = Util.findTerritoryName(currentMousePoint, polygons);
       if (territoryName.isPresent()) {
         final List<Point> points = new ArrayList<>();
         points.add(new Point(currentMousePoint));
-        currentImagePoints.put(territoryName.get(), Tuple.of(s_staticImageForPlacing, points));
+        currentImagePoints.put(territoryName.get(), Tuple.of(staticImageForPlacing, points));
       }
-    } else if (rightMouse && !ctrlDown && s_imagePointType.isCanHaveMultiplePoints()) {
+    } else if (rightMouse && !ctrlDown && imagePointType.isCanHaveMultiplePoints()) {
       // if none selected find the image we are clicking on, and duplicate it (not replace/move it)
       if (currentSelectedImage == null) {
         Point testPoint = null;
@@ -802,7 +799,7 @@ public class DecorationPlacer extends JFrame {
       }
       final File mapFolder = new File(value);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + value);
       }
@@ -810,185 +807,185 @@ public class DecorationPlacer extends JFrame {
       System.out.println("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }
       }
     }
   }
-}
 
+  enum ImagePointType {
+    decorations(
+        "decorations.txt", "misc", "decorationExample.png", true, true, true, false, true, true,
+        "decorations.txt will place any kind of image you want anywhere, using the 'misc' folder",
+        "<html>decorations.txt will allow for multiple points per image. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = create a copy of currently selected image OR closest image <br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-enum ImagePointType {
-  decorations(
-      "decorations.txt", "misc", "decorationExample.png", true, true, true, false, true, true,
-      "decorations.txt will place any kind of image you want anywhere, using the 'misc' folder",
-      "<html>decorations.txt will allow for multiple points per image. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = create a copy of currently selected image OR closest image <br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+    name_place(
+        "name_place.txt", "territoryNames", "territoryName.png", true, false, true, true, false, false,
+        "name_place.txt only places images with the exact name of the territories on map, using the 'territoryNames' "
+            + "folder",
+        "<html>name_place.txt only allows 1 point per image/territory. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = nothing <br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-  name_place(
-      "name_place.txt", "territoryNames", "territoryName.png", true, false, true, true, false, false,
-      "name_place.txt only places images with the exact name of the territories on map, using the 'territoryNames' "
-          + "folder",
-      "<html>name_place.txt only allows 1 point per image/territory. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = nothing <br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+    pu_place(
+        "pu_place.txt", "PUs", "2.png", false, false, true, true, false, false,
+        "pu_place.txt is the point where the PUs get shown,"
+            + " and picks the PU images (like '2.png') from the 'PUs' folder",
+        "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = create an image and point for this territory if none exists yet <br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-  pu_place(
-      "pu_place.txt", "PUs", "2.png", false, false, true, true, false, false,
-      "pu_place.txt is the point where the PUs get shown, and picks the PU images (like '2.png') from the 'PUs' folder",
-      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = create an image and point for this territory if none exists yet <br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+    capitols(
+        "capitols.txt", "flags", "Neutral_large.png", false, false, false, false, false, true,
+        "capitols.txt is the point where a capitol flag is shown,"
+            + " and picks the <name>_large.png image from the 'flags' folder",
+        "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = create an image and point for this territory if none exists yet <br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-  capitols(
-      "capitols.txt", "flags", "Neutral_large.png", false, false, false, false, false, true,
-      "capitols.txt is the point where a capitol flag is shown, and picks the <name>_large.png image from the 'flags' "
-          + "folder",
-      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = create an image and point for this territory if none exists yet <br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+    vc(
+        "vc.txt", "misc", "vc.png", false, false, false, false, false, true,
+        "vc.txt is the point where a Victory City icon is shown, and picks the 'vc.png' image from the 'misc' folder",
+        "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = create an image and point for this territory if none exists yet <br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-  vc(
-      "vc.txt", "misc", "vc.png", false, false, false, false, false, true,
-      "vc.txt is the point where a Victory City icon is shown, and picks the 'vc.png' image from the 'misc' folder",
-      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = create an image and point for this territory if none exists yet <br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+    blockade(
+        "blockade.txt", "misc", "blockade.png", false, false, false, false, false, true,
+        "blockade.txt is the point where a blockade zone icon is shown, and picks the 'blockade.png' image from the "
+            + "'misc' folder",
+        "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = create an image and point for this territory if none exists yet <br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-  blockade(
-      "blockade.txt", "misc", "blockade.png", false, false, false, false, false, true,
-      "blockade.txt is the point where a blockade zone icon is shown, and picks the 'blockade.png' image from the "
-          + "'misc' folder",
-      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = create an image and point for this territory if none exists yet <br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+    convoy(
+        "convoy.txt", "flags", "Neutral.png", false, false, false, false, false, true,
+        "convoy.txt is the point where a nation flag is shown on any sea zone that has production ability,"
+            + " and picks the <name>.png image from the 'flags' folder",
+        "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = create an image and point for this territory if none exists yet <br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-  convoy(
-      "convoy.txt", "flags", "Neutral.png", false, false, false, false, false, true,
-      "convoy.txt is the point where a nation flag is shown on any sea zone that has production ability, and picks the "
-          + "<name>.png image from the 'flags' folder",
-      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = create an image and point for this territory if none exists yet <br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+    comments(
+        "comments.txt", "misc", "exampleConvoyText.png", false, false, false, true, false, false,
+        "comments.txt is the point where text details about a convoy zone or route is shown, and it does not use any "
+            + "image, instead it writes the text in-game",
+        "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = create an image and point for this territory if none exists yet <br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-  comments(
-      "comments.txt", "misc", "exampleConvoyText.png", false, false, false, true, false, false,
-      "comments.txt is the point where text details about a convoy zone or route is shown, and it does not use any "
-          + "image, instead it writes the text in-game",
-      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = create an image and point for this territory if none exists yet <br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+    kamikaze_place(
+        "kamikaze_place.txt", "flags", "Neutral_fade.png", false, false, false, false, false, true,
+        "kamikaze_place.txt is the point where a kamikaze zone symbol is shown,"
+            + " and it picks the <name>_fade.png image from the 'flags' folder",
+        "<html>pu_place.txt only allows 1 point per image/territory. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = create an image and point for this territory if none exists yet <br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
-  kamikaze_place(
-      "kamikaze_place.txt", "flags", "Neutral_fade.png", false, false, false, false, false, true,
-      "kamikaze_place.txt is the point where a kamikaze zone symbol is shown, and it picks the <name>_fade.png image "
-          + "from the 'flags' folder",
-      "<html>pu_place.txt only allows 1 point per image/territory. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = create an image and point for this territory if none exists yet <br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
+    territory_effects(
+        "territory_effects.txt", "territoryEffects", "mountain.png", false, false, false, false, true, true,
+        "territory_effects.txt is the point where a territory effect image is shown,"
+            + " and it picks the <effect>.png image from the 'territoryEffects' folder",
+        "<html>pu_place.txt will allow for multiple points per image. <br>"
+            + "Left Click = select closest image  OR  place currently selected image <br>"
+            + "Right click = copy selected image OR create an image for this territory<br>"
+            + "CTRL/SHIFT + Right Click = delete currently selected image point</html>");
 
-  territory_effects(
-      "territory_effects.txt", "territoryEffects", "mountain.png", false, false, false, false, true, true,
-      "territory_effects.txt is the point where a territory effect image is shown, and it picks the <effect>.png image "
-          + "from the 'territoryEffects' folder",
-      "<html>pu_place.txt will allow for multiple points per image. <br>"
-          + "Left Click = select closest image  OR  place currently selected image <br>"
-          + "Right click = copy selected image OR create an image for this territory<br>"
-          + "CTRL/SHIFT + Right Click = delete currently selected image point</html>");
+    public static final int SPACE_BETWEEN_NAMES_AND_PUS = 32;
+    private final String fileName;
+    private final String folderName;
+    private final String imageName;
+    private final boolean useFolder;
+    private final boolean endInPng;
+    private final boolean fillAll;
+    private final boolean canUseBottomLeftPoint;
+    private final boolean canHaveMultiplePoints;
+    private final boolean usesCentersPoint;
+    private final String description;
+    private final String instructions;
 
-  public static final int SPACE_BETWEEN_NAMES_AND_PUS = 32;
-  private final String fileName;
-  private final String folderName;
-  private final String imageName;
-  private final boolean useFolder;
-  private final boolean endInPng;
-  private final boolean fillAll;
-  private final boolean canUseBottomLeftPoint;
-  private final boolean canHaveMultiplePoints;
-  private final boolean usesCentersPoint;
-  private final String description;
-  private final String instructions;
+    protected static ImagePointType[] getTypes() {
+      return new ImagePointType[] {decorations, name_place, pu_place, capitols, vc, blockade, convoy, comments,
+          kamikaze_place, territory_effects};
+    }
 
-  protected static ImagePointType[] getTypes() {
-    return new ImagePointType[] {decorations, name_place, pu_place, capitols, vc, blockade, convoy, comments,
-        kamikaze_place, territory_effects};
-  }
+    ImagePointType(final String fileName, final String folderName, final String imageName, final boolean useFolder,
+        final boolean endInPng, final boolean fillAll, final boolean canUseBottomLeftPoint,
+        final boolean canHaveMultiplePoints, final boolean usesCentersPoint, final String description,
+        final String instructions) {
+      this.fileName = fileName;
+      this.folderName = folderName;
+      this.imageName = imageName;
+      this.useFolder = useFolder;
+      this.endInPng = endInPng;
+      this.fillAll = fillAll;
+      this.canUseBottomLeftPoint = canUseBottomLeftPoint;
+      this.canHaveMultiplePoints = canHaveMultiplePoints;
+      this.usesCentersPoint = usesCentersPoint;
+      this.description = description;
+      this.instructions = instructions;
+    }
 
-  ImagePointType(final String fileName, final String folderName, final String imageName, final boolean useFolder,
-      final boolean endInPng, final boolean fillAll, final boolean canUseBottomLeftPoint,
-      final boolean canHaveMultiplePoints, final boolean usesCentersPoint, final String description,
-      final String instructions) {
-    this.fileName = fileName;
-    this.folderName = folderName;
-    this.imageName = imageName;
-    this.useFolder = useFolder;
-    this.endInPng = endInPng;
-    this.fillAll = fillAll;
-    this.canUseBottomLeftPoint = canUseBottomLeftPoint;
-    this.canHaveMultiplePoints = canHaveMultiplePoints;
-    this.usesCentersPoint = usesCentersPoint;
-    this.description = description;
-    this.instructions = instructions;
-  }
+    public String getFileName() {
+      return fileName;
+    }
 
-  public String getFileName() {
-    return fileName;
-  }
+    public String getFolderName() {
+      return folderName;
+    }
 
-  public String getFolderName() {
-    return folderName;
-  }
+    public String getImageName() {
+      return imageName;
+    }
 
-  public String getImageName() {
-    return imageName;
-  }
+    public boolean isUseFolder() {
+      return useFolder;
+    }
 
-  public boolean isUseFolder() {
-    return useFolder;
-  }
+    public boolean isEndInPng() {
+      return endInPng;
+    }
 
-  public boolean isEndInPng() {
-    return endInPng;
-  }
+    public boolean isFillAll() {
+      return fillAll;
+    }
 
-  public boolean isFillAll() {
-    return fillAll;
-  }
+    public boolean isCanUseBottomLeftPoint() {
+      return canUseBottomLeftPoint;
+    }
 
-  public boolean isCanUseBottomLeftPoint() {
-    return canUseBottomLeftPoint;
-  }
+    public boolean isCanHaveMultiplePoints() {
+      return canHaveMultiplePoints;
+    }
 
-  public boolean isCanHaveMultiplePoints() {
-    return canHaveMultiplePoints;
-  }
+    public boolean isUsesCentersPoint() {
+      return usesCentersPoint;
+    }
 
-  public boolean isUsesCentersPoint() {
-    return usesCentersPoint;
-  }
+    public String getDescription() {
+      return description;
+    }
 
-  public String getDescription() {
-    return description;
-  }
-
-  public String getInstructions() {
-    return instructions;
+    public String getInstructions() {
+      return instructions;
+    }
   }
 }

@@ -51,13 +51,13 @@ public class PoliticalStateOverview extends JPanel {
     this.uic = uiContext;
     this.data = data;
     this.editable = editable;
-    drawPoliticsUI();
+    drawPoliticsUi();
   }
 
   /**
    * does the actual adding of elements to this panel.
    */
-  private void drawPoliticsUI() {
+  private void drawPoliticsUi() {
     this.setLayout(new GridBagLayout());
     // draw horizontal labels
     int currentCell = 1;
@@ -77,14 +77,14 @@ public class PoliticalStateOverview extends JPanel {
     // draw cells
     int x = 1;
     int y = 2;
-    for (final PlayerID pVertical : data.getPlayerList()) {
-      for (final PlayerID pHorizontal : data.getPlayerList()) {
-        if (pHorizontal.equals(pVertical)) {
+    for (final PlayerID verticalPlayer : data.getPlayerList()) {
+      for (final PlayerID horizontalPlayer : data.getPlayerList()) {
+        if (horizontalPlayer.equals(verticalPlayer)) {
           this.add(new JLabel(PoliticalStateOverview.LABEL_SELF), new GridBagConstraints(x++, y, 1, 1, 1.0, 1.0,
               GridBagConstraints.CENTER, GridBagConstraints.NONE, insets, 0, 0));
         } else {
-          this.add(getRelationshipLabel(pVertical, pHorizontal), new GridBagConstraints(x++, y, 1, 1, 1.0, 1.0,
-              GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+          this.add(getRelationshipLabel(verticalPlayer, horizontalPlayer), new GridBagConstraints(x++, y, 1, 1, 1.0,
+              1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
         }
       }
       y = y + 2;
@@ -209,7 +209,7 @@ public class PoliticalStateOverview extends JPanel {
    */
   public void redrawPolitics() {
     this.removeAll();
-    this.drawPoliticsUI();
+    this.drawPoliticsUi();
     this.revalidate();
   }
 

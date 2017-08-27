@@ -2,9 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -103,16 +101,6 @@ public class PacificTest extends DelegateTest {
     delegate.start();
   }
 
-  private static Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from) {
-    final Iterator<UnitType> iter = units.keySet().iterator();
-    final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
-    while (iter.hasNext()) {
-      final UnitType type = iter.next();
-      rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));
-    }
-    return rVal;
-  }
-
   @Override
   protected ITestDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
@@ -200,7 +188,7 @@ public class PacificTest extends DelegateTest {
     route.add(newBritain);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(getUnits(map, route.getStart()), route);
+    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -216,7 +204,7 @@ public class PacificTest extends DelegateTest {
     route.add(midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(getUnits(map, route.getStart()), route);
+    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // assertError( results);
   }
@@ -233,7 +221,7 @@ public class PacificTest extends DelegateTest {
     route.add(midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(getUnits(map, route.getStart()), route);
+    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -247,7 +235,7 @@ public class PacificTest extends DelegateTest {
     route.add(sz20);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
-    final String results = delegate.move(getUnits(map, route.getStart()), route);
+    final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
   }
 
@@ -270,7 +258,7 @@ public class PacificTest extends DelegateTest {
     assertEquals(1, sz24.getUnits().size());
     // validate movement
     final String results =
-        delegate.move(getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
     assertValid(results);
     // verify unit counts after move
     assertEquals(1, bonin.getUnits().size());

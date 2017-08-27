@@ -20,8 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import games.strategy.engine.ClientContext;
-import games.strategy.triplea.settings.scrolling.ScrollSettings;
+import games.strategy.triplea.settings.ClientSetting;
 
 /**
  * A large image that can be scrolled according to a ImageScrollModel.
@@ -40,13 +39,11 @@ public class ImageScrollerLargeView extends JComponent {
   static final int TOP = 4;
   static final int BOTTOM = 8;
 
-  private final ScrollSettings scrollSettings;
-
   protected final ImageScrollModel model;
   protected double scale = 1;
 
-  private int drag_scrolling_lastx;
-  private int drag_scrolling_lasty;
+  private int dragScrollingLastX;
+  private int dragScrollingLastY;
   private boolean wasLastActionDragging = false;
 
   public boolean wasLastActionDraggingAndReset() {
@@ -82,12 +79,11 @@ public class ImageScrollerLargeView extends JComponent {
 
   public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     super();
-    scrollSettings = ClientContext.scrollSettings();
     this.model = model;
     this.model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
     setMaximumSize(getImageDimensions());
-    final MouseWheelListener MOUSE_WHEEL_LISTENER = e -> {
+    final MouseWheelListener mouseWheelListener = e -> {
       if (!e.isAltDown()) {
         if (edge == NONE) {
           insideCount = 0;
@@ -96,9 +92,9 @@ public class ImageScrollerLargeView extends JComponent {
         int dx = 0;
         int dy = 0;
         if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-          dx = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
+          dx = e.getWheelRotation() * ClientSetting.WHEEL_SCROLL_AMOUNT.intValue();
         } else {
-          dy = e.getWheelRotation() * scrollSettings.getWheelScrollAmount();
+          dy = e.getWheelRotation() * ClientSetting.WHEEL_SCROLL_AMOUNT.intValue();
         }
         // move left and right and test for wrap
         int newX = (this.model.getX() + dx);
@@ -149,8 +145,8 @@ public class ImageScrollerLargeView extends JComponent {
         setScale(value);
       }
     };
-    addMouseWheelListener(MOUSE_WHEEL_LISTENER);
-    final MouseAdapter MOUSE_LISTENER = new MouseAdapter() {
+    addMouseWheelListener(mouseWheelListener);
+    final MouseAdapter mouseListener = new MouseAdapter() {
       @Override
       public void mouseEntered(final MouseEvent e) {
         timer.start();
@@ -172,17 +168,17 @@ public class ImageScrollerLargeView extends JComponent {
         requestFocusInWindow();
       }
     };
-    addMouseListener(MOUSE_LISTENER);
-    final MouseAdapter MOUSE_LISTENER_DRAG_SCROLLING = new MouseAdapter() {
+    addMouseListener(mouseListener);
+    final MouseAdapter mouseListenerDragScrolling = new MouseAdapter() {
       @Override
       public void mousePressed(final MouseEvent e) {
         // try to center around the click
-        drag_scrolling_lastx = e.getX();
-        drag_scrolling_lasty = e.getY();
+        dragScrollingLastX = e.getX();
+        dragScrollingLastY = e.getY();
       }
     };
-    addMouseListener(MOUSE_LISTENER_DRAG_SCROLLING);
-    final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter() {
+    addMouseListener(mouseListenerDragScrolling);
+    final MouseMotionListener mouseMotionListener = new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
         inside = true;
@@ -196,11 +192,11 @@ public class ImageScrollerLargeView extends JComponent {
         }
       }
     };
-    addMouseMotionListener(MOUSE_MOTION_LISTENER);
+    addMouseMotionListener(mouseMotionListener);
     /*
      * this is used to detect drag scrolling
      */
-    final MouseMotionListener MOUSE_DRAG_LISTENER = new MouseMotionAdapter() {
+    final MouseMotionListener mouseDragListener = new MouseMotionAdapter() {
       @Override
       public void mouseDragged(final MouseEvent e) {
         requestFocusInWindow();
@@ -215,8 +211,8 @@ public class ImageScrollerLargeView extends JComponent {
             insideCount = 0;
           }
           // compute the amount to move
-          final int dx = (drag_scrolling_lastx - x);
-          final int dy = (drag_scrolling_lasty - y);
+          final int dx = (dragScrollingLastX - x);
+          final int dy = (dragScrollingLastY - y);
           // move left and right and test for wrap
           final int newX = (ImageScrollerLargeView.this.model.getX() + dx);
           // move up and down and test for edges
@@ -224,19 +220,19 @@ public class ImageScrollerLargeView extends JComponent {
           // update the map
           ImageScrollerLargeView.this.model.set(newX, newY);
           // store the location of the mouse for the next move
-          drag_scrolling_lastx = e.getX();
-          drag_scrolling_lasty = e.getY();
+          dragScrollingLastX = e.getX();
+          dragScrollingLastY = e.getY();
         }
       }
     };
-    addMouseMotionListener(MOUSE_DRAG_LISTENER);
-    final ComponentListener COMPONENT_LISTENER = new ComponentAdapter() {
+    addMouseMotionListener(mouseDragListener);
+    final ComponentListener componentListener = new ComponentAdapter() {
       @Override
       public void componentResized(final ComponentEvent e) {
         refreshBoxSize();
       }
     };
-    addComponentListener(COMPONENT_LISTENER);
+    addComponentListener(componentListener);
     timer.start();
     this.model.addObserver((o, arg) -> {
       repaint();
@@ -286,15 +282,15 @@ public class ImageScrollerLargeView extends JComponent {
   private void scroll() {
     int dy = 0;
     if ((edge & TOP) != 0) {
-      dy = -scrollSettings.getMapEdgeScrollSpeed();
+      dy = -ClientSetting.MAP_EDGE_SCROLL_SPEED.intValue();
     } else if ((edge & BOTTOM) != 0) {
-      dy = scrollSettings.getMapEdgeScrollSpeed();
+      dy = ClientSetting.MAP_EDGE_SCROLL_SPEED.intValue();
     }
     int dx = 0;
     if ((edge & LEFT) != 0) {
-      dx = -scrollSettings.getMapEdgeScrollSpeed();
+      dx = -ClientSetting.MAP_EDGE_SCROLL_SPEED.intValue();
     } else if ((edge & RIGHT) != 0) {
-      dx = scrollSettings.getMapEdgeScrollSpeed();
+      dx = ClientSetting.MAP_EDGE_SCROLL_SPEED.intValue();
     }
 
     dx = (int) (dx / scale);
@@ -310,14 +306,14 @@ public class ImageScrollerLargeView extends JComponent {
 
   private int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
-    if (x < scrollSettings.getMapEdgeScrollZoneSize()) {
+    if (x < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += LEFT;
-    } else if (width - x < scrollSettings.getMapEdgeScrollZoneSize()) {
+    } else if (width - x < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += RIGHT;
     }
-    if (y < scrollSettings.getMapEdgeScrollZoneSize()) {
+    if (y < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += TOP;
-    } else if (height - y < scrollSettings.getMapEdgeScrollZoneSize()) {
+    } else if (height - y < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += BOTTOM;
     }
     return newEdge;

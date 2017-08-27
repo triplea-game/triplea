@@ -9,14 +9,25 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingComponents;
+import swinglib.JButtonBuilder;
+import tools.map.making.MapCreator;
 
+/**
+ * This is the main welcome panel with 'play online' button.
+ * This panel is just the upper right of the main screen, it does not include the map information
+ * nor the 'play' and 'quit' buttons.
+ */
 public class MetaSetupPanel extends SetupPanel {
 
   private static final long serialVersionUID = 3926503672972937677L;
@@ -90,8 +101,18 @@ public class MetaSetupPanel extends SetupPanel {
         GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
     add(ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
-    add(helpButton, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+
+    final JButton mapCreator = JButtonBuilder.builder()
+        .title("Run the Map Creator")
+        .actionListener(() -> ProcessRunnerUtil.runClass(MapCreator.class))
+        .build();
+
+    add(mapCreator, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
+
+    add(helpButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+        new Insets(10, 0, 0, 0), 0, 0));
+
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(00, 0, 0, 0), 0, 0));
@@ -103,7 +124,7 @@ public class MetaSetupPanel extends SetupPanel {
     hostGame.addActionListener(e -> model.showServer(MetaSetupPanel.this));
     connectToHostedGame.addActionListener(e -> model.showClient(MetaSetupPanel.this));
     connectToLobby.addActionListener(e -> connectToLobby());
-    enginePreferences.addActionListener(e -> enginePreferences());
+    enginePreferences.addActionListener(e -> ClientSetting.showSettingsWindow());
     ruleBook.addActionListener(e -> ruleBook());
     helpButton.addActionListener(e -> helpPage());
   }
@@ -117,19 +138,16 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
 
-
-  private void enginePreferences() {
-    EnginePreferences.showEnginePreferences(this);
-  }
-
-
   private void connectToLobby() {
-    final LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(this));
+    final LobbyServerProperties lobbyServerProperties = new LobbyServerPropertiesFetcher().fetchLobbyServerProperties();
+    final LobbyLogin login = new LobbyLogin(
+        JOptionPane.getFrameForComponent(this),
+        lobbyServerProperties);
     final LobbyClient client = login.login();
     if (client == null) {
       return;
     }
-    final LobbyFrame lobbyFrame = new LobbyFrame(client);
+    final LobbyFrame lobbyFrame = new LobbyFrame(client, lobbyServerProperties);
     GameRunner.hideMainFrame();
     lobbyFrame.setVisible(true);
   }

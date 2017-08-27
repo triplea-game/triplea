@@ -105,9 +105,9 @@ public class TerritoryNameDrawable implements IDrawable {
     }
     // draw the PUs.
     if (ta != null && ta.getProduction() > 0 && mapData.drawResources()) {
-      final Image img = uiContext.getPUImageFactory().getPUImage(ta.getProduction());
+      final Image img = uiContext.getPuImageFactory().getPUImage(ta.getProduction());
       final String prod = Integer.valueOf(ta.getProduction()).toString();
-      final Optional<Point> place = mapData.getPUPlacementPoint(territory);
+      final Optional<Point> place = mapData.getPuPlacementPoint(territory);
       // if pu_place.txt is specified draw there
       if (place.isPresent()) {
         draw(bounds, graphics, place.get().x, place.get().y, img, prod, drawFromTopLeft);

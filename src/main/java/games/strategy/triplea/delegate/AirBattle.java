@@ -30,6 +30,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleADisplay;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -54,7 +55,7 @@ public class AirBattle extends AbstractBattle {
     super(battleSite, attacker, battleTracker, bombingRaid, (bombingRaid ? BattleType.AIR_RAID : BattleType.AIR_BATTLE),
         data);
     m_isAmphibious = false;
-    m_maxRounds = games.strategy.triplea.Properties.getAirBattleRounds(data);
+    m_maxRounds = Properties.getAirBattleRounds(data);
     updateDefendingUnits();
   }
 
@@ -127,12 +128,12 @@ public class AirBattle extends AbstractBattle {
 
   protected boolean canAttackerRetreat() {
     return !shouldEndBattleDueToMaxRounds() && shouldFightAirBattle()
-        && games.strategy.triplea.Properties.getAirBattleAttackersCanRetreat(m_data);
+        && Properties.getAirBattleAttackersCanRetreat(m_data);
   }
 
   protected boolean canDefenderRetreat() {
     return !shouldEndBattleDueToMaxRounds() && shouldFightAirBattle()
-        && games.strategy.triplea.Properties.getAirBattleDefendersCanRetreat(m_data);
+        && Properties.getAirBattleDefendersCanRetreat(m_data);
   }
 
   List<IExecutable> getBattleExecutables(final boolean firstRun) {
@@ -151,36 +152,36 @@ public class AirBattle extends AbstractBattle {
           if (!m_intercept) {
             return;
           }
-          final IntegerMap<UnitType> defenderCosts = BattleCalculator.getCostsForTUV(m_defender, m_data);
-          final IntegerMap<UnitType> attackerCosts = BattleCalculator.getCostsForTUV(m_attacker, m_data);
+          final IntegerMap<UnitType> defenderCosts = TuvUtils.getCostsForTuv(m_defender, m_data);
+          final IntegerMap<UnitType> attackerCosts = TuvUtils.getCostsForTuv(m_attacker, m_data);
           m_attackingUnits.removeAll(m_attackingWaitingToDie);
           remove(m_attackingWaitingToDie, bridge, m_battleSite);
           m_defendingUnits.removeAll(m_defendingWaitingToDie);
           remove(m_defendingWaitingToDie, bridge, m_battleSite);
-          int tuvLostAttacker = BattleCalculator.getTUV(m_attackingWaitingToDie, m_attacker, attackerCosts, m_data);
+          int tuvLostAttacker = TuvUtils.getTuv(m_attackingWaitingToDie, m_attacker, attackerCosts, m_data);
           m_attackerLostTUV += tuvLostAttacker;
-          int tuvLostDefender = BattleCalculator.getTUV(m_defendingWaitingToDie, m_defender, defenderCosts, m_data);
+          int tuvLostDefender = TuvUtils.getTuv(m_defendingWaitingToDie, m_defender, defenderCosts, m_data);
           m_defenderLostTUV += tuvLostDefender;
           m_attackingWaitingToDie.clear();
           m_defendingWaitingToDie.clear();
           // kill any suicide attackers (veqryn)
           final Match.CompositeBuilder<Unit> attackerSuicideBuilder = Match.newCompositeBuilder(
-              Matches.UnitIsSuicide);
+              Matches.unitIsSuicide());
           if (m_isBombingRun) {
-            attackerSuicideBuilder.add(Matches.UnitIsNotStrategicBomber);
+            attackerSuicideBuilder.add(Matches.unitIsNotStrategicBomber());
           }
           if (Match.anyMatch(m_attackingUnits, attackerSuicideBuilder.all())) {
-            final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
+            final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.unitIsSuicide());
             m_attackingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
-            tuvLostAttacker = BattleCalculator.getTUV(suicideUnits, m_attacker, attackerCosts, m_data);
+            tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, attackerCosts, m_data);
             m_attackerLostTUV += tuvLostAttacker;
           }
-          if (Match.anyMatch(m_defendingUnits, Matches.UnitIsSuicide)) {
-            final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
+          if (Match.anyMatch(m_defendingUnits, Matches.unitIsSuicide())) {
+            final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.unitIsSuicide());
             m_defendingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
-            tuvLostDefender = BattleCalculator.getTUV(suicideUnits, m_defender, defenderCosts, m_data);
+            tuvLostDefender = TuvUtils.getTuv(suicideUnits, m_defender, defenderCosts, m_data);
             m_defenderLostTUV += tuvLostDefender;
           }
         }
@@ -313,7 +314,7 @@ public class AirBattle extends AbstractBattle {
           if (!enemyTargets.isEmpty()) {
             Unit target = null;
             if (enemyTargets.size() > 1
-                && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data)) {
+                && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data)) {
               while (target == null) {
                 target =
                     getRemote(bridge).whatShouldBomberBomb(m_battleSite, enemyTargets, Collections.singletonList(unit));
@@ -501,7 +502,7 @@ public class AirBattle extends AbstractBattle {
         // if normal battle, we may choose to withdraw some air units (keep them grounded for both Air battle and the
         // subsequent normal
         // battle) instead of launching
-        if (games.strategy.triplea.Properties.getAirBattleDefendersCanRetreat(m_data)) {
+        if (Properties.getAirBattleDefendersCanRetreat(m_data)) {
           interceptors = getRemote(m_defender, bridge).selectUnitsQuery(m_battleSite,
               new ArrayList<>(m_defendingUnits), "Select Air to Intercept");
           groundedPlanesRetreated = true;
@@ -646,9 +647,9 @@ public class AirBattle extends AbstractBattle {
     final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
         Matches.unitCanAirBattle,
         Matches.unitIsEnemyOf(data, attacker),
-        Matches.UnitWasInAirBattle.invert());
+        Matches.unitWasInAirBattle().invert());
     if (!Properties.getCanScrambleIntoAirBattles(data)) {
-      matchBuilder.add(Matches.UnitWasScrambled.invert());
+      matchBuilder.add(Matches.unitWasScrambled().invert());
     }
     return matchBuilder.all();
   }
@@ -657,16 +658,16 @@ public class AirBattle extends AbstractBattle {
     final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
         Matches.unitCanIntercept,
         Matches.unitIsEnemyOf(data, attacker),
-        Matches.UnitWasInAirBattle.invert());
+        Matches.unitWasInAirBattle().invert());
     if (!Properties.getCanScrambleIntoAirBattles(data)) {
-      matchBuilder.add(Matches.UnitWasScrambled.invert());
+      matchBuilder.add(Matches.unitWasScrambled().invert());
     }
     return matchBuilder.all();
   }
 
   static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,
       final GameData data, final boolean bombing) {
-    final boolean canScrambleToAirBattle = games.strategy.triplea.Properties.getCanScrambleIntoAirBattles(data);
+    final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
     final Match<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(attacker, data)
         : defendingGroundSeaBattleInterceptors(attacker, data);
     int maxScrambleDistance = 0;

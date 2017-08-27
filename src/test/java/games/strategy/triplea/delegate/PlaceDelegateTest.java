@@ -3,10 +3,8 @@ package games.strategy.triplea.delegate;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Before;
@@ -41,21 +39,12 @@ public class PlaceDelegateTest extends DelegateTest {
     delegate.start();
   }
 
-  private static Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from) {
-    final Iterator<UnitType> iter = units.keySet().iterator();
-    final Collection<Unit> rVal = new ArrayList<>(units.totalValues());
-    while (iter.hasNext()) {
-      final UnitType type = iter.next();
-      rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));
-    }
-    return rVal;
-  }
-
   @Test
   public void testValid() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
-    final String response = delegate.placeUnits(getUnits(map, british), uk, IAbstractPlaceDelegate.BidMode.NOT_BID);
+    final String response =
+        delegate.placeUnits(GameDataTestUtil.getUnits(map, british), uk, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(response);
   }
 
@@ -70,7 +59,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testOnlySeaInSeaZone() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
-    final String response = delegate.canUnitsBePlaced(northSea, getUnits(map, british), british);
+    final String response = delegate.canUnitsBePlaced(northSea, GameDataTestUtil.getUnits(map, british), british);
     assertError(response);
   }
 
@@ -78,7 +67,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testSeaCanGoInSeaZone() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transport, 2);
-    final String response = delegate.canUnitsBePlaced(northSea, getUnits(map, british), british);
+    final String response = delegate.canUnitsBePlaced(northSea, GameDataTestUtil.getUnits(map, british), british);
     assertValid(response);
   }
 
@@ -86,7 +75,8 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testLandCanGoInLandZone() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
-    final String response = delegate.placeUnits(getUnits(map, british), uk, IAbstractPlaceDelegate.BidMode.NOT_BID);
+    final String response =
+        delegate.placeUnits(GameDataTestUtil.getUnits(map, british), uk, IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(response);
   }
 
@@ -94,7 +84,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testSeaCantGoInSeaInLandZone() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transport, 2);
-    final String response = delegate.canUnitsBePlaced(uk, getUnits(map, british), british);
+    final String response = delegate.canUnitsBePlaced(uk, GameDataTestUtil.getUnits(map, british), british);
     assertError(response);
   }
 
@@ -102,7 +92,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testNoGoIfOpposingTroopsSea() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transport, 2);
-    final String response = delegate.canUnitsBePlaced(northSea, getUnits(map, japanese), japanese);
+    final String response = delegate.canUnitsBePlaced(northSea, GameDataTestUtil.getUnits(map, japanese), japanese);
     assertError(response);
   }
 
@@ -110,7 +100,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testNoGoIfOpposingTroopsLand() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
-    final String response = delegate.canUnitsBePlaced(japan, getUnits(map, british), british);
+    final String response = delegate.canUnitsBePlaced(japan, GameDataTestUtil.getUnits(map, british), british);
     assertError(response);
   }
 
@@ -118,7 +108,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testOnlyOneFactoryPlaced() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(factory, 1);
-    final String response = delegate.canUnitsBePlaced(uk, getUnits(map, british), british);
+    final String response = delegate.canUnitsBePlaced(uk, GameDataTestUtil.getUnits(map, british), british);
     assertError(response);
   }
 
@@ -126,7 +116,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testCantPlaceAaWhenOneAlreadyThere() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(aaGun, 1);
-    final String response = delegate.canUnitsBePlaced(uk, getUnits(map, british), british);
+    final String response = delegate.canUnitsBePlaced(uk, GameDataTestUtil.getUnits(map, british), british);
     assertError(response);
   }
 
@@ -134,7 +124,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testCantPlaceTwoAa() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(aaGun, 2);
-    final String response = delegate.canUnitsBePlaced(westCanada, getUnits(map, british), british);
+    final String response = delegate.canUnitsBePlaced(westCanada, GameDataTestUtil.getUnits(map, british), british);
     assertError(response);
   }
 
@@ -142,7 +132,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testProduceFactory() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(factory, 1);
-    final String response = delegate.canUnitsBePlaced(egypt, getUnits(map, british), british);
+    final String response = delegate.canUnitsBePlaced(egypt, GameDataTestUtil.getUnits(map, british), british);
     assertValid(response);
   }
 
@@ -150,7 +140,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testMustOwnToPlace() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
-    final String response = delegate.canUnitsBePlaced(germany, getUnits(map, british), british);
+    final String response = delegate.canUnitsBePlaced(germany, GameDataTestUtil.getUnits(map, british), british);
     assertError(response);
   }
 
@@ -158,7 +148,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testCanProduce() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 2);
-    final PlaceableUnits response = delegate.getPlaceableUnits(getUnits(map, british), westCanada);
+    final PlaceableUnits response = delegate.getPlaceableUnits(GameDataTestUtil.getUnits(map, british), westCanada);
     assertFalse(response.isError());
   }
 
@@ -166,7 +156,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testCanProduceInSea() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transport, 2);
-    final PlaceableUnits response = delegate.getPlaceableUnits(getUnits(map, british), northSea);
+    final PlaceableUnits response = delegate.getPlaceableUnits(GameDataTestUtil.getUnits(map, british), northSea);
     assertFalse(response.isError());
   }
 
@@ -174,7 +164,7 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testCanNotProduceThatManyUnits() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 3);
-    final PlaceableUnits response = delegate.getPlaceableUnits(getUnits(map, british), westCanada);
+    final PlaceableUnits response = delegate.getPlaceableUnits(GameDataTestUtil.getUnits(map, british), westCanada);
     assertTrue(response.getMaxUnits() == 2);
   }
 
@@ -185,7 +175,7 @@ public class PlaceDelegateTest extends DelegateTest {
     alreadyProduced.put(westCanada, getInfantry(2, british));
     delegate.setProduced(alreadyProduced);
     map.add(infantry, 1);
-    final PlaceableUnits response = delegate.getPlaceableUnits(getUnits(map, british), westCanada);
+    final PlaceableUnits response = delegate.getPlaceableUnits(GameDataTestUtil.getUnits(map, british), westCanada);
     assertTrue(response.getMaxUnits() == 0);
   }
 
@@ -193,13 +183,13 @@ public class PlaceDelegateTest extends DelegateTest {
   public void testMultipleFactories() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(factory, 1);
-    String response = delegate.canUnitsBePlaced(egypt, getUnits(map, british), british);
+    String response = delegate.canUnitsBePlaced(egypt, GameDataTestUtil.getUnits(map, british), british);
     // we can place 1 factory
     assertValid(response);
     // we cant place 2
     map = new IntegerMap<>();
     map.add(factory, 2);
-    response = delegate.canUnitsBePlaced(egypt, getUnits(map, british), british);
+    response = delegate.canUnitsBePlaced(egypt, GameDataTestUtil.getUnits(map, british), british);
     assertError(response);
   }
 }

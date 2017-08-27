@@ -18,11 +18,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.util.Version;
 
-
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class MapDownloadListTest {
-
-
   private static final String MAP_NAME = "new_test_order";
   private static final Version MAP_VERSION = new Version(10, 10);
   private static final Version lowVersion = new Version(0, 0);
@@ -119,5 +116,14 @@ public class MapDownloadListTest {
     final List<DownloadFileDescription> outOfDate = testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
 
     assertThat(outOfDate, is(Arrays.asList(download2)));
+  }
+
+  @Test
+  public void testIsInstalled() {
+    when(strategy.getMapVersion(any())).thenReturn(Optional.of(MAP_VERSION));
+    final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
+
+    assertThat(testObj.isInstalled(TEST_MAP), is(true));
+    assertThat(testObj.isInstalled(newDownloadWithUrl("url1")), is(false));
   }
 }

@@ -20,13 +20,12 @@ public class GameDataUtils {
    */
   public static GameData cloneGameData(final GameData data, final boolean copyDelegates) {
     try {
-      final GameDataManager manager = new GameDataManager();
       ByteArrayOutputStream sink = new ByteArrayOutputStream(10000);
-      manager.saveGame(sink, data, copyDelegates);
+      GameDataManager.saveGame(sink, data, copyDelegates);
       sink.close();
       final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
       sink = null;
-      return manager.loadGame(source, null);
+      return GameDataManager.loadGame(source, null);
     } catch (final IOException ex) {
       ClientLogger.logQuietly(ex);
       return null;
@@ -41,10 +40,9 @@ public class GameDataUtils {
   public static <T> T translateIntoOtherGameData(final T object, final GameData translateInto) {
     try {
       ByteArrayOutputStream sink = new ByteArrayOutputStream(1024);
-      final GameObjectOutputStream out = new GameObjectOutputStream(sink);
-      out.writeObject(object);
-      out.flush();
-      out.close();
+      try (final GameObjectOutputStream out = new GameObjectOutputStream(sink)) {
+        out.writeObject(object);
+      }
       final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
       sink = null;
       final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);

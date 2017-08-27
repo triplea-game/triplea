@@ -5,9 +5,9 @@ import java.awt.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -138,15 +138,15 @@ public class ObjectivePanel extends AbstractStatPanel {
   class ObjectiveTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = 2259315408905271333L;
     private static final int COLUMNS_TOTAL = 2;
-    private boolean m_isDirty = true;
-    private String[][] m_collectedData;
-    final Map<String, List<String>> m_sections = new LinkedHashMap<>();
-    private long m_timestamp = 0;
+    private boolean isDirty = true;
+    private String[][] collectedData;
+    final Map<String, List<String>> sections = new LinkedHashMap<>();
+    private Instant timestamp = Instant.EPOCH;
 
     public ObjectiveTableModel() {
       setObjectiveStats();
       gameData.addDataChangeListener(this);
-      m_isDirty = true;
+      isDirty = true;
     }
 
     public void removeDataChangeListener() {
@@ -190,7 +190,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       Collections.sort(sectionsSorters);
       for (final String section : sectionsSorters) {
         final String key = section.split(";")[1];
-        m_sections.put(key, sectionsUnsorted.get(key));
+        sections.put(key, sectionsUnsorted.get(key));
         statsObjective.put(key, new LinkedHashMap<>());
         statsObjectiveUnsorted.put(key, new HashMap<>());
       }
@@ -244,8 +244,8 @@ public class ObjectivePanel extends AbstractStatPanel {
         }
         // find which section
         boolean found = false;
-        if (m_sections.containsKey(player.getName())) {
-          if (m_sections.get(player.getName()).contains(key[1])) {
+        if (sections.containsKey(player.getName())) {
+          if (sections.get(player.getName()).contains(key[1])) {
             final Map<ICondition, String> map = statsObjectiveUnsorted.get(player.getName());
             if (map == null) {
               throw new IllegalStateException("objective.properties group has nothing: " + player.getName());
@@ -256,7 +256,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           }
         }
         if (!found) {
-          for (final Entry<String, List<String>> sectionEntry : m_sections.entrySet()) {
+          for (final Entry<String, List<String>> sectionEntry : sections.entrySet()) {
             if (sectionEntry.getValue().contains(key[1])) {
               final Map<ICondition, String> map = statsObjectiveUnsorted.get(sectionEntry.getKey());
               if (map == null) {
@@ -272,7 +272,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       for (final Entry<String, Map<ICondition, String>> entry : statsObjective.entrySet()) {
         final Map<ICondition, String> mapUnsorted = statsObjectiveUnsorted.get(entry.getKey());
         final Map<ICondition, String> mapSorted = entry.getValue();
-        for (final String conditionString : m_sections.get(entry.getKey())) {
+        for (final String conditionString : sections.get(entry.getKey())) {
           final Iterator<ICondition> conditionIter = mapUnsorted.keySet().iterator();
           while (conditionIter.hasNext()) {
             final ICondition condition = conditionIter.next();
@@ -289,30 +289,30 @@ public class ObjectivePanel extends AbstractStatPanel {
     @Override
     public synchronized Object getValueAt(final int row, final int col) {
       // do not refresh too often, or else it will slow the game down seriously
-      if (m_isDirty && Calendar.getInstance().getTimeInMillis() > m_timestamp + 10000) {
+      if (isDirty && timestamp.plusSeconds(10).isBefore(Instant.now())) {
         loadData();
-        m_isDirty = false;
-        m_timestamp = Calendar.getInstance().getTimeInMillis();
+        isDirty = false;
+        timestamp = Instant.now();
       }
-      return m_collectedData[row][col];
+      return collectedData[row][col];
     }
 
     private synchronized void loadData() {
       gameData.acquireReadLock();
       try {
         final HashMap<ICondition, String> conditions = getConditionComment(getTestedConditions());
-        m_collectedData = new String[getRowTotal()][COLUMNS_TOTAL];
+        collectedData = new String[getRowTotal()][COLUMNS_TOTAL];
         int row = 0;
         for (final Entry<String, Map<ICondition, String>> mapEntry : statsObjective.entrySet()) {
-          m_collectedData[row][1] =
+          collectedData[row][1] =
               "<html><span style=\"font-size:140%\"><b><em>" + mapEntry.getKey() + "</em></b></span></html>";
           for (final Entry<ICondition, String> attachmentEntry : mapEntry.getValue().entrySet()) {
             row++;
-            m_collectedData[row][0] = conditions.get(attachmentEntry.getKey());
-            m_collectedData[row][1] = "<html>" + attachmentEntry.getValue() + "</html>";
+            collectedData[row][0] = conditions.get(attachmentEntry.getKey());
+            collectedData[row][1] = "<html>" + attachmentEntry.getValue() + "</html>";
           }
           row++;
-          m_collectedData[row][1] = "--------------------";
+          collectedData[row][1] = "--------------------";
           row++;
         }
       } finally {
@@ -372,7 +372,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     @Override
     public void gameDataChanged(final Change change) {
       synchronized (this) {
-        m_isDirty = true;
+        isDirty = true;
       }
       SwingUtilities.invokeLater(() -> repaint());
     }
@@ -393,8 +393,8 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     @Override
     public synchronized int getRowCount() {
-      if (!m_isDirty) {
-        return m_collectedData.length;
+      if (!isDirty) {
+        return collectedData.length;
       } else {
         gameData.acquireReadLock();
         try {
@@ -406,7 +406,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     private int getRowTotal() {
-      int rowsTotal = m_sections.size() * 2; // we include a space between sections as well
+      int rowsTotal = sections.size() * 2; // we include a space between sections as well
       for (final Map<ICondition, String> map : statsObjective.values()) {
         rowsTotal += map.size();
       }
@@ -419,7 +419,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         gameData = data;
         setObjectiveStats();
         gameData.addDataChangeListener(this);
-        m_isDirty = true;
+        isDirty = true;
       }
       repaint();
     }
@@ -572,249 +572,247 @@ public class ObjectivePanel extends AbstractStatPanel {
       return maximumHeight;
     }
   }
-}
 
-/** TODO: copy paste overlap with NotifcationMessages.java */
-class ObjectiveProperties {
-  // Filename
-  private static final String PROPERTY_FILE = "objectives.properties";
-  static final String GROUP_PROPERTY = "TABLEGROUP";
-  static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
-  private static ObjectiveProperties s_op = null;
-  private static long s_timestamp = 0;
-  private final Properties m_properties = new Properties();
+  // TODO: copy paste overlap with NotifcationMessages.java
+  static class ObjectiveProperties {
+    // Filename
+    private static final String PROPERTY_FILE = "objectives.properties";
+    static final String GROUP_PROPERTY = "TABLEGROUP";
+    static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
+    private static ObjectiveProperties instance = null;
+    private static Instant timestamp = Instant.EPOCH;
+    private final Properties properties = new Properties();
 
-  protected ObjectiveProperties() {
-    final ResourceLoader loader = AbstractUIContext.getResourceLoader();
-    final URL url = loader.getResource(PROPERTY_FILE);
-    if (url != null) {
-      final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-      if (inputStream.isPresent()) {
-        try {
-          m_properties.load(inputStream.get());
-        } catch (final IOException e) {
-          System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+    protected ObjectiveProperties() {
+      final ResourceLoader loader = AbstractUIContext.getResourceLoader();
+      final URL url = loader.getResource(PROPERTY_FILE);
+      if (url != null) {
+        final Optional<InputStream> inputStream = UrlStreams.openStream(url);
+        if (inputStream.isPresent()) {
+          try {
+            properties.load(inputStream.get());
+          } catch (final IOException e) {
+            System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+          }
         }
       }
     }
-  }
 
-  public static ObjectiveProperties getInstance() {
-    // cache properties for 1 second
-    if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000) {
-      s_op = new ObjectiveProperties();
-      s_timestamp = Calendar.getInstance().getTimeInMillis();
+    public static ObjectiveProperties getInstance() {
+      // cache properties for 1 second
+      if (instance == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
+        instance = new ObjectiveProperties();
+        timestamp = Instant.now();
+      }
+      return instance;
     }
-    return s_op;
-  }
 
-  public String getProperty(final String objectiveKey) {
-    return getProperty(objectiveKey, "Not Found In objectives.properties");
-  }
-
-  public String getProperty(final String objectiveKey, final String defaultValue) {
-    return m_properties.getProperty(objectiveKey, defaultValue);
-  }
-
-  public Set<Entry<Object, Object>> entrySet() {
-    return m_properties.entrySet();
-  }
-}
-
-
-class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
-  private final ITripleADisplay m_display = new HeadlessDisplay();
-  private final ISound m_soundChannel = new HeadlessSoundChannel();
-  private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
-  private final GameData m_data;
-  private final ObjectivePanelDummyPlayer m_dummyAI =
-      new ObjectivePanelDummyPlayer("objective panel dummy", "None (AI)");
-
-  public ObjectivePanelDummyDelegateBridge(final GameData data) {
-    m_data = data;
-  }
-
-  @Override
-  public GameData getData() {
-    return m_data;
-  }
-
-  @Override
-  public void leaveDelegateExecution() {}
-
-  @Override
-  public Properties getStepProperties() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public String getStepName() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public IRemotePlayer getRemotePlayer(final PlayerID id) {
-    return m_dummyAI;
-  }
-
-  @Override
-  public IRemotePlayer getRemotePlayer() {
-    return m_dummyAI;
-  }
-
-  @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
-      final String annotation) {
-    if (count <= 0) {
-      throw new IllegalStateException("count must be > o, annotation:" + annotation);
+    public String getProperty(final String objectiveKey) {
+      return getProperty(objectiveKey, "Not Found In objectives.properties");
     }
-    final int[] numbers = new int[count];
-    for (int i = 0; i < count; i++) {
-      numbers[i] = getRandom(max, player, diceType, annotation);
+
+    public String getProperty(final String objectiveKey, final String defaultValue) {
+      return properties.getProperty(objectiveKey, defaultValue);
     }
-    return numbers;
+
+    public Set<Entry<Object, Object>> entrySet() {
+      return properties.entrySet();
+    }
   }
 
-  @Override
-  public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
-    return 0;
+  static class ObjectivePanelDummyDelegateBridge implements IDelegateBridge {
+    private final ITripleADisplay display = new HeadlessDisplay();
+    private final ISound soundChannel = new HeadlessSoundChannel();
+    private final DelegateHistoryWriter writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
+    private final GameData gameData;
+    private final ObjectivePanelDummyPlayer dummyAi =
+        new ObjectivePanelDummyPlayer("objective panel dummy", "None (AI)");
+
+    public ObjectivePanelDummyDelegateBridge(final GameData data) {
+      gameData = data;
+    }
+
+    @Override
+    public GameData getData() {
+      return gameData;
+    }
+
+    @Override
+    public void leaveDelegateExecution() {}
+
+    @Override
+    public Properties getStepProperties() {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getStepName() {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public IRemotePlayer getRemotePlayer(final PlayerID id) {
+      return dummyAi;
+    }
+
+    @Override
+    public IRemotePlayer getRemotePlayer() {
+      return dummyAi;
+    }
+
+    @Override
+    public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+        final String annotation) {
+      if (count <= 0) {
+        throw new IllegalStateException("count must be > o, annotation:" + annotation);
+      }
+      final int[] numbers = new int[count];
+      for (int i = 0; i < count; i++) {
+        numbers[i] = getRandom(max, player, diceType, annotation);
+      }
+      return numbers;
+    }
+
+    @Override
+    public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
+      return 0;
+    }
+
+    @Override
+    public PlayerID getPlayerID() {
+      return PlayerID.NULL_PLAYERID;
+    }
+
+    @Override
+    public IDelegateHistoryWriter getHistoryWriter() {
+      return writer;
+    }
+
+    @Override
+    public IDisplay getDisplayChannelBroadcaster() {
+      return display;
+    }
+
+    @Override
+    public ISound getSoundChannelBroadcaster() {
+      return soundChannel;
+    }
+
+    @Override
+    public void enterDelegateExecution() {}
+
+    @Override
+    public void addChange(final Change change) {}
+
+    @Override
+    public void stopGameSequence() {}
   }
 
-  @Override
-  public PlayerID getPlayerID() {
-    return PlayerID.NULL_PLAYERID;
+  static class DummyGameModifiedChannel implements IGameModifiedChannel {
+    @Override
+    public void addChildToEvent(final String text, final Object renderingData) {}
+
+    @Override
+    public void gameDataChanged(final Change change) {}
+
+    @Override
+    public void shutDown() {}
+
+    @Override
+    public void startHistoryEvent(final String event) {}
+
+    @Override
+    public void startHistoryEvent(final String event, final Object renderingData) {}
+
+    @Override
+    public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
+        final String displayName, final boolean loadedFromSavedGame) {}
   }
 
-  @Override
-  public IDelegateHistoryWriter getHistoryWriter() {
-    return m_writer;
+  static class ObjectivePanelDummyPlayer extends AbstractAI {
+    public ObjectivePanelDummyPlayer(final String name, final String type) {
+      super(name, type);
+    }
+
+    @Override
+    protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
+        final PlayerID player) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
+        final PlayerID player) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void purchase(final boolean purcahseForBid, final int pusToSpend,
+        final IPurchaseDelegate purchaseDelegate,
+        final GameData data, final PlayerID player) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
+        final Territory from) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleSite,
+        final Collection<Territory> possibleTerritories, final String message) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+        final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
+        final String message) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
+        final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+        final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+        final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+        final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
+        final boolean allowMultipleHitsPerUnit) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates,
+        final Territory currentTerritory,
+        final String unitMessage) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean shouldBomberBomb(final Territory territory) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+        final Collection<Unit> bombers) {
+      throw new UnsupportedOperationException();
+    }
   }
-
-  @Override
-  public IDisplay getDisplayChannelBroadcaster() {
-    return m_display;
-  }
-
-  @Override
-  public ISound getSoundChannelBroadcaster() {
-    return m_soundChannel;
-  }
-
-  @Override
-  public void enterDelegateExecution() {}
-
-  @Override
-  public void addChange(final Change change) {}
-
-  @Override
-  public void stopGameSequence() {}
-}
-
-
-class DummyGameModifiedChannel implements IGameModifiedChannel {
-  @Override
-  public void addChildToEvent(final String text, final Object renderingData) {}
-
-  @Override
-  public void gameDataChanged(final Change change) {}
-
-  @Override
-  public void shutDown() {}
-
-  @Override
-  public void startHistoryEvent(final String event) {}
-
-  @Override
-  public void startHistoryEvent(final String event, final Object renderingData) {}
-
-  @Override
-  public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
-      final String displayName, final boolean loadedFromSavedGame) {}
-}
-
-
-class ObjectivePanelDummyPlayer extends AbstractAI {
-  public ObjectivePanelDummyPlayer(final String name, final String type) {
-    super(name, type);
-  }
-
-  @Override
-  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
-      final PlayerID player) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
-      final PlayerID player) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  protected void purchase(final boolean purcahseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
-      final GameData data, final PlayerID player) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
-      final Territory from) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleSite,
-      final Collection<Territory> possibleTerritories, final String message) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
-      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
-      final String message) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
-      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
-      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
-      final boolean allowMultipleHitsPerUnit) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
-      final String unitMessage) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public boolean shouldBomberBomb(final Territory territory) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
-      final Collection<Unit> bombers) {
-    throw new UnsupportedOperationException();
-  }
-
 }

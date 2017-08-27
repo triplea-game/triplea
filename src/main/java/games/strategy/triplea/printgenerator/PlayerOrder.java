@@ -19,18 +19,17 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.InitializationDelegate;
 
 public class PlayerOrder {
-  private final List<PlayerID> m_playerSet = new ArrayList<>();
+  private final List<PlayerID> playerSet = new ArrayList<>();
 
   private static <E> Set<E> removeDups(final Collection<E> c) {
     return new LinkedHashSet<>(c);
   }
 
   protected void saveToFile(final PrintGenerationData printData) throws IOException {
-    final GameData m_data = printData.getData();
-    final PrintGenerationData m_printData = printData;
-    final Iterator<GameStep> m_gameStepIterator = m_data.getSequence().iterator();
-    while (m_gameStepIterator.hasNext()) {
-      final GameStep currentStep = m_gameStepIterator.next();
+    final GameData gameData = printData.getData();
+    final Iterator<GameStep> gameStepIterator = gameData.getSequence().iterator();
+    while (gameStepIterator.hasNext()) {
+      final GameStep currentStep = gameStepIterator.next();
       if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {
         final String delegateClassName = currentStep.getDelegate().getClass().getName();
         if (delegateClassName.equals(InitializationDelegate.class.getName())
@@ -45,22 +44,21 @@ public class PlayerOrder {
       }
       final PlayerID currentPlayerId = currentStep.getPlayerID();
       if (currentPlayerId != null && !currentPlayerId.isNull()) {
-        m_playerSet.add(currentPlayerId);
+        playerSet.add(currentPlayerId);
       }
     }
-    FileWriter turnWriter = null;
-    m_printData.getOutDir().mkdir();
-    final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
-    turnWriter = new FileWriter(outFile, true);
-    turnWriter.write("Turn Order\r\n");
-    final Set<PlayerID> noDuplicates = removeDups(m_playerSet);
-    final Iterator<PlayerID> playerIterator = noDuplicates.iterator();
-    int count = 1;
-    while (playerIterator.hasNext()) {
-      final PlayerID currentPlayerId = playerIterator.next();
-      turnWriter.write(count + ". " + currentPlayerId.getName() + "\r\n");
-      count++;
+    printData.getOutDir().mkdir();
+    final File outFile = new File(printData.getOutDir(), "General Information.csv");
+    try (final FileWriter turnWriter = new FileWriter(outFile, true)) {
+      turnWriter.write("Turn Order\r\n");
+      final Set<PlayerID> noDuplicates = removeDups(playerSet);
+      final Iterator<PlayerID> playerIterator = noDuplicates.iterator();
+      int count = 1;
+      while (playerIterator.hasNext()) {
+        final PlayerID currentPlayerId = playerIterator.next();
+        turnWriter.write(count + ". " + currentPlayerId.getName() + "\r\n");
+        count++;
+      }
     }
-    turnWriter.close();
   }
 }

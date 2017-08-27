@@ -24,10 +24,10 @@ public class UnitTypeComparator implements Comparator<UnitType> {
     if (ua2.getIsInfrastructure() && !ua1.getIsInfrastructure()) {
       return -1;
     }
-    if (Matches.UnitTypeIsAAforAnything.match(u1) && !Matches.UnitTypeIsAAforAnything.match(u2)) {
+    if (Matches.unitTypeIsAaForAnything().match(u1) && !Matches.unitTypeIsAaForAnything().match(u2)) {
       return 1;
     }
-    if (!Matches.UnitTypeIsAAforAnything.match(u1) && Matches.UnitTypeIsAAforAnything.match(u2)) {
+    if (!Matches.unitTypeIsAaForAnything().match(u1) && Matches.unitTypeIsAaForAnything().match(u2)) {
       return -1;
     }
     if (ua1.getIsAir() && !ua2.getIsAir()) {
@@ -42,8 +42,8 @@ public class UnitTypeComparator implements Comparator<UnitType> {
     if (ua2.getIsSea() && !ua1.getIsSea()) {
       return -1;
     }
-    if (ua1.getRawAttack() != ua2.getRawAttack()) {
-      return ua1.getRawAttack() - ua2.getRawAttack();
+    if (ua1.getAttack() != ua2.getAttack()) {
+      return ua1.getAttack() - ua2.getAttack();
     }
     return u1.getName().compareTo(u2.getName());
   }

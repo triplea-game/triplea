@@ -121,7 +121,7 @@ public class PoliticsPanel extends ActionPanel {
     final Insets insets = new Insets(1, 1, 1, 1);
     final JPanel politicalChoicePanel = new JPanel();
     politicalChoicePanel.setLayout(new GridBagLayout());
-    final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUIContext(), false);
+    final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUiContext(), false);
     final JScrollPane overviewScroll = new JScrollPane(overview);
     overviewScroll.setBorder(BorderFactory.createEmptyBorder());
     // add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong
@@ -216,7 +216,7 @@ public class PoliticsPanel extends ActionPanel {
   private JPanel getOtherPlayerFlags(final PoliticalActionAttachment paa) {
     final JPanel panel = new JPanel();
     for (final PlayerID p : paa.getOtherPlayers()) {
-      panel.add(new JLabel(new ImageIcon(this.getMap().getUIContext().getFlagImageFactory().getFlag(p))));
+      panel.add(new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
     }
     return panel;
   }

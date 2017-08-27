@@ -7,15 +7,25 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.logging.Level;
+
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SpinnerNumberModel;
 
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
@@ -26,6 +36,15 @@ import games.strategy.ui.SwingAction;
 class ProLogWindow extends JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
 
+  private JTextArea currentLogTextArea = null;
+  private JTextArea aiOutputLogArea;
+  private JCheckBox enableAiLogging;
+  private JCheckBox limitLogHistoryCheckBox;
+  private JSpinner limitLogHistoryToSpinner;
+  private JComboBox<String> logDepth;
+  private JTabbedPane logHolderTabbedPane;
+  private JTabbedPane tabPaneMain;
+
   /** Creates new form ProLogWindow. */
   ProLogWindow(final TripleAFrame frame) {
     super(frame);
@@ -34,33 +53,32 @@ class ProLogWindow extends JDialog {
 
   void clear() {
     this.dispose();
-    v_tabPaneMain = null;
-    v_logHolderTabbedPane = null;
+    tabPaneMain = null;
+    logHolderTabbedPane = null;
   }
 
   private void initComponents() {
-    final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-    GridBagConstraints gridBagConstraints;
-    final JPanel jPanel7 = new JPanel();
-    final JButton v_restoreDefaultsButton = new JButton();
-    final JButton v_settingsDetailsButton = new JButton();
-    final JPanel jPanel14 = new JPanel();
-    final JPanel jPanel13 = new JPanel();
-    final JButton v_cancelButton = new JButton();
-    final JButton v_okButton = new JButton();
-    v_tabPaneMain = new javax.swing.JTabbedPane();
-    final JPanel jPanel8 = new JPanel();
-    v_logHolderTabbedPane = new javax.swing.JTabbedPane();
-    final JPanel jPanel9 = new JPanel();
-    final JScrollPane v_aiOutputLogAreaScrollPane = new JScrollPane();
-    v_aiOutputLogArea = new javax.swing.JTextArea();
-    v_enableAILogging = new javax.swing.JCheckBox();
-    final javax.swing.JLabel jLabel15 = new javax.swing.JLabel();
-    v_logDepth = new javax.swing.JComboBox<>();
-    v_limitLogHistoryToSpinner = new javax.swing.JSpinner();
-    v_limitLogHistoryCB = new javax.swing.JCheckBox();
-    final javax.swing.JLabel jLabel46 = new javax.swing.JLabel();
-    final JPanel v_pauseAIs = new JPanel();
+    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    final JPanel panel7 = new JPanel();
+    final JButton restoreDefaultsButton = new JButton();
+    final JButton settingsDetailsButton = new JButton();
+    final JPanel panel14 = new JPanel();
+    final JPanel panel13 = new JPanel();
+    final JButton cancelButton = new JButton();
+    final JButton okButton = new JButton();
+    tabPaneMain = new JTabbedPane();
+    final JPanel panel8 = new JPanel();
+    logHolderTabbedPane = new JTabbedPane();
+    final JPanel panel9 = new JPanel();
+    final JScrollPane aiOutputLogAreaScrollPane = new JScrollPane();
+    aiOutputLogArea = new JTextArea();
+    enableAiLogging = new JCheckBox();
+    final JLabel label15 = new JLabel();
+    logDepth = new JComboBox<>();
+    limitLogHistoryToSpinner = new JSpinner();
+    limitLogHistoryCheckBox = new JCheckBox();
+    final JLabel label46 = new JLabel();
+    final JPanel pauseAIs = new JPanel();
     setTitle("Hard AI Settings");
     setMinimumSize(new Dimension(775, 400));
     addWindowListener(new WindowAdapter() {
@@ -70,93 +88,93 @@ class ProLogWindow extends JDialog {
       }
 
       @Override
-      public void windowOpened(final java.awt.event.WindowEvent evt) {
+      public void windowOpened(final WindowEvent evt) {
         formWindowOpened();
       }
     });
-    getContentPane().setLayout(new java.awt.GridBagLayout());
-    jPanel7.setName("jPanel3");
-    jPanel7.setPreferredSize(new java.awt.Dimension(600, 45));
-    jPanel7.setLayout(new java.awt.GridBagLayout());
-    v_restoreDefaultsButton.setText("Restore Defaults");
-    v_restoreDefaultsButton.setMinimumSize(new java.awt.Dimension(118, 23));
-    v_restoreDefaultsButton.setName("v_restoreDefaultsButton");
-    v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
-    v_restoreDefaultsButton.addActionListener(evt -> restoreDefaultsButtonActionPerformed());
-    gridBagConstraints = new GridBagConstraints();
+    getContentPane().setLayout(new GridBagLayout());
+    panel7.setName("panel7");
+    panel7.setPreferredSize(new Dimension(600, 45));
+    panel7.setLayout(new GridBagLayout());
+    restoreDefaultsButton.setText("Restore Defaults");
+    restoreDefaultsButton.setMinimumSize(new Dimension(118, 23));
+    restoreDefaultsButton.setName("restoreDefaultsButton");
+    restoreDefaultsButton.setPreferredSize(new Dimension(118, 23));
+    restoreDefaultsButton.addActionListener(evt -> restoreDefaultsButtonActionPerformed());
+    GridBagConstraints gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.anchor = GridBagConstraints.WEST;
     gridBagConstraints.insets = new Insets(11, 0, 11, 0);
-    jPanel7.add(v_restoreDefaultsButton, gridBagConstraints);
-    v_settingsDetailsButton.setText("Settings Details");
-    v_settingsDetailsButton.setMinimumSize(new java.awt.Dimension(115, 23));
-    v_settingsDetailsButton.setName("v_settingsDetailsButton");
-    v_settingsDetailsButton.setPreferredSize(new java.awt.Dimension(115, 23));
-    v_settingsDetailsButton.addActionListener(evt -> settingsDetailsButtonActionPerformed());
-    gridBagConstraints = new java.awt.GridBagConstraints();
+    panel7.add(restoreDefaultsButton, gridBagConstraints);
+    settingsDetailsButton.setText("Settings Details");
+    settingsDetailsButton.setMinimumSize(new Dimension(115, 23));
+    settingsDetailsButton.setName("settingsDetailsButton");
+    settingsDetailsButton.setPreferredSize(new Dimension(115, 23));
+    settingsDetailsButton.addActionListener(evt -> settingsDetailsButtonActionPerformed());
+    gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.anchor = GridBagConstraints.EAST;
     gridBagConstraints.insets = new Insets(11, 6, 11, 0);
-    jPanel7.add(v_settingsDetailsButton, gridBagConstraints);
-    jPanel14.setName("jPanel14");
-    jPanel14.setLayout(new GridBagLayout());
-    jPanel13.setName("jPanel13");
-    jPanel13.setLayout(new GridBagLayout());
-    v_cancelButton.setText("Cancel");
-    v_cancelButton.setName("v_cancelButton");
-    v_cancelButton.addActionListener(evt -> cancelButtonActionPerformed());
+    panel7.add(settingsDetailsButton, gridBagConstraints);
+    panel14.setName("panel14");
+    panel14.setLayout(new GridBagLayout());
+    panel13.setName("panel13");
+    panel13.setLayout(new GridBagLayout());
+    cancelButton.setText("Cancel");
+    cancelButton.setName("cancelButton");
+    cancelButton.addActionListener(evt -> cancelButtonActionPerformed());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(0, 10, 0, 0);
-    jPanel13.add(v_cancelButton, gridBagConstraints);
-    v_okButton.setText("OK");
-    v_okButton.setName("v_okButton");
-    v_okButton.addActionListener(evt -> okButtonActionPerformed());
+    panel13.add(cancelButton, gridBagConstraints);
+    okButton.setText("OK");
+    okButton.setName("okButton");
+    okButton.addActionListener(evt -> okButtonActionPerformed());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
-    jPanel13.add(v_okButton, gridBagConstraints);
+    panel13.add(okButton, gridBagConstraints);
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
-    jPanel14.add(jPanel13, gridBagConstraints);
+    panel14.add(panel13, gridBagConstraints);
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.insets = new Insets(11, 6, 11, 0);
-    jPanel7.add(jPanel14, gridBagConstraints);
+    panel7.add(panel14, gridBagConstraints);
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
-    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
     gridBagConstraints.weightx = 99.0;
-    gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 7);
-    getContentPane().add(jPanel7, gridBagConstraints);
-    v_tabPaneMain.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-    v_tabPaneMain.setName("v_tabPaneMain");
-    v_tabPaneMain.setPreferredSize(new java.awt.Dimension(500, screenSize.height - 200));
-    jPanel8.setName("jPanel8");
-    jPanel8.setPreferredSize(new java.awt.Dimension(500, 314));
-    jPanel8.setLayout(new java.awt.GridBagLayout());
-    v_logHolderTabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-    v_logHolderTabbedPane.setFont(new java.awt.Font("Segoe UI", 0, 10));
-    v_logHolderTabbedPane.setName("v_logHolderTabbedPane");
-    jPanel9.setName("jPanel9");
-    jPanel9.setLayout(new java.awt.GridLayout(1, 0));
-    v_aiOutputLogAreaScrollPane.setName("v_aiOutputLogAreaScrollPane");
-    v_aiOutputLogArea.setColumns(20);
-    v_aiOutputLogArea.setEditable(false);
-    v_aiOutputLogArea.setFont(new Font("Segoe UI", 0, 10));
-    v_aiOutputLogArea.setRows(5);
-    v_aiOutputLogArea.setName("v_aiOutputLogArea");
-    v_aiOutputLogAreaScrollPane.setViewportView(v_aiOutputLogArea);
-    jPanel9.add(v_aiOutputLogAreaScrollPane);
-    v_logHolderTabbedPane.addTab("Pre-Game", jPanel9);
+    gridBagConstraints.insets = new Insets(0, 7, 0, 7);
+    getContentPane().add(panel7, gridBagConstraints);
+    tabPaneMain.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+    tabPaneMain.setName("tabPaneMain");
+    tabPaneMain.setPreferredSize(new Dimension(500, screenSize.height - 200));
+    panel8.setName("panel8");
+    panel8.setPreferredSize(new Dimension(500, 314));
+    panel8.setLayout(new GridBagLayout());
+    logHolderTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+    logHolderTabbedPane.setFont(new Font("Segoe UI", 0, 10));
+    logHolderTabbedPane.setName("logHolderTabbedPane");
+    panel9.setName("panel9");
+    panel9.setLayout(new GridLayout(1, 0));
+    aiOutputLogAreaScrollPane.setName("aiOutputLogAreaScrollPane");
+    aiOutputLogArea.setColumns(20);
+    aiOutputLogArea.setEditable(false);
+    aiOutputLogArea.setFont(new Font("Segoe UI", 0, 10));
+    aiOutputLogArea.setRows(5);
+    aiOutputLogArea.setName("aiOutputLogArea");
+    aiOutputLogAreaScrollPane.setViewportView(aiOutputLogArea);
+    panel9.add(aiOutputLogAreaScrollPane);
+    logHolderTabbedPane.addTab("Pre-Game", panel9);
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
@@ -166,64 +184,64 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.weighty = 99.0;
     gridBagConstraints.insets = new Insets(7, 7, 7, 7);
-    jPanel8.add(v_logHolderTabbedPane, gridBagConstraints);
-    v_enableAILogging.setSelected(true);
-    v_enableAILogging.setText("Enable AI Logging");
-    v_enableAILogging.setName("v_enableAILogging");
-    v_enableAILogging.addChangeListener(evt -> enableAiLoggingStateChanged());
+    panel8.add(logHolderTabbedPane, gridBagConstraints);
+    enableAiLogging.setSelected(true);
+    enableAiLogging.setText("Enable AI Logging");
+    enableAiLogging.setName("enableAiLogging");
+    enableAiLogging.addChangeListener(evt -> enableAiLoggingStateChanged());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 7, 0, 0);
-    jPanel8.add(v_enableAILogging, gridBagConstraints);
-    jLabel15.setText("Log Depth:");
-    jLabel15.setName("jLabel15");
+    panel8.add(enableAiLogging, gridBagConstraints);
+    label15.setText("Log Depth:");
+    label15.setName("label15");
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 12, 0, 0);
-    jPanel8.add(jLabel15, gridBagConstraints);
-    v_logDepth.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Fine", "Finer", "Finest"}));
-    v_logDepth.setSelectedItem(v_logDepth.getItemAt(2));
-    v_logDepth.setName("v_logDepth");
+    panel8.add(label15, gridBagConstraints);
+    logDepth.setModel(new DefaultComboBoxModel<>(new String[] {"Fine", "Finer", "Finest"}));
+    logDepth.setSelectedItem(logDepth.getItemAt(2));
+    logDepth.setName("logDepth");
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 5, 0, 0);
-    jPanel8.add(v_logDepth, gridBagConstraints);
-    v_limitLogHistoryToSpinner.setModel(new javax.swing.SpinnerNumberModel(5, 1, 100, 1));
-    v_limitLogHistoryToSpinner.setMinimumSize(new Dimension(60, 20));
-    v_limitLogHistoryToSpinner.setName("v_limitLogHistoryToSpinner");
-    v_limitLogHistoryToSpinner.setPreferredSize(new Dimension(60, 20));
+    panel8.add(logDepth, gridBagConstraints);
+    limitLogHistoryToSpinner.setModel(new SpinnerNumberModel(5, 1, 100, 1));
+    limitLogHistoryToSpinner.setMinimumSize(new Dimension(60, 20));
+    limitLogHistoryToSpinner.setName("limitLogHistoryToSpinner");
+    limitLogHistoryToSpinner.setPreferredSize(new Dimension(60, 20));
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 5;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.ipadx = 10;
     gridBagConstraints.insets = new Insets(7, 0, 0, 0);
-    jPanel8.add(v_limitLogHistoryToSpinner, gridBagConstraints);
-    v_limitLogHistoryCB.setSelected(true);
-    v_limitLogHistoryCB.setText("Limit Log History To:");
-    v_limitLogHistoryCB.setName("v_limitLogHistoryCB");
-    v_limitLogHistoryCB.addChangeListener(evt -> limitLogHistoryCbStateChanged());
+    panel8.add(limitLogHistoryToSpinner, gridBagConstraints);
+    limitLogHistoryCheckBox.setSelected(true);
+    limitLogHistoryCheckBox.setText("Limit Log History To:");
+    limitLogHistoryCheckBox.setName("limitLogHistoryCheckBox");
+    limitLogHistoryCheckBox.addChangeListener(evt -> limitLogHistoryCbStateChanged());
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 0, 0, 12);
-    jPanel8.add(v_limitLogHistoryCB, gridBagConstraints);
-    jLabel46.setText("rounds");
-    jLabel46.setName("jLabel46");
+    panel8.add(limitLogHistoryCheckBox, gridBagConstraints);
+    label46.setText("rounds");
+    label46.setName("label46");
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 6;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.insets = new Insets(7, 5, 0, 7);
-    jPanel8.add(jLabel46, gridBagConstraints);
+    panel8.add(label46, gridBagConstraints);
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.insets = new Insets(7, 0, 0, 0);
-    jPanel8.add(v_pauseAIs, gridBagConstraints);
-    v_tabPaneMain.addTab("Debugging", jPanel8);
+    panel8.add(pauseAIs, gridBagConstraints);
+    tabPaneMain.addTab("Debugging", panel8);
     gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -231,7 +249,7 @@ class ProLogWindow extends JDialog {
     gridBagConstraints.weightx = 99.0;
     gridBagConstraints.weighty = 99.0;
     gridBagConstraints.insets = new Insets(7, 7, 0, 7);
-    getContentPane().add(v_tabPaneMain, gridBagConstraints);
+    getContentPane().add(tabPaneMain, gridBagConstraints);
     setBounds((screenSize.width - 800), 25, 775, 401);
   }
 
@@ -244,30 +262,30 @@ class ProLogWindow extends JDialog {
    * Loads the settings provided and displays it in this settings window.
    */
   private void loadSettings(final ProLogSettings settings) {
-    v_enableAILogging.setSelected(settings.EnableAILogging);
+    enableAiLogging.setSelected(settings.EnableAILogging);
     if (settings.AILoggingDepth.equals(Level.FINE)) {
-      v_logDepth.setSelectedIndex(0);
+      logDepth.setSelectedIndex(0);
     } else if (settings.AILoggingDepth.equals(Level.FINER)) {
-      v_logDepth.setSelectedIndex(1);
+      logDepth.setSelectedIndex(1);
     } else if (settings.AILoggingDepth.equals(Level.FINEST)) {
-      v_logDepth.setSelectedIndex(2);
+      logDepth.setSelectedIndex(2);
     }
-    v_limitLogHistoryCB.setSelected(settings.LimitLogHistory);
-    v_limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
+    limitLogHistoryCheckBox.setSelected(settings.LimitLogHistory);
+    limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
   }
 
   ProLogSettings createSettings() {
     final ProLogSettings settings = new ProLogSettings();
-    settings.EnableAILogging = v_enableAILogging.isSelected();
-    if (v_logDepth.getSelectedIndex() == 0) {
+    settings.EnableAILogging = enableAiLogging.isSelected();
+    if (logDepth.getSelectedIndex() == 0) {
       settings.AILoggingDepth = Level.FINE;
-    } else if (v_logDepth.getSelectedIndex() == 1) {
+    } else if (logDepth.getSelectedIndex() == 1) {
       settings.AILoggingDepth = Level.FINER;
-    } else if (v_logDepth.getSelectedIndex() == 2) {
+    } else if (logDepth.getSelectedIndex() == 2) {
       settings.AILoggingDepth = Level.FINEST;
     }
-    settings.LimitLogHistory = v_limitLogHistoryCB.isSelected();
-    settings.LimitLogHistoryTo = Integer.parseInt(v_limitLogHistoryToSpinner.getValue().toString());
+    settings.LimitLogHistory = limitLogHistoryCheckBox.isSelected();
+    settings.LimitLogHistoryTo = Integer.parseInt(limitLogHistoryToSpinner.getValue().toString());
     return settings;
   }
 
@@ -285,12 +303,12 @@ class ProLogWindow extends JDialog {
   }
 
   private void enableAiLoggingStateChanged() {
-    v_logDepth.setEnabled(v_enableAILogging.isSelected());
-    v_limitLogHistoryCB.setEnabled(v_enableAILogging.isSelected());
+    logDepth.setEnabled(enableAiLogging.isSelected());
+    limitLogHistoryCheckBox.setEnabled(enableAiLogging.isSelected());
   }
 
   private void limitLogHistoryCbStateChanged() {
-    v_limitLogHistoryToSpinner.setEnabled(v_limitLogHistoryCB.isSelected() && v_enableAILogging.isSelected());
+    limitLogHistoryToSpinner.setEnabled(limitLogHistoryCheckBox.isSelected() && enableAiLogging.isSelected());
   }
 
   private void formWindowClosing() {
@@ -312,7 +330,7 @@ class ProLogWindow extends JDialog {
   private void settingsDetailsButtonActionPerformed() {
     final JDialog dialog = new JDialog(this, "Pro AI - Settings Details");
     String message = "";
-    if (v_tabPaneMain.getSelectedIndex() == 0) { // Debugging
+    if (tabPaneMain.getSelectedIndex() == 0) { // Debugging
       message = "Debugging\r\n" + "\r\n"
           + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see "
           + "exactly what the AI is thinking.\r\n"
@@ -342,8 +360,8 @@ class ProLogWindow extends JDialog {
     dialog.setBackground(label.getBackground());
     dialog.setLayout(new BorderLayout());
     final JScrollPane pane = new JScrollPane();
-    pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+    pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     pane.setViewportView(label);
     dialog.add(pane, BorderLayout.CENTER);
     final JButton button = new JButton(SwingAction.of(e -> dialog.dispose()));
@@ -358,12 +376,10 @@ class ProLogWindow extends JDialog {
     dialog.setVisible(true);
   }
 
-  private JTextArea currentLogTextArea = null;
-
   void addMessage(final Level level, final String message) {
     try {
       if (currentLogTextArea == null) {
-        currentLogTextArea = v_aiOutputLogArea;
+        currentLogTextArea = aiOutputLogArea;
       }
       currentLogTextArea.append(message + "\r\n");
     } catch (final NullPointerException ex) { // This is bad, but we don't want TripleA crashing because of this...
@@ -378,13 +394,13 @@ class ProLogWindow extends JDialog {
       final JTextArea newTextArea = new JTextArea();
       newTextArea.setColumns(20);
       newTextArea.setRows(5);
-      newTextArea.setFont(new java.awt.Font("Segoe UI", 0, 10));
+      newTextArea.setFont(new Font("Segoe UI", 0, 10));
       newTextArea.setEditable(false);
       newScrollPane.getHorizontalScrollBar().setEnabled(true);
       newScrollPane.setViewportView(newTextArea);
       newPanel.setLayout(new GridLayout());
       newPanel.add(newScrollPane);
-      v_logHolderTabbedPane.addTab(Integer.toString(roundNumber) + "-" + name, newPanel);
+      logHolderTabbedPane.addTab(Integer.toString(roundNumber) + "-" + name, newPanel);
       currentLogTextArea = newTextArea;
     });
     // Now remove round logging that has 'expired'.
@@ -404,23 +420,15 @@ class ProLogWindow extends JDialog {
         maxHistoryRounds = 1; // If we're not logging, trim to 1
       }
       SwingAction.invokeAndWait(() -> {
-        for (int i = 0; i < v_logHolderTabbedPane.getTabCount(); i++) {
+        for (int i = 0; i < logHolderTabbedPane.getTabCount(); i++) {
           // Remember, we never remove last tab, in case user turns logging back on in the middle of a round
-          if (i != 0 && i < v_logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
+          if (i != 0 && i < logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
             // Remove the tab and decrease i by one, so the next component will be checked
-            v_logHolderTabbedPane.removeTabAt(i);
+            logHolderTabbedPane.removeTabAt(i);
             i--;
           }
         }
       });
     }
   }
-
-  private javax.swing.JTextArea v_aiOutputLogArea;
-  private javax.swing.JCheckBox v_enableAILogging;
-  private javax.swing.JCheckBox v_limitLogHistoryCB;
-  private javax.swing.JSpinner v_limitLogHistoryToSpinner;
-  private javax.swing.JComboBox<String> v_logDepth;
-  private javax.swing.JTabbedPane v_logHolderTabbedPane;
-  private javax.swing.JTabbedPane v_tabPaneMain;
 }

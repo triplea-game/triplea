@@ -12,20 +12,23 @@ import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 
+/**
+ * Client-side implementation of {@link QuarantineConversation}.
+ */
 public class ClientQuarantineConversation extends QuarantineConversation {
-  private static final Logger s_logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
+  private static final Logger logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
 
-  private enum STEP {
+  private enum Step {
     READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
   }
 
   private final IConnectionLogin login;
   private final SocketChannel channel;
-  private final NIOSocket socket;
+  private final NioSocket socket;
   private final CountDownLatch showLatch = new CountDownLatch(1);
   private final CountDownLatch doneShowLatch = new CountDownLatch(1);
   private final String macAddress;
-  private STEP step = STEP.READ_CHALLENGE;
+  private Step step = Step.READ_CHALLENGE;
   private String localName;
   private String serverName;
   private InetSocketAddress networkVisibleAddress;
@@ -35,7 +38,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private volatile boolean isClosed = false;
   private volatile String errorMessage;
 
-  public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NIOSocket socket,
+  public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NioSocket socket,
       final String localName, final String mac) {
     this.login = login;
     this.localName = localName;
@@ -64,8 +67,11 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     return serverName;
   }
 
+  /**
+   * Prompts the user to enter their credentials.
+   */
   public void showCredentials() {
-    /**
+    /*
      * We need to do this in the thread that created the socket, since
      * the thread that creates the socket will often be, or will block the
      * swing event thread, but the getting of a username/password
@@ -91,14 +97,14 @@ public class ClientQuarantineConversation extends QuarantineConversation {
 
   @Override
   @SuppressWarnings("unchecked")
-  public ACTION message(final Object o) {
+  public Action message(final Object o) {
     try {
       switch (step) {
         case READ_CHALLENGE:
           // read name, send challenge
           final Map<String, String> challenge = (Map<String, String>) o;
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "read challenge:" + challenge);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "read challenge:" + challenge);
           }
           if (challenge != null) {
             challengeProperties = challenge;
@@ -109,55 +115,55 @@ public class ClientQuarantineConversation extends QuarantineConversation {
               // ignore
             }
             if (isClosed) {
-              return ACTION.NONE;
+              return Action.NONE;
             }
-            if (s_logger.isLoggable(Level.FINER)) {
-              s_logger.log(Level.FINER, "writing response" + challengeResponse);
+            if (logger.isLoggable(Level.FINER)) {
+              logger.log(Level.FINER, "writing response" + challengeResponse);
             }
             send((Serializable) challengeResponse);
           } else {
             showLatch.countDown();
-            if (s_logger.isLoggable(Level.FINER)) {
-              s_logger.log(Level.FINER, "sending null response");
+            if (logger.isLoggable(Level.FINER)) {
+              logger.log(Level.FINER, "sending null response");
             }
             send(null);
           }
-          step = STEP.READ_ERROR;
-          return ACTION.NONE;
+          step = Step.READ_ERROR;
+          return Action.NONE;
         case READ_ERROR:
           if (o != null) {
-            if (s_logger.isLoggable(Level.FINER)) {
-              s_logger.log(Level.FINER, "error:" + o);
+            if (logger.isLoggable(Level.FINER)) {
+              logger.log(Level.FINER, "error:" + o);
             }
             errorMessage = (String) o;
             // acknowledge the error
             send(null);
-            return ACTION.TERMINATE;
+            return Action.TERMINATE;
           }
-          step = STEP.READ_NAMES;
-          return ACTION.NONE;
+          step = Step.READ_NAMES;
+          return Action.NONE;
         case READ_NAMES:
           final String[] strings = ((String[]) o);
-          if (s_logger.isLoggable(Level.FINER)) {
-            s_logger.log(Level.FINER, "new local name:" + strings[0]);
+          if (logger.isLoggable(Level.FINER)) {
+            logger.log(Level.FINER, "new local name:" + strings[0]);
           }
           localName = strings[0];
           serverName = strings[1];
-          step = STEP.READ_ADDRESS;
-          return ACTION.NONE;
+          step = Step.READ_ADDRESS;
+          return Action.NONE;
         case READ_ADDRESS:
           // this is the adress that others see us as
           final InetSocketAddress[] address = (InetSocketAddress[]) o;
           // this is the address the server thinks he is
           networkVisibleAddress = address[0];
           serverLocalAddress = address[1];
-          if (s_logger.isLoggable(Level.FINE)) {
-            s_logger.log(Level.FINE, "Server local address:" + serverLocalAddress);
-            s_logger.log(Level.FINE, "channel remote address:" + channel.socket().getRemoteSocketAddress());
-            s_logger.log(Level.FINE, "network visible address:" + networkVisibleAddress);
-            s_logger.log(Level.FINE, "channel local adresss:" + channel.socket().getLocalSocketAddress());
+          if (logger.isLoggable(Level.FINE)) {
+            logger.log(Level.FINE, "Server local address:" + serverLocalAddress);
+            logger.log(Level.FINE, "channel remote address:" + channel.socket().getRemoteSocketAddress());
+            logger.log(Level.FINE, "network visible address:" + networkVisibleAddress);
+            logger.log(Level.FINE, "channel local adresss:" + channel.socket().getLocalSocketAddress());
           }
-          return ACTION.UNQUARANTINE;
+          return Action.UNQUARANTINE;
         default:
           throw new IllegalStateException("Invalid state");
       }
@@ -165,8 +171,8 @@ public class ClientQuarantineConversation extends QuarantineConversation {
       isClosed = true;
       showLatch.countDown();
       doneShowLatch.countDown();
-      s_logger.log(Level.SEVERE, "error with connection", t);
-      return ACTION.TERMINATE;
+      logger.log(Level.SEVERE, "error with connection", t);
+      return Action.TERMINATE;
     }
   }
 

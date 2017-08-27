@@ -31,9 +31,9 @@ import games.strategy.util.Util;
  */
 public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
-  private Set<Territory> m_attackingFrom;
-  private Collection<Territory> m_amphibiousAttackFrom;
-  private Map<Territory, Collection<Unit>> m_attackingFromMap;
+  private final Set<Territory> m_attackingFrom;
+  private final Collection<Territory> m_amphibiousAttackFrom;
+  private final Map<Territory, Collection<Unit>> m_attackingFromMap;
 
   /**
    *  Constructor. Suppress checkstyle warning.

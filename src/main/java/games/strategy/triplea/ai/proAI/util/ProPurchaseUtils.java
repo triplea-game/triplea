@@ -156,14 +156,14 @@ public class ProPurchaseUtils {
     final GameData data = ProData.getData();
 
     // Determine most cost efficient defender that can be produced in this territory
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final int PUsRemaining = player.getResources().getQuantity(PUs);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final int pusRemaining = player.getResources().getQuantity(pus);
     final List<ProPurchaseOption> purchaseOptionsForTerritory =
         findPurchaseOptionsForTerritory(player, landPurchaseOptions, t, false);
     ProPurchaseOption bestDefenseOption = null;
     double maxDefenseEfficiency = 0;
     for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
-      if (ppo.getDefenseEfficiency() > maxDefenseEfficiency && ppo.getCost() <= PUsRemaining) {
+      if (ppo.getDefenseEfficiency() > maxDefenseEfficiency && ppo.getCost() <= pusRemaining) {
         bestDefenseOption = ppo;
         maxDefenseEfficiency = ppo.getDefenseEfficiency();
       }
@@ -178,7 +178,7 @@ public class ProPurchaseUtils {
       while (true) {
 
         // If out of PUs or production then break
-        if (bestDefenseOption.getCost() > (PUsRemaining - pusSpent)
+        if (bestDefenseOption.getCost() > (pusRemaining - pusSpent)
             || remainingUnitProduction < bestDefenseOption.getQuantity()) {
           break;
         }
@@ -311,7 +311,7 @@ public class ProPurchaseUtils {
    * How many PU's does it cost the given player to produce the given unit including any dependents.
    */
   public static double getCost(final Unit unit) {
-    final Resource PUs = unit.getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = unit.getData().getResourceList().getResource(Constants.PUS);
     final Collection<Unit> units = TransportTracker.transportingAndUnloaded(unit);
     units.add(unit);
     double cost = 0.0;
@@ -320,7 +320,7 @@ public class ProPurchaseUtils {
       if (rule == null) {
         cost += ProData.unitValueMap.getInt(u.getType());
       } else {
-        cost += ((double) rule.getCosts().getInt(PUs)) / rule.getResults().totalValues();
+        cost += ((double) rule.getCosts().getInt(pus)) / rule.getResults().totalValues();
       }
     }
     return cost;

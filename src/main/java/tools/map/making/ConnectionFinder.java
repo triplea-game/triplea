@@ -40,7 +40,7 @@ import tools.image.FileSave;
  */
 // TODO: get this moved to its own package tree
 public class ConnectionFinder {
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final String LINE_THICKNESS = "triplea.map.lineThickness";
   private static final String SCALE_PIXELS = "triplea.map.scalePixels";
@@ -66,21 +66,21 @@ public class ConnectionFinder {
             + "</html>"));
     System.out.println("Select polygons.txt");
     File polyFile = null;
-    if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
-      polyFile = new File(s_mapFolderLocation, "polygons.txt");
+    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+      polyFile = new File(mapFolderLocation, "polygons.txt");
     }
     if (polyFile != null && polyFile.exists() && JOptionPane.showConfirmDialog(null,
         "A polygons.txt file was found in the map's folder, do you want to use it?", "File Suggestion", 1) == 0) {
       // yay
     } else {
-      polyFile = new FileOpen("Select The polygons.txt file", s_mapFolderLocation, ".txt").getFile();
+      polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
     }
     if (polyFile == null || !polyFile.exists()) {
       System.out.println("No polygons.txt Selected. Shutting down.");
       System.exit(0);
     }
-    if (s_mapFolderLocation == null && polyFile != null) {
-      s_mapFolderLocation = polyFile.getParentFile();
+    if (mapFolderLocation == null && polyFile != null) {
+      mapFolderLocation = polyFile.getParentFile();
     }
     final Map<String, List<Area>> territoryAreas = new HashMap<>();
     Map<String, List<Polygon>> mapOfPolygons = null;
@@ -176,7 +176,7 @@ public class ConnectionFinder {
     }
     try {
       final String fileName = new FileSave("Where To Save connections.txt ? (cancel to print to console)",
-          "connections.txt", s_mapFolderLocation).getPathString();
+          "connections.txt", mapFolderLocation).getPathString();
       final StringBuffer connectionsString = convertToXml(connections);
       if (fileName == null) {
         System.out.println();
@@ -185,13 +185,12 @@ public class ConnectionFinder {
         }
         System.out.println(connectionsString.toString());
       } else {
-        final FileOutputStream out = new FileOutputStream(fileName);
-        if (territoryDefinitions != null) {
-          out.write(String.valueOf(territoryDefinitions).getBytes());
+        try (final FileOutputStream out = new FileOutputStream(fileName)) {
+          if (territoryDefinitions != null) {
+            out.write(String.valueOf(territoryDefinitions).getBytes());
+          }
+          out.write(String.valueOf(connectionsString).getBytes());
         }
-        out.write(String.valueOf(connectionsString).getBytes());
-        out.flush();
-        out.close();
         System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
       }
     } catch (final Exception ex) {
@@ -267,12 +266,12 @@ public class ConnectionFinder {
    * @return a double that represents the area of the given point array of a polygon
    */
   private static double calcSignedPolygonArea(final Point2D[] pointArray) {
-    final int N = pointArray.length;
+    final int length = pointArray.length;
     int i;
     int j;
     double area = 0;
-    for (i = 0; i < N; i++) {
-      j = (i + 1) % N;
+    for (i = 0; i < length; i++) {
+      j = (i + 1) % length;
       area += pointArray[i].getX() * pointArray[j].getY();
       area -= pointArray[i].getY() * pointArray[j].getX();
     }
@@ -288,7 +287,7 @@ public class ConnectionFinder {
    * @return a Point2D object that represents the center of mass of the given point array
    */
   private static Point2D calcCenterOfMass(final Point2D[] pointArray) {
-    final int N = pointArray.length;
+    final int length = pointArray.length;
     double cx = 0;
     double cy = 0;
     double area = calcSignedPolygonArea(pointArray);
@@ -296,8 +295,8 @@ public class ConnectionFinder {
     int i;
     int j;
     double factor = 0;
-    for (i = 0; i < N; i++) {
-      j = (i + 1) % N;
+    for (i = 0; i < length; i++) {
+      j = (i + 1) % length;
       factor = (pointArray[i].getX() * pointArray[j].getY() - pointArray[j].getX() * pointArray[i].getY());
       cx += (pointArray[i].getX() + pointArray[j].getX()) * factor;
       cy += (pointArray[i].getY() + pointArray[j].getY()) * factor;
@@ -322,7 +321,8 @@ public class ConnectionFinder {
     int lastMoveToIndex = -1;
     while (!pathIterator.isDone()) {
       final double[] coordinates = new double[6];
-      switch (pathIterator.currentSegment(coordinates)) {
+      final int segmentType = pathIterator.currentSegment(coordinates);
+      switch (segmentType) {
         case PathIterator.SEG_MOVETO:
           pointList.add(new Point2D.Double(coordinates[0], coordinates[1]));
           lastMoveToIndex++;
@@ -344,6 +344,8 @@ public class ConnectionFinder {
             pointList.add(pointList.get(lastMoveToIndex));
           }
           break;
+        default:
+          throw new AssertionError("unknown path iterator segment type: " + segmentType);
       }
       pathIterator.next();
     }
@@ -385,7 +387,7 @@ public class ConnectionFinder {
       if (arg.startsWith(TRIPLEA_MAP_FOLDER)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }
@@ -404,12 +406,12 @@ public class ConnectionFinder {
       }
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }

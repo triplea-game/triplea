@@ -95,7 +95,7 @@ public class CommentPanel extends JPanel {
     // create icon map
     iconMap = new HashMap<>();
     for (final PlayerID playerId : data.getPlayerList().getPlayers()) {
-      iconMap.put(playerId, new ImageIcon(frame.getUIContext().getFlagImageFactory().getSmallFlag(playerId)));
+      iconMap.put(playerId, new ImageIcon(frame.getUiContext().getFlagImageFactory().getSmallFlag(playerId)));
     }
   }
 
@@ -120,12 +120,11 @@ public class CommentPanel extends JPanel {
   }
 
   private void readHistoryTreeEvent(final TreeModelEvent e) {
-    final TreeModelEvent tme = e;
     final Runnable runner = () -> {
       data.acquireReadLock();
       try {
         final Document doc = text.getDocument();
-        final HistoryNode node = (HistoryNode) (tme.getTreePath().getLastPathComponent());
+        final HistoryNode node = (HistoryNode) (e.getTreePath().getLastPathComponent());
         final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
         final String title =
             child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
@@ -208,7 +207,7 @@ public class CommentPanel extends JPanel {
         final Document doc = text.getDocument();
         // save history entry
         final IEditDelegate delegate = frame.getEditDelegate();
-        String error;
+        final String error;
         if (delegate == null) {
           error = "You can only add comments during your turn";
         } else {

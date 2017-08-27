@@ -15,8 +15,8 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.util.TuvUtils;
 
 class UnitInformation {
   private GameData data;
@@ -65,7 +65,7 @@ class UnitInformation {
             + (currentAttachment.getCanProduceUnits() == false ? "-" : "true") + ","
             + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine()) + ","
             + (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
-            + (Matches.UnitTypeIsAAforAnything.match(currentType) == false ? "-" : "true") + ","
+            + (Matches.unitTypeIsAaForAnything().match(currentType) == false ? "-" : "true") + ","
             + (currentAttachment.getIsAir() == false ? "-" : "true") + ","
             + (currentAttachment.getIsStrategicBomber() == false ? "-" : "true") + ","
             + (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + ","
@@ -97,9 +97,9 @@ class UnitInformation {
         }
       }
     } else {
-      if (BattleCalculator.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
+      if (TuvUtils.getCostsForTuv(data.getPlayerList().getPlayers().iterator().next(), data)
           .getInt(type) > 0) {
-        return BattleCalculator.getCostsForTUV(data.getPlayerList().getPlayers().iterator().next(), data)
+        return TuvUtils.getCostsForTuv(data.getPlayerList().getPlayers().iterator().next(), data)
             .getInt(type);
       }
     }

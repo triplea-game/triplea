@@ -164,21 +164,21 @@ public class IndividualUnitPanel extends JPanel {
     this.setLayout(new GridBagLayout());
     final Insets nullInsets = new Insets(0, 0, 0, 0);
     final Dimension buttonSize = new Dimension(80, 20);
-    final JButton m_selectNoneButton = new JButton("None");
-    m_selectNoneButton.setPreferredSize(buttonSize);
-    final JButton m_autoSelectButton = new JButton("Max");
-    m_autoSelectButton.setPreferredSize(buttonSize);
+    final JButton selectNoneButton = new JButton("None");
+    selectNoneButton.setPreferredSize(buttonSize);
+    final JButton autoSelectButton = new JButton("Max");
+    autoSelectButton.setPreferredSize(buttonSize);
     add(title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
-    m_selectNoneButton.addActionListener(e -> selectNone());
-    m_autoSelectButton.addActionListener(e -> autoSelect());
+    selectNoneButton.addActionListener(e -> selectNone());
+    autoSelectButton.addActionListener(e -> autoSelect());
     int rowIndex = 1;
     for (final SingleUnitPanel entry : entries) {
       entry.createComponents(this, rowIndex);
       rowIndex++;
     }
     if (showSelectAll) {
-      add(m_autoSelectButton, new GridBagConstraints(0, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
+      add(autoSelectButton, new GridBagConstraints(0, rowIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST,
           GridBagConstraints.NONE, nullInsets, 0, 0));
       rowIndex++;
     }
@@ -239,8 +239,6 @@ public class IndividualUnitPanel extends JPanel {
         final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
         final boolean showMaxAndMin) {
       this.unit = unit;
-      final GameData m_data = data;
-      final IUIContext m_context = context;
       countTextFieldListener = textFieldListener;
       textField = new ScrollableTextField(0, 512);
       if (max >= 0) {
@@ -255,7 +253,7 @@ public class IndividualUnitPanel extends JPanel {
       setLayout(new GridBagLayout());
 
       final boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
-      final JLabel label = m_context.createUnitImageJLabel(this.unit.getType(), this.unit.getOwner(), m_data,
+      final JLabel label = context.createUnitImageJLabel(this.unit.getType(), this.unit.getOwner(), data,
           isDamaged ? IUIContext.UnitDamage.DAMAGED : IUIContext.UnitDamage.NOT_DAMAGED,
           taUnit.getDisabled() ? IUIContext.UnitEnable.DISABLED : IUIContext.UnitEnable.ENABLED);
 

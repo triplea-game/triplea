@@ -40,8 +40,6 @@ public abstract class AbstractLauncher implements ILauncher {
     if (!m_headless && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
-    final Runnable r = () -> launchInNewThread(parent);
-    final Thread t = new Thread(r, "Triplea start thread");
     if (!m_headless && m_gameLoadingWindow != null) {
       m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
       m_gameLoadingWindow.setVisible(true);
@@ -50,7 +48,7 @@ public abstract class AbstractLauncher implements ILauncher {
     if (parent != null) {
       JOptionPane.getFrameForComponent(parent).setVisible(false);
     }
-    t.start();
+    new Thread(() -> launchInNewThread(parent), "Triplea start thread").start();
   }
 
   protected abstract void launchInNewThread(Component parent);

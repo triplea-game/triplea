@@ -225,18 +225,14 @@
 - mapName: World At War
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_at_war/archive/master.zip
-  version: 2
+  version: 3
   img: http://tripleamaps.sourceforge.net/images/TripleA_world_at_war_mini.png
   description: |
+    <br> by Sieg
     <br>
-    <br>=WORLD AT WAR=
-    <br> by sieg
+    <br>Very large WW2 anachronistic map, based primarily on Revised rules, using mostly the New World Order units structure.
     <br>
-    <br>Very large file, over 40mb, download could take a while.
-    <br>If link does not work, download manually from:
-    <br>https://sourceforge.net/projects/tripleamaps/files/
-    <br>
-    <br>Includes World at War 1940 Mod by Ice
+    <br>Includes WAW 1940 mod by ice.
 - mapName: The Rising Sun
   mapCategory: BEST
   url: https://github.com/triplea-maps/the_rising_sun/archive/master.zip
@@ -1079,13 +1075,11 @@
 - mapName: Global War2
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_war2/archive/master.zip
-  version: 1
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_global_war_2_mini.png
   description: |
     <br>Global War 2
     <br>Created by Dagon81
-    <br>
-    <br>Filesize is huge, at 64mb, so it may take a while to download.  Now comes with relief tiles, thx dagon.
     <br>
     <br>Converted up to TripleA 1.2.x.x by Veqryn
 - mapName: New World Order Lebowski Edition
@@ -1113,7 +1107,7 @@
 - mapName: WW2v3_Variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/ww2v3_variants/archive/master.zip
-  version: 3
+  version: 4
   img: http://tripleamaps.sourceforge.net/images/TripleA_ww2v3_11nation_mini.png
   description: |
     <br>10 Variants of World War II v3
@@ -1146,7 +1140,7 @@
     <br>  1941 With some Free Technology given to each player, based on historical tendencies.
     <br>
     <br>WWIIv3 1941 Tech Advance (by Cernel)
-    <br>  A mod of WWIIv3 1941 where all the main players start the game with one or two active technologies and 6 free tech tokens, to roll on round 1. During the course of the game, additional free tech tokens are received and rolled, representing the technological development inherent in the system. The new tech chart offers 12 categories with 3 technologies each, every technology available inside 3 different categories. Newly developed technologies activate during placement. The Heavy Bombers technological advancement is restricted to bombing raids only, for 2 dice damage per bomber.
+    <br>  A mod of WWIIv3 1941 where all the main players start the game with one or two active technologies and 6 free tech tokens, to roll on round 1. During the course of the game, additional free tech tokens are received and rolled, representing the technological development inherent in the system. The new tech chart offers 4 categories with 3 technologies each. Newly developed technologies activate during placement. The Heavy Bombers technological advancement is restricted to bombing raids only, for 2 dice damage per bomber.
     <br>  All the default changes are options enabled as default: you can customise this game back to standard WWIIv3 rules and add whatever of the options you wish, on top of it.
     <br>
 - mapName: Atari
@@ -1674,7 +1668,7 @@
 - mapName: Pacific
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/pacific/archive/master.zip
-  version: 1
+  version: 2
   img: http://tripleamaps.sourceforge.net/images/TripleA_pacific_mini.png
   description: |
     <br>
@@ -1682,8 +1676,6 @@
     <br>
     <br>Created by Triplelk and ComradeKev
     <br>TripleA adaption of WW2 Pacific (from the WW2 Revised era). Alpha stage.
-    <br>
-    <br>abandoned
     <br>
 - mapName: Europe
   mapCategory: EXPERIMENTAL

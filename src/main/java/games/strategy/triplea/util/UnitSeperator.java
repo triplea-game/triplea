@@ -76,7 +76,7 @@ public class UnitSeperator {
       if (dependent != null) {
         currentDependents = dependent.get(current);
       }
-      final boolean disabled = Matches.UnitIsDisabled.match(current);
+      final boolean disabled = Matches.unitIsDisabled().match(current);
       final UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, current.getHits(),
           TripleAUnit.get(current).getUnitDamage(), disabled, unitTransportCost);
       // we test to see if we have the key using equals, then since

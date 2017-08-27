@@ -20,7 +20,7 @@ import games.strategy.net.Messengers;
 import games.strategy.util.ThreadUtil;
 
 public class LocalLauncher extends AbstractLauncher {
-  private static final Logger s_logger = Logger.getLogger(ILauncher.class.getName());
+  private static final Logger logger = Logger.getLogger(ILauncher.class.getName());
   private final IRandomSource m_randomSource;
   private final PlayerListing m_playerListing;
 
@@ -57,16 +57,16 @@ public class LocalLauncher extends AbstractLauncher {
     }
     try {
       if (exceptionLoadingGame == null) {
-        s_logger.fine("Game starting");
+        logger.fine("Game starting");
         game.startGame();
-        s_logger.fine("Game over");
+        logger.fine("Game over");
       }
     } finally {
       // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
       // by closing of stream while unloading map resources.
       ThreadUtil.sleep(100);
-      m_gameSelectorModel.loadDefaultGame(parent);
+      m_gameSelectorModel.loadDefaultGame();
       SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
     }
   }

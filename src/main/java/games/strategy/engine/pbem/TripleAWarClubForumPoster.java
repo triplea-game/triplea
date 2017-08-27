@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
@@ -30,7 +31,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
-import games.strategy.util.Util;
 
 /**
  * A poster for www.tripleawarclub.org forum
@@ -39,7 +39,7 @@ import games.strategy.util.Util;
 public class TripleAWarClubForumPoster extends AbstractForumPoster {
   private static final long serialVersionUID = -4017550807078258152L;
   private static final String WAR_CLUB_FORUM_URL = "http://www.tripleawarclub.org/modules/newbb";
-  private static Pattern s_XOOPS_TOKEN_REQUEST =
+  private static final Pattern XOOPS_TOKEN_REQUEST_PATTERN =
       Pattern.compile(".*XOOPS_TOKEN_REQUEST[^>]*value=\"([^\"]*)\".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
   /**
@@ -67,7 +67,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       if (status != HttpURLConnection.HTTP_OK) {
         throw new Exception("Login failed, server returned status: " + status);
       }
-      final String body = Util.getStringFromInputStream(response.getEntity().getContent());
+      final String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
       final String lowerBody = body.toLowerCase();
       if (lowerBody.contains("incorrect login!")) {
         throw new Exception("Incorrect login credentials");
@@ -97,8 +97,8 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build()) {
       HttpContext httpContext = login(client);
       // load the reply page
-      final String s_forumId = "20";
-      final String url = WAR_CLUB_FORUM_URL + "/reply.php?forum=" + s_forumId + "&topic_id="
+      final String forumId = "20";
+      final String url = WAR_CLUB_FORUM_URL + "/reply.php?forum=" + forumId + "&topic_id="
           + URLEncoder.encode(m_topicId, StandardCharsets.UTF_8.name());
       String xoopsTokenRequest;
       HttpGet httpGet = new HttpGet(url);
@@ -108,8 +108,8 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         if (status != HttpURLConnection.HTTP_OK) {
           throw new Exception("Could not load reply page: " + url + ". Site returned " + status);
         }
-        final String body = Util.getStringFromInputStream(response.getEntity().getContent());
-        final Matcher m = s_XOOPS_TOKEN_REQUEST.matcher(body);
+        final String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+        final Matcher m = XOOPS_TOKEN_REQUEST_PATTERN.matcher(body);
         if (!m.matches()) {
           throw new Exception("Unable to find 'XOOPS_TOKEN_REQUEST' form field on reply page");
         }
@@ -119,7 +119,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       MultipartEntityBuilder builder = MultipartEntityBuilder.create()
           .addTextBody("subject", subject)
           .addTextBody("message", summary)
-          .addTextBody("forum", s_forumId)
+          .addTextBody("forum", forumId)
           .addTextBody("topic_id", m_topicId)
           .addTextBody("XOOPS_TOKEN_REQUEST", xoopsTokenRequest)
           .addTextBody("xoops_upload_file[]", "userfile")
@@ -142,12 +142,12 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         if (status != HttpURLConnection.HTTP_OK) {
           throw new Exception("Posting summary failed, the server returned status: " + status);
         }
-        final String body = Util.getStringFromInputStream(response.getEntity().getContent());
+        final String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
         if (!body.toLowerCase().contains("thanks for your submission!")) {
           throw new Exception("Posting summary failed, the server didn't respond with thank you message");
         }
         m_turnSummaryRef =
-            "www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=" + m_topicId + "&forum=" + s_forumId;
+            "www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=" + m_topicId + "&forum=" + forumId;
       }
       // now logout, this is just to be nice, so we don't care if this fails
       try {
@@ -200,6 +200,6 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
   @Override
   public void viewPosted() {
     final String url = WAR_CLUB_FORUM_URL + "/viewtopic.php?topic_id=" + m_topicId;
-    OpenFileUtility.openURL(url);
+    OpenFileUtility.openUrl(url);
   }
 }

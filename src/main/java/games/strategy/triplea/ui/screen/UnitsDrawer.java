@@ -17,6 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -129,6 +130,8 @@ public class UnitsDrawer implements IDrawable {
                 null);
           }
           break;
+        default:
+          throw new AssertionError("unknown unit flag draw mode: " + drawUnitNationMode);
       }
     } else {
       if (img.isPresent()) {
@@ -170,7 +173,7 @@ public class UnitsDrawer implements IDrawable {
     }
     displayHitDamage(bounds, graphics);
     // Display Factory Damage
-    if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.UnitTypeCanBeDamaged.match(type)) {
+    if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.unitTypeCanBeDamaged().match(type)) {
       displayFactoryDamage(bounds, graphics);
     }
   }
@@ -214,14 +217,14 @@ public class UnitsDrawer implements IDrawable {
         Matches.unitIsOfType(type),
         Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(playerName)));
     if (damaged > 0) {
-      selectedUnitsBuilder.add(Matches.UnitHasTakenSomeDamage);
+      selectedUnitsBuilder.add(Matches.unitHasTakenSomeDamage());
     } else {
-      selectedUnitsBuilder.add(Matches.UnitHasNotTakenAnyDamage);
+      selectedUnitsBuilder.add(Matches.unitHasNotTakenAnyDamage());
     }
     if (bombingUnitDamage > 0) {
-      selectedUnitsBuilder.add(Matches.UnitHasTakenSomeBombingUnitDamage);
+      selectedUnitsBuilder.add(Matches.unitHasTakenSomeBombingUnitDamage());
     } else {
-      selectedUnitsBuilder.add(Matches.UnitHasNotTakenAnyBombingUnitDamage);
+      selectedUnitsBuilder.add(Matches.unitHasNotTakenAnyBombingUnitDamage());
     }
     final List<Unit> rVal = t.getUnits().getMatches(selectedUnitsBuilder.all());
     return Tuple.of(t, rVal);
@@ -238,7 +241,7 @@ public class UnitsDrawer implements IDrawable {
   }
 
   private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
-    return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 
   public static void setUnitFlagDrawMode(final UnitFlagDrawMode unitFlag, final Preferences prefs) {

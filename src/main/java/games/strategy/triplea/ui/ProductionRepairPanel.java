@@ -3,7 +3,6 @@ package games.strategy.triplea.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,12 +12,10 @@ import java.util.Optional;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
@@ -32,12 +29,14 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -53,7 +52,6 @@ public class ProductionRepairPanel extends JPanel {
   private boolean bid;
   private Collection<PlayerID> allowedPlayersToRepair;
   private GameData data;
-  private static final HashMap<Unit, Integer> repairCount = new HashMap<>();
 
   public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
@@ -63,7 +61,6 @@ public class ProductionRepairPanel extends JPanel {
 
   private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
     final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
-    // IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
     for (final Rule rule : rules) {
       final int quantity = rule.getQuantity();
       if (quantity != 0) {
@@ -102,25 +99,14 @@ public class ProductionRepairPanel extends JPanel {
     return getProduction();
   }
 
-  // this method can be accessed by subclasses
   public List<Rule> getRules() {
     return this.rules;
-  }
-
-  public static HashMap<Unit, Integer> getUnitRepairs() {
-    return repairCount;
   }
 
   private void initDialog(final JFrame root) {
     dialog = new JDialog(root, "Repair", true);
     dialog.getContentPane().add(this);
-    final Action closeAction = SwingAction.of("", e -> dialog.setVisible(false));
-    // close the window on escape
-    // this is mostly for developers, makes it much easier to quickly cycle through steps
-    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-    final String key = "production.panel.close.prod.popup";
-    dialog.getRootPane().getActionMap().put(key, closeAction);
-    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
+    SwingComponents.addEscapeKeyListener(dialog, () -> dialog.setVisible(false));
   }
 
   /** Creates new ProductionRepairPanel. */
@@ -131,7 +117,7 @@ public class ProductionRepairPanel extends JPanel {
 
   private void initRules(final PlayerID player, final Collection<PlayerID> allowedPlayersToRepair, final GameData data,
       final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
-    if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
+    if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       return;
     }
     this.data.acquireReadLock();
@@ -140,7 +126,7 @@ public class ProductionRepairPanel extends JPanel {
       this.allowedPlayersToRepair = allowedPlayersToRepair;
       final Match<Unit> myDamagedUnits =
           Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
-              Matches.UnitHasTakenSomeBombingUnitDamage);
+              Matches.unitHasTakenSomeBombingUnitDamage());
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
           Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
       for (final RepairRule repairRule : player.getRepairFrontier()) {
@@ -258,7 +244,7 @@ public class ProductionRepairPanel extends JPanel {
       repairResults = rule.getResults().getInt(type);
       final TripleAUnit taUnit = (TripleAUnit) repairUnit;
       final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(type, id, data,
-          Matches.UnitHasTakenSomeBombingUnitDamage.match(repairUnit), Matches.UnitIsDisabled.match(repairUnit));
+          Matches.unitHasTakenSomeBombingUnitDamage().match(repairUnit), Matches.unitIsDisabled().match(repairUnit));
       final String text = "<html> x " + ResourceCollection.toStringForHTML(cost, data) + "</html>";
 
       final JLabel label =

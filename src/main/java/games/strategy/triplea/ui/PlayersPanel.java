@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.IGame;
-import games.strategy.ui.SwingComponents;
+import swinglib.JPanelBuilder;
 
 /**
  * Panel to show who is playing which players.
@@ -16,7 +16,9 @@ import games.strategy.ui.SwingComponents;
 public class PlayersPanel {
 
   public static void showPlayers(final IGame game, final Component parent) {
-    JPanel panel = SwingComponents.newJPanelWithVerticalBoxLayout();
+    final JPanel panel = JPanelBuilder.builder()
+        .verticalBoxLayout()
+        .build();
     for (final String player : game.getPlayerManager().getPlayers()) {
       final PlayerID playerId = game.getData().getPlayerList().getPlayerID(player);
       if (playerId.isAI()) {

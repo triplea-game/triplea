@@ -29,73 +29,74 @@ import games.strategy.util.CountUpAndDownLatch;
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
  */
 public class ConcurrentOddsCalculator implements IOddsCalculator {
-  private static final Logger s_logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());
+  private static final Logger logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());
   private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
-  private int m_currentThreads = MAX_THREADS;
-  private final ExecutorService m_executor;
-  private final CopyOnWriteArrayList<OddsCalculator> m_workers = new CopyOnWriteArrayList<>();
+
+  private int currentThreads = MAX_THREADS;
+  private final ExecutorService executor;
+  private final List<OddsCalculator> workers = new CopyOnWriteArrayList<>();
   // do not let calc be set up til data is set
-  private volatile boolean m_isDataSet = false;
+  private volatile boolean isDataSet = false;
   // do not let calc start until it is set
-  private volatile boolean m_isCalcSet = false;
+  private volatile boolean isCalcSet = false;
   // shortcut everything if we are shutting down
-  private volatile boolean m_isShutDown = false;
+  private volatile boolean isShutDown = false;
   // shortcut setting of previous game data if we are trying to set it to a new one, or shutdown
-  private volatile int m_cancelCurrentOperation = 0;
+  private volatile int cancelCurrentOperation = 0;
   // do not let calcing happen while we are setting game data
-  private final CountUpAndDownLatch m_latchSetData = new CountUpAndDownLatch();
+  private final CountUpAndDownLatch latchSetData = new CountUpAndDownLatch();
   // do not let setting of game data happen multiple times while we offload creating workers and copying data to a
   // different thread
-  private final CountUpAndDownLatch m_latchWorkerThreadsCreation = new CountUpAndDownLatch();
+  private final CountUpAndDownLatch latchWorkerThreadsCreation = new CountUpAndDownLatch();
 
   // do not let setting of game data happen at same time
-  private final Object m_mutexSetGameData = new Object();
+  private final Object mutexSetGameData = new Object();
   // do not let multiple calculations or setting calc data happen at same time
-  private final Object m_mutexCalcIsRunning = new Object();
-  private final List<OddsCalculatorListener> m_listeners = new ArrayList<>();
+  private final Object mutexCalcIsRunning = new Object();
+  private final List<OddsCalculatorListener> listeners = new ArrayList<>();
 
   public ConcurrentOddsCalculator(final String threadNamePrefix) {
-    m_executor = Executors.newFixedThreadPool(MAX_THREADS,
+    executor = Executors.newFixedThreadPool(MAX_THREADS,
         new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
-    s_logger.fine("Initialized executor thread pool with size: " + MAX_THREADS);
+    logger.fine("Initialized executor thread pool with size: " + MAX_THREADS);
   }
 
   @Override
   public void setGameData(final GameData data) {
     // increment so that a new calc doesn't take place (since they all wait on this latch)
-    m_latchSetData.increment();
+    latchSetData.increment();
     // cancel any current setting of data
-    --m_cancelCurrentOperation;
+    --cancelCurrentOperation;
     // cancel any existing calcing (it won't stop immediately, just quicker)
     cancel();
-    synchronized (m_mutexSetGameData) {
+    synchronized (mutexSetGameData) {
       try {
         // since setting data takes place on a different thread, this is our token. wait on it since
-        m_latchWorkerThreadsCreation.await();
+        latchWorkerThreadsCreation.await();
         // we could have exited the synchronized block already.
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       }
       cancel();
-      m_isDataSet = false;
-      m_isCalcSet = false;
-      if (data == null || m_isShutDown) {
-        m_workers.clear();
-        ++m_cancelCurrentOperation;
+      isDataSet = false;
+      isCalcSet = false;
+      if (data == null || isShutDown) {
+        workers.clear();
+        ++cancelCurrentOperation;
         // allow calcing and other stuff to go ahead
-        m_latchSetData.countDown();
+        latchSetData.countDown();
       } else {
-        ++m_cancelCurrentOperation;
+        ++cancelCurrentOperation;
         // increment our token, so that we can set the data in a different thread and return from this one
-        m_latchWorkerThreadsCreation.increment();
-        m_executor.submit(() -> createWorkers(data));
+        latchWorkerThreadsCreation.increment();
+        executor.submit(() -> createWorkers(data));
       }
     }
   }
 
   @Override
   public int getThreadCount() {
-    return m_currentThreads;
+    return currentThreads;
   }
 
   // use both time and memory left to determine how many copies to make
@@ -125,8 +126,8 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   }
 
   private void createWorkers(final GameData data) {
-    m_workers.clear();
-    if (data != null && m_cancelCurrentOperation >= 0) {
+    workers.clear();
+    if (data != null && cancelCurrentOperation >= 0) {
       // see how long 1 copy takes (some games can get REALLY big)
       final long startTime = System.currentTimeMillis();
       final long startMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -139,33 +140,33 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       } finally {
         data.releaseReadLock();
       }
-      m_currentThreads = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
+      currentThreads = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
       try {
         // make sure all workers are using the same data
         newData.acquireReadLock();
         int i = 0;
         // we are already in 1 executor thread, so we have MAX_THREADS-1 threads left to use
-        if (m_currentThreads <= 2 || MAX_THREADS <= 2) {
+        if (currentThreads <= 2 || MAX_THREADS <= 2) {
           // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most
           // only 1 more copy to
           // make)
-          while (m_cancelCurrentOperation >= 0 && i < m_currentThreads) {
+          while (cancelCurrentOperation >= 0 && i < currentThreads) {
             // the last one will use our already copied data from above, without copying it again
-            m_workers.add(new OddsCalculator(newData, (m_currentThreads == ++i)));
+            workers.add(new OddsCalculator(newData, (currentThreads == ++i)));
           }
         } else { // multi-thread our copying, cus why the heck not (it increases the speed of copying by about double)
-          final CountDownLatch workerLatch = new CountDownLatch(m_currentThreads - 1);
-          while (i < (m_currentThreads - 1)) {
+          final CountDownLatch workerLatch = new CountDownLatch(currentThreads - 1);
+          while (i < (currentThreads - 1)) {
             ++i;
-            m_executor.submit(() -> {
-              if (m_cancelCurrentOperation >= 0) {
-                m_workers.add(new OddsCalculator(newData, false));
+            executor.submit(() -> {
+              if (cancelCurrentOperation >= 0) {
+                workers.add(new OddsCalculator(newData, false));
               }
               workerLatch.countDown();
             });
           }
           // the last one will use our already copied data from above, without copying it again
-          m_workers.add(new OddsCalculator(newData, true));
+          workers.add(new OddsCalculator(newData, true));
           try {
             workerLatch.await();
           } catch (final InterruptedException e) {
@@ -176,30 +177,30 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         newData.releaseReadLock();
       }
     }
-    if (m_cancelCurrentOperation < 0 || data == null) {
+    if (cancelCurrentOperation < 0 || data == null) {
       // we could have cancelled while setting data, so clear the workers again if so
-      m_workers.clear();
-      m_isDataSet = false;
+      workers.clear();
+      isDataSet = false;
     } else {
       // should make sure that all workers have their game data set before we can call calculate and other things
-      m_isDataSet = true;
+      isDataSet = true;
       notifyListenersGameDataIsSet();
     }
     // allow setting new data to take place if it is waiting on us
-    m_latchWorkerThreadsCreation.countDown();
+    latchWorkerThreadsCreation.countDown();
     // allow calcing and other stuff to go ahead
-    m_latchSetData.countDown();
-    s_logger.fine("Initialized worker thread pool with size: " + m_workers.size());
+    latchSetData.countDown();
+    logger.fine("Initialized worker thread pool with size: " + workers.size());
   }
 
   @Override
   public void shutdown() {
-    m_isShutDown = true;
-    m_cancelCurrentOperation = Integer.MIN_VALUE / 2;
+    isShutDown = true;
+    cancelCurrentOperation = Integer.MIN_VALUE / 2;
     cancel();
-    m_executor.shutdown();
-    synchronized (m_listeners) {
-      m_listeners.clear();
+    executor.shutdown();
+    synchronized (listeners) {
+      listeners.clear();
     }
   }
 
@@ -207,7 +208,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     try {
       // there is a small chance calculate or setCalculateData or something could be called in between calls to
       // setGameData
-      m_latchSetData.await();
+      latchSetData.await();
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
     }
@@ -217,13 +218,13 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
       final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects, int runCount) {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       awaitLatch();
-      m_isCalcSet = false;
-      final int workerNum = m_workers.size();
+      isCalcSet = false;
+      final int workerNum = workers.size();
       final int workerRunCount = Math.max(1, (runCount / Math.max(1, workerNum)));
-      for (final OddsCalculator worker : m_workers) {
-        if (!m_isDataSet || m_isShutDown) {
+      for (final OddsCalculator worker : workers) {
+        if (!isDataSet || isShutDown) {
           // we could have attempted to set a new game data, while the old one was still being set, causing it to abort
           // with null data
           return;
@@ -232,10 +233,10 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
             (runCount <= 0 ? 0 : workerRunCount));
         runCount -= workerRunCount;
       }
-      if (!m_isDataSet || m_isShutDown || workerNum <= 0) {
+      if (!isDataSet || isShutDown || workerNum <= 0) {
         return;
       }
-      m_isCalcSet = true;
+      isCalcSet = true;
     }
   }
 
@@ -246,13 +247,13 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
    */
   @Override
   public AggregateResults calculate() throws IllegalStateException {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       awaitLatch();
       final long start = System.currentTimeMillis();
       // Create worker thread pool and start all workers
       int totalRunCount = 0;
       final List<Future<AggregateResults>> list = new ArrayList<>();
-      for (final OddsCalculator worker : m_workers) {
+      for (final OddsCalculator worker : workers) {
         if (!getIsReady()) {
           // we could have attempted to set a new game data, while the old one was still being set, causing it to abort
           // with null data
@@ -263,7 +264,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         }
         if (worker.getRunCount() > 0) {
           totalRunCount += worker.getRunCount();
-          final Future<AggregateResults> workerResult = m_executor.submit(worker);
+          final Future<AggregateResults> workerResult = executor.submit(worker);
           list.add(workerResult);
         }
       }
@@ -289,7 +290,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       }
       // we don't want to scare the user with 8+ errors all for the same thing
       if (!interruptExceptions.isEmpty()) {
-        s_logger.log(Level.SEVERE, interruptExceptions.size() + " Battle results workers interrupted",
+        logger.log(Level.SEVERE, interruptExceptions.size() + " Battle results workers interrupted",
             interruptExceptions.iterator().next());
       }
       if (!executionExceptions.isEmpty()) {
@@ -297,7 +298,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         for (final Set<ExecutionException> entry : executionExceptions.values()) {
           if (!entry.isEmpty()) {
             e = entry.iterator().next();
-            s_logger.log(Level.SEVERE, entry.size() + " Battle results workers aborted by exception", e.getCause());
+            logger.log(Level.SEVERE, entry.size() + " Battle results workers aborted by exception", e.getCause());
           }
         }
         if (e != null) {
@@ -313,7 +314,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
       final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
       final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
       return calculate();
     }
@@ -321,13 +322,13 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   @Override
   public boolean getIsReady() {
-    return m_isDataSet && m_isCalcSet && !m_isShutDown;
+    return isDataSet && isCalcSet && !isShutDown;
   }
 
   @Override
   public int getRunCount() {
     int totalRunCount = 0;
-    for (final OddsCalculator worker : m_workers) {
+    for (final OddsCalculator worker : workers) {
       totalRunCount += worker.getRunCount();
     }
     return totalRunCount;
@@ -335,9 +336,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   @Override
   public void setKeepOneAttackingLandUnit(final boolean bool) {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       awaitLatch();
-      for (final OddsCalculator worker : m_workers) {
+      for (final OddsCalculator worker : workers) {
         worker.setKeepOneAttackingLandUnit(bool);
       }
     }
@@ -345,9 +346,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   @Override
   public void setAmphibious(final boolean bool) {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       awaitLatch();
-      for (final OddsCalculator worker : m_workers) {
+      for (final OddsCalculator worker : workers) {
         worker.setAmphibious(bool);
       }
     }
@@ -355,9 +356,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   @Override
   public void setRetreatAfterRound(final int value) {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       awaitLatch();
-      for (final OddsCalculator worker : m_workers) {
+      for (final OddsCalculator worker : workers) {
         worker.setRetreatAfterRound(value);
       }
     }
@@ -365,9 +366,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   @Override
   public void setRetreatAfterXUnitsLeft(final int value) {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       awaitLatch();
-      for (final OddsCalculator worker : m_workers) {
+      for (final OddsCalculator worker : workers) {
         worker.setRetreatAfterXUnitsLeft(value);
       }
     }
@@ -375,9 +376,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   @Override
   public void setRetreatWhenOnlyAirLeft(final boolean value) {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       awaitLatch();
-      for (final OddsCalculator worker : m_workers) {
+      for (final OddsCalculator worker : workers) {
         worker.setRetreatWhenOnlyAirLeft(value);
       }
     }
@@ -386,9 +387,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   @Override
   public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       awaitLatch();
-      for (final OddsCalculator worker : m_workers) {
+      for (final OddsCalculator worker : workers) {
         worker.setAttackerOrderOfLosses(attackerOrderOfLosses);
       }
     }
@@ -396,9 +397,9 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   @Override
   public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
-    synchronized (m_mutexCalcIsRunning) {
+    synchronized (mutexCalcIsRunning) {
       awaitLatch();
-      for (final OddsCalculator worker : m_workers) {
+      for (final OddsCalculator worker : workers) {
         worker.setDefenderOrderOfLosses(defenderOrderOfLosses);
       }
     }
@@ -407,32 +408,30 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   // not on purpose, we need to be able to cancel at any time
   @Override
   public void cancel() {
-    for (final OddsCalculator worker : m_workers) {
+    for (final OddsCalculator worker : workers) {
       worker.cancel();
     }
   }
 
   @Override
   public void addOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (m_listeners) {
-      m_listeners.add(listener);
+    synchronized (listeners) {
+      listeners.add(listener);
     }
   }
 
   @Override
   public void removeOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (m_listeners) {
-      m_listeners.remove(listener);
+    synchronized (listeners) {
+      listeners.remove(listener);
     }
   }
 
   private void notifyListenersGameDataIsSet() {
-    synchronized (m_listeners) {
-      for (final OddsCalculatorListener listener : m_listeners) {
+    synchronized (listeners) {
+      for (final OddsCalculatorListener listener : listeners) {
         listener.dataReady();
       }
     }
   }
 }
-
-

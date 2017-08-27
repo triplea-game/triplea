@@ -62,8 +62,9 @@ public class GameObjectStreamData implements Externalizable {
           return data.getProductionRuleList().getProductionRule(m_name);
         case PRODUCTIONFRONTIER:
           return data.getProductionFrontierList().getProductionFrontier(m_name);
+        default:
+          throw new IllegalStateException("Unknown type: " + m_type);
       }
-      throw new IllegalStateException("Unknown type" + this);
     } finally {
       data.releaseReadLock();
     }

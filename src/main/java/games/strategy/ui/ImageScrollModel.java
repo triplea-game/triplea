@@ -12,18 +12,18 @@ import java.util.Observable;
  * </p>
  */
 public class ImageScrollModel extends Observable {
-  private int m_x;
-  private int m_y;
-  private int m_boxWidth = 5;
-  private int m_boxHeight = 5;
-  private int m_maxWidth;
-  private int m_maxHeight;
-  private boolean m_scrollX;
-  private boolean m_scrollY;
+  private int x;
+  private int y;
+  private int boxWidth = 5;
+  private int boxHeight = 5;
+  private int maxWidth;
+  private int maxHeight;
+  private boolean scrollX;
+  private boolean scrollY;
 
   public void setMaxBounds(final int maxWidth, final int maxHeight) {
-    m_maxWidth = maxWidth;
-    m_maxHeight = maxHeight;
+    this.maxWidth = maxWidth;
+    this.maxHeight = maxHeight;
     enforceBounds();
     updateListeners();
   }
@@ -33,8 +33,8 @@ public class ImageScrollModel extends Observable {
   }
 
   void setBoxDimensions(final int maxX, final int maxy) {
-    m_boxWidth = maxX;
-    m_boxHeight = maxy;
+    boxWidth = maxX;
+    boxHeight = maxy;
     enforceBounds();
     updateListeners();
   }
@@ -45,95 +45,95 @@ public class ImageScrollModel extends Observable {
   }
 
   public void setScrollX(final boolean scrollX) {
-    m_scrollX = scrollX;
+    this.scrollX = scrollX;
     enforceBounds();
     updateListeners();
   }
 
   public void setScrollY(final boolean scrollY) {
-    m_scrollY = scrollY;
+    this.scrollY = scrollY;
     enforceBounds();
     updateListeners();
   }
 
   private void enforceBounds() {
-    if (!m_scrollY) {
-      if (m_y < 0) {
-        m_y = 0;
+    if (!scrollY) {
+      if (y < 0) {
+        y = 0;
       }
-      if (m_y + m_boxHeight > m_maxHeight) {
-        m_y = m_maxHeight - m_boxHeight;
+      if (y + boxHeight > maxHeight) {
+        y = maxHeight - boxHeight;
       }
     } else {
       // don't let the map scroll infinitely,
       // when it gets to be twice the height to the up or down, move it back one length
-      while (m_y > m_maxHeight) {
-        m_y -= m_maxHeight;
+      while (y > maxHeight) {
+        y -= maxHeight;
       }
-      while (m_y < -m_maxHeight) {
-        m_y += m_maxHeight;
+      while (y < -maxHeight) {
+        y += maxHeight;
       }
     }
     // if the box is bigger than the map
     // put us at 0,0
-    if (m_boxHeight > m_maxHeight) {
-      m_y = 0;
+    if (boxHeight > maxHeight) {
+      y = 0;
     }
-    if (!m_scrollX) {
-      if (m_x < 0) {
-        m_x = 0;
+    if (!scrollX) {
+      if (x < 0) {
+        x = 0;
       }
-      if (m_x + m_boxWidth > m_maxWidth) {
-        m_x = m_maxWidth - m_boxWidth;
+      if (x + boxWidth > maxWidth) {
+        x = maxWidth - boxWidth;
       }
     } else {
       // don't let the map scroll infinitely,
       // when it gets to be twice the length to the left or right, move it back one length
-      while (m_x > m_maxWidth) {
-        m_x -= m_maxWidth;
+      while (x > maxWidth) {
+        x -= maxWidth;
       }
-      while (m_x < -m_maxWidth) {
-        m_x += m_maxWidth;
+      while (x < -maxWidth) {
+        x += maxWidth;
       }
     }
     // if the box is bigger than the map
     // put us at 0,0
-    if (m_boxWidth > m_maxWidth) {
-      m_x = 0;
+    if (boxWidth > maxWidth) {
+      x = 0;
     }
   }
 
   public boolean getScrollX() {
-    return m_scrollX;
+    return scrollX;
   }
 
   public int getX() {
-    return m_x;
+    return x;
   }
 
   public int getY() {
-    return m_y;
+    return y;
   }
 
   public int getBoxWidth() {
-    return m_boxWidth;
+    return boxWidth;
   }
 
   public int getBoxHeight() {
-    return m_boxHeight;
+    return boxHeight;
   }
 
   public int getMaxWidth() {
-    return m_maxWidth;
+    return maxWidth;
   }
 
   public int getMaxHeight() {
-    return m_maxHeight;
+    return maxHeight;
   }
 
   void set(final int x, final int y) {
-    m_x = x;
-    m_y = y;
+    this.x = x;
+    this.y = y;
     enforceBounds();
     updateListeners();
   }

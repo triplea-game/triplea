@@ -16,7 +16,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 public class XmlUpdater {
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 
   /**
@@ -24,7 +24,7 @@ public class XmlUpdater {
    */
   public static void main(final String[] args) throws Exception {
     handleCommandLineArgs(args);
-    final File gameXmlFile = new FileOpen("Select xml file", s_mapFolderLocation, ".xml").getFile();
+    final File gameXmlFile = new FileOpen("Select xml file", mapFolderLocation, ".xml").getFile();
     if (gameXmlFile == null) {
       System.out.println("No file selected");
       return;
@@ -49,9 +49,9 @@ public class XmlUpdater {
       trans.transform(xmlSource, new StreamResult(resultBuf));
     }
     gameXmlFile.renameTo(new File(gameXmlFile.getAbsolutePath() + ".backup"));
-    final FileOutputStream outStream = new FileOutputStream(gameXmlFile);
-    outStream.write(resultBuf.toByteArray());
-    outStream.close();
+    try (final FileOutputStream outStream = new FileOutputStream(gameXmlFile)) {
+      outStream.write(resultBuf.toByteArray());
+    }
     System.out.println("Successfully updated:" + gameXmlFile);
   }
 
@@ -74,7 +74,7 @@ public class XmlUpdater {
       }
       final File mapFolder = new File(value);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + value);
       }
@@ -82,12 +82,12 @@ public class XmlUpdater {
       System.out.println("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }

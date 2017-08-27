@@ -12,12 +12,12 @@ import games.strategy.util.IntegerMap;
  */
 public class ExampleAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -5820318094331518742L;
-  private int m_techCost;
-  private boolean m_heavyBomber;
-  private String m_attribute;
-  private IntegerMap<UnitType> m_givesMovement = new IntegerMap<>();
+  private int techCost;
+  private boolean heavyBomber;
+  private String attribute;
+  private IntegerMap<UnitType> givesMovement = new IntegerMap<>();
   @InternalDoNotExport
-  private String m_notAProperty = "str";
+  private String notAProperty = "str";
 
   public ExampleAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -25,60 +25,60 @@ public class ExampleAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTechCost(final String techCost) {
-    m_techCost = getInt(techCost);
+    this.techCost = getInt(techCost);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTechCost(final int techCost) {
-    m_techCost = techCost;
+    this.techCost = techCost;
   }
 
   public int getTechCost() {
-    return m_techCost;
+    return techCost;
   }
 
   public void resetTechCost() {
-    m_techCost = 5;
+    techCost = 5;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setHeavyBomber(final String heavyBomber) {
-    m_heavyBomber = getBool(heavyBomber);
+    this.heavyBomber = getBool(heavyBomber);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setHeavyBomber(final boolean heavyBomber) {
-    m_heavyBomber = heavyBomber;
+    this.heavyBomber = heavyBomber;
   }
 
   public boolean getHeavyBomber() {
-    return m_heavyBomber;
+    return heavyBomber;
   }
 
   public void resetHeavyBomber() {
-    m_heavyBomber = false;
+    heavyBomber = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAttribute(final String attribute) {
-    m_attribute = attribute;
+    this.attribute = attribute;
   }
 
   public String getAttribute() {
-    return m_attribute;
+    return attribute;
   }
 
   public void resetAttribute() {
-    m_attribute = null;
+    attribute = null;
   }
 
   @InternalDoNotExport
   public void setNotAProperty(final String notAProperty) {
-    m_notAProperty = notAProperty;
+    this.notAProperty = notAProperty;
   }
 
   public String getNotAProperty() {
-    return m_notAProperty;
+    return notAProperty;
   }
 
   /**
@@ -99,24 +99,24 @@ public class ExampleAttachment extends DefaultAttachment {
     }
     // we should allow positive and negative numbers, since you can give bonuses to units or take away a unit's movement
     final int n = getInt(s[0]);
-    m_givesMovement.add(ut, n);
+    givesMovement.add(ut, n);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setGivesMovement(final IntegerMap<UnitType> value) {
-    m_givesMovement = value;
+    givesMovement = value;
   }
 
   public IntegerMap<UnitType> getGivesMovement() {
-    return m_givesMovement;
+    return givesMovement;
   }
 
   public void clearGivesMovement() {
-    m_givesMovement.clear();
+    givesMovement.clear();
   }
 
   public void resetGivesMovement() {
-    m_givesMovement = new IntegerMap<>();
+    givesMovement = new IntegerMap<>();
   }
 
   @Override

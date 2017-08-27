@@ -19,6 +19,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
@@ -59,7 +60,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return;
     }
     final boolean onlyWhereUnderAttackAlready =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+        Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     if (m_needToInitialize && onlyWhereUnderAttackAlready) {
       // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move
@@ -226,9 +227,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         result.addDisallowedUnit("Must Own All Airborne Forces", u);
       } else if (!Matches.unitIsOfTypes(airborneTypes).match(u)) {
         result.addDisallowedUnit("Can Only Launch Airborne Forces", u);
-      } else if (Matches.UnitIsDisabled.match(u)) {
+      } else if (Matches.unitIsDisabled().match(u)) {
         result.addDisallowedUnit("Must Not Be Disabled", u);
-      } else if (!Matches.unitHasNotMoved.match(u)) {
+      } else if (!Matches.unitHasNotMoved().match(u)) {
         result.addDisallowedUnit("Must Not Have Previously Moved Airborne Forces", u);
       } else if (Matches.UnitIsAirborne.match(u)) {
         result.addDisallowedUnit("Cannot Move Units Already Airborne", u);
@@ -240,14 +241,13 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result;
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
-    final boolean onlyWhereUnderAttackAlready =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
-    final boolean onlyEnemyTerritories =
-        games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
-    if (!Match.allMatchNotEmpty(route.getSteps(), Matches.territoryIsPassableAndNotRestricted(player, data))) {
+    final boolean onlyWhereUnderAttackAlready = Properties.getAirborneAttacksOnlyInExistingBattles(data);
+    final boolean onlyEnemyTerritories = Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
+    final List<Territory> steps = route.getSteps();
+    if (steps.isEmpty() || !Match.allMatch(steps, Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
-    if (!Match.allMatchNotEmpty(route.getSteps(), Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
+    if (steps.isEmpty() || !Match.allMatch(steps, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
     final boolean someLand = Match.anyMatch(airborne, Matches.UnitIsLand);
@@ -292,7 +292,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
 
   private static Match<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
     return Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
-        Matches.unitIsOfTypes(types), Matches.UnitIsNotDisabled, Matches.unitHasNotMoved,
+        Matches.unitIsOfTypes(types), Matches.unitIsNotDisabled(), Matches.unitHasNotMoved(),
         Matches.UnitIsAirborne.invert());
   }
 

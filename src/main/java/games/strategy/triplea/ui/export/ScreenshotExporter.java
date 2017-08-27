@@ -79,7 +79,7 @@ public final class ScreenshotExporter {
         round = ((Round) curNode).getRoundNo();
       }
     }
-    final IUIContext iuiContext = frame.getUIContext();
+    final IUIContext iuiContext = frame.getUiContext();
     final double scale = iuiContext.getScale();
     // print map panel to image
     final MapPanel mapPanel = frame.getMapPanel();
@@ -89,26 +89,26 @@ public final class ScreenshotExporter {
     try {
       // workaround to get the whole map
       // (otherwise the map is cut if current window is not on top of map)
-      final int xOffset = mapPanel.getXOffset();
-      final int yOffset = mapPanel.getYOffset();
+      final int offsetX = mapPanel.getXOffset();
+      final int offsetY = mapPanel.getYOffset();
       mapPanel.setTopLeft(0, 0);
       mapPanel.drawMapImage(mapGraphics);
-      mapPanel.setTopLeft(xOffset, yOffset);
+      mapPanel.setTopLeft(offsetX, offsetY);
       // overlay title
       Color titleColor = iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
       if (titleColor == null) {
         titleColor = Color.BLACK;
       }
-      final String s_title_x = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
-      final String s_title_y = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
-      final String s_title_size = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
+      final String encodedTitleX = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
+      final String encodedTitleY = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
+      final String encodedTitleSize = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
       int titleX;
       int titleY;
       int titleSize;
       try {
-        titleX = (int) (Integer.parseInt(s_title_x) * scale);
-        titleY = (int) (Integer.parseInt(s_title_y) * scale);
-        titleSize = Integer.parseInt(s_title_size);
+        titleX = (int) (Integer.parseInt(encodedTitleX) * scale);
+        titleY = (int) (Integer.parseInt(encodedTitleY) * scale);
+        titleSize = Integer.parseInt(encodedTitleSize);
       } catch (final NumberFormatException nfe) {
         // choose safe defaults
         titleX = (int) (15 * scale);

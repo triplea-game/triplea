@@ -55,7 +55,7 @@ public class DownloadRunnable {
   }
 
   private List<DownloadFileDescription> readLocalFile() {
-    final File targetFile = new File(ClientFileSystemHelper.getRootFolder(), urlString);
+    final File targetFile = new File(urlString);
     try {
       final byte[] contents = Files.readAllBytes(targetFile.toPath());
       final List<DownloadFileDescription> downloads = DownloadFileParser.parse(new ByteArrayInputStream(contents));

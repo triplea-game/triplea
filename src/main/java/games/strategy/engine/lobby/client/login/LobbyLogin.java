@@ -8,11 +8,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
+import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IConnectionLogin;
@@ -24,9 +24,9 @@ public class LobbyLogin {
   private final Window parentWindow;
   private final LobbyServerProperties lobbyServerProperties;
 
-  public LobbyLogin(final Window parent) {
+  public LobbyLogin(final Window parent, final LobbyServerProperties lobbyServerProperties) {
     parentWindow = parent;
-    lobbyServerProperties = ClientContext.gameEnginePropertyReader().fetchLobbyServerProperties();
+    this.lobbyServerProperties = lobbyServerProperties;
   }
 
   /**
@@ -88,16 +88,22 @@ public class LobbyLogin {
               if (panel.isAnonymous()) {
                 props.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
               } else {
+                final boolean isUpdatedLobby = RsaAuthenticator.canProcessChallenge(challengProperties);
                 String salt = challengProperties.get(LobbyLoginValidator.SALT_KEY);
                 if (salt == null) {
-                  // the server does not have a salt value
-                  // so there is no user with our name,
-                  // continue as before
-                  internalError.set("No account with that name exists");
+                  if (!isUpdatedLobby) {
+                    // the server does not have a salt value
+                    // so there is no user with our name,
+                    // continue as before
+                    internalError.set("No account with that name exists");
+                  }
                   salt = "none";
                 }
                 final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
                 props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
+                if (isUpdatedLobby) {
+                  props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, panel.getPassword()));
+                }
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;
@@ -158,7 +164,11 @@ public class LobbyLogin {
               final Map<String, String> props = new HashMap<>();
               props.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
               props.put(LobbyLoginValidator.EMAIL_KEY, createAccount.getEmail());
+              // TODO: Don't send the md5-hashed password once the lobby is updated
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
+              if (RsaAuthenticator.canProcessChallenge(challengProperties)) {
+                props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, createAccount.getPassword()));
+              }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;
             }

@@ -6,23 +6,23 @@ import java.awt.Point;
 import games.strategy.engine.data.Route;
 
 public class RouteDescription {
-  private final Route m_route;
+  private final Route route;
   // this point is in map co-ordinates, un scaled
-  private final Point m_start;
+  private final Point start;
   // this point is in map co-ordinates, un scaled
-  private final Point m_end;
-  private final Image m_cursorImage;
+  private final Point end;
+  private final Image cursorImage;
 
   RouteDescription(final Route route, final Point start, final Point end, final Image cursorImage) {
-    m_route = route;
-    m_start = start;
-    m_end = end;
-    m_cursorImage = cursorImage;
+    this.route = route;
+    this.start = start;
+    this.end = end;
+    this.cursorImage = cursorImage;
   }
 
   @Override
   public int hashCode() {
-    return m_route.hashCode() + m_cursorImage.hashCode();
+    return route.hashCode() + cursorImage.hashCode();
   }
 
   @Override
@@ -34,46 +34,46 @@ public class RouteDescription {
       return false;
     }
     final RouteDescription other = (RouteDescription) o;
-    if (m_start == null && other.m_start != null || other.m_start == null && m_start != null
-        || (m_start != other.m_start && !m_start.equals(other.m_start))) {
+    if (start == null && other.start != null || other.start == null && start != null
+        || (start != other.start && !start.equals(other.start))) {
       return false;
     }
-    if (m_route == null && other.m_route != null || other.m_route == null && m_route != null
-        || (m_route != other.m_route && !m_route.equals(other.m_route))) {
+    if (route == null && other.route != null || other.route == null && route != null
+        || (route != other.route && !route.equals(other.route))) {
       return false;
     }
-    if (m_end == null && other.m_end != null || other.m_end == null && m_end != null) {
+    if (end == null && other.end != null || other.end == null && end != null) {
       return false;
     }
-    if (m_cursorImage != other.m_cursorImage) {
+    if (cursorImage != other.cursorImage) {
       return false;
     }
     // we dont want to be updating for every small change,
     // if the end points are close enough, they are close enough
-    if (other.m_end == null && this.m_end == null) {
+    if (other.end == null && this.end == null) {
       return true;
     }
-    int diffX = m_end.x - other.m_end.x;
+    int diffX = end.x - other.end.x;
     diffX *= diffX;
-    int diffY = m_end.y - other.m_end.y;
+    int diffY = end.y - other.end.y;
     diffY *= diffY;
     final int endDiff = (int) Math.sqrt(diffX + diffY);
     return endDiff < 6;
   }
 
   public Route getRoute() {
-    return m_route;
+    return route;
   }
 
   public Point getStart() {
-    return m_start;
+    return start;
   }
 
   public Point getEnd() {
-    return m_end;
+    return end;
   }
 
   public Image getCursorImage() {
-    return m_cursorImage;
+    return cursorImage;
   }
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
@@ -20,7 +19,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 
@@ -144,8 +143,8 @@ public class ProUtils {
 
   public static List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) {
     final List<Territory> enemyCapitals = new ArrayList<>();
-    final List<PlayerID> ePlayers = getEnemyPlayers(player);
-    for (final PlayerID otherPlayer : ePlayers) {
+    final List<PlayerID> enemyPlayers = getEnemyPlayers(player);
+    for (final PlayerID otherPlayer : enemyPlayers) {
       enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
     }
     enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
@@ -262,10 +261,6 @@ public class ProUtils {
    * Pause the game to allow the human player to see what is going on.
    */
   public static void pause() {
-    try {
-      ThreadUtil.sleep(AbstractUIContext.getAIPauseDuration());
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
+    ThreadUtil.sleep(ClientSetting.AI_PAUSE_DURATION.intValue());
   }
 }

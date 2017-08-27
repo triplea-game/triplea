@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,7 +18,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDesc
 /**
  * Represents a battle.
  */
-public interface IBattle extends java.io.Serializable {
+public interface IBattle extends Serializable {
   enum WhoWon {
     NOTFINISHED, DRAW, ATTACKER, DEFENDER
   }

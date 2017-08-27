@@ -22,6 +22,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -53,7 +54,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   public void end() {
     super.end();
     resetAttempts();
-    if (games.strategy.triplea.Properties.getTriggers(getData())) {
+    if (Properties.getTriggers(getData())) {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
@@ -98,7 +99,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (!m_player.amNotDeadYet(getData())) {
       return false;
     }
-    if (!games.strategy.triplea.Properties.getUsePolitics(getData())) {
+    if (!Properties.getUsePolitics(getData())) {
       return false;
     }
     return !getValidActions().isEmpty();
@@ -130,7 +131,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   @Override
   public void attemptAction(final PoliticalActionAttachment paa) {
-    if (!games.strategy.triplea.Properties.getUsePolitics(getData())) {
+    if (!Properties.getUsePolitics(getData())) {
       notifyPoliticsTurnedOff();
       return;
     }
@@ -182,7 +183,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
                 Matches.RelationshipTypeIsAtWar, data),
             Matches.politicalActionIsRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar,
                 Matches.RelationshipTypeIsAtWar.invert(), data));
-    if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)
+    if (!Properties.getAlliancesCanChainTogether(data)
         || !intoAlliedChainOrIntoOrOutOfWar.match(paa)) {
       for (final PlayerID player : paa.getActionAccept()) {
         if (!(getRemotePlayer(player)).acceptAction(m_player,
@@ -264,7 +265,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    *        the politicalactionattachment this the money is charged for.
    */
   private void chargeForAction(final PoliticalActionAttachment paa) {
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = paa.getCostPU();
     if (cost > 0) {
       // don't notify user of spending money anymore
@@ -272,7 +273,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on Political Action: "
           + MyFormatter.attachmentNameToText(paa.getName());
       m_bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
+      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), pus, -cost);
       m_bridge.addChange(charge);
     } else {
       final String transcriptText = m_bridge.getPlayerID().getName() + " takes Political Action: "
@@ -288,9 +289,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * @return false if the player can't afford the action
    */
   private boolean checkEnoughMoney(final PoliticalActionAttachment paa) {
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = paa.getCostPU();
-    final int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+    final int has = m_bridge.getPlayerID().getResources().getQuantity(pus);
     return has >= cost;
   }
 
@@ -420,7 +421,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private static void getMyselfOutOfAlliance(final PoliticalActionAttachment paa, final PlayerID player,
       final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
+    if (!Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
@@ -435,8 +436,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       if (!(p1.equals(player) || p2.equals(player))) {
         continue;
       }
-      final PlayerID pOther = (p1.equals(player) ? p2 : p1);
-      if (!p1AlliedWith.contains(pOther)) {
+      final PlayerID otherPlayer = (p1.equals(player) ? p2 : p1);
+      if (!p1AlliedWith.contains(otherPlayer)) {
         continue;
       }
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
@@ -462,7 +463,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private static void getNeutralOutOfWarWithAllies(final PoliticalActionAttachment paa, final PlayerID player,
       final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
+    if (!Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
 
@@ -477,21 +478,21 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       if (!(p1.equals(player) || p2.equals(player))) {
         continue;
       }
-      final PlayerID pOther = (p1.equals(player) ? p2 : p1);
+      final PlayerID otherPlayer = (p1.equals(player) ? p2 : p1);
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
       final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
       if (Matches.RelationshipTypeIsAtWar.match(currentType)
           && Matches.RelationshipTypeIsAtWar.invert().match(newType)) {
-        final Collection<PlayerID> pOtherAlliedWith =
-            Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(pOther, data));
-        if (!pOtherAlliedWith.contains(pOther)) {
-          pOtherAlliedWith.add(pOther);
+        final Collection<PlayerID> otherPlayersAlliedWith =
+            Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(otherPlayer, data));
+        if (!otherPlayersAlliedWith.contains(otherPlayer)) {
+          otherPlayersAlliedWith.add(otherPlayer);
         }
         if (!p1AlliedWith.contains(player)) {
           p1AlliedWith.add(player);
         }
         for (final PlayerID p3 : p1AlliedWith) {
-          for (final PlayerID p4 : pOtherAlliedWith) {
+          for (final PlayerID p4 : otherPlayersAlliedWith) {
             final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, p4);
             if (!currentOther.equals(newType) && Matches.RelationshipTypeIsAtWar.match(currentOther)) {
               change.add(ChangeFactory.relationshipChange(p3, p4, currentOther, newType));
@@ -510,16 +511,16 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   static void chainAlliancesTogether(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data)) {
+    if (!Properties.getAlliancesCanChainTogether(data)) {
       return;
     }
     final Collection<RelationshipType> allTypes = data.getRelationshipTypeList().getAllRelationshipTypes();
     RelationshipType alliedType = null;
     RelationshipType warType = null;
     for (final RelationshipType type : allTypes) {
-      if (type.getRelationshipTypeAttachment().getIsDefaultWarPosition()) {
+      if (type.getRelationshipTypeAttachment().isDefaultWarPosition()) {
         warType = type;
-      } else if (type.getRelationshipTypeAttachment().getAlliancesCanChainTogether()) {
+      } else if (type.getRelationshipTypeAttachment().canAlliancesChainTogether()) {
         alliedType = type;
       }
     }

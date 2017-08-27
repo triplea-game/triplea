@@ -49,7 +49,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -68,7 +67,9 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.IntTextField;
@@ -424,7 +425,7 @@ class OddsCalculatorPanel extends JPanel {
     // swing event thread
     dialog.setVisible(true);
     // results.get() could be null if we cancelled to quickly or something weird like that.
-    if (results == null || results.get() == null) {
+    if (results.get() == null) {
       setResultsToBlank();
     } else {
       attackerWin.setText(formatPercentage(results.get().getAttackerWinPercent()));
@@ -700,9 +701,9 @@ class OddsCalculatorPanel extends JPanel {
     numRuns.setMin(1);
     numRuns.setMax(20000);
 
-    final int simulationCount =
-        Properties.getLow_Luck(data) ? ClientContext.battleCalcSettings().getSimulationCountLowLuck()
-            : ClientContext.battleCalcSettings().getSimulationCountDice();
+    final int simulationCount = Properties.getLow_Luck(data)
+        ? ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK.intValue()
+        : ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE.intValue();
     numRuns.setValue(simulationCount);
     retreatAfterXRounds.setColumns(4);
     retreatAfterXRounds.setMin(-1);
@@ -762,17 +763,17 @@ class OddsCalculatorPanel extends JPanel {
           Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
       attackerUnitsTotalNumber.setText("Units: " + attackers.size());
       defenderUnitsTotalNumber.setText("Units: " + defenders.size());
-      attackerUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(attackers, getAttacker(),
-          BattleCalculator.getCostsForTUV(getAttacker(), data), data));
-      defenderUnitsTotalTUV.setText("TUV: " + BattleCalculator.getTUV(defenders, getDefender(),
-          BattleCalculator.getCostsForTUV(getDefender(), data), data));
+      attackerUnitsTotalTUV.setText("TUV: " + TuvUtils.getTuv(attackers, getAttacker(),
+          TuvUtils.getCostsForTuv(getAttacker(), data), data));
+      defenderUnitsTotalTUV.setText("TUV: " + TuvUtils.getTuv(defenders, getDefender(),
+          TuvUtils.getCostsForTuv(getDefender(), data), data));
       final int attackHitPoints = BattleCalculator.getTotalHitpointsLeft(attackers);
       final int defenseHitPoints = BattleCalculator.getTotalHitpointsLeft(defenders);
       attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);
       defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
       final boolean isAmphibiousBattle = isAmphibiousBattle();
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-      final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(getAttacker(), data);
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       Collections.sort(attackers, new UnitBattleComparator(false, costs, territoryEffects, data, false, false));
       Collections.reverse(attackers);
       final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, defenders,
@@ -871,8 +872,8 @@ class OddsCalculatorPanel extends JPanel {
           if (u1.getIsSea() != u2.getIsSea()) {
             return u1.getIsSea() ? 1 : -1;
           }
-          if (Matches.UnitTypeIsAAforAnything.match(ut1) != Matches.UnitTypeIsAAforAnything.match(ut2)) {
-            return Matches.UnitTypeIsAAforAnything.match(ut1) ? 1 : -1;
+          if (Matches.unitTypeIsAaForAnything().match(ut1) != Matches.unitTypeIsAaForAnything().match(ut2)) {
+            return Matches.unitTypeIsAaForAnything().match(ut1) ? 1 : -1;
           }
           if (u1.getIsAir() != u2.getIsAir()) {
             return u1.getIsAir() ? 1 : -1;
@@ -888,17 +889,17 @@ class OddsCalculatorPanel extends JPanel {
       final Match<UnitType> predicate;
       if (land) {
         if (defender) {
-          predicate = Matches.UnitTypeIsNotSea;
+          predicate = Matches.unitTypeIsNotSea();
         } else {
-          predicate = Match.anyOf(Matches.UnitTypeIsNotSea, Matches.unitTypeCanBombard(id));
+          predicate = Match.anyOf(Matches.unitTypeIsNotSea(), Matches.unitTypeCanBombard(id));
         }
       } else {
-        predicate = Matches.UnitTypeIsSeaOrAir;
+        predicate = Matches.unitTypeIsSeaOrAir();
       }
       final IntegerMap<UnitType> costs;
       try {
         data.acquireReadLock();
-        costs = BattleCalculator.getCostsForTUV(id, data);
+        costs = TuvUtils.getCostsForTuv(id, data);
       } finally {
         data.releaseReadLock();
       }
@@ -1014,11 +1015,11 @@ class OddsCalculatorPanel extends JPanel {
             u.setHits(category.getDamaged());
           }
         }
-        if (category.getDisabled() && Matches.UnitTypeCanBeDamaged.match(category.getType())) {
+        if (category.getDisabled() && Matches.unitTypeCanBeDamaged().match(category.getType())) {
           // add 1 because it is the max operational damage and we want to disable it
-          final int uDamage = Math.max(0, 1 + UnitAttachment.get(category.getType()).getMaxOperationalDamage());
+          final int unitDamage = Math.max(0, 1 + UnitAttachment.get(category.getType()).getMaxOperationalDamage());
           for (final Unit u : units) {
-            ((TripleAUnit) u).setUnitDamage(uDamage);
+            ((TripleAUnit) u).setUnitDamage(unitDamage);
           }
         }
       }
@@ -1181,9 +1182,9 @@ class OddsCalculatorPanel extends JPanel {
         final Set<UnitType> typesUsed = new HashSet<>();
         for (final UnitCategory category : categories) {
           // no duplicates or infrastructure allowed. no sea if land, no land if sea.
-          if (typesUsed.contains(category.getType()) || Matches.UnitTypeIsInfrastructure.match(category.getType())
-              || (land && Matches.UnitTypeIsSea.match(category.getType()))
-              || (!land && Matches.UnitTypeIsLand.match(category.getType()))) {
+          if (typesUsed.contains(category.getType()) || Matches.unitTypeIsInfrastructure().match(category.getType())
+              || (land && Matches.unitTypeIsSea().match(category.getType()))
+              || (!land && Matches.unitTypeIsLand().match(category.getType()))) {
             continue;
           }
           final String unitName =

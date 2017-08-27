@@ -39,12 +39,12 @@ public class AIUtils {
    * </p>
    */
   static int getCost(final UnitType unitType, final PlayerID player, final GameData data) {
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final ProductionRule rule = getProductionRule(unitType, player);
     if (rule == null) {
       return Integer.MAX_VALUE;
     } else {
-      return rule.getCosts().getInt(PUs);
+      return rule.getCosts().getInt(pus);
     }
   }
 
@@ -105,8 +105,8 @@ public class AIUtils {
       }
     }
     if (attacking) {
-      final int art = Match.countMatches(units, Matches.UnitIsArtillery);
-      final int artSupport = Match.countMatches(units, Matches.UnitIsArtillerySupportable);
+      final int art = Match.countMatches(units, Matches.unitIsArtillery());
+      final int artSupport = Match.countMatches(units, Matches.unitIsArtillerySupportable());
       strength += Math.min(art, artSupport);
     }
     return strength;

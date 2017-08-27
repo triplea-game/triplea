@@ -52,12 +52,12 @@ public class MapCreator extends JFrame {
   private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
   private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
   private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
-  private static long s_memory = Runtime.getRuntime().maxMemory();
-  private static File s_mapFolderLocation = null;
-  private static double s_unit_zoom = 0.75;
-  private static int s_unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static int s_unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static boolean s_runUtilitiesAsSeperateProcesses = true;
+  private static long memoryInBytes = Runtime.getRuntime().maxMemory();
+  private static File mapFolderLocation = null;
+  private static double unitZoom = 0.75;
+  private static int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private static int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private static boolean runUtilitiesAsSeperateProcesses = true;
   final JPanel mainPanel;
   final JPanel sidePanel;
   final JButton part1;
@@ -75,10 +75,13 @@ public class MapCreator extends JFrame {
 
   public static void main(final String[] args) {
     LookAndFeel.setupLookAndFeel();
-    final MapCreator creator = new MapCreator();
-    creator.setSize(800, 600);
-    creator.setLocationRelativeTo(null);
-    creator.setVisible(true);
+
+    SwingAction.invokeAndWait(() -> {
+      final MapCreator creator = new MapCreator();
+      creator.setSize(800, 600);
+      creator.setLocationRelativeTo(null);
+      creator.setVisible(true);
+    });
   }
 
   private MapCreator() {
@@ -199,12 +202,12 @@ public class MapCreator extends JFrame {
     panel1.add(new JLabel("Click button to select where your map folder is:"));
     final JButton mapFolderButton = new JButton("Select Map Folder");
     mapFolderButton.addActionListener(SwingAction.of("Select Map Folder", e -> {
-      final String path = new FileSave("Where is your map's folder?", null, s_mapFolderLocation).getPathString();
+      final String path = new FileSave("Where is your map's folder?", null, mapFolderLocation).getPathString();
       if (path != null) {
         final File mapFolder = new File(path);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
-          System.setProperty(TRIPLEA_MAP_FOLDER, s_mapFolderLocation.getPath());
+          mapFolderLocation = mapFolder;
+          System.setProperty(TRIPLEA_MAP_FOLDER, mapFolderLocation.getPath());
         }
       }
     }));
@@ -212,7 +215,7 @@ public class MapCreator extends JFrame {
     panel1.add(Box.createVerticalStrut(30));
     panel1.add(new JLabel("Set the unit scaling (unit image zoom): "));
     panel1.add(new JLabel("Choose one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5"));
-    final JTextField unitZoomText = new JTextField("" + s_unit_zoom);
+    final JTextField unitZoomText = new JTextField("" + unitZoom);
     unitZoomText.setMaximumSize(new Dimension(100, 20));
     unitZoomText.addFocusListener(new FocusListener() {
       @Override
@@ -221,18 +224,18 @@ public class MapCreator extends JFrame {
       @Override
       public void focusLost(final FocusEvent e) {
         try {
-          s_unit_zoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
-          System.setProperty(TRIPLEA_UNIT_ZOOM, "" + s_unit_zoom);
+          unitZoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
+          System.setProperty(TRIPLEA_UNIT_ZOOM, "" + unitZoom);
         } catch (final Exception ex) {
           // ignore malformed input
         }
-        unitZoomText.setText("" + s_unit_zoom);
+        unitZoomText.setText("" + unitZoom);
       }
     });
     panel1.add(unitZoomText);
     panel1.add(Box.createVerticalStrut(30));
     panel1.add(new JLabel("Set the width of the unit images: "));
-    final JTextField unitWidthText = new JTextField("" + s_unit_width);
+    final JTextField unitWidthText = new JTextField("" + unitWidth);
     unitWidthText.setMaximumSize(new Dimension(100, 20));
     unitWidthText.addFocusListener(new FocusListener() {
       @Override
@@ -241,18 +244,18 @@ public class MapCreator extends JFrame {
       @Override
       public void focusLost(final FocusEvent e) {
         try {
-          s_unit_width = Math.min(400, Math.max(1, Integer.parseInt(unitWidthText.getText())));
-          System.setProperty(TRIPLEA_UNIT_WIDTH, "" + s_unit_width);
+          unitWidth = Math.min(400, Math.max(1, Integer.parseInt(unitWidthText.getText())));
+          System.setProperty(TRIPLEA_UNIT_WIDTH, "" + unitWidth);
         } catch (final Exception ex) {
           // ignore malformed input
         }
-        unitWidthText.setText("" + s_unit_width);
+        unitWidthText.setText("" + unitWidth);
       }
     });
     panel1.add(unitWidthText);
     panel1.add(Box.createVerticalStrut(30));
     panel1.add(new JLabel("Set the height of the unit images: "));
-    final JTextField unitHeightText = new JTextField("" + s_unit_height);
+    final JTextField unitHeightText = new JTextField("" + unitHeight);
     unitHeightText.setMaximumSize(new Dimension(100, 20));
     unitHeightText.addFocusListener(new FocusListener() {
       @Override
@@ -261,12 +264,12 @@ public class MapCreator extends JFrame {
       @Override
       public void focusLost(final FocusEvent e) {
         try {
-          s_unit_height = Math.min(400, Math.max(1, Integer.parseInt(unitHeightText.getText())));
-          System.setProperty(TRIPLEA_UNIT_HEIGHT, "" + s_unit_height);
+          unitHeight = Math.min(400, Math.max(1, Integer.parseInt(unitHeightText.getText())));
+          System.setProperty(TRIPLEA_UNIT_HEIGHT, "" + unitHeight);
         } catch (final Exception ex) {
           // ignore malformed input
         }
-        unitHeightText.setText("" + s_unit_height);
+        unitHeightText.setText("" + unitHeight);
       }
     });
     panel1.add(unitHeightText);
@@ -275,7 +278,7 @@ public class MapCreator extends JFrame {
         .add(new JLabel("<html>Here you can set the 'max memory' that utilities like the Polygon Grabber will use.<br>"
             + "This is useful is you have a very large map, or ever get any Java Heap Space errors.</html>"));
     panel1.add(new JLabel("Set the amount of memory to use when running new processes (in megabytes [mb]):"));
-    final JTextField memoryText = new JTextField("" + (s_memory / (1024 * 1024)));
+    final JTextField memoryText = new JTextField("" + (memoryInBytes / (1024 * 1024)));
     memoryText.setMaximumSize(new Dimension(100, 20));
     memoryText.addFocusListener(new FocusListener() {
       @Override
@@ -284,18 +287,18 @@ public class MapCreator extends JFrame {
       @Override
       public void focusLost(final FocusEvent e) {
         try {
-          s_memory = (long) 1024 * 1024 * Math.min(4096, Math.max(256, Integer.parseInt(memoryText.getText())));
+          memoryInBytes = (long) 1024 * 1024 * Math.min(4096, Math.max(256, Integer.parseInt(memoryText.getText())));
         } catch (final Exception ex) {
           // ignore malformed input
         }
-        memoryText.setText("" + (s_memory / (1024 * 1024)));
+        memoryText.setText("" + (memoryInBytes / (1024 * 1024)));
       }
     });
     panel1.add(memoryText);
     final JCheckBox runTypeBox = new JCheckBox("Run All Utilities as Separate Processes");
-    runTypeBox.setSelected(s_runUtilitiesAsSeperateProcesses);
+    runTypeBox.setSelected(runUtilitiesAsSeperateProcesses);
     runTypeBox.addActionListener(SwingAction.of("Run All Utilities as Separate Processes",
-        e -> s_runUtilitiesAsSeperateProcesses = runTypeBox.isSelected()));
+        e -> runUtilitiesAsSeperateProcesses = runTypeBox.isSelected()));
     panel1.add(runTypeBox);
     panel1.add(Box.createVerticalStrut(30));
     panel1.validate();
@@ -309,7 +312,7 @@ public class MapCreator extends JFrame {
     panel2.add(Box.createVerticalStrut(30));
     final JButton mapPropertiesMakerButton = new JButton("Run the Map Properties Maker");
     mapPropertiesMakerButton.addActionListener(SwingAction.of("Run the Map Properties Maker", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(MapPropertiesMaker.class);
       } else {
         (new Thread() {
@@ -324,7 +327,7 @@ public class MapCreator extends JFrame {
     panel2.add(Box.createVerticalStrut(30));
     final JButton centerPickerButton = new JButton("Run the Center Picker");
     centerPickerButton.addActionListener(SwingAction.of("Run the Center Picker", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(CenterPicker.class);
       } else {
         (new Thread() {
@@ -339,7 +342,7 @@ public class MapCreator extends JFrame {
     panel2.add(Box.createVerticalStrut(30));
     final JButton polygonGrabberButton = new JButton("Run the Polygon Grabber");
     polygonGrabberButton.addActionListener(SwingAction.of("Run the Polygon Grabber", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(PolygonGrabber.class);
       } else {
         (new Thread() {
@@ -355,7 +358,7 @@ public class MapCreator extends JFrame {
     panel2.add(Box.createVerticalStrut(30));
     final JButton autoPlacerButton = new JButton("Run the Automatic Placement Finder");
     autoPlacerButton.addActionListener(SwingAction.of("Run the Automatic Placement Finder", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(AutoPlacementFinder.class);
       } else {
         (new Thread() {
@@ -371,7 +374,7 @@ public class MapCreator extends JFrame {
     panel2.add(Box.createVerticalStrut(30));
     final JButton placementPickerButton = new JButton("Run the Placement Picker");
     placementPickerButton.addActionListener(SwingAction.of("Run the Placement Picker", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(PlacementPicker.class);
       } else {
         (new Thread() {
@@ -386,7 +389,7 @@ public class MapCreator extends JFrame {
     panel2.add(Box.createVerticalStrut(30));
     final JButton tileBreakerButton = new JButton("Run the Tile Image Breaker");
     tileBreakerButton.addActionListener(SwingAction.of("Run the Tile Image Breaker", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(TileImageBreaker.class);
       } else {
         (new Thread() {
@@ -405,7 +408,7 @@ public class MapCreator extends JFrame {
     panel2.add(Box.createVerticalStrut(30));
     final JButton decorationPlacerButton = new JButton("Run the Decoration Placer");
     decorationPlacerButton.addActionListener(SwingAction.of("Run the Decoration Placer", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(DecorationPlacer.class);
       } else {
         (new Thread() {
@@ -434,7 +437,7 @@ public class MapCreator extends JFrame {
     panel3.add(Box.createVerticalStrut(30));
     final JButton connectionFinderButton = new JButton("Run the Connection Finder");
     connectionFinderButton.addActionListener(SwingAction.of("Run the Connection Finder", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(ConnectionFinder.class);
       } else {
         (new Thread() {
@@ -462,7 +465,7 @@ public class MapCreator extends JFrame {
     panel4.add(Box.createVerticalStrut(30));
     final JButton reliefBreakerButton = new JButton("Run the Relief Image Breaker");
     reliefBreakerButton.addActionListener(SwingAction.of("Run the Relief Image Breaker", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(ReliefImageBreaker.class);
       } else {
         (new Thread() {
@@ -481,7 +484,7 @@ public class MapCreator extends JFrame {
     panel4.add(Box.createVerticalStrut(30));
     final JButton imageShrinkerButton = new JButton("Run the Image Shrinker");
     imageShrinkerButton.addActionListener(SwingAction.of("Run the Image Shrinker", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(ImageShrinker.class);
       } else {
         (new Thread() {
@@ -500,7 +503,7 @@ public class MapCreator extends JFrame {
     panel4.add(Box.createVerticalStrut(30));
     final JButton tileImageReconstructorButton = new JButton("Run the Tile Image Reconstructor");
     tileImageReconstructorButton.addActionListener(SwingAction.of("Run the Tile Image Reconstructor", e -> {
-      if (s_runUtilitiesAsSeperateProcesses) {
+      if (runUtilitiesAsSeperateProcesses) {
         runUtility(TileImageReconstructor.class);
       } else {
         new Thread(() -> {
@@ -520,14 +523,14 @@ public class MapCreator extends JFrame {
 
   private static void runUtility(final Class<?> javaClass) {
     final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
-    if (s_mapFolderLocation != null && s_mapFolderLocation.exists()) {
+    ProcessRunnerUtil.populateBasicJavaArgs(commands, memoryInBytes);
+    if (mapFolderLocation != null && mapFolderLocation.exists()) {
       // no need for quotes, that will just screw up the process builder
-      commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + s_mapFolderLocation.getAbsolutePath());
+      commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + mapFolderLocation.getAbsolutePath());
     }
-    commands.add("-D" + TRIPLEA_UNIT_ZOOM + "=" + s_unit_zoom);
-    commands.add("-D" + TRIPLEA_UNIT_WIDTH + "=" + s_unit_width);
-    commands.add("-D" + TRIPLEA_UNIT_HEIGHT + "=" + s_unit_height);
+    commands.add("-D" + TRIPLEA_UNIT_ZOOM + "=" + unitZoom);
+    commands.add("-D" + TRIPLEA_UNIT_WIDTH + "=" + unitWidth);
+    commands.add("-D" + TRIPLEA_UNIT_HEIGHT + "=" + unitHeight);
     commands.add(javaClass.getName());
     ProcessRunnerUtil.exec(commands);
     // example: java -classpath triplea.jar -Dtriplea.map.folder="C:/Users" tools/image/CenterPicker

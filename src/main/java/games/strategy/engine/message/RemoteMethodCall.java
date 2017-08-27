@@ -16,7 +16,7 @@ import games.strategy.util.Tuple;
  */
 public class RemoteMethodCall implements Externalizable {
   private static final long serialVersionUID = 4630825927685836207L;
-  private static final Logger s_logger = Logger.getLogger(RemoteMethodCall.class.getName());
+  private static final Logger logger = Logger.getLogger(RemoteMethodCall.class.getName());
   private String m_remoteName;
   private String m_methodName;
   private Object[] m_args;
@@ -45,8 +45,8 @@ public class RemoteMethodCall implements Externalizable {
     m_args = args;
     m_argTypes = classesToString(argTypes, args);
     m_methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
-    if (s_logger.isLoggable(Level.FINE)) {
-      s_logger.fine("Remote Method Call:" + debugMethodText());
+    if (logger.isLoggable(Level.FINE)) {
+      logger.fine("Remote Method Call:" + debugMethodText());
     }
   }
 
@@ -147,8 +147,8 @@ public class RemoteMethodCall implements Externalizable {
       out.writeByte(Byte.MAX_VALUE);
     } else {
       out.writeByte(m_args.length);
-      for (final Object m_arg : m_args) {
-        out.writeObject(m_arg);
+      for (final Object arg : m_args) {
+        out.writeObject(arg);
       }
     }
   }
@@ -178,8 +178,8 @@ public class RemoteMethodCall implements Externalizable {
     final Tuple<String, Class<?>[]> values = RemoteInterfaceHelper.getMethodInfo(m_methodNumber, remoteType);
     m_methodName = values.getFirst();
     m_argTypes = classesToString(values.getSecond(), m_args);
-    if (s_logger.isLoggable(Level.FINE)) {
-      s_logger.fine("Remote Method for class:" + remoteType.getSimpleName() + " Resolved To:" + debugMethodText());
+    if (logger.isLoggable(Level.FINE)) {
+      logger.fine("Remote Method for class:" + remoteType.getSimpleName() + " Resolved To:" + debugMethodText());
     }
   }
 }

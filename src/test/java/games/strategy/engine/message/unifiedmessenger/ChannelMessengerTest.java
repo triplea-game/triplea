@@ -25,18 +25,18 @@ import games.strategy.util.ThreadUtil;
 public class ChannelMessengerTest {
   private IServerMessenger serverMessenger;
   private IMessenger clientMessenger;
-  private static int SERVER_PORT = -1;
+  private int serverPort = -1;
   private ChannelMessenger serverChannelMessenger;
   private ChannelMessenger clientChannelMessenger;
   private UnifiedMessengerHub unifiedMessengerHub;
 
   @Before
   public void setUp() throws IOException {
-    SERVER_PORT = TestUtil.getUniquePort();
-    serverMessenger = new ServerMessenger("Server", SERVER_PORT);
+    serverPort = TestUtil.getUniquePort();
+    serverMessenger = new ServerMessenger("Server", serverPort);
     serverMessenger.setAcceptNewConnections(true);
     final String mac = MacFinder.getHashedMacAddress();
-    clientMessenger = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
+    clientMessenger = new ClientMessenger("localhost", serverPort, "client1", mac);
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
     unifiedMessengerHub = unifiedMessenger.getHub();
     serverChannelMessenger = new ChannelMessenger(unifiedMessenger);
@@ -99,7 +99,7 @@ public class ChannelMessengerTest {
     assertEquals(1, clientChannelMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
     // add a new client
     final String mac = MacFinder.getHashedMacAddress();
-    final ClientMessenger clientMessenger2 = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
+    final ClientMessenger clientMessenger2 = new ClientMessenger("localhost", serverPort, "client2", mac);
     final ChannelMessenger client2 = new ChannelMessenger(new UnifiedMessenger(clientMessenger2));
     ((IChannelBase) client2.getChannelBroadcastor(test)).testString("a");
     assertCallCountIs(client1Subscribor, 1);

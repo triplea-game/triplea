@@ -192,9 +192,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final IPoliticsDelegate iPoliticsDelegate;
+    final IPoliticsDelegate politicsDelegate;
     try {
-      iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
+      politicsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
@@ -203,9 +203,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
 
     final PoliticalActionAttachment actionChoice =
-        ui.getPoliticalActionChoice(getPlayerID(), firstRun, iPoliticsDelegate);
+        ui.getPoliticalActionChoice(getPlayerID(), firstRun, politicsDelegate);
     if (actionChoice != null) {
-      iPoliticsDelegate.attemptAction(actionChoice);
+      politicsDelegate.attemptAction(actionChoice);
       politics(false);
     }
   }
@@ -214,9 +214,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final IUserActionDelegate iUserActionDelegate;
+    final IUserActionDelegate userActionDelegate;
     try {
-      iUserActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemoteDelegate();
+      userActionDelegate = (IUserActionDelegate) getPlayerBridge().getRemoteDelegate();
     } catch (final ClassCastException e) {
       final String errorContext = "PlayerBridge step name: " + getPlayerBridge().getStepName() + ", Remote class name: "
           + getPlayerBridge().getRemoteDelegate().getClass();
@@ -225,9 +225,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
-    final UserActionAttachment actionChoice = ui.getUserActionChoice(getPlayerID(), firstRun, iUserActionDelegate);
+    final UserActionAttachment actionChoice = ui.getUserActionChoice(getPlayerID(), firstRun, userActionDelegate);
     if (actionChoice != null) {
-      iUserActionDelegate.attemptAction(actionChoice);
+      userActionDelegate.attemptAction(actionChoice);
       userActions(false);
     }
   }
@@ -349,7 +349,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (airCantLand.isEmpty()) {
       return true;
     } else {
-      return ui.getOKToLetAirDie(getPlayerID(), airCantLand, movePhase);
+      return ui.getOkToLetAirDie(getPlayerID(), airCantLand, movePhase);
     }
   }
 
@@ -366,7 +366,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (unitsCantFight.isEmpty()) {
       return false;
     } else {
-      return !ui.getOKToLetUnitsDie(unitsCantFight, true);
+      return !ui.getOkToLetUnitsDie(unitsCantFight, true);
     }
   }
 
@@ -387,7 +387,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         && !id.getRepairFrontier().getRules().isEmpty()) {
       final GameData data = getGameData();
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        final Match<Unit> myDamaged = Match.allOf(Matches.unitIsOwnedBy(id), Matches.UnitHasTakenSomeBombingUnitDamage);
+        final Match<Unit> myDamaged = Match.allOf(
+            Matches.unitIsOwnedBy(id),
+            Matches.unitHasTakenSomeBombingUnitDamage());
         final Collection<Unit> damagedUnits = new ArrayList<>();
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
@@ -626,12 +628,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   @Override
-  public Territory selectProducerTerritoryForUnits(final Collection<Territory> candidates,
-      final Territory unitTerritory) {
-    return ui.selectProducerTerritoryForUnits(candidates, unitTerritory);
-  }
-
-  @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
     return ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
@@ -647,19 +643,19 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
     final String question = "Your units will be fired on in: "
         + MyFormatter.defaultNamedToTextList(aaFiringTerritories, " and ", false) + ".  Do you still want to move?";
-    return ui.getOK(question);
+    return ui.getOk(question);
   }
 
   @Override
   public boolean confirmMoveKamikaze() {
     final String question = "Not all air units in destination territory can land, do you still want to move?";
-    return ui.getOK(question);
+    return ui.getOk(question);
   }
 
   @Override
   public boolean confirmMoveHariKari() {
     final String question = "All units in destination territory will automatically die, do you still want to move?";
-    return ui.getOK(question);
+    return ui.getOk(question);
   }
 
   @Override
@@ -699,7 +695,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
-    return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 
   @Override

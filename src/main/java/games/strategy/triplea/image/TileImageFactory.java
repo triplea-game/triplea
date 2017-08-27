@@ -31,43 +31,43 @@ public final class TileImageFactory {
   private final Object m_mutex = new Object();
   // one instance in the application
   private static final String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
-  private static boolean s_showReliefImages = true;
+  private static boolean showReliefImages = true;
   private static final String SHOW_MAP_BLENDS_PREFERENCE = "ShowBlends";
-  private static boolean s_showMapBlends = false;
+  private static boolean showMapBlends = false;
   private static final String SHOW_MAP_BLEND_MODE = "BlendMode";
-  private static String s_showMapBlendMode = "normal";
+  private static String showMapBlendMode = "normal";
   private static final String SHOW_MAP_BLEND_ALPHA = "BlendAlpha";
-  private static float s_showMapBlendAlpha = 1.0f;
+  private static float showMapBlendAlpha = 1.0f;
   private final Composite composite = AlphaComposite.Src;
   private static GraphicsConfiguration configuration =
       GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-  private static final Logger s_logger = Logger.getLogger(TileImageFactory.class.getName());
+  private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
   private double m_scale = 1;
   // maps image name to ImageRef
   private HashMap<String, ImageRef> m_imageCache = new HashMap<>();
 
   static {
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
-    s_showReliefImages = prefs.getBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, true);
-    s_showMapBlends = prefs.getBoolean(SHOW_MAP_BLENDS_PREFERENCE, false);
-    s_showMapBlendMode = prefs.get(SHOW_MAP_BLEND_MODE, "normal");
-    s_showMapBlendAlpha = prefs.getFloat(SHOW_MAP_BLEND_ALPHA, 1.0f);
+    showReliefImages = prefs.getBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, true);
+    showMapBlends = prefs.getBoolean(SHOW_MAP_BLENDS_PREFERENCE, false);
+    showMapBlendMode = prefs.get(SHOW_MAP_BLEND_MODE, "normal");
+    showMapBlendAlpha = prefs.getFloat(SHOW_MAP_BLEND_ALPHA, 1.0f);
   }
 
   public static boolean getShowReliefImages() {
-    return s_showReliefImages;
+    return showReliefImages;
   }
 
   public static boolean getShowMapBlends() {
-    return s_showMapBlends;
+    return showMapBlends;
   }
 
   private static String getShowMapBlendMode() {
-    return s_showMapBlendMode.toUpperCase();
+    return showMapBlendMode.toUpperCase();
   }
 
   private static float getShowMapBlendAlpha() {
-    return s_showMapBlendAlpha;
+    return showMapBlendAlpha;
   }
 
   public void setScale(final double newScale) {
@@ -81,9 +81,9 @@ public final class TileImageFactory {
   }
 
   public static void setShowReliefImages(final boolean showReliefImages) {
-    s_showReliefImages = showReliefImages;
+    TileImageFactory.showReliefImages = showReliefImages;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
-    prefs.putBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, s_showReliefImages);
+    prefs.putBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, TileImageFactory.showReliefImages);
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
@@ -92,9 +92,9 @@ public final class TileImageFactory {
   }
 
   public static void setShowMapBlends(final boolean showMapBlends) {
-    s_showMapBlends = showMapBlends;
+    TileImageFactory.showMapBlends = showMapBlends;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
-    prefs.putBoolean(SHOW_MAP_BLENDS_PREFERENCE, s_showMapBlends);
+    prefs.putBoolean(SHOW_MAP_BLENDS_PREFERENCE, TileImageFactory.showMapBlends);
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
@@ -103,9 +103,9 @@ public final class TileImageFactory {
   }
 
   public static void setShowMapBlendMode(final String showMapBlendMode) {
-    s_showMapBlendMode = showMapBlendMode;
+    TileImageFactory.showMapBlendMode = showMapBlendMode;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
-    prefs.put(SHOW_MAP_BLEND_MODE, s_showMapBlendMode);
+    prefs.put(SHOW_MAP_BLEND_MODE, TileImageFactory.showMapBlendMode);
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
@@ -114,9 +114,9 @@ public final class TileImageFactory {
   }
 
   public static void setShowMapBlendAlpha(final float showMapBlendAlpha) {
-    s_showMapBlendAlpha = showMapBlendAlpha;
+    TileImageFactory.showMapBlendAlpha = showMapBlendAlpha;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
-    prefs.putFloat(SHOW_MAP_BLEND_ALPHA, s_showMapBlendAlpha);
+    prefs.putFloat(SHOW_MAP_BLEND_ALPHA, TileImageFactory.showMapBlendAlpha);
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
@@ -181,7 +181,7 @@ public final class TileImageFactory {
       // This is null if there is no image
       final URL url = m_resourceLoader.getResource(fileName);
 
-      if ((!s_showMapBlends || !s_showReliefImages || !transparent) && url == null) {
+      if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
         return null;
       }
       loadImage(url, fileName, transparent, true, true);
@@ -225,7 +225,7 @@ public final class TileImageFactory {
 
   private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent,
       final boolean cache, final boolean scale) {
-    if (s_showMapBlends && s_showReliefImages && transparent) {
+    if (showMapBlends && showReliefImages && transparent) {
       return loadBlendedImage(fileName, cache, scale);
     } else {
       return loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);
@@ -248,7 +248,7 @@ public final class TileImageFactory {
     // Get buffered images
     try {
       final Stopwatch loadingImages =
-          new Stopwatch(s_logger, Level.FINE, "Loading images:" + urlrelief + " and " + urlBase);
+          new Stopwatch(logger, Level.FINE, "Loading images:" + urlrelief + " and " + urlBase);
       if (urlrelief != null) {
         reliefFile = loadCompatibleImage(urlrelief);
       }
@@ -308,10 +308,10 @@ public final class TileImageFactory {
       final boolean cache, final boolean scale) {
     Image image;
     try {
-      final Stopwatch loadingImages = new Stopwatch(s_logger, Level.FINE, "Loading image:" + imageLocation);
+      final Stopwatch loadingImages = new Stopwatch(logger, Level.FINE, "Loading image:" + imageLocation);
       final BufferedImage fromFile = ImageIO.read(imageLocation);
       loadingImages.done();
-      final Stopwatch copyingImage = new Stopwatch(s_logger, Level.FINE, "Copying image:" + imageLocation);
+      final Stopwatch copyingImage = new Stopwatch(logger, Level.FINE, "Copying image:" + imageLocation);
       // if we dont copy, drawing the tile to the screen takes significantly longer
       // has something to do with the colour model and type of the images
       // some images can be copeid quickly to the screen

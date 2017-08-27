@@ -32,7 +32,7 @@ import games.strategy.util.ThreadUtil;
  * based on it.
  */
 public class UnifiedMessenger {
-  private static final Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
+  private static final Logger logger = Logger.getLogger(UnifiedMessenger.class.getName());
 
   private static final ExecutorService threadPool = Executors.newFixedThreadPool(15);
   // the messenger we are based on
@@ -60,11 +60,11 @@ public class UnifiedMessenger {
    */
   public UnifiedMessenger(final IMessenger messenger) {
     m_messenger = messenger;
-    final IMessageListener m_messageListener = (msg, from) -> UnifiedMessenger.this.messageReceived(msg, from);
-    m_messenger.addMessageListener(m_messageListener);
-    final IMessengerErrorListener m_messengerErrorListener =
+    final IMessageListener messageListener = (msg, from) -> UnifiedMessenger.this.messageReceived(msg, from);
+    m_messenger.addMessageListener(messageListener);
+    final IMessengerErrorListener messengerErrorListener =
         (messenger1, reason) -> UnifiedMessenger.this.messengerInvalid();
-    m_messenger.addErrorListener(m_messengerErrorListener);
+    m_messenger.addErrorListener(messengerErrorListener);
     if (m_messenger.isServer()) {
       m_hub = new UnifiedMessengerHub(m_messenger, this);
     }
@@ -121,7 +121,7 @@ public class UnifiedMessenger {
     try {
       latch.await();
     } catch (final InterruptedException e) {
-      s_logger.log(Level.WARNING, e.getMessage());
+      logger.log(Level.WARNING, e.getMessage());
     }
 
     synchronized (m_pendingLock) {
@@ -153,7 +153,7 @@ public class UnifiedMessenger {
       for (final RemoteMethodCallResults r : results) {
         if (r.getException() != null) {
           // don't swallow errors
-          s_logger.log(Level.WARNING, r.getException().getMessage(), r.getException());
+          logger.log(Level.WARNING, r.getException().getMessage(), r.getException());
         }
       }
     }

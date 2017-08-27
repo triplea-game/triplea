@@ -1,8 +1,10 @@
 package games.strategy.engine.data.properties;
 
+import java.io.Serializable;
+
 import javax.swing.JComponent;
 
-public abstract class AEditableProperty implements IEditableProperty, java.io.Serializable, Comparable<Object> {
+public abstract class AEditableProperty implements IEditableProperty, Serializable, Comparable<Object> {
   private static final long serialVersionUID = -5005729898242568847L;
   private final String m_name;
   private final String m_description;

@@ -6,10 +6,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.Action;
@@ -23,9 +26,9 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
@@ -44,6 +47,16 @@ import games.strategy.util.EventThreadJOptionPane;
 public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
 
+  @VisibleForTesting
+  interface TimeUnitNames {
+    String MINUTE = "Minute";
+    String HOUR = "Hour";
+    String DAY = "Day";
+    String WEEK = "Week";
+    String MONTH = "Month";
+    String YEAR = "Year";
+  }
+
   private static final List<String> banOrMuteOptions = ImmutableList.of(
       "Mac Address Only",
       "User Name only",
@@ -53,7 +66,7 @@ public class LobbyFrame extends JFrame {
   private final LobbyClient m_client;
   private final ChatMessagePanel m_chatMessagePanel;
 
-  public LobbyFrame(final LobbyClient client) {
+  public LobbyFrame(final LobbyClient client, final LobbyServerProperties lobbyServerProperties) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(GameRunner.getGameIcon(this));
@@ -62,7 +75,7 @@ public class LobbyFrame extends JFrame {
     final Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(),
         m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
     m_chatMessagePanel = new ChatMessagePanel(chat);
-    showServerMessage(ClientContext.gameEnginePropertyReader().fetchLobbyServerProperties());
+    showServerMessage(lobbyServerProperties);
     m_chatMessagePanel.setShowTime(true);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
     chatPlayers.addHiddenPlayerName(LobbyServer.ADMIN_USERNAME);
@@ -135,12 +148,12 @@ public class LobbyFrame extends JFrame {
         return;
       }
       final List<String> timeUnits = new ArrayList<>();
-      timeUnits.add("Minute");
-      timeUnits.add("Hour");
-      timeUnits.add("Day");
-      timeUnits.add("Week");
-      timeUnits.add("Month");
-      timeUnits.add("Year");
+      timeUnits.add(TimeUnitNames.MINUTE);
+      timeUnits.add(TimeUnitNames.HOUR);
+      timeUnits.add(TimeUnitNames.DAY);
+      timeUnits.add(TimeUnitNames.WEEK);
+      timeUnits.add(TimeUnitNames.MONTH);
+      timeUnits.add(TimeUnitNames.YEAR);
       timeUnits.add("Forever");
       timeUnits.add("Cancel");
       final int resultTimespanUnit = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
@@ -155,10 +168,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedBanType.toLowerCase().contains("name")) {
-          controller.zzBanUsername(clickedOn, (Instant) null);
+          controller.banUsername(clickedOn, null);
         }
         if (selectedBanType.toLowerCase().contains("mac")) {
-          controller.zzBanMac(clickedOn, (Instant) null);
+          controller.banMac(clickedOn, null);
         }
         // Should we keep this auto?
         controller.boot(clickedOn);
@@ -173,31 +186,16 @@ public class LobbyFrame extends JFrame {
       if (result2 < 0) {
         return;
       }
-      TemporalUnit unit = null;
-      if (selectedTimeUnit.equals("Minute")) {
-        unit = ChronoUnit.MINUTES;
-      } else if (selectedTimeUnit.equals("Hour")) {
-        unit = ChronoUnit.HOURS;
-      } else if (selectedTimeUnit.equals("Day")) {
-        unit = ChronoUnit.DAYS;
-      } else if (selectedTimeUnit.equals("Week")) {
-        unit = ChronoUnit.WEEKS;
-      } else if (selectedTimeUnit.equals("Month")) {
-        unit = ChronoUnit.MONTHS;
-      } else if (selectedTimeUnit.equals("Year")) {
-        unit = ChronoUnit.YEARS;
-      }
-      final Instant expire = Instant.now().plus(Duration.of(result2, unit));
+      final Instant expire = addDuration(Instant.now(), result2, selectedTimeUnit);
       if (selectedBanType.toLowerCase().contains("name")) {
-        controller.zzBanUsername(clickedOn, expire);
+        controller.banUsername(clickedOn, Date.from(expire));
       }
       if (selectedBanType.toLowerCase().contains("mac")) {
-        controller.zzBanMac(clickedOn, expire);
+        controller.banMac(clickedOn, Date.from(expire));
       }
       // Should we keep this auto?
       controller.boot(clickedOn);
     }));
-
 
     rVal.add(SwingAction.of("Mute Player", e -> {
       final int resultMuteType = JOptionPane.showOptionDialog(LobbyFrame.this,
@@ -212,12 +210,12 @@ public class LobbyFrame extends JFrame {
         return;
       }
       final List<String> timeUnits = new ArrayList<>();
-      timeUnits.add("Minute");
-      timeUnits.add("Hour");
-      timeUnits.add("Day");
-      timeUnits.add("Week");
-      timeUnits.add("Month");
-      timeUnits.add("Year");
+      timeUnits.add(TimeUnitNames.MINUTE);
+      timeUnits.add(TimeUnitNames.HOUR);
+      timeUnits.add(TimeUnitNames.DAY);
+      timeUnits.add(TimeUnitNames.WEEK);
+      timeUnits.add(TimeUnitNames.MONTH);
+      timeUnits.add(TimeUnitNames.YEAR);
       timeUnits.add("Forever");
       timeUnits.add("Cancel");
       final int resultTimespanUnit = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
@@ -232,10 +230,10 @@ public class LobbyFrame extends JFrame {
       }
       if (selectedTimeUnit.equals("Forever")) {
         if (selectedMuteType.toLowerCase().contains("name")) {
-          controller.zzMuteUsername(clickedOn, (Instant) null);
+          controller.muteUsername(clickedOn, null);
         }
         if (selectedMuteType.toLowerCase().contains("mac")) {
-          controller.zzMuteMac(clickedOn, (Instant) null);
+          controller.muteMac(clickedOn, null);
         }
         return;
       }
@@ -248,26 +246,12 @@ public class LobbyFrame extends JFrame {
       if (result2 < 0) {
         return;
       }
-      TemporalUnit unit = null;
-      if (selectedTimeUnit.equals("Minute")) {
-        unit = ChronoUnit.MINUTES;
-      } else if (selectedTimeUnit.equals("Hour")) {
-        unit = ChronoUnit.HOURS;
-      } else if (selectedTimeUnit.equals("Day")) {
-        unit = ChronoUnit.DAYS;
-      } else if (selectedTimeUnit.equals("Week")) {
-        unit = ChronoUnit.WEEKS;
-      } else if (selectedTimeUnit.equals("Month")) {
-        unit = ChronoUnit.MONTHS;
-      } else if (selectedTimeUnit.equals("Year")) {
-        unit = ChronoUnit.YEARS;
-      }
-      final Instant expire = Instant.now().plus(Duration.of(result2, unit));
+      final Instant expire = addDuration(Instant.now(), result2, selectedTimeUnit);
       if (selectedMuteType.toLowerCase().contains("name")) {
-        controller.zzMuteUsername(clickedOn, expire);
+        controller.muteUsername(clickedOn, Date.from(expire));
       }
       if (selectedMuteType.toLowerCase().contains("mac")) {
-        controller.zzMuteMac(clickedOn, expire);
+        controller.muteMac(clickedOn, Date.from(expire));
       }
     }));
     rVal.add(SwingAction.of("Quick Mute", e -> {
@@ -288,8 +272,8 @@ public class LobbyFrame extends JFrame {
           return;
         }
         final Instant expire = Instant.now().plus(Duration.ofMinutes(resultMuteLengthInMinutes));
-        controller.zzMuteUsername(clickedOn, expire);
-        controller.zzMuteMac(clickedOn, expire);
+        controller.muteUsername(clickedOn, Date.from(expire));
+        controller.muteMac(clickedOn, Date.from(expire));
       }
     }));
     rVal.add(SwingAction.of("Show player information", e -> {
@@ -300,7 +284,32 @@ public class LobbyFrame extends JFrame {
       JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
     }));
     return rVal;
+  }
 
+  @VisibleForTesting
+  static Instant addDuration(final Instant start, final long amountInUnits, final String unitName) {
+    return LocalDateTime.ofInstant(start, ZoneOffset.UTC)
+        .plus(toTemporalAmount(amountInUnits, unitName))
+        .toInstant(ZoneOffset.UTC);
+  }
+
+  private static TemporalAmount toTemporalAmount(final long amountInUnits, final String unitName) {
+    switch (unitName) {
+      case TimeUnitNames.MINUTE:
+        return Duration.ofMinutes(amountInUnits);
+      case TimeUnitNames.HOUR:
+        return Duration.ofHours(amountInUnits);
+      case TimeUnitNames.DAY:
+        return Duration.ofDays(amountInUnits);
+      case TimeUnitNames.WEEK:
+        return Period.ofWeeks((int) amountInUnits);
+      case TimeUnitNames.MONTH:
+        return Period.ofMonths((int) amountInUnits);
+      case TimeUnitNames.YEAR:
+        return Period.ofYears((int) amountInUnits);
+      default:
+        throw new IllegalArgumentException(String.format("unknown temporal unit name (%s)", unitName));
+    }
   }
 
   private boolean confirm(final String question) {

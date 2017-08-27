@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
@@ -33,6 +32,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.TimeManager;
@@ -43,8 +43,8 @@ import games.strategy.util.Util;
  */
 public class HeadlessGameServer {
 
-  static final Logger s_logger = Logger.getLogger(HeadlessGameServer.class.getName());
-  private static HeadlessGameServer s_instance = null;
+  private static final Logger logger = Logger.getLogger(HeadlessGameServer.class.getName());
+  private static HeadlessGameServer instance = null;
   private final AvailableGames m_availableGames;
   private final GameSelectorModel m_gameSelectorModel;
   private SetupPanelModel m_setupPanelModel = null;
@@ -54,7 +54,7 @@ public class HeadlessGameServer {
   private final String startDate = TimeManager.getFullUtcString(Instant.now());
 
   public static synchronized HeadlessGameServer getInstance() {
-    return s_instance;
+    return instance;
   }
 
   public static synchronized boolean headless() {
@@ -195,18 +195,18 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
-      final ServerGame iGame = m_iGame;
-      if (iGame != null) {
+      final ServerGame serverGame = m_iGame;
+      if (serverGame != null) {
         (new Thread(() -> {
           System.out.println("Remote Stop Game Initiated.");
-          SaveGameFileChooser.ensureMapsFolderExists();
           try {
-            iGame.saveGame(new File(
-                ClientContext.folderSettings().getSaveGamePath(), SaveGameFileChooser.getAutoSaveFileName()));
+            serverGame.saveGame(new File(
+                ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
+                SaveGameFileChooser.getAutoSaveFileName()));
           } catch (final Exception e) {
             ClientLogger.logQuietly(e);
           }
-          iGame.stopGame();
+          serverGame.stopGame();
         })).start();
       }
       return null;
@@ -242,7 +242,7 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     // (48 hours max)
-    Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
+    final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
     if (encryptedPassword.equals(hashedPassword)) {
       (new Thread(() -> {
         if (getServerModel() == null) {
@@ -385,12 +385,12 @@ public class HeadlessGameServer {
 
   private HeadlessGameServer() {
     super();
-    if (s_instance != null) {
+    if (instance != null) {
       throw new IllegalStateException("Instance already exists");
     }
-    s_instance = this;
+    instance = this;
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      s_logger.info("Running ShutdownHook.");
+      logger.info("Running ShutdownHook.");
       shutdown();
     }));
     m_availableGames = new AvailableGames();
@@ -432,7 +432,7 @@ public class HeadlessGameServer {
         restartLobbyWatcher(m_setupPanelModel, m_iGame);
       }
     }, reconnect, reconnect, TimeUnit.SECONDS);
-    s_logger.info("Game Server initialized");
+    logger.info("Game Server initialized");
   }
 
   private static synchronized void restartLobbyWatcher(
@@ -543,7 +543,7 @@ public class HeadlessGameServer {
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
-    s_instance = null;
+    instance = null;
     m_setupPanelModel = null;
     m_iGame = null;
     System.out.println("Shutdown Script Finished.");
@@ -743,36 +743,10 @@ public class HeadlessGameServer {
           + (2 * GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
       printUsage = true;
     }
-    // no passwords allowed for bots
-    // take any actions or commit to preferences
-    final String clientWait = System.getProperty(GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, "");
-    final String observerWait = System.getProperty(GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME, "");
-    if (clientWait.length() > 0) {
-      try {
-        final int wait = Integer.parseInt(clientWait);
-        GameRunner.setServerStartGameSyncWaitTime(wait);
-      } catch (final NumberFormatException e) {
-        System.out.println(
-            "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-        printUsage = true;
-      }
-    }
-    if (observerWait.length() > 0) {
-      try {
-        final int wait = Integer.parseInt(observerWait);
-        GameRunner.setServerObserverJoinWaitTime(wait);
-      } catch (final NumberFormatException e) {
-        System.out.println(
-            "Invalid argument: " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + " must be an integer.");
-        printUsage = true;
-      }
-    }
 
     if (printUsage) {
       usage();
       System.exit(-1);
     }
-
-
   }
 }

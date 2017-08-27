@@ -11,14 +11,36 @@ plugins {
 
 apply from: 'gradle/scripts/yaml.gradle'
 
-version = System.getenv("TAGGED_VERSION") ?: ""
 group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = "games.strategy.engine.framework.GameRunner"
 
 ext {
+    rootFilesDir = file("$buildDir/rootFiles")
+    releasesDir = file("$buildDir/releases")
     schemasDir = file('config/triplea/schemas')
+
+    gameEnginePropertiesFile = file('game_engine.properties')
+    gameEnginePropertiesArtifactFile = file("$rootFilesDir/${gameEnginePropertiesFile.name}")
 }
+
+def getEngineVersion() {
+    if (project.hasProperty('engineVersion')) {
+        return project.engineVersion
+    }
+
+    def props = new Properties()
+    gameEnginePropertiesFile.withInputStream { props.load(it) }
+    def devEngineVersion = props.getProperty('engine_version')
+    if (devEngineVersion) {
+        return "${devEngineVersion}.dev"
+    }
+
+    throw new GradleException("unable to determine engine version: "
+        + "you must define either the project property 'engineVersion' or the game engine property 'engine_version'")
+}
+
+version = getEngineVersion()
 
 compileJava {
     options.encoding = 'UTF-8'
@@ -59,19 +81,22 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'postgresql:postgresql:9.1-901-1.jdbc4'
     compile 'com.github.insubstantial:substance:7.3'
+    compile 'com.google.code.findbugs:jsr305:3.0.2'
     compile 'com.google.guava:guava:19.0'
     compile 'com.googlecode.soundlibs:jlayer:1.0.1-2'
     compile 'com.sun.mail:mailapi:1.5.5'
     compile 'com.sun.mail:smtp:1.5.5'
+    compile 'commons-io:commons-io:2.5'
     compile 'org.apache.httpcomponents:httpclient:4.5.3'
     compile 'org.apache.httpcomponents:httpmime:4.5.3'
     compile 'org.apache.commons:commons-math3:3.6.1'
-    compile 'org.mindrot:jbcrypt:0.3m'
+    compile 'org.mindrot:jbcrypt:0.4'
     compile 'org.yaml:snakeyaml:1.17'
     compile 'org.json:json:20160810'
     compile 'com.yuvimasory:orange-extensions:1.3.0'
 
     testCompile 'eu.codearte.catch-exception:catch-exception:2.0.0-ALPHA-1'
+    testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3'
     testCompile 'org.apache.derby:derby:10.10.1.1'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.mockito:mockito-core:2.8.47'
@@ -80,10 +105,6 @@ dependencies {
 
 test {
     exclude '**/*Tests.class'
-
-    testLogging {
-        exceptionFormat = 'full'
-    }
 }
 
 task integTest(type: Test) {
@@ -153,18 +174,29 @@ task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
 task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
 }
 
-task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
+task prepareGameEngineProperties() {
+    group = 'release'
+    description = 'Updates the game engine properties with final values for distribution.'
+
+    doLast {
+        copy {
+            from gameEnginePropertiesFile
+            into gameEnginePropertiesArtifactFile.parent
+        }
+        ant.propertyfile(file: gameEnginePropertiesArtifactFile) {
+            entry key: 'engine_version', value: version
+        }
+    }
+}
+
+task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets, prepareGameEngineProperties]) {
     classifier 'all_platforms'
     ['assets', 'dice_servers', 'old'].each { folder ->
         from(folder) {
             into(folder)
         }
     }
-    from("${assetsDirectory}/icons") {
-        into('icons')
-        exclude("icon.icns")
-    }
-    from('game_engine.properties')
+    from(gameEnginePropertiesArtifactFile)
     from(renameShadowJar.output) {
         into('bin')
     }
@@ -203,14 +235,13 @@ task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJR
     }
 }
 
-task setRunnableLinux(dependsOn: [generateInstallers]) {
+task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
     doLast {
-        def linuxFile = "TripleA_${version}_unix.sh"
-        ant.chmod(dir: "$buildDir/releases", perm: '+x', includes: linuxFile)
+        ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
     }
 }
 
-task release(group: 'release', dependsOn: [generateZipReleases, setRunnableLinux]) {}
+task release(group: 'release', dependsOn: [generateZipReleases, prepareInstallers]) {}
 
 gradle.taskGraph.whenReady { graph ->
     graph.getAllTasks().any({
@@ -226,12 +257,19 @@ gradle.taskGraph.whenReady { graph ->
     })
 }
 
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
 check {
     dependsOn 'integTest', 'validateYamls'
 }
 
 checkstyle {
     toolVersion = "7.6.1"
+    configProperties = [samedir: configFile.parent]
 }
 
 checkstyleIntegTest {

@@ -34,6 +34,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.random.PBEMDiceRoller;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -42,12 +43,13 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 import games.strategy.ui.Util.Task;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ThreadUtil;
+import swinglib.JPanelBuilder;
 
 /**
  * UI for fighting battles.
@@ -75,12 +77,12 @@ public class BattlePanel extends ActionPanel {
 
       @Override
       public void dispose() {
-        games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(null);
+        PBEMDiceRoller.setFocusWindow(null);
         super.dispose();
       }
     };
     battleFrame.setIconImage(GameRunner.getGameIcon(battleFrame));
-    getMap().getUIContext().addShutdownWindow(battleFrame);
+    getMap().getUiContext().addShutdownWindow(battleFrame);
     battleFrame.addWindowListener(new WindowListener() {
       @Override
       public void windowActivated(final WindowEvent e) {
@@ -124,8 +126,10 @@ public class BattlePanel extends ActionPanel {
         removeAll();
         actionLabel.setText(id.getName() + " battle");
         setLayout(new BorderLayout());
-        final JPanel panel = SwingComponents.gridPanel(0, 1);
-        panel.add(actionLabel);
+        final JPanel panel = JPanelBuilder.builder()
+            .gridLayout(0, 1)
+            .add(actionLabel)
+            .build();
         for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
           for (final Territory t : entry.getValue()) {
             addBattleActions(panel, t, entry.getKey().isBombingRun(), entry.getKey());
@@ -185,7 +189,7 @@ public class BattlePanel extends ActionPanel {
       battleDisplay.cleanUp();
       battleFrame.getContentPane().removeAll();
       battleDisplay = null;
-      games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(battleFrame);
+      PBEMDiceRoller.setFocusWindow(battleFrame);
     }
   }
 
@@ -244,25 +248,25 @@ public class BattlePanel extends ActionPanel {
         cleanUpBattleWindow();
         currentBattleDisplayed = null;
       }
-      if (!getMap().getUIContext().getShowMapOnly()) {
+      if (!getMap().getUiContext().getShowMapOnly()) {
         battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits,
-            killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleId, BattlePanel.this.getMap(),
+            killedUnits, attackingWaitingToDie, defendingWaitingToDie, BattlePanel.this.getMap(),
             isAmphibious, battleType, amphibiousLandAttackers);
         battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
         battleFrame.getContentPane().removeAll();
         battleFrame.getContentPane().add(battleDisplay);
         battleFrame.setSize(800, 600);
         battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-        games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(battleFrame);
+        PBEMDiceRoller.setFocusWindow(battleFrame);
         boolean foundHumanInBattle = false;
-        for (final IGamePlayer gamePlayer : getMap().getUIContext().getLocalPlayers().getLocalPlayers()) {
+        for (final IGamePlayer gamePlayer : getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
           if ((gamePlayer.getPlayerID().equals(attacker) && gamePlayer instanceof TripleAPlayer)
               || (gamePlayer.getPlayerID().equals(defender) && gamePlayer instanceof TripleAPlayer)) {
             foundHumanInBattle = true;
             break;
           }
         }
-        if (getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle) {
+        if (ClientSetting.SHOW_BATTLES_WHEN_OBSERVING.booleanValue() || foundHumanInBattle) {
           battleFrame.setVisible(true);
           battleFrame.validate();
           battleFrame.invalidate();
@@ -295,7 +299,7 @@ public class BattlePanel extends ActionPanel {
     int option = JOptionPane.NO_OPTION;
     while (option != JOptionPane.OK_OPTION) {
       option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection",
-          JOptionPane.OK_OPTION, getMap().getUIContext().getCountDownLatchHandler());
+          JOptionPane.OK_OPTION, getMap().getUiContext().getCountDownLatchHandler());
     }
     return comp.getSelection();
   }
@@ -303,25 +307,25 @@ public class BattlePanel extends ActionPanel {
   public boolean getAttackSubs(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(null, "Attack submarines in " + terr.toString() + "?", "Attack",
-        JOptionPane.YES_NO_OPTION, getMap().getUIContext().getCountDownLatchHandler()) == 0;
+        JOptionPane.YES_NO_OPTION, getMap().getUiContext().getCountDownLatchHandler()) == 0;
   }
 
   public boolean getAttackTransports(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(null, "Attack transports in " + terr.toString() + "?", "Attack",
-        JOptionPane.YES_NO_OPTION, getMap().getUIContext().getCountDownLatchHandler()) == 0;
+        JOptionPane.YES_NO_OPTION, getMap().getUiContext().getCountDownLatchHandler()) == 0;
   }
 
   public boolean getAttackUnits(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(null, "Attack units in " + terr.toString() + "?", "Attack",
-        JOptionPane.YES_NO_OPTION, getMap().getUIContext().getCountDownLatchHandler()) == 0;
+        JOptionPane.YES_NO_OPTION, getMap().getUiContext().getCountDownLatchHandler()) == 0;
   }
 
   public boolean getShoreBombard(final Territory terr) {
     getMap().centerOn(terr);
     return EventThreadJOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?",
-        "Bombard", JOptionPane.YES_NO_OPTION, getMap().getUIContext().getCountDownLatchHandler()) == 0;
+        "Bombard", JOptionPane.YES_NO_OPTION, getMap().getUiContext().getCountDownLatchHandler()) == 0;
   }
 
   public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
@@ -343,10 +347,10 @@ public class BattlePanel extends ActionPanel {
   }
 
   public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
-      final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
+      final Collection<Unit> addedUnits) {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
-        battleDisplay.changedUnitsNotification(player, removedUnits, addedUnits, dependents);
+        battleDisplay.changedUnitsNotification(player, removedUnits, addedUnits);
       }
     });
   }
@@ -364,7 +368,7 @@ public class BattlePanel extends ActionPanel {
       final CasualtyList defaultCasualties, final GUID battleId, final boolean allowMultipleHitsPerUnit) {
     // if the battle display is null, then this is an aa fire during move
     if (battleId == null) {
-      return getCasualtiesAA(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
+      return getCasualtiesAa(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
           allowMultipleHitsPerUnit);
     } else {
       // something is wong
@@ -377,20 +381,20 @@ public class BattlePanel extends ActionPanel {
     }
   }
 
-  private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom,
+  private CasualtyDetails getCasualtiesAa(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit) {
     final Task<CasualtyDetails> task = () -> {
       final boolean isEditMode = (dice == null);
       final UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(),
-          allowMultipleHitsPerUnit, getMap().getUIContext());
+          allowMultipleHitsPerUnit, getMap().getUiContext());
       chooser.setTitle(message);
       if (isEditMode) {
         chooser.setMax(selectFrom.size());
       } else {
         chooser.setMax(count);
       }
-      final DicePanel dicePanel = new DicePanel(getMap().getUIContext(), getData());
+      final DicePanel dicePanel = new DicePanel(getMap().getUiContext(), getData());
       if (!isEditMode) {
         dicePanel.setDiceRoll(dice);
       }
@@ -403,7 +407,7 @@ public class BattlePanel extends ActionPanel {
       final String[] options = {"OK"};
       EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties",
           JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null,
-          getMap().getUIContext().getCountDownLatchHandler());
+          getMap().getUiContext().getCountDownLatchHandler());
       final List<Unit> killed = chooser.getSelected(false);
       final CasualtyDetails response =
           new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);

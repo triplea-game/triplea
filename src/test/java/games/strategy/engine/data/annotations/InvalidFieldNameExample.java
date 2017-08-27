@@ -15,16 +15,16 @@ public class InvalidFieldNameExample extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  // should have been prefixed with "m_". Should cause test to fail.
-  private String attribute;
+  // This attribute with another name than 'attribute' should cause tests to fail.
+  private String notAnAttribute;
 
   public String getAttribute() {
-    return attribute;
+    return notAnAttribute;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAttribute(final String attribute) {
-    this.attribute = attribute;
+    this.notAnAttribute = attribute;
   }
 
   public void resetAttribute() {}

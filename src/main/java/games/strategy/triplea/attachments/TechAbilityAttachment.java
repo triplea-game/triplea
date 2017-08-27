@@ -18,6 +18,7 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
@@ -1243,7 +1244,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allAir =
-              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAir);
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir());
           for (final UnitType air : allAir) {
             taa.setMovementBonus("2:" + air.getName());
           }
@@ -1251,7 +1252,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allAa =
-              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAAforAnything);
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAaForAnything());
           for (final UnitType aa : allAa) {
             taa.setRadarBonus("1:" + aa.getName());
           }
@@ -1259,7 +1260,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allSubs =
-              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsSub);
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsSub());
           for (final UnitType sub : allSubs) {
             taa.setAttackBonus("1:" + sub.getName());
           }
@@ -1267,8 +1268,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allJets = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(),
-              Match.allOf(Matches.UnitTypeIsAir, Matches.UnitTypeIsStrategicBomber.invert()));
-          final boolean ww2v3TechModel = games.strategy.triplea.Properties.getWW2V3TechModel(data);
+              Match.allOf(Matches.unitTypeIsAir(), Matches.unitTypeIsStrategicBomber().invert()));
+          final boolean ww2v3TechModel = Properties.getWW2V3TechModel(data);
           for (final UnitType jet : allJets) {
             if (ww2v3TechModel) {
               taa.setAttackBonus("1:" + jet.getName());
@@ -1282,7 +1283,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allFactories =
-              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeCanProduceUnits);
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeCanProduceUnits());
           for (final UnitType factory : allFactories) {
             taa.setProductionBonus("2:" + factory.getName());
             taa.setMinimumTerritoryValueForProductionBonus("3");
@@ -1298,7 +1299,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allRockets =
-              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsRocket);
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsRocket());
           for (final UnitType rocket : allRockets) {
             taa.setRocketDiceNumber("1:" + rocket.getName());
           }
@@ -1308,7 +1309,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allDestroyers =
-              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsDestroyer);
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsDestroyer());
           for (final UnitType destroyer : allDestroyers) {
             taa.setUnitAbilitiesGained(destroyer.getName() + ":" + ABILITY_CAN_BOMBARD);
           }
@@ -1316,9 +1317,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allBombers =
-              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsStrategicBomber);
-          final int heavyBomberDiceRollsTotal = games.strategy.triplea.Properties.getHeavyBomberDiceRolls(data);
-          final boolean heavyBombersLhtr = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+              Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsStrategicBomber());
+          final int heavyBomberDiceRollsTotal = Properties.getHeavyBomberDiceRolls(data);
+          final boolean heavyBombersLhtr = Properties.getLHTR_Heavy_Bombers(data);
           for (final UnitType bomber : allBombers) {
             // TODO: The bomber dice rolls get set when the xml is parsed.
             // we subtract the base rolls to get the bonus

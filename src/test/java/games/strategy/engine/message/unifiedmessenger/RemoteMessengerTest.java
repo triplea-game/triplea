@@ -188,8 +188,8 @@ public class RemoteMessengerTest {
         ThreadUtil.sleep(50);
       }
       // call it on the client
-      final int rVal = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
-      assertEquals(2, rVal);
+      final int incrementedValue = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
+      assertEquals(2, incrementedValue);
       assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
     } finally {
       shutdownServerAndClient(server, client);
@@ -222,8 +222,8 @@ public class RemoteMessengerTest {
       // call it on the client
       // should be no need to wait since the constructor should not
       // reutrn until the initial state of the messenger is good
-      final int rVal = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
-      assertEquals(2, rVal);
+      final int incrementedValue = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
+      assertEquals(2, incrementedValue);
       assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
     } finally {
       shutdownServerAndClient(server, client);

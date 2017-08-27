@@ -40,7 +40,7 @@ public class ReliefImageBreaker {
   private static JFrame observer = new JFrame();
   private boolean seaZoneOnly;
   private MapData mapData;
-  private static File s_mapFolderLocation = null;
+  private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 
   /**
@@ -54,10 +54,10 @@ public class ReliefImageBreaker {
             + "<br>for each territory and sea zone."
             + "<br><br>TripleA no longer uses these, and instead uses reliefTiles (use the TileImageBreaker for that)."
             + "</html>"));
-    final FileSave locationSelection = new FileSave("Where to save Relief Images?", null, s_mapFolderLocation);
+    final FileSave locationSelection = new FileSave("Where to save Relief Images?", null, mapFolderLocation);
     location = locationSelection.getPathString();
-    if (s_mapFolderLocation == null && locationSelection.getFile() != null) {
-      s_mapFolderLocation = locationSelection.getFile().getParentFile();
+    if (mapFolderLocation == null && locationSelection.getFile() != null) {
+      mapFolderLocation = locationSelection.getFile().getParentFile();
     }
     if (location == null) {
       System.out.println("You need to select a folder to save the tiles in for this to work");
@@ -160,7 +160,7 @@ public class ReliefImageBreaker {
    */
   private static Image loadImage() {
     System.out.println("Select the map");
-    final String mapName = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png").getPathString();
+    final String mapName = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getPathString();
     if (mapName != null) {
       final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
       final MediaTracker tracker = new MediaTracker(new Panel());
@@ -189,9 +189,9 @@ public class ReliefImageBreaker {
       item.translate(-bounds.x, -bounds.y);
       alphaChannelImage.getGraphics().fillPolygon(item);
     }
-    final GraphicsConfiguration m_localGraphicSystem =
+    final GraphicsConfiguration localGraphicSystem =
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-    final BufferedImage relief = m_localGraphicSystem.createCompatibleImage(width, height,
+    final BufferedImage relief = localGraphicSystem.createCompatibleImage(width, height,
         seaZoneOnly ? Transparency.BITMASK : Transparency.TRANSLUCENT);
     relief.getGraphics().drawImage(map, 0, 0, width, height, bounds.x, bounds.y, bounds.x + width, bounds.y + height,
         observer);
@@ -246,7 +246,7 @@ public class ReliefImageBreaker {
       }
       final File mapFolder = new File(value);
       if (mapFolder.exists()) {
-        s_mapFolderLocation = mapFolder;
+        mapFolderLocation = mapFolder;
       } else {
         System.out.println("Could not find directory: " + value);
       }
@@ -254,12 +254,12 @@ public class ReliefImageBreaker {
       System.out.println("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1) {
+    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
-          s_mapFolderLocation = mapFolder;
+          mapFolderLocation = mapFolder;
         } else {
           System.out.println("Could not find directory: " + value);
         }

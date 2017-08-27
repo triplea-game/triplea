@@ -9,6 +9,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 
+/**
+ * Enum providing all the constants to be used by other tests.
+ */
 public enum TestMapGameData {
   BIG_WORLD_1942("big_world_1942_test.xml"),
   IRON_BLITZ("iron_blitz_test.xml"),
@@ -22,7 +25,8 @@ public enum TestMapGameData {
   GLOBAL1940("ww2_g40_balanced.xml"),
   TEST("Test.xml"),
   DELEGATE_TEST("DelegateTest.xml"),
-  GAME_EXAMPLE("GameExample.xml");
+  GAME_EXAMPLE("GameExample.xml"),
+  TWW("Total_World_War_Dec1941.xml");
 
   private static final String TEST_MAP_XML_PATH = "src/test/resources/";
 

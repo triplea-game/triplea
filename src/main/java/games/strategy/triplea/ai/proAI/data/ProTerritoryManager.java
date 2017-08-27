@@ -308,18 +308,18 @@ public class ProTerritoryManager {
       }
     }
     final Match<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, player),
-        Matches.UnitIsAirBase, Matches.UnitIsNotDisabled, Matches.unitIsBeingTransported().invert());
+        Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().invert());
     final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.newCompositeBuilder(
         Match.anyOf(
             Matches.TerritoryIsWater,
             Matches.isTerritoryEnemy(player, data)),
         Matches.territoryHasUnitsThatMatch(Match.allOf(
-            Matches.UnitCanScramble,
+            Matches.unitCanScramble(),
             Matches.unitIsEnemyOf(data, player),
-            Matches.UnitIsNotDisabled)),
+            Matches.unitIsNotDisabled())),
         Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
     if (fromIslandOnly) {
-      canScrambleBuilder.add(Matches.TerritoryIsIsland);
+      canScrambleBuilder.add(Matches.territoryIsIsland());
     }
 
     // Find potential territories to scramble from
@@ -344,10 +344,10 @@ public class ProTerritoryManager {
         // Find potential scramble units from territory
         final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
-        final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.TerritoryIsNotImpassable);
+        final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
         List<Unit> canScrambleAir = from.getUnits()
-            .getMatches(Match.allOf(Matches.unitIsEnemyOf(data, player), Matches.UnitCanScramble,
-                Matches.UnitIsNotDisabled, Matches.UnitWasScrambled.invert(),
+            .getMatches(Match.allOf(Matches.unitIsEnemyOf(data, player), Matches.unitCanScramble(),
+                Matches.unitIsNotDisabled(), Matches.unitWasScrambled().invert(),
                 Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
 
         // Add max scramble units
@@ -369,7 +369,8 @@ public class ProTerritoryManager {
   }
 
   private static int getMaxScrambleCount(final Collection<Unit> airbases) {
-    if (!Match.allMatchNotEmpty(airbases, Match.allOf(Matches.UnitIsAirBase, Matches.UnitIsNotDisabled))) {
+    if (airbases.isEmpty()
+        || !Match.allMatch(airbases, Match.allOf(Matches.unitIsAirBase(), Matches.unitIsNotDisabled()))) {
       throw new IllegalStateException("All units must be viable airbases");
     }
 

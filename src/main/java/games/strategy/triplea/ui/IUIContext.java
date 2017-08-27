@@ -60,7 +60,7 @@ public interface IUIContext {
 
   FlagIconImageFactory getFlagImageFactory();
 
-  PUImageFactory getPUImageFactory();
+  PUImageFactory getPuImageFactory();
 
   DiceImageFactory getDiceImageFactory();
 
@@ -121,10 +121,6 @@ public interface IUIContext {
   boolean getShowTriggerChanceFailure();
 
   void setShowTriggerChanceFailure(boolean value);
-
-  boolean getShowBattlesBetweenAIs();
-
-  void setShowBattlesBetweenAIs(boolean showBattlesBetweenAis);
 
   LocalPlayers getLocalPlayers();
 

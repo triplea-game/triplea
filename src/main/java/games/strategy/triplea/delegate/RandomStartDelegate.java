@@ -19,7 +19,9 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
@@ -74,7 +76,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
 
   protected void setupBoard() {
     final GameData data = getData();
-    final boolean randomTerritories = games.strategy.triplea.Properties.getTerritoriesAreAssignedRandomly(data);
+    final boolean randomTerritories = Properties.getTerritoriesAreAssignedRandomly(data);
     final Match<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
     final Match<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
     final List<Territory> allPickableTerritories =
@@ -103,7 +105,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (randomTerritories) {
         pos += hitRandom[i];
         i++;
-        final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_currentPickingPlayer, data);
+        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_currentPickingPlayer, data);
         final List<Unit> units = new ArrayList<>(m_currentPickingPlayer.getUnits().getUnits());
         Collections.sort(units, new UnitCostComparator(costs));
         final Set<Unit> unitsToPlace = new HashSet<>();
@@ -220,8 +222,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   public Match<Territory> getTerritoryPickableMatch() {
-    return Match.allOf(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable,
-        Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.TerritoryIsEmpty);
+    return Match.allOf(Matches.TerritoryIsLand, Matches.territoryIsNotImpassable(),
+        Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.territoryIsEmpty());
   }
 
   private Match<PlayerID> getPlayerCanPickMatch() {
@@ -240,6 +242,24 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   public Class<? extends IRemote> getRemoteType() {
     return null;
   }
+
+
+  static class UnitCostComparator implements Comparator<Unit> {
+    private final IntegerMap<UnitType> m_costs;
+
+    public UnitCostComparator(final IntegerMap<UnitType> costs) {
+      m_costs = costs;
+    }
+
+    public UnitCostComparator(final PlayerID player, final GameData data) {
+      m_costs = TuvUtils.getCostsForTuv(player, data);
+    }
+
+    @Override
+    public int compare(final Unit u1, final Unit u2) {
+      return m_costs.getInt(u1.getType()) - m_costs.getInt(u2.getType());
+    }
+  }
 }
 
 
@@ -248,22 +268,4 @@ class RandomStartExtendedDelegateState implements Serializable {
   Serializable superState;
   // add other variables here:
   public PlayerID m_currentPickingPlayer;
-}
-
-
-class UnitCostComparator implements Comparator<Unit> {
-  private final IntegerMap<UnitType> m_costs;
-
-  public UnitCostComparator(final IntegerMap<UnitType> costs) {
-    m_costs = costs;
-  }
-
-  public UnitCostComparator(final PlayerID player, final GameData data) {
-    m_costs = BattleCalculator.getCostsForTUV(player, data);
-  }
-
-  @Override
-  public int compare(final Unit u1, final Unit u2) {
-    return m_costs.getInt(u1.getType()) - m_costs.getInt(u2.getType());
-  }
 }

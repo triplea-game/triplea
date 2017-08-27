@@ -19,6 +19,7 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.Tuple;
 
@@ -53,12 +54,12 @@ public abstract class TechAdvance extends NamedAttachable {
   public static final String TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY = "industrialTechnology";
   public static final String TECH_NAME_DESTROYER_BOMBARD = "Destroyer Bombard";
   public static final String TECH_PROPERTY_DESTROYER_BOMBARD = "destroyerBombard";
-  public static final List<String> s_allPreDefinedTechnologyNames = Collections.unmodifiableList(
+  public static final List<String> ALL_PREDEFINED_TECHNOLOGY_NAMES = Collections.unmodifiableList(
       Arrays.asList(TECH_NAME_SUPER_SUBS, TECH_NAME_JET_POWER, TECH_NAME_IMPROVED_SHIPYARDS, TECH_NAME_AA_RADAR,
           TECH_NAME_LONG_RANGE_AIRCRAFT, TECH_NAME_HEAVY_BOMBER, TECH_NAME_IMPROVED_ARTILLERY_SUPPORT,
           TECH_NAME_ROCKETS, TECH_NAME_PARATROOPERS, TECH_NAME_INCREASED_FACTORY_PRODUCTION, TECH_NAME_WAR_BONDS,
           TECH_NAME_MECHANIZED_INFANTRY, TECH_NAME_INDUSTRIAL_TECHNOLOGY, TECH_NAME_DESTROYER_BOMBARD));
-  private static final Map<String, Class<? extends TechAdvance>> s_allPreDefinedTechnologies =
+  private static final Map<String, Class<? extends TechAdvance>> ALL_PREDEFINED_TECHNOLOGIES =
       createPreDefinedTechnologyMap();
 
   private static Map<String, Class<? extends TechAdvance>> createPreDefinedTechnologyMap() {
@@ -130,8 +131,8 @@ public abstract class TechAdvance extends NamedAttachable {
    */
   public static void createDefaultTechAdvances(final GameData data) {
     final TechnologyFrontier tf = data.getTechnologyFrontier();
-    final boolean ww2v2 = games.strategy.triplea.Properties.getWW2V2(data);
-    final boolean ww2v3 = games.strategy.triplea.Properties.getWW2V3(data);
+    final boolean ww2v2 = Properties.getWW2V2(data);
+    final boolean ww2v3 = Properties.getWW2V3(data);
     if (ww2v2) {
       createWW2V2Advances(tf);
     } else if (ww2v3) {
@@ -163,7 +164,7 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   public static TechAdvance findDefinedAdvanceAndCreateAdvance(final String s, final GameData data) {
-    final Class<? extends TechAdvance> clazz = s_allPreDefinedTechnologies.get(s);
+    final Class<? extends TechAdvance> clazz = ALL_PREDEFINED_TECHNOLOGIES.get(s);
     if (clazz == null) {
       throw new IllegalArgumentException(s + " is not a valid technology");
     }
@@ -620,7 +621,7 @@ class ImprovedShipyardsAdvance extends TechAdvance {
   @Override
   public void perform(final PlayerID id, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!games.strategy.triplea.Properties.getUse_Shipyards(data)) {
+    if (!Properties.getUse_Shipyards(data)) {
       return;
     }
     final ProductionFrontier current = id.getProductionFrontier();

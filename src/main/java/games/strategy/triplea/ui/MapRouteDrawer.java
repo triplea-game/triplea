@@ -66,28 +66,28 @@ public class MapRouteDrawer {
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     final int numTerritories = route.getAllTerritories().size();
-    final int xOffset = mapPanel.getXOffset();
-    final int yOffset = mapPanel.getYOffset();
+    final int offsetX = mapPanel.getXOffset();
+    final int offsetY = mapPanel.getYOffset();
     final Point[] points = routeCalculator.getTranslatedRoute(getRoutePoints(routeDescription));
     final boolean tooFewTerritories = numTerritories <= 1;
     final boolean tooFewPoints = points.length <= 2;
     final double scale = mapPanel.getScale();
     if (tooFewTerritories || tooFewPoints) {
       if (routeDescription.getEnd() != null) { // AI has no End Point
-        drawDirectPath(graphics, new Point(routeDescription.getStart()), new Point(routeDescription.getEnd()), xOffset,
-            yOffset, scale);
+        drawDirectPath(graphics, new Point(routeDescription.getStart()), new Point(routeDescription.getEnd()), offsetX,
+            offsetY, scale);
       } else {
-        drawDirectPath(graphics, points[0], points[points.length - 1], xOffset, yOffset, scale);
+        drawDirectPath(graphics, points[0], points[points.length - 1], offsetX, offsetY, scale);
       }
       if (tooFewPoints && !tooFewTerritories) {
-        drawMoveLength(graphics, points, xOffset, yOffset, scale, numTerritories, maxMovement);
+        drawMoveLength(graphics, points, offsetX, offsetY, scale, numTerritories, maxMovement);
       }
     } else {
-      drawCurvedPath(graphics, points, xOffset, yOffset, scale);
-      drawMoveLength(graphics, points, xOffset, yOffset, scale, numTerritories, maxMovement);
+      drawCurvedPath(graphics, points, offsetX, offsetY, scale);
+      drawMoveLength(graphics, points, offsetX, offsetY, scale, numTerritories, maxMovement);
     }
-    drawJoints(graphics, points, xOffset, yOffset, scale);
-    drawCustomCursor(graphics, routeDescription, xOffset, yOffset, scale);
+    drawJoints(graphics, points, offsetX, offsetY, scale);
+    drawCustomCursor(graphics, routeDescription, offsetX, offsetY, scale);
   }
 
   /**
@@ -280,8 +280,8 @@ public class MapRouteDrawer {
     createMovementLeftImage(movementImage, String.valueOf(numTerritories - 1), unitMovementLeft);
 
     final int textXOffset = -movementImage.getWidth() / 2;
-    final double yDir = cursorPos.getY() - points[numTerritories - 2].getY();
-    final int textYOffset = yDir > 0 ? movementImage.getHeight() : movementImage.getHeight() * -2;
+    final double deltaY = cursorPos.getY() - points[numTerritories - 2].getY();
+    final int textYOffset = deltaY > 0 ? movementImage.getHeight() : movementImage.getHeight() * -2;
     for (Point[] cursorPositions : routeCalculator.getAllPoints(cursorPos)) {
       graphics.drawImage(movementImage,
           (int) ((cursorPositions[0].getX() + textXOffset - offsetX) * scale),

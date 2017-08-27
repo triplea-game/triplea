@@ -121,9 +121,9 @@ public class TechPanel extends ActionPanel {
       }
       advance = list.getSelectedValue();
     }
-    final int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
+    final int pus = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
     final String message = "Roll Tech";
-    final TechRollPanel techRollPanel = new TechRollPanel(PUs, getCurrentPlayer());
+    final TechRollPanel techRollPanel = new TechRollPanel(pus, getCurrentPlayer());
     final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techRollPanel, message,
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
     if (choice != JOptionPane.OK_OPTION) {
@@ -183,7 +183,7 @@ public class TechPanel extends ActionPanel {
         JOptionPane.PLAIN_MESSAGE);
     final TechnologyFrontier category = list.getSelectedValue();
 
-    final int PUs = currentPlayer.getResources().getQuantity(Constants.PUS);
+    final int pus = currentPlayer.getResources().getQuantity(Constants.PUS);
     final String message = "Purchase Tech Tokens";
     // see if anyone will help us to pay
     Collection<PlayerID> helpPay;
@@ -193,7 +193,7 @@ public class TechPanel extends ActionPanel {
     } else {
       helpPay = null;
     }
-    final TechTokenPanel techTokenPanel = new TechTokenPanel(PUs, currTokens, currentPlayer, helpPay);
+    final TechTokenPanel techTokenPanel = new TechTokenPanel(pus, currTokens, currentPlayer, helpPay);
     final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message,
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
     if (choice != JOptionPane.OK_OPTION) {
@@ -284,9 +284,9 @@ public class TechPanel extends ActionPanel {
       final JLabel title = new JLabel("Select the number of tech rolls:");
       title.setBorder(new EmptyBorder(5, 5, 5, 5));
       textField = new ScrollableTextField(0, pus / TechTracker.getTechCost(player));
-      final ScrollableTextFieldListener m_listener =
+      final ScrollableTextFieldListener listener =
           stf -> setLabel(this.pus - (TechTracker.getTechCost(this.player) * textField.getValue()));
-      textField.addChangeListener(m_listener);
+      textField.addChangeListener(listener);
       final JLabel costLabel = new JLabel("x" + TechTracker.getTechCost(this.player));
       setLabel(pus);
       final int space = 0;
@@ -338,11 +338,11 @@ public class TechPanel extends ActionPanel {
       title.setBorder(new EmptyBorder(5, 5, 5, 5));
       final int techCost = TechTracker.getTechCost(this.player);
       textField = new ScrollableTextField(0, totalPus / techCost);
-      final ScrollableTextFieldListener m_listener = stf -> {
+      final ScrollableTextFieldListener listener = stf -> {
         setLabel(TechTracker.getTechCost(this.player) * textField.getValue());
         setWidgetActivation();
       };
-      textField.addChangeListener(m_listener);
+      textField.addChangeListener(listener);
       final JLabel costLabel = new JLabel("x" + techCost + " cost per token");
       setLabel(0);
       setTokens(currTokens);

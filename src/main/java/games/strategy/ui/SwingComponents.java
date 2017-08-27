@@ -1,37 +1,34 @@
 package games.strategy.ui;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridLayout;
 import java.awt.Window;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -39,70 +36,125 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 
+/**
+ * Wrapper/utility class to give Swing components a nicer API. This class is to help extract pure UI code out of
+ * the rest of the code base. This also gives us a cleaner interface between UI and the rest of the code.
+ */
 public class SwingComponents {
   private static final String PERIOD = ".";
+  private static final Collection<String> visiblePrompts = new HashSet<>();
 
-  public static JFrame newJFrame(final String title, final JComponent contents) {
-    final JFrame frame = new JFrame(title);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+  /**
+   * Enum for swing codes that represent key events. In this case holding control or the
+   * meta keys.
+   */
+  public enum KeyDownMask {
+    META_DOWN(InputEvent.META_DOWN_MASK),
+    CTRL_DOWN(InputEvent.CTRL_DOWN_MASK);
 
-    frame.setIconImage(GameRunner.getGameIcon(frame));
-    frame.getContentPane().add(contents, BorderLayout.CENTER);
-    frame.pack();
+    private final int code;
 
-    frame.setLocationRelativeTo(null);
-    return frame;
+    KeyDownMask(final int code) {
+      this.code = code;
+    }
   }
 
-  public static JTabbedPane newJTabbedPane() {
-    return new JTabbedPaneWithFixedWidthTabs();
+  public static void addSpaceKeyListener(final JComponent component, final Runnable runnable) {
+    addKeyListener(component, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), runnable);
   }
 
-  public static JPanel newJPanelWithVerticalBoxLayout() {
-    return newJPanelWithBoxLayout(BoxLayout.Y_AXIS);
-  }
-
-  private static JPanel newJPanelWithBoxLayout(final int layout) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, layout));
-    return panel;
-  }
-
-  public static JPanel newJPanelWithHorizontalBoxLayout() {
-    return newJPanelWithBoxLayout(BoxLayout.X_AXIS);
+  public static void addEnterKeyListener(final JComponent component, final Runnable runnable) {
+    addKeyListener(component, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), runnable);
   }
 
   /**
-   * Returns a row that has some padding at the top of it, and bottom.
+   * To a given dialog, adds a key listener that is fired if a key is pressed.
    */
-  public static JPanel createRowWithTopAndBottomPadding(final JPanel contentRow, final int topPadding,
-      final int bottomPadding) {
-    final JPanel rowContents = new JPanel();
-    rowContents.setLayout(new BoxLayout(rowContents, BoxLayout.Y_AXIS));
-    rowContents.add(Box.createVerticalStrut(topPadding));
-    rowContents.add(contentRow);
-    rowContents.add(Box.createVerticalStrut(bottomPadding));
-    return rowContents;
+  public static void addEscapeKeyListener(
+      final RootPaneContainer dialog,
+      final Runnable keyDownAction) {
+    if (dialog.getRootPane() != null) {
+      addKeyListener(dialog.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
+    }
+  }
+
+  /**
+   * To a given component, adds a key listener that is fired if a key is pressed.
+   */
+  public static void addEscapeKeyListener(
+      final JComponent component,
+      final Runnable keyDownAction) {
+
+    // TODO: null checks are bit questionable, have them here because they were here before...
+    if (component.getRootPane() != null) {
+      addKeyListener(component.getRootPane(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), keyDownAction);
+    }
+  }
+
+  public static void addKeyListenerWithMetaAndCtrlMasks(
+      final JFrame component, final char key, final Runnable action) {
+    addKeyListener((JComponent) component.getContentPane(), key, KeyDownMask.CTRL_DOWN, action);
+    addKeyListener((JComponent) component.getContentPane(), key, KeyDownMask.META_DOWN, action);
+  }
+
+  private static void addKeyListener(
+      final JComponent component,
+      final char key,
+      final KeyDownMask keyDownMask,
+      final Runnable keyDownAction) {
+    addKeyListener(component, KeyStroke.getKeyStroke(key, keyDownMask.code), keyDownAction);
+  }
+
+
+
+  private static void addKeyListener(
+      final JComponent component,
+      final KeyStroke keyStroke,
+      final Runnable keyDownAction) {
+
+    // We are using the object address here of our action.
+    // It is okay since we only need it to be the same value when we store it in the
+    // input and action maps below. Having the address be logged could be useful
+    // for debugging, otherwise no particular reason to use this exact value.
+    final String actionKey = keyDownAction.toString();
+
+    component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(keyStroke, actionKey);
+
+    component.getActionMap().put(actionKey, new AbstractAction() {
+      private static final long serialVersionUID = -280371946771796597L;
+
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        keyDownAction.run();
+      }
+    });
+  }
+
+  public static JTabbedPane newJTabbedPane() {
+    return newJTabbedPane(900, 600);
+  }
+
+  public static JTabbedPane newJTabbedPane(final int width, final int height) {
+    final JTabbedPane tabbedPane = new JTabbedPaneWithFixedWidthTabs();
+    tabbedPane.setPreferredSize(new Dimension(width, height));
+    return tabbedPane;
   }
 
   public static ButtonGroup createButtonGroup(final JRadioButton... radioButtons) {
@@ -113,25 +165,27 @@ public class SwingComponents {
     return group;
   }
 
-  public static class ModalJDialog extends JDialog {
-    private static final long serialVersionUID = -3953716954531215173L;
 
-    protected ModalJDialog() {
-      super((Frame) null, true);
-      setLocationByPlatform(true);
-    }
+  /**
+   * Adds a focus listener to a given component and executes a given action when focus is lost.
+   */
+  public static void addTextFieldFocusLostListener(final JTextField component, final Runnable focusLostListener) {
+    addFocusLostListener(component, focusLostListener);
+    component.addActionListener(e -> focusLostListener.run());
   }
 
-  public static void showWindow(final Window window) {
-    window.pack();
-    window.setLocationByPlatform(true);
-    window.setVisible(true);
-  }
+  private static void addFocusLostListener(final JComponent component, final Runnable focusLostListener) {
+    component.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(final FocusEvent e) {
 
-  public static JPanel newJPanelWithGridLayout(final int rows, final int columns) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new GridLayout(rows, columns));
-    return panel;
+      }
+
+      @Override
+      public void focusLost(final FocusEvent e) {
+        focusLostListener.run();
+      }
+    });
   }
 
   public enum KeyboardCode {
@@ -147,43 +201,6 @@ public class SwingComponents {
     int getSwingKeyEventCode() {
       return keyEventCode;
     }
-
-  }
-
-
-  private static final Set<String> visiblePrompts = new HashSet<>();
-
-  /**
-   * Creates a JPanel with BorderLayout and adds a west component and an east component.
-   */
-  public static JPanel horizontalJPanel(final Component westComponent, final Component eastComponent) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BorderLayout());
-    panel.add(westComponent, BorderLayout.WEST);
-    panel.add(eastComponent, BorderLayout.EAST);
-    return panel;
-  }
-
-  public static JPanel gridPanel(final int rows, final int cols) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new GridLayout(rows, cols));
-    return panel;
-  }
-
-  public static JButton newJButton(final String title, final String toolTip, final Runnable actionListener) {
-    return newJButton(title, toolTip, SwingAction.of(e -> actionListener.run()));
-  }
-
-  public static JButton newJButton(final String title, final String toolTip, final ActionListener actionListener) {
-    final JButton button = newJButton(title, actionListener);
-    button.setToolTipText(toolTip);
-    return button;
-  }
-
-  public static JButton newJButton(final String title, final ActionListener actionListener) {
-    final JButton button = new JButton(title);
-    button.addActionListener(actionListener);
-    return button;
   }
 
 
@@ -272,22 +289,11 @@ public class SwingComponents {
   }
 
   public static JEditorPane newHtmlJEditorPane() {
-    final JEditorPane m_descriptionPane = new JEditorPane();
-    m_descriptionPane.setEditable(false);
-    m_descriptionPane.setContentType("text/html");
-    m_descriptionPane.setBackground(new JLabel().getBackground());
-    return m_descriptionPane;
-  }
-
-  public static JPanel newBorderedPanel(final int borderWidth) {
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BorderLayout());
-    panel.setBorder(newEmptyBorder(borderWidth));
-    return panel;
-  }
-
-  public static Border newEmptyBorder(final int borderWidth) {
-    return new EmptyBorder(borderWidth, borderWidth, borderWidth, borderWidth);
+    final JEditorPane descriptionPane = new JEditorPane();
+    descriptionPane.setEditable(false);
+    descriptionPane.setContentType("text/html");
+    descriptionPane.setBackground(new JLabel().getBackground());
+    return descriptionPane;
   }
 
   public static void newOpenUrlConfirmationDialog(final UrlConstants url) {
@@ -296,7 +302,7 @@ public class SwingComponents {
 
   public static void newOpenUrlConfirmationDialog(final String url) {
     final String msg = "Okay to open URL in a web browser?\n" + url;
-    SwingComponents.promptUser("Open external URL?", msg, () -> OpenFileUtility.openURL(url));
+    SwingComponents.promptUser("Open external URL?", msg, () -> OpenFileUtility.openUrl(url));
   }
 
   public static void showDialog(final String title, final String message) {
@@ -304,20 +310,9 @@ public class SwingComponents {
         JOptionPane.INFORMATION_MESSAGE));
   }
 
-
-  public static JDialog newJDialogModal(final JFrame parent, final String title, final JPanel contents) {
-    final JDialog dialog = new JDialog(parent, title, true);
-    dialog.getContentPane().add(contents);
-    final Action closeAction = SwingAction.of("", e -> dialog.setVisible(false));
-    final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-    final String key = "dialog.close";
-    dialog.getRootPane().getActionMap().put(key, closeAction);
-    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
-    return dialog;
-  }
-
-
-
+  /**
+   * Builds a new menu item with title and keyboard shortcut key.
+   */
   public static JMenu newJMenu(final String menuTitle, final KeyboardCode keyboardCode) {
     final JMenu menu = new JMenu(menuTitle);
     menu.setMnemonic(keyboardCode.getSwingKeyEventCode());
@@ -325,33 +320,32 @@ public class SwingComponents {
   }
 
   /**
-   * Creates a new component that emulates a multiline label.
-   *
-   * <p>
-   * The multiline label will properly wrap text that has embedded newlines ({@code \n}).
-   * </p>
-   *
-   * @param text The text to be displayed; may be {@code null}.
-   * @param rows The number of rows; must be greater than or equal to zero.
-   * @param cols The number of columns; must be greater than or equal to zero.
-   *
-   * @return The new multiline label; never {@code null}.
-   *
-   * @throws IllegalArgumentException If {@code rows} or {@code cols} is negative.
+   * Flag for file selection component, whether to allow selection of files only or folders only.
    */
-  public static JTextArea newMultilineLabel(final String text, final int rows, final int cols) {
-    checkArgument(rows >= 0, "rows must not be negative");
-    checkArgument(cols >= 0, "cols must not be negative");
+  public enum FolderSelectionMode {
+    FILES, DIRECTORIES
+  }
 
-    final JTextArea textArea = new JTextArea(text, rows, cols);
-    textArea.setCursor(null);
-    textArea.setEditable(false);
-    textArea.setFocusable(false);
-    textArea.setFont(UIManager.getFont("Label.font"));
-    textArea.setLineWrap(true);
-    textArea.setOpaque(false);
-    textArea.setWrapStyleWord(true);
-    return textArea;
+  /**
+   * Shows a dialog the user can use to select a folder or file.
+   * @param folderSelectionMode Flag controlling whether files or folders are available for selection.
+   * @return Empty if the user selects nothing, otherwise the users selection.
+   */
+  public static Optional<File> showJFileChooser(final FolderSelectionMode folderSelectionMode) {
+    final JFileChooser fileChooser = new JFileChooser();
+    if (folderSelectionMode == FolderSelectionMode.DIRECTORIES) {
+      fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    } else {
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    }
+
+    final int result = fileChooser.showOpenDialog(null);
+
+    if (result == JFileChooser.APPROVE_OPTION) {
+      return Optional.of(fileChooser.getSelectedFile());
+    } else {
+      return Optional.empty();
+    }
   }
 
   /**

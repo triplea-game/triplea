@@ -80,6 +80,22 @@ public class Version implements Serializable, Comparable<Object> {
     return exactVersion != null ? exactVersion : toString();
   }
 
+  public int getMajor() {
+    return m_major;
+  }
+
+  public int getMinor() {
+    return m_minor;
+  }
+
+  public int getPoint() {
+    return m_point;
+  }
+
+  public int getMicro() {
+    return m_micro;
+  }
+
   @Override
   public boolean equals(final Object o) {
     return compareTo(o) == 0;

@@ -36,12 +36,12 @@ public class ProductionTabsProperties {
   // The number of columns of units to be used in the panel if rows or columns are "0" the system will calculate based
   // on max units
   private static final String NUMBER_OF_COLUMNS = "production_tabs.columns";
-  private final Properties m_properties = new Properties();
-  private final List<Rule> m_rules;
-  private List<Tuple<String, List<Rule>>> m_ruleLists;
+  private final Properties properties = new Properties();
+  private final List<Rule> rules;
+  private List<Tuple<String, List<Rule>>> ruleLists;
 
   protected ProductionTabsProperties(final PlayerID playerId, final List<Rule> rules) {
-    m_rules = rules;
+    this.rules = rules;
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
     String propertyFile = PROPERTY_FILE + "." + playerId.getName() + ".properties";
     URL url = loader.getResource(propertyFile);
@@ -53,7 +53,7 @@ public class ProductionTabsProperties {
         final Optional<InputStream> inputStream = UrlStreams.openStream(url);
         if (inputStream.isPresent()) {
           try {
-            m_properties.load(inputStream.get());
+            properties.load(inputStream.get());
           } catch (final IOException e) {
             System.out.println("Error reading " + propertyFile + e);
           }
@@ -67,38 +67,38 @@ public class ProductionTabsProperties {
   }
 
   List<Tuple<String, List<Rule>>> getRuleLists() {
-    if (m_ruleLists != null) {
-      return m_ruleLists;
+    if (ruleLists != null) {
+      return ruleLists;
     }
-    m_ruleLists = new ArrayList<>();
-    final int iTabs = getNumberOfTabs();
-    for (int i = 1; i <= iTabs; i++) {
-      final String tabName = m_properties.getProperty(TAB_NAME + "." + i);
-      final List<String> tabValues = Arrays.asList(m_properties.getProperty(TAB_UNITS + "." + i).split(":"));
+    ruleLists = new ArrayList<>();
+    final int numberOfTabs = getNumberOfTabs();
+    for (int i = 1; i <= numberOfTabs; i++) {
+      final String tabName = properties.getProperty(TAB_NAME + "." + i);
+      final List<String> tabValues = Arrays.asList(properties.getProperty(TAB_UNITS + "." + i).split(":"));
       final List<Rule> ruleList = new ArrayList<>();
-      for (final Rule rule : m_rules) {
+      for (final Rule rule : rules) {
         if (tabValues.contains(rule.getProductionRule().getResults().keySet().iterator().next().getName())) {
           ruleList.add(rule);
         }
       }
-      m_ruleLists.add(Tuple.of(tabName, ruleList));
+      ruleLists.add(Tuple.of(tabName, ruleList));
     }
-    return m_ruleLists;
+    return ruleLists;
   }
 
   private int getNumberOfTabs() {
-    return Integer.valueOf(m_properties.getProperty(NUMBER_OF_TABS, "0"));
+    return Integer.valueOf(properties.getProperty(NUMBER_OF_TABS, "0"));
   }
 
   public boolean useDefaultTabs() {
-    return Boolean.valueOf(m_properties.getProperty(USE_DEFAULT_TABS, "true"));
+    return Boolean.valueOf(properties.getProperty(USE_DEFAULT_TABS, "true"));
   }
 
   public int getRows() {
-    return Integer.valueOf(m_properties.getProperty(NUMBER_OF_ROWS, "0"));
+    return Integer.valueOf(properties.getProperty(NUMBER_OF_ROWS, "0"));
   }
 
   public int getColumns() {
-    return Integer.valueOf(m_properties.getProperty(NUMBER_OF_COLUMNS, "0"));
+    return Integer.valueOf(properties.getProperty(NUMBER_OF_COLUMNS, "0"));
   }
 }

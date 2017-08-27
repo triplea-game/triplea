@@ -3,7 +3,7 @@ package games.strategy.triplea.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -16,9 +16,9 @@ public class NotificationMessages {
   // Filename
   private static final String PROPERTY_FILE = "notifications.properties";
   private static final String SOUND_CLIP_SUFFIX = "_sounds";
-  private static NotificationMessages s_nm = null;
-  private static long s_timestamp = 0;
-  private final Properties m_properties = new Properties();
+  private static NotificationMessages nm = null;
+  private static Instant timestamp = Instant.EPOCH;
+  private final Properties properties = new Properties();
 
   protected NotificationMessages() {
     final ResourceLoader loader = AbstractUIContext.getResourceLoader();
@@ -27,7 +27,7 @@ public class NotificationMessages {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);
       if (inputStream.isPresent()) {
         try {
-          m_properties.load(inputStream.get());
+          properties.load(inputStream.get());
         } catch (final IOException e) {
           ClientLogger.logError("Error reading " + PROPERTY_FILE, e);
         }
@@ -37,24 +37,24 @@ public class NotificationMessages {
 
   public static NotificationMessages getInstance() {
     // cache properties for 10 seconds
-    if (s_nm == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 10000) {
-      s_nm = new NotificationMessages();
-      s_timestamp = Calendar.getInstance().getTimeInMillis();
+    if (nm == null || timestamp.plusSeconds(10).isBefore(Instant.now())) {
+      nm = new NotificationMessages();
+      timestamp = Instant.now();
     }
-    return s_nm;
+    return nm;
   }
 
   /**
    * Can be null if none exist.
    */
   public String getMessage(final String notificationMessageKey) {
-    return m_properties.getProperty(notificationMessageKey);
+    return properties.getProperty(notificationMessageKey);
   }
 
   /**
    * Can be null if none exist.
    */
   public String getSoundsKey(final String notificationMessageKey) {
-    return m_properties.getProperty(notificationMessageKey + SOUND_CLIP_SUFFIX);
+    return properties.getProperty(notificationMessageKey + SOUND_CLIP_SUFFIX);
   }
 }

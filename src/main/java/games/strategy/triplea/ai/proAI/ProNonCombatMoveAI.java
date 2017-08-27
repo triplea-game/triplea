@@ -40,12 +40,12 @@ import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.Match;
 
 /**
@@ -359,7 +359,7 @@ class ProNonCombatMoveAI {
       patd.setMaxEnemyUnits(new ArrayList<>(enemyAttackingUnits));
       patd.setMaxEnemyBombardUnits(enemyAttackOptions.getMax(t).getMaxBombardUnits());
       final List<Unit> minDefendingUnitsAndNotAa =
-          Match.getMatches(patd.getCantMoveUnits(), Matches.UnitIsAAforAnything.invert());
+          Match.getMatches(patd.getCantMoveUnits(), Matches.unitIsAaForAnything().invert());
       final ProBattleResult minResult = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits),
           minDefendingUnitsAndNotAa, enemyAttackOptions.getMax(t).getMaxBombardUnits());
       patd.setMinBattleResult(minResult);
@@ -375,7 +375,8 @@ class ProNonCombatMoveAI {
       final Set<Unit> defendingUnits = new HashSet<>(patd.getMaxUnits());
       defendingUnits.addAll(patd.getMaxAmphibUnits());
       defendingUnits.addAll(patd.getCantMoveUnits());
-      final List<Unit> defendingUnitsAndNotAa = Match.getMatches(defendingUnits, Matches.UnitIsAAforAnything.invert());
+      final List<Unit> defendingUnitsAndNotAa =
+          Match.getMatches(defendingUnits, Matches.unitIsAaForAnything().invert());
       final ProBattleResult result = calc.calculateBattleResults(t, new ArrayList<>(enemyAttackingUnits),
           defendingUnitsAndNotAa, enemyAttackOptions.getMax(t).getMaxBombardUnits());
       int isFactory = 0;
@@ -388,7 +389,7 @@ class ProNonCombatMoveAI {
       }
       final List<Unit> extraUnits = new ArrayList<>(defendingUnitsAndNotAa);
       extraUnits.removeAll(minDefendingUnitsAndNotAa);
-      final double extraUnitValue = BattleCalculator.getTUV(extraUnits, ProData.unitValueMap);
+      final double extraUnitValue = TuvUtils.getTuv(extraUnits, ProData.unitValueMap);
       final double holdValue = extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + 2 * isMyCapital);
       if (minDefendingUnitsAndNotAa.size() != defendingUnitsAndNotAa.size()
           && (result.getTUVSwing() - holdValue) < minResult.getTUVSwing()) {
@@ -458,11 +459,11 @@ class ProNonCombatMoveAI {
       }
 
       // Determine defending unit value
-      final int cantMoveUnitValue = BattleCalculator.getTUV(moveMap.get(t).getCantMoveUnits(), ProData.unitValueMap);
+      final int cantMoveUnitValue = TuvUtils.getTuv(moveMap.get(t).getCantMoveUnits(), ProData.unitValueMap);
       double unitOwnerMultiplier = 1;
       if (Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.unitIsOwnedBy(player))) {
         if (t.isWater()
-            && Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.UnitIsTransportButNotCombatTransport)) {
+            && Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.unitIsTransportButNotCombatTransport())) {
           unitOwnerMultiplier = 0;
         } else {
           unitOwnerMultiplier = 0.5;
@@ -490,9 +491,10 @@ class ProNonCombatMoveAI {
       final Territory t = patd.getTerritory();
       final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsLand().match(t);
       final ProBattleResult minResult = patd.getMinBattleResult();
-      final int cantMoveUnitValue = BattleCalculator.getTUV(moveMap.get(t).getCantMoveUnits(), ProData.unitValueMap);
+      final int cantMoveUnitValue = TuvUtils.getTuv(moveMap.get(t).getCantMoveUnits(), ProData.unitValueMap);
+      final List<Unit> maxEnemyUnits = patd.getMaxEnemyUnits();
       final boolean isLandAndCanOnlyBeAttackedByAir =
-          !t.isWater() && Match.allMatchNotEmpty(patd.getMaxEnemyUnits(), Matches.UnitIsAir);
+          !t.isWater() && !maxEnemyUnits.isEmpty() && Match.allMatch(maxEnemyUnits, Matches.UnitIsAir);
       final boolean isNotFactoryAndShouldHold =
           !hasFactory && (minResult.getTUVSwing() <= 0 || !minResult.isHasLandUnitRemaining());
       final boolean canAlreadyBeHeld =
@@ -888,7 +890,7 @@ class ProNonCombatMoveAI {
           isMyCapital = 1;
           containsCapital = true;
         }
-        final double extraUnitValue = BattleCalculator.getTUV(moveMap.get(t).getTempUnits(), ProData.unitValueMap);
+        final double extraUnitValue = TuvUtils.getTuv(moveMap.get(t).getTempUnits(), ProData.unitValueMap);
         final List<Unit> unsafeTransports = new ArrayList<>();
         for (final Unit transport : moveMap.get(t).getTransportTerritoryMap().keySet()) {
           final Territory transportTerritory = moveMap.get(t).getTransportTerritoryMap().get(transport);
@@ -896,7 +898,7 @@ class ProNonCombatMoveAI {
             unsafeTransports.add(transport);
           }
         }
-        final int unsafeTransportValue = BattleCalculator.getTUV(unsafeTransports, ProData.unitValueMap);
+        final int unsafeTransportValue = TuvUtils.getTuv(unsafeTransports, ProData.unitValueMap);
         final double holdValue =
             extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + 2 * isMyCapital) - unsafeTransportValue;
 
@@ -905,7 +907,7 @@ class ProNonCombatMoveAI {
         if (!t.isWater() && !t.equals(ProData.myCapital)
             && !ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
           double totalValue = 0.0;
-          final List<Unit> nonAirDefenders = Match.getMatches(moveMap.get(t).getTempUnits(), Matches.UnitIsNotAir);
+          final List<Unit> nonAirDefenders = Match.getMatches(moveMap.get(t).getTempUnits(), Matches.unitIsNotAir());
           for (final Unit u : nonAirDefenders) {
             totalValue += territoryValueMap.get(unitTerritoryMap.get(u));
           }
@@ -1346,7 +1348,7 @@ class ProNonCombatMoveAI {
             if (moveMap.get(t).isCanHold() && !moveMap.get(t).getAllDefenders().isEmpty()
                 && Match.anyMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransport(player))) {
               final List<Unit> defendingUnits =
-                  Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.UnitIsNotLand);
+                  Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.unitIsNotLand());
               if (moveMap.get(t).getBattleResult() == null) {
                 moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                     moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
@@ -1390,7 +1392,7 @@ class ProNonCombatMoveAI {
                 continue;
               }
               final List<Unit> defendingUnits =
-                  Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.UnitIsNotLand);
+                  Match.getMatches(moveMap.get(t).getAllDefenders(), Matches.unitIsNotLand());
               if (moveMap.get(t).getBattleResult() == null) {
                 moveMap.get(t).setBattleResult(calc.estimateDefendBattleResults(t,
                     moveMap.get(t).getMaxEnemyUnits(), defendingUnits, moveMap.get(t).getMaxEnemyBombardUnits()));
@@ -1511,7 +1513,7 @@ class ProNonCombatMoveAI {
         if (t.isWater()) {
           isWater = 1;
         }
-        final double extraUnitValue = BattleCalculator.getTUV(moveMap.get(t).getTempUnits(), ProData.unitValueMap);
+        final double extraUnitValue = TuvUtils.getTuv(moveMap.get(t).getTempUnits(), ProData.unitValueMap);
         final double holdValue = result.getTUVSwing() - (extraUnitValue / 8 * (1 + isWater));
 
         // Find min result without temp units
@@ -1732,7 +1734,7 @@ class ProNonCombatMoveAI {
     // Move air units to safe territory with most attack options
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
       final Unit u = it.next();
-      if (Matches.UnitIsNotAir.match(u)) {
+      if (Matches.unitIsNotAir().match(u)) {
         continue;
       }
       double maxAirValue = 0;
@@ -1813,7 +1815,7 @@ class ProNonCombatMoveAI {
     // Move air units to safest territory
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
       final Unit u = it.next();
-      if (Matches.UnitIsNotAir.match(u)) {
+      if (Matches.unitIsNotAir().match(u)) {
         continue;
       }
       double minStrengthDifference = Double.POSITIVE_INFINITY;
@@ -1926,7 +1928,7 @@ class ProNonCombatMoveAI {
       final Territory currentTerritory = unitTerritoryMap.get(u);
 
       // Only check AA units whose territory can't be held and don't have factories
-      if (Matches.UnitIsAAforAnything.match(u) && !moveMap.get(currentTerritory).isCanHold()
+      if (Matches.unitIsAaForAnything().match(u) && !moveMap.get(currentTerritory).isCanHold()
           && !ProMatches.territoryHasInfraFactoryAndIsLand().match(currentTerritory)) {
         Territory maxValueTerritory = null;
         double maxValue = 0;
@@ -1947,7 +1949,7 @@ class ProNonCombatMoveAI {
           // Find value and try to move to territory that doesn't already have AA
           final List<Unit> units = new ArrayList<>(moveMap.get(t).getCantMoveUnits());
           units.addAll(moveMap.get(t).getUnits());
-          final boolean hasAa = Match.anyMatch(units, Matches.UnitIsAAforAnything);
+          final boolean hasAa = Match.anyMatch(units, Matches.unitIsAaForAnything());
           double value = moveMap.get(t).getValue();
           if (hasAa) {
             value *= 0.01;

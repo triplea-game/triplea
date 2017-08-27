@@ -132,7 +132,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     while (iter.hasNext()) {
       final UnitCategory category = iter.next();
       final Optional<ImageIcon> icon =
-          movePanel.getMap().getUIContext().getUnitImageFactory().getIcon(category.getType(),
+          movePanel.getMap().getUiContext().getUnitImageFactory().getIcon(category.getType(),
               category.getOwner(), gameData, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
       if (icon.isPresent()) {
         final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);

@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -51,6 +50,7 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.settings.ClientSetting;
 
 /**
  * Represents a running game.
@@ -149,7 +149,7 @@ public class ServerGame extends AbstractGame {
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     setupDelegateMessaging(data);
     m_randomStats = new RandomStats(m_remoteMessenger);
-    final IServerRemote m_serverRemote = () -> {
+    final IServerRemote serverRemote = () -> {
       final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
       try {
         saveGame(sink);
@@ -159,7 +159,7 @@ public class ServerGame extends AbstractGame {
       }
       return sink.toByteArray();
     };
-    m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
+    m_remoteMessenger.registerRemote(serverRemote, SERVER_REMOTE);
   }
 
   public void addObserver(final IObserverWaitingToJoin blockingObserver,
@@ -188,7 +188,7 @@ public class ServerGame extends AbstractGame {
         }
       }, "Waiting on observer to finish joining: " + newNode.getName())).start();
       try {
-        if (!waitOnObserver.await(GameRunner.getServerObserverJoinWaitTime(), TimeUnit.SECONDS)) {
+        if (!waitOnObserver.await(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");
         }
       } catch (final InterruptedException e) {
@@ -347,8 +347,8 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSave(final String fileName) {
-    SaveGameFileChooser.ensureMapsFolderExists();
-    final File autoSaveDir = new File(ClientContext.folderSettings().getSaveGamePath()
+    final File autoSaveDir = new File(
+        ClientSetting.SAVE_GAMES_FOLDER_PATH.value()
         + (SystemProperties.isWindows() ? "\\" : "/" + "autoSave"));
     if (!autoSaveDir.exists()) {
       autoSaveDir.mkdirs();
@@ -383,7 +383,7 @@ public class ServerGame extends AbstractGame {
       throw new IOException(ie.getMessage());
     }
     try {
-      new GameDataManager().saveGame(out, m_data);
+      GameDataManager.saveGame(out, m_data);
     } finally {
       m_delegateExecutionManager.resumeDelegateExecution();
     }

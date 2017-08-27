@@ -22,6 +22,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -73,7 +74,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (!m_needToInitialize) {
       return;
     }
-    if (games.strategy.triplea.Properties.getTriggers(getData())) {
+    if (Properties.getTriggers(getData())) {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
@@ -123,13 +124,13 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if (!games.strategy.triplea.Properties.getTechDevelopment(getData())) {
+    if (!Properties.getTechDevelopment(getData())) {
       return false;
     }
     if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData())) {
       return false;
     }
-    if (games.strategy.triplea.Properties.getWW2V3TechModel(getData())) {
+    if (Properties.getWW2V3TechModel(getData())) {
       final Resource techtokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
       if (techtokens != null) {
         final int techTokens = m_player.getResources().getQuantity(techtokens);
@@ -164,19 +165,19 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(getData());
+    return Properties.getWW2V2(getData());
   }
 
   private boolean isWW2V3TechModel() {
-    return games.strategy.triplea.Properties.getWW2V3TechModel(getData());
+    return Properties.getWW2V3TechModel(getData());
   }
 
   private boolean isSelectableTechRoll() {
-    return games.strategy.triplea.Properties.getSelectableTechRoll(getData());
+    return Properties.getSelectableTechRoll(getData());
   }
 
   private boolean isLL_TECH_ONLY() {
-    return games.strategy.triplea.Properties.getLL_TECH_ONLY(getData());
+    return Properties.getLL_TECH_ONLY(getData());
   }
 
   @Override
@@ -242,7 +243,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
                 + directedTechInfo + " and gets " + techHits + " " + MyFormatter.pluralize("hit", techHits),
             renderDice);
     if (isWW2V3TechModel()
-        && (techHits > 0 || games.strategy.triplea.Properties.getRemoveAllTechTokensAtEndOfTurn(data))) {
+        && (techHits > 0 || Properties.getRemoveAllTechTokensAtEndOfTurn(data))) {
       m_techCategory = techToRollFor;
       // remove all the tokens
       final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
@@ -293,15 +294,15 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   boolean checkEnoughMoney(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch) {
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
-      final int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+      final int has = m_bridge.getPlayerID().getResources().getQuantity(pus);
       return has >= cost;
     } else {
       int runningTotal = 0;
       for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet()) {
-        final int has = entry.getKey().getResources().getQuantity(PUs);
+        final int has = entry.getKey().getResources().getQuantity(pus);
         final int paying = entry.getValue();
         if (paying > has) {
           return false;
@@ -313,12 +314,12 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private void chargeForTechRolls(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch) {
-    final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
       final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " on tech rolls";
       m_bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
+      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), pus, -cost);
       m_bridge.addChange(charge);
     } else {
       for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet()) {
@@ -330,7 +331,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         cost -= pays;
         final String transcriptText = p.getName() + " spend " + pays + " on tech rolls";
         m_bridge.getHistoryWriter().startEvent(transcriptText);
-        final Change charge = ChangeFactory.changeResourcesChange(p, PUs, -pays);
+        final Change charge = ChangeFactory.changeResourcesChange(p, pus, -pays);
         m_bridge.addChange(charge);
       }
     }

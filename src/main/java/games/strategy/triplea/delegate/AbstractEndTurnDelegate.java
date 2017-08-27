@@ -49,7 +49,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private boolean m_hasPostedTurnSummary = false;
 
   private boolean isGiveUnitsByTerritory() {
-    return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
+    return Properties.getGiveUnitsByTerritory(getData());
   }
 
   private static boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
@@ -63,8 +63,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   public void start() {
     // figure out our current PUs before we do anything else, including super methods
     final GameData data = m_bridge.getData();
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final int leftOverPUs = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final int leftOverPUs = m_bridge.getPlayerID().getResources().getQuantity(pus);
     final IntegerMap<Resource> leftOverResources = m_bridge.getPlayerID().getResources().getResourcesCopy();
     super.start();
     if (!m_needToInitialize) {
@@ -84,7 +84,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final int blockadeLoss = getBlockadeProductionLoss(m_player, data, m_bridge, endTurnReport);
       toAdd -= blockadeLoss;
       toAdd *= Properties.getPU_Multiplier(data);
-      int total = m_player.getResources().getQuantity(PUs) + toAdd;
+      int total = m_player.getResources().getQuantity(pus) + toAdd;
       final String transcriptText;
       if (blockadeLoss == 0) {
         transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with "
@@ -110,7 +110,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         toAdd -= total;
         total = 0;
       }
-      final Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
+      final Change change = ChangeFactory.changeResourcesChange(m_player, pus, toAdd);
       m_bridge.addChange(change);
       if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null) {
         final Change changeVp = (ChangeFactory.attachmentPropertyChange(pa,
@@ -127,7 +127,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
       // NOs)
-      final int currentPUs = m_player.getResources().getQuantity(PUs);
+      final int currentPUs = m_player.getResources().getQuantity(pus);
       final float gainedPus = Math.max(0, currentPUs - leftOverPUs);
       int relationshipUpkeepCostFlat = 0;
       int relationshipUpkeepCostPercentage = 0;
@@ -158,7 +158,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
             + MyFormatter.pluralize(" PU", newTotal);
         m_bridge.getHistoryWriter().startEvent(transcriptText2);
         endTurnReport.append("<br />").append(transcriptText2).append("<br />");
-        final Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
+        final Change upkeep = ChangeFactory.changeResourcesChange(m_player, pus, relationshipUpkeepTotalCost);
         m_bridge.addChange(upkeep);
       }
     }
@@ -254,9 +254,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     // take first one
     PlayerID giveWarBondsTo = null;
     for (final PlayerID p : shareWith) {
-      final int pCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
-      final int pSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
-      if (pSides <= 0 && pCount <= 0) {
+      final int diceCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
+      final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
+      if (diceSides <= 0 && diceCount <= 0) {
         // if both are zero, then it must mean we did not share our war bonds tech with them, even though we are sharing
         // all tech (because
         // they cannot have this tech)
@@ -276,23 +276,23 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     for (int i = 0; i < dice.size(); i++) {
       totalWarBonds += dice.getDie(i).getValue() + 1;
     }
-    final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-    final int currentPUs = giveWarBondsTo.getResources().getQuantity(PUs);
+    final Resource pus = data.getResourceList().getResource(Constants.PUS);
+    final int currentPUs = giveWarBondsTo.getResources().getQuantity(pus);
     final String transcriptText =
         player.getName() + " rolls " + totalWarBonds + MyFormatter.pluralize(" PU", totalWarBonds)
             + " from War Bonds, giving the total to " + giveWarBondsTo.getName() + ", who ends with "
             + (currentPUs + totalWarBonds) + MyFormatter.pluralize(" PU", (currentPUs + totalWarBonds)) + " total";
     delegateBridge.getHistoryWriter().startEvent(transcriptText);
-    final Change change = ChangeFactory.changeResourcesChange(giveWarBondsTo, PUs, totalWarBonds);
+    final Change change = ChangeFactory.changeResourcesChange(giveWarBondsTo, pus, totalWarBonds);
     delegateBridge.addChange(change);
     getRemotePlayer(player).reportMessage(annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
     return transcriptText + "<br />";
   }
 
   private static void changeUnitOwnership(final IDelegateBridge bridge) {
-    final PlayerID Player = bridge.getPlayerID();
-    final PlayerAttachment pa = PlayerAttachment.get(Player);
-    final Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();
+    final PlayerID player = bridge.getPlayerID();
+    final PlayerAttachment pa = PlayerAttachment.get(player);
+    final Collection<PlayerID> possibleNewOwners = pa.getGiveUnitControl();
     final Collection<Territory> territories = bridge.getData().getMap().getTerritories();
     final CompositeChange change = new CompositeChange();
     final Collection<Tuple<Territory, Collection<Unit>>> changeList =
@@ -303,10 +303,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       if (ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty()) {
         final Collection<PlayerID> terrNewOwners = ta.getChangeUnitOwners();
         for (final PlayerID terrNewOwner : terrNewOwners) {
-          if (PossibleNewOwners.contains(terrNewOwner)) {
+          if (possibleNewOwners.contains(terrNewOwner)) {
             // PlayerOwnerChange
             final Collection<Unit> units =
-                currTerritory.getUnits().getMatches(Match.allOf(Matches.unitOwnedBy(Player),
+                currTerritory.getUnits().getMatches(Match.allOf(Matches.unitOwnedBy(player),
                     Matches.unitCanBeGivenByTerritoryTo(terrNewOwner)));
             if (!units.isEmpty()) {
               change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
@@ -363,13 +363,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return 0;
     }
     final GameMap map = data.getMap();
-    final Collection<Territory> blockable = Match.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone);
+    final Collection<Territory> blockable = Match.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone());
     if (blockable.isEmpty()) {
       return 0;
     }
     final Match<Unit> enemyUnits = Match.allOf(Matches.enemyUnit(player, data));
     int totalLoss = 0;
-    final boolean rollDiceForBlockadeDamage = games.strategy.triplea.Properties.getConvoyBlockadesRollDiceForCost(data);
+    final boolean rollDiceForBlockadeDamage = Properties.getConvoyBlockadesRollDiceForCost(data);
     final Collection<String> transcripts = new ArrayList<>();
     final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone =
         new HashMap<>();

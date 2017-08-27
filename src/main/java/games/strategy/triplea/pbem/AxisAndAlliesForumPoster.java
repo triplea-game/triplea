@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
@@ -31,7 +32,6 @@ import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.help.HelpSupport;
 import games.strategy.util.ThreadUtil;
-import games.strategy.util.Util;
 
 /**
  * Post turn summary to www.axisandallies.org to the thread identified by the forumId
@@ -84,7 +84,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
       int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
-        final String body = Util.getStringFromInputStream(response.getEntity().getContent());
+        final String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
         if (body.toLowerCase().contains("password incorrect")) {
           throw new Exception("Incorrect Password");
         }
@@ -127,7 +127,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
       HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
         int status = response.getStatusLine().getStatusCode();
-        String body = Util.getStringFromInputStream(response.getEntity().getContent());
+        String body = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
         if (status == 200) {
           String numReplies;
           String seqNum;
@@ -184,7 +184,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           HttpProxy.addProxy(httpPost);
           try (CloseableHttpResponse response2 = client.execute(httpPost, httpContext)) {
             status = response2.getStatusLine().getStatusCode();
-            body = Util.getStringFromInputStream(response2.getEntity().getContent());
+            body = IOUtils.toString(response2.getEntity().getContent(), StandardCharsets.UTF_8);
             if (status == HttpURLConnection.HTTP_MOVED_TEMP) {
               // site responds with a 302 redirect back to the forum index (board=40)
               // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
@@ -267,7 +267,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   @Override
   public void viewPosted() {
     final String url = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
-    OpenFileUtility.openURL(url);
+    OpenFileUtility.openUrl(url);
   }
 
   @Override

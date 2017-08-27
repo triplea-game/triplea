@@ -22,7 +22,7 @@ public class PlainRandomSource implements IRandomSource {
   }
 
 
-  private static MersenneTwister s_random;
+  private static MersenneTwister random;
 
   @Override
   public synchronized int[] getRandom(final int max, final int count, final String annotation)
@@ -39,9 +39,9 @@ public class PlainRandomSource implements IRandomSource {
 
   @Override
   public synchronized int getRandom(final int max, final String annotation) throws IllegalArgumentException {
-    if (s_random == null) {
-      s_random = new MersenneTwister(getSeed());
+    if (random == null) {
+      random = new MersenneTwister(getSeed());
     }
-    return s_random.nextInt(max);
+    return random.nextInt(max);
   }
 }

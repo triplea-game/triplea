@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -159,7 +160,7 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.zzBanUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), expire);
+        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), Date.from(expire));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -200,8 +201,8 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.zzBanMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-            expire);
+        controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
+            Date.from(expire));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -228,7 +229,8 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.zzBanUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), Instant.ofEpochMilli(0));
+        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0),
+            Date.from(Instant.ofEpochMilli(0)));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -268,8 +270,8 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.zzBanMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-            Instant.ofEpochMilli(0));
+        controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
+            Date.from(Instant.ofEpochMilli(0)));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -389,6 +391,7 @@ public class LobbyMenu extends JMenuBar {
     if (rVal == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
+    //TODO: Replace MD5Crypt.crypt with an encryption algorithm
     final String error = manager.updateUser(panel.getUserName(), panel.getEmail(), MD5Crypt.crypt(panel.getPassword()));
     if (error != null) {
       JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);

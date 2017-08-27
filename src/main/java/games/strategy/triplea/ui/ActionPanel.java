@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.triplea.Properties;
 
 /**
  * Abstract superclass for all action panels. <br>
@@ -30,20 +31,20 @@ public abstract class ActionPanel extends JPanel {
   }
 
   protected final boolean isWW2V2() {
-    return games.strategy.triplea.Properties.getWW2V2(data);
+    return Properties.getWW2V2(data);
   }
 
   protected final boolean isWW2V3TechModel() {
-    return games.strategy.triplea.Properties.getWW2V3TechModel(data);
+    return Properties.getWW2V3TechModel(data);
   }
 
   protected final boolean isRestrictedPurchase() {
-    return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(data);
+    return Properties.getPlacementRestrictedByFactory(data);
   }
 
 
   protected final boolean isSelectableTechRoll() {
-    return games.strategy.triplea.Properties.getSelectableTechRoll(data);
+    return Properties.getSelectableTechRoll(data);
   }
 
   /**
@@ -68,7 +69,7 @@ public abstract class ActionPanel extends JPanel {
         throw new IllegalStateException("Latch not null");
       }
       latch = new CountDownLatch(1);
-      map.getUIContext().addShutdownLatch(latch);
+      map.getUiContext().addShutdownLatch(latch);
     }
     try {
       latch.await();
@@ -97,7 +98,7 @@ public abstract class ActionPanel extends JPanel {
       if (latch == null) {
         return;
       }
-      map.getUIContext().removeShutdownLatch(latch);
+      map.getUiContext().removeShutdownLatch(latch);
       latch.countDown();
       latch = null;
     }

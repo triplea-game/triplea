@@ -1,5 +1,6 @@
 package games.strategy.triplea.image;
 
+import java.awt.Composite;
 import java.awt.CompositeContext;
 import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
@@ -10,16 +11,11 @@ import java.awt.image.WritableRaster;
 /**
  * This class handles the various types of blends for base/relief tiles.
  */
-class BlendComposite implements java.awt.Composite {
+class BlendComposite implements Composite {
   public enum BlendingMode {
     NORMAL, OVERLAY, MULTIPLY, DIFFERENCE, LINEAR_LIGHT
   }
 
-  public static final BlendComposite Normal = new BlendComposite(BlendingMode.NORMAL);
-  public static final BlendComposite Overlay = new BlendComposite(BlendingMode.OVERLAY);
-  public static final BlendComposite Multiply = new BlendComposite(BlendingMode.MULTIPLY);
-  public static final BlendComposite Difference = new BlendComposite(BlendingMode.DIFFERENCE);
-  public static final BlendComposite Linear_Light = new BlendComposite(BlendingMode.LINEAR_LIGHT);
   private float alpha;
   private final BlendingMode mode;
 
@@ -171,8 +167,9 @@ class BlendComposite implements java.awt.Composite {
                   Math.min(255, src[3] + dst[3])};
             }
           };
+        default:
+          throw new IllegalArgumentException("Blender not implemented for " + composite.getMode());
       }
-      throw new IllegalArgumentException("Blender not implement for " + composite.getMode().name());
     }
   }
 }

@@ -2,59 +2,48 @@ package games.strategy.engine.framework.ui.background;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-public class WaitWindow extends JWindow {
+/**
+ * A window that is displayed while loading a game to provide visual feedback to the user during this potentially
+ * long-running operation.
+ */
+public final class WaitWindow extends JWindow {
   private static final long serialVersionUID = -8134956690669346954L;
-  private final Object m_mutex = new Object();
-  private Timer m_timer = new Timer();
-  private boolean m_finished = false;
 
   public WaitWindow() {
-    setSize(200, 80);
-    final WaitPanel mainPanel = new WaitPanel("Loading game, please wait.");
+    setAlwaysOnTop(true);
     setLocationRelativeTo(null);
+
+    final WaitPanel mainPanel = new WaitPanel("Loading game, please wait...");
     mainPanel.setBorder(new LineBorder(Color.BLACK));
     setLayout(new BorderLayout());
     add(mainPanel, BorderLayout.CENTER);
+
+    pack();
+    setSize(getSize().width, 80);
   }
 
+  /**
+   * Shows the wait window.
+   */
   public void showWait() {
-    final TimerTask task = new TimerTask() {
-      @Override
-      public void run() {
-        SwingUtilities.invokeLater(() -> toFront());
-      }
-    };
-
-    synchronized (m_mutex) {
-      if (m_timer != null) {
-        m_timer.schedule(task, 15, 15);
-      }
-    }
+    SwingUtilities.invokeLater(() -> {
+      setVisible(true);
+    });
   }
 
+  /**
+   * Hides the wait window.
+   */
   public void doneWait() {
-    synchronized (m_mutex) {
-      if (m_timer != null) {
-        m_timer.cancel();
-        m_timer = null;
-      }
-    }
     SwingUtilities.invokeLater(() -> {
       setVisible(false);
       removeAll();
       dispose();
     });
-    m_finished = true;
-  }
-
-  public boolean isFinished() {
-    return m_finished;
   }
 }

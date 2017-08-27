@@ -574,7 +574,7 @@ public class MapData implements Closeable {
     return getCenter(terr);
   }
 
-  public Point getVCPlacementPoint(final Territory terr) {
+  public Point getVcPlacementPoint(final Territory terr) {
     if (vcPlace.containsKey(terr.getName())) {
       return vcPlace.get(terr.getName());
     }
@@ -588,7 +588,7 @@ public class MapData implements Closeable {
     return getCenter(terr);
   }
 
-  public Optional<Point> getPUPlacementPoint(final Territory terr) {
+  public Optional<Point> getPuPlacementPoint(final Territory terr) {
     return Optional.ofNullable(puPlace.get(terr.getName()));
   }
 
@@ -704,7 +704,7 @@ public class MapData implements Closeable {
     return boundingRect;
   }
 
-  public Optional<Image> getVCImage() {
+  public Optional<Image> getVcImage() {
     return loadImage("misc/vc.png");
   }
 
