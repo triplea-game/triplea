@@ -27,40 +27,30 @@ public class UserController implements UserDao {
   @Override
   public HashedPassword getPassword(final String userName) {
     final String sql = "select password from ta_users where username = ?";
-    final Connection con = connectionSupplier.get();
-    try {
-      try (final PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, userName);
-        try (final ResultSet rs = ps.executeQuery()) {
-          String returnValue = null;
-          if (rs.next()) {
-            returnValue = rs.getString(1);
-          }
-          return returnValue == null ? null : new HashedPassword(returnValue);
+    try (final Connection con = connectionSupplier.get(); final PreparedStatement ps = con.prepareStatement(sql)) {
+      ps.setString(1, userName);
+      try (final ResultSet rs = ps.executeQuery()) {
+        String returnValue = null;
+        if (rs.next()) {
+          returnValue = rs.getString(1);
         }
+        return returnValue == null ? null : new HashedPassword(returnValue);
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error getting password for user:" + userName, sqle);
-    } finally {
-      DbUtil.closeConnection(con);
     }
   }
 
   @Override
   public boolean doesUserExist(final String userName) {
     final String sql = "select username from ta_users where upper(username) = upper(?)";
-    final Connection con = connectionSupplier.get();
-    try {
-      try (final PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, userName);
-        try (final ResultSet rs = ps.executeQuery()) {
-          return rs.next();
-        }
+    try (final Connection con = connectionSupplier.get(); final PreparedStatement ps = con.prepareStatement(sql)) {
+      ps.setString(1, userName);
+      try (final ResultSet rs = ps.executeQuery()) {
+        return rs.next();
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error testing for existence of user:" + userName, sqle);
-    } finally {
-      DbUtil.closeConnection(con);
     }
   }
 
@@ -68,20 +58,18 @@ public class UserController implements UserDao {
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
-    try (final Connection con = connectionSupplier.get()) {
-      try (final PreparedStatement ps =
-          con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?")) {
-        ps.setString(1, hashedPassword.value);
-        ps.setString(2, user.getEmail());
-        ps.setInt(3, user.isAdmin() ? 1 : 0);
-        ps.setString(4, user.getName());
-        ps.execute();
-      }
+    try (final Connection con = connectionSupplier.get();
+        final PreparedStatement ps =
+            con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?")) {
+      ps.setString(1, hashedPassword.value);
+      ps.setString(2, user.getEmail());
+      ps.setInt(3, user.isAdmin() ? 1 : 0);
+      ps.setString(4, user.getName());
+      ps.execute();
       con.commit();
     } catch (final SQLException e) {
       throw new IllegalStateException(
-          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + hashedPassword.mask(),
-          e);
+          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + hashedPassword.mask(), e);
     }
   }
 
@@ -90,24 +78,20 @@ public class UserController implements UserDao {
     Preconditions.checkState(hashedPassword.isValidSyntax());
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
-    try (final Connection con = connectionSupplier.get()) {
-      try (final PreparedStatement ps = con.prepareStatement(
-          "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)")) {
-        ps.setString(1, user.getName());
-        ps.setString(2, hashedPassword.value);
-        ps.setString(3, user.getEmail());
-        ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-        ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-        ps.setInt(6, user.isAdmin() ? 1 : 0);
-        ps.execute();
-      }
+    try (final Connection con = connectionSupplier.get();
+        final PreparedStatement ps = con.prepareStatement(
+            "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)")) {
+      ps.setString(1, user.getName());
+      ps.setString(2, hashedPassword.value);
+      ps.setString(3, user.getEmail());
+      ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+      ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+      ps.setInt(6, user.isAdmin() ? 1 : 0);
+      ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new RuntimeException(
-          String.format(
-              "Error inserting name: %s, email: %s, (masked) pwd: %s",
-              user.getName(), user.getEmail(), hashedPassword.mask()),
-          e);
+      throw new RuntimeException(String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
+          user.getName(), user.getEmail(), hashedPassword.mask()), e);
     }
   }
 
@@ -154,24 +138,19 @@ public class UserController implements UserDao {
   @Override
   public DBUser getUserByName(final String userName) {
     final String sql = "select * from ta_users where username = ?";
-    final Connection con = connectionSupplier.get();
-    try {
-      try (final PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, userName);
-        try (final ResultSet rs = ps.executeQuery()) {
-          if (!rs.next()) {
-            return null;
-          }
-          return new DBUser(
-              new DBUser.UserName(rs.getString("username")),
-              new DBUser.UserEmail(rs.getString("email")),
-              rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
+    try (final Connection con = connectionSupplier.get(); final PreparedStatement ps = con.prepareStatement(sql)) {
+      ps.setString(1, userName);
+      try (final ResultSet rs = ps.executeQuery()) {
+        if (!rs.next()) {
+          return null;
         }
+        return new DBUser(
+            new DBUser.UserName(rs.getString("username")),
+            new DBUser.UserEmail(rs.getString("email")),
+            rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error getting user:" + userName, sqle);
-    } finally {
-      DbUtil.closeConnection(con);
     }
   }
 }
