@@ -276,24 +276,19 @@ public class PBEMDiceRoller implements IRandomSource {
         appendText("Text from dice server:\n" + text + "\n");
         notifyError();
       } catch (final IOException ex) {
-        try {
-          appendText("An error has occured!\n");
-          appendText("Possible reasons the error could have happened:\n");
-          appendText("  1: An invalid e-mail address\n");
-          appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");
-          appendText("  3: The e-mail address does not exist\n");
-          appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
-          appendText("     Visit https://forums.triplea-game.org  for extra help\n");
-          if (text != null) {
-            appendText("Text from dice server:\n" + text + "\n");
-          }
-          final StringWriter writer = new StringWriter();
-          ex.printStackTrace(new PrintWriter(writer));
-          writer.close();
-          appendText(writer.toString());
-        } catch (final IOException ex1) {
-          ex1.printStackTrace();
+        appendText("An error has occured!\n");
+        appendText("Possible reasons the error could have happened:\n");
+        appendText("  1: An invalid e-mail address\n");
+        appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");
+        appendText("  3: The e-mail address does not exist\n");
+        appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
+        appendText("     Visit https://forums.triplea-game.org  for extra help\n");
+        if (text != null) {
+          appendText("Text from dice server:\n" + text + "\n");
         }
+        final StringWriter writer = new StringWriter();
+        ex.printStackTrace(new PrintWriter(writer));
+        appendText(writer.toString());
         notifyError();
       }
     }

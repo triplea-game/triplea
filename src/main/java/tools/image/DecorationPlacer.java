@@ -462,12 +462,9 @@ public class DecorationPlacer extends JFrame {
       if (fileName == null) {
         return;
       }
-      final FileOutputStream out = new FileOutputStream(fileName);
-
-      PointFileReaderWriter.writeOneToMany(out, new HashMap<>(currentPoints));
-
-      out.flush();
-      out.close();
+      try (final FileOutputStream out = new FileOutputStream(fileName)) {
+        PointFileReaderWriter.writeOneToMany(out, new HashMap<>(currentPoints));
+      }
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final Exception ex) {
       ClientLogger.logQuietly(ex);

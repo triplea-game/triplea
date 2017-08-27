@@ -29,16 +29,16 @@ public class UserController implements UserDao {
     final String sql = "select password from ta_users where username = ?";
     final Connection con = connectionSupplier.get();
     try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, userName);
-      final ResultSet rs = ps.executeQuery();
-      String returnValue = null;
-      if (rs.next()) {
-        returnValue = rs.getString(1);
+      try (final PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, userName);
+        try (final ResultSet rs = ps.executeQuery()) {
+          String returnValue = null;
+          if (rs.next()) {
+            returnValue = rs.getString(1);
+          }
+          return returnValue == null ? null : new HashedPassword(returnValue);
+        }
       }
-      rs.close();
-      ps.close();
-      return returnValue == null ? null : new HashedPassword(returnValue);
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error getting password for user:" + userName, sqle);
     } finally {
@@ -51,13 +51,12 @@ public class UserController implements UserDao {
     final String sql = "select username from ta_users where upper(username) = upper(?)";
     final Connection con = connectionSupplier.get();
     try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, userName);
-      final ResultSet rs = ps.executeQuery();
-      final boolean found = rs.next();
-      rs.close();
-      ps.close();
-      return found;
+      try (final PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, userName);
+        try (final ResultSet rs = ps.executeQuery()) {
+          return rs.next();
+        }
+      }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error testing for existence of user:" + userName, sqle);
     } finally {
@@ -157,19 +156,18 @@ public class UserController implements UserDao {
     final String sql = "select * from ta_users where username = ?";
     final Connection con = connectionSupplier.get();
     try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, userName);
-      final ResultSet rs = ps.executeQuery();
-      if (!rs.next()) {
-        return null;
+      try (final PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, userName);
+        try (final ResultSet rs = ps.executeQuery()) {
+          if (!rs.next()) {
+            return null;
+          }
+          return new DBUser(
+              new DBUser.UserName(rs.getString("username")),
+              new DBUser.UserEmail(rs.getString("email")),
+              rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
+        }
       }
-      final DBUser user = new DBUser(
-          new DBUser.UserName(rs.getString("username")),
-          new DBUser.UserEmail(rs.getString("email")),
-          rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
-      rs.close();
-      ps.close();
-      return user;
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error getting user:" + userName, sqle);
     } finally {

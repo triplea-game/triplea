@@ -39,12 +39,12 @@ public class MutedUsernameController {
     logger.fine("Muting username:" + username);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps =
-          con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)");
-      ps.setString(1, username);
-      ps.setTimestamp(2, muteTillTs);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps =
+          con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)")) {
+        ps.setString(1, username);
+        ps.setTimestamp(2, muteTillTs);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       if (sqle.getErrorCode() == 30000) {
@@ -63,10 +63,10 @@ public class MutedUsernameController {
     logger.fine("Removing muted username:" + username);
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?");
-      ps.setString(1, username);
-      ps.execute();
-      ps.close();
+      try (final PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?")) {
+        ps.setString(1, username);
+        ps.execute();
+      }
       con.commit();
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error deleting muted username:" + username, sqle);
@@ -93,22 +93,22 @@ public class MutedUsernameController {
     final String sql = "select username, mute_till from muted_usernames where username = ?";
     final Connection con = Database.getDerbyConnection();
     try {
-      final PreparedStatement ps = con.prepareStatement(sql);
-      ps.setString(1, username);
-      final ResultSet rs = ps.executeQuery();
-      final boolean found = rs.next();
-      if (found) {
-        final Timestamp muteTill = rs.getTimestamp(2);
-        result = muteTill.getTime();
-        if (result < System.currentTimeMillis()) {
-          logger.fine("Mute expired for:" + username);
-          expired = true;
+      try (final PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, username);
+        try (final ResultSet rs = ps.executeQuery()) {
+          final boolean found = rs.next();
+          if (found) {
+            final Timestamp muteTill = rs.getTimestamp(2);
+            result = muteTill.getTime();
+            if (result < System.currentTimeMillis()) {
+              logger.fine("Mute expired for:" + username);
+              expired = true;
+            }
+          } else {
+            result = -1;
+          }
         }
-      } else {
-        result = -1;
       }
-      rs.close();
-      ps.close();
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing muted username existence:" + username, sqle);
     } finally {

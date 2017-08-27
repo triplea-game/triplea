@@ -156,9 +156,9 @@ public class EmailSenderEditor extends EditorPanel {
         final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
         final File dummy = new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
         dummy.deleteOnExit();
-        final FileOutputStream fout = new FileOutputStream(dummy);
-        fout.write("This file would normally be a save game".getBytes());
-        fout.close();
+        try (final FileOutputStream fout = new FileOutputStream(dummy)) {
+          fout.write("This file would normally be a save game".getBytes());
+        }
         ((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
         // email was sent, or an exception would have been thrown
         message = "Email sent, it should arrive shortly, otherwise check your spam folder";

@@ -375,10 +375,9 @@ public class PolygonGrabber extends JFrame {
       if (polyName == null) {
         return;
       }
-      final FileOutputStream out = new FileOutputStream(polyName);
-      PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
-      out.flush();
-      out.close();
+      try (final FileOutputStream out = new FileOutputStream(polyName)) {
+        PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
+      }
       System.out.println("Data written to :" + new File(polyName).getCanonicalPath());
     } catch (final Exception ex) {
       ClientLogger.logQuietly("file save name: " + polyName, ex);

@@ -49,9 +49,9 @@ public class XmlUpdater {
       trans.transform(xmlSource, new StreamResult(resultBuf));
     }
     gameXmlFile.renameTo(new File(gameXmlFile.getAbsolutePath() + ".backup"));
-    final FileOutputStream outStream = new FileOutputStream(gameXmlFile);
-    outStream.write(resultBuf.toByteArray());
-    outStream.close();
+    try (final FileOutputStream outStream = new FileOutputStream(gameXmlFile)) {
+      outStream.write(resultBuf.toByteArray());
+    }
     System.out.println("Successfully updated:" + gameXmlFile);
   }
 

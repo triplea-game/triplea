@@ -175,19 +175,19 @@ public class MacFinder {
     }
     try {
       final StringBuilder builder = new StringBuilder();
-      final BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-      while (true) {
-        try {
-          final String line = in.readLine();
-          if (line == null) {
+      try (final BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+        while (true) {
+          try {
+            final String line = in.readLine();
+            if (line == null) {
+              break;
+            }
+            builder.append(line).append("\r\n");
+          } catch (final IOException e) {
             break;
           }
-          builder.append(line).append("\r\n");
-        } catch (final IOException e) {
-          break;
         }
       }
-      in.close();
       return builder.toString();
     } catch (final IOException e) {
       ClientLogger.logQuietly("IOException while executing command: " + command, e);

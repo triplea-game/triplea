@@ -343,10 +343,9 @@ public class MapPropertiesMaker extends JFrame {
       }
       final FileOutputStream sink = new FileOutputStream(fileName);
       final String stringToWrite = getOutPutString();
-      final OutputStreamWriter out = new OutputStreamWriter(sink);
-      out.write(stringToWrite);
-      out.flush();
-      out.close();
+      try (final OutputStreamWriter out = new OutputStreamWriter(sink)) {
+        out.write(stringToWrite);
+      }
       System.out.println("");
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
       System.out.println("");

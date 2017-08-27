@@ -114,59 +114,61 @@ public class Database {
         if (areDbTablesCreated) {
           return;
         }
-        final ResultSet rs = conn.getMetaData().getTables(null, null, null, null);
+
         final List<String> existing = new ArrayList<>();
-        while (rs.next()) {
-          existing.add(rs.getString("TABLE_NAME").toUpperCase());
+        try (final ResultSet rs = conn.getMetaData().getTables(null, null, null, null)) {
+          while (rs.next()) {
+            existing.add(rs.getString("TABLE_NAME").toUpperCase());
+          }
         }
-        rs.close();
+
         if (!existing.contains("TA_USERS")) {
-          final Statement s = conn.createStatement();
-          s.execute("create table ta_users" + "(" + "userName varchar(40) NOT NULL PRIMARY KEY, "
-              + "password varchar(40) NOT NULL, " + "email varchar(40) NOT NULL, " + "joined timestamp NOT NULL, "
-              + "lastLogin timestamp NOT NULL, " + "admin integer NOT NULL " + ")");
-          s.close();
+          try (final Statement s = conn.createStatement()) {
+            s.execute("create table ta_users" + "(" + "userName varchar(40) NOT NULL PRIMARY KEY, "
+                + "password varchar(40) NOT NULL, " + "email varchar(40) NOT NULL, " + "joined timestamp NOT NULL, "
+                + "lastLogin timestamp NOT NULL, " + "admin integer NOT NULL " + ")");
+          }
         }
         if (!existing.contains("BANNED_USERNAMES")) {
-          final Statement s = conn.createStatement();
-          s.execute("create table banned_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, "
-              + "ban_till timestamp  " + ")");
-          s.close();
+          try (final Statement s = conn.createStatement()) {
+            s.execute("create table banned_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, "
+                + "ban_till timestamp  " + ")");
+          }
         }
         if (!existing.contains("BANNED_IPS")) {
-          final Statement s = conn.createStatement();
-          s.execute(
-              "create table banned_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  " + ")");
-          s.close();
+          try (final Statement s = conn.createStatement()) {
+            s.execute("create table banned_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, "
+                + "ban_till timestamp  " + ")");
+          }
         }
         if (!existing.contains("BANNED_MACS")) {
-          final Statement s = conn.createStatement();
-          s.execute("create table banned_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  "
-              + ")");
-          s.close();
+          try (final Statement s = conn.createStatement()) {
+            s.execute("create table banned_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, "
+                + "ban_till timestamp  " + ")");
+          }
         }
         if (!existing.contains("MUTED_USERNAMES")) {
-          final Statement s = conn.createStatement();
-          s.execute("create table muted_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, "
-              + "mute_till timestamp  " + ")");
-          s.close();
+          try (final Statement s = conn.createStatement()) {
+            s.execute("create table muted_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, "
+                + "mute_till timestamp  " + ")");
+          }
         }
         if (!existing.contains("MUTED_IPS")) {
-          final Statement s = conn.createStatement();
-          s.execute(
-              "create table muted_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  " + ")");
-          s.close();
+          try (final Statement s = conn.createStatement()) {
+            s.execute("create table muted_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, "
+                + "mute_till timestamp  " + ")");
+          }
         }
         if (!existing.contains("MUTED_MACS")) {
-          final Statement s = conn.createStatement();
-          s.execute("create table muted_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  "
-              + ")");
-          s.close();
+          try (final Statement s = conn.createStatement()) {
+            s.execute("create table muted_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, "
+                + "mute_till timestamp  " + ")");
+          }
         }
         if (!existing.contains("BAD_WORDS")) {
-          final Statement s = conn.createStatement();
-          s.execute("create table bad_words" + "(" + "word varchar(40) NOT NULL PRIMARY KEY " + ")");
-          s.close();
+          try (final Statement s = conn.createStatement()) {
+            s.execute("create table bad_words" + "(" + "word varchar(40) NOT NULL PRIMARY KEY " + ")");
+          }
         }
         areDbTablesCreated = true;
       } catch (final SQLException sqle) {
@@ -238,10 +240,10 @@ public class Database {
     try (final Connection con = getDerbyConnection()) {
       // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
       final String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
-      final CallableStatement cs = con.prepareCall(sqlstmt);
-      cs.setString(1, backupDir.getAbsolutePath());
-      cs.execute();
-      cs.close();
+      try (final CallableStatement cs = con.prepareCall(sqlstmt)) {
+        cs.setString(1, backupDir.getAbsolutePath());
+        cs.execute();
+      }
     } catch (final Exception e) {
       logger.log(Level.SEVERE, "Could not back up database", e);
     }

@@ -185,13 +185,12 @@ public class ConnectionFinder {
         }
         System.out.println(connectionsString.toString());
       } else {
-        final FileOutputStream out = new FileOutputStream(fileName);
-        if (territoryDefinitions != null) {
-          out.write(String.valueOf(territoryDefinitions).getBytes());
+        try (final FileOutputStream out = new FileOutputStream(fileName)) {
+          if (territoryDefinitions != null) {
+            out.write(String.valueOf(territoryDefinitions).getBytes());
+          }
+          out.write(String.valueOf(connectionsString).getBytes());
         }
-        out.write(String.valueOf(connectionsString).getBytes());
-        out.flush();
-        out.close();
         System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
       }
     } catch (final Exception ex) {

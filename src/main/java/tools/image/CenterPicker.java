@@ -236,10 +236,9 @@ public class CenterPicker extends JFrame {
       if (fileName == null) {
         return;
       }
-      final FileOutputStream out = new FileOutputStream(fileName);
-      PointFileReaderWriter.writeOneToOne(out, centers);
-      out.flush();
-      out.close();
+      try (final FileOutputStream out = new FileOutputStream(fileName)) {
+        PointFileReaderWriter.writeOneToOne(out, centers);
+      }
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final Exception ex) {
       ClientLogger.logQuietly(ex);
