@@ -16,12 +16,10 @@ public class BadWordController {
 
   public void addBadWord(final String word) {
     logger.fine("Adding bad word word:" + word);
-    final Connection con = Database.getDerbyConnection();
-    try {
-      try (final PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?)")) {
-        ps.setString(1, word);
-        ps.execute();
-      }
+    try (final Connection con = Database.getDerbyConnection();
+        final PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?)")) {
+      ps.setString(1, word);
+      ps.execute();
       con.commit();
     } catch (final SQLException sqle) {
       if (sqle.getErrorCode() == 30000) {
@@ -31,43 +29,34 @@ public class BadWordController {
         return;
       }
       throw new IllegalStateException("Error inserting banned word:" + word, sqle);
-    } finally {
-      DbUtil.closeConnection(con);
     }
   }
 
   void removeBannedWord(final String word) {
     logger.fine("Removing banned word:" + word);
-    final Connection con = Database.getDerbyConnection();
-    try {
-      try (final PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
-        ps.setString(1, word);
-        ps.execute();
-      }
+    try (final Connection con = Database.getDerbyConnection();
+        final PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
+      ps.setString(1, word);
+      ps.execute();
       con.commit();
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error deleting banned word:" + word, sqle);
-    } finally {
-      DbUtil.closeConnection(con);
     }
   }
 
   public List<String> list() {
     final String sql = "select word from bad_words";
-    final Connection con = Database.getDerbyConnection();
-    try {
-      try (final PreparedStatement ps = con.prepareStatement(sql);
-          final ResultSet rs = ps.executeQuery()) {
-        final List<String> rVal = new ArrayList<>();
-        while (rs.next()) {
-          rVal.add(rs.getString(1));
-        }
-        return rVal;
+
+    try (final Connection con = Database.getDerbyConnection();
+        final PreparedStatement ps = con.prepareStatement(sql);
+        final ResultSet rs = ps.executeQuery()) {
+      final List<String> rVal = new ArrayList<>();
+      while (rs.next()) {
+        rVal.add(rs.getString(1));
       }
+      return rVal;
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error reading bad words", sqle);
-    } finally {
-      DbUtil.closeConnection(con);
     }
   }
 }
