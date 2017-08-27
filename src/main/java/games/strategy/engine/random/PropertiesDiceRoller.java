@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -40,7 +41,6 @@ import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.util.Util;
 
 /**
  * A pbem dice roller that reads its configuration from a properties file.
@@ -153,7 +153,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       HttpProxy.addProxy(httpPost);
       try (CloseableHttpResponse response = httpClient.execute(hostConfig, httpPost)) {
         final HttpEntity entity = response.getEntity();
-        return Util.getStringFromInputStream(entity.getContent());
+        return IOUtils.toString(entity.getContent(), StandardCharsets.UTF_8);
       }
     }
   }
