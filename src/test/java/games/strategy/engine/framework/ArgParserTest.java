@@ -5,6 +5,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.junit.After;
@@ -72,6 +75,16 @@ public class ArgParserTest {
     assertThat("if we pass only one arg prefixed with 'triplea:',"
         + " it's assumed to mean we are specifying the 'map download property'",
         System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY), is(TestData.propValue));
+  }
+
+  @Test
+  public void singleUrlArgIsUrlDecoded() throws UnsupportedEncodingException {
+    final String propvalue = "Something with spaces and Special chars \uD83E\uDD14";
+    final String testUrl = "triplea:" + URLEncoder.encode(propvalue, StandardCharsets.UTF_8.displayName());
+    ArgParser.handleCommandLineArgs(new String[] {testUrl}, new String[] {GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY});
+    assertThat("if we pass only one arg prefixed with 'triplea:',"
+        + " it should be properly URL-decoded as it's probably coming from a browser",
+        System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY), is(propvalue));
   }
 
   @Test
