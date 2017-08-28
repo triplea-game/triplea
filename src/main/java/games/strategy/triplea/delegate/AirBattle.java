@@ -639,13 +639,13 @@ public class AirBattle extends AbstractBattle {
   }
 
   static Match<Unit> attackingGroundSeaBattleEscorts(final PlayerID attacker, final GameData data) {
-    final Match<Unit> canIntercept = Matches.unitCanAirBattle;
+    final Match<Unit> canIntercept = Matches.unitCanAirBattle();
     return canIntercept;
   }
 
   private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
     final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
-        Matches.unitCanAirBattle,
+        Matches.unitCanAirBattle(),
         Matches.unitIsEnemyOf(data, attacker),
         Matches.unitWasInAirBattle().invert());
     if (!Properties.getCanScrambleIntoAirBattles(data)) {
@@ -656,7 +656,7 @@ public class AirBattle extends AbstractBattle {
 
   private static Match<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
     final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
-        Matches.unitCanIntercept,
+        Matches.unitCanIntercept(),
         Matches.unitIsEnemyOf(data, attacker),
         Matches.unitWasInAirBattle().invert());
     if (!Properties.getCanScrambleIntoAirBattles(data)) {

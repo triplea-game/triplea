@@ -82,7 +82,7 @@ class ProPurchaseAI {
       ProLogger.debug("Factories can be damaged");
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<>();
       for (final Territory fixTerr : rfactories) {
-        if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+        if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
             .match(fixTerr)) {
           continue;
         }
@@ -99,7 +99,7 @@ class ProPurchaseAI {
           if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
             continue;
           }
-          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.UnitCanProduceUnitsAndCanBeDamaged)
+          if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
               .match(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
             continue;
           }
@@ -713,7 +713,7 @@ class ProPurchaseAI {
       // Check if territory needs AA
       final boolean enemyCanBomb =
           Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsStrategicBomber);
-      final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged);
+      final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.unitCanProduceUnitsAndCanBeDamaged());
       final boolean hasAaBombingDefense = t.getUnits().anyMatch(Matches.unitIsAaForBombingThisUnitOnly());
       ProLogger.debug(t + ", enemyCanBomb=" + enemyCanBomb + ", territoryCanBeBombed=" + territoryCanBeBombed
           + ", hasAABombingDefense=" + hasAaBombingDefense);
@@ -1817,7 +1817,7 @@ class ProPurchaseAI {
 
       // Check if any units can be placed
       final PlaceableUnits placeableUnits =
-          placeDelegate.getPlaceableUnits(player.getUnits().getMatches(Matches.UnitIsNotConstruction), t);
+          placeDelegate.getPlaceableUnits(player.getUnits().getMatches(Matches.unitIsNotConstruction()), t);
       if (placeableUnits.isError()) {
         ProLogger.trace(t + " can't place units with error: " + placeableUnits.getErrorMessage());
         continue;
@@ -1875,7 +1875,7 @@ class ProPurchaseAI {
 
     ProLogger.info("Place land with isConstruction=" + isConstruction + ", units=" + player.getUnits().getUnits());
 
-    Match<Unit> unitMatch = Matches.UnitIsNotConstruction;
+    Match<Unit> unitMatch = Matches.unitIsNotConstruction();
     if (isConstruction) {
       unitMatch = Matches.unitIsConstruction();
     }

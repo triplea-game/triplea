@@ -235,7 +235,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // check)
     if (TechAttachment.isAirTransportable(m_attacker)) {
       final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
-      final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
+      final Collection<Unit> paratroops = Match.getMatches(units, Matches.unitIsAirTransportable());
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
         // Load capable bombers by default>
         final Map<Unit, Unit> unitsToCapableAirTransports =
@@ -2170,7 +2170,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         final Collection<Unit> validAttackingUnitsForThisRoll =
             Match.getMatches((m_defending ? m_attackingUnits : m_defendingUnits),
                 Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-                    Match.allOf(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+                    Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         final IExecutable rollDice = new IExecutable() {
           private static final long serialVersionUID = 6435935558879109347L;
 

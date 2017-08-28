@@ -832,7 +832,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (listedTerrs.contains(to)) {
         return "Cannot place these units in " + to.getName() + " due to Unit Placement Restrictions";
       }
-      if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit)
+      if (Matches.unitCanOnlyPlaceInOriginalTerritories().match(currentUnit)
           && !Matches.territoryIsOriginallyOwnedBy(player).match(to)) {
         return "Cannot place these units in " + to.getName() + " as territory is not originally owned";
       }
@@ -880,9 +880,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
       final Match<Unit> seaOrLandMatch = water ? Matches.UnitIsSea : Matches.UnitIsLand;
-      placeableUnits.addAll(Match.getMatches(units, Match.allOf(seaOrLandMatch, Matches.UnitIsNotConstruction)));
+      placeableUnits.addAll(Match.getMatches(units, Match.allOf(seaOrLandMatch, Matches.unitIsNotConstruction())));
       if (!water) {
-        placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.UnitIsNotConstruction)));
+        placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.unitIsNotConstruction())));
       } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
           && Match.anyMatch(allProducedUnits, Matches.UnitIsCarrier))
           || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
@@ -945,7 +945,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().match(currentUnit)) {
         continue;
       }
-      if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit)
+      if (Matches.unitCanOnlyPlaceInOriginalTerritories().match(currentUnit)
           && !Matches.territoryIsOriginallyOwnedBy(player).match(to)) {
         continue;
       }

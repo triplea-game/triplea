@@ -390,7 +390,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final Collection<Unit> airTransports =
           Match.getMatches(battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
       final Collection<Unit> paratroops =
-          Match.getMatches(battleSite.getUnits().getUnits(), Matches.UnitIsAirTransportable);
+          Match.getMatches(battleSite.getUnits().getUnits(), Matches.unitIsAirTransportable());
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
         final CompositeChange change = new CompositeChange();
         for (final Unit u : paratroops) {

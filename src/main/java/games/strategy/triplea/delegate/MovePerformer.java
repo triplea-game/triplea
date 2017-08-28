@@ -150,7 +150,7 @@ public class MovePerformer implements Serializable {
         // are still dependent during the middle steps of the route.
         final Collection<Unit> dependentOnSomethingTilTheEndOfRoute = new ArrayList<>();
         final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.UnitIsAirTransport);
-        final Collection<Unit> paratroops = Match.getMatches(arrived, Matches.UnitIsAirTransportable);
+        final Collection<Unit> paratroops = Match.getMatches(arrived, Matches.unitIsAirTransportable());
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
           final Map<Unit, Unit> transportingAir =
               TransportUtils.mapTransportsToLoad(paratroops, airTransports);
@@ -180,7 +180,7 @@ public class MovePerformer implements Serializable {
                   && Properties.getRaidsMayBePreceededByAirBattles(data)
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, true);
           if (canCreateAirBattle) {
-            allBombingRaidBuilder.add(Matches.unitCanEscort);
+            allBombingRaidBuilder.add(Matches.unitCanEscort());
           }
           final boolean allCanBomb = !arrived.isEmpty() && Match.allMatch(arrived, allBombingRaidBuilder.any());
           final Collection<Unit> enemyTargets =
@@ -190,7 +190,7 @@ public class MovePerformer implements Serializable {
                           data)));
           final boolean targetsOrEscort = !enemyTargets.isEmpty()
               || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle
-                  && !arrived.isEmpty() && Match.allMatch(arrived, Matches.unitCanEscort));
+                  && !arrived.isEmpty() && Match.allMatch(arrived, Matches.unitCanEscort()));
           boolean targetedAttack = false;
           // if it's all bombers and there's something to bomb
           if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data)) {
@@ -364,7 +364,9 @@ public class MovePerformer implements Serializable {
       return;
     }
     final GameData data = m_bridge.getData();
-    final Match<Unit> paratroopNAirTransports = Match.anyOf(Matches.UnitIsAirTransport, Matches.UnitIsAirTransportable);
+    final Match<Unit> paratroopNAirTransports = Match.anyOf(
+        Matches.UnitIsAirTransport,
+        Matches.unitIsAirTransportable());
     final boolean paratroopsLanding = Match.anyMatch(arrived, paratroopNAirTransports)
         && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
     final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =

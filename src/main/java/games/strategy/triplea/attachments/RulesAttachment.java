@@ -898,11 +898,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         return false;
       }
       if (!(relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
-          && Matches.RelationshipTypeIsAllied.match(currentRelationshipType)
+          && Matches.relationshipTypeIsAllied().match(currentRelationshipType)
           || relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
-              && Matches.RelationshipTypeIsNeutral.match(currentRelationshipType)
+              && Matches.relationshipTypeIsNeutral().match(currentRelationshipType)
           || relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-              && Matches.RelationshipTypeIsAtWar.match(currentRelationshipType)
+              && Matches.relationshipTypeIsAtWar().match(currentRelationshipType)
           || currentRelationshipType
               .equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2])))) {
         return false;

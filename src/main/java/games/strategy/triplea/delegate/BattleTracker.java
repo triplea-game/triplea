@@ -179,8 +179,8 @@ public class BattleTracker implements Serializable {
         continue;
       }
       final Tuple<RelationshipType, RelationshipType> relations = t.getSecond();
-      if (!Matches.RelationshipTypeIsAtWar.match(relations.getFirst())) {
-        if (Matches.RelationshipTypeIsAtWar.match(relations.getSecond())) {
+      if (!Matches.relationshipTypeIsAtWar().match(relations.getFirst())) {
+        if (Matches.relationshipTypeIsAtWar().match(relations.getSecond())) {
           return true;
         }
       }
