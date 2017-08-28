@@ -79,7 +79,7 @@ public class ArgParserTest {
 
   @Test
   public void singleUrlArgIsUrlDecoded() throws UnsupportedEncodingException {
-    final String propvalue = "Something with spaces and Special chars \uD83E\uDD14";
+    final String propvalue = "Something with spaces and Special chars 🤔";
     final String testUrl = "triplea:" + URLEncoder.encode(propvalue, StandardCharsets.UTF_8.displayName());
     ArgParser.handleCommandLineArgs(new String[] {testUrl}, new String[] {GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY});
     assertThat("if we pass only one arg prefixed with 'triplea:',"
