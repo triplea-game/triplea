@@ -268,7 +268,7 @@ check {
 }
 
 checkstyle {
-    toolVersion = "7.6.1"
+    toolVersion = "7.8.2"
     configProperties = [samedir: configFile.parent]
 }
 
