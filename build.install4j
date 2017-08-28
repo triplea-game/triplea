@@ -451,7 +451,7 @@ if(System.getenv("XDG_DATA_HOME") != null || (shareFolder.exists() &amp;&amp; sh
         while(scanner.hasNextLine()){
             String nextLine = scanner.nextLine();
             if(nextLine.startsWith("Exec=") &amp;&amp; !nextLine.contains("%u")){
-                builder.append(nextLine).append(" \"%u\"\n");
+                builder.append(nextLine).append(" %u\n");
             } else if(!nextLine.startsWith(mimeTypePrefix)){
                 builder.append(nextLine).append('\n');
             }
