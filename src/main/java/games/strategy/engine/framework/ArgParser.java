@@ -1,5 +1,8 @@
 package games.strategy.engine.framework;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import games.strategy.triplea.settings.ClientSetting;
@@ -18,7 +21,13 @@ public class ArgParser {
     if (args.length == 1 && !args[0].contains("=")) {
       // assume a default single arg, convert the format so we can process as normally.
       if (args[0].startsWith(TRIPLEA_PROTOCOL)) {
-        args[0] = GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY + "=" + args[0].substring(TRIPLEA_PROTOCOL.length());
+        final String encoding = StandardCharsets.UTF_8.displayName();
+        try {
+          args[0] = GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY + "="
+              + URLDecoder.decode(args[0].substring(TRIPLEA_PROTOCOL.length()), encoding);
+        } catch (UnsupportedEncodingException e) {
+          throw new IllegalStateException(encoding + " is not a supported encoding!", e);
+        }
       } else {
         args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
       }
