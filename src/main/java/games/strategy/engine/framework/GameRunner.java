@@ -30,6 +30,7 @@ import org.triplea.client.ui.javafx.TripleA;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
+import games.strategy.debug.LoggingConfiguration;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
@@ -118,6 +119,8 @@ public class GameRunner {
    * Warning: game engine code invokes this method to spawn new game clients.
    */
   public static void main(final String[] args) {
+    LoggingConfiguration.initialize();
+
     if (!ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
       ErrorConsole.getConsole();
     }
