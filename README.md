@@ -39,6 +39,6 @@ Lobby Game Bot Hosting
 
 Development
 ===========
-- Project documentation, including 'how to get started guides' at: http://www.triplea-game.org/dev_docs/
+- Project documentation, including 'how to get started guides' at: https://github.com/triplea-game/triplea/tree/master/docs/dev
 - Broken map list: https://github.com/triplea-game/triplea/wiki/Broken-Maps
 - Additional feature request list: https://github.com/triplea-game/triplea/issues?q=label%3A%22ice+box+-+revisit+later%22+is%3Aclosed (list is not to be added to, if picked up, re-open and remove the ice-box label)
