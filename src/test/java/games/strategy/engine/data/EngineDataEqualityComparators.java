@@ -8,6 +8,7 @@ import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.ImprovedShipyardsAdvance;
 import games.strategy.triplea.delegate.IncreasedFactoryProductionAdvance;
 import games.strategy.triplea.delegate.IndustrialTechnologyAdvance;
+import games.strategy.triplea.delegate.JetPowerAdvance;
 
 /**
  * A collection of equality comparators for engine data types.
@@ -64,6 +65,12 @@ public final class EngineDataEqualityComparators {
 
   public static final EqualityComparator INDUSTRIAL_TECHNOLOGY_ADVANCE = EqualityComparator.newInstance(
       IndustrialTechnologyAdvance.class,
+      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
+          && context.equals(o1.getData(), o2.getData())
+          && context.equals(o1.getName(), o2.getName()));
+
+  public static final EqualityComparator JET_POWER_ADVANCE = EqualityComparator.newInstance(
+      JetPowerAdvance.class,
       (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
           && context.equals(o1.getData(), o2.getData())
           && context.equals(o1.getName(), o2.getName()));

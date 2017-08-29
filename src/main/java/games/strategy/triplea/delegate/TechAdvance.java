@@ -301,28 +301,6 @@ class SuperSubsAdvance extends TechAdvance {
 }
 
 
-class JetPowerAdvance extends TechAdvance {
-  private static final long serialVersionUID = -9124162661008361132L;
-
-  public JetPowerAdvance(final GameData data) {
-    super(TECH_NAME_JET_POWER, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_JET_POWER;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getJetPower();
-  }
-}
-
-
 class RocketsAdvance extends TechAdvance {
   private static final long serialVersionUID = 1526117896586201770L;
 
