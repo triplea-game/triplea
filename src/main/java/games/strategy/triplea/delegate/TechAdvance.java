@@ -438,31 +438,6 @@ class ParatroopersAdvance extends TechAdvance {
 
 
 /*
- * Increased Factory Production
- */
-class IncreasedFactoryProductionAdvance extends TechAdvance {
-  private static final long serialVersionUID = 987606878563485763L;
-
-  public IncreasedFactoryProductionAdvance(final GameData data) {
-    super(TECH_NAME_INCREASED_FACTORY_PRODUCTION, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getIncreasedFactoryProduction();
-  }
-}
-
-
-/*
  * War Bonds
  */
 class WarBondsAdvance extends TechAdvance {
