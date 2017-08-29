@@ -13,6 +13,7 @@ import games.strategy.triplea.delegate.JetPowerAdvance;
 import games.strategy.triplea.delegate.LongRangeAircraftAdvance;
 import games.strategy.triplea.delegate.MechanizedInfantryAdvance;
 import games.strategy.triplea.delegate.ParatroopersAdvance;
+import games.strategy.triplea.delegate.RocketsAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -257,5 +258,21 @@ public final class TestGameDataComponentFactory {
     resource.addAttachment("key1", new FakeAttachment("attachment1"));
     resource.addAttachment("key2", new FakeAttachment("attachment2"));
     return resource;
+  }
+
+  /**
+   * Creates a new {@link RocketsAdvance} instance.
+   *
+   * @param gameData The game data associated with the advance.
+   *
+   * @return A new {@link RocketsAdvance} instance.
+   */
+  public static RocketsAdvance newRocketsAdvance(final GameData gameData) {
+    checkNotNull(gameData);
+
+    final RocketsAdvance rocketsAdvance = new RocketsAdvance(gameData);
+    rocketsAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
+    rocketsAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
+    return rocketsAdvance;
   }
 }

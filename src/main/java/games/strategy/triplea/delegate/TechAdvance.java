@@ -301,28 +301,6 @@ class SuperSubsAdvance extends TechAdvance {
 }
 
 
-class RocketsAdvance extends TechAdvance {
-  private static final long serialVersionUID = 1526117896586201770L;
-
-  public RocketsAdvance(final GameData data) {
-    super(TECH_NAME_ROCKETS, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_ROCKETS;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getRocket();
-  }
-}
-
-
 /*
  * War Bonds
  */
