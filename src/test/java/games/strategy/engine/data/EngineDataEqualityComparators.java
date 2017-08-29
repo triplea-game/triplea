@@ -10,6 +10,7 @@ import games.strategy.triplea.delegate.IncreasedFactoryProductionAdvance;
 import games.strategy.triplea.delegate.IndustrialTechnologyAdvance;
 import games.strategy.triplea.delegate.JetPowerAdvance;
 import games.strategy.triplea.delegate.LongRangeAircraftAdvance;
+import games.strategy.triplea.delegate.MechanizedInfantryAdvance;
 import games.strategy.triplea.delegate.ParatroopersAdvance;
 
 /**
@@ -79,6 +80,12 @@ public final class EngineDataEqualityComparators {
 
   public static final EqualityComparator LONG_RANGE_AIRCRAFT_ADVANCE = EqualityComparator.newInstance(
       LongRangeAircraftAdvance.class,
+      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
+          && context.equals(o1.getData(), o2.getData())
+          && context.equals(o1.getName(), o2.getName()));
+
+  public static final EqualityComparator MECHANIZED_INFANTRY_ADVANCE = EqualityComparator.newInstance(
+      MechanizedInfantryAdvance.class,
       (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
           && context.equals(o1.getData(), o2.getData())
           && context.equals(o1.getName(), o2.getName()));

@@ -346,28 +346,3 @@ class WarBondsAdvance extends TechAdvance {
     return ta.getWarBonds();
   }
 }
-
-
-/*
- * Mechanized Infantry
- */
-class MechanizedInfantryAdvance extends TechAdvance {
-  private static final long serialVersionUID = 3040670614877450791L;
-
-  public MechanizedInfantryAdvance(final GameData data) {
-    super(TECH_NAME_MECHANIZED_INFANTRY, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_MECHANIZED_INFANTRY;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getMechanizedInfantry();
-  }
-}
