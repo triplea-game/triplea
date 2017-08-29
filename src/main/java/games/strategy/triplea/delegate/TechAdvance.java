@@ -306,28 +306,6 @@ class SuperSubsAdvance extends TechAdvance {
 }
 
 
-class HeavyBomberAdvance extends TechAdvance {
-  private static final long serialVersionUID = -1743063539572684675L;
-
-  public HeavyBomberAdvance(final GameData data) {
-    super(TECH_NAME_HEAVY_BOMBER, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_HEAVY_BOMBER;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getHeavyBomber();
-  }
-}
-
-
 class IndustrialTechnologyAdvance extends TechAdvance {
   private static final long serialVersionUID = -21252592806022090L;
 

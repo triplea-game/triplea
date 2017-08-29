@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.AARadarAdvance;
 import games.strategy.triplea.delegate.DestroyerBombardTechAdvance;
+import games.strategy.triplea.delegate.HeavyBomberAdvance;
 
 /**
  * A collection of equality comparators for engine data types.
@@ -32,6 +33,12 @@ public final class EngineDataEqualityComparators {
   private static boolean areBothNullOrBothNotNull(final Object o1, final Object o2) {
     return (o1 == null) == (o2 == null);
   }
+
+  public static final EqualityComparator HEAVY_BOMBER_ADVANCE = EqualityComparator.newInstance(
+      HeavyBomberAdvance.class,
+      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
+          && context.equals(o1.getData(), o2.getData())
+          && context.equals(o1.getName(), o2.getName()));
 
   public static final EqualityComparator PRODUCTION_FRONTIER = EqualityComparator.newInstance(
       ProductionFrontier.class,
