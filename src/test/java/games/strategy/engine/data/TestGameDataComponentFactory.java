@@ -8,6 +8,7 @@ import games.strategy.triplea.delegate.HeavyBomberAdvance;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.ImprovedShipyardsAdvance;
 import games.strategy.triplea.delegate.IncreasedFactoryProductionAdvance;
+import games.strategy.triplea.delegate.IndustrialTechnologyAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -112,6 +113,22 @@ public final class TestGameDataComponentFactory {
     increasedFactoryProductionAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
     increasedFactoryProductionAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
     return increasedFactoryProductionAdvance;
+  }
+
+  /**
+   * Creates a new {@link IndustrialTechnologyAdvance} instance.
+   *
+   * @param gameData The game data associated with the advance.
+   *
+   * @return A new {@link IndustrialTechnologyAdvance} instance.
+   */
+  public static IndustrialTechnologyAdvance newIndustrialTechnologyAdvance(final GameData gameData) {
+    checkNotNull(gameData);
+
+    final IndustrialTechnologyAdvance industrialTechnologyAdvance = new IndustrialTechnologyAdvance(gameData);
+    industrialTechnologyAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
+    industrialTechnologyAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
+    return industrialTechnologyAdvance;
   }
 
   /**
