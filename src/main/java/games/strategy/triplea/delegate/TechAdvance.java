@@ -411,28 +411,6 @@ class RocketsAdvance extends TechAdvance {
 }
 
 
-class DestroyerBombardTechAdvance extends TechAdvance {
-  private static final long serialVersionUID = -4977423636387126617L;
-
-  public DestroyerBombardTechAdvance(final GameData data) {
-    super(TECH_NAME_DESTROYER_BOMBARD, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_DESTROYER_BOMBARD;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getDestroyerBombard();
-  }
-}
-
-
 class LongRangeAircraftAdvance extends TechAdvance {
   private static final long serialVersionUID = 1986380888336238652L;
 

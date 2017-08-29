@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.triplea.delegate.AARadarAdvance;
+import games.strategy.triplea.delegate.DestroyerBombardTechAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -25,6 +26,22 @@ public final class TestGameDataComponentFactory {
     aaRadarAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
     aaRadarAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
     return aaRadarAdvance;
+  }
+
+  /**
+   * Creates a new {@link DestroyerBombardTechAdvance} instance.
+   *
+   * @param gameData The game data associated with the advance.
+   *
+   * @return A new {@link DestroyerBombardTechAdvance} instance.
+   */
+  public static DestroyerBombardTechAdvance newDestroyerBombardTechAdvance(final GameData gameData) {
+    checkNotNull(gameData);
+
+    final DestroyerBombardTechAdvance destroyerBombardTechAdvance = new DestroyerBombardTechAdvance(gameData);
+    destroyerBombardTechAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
+    destroyerBombardTechAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
+    return destroyerBombardTechAdvance;
   }
 
   /**
