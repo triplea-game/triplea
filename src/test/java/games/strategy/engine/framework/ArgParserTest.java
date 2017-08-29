@@ -5,7 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.fail;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 import org.junit.After;
@@ -76,7 +75,7 @@ public class ArgParserTest {
   }
 
   @Test
-  public void singleUrlArgIsUrlDecoded() throws UnsupportedEncodingException {
+  public void singleUrlArgIsUrlDecoded() {
     final String testUrl = "triplea:Something%20with+spaces%20and%20Special%20chars%20%F0%9F%A4%94";
     ArgParser.handleCommandLineArgs(new String[] {testUrl}, new String[] {GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY});
     assertThat("if we pass only one arg prefixed with 'triplea:',"
