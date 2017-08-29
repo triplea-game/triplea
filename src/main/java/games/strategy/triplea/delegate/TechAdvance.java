@@ -581,31 +581,6 @@ class MechanizedInfantryAdvance extends TechAdvance {
 }
 
 
-/*
- * AA Radar
- */
-class AARadarAdvance extends TechAdvance {
-  private static final long serialVersionUID = 6464021231625252901L;
-
-  public AARadarAdvance(final GameData data) {
-    super(TECH_NAME_AA_RADAR, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_AA_RADAR;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getAARadar();
-  }
-}
-
-
 class ImprovedShipyardsAdvance extends TechAdvance {
   private static final long serialVersionUID = 7613381831727736711L;
 

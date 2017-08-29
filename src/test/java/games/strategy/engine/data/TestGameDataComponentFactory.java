@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.triplea.delegate.AARadarAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -9,6 +10,22 @@ import games.strategy.util.IntegerMap;
  */
 public final class TestGameDataComponentFactory {
   private TestGameDataComponentFactory() {}
+
+  /**
+   * Creates a new {@link AARadarAdvance} instance.
+   *
+   * @param gameData The game data associated with the advance.
+   *
+   * @return A new {@link AARadarAdvance} instance.
+   */
+  public static AARadarAdvance newAaRadarAdvance(final GameData gameData) {
+    checkNotNull(gameData);
+
+    final AARadarAdvance aaRadarAdvance = new AARadarAdvance(gameData);
+    aaRadarAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
+    aaRadarAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
+    return aaRadarAdvance;
+  }
 
   /**
    * Creates a new {@link ProductionRule} instance.
