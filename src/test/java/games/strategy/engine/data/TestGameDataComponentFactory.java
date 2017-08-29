@@ -6,6 +6,7 @@ import games.strategy.triplea.delegate.AARadarAdvance;
 import games.strategy.triplea.delegate.DestroyerBombardTechAdvance;
 import games.strategy.triplea.delegate.HeavyBomberAdvance;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
+import games.strategy.triplea.delegate.ImprovedShipyardsAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -77,6 +78,22 @@ public final class TestGameDataComponentFactory {
     improvedArtillerySupportAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
     improvedArtillerySupportAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
     return improvedArtillerySupportAdvance;
+  }
+
+  /**
+   * Creates a new {@link ImprovedShipyardsAdvance} instance.
+   *
+   * @param gameData The game data associated with the advance.
+   *
+   * @return A new {@link ImprovedShipyardsAdvance} instance.
+   */
+  public static ImprovedShipyardsAdvance newImprovedShipyardsAdvance(final GameData gameData) {
+    checkNotNull(gameData);
+
+    final ImprovedShipyardsAdvance improvedShipyardsAdvance = new ImprovedShipyardsAdvance(gameData);
+    improvedShipyardsAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
+    improvedShipyardsAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
+    return improvedShipyardsAdvance;
   }
 
   /**
