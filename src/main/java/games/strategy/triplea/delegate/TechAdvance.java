@@ -413,31 +413,6 @@ class LongRangeAircraftAdvance extends TechAdvance {
 
 
 /*
- * Artillery can support multiple infantry
- */
-class ImprovedArtillerySupportAdvance extends TechAdvance {
-  private static final long serialVersionUID = 3946378995070209879L;
-
-  public ImprovedArtillerySupportAdvance(final GameData data) {
-    super(TECH_NAME_IMPROVED_ARTILLERY_SUPPORT, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getImprovedArtillerySupport();
-  }
-}
-
-
-/*
  * Support paratroops
  */
 class ParatroopersAdvance extends TechAdvance {

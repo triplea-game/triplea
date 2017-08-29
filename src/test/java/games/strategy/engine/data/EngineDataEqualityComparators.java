@@ -4,6 +4,7 @@ import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.AARadarAdvance;
 import games.strategy.triplea.delegate.DestroyerBombardTechAdvance;
 import games.strategy.triplea.delegate.HeavyBomberAdvance;
+import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 
 /**
  * A collection of equality comparators for engine data types.
@@ -36,6 +37,12 @@ public final class EngineDataEqualityComparators {
 
   public static final EqualityComparator HEAVY_BOMBER_ADVANCE = EqualityComparator.newInstance(
       HeavyBomberAdvance.class,
+      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
+          && context.equals(o1.getData(), o2.getData())
+          && context.equals(o1.getName(), o2.getName()));
+
+  public static final EqualityComparator IMPROVED_ARTILLERY_SUPPORT_ADVANCE = EqualityComparator.newInstance(
+      ImprovedArtillerySupportAdvance.class,
       (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
           && context.equals(o1.getData(), o2.getData())
           && context.equals(o1.getName(), o2.getName()));

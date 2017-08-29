@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import games.strategy.triplea.delegate.AARadarAdvance;
 import games.strategy.triplea.delegate.DestroyerBombardTechAdvance;
 import games.strategy.triplea.delegate.HeavyBomberAdvance;
+import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -59,6 +60,23 @@ public final class TestGameDataComponentFactory {
     heavyBomberAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
     heavyBomberAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
     return heavyBomberAdvance;
+  }
+
+  /**
+   * Creates a new {@link ImprovedArtillerySupportAdvance} instance.
+   *
+   * @param gameData The game data associated with the advance.
+   *
+   * @return A new {@link ImprovedArtillerySupportAdvance} instance.
+   */
+  public static ImprovedArtillerySupportAdvance newImprovedArtillerySupportAdvance(final GameData gameData) {
+    checkNotNull(gameData);
+
+    final ImprovedArtillerySupportAdvance improvedArtillerySupportAdvance =
+        new ImprovedArtillerySupportAdvance(gameData);
+    improvedArtillerySupportAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
+    improvedArtillerySupportAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
+    return improvedArtillerySupportAdvance;
   }
 
   /**
