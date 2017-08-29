@@ -323,29 +323,6 @@ class RocketsAdvance extends TechAdvance {
 }
 
 
-class LongRangeAircraftAdvance extends TechAdvance {
-  private static final long serialVersionUID = 1986380888336238652L;
-
-  public LongRangeAircraftAdvance(final GameData data) {
-    super(TECH_NAME_LONG_RANGE_AIRCRAFT, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_LONG_RANGE_AIRCRAFT;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getLongRangeAir();
-  }
-}
-// Beginning of AA 50 rules
-
-
 /*
  * Support paratroops
  */

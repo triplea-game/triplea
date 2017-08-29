@@ -10,6 +10,7 @@ import games.strategy.triplea.delegate.ImprovedShipyardsAdvance;
 import games.strategy.triplea.delegate.IncreasedFactoryProductionAdvance;
 import games.strategy.triplea.delegate.IndustrialTechnologyAdvance;
 import games.strategy.triplea.delegate.JetPowerAdvance;
+import games.strategy.triplea.delegate.LongRangeAircraftAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -146,6 +147,22 @@ public final class TestGameDataComponentFactory {
     jetPowerAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
     jetPowerAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
     return jetPowerAdvance;
+  }
+
+  /**
+   * Creates a new {@link LongRangeAircraftAdvance} instance.
+   *
+   * @param gameData The game data associated with the advance.
+   *
+   * @return A new {@link LongRangeAircraftAdvance} instance.
+   */
+  public static LongRangeAircraftAdvance newLongRangeAircraftAdvance(final GameData gameData) {
+    checkNotNull(gameData);
+
+    final LongRangeAircraftAdvance longRangeAircraftAdvance = new LongRangeAircraftAdvance(gameData);
+    longRangeAircraftAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
+    longRangeAircraftAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
+    return longRangeAircraftAdvance;
   }
 
   /**
