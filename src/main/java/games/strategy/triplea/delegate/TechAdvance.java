@@ -324,31 +324,6 @@ class RocketsAdvance extends TechAdvance {
 
 
 /*
- * Support paratroops
- */
-class ParatroopersAdvance extends TechAdvance {
-  private static final long serialVersionUID = 1457384348499672184L;
-
-  public ParatroopersAdvance(final GameData data) {
-    super(TECH_NAME_PARATROOPERS, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_PARATROOPERS;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getParatroopers();
-  }
-}
-
-
-/*
  * War Bonds
  */
 class WarBondsAdvance extends TechAdvance {
