@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.LongRangeAircraftAdvance;
 import games.strategy.triplea.delegate.MechanizedInfantryAdvance;
 import games.strategy.triplea.delegate.ParatroopersAdvance;
 import games.strategy.triplea.delegate.RocketsAdvance;
+import games.strategy.triplea.delegate.SuperSubsAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -274,5 +275,21 @@ public final class TestGameDataComponentFactory {
     rocketsAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
     rocketsAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
     return rocketsAdvance;
+  }
+
+  /**
+   * Creates a new {@link SuperSubsAdvance} instance.
+   *
+   * @param gameData The game data associated with the advance.
+   *
+   * @return A new {@link SuperSubsAdvance} instance.
+   */
+  public static SuperSubsAdvance newSuperSubsAdvance(final GameData gameData) {
+    checkNotNull(gameData);
+
+    final SuperSubsAdvance superSubsAdvance = new SuperSubsAdvance(gameData);
+    superSubsAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
+    superSubsAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
+    return superSubsAdvance;
   }
 }

@@ -13,6 +13,7 @@ import games.strategy.triplea.delegate.LongRangeAircraftAdvance;
 import games.strategy.triplea.delegate.MechanizedInfantryAdvance;
 import games.strategy.triplea.delegate.ParatroopersAdvance;
 import games.strategy.triplea.delegate.RocketsAdvance;
+import games.strategy.triplea.delegate.SuperSubsAdvance;
 
 /**
  * A collection of equality comparators for engine data types.
@@ -136,6 +137,12 @@ public final class EngineDataEqualityComparators {
 
   public static final EqualityComparator ROCKETS_ADVANCE = EqualityComparator.newInstance(
       RocketsAdvance.class,
+      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
+          && context.equals(o1.getData(), o2.getData())
+          && context.equals(o1.getName(), o2.getName()));
+
+  public static final EqualityComparator SUPER_SUBS_ADVANCE = EqualityComparator.newInstance(
+      SuperSubsAdvance.class,
       (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
           && context.equals(o1.getData(), o2.getData())
           && context.equals(o1.getName(), o2.getName()));

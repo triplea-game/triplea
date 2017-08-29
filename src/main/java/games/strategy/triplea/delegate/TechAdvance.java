@@ -279,28 +279,6 @@ public abstract class TechAdvance extends NamedAttachable {
 }
 
 
-class SuperSubsAdvance extends TechAdvance {
-  private static final long serialVersionUID = -5469354766630425933L;
-
-  public SuperSubsAdvance(final GameData data) {
-    super(TECH_NAME_SUPER_SUBS, data);
-  }
-
-  @Override
-  public String getProperty() {
-    return TECH_PROPERTY_SUPER_SUBS;
-  }
-
-  @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
-
-  @Override
-  public boolean hasTech(final TechAttachment ta) {
-    return ta.getSuperSub();
-  }
-}
-
-
 /*
  * War Bonds
  */
