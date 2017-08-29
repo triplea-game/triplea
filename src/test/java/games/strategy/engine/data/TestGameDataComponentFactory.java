@@ -15,6 +15,7 @@ import games.strategy.triplea.delegate.MechanizedInfantryAdvance;
 import games.strategy.triplea.delegate.ParatroopersAdvance;
 import games.strategy.triplea.delegate.RocketsAdvance;
 import games.strategy.triplea.delegate.SuperSubsAdvance;
+import games.strategy.triplea.delegate.WarBondsAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -291,5 +292,21 @@ public final class TestGameDataComponentFactory {
     superSubsAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
     superSubsAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
     return superSubsAdvance;
+  }
+
+  /**
+   * Creates a new {@link WarBondsAdvance} instance.
+   *
+   * @param gameData The game data associated with the advance.
+   *
+   * @return A new {@link WarBondsAdvance} instance.
+   */
+  public static WarBondsAdvance newWarBondsAdvance(final GameData gameData) {
+    checkNotNull(gameData);
+
+    final WarBondsAdvance warBondsAdvance = new WarBondsAdvance(gameData);
+    warBondsAdvance.addAttachment("key1", new FakeAttachment("attachment1"));
+    warBondsAdvance.addAttachment("key2", new FakeAttachment("attachment2"));
+    return warBondsAdvance;
   }
 }
