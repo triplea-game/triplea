@@ -200,7 +200,7 @@ public class WeakAI extends AbstractAI {
         route.add(neighbor);
         moveUnits.add(units);
         moveRoutes.add(route);
-        transportsToLoad.add(neighbor.getUnits().getMatches(Matches.UnitIsTransport));
+        transportsToLoad.add(neighbor.getUnits().getMatches(Matches.unitIsTransport()));
       }
     }
   }
@@ -711,7 +711,7 @@ public class WeakAI extends AbstractAI {
   }
 
   private static int countTransports(final GameData data, final PlayerID player) {
-    final Match<Unit> ownedTransport = Match.allOf(Matches.UnitIsTransport, Matches.unitIsOwnedBy(player));
+    final Match<Unit> ownedTransport = Match.allOf(Matches.unitIsTransport(), Matches.unitIsOwnedBy(player));
     int sum = 0;
     for (final Territory t : data.getMap()) {
       sum += t.getUnits().countMatches(ownedTransport);

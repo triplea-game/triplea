@@ -234,7 +234,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // need to double
     // check)
     if (TechAttachment.isAirTransportable(m_attacker)) {
-      final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+      final Collection<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
       final Collection<Unit> paratroops = Match.getMatches(units, Matches.unitIsAirTransportable());
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
         // Load capable bombers by default>
@@ -515,7 +515,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
       if (!m_battleSite.isWater() && TechAttachment.isAirTransportable(m_attacker)) {
         final Collection<Unit> bombers =
-            Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
+            Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAirTransport());
         if (!bombers.isEmpty()) {
           final Collection<Unit> dependents = getDependentUnits(bombers);
           if (!dependents.isEmpty()) {
@@ -526,19 +526,19 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // Check if defending subs can submerge before battle
     if (isSubRetreatBeforeBattle()) {
-      if (!Match.anyMatch(m_defendingUnits, Matches.UnitIsDestroyer)
+      if (!Match.anyMatch(m_defendingUnits, Matches.unitIsDestroyer())
           && Match.anyMatch(m_attackingUnits, Matches.UnitIsSub)) {
         steps.add(m_attacker.getName() + SUBS_SUBMERGE);
       }
-      if (!Match.anyMatch(m_attackingUnits, Matches.UnitIsDestroyer)
+      if (!Match.anyMatch(m_attackingUnits, Matches.unitIsDestroyer())
           && Match.anyMatch(m_defendingUnits, Matches.UnitIsSub)) {
         steps.add(m_defender.getName() + SUBS_SUBMERGE);
       }
     }
     // See if there any unescorted trns
     if (m_battleSite.isWater() && isTransportCasualtiesRestricted()) {
-      if (Match.anyMatch(m_attackingUnits, Matches.UnitIsTransport)
-          || Match.anyMatch(m_defendingUnits, Matches.UnitIsTransport)) {
+      if (Match.anyMatch(m_attackingUnits, Matches.unitIsTransport())
+          || Match.anyMatch(m_defendingUnits, Matches.unitIsTransport())) {
         steps.add(REMOVE_UNESCORTED_TRANSPORTS);
       }
     }
@@ -583,7 +583,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (isAirAttackSubRestricted()) {
       final Collection<Unit> units = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
       units.addAll(m_attackingUnits);
-      // if(!Match.anyMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.allMatch(m_attackingUnits,
+      // if(!Match.anyMatch(m_attackingUnits, Matches.unitIsDestroyer()) && Match.allMatch(m_attackingUnits,
       // Matches.UnitIsAir))
       if (Match.anyMatch(m_attackingUnits, Matches.UnitIsAir) && !canAirAttackSubs(m_defendingUnits, units)) {
         steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
@@ -593,7 +593,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_battleSite.isWater() && isAirAttackSubRestricted()) {
       final Collection<Unit> units = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
       units.addAll(m_attackingUnits);
-      // if(!Match.anyMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.anyMatch(m_attackingUnits,
+      // if(!Match.anyMatch(m_attackingUnits, Matches.unitIsDestroyer()) && Match.anyMatch(m_attackingUnits,
       // Matches.UnitIsAir) &&
       // Match.anyMatch(m_defendingUnits, Matches.UnitIsSub))
       if (Match.anyMatch(m_attackingUnits, Matches.UnitIsAir) && !canAirAttackSubs(m_defendingUnits, units)) {
@@ -621,7 +621,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Collection<Unit> units = new ArrayList<>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
       units.addAll(m_defendingUnits);
       units.addAll(m_defendingWaitingToDie);
-      // if(!Match.anyMatch(m_defendingUnits, Matches.UnitIsDestroyer) && Match.anyMatch(m_defendingUnits,
+      // if(!Match.anyMatch(m_defendingUnits, Matches.unitIsDestroyer()) && Match.anyMatch(m_defendingUnits,
       // Matches.UnitIsAir) &&
       // Match.anyMatch(m_attackingUnits, Matches.UnitIsSub))
       if (Match.anyMatch(m_defendingUnits, Matches.UnitIsAir) && !canAirAttackSubs(m_attackingUnits, units)) {
@@ -848,7 +848,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           } else {
             // Get all allied transports in the territory
             final Match<Unit> matchAllied = Match.allOf(
-                Matches.UnitIsTransport,
+                Matches.unitIsTransport(),
                 Matches.unitIsNotCombatTransport(),
                 Matches.isUnitAllied(m_attacker, m_data));
             final List<Unit> alliedTransports = Match.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);
@@ -1139,7 +1139,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private ReturnFire returnFireAgainstAttackingSubs() {
-    final boolean attackingSubsSneakAttack = !Match.anyMatch(m_defendingUnits, Matches.UnitIsDestroyer);
+    final boolean attackingSubsSneakAttack = !Match.anyMatch(m_defendingUnits, Matches.unitIsDestroyer());
     final boolean defendingSubsSneakAttack = defendingSubsSneakAttack2();
     final ReturnFire returnFireAgainstAttackingSubs;
     if (!attackingSubsSneakAttack) {
@@ -1159,7 +1159,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
      * calculate here, this holds for the fight round, but can't be computed later
      * since destroyers may die
      */
-    final boolean attackingSubsSneakAttack = !Match.anyMatch(m_defendingUnits, Matches.UnitIsDestroyer);
+    final boolean attackingSubsSneakAttack = !Match.anyMatch(m_defendingUnits, Matches.unitIsDestroyer());
     final boolean defendingSubsSneakAttack = defendingSubsSneakAttack2();
     final ReturnFire returnFireAgainstDefendingSubs;
     if (!defendingSubsSneakAttack) {
@@ -1173,7 +1173,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean defendingSubsSneakAttack2() {
-    return !Match.anyMatch(m_attackingUnits, Matches.UnitIsDestroyer) && defendingSubsSneakAttack3();
+    return !Match.anyMatch(m_attackingUnits, Matches.unitIsDestroyer()) && defendingSubsSneakAttack3();
   }
 
   private boolean defendingSubsSneakAttack3() {
@@ -1276,10 +1276,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean canAttackerRetreatSubs() {
-    if (Match.anyMatch(m_defendingUnits, Matches.UnitIsDestroyer)) {
+    if (Match.anyMatch(m_defendingUnits, Matches.unitIsDestroyer())) {
       return false;
     }
-    if (Match.anyMatch(m_defendingWaitingToDie, Matches.UnitIsDestroyer)) {
+    if (Match.anyMatch(m_defendingWaitingToDie, Matches.unitIsDestroyer())) {
       return false;
     }
     return canAttackerRetreat() || canSubsSubmerge();
@@ -1324,10 +1324,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean canDefenderRetreatSubs() {
-    if (Match.anyMatch(m_attackingUnits, Matches.UnitIsDestroyer)) {
+    if (Match.anyMatch(m_attackingUnits, Matches.unitIsDestroyer())) {
       return false;
     }
-    if (Match.anyMatch(m_attackingWaitingToDie, Matches.UnitIsDestroyer)) {
+    if (Match.anyMatch(m_attackingWaitingToDie, Matches.unitIsDestroyer())) {
       return false;
     }
     return getEmptyOrFriendlySeaNeighbors(m_defender, Match.getMatches(m_defendingUnits, Matches.UnitIsSub)).size() != 0
@@ -1544,7 +1544,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   // Retreat landed units from allied territory when their transport retreats
   private Change retreatFromNonCombat(Collection<Unit> units, final Territory retreatTo) {
     final CompositeChange change = new CompositeChange();
-    units = Match.getMatches(units, Matches.UnitIsTransport);
+    units = Match.getMatches(units, Matches.unitIsTransport());
     final Collection<Unit> retreated = getTransportDependents(units);
     if (!retreated.isEmpty()) {
       Territory retreatedFrom = null;
@@ -1735,7 +1735,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // Get all allied transports in the territory
     final Match<Unit> matchAllied = Match.allOf(
-        Matches.UnitIsTransport,
+        Matches.unitIsTransport(),
         Matches.unitIsNotCombatTransport(),
         Matches.isUnitAllied(player, m_data),
         Matches.UnitIsSea);
@@ -1880,7 +1880,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
     return !(m_battleSite.isWater() && Match.anyMatch(firedAt, Matches.UnitIsSub)
-        && Match.noneMatch(firing, Matches.UnitIsDestroyer));
+        && Match.noneMatch(firing, Matches.unitIsDestroyer()));
   }
 
   private void defendAirOnNonSubs() {
@@ -2037,7 +2037,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't
     // attack subs with
     // anything.
-    if (isAirAttackSubRestricted() && !Match.anyMatch(m_attackingUnits, Matches.UnitIsDestroyer)
+    if (isAirAttackSubRestricted() && !Match.anyMatch(m_attackingUnits, Matches.unitIsDestroyer())
         && Match.anyMatch(attackedDefenders, Matches.UnitIsSub)) {
       attackedDefenders.removeAll(Match.getMatches(attackedDefenders, Matches.UnitIsSub));
     }
@@ -2068,7 +2068,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't
     // attack subs with
     // anything.
-    if (isAirAttackSubRestricted() && !Match.anyMatch(m_defendingUnits, Matches.UnitIsDestroyer)
+    if (isAirAttackSubRestricted() && !Match.anyMatch(m_defendingUnits, Matches.unitIsDestroyer())
         && Match.anyMatch(attackedAttackers, Matches.UnitIsSub)) {
       attackedAttackers.removeAll(Match.getMatches(attackedAttackers, Matches.UnitIsSub));
     }
@@ -2322,7 +2322,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         Matches.unitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));
     // remove any allied air units that are stuck on damaged carriers (veqryn)
     unitList.removeAll(Match.getMatches(unitList, Match.allOf(Matches.unitIsBeingTransported(),
-        Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
+        Matches.UnitIsAir, Matches.unitCanLandOnCarrier())));
     // remove any units that were in air combat (veqryn)
     unitList.removeAll(Match.getMatches(unitList, Matches.unitWasInAirBattle()));
     return unitList;
@@ -2351,7 +2351,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void landParatroops(final IDelegateBridge bridge) {
     if (TechAttachment.isAirTransportable(m_attacker)) {
       final Collection<Unit> airTransports =
-          Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
+          Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAirTransport());
       if (!airTransports.isEmpty()) {
         final Collection<Unit> dependents = getDependentUnits(airTransports);
         if (!dependents.isEmpty()) {
@@ -2437,7 +2437,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   // Remove landed units from allied territory when their transport sinks
   private void removeFromNonCombatLandings(final Collection<Unit> units, final IDelegateBridge bridge) {
-    for (final Unit transport : Match.getMatches(units, Matches.UnitIsTransport)) {
+    for (final Unit transport : Match.getMatches(units, Matches.unitIsTransport())) {
       final Collection<Unit> lost = getTransportDependents(Collections.singleton(transport));
       if (lost.isEmpty()) {
         continue;
@@ -2528,7 +2528,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
     }
     // Clear the transported_by for successfully offloaded units
-    final Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
+    final Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.unitIsTransport());
     if (!transports.isEmpty()) {
       final CompositeChange change = new CompositeChange();
       final Collection<Unit> dependents = getTransportDependents(transports);
@@ -2607,7 +2607,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     carrierCost +=
         AirMovementValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits), alliedDefendingAir));
     for (final Unit currentUnit : new ArrayList<>(defendingAir)) {
-      if (!Matches.UnitCanLandOnCarrier.match(currentUnit)) {
+      if (!Matches.unitCanLandOnCarrier().match(currentUnit)) {
         defendingAir.remove(currentUnit);
         continue;
       }
@@ -2628,7 +2628,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> carriers = Match.getMatches(attackingUnits, Matches.UnitIsCarrier);
     if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data)) {
       final Match<Unit> alliedFighters = Match.allOf(Matches.isUnitAllied(attacker, data),
-          Matches.unitIsOwnedBy(attacker).invert(), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
+          Matches.unitIsOwnedBy(attacker).invert(), Matches.UnitIsAir, Matches.unitCanLandOnCarrier());
       final Collection<Unit> alliedAirInTerr = Match.getMatches(attackingUnits, alliedFighters);
       for (final Unit fighter : alliedAirInTerr) {
         final TripleAUnit taUnit = (TripleAUnit) fighter;

@@ -636,7 +636,7 @@ class ProNonCombatMoveAI {
       // Set non-air units in territories
       for (final Iterator<Unit> it = sortedUnitMoveOptions.keySet().iterator(); it.hasNext();) {
         final Unit unit = it.next();
-        if (Matches.UnitCanLandOnCarrier.match(unit)) {
+        if (Matches.unitCanLandOnCarrier().match(unit)) {
           continue;
         }
         Territory maxWinTerritory = null;
@@ -992,7 +992,7 @@ class ProNonCombatMoveAI {
       moveMap.get(t).addUnits(moveMap.get(t).getTempUnits());
       moveMap.get(t).putAllAmphibAttackMap(moveMap.get(t).getTempAmphibAttackMap());
       for (final Unit u : moveMap.get(t).getTempUnits()) {
-        if (Matches.UnitIsTransport.match(u)) {
+        if (Matches.unitIsTransport().match(u)) {
           transportMoveMap.remove(u);
           for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
             if (it.next().getTransport().equals(u)) {
@@ -1383,7 +1383,7 @@ class ProNonCombatMoveAI {
       // Move air units to defend transports
       for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext();) {
         final Unit u = it.next();
-        if (Matches.UnitCanLandOnCarrier.match(u)) {
+        if (Matches.unitCanLandOnCarrier().match(u)) {
           for (final Territory t : currentUnitMoveMap.get(u)) {
             if (t.isWater() && moveMap.get(t).isCanHold() && !moveMap.get(t).getAllDefenders().isEmpty()
                 && Match.anyMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransport(player))) {
@@ -1555,7 +1555,7 @@ class ProNonCombatMoveAI {
       moveMap.get(t).addUnits(moveMap.get(t).getTempUnits());
       moveMap.get(t).putAllAmphibAttackMap(moveMap.get(t).getTempAmphibAttackMap());
       for (final Unit u : moveMap.get(t).getTempUnits()) {
-        if (Matches.UnitIsTransport.match(u)) {
+        if (Matches.unitIsTransport().match(u)) {
           transportMoveMap.remove(u);
           for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
             if (it.next().getTransport().equals(u)) {

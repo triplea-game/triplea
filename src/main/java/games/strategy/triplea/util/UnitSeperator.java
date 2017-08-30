@@ -65,7 +65,7 @@ public class UnitSeperator {
     }
     for (final Unit current : units) {
       int unitMovement = -1;
-      if (categorizeMovement || (categorizeTrnMovement && Matches.UnitIsTransport.match(current))) {
+      if (categorizeMovement || (categorizeTrnMovement && Matches.unitIsTransport().match(current))) {
         unitMovement = TripleAUnit.get(current).getMovementLeft();
       }
       int unitTransportCost = -1;

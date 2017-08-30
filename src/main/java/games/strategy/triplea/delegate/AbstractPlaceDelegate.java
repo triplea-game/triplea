@@ -496,7 +496,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getUnits().anyMatch(Matches.UnitCanProduceUnits)) {
       return null;
     }
-    final Match<Unit> ownedFighters = Match.allOf(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
+    final Match<Unit> ownedFighters = Match.allOf(Matches.unitCanLandOnCarrier(), Matches.unitIsOwnedBy(player));
     if (!producer.getUnits().anyMatch(ownedFighters)) {
       return null;
     }
@@ -887,7 +887,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           && Match.anyMatch(allProducedUnits, Matches.UnitIsCarrier))
           || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
               && Match.anyMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier))) {
-        placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
+        placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.unitCanLandOnCarrier())));
       }
     }
     if (Match.anyMatch(units, Matches.unitIsConstruction())) {

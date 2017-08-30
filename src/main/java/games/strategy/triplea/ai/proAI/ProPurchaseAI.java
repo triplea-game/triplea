@@ -548,7 +548,7 @@ class ProPurchaseAI {
       // Determine if need destroyer
       boolean needDestroyer = false;
       if (Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
-          && Match.noneMatch(ownedLocalUnits, Matches.UnitIsDestroyer)) {
+          && Match.noneMatch(ownedLocalUnits, Matches.unitIsDestroyer())) {
         needDestroyer = true;
       }
 
@@ -1067,7 +1067,7 @@ class ProPurchaseAI {
       final List<Unit> units = new ArrayList<>(placeTerritory.getDefendingUnits());
       units.addAll(ProPurchaseUtils.getPlaceUnits(t, purchaseTerritories));
       final List<Unit> myUnits = Match.getMatches(units, Matches.unitIsOwnedBy(player));
-      final int numMyTransports = Match.countMatches(myUnits, Matches.UnitIsTransport);
+      final int numMyTransports = Match.countMatches(myUnits, Matches.unitIsTransport());
       final int numSeaDefenders = Match.countMatches(units, Matches.unitIsNotTransport());
 
       // Determine needed defense strength
@@ -1147,7 +1147,7 @@ class ProPurchaseAI {
 
         // Determine if need destroyer
         if (Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsSub)
-            && Match.noneMatch(t.getUnits().getMatches(Matches.unitIsOwnedBy(player)), Matches.UnitIsDestroyer)) {
+            && Match.noneMatch(t.getUnits().getMatches(Matches.unitIsOwnedBy(player)), Matches.unitIsDestroyer())) {
           needDestroyer = true;
         }
         ProLogger.trace(t + ", needDestroyer=" + needDestroyer + ", checking defense since has enemy attackers: "
@@ -1160,7 +1160,7 @@ class ProPurchaseAI {
         boolean hasOnlyRetreatingSubs =
             Properties.getSubRetreatBeforeBattle(data)
                 && !initialDefendingUnits.isEmpty() && Match.allMatch(initialDefendingUnits, Matches.UnitIsSub)
-                && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsDestroyer);
+                && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.unitIsDestroyer());
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
 
           // Check remaining production
@@ -1226,7 +1226,7 @@ class ProPurchaseAI {
             hasOnlyRetreatingSubs =
                 Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty()
                     && Match.allMatch(defendingUnits, Matches.UnitIsSub)
-                    && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsDestroyer);
+                    && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.unitIsDestroyer());
           }
         }
 
@@ -1296,7 +1296,7 @@ class ProPurchaseAI {
 
       // Check if destroyer is needed
       final int numEnemySubs = Match.countMatches(enemyUnitsInSeaTerritories, Matches.UnitIsSub);
-      final int numMyDestroyers = Match.countMatches(myUnitsInSeaTerritories, Matches.UnitIsDestroyer);
+      final int numMyDestroyers = Match.countMatches(myUnitsInSeaTerritories, Matches.unitIsDestroyer());
       if (numEnemySubs > 2 * numMyDestroyers) {
         needDestroyer = true;
       }

@@ -111,14 +111,14 @@ final class ProTechAI {
           Matches.unitIsOwnedBy(enemyPlayer),
           Matches.unitCanMove());
       final Match<Unit> enemyTransport = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
-          Matches.UnitIsSea, Matches.UnitIsTransport, Matches.unitCanMove());
+          Matches.UnitIsSea, Matches.unitIsTransport(), Matches.unitCanMove());
       final Match<Unit> enemyShip = Match.allOf(
           Matches.unitIsOwnedBy(enemyPlayer),
           Matches.UnitIsSea,
           Matches.unitCanMove());
       final Match<Unit> enemyTransportable = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
           Matches.unitCanBeTransported(), Matches.unitIsNotAa(), Matches.unitCanMove());
-      final Match<Unit> transport = Match.allOf(Matches.UnitIsSea, Matches.UnitIsTransport, Matches.unitCanMove());
+      final Match<Unit> transport = Match.allOf(Matches.UnitIsSea, Matches.unitIsTransport(), Matches.unitCanMove());
       final List<Territory> enemyFighterTerritories = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
       // should change this to read production frontier and tech
@@ -366,7 +366,7 @@ final class ProTechAI {
     final HashSet<Integer> ignore = new HashSet<>();
     ignore.add(1);
     final Match<Unit> blitzUnit =
-        Match.allOf(Matches.unitIsOwnedBy(enemyPlayer), Matches.UnitCanBlitz, Matches.unitCanMove());
+        Match.allOf(Matches.unitIsOwnedBy(enemyPlayer), Matches.unitCanBlitz(), Matches.unitCanMove());
     final Match<Territory> validBlitzRoute = Match.allOf(
         Matches.territoryHasNoEnemyUnits(enemyPlayer, data),
         Matches.territoryIsNotImpassableToLandUnits(enemyPlayer, data));
@@ -501,7 +501,7 @@ final class ProTechAI {
     for (final Unit u : unitDistance.keySet()) {
       if (lz != null && Matches.unitHasEnoughMovementForRoute(checked).match(u)) {
         units.add(u);
-      } else if (ac != null && Matches.UnitCanLandOnCarrier.match(u)
+      } else if (ac != null && Matches.unitCanLandOnCarrier().match(u)
           && Matches.unitHasEnoughMovementForRoute(checked).match(u)) {
         units.add(u);
       }
@@ -535,7 +535,7 @@ final class ProTechAI {
       return null;
     }
     final Match<Unit> sub = Match.allOf(Matches.UnitIsSub.invert());
-    final Match<Unit> transport = Match.allOf(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
+    final Match<Unit> transport = Match.allOf(Matches.unitIsTransport().invert(), Matches.UnitIsLand.invert());
     final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
         Matches.UnitIsInfrastructure.invert(),
         Matches.alliedUnit(player, data).invert());
@@ -689,7 +689,7 @@ final class ProTechAI {
         infantry.add(x);
       } else if (Matches.unitIsArtillery().match(x)) {
         artillery.add(x);
-      } else if (Matches.UnitCanBlitz.match(x)) {
+      } else if (Matches.unitCanBlitz().match(x)) {
         armor.add(x);
       } else {
         others.add(x);

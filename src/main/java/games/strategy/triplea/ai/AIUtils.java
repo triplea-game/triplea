@@ -131,7 +131,7 @@ public class AIUtils {
   }
 
   static List<Unit> interleaveCarriersAndPlanes(final List<Unit> units, final int planesThatDontNeedToLand) {
-    if (!(Match.anyMatch(units, Matches.UnitIsCarrier) && Match.anyMatch(units, Matches.UnitCanLandOnCarrier))) {
+    if (!(Match.anyMatch(units, Matches.UnitIsCarrier) && Match.anyMatch(units, Matches.unitCanLandOnCarrier()))) {
       return units;
     }
     // Clone the current list

@@ -136,7 +136,9 @@ public class PlacePanel extends AbstractMovePanel {
             || isLhtrCarrierProductionRules() || GameStepPropertiesHelper.isBid(getData()))) {
           units = Match.getMatches(units, Matches.UnitIsSea);
         } else {
-          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(
+              Matches.UnitIsSea,
+              Matches.unitCanLandOnCarrier());
           units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {

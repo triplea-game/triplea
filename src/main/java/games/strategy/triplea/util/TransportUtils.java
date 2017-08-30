@@ -145,7 +145,7 @@ public class TransportUtils {
   public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
 
-    final Collection<Unit> airTransports = Match.getMatches(transports, Matches.UnitIsAirTransport);
+    final Collection<Unit> airTransports = Match.getMatches(transports, Matches.unitIsAirTransport());
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
 
     // Define the max of all units that could be loaded

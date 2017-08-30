@@ -135,26 +135,32 @@ public final class Matches {
     });
   }
 
-  public static final Match<Unit> UnitIsDestroyer =
-      Match.of(unit -> UnitAttachment.get(unit.getType()).getIsDestroyer());
+  public static Match<Unit> unitIsDestroyer() {
+    return Match.of(unit -> UnitAttachment.get(unit.getType()).getIsDestroyer());
+  }
 
   public static Match<UnitType> unitTypeIsDestroyer() {
     return Match.of(type -> UnitAttachment.get(type).getIsDestroyer());
   }
 
-  public static final Match<Unit> UnitIsTransport = Match.of(unit -> {
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
-    return (ua.getTransportCapacity() != -1 && ua.getIsSea());
-  });
+  /**
+   * Returns a match indicating the specified unit can transport other units by sea.
+   */
+  public static Match<Unit> unitIsTransport() {
+    return Match.of(unit -> {
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      return ua.getTransportCapacity() != -1 && ua.getIsSea();
+    });
+  }
 
   public static Match<Unit> unitIsNotTransport() {
-    return UnitIsTransport.invert();
+    return unitIsTransport().invert();
   }
 
   static Match<Unit> unitIsTransportAndNotDestroyer() {
     return Match.of(unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return !Matches.UnitIsDestroyer.match(unit) && ua.getTransportCapacity() != -1 && ua.getIsSea();
+      return !Matches.unitIsDestroyer().match(unit) && ua.getTransportCapacity() != -1 && ua.getIsSea();
     });
   }
 
@@ -457,8 +463,9 @@ public final class Matches {
     return Match.of(unit -> UnitAttachment.get(unit.getType()).getCanBombard(id));
   }
 
-  public static final Match<Unit> UnitCanBlitz =
-      Match.of(unit -> UnitAttachment.get(unit.getType()).getCanBlitz(unit.getOwner()));
+  public static Match<Unit> unitCanBlitz() {
+    return Match.of(unit -> UnitAttachment.get(unit.getType()).getCanBlitz(unit.getOwner()));
+  }
 
   static Match<Unit> unitIsLandTransport() {
     return Match.of(unit -> UnitAttachment.get(unit.getType()).getIsLandTransport());
@@ -486,8 +493,9 @@ public final class Matches {
     return Match.of(type -> !UnitAttachment.get(type).getIsAir());
   }
 
-  public static final Match<Unit> UnitCanLandOnCarrier =
-      Match.of(unit -> UnitAttachment.get(unit.getType()).getCarrierCost() != -1);
+  public static Match<Unit> unitCanLandOnCarrier() {
+    return Match.of(unit -> UnitAttachment.get(unit.getType()).getCarrierCost() != -1);
+  }
 
   public static final Match<Unit> UnitIsCarrier =
       Match.of(unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1);
@@ -727,15 +735,20 @@ public final class Matches {
     return unitIsAirTransportable().invert();
   }
 
-  public static final Match<Unit> UnitIsAirTransport = Match.of(obj -> {
-    final TechAttachment ta = TechAttachment.get(obj.getOwner());
-    if (ta == null || !ta.getParatroopers()) {
-      return false;
-    }
-    final UnitType type = obj.getUnitType();
-    final UnitAttachment ua = UnitAttachment.get(type);
-    return ua.getIsAirTransport();
-  });
+  /**
+   * Returns a match indicating the specified unit can transport other units by air.
+   */
+  public static Match<Unit> unitIsAirTransport() {
+    return Match.of(obj -> {
+      final TechAttachment ta = TechAttachment.get(obj.getOwner());
+      if (ta == null || !ta.getParatroopers()) {
+        return false;
+      }
+      final UnitType type = obj.getUnitType();
+      final UnitAttachment ua = UnitAttachment.get(type);
+      return ua.getIsAirTransport();
+    });
+  }
 
   public static Match<Unit> unitIsArtillery() {
     return Match.of(obj -> UnitAttachment.get(obj.getUnitType()).getArtillery());
@@ -1561,7 +1574,7 @@ public final class Matches {
       }
       // paratrooper on an air transport
       if (forceLoadParatroopersIfPossible) {
-        final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+        final Collection<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
         final Collection<Unit> paratroops = Match.getMatches(units, Matches.unitIsAirTransportable());
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
           if (TransportUtils.mapTransportsToLoad(paratroops, airTransports)
