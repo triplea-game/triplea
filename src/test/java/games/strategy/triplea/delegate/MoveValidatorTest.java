@@ -28,13 +28,13 @@ import games.strategy.util.Match;
 
 public class MoveValidatorTest extends DelegateTest {
 
-  private GameData gameData;
+  private GameData twwGameData;
 
   @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    gameData = TestMapGameData.TWW.getGameData();
+    twwGameData = TestMapGameData.TWW.getGameData();
   }
 
   @Test
@@ -135,26 +135,26 @@ public class MoveValidatorTest extends DelegateTest {
   public void testValidateMoveForRequiresUnitsToMove() {
 
     // Move regular units
-    final PlayerID germans = GameDataTestUtil.germany(gameData);
-    final Territory berlin = territory("Berlin", gameData);
-    final Territory easternGermany = territory("Eastern Germany", gameData);
+    final PlayerID germans = GameDataTestUtil.germany(twwGameData);
+    final Territory berlin = territory("Berlin", twwGameData);
+    final Territory easternGermany = territory("Eastern Germany", twwGameData);
     final Route r = new Route(berlin, easternGermany);
     List<Unit> toMove = berlin.getUnits().getMatches(Matches.unitCanMove());
     MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
-        new HashMap<>(), false, null, gameData);
+        new HashMap<>(), false, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add germanTrain to units which fails since it requires germainRail
-    addTo(berlin, GameDataTestUtil.germanTrain(gameData).create(1, germans));
+    addTo(berlin, GameDataTestUtil.germanTrain(twwGameData).create(1, germans));
     toMove = berlin.getUnits().getMatches(Matches.unitCanMove());
     results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
-        new HashMap<>(), false, null, gameData);
+        new HashMap<>(), false, null, twwGameData);
     assertFalse(results.isMoveValid());
 
     // Add germanRail to destination so move succeeds
-    addTo(easternGermany, GameDataTestUtil.germanRail(gameData).create(1, germans));
+    addTo(easternGermany, GameDataTestUtil.germanRail(twwGameData).create(1, germans));
     results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
-        new HashMap<>(), false, null, gameData);
+        new HashMap<>(), false, null, twwGameData);
     assertTrue(results.isMoveValid());
   }
 
