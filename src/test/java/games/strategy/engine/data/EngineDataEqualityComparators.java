@@ -14,6 +14,7 @@ import games.strategy.triplea.delegate.MechanizedInfantryAdvance;
 import games.strategy.triplea.delegate.ParatroopersAdvance;
 import games.strategy.triplea.delegate.RocketsAdvance;
 import games.strategy.triplea.delegate.SuperSubsAdvance;
+import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.WarBondsAdvance;
 
 /**
@@ -24,15 +25,11 @@ public final class EngineDataEqualityComparators {
 
   public static final EqualityComparator AA_RADAR_ADVANCE = EqualityComparator.newInstance(
       AARadarAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator DESTROYER_BOMBARD_TECH_ADVANCE = EqualityComparator.newInstance(
       DestroyerBombardTechAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator GAME_DATA = EqualityComparator.newInstance(
       GameData.class,
@@ -47,110 +44,124 @@ public final class EngineDataEqualityComparators {
 
   public static final EqualityComparator HEAVY_BOMBER_ADVANCE = EqualityComparator.newInstance(
       HeavyBomberAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator IMPROVED_ARTILLERY_SUPPORT_ADVANCE = EqualityComparator.newInstance(
       ImprovedArtillerySupportAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator IMPROVED_SHIPYARDS_ADVANCE = EqualityComparator.newInstance(
       ImprovedShipyardsAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator INCREASED_FACTORY_PRODUCTION_ADVANCE = EqualityComparator.newInstance(
       IncreasedFactoryProductionAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator INDUSTRIAL_TECHNOLOGY_ADVANCE = EqualityComparator.newInstance(
       IndustrialTechnologyAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator JET_POWER_ADVANCE = EqualityComparator.newInstance(
       JetPowerAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator LONG_RANGE_AIRCRAFT_ADVANCE = EqualityComparator.newInstance(
       LongRangeAircraftAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator MECHANIZED_INFANTRY_ADVANCE = EqualityComparator.newInstance(
       MechanizedInfantryAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator PARATROOPERS_ADVANCE = EqualityComparator.newInstance(
       ParatroopersAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator PRODUCTION_FRONTIER = EqualityComparator.newInstance(
       ProductionFrontier.class,
-      (context, o1, o2) -> context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName())
+      (context, o1, o2) -> defaultNamedEquals(context, o1, o2)
           && context.equals(o1.getRules(), o2.getRules()));
 
   public static final EqualityComparator PRODUCTION_RULE = EqualityComparator.newInstance(
       ProductionRule.class,
-      (context, o1, o2) -> context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName())
+      (context, o1, o2) -> defaultNamedEquals(context, o1, o2)
           && context.equals(o1.getCosts(), o2.getCosts())
           && context.equals(o1.getResults(), o2.getResults()));
 
   public static final EqualityComparator REPAIR_FRONTIER = EqualityComparator.newInstance(
       RepairFrontier.class,
-      (context, o1, o2) -> context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName())
+      (context, o1, o2) -> defaultNamedEquals(context, o1, o2)
           && context.equals(o1.getRules(), o2.getRules()));
 
   public static final EqualityComparator REPAIR_RULE = EqualityComparator.newInstance(
       RepairRule.class,
-      (context, o1, o2) -> context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName())
+      (context, o1, o2) -> defaultNamedEquals(context, o1, o2)
           && context.equals(o1.getCosts(), o2.getCosts())
           && context.equals(o1.getResults(), o2.getResults()));
 
   public static final EqualityComparator RESOURCE = EqualityComparator.newInstance(
       Resource.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::namedAttachableEquals);
 
   public static final EqualityComparator RESOURCE_COLLECTION = EqualityComparator.newInstance(
       ResourceCollection.class,
-      (context, o1, o2) -> context.equals(o1.getData(), o2.getData())
+      (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
           && context.equals(o1.getResourcesCopy(), o2.getResourcesCopy()));
 
   public static final EqualityComparator ROCKETS_ADVANCE = EqualityComparator.newInstance(
       RocketsAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator SUPER_SUBS_ADVANCE = EqualityComparator.newInstance(
       SuperSubsAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator WAR_BONDS_ADVANCE = EqualityComparator.newInstance(
       WarBondsAdvance.class,
-      (context, o1, o2) -> context.equals(o1.getAttachments(), o2.getAttachments())
-          && context.equals(o1.getData(), o2.getData())
-          && context.equals(o1.getName(), o2.getName()));
+      EngineDataEqualityComparators::techAdvanceEquals);
+
+  private static boolean techAdvanceEquals(
+      final EqualityComparator.Context context,
+      final TechAdvance o1,
+      final TechAdvance o2) {
+    return namedAttachableEquals(context, o1, o2);
+  }
+
+  private static boolean namedAttachableEquals(
+      final EqualityComparator.Context context,
+      final NamedAttachable o1,
+      final NamedAttachable o2) {
+    return defaultNamedEquals(context, o1, o2)
+        && attachableEquals(context, o1, o2);
+  }
+
+  private static boolean defaultNamedEquals(
+      final EqualityComparator.Context context,
+      final DefaultNamed o1,
+      final DefaultNamed o2) {
+    return gameDataComponentEquals(context, o1, o2)
+        && namedEquals(context, o1, o2);
+  }
+
+  private static boolean gameDataComponentEquals(
+      final EqualityComparator.Context context,
+      final GameDataComponent o1,
+      final GameDataComponent o2) {
+    return context.equals(o1.getData(), o2.getData());
+  }
+
+  private static boolean namedEquals(
+      final EqualityComparator.Context context,
+      final Named o1,
+      final Named o2) {
+    return context.equals(o1.getName(), o2.getName());
+  }
+
+  private static boolean attachableEquals(
+      final EqualityComparator.Context context,
+      final Attachable o1,
+      final Attachable o2) {
+    return context.equals(o1.getAttachments(), o2.getAttachments());
+  }
 }
