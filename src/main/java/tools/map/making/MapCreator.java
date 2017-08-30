@@ -3,8 +3,6 @@ package tools.map.making;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
@@ -28,10 +26,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.OpenFileUtility;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.SwingAction;
 import tools.image.AutoPlacementFinder;
@@ -185,18 +183,7 @@ public class MapCreator extends JFrame {
     panel1.add(Box.createVerticalStrut(30));
     panel1.add(new JLabel("Click button open up the readme file on how to make maps:"));
     final JButton helpButton = new JButton("Start Tutorial  /  Show Help Document");
-    helpButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          OpenFileUtility.openFile(
-              new File(ClientFileSystemHelper.getRootFolder(),
-                  "doc" + File.separator + "map_and_map_skin_making_overview.html"));
-        } catch (final Exception e1) {
-          e1.printStackTrace();
-        }
-      }
-    });
+    helpButton.addActionListener(e -> OpenFileUtility.openUrl(UrlConstants.MAP_MAKER_HELP.toString()));
     panel1.add(helpButton);
     panel1.add(Box.createVerticalStrut(30));
     panel1.add(new JLabel("Click button to select where your map folder is:"));
