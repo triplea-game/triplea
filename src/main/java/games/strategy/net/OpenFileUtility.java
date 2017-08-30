@@ -11,7 +11,8 @@ import games.strategy.ui.SwingComponents;
 /**
  * A wrapper class for opening Files & URLs using the Desktop API.
  */
-public class OpenFileUtility {
+public final class OpenFileUtility {
+  private OpenFileUtility() {}
 
   /**
    * Opens a specific file on the user's computer using the local computer's file associations.
@@ -28,11 +29,11 @@ public class OpenFileUtility {
    * @param file The file to be opened.
    * @param action What to do if the Desktop API is not supported.
    */
-  public static void openFile(final File file, Runnable action) {
+  public static void openFile(final File file, final Runnable action) {
     if (Desktop.isDesktopSupported()) {
       try {
         Desktop.getDesktop().open(file);
-      } catch (IOException e) {
+      } catch (final IOException e) {
         ClientLogger.logError("Could not open File " + file.getAbsolutePath(), e);
       }
     } else {
@@ -46,11 +47,11 @@ public class OpenFileUtility {
    * @param url A URL of a web page (ex: "http://www.google.com/").
    * @param action What to do if the Desktop API is not supported.
    */
-  public static void openUrl(final String url, Runnable action) {
+  public static void openUrl(final String url, final Runnable action) {
     if (Desktop.isDesktopSupported()) {
       try {
         Desktop.getDesktop().browse(URI.create(url));
-      } catch (IOException e) {
+      } catch (final IOException e) {
         ClientLogger.logError("Could not open URL " + url, e);
       }
     } else {
@@ -67,7 +68,7 @@ public class OpenFileUtility {
     openUrl(url, () -> logDesktopApiMessage(url));
   }
 
-  private static void logDesktopApiMessage(String path) {
+  private static void logDesktopApiMessage(final String path) {
     SwingComponents.showDialog("Desktop API not supported",
         "We're sorry, but it seems that your installed java version doesn't support the Desktop API required to open "
             + path);
