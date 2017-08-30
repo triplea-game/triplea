@@ -1068,16 +1068,14 @@ public final class Matches {
   }
 
   /**
-   * Does NOT check for Canals, Blitzing, Loading units on transports, TerritoryEffects that disallow units, Stacking
-   * Limits, Unit movement
-   * left, Fuel available, etc.<br>
+   * Does NOT check for: Canals, Blitzing, Loading units on transports, TerritoryEffects that disallow units, Stacking
+   * Limits, Unit movement left, Fuel available, etc.
    * <br>
-   * Does check for: Impassable, ImpassableNeutrals, ImpassableToAirNeutrals, RestrictedTerritories, Land units moving
-   * on water, Sea units
-   * moving on land,
-   * and territories that are disallowed due to a relationship attachment (canMoveLandUnitsOverOwnedLand,
-   * canMoveAirUnitsOverOwnedLand,
-   * canLandAirUnitsOnOwnedLand, canMoveIntoDuringCombatMove, etc).
+   * <br>
+   * Does check for: Impassable, ImpassableNeutrals, ImpassableToAirNeutrals, RestrictedTerritories, requiresUnitToMove,
+   * Land units moving on water, Sea units moving on land, and territories that are disallowed due to a relationship
+   * attachment (canMoveLandUnitsOverOwnedLand, canMoveAirUnitsOverOwnedLand, canLandAirUnitsOnOwnedLand,
+   * canMoveIntoDuringCombatMove, etc).
    */
   public static Match<Territory> territoryIsPassableAndNotRestrictedAndOkByRelationships(
       final PlayerID playerWhoOwnsAllTheUnitsMoving, final GameData data, final boolean isCombatMovePhase,
@@ -1865,6 +1863,38 @@ public final class Matches {
         }
       }
       return canBuild;
+    });
+  }
+
+  /**
+   * Check if unit meets requiredUnitsToMove criteria and can move into territory.
+   */
+  public static Match<Unit> unitHasRequiredUnitsToMove(final Territory t) {
+    return Match.of(unit -> {
+
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      if (ua == null || ua.getRequiresUnitsToMove() == null || ua.getRequiresUnitsToMove().isEmpty()) {
+        return true;
+      }
+
+      final Match<Unit> unitIsOwnedByAndNotDisabled = Match.allOf(
+          Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsNotDisabled());
+      final List<Unit> units = Match.getMatches(t.getUnits().getUnits(), unitIsOwnedByAndNotDisabled);
+
+      for (final String[] array : ua.getRequiresUnitsToMove()) {
+        boolean haveAll = true;
+        for (final UnitType ut : ua.getListedUnits(array)) {
+          if (Match.noneMatch(units, Matches.unitIsOfType(ut))) {
+            haveAll = false;
+            break;
+          }
+        }
+        if (haveAll) {
+          return true;
+        }
+      }
+
+      return false;
     });
   }
 
