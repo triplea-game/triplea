@@ -22,7 +22,8 @@ public enum UrlConstants {
   LATEST_GAME_DOWNLOAD_WEBSITE("http://www.triplea-game.org/download"),
   TRIPLEA_WEBSITE("http://www.triplea-game.org/"),
   MAP_DOWNLOAD_LIST("https://raw.githubusercontent.com/triplea-game/triplea/master/triplea_maps.yaml?raw=true"),
-  LOBBY_PROPS_FILE_URL("https://raw.githubusercontent.com/triplea-game/triplea/master/lobby_server.yaml?raw=true");
+  LOBBY_PROPS_FILE_URL("https://raw.githubusercontent.com/triplea-game/triplea/master/lobby_server.yaml?raw=true"),
+  MAP_MAKER_HELP("https://github.com/triplea-game/triplea/blob/master/docs/map_making/map_and_map_skin_making_overview.md");
 
   private final String urlString;
 
