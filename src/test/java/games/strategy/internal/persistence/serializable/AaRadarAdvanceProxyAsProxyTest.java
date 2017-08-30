@@ -19,7 +19,13 @@ public final class AaRadarAdvanceProxyAsProxyTest extends AbstractProxyTestCase<
 
   @Override
   protected Collection<AARadarAdvance> createPrincipals() {
-    return Arrays.asList(TestGameDataComponentFactory.newAaRadarAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newAaRadarAdvance());
+  }
+
+  private static AARadarAdvance newAaRadarAdvance() {
+    final AARadarAdvance aaRadarAdvance = new AARadarAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(aaRadarAdvance);
+    return aaRadarAdvance;
   }
 
   @Override

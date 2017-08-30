@@ -20,8 +20,14 @@ public final class DestroyerBombardTechAdvanceProxyAsProxyTest
 
   @Override
   protected Collection<DestroyerBombardTechAdvance> createPrincipals() {
-    return Arrays.asList(
-        TestGameDataComponentFactory.newDestroyerBombardTechAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newDestroyerBombardTechAdvance());
+  }
+
+  private static DestroyerBombardTechAdvance newDestroyerBombardTechAdvance() {
+    final DestroyerBombardTechAdvance destroyerBombardTechAdvance =
+        new DestroyerBombardTechAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(destroyerBombardTechAdvance);
+    return destroyerBombardTechAdvance;
   }
 
   @Override

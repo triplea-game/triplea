@@ -19,7 +19,13 @@ public final class HeavyBomberAdvanceProxyAsProxyTest extends AbstractProxyTestC
 
   @Override
   protected Collection<HeavyBomberAdvance> createPrincipals() {
-    return Arrays.asList(TestGameDataComponentFactory.newHeavyBomberAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newHeavyBomberAdvance());
+  }
+
+  private static HeavyBomberAdvance newHeavyBomberAdvance() {
+    final HeavyBomberAdvance heavyBomberAdvance = new HeavyBomberAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(heavyBomberAdvance);
+    return heavyBomberAdvance;
   }
 
   @Override

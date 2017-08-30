@@ -19,7 +19,13 @@ public final class RocketsAdvanceProxyAsProxyTest extends AbstractProxyTestCase<
 
   @Override
   protected Collection<RocketsAdvance> createPrincipals() {
-    return Arrays.asList(TestGameDataComponentFactory.newRocketsAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newRocketsAdvance());
+  }
+
+  private static RocketsAdvance newRocketsAdvance() {
+    final RocketsAdvance rocketsAdvance = new RocketsAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(rocketsAdvance);
+    return rocketsAdvance;
   }
 
   @Override

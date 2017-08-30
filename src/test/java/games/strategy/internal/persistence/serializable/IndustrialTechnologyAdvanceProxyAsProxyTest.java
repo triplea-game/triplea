@@ -20,8 +20,14 @@ public final class IndustrialTechnologyAdvanceProxyAsProxyTest
 
   @Override
   protected Collection<IndustrialTechnologyAdvance> createPrincipals() {
-    return Arrays.asList(
-        TestGameDataComponentFactory.newIndustrialTechnologyAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newIndustrialTechnologyAdvance());
+  }
+
+  private static IndustrialTechnologyAdvance newIndustrialTechnologyAdvance() {
+    final IndustrialTechnologyAdvance industrialTechnologyAdvance =
+        new IndustrialTechnologyAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(industrialTechnologyAdvance);
+    return industrialTechnologyAdvance;
   }
 
   @Override

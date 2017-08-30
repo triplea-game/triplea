@@ -19,8 +19,14 @@ public final class LongRangeAircraftAdvanceProxyAsProxyTest extends AbstractProx
 
   @Override
   protected Collection<LongRangeAircraftAdvance> createPrincipals() {
-    return Arrays.asList(
-        TestGameDataComponentFactory.newLongRangeAircraftAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newLongRangeAircraftAdvance());
+  }
+
+  private static LongRangeAircraftAdvance newLongRangeAircraftAdvance() {
+    final LongRangeAircraftAdvance longRangeAircraftAdvance =
+        new LongRangeAircraftAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(longRangeAircraftAdvance);
+    return longRangeAircraftAdvance;
   }
 
   @Override

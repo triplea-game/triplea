@@ -19,7 +19,13 @@ public final class SuperSubsAdvanceProxyAsProxyTest extends AbstractProxyTestCas
 
   @Override
   protected Collection<SuperSubsAdvance> createPrincipals() {
-    return Arrays.asList(TestGameDataComponentFactory.newSuperSubsAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newSuperSubsAdvance());
+  }
+
+  private static SuperSubsAdvance newSuperSubsAdvance() {
+    final SuperSubsAdvance superSubsAdvance = new SuperSubsAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(superSubsAdvance);
+    return superSubsAdvance;
   }
 
   @Override

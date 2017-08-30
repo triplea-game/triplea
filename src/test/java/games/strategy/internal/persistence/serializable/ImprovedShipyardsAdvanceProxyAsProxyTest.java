@@ -19,8 +19,14 @@ public final class ImprovedShipyardsAdvanceProxyAsProxyTest extends AbstractProx
 
   @Override
   protected Collection<ImprovedShipyardsAdvance> createPrincipals() {
-    return Arrays.asList(
-        TestGameDataComponentFactory.newImprovedShipyardsAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newImprovedShipyardsAdvance());
+  }
+
+  private static ImprovedShipyardsAdvance newImprovedShipyardsAdvance() {
+    final ImprovedShipyardsAdvance improvedShipyardsAdvance =
+        new ImprovedShipyardsAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(improvedShipyardsAdvance);
+    return improvedShipyardsAdvance;
   }
 
   @Override

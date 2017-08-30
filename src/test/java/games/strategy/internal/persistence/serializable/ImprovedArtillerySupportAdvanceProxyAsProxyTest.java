@@ -20,8 +20,14 @@ public final class ImprovedArtillerySupportAdvanceProxyAsProxyTest
 
   @Override
   protected Collection<ImprovedArtillerySupportAdvance> createPrincipals() {
-    return Arrays.asList(
-        TestGameDataComponentFactory.newImprovedArtillerySupportAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newImprovedArtillerySupportAdvance());
+  }
+
+  private static ImprovedArtillerySupportAdvance newImprovedArtillerySupportAdvance() {
+    final ImprovedArtillerySupportAdvance improvedArtillerySupportAdvance =
+        new ImprovedArtillerySupportAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(improvedArtillerySupportAdvance);
+    return improvedArtillerySupportAdvance;
   }
 
   @Override

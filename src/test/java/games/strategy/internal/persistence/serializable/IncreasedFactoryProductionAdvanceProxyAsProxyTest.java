@@ -20,8 +20,14 @@ public final class IncreasedFactoryProductionAdvanceProxyAsProxyTest
 
   @Override
   protected Collection<IncreasedFactoryProductionAdvance> createPrincipals() {
-    return Arrays.asList(
-        TestGameDataComponentFactory.newIncreasedFactoryProductionAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newIncreasedFactoryProductionAdvance());
+  }
+
+  private static IncreasedFactoryProductionAdvance newIncreasedFactoryProductionAdvance() {
+    final IncreasedFactoryProductionAdvance increasedFactoryProductionAdvance =
+        new IncreasedFactoryProductionAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(increasedFactoryProductionAdvance);
+    return increasedFactoryProductionAdvance;
   }
 
   @Override

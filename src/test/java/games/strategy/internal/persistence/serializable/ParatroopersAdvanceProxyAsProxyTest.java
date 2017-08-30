@@ -19,7 +19,13 @@ public final class ParatroopersAdvanceProxyAsProxyTest extends AbstractProxyTest
 
   @Override
   protected Collection<ParatroopersAdvance> createPrincipals() {
-    return Arrays.asList(TestGameDataComponentFactory.newParatroopersAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newParatroopersAdvance());
+  }
+
+  private static ParatroopersAdvance newParatroopersAdvance() {
+    final ParatroopersAdvance paratroopersAdvance = new ParatroopersAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(paratroopersAdvance);
+    return paratroopersAdvance;
   }
 
   @Override

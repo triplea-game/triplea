@@ -19,7 +19,13 @@ public final class JetPowerAdvanceProxyAsProxyTest extends AbstractProxyTestCase
 
   @Override
   protected Collection<JetPowerAdvance> createPrincipals() {
-    return Arrays.asList(TestGameDataComponentFactory.newJetPowerAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newJetPowerAdvance());
+  }
+
+  private static JetPowerAdvance newJetPowerAdvance() {
+    final JetPowerAdvance jetPowerAdvance = new JetPowerAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(jetPowerAdvance);
+    return jetPowerAdvance;
   }
 
   @Override

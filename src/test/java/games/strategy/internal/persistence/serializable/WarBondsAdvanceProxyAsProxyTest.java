@@ -19,7 +19,13 @@ public final class WarBondsAdvanceProxyAsProxyTest extends AbstractProxyTestCase
 
   @Override
   protected Collection<WarBondsAdvance> createPrincipals() {
-    return Arrays.asList(TestGameDataComponentFactory.newWarBondsAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newWarBondsAdvance());
+  }
+
+  private static WarBondsAdvance newWarBondsAdvance() {
+    final WarBondsAdvance warBondsAdvance = new WarBondsAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(warBondsAdvance);
+    return warBondsAdvance;
   }
 
   @Override

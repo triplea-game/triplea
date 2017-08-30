@@ -19,8 +19,14 @@ public final class MechanizedInfantryAdvanceProxyAsProxyTest extends AbstractPro
 
   @Override
   protected Collection<MechanizedInfantryAdvance> createPrincipals() {
-    return Arrays.asList(
-        TestGameDataComponentFactory.newMechanizedInfantryAdvance(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newMechanizedInfantryAdvance());
+  }
+
+  private static MechanizedInfantryAdvance newMechanizedInfantryAdvance() {
+    final MechanizedInfantryAdvance mechanizedInfantryAdvance =
+        new MechanizedInfantryAdvance(TestGameDataFactory.newValidGameData());
+    TestGameDataComponentFactory.initializeAttachable(mechanizedInfantryAdvance);
+    return mechanizedInfantryAdvance;
   }
 
   @Override
