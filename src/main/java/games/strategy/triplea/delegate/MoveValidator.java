@@ -283,7 +283,9 @@ public class MoveValidator {
           && (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsAir))) {
         return result.setErrorReturnResult("Cannot blitz out of a battle further into enemy territory");
       }
-      for (final Unit u : Match.getMatches(units, Match.allOf(Matches.UnitCanBlitz.invert(), Matches.unitIsNotAir()))) {
+      for (final Unit u : Match.getMatches(units, Match.allOf(
+          Matches.unitCanBlitz().invert(),
+          Matches.unitIsNotAir()))) {
         result.addDisallowedUnit("Not all units can blitz out of empty enemy territory", u);
       }
     }
@@ -332,7 +334,7 @@ public class MoveValidator {
           return result.setErrorReturnResult("Cannot blitz on that route");
         }
       } else if (allEnemyBlitzable && !(route.getStart().isWater() || route.getEnd().isWater())) {
-        final Match<Unit> blitzingUnit = Match.anyOf(Matches.UnitCanBlitz, Matches.UnitIsAir);
+        final Match<Unit> blitzingUnit = Match.anyOf(Matches.unitCanBlitz(), Matches.UnitIsAir);
         final Match<Unit> nonBlitzing = blitzingUnit.invert();
         final Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
         // remove any units that gain blitz due to certain abilities
@@ -607,7 +609,7 @@ public class MoveValidator {
             // simple: if it movement group contains an air-transport, then assume we are doing paratroopers. else,
             // assume we are doing
             // mechanized
-            if (Match.anyMatch(units, Matches.UnitIsAirTransport)) {
+            if (Match.anyMatch(units, Matches.unitIsAirTransport())) {
               for (final Unit airTransport : dependencies.keySet()) {
                 if (dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit)) {
                   unitOk = true;
@@ -813,7 +815,7 @@ public class MoveValidator {
   }
 
   private static boolean enemyDestroyerOnPath(final Route route, final PlayerID player, final GameData data) {
-    final Match<Unit> enemyDestroyer = Match.allOf(Matches.UnitIsDestroyer, Matches.enemyUnit(player, data));
+    final Match<Unit> enemyDestroyer = Match.allOf(Matches.unitIsDestroyer(), Matches.enemyUnit(player, data));
     for (final Territory current : route.getMiddleSteps()) {
       if (current.getUnits().anyMatch(enemyDestroyer)) {
         return true;
@@ -847,9 +849,9 @@ public class MoveValidator {
     // See if we even need to go to the trouble of checking for AirTransported units
     final boolean checkForAlreadyTransported = !route.getStart().isWater() && route.hasWater();
     if (checkForAlreadyTransported) {
-      // TODO Leaving UnitIsTransport for potential use with amphib transports (hovercraft, ducks, etc...)
+      // TODO Leaving unitIsTransport() for potential use with amphib transports (hovercraft, ducks, etc...)
       final List<Unit> transports =
-          Match.getMatches(units, Match.anyOf(Matches.UnitIsTransport, Matches.UnitIsAirTransport));
+          Match.getMatches(units, Match.anyOf(Matches.unitIsTransport(), Matches.unitIsAirTransport()));
       final List<Unit> transportable =
           Match.getMatches(units, Match.anyOf(Matches.unitCanBeTransported(), Matches.unitIsAirTransportable()));
       // Check if there are transports in the group to be checked
@@ -1164,7 +1166,7 @@ public class MoveValidator {
   static boolean allLandUnitsAreBeingParatroopered(final Collection<Unit> units) {
     // some units that can't be paratrooped
     if (units.isEmpty()
-        || !Match.allMatch(units, Match.anyOf(Matches.unitIsAirTransportable(), Matches.UnitIsAirTransport,
+        || !Match.allMatch(units, Match.anyOf(Matches.unitIsAirTransportable(), Matches.unitIsAirTransport(),
             Matches.UnitIsAir))) {
       return false;
     }
@@ -1175,7 +1177,7 @@ public class MoveValidator {
     if (paratroopsRequiringTransport.isEmpty()) {
       return false;
     }
-    final List<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+    final List<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
     final List<Unit> allParatroops =
         TransportUtils.findUnitsToLoadOnAirTransports(paratroopsRequiringTransport, airTransports);
     if (!allParatroops.containsAll(paratroopsRequiringTransport)) {
@@ -1214,7 +1216,7 @@ public class MoveValidator {
       return result;
     }
     if (Match.noneMatch(units, Matches.unitIsAirTransportable())
-        || Match.noneMatch(units, Matches.UnitIsAirTransport)) {
+        || Match.noneMatch(units, Matches.unitIsAirTransport())) {
       return result;
     }
     if (nonCombat && !isAirTransportableCanMoveDuringNonCombat(data)) {
@@ -1228,7 +1230,7 @@ public class MoveValidator {
       if (paratroopsRequiringTransport.isEmpty()) {
         return result;
       }
-      final List<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+      final List<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
       // TODO kev change below to mapAirTransports (or modify mapTransports to handle air cargo)
       // Map<Unit, Unit> airTransportsAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport,
       // airTransports);
@@ -1362,7 +1364,7 @@ public class MoveValidator {
   private static Map<Unit, Collection<Unit>> transportsMustMoveWith(final Collection<Unit> units) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     // map transports
-    final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
+    final Collection<Unit> transports = Match.getMatches(units, Matches.unitIsTransport());
     final Iterator<Unit> iter = transports.iterator();
     while (iter.hasNext()) {
       final Unit transport = iter.next();
@@ -1375,7 +1377,7 @@ public class MoveValidator {
   private static Map<Unit, Collection<Unit>> airTransportsMustMoveWith(final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
-    final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+    final Collection<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
     // Then check those that have already had their transportedBy set
     for (final Unit airTransport : airTransports) {
       if (!mustMoveWith.containsKey(airTransport)) {
@@ -1403,7 +1405,7 @@ public class MoveValidator {
     final Match<Unit> friendlyNotOwnedAir = Match.allOf(
         Matches.alliedUnit(player, data),
         Matches.unitIsOwnedBy(player).invert(),
-        Matches.UnitCanLandOnCarrier);
+        Matches.unitCanLandOnCarrier());
     final Collection<Unit> alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
     if (alliedAir.isEmpty()) {
       return Collections.emptyMap();

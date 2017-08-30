@@ -95,7 +95,7 @@ public class ProMatches {
           Match.allOf(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u),
               Matches.isTerritoryAllied(player, data), Matches.territoryHasNoEnemyUnits(player, data),
               Matches.territoryIsInList(enemyTerritories).invert());
-      if (isCombatMove && Matches.UnitCanBlitz.match(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
+      if (isCombatMove && Matches.unitCanBlitz().match(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
         final Match<Territory> alliedWithNoEnemiesMatch = Match.allOf(
             Matches.isTerritoryAllied(player, data), Matches.territoryHasNoEnemyUnits(player, data));
         final Match<Territory> alliedOrBlitzableMatch =
@@ -112,7 +112,7 @@ public class ProMatches {
       final List<Territory> blockedTerritories, final List<Territory> clearedTerritories) {
     Match<Territory> alliedMatch = Match.anyOf(Matches.isTerritoryAllied(player, data),
         Matches.territoryIsInList(clearedTerritories));
-    if (isCombatMove && Matches.UnitCanBlitz.match(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
+    if (isCombatMove && Matches.unitCanBlitz().match(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
       alliedMatch = Match.anyOf(Matches.isTerritoryAllied(player, data),
           Matches.territoryIsInList(clearedTerritories), territoryIsBlitzable(player, data, u));
     }
@@ -386,7 +386,7 @@ public class ProMatches {
       if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
-      final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.UnitIsTransport);
+      final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitIsTransport());
       return match.match(u);
     });
   }
@@ -489,7 +489,7 @@ public class ProMatches {
   }
 
   public static Match<Unit> unitIsOwnedTransport(final PlayerID player) {
-    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport);
+    return Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsTransport());
   }
 
   public static Match<Unit> unitIsOwnedTransportableUnit(final PlayerID player) {

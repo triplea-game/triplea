@@ -99,7 +99,7 @@ public class ProOddsCalculator {
       return new ProBattleResult(100, 0.1, true, attackingUnits, new ArrayList<>(), 0);
     } else if (Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty()
         && Match.allMatch(defendingUnits, Matches.UnitIsSub)
-        && Match.noneMatch(attackingUnits, Matches.UnitIsDestroyer)) {
+        && Match.noneMatch(attackingUnits, Matches.unitIsDestroyer())) {
       return new ProBattleResult();
     }
     return null;

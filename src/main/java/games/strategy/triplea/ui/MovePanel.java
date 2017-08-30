@@ -94,7 +94,7 @@ public class MovePanel extends AbstractMovePanel {
   // Same as above! Delete this crap after refactoring.
   public static void clearDependents(final Collection<Unit> units) {
     for (final Unit unit : units) {
-      if (Matches.UnitIsAirTransport.match(unit)) {
+      if (Matches.unitIsAirTransport().match(unit)) {
         dependentUnits.remove(unit);
       }
     }
@@ -204,7 +204,7 @@ public class MovePanel extends AbstractMovePanel {
 
     // Match criteria to ensure that chosen transports will match selected units
     final Match<Collection<Unit>> transportsToUnloadMatch = Match.of(units -> {
-      final List<Unit> sortedTransports = Match.getMatches(units, Matches.UnitIsTransport);
+      final List<Unit> sortedTransports = Match.getMatches(units, Matches.unitIsTransport());
       final Collection<Unit> availableUnits = new ArrayList<>(unitsToUnload);
 
       // track the changing capacities of the transports as we assign units
@@ -268,7 +268,7 @@ public class MovePanel extends AbstractMovePanel {
     if (option != JOptionPane.OK_OPTION) {
       return Collections.emptyList();
     }
-    final Collection<Unit> chosenTransports = Match.getMatches(chooser.getSelected(), Matches.UnitIsTransport);
+    final Collection<Unit> chosenTransports = Match.getMatches(chooser.getSelected(), Matches.unitIsTransport());
     final List<Unit> allUnitsInSelectedTransports = new ArrayList<>();
     for (final Unit transport : chosenTransports) {
       final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
@@ -451,7 +451,7 @@ public class MovePanel extends AbstractMovePanel {
     Collection<Unit> transportsToLoad = Collections.emptyList();
     if (MoveValidator.isLoad(units, dependentUnits, route, getData(), getCurrentPlayer())) {
       transportsToLoad = route.getEnd().getUnits().getMatches(
-          Match.allOf(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), getData())));
+          Match.allOf(Matches.unitIsTransport(), Matches.alliedUnit(getCurrentPlayer(), getData())));
     }
     List<Unit> best = new ArrayList<>(units);
     // if the player selects a land unit and other units
@@ -571,7 +571,7 @@ public class MovePanel extends AbstractMovePanel {
       minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
     }
     final Match<Unit> candidateTransportsMatch = Match.allOf(
-        Matches.UnitIsTransport,
+        Matches.unitIsTransport(),
         Matches.alliedUnit(unitOwner, getGameData()));
     final List<Unit> candidateTransports = Match.getMatches(endOwnedUnits, candidateTransportsMatch);
 
@@ -687,7 +687,7 @@ public class MovePanel extends AbstractMovePanel {
 
     // the match criteria to ensure that chosen transports will match selected units
     final Match<Collection<Unit>> transportsToLoadMatch = Match.of(units -> {
-      final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
+      final Collection<Unit> transports = Match.getMatches(units, Matches.unitIsTransport());
       // prevent too many transports from being selected
       return (transports.size() <= Math.min(unitsToLoad.size(), candidateTransports.size()));
     });
@@ -843,7 +843,7 @@ public class MovePanel extends AbstractMovePanel {
         // Load Bombers with paratroops
         if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))
             && TechAttachment.isAirTransportable(getCurrentPlayer())
-            && Match.anyMatch(selectedUnits, Match.allOf(Matches.UnitIsAirTransport, Matches.unitHasNotMoved()))) {
+            && Match.anyMatch(selectedUnits, Match.allOf(Matches.unitIsAirTransport(), Matches.unitHasNotMoved()))) {
           final PlayerID player = getCurrentPlayer();
           // TODO Transporting allied units
           // Get the potential units to load
@@ -859,7 +859,7 @@ public class MovePanel extends AbstractMovePanel {
           }
           // Get the potential air transports to load
           final Match.CompositeBuilder<Unit> candidateAirTransportsMatchBuilder = Match.newCompositeBuilder(
-              Matches.UnitIsAirTransport,
+              Matches.unitIsAirTransport(),
               Matches.unitIsOwnedBy(player),
               Matches.unitHasNotMoved(),
               Matches.transportIsNotTransporting());
@@ -891,7 +891,7 @@ public class MovePanel extends AbstractMovePanel {
       final Set<Unit> defaultSelections = new HashSet<>();
       // prevent too many bombers from being selected
       final Match<Collection<Unit>> transportsToLoadMatch = Match.of(units -> {
-        final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+        final Collection<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
         return (airTransports.size() <= candidateAirTransports.size());
       });
       // Allow player to select which to load.
@@ -1092,7 +1092,7 @@ public class MovePanel extends AbstractMovePanel {
       }
       Collection<Unit> transports = null;
       final Match.CompositeBuilder<Unit> paratroopNBombersBuilder = Match.newCompositeBuilder(
-          Matches.UnitIsAirTransport,
+          Matches.unitIsAirTransport(),
           Matches.unitIsAirTransportable());
       final boolean paratroopsLanding = Match.anyMatch(units, paratroopNBombersBuilder.all());
       if (route.isLoad() && Match.anyMatch(units, Matches.UnitIsLand)) {

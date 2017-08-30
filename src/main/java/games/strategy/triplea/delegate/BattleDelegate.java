@@ -388,7 +388,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final IDelegateBridge bridge) {
     if (TechTracker.hasParatroopers(player)) {
       final Collection<Unit> airTransports =
-          Match.getMatches(battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
+          Match.getMatches(battleSite.getUnits().getUnits(), Matches.unitIsAirTransport());
       final Collection<Unit> paratroops =
           Match.getMatches(battleSite.getUnits().getUnits(), Matches.unitIsAirTransportable());
       if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
@@ -867,7 +867,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           // refactored.
           final MustFightBattle mfb = (MustFightBattle) battle;
           final Collection<Territory> neighborsLand = data.getMap().getNeighbors(to, Matches.TerritoryIsLand);
-          if (Match.anyMatch(attackingUnits, Matches.UnitIsTransport)) {
+          if (Match.anyMatch(attackingUnits, Matches.unitIsTransport())) {
             // first, we have to reset the "transportedBy" setting for all the land units that were offloaded
             final CompositeChange change1 = new CompositeChange();
             mfb.reLoadTransports(attackingUnits, change1);
@@ -879,7 +879,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 new HashMap<>();
             final Map<Unit, Collection<Unit>> dependenciesForMfb =
                 TransportTracker.transporting(attackingUnits, attackingUnits);
-            for (final Unit transport : Match.getMatches(attackingUnits, Matches.UnitIsTransport)) {
+            for (final Unit transport : Match.getMatches(attackingUnits, Matches.unitIsTransport())) {
               // however, the map we add to the newly created battle, cannot hold any units that are NOT in this
               // territory.
               // BUT it must still hold all transports
@@ -891,11 +891,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             for (final Territory t : neighborsLand) {
               // All other maps, must hold only the transported units that in their territory
               final Collection<Unit> allNeighborUnits =
-                  new ArrayList<>(Match.getMatches(attackingUnits, Matches.UnitIsTransport));
+                  new ArrayList<>(Match.getMatches(attackingUnits, Matches.unitIsTransport()));
               allNeighborUnits.addAll(t.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(m_player)));
               final Map<Unit, Collection<Unit>> dependenciesForNeighbors =
-                  TransportTracker.transporting(Match.getMatches(allNeighborUnits, Matches.UnitIsTransport),
-                      Match.getMatches(allNeighborUnits, Matches.UnitIsTransport.invert()));
+                  TransportTracker.transporting(Match.getMatches(allNeighborUnits, Matches.unitIsTransport()),
+                      Match.getMatches(allNeighborUnits, Matches.unitIsTransport().invert()));
               dependencies.put(t, dependenciesForNeighbors);
             }
             mfb.addDependentUnits(dependencies.get(to));
@@ -1515,7 +1515,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     availableLand.removeAll(canNotLand);
     whereCanLand.addAll(availableLand);
     // now for carrier-air-landing validation
-    if (!strandedAir.isEmpty() && Match.allMatch(strandedAir, Matches.UnitCanLandOnCarrier)) {
+    if (!strandedAir.isEmpty() && Match.allMatch(strandedAir, Matches.unitCanLandOnCarrier())) {
       final HashSet<Territory> availableWater = new HashSet<>();
       availableWater.addAll(Match.getMatches(possibleTerrs,
           Match.allOf(
@@ -1531,7 +1531,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .carrierCapacity(t.getUnits().getMatches(Matches.unitIsAlliedCarrier(alliedPlayer, data)), t);
         if (!t.equals(currentTerr)) {
           carrierCapacity -= AirMovementValidator.carrierCost(t.getUnits().getMatches(
-              Match.allOf(Matches.UnitCanLandOnCarrier, Matches.alliedUnit(alliedPlayer, data))));
+              Match.allOf(Matches.unitCanLandOnCarrier(), Matches.alliedUnit(alliedPlayer, data))));
         } else {
           carrierCapacity -= carrierCostForCurrentTerr;
         }

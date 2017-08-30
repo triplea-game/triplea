@@ -149,7 +149,7 @@ public class MovePerformer implements Serializable {
         // territory. This means they
         // are still dependent during the middle steps of the route.
         final Collection<Unit> dependentOnSomethingTilTheEndOfRoute = new ArrayList<>();
-        final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.UnitIsAirTransport);
+        final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.unitIsAirTransport());
         final Collection<Unit> paratroops = Match.getMatches(arrived, Matches.unitIsAirTransportable());
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
           final Map<Unit, Unit> transportingAir =
@@ -344,7 +344,7 @@ public class MovePerformer implements Serializable {
     }
     if (routeEnd != null && Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
         && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
-            .anyMatch(Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer))) {
+            .anyMatch(Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.unitIsDestroyer()))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
@@ -365,7 +365,7 @@ public class MovePerformer implements Serializable {
     }
     final GameData data = m_bridge.getData();
     final Match<Unit> paratroopNAirTransports = Match.anyOf(
-        Matches.UnitIsAirTransport,
+        Matches.unitIsAirTransport(),
         Matches.unitIsAirTransportable());
     final boolean paratroopsLanding = Match.anyMatch(arrived, paratroopNAirTransports)
         && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
@@ -386,7 +386,7 @@ public class MovePerformer implements Serializable {
     // If paratroops moved normally (within their normal movement) remove their dependency to the airTransports
     // So they can all continue to move normally
     if (!paratroopsLanding && !dependentAirTransportableUnits.isEmpty()) {
-      final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.UnitIsAirTransport);
+      final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.unitIsAirTransport());
       airTransports.addAll(dependentAirTransportableUnits.keySet());
       MovePanel.clearDependents(airTransports);
     }
@@ -433,7 +433,7 @@ public class MovePerformer implements Serializable {
         }
         final Unit transportedBy = ((TripleAUnit) unit).getTransportedBy();
         // we will unload our paratroopers after they land in battle (after aa guns fire)
-        if (paratroopsLanding && transportedBy != null && Matches.UnitIsAirTransport.match(transportedBy)
+        if (paratroopsLanding && transportedBy != null && Matches.unitIsAirTransport().match(transportedBy)
             && GameStepPropertiesHelper.isCombatMove(data)
             && Matches.territoryHasNonSubmergedEnemyUnits(m_player, data).match(route.getEnd())) {
           continue;

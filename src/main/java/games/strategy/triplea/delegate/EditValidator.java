@@ -75,7 +75,7 @@ class EditValidator {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              Match.allOf(Matches.unitIsTransport(), Matches.UnitIsSea, Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
           if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.unitCanBeTransported())) {
@@ -91,7 +91,7 @@ class EditValidator {
           }
         }
         if (Match.anyMatch(units, Matches.UnitIsAir)) {
-          if (Match.anyMatch(units, Match.allOf(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
+          if (Match.anyMatch(units, Match.allOf(Matches.UnitIsAir, Matches.unitCanLandOnCarrier().invert()))) {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches

@@ -284,7 +284,7 @@ public class ProTerritoryManager {
     final Set<Unit> movedTransports = new HashSet<>();
     for (final ProTerritory patd : attackOptions.getTerritoryMap().values()) {
       movedTransports.addAll(patd.getAmphibAttackMap().keySet());
-      movedTransports.addAll(Match.getMatches(patd.getUnits(), Matches.UnitIsTransport));
+      movedTransports.addAll(Match.getMatches(patd.getUnits(), Matches.unitIsTransport()));
     }
     return movedTransports.size() >= attackOptions.getTransportList().size();
   }
@@ -628,7 +628,7 @@ public class ProTerritoryManager {
           }
 
           // Populate appropriate unit move options map
-          if (Matches.UnitIsTransport.match(mySeaUnit)) {
+          if (Matches.unitIsTransport().match(mySeaUnit)) {
             if (transportMoveMap.containsKey(mySeaUnit)) {
               transportMoveMap.get(mySeaUnit).add(potentialTerritory);
             } else {
@@ -790,7 +790,7 @@ public class ProTerritoryManager {
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
             new HashSet<>(Match.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
-        if (!isCombatMove && Matches.UnitCanLandOnCarrier.match(myAirUnit)) {
+        if (!isCombatMove && Matches.unitCanLandOnCarrier().match(myAirUnit)) {
           potentialTerritories
               .addAll(Match.getMatches(possibleMoveTerritories, Matches.territoryIsInList(possibleCarrierTerritories)));
         }
@@ -820,7 +820,7 @@ public class ProTerritoryManager {
             final List<Territory> landingTerritories = Match.getMatches(possibleLandingTerritories,
                 ProMatches.territoryCanLandAirUnits(player, data, isCombatMove, enemyTerritories, alliedTerritories));
             List<Territory> carrierTerritories = new ArrayList<>();
-            if (Matches.UnitCanLandOnCarrier.match(myAirUnit)) {
+            if (Matches.unitCanLandOnCarrier().match(myAirUnit)) {
               carrierTerritories =
                   Match.getMatches(possibleLandingTerritories, Matches.territoryIsInList(possibleCarrierTerritories));
             }

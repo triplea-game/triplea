@@ -99,7 +99,7 @@ public class Fire implements IExecutable {
     final int hitCount = m_dice.getHits();
     AbstractBattle.getDisplay(bridge).notifyDice(m_dice, m_stepName);
     final int countTransports =
-        Match.countMatches(m_attackableUnits, Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea));
+        Match.countMatches(m_attackableUnits, Match.allOf(Matches.unitIsTransport(), Matches.UnitIsSea));
     if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData())) {
       final CasualtyDetails message;
       final Collection<Unit> nonTransports = Match.getMatches(m_attackableUnits,

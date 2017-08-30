@@ -216,7 +216,7 @@ public class RevisedTest {
     r.setStart(russia);
     r.add(novo);
     r.add(sinkiang);
-    assertNull(moveDelegate.move(russia.getUnits().getMatches(Matches.UnitCanBlitz), r));
+    assertNull(moveDelegate.move(russia.getUnits().getMatches(Matches.unitCanBlitz()), r));
     moveDelegate.undoMove(0);
     assertTrue(battle.getBattleTracker().wasConquered(sinkiang));
     // now move the planes into the territory
@@ -283,7 +283,7 @@ public class RevisedTest {
     // try to load them on the british players turn
     final Territory sz2 = territory("2 Sea Zone", gameData);
     final String error = moveDelegate(gameData).move(uk.getUnits().getMatches(Matches.unitIsOwnedBy(americans)),
-        new Route(uk, sz2), sz2.getUnits().getMatches(Matches.UnitIsTransport));
+        new Route(uk, sz2), sz2.getUnits().getMatches(Matches.unitIsTransport()));
     // should not be able to load on british turn, only on american turn
     assertFalse(error == null);
   }
@@ -399,7 +399,7 @@ public class RevisedTest {
     final Route sz14To13 = new Route();
     sz14To13.setStart(sz14);
     sz14To13.add(sz13);
-    final List<Unit> transports = sz14.getUnits().getMatches(Matches.UnitIsTransport);
+    final List<Unit> transports = sz14.getUnits().getMatches(Matches.unitIsTransport());
     assertEquals(1, transports.size());
     final String error = moveDelegate.move(transports, sz14To13);
     assertNull(error, error);
@@ -422,7 +422,7 @@ public class RevisedTest {
     // load the transport in the baltic
     final List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.unitIsTransport()).get(0);
     final String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // make sure the transport was loaded
@@ -455,7 +455,7 @@ public class RevisedTest {
     // load the transport in the baltic
     final List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.unitIsTransport()).get(0);
     // load the transport
     String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
@@ -501,7 +501,7 @@ public class RevisedTest {
     // load the transport in the baltic
     final List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.unitIsTransport()).get(0);
     // load the transports
     // in two moves
     String error = moveDelegate.move(infantry.subList(0, 1), eeToSz5, Collections.singletonList(transport));
@@ -541,7 +541,7 @@ public class RevisedTest {
     final List<Unit> infantry = eastEurope.getUnits()
         .getMatches(Match.allOf(Matches.unitIsOfType(infantryType), Matches.unitIsOwnedBy(japanese)));
     assertEquals(1, infantry.size());
-    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.unitIsTransport()).get(0);
     String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // try to unload
@@ -570,7 +570,7 @@ public class RevisedTest {
     // load the transport in the baltic
     final List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.unitIsTransport()).get(0);
     String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // unload one infantry to Norway
@@ -623,7 +623,7 @@ public class RevisedTest {
     // load the transport in the baltic
     final List<Unit> infantry = eastEurope.getUnits().getMatches(Matches.unitIsOfType(infantryType));
     assertEquals(2, infantry.size());
-    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.UnitIsTransport).get(0);
+    final TripleAUnit transport = (TripleAUnit) sz5.getUnits().getMatches(Matches.unitIsTransport()).get(0);
     String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // unload one infantry to Norway
@@ -1307,7 +1307,7 @@ public class RevisedTest {
     removeFrom(cauc, cauc.getUnits().getMatches(Matches.unitIsNotAa()));
     // blitz
     final Territory wr = territory("West Russia", gameData);
-    move(wr.getUnits().getMatches(Matches.UnitCanBlitz), new Route(wr, cauc));
+    move(wr.getUnits().getMatches(Matches.unitCanBlitz()), new Route(wr, cauc));
     final Set<Territory> fire = new RocketsFireHelper().getTerritoriesWithRockets(gameData, germans(gameData));
     // germany, WE, SE, but not caucusus
     assertEquals(fire.size(), 3);
@@ -1378,17 +1378,18 @@ public class RevisedTest {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // load two transports, 1 tank each
-    load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
-    load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
-    load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
+    load(germany.getUnits().getMatches(Matches.unitCanBlitz()).subList(0, 1), new Route(germany, sz5));
+    load(germany.getUnits().getMatches(Matches.unitCanBlitz()).subList(0, 1), new Route(germany, sz5));
+    load(germany.getUnits().getMatches(Matches.unitCanBlitz()).subList(0, 1), new Route(germany, sz5));
     // attack sz 6
-    move(sz5.getUnits().getMatches(Match.anyOf(Matches.UnitCanBlitz, Matches.UnitIsTransport)), new Route(sz5, sz6));
+    move(sz5.getUnits().getMatches(Match.anyOf(Matches.unitCanBlitz(), Matches.unitIsTransport())),
+        new Route(sz5, sz6));
     // unload transports, 1 each to a different country
     // this move is illegal now
-    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, norway));
+    assertMoveError(sz6.getUnits().getMatches(Matches.unitCanBlitz()).subList(0, 1), new Route(sz6, norway));
     // this move is illegal now
-    assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, we));
-    move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, uk));
+    assertMoveError(sz6.getUnits().getMatches(Matches.unitCanBlitz()).subList(0, 1), new Route(sz6, we));
+    move(sz6.getUnits().getMatches(Matches.unitCanBlitz()).subList(0, 1), new Route(sz6, uk));
     // fight the battle
     moveDelegate(gameData).end();
     final MustFightBattle battle =
@@ -1397,8 +1398,8 @@ public class RevisedTest {
     bridge.setRandomSource(new ScriptedRandomSource(0));
     battle.fight(bridge);
     // the armour should have died
-    assertEquals(0, norway.getUnits().countMatches(Matches.UnitCanBlitz));
-    assertEquals(2, we.getUnits().countMatches(Matches.UnitCanBlitz));
+    assertEquals(0, norway.getUnits().countMatches(Matches.unitCanBlitz()));
+    assertEquals(2, we.getUnits().countMatches(Matches.unitCanBlitz()));
     assertEquals(0, uk.getUnits().countMatches(Matches.unitIsOwnedBy(germans)));
   }
 
@@ -1433,7 +1434,7 @@ public class RevisedTest {
 
   @Test
   public void testTransportIsTransport() {
-    assertTrue(Matches.UnitIsTransport.match(transport(gameData).create(british(gameData))));
-    assertFalse(Matches.UnitIsTransport.match(infantry(gameData).create(british(gameData))));
+    assertTrue(Matches.unitIsTransport().match(transport(gameData).create(british(gameData))));
+    assertFalse(Matches.unitIsTransport().match(infantry(gameData).create(british(gameData))));
   }
 }
