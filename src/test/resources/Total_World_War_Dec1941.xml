@@ -1891,6 +1891,8 @@
     <alliance player="Brazil" alliance="Neutral"/>
   </playerList>
   <unitList>
+    <unit name="germanTrain"/>
+    <unit name="germanRail"/>
     <unit name="germanInfantry"/>
     <unit name="germanAlpineInfantry"/>
     <unit name="germanCombatEngineer"/>
@@ -7676,6 +7678,32 @@
       <option name="whenCapturedChangesInto" value="any:India:true:Material:1"/>
     </attachment>
     <!-- German Units -->
+    <attachment name="unitAttachment" attachTo="germanTrain" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="5"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="transportCost" value="2"/>
+      <option name="canBeGivenByTerritoryTo" value="Germany"/>
+      <option name="requiresUnits" value="germanFactory"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="requiresUnitsToMove" value="germanRail"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="germanRail" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="isInfrastructure" value="true"/>
+      <option name="canBeDamaged" value="true"/>
+      <option name="maxDamage" value="12"/>
+      <option name="maxOperationalDamage" value="8"/>
+      <option name="movement" value="0"/>
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="isConstruction" value="true"/>
+      <option name="constructionType" value="fProduction"/>
+      <option name="constructionsPerTerrPerTypePerTurn" value="1"/>
+      <option name="maxConstructionsPerTypePerTerr" value="1"/>
+      <option name="canDieFromReachingMaxDamage" value="true"/>
+      <option name="consumesUnits" value="1:Material"/>
+      <option name="requiresUnits" value="germanCombatEngineer"/>
+    </attachment>
     <attachment name="unitAttachment" attachTo="germanInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="1"/>
       <option name="attack" value="2"/>
