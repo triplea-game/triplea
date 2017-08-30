@@ -222,6 +222,20 @@ public class GameDataTestUtil {
   }
 
   /**
+   * Returns a germanTrain UnitType object for the specified GameData object.
+   */
+  public static UnitType germanTrain(final GameData data) {
+    return unitType("germanTrain", data);
+  }
+
+  /**
+   * Returns a germanRail UnitType object for the specified GameData object.
+   */
+  public static UnitType germanRail(final GameData data) {
+    return unitType("germanRail", data);
+  }
+
+  /**
    * Returns a factory_upgrade UnitType object for the specified GameData object.
    */
   public static UnitType factoryUpgrade(final GameData data) {
