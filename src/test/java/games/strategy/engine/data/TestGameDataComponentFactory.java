@@ -13,8 +13,8 @@ public final class TestGameDataComponentFactory {
   /**
    * Creates a new {@link ProductionRule} instance.
    *
-   * @param gameData The game data associated with the production rule.
-   * @param name The production rule name.
+   * @param gameData The game data that owns the component.
+   * @param name The component name.
    *
    * @return A new {@link ProductionRule} instance.
    */
@@ -22,20 +22,28 @@ public final class TestGameDataComponentFactory {
     checkNotNull(gameData);
     checkNotNull(name);
 
-    final IntegerMap<NamedAttachable> results = new IntegerMap<>();
-    results.add(newResource(gameData, "resource1"), 11);
-    results.add(newResource(gameData, "resource2"), 22);
-    final IntegerMap<Resource> costs = new IntegerMap<>();
-    costs.add(newResource(gameData, "resource3"), 33);
-    costs.add(newResource(gameData, "resource4"), 44);
-    return new ProductionRule(name, gameData, results, costs);
+    return new ProductionRule(name, gameData, newNamedAttachableIntegerMap(gameData), newResourceIntegerMap(gameData));
+  }
+
+  private static IntegerMap<NamedAttachable> newNamedAttachableIntegerMap(final GameData gameData) {
+    final IntegerMap<NamedAttachable> integerMap = new IntegerMap<>();
+    integerMap.add(newResource(gameData, "resource1"), 11);
+    integerMap.add(newResource(gameData, "resource2"), 22);
+    return integerMap;
+  }
+
+  private static IntegerMap<Resource> newResourceIntegerMap(final GameData gameData) {
+    final IntegerMap<Resource> integerMap = new IntegerMap<>();
+    integerMap.add(newResource(gameData, "resource3"), 33);
+    integerMap.add(newResource(gameData, "resource4"), 44);
+    return integerMap;
   }
 
   /**
    * Creates a new {@link RepairRule} instance.
    *
-   * @param gameData The game data associated with the repair rule.
-   * @param name The repair rule name.
+   * @param gameData The game data that owns the component.
+   * @param name The component name.
    *
    * @return A new {@link RepairRule} instance.
    */
@@ -43,20 +51,14 @@ public final class TestGameDataComponentFactory {
     checkNotNull(gameData);
     checkNotNull(name);
 
-    final IntegerMap<NamedAttachable> results = new IntegerMap<>();
-    results.add(newResource(gameData, "resource1"), 11);
-    results.add(newResource(gameData, "resource2"), 22);
-    final IntegerMap<Resource> costs = new IntegerMap<>();
-    costs.add(newResource(gameData, "resource3"), 33);
-    costs.add(newResource(gameData, "resource4"), 44);
-    return new RepairRule("repairRule", gameData, results, costs);
+    return new RepairRule(name, gameData, newNamedAttachableIntegerMap(gameData), newResourceIntegerMap(gameData));
   }
 
   /**
    * Creates a new {@link Resource} instance.
    *
-   * @param gameData The game data associated with the resource.
-   * @param name The resource name.
+   * @param gameData The game data that owns the component.
+   * @param name The component name.
    *
    * @return A new {@link Resource} instance.
    */
@@ -65,8 +67,19 @@ public final class TestGameDataComponentFactory {
     checkNotNull(name);
 
     final Resource resource = new Resource(name, gameData);
-    resource.addAttachment("key1", new FakeAttachment("attachment1"));
-    resource.addAttachment("key2", new FakeAttachment("attachment2"));
+    initializeAttachable(resource);
     return resource;
+  }
+
+  /**
+   * Initializes the specified {@link Attachable} instance with a set of attachments appropriate for testing.
+   *
+   * @param attachable The instance to initialize.
+   */
+  public static void initializeAttachable(final Attachable attachable) {
+    checkNotNull(attachable);
+
+    attachable.addAttachment("key1", new FakeAttachment("attachment1"));
+    attachable.addAttachment("key2", new FakeAttachment("attachment2"));
   }
 }
