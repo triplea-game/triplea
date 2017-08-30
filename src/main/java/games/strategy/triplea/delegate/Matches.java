@@ -1829,6 +1829,9 @@ public final class Matches {
     });
   }
 
+  /**
+   * Checks if requiresUnits criteria allows placement in territory based on units there at the start of turn.
+   */
   public static Match<Unit> unitWhichRequiresUnitsHasRequiredUnitsInList(
       final Collection<Unit> unitsInTerritoryAtStartOfTurn) {
     return Match.of(unitWhichRequiresUnits -> {
