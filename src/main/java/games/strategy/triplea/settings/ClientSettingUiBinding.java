@@ -29,13 +29,13 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
       "AI Pause Duration",
       SettingType.AI,
       SelectionComponentFactory.intValueRange(ClientSetting.AI_PAUSE_DURATION, 0, 3000),
-      "Time between AI moves"),
+      "Time (in milliseconds) between AI moves"),
 
   ARROW_KEY_SCROLL_SPEED_BINDING(
       "Arrow Key Scroll Speed",
       SettingType.MAP_SCROLLING,
       SelectionComponentFactory.intValueRange(ClientSetting.ARROW_KEY_SCROLL_SPEED, 0, 500),
-      "How fast the map is scrolled when using the arrow keys"),
+      "How fast the map is scrolled (in pixels) when using the arrow keys"),
 
   BATTLE_CALC_SIMULATION_COUNT_DICE_BINDING(
       "Simulation Count (Dice)",
@@ -80,25 +80,25 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
       "Map Scroll Speed",
       SettingType.MAP_SCROLLING,
       SelectionComponentFactory.intValueRange(ClientSetting.MAP_EDGE_SCROLL_SPEED, 0, 300),
-      "How fast the map scrolls when the mouse is moved close to the map edge"),
+      "How fast the map scrolls (in pixels) when the mouse is moved close to the map edge"),
 
   MAP_EDGE_SCROLL_ZONE_SIZE_BINDING(
       "Scroll Zone Size",
       SettingType.MAP_SCROLLING,
       SelectionComponentFactory.intValueRange(ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE, 0, 300),
-      "How close to the edge of the map the mouse needs to be for the map to start scrolling"),
+      "How close to the edge of the map (in pixels) the mouse needs to be for the map to start scrolling"),
 
   SERVER_START_GAME_SYNC_WAIT_TIME_BINDING(
       "Start game timeout",
       SettingType.NETWORK_TIMEOUTS,
       SelectionComponentFactory.intValueRange(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME, 120, 1500),
-      "Max seconds to wait for all clients to sync data on game start"),
+      "Maximum time (in seconds) to wait for all clients to sync data on game start"),
 
   SERVER_OBSERVER_JOIN_WAIT_TIME_BINDING(
       "Observer join timeout",
       SettingType.NETWORK_TIMEOUTS,
       SelectionComponentFactory.intValueRange(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME, 60, 1500),
-      "Max seconds for host to wait for clients and Observers"),
+      "Maximum time (in seconds) for host to wait for clients and observers"),
 
   SHOW_BATTLES_WHEN_OBSERVING_BINDING(
       "Show battles as observer",
@@ -161,7 +161,7 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
       "Mouse Wheel Scroll Speed",
       SettingType.MAP_SCROLLING,
       SelectionComponentFactory.intValueRange(ClientSetting.WHEEL_SCROLL_AMOUNT, 10, 300),
-      "How fast the map will scroll when using the mouse wheel"),
+      "How fast the map will scroll (in pixels) when using the mouse wheel"),
 
   PROXY_CHOICE(
       "Network Proxy",
