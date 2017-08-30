@@ -28,13 +28,10 @@ import games.strategy.util.Match;
 
 public class MoveValidatorTest extends DelegateTest {
 
-  private GameData twwGameData;
-
   @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    twwGameData = TestMapGameData.TWW.getGameData();
   }
 
   @Test
@@ -132,7 +129,9 @@ public class MoveValidatorTest extends DelegateTest {
   }
 
   @Test
-  public void testValidateMoveForRequiresUnitsToMove() {
+  public void testValidateMoveForRequiresUnitsToMove() throws Exception {
+
+    final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Move regular units
     final PlayerID germans = GameDataTestUtil.germany(twwGameData);
