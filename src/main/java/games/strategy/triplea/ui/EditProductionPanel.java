@@ -41,8 +41,7 @@ public class EditProductionPanel extends ProductionPanel {
   }
 
   @Override
-  protected void initRules(final PlayerID player, final GameData data,
-      final IntegerMap<ProductionRule> initialPurchase) {
+  protected void initRules(final PlayerID player, final IntegerMap<ProductionRule> initialPurchase) {
     this.data.acquireReadLock();
     try {
       id = player;
@@ -88,7 +87,7 @@ public class EditProductionPanel extends ProductionPanel {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
-              final Optional<Image> unitImage = imageFactory.getImage(ut, player, data, false, false);
+              final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
               if (unitImage.isPresent()) {
                 unitsAllowed.add(ut);
                 final IntegerMap<NamedAttachable> result = new IntegerMap<>();

@@ -92,7 +92,7 @@ public class ProductionPanel extends JPanel {
 
     this.bid = bid;
     this.data = data;
-    this.initRules(id, data, initialPurchase);
+    this.initRules(id, initialPurchase);
     this.initLayout();
     this.calculateLimits();
     dialog.pack();
@@ -109,10 +109,7 @@ public class ProductionPanel extends JPanel {
     return rules;
   }
 
-
-  // made this protected so can be extended by edit production panel
-  protected void initRules(final PlayerID player, final GameData data,
-      final IntegerMap<ProductionRule> initialPurchase) {
+  protected void initRules(final PlayerID player, final IntegerMap<ProductionRule> initialPurchase) {
     this.data.acquireReadLock();
     try {
       id = player;
@@ -244,7 +241,7 @@ public class ProductionPanel extends JPanel {
         final NamedAttachable resourceOrUnit = iter.next();
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
-          icon = uiContext.getUnitImageFactory().getIcon(type, id, data, false, false);
+          icon = uiContext.getUnitImageFactory().getIcon(type, id, false, false);
           final UnitAttachment attach = UnitAttachment.get(type);
           final int attack = attach.getAttack(id);
           final int movement = attach.getMovement(id);
@@ -261,7 +258,7 @@ public class ProductionPanel extends JPanel {
           }
         } else if (resourceOrUnit instanceof Resource) {
           final Resource resource = (Resource) resourceOrUnit;
-          icon = Optional.of(uiContext.getResourceImageFactory().getIcon(resource, data, true));
+          icon = Optional.of(uiContext.getResourceImageFactory().getIcon(resource, true));
           info.setText("resource");
           tooltip.append(resource.getName()).append(": resource");
           name.setText(resource.getName());

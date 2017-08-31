@@ -248,7 +248,7 @@ public abstract class TechAdvance extends NamedAttachable {
   /**
    * Returns all possible tech categories for this player.
    */
-  public static List<TechnologyFrontier> getPlayerTechCategories(final GameData data, final PlayerID player) {
+  public static List<TechnologyFrontier> getPlayerTechCategories(final PlayerID player) {
     if (player != null) {
       return player.getTechnologyFrontierList().getFrontiers();
     }

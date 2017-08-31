@@ -362,7 +362,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     updateOffensiveAAUnits();
     updateDefendingAAUnits();
     // list the steps
-    m_stepStrings = determineStepStrings(true, bridge);
+    m_stepStrings = determineStepStrings(true);
     final ITripleADisplay display = getDisplay(bridge);
     display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
         removeNonCombatants(m_attackingUnits, true, false, false, false),
@@ -484,7 +484,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     m_attackingUnits.removeAll(Match.getMatches(m_attackingUnits, airNotInTerritory));
   }
 
-  List<String> determineStepStrings(final boolean showFirstRun, final IDelegateBridge bridge) {
+  List<String> determineStepStrings(final boolean showFirstRun) {
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAA()) {
       for (final String typeAa : UnitAttachment.getAllOfTypeAAs(m_offensiveAA)) {
@@ -972,7 +972,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           // determine any AA
           updateOffensiveAAUnits();
           updateDefendingAAUnits();
-          m_stepStrings = determineStepStrings(false, bridge);
+          m_stepStrings = determineStepStrings(false);
           final ITripleADisplay display = getDisplay(bridge);
           display.listBattleSteps(m_battleID, m_stepStrings);
           // continue fighting
@@ -2622,7 +2622,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
-      final Territory battleSite, final PlayerID attacker, final GameData data) {
+      final PlayerID attacker, final GameData data) {
     final CompositeChange change = new CompositeChange();
     // Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an
     // carrier unit
@@ -2669,12 +2669,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
     // Must clear transportedby for allied air on carriers for both attacking units and retreating units
     final CompositeChange clearAlliedAir =
-        clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_battleSite, m_attacker, m_data);
+        clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_attacker, m_data);
     if (!clearAlliedAir.isEmpty()) {
       bridge.addChange(clearAlliedAir);
     }
     final CompositeChange clearAlliedAirRetreated =
-        clearTransportedByForAlliedAirOnCarrier(m_attackingUnitsRetreated, m_battleSite, m_attacker, m_data);
+        clearTransportedByForAlliedAirOnCarrier(m_attackingUnitsRetreated, m_attacker, m_data);
     if (!clearAlliedAirRetreated.isEmpty()) {
       bridge.addChange(clearAlliedAirRetreated);
     }

@@ -905,7 +905,7 @@ class OddsCalculatorPanel extends JPanel {
       }
       for (final UnitCategory category : categories) {
         if (predicate.match(category.getType())) {
-          final UnitPanel upanel = new UnitPanel(data, context, category, costs);
+          final UnitPanel upanel = new UnitPanel(context, category, costs);
           upanel.addChangeListener(listenerUnitPanel);
           add(upanel);
         }
@@ -976,8 +976,7 @@ class OddsCalculatorPanel extends JPanel {
     private final List<WidgetChangedListener> listeners = new CopyOnWriteArrayList<>();
     private final ScrollableTextFieldListener listenerTextField = field -> notifyListeners();
 
-    UnitPanel(final GameData data, final IUIContext context, final UnitCategory category,
-        final IntegerMap<UnitType> costs) {
+    UnitPanel(final IUIContext context, final UnitCategory category, final IntegerMap<UnitType> costs) {
       this.category = category;
       this.context = context;
       textField = new ScrollableTextField(0, 512);
@@ -992,7 +991,7 @@ class OddsCalculatorPanel extends JPanel {
 
 
       final Optional<Image> img =
-          this.context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), data,
+          this.context.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
               category.hasDamageOrBombingUnitDamage(), category.getDisabled());
 
       final JLabel label = img.isPresent() ? new JLabel(new ImageIcon(img.get())) : new JLabel();
@@ -1192,7 +1191,7 @@ class OddsCalculatorPanel extends JPanel {
           final String toolTipText = "<html>" + category.getType().getName() + ":  "
               + category.getType().getTooltip(category.getOwner()) + "</html>";
           final Optional<Image> img =
-              context.getUnitImageFactory().getImage(category.getType(), category.getOwner(), data,
+              context.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
                   category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if (img.isPresent()) {
             final JButton button = new JButton(new ImageIcon(img.get()));

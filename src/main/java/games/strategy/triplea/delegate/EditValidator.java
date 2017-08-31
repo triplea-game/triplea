@@ -272,7 +272,7 @@ class EditValidator {
     return result;
   }
 
-  static String validateChangePoliticalRelationships(final GameData data,
+  static String validateChangePoliticalRelationships(
       final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
     final String result = null;
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {

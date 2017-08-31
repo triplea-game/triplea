@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.util.UnitCategory;
@@ -38,37 +37,33 @@ final class UnitChooser extends JPanel {
   private JTextArea title;
   private int total = -1;
   private final JLabel leftToSelect = new JLabel();
-  private final GameData data;
   private boolean allowMultipleHits = false;
   private JButton autoSelectButton;
   private JButton selectNoneButton;
   private final IUIContext uiContext;
   private final Match<Collection<Unit>> match;
 
-  UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data,
+  UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
       final boolean allowTwoHit, final IUIContext uiContext) {
-    this(units, Collections.emptyList(), dependent, data, allowTwoHit, uiContext);
+    this(units, Collections.emptyList(), dependent, allowTwoHit, uiContext);
   }
 
-  UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit,
-      final IUIContext uiContext) {
-    this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
+  private UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
+      final Map<Unit, Collection<Unit>> dependent, final boolean allowTwoHit, final IUIContext uiContext) {
+    this(units, defaultSelections, dependent, false, false, allowTwoHit, uiContext);
   }
 
-  private UnitChooser(final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowMultipleHits,
+  private UnitChooser(final Map<Unit, Collection<Unit>> dependent, final boolean allowMultipleHits,
       final IUIContext uiContext, final Match<Collection<Unit>> match) {
     dependents = dependent;
-    this.data = data;
     this.allowMultipleHits = allowMultipleHits;
     this.uiContext = uiContext;
     this.match = match;
   }
 
   UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowMultipleHits,
-      final IUIContext uiContext) {
-    this(dependent, data, allowMultipleHits, uiContext, null);
+      final Map<Unit, Collection<Unit>> dependent, final boolean allowMultipleHits, final IUIContext uiContext) {
+    this(dependent, allowMultipleHits, uiContext, null);
     final List<Unit> combinedList = defaultSelections.getDamaged();
     // TODO: this adds it to the default selections list, is this intended?
     combinedList.addAll(defaultSelections.getKilled());
@@ -78,18 +73,17 @@ final class UnitChooser extends JPanel {
 
   UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits,
-      final IUIContext uiContext) {
-    this(dependent, data, allowMultipleHits, uiContext, null);
+      final boolean categorizeTransportCost, final boolean allowMultipleHits, final IUIContext uiContext) {
+    this(dependent, allowMultipleHits, uiContext, null);
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();
   }
 
   UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final GameData data, final boolean allowMultipleHits,
+      final boolean categorizeTransportCost, final boolean allowMultipleHits,
       final IUIContext uiContext, final Match<Collection<Unit>> match) {
-    this(dependent, data, allowMultipleHits, uiContext, match);
+    this(dependent, allowMultipleHits, uiContext, match);
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();
   }
@@ -190,7 +184,7 @@ final class UnitChooser extends JPanel {
   }
 
   private void addCategory(final UnitCategory category, final int defaultValue) {
-    final ChooserEntry entry = new ChooserEntry(category, total, textFieldListener, data, allowMultipleHits,
+    final ChooserEntry entry = new ChooserEntry(category, total, textFieldListener, allowMultipleHits,
         defaultValue, uiContext);
     entries.add(entry);
   }
@@ -328,7 +322,6 @@ final class UnitChooser extends JPanel {
   private static final class ChooserEntry {
     private final UnitCategory category;
     private final ScrollableTextFieldListener hitTextFieldListener;
-    private final GameData gameData;
     private final boolean hasMultipleHits;
     private final List<Integer> defaultHits;
     private final List<ScrollableTextField> hitTexts;
@@ -338,9 +331,8 @@ final class UnitChooser extends JPanel {
     private final IUIContext uiContext;
 
     ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener,
-        final GameData data, final boolean allowTwoHit, final int defaultValue, final IUIContext uiContext) {
+        final boolean allowTwoHit, final int defaultValue, final IUIContext uiContext) {
       hitTextFieldListener = listener;
-      gameData = data;
       this.category = category;
       this.leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
       hasMultipleHits =
@@ -478,7 +470,7 @@ final class UnitChooser extends JPanel {
       public void paint(final Graphics g) {
         super.paint(g);
         final Optional<Image> image =
-            uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(), gameData,
+            uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
                 forceDamaged || category.hasDamageOrBombingUnitDamage(), category.getDisabled());
         if (image.isPresent()) {
           g.drawImage(image.get(), 0, 0, this);
@@ -490,7 +482,7 @@ final class UnitChooser extends JPanel {
           final UnitOwner holder = iter.next();
           final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
           final Optional<Image> unitImg =
-              uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), gameData, false, false);
+              uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), false, false);
           if (unitImg.isPresent()) {
             g.drawImage(unitImg.get(), x, 0, this);
           }

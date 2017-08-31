@@ -56,7 +56,7 @@ final class ProTechAI {
       tokensToBuy = 1;
     }
     if (techTokensQuantity > 0 || tokensToBuy > 0) {
-      final List<TechnologyFrontier> cats = TechAdvance.getPlayerTechCategories(data, player);
+      final List<TechnologyFrontier> cats = TechAdvance.getPlayerTechCategories(player);
       // retaining 65% chance of choosing land advances using basic ww2v3 model.
       if (data.getTechnologyFrontier().isEmpty()) {
         if (Math.random() > 0.35) {

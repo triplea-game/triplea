@@ -74,13 +74,12 @@ public class PurchasePanel extends ActionPanel {
 
       add(Box.createVerticalStrut(4));
 
-      purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id, getData());
+      purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id);
       add(purhcasedUnits);
 
       getData().acquireReadLock();
       try {
-        purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeperator.categorize(id.getUnits().getUnits()),
-            getData());
+        purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeperator.categorize(id.getUnits().getUnits()));
         add(Box.createVerticalStrut(4));
         if (!id.getUnits().isEmpty()) {
           add(purchasedPreviousRoundsLabel);
@@ -122,7 +121,7 @@ public class PurchasePanel extends ActionPanel {
         purchase = ProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, bid, purchase,
             getMap().getUiContext());
       }
-      purhcasedUnits.setUnitsFromProductionRuleMap(purchase, player, data);
+      purhcasedUnits.setUnitsFromProductionRuleMap(purchase, player);
       if (purchase.totalValues() == 0) {
         purchasedLabel.setText("");
         buyButton.setText(BUY);

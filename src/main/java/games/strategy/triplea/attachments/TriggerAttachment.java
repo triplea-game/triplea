@@ -135,8 +135,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * @return set of trigger attachments (If you use null for the match condition, you will get all triggers for this
    *         player)
    */
-  public static Set<TriggerAttachment> getTriggers(final PlayerID player, final GameData data,
-      final Match<TriggerAttachment> cond) {
+  static Set<TriggerAttachment> getTriggers(final PlayerID player, final Match<TriggerAttachment> cond) {
     final Set<TriggerAttachment> trigs = new HashSet<>();
     final Map<String, IAttachment> map = player.getAttachments();
     final Iterator<String> iter = map.keySet().iterator();
@@ -159,7 +158,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   public static void collectAndFireTriggers(final HashSet<PlayerID> players,
       final Match<TriggerAttachment> triggerMatch, final IDelegateBridge bridge, final String beforeOrAfter,
       final String stepName) {
-    final HashSet<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch, bridge);
+    final HashSet<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch);
     if (toFirePossible.isEmpty()) {
       return;
     }
@@ -174,11 +173,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static HashSet<TriggerAttachment> collectForAllTriggersMatching(final HashSet<PlayerID> players,
-      final Match<TriggerAttachment> triggerMatch, final IDelegateBridge bridge) {
-    final GameData data = bridge.getData();
+      final Match<TriggerAttachment> triggerMatch) {
     final HashSet<TriggerAttachment> toFirePossible = new HashSet<>();
     for (final PlayerID player : players) {
-      toFirePossible.addAll(TriggerAttachment.getTriggers(player, data, triggerMatch));
+      toFirePossible.addAll(TriggerAttachment.getTriggers(player, triggerMatch));
     }
     return toFirePossible;
   }
@@ -295,7 +293,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     TriggerAttachment trigger = null;
     for (final PlayerID player : getData().getPlayerList().getPlayers()) {
-      for (final TriggerAttachment ta : getTriggers(player, getData(), null)) {
+      for (final TriggerAttachment ta : getTriggers(player, null)) {
         if (ta.getName().equals(s[0])) {
           trigger = ta;
           break;
@@ -2452,7 +2450,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         // numberOfTimes:useUses:testUses:testConditions:testChance
         TriggerAttachment toFire = null;
         for (final PlayerID player : data.getPlayerList().getPlayers()) {
-          for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, data, null)) {
+          for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
             if (ta.getName().equals(tuple.getFirst())) {
               toFire = ta;
               break;

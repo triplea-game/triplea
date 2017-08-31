@@ -84,8 +84,7 @@ public class PlacePanel extends AbstractMovePanel {
       if (units.isEmpty()) {
         return;
       }
-      final UnitChooser chooser =
-          new UnitChooser(units, Collections.emptyMap(), getData(), false, getMap().getUiContext());
+      final UnitChooser chooser = new UnitChooser(units, Collections.emptyMap(), false, getMap().getUiContext());
       final String messageText = "Place units in " + territory.getName();
       if (maxUnits[0] >= 0) {
         chooser.setMaxAndShowMaxButton(maxUnits[0]);
@@ -163,7 +162,7 @@ public class PlacePanel extends AbstractMovePanel {
 
   private void updateUnits() {
     final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
-    unitsToPlace.setUnitsFromCategories(unitCategories, getData());
+    unitsToPlace.setUnitsFromCategories(unitCategories);
   }
 
   @Override

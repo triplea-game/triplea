@@ -231,8 +231,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private void recreateTiles(final GameData data, final IUIContext uiContext) {
-    this.tileManager.createTiles(new Rectangle(this.uiContext.getMapData().getMapDimensions()), data,
-        this.uiContext.getMapData());
+    this.tileManager.createTiles(new Rectangle(this.uiContext.getMapData().getMapDimensions()));
     this.tileManager.resetTiles(data, uiContext.getMapData());
   }
 
@@ -243,7 +242,7 @@ public class MapPanel extends ImageScrollerLargeView {
   // Beagle Code used to chnage map skin
   void changeImage(final Dimension newDimensions) {
     model.setMaxBounds((int) newDimensions.getWidth(), (int) newDimensions.getHeight());
-    tileManager.createTiles(new Rectangle(newDimensions), gameData, uiContext.getMapData());
+    tileManager.createTiles(new Rectangle(newDimensions));
     tileManager.resetTiles(gameData, uiContext.getMapData());
   }
 
@@ -420,7 +419,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void updateCountries(final Collection<Territory> countries) {
     tileManager.updateTerritories(countries, gameData, uiContext.getMapData());
-    smallMapImageManager.update(gameData, uiContext.getMapData());
+    smallMapImageManager.update(uiContext.getMapData());
     SwingUtilities.invokeLater(() -> {
       smallView.repaint();
       repaint();
@@ -601,7 +600,7 @@ public class MapPanel extends ImageScrollerLargeView {
           }
 
           final Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
-              category.getOwner(), gameData, category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+              category.getOwner(), category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if (image.isPresent()) {
             final AffineTransform t = new AffineTransform();
             t.translate(normalizeX(r.getX() - getXOffset()) * scale, normalizeY(r.getY() - getYOffset()) * scale);
@@ -743,7 +742,7 @@ public class MapPanel extends ImageScrollerLargeView {
     for (final Territory territory : gameData.getMap().getTerritories()) {
       smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
     }
-    smallMapImageManager.update(gameData, uiContext.getMapData());
+    smallMapImageManager.update(uiContext.getMapData());
   }
 
   void changeSmallMapOffscreenMap() {

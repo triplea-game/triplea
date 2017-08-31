@@ -260,7 +260,7 @@ public class MovePanel extends AbstractMovePanel {
     // Choosing what transports to unload
     final UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections,
         mustMoveWithDetails.getMustMoveWith(), /* categorizeMovement */true, /* categorizeTransportCost */false,
-        getGameData(), /* allowTwoHit */false, getMap().getUiContext(), transportsToUnloadMatch);
+        /* allowTwoHit */false, getMap().getUiContext(), transportsToUnloadMatch);
     chooser.setTitle("What transports do you want to unload");
     final int option =
         JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to unload",
@@ -693,7 +693,7 @@ public class MovePanel extends AbstractMovePanel {
     });
     final UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections,
         endMustMoveWith.getMustMoveWith(), /* categorizeMovement */true, /* categorizeTransportCost */false,
-        getGameData(), /* allowTwoHit */false, getMap().getUiContext(), transportsToLoadMatch);
+        /* allowTwoHit */false, getMap().getUiContext(), transportsToLoadMatch);
     chooser.setTitle("What transports do you want to load");
     final int option =
         JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to load",
@@ -773,12 +773,12 @@ public class MovePanel extends AbstractMovePanel {
               .getMatches(unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove))).containsAll(unitsToMove)) {
             // use matcher to prevent units of different owners being chosen
             chooser = new UnitChooser(unitsToMove, selectedUnits, /* mustMoveWith */null,
-                /* categorizeMovement */false, /* categorizeTransportCost */false, getData(), /* allowTwoHit */false,
+                /* categorizeMovement */false, /* categorizeTransportCost */false, /* allowTwoHit */false,
                 getMap().getUiContext(), ownerMatch);
           } else {
             chooser =
                 new UnitChooser(unitsToMove, selectedUnits, /* mustMoveWith */null, /* categorizeMovement */false,
-                    /* categorizeTransportCost */false, getData(), /* allowTwoHit */false, getMap().getUiContext());
+                    /* categorizeTransportCost */false, /* allowTwoHit */false, getMap().getUiContext());
           }
           final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
               JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -896,7 +896,7 @@ public class MovePanel extends AbstractMovePanel {
       });
       // Allow player to select which to load.
       final UnitChooser chooser = new UnitChooser(candidateAirTransports, defaultSelections, dependentUnits,
-          /* categorizeMovement */true, /* categorizeTransportCost */false, getGameData(), /* allowTwoHit */false,
+          /* categorizeMovement */true, /* categorizeTransportCost */false, /* allowTwoHit */false,
           getMap().getUiContext(), transportsToLoadMatch);
       chooser.setTitle("Select air transports to load");
       final int option =
@@ -1197,7 +1197,7 @@ public class MovePanel extends AbstractMovePanel {
       sortUnitsToMove(candidateUnits, route);
       final UnitChooser chooser =
           new UnitChooser(candidateUnits, defaultSelections, mustMoveWithDetails.getMustMoveWith(), true, false,
-              getGameData(), false, getMap().getUiContext(), matchCriteria);
+              false, getMap().getUiContext(), matchCriteria);
       final String text = "Select units to move from " + getFirstSelectedTerritory() + ".";
       final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -1325,7 +1325,7 @@ public class MovePanel extends AbstractMovePanel {
       final String action) {
     // Allow player to select which to load.
     final UnitChooser chooser = new UnitChooser(unitsToLoad, defaultSelections, dependentUnits,
-        /* categorizeMovement */false, /* categorizeTransportCost */true, getGameData(), /* allowTwoHit */false,
+        /* categorizeMovement */false, /* categorizeTransportCost */true, /* allowTwoHit */false,
         getMap().getUiContext(), unitsToLoadMatch);
     chooser.setTitle(title);
     final int option =

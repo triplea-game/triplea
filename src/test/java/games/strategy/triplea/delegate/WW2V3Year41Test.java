@@ -830,7 +830,7 @@ public class WW2V3Year41Test {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         Arrays.asList(attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + SUBS_FIRE,
             defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES,
@@ -865,7 +865,7 @@ public class WW2V3Year41Test {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         Arrays.asList(defender + SUBS_SUBMERGE, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES,
             REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + FIRE,
@@ -901,7 +901,7 @@ public class WW2V3Year41Test {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         Arrays.asList(attacker + SUBS_SUBMERGE, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES,
             REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES, defender + SUBS_FIRE,
@@ -938,7 +938,7 @@ public class WW2V3Year41Test {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, attacker + FIRE,
             defender + SELECT_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, defender + FIRE,

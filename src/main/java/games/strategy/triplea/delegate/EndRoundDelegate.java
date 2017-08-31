@@ -112,7 +112,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
                   TriggerAttachment.activateTriggerMatch(), TriggerAttachment.victoryMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch, m_bridge);
+          new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final HashMap<ICondition, Boolean> testedConditions =
@@ -183,7 +183,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     if (Properties.getTriggers(data)) {
       final CompositeChange change = new CompositeChange();
       for (final PlayerID player : data.getPlayerList().getPlayers()) {
-        change.add(AbstractTriggerAttachment.triggerSetUsedForThisRound(player, m_bridge));
+        change.add(AbstractTriggerAttachment.triggerSetUsedForThisRound(player));
       }
       if (!change.isEmpty()) {
         m_bridge.getHistoryWriter().startEvent("Setting uses for triggers used this round.");
