@@ -657,7 +657,15 @@ public class MoveValidator {
         return result.setErrorReturnResult("Territory Effects disallow some units into "
             + (route.numberOfSteps() > 1 ? "these territories" : "this territory"));
       }
+      // Check requiresUnitsToMove conditions
+      for (final Territory t : route.getSteps()) {
+        if (!Match.allMatch(units, Matches.unitHasRequiredUnitsToMove(t))) {
+          return result.setErrorReturnResult(
+              t.getName() + " doesn't have the required units to allow moving the selected units into it");
+        }
+      }
     } // !isEditMode
+
     // make sure that no non sea non transportable no carriable units end at sea
     if (route.getEnd() != null && route.getEnd().isWater()) {
       for (final Unit unit : MoveValidator.getUnitsThatCantGoOnWater(units)) {
@@ -741,7 +749,7 @@ public class MoveValidator {
   static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units) {
     // just worry about transports
     final Map<Unit, Collection<Unit>> dependents = new HashMap<>();
-    for (Unit unit : units) {
+    for (final Unit unit : units) {
       dependents.put(unit, TransportTracker.transporting(unit));
     }
     return dependents;
@@ -901,7 +909,7 @@ public class MoveValidator {
       throw new IllegalArgumentException("no units");
     }
     int max = 0;
-    for (Unit unit : units) {
+    for (final Unit unit : units) {
       final int left = TripleAUnit.get(unit).getMovementLeft();
       max = Math.max(left, max);
     }
@@ -913,7 +921,7 @@ public class MoveValidator {
       throw new IllegalArgumentException("no units");
     }
     int least = Integer.MAX_VALUE;
-    for (Unit unit : units) {
+    for (final Unit unit : units) {
       final int left = TripleAUnit.get(unit).getMovementLeft();
       least = Math.min(left, least);
     }
@@ -1066,7 +1074,7 @@ public class MoveValidator {
     }
     if (route.getEnd().isWater() && route.getStart().isWater()) {
       // make sure units and transports stick together
-      for (Unit unit : units) {
+      for (final Unit unit : units) {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
         // make sure transports dont leave their units behind
         if (ua.getTransportCapacity() != -1) {
@@ -1115,7 +1123,7 @@ public class MoveValidator {
           result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
         } else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd())) {
           Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
-          for (Unit transportToLoad : transportsToLoad) {
+          for (final Unit transportToLoad : transportsToLoad) {
             final TripleAUnit trn = (TripleAUnit) transportToLoad;
             if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(trn, route.getEnd())) {
               final UnitAttachment ua = UnitAttachment.get(unit.getType());

@@ -187,6 +187,9 @@ public class UnitAttachment extends DefaultAttachment {
   // territory, owned by player, not be disabled)
   private ArrayList<String[]> m_requiresUnits = new ArrayList<>();
   private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<>();
+  // multiple colon delimited lists of the unit combos required for
+  // this unit to move into a territory. (units must be owned by player, not be disabled)
+  private ArrayList<String[]> m_requiresUnitsToMove = new ArrayList<>();
   // a colon delimited list of territories where this unit may not be placed
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates m_unitPlacementRestrictions with an inverted list of territories
@@ -953,6 +956,41 @@ public class UnitAttachment extends DefaultAttachment {
 
   public void resetRequiresUnits() {
     m_requiresUnits = new ArrayList<>();
+  }
+
+  /**
+   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+   */
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+  public void setRequiresUnitsToMove(final String value) throws GameParseException {
+    final String[] array = value.split(":");
+    if (array.length == 0) {
+      throw new GameParseException("requiresUnitsToMove must have at least 1 unit type" + thisErrorMsg());
+    }
+    for (final String s : array) {
+      final UnitType ut = getData().getUnitTypeList().getUnitType(s);
+      if (ut == null) {
+        throw new GameParseException("No unit called:" + s + thisErrorMsg());
+      }
+    }
+    m_requiresUnitsToMove.add(array);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setRequiresUnitsToMove(final ArrayList<String[]> value) {
+    m_requiresUnitsToMove = value;
+  }
+
+  public ArrayList<String[]> getRequiresUnitsToMove() {
+    return m_requiresUnitsToMove;
+  }
+
+  public void clearRequiresUnitsToMove() {
+    m_requiresUnitsToMove.clear();
+  }
+
+  public void resetRequiresUnitsToMove() {
+    m_requiresUnitsToMove = new ArrayList<>();
   }
 
   /**
@@ -2860,6 +2898,10 @@ public class UnitAttachment extends DefaultAttachment {
             ? (m_requiresUnits.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(m_requiresUnits)) : "null")
         + "  consumesUnits:"
         + (m_consumesUnits != null ? (m_consumesUnits.size() == 0 ? "empty" : m_consumesUnits.toString()) : "null")
+        + "  requiresUnitsToMove:"
+        + (m_requiresUnitsToMove != null
+            ? (m_requiresUnitsToMove.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(m_requiresUnitsToMove))
+            : "null")
         + "  canOnlyBePlacedInTerritoryValuedAtX:" + m_canOnlyBePlacedInTerritoryValuedAtX + "  maxBuiltPerPlayer:"
         + m_maxBuiltPerPlayer + "  special:"
         + (m_special != null ? (m_special.size() == 0 ? "empty" : m_special.toString()) : "null") + "  isSuicide:"
@@ -3214,6 +3256,30 @@ public class UnitAttachment extends DefaultAttachment {
       } else {
         stats.append("unit can only be Placed Where There Is: ");
         final Iterator<String[]> requiredIter = getRequiresUnits().iterator();
+        while (requiredIter.hasNext()) {
+          final String[] required = requiredIter.next();
+          if (required.length == 1) {
+            stats.append(required[0]);
+          } else {
+            stats.append(Arrays.toString(required));
+          }
+          if (requiredIter.hasNext()) {
+            stats.append(" Or ");
+          }
+        }
+        stats.append(", ");
+      }
+    }
+    if (getRequiresUnitsToMove() != null && !getRequiresUnitsToMove().isEmpty()) {
+      final List<String> totalUnitsListed = new ArrayList<>();
+      for (final String[] list : getRequiresUnitsToMove()) {
+        totalUnitsListed.addAll(Arrays.asList(list));
+      }
+      if (totalUnitsListed.size() > 4) {
+        stats.append("unit Requires Other Units Present To Be Moved, ");
+      } else {
+        stats.append("unit can only be Moved Where There Is: ");
+        final Iterator<String[]> requiredIter = getRequiresUnitsToMove().iterator();
         while (requiredIter.hasNext()) {
           final String[] required = requiredIter.next();
           if (required.length == 1) {

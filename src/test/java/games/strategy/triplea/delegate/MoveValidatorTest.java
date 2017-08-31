@@ -1,19 +1,29 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
+import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.Match;
 
 public class MoveValidatorTest extends DelegateTest {
@@ -117,4 +127,34 @@ public class MoveValidatorTest extends DelegateTest {
     units.addAll(infantry.create(2, british));
     assertTrue(Match.anyMatch(units, Matches.UnitIsLand));
   }
+
+  @Test
+  public void testValidateMoveForRequiresUnitsToMove() throws Exception {
+
+    final GameData twwGameData = TestMapGameData.TWW.getGameData();
+
+    // Move regular units
+    final PlayerID germans = GameDataTestUtil.germany(twwGameData);
+    final Territory berlin = territory("Berlin", twwGameData);
+    final Territory easternGermany = territory("Eastern Germany", twwGameData);
+    final Route r = new Route(berlin, easternGermany);
+    List<Unit> toMove = berlin.getUnits().getMatches(Matches.unitCanMove());
+    MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
+        new HashMap<>(), false, null, twwGameData);
+    assertTrue(results.isMoveValid());
+
+    // Add germanTrain to units which fails since it requires germainRail
+    addTo(berlin, GameDataTestUtil.germanTrain(twwGameData).create(1, germans));
+    toMove = berlin.getUnits().getMatches(Matches.unitCanMove());
+    results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
+        new HashMap<>(), false, null, twwGameData);
+    assertFalse(results.isMoveValid());
+
+    // Add germanRail to destination so move succeeds
+    addTo(easternGermany, GameDataTestUtil.germanRail(twwGameData).create(1, germans));
+    results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
+        new HashMap<>(), false, null, twwGameData);
+    assertTrue(results.isMoveValid());
+  }
+
 }
