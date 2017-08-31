@@ -525,7 +525,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   protected String isValidPlacement(final Collection<Unit> units, final Territory at, final PlayerID player) {
     // do we hold enough units
-    String error = playerHasEnoughUnits(units, at, player);
+    String error = playerHasEnoughUnits(units, player);
     if (error != null) {
       return error;
     }
@@ -550,7 +550,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   /**
    * Make sure the player has enough in hand to place the units.
    */
-  String playerHasEnoughUnits(final Collection<Unit> units, final Territory at, final PlayerID player) {
+  private static String playerHasEnoughUnits(final Collection<Unit> units, final PlayerID player) {
     // make sure the player has enough units in hand to place
     if (!player.getUnits().getUnits().containsAll(units)) {
       return "Not enough units";

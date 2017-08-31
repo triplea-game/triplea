@@ -73,7 +73,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     }
     TriggerAttachment trigger = null;
     for (final PlayerID player : getData().getPlayerList().getPlayers()) {
-      for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, getData(), null)) {
+      for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
         if (ta.getName().equals(s[0])) {
           trigger = ta;
           break;
@@ -124,7 +124,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
       // numberOfTimes:useUses:testUses:testConditions:testChance
       TriggerAttachment toFire = null;
       for (final PlayerID player : data.getPlayerList().getPlayers()) {
-        for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, data, null)) {
+        for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
           if (ta.getName().equals(tuple.getFirst())) {
             toFire = ta;
             break;
@@ -172,7 +172,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
    * @return gets the valid actions for this player.
    */
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
-      final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
+      final HashMap<ICondition, Boolean> testedConditions) {
     return Match.getMatches(getUserActionAttachments(player), Match.allOf(
         Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }

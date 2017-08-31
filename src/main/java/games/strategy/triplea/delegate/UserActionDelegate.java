@@ -76,7 +76,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     } finally {
       data.releaseReadLock();
     }
-    return UserActionAttachment.getValidActions(m_player, testedConditions, data);
+    return UserActionAttachment.getValidActions(m_player, testedConditions);
   }
 
   @Override

@@ -92,7 +92,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
           moveCombatDelegateBeforeBonusTriggerMatch, moveCombatDelegateAfterBonusTriggerMatch);
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-            new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAllTriggerMatch, m_bridge);
+            new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAllTriggerMatch);
         if (!toFirePossible.isEmpty()) {
 
           // collect conditions and test them for ALL triggers, both those that we will fire before and those we will
@@ -100,7 +100,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
           testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
           final HashSet<TriggerAttachment> toFireBeforeBonus =
               TriggerAttachment.collectForAllTriggersMatching(new HashSet<>(Collections.singleton(m_player)),
-                  moveCombatDelegateBeforeBonusTriggerMatch, m_bridge);
+                  moveCombatDelegateBeforeBonusTriggerMatch);
           if (!toFireBeforeBonus.isEmpty()) {
 
             // get all triggers that are satisfied based on the tested conditions.
@@ -144,7 +144,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // placing triggered units at beginning of combat move, but after bonuses and repairing, etc, have been done.
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(
-            new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAfterBonusTriggerMatch, m_bridge);
+            new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAfterBonusTriggerMatch);
         if (!toFireAfterBonus.isEmpty()) {
 
           // get all triggers that are satisfied based on the tested conditions.
@@ -457,7 +457,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final CompositeChange clearAlliedAir = new CompositeChange();
     for (final Unit carrier : damagedCarriers) {
       final CompositeChange change = MustFightBattle.clearTransportedByForAlliedAirOnCarrier(
-          Collections.singleton(carrier), fullyRepaired.get(carrier), carrier.getOwner(), data);
+          Collections.singleton(carrier), carrier.getOwner(), data);
       if (!change.isEmpty()) {
         clearAlliedAir.add(change);
       }

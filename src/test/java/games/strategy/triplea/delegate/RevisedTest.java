@@ -958,7 +958,7 @@ public class RevisedTest {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     assertEquals(Arrays.asList(attacker + FIRE, defender + SELECT_CASUALTIES, defender + FIRE,
         attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
   }
@@ -980,7 +980,7 @@ public class RevisedTest {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     assertEquals(Arrays.asList(attacker + FIRE, defender + SELECT_CASUALTIES, defender + FIRE,
         attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
   }
@@ -1002,7 +1002,7 @@ public class RevisedTest {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,
             attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES,
@@ -1040,7 +1040,7 @@ public class RevisedTest {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
      * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of
@@ -1097,7 +1097,7 @@ public class RevisedTest {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
      * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of
@@ -1157,7 +1157,7 @@ public class RevisedTest {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     assertEquals(Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,
         attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES,
         REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(),
@@ -1196,7 +1196,7 @@ public class RevisedTest {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
      * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of
@@ -1257,7 +1257,7 @@ public class RevisedTest {
     moveDelegate(gameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
-    final List<String> steps = battle.determineStepStrings(true, bridge);
+    final List<String> steps = battle.determineStepStrings(true);
     assertEquals(Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,
         attacker + SELECT_SUB_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES, defender + FIRE,
         attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE,

@@ -39,9 +39,9 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     super(name, attachable, gameData);
   }
 
-  public static CompositeChange triggerSetUsedForThisRound(final PlayerID player, final IDelegateBridge bridge) {
+  public static CompositeChange triggerSetUsedForThisRound(final PlayerID player) {
     final CompositeChange change = new CompositeChange();
-    for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, bridge.getData(), null)) {
+    for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
       if (ta.getUsedThisRound()) {
         final int currentUses = ta.getUses();
         if (currentUses > 0) {

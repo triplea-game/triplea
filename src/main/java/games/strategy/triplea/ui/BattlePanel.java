@@ -386,7 +386,7 @@ public class BattlePanel extends ActionPanel {
       final PlayerID hit, final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit) {
     final Task<CasualtyDetails> task = () -> {
       final boolean isEditMode = (dice == null);
-      final UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(),
+      final UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents,
           allowMultipleHitsPerUnit, getMap().getUiContext());
       chooser.setTitle(message);
       if (isEditMode) {
@@ -425,7 +425,7 @@ public class BattlePanel extends ActionPanel {
     return battleDisplay.getRetreat(message, possible, submerge);
   }
 
-  public void gotoStep(final GUID battleId, final String step) {
+  public void gotoStep(final String step) {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
         battleDisplay.setStep(step);
@@ -433,7 +433,7 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void bombingResults(final GUID battleId, final List<Die> dice, final int cost) {
+  public void bombingResults(final List<Die> dice, final int cost) {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
         battleDisplay.bombingResults(dice, cost);

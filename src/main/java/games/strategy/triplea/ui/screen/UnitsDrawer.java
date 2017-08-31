@@ -91,7 +91,7 @@ public class UnitsDrawer implements IDrawable {
     }
     final PlayerID owner = data.getPlayerList().getPlayerID(playerName);
     final Optional<Image> img =
-        uiContext.getUnitImageFactory().getImage(type, owner, data, damaged > 0 || bombingUnitDamage > 0, disabled);
+        uiContext.getUnitImageFactory().getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
 
     if (!img.isPresent()) {
       ClientLogger

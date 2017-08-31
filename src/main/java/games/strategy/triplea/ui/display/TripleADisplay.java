@@ -70,7 +70,7 @@ public class TripleADisplay implements ITripleADisplay {
 
   @Override
   public void bombingResults(final GUID battleId, final List<Die> dice, final int cost) {
-    ui.getBattlePanel().bombingResults(battleId, dice, cost);
+    ui.getBattlePanel().bombingResults(dice, cost);
   }
 
   @Override
@@ -98,7 +98,7 @@ public class TripleADisplay implements ITripleADisplay {
 
   @Override
   public void gotoBattleStep(final GUID battleId, final String step) {
-    ui.getBattlePanel().gotoStep(battleId, step);
+    ui.getBattlePanel().gotoStep(step);
   }
 
   @Override

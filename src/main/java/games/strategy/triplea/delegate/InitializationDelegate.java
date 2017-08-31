@@ -91,13 +91,13 @@ public class InitializationDelegate extends BaseTripleADelegate {
     initAiStartingBonusIncome(bridge);
     initDeleteAssetsOfDisabledPlayers(bridge);
     initTransportedLandUnits(bridge);
-    resetUnitState(bridge);
+    resetUnitState();
   }
 
   /**
    * The initTransportedLandUnits has some side effects, and we need to reset unit state to get rid of them.
    */
-  private void resetUnitState(final IDelegateBridge bridge) {
+  private void resetUnitState() {
     final Change change = MoveDelegate.getResetUnitStateChange(getData());
     if (!change.isEmpty()) {
       m_bridge.getHistoryWriter().startEvent("Cleaning up unit state.");

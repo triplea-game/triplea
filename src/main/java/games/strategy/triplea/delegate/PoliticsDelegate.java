@@ -63,7 +63,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
           Match.anyOf(TriggerAttachment.relationshipChangeMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(Collections.singleton(m_player)), politicsDelegateTriggerMatch, m_bridge);
+          new HashSet<>(Collections.singleton(m_player)), politicsDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final HashMap<ICondition, Boolean> testedConditions =

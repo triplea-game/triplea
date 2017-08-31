@@ -43,16 +43,14 @@ public class SimpleUnitPanel extends JPanel {
    *        a HashMap in the form ProductionRule -> number of units
    *        assumes that each production rule has 1 result, which is simple the number of units.
    */
-  public void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player,
-      final GameData data) {
+  void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player) {
     removeAll();
     final TreeSet<ProductionRule> productionRules = new TreeSet<>(productionRuleComparator);
     productionRules.addAll(units.keySet());
     for (final ProductionRule productionRule : productionRules) {
       final int quantity = units.getInt(productionRule);
       for (final NamedAttachable resourceOrUnit : productionRule.getResults().keySet()) {
-        addUnits(player, data, quantity * productionRule.getResults().getInt(resourceOrUnit), resourceOrUnit, false,
-            false);
+        addUnits(player, quantity * productionRule.getResults().getInt(resourceOrUnit), resourceOrUnit, false, false);
       }
     }
   }
@@ -75,7 +73,7 @@ public class SimpleUnitPanel extends JPanel {
         if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
           // check to see if the repair rule matches the damaged unit
           if (unit.getType().equals((repairRule.getResults().keySet().iterator().next()))) {
-            addUnits(player, data, quantity, unit.getType(), Matches.unitHasTakenSomeBombingUnitDamage().match(unit),
+            addUnits(player, quantity, unit.getType(), Matches.unitHasTakenSomeBombingUnitDamage().match(unit),
                 Matches.unitIsDisabled().match(unit));
           }
         }
@@ -87,26 +85,26 @@ public class SimpleUnitPanel extends JPanel {
    * @param categories
    *        a collection of UnitCategories.
    */
-  public void setUnitsFromCategories(final Collection<UnitCategory> categories, final GameData data) {
+  public void setUnitsFromCategories(final Collection<UnitCategory> categories) {
     removeAll();
     for (final UnitCategory category : categories) {
-      addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(),
+      addUnits(category.getOwner(), category.getUnits().size(), category.getType(),
           category.hasDamageOrBombingUnitDamage(), category.getDisabled());
     }
   }
 
-  private void addUnits(final PlayerID player, final GameData data, final int quantity, final NamedAttachable unit,
+  private void addUnits(final PlayerID player, final int quantity, final NamedAttachable unit,
       final boolean damaged, final boolean disabled) {
     final JLabel label = new JLabel();
     label.setText(" x " + quantity);
     if (unit instanceof UnitType) {
       final Optional<ImageIcon> icon =
-          uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, data, damaged, disabled);
+          uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, damaged, disabled);
       if (icon.isPresent()) {
         label.setIcon(icon.get());
       }
     } else if (unit instanceof Resource) {
-      label.setIcon(uiContext.getResourceImageFactory().getIcon((Resource) unit, data, true));
+      label.setIcon(uiContext.getResourceImageFactory().getIcon((Resource) unit, true));
     }
     add(label);
   }

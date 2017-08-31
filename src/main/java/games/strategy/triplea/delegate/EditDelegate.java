@@ -301,7 +301,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (null != (result = checkEditMode())) {
       return result;
     }
-    if (null != (result = EditValidator.validateChangePoliticalRelationships(getData(), relationshipChanges))) {
+    if (null != (result = EditValidator.validateChangePoliticalRelationships(relationshipChanges))) {
       return result;
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(getData());

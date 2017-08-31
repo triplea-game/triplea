@@ -93,14 +93,13 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       gameData.releaseReadLock();
     }
     add(new JLabel("Units: " + unitsInTerritory.size()));
-    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, uiContext, gameData));
+    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, uiContext));
     scroll.setBorder(BorderFactory.createEmptyBorder());
     add(scroll);
     refresh();
   }
 
-  private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final IUIContext uiContext,
-      final GameData data) {
+  private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final IUIContext uiContext) {
     final JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -116,7 +115,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       }
       // TODO Kev determine if we need to identify if the unit is hit/disabled
       final Optional<ImageIcon> unitIcon =
-          uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data,
+          uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(),
               item.hasDamageOrBombingUnitDamage(), item.getDisabled());
       if (unitIcon.isPresent()) {
         // overlay flag onto upper-right of icon

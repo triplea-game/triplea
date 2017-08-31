@@ -130,7 +130,7 @@ public class RocketsFireHelper {
 
   Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player) {
     final Set<Territory> territories = new HashSet<>();
-    final Match<Unit> ownedRockets = rocketMatch(player, data);
+    final Match<Unit> ownedRockets = rocketMatch(player);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
     for (final Territory current : data.getMap()) {
       if (tracker.wasConquered(current)) {
@@ -143,7 +143,7 @@ public class RocketsFireHelper {
     return territories;
   }
 
-  Match<Unit> rocketMatch(final PlayerID player, final GameData data) {
+  private static Match<Unit> rocketMatch(final PlayerID player) {
     return Match.allOf(Matches.unitIsRocket(), Matches.unitIsOwnedBy(player), Matches.unitIsNotDisabled(),
         Matches.unitIsBeingTransported().invert(), Matches.unitIsSubmerged().invert(), Matches.unitHasNotMoved());
   }
@@ -195,7 +195,7 @@ public class RocketsFireHelper {
     if (attackFrom == null) {
       rockets = null;
     } else {
-      rockets = new ArrayList<>(Match.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player, data)));
+      rockets = new ArrayList<>(Match.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player)));
     }
     final int numberOfAttacks = (rockets == null ? 1
         : Math.min(TechAbilityAttachment.getRocketNumberPerTerritory(player, data),

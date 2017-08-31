@@ -307,8 +307,7 @@ public class BattleTracker implements Serializable {
       // create both an air battle and a normal battle
       if (!airBattleCompleted && Properties.getBattlesMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing)) {
-        addAirBattle(route, Match.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts(id, data)), id, data,
-            false);
+        addAirBattle(route, Match.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts()), id, data, false);
       }
       final Change change = addMustFightBattleChange(route, units, id, data);
       bridge.addChange(change);

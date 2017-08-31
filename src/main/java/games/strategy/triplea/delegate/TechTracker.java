@@ -42,11 +42,10 @@ public class TechTracker implements Serializable {
    * successfully researched
    * already.
    */
-  public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final GameData data,
-      final PlayerID id) {
+  public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final PlayerID id) {
     final Collection<TechnologyFrontier> rVal = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(id);
-    for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(data, id)) {
+    for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(id)) {
       boolean has = true;
       for (final TechAdvance t : tf.getTechs()) {
         has = t.hasTech(attachment);

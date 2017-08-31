@@ -83,7 +83,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
           Match.anyOf(TriggerAttachment.techAvailableMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(Collections.singleton(m_player)), technologyDelegateTriggerMatch, m_bridge);
+          new HashSet<>(Collections.singleton(m_player)), technologyDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final HashMap<ICondition, Boolean> testedConditions =

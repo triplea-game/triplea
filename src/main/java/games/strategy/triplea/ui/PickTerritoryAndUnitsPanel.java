@@ -182,7 +182,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       currentAction = selectUnitsAction;
       setWidgetActivation();
       final UnitChooser unitChooser = new UnitChooser(unitChoices, Collections.emptyMap(),
-          getData(), false, getMap().getUiContext());
+          false, getMap().getUiContext());
       unitChooser.setMaxAndShowMaxButton(unitsPerPick);
       if (JOptionPane.OK_OPTION == EventThreadJOptionPane.showConfirmDialog(parent, unitChooser, "Select Units",
           JOptionPane.OK_CANCEL_OPTION, new CountDownLatchHandler(true))) {

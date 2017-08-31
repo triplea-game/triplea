@@ -638,9 +638,8 @@ public class AirBattle extends AbstractBattle {
     return Match.of(u -> UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0);
   }
 
-  static Match<Unit> attackingGroundSeaBattleEscorts(final PlayerID attacker, final GameData data) {
-    final Match<Unit> canIntercept = Matches.unitCanAirBattle();
-    return canIntercept;
+  static Match<Unit> attackingGroundSeaBattleEscorts() {
+    return Matches.unitCanAirBattle();
   }
 
   private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {

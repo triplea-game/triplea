@@ -1149,7 +1149,7 @@ public class TripleAFrame extends MainGameFrame {
           final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
           final int maxAllowed =
               Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
-          final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
+          final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
           chooser.setMaxAndShowMaxButton(maxAllowed);
           choosers.add(Tuple.of(from, chooser));
           panelChooser.add(chooser);
@@ -1234,7 +1234,7 @@ public class TripleAFrame extends MainGameFrame {
         panelChooser.add(whereFrom);
         panelChooser.add(new JLabel(" "));
         final int maxAllowed = possible.size();
-        final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
+        final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
         panelChooser.add(chooser);
         final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
@@ -1944,7 +1944,7 @@ public class TripleAFrame extends MainGameFrame {
     final AtomicReference<JScrollPane> panelRef = new AtomicReference<>();
     final AtomicReference<UnitChooser> chooserRef = new AtomicReference<>();
     SwingAction.invokeAndWait(() -> {
-      final UnitChooser chooser = new UnitChooser(fighters, Collections.emptyMap(), data, false, uiContext);
+      final UnitChooser chooser = new UnitChooser(fighters, Collections.emptyMap(), false, uiContext);
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
       final int availHeight = screenResolution.height - 120;
       final int availWidth = screenResolution.width - 40;

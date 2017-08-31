@@ -39,7 +39,7 @@ public class SmallMapImageManager {
     this.offscreen = Util.copyImage(offscreen);
   }
 
-  public void update(final GameData data, final MapData mapData) {
+  public void update(final MapData mapData) {
     final Stopwatch stopwatch = new Stopwatch(logger, Level.FINEST, "Small map updating took");
     final Graphics onScreenGraphics = view.getOffScreenImage().getGraphics();
     onScreenGraphics.drawImage(offscreen, 0, 0, null);
