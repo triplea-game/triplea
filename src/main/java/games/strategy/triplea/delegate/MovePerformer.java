@@ -348,7 +348,7 @@ public class MovePerformer implements Serializable {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
-      for (final Unit unit : Match.getMatches(units, Match.allOf(Matches.UnitIsSub, Matches.UnitIsAir.invert()))) {
+      for (final Unit unit : Match.getMatches(units, Match.allOf(Matches.unitIsSub(), Matches.UnitIsAir.invert()))) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }

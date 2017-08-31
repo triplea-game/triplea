@@ -812,7 +812,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(northAtlantic);
     Collection<Unit> units = new ArrayList<>();
     units.addAll(Match.getMatches(gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits().getUnits(),
-        Matches.UnitIsCarrier));
+        Matches.unitIsCarrier()));
     results = delegate.move(units, route);
     assertValid(results);
     // move carriers to ensure they can't go anywhere
@@ -822,7 +822,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(blackSea);
     units = new ArrayList<>();
     units.addAll(Match.getMatches(
-        gameData.getMap().getTerritory(redSea.toString()).getUnits().getUnits(), Matches.UnitIsCarrier));
+        gameData.getMap().getTerritory(redSea.toString()).getUnits().getUnits(), Matches.unitIsCarrier()));
     results = delegate.move(units, route);
     assertValid(results);
     // make sure the place cant use it to land

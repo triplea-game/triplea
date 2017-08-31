@@ -144,12 +144,12 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
         + player.getName(), territory);
     if (!data.getRelationshipTracker().isAtWar(territory.getOwner(), player)) {
       // change ownership of friendly factories
-      final Collection<Unit> units = territory.getUnits().getMatches(Matches.UnitIsInfrastructure);
+      final Collection<Unit> units = territory.getUnits().getMatches(Matches.unitIsInfrastructure());
       for (final Unit unit : units) {
         m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
       }
     } else {
-      final Match<Unit> enemyNonCom = Match.allOf(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data));
+      final Match<Unit> enemyNonCom = Match.allOf(Matches.unitIsInfrastructure(), Matches.enemyUnit(player, data));
       final Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
       // mark no movement for enemy units
       m_bridge.addChange(ChangeFactory.markNoMovementChange(units));

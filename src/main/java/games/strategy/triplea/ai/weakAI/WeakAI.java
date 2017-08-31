@@ -168,7 +168,7 @@ public class WeakAI extends AbstractAI {
     if (capitol == null || !capitol.getOwner().equals(player)) {
       return;
     }
-    List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.UnitIsInfrastructure.invert());
+    List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.unitIsInfrastructure().invert());
     unitsToLoad = Match.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getPlayerID()));
     for (final Territory neighbor : data.getMap().getNeighbors(capitol)) {
       if (!neighbor.isWater()) {
@@ -450,7 +450,7 @@ public class WeakAI extends AbstractAI {
           Matches.unitIsNotAa(),
           // we can never move factories
           Matches.unitCanMove(),
-          Matches.UnitIsNotInfrastructure,
+          Matches.unitIsNotInfrastructure(),
           Matches.UnitIsLand);
       final Match<Territory> moveThrough =
           Match.allOf(Matches.territoryIsImpassable().invert(),
@@ -574,8 +574,8 @@ public class WeakAI extends AbstractAI {
       if (!ta1.isCapital() && ta2.isCapital()) {
         return 1;
       }
-      final boolean factoryInT1 = o1.getUnits().anyMatch(Matches.UnitCanProduceUnits);
-      final boolean factoryInT2 = o2.getUnits().anyMatch(Matches.UnitCanProduceUnits);
+      final boolean factoryInT1 = o1.getUnits().anyMatch(Matches.unitCanProduceUnits());
+      final boolean factoryInT2 = o2.getUnits().anyMatch(Matches.unitCanProduceUnits());
       // next take territories which can produce
       if (factoryInT1 && !factoryInT2) {
         return -1;
@@ -583,8 +583,8 @@ public class WeakAI extends AbstractAI {
       if (!factoryInT1 && factoryInT2) {
         return 1;
       }
-      final boolean infrastructureInT1 = o1.getUnits().anyMatch(Matches.UnitIsInfrastructure);
-      final boolean infrastructureInT2 = o2.getUnits().anyMatch(Matches.UnitIsInfrastructure);
+      final boolean infrastructureInT1 = o1.getUnits().anyMatch(Matches.unitIsInfrastructure());
+      final boolean infrastructureInT2 = o2.getUnits().anyMatch(Matches.unitIsInfrastructure());
       // next take territories with infrastructure
       if (infrastructureInT1 && !infrastructureInT2) {
         return -1;
@@ -612,7 +612,7 @@ public class WeakAI extends AbstractAI {
           Collections.sort(unitsSortedByCost, AIUtils.getCostComparator());
           for (final Unit unit : unitsSortedByCost) {
             final Match<Unit> match = Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsLand,
-                Matches.UnitIsNotInfrastructure, Matches.unitCanMove(), Matches.unitIsNotAa(),
+                Matches.unitIsNotInfrastructure(), Matches.unitCanMove(), Matches.unitIsNotAa(),
                 Matches.unitCanNotMoveDuringCombatMove().invert());
             if (!unitsAlreadyMoved.contains(unit) && match.match(unit)) {
               moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
@@ -645,7 +645,7 @@ public class WeakAI extends AbstractAI {
             Match.of(o -> !unitsAlreadyMoved.contains(o)),
             Matches.unitIsNotAa(),
             Matches.unitCanMove(),
-            Matches.UnitIsNotInfrastructure,
+            Matches.unitIsNotInfrastructure(),
             Matches.unitCanNotMoveDuringCombatMove().invert(),
             Matches.unitIsNotSea());
         final Set<Territory> dontMoveFrom = new HashSet<>();
@@ -792,7 +792,7 @@ public class WeakAI extends AbstractAI {
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
     List<RepairRule> rrules = Collections.emptyList();
-    final Match<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitCanProduceUnits);
+    final Match<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCanProduceUnits());
     final List<Territory> rfactories =
         Match.getMatches(Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));
     // figure out if anything needs to be repaired
@@ -1010,7 +1010,7 @@ public class WeakAI extends AbstractAI {
     final List<Territory> randomTerritories = new ArrayList<>(data.getMap().getTerritories());
     Collections.shuffle(randomTerritories);
     for (final Territory t : randomTerritories) {
-      if (t != capitol && t.getOwner().equals(player) && t.getUnits().anyMatch(Matches.UnitCanProduceUnits)) {
+      if (t != capitol && t.getOwner().equals(player) && t.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
         placeAllWeCanOn(data, t, placeDelegate, player);
       }
     }

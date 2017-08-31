@@ -26,7 +26,7 @@ public class UnitsThatCantFightUtil {
     for (final Territory current : m_data.getMap()) {
       // get all owned non-combat units
       final Match.CompositeBuilder<Unit> ownedUnitsMatchBuilder = Match.newCompositeBuilder(
-          Matches.UnitIsInfrastructure.invert());
+          Matches.unitIsInfrastructure().invert());
       if (current.isWater()) {
         ownedUnitsMatchBuilder.add(Matches.UnitIsLand.invert());
       }

@@ -1407,7 +1407,7 @@ public class WW2V3Year41Test {
     final Territory uk = territory("United Kingdom", gameData);
     final Territory sz5 = territory("5 Sea Zone", gameData);
     // remove the sub
-    removeFrom(sz5, sz5.getUnits().getMatches(Matches.UnitIsSub));
+    removeFrom(sz5, sz5.getUnits().getMatches(Matches.unitIsSub()));
 
     when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(),
         any(), any())).thenAnswer(new Answer<Territory>() {

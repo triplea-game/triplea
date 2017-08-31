@@ -20,7 +20,7 @@ public class PlaceDelegate extends AbstractPlaceDelegate {
   @Override
   protected int getProduction(final Territory territory) {
     final Collection<Unit> allUnits = territory.getUnits().getUnits();
-    final int factoryCount = Match.countMatches(allUnits, Matches.UnitCanProduceUnits);
+    final int factoryCount = Match.countMatches(allUnits, Matches.unitCanProduceUnits());
     return 5 * factoryCount;
   }
 }

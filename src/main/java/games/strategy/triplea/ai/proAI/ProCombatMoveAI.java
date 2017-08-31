@@ -1017,7 +1017,7 @@ class ProCombatMoveAI {
 
         // Add destroyer if territory has subs and a destroyer has been already added
         final List<Unit> defendingUnits = attackMap.get(t).getMaxEnemyDefenders(player, data);
-        if (Match.anyMatch(defendingUnits, Matches.UnitIsSub)
+        if (Match.anyMatch(defendingUnits, Matches.unitIsSub())
             && Match.noneMatch(attackMap.get(t).getUnits(), Matches.unitIsDestroyer())) {
           attackMap.get(t).addUnit(unit);
           it.remove();
@@ -1382,7 +1382,7 @@ class ProCombatMoveAI {
       final Set<Territory> canBombardTerritories = new HashSet<>();
       for (final ProTerritory patd : prioritizedTerritories) {
         final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
-        final boolean hasDefenders = Match.anyMatch(defendingUnits, Matches.UnitIsInfrastructure.invert());
+        final boolean hasDefenders = Match.anyMatch(defendingUnits, Matches.unitIsInfrastructure().invert());
         if (bombardMap.get(u).contains(patd.getTerritory()) && !patd.getTransportTerritoryMap().isEmpty()
             && hasDefenders && !TransportTracker.isTransporting(u)) {
           canBombardTerritories.add(patd.getTerritory());

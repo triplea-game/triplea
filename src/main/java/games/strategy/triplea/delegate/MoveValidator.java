@@ -428,7 +428,7 @@ public class MoveValidator {
       }
     }
     // Subs can't travel under DDs
-    if (isSubmersibleSubsAllowed(data) && !units.isEmpty() && Match.allMatch(units, Matches.UnitIsSub)) {
+    if (isSubmersibleSubsAllowed(data) && !units.isEmpty() && Match.allMatch(units, Matches.unitIsSub())) {
       // this is ok unless there are destroyer on the path
       if (MoveValidator.enemyDestroyerOnPath(route, player, data)) {
         return result.setErrorReturnResult("Cannot move submarines under destroyers");
@@ -441,7 +441,7 @@ public class MoveValidator {
             Matches.unitIsSubmerged());
         if (!end.getUnits().allMatch(friendlyOrSubmerged)
             && !(!units.isEmpty() && Match.allMatch(units, Matches.UnitIsAir) && end.isWater())) {
-          if (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsSub)
+          if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsSub())
               || !Properties.getSubsCanEndNonCombatMoveWithEnemies(data)) {
 
             return result.setErrorReturnResult("Cannot advance to battle in non combat");
@@ -525,7 +525,7 @@ public class MoveValidator {
     // subs may possibly carry units...
     if (isSubmersibleSubsAllowed(data)) {
       final Collection<Unit> matches = Match.getMatches(units, Matches.unitIsBeingTransported().invert());
-      if (!matches.isEmpty() && Match.allMatch(matches, Matches.UnitIsSub)) {
+      if (!matches.isEmpty() && Match.allMatch(matches, Matches.unitIsSub())) {
         // this is ok unless there are destroyer on the path
         if (MoveValidator.enemyDestroyerOnPath(route, player, data)) {
           return result.setErrorReturnResult("Cannot move submarines under destroyers");
@@ -762,8 +762,10 @@ public class MoveValidator {
    * AA and factory dont count as enemy.
    */
   static boolean noEnemyUnitsOnPathMiddleSteps(final Route route, final PlayerID player, final GameData data) {
-    final Match<Unit> alliedOrNonCombat =
-        Match.anyOf(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data).invert(), Matches.unitIsSubmerged());
+    final Match<Unit> alliedOrNonCombat = Match.anyOf(
+        Matches.unitIsInfrastructure(),
+        Matches.enemyUnit(player, data).invert(),
+        Matches.unitIsSubmerged());
     // Submerged units do not interfere with movement
     for (final Territory current : route.getMiddleSteps()) {
       if (!current.getUnits().allMatch(alliedOrNonCombat)) {
@@ -780,13 +782,13 @@ public class MoveValidator {
   static boolean onlyIgnoredUnitsOnPath(final Route route, final PlayerID player, final GameData data,
       final boolean ignoreRouteEnd) {
     final Match<Unit> subOnly =
-        Match.anyOf(Matches.UnitIsInfrastructure, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
+        Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsSub(), Matches.enemyUnit(player, data).invert());
     final Match<Unit> transportOnly =
-        Match.anyOf(Matches.UnitIsInfrastructure, Matches.unitIsTransportButNotCombatTransport(),
+        Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsTransportButNotCombatTransport(),
             Matches.UnitIsLand, Matches.enemyUnit(player, data).invert());
     final Match<Unit> transportOrSubOnly =
-        Match.anyOf(Matches.UnitIsInfrastructure, Matches.unitIsTransportButNotCombatTransport(),
-            Matches.UnitIsLand, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
+        Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsTransportButNotCombatTransport(),
+            Matches.UnitIsLand, Matches.unitIsSub(), Matches.enemyUnit(player, data).invert());
     final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
     boolean validMove = false;
@@ -989,7 +991,7 @@ public class MoveValidator {
               || Properties.getUseKamikazeSuicideAttacks(data);
       final boolean submarinesPreventUnescortedAmphibAssaults =
           Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data);
-      final Match<Unit> enemySubmarineMatch = Match.allOf(Matches.unitIsEnemyOf(data, player), Matches.UnitIsSub);
+      final Match<Unit> enemySubmarineMatch = Match.allOf(Matches.unitIsEnemyOf(data, player), Matches.unitIsSub());
       final Match<Unit> ownedSeaNonTransportMatch =
           Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsSea,
               Matches.unitIsNotTransportButCouldBeCombatTransport());
@@ -1420,7 +1422,7 @@ public class MoveValidator {
     }
     // remove air that can be carried by allied
     final Match<Unit> friendlyNotOwnedCarrier = Match.allOf(
-        Matches.UnitIsCarrier,
+        Matches.unitIsCarrier(),
         Matches.alliedUnit(player, data),
         Matches.unitIsOwnedBy(player).invert());
     final Collection<Unit> alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
@@ -1436,7 +1438,7 @@ public class MoveValidator {
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>();
     // get air that must be carried by our carriers
     final Collection<Unit> ownedCarrier =
-        Match.getMatches(units, Match.allOf(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player)));
+        Match.getMatches(units, Match.allOf(Matches.unitIsCarrier(), Matches.unitIsOwnedBy(player)));
     final Iterator<Unit> ownedCarrierIter = ownedCarrier.iterator();
     while (ownedCarrierIter.hasNext()) {
       final Unit carrier = ownedCarrierIter.next();

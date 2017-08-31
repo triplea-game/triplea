@@ -510,7 +510,7 @@ public class BattleTracker implements Serializable {
       // TODO check if istrn and NOT isDD
       // If subs are restricted from controlling sea zones, subtract them
       if (Properties.getSubControlSeaZoneRestricted(data)) {
-        totalMatches -= Match.countMatches(arrivedUnits, Matches.UnitIsSub);
+        totalMatches -= Match.countMatches(arrivedUnits, Matches.unitIsSub());
       }
       if (totalMatches == 0) {
         return;
@@ -720,7 +720,7 @@ public class BattleTracker implements Serializable {
         if (changeTracker != null) {
           changeTracker.addChange(takeOverFriendlyTerritories);
         }
-        final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsInfrastructure);
+        final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);
           bridge.addChange(takeOverNonComUnits);
@@ -772,7 +772,7 @@ public class BattleTracker implements Serializable {
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
     final Match<Unit> enemyToBeDestroyed = Match.allOf(Matches.enemyUnit(id, data),
-        Matches.unitIsDisabled(), Matches.UnitIsInfrastructure.invert());
+        Matches.unitIsDisabled(), Matches.unitIsInfrastructure().invert());
     final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
     if (!destroyed.isEmpty()) {
       final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
@@ -783,7 +783,7 @@ public class BattleTracker implements Serializable {
       }
     }
     // take over non combatants
-    final Match<Unit> enemyNonCom = Match.allOf(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
+    final Match<Unit> enemyNonCom = Match.allOf(Matches.enemyUnit(id, data), Matches.unitIsInfrastructure());
     final Match<Unit> willBeCaptured = Match.anyOf(enemyNonCom,
         Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
@@ -867,7 +867,7 @@ public class BattleTracker implements Serializable {
     }
     // if just an enemy factory &/or AA then no battle
     final Collection<Unit> enemyUnits = Match.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
-    if (route.getEnd() != null && !enemyUnits.isEmpty() && Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure)) {
+    if (route.getEnd() != null && !enemyUnits.isEmpty() && Match.allMatch(enemyUnits, Matches.unitIsInfrastructure())) {
       return ChangeFactory.EMPTY_CHANGE;
     }
     IBattle battle = getPendingBattle(site, false, BattleType.NORMAL);

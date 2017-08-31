@@ -725,7 +725,7 @@ public class RevisedTest {
     sz45To50.setStart(sz45);
     sz45To50.add(sz50);
     final List<Unit> japSub =
-        sz45.getUnits().getMatches(Match.allOf(Matches.UnitIsSub, Matches.unitIsOwnedBy(japanese)));
+        sz45.getUnits().getMatches(Match.allOf(Matches.unitIsSub(), Matches.unitIsOwnedBy(japanese)));
     error = moveDelegate.move(japSub, sz45To50);
     // make sure no error
     assertNull(error);

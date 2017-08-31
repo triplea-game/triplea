@@ -1529,7 +1529,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       change.add(ChangeFactory.markNoMovementChange(unit));
     }
     // place units
-    final Collection<Unit> factoryAndInfrastructure = Match.getMatches(units, Matches.UnitIsInfrastructure);
+    final Collection<Unit> factoryAndInfrastructure = Match.getMatches(units, Matches.unitIsInfrastructure());
     change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
     final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName() + " has "
         + MyFormatter.unitsToTextNoOwner(units) + " placed in " + terr.getName();

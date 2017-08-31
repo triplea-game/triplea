@@ -268,7 +268,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
 
     // play a sound
-    if (Match.anyMatch(units, Matches.UnitIsInfrastructure)) {
+    if (Match.anyMatch(units, Matches.unitIsInfrastructure())) {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_INFRASTRUCTURE, m_player);
     } else if (Match.anyMatch(units, Matches.UnitIsSea)) {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_SEA, m_player);
@@ -296,7 +296,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!didIt) {
       throw new IllegalStateException("Something wrong with consuming/upgrading units");
     }
-    final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.UnitIsInfrastructure);
+    final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.unitIsInfrastructure());
     if (!factoryAndInfrastructure.isEmpty()) {
       change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
     }
@@ -479,7 +479,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!canMoveExistingFightersToNewCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) {
       return null;
     }
-    if (Match.noneMatch(units, Matches.UnitIsCarrier)) {
+    if (Match.noneMatch(units, Matches.unitIsCarrier())) {
       return null;
     }
     // do we have any spare carrier capacity
@@ -493,7 +493,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!Matches.TerritoryIsLand.match(producer)) {
       return null;
     }
-    if (!producer.getUnits().anyMatch(Matches.UnitCanProduceUnits)) {
+    if (!producer.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
       return null;
     }
     final Match<Unit> ownedFighters = Match.allOf(Matches.unitCanLandOnCarrier(), Matches.unitIsOwnedBy(player));
@@ -503,7 +503,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (wasConquered(producer)) {
       return null;
     }
-    if (Match.anyMatch(getAlreadyProduced(producer), Matches.UnitCanProduceUnits)) {
+    if (Match.anyMatch(getAlreadyProduced(producer), Matches.unitCanProduceUnits())) {
       return null;
     }
     final List<Unit> fighters = producer.getUnits().getMatches(ownedFighters);
@@ -673,8 +673,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return "No more Constructions Allowed in " + producer.getName();
     }
     // check we havent just put a factory there (should we be checking producer?)
-    if (Match.anyMatch(getAlreadyProduced(producer), Matches.UnitCanProduceUnits)
-        || Match.anyMatch(getAlreadyProduced(to), Matches.UnitCanProduceUnits)) {
+    if (Match.anyMatch(getAlreadyProduced(producer), Matches.unitCanProduceUnits())
+        || Match.anyMatch(getAlreadyProduced(to), Matches.unitCanProduceUnits())) {
       return "Factory in " + producer.getName() + " cant produce until 1 turn after it is created";
     }
     return "No Factory in " + producer.getName();
@@ -884,9 +884,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (!water) {
         placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.unitIsNotConstruction())));
       } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
-          && Match.anyMatch(allProducedUnits, Matches.UnitIsCarrier))
+          && Match.anyMatch(allProducedUnits, Matches.unitIsCarrier()))
           || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
-              && Match.anyMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier))) {
+              && Match.anyMatch(to.getUnits().getUnits(), Matches.unitIsCarrier()))) {
         placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.unitCanLandOnCarrier())));
       }
     }
@@ -1570,7 +1570,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * will be thrown. return value may be null.
    */
   protected PlayerID getOriginalFactoryOwner(final Territory territory) {
-    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.UnitCanProduceUnits);
+    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.size() == 0) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }

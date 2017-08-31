@@ -161,7 +161,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
       if (t.getOwner().equals(this)) {
         ownsLand = true;
       }
-      if (t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(this), Matches.UnitCanProduceUnits))) {
+      if (t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(this), Matches.unitCanProduceUnits()))) {
         hasFactory = true;
       }
       if (ownsLand && hasFactory) {

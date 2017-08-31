@@ -150,7 +150,7 @@ class ProNonCombatMoveAI {
 
     // Log a warning if any units not assigned to a territory (skip infrastructure for now)
     for (final Unit u : territoryManager.getDefendOptions().getUnitMoveMap().keySet()) {
-      if (Matches.UnitIsInfrastructure.invert().match(u)) {
+      if (Matches.unitIsInfrastructure().invert().match(u)) {
         ProLogger.warn(player + ": " + unitTerritoryMap.get(u) + " has unmoved unit: " + u + " with options: "
             + territoryManager.getDefendOptions().getUnitMoveMap().get(u));
       }
@@ -612,7 +612,7 @@ class ProNonCombatMoveAI {
       for (final Iterator<Unit> it = sortedUnitMoveOptions.keySet().iterator(); it.hasNext();) {
         final Unit unit = it.next();
         final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
-        if (isAirUnit || Matches.UnitIsCarrier.match(unit)) {
+        if (isAirUnit || Matches.unitIsCarrier().match(unit)) {
           continue; // skip air and carrier units
         }
         final TreeMap<Double, Territory> estimatesMap = new TreeMap<>();
@@ -667,7 +667,7 @@ class ProNonCombatMoveAI {
           it.remove();
 
           // If carrier has dependent allied fighters then move them too
-          if (Matches.UnitIsCarrier.match(unit)) {
+          if (Matches.unitIsCarrier().match(unit)) {
             final Territory unitTerritory = unitTerritoryMap.get(unit);
             final Map<Unit, Collection<Unit>> carrierMustMoveWith =
                 MoveValidator.carrierMustMoveWith(unitTerritory.getUnits().getUnits(), unitTerritory, data, player);
@@ -1365,7 +1365,7 @@ class ProNonCombatMoveAI {
                 it.remove();
 
                 // If carrier has dependent allied fighters then move them too
-                if (Matches.UnitIsCarrier.match(u)) {
+                if (Matches.unitIsCarrier().match(u)) {
                   final Territory unitTerritory = unitTerritoryMap.get(u);
                   final Map<Unit, Collection<Unit>> carrierMustMoveWith = MoveValidator
                       .carrierMustMoveWith(unitTerritory.getUnits().getUnits(), unitTerritory, data, player);
@@ -1442,7 +1442,7 @@ class ProNonCombatMoveAI {
             it.remove();
 
             // If carrier has dependent allied fighters then move them too
-            if (Matches.UnitIsCarrier.match(u)) {
+            if (Matches.unitIsCarrier().match(u)) {
               final Territory unitTerritory = unitTerritoryMap.get(u);
               final Map<Unit, Collection<Unit>> carrierMustMoveWith =
                   MoveValidator.carrierMustMoveWith(unitTerritory.getUnits().getUnits(), unitTerritory, data, player);
@@ -1480,7 +1480,7 @@ class ProNonCombatMoveAI {
               it.remove();
 
               // If carrier has dependent allied fighters then move them too
-              if (Matches.UnitIsCarrier.match(u)) {
+              if (Matches.unitIsCarrier().match(u)) {
                 final Territory unitTerritory = unitTerritoryMap.get(u);
                 final Map<Unit, Collection<Unit>> carrierMustMoveWith =
                     MoveValidator.carrierMustMoveWith(unitTerritory.getUnits().getUnits(), unitTerritory, data, player);
@@ -1861,7 +1861,7 @@ class ProNonCombatMoveAI {
         final Unit u = it.next();
 
         // Only check factory units
-        if (Matches.UnitCanProduceUnits.match(u)) {
+        if (Matches.unitCanProduceUnits().match(u)) {
           Territory maxValueTerritory = null;
           double maxValue = 0;
           for (final Territory t : infraUnitMoveMap.get(u)) {

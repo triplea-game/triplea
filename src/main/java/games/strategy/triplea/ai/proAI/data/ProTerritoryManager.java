@@ -750,7 +750,7 @@ public class ProTerritoryManager {
       findNavalMoveOptions(player, myUnitTerritories, new HashMap<>(), unitMoveMap2, new HashMap<>(),
           Matches.TerritoryIsWater, enemyTerritories, false, true);
       for (final Unit u : unitMoveMap2.keySet()) {
-        if (Matches.UnitIsCarrier.match(u)) {
+        if (Matches.unitIsCarrier().match(u)) {
           possibleCarrierTerritories.addAll(unitMoveMap2.get(u));
         }
       }
