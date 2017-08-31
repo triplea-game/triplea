@@ -88,7 +88,7 @@ public class ProOddsCalculator {
       final List<Unit> defendingUnits) {
     final GameData data = ProData.getData();
 
-    final boolean hasNoDefenders = Match.noneMatch(defendingUnits, Matches.UnitIsNotInfrastructure);
+    final boolean hasNoDefenders = Match.noneMatch(defendingUnits, Matches.unitIsNotInfrastructure());
     final boolean isLandAndCanOnlyBeAttackedByAir =
         !t.isWater() && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
     if (attackingUnits.size() == 0) {
@@ -98,7 +98,7 @@ public class ProOddsCalculator {
     } else if (hasNoDefenders) {
       return new ProBattleResult(100, 0.1, true, attackingUnits, new ArrayList<>(), 0);
     } else if (Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty()
-        && Match.allMatch(defendingUnits, Matches.UnitIsSub)
+        && Match.allMatch(defendingUnits, Matches.unitIsSub())
         && Match.noneMatch(attackingUnits, Matches.unitIsDestroyer())) {
       return new ProBattleResult();
     }

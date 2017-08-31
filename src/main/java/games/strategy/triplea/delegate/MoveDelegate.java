@@ -322,7 +322,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final PlayerID player) {
     final GameData data = bridge.getData();
     final Match<Unit> crippledAlliedCarriersMatch = Match.allOf(Matches.isUnitAllied(player, data),
-        Matches.unitIsOwnedBy(player).invert(), Matches.UnitIsCarrier,
+        Matches.unitIsOwnedBy(player).invert(), Matches.unitIsCarrier(),
         Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
     final Match<Unit> ownedFightersMatch =
         Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsAir,
@@ -584,7 +584,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     boolean hasProducedCarriers = false;
     for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, m_player)) {
-      if (p.getUnits().anyMatch(Matches.UnitIsCarrier)) {
+      if (p.getUnits().anyMatch(Matches.unitIsCarrier())) {
         hasProducedCarriers = true;
         break;
       }
@@ -598,7 +598,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // Check if player still has units to place
       if (!player.equals(m_player)) {
         util.removeAirThatCantLand(player,
-            ((player.getUnits().anyMatch(Matches.UnitIsCarrier) || hasProducedCarriers) && lhtrCarrierProd));
+            ((player.getUnits().anyMatch(Matches.unitIsCarrier()) || hasProducedCarriers) && lhtrCarrierProd));
       }
     }
   }

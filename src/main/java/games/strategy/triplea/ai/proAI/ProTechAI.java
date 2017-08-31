@@ -463,7 +463,7 @@ final class ProTechAI {
     Territory ac = null;
     final Match<Unit> enemyPlane = Match.allOf(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.unitCanMove());
     final Match<Unit> enemyCarrier =
-        Match.allOf(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player), Matches.unitCanMove());
+        Match.allOf(Matches.unitIsCarrier(), Matches.unitIsOwnedBy(player), Matches.unitCanMove());
     q.add(start);
     Territory current = null;
     distance.put(start, 0);
@@ -534,10 +534,10 @@ final class ProTechAI {
     if (start == null || destination == null || !start.isWater() || !destination.isWater()) {
       return null;
     }
-    final Match<Unit> sub = Match.allOf(Matches.UnitIsSub.invert());
+    final Match<Unit> sub = Match.allOf(Matches.unitIsSub().invert());
     final Match<Unit> transport = Match.allOf(Matches.unitIsTransport().invert(), Matches.UnitIsLand.invert());
     final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
-        Matches.UnitIsInfrastructure.invert(),
+        Matches.unitIsInfrastructure().invert(),
         Matches.alliedUnit(player, data).invert());
     if (Properties.getIgnoreTransportInMovement(data)) {
       unitCondBuilder.add(transport);

@@ -285,7 +285,7 @@ public class ProPurchaseUtils {
 
   private static PlayerID getOriginalFactoryOwner(final Territory territory, final PlayerID player) {
 
-    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.UnitCanProduceUnits);
+    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.size() == 0) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }

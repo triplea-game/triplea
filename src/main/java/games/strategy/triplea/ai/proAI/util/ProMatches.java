@@ -164,7 +164,7 @@ public class ProMatches {
 
   private static Match<Territory> territoryHasOnlyIgnoredUnits(final PlayerID player, final GameData data) {
     return Match.of(t -> {
-      final Match<Unit> subOnly = Match.anyOf(Matches.UnitIsInfrastructure, Matches.UnitIsSub,
+      final Match<Unit> subOnly = Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsSub(),
           Matches.enemyUnit(player, data).invert());
       return (Properties.getIgnoreSubInMovement(data) && t.getUnits().allMatch(subOnly))
           || Matches.territoryHasNoEnemyUnits(player, data).match(t);
@@ -195,7 +195,7 @@ public class ProMatches {
   }
 
   public static Match<Territory> territoryHasInfraFactoryAndIsLand() {
-    final Match<Unit> infraFactoryMatch = Match.allOf(Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure);
+    final Match<Unit> infraFactoryMatch = Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
     return Match.allOf(Matches.TerritoryIsLand, Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
   }
 
@@ -225,20 +225,20 @@ public class ProMatches {
   }
 
   private static Match<Territory> territoryHasNonMobileInfraFactory() {
-    final Match<Unit> nonMobileInfraFactoryMatch = Match.allOf(Matches.UnitCanProduceUnits,
-        Matches.UnitIsInfrastructure, Matches.unitHasMovementLeft().invert());
+    final Match<Unit> nonMobileInfraFactoryMatch = Match.allOf(Matches.unitCanProduceUnits(),
+        Matches.unitIsInfrastructure(), Matches.unitHasMovementLeft().invert());
     return Matches.territoryHasUnitsThatMatch(nonMobileInfraFactoryMatch);
   }
 
   public static Match<Territory> territoryHasInfraFactoryAndIsOwnedLand(final PlayerID player) {
     final Match<Unit> infraFactoryMatch = Match.allOf(Matches.unitIsOwnedBy(player),
-        Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure);
+        Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
     return Match.allOf(Matches.isTerritoryOwnedBy(player),
         Matches.TerritoryIsLand, Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
   }
 
   public static Match<Territory> territoryHasInfraFactoryAndIsAlliedLand(final PlayerID player, final GameData data) {
-    final Match<Unit> infraFactoryMatch = Match.allOf(Matches.UnitCanProduceUnits, Matches.UnitIsInfrastructure);
+    final Match<Unit> infraFactoryMatch = Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
     return Match.allOf(Matches.isTerritoryAllied(player, data),
         Matches.TerritoryIsLand, Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
   }
@@ -403,7 +403,7 @@ public class ProMatches {
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedNonCombatInfra(final PlayerID player) {
     return Match.allOf(unitCanBeMovedAndIsOwned(player),
-        Matches.unitCanNotMoveDuringCombatMove(), Matches.UnitIsInfrastructure);
+        Matches.unitCanNotMoveDuringCombatMove(), Matches.unitIsInfrastructure());
   }
 
   public static Match<Unit> unitCantBeMovedAndIsAlliedDefender(final PlayerID player, final GameData data,
@@ -420,12 +420,12 @@ public class ProMatches {
   public static Match<Unit> unitCantBeMovedAndIsAlliedDefenderAndNotInfra(final PlayerID player, final GameData data,
       final Territory t) {
     return Match.allOf(unitCantBeMovedAndIsAlliedDefender(player, data, t),
-        Matches.UnitIsNotInfrastructure);
+        Matches.unitIsNotInfrastructure());
   }
 
   public static Match<Unit> unitIsAlliedLandAndNotInfra(final PlayerID player, final GameData data) {
     return Match.allOf(Matches.UnitIsLand, Matches.isUnitAllied(player, data),
-        Matches.UnitIsNotInfrastructure);
+        Matches.unitIsNotInfrastructure());
   }
 
   public static Match<Unit> unitIsAlliedNotOwned(final PlayerID player, final GameData data) {
@@ -449,7 +449,7 @@ public class ProMatches {
   }
 
   public static Match<Unit> unitIsEnemyAndNotInfa(final PlayerID player, final GameData data) {
-    return Match.allOf(Matches.enemyUnit(player, data), Matches.UnitIsNotInfrastructure);
+    return Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsNotInfrastructure());
   }
 
   public static Match<Unit> unitIsEnemyNotLand(final PlayerID player, final GameData data) {

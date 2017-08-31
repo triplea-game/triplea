@@ -369,7 +369,7 @@ public class TripleAUnit extends Unit {
         // can use "production" or "unitProduction"
         return territoryUnitProduction * 2;
       } else {
-        if (Matches.UnitCanProduceUnits.match(u)) {
+        if (Matches.unitCanProduceUnits().match(u)) {
           if (ua.getCanProduceXUnits() < 0) {
             // can use "production" or "unitProduction"
             return territoryUnitProduction * ua.getMaxDamage();
@@ -431,7 +431,7 @@ public class TripleAUnit extends Unit {
     if (u == null) {
       return 0;
     }
-    if (!Matches.UnitCanProduceUnits.match(u)) {
+    if (!Matches.unitCanProduceUnits().match(u)) {
       return 0;
     }
     int productionCapacity = 0;

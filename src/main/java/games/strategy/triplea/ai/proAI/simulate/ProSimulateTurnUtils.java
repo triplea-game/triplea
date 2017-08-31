@@ -66,8 +66,8 @@ public class ProSimulateTurnUtils {
         // Make updates to data
         final List<Unit> attackersToRemove = new ArrayList<>(attackers);
         attackersToRemove.removeAll(remainingUnits);
-        final List<Unit> defendersToRemove = Match.getMatches(defenders, Matches.UnitIsInfrastructure.invert());
-        final List<Unit> infrastructureToChangeOwner = Match.getMatches(defenders, Matches.UnitIsInfrastructure);
+        final List<Unit> defendersToRemove = Match.getMatches(defenders, Matches.unitIsInfrastructure().invert());
+        final List<Unit> infrastructureToChangeOwner = Match.getMatches(defenders, Matches.unitIsInfrastructure());
         ProLogger.debug("attackersToRemove=" + attackersToRemove);
         ProLogger.debug("defendersToRemove=" + defendersToRemove);
         ProLogger.debug("infrastructureToChangeOwner=" + infrastructureToChangeOwner);
@@ -175,7 +175,7 @@ public class ProSimulateTurnUtils {
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
         delegateBridge.addChange(takeOverFriendlyTerritories);
-        final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsInfrastructure);
+        final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, t);
           delegateBridge.addChange(takeOverNonComUnits);

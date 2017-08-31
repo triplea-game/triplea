@@ -312,8 +312,8 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       final List<Territory> notOwned = Match.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).invert());
       if (notOwned.isEmpty()) {
         // only owned territories left
-        final boolean nonFactoryUnitsLeft = Match.anyMatch(unitChoices, Matches.UnitCanProduceUnits.invert());
-        final Match<Unit> ownedFactories = Match.allOf(Matches.UnitCanProduceUnits, Matches.unitIsOwnedBy(me));
+        final boolean nonFactoryUnitsLeft = Match.anyMatch(unitChoices, Matches.unitCanProduceUnits().invert());
+        final Match<Unit> ownedFactories = Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsOwnedBy(me));
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
         final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(territoryChoices);
@@ -340,7 +340,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           }
         } else {
           final int maxTerritoriesToPopulate = Math.min(territoryChoices.size(),
-              Math.max(4, Match.countMatches(unitChoices, Matches.UnitCanProduceUnits)));
+              Math.max(4, Match.countMatches(unitChoices, Matches.unitCanProduceUnits())));
           test.addAll(territoriesWithFactories);
           if (!test.isEmpty()) {
             if (test.size() < maxTerritoriesToPopulate) {
@@ -403,7 +403,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     final Set<Unit> unitsToPlace = new HashSet<>();
     if (unitChoices != null && !unitChoices.isEmpty() && unitsPerPick > 0) {
       Collections.shuffle(unitChoices);
-      final List<Unit> nonFactory = Match.getMatches(unitChoices, Matches.UnitCanProduceUnits.invert());
+      final List<Unit> nonFactory = Match.getMatches(unitChoices, Matches.unitCanProduceUnits().invert());
       if (nonFactory.isEmpty()) {
         for (int i = 0; i < unitsPerPick && !unitChoices.isEmpty(); i++) {
           unitsToPlace.add(unitChoices.get(0));

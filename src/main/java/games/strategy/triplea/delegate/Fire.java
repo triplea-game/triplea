@@ -57,7 +57,7 @@ public class Fire implements IExecutable {
      * to:
      * m_attackableUnits = attackableUnits;
      */
-    m_attackableUnits = Match.getMatches(attackableUnits, Matches.UnitIsNotInfrastructure);
+    m_attackableUnits = Match.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
     m_canReturnFire = canReturnFire;
     m_firingUnits = firingUnits;
     m_stepName = stepName;

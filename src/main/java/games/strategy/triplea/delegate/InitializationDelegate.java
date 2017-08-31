@@ -336,7 +336,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
         if (territoryAttachment.getOriginalOwner() == null && current.getOwner() != null) {
           changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
         }
-        final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.UnitIsInfrastructure);
+        final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.unitIsInfrastructure());
         changes.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
       } else if (!current.isWater()) {
         final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
