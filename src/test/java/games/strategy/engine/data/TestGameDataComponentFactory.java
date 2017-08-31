@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.triplea.delegate.FakeTechAdvance;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -9,6 +10,20 @@ import games.strategy.util.IntegerMap;
  */
 public final class TestGameDataComponentFactory {
   private TestGameDataComponentFactory() {}
+
+  /**
+   * Creates a new {@link FakeTechAdvance} instance.
+   *
+   * @param gameData The game data that owns the component.
+   * @param name The component name.
+   *
+   * @return A new {@link FakeTechAdvance} instance.
+   */
+  public static FakeTechAdvance newFakeTechAdvance(final GameData gameData, final String name) {
+    final FakeTechAdvance fakeTechAdvance = new FakeTechAdvance(gameData, name);
+    initializeAttachable(fakeTechAdvance);
+    return fakeTechAdvance;
+  }
 
   /**
    * Creates a new {@link ProductionRule} instance.

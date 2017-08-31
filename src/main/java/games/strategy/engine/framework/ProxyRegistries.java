@@ -22,6 +22,7 @@ import games.strategy.internal.persistence.serializable.ResourceCollectionProxy;
 import games.strategy.internal.persistence.serializable.ResourceProxy;
 import games.strategy.internal.persistence.serializable.RocketsAdvanceProxy;
 import games.strategy.internal.persistence.serializable.SuperSubsAdvanceProxy;
+import games.strategy.internal.persistence.serializable.TechnologyFrontierProxy;
 import games.strategy.internal.persistence.serializable.TripleAProxy;
 import games.strategy.internal.persistence.serializable.VersionProxy;
 import games.strategy.internal.persistence.serializable.WarBondsAdvanceProxy;
@@ -59,6 +60,7 @@ final class ProxyRegistries {
         ResourceCollectionProxy.FACTORY,
         RocketsAdvanceProxy.FACTORY,
         SuperSubsAdvanceProxy.FACTORY,
+        TechnologyFrontierProxy.FACTORY,
         TripleAProxy.FACTORY,
         VersionProxy.FACTORY,
         WarBondsAdvanceProxy.FACTORY);

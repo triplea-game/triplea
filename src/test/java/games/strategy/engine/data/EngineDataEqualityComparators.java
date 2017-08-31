@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.AARadarAdvance;
 import games.strategy.triplea.delegate.DestroyerBombardTechAdvance;
+import games.strategy.triplea.delegate.FakeTechAdvance;
 import games.strategy.triplea.delegate.HeavyBomberAdvance;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 import games.strategy.triplea.delegate.ImprovedShipyardsAdvance;
@@ -29,6 +30,10 @@ public final class EngineDataEqualityComparators {
 
   public static final EqualityComparator DESTROYER_BOMBARD_TECH_ADVANCE = EqualityComparator.newInstance(
       DestroyerBombardTechAdvance.class,
+      EngineDataEqualityComparators::techAdvanceEquals);
+
+  public static final EqualityComparator FAKE_TECH_ADVANCE = EqualityComparator.newInstance(
+      FakeTechAdvance.class,
       EngineDataEqualityComparators::techAdvanceEquals);
 
   public static final EqualityComparator GAME_DATA = EqualityComparator.newInstance(
@@ -116,6 +121,12 @@ public final class EngineDataEqualityComparators {
   public static final EqualityComparator SUPER_SUBS_ADVANCE = EqualityComparator.newInstance(
       SuperSubsAdvance.class,
       EngineDataEqualityComparators::techAdvanceEquals);
+
+  public static final EqualityComparator TECHNOLOGY_FRONTIER = EqualityComparator.newInstance(
+      TechnologyFrontier.class,
+      (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
+          && context.equals(o1.getName(), o2.getName())
+          && context.equals(o1.getTechs(), o2.getTechs()));
 
   public static final EqualityComparator WAR_BONDS_ADVANCE = EqualityComparator.newInstance(
       WarBondsAdvance.class,
