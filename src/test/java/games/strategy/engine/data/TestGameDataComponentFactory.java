@@ -2,6 +2,8 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Arrays;
+
 import games.strategy.triplea.delegate.FakeTechAdvance;
 import games.strategy.util.IntegerMap;
 
@@ -84,6 +86,22 @@ public final class TestGameDataComponentFactory {
     final Resource resource = new Resource(name, gameData);
     initializeAttachable(resource);
     return resource;
+  }
+
+  /**
+   * Creates a new {@link TechnologyFrontier} instance.
+   *
+   * @param gameData The game data that owns the component.
+   * @param name The component name.
+   *
+   * @return A new {@link TechnologyFrontier} instance.
+   */
+  public static TechnologyFrontier newTechnologyFrontier(final GameData gameData, final String name) {
+    final TechnologyFrontier technologyFrontier = new TechnologyFrontier(name, gameData);
+    technologyFrontier.addAdvance(Arrays.asList(
+        newFakeTechAdvance(gameData, "Tech Advance 1"),
+        newFakeTechAdvance(gameData, "Tech Advance 2")));
+    return technologyFrontier;
   }
 
   /**

@@ -128,6 +128,11 @@ public final class EngineDataEqualityComparators {
           && context.equals(o1.getName(), o2.getName())
           && context.equals(o1.getTechs(), o2.getTechs()));
 
+  public static final EqualityComparator TECHNOLOGY_FRONTIER_LIST = EqualityComparator.newInstance(
+      TechnologyFrontierList.class,
+      (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
+          && context.equals(o1.getFrontiers(), o2.getFrontiers()));
+
   public static final EqualityComparator WAR_BONDS_ADVANCE = EqualityComparator.newInstance(
       WarBondsAdvance.class,
       EngineDataEqualityComparators::techAdvanceEquals);

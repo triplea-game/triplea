@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
 import games.strategy.engine.data.TestGameDataComponentFactory;
@@ -20,16 +19,9 @@ public final class TechnologyFrontierProxyAsProxyTest extends AbstractProxyTestC
 
   @Override
   protected Collection<TechnologyFrontier> createPrincipals() {
-    return Arrays.asList(newTechnologyFrontier());
-  }
-
-  private static TechnologyFrontier newTechnologyFrontier() {
-    final GameData gameData = TestGameDataFactory.newValidGameData();
-    final TechnologyFrontier technologyFrontier = new TechnologyFrontier("technologyFrontier", gameData);
-    technologyFrontier.addAdvance(Arrays.asList(
-        TestGameDataComponentFactory.newFakeTechAdvance(gameData, "Tech Advance 1"),
-        TestGameDataComponentFactory.newFakeTechAdvance(gameData, "Tech Advance 2")));
-    return technologyFrontier;
+    return Arrays.asList(TestGameDataComponentFactory.newTechnologyFrontier(
+        TestGameDataFactory.newValidGameData(),
+        "technologyFrontier"));
   }
 
   @Override
