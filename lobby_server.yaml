@@ -3,12 +3,9 @@
   port: 3304
   message: |
     Welcome to TripleA 1.9 - For help: http://www.triplea-game.org/help/
-    Lobby Rules: https://forums.triplea-game.org/topic/4
     No talking politics in the lobby! Take your political comments to a private game!
-    Please ensure you are using the latest stable release of Triplea located here http://www.triplea-game.org/
-    Join the new testing group! For more info:
-    https://forums.triplea-game.org/topic/268/volunteers-needed-early-release-testing-group
+    Lobby Rules: https://forums.triplea-game.org/topic/4
     
-    https://forums.triplea-game.org/topic/69/revised-tournament-of-champions-11-toc-11  for intermediate or expert players only!
-  error_message:
-  
+    TOC 11 signup has now started, $100 first place prize:
+    https://forums.triplea-game.org/topic/69/revised-tournament-of-champions-11-toc-11
+  error_message:  
