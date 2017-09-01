@@ -42,11 +42,25 @@ def getEngineVersion() {
 
 version = getEngineVersion()
 
+sourceSets {
+    integTest {
+        java.srcDir 'src/integ_test/java'
+        resources.srcDir 'src/integ_test/resources'
+
+        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testRuntime
+        runtimeClasspath = output + compileClasspath
+    }
+}
+
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:all"
 }
 compileTestJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:all"
+}
+compileIntegTestJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:all"
 }
@@ -65,16 +79,6 @@ jar {
 
 repositories {
     jcenter()
-}
-
-sourceSets {
-    integTest {
-        java.srcDir 'src/integ_test/java'
-        resources.srcDir 'src/integ_test/resources'
-
-        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testRuntime
-        runtimeClasspath = output + compileClasspath
-    }
 }
 
 dependencies {
