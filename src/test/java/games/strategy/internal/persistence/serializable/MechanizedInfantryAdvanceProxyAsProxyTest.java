@@ -1,45 +1,36 @@
 package games.strategy.internal.persistence.serializable;
 
+import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
-import games.strategy.engine.data.TestGameDataComponentFactory;
-import games.strategy.engine.data.TestGameDataFactory;
-import games.strategy.persistence.serializable.AbstractProxyTestCase;
+import games.strategy.engine.data.GameData;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.MechanizedInfantryAdvance;
 
-public final class MechanizedInfantryAdvanceProxyAsProxyTest extends AbstractProxyTestCase<MechanizedInfantryAdvance> {
+public final class MechanizedInfantryAdvanceProxyAsProxyTest
+    extends AbstractGameDataComponentProxyTestCase<MechanizedInfantryAdvance> {
   public MechanizedInfantryAdvanceProxyAsProxyTest() {
     super(MechanizedInfantryAdvance.class);
   }
 
   @Override
-  protected Collection<MechanizedInfantryAdvance> createPrincipals() {
-    return Arrays.asList(newMechanizedInfantryAdvance());
-  }
-
-  private static MechanizedInfantryAdvance newMechanizedInfantryAdvance() {
-    final MechanizedInfantryAdvance mechanizedInfantryAdvance =
-        new MechanizedInfantryAdvance(TestGameDataFactory.newValidGameData());
-    TestGameDataComponentFactory.initializeAttachable(mechanizedInfantryAdvance);
+  protected MechanizedInfantryAdvance newGameDataComponent(final GameData gameData) {
+    final MechanizedInfantryAdvance mechanizedInfantryAdvance = new MechanizedInfantryAdvance(gameData);
+    initializeAttachable(mechanizedInfantryAdvance);
     return mechanizedInfantryAdvance;
   }
 
   @Override
-  protected Collection<EqualityComparator> getEqualityComparators() {
-    return TestEqualityComparatorCollectionBuilder.forGameData()
-        .add(EngineDataEqualityComparators.MECHANIZED_INFANTRY_ADVANCE)
-        .build();
+  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
+    return Arrays.asList(EngineDataEqualityComparators.MECHANIZED_INFANTRY_ADVANCE);
   }
 
   @Override
-  protected Collection<ProxyFactory> getProxyFactories() {
-    return TestProxyFactoryCollectionBuilder.forGameData()
-        .add(MechanizedInfantryAdvanceProxy.FACTORY)
-        .build();
+  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
+    return Arrays.asList(MechanizedInfantryAdvanceProxy.FACTORY);
   }
 }

@@ -1,46 +1,36 @@
 package games.strategy.internal.persistence.serializable;
 
+import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
-import games.strategy.engine.data.TestGameDataComponentFactory;
-import games.strategy.engine.data.TestGameDataFactory;
-import games.strategy.persistence.serializable.AbstractProxyTestCase;
+import games.strategy.engine.data.GameData;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.IndustrialTechnologyAdvance;
 
 public final class IndustrialTechnologyAdvanceProxyAsProxyTest
-    extends AbstractProxyTestCase<IndustrialTechnologyAdvance> {
+    extends AbstractGameDataComponentProxyTestCase<IndustrialTechnologyAdvance> {
   public IndustrialTechnologyAdvanceProxyAsProxyTest() {
     super(IndustrialTechnologyAdvance.class);
   }
 
   @Override
-  protected Collection<IndustrialTechnologyAdvance> createPrincipals() {
-    return Arrays.asList(newIndustrialTechnologyAdvance());
-  }
-
-  private static IndustrialTechnologyAdvance newIndustrialTechnologyAdvance() {
-    final IndustrialTechnologyAdvance industrialTechnologyAdvance =
-        new IndustrialTechnologyAdvance(TestGameDataFactory.newValidGameData());
-    TestGameDataComponentFactory.initializeAttachable(industrialTechnologyAdvance);
+  protected IndustrialTechnologyAdvance newGameDataComponent(final GameData gameData) {
+    final IndustrialTechnologyAdvance industrialTechnologyAdvance = new IndustrialTechnologyAdvance(gameData);
+    initializeAttachable(industrialTechnologyAdvance);
     return industrialTechnologyAdvance;
   }
 
   @Override
-  protected Collection<EqualityComparator> getEqualityComparators() {
-    return TestEqualityComparatorCollectionBuilder.forGameData()
-        .add(EngineDataEqualityComparators.INDUSTRIAL_TECHNOLOGY_ADVANCE)
-        .build();
+  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
+    return Arrays.asList(EngineDataEqualityComparators.INDUSTRIAL_TECHNOLOGY_ADVANCE);
   }
 
   @Override
-  protected Collection<ProxyFactory> getProxyFactories() {
-    return TestProxyFactoryCollectionBuilder.forGameData()
-        .add(IndustrialTechnologyAdvanceProxy.FACTORY)
-        .build();
+  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
+    return Arrays.asList(IndustrialTechnologyAdvanceProxy.FACTORY);
   }
 }

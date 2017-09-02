@@ -1,39 +1,33 @@
 package games.strategy.internal.persistence.serializable;
 
+import static games.strategy.engine.data.TestGameDataComponentFactory.newFakeTechAdvance;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
-import games.strategy.engine.data.TestGameDataComponentFactory;
-import games.strategy.engine.data.TestGameDataFactory;
-import games.strategy.persistence.serializable.AbstractProxyTestCase;
+import games.strategy.engine.data.GameData;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.FakeTechAdvance;
 
-public final class FakeTechAdvanceProxyAsProxyTest extends AbstractProxyTestCase<FakeTechAdvance> {
+public final class FakeTechAdvanceProxyAsProxyTest extends AbstractGameDataComponentProxyTestCase<FakeTechAdvance> {
   public FakeTechAdvanceProxyAsProxyTest() {
     super(FakeTechAdvance.class);
   }
 
   @Override
-  protected Collection<FakeTechAdvance> createPrincipals() {
-    return Arrays.asList(
-        TestGameDataComponentFactory.newFakeTechAdvance(TestGameDataFactory.newValidGameData(), "Tech Advance"));
+  protected FakeTechAdvance newGameDataComponent(final GameData gameData) {
+    return newFakeTechAdvance(gameData, "Tech Advance");
   }
 
   @Override
-  protected Collection<EqualityComparator> getEqualityComparators() {
-    return TestEqualityComparatorCollectionBuilder.forGameData()
-        .add(EngineDataEqualityComparators.FAKE_TECH_ADVANCE)
-        .build();
+  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
+    return Arrays.asList(EngineDataEqualityComparators.FAKE_TECH_ADVANCE);
   }
 
   @Override
-  protected Collection<ProxyFactory> getProxyFactories() {
-    return TestProxyFactoryCollectionBuilder.forGameData()
-        .add(FakeTechAdvanceProxy.FACTORY)
-        .build();
+  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
+    return Arrays.asList(FakeTechAdvanceProxy.FACTORY);
   }
 }

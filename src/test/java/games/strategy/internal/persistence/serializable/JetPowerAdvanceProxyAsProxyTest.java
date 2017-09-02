@@ -1,44 +1,35 @@
 package games.strategy.internal.persistence.serializable;
 
+import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
-import games.strategy.engine.data.TestGameDataComponentFactory;
-import games.strategy.engine.data.TestGameDataFactory;
-import games.strategy.persistence.serializable.AbstractProxyTestCase;
+import games.strategy.engine.data.GameData;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.JetPowerAdvance;
 
-public final class JetPowerAdvanceProxyAsProxyTest extends AbstractProxyTestCase<JetPowerAdvance> {
+public final class JetPowerAdvanceProxyAsProxyTest extends AbstractGameDataComponentProxyTestCase<JetPowerAdvance> {
   public JetPowerAdvanceProxyAsProxyTest() {
     super(JetPowerAdvance.class);
   }
 
   @Override
-  protected Collection<JetPowerAdvance> createPrincipals() {
-    return Arrays.asList(newJetPowerAdvance());
-  }
-
-  private static JetPowerAdvance newJetPowerAdvance() {
-    final JetPowerAdvance jetPowerAdvance = new JetPowerAdvance(TestGameDataFactory.newValidGameData());
-    TestGameDataComponentFactory.initializeAttachable(jetPowerAdvance);
+  protected JetPowerAdvance newGameDataComponent(final GameData gameData) {
+    final JetPowerAdvance jetPowerAdvance = new JetPowerAdvance(gameData);
+    initializeAttachable(jetPowerAdvance);
     return jetPowerAdvance;
   }
 
   @Override
-  protected Collection<EqualityComparator> getEqualityComparators() {
-    return TestEqualityComparatorCollectionBuilder.forGameData()
-        .add(EngineDataEqualityComparators.JET_POWER_ADVANCE)
-        .build();
+  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
+    return Arrays.asList(EngineDataEqualityComparators.JET_POWER_ADVANCE);
   }
 
   @Override
-  protected Collection<ProxyFactory> getProxyFactories() {
-    return TestProxyFactoryCollectionBuilder.forGameData()
-        .add(JetPowerAdvanceProxy.FACTORY)
-        .build();
+  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
+    return Arrays.asList(JetPowerAdvanceProxy.FACTORY);
   }
 }

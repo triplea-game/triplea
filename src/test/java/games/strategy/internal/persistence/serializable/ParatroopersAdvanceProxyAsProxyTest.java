@@ -1,44 +1,36 @@
 package games.strategy.internal.persistence.serializable;
 
+import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
-import games.strategy.engine.data.TestGameDataComponentFactory;
-import games.strategy.engine.data.TestGameDataFactory;
-import games.strategy.persistence.serializable.AbstractProxyTestCase;
+import games.strategy.engine.data.GameData;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.ParatroopersAdvance;
 
-public final class ParatroopersAdvanceProxyAsProxyTest extends AbstractProxyTestCase<ParatroopersAdvance> {
+public final class ParatroopersAdvanceProxyAsProxyTest
+    extends AbstractGameDataComponentProxyTestCase<ParatroopersAdvance> {
   public ParatroopersAdvanceProxyAsProxyTest() {
     super(ParatroopersAdvance.class);
   }
 
   @Override
-  protected Collection<ParatroopersAdvance> createPrincipals() {
-    return Arrays.asList(newParatroopersAdvance());
-  }
-
-  private static ParatroopersAdvance newParatroopersAdvance() {
-    final ParatroopersAdvance paratroopersAdvance = new ParatroopersAdvance(TestGameDataFactory.newValidGameData());
-    TestGameDataComponentFactory.initializeAttachable(paratroopersAdvance);
+  protected ParatroopersAdvance newGameDataComponent(final GameData gameData) {
+    final ParatroopersAdvance paratroopersAdvance = new ParatroopersAdvance(gameData);
+    initializeAttachable(paratroopersAdvance);
     return paratroopersAdvance;
   }
 
   @Override
-  protected Collection<EqualityComparator> getEqualityComparators() {
-    return TestEqualityComparatorCollectionBuilder.forGameData()
-        .add(EngineDataEqualityComparators.PARATROOPERS_ADVANCE)
-        .build();
+  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
+    return Arrays.asList(EngineDataEqualityComparators.PARATROOPERS_ADVANCE);
   }
 
   @Override
-  protected Collection<ProxyFactory> getProxyFactories() {
-    return TestProxyFactoryCollectionBuilder.forGameData()
-        .add(ParatroopersAdvanceProxy.FACTORY)
-        .build();
+  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
+    return Arrays.asList(ParatroopersAdvanceProxy.FACTORY);
   }
 }

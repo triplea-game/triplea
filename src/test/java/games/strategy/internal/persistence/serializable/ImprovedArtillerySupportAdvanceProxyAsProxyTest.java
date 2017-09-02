@@ -1,46 +1,37 @@
 package games.strategy.internal.persistence.serializable;
 
+import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
-import games.strategy.engine.data.TestGameDataComponentFactory;
-import games.strategy.engine.data.TestGameDataFactory;
-import games.strategy.persistence.serializable.AbstractProxyTestCase;
+import games.strategy.engine.data.GameData;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.ImprovedArtillerySupportAdvance;
 
 public final class ImprovedArtillerySupportAdvanceProxyAsProxyTest
-    extends AbstractProxyTestCase<ImprovedArtillerySupportAdvance> {
+    extends AbstractGameDataComponentProxyTestCase<ImprovedArtillerySupportAdvance> {
   public ImprovedArtillerySupportAdvanceProxyAsProxyTest() {
     super(ImprovedArtillerySupportAdvance.class);
   }
 
   @Override
-  protected Collection<ImprovedArtillerySupportAdvance> createPrincipals() {
-    return Arrays.asList(newImprovedArtillerySupportAdvance());
-  }
-
-  private static ImprovedArtillerySupportAdvance newImprovedArtillerySupportAdvance() {
+  protected ImprovedArtillerySupportAdvance newGameDataComponent(final GameData gameData) {
     final ImprovedArtillerySupportAdvance improvedArtillerySupportAdvance =
-        new ImprovedArtillerySupportAdvance(TestGameDataFactory.newValidGameData());
-    TestGameDataComponentFactory.initializeAttachable(improvedArtillerySupportAdvance);
+        new ImprovedArtillerySupportAdvance(gameData);
+    initializeAttachable(improvedArtillerySupportAdvance);
     return improvedArtillerySupportAdvance;
   }
 
   @Override
-  protected Collection<EqualityComparator> getEqualityComparators() {
-    return TestEqualityComparatorCollectionBuilder.forGameData()
-        .add(EngineDataEqualityComparators.IMPROVED_ARTILLERY_SUPPORT_ADVANCE)
-        .build();
+  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
+    return Arrays.asList(EngineDataEqualityComparators.IMPROVED_ARTILLERY_SUPPORT_ADVANCE);
   }
 
   @Override
-  protected Collection<ProxyFactory> getProxyFactories() {
-    return TestProxyFactoryCollectionBuilder.forGameData()
-        .add(ImprovedArtillerySupportAdvanceProxy.FACTORY)
-        .build();
+  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
+    return Arrays.asList(ImprovedArtillerySupportAdvanceProxy.FACTORY);
   }
 }

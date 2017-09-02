@@ -1,46 +1,36 @@
 package games.strategy.internal.persistence.serializable;
 
+import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
-import games.strategy.engine.data.TestGameDataComponentFactory;
-import games.strategy.engine.data.TestGameDataFactory;
-import games.strategy.persistence.serializable.AbstractProxyTestCase;
+import games.strategy.engine.data.GameData;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.DestroyerBombardTechAdvance;
 
 public final class DestroyerBombardTechAdvanceProxyAsProxyTest
-    extends AbstractProxyTestCase<DestroyerBombardTechAdvance> {
+    extends AbstractGameDataComponentProxyTestCase<DestroyerBombardTechAdvance> {
   public DestroyerBombardTechAdvanceProxyAsProxyTest() {
     super(DestroyerBombardTechAdvance.class);
   }
 
   @Override
-  protected Collection<DestroyerBombardTechAdvance> createPrincipals() {
-    return Arrays.asList(newDestroyerBombardTechAdvance());
-  }
-
-  private static DestroyerBombardTechAdvance newDestroyerBombardTechAdvance() {
-    final DestroyerBombardTechAdvance destroyerBombardTechAdvance =
-        new DestroyerBombardTechAdvance(TestGameDataFactory.newValidGameData());
-    TestGameDataComponentFactory.initializeAttachable(destroyerBombardTechAdvance);
+  protected DestroyerBombardTechAdvance newGameDataComponent(final GameData gameData) {
+    final DestroyerBombardTechAdvance destroyerBombardTechAdvance = new DestroyerBombardTechAdvance(gameData);
+    initializeAttachable(destroyerBombardTechAdvance);
     return destroyerBombardTechAdvance;
   }
 
   @Override
-  protected Collection<EqualityComparator> getEqualityComparators() {
-    return TestEqualityComparatorCollectionBuilder.forGameData()
-        .add(EngineDataEqualityComparators.DESTROYER_BOMBARD_TECH_ADVANCE)
-        .build();
+  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
+    return Arrays.asList(EngineDataEqualityComparators.DESTROYER_BOMBARD_TECH_ADVANCE);
   }
 
   @Override
-  protected Collection<ProxyFactory> getProxyFactories() {
-    return TestProxyFactoryCollectionBuilder.forGameData()
-        .add(DestroyerBombardTechAdvanceProxy.FACTORY)
-        .build();
+  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
+    return Arrays.asList(DestroyerBombardTechAdvanceProxy.FACTORY);
   }
 }

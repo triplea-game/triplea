@@ -1,44 +1,35 @@
 package games.strategy.internal.persistence.serializable;
 
+import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
-import games.strategy.engine.data.TestGameDataComponentFactory;
-import games.strategy.engine.data.TestGameDataFactory;
-import games.strategy.persistence.serializable.AbstractProxyTestCase;
+import games.strategy.engine.data.GameData;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.AARadarAdvance;
 
-public final class AaRadarAdvanceProxyAsProxyTest extends AbstractProxyTestCase<AARadarAdvance> {
+public final class AaRadarAdvanceProxyAsProxyTest extends AbstractGameDataComponentProxyTestCase<AARadarAdvance> {
   public AaRadarAdvanceProxyAsProxyTest() {
     super(AARadarAdvance.class);
   }
 
   @Override
-  protected Collection<AARadarAdvance> createPrincipals() {
-    return Arrays.asList(newAaRadarAdvance());
-  }
-
-  private static AARadarAdvance newAaRadarAdvance() {
-    final AARadarAdvance aaRadarAdvance = new AARadarAdvance(TestGameDataFactory.newValidGameData());
-    TestGameDataComponentFactory.initializeAttachable(aaRadarAdvance);
+  protected AARadarAdvance newGameDataComponent(final GameData gameData) {
+    final AARadarAdvance aaRadarAdvance = new AARadarAdvance(gameData);
+    initializeAttachable(aaRadarAdvance);
     return aaRadarAdvance;
   }
 
   @Override
-  protected Collection<EqualityComparator> getEqualityComparators() {
-    return TestEqualityComparatorCollectionBuilder.forGameData()
-        .add(EngineDataEqualityComparators.AA_RADAR_ADVANCE)
-        .build();
+  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
+    return Arrays.asList(EngineDataEqualityComparators.AA_RADAR_ADVANCE);
   }
 
   @Override
-  protected Collection<ProxyFactory> getProxyFactories() {
-    return TestProxyFactoryCollectionBuilder.forGameData()
-        .add(AaRadarAdvanceProxy.FACTORY)
-        .build();
+  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
+    return Arrays.asList(AaRadarAdvanceProxy.FACTORY);
   }
 }

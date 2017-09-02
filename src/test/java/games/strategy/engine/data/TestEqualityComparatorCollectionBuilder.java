@@ -43,6 +43,20 @@ public final class TestEqualityComparatorCollectionBuilder {
     return this;
   }
 
+  /**
+   * Adds the specified collection of equality comparators to the collection under construction.
+   *
+   * @param equalityComparators The collection of equality comparators to add.
+   *
+   * @return A reference to this builder.
+   */
+  public TestEqualityComparatorCollectionBuilder addAll(final Collection<EqualityComparator> equalityComparators) {
+    checkNotNull(equalityComparators);
+
+    this.equalityComparators.addAll(equalityComparators);
+    return this;
+  }
+
   public Collection<EqualityComparator> build() {
     return new ArrayList<>(equalityComparators);
   }
