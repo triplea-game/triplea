@@ -28,7 +28,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.LocalizeHtml;
 import games.strategy.util.Match;
@@ -296,9 +295,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         }
         // this is currently the ONLY instance of JOptionPane that is allowed outside of the UI classes. maybe there is
         // a better way?
-        stopGame = (JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null,
-            ("<html>" + displayMessage + "</html>"), "Continue Game?  (" + title + ")", JOptionPane.YES_NO_OPTION,
-            new CountDownLatchHandler()));
+        stopGame = JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null,
+            "<html>" + displayMessage + "</html>", "Continue Game?  (" + title + ")", JOptionPane.YES_NO_OPTION);
       }
       if (stopGame) {
         bridge.stopGameSequence();

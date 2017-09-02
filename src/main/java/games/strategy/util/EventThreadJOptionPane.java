@@ -22,8 +22,14 @@ import com.google.common.annotations.VisibleForTesting;
  * Blocking JOptionPane calls that do their work in the swing event thread (to be thread safe).
  */
 public final class EventThreadJOptionPane {
-  private EventThreadJOptionPane() {
-    // do nothing
+  private EventThreadJOptionPane() {}
+
+  public static void showMessageDialog(
+      final Component parentComponent,
+      final Object message,
+      final String title,
+      final int messageType) {
+    showMessageDialog(parentComponent, message, title, messageType, false, new CountDownLatchHandler());
   }
 
   public static void showMessageDialog(final Component parentComponent, final Object message, final String title,
@@ -39,11 +45,8 @@ public final class EventThreadJOptionPane {
             useJLabel ? createJLabelInScrollPane((String) message) : message, title, messageType));
   }
 
-  public static void showMessageDialog(final Component parentComponent, final Object message,
-      final CountDownLatchHandler latchHandler) {
-    invokeAndWait(
-        latchHandler,
-        () -> JOptionPane.showMessageDialog(parentComponent, message));
+  public static void showMessageDialog(final Component parentComponent, final Object message) {
+    invokeAndWait(new CountDownLatchHandler(), () -> JOptionPane.showMessageDialog(parentComponent, message));
   }
 
   private static void invokeAndWait(final CountDownLatchHandler latchHandler, final Runnable runnable) {
@@ -117,6 +120,14 @@ public final class EventThreadJOptionPane {
         latchHandler,
         () -> JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options,
             initialValue));
+  }
+
+  public static int showConfirmDialog(
+      final Component parentComponent,
+      final Object message,
+      final String title,
+      final int optionType) {
+    return showConfirmDialog(parentComponent, message, title, optionType, new CountDownLatchHandler());
   }
 
   public static int showConfirmDialog(final Component parentComponent, final Object message, final String title,

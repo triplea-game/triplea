@@ -54,7 +54,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
@@ -403,7 +402,7 @@ public class GameRunner {
           .isLessThan(latestEngineOut.getLatestVersionOut())) {
         SwingUtilities
             .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
-                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler()));
+                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE));
         return true;
       }
     } catch (final Exception e) {

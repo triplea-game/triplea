@@ -41,7 +41,6 @@ import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 public class LobbyFrame extends JFrame {
@@ -339,6 +338,6 @@ public class LobbyFrame extends JFrame {
   private void connectionToServerLost() {
     EventThreadJOptionPane.showMessageDialog(LobbyFrame.this,
         "Connection to Server Lost.  Please close this instance and reconnect to the lobby.", "Connection Lost",
-        JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler());
+        JOptionPane.ERROR_MESSAGE);
   }
 }
