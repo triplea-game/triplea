@@ -27,6 +27,12 @@ import com.google.common.annotations.VisibleForTesting;
 public final class EventThreadJOptionPane {
   private EventThreadJOptionPane() {}
 
+  /**
+   * Shows a message dialog using a {@code CountDownLatchHandler} that will release its associated latches upon
+   * interruption.
+   *
+   * @see JOptionPane#showMessageDialog(Component, Object, String, int)
+   */
   public static void showMessageDialog(
       final @Nullable Component parentComponent,
       final @Nullable Object message,
@@ -35,6 +41,13 @@ public final class EventThreadJOptionPane {
     showMessageDialog(parentComponent, message, title, messageType, new CountDownLatchHandler());
   }
 
+  /**
+   * Shows a message dialog using the specified {@code CountDownLatchHandler}.
+   *
+   * @param latchHandler The handler with which to associate the latch used to await the dialog.
+   *
+   * @see JOptionPane#showMessageDialog(Component, Object, String, int)
+   */
   public static void showMessageDialog(
       final @Nullable Component parentComponent,
       final @Nullable Object message,
@@ -46,6 +59,16 @@ public final class EventThreadJOptionPane {
     showMessageDialog(parentComponent, message, title, messageType, false, latchHandler);
   }
 
+  /**
+   * Shows a message dialog using the specified {@code CountDownLatchHandler} and with the option to embed the
+   * {@code message} in a scrollable {@code JLabel}.
+   *
+   * @param useJLabel {@code true} to embed the {@code message}, which must be a {@code String}, in a scrollable
+   *        {@code JLabel}; otherwise {@code false} to display the {@code message} unmodified.
+   * @param latchHandler The handler with which to associate the latch used to await the dialog.
+   *
+   * @see JOptionPane#showMessageDialog(Component, Object, String, int)
+   */
   public static void showMessageDialog(
       final @Nullable Component parentComponent,
       final @Nullable Object message,
@@ -61,6 +84,12 @@ public final class EventThreadJOptionPane {
             useJLabel ? createJLabelInScrollPane((String) message) : message, title, messageType));
   }
 
+  /**
+   * Shows a message dialog using a {@code CountDownLatchHandler} that will release its associated latches upon
+   * interruption.
+   *
+   * @see JOptionPane#showMessageDialog(Component, Object)
+   */
   public static void showMessageDialog(final @Nullable Component parentComponent, final @Nullable Object message) {
     invokeAndWait(new CountDownLatchHandler(), () -> JOptionPane.showMessageDialog(parentComponent, message));
   }
@@ -124,6 +153,13 @@ public final class EventThreadJOptionPane {
     latchHandler.removeShutdownLatch(latch);
   }
 
+  /**
+   * Shows an option dialog using the specified {@code CountDownLatchHandler}.
+   *
+   * @param latchHandler The handler with which to associate the latch used to await the dialog.
+   *
+   * @see JOptionPane#showOptionDialog(Component, Object, String, int, int, Icon, Object[], Object)
+   */
   public static int showOptionDialog(
       final @Nullable Component parentComponent,
       final @Nullable Object message,
@@ -142,6 +178,12 @@ public final class EventThreadJOptionPane {
             initialValue));
   }
 
+  /**
+   * Shows a confirmation dialog using a {@code CountDownLatchHandler} that will release its associated latches upon
+   * interruption.
+   *
+   * @see JOptionPane#showConfirmDialog(Component, Object, String, int)
+   */
   public static int showConfirmDialog(
       final @Nullable Component parentComponent,
       final @Nullable Object message,
@@ -150,6 +192,13 @@ public final class EventThreadJOptionPane {
     return showConfirmDialog(parentComponent, message, title, optionType, new CountDownLatchHandler());
   }
 
+  /**
+   * Shows a confirmation dialog using the specified {@code CountDownLatchHandler}.
+   *
+   * @param latchHandler The handler with which to associate the latch used to await the dialog.
+   *
+   * @see JOptionPane#showConfirmDialog(Component, Object, String, int)
+   */
   public static int showConfirmDialog(
       final @Nullable Component parentComponent,
       final @Nullable Object message,
