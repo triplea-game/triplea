@@ -145,7 +145,7 @@ public class ClientModel implements IMessengerErrorListener {
     final int port = props.getPort();
     if (port >= 65536 || port <= 0) {
       EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE,
-          new CountDownLatchHandler(true));
+          new CountDownLatchHandler());
       return false;
     }
     final String address = props.getHost();
@@ -158,7 +158,7 @@ public class ClientModel implements IMessengerErrorListener {
     } catch (final Exception ioe) {
       ioe.printStackTrace(System.out);
       EventThreadJOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error",
-          JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
+          JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler());
       return false;
     }
     m_messenger.addErrorListener(this);
@@ -271,8 +271,7 @@ public class ClientModel implements IMessengerErrorListener {
     public void cannotJoinGame(final String reason) {
       SwingUtilities.invokeLater(() -> {
         m_typePanelModel.showSelectType();
-        EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason,
-            new CountDownLatchHandler(true));
+        EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason, new CountDownLatchHandler());
       });
     }
   };
@@ -413,7 +412,7 @@ public class ClientModel implements IMessengerErrorListener {
     // In case for example there are many game windows open, it may not be clear which game disconnected.
     GameRunner.getChat().sendMessage("*** Was Disconnected ***", false);
     EventThreadJOptionPane.showMessageDialog(m_ui, "Connection to game host lost.\nPlease save and restart.",
-        "Connection Lost!", JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
+        "Connection Lost!", JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler());
   }
 
   public IChatPanel getChatPanel() {

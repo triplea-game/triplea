@@ -72,7 +72,7 @@ public final class Util {
 
   public static void notifyError(final Component parent, final String message) {
     EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Error",
-        JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
+        JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler());
   }
 
   /**
