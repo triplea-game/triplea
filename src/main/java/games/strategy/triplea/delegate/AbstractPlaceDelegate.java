@@ -270,7 +270,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // play a sound
     if (Match.anyMatch(units, Matches.unitIsInfrastructure())) {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_INFRASTRUCTURE, m_player);
-    } else if (Match.anyMatch(units, Matches.UnitIsSea)) {
+    } else if (Match.anyMatch(units, Matches.unitIsSea())) {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_SEA, m_player);
     } else if (Match.anyMatch(units, Matches.UnitIsAir)) {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_AIR, m_player);
@@ -490,7 +490,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (capacity <= 0) {
       return null;
     }
-    if (!Matches.TerritoryIsLand.match(producer)) {
+    if (!Matches.territoryIsLand().match(producer)) {
       return null;
     }
     if (!producer.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
@@ -622,9 +622,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getOwner().equals(player)) {
       // sea constructions require either owning the sea zone or owning a surrounding land territory
       if (producer.isWater()
-          && Match.anyMatch(testUnits, Match.allOf(Matches.UnitIsSea, Matches.unitIsConstruction()))) {
+          && Match.anyMatch(testUnits, Match.allOf(Matches.unitIsSea(), Matches.unitIsConstruction()))) {
         boolean ownedNeighbor = false;
-        for (final Territory current : getData().getMap().getNeighbors(to, Matches.TerritoryIsLand)) {
+        for (final Territory current : getData().getMap().getNeighbors(to, Matches.territoryIsLand())) {
           if (current.getOwner().equals(player) && (canProduceInConquered || !wasConquered(current))) {
             ownedNeighbor = true;
             break;
@@ -641,11 +641,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!canProduceInConquered && wasConquered(producer)) {
       return producer.getName() + " was conquered this turn and cannot produce till next turn";
     }
-    if (isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player) && Matches.TerritoryIsLand.match(to)
+    if (isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player) && Matches.territoryIsLand().match(to)
         && Matches.isTerritoryOwnedBy(player).match(to)) {
       return null;
     }
-    if (isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(player) && Matches.TerritoryIsWater.match(to)
+    if (isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(player) && Matches.territoryIsWater().match(to)
         && Matches.isTerritoryOwnedBy(player).match(producer)) {
       return null;
     }
@@ -710,7 +710,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (canProduce(to, to, unitsToPlace, player, simpleCheck) == null) {
       producers.add(to);
     }
-    for (final Territory current : getData().getMap().getNeighbors(to, Matches.TerritoryIsLand)) {
+    for (final Territory current : getData().getMap().getNeighbors(to, Matches.territoryIsLand())) {
       if (canProduce(current, to, unitsToPlace, player, simpleCheck) == null) {
         producers.add(current);
       }
@@ -869,7 +869,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     final Collection<Unit> units = new ArrayList<>(allUnits);
     // if water, remove land. if land, remove water.
-    units.removeAll(Match.getMatches(units, water ? Matches.UnitIsLand : Matches.UnitIsSea));
+    units.removeAll(Match.getMatches(units, water ? Matches.UnitIsLand : Matches.unitIsSea()));
     final Collection<Unit> placeableUnits = new ArrayList<>();
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> allProducedUnits = unitsPlacedInTerritorySoFar(to);
@@ -879,7 +879,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
-      final Match<Unit> seaOrLandMatch = water ? Matches.UnitIsSea : Matches.UnitIsLand;
+      final Match<Unit> seaOrLandMatch = water ? Matches.unitIsSea() : Matches.UnitIsLand;
       placeableUnits.addAll(Match.getMatches(units, Match.allOf(seaOrLandMatch, Matches.unitIsNotConstruction())));
       if (!water) {
         placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.unitIsNotConstruction())));
@@ -1078,7 +1078,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (producer.isWater()) {
       factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
-      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }
     final Collection<Unit> factoryUnits = producer.getUnits().getMatches(factoryMatchBuilder.all());
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
@@ -1383,7 +1383,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         return true;
       }
       if (!doNotCountNeighbors) {
-        if (Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
+        if (Matches.unitIsSea().match(unitWhichRequiresUnits)) {
           for (final Territory current : getAllProducers(to, m_player,
               Collections.singletonList(unitWhichRequiresUnits), true)) {
             final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
@@ -1521,7 +1521,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     final Collection<Unit> unitsInTo = to.getUnits().getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-    if (Matches.TerritoryIsWater.match(to)) {
+    if (Matches.territoryIsWater().match(to)) {
       for (final Territory current : getAllProducers(to, m_player, null, true)) {
         unitsPlacedAlready.addAll(getAlreadyProduced(current));
       }
@@ -1560,7 +1560,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (to.isWater()) {
       factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
-      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }
     return Match.countMatches(unitsAtStartOfTurnInTo, factoryMatchBuilder.all()) > 0;
   }

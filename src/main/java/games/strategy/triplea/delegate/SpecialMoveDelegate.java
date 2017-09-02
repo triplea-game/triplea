@@ -251,9 +251,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
     final boolean someLand = Match.anyMatch(airborne, Matches.UnitIsLand);
-    final boolean someSea = Match.anyMatch(airborne, Matches.UnitIsSea);
-    final boolean land = Matches.TerritoryIsLand.match(end);
-    final boolean sea = Matches.TerritoryIsWater.match(end);
+    final boolean someSea = Match.anyMatch(airborne, Matches.unitIsSea());
+    final boolean land = Matches.territoryIsLand().match(end);
+    final boolean sea = Matches.territoryIsWater().match(end);
     if (someLand && someSea) {
       return result.setErrorReturnResult("Cannot Mix Land and Sea Units");
     } else if (someLand) {
@@ -272,7 +272,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
           return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
         } else if (land && someLand && !Match.anyMatch(battle.getAttackingUnits(), Matches.UnitIsLand)) {
           return result.setErrorReturnResult("Battle Must Have Some Land Units Participating Already");
-        } else if (sea && someSea && !Match.anyMatch(battle.getAttackingUnits(), Matches.UnitIsSea)) {
+        } else if (sea && someSea && !Match.anyMatch(battle.getAttackingUnits(), Matches.unitIsSea())) {
           return result.setErrorReturnResult("Battle Must Have Some Sea Units Participating Already");
         }
       }

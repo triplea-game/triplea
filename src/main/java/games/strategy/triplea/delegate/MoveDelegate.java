@@ -366,17 +366,17 @@ public class MoveDelegate extends AbstractMoveDelegate {
           final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
               Matches.unitCanGiveBonusMovementToThisUnit(u));
           givesBonusUnits.addAll(Match.getMatches(t.getUnits().getUnits(), givesBonusUnit));
-          if (Matches.UnitIsSea.match(u)) {
+          if (Matches.unitIsSea().match(u)) {
             final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.UnitIsLand);
             final List<Territory> neighbors =
-                new ArrayList<>(data.getMap().getNeighbors(t, Matches.TerritoryIsLand));
+                new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
             for (final Territory current : neighbors) {
               givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
             }
           } else if (Matches.UnitIsLand.match(u)) {
-            final Match<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.UnitIsSea);
+            final Match<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.unitIsSea());
             final List<Territory> neighbors =
-                new ArrayList<>(data.getMap().getNeighbors(t, Matches.TerritoryIsWater));
+                new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
             for (final Territory current : neighbors) {
               givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
             }
@@ -480,17 +480,17 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Match<Unit> repairUnit = Match.allOf(Matches.alliedUnit(owner, data),
         Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired));
     repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
-    if (Matches.UnitIsSea.match(unitToBeRepaired)) {
+    if (Matches.unitIsSea().match(unitToBeRepaired)) {
       final Match<Unit> repairUnitLand = Match.allOf(repairUnit, Matches.UnitIsLand);
       final List<Territory> neighbors =
-          new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsLand));
+          new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
       for (final Territory current : neighbors) {
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
       }
     } else if (Matches.UnitIsLand.match(unitToBeRepaired)) {
-      final Match<Unit> repairUnitSea = Match.allOf(repairUnit, Matches.UnitIsSea);
+      final Match<Unit> repairUnitSea = Match.allOf(repairUnit, Matches.unitIsSea());
       final List<Territory> neighbors =
-          new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.TerritoryIsWater));
+          new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater()));
       for (final Territory current : neighbors) {
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitSea));
       }

@@ -75,7 +75,7 @@ public class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (Match.anyMatch(unitList, Matches.UnitIsSea)) {
+        if (Match.anyMatch(unitList, Matches.unitIsSea())) {
 
           // Sea unit (including carriers with planes)
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,

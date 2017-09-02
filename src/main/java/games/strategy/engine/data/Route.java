@@ -410,7 +410,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (getStart().isWater()) {
       return true;
     }
-    return Match.anyMatch(getSteps(), Matches.TerritoryIsWater);
+    return Match.anyMatch(getSteps(), Matches.territoryIsWater());
   }
 
   /**
@@ -420,7 +420,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (!getStart().isWater()) {
       return true;
     }
-    return getAllTerritories().isEmpty() || !Match.allMatch(getAllTerritories(), Matches.TerritoryIsWater);
+    return getAllTerritories().isEmpty() || !Match.allMatch(getAllTerritories(), Matches.territoryIsWater());
   }
 
   public int getLargestMovementCost(final Collection<Unit> units) {

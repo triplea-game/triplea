@@ -448,7 +448,7 @@ class ProNonCombatMoveAI {
       // Determine neighbor value
       double neighborValue = 0;
       if (!t.isWater()) {
-        final Set<Territory> landNeighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
+        final Set<Territory> landNeighbors = data.getMap().getNeighbors(t, Matches.territoryIsLand());
         for (final Territory neighbor : landNeighbors) {
           double neighborProduction = TerritoryAttachment.getProduction(neighbor);
           if (Matches.isTerritoryAllied(player, data).match(neighbor)) {
@@ -1131,7 +1131,7 @@ class ProNonCombatMoveAI {
           Territory unloadToTerritory = null;
           int maxNumSeaNeighbors = 0;
           for (final Territory t : possibleUnloadTerritories) {
-            final int numSeaNeighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsWater).size();
+            final int numSeaNeighbors = data.getMap().getNeighbors(t, Matches.territoryIsWater()).size();
             final boolean isAdjacentToEnemy =
                 ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player, data).match(t);
             if (moveMap.get(t) != null && (moveMap.get(t).isCanHold() || !isAdjacentToEnemy)
@@ -1181,7 +1181,8 @@ class ProNonCombatMoveAI {
                   .match(t);
           final int distance = data.getMap().getDistance_IgnoreEndForCondition(currentTerritory, t,
               ProMatches.territoryCanMoveSeaUnits(player, data, true));
-          final boolean hasSeaNeighbor = Matches.territoryHasNeighborMatching(data, Matches.TerritoryIsWater).match(t);
+          final boolean hasSeaNeighbor =
+              Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).match(t);
           final boolean hasFactory = ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player).match(t);
           if (!t.isWater() && hasSeaNeighbor && distance > 0
               && !(distance == 1 && territoryHasTransportableUnits && !hasFactory)) {
@@ -1343,7 +1344,7 @@ class ProNonCombatMoveAI {
       // Move sea units to defend transports
       for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext();) {
         final Unit u = it.next();
-        if (Matches.UnitIsSea.match(u)) {
+        if (Matches.unitIsSea().match(u)) {
           for (final Territory t : currentUnitMoveMap.get(u)) {
             if (moveMap.get(t).isCanHold() && !moveMap.get(t).getAllDefenders().isEmpty()
                 && Match.anyMatch(moveMap.get(t).getAllDefenders(), ProMatches.unitIsOwnedTransport(player))) {
@@ -1417,7 +1418,7 @@ class ProNonCombatMoveAI {
       // Move sea units to best location or safest location
       for (final Iterator<Unit> it = currentUnitMoveMap.keySet().iterator(); it.hasNext();) {
         final Unit u = it.next();
-        if (Matches.UnitIsSea.match(u)) {
+        if (Matches.unitIsSea().match(u)) {
           Territory maxValueTerritory = null;
           double maxValue = 0;
           for (final Territory t : currentUnitMoveMap.get(u)) {

@@ -311,7 +311,7 @@ public class ProTerritoryManager {
         Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().invert());
     final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.newCompositeBuilder(
         Match.anyOf(
-            Matches.TerritoryIsWater,
+            Matches.territoryIsWater(),
             Matches.isTerritoryEnemy(player, data)),
         Matches.territoryHasUnitsThatMatch(Match.allOf(
             Matches.unitCanScramble(),
@@ -467,7 +467,7 @@ public class ProTerritoryManager {
       enemyAttackMaps.add(attackMap);
       findAttackOptions(enemyPlayer, enemyUnitTerritories, attackMap, unitAttackMap, transportAttackMap, bombardMap,
           transportMapList, enemyTerritories, new ArrayList<>(alliedTerritories), territoriesToCheck, true, true);
-      alliedTerritories.addAll(Match.getMatches(attackMap.keySet(), Matches.TerritoryIsLand));
+      alliedTerritories.addAll(Match.getMatches(attackMap.keySet(), Matches.territoryIsLand()));
       enemyTerritories.removeAll(alliedTerritories);
     }
     return new ProOtherMoveOptions(enemyAttackMaps, player, true);
@@ -748,7 +748,7 @@ public class ProTerritoryManager {
     if (isCheckingEnemyAttacks || !isCombatMove) {
       final Map<Unit, Set<Territory>> unitMoveMap2 = new HashMap<>();
       findNavalMoveOptions(player, myUnitTerritories, new HashMap<>(), unitMoveMap2, new HashMap<>(),
-          Matches.TerritoryIsWater, enemyTerritories, false, true);
+          Matches.territoryIsWater(), enemyTerritories, false, true);
       for (final Unit u : unitMoveMap2.keySet()) {
         if (Matches.unitIsCarrier().match(u)) {
           possibleCarrierTerritories.addAll(unitMoveMap2.get(u));

@@ -262,7 +262,7 @@ public class ProPurchaseUtils {
     if (territory.isWater()) {
       factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
-      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }
     final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatchBuilder.all());
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);

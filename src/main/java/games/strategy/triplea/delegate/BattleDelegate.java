@@ -421,7 +421,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final GameData data = bridge.getData();
     final boolean ignoreTransports = isIgnoreTransportInMovement(data);
     final boolean ignoreSubs = isIgnoreSubInMovement(data);
-    final Match<Unit> seaTransports = Match.allOf(Matches.unitIsTransportButNotCombatTransport(), Matches.UnitIsSea);
+    final Match<Unit> seaTransports = Match.allOf(Matches.unitIsTransportButNotCombatTransport(), Matches.unitIsSea());
     final Match<Unit> seaTranportsOrSubs = Match.anyOf(seaTransports, Matches.unitIsSub());
     // we want to match all sea zones with our units and enemy units
     final Match<Territory> anyTerritoryWithOwnAndEnemy = Match.allOf(
@@ -486,7 +486,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (territory.isWater()) {
           attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsLand.invert());
         } else {
-          attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsSea.invert());
+          attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.unitIsSea().invert());
         }
         if (!attackingUnitsNeedToBeAdded.isEmpty()) {
           battle.addAttackChange(new RouteScripted(territory), attackingUnitsNeedToBeAdded, null);
@@ -654,7 +654,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().invert());
     final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.newCompositeBuilder(
         Match.anyOf(
-            Matches.TerritoryIsWater,
+            Matches.territoryIsWater(),
             Matches.isTerritoryEnemy(m_player, data)),
         Matches.territoryHasUnitsThatMatch(Match.allOf(
             Matches.unitCanScramble(),
@@ -674,8 +674,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final Set<Territory> territoriesWithBattlesWater = new HashSet<>();
     final Set<Territory> territoriesWithBattlesLand = new HashSet<>();
-    territoriesWithBattlesWater.addAll(Match.getMatches(territoriesWithBattles, Matches.TerritoryIsWater));
-    territoriesWithBattlesLand.addAll(Match.getMatches(territoriesWithBattles, Matches.TerritoryIsLand));
+    territoriesWithBattlesWater.addAll(Match.getMatches(territoriesWithBattles, Matches.territoryIsWater()));
+    territoriesWithBattlesLand.addAll(Match.getMatches(territoriesWithBattles, Matches.territoryIsLand()));
     for (final Territory battleTerr : territoriesWithBattlesWater) {
       final HashSet<Territory> canScrambleFrom = new HashSet<>(
           Match.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
@@ -866,7 +866,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           // this is an ugly mess of hacks, but will have to stay here till all transport related code is gutted and
           // refactored.
           final MustFightBattle mfb = (MustFightBattle) battle;
-          final Collection<Territory> neighborsLand = data.getMap().getNeighbors(to, Matches.TerritoryIsLand);
+          final Collection<Territory> neighborsLand = data.getMap().getNeighbors(to, Matches.territoryIsLand());
           if (Match.anyMatch(attackingUnits, Matches.unitIsTransport())) {
             // first, we have to reset the "transportedBy" setting for all the land units that were offloaded
             final CompositeChange change1 = new CompositeChange();
@@ -923,7 +923,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             // to retreat to! (TODO: Fix this)
             final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<>();
             final Collection<Territory> neighbors = data.getMap().getNeighbors(to,
-                (Matches.TerritoryIsLand.match(to) ? Matches.TerritoryIsLand : Matches.TerritoryIsWater));
+                (Matches.territoryIsLand().match(to) ? Matches.territoryIsLand() : Matches.territoryIsWater()));
             // neighbors.removeAll(territoriesWithBattles);
             // neighbors.removeAll(Match.getMatches(neighbors, Matches.territoryHasEnemyUnits(m_player, data)));
             for (final Territory t : neighbors) {
@@ -937,7 +937,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // now make sure any amphibious battles that are dependent on this 'new' sea battle have their dependencies set.
       if (to.isWater()) {
-        for (final Territory t : data.getMap().getNeighbors(to, Matches.TerritoryIsLand)) {
+        for (final Territory t : data.getMap().getNeighbors(to, Matches.territoryIsLand())) {
           final IBattle battleAmphib = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
           if (battleAmphib != null) {
             if (!m_battleTracker.getDependentOn(battle).contains(battleAmphib)) {
@@ -1086,7 +1086,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final Collection<Territory> canLandHere = Match.getMatches(neighbors, alliedLandTerritories);
       // Get all sea territories where there are allies
       final Match<Territory> neighboringSeaZonesWithAlliedUnits =
-          Match.allOf(Matches.TerritoryIsWater, Matches.territoryHasAlliedUnits(defender, data));
+          Match.allOf(Matches.territoryIsWater(), Matches.territoryHasAlliedUnits(defender, data));
       // Get those that are neighbors
       final Collection<Territory> areSeaNeighbors = Match.getMatches(neighbors, neighboringSeaZonesWithAlliedUnits);
       // Set up match criteria for allied carriers
@@ -1214,7 +1214,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       return;
     }
     final Match<Unit> canBeAttackedDefault = Match.allOf(Matches.unitIsOwnedBy(m_player),
-        Matches.UnitIsSea, Matches.unitIsNotTransportButCouldBeCombatTransport(), Matches.unitIsNotSub());
+        Matches.unitIsSea(), Matches.unitIsNotTransportButCouldBeCombatTransport(), Matches.unitIsNotSub());
     final boolean onlyWhereThereAreBattlesOrAmphibious =
         Properties.getKamikazeSuicideAttacksOnlyWhereBattlesAre(data);
     final Collection<Territory> pendingBattles = m_battleTracker.getPendingBattleSites(false);
@@ -1248,11 +1248,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (onlyWhereThereAreBattlesOrAmphibious) {
           // if no battle or amphibious from here, ignore it
           if (!pendingBattles.contains(t)) {
-            if (!Matches.TerritoryIsWater.match(t)) {
+            if (!Matches.territoryIsWater().match(t)) {
               continue;
             }
             boolean amphib = false;
-            final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
+            final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, Matches.territoryIsLand());
             for (final Territory neighbor : landNeighbors) {
               final IBattle battle = m_battleTracker.getPendingBattle(neighbor, false, BattleType.NORMAL);
               if (battle == null) {
@@ -1511,7 +1511,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     possibleTerrs.add(currentTerr);
     final HashSet<Territory> availableLand = new HashSet<>();
     availableLand.addAll(Match.getMatches(possibleTerrs,
-        Match.allOf(Matches.isTerritoryAllied(alliedPlayer, data), Matches.TerritoryIsLand)));
+        Match.allOf(Matches.isTerritoryAllied(alliedPlayer, data), Matches.territoryIsLand())));
     availableLand.removeAll(canNotLand);
     whereCanLand.addAll(availableLand);
     // now for carrier-air-landing validation
@@ -1520,7 +1520,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       availableWater.addAll(Match.getMatches(possibleTerrs,
           Match.allOf(
               Matches.territoryHasUnitsThatMatch(Matches.unitIsAlliedCarrier(alliedPlayer, data)),
-              Matches.TerritoryIsWater)));
+              Matches.territoryIsWater())));
       availableWater.removeAll(battleTracker.getPendingBattleSites(false));
       // a rather simple calculation, either we can take all the air, or we can't, nothing in the middle
       final int carrierCost = AirMovementValidator.carrierCost(strandedAir);

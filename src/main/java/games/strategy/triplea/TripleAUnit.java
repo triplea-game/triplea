@@ -406,7 +406,7 @@ public class TripleAUnit extends Unit {
     if (producer.isWater()) {
       factoryMatchBuilder.add(Matches.UnitIsLand.invert());
     } else {
-      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }
     final Collection<Unit> factories = Match.getMatches(units, factoryMatchBuilder.all());
     if (factories.isEmpty()) {

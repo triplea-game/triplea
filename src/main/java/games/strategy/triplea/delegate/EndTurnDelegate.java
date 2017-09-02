@@ -87,10 +87,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           final IntegerMap<UnitType> createsUnitsMap = ua.getCreatesUnitsList();
           final Collection<UnitType> willBeCreated = createsUnitsMap.keySet();
           for (final UnitType ut : willBeCreated) {
-            if (UnitAttachment.get(ut).getIsSea() && Matches.TerritoryIsLand.match(t)) {
+            if (UnitAttachment.get(ut).getIsSea() && Matches.territoryIsLand().match(t)) {
               toAddSea.addAll(ut.create(createsUnitsMap.getInt(ut), player));
             } else if (!UnitAttachment.get(ut).getIsSea() && !UnitAttachment.get(ut).getIsAir()
-                && Matches.TerritoryIsWater.match(t)) {
+                && Matches.territoryIsWater().match(t)) {
               toAddLand.addAll(ut.create(createsUnitsMap.getInt(ut), player));
             } else {
               toAdd.addAll(ut.create(createsUnitsMap.getInt(ut), player));
@@ -106,7 +106,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           change.add(place);
         }
         if (!toAddSea.isEmpty()) {
-          final Match<Territory> myTerrs = Match.allOf(Matches.TerritoryIsWater);
+          final Match<Territory> myTerrs = Match.allOf(Matches.territoryIsWater());
           final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (waterNeighbors != null && !waterNeighbors.isEmpty()) {
             final Territory tw = getRandomTerritory(waterNeighbors, bridge);
@@ -119,7 +119,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           }
         }
         if (!toAddLand.isEmpty()) {
-          final Match<Territory> myTerrs = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand);
+          final Match<Territory> myTerrs = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.territoryIsLand());
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (landNeighbors != null && !landNeighbors.isEmpty()) {
             final Territory tl = getRandomTerritory(landNeighbors, bridge);

@@ -86,7 +86,7 @@ public class ProTerritoryValueUtils {
     final GameData data = ProData.getData();
     for (final Territory t : data.getMap().getTerritories()) {
       if (!territoriesThatCantBeHeld.contains(t) && t.isWater()
-          && !data.getMap().getNeighbors(t, Matches.TerritoryIsWater).isEmpty()) {
+          && !data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
 
         // Determine sea value based on nearby convoy production
         double nearbySeaProductionValue = 0;
@@ -263,7 +263,7 @@ public class ProTerritoryValueUtils {
       final List<Territory> territoriesToAttack, final Map<Territory, Double> territoryValueMap) {
 
     final GameData data = ProData.getData();
-    if (territoriesThatCantBeHeld.contains(t) || data.getMap().getNeighbors(t, Matches.TerritoryIsWater).isEmpty()) {
+    if (territoriesThatCantBeHeld.contains(t) || data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
       return 0.0;
     }
 
