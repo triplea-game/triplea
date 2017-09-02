@@ -26,7 +26,7 @@ public final class EventThreadJOptionPaneTest {
   public final Timeout globalTimeout = new Timeout(5, TimeUnit.SECONDS);
 
   @Spy
-  private final CountDownLatchHandler latchHandler = new CountDownLatchHandler(true);
+  private final CountDownLatchHandler latchHandler = new CountDownLatchHandler();
 
   @Test
   public void testInvokeAndWaitWithSupplier_ShouldRunSupplierOnEventDispatchThreadWhenNotCalledFromEventDispatchThread()

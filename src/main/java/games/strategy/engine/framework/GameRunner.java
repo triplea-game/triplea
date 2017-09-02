@@ -403,7 +403,7 @@ public class GameRunner {
           .isLessThan(latestEngineOut.getLatestVersionOut())) {
         SwingUtilities
             .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
-                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true)));
+                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler()));
         return true;
       }
     } catch (final Exception e) {

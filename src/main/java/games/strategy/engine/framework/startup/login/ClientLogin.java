@@ -75,6 +75,6 @@ public class ClientLogin implements IConnectionLogin {
   @Override
   public void notifyFailedLogin(final String message) {
     EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parentComponent), message,
-        new CountDownLatchHandler(true));
+        new CountDownLatchHandler());
   }
 }

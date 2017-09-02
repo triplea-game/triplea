@@ -298,7 +298,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         // a better way?
         stopGame = (JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null,
             ("<html>" + displayMessage + "</html>"), "Continue Game?  (" + title + ")", JOptionPane.YES_NO_OPTION,
-            new CountDownLatchHandler(true)));
+            new CountDownLatchHandler()));
       }
       if (stopGame) {
         bridge.stopGameSequence();

@@ -20,6 +20,10 @@ public class CountDownLatchHandler {
 
   private final boolean releaseLatchOnInterrupt;
 
+  public CountDownLatchHandler() {
+    this(true);
+  }
+
   public CountDownLatchHandler(final boolean releaseLatchOnInterrupt) {
     this.releaseLatchOnInterrupt = releaseLatchOnInterrupt;
   }
