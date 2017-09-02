@@ -82,15 +82,6 @@ public final class EventThreadJOptionPaneTest {
   }
 
   @Test
-  public void testInvokeAndWaitWithSupplier_ShouldRunSuccessfullyWhenLatchHandlerIsNull() {
-    final Object expectedResult = new Object();
-
-    final Object actualResult = EventThreadJOptionPane.invokeAndWait(null, () -> Optional.of(expectedResult)).get();
-
-    assertThat(actualResult, is(expectedResult));
-  }
-
-  @Test
   public void testInvokeAndWaitWithIntSupplier_ShouldReturnIntSupplierResult() {
     final int expectedResult = 42;
 

@@ -1,5 +1,7 @@
 package games.strategy.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -9,6 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -25,27 +28,40 @@ public final class EventThreadJOptionPane {
   private EventThreadJOptionPane() {}
 
   public static void showMessageDialog(
-      final Component parentComponent,
-      final Object message,
-      final String title,
+      final @Nullable Component parentComponent,
+      final @Nullable Object message,
+      final @Nullable String title,
       final int messageType) {
-    showMessageDialog(parentComponent, message, title, messageType, false, new CountDownLatchHandler());
+    showMessageDialog(parentComponent, message, title, messageType, new CountDownLatchHandler());
   }
 
-  public static void showMessageDialog(final Component parentComponent, final Object message, final String title,
-      final int messageType, final CountDownLatchHandler latchHandler) {
+  public static void showMessageDialog(
+      final @Nullable Component parentComponent,
+      final @Nullable Object message,
+      final @Nullable String title,
+      final int messageType,
+      final CountDownLatchHandler latchHandler) {
+    checkNotNull(latchHandler);
+
     showMessageDialog(parentComponent, message, title, messageType, false, latchHandler);
   }
 
-  public static void showMessageDialog(final Component parentComponent, final Object message, final String title,
-      final int messageType, final boolean useJLabel, final CountDownLatchHandler latchHandler) {
+  public static void showMessageDialog(
+      final @Nullable Component parentComponent,
+      final @Nullable Object message,
+      final @Nullable String title,
+      final int messageType,
+      final boolean useJLabel,
+      final CountDownLatchHandler latchHandler) {
+    checkNotNull(latchHandler);
+
     invokeAndWait(
         latchHandler,
         () -> JOptionPane.showMessageDialog(parentComponent,
             useJLabel ? createJLabelInScrollPane((String) message) : message, title, messageType));
   }
 
-  public static void showMessageDialog(final Component parentComponent, final Object message) {
+  public static void showMessageDialog(final @Nullable Component parentComponent, final @Nullable Object message) {
     invokeAndWait(new CountDownLatchHandler(), () -> JOptionPane.showMessageDialog(parentComponent, message));
   }
 
@@ -68,9 +84,7 @@ public final class EventThreadJOptionPane {
       result.set(supplier.get());
       latch.countDown();
     });
-    if (latchHandler != null) {
-      latchHandler.addShutdownLatch(latch);
-    }
+    latchHandler.addShutdownLatch(latch);
     awaitLatch(latchHandler, latch);
     return result.get();
   }
@@ -103,19 +117,25 @@ public final class EventThreadJOptionPane {
         latch.await();
         done = true;
       } catch (final InterruptedException e) {
-        if (latchHandler != null) {
-          latchHandler.interruptLatch(latch);
-        }
+        latchHandler.interruptLatch(latch);
       }
     }
-    if (latchHandler != null) {
-      latchHandler.removeShutdownLatch(latch);
-    }
+
+    latchHandler.removeShutdownLatch(latch);
   }
 
-  public static int showOptionDialog(final Component parentComponent, final Object message, final String title,
-      final int optionType, final int messageType, final Icon icon, final Object[] options, final Object initialValue,
+  public static int showOptionDialog(
+      final @Nullable Component parentComponent,
+      final @Nullable Object message,
+      final @Nullable String title,
+      final int optionType,
+      final int messageType,
+      final @Nullable Icon icon,
+      final @Nullable Object[] options,
+      final @Nullable Object initialValue,
       final CountDownLatchHandler latchHandler) {
+    checkNotNull(latchHandler);
+
     return invokeAndWait(
         latchHandler,
         () -> JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options,
@@ -123,15 +143,21 @@ public final class EventThreadJOptionPane {
   }
 
   public static int showConfirmDialog(
-      final Component parentComponent,
-      final Object message,
-      final String title,
+      final @Nullable Component parentComponent,
+      final @Nullable Object message,
+      final @Nullable String title,
       final int optionType) {
     return showConfirmDialog(parentComponent, message, title, optionType, new CountDownLatchHandler());
   }
 
-  public static int showConfirmDialog(final Component parentComponent, final Object message, final String title,
-      final int optionType, final CountDownLatchHandler latchHandler) {
+  public static int showConfirmDialog(
+      final @Nullable Component parentComponent,
+      final @Nullable Object message,
+      final @Nullable String title,
+      final int optionType,
+      final CountDownLatchHandler latchHandler) {
+    checkNotNull(latchHandler);
+
     return invokeAndWait(
         latchHandler,
         () -> JOptionPane.showConfirmDialog(parentComponent, message, title, optionType));
