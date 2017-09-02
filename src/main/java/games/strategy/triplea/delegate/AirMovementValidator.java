@@ -170,7 +170,7 @@ public class AirMovementValidator {
     final List<Unit> carriersInProductionQueue = player.getUnits().getMatches(Matches.unitIsCarrier());
     for (final Territory t : landingSpots) {
       if (landAirOnNewCarriers && !carriersInProductionQueue.isEmpty()) {
-        if (Matches.TerritoryIsWater.match(t)
+        if (Matches.territoryIsWater().match(t)
             && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(data, player).match(t)) {
           // TODO: Here we are assuming that this factory can produce all of the carriers. Actually it might not be able
           // to produce any

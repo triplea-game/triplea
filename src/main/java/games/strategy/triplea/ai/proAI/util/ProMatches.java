@@ -78,7 +78,7 @@ public class ProMatches {
   }
 
   public static Match<Territory> territoryCanPotentiallyMoveLandUnits(final PlayerID player, final GameData data) {
-    return Match.allOf(Matches.TerritoryIsLand,
+    return Match.allOf(Matches.territoryIsLand(),
         Matches.territoryDoesNotCostMoneyToEnter(data), Matches.territoryIsPassableAndNotRestricted(player, data));
   }
 
@@ -196,7 +196,7 @@ public class ProMatches {
 
   public static Match<Territory> territoryHasInfraFactoryAndIsLand() {
     final Match<Unit> infraFactoryMatch = Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
-    return Match.allOf(Matches.TerritoryIsLand, Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
+    return Match.allOf(Matches.territoryIsLand(), Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
   }
 
   public static Match<Territory> territoryHasInfraFactoryAndIsEnemyLand(final PlayerID player, final GameData data) {
@@ -234,19 +234,19 @@ public class ProMatches {
     final Match<Unit> infraFactoryMatch = Match.allOf(Matches.unitIsOwnedBy(player),
         Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
     return Match.allOf(Matches.isTerritoryOwnedBy(player),
-        Matches.TerritoryIsLand, Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
+        Matches.territoryIsLand(), Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
   }
 
   public static Match<Territory> territoryHasInfraFactoryAndIsAlliedLand(final PlayerID player, final GameData data) {
     final Match<Unit> infraFactoryMatch = Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
     return Match.allOf(Matches.isTerritoryAllied(player, data),
-        Matches.TerritoryIsLand, Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
+        Matches.territoryIsLand(), Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
   }
 
   public static Match<Territory> territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(final PlayerID player,
       final GameData data) {
     return Match.allOf(territoryHasInfraFactoryAndIsOwnedLand(player),
-        Matches.territoryHasNeighborMatching(data, Matches.TerritoryIsWater));
+        Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()));
   }
 
   public static Match<Territory> territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(final PlayerID player,
@@ -289,7 +289,7 @@ public class ProMatches {
   }
 
   public static Match<Territory> territoryIsEnemyNotNeutralOrAllied(final PlayerID player, final GameData data) {
-    final Match<Territory> alliedLand = Match.allOf(Matches.TerritoryIsLand, Matches.isTerritoryAllied(player, data));
+    final Match<Territory> alliedLand = Match.allOf(Matches.territoryIsLand(), Matches.isTerritoryAllied(player, data));
     return Match.anyOf(territoryIsEnemyNotNeutralLand(player, data), alliedLand);
   }
 
@@ -314,7 +314,7 @@ public class ProMatches {
       final GameData data, final List<Territory> territoriesThatCantBeHeld) {
     final Match<Unit> myUnitIsLand = Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsLand);
     final Match<Territory> territoryIsLandAndAdjacentToMyLandUnits =
-        Match.allOf(Matches.TerritoryIsLand,
+        Match.allOf(Matches.territoryIsLand(),
             Matches.territoryHasNeighborMatching(data, Matches.territoryHasUnitsThatMatch(myUnitIsLand)));
     return Match.allOf(territoryIsLandAndAdjacentToMyLandUnits,
         territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld));
@@ -325,7 +325,7 @@ public class ProMatches {
       if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(t)) {
         return false;
       }
-      final Match<Territory> match = Match.allOf(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand);
+      final Match<Territory> match = Match.allOf(Matches.isTerritoryAllied(player, data), Matches.territoryIsLand());
       return match.match(t);
     });
   }
@@ -335,7 +335,7 @@ public class ProMatches {
       if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(t)) {
         return false;
       }
-      final Match<Territory> match = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand);
+      final Match<Territory> match = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.territoryIsLand());
       return match.match(t);
     });
   }
@@ -376,7 +376,7 @@ public class ProMatches {
       if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
-      final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.UnitIsSea);
+      final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitIsSea());
       return match.match(u);
     });
   }
@@ -530,8 +530,8 @@ public class ProMatches {
           .match(unitWhichRequiresUnits)) {
         return true;
       }
-      if (t.isWater() && Matches.UnitIsSea.match(unitWhichRequiresUnits)) {
-        for (final Territory neighbor : t.getData().getMap().getNeighbors(t, Matches.TerritoryIsLand)) {
+      if (t.isWater() && Matches.unitIsSea().match(unitWhichRequiresUnits)) {
+        for (final Territory neighbor : t.getData().getMap().getNeighbors(t, Matches.territoryIsLand())) {
           final Collection<Unit> unitsAtStartOfTurnInCurrent = neighbor.getUnits().getUnits();
           if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
               .match(unitWhichRequiresUnits)) {

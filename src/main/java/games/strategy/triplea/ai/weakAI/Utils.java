@@ -49,7 +49,7 @@ class Utils {
   static float getStrengthOfPotentialAttackers(final Territory location, final GameData data) {
     float strength = 0;
     for (final Territory t : data.getMap().getNeighbors(location,
-        location.isWater() ? Matches.TerritoryIsWater : Matches.TerritoryIsLand)) {
+        location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
       final List<Unit> enemies = t.getUnits().getMatches(Matches.enemyUnit(location.getOwner(), data));
       strength += AIUtils.strength(enemies, true, location.isWater());
     }
@@ -76,7 +76,7 @@ class Utils {
   static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID us, final GameData data) {
     for (final PlayerID player : Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data))) {
       for (final Territory capital : TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {
-        if (data.getMap().getDistance(t, capital, Matches.TerritoryIsLand) != -1) {
+        if (data.getMap().getDistance(t, capital, Matches.territoryIsLand()) != -1) {
           return true;
         }
       }
@@ -90,7 +90,7 @@ class Utils {
     final Iterator<Territory> waterFactIter = water.iterator();
     while (waterFactIter.hasNext()) {
       final Territory waterFact = waterFactIter.next();
-      if (!Matches.TerritoryIsWater.match(waterFact)) {
+      if (!Matches.territoryIsWater().match(waterFact)) {
         waterFactIter.remove();
       }
     }

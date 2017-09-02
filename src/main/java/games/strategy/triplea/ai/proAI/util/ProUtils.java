@@ -220,7 +220,7 @@ public class ProUtils {
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyOrAdjacentLandTerritories) {
       final int distance =
-          data.getMap().getDistance_IgnoreEndForCondition(t, enemyLandTerritory, Matches.TerritoryIsWater);
+          data.getMap().getDistance_IgnoreEndForCondition(t, enemyLandTerritory, Matches.territoryIsWater());
       if (distance > 0 && distance < minDistance) {
         minDistance = distance;
       }

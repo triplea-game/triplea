@@ -315,7 +315,7 @@ public class BattleTracker implements Serializable {
         changeTracker.addChange(change);
       }
       if (Match.anyMatch(units, Matches.UnitIsLand)
-          || Match.anyMatch(units, Matches.UnitIsSea)) {
+          || Match.anyMatch(units, Matches.unitIsSea())) {
         addEmptyBattle(route, units, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute);
       }
     }
@@ -732,7 +732,7 @@ public class BattleTracker implements Serializable {
     // say they were in combat
     // if the territory being taken over is water, then do not say any land units were in combat
     // (they may want to unload from the transport and attack)
-    if (Matches.TerritoryIsWater.match(territory) && arrivedUnits != null) {
+    if (Matches.territoryIsWater().match(territory) && arrivedUnits != null) {
       arrivedUnits.removeAll(Match.getMatches(arrivedUnits, Matches.UnitIsLand));
     }
     markWasInCombat(arrivedUnits, bridge, changeTracker);

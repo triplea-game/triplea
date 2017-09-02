@@ -38,7 +38,7 @@ public class ProPurchaseTerritory {
     canPlaceTerritories.add(new ProPlaceTerritory(territory));
     if (!isBid) {
       if (ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(territory)) {
-        for (final Territory t : data.getMap().getNeighbors(territory, Matches.TerritoryIsWater)) {
+        for (final Territory t : data.getMap().getNeighbors(territory, Matches.territoryIsWater())) {
           if (Properties.getWW2V2(data) || Properties.getUnitPlacementInEnemySeas(data)
               || !t.getUnits().anyMatch(Matches.enemyUnit(player, data))) {
             canPlaceTerritories.add(new ProPlaceTerritory(t));

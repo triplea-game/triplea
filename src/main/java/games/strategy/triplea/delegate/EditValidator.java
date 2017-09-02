@@ -51,7 +51,7 @@ class EditValidator {
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player) {
     String result = null;
-    if (Matches.TerritoryIsWater.match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
+    if (Matches.territoryIsWater().match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }
@@ -69,13 +69,13 @@ class EditValidator {
     final PlayerID player = units.iterator().next().getOwner();
     // check land/water sanity
     if (territory.isWater()) {
-      if (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsSea)) {
+      if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsSea())) {
         if (Match.anyMatch(units, Matches.UnitIsLand)) {
           if (units.isEmpty() || !Match.allMatch(units, Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              Match.allOf(Matches.unitIsTransport(), Matches.UnitIsSea, Matches.alliedUnit(player, data));
+              Match.allOf(Matches.unitIsTransport(), Matches.unitIsSea(), Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
           if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.unitCanBeTransported())) {
@@ -111,10 +111,10 @@ class EditValidator {
     } else {
       /*
        * // Can't add to enemy territory
-       * if (Matches.isTerritoryEnemy(player, data).match(territory) && !Matches.TerritoryIsWater.match(territory))
+       * if (Matches.isTerritoryEnemy(player, data).match(territory) && !Matches.territoryIsWater().match(territory))
        * return "Can't add units to enemy territory";
        */
-      if (Match.anyMatch(units, Matches.UnitIsSea)) {
+      if (Match.anyMatch(units, Matches.unitIsSea())) {
         return "Can't add sea units to land";
       }
     }

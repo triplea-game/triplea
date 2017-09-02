@@ -98,7 +98,7 @@ final class ProTechAI {
     if (!onWater) {
       nonTransportsInAttack = true;
     }
-    final Set<Territory> waterTerr = data.getMap().getNeighbors(location, Matches.TerritoryIsWater);
+    final Set<Territory> waterTerr = data.getMap().getNeighbors(location, Matches.territoryIsWater());
     while (playerIter.hasNext()) {
       float seaStrength = 0.0F;
       float firstStrength = 0.0F;
@@ -111,14 +111,14 @@ final class ProTechAI {
           Matches.unitIsOwnedBy(enemyPlayer),
           Matches.unitCanMove());
       final Match<Unit> enemyTransport = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
-          Matches.UnitIsSea, Matches.unitIsTransport(), Matches.unitCanMove());
+          Matches.unitIsSea(), Matches.unitIsTransport(), Matches.unitCanMove());
       final Match<Unit> enemyShip = Match.allOf(
           Matches.unitIsOwnedBy(enemyPlayer),
-          Matches.UnitIsSea,
+          Matches.unitIsSea(),
           Matches.unitCanMove());
       final Match<Unit> enemyTransportable = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
           Matches.unitCanBeTransported(), Matches.unitIsNotAa(), Matches.unitCanMove());
-      final Match<Unit> transport = Match.allOf(Matches.UnitIsSea, Matches.unitIsTransport(), Matches.unitCanMove());
+      final Match<Unit> transport = Match.allOf(Matches.unitIsSea(), Matches.unitIsTransport(), Matches.unitCanMove());
       final List<Territory> enemyFighterTerritories = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
       // should change this to read production frontier and tech
@@ -144,7 +144,7 @@ final class ProTechAI {
       final List<Territory> checked = new ArrayList<>();
       final List<Unit> enemyWaterUnits = new ArrayList<>();
       for (final Territory t : data.getMap().getNeighbors(location,
-          onWater ? Matches.TerritoryIsWater : Matches.TerritoryIsLand)) {
+          onWater ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
         if (ignoreTerr != null && ignoreTerr.contains(t)) {
           continue;
         }
@@ -153,7 +153,7 @@ final class ProTechAI {
         firstStrength += strength(enemies, true, onWater, transportsFirst);
         checked.add(t);
       }
-      if (Matches.TerritoryIsLand.match(location)) {
+      if (Matches.territoryIsLand().match(location)) {
         blitzStrength = determineEnemyBlitzStrength(location, blitzTerrRoutes, null, data, enemyPlayer);
       } else { // get ships attack strength
         // old assumed fleets won't split up, new lets them. no biggie.
@@ -173,7 +173,7 @@ final class ProTechAI {
       final List<Unit> attackPlanes =
           findPlaneAttackersThatCanLand(location, maxFighterDistance, enemyPlayer, data, ignoreTerr, checked);
       final float airStrength = allairstrength(attackPlanes, true);
-      if (Matches.territoryHasWaterNeighbor(data).match(location) && Matches.TerritoryIsLand.match(location)) {
+      if (Matches.territoryHasWaterNeighbor(data).match(location) && Matches.territoryIsLand().match(location)) {
         for (final Territory t4 : data.getMap().getNeighbors(location, maxTransportDistance)) {
           if (!t4.isWater()) {
             continue;
@@ -547,7 +547,7 @@ final class ProTechAI {
     }
     final Match<Territory> routeCond = Match.allOf(
         Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(),
-        Matches.TerritoryIsWater);
+        Matches.territoryIsWater());
     final Match<Territory> routeCondition;
     if (attacking) {
       routeCondition = Match.anyOf(Matches.territoryIs(destination), routeCond);
@@ -738,6 +738,6 @@ final class ProTechAI {
    * Assumes that water is passable to air units always.
    */
   private static Match<Territory> territoryIsImpassableToAirUnits() {
-    return Match.allOf(Matches.TerritoryIsLand, Matches.territoryIsImpassable());
+    return Match.allOf(Matches.territoryIsLand(), Matches.territoryIsImpassable());
   }
 }

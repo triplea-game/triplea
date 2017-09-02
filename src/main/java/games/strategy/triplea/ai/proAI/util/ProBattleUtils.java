@@ -196,12 +196,12 @@ public class ProBattleUtils {
     final int enemyDistance = Math.max(3, (landDistance + 1));
     final int alliedDistance = (enemyDistance + 1) / 2;
     final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, enemyDistance);
-    final List<Territory> nearbyLandTerritories = Match.getMatches(nearbyTerritories, Matches.TerritoryIsLand);
+    final List<Territory> nearbyLandTerritories = Match.getMatches(nearbyTerritories, Matches.territoryIsLand());
     final Set<Territory> nearbyEnemySeaTerritories =
-        data.getMap().getNeighbors(t, enemyDistance, Matches.TerritoryIsWater);
+        data.getMap().getNeighbors(t, enemyDistance, Matches.territoryIsWater());
     nearbyEnemySeaTerritories.add(t);
     final Set<Territory> nearbyAlliedSeaTerritories =
-        data.getMap().getNeighbors(t, alliedDistance, Matches.TerritoryIsWater);
+        data.getMap().getNeighbors(t, alliedDistance, Matches.territoryIsWater());
     nearbyAlliedSeaTerritories.add(t);
     final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
     final List<Unit> enemyUnitsInLandTerritories = new ArrayList<>();
@@ -217,7 +217,7 @@ public class ProBattleUtils {
       if (enemySeaUnits.isEmpty()) {
         continue;
       }
-      final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbySeaTerritory, Matches.TerritoryIsWater);
+      final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbySeaTerritory, Matches.territoryIsWater());
       if (route == null) {
         continue;
       }

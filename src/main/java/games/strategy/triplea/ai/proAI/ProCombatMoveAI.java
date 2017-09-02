@@ -104,7 +104,8 @@ class ProCombatMoveAI {
     for (final ProTerritory patd : attackOptions) {
       clearedTerritories.add(patd.getTerritory());
       if (!patd.getAmphibAttackMap().isEmpty()) {
-        possibleTransportTerritories.addAll(data.getMap().getNeighbors(patd.getTerritory(), Matches.TerritoryIsWater));
+        possibleTransportTerritories
+            .addAll(data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater()));
       }
     }
     territoryManager.populateEnemyAttackOptions(clearedTerritories, new ArrayList<>(possibleTransportTerritories));
@@ -1473,7 +1474,7 @@ class ProCombatMoveAI {
 
       // Find max remaining defenders
       final Set<Territory> territoriesAdjacentToCapital =
-          data.getMap().getNeighbors(myCapital, Matches.TerritoryIsLand);
+          data.getMap().getNeighbors(myCapital, Matches.territoryIsLand());
       final List<Unit> defenders = myCapital.getUnits().getMatches(Matches.isUnitAllied(player, data));
       defenders.addAll(placeUnits);
       for (final Territory t : territoriesAdjacentToCapital) {
@@ -1495,7 +1496,7 @@ class ProCombatMoveAI {
       if (result.isHasLandUnitRemaining()) {
         double maxUnitsNearCapitalPerValue = 0.0;
         Territory maxTerritory = null;
-        final Set<Territory> territoriesNearCapital = data.getMap().getNeighbors(myCapital, Matches.TerritoryIsLand);
+        final Set<Territory> territoriesNearCapital = data.getMap().getNeighbors(myCapital, Matches.territoryIsLand());
         territoriesNearCapital.add(myCapital);
         for (final Territory t : attackMap.keySet()) {
           int unitsNearCapital = 0;

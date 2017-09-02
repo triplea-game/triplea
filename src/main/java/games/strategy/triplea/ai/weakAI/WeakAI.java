@@ -65,13 +65,13 @@ public class WeakAI extends AbstractAI {
       return !impassable && !o.isWater() && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
     });
     final Match<Territory> routeCond =
-        Match.allOf(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
+        Match.allOf(Matches.territoryIsWater(), Matches.territoryHasNoEnemyUnits(player, data));
     final Route withNoEnemy = Utils.findNearest(ourCapitol, endMatch, routeCond, data);
     if (withNoEnemy != null && withNoEnemy.numberOfSteps() > 0) {
       return withNoEnemy;
     }
     // this will fail if our capitol is not next to water, c'est la vie.
-    final Route route = Utils.findNearest(ourCapitol, endMatch, Matches.TerritoryIsWater, data);
+    final Route route = Utils.findNearest(ourCapitol, endMatch, Matches.territoryIsWater(), data);
     if (route != null && route.numberOfSteps() == 0) {
       return null;
     }
@@ -87,7 +87,7 @@ public class WeakAI extends AbstractAI {
     // find a land route to an enemy territory from our capitol
     final Route invasionRoute =
         Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
-            Match.allOf(Matches.TerritoryIsLand, Matches.territoryIsNeutralButNotWater().invert()), data);
+            Match.allOf(Matches.territoryIsLand(), Matches.territoryIsNeutralButNotWater().invert()), data);
     return invasionRoute == null;
   }
 
@@ -335,7 +335,7 @@ public class WeakAI extends AbstractAI {
   private static Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
       final PlayerID player) {
     final Match<Territory> routeCond =
-        Match.allOf(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(),
+        Match.allOf(Matches.territoryIsWater(), Matches.territoryHasEnemyUnits(player, data).invert(),
             Matches.territoryHasNonAllowedCanal(player, null, data).invert());
     Route r = data.getMap().getRoute(start, destination, routeCond);
     if (r == null) {
@@ -369,7 +369,7 @@ public class WeakAI extends AbstractAI {
         final Set<Territory> dontMoveFrom = new HashSet<>();
         // find our strength that we can attack with
         int ourStrength = 0;
-        final Collection<Territory> attackFrom = data.getMap().getNeighbors(enemy, Matches.TerritoryIsWater);
+        final Collection<Territory> attackFrom = data.getMap().getNeighbors(enemy, Matches.territoryIsWater());
         for (final Territory owned : attackFrom) {
           // dont risk units we are carrying
           if (owned.getUnits().anyMatch(Matches.UnitIsLand)) {
@@ -400,10 +400,10 @@ public class WeakAI extends AbstractAI {
       return null;
     }
     final Match<Territory> routeCondition =
-        Match.allOf(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
+        Match.allOf(Matches.territoryIsWater(), Matches.territoryHasNoEnemyUnits(player, data));
     // should select all territories with loaded transports
     final Match<Territory> transportOnSea =
-        Match.allOf(Matches.TerritoryIsWater, Matches.territoryHasLandUnitsOwnedBy(player));
+        Match.allOf(Matches.territoryIsWater(), Matches.territoryHasLandUnitsOwnedBy(player));
     Route altRoute = null;
     final int length = Integer.MAX_VALUE;
     for (final Territory t : data.getMap()) {
@@ -413,7 +413,7 @@ public class WeakAI extends AbstractAI {
       final Match<Unit> ownedTransports =
           Match.allOf(Matches.unitCanTransport(), Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved());
       final Match<Territory> enemyTerritory =
-          Match.allOf(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsLand,
+          Match.allOf(Matches.isTerritoryEnemy(player, data), Matches.territoryIsLand(),
               Matches.territoryIsNeutralButNotWater().invert(), Matches.territoryIsEmpty());
       final int trans = t.getUnits().countMatches(ownedTransports);
       if (trans > 0) {
@@ -454,7 +454,7 @@ public class WeakAI extends AbstractAI {
           Matches.UnitIsLand);
       final Match<Territory> moveThrough =
           Match.allOf(Matches.territoryIsImpassable().invert(),
-              Matches.territoryIsNeutralButNotWater().invert(), Matches.TerritoryIsLand);
+              Matches.territoryIsNeutralButNotWater().invert(), Matches.territoryIsLand());
       final List<Unit> units = t.getUnits().getMatches(moveOfType);
       if (units.size() == 0) {
         continue;
@@ -487,7 +487,7 @@ public class WeakAI extends AbstractAI {
         }
       } else { // if we cant move to a capitol, move towards the enemy
         final Match<Territory> routeCondition =
-            Match.allOf(Matches.TerritoryIsLand, Matches.territoryIsImpassable().invert());
+            Match.allOf(Matches.territoryIsLand(), Matches.territoryIsImpassable().invert());
         Route newRoute = Utils.findNearest(t, Matches.territoryHasEnemyLandUnits(player, data), routeCondition, data);
         // move to any enemy territory
         if (newRoute == null) {
@@ -1026,14 +1026,14 @@ public class WeakAI extends AbstractAI {
     if (placementLeft == -1) {
       placementLeft = Integer.MAX_VALUE;
     }
-    final List<Unit> seaUnits = new ArrayList<>(player.getUnits().getMatches(Matches.UnitIsSea));
+    final List<Unit> seaUnits = new ArrayList<>(player.getUnits().getMatches(Matches.unitIsSea()));
     if (seaUnits.size() > 0) {
       final Route amphibRoute = getAmphibRoute(player, data);
       Territory seaPlaceAt = null;
       if (amphibRoute != null) {
         seaPlaceAt = amphibRoute.getAllTerritories().get(1);
       } else {
-        final Set<Territory> seaNeighbors = data.getMap().getNeighbors(placeAt, Matches.TerritoryIsWater);
+        final Set<Territory> seaNeighbors = data.getMap().getNeighbors(placeAt, Matches.territoryIsWater());
         if (!seaNeighbors.isEmpty()) {
           seaPlaceAt = seaNeighbors.iterator().next();
         }
