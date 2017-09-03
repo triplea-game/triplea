@@ -150,8 +150,14 @@ public class MoveValidatorTest extends DelegateTest {
         new HashMap<>(), false, null, twwGameData);
     assertFalse(results.isMoveValid());
 
-    // Add germanRail to destination so move succeeds
+    // Add germanRail to only destination so it fails
     addTo(easternGermany, GameDataTestUtil.germanRail(twwGameData).create(1, germans));
+    results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
+        new HashMap<>(), false, null, twwGameData);
+    assertFalse(results.isMoveValid());
+
+    // Add germanRail to start so move succeeds
+    addTo(berlin, GameDataTestUtil.germanRail(twwGameData).create(1, germans));
     results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
         new HashMap<>(), false, null, twwGameData);
     assertTrue(results.isMoveValid());
