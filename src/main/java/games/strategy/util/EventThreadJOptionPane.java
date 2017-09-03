@@ -31,6 +31,16 @@ public final class EventThreadJOptionPane {
    * Shows a message dialog using a {@code CountDownLatchHandler} that will release its associated latches upon
    * interruption.
    *
+   * @see JOptionPane#showMessageDialog(Component, Object)
+   */
+  public static void showMessageDialog(final @Nullable Component parentComponent, final @Nullable Object message) {
+    invokeAndWait(new CountDownLatchHandler(), () -> JOptionPane.showMessageDialog(parentComponent, message));
+  }
+
+  /**
+   * Shows a message dialog using a {@code CountDownLatchHandler} that will release its associated latches upon
+   * interruption.
+   *
    * @see JOptionPane#showMessageDialog(Component, Object, String, int)
    */
   public static void showMessageDialog(
@@ -56,42 +66,26 @@ public final class EventThreadJOptionPane {
       final CountDownLatchHandler latchHandler) {
     checkNotNull(latchHandler);
 
-    showMessageDialog(parentComponent, message, title, messageType, false, latchHandler);
+    invokeAndWait(latchHandler, () -> JOptionPane.showMessageDialog(parentComponent, message, title, messageType));
   }
 
   /**
-   * Shows a message dialog using the specified {@code CountDownLatchHandler} and with the option to embed the
-   * {@code message} in a scrollable {@code JLabel}.
+   * Shows a message dialog using the specified {@code CountDownLatchHandler} and using a scroll pane to display the
+   * message.
    *
-   * @param useJLabel {@code true} to embed the {@code message}, which must be a {@code String}, in a scrollable
-   *        {@code JLabel}; otherwise {@code false} to display the {@code message} unmodified.
    * @param latchHandler The handler with which to associate the latch used to await the dialog.
    *
    * @see JOptionPane#showMessageDialog(Component, Object, String, int)
    */
-  public static void showMessageDialog(
+  public static void showMessageDialogWithScrollPane(
       final @Nullable Component parentComponent,
-      final @Nullable Object message,
+      final @Nullable String message,
       final @Nullable String title,
       final int messageType,
-      final boolean useJLabel,
       final CountDownLatchHandler latchHandler) {
     checkNotNull(latchHandler);
 
-    invokeAndWait(
-        latchHandler,
-        () -> JOptionPane.showMessageDialog(parentComponent,
-            useJLabel ? createJLabelInScrollPane((String) message) : message, title, messageType));
-  }
-
-  /**
-   * Shows a message dialog using a {@code CountDownLatchHandler} that will release its associated latches upon
-   * interruption.
-   *
-   * @see JOptionPane#showMessageDialog(Component, Object)
-   */
-  public static void showMessageDialog(final @Nullable Component parentComponent, final @Nullable Object message) {
-    invokeAndWait(new CountDownLatchHandler(), () -> JOptionPane.showMessageDialog(parentComponent, message));
+    showMessageDialog(parentComponent, createJLabelInScrollPane(message), title, messageType, latchHandler);
   }
 
   private static void invokeAndWait(final CountDownLatchHandler latchHandler, final Runnable runnable) {
@@ -123,7 +117,7 @@ public final class EventThreadJOptionPane {
     return invokeAndWait(latchHandler, () -> Optional.of(supplier.getAsInt())).get();
   }
 
-  private static JScrollPane createJLabelInScrollPane(final String message) {
+  private static JScrollPane createJLabelInScrollPane(final @Nullable String message) {
     final JLabel label = new JLabel(message);
     final JScrollPane scroll = new JScrollPane(label);
     scroll.setBorder(BorderFactory.createEmptyBorder());

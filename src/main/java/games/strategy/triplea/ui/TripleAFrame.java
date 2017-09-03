@@ -751,8 +751,8 @@ public class TripleAFrame extends MainGameFrame {
     if (messageAndDialogThreadPool == null) {
       return;
     }
-    messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage,
-        "Error", JOptionPane.ERROR_MESSAGE, true, getUiContext().getCountDownLatchHandler()));
+    messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
+        displayMessage, "Error", JOptionPane.ERROR_MESSAGE, getUiContext().getCountDownLatchHandler()));
   }
 
   /**
@@ -782,8 +782,8 @@ public class TripleAFrame extends MainGameFrame {
     }
     final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
     if (messageAndDialogThreadPool != null) {
-      messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this,
-          displayMessage, title, JOptionPane.INFORMATION_MESSAGE, true, getUiContext().getCountDownLatchHandler()));
+      messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
+          displayMessage, title, JOptionPane.INFORMATION_MESSAGE, getUiContext().getCountDownLatchHandler()));
     }
   }
 
