@@ -28,7 +28,7 @@ public class UnitsThatCantFightUtil {
       final Match.CompositeBuilder<Unit> ownedUnitsMatchBuilder = Match.newCompositeBuilder(
           Matches.unitIsInfrastructure().invert());
       if (current.isWater()) {
-        ownedUnitsMatchBuilder.add(Matches.UnitIsLand.invert());
+        ownedUnitsMatchBuilder.add(Matches.unitIsLand().invert());
       }
       ownedUnitsMatchBuilder.add(Matches.unitIsOwnedBy(player));
       // All owned units

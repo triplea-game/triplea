@@ -549,7 +549,7 @@ class ProCombatMoveAI {
       final boolean hasAlliedLandUnits = Match.anyMatch(t.getUnits().getUnits(),
           ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(player, data, t));
       final Set<Territory> enemyNeighbors = data.getMap().getNeighbors(t,
-          Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitIsLand));
+          Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.unitIsLand()));
       enemyNeighbors.removeAll(territoriesToAttack);
       if (!t.isWater() && !hasAlliedLandUnits && !enemyNeighbors.isEmpty()) {
         int minCost = Integer.MAX_VALUE;

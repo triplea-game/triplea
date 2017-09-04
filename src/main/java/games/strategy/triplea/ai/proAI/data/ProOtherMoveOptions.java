@@ -86,8 +86,8 @@ public class ProOtherMoveOptions {
           }
           final double currentStrength =
               ProBattleUtils.estimateStrength(t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
-          final boolean currentHasLandUnits = Match.anyMatch(currentUnits, Matches.UnitIsLand);
-          final boolean maxHasLandUnits = Match.anyMatch(maxUnits, Matches.UnitIsLand);
+          final boolean currentHasLandUnits = Match.anyMatch(currentUnits, Matches.unitIsLand());
+          final boolean maxHasLandUnits = Match.anyMatch(maxUnits, Matches.unitIsLand());
           if ((currentHasLandUnits && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
               || ((!maxHasLandUnits || t.isWater()) && currentStrength > maxStrength)) {
             result.put(t, moveMap.get(t));

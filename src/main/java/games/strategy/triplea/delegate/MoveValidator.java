@@ -161,7 +161,7 @@ public class MoveValidator {
       // make sure we avoid land
       // territories owned by nations with these 2 relationship type attachment options
       for (final Territory t : landOnRoute) {
-        if (Match.anyMatch(units, Matches.UnitIsLand)) {
+        if (Match.anyMatch(units, Matches.unitIsLand())) {
           if (!data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner())) {
             result.setError(player.getName() + " may not move land units over land owned by " + t.getOwner().getName());
             return result;
@@ -314,7 +314,7 @@ public class MoveValidator {
         return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
       }
     }
-    if (Match.anyMatch(units, Matches.UnitIsLand) && route.hasSteps()) {
+    if (Match.anyMatch(units, Matches.unitIsLand()) && route.hasSteps()) {
       // check all the territories but the end, if there are enemy territories, make sure they are blitzable
       // if they are not blitzable, or we aren't all blitz units fail
       int enemyCount = 0;
@@ -785,10 +785,10 @@ public class MoveValidator {
         Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsSub(), Matches.enemyUnit(player, data).invert());
     final Match<Unit> transportOnly =
         Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsTransportButNotCombatTransport(),
-            Matches.UnitIsLand, Matches.enemyUnit(player, data).invert());
+            Matches.unitIsLand(), Matches.enemyUnit(player, data).invert());
     final Match<Unit> transportOrSubOnly =
         Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsTransportButNotCombatTransport(),
-            Matches.UnitIsLand, Matches.unitIsSub(), Matches.enemyUnit(player, data).invert());
+            Matches.unitIsLand(), Matches.unitIsSub(), Matches.enemyUnit(player, data).invert());
     final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
     boolean validMove = false;
@@ -1050,8 +1050,8 @@ public class MoveValidator {
     }
     // if we are land make sure no water in route except for transport
     // situations
-    final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
-    final Collection<Unit> landAndAir = Match.getMatches(units, Match.anyOf(Matches.UnitIsLand, Matches.UnitIsAir));
+    final Collection<Unit> land = Match.getMatches(units, Matches.unitIsLand());
+    final Collection<Unit> landAndAir = Match.getMatches(units, Match.anyOf(Matches.unitIsLand(), Matches.UnitIsAir));
     // make sure we can be transported
     final Match<Unit> cantBeTransported = Matches.unitCanBeTransported().invert();
     for (final Unit unit : Match.getMatches(land, cantBeTransported)) {
@@ -1203,11 +1203,11 @@ public class MoveValidator {
     if (!TechAttachment.isAirTransportable(player)) {
       return true;
     }
-    if (units.isEmpty() || !Match.allMatch(units, Match.anyOf(Matches.UnitIsAir, Matches.UnitIsLand))) {
+    if (units.isEmpty() || !Match.allMatch(units, Match.anyOf(Matches.UnitIsAir, Matches.unitIsLand()))) {
       return true;
     }
     for (final Unit unit : Match.getMatches(units, Matches.unitIsNotAirTransportable())) {
-      if (Matches.UnitIsLand.match(unit)) {
+      if (Matches.unitIsLand().match(unit)) {
         return true;
       }
     }
@@ -1484,7 +1484,7 @@ public class MoveValidator {
    */
   public static Route getBestRoute(final Territory start, final Territory end, final GameData data,
       final PlayerID player, final Collection<Unit> units, final boolean forceLandOrSeaRoute) {
-    final boolean hasLand = Match.anyMatch(units, Matches.UnitIsLand);
+    final boolean hasLand = Match.anyMatch(units, Matches.unitIsLand());
     final boolean hasAir = Match.anyMatch(units, Matches.UnitIsAir);
     // final boolean hasSea = Match.anyMatch(units, Matches.unitIsSea());
     final boolean isNeutralsImpassable =
@@ -1552,7 +1552,7 @@ public class MoveValidator {
           && ((landRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
               .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
               || (forceLandOrSeaRoute
-                  && Match.anyMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))) {
+                  && Match.anyMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.unitIsLand())))) {
         defaultRoute = landRoute;
         mustGoLand = true;
       }

@@ -213,7 +213,7 @@ public class WeakAI extends AbstractAI {
     }
     final Territory lastSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(amphibRoute.numberOfSteps() - 1);
     final Territory landOn = amphibRoute.getEnd();
-    final Match<Unit> landAndOwned = Match.allOf(Matches.UnitIsLand, Matches.unitIsOwnedBy(player));
+    final Match<Unit> landAndOwned = Match.allOf(Matches.unitIsLand(), Matches.unitIsOwnedBy(player));
     final List<Unit> units = lastSeaZoneOnAmphib.getUnits().getMatches(landAndOwned);
     if (units.size() > 0) {
       // just try to make the move, the engine will stop us if it doesnt work
@@ -308,7 +308,7 @@ public class WeakAI extends AbstractAI {
       // move sea units to the capitol, unless they are loaded transports
       if (t.isWater()) {
         // land units, move all towards the end point
-        if (t.getUnits().anyMatch(Matches.UnitIsLand)) {
+        if (t.getUnits().anyMatch(Matches.unitIsLand())) {
           // move along amphi route
           if (lastSeaZoneOnAmphib != null) {
             // two move route to end
@@ -372,7 +372,7 @@ public class WeakAI extends AbstractAI {
         final Collection<Territory> attackFrom = data.getMap().getNeighbors(enemy, Matches.territoryIsWater());
         for (final Territory owned : attackFrom) {
           // dont risk units we are carrying
-          if (owned.getUnits().anyMatch(Matches.UnitIsLand)) {
+          if (owned.getUnits().anyMatch(Matches.unitIsLand())) {
             dontMoveFrom.add(owned);
             continue;
           }
@@ -451,7 +451,7 @@ public class WeakAI extends AbstractAI {
           // we can never move factories
           Matches.unitCanMove(),
           Matches.unitIsNotInfrastructure(),
-          Matches.UnitIsLand);
+          Matches.unitIsLand());
       final Match<Territory> moveThrough =
           Match.allOf(Matches.territoryIsImpassable().invert(),
               Matches.territoryIsNeutralButNotWater().invert(), Matches.territoryIsLand());
@@ -611,7 +611,7 @@ public class WeakAI extends AbstractAI {
           final List<Unit> unitsSortedByCost = new ArrayList<>(attackFrom.getUnits().getUnits());
           Collections.sort(unitsSortedByCost, AIUtils.getCostComparator());
           for (final Unit unit : unitsSortedByCost) {
-            final Match<Unit> match = Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsLand,
+            final Match<Unit> match = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsLand(),
                 Matches.unitIsNotInfrastructure(), Matches.unitCanMove(), Matches.unitIsNotAa(),
                 Matches.unitCanNotMoveDuringCombatMove().invert());
             if (!unitsAlreadyMoved.contains(unit) && match.match(unit)) {
@@ -641,7 +641,7 @@ public class WeakAI extends AbstractAI {
       if (enemyStrength > 0) {
         final Match<Unit> attackable = Match.allOf(
             Matches.unitIsOwnedBy(player),
-            Matches.UnitIsStrategicBomber.invert(),
+            Matches.unitIsStrategicBomber().invert(),
             Match.of(o -> !unitsAlreadyMoved.contains(o)),
             Matches.unitIsNotAa(),
             Matches.unitCanMove(),
@@ -697,7 +697,7 @@ public class WeakAI extends AbstractAI {
       final List<Route> moveRoutes, final PlayerID player) {
     final Match<Territory> enemyFactory = Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player,
         Matches.unitCanProduceUnitsAndCanBeDamaged());
-    final Match<Unit> ownBomber = Match.allOf(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
+    final Match<Unit> ownBomber = Match.allOf(Matches.unitIsStrategicBomber(), Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> bombers = t.getUnits().getMatches(ownBomber);
       if (bombers.isEmpty()) {
@@ -720,7 +720,7 @@ public class WeakAI extends AbstractAI {
   }
 
   private static int countLandUnits(final GameData data, final PlayerID player) {
-    final Match<Unit> ownedLandUnit = Match.allOf(Matches.UnitIsLand, Matches.unitIsOwnedBy(player));
+    final Match<Unit> ownedLandUnit = Match.allOf(Matches.unitIsLand(), Matches.unitIsOwnedBy(player));
     int sum = 0;
     for (final Territory t : data.getMap()) {
       sum += t.getUnits().countMatches(ownedLandUnit);
@@ -1045,7 +1045,7 @@ public class WeakAI extends AbstractAI {
         doPlace(seaPlaceAt, toPlace, placeDelegate);
       }
     }
-    final List<Unit> landUnits = new ArrayList<>(player.getUnits().getMatches(Matches.UnitIsLand));
+    final List<Unit> landUnits = new ArrayList<>(player.getUnits().getMatches(Matches.unitIsLand()));
     if (!landUnits.isEmpty()) {
       final int landPlaceCount = Math.min(placementLeft, landUnits.size());
       placementLeft -= landPlaceCount;

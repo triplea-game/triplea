@@ -404,7 +404,7 @@ public class TripleAUnit extends Unit {
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
         Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
-      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.unitIsLand().invert());
     } else {
       factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }

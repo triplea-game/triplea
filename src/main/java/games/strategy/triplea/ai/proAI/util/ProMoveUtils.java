@@ -80,7 +80,7 @@ public class ProMoveUtils {
           // Sea unit (including carriers with planes)
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
               ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
-        } else if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.UnitIsLand)) {
+        } else if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.unitIsLand())) {
 
           // Land unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches

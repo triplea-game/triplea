@@ -260,7 +260,7 @@ public class ProPurchaseUtils {
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
         Matches.unitIsBeingTransported().invert());
     if (territory.isWater()) {
-      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.unitIsLand().invert());
     } else {
       factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }

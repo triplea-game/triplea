@@ -415,7 +415,7 @@ public class ProTerritoryManager {
 
   private void findBombingOptions() {
     for (final Unit unit : attackOptions.getUnitMoveMap().keySet()) {
-      if (Matches.UnitIsStrategicBomber.match(unit)) {
+      if (Matches.unitIsStrategicBomber().match(unit)) {
         attackOptions.getBomberMoveMap().put(unit, new HashSet<>(attackOptions.getUnitMoveMap().get(unit)));
       }
     }

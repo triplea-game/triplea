@@ -162,12 +162,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
-      if (route.getEnd() != null && !route.getEnd().isWater() && Match.anyMatch(units, Matches.UnitIsLand)) {
-        m_amphibiousLandAttackers.removeAll(Match.getMatches(units, Matches.UnitIsLand));
+      if (route.getEnd() != null && !route.getEnd().isWater() && Match.anyMatch(units, Matches.unitIsLand())) {
+        m_amphibiousLandAttackers.removeAll(Match.getMatches(units, Matches.unitIsLand()));
       }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
-      if (Match.noneMatch(attackingFromMapUnits, Matches.UnitIsLand)) {
+      if (Match.noneMatch(attackingFromMapUnits, Matches.unitIsLand())) {
         getAmphibiousAttackTerritories().remove(attackingFrom);
         // do we have any amphibious attacks left?
         m_isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
@@ -203,9 +203,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     attackingFromMapUnits.addAll(attackingUnits);
     // are we amphibious
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
-        && Match.anyMatch(attackingUnits, Matches.UnitIsLand)) {
+        && Match.anyMatch(attackingUnits, Matches.unitIsLand())) {
       getAmphibiousAttackTerritories().add(route.getTerritoryBeforeEnd());
-      m_amphibiousLandAttackers.addAll(Match.getMatches(attackingUnits, Matches.UnitIsLand));
+      m_amphibiousLandAttackers.addAll(Match.getMatches(attackingUnits, Matches.unitIsLand()));
       m_isAmphibious = true;
     }
     final Map<Unit, Collection<Unit>> dependencies = transporting(units);
@@ -1188,7 +1188,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private boolean canAttackerRetreatPartialAmphib() {
     if (m_isAmphibious && isPartialAmphibiousRetreat()) {
       // Only include land units when checking for allow amphibious retreat
-      final List<Unit> landUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsLand);
+      final List<Unit> landUnits = Match.getMatches(m_attackingUnits, Matches.unitIsLand());
       for (final Unit unit : landUnits) {
         final TripleAUnit taUnit = (TripleAUnit) unit;
         if (!taUnit.getWasAmphibious()) {
@@ -1247,7 +1247,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // the battle site is in the attacking from
     // if sea units are fighting a submerged sub
     possible.remove(m_battleSite);
-    if (Match.anyMatch(m_attackingUnits, Matches.UnitIsLand) && !m_battleSite.isWater()) {
+    if (Match.anyMatch(m_attackingUnits, Matches.unitIsLand()) && !m_battleSite.isWater()) {
       possible = Match.getMatches(possible, Matches.territoryIsLand());
     }
     if (Match.anyMatch(m_attackingUnits, Matches.unitIsSea())) {
@@ -1475,7 +1475,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         if (!m_headless) {
           if (Match.anyMatch(units, Matches.unitIsSea())) {
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker);
-          } else if (Match.anyMatch(units, Matches.UnitIsLand)) {
+          } else if (Match.anyMatch(units, Matches.unitIsLand())) {
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker);
           } else {
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker);
@@ -1490,7 +1490,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         if (!m_headless) {
           if (Match.anyMatch(units, Matches.unitIsSea())) {
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker);
-          } else if (Match.anyMatch(units, Matches.UnitIsLand)) {
+          } else if (Match.anyMatch(units, Matches.unitIsLand())) {
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker);
           } else {
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker);
@@ -1783,7 +1783,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (Matches.territoryIsLand().match(m_battleSite)) {
       notSubmergedAndTypeBuilder.add(Matches.unitIsSea().invert());
     } else {
-      notSubmergedAndTypeBuilder.add(Matches.UnitIsLand.invert());
+      notSubmergedAndTypeBuilder.add(Matches.unitIsLand().invert());
     }
     final Match<Unit> notSubmergedAndType = notSubmergedAndTypeBuilder.all();
     final Collection<Unit> unitsToKill;
@@ -2308,7 +2308,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final boolean doNotIncludeAa, final boolean doNotIncludeSeaBombardmentUnits, final boolean removeForNextRound) {
     final List<Unit> unitList = new ArrayList<>(units);
     if (m_battleSite.isWater()) {
-      unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsLand));
+      unitList.removeAll(Match.getMatches(unitList, Matches.unitIsLand()));
     }
     // still allow infrastructure type units that can provide support have combat abilities
     // remove infrastructure units that can't take part in combat (air/naval bases, etc...)

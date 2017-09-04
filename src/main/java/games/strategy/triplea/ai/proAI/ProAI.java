@@ -298,7 +298,7 @@ public class ProAI extends AbstractAI {
         + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker
         + ", isStrafing=" + isStrafing);
     if ((isStrafing || (isAttacker && strengthDifference > 50))
-        && (battleTerritory.isWater() || Match.anyMatch(attackers, Matches.UnitIsLand))) {
+        && (battleTerritory.isWater() || Match.anyMatch(attackers, Matches.unitIsLand()))) {
       return null;
     }
     calc.setData(getGameData());

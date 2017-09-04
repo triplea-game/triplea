@@ -258,7 +258,7 @@ public class ProMatches {
   public static Match<Territory> territoryHasNeighborOwnedByAndHasLandUnit(final GameData data,
       final List<PlayerID> players) {
     final Match<Territory> territoryMatch = Match.allOf(Matches.isTerritoryOwnedBy(players),
-        Matches.territoryHasUnitsThatMatch(Matches.UnitIsLand));
+        Matches.territoryHasUnitsThatMatch(Matches.unitIsLand()));
     return Matches.territoryHasNeighborMatching(data, territoryMatch);
   }
 
@@ -312,7 +312,7 @@ public class ProMatches {
 
   public static Match<Territory> territoryIsEnemyOrCantBeHeldAndIsAdjacentToMyLandUnits(final PlayerID player,
       final GameData data, final List<Territory> territoriesThatCantBeHeld) {
-    final Match<Unit> myUnitIsLand = Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsLand);
+    final Match<Unit> myUnitIsLand = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsLand());
     final Match<Territory> territoryIsLandAndAdjacentToMyLandUnits =
         Match.allOf(Matches.territoryIsLand(),
             Matches.territoryHasNeighborMatching(data, Matches.territoryHasUnitsThatMatch(myUnitIsLand)));
@@ -365,7 +365,7 @@ public class ProMatches {
       if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
-      final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.UnitIsLand,
+      final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitIsLand(),
           Matches.unitIsBeingTransported().invert());
       return match.match(u);
     });
@@ -424,7 +424,7 @@ public class ProMatches {
   }
 
   public static Match<Unit> unitIsAlliedLandAndNotInfra(final PlayerID player, final GameData data) {
-    return Match.allOf(Matches.UnitIsLand, Matches.isUnitAllied(player, data),
+    return Match.allOf(Matches.unitIsLand(), Matches.isUnitAllied(player, data),
         Matches.unitIsNotInfrastructure());
   }
 

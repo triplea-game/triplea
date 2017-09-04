@@ -131,7 +131,7 @@ public class MovePanel extends AbstractMovePanel {
 
     final Comparator<Unit> unitComparator;
     // sort units based on which transports are allowed to unload
-    if (route.isUnload() && Match.anyMatch(units, Matches.UnitIsLand)) {
+    if (route.isUnload() && Match.anyMatch(units, Matches.unitIsLand())) {
       unitComparator = UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units));
     } else {
       unitComparator = UnitComparator.getMovableUnitsComparator(units, route);
@@ -323,7 +323,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private Match<Unit> getUnloadableMatch(final Route route, final Collection<Unit> units) {
-    return Match.allOf(getMovableMatch(route, units), Matches.UnitIsLand);
+    return Match.allOf(getMovableMatch(route, units), Matches.unitIsLand());
   }
 
   private Match<Unit> getMovableMatch(final Route route, final Collection<Unit> units) {
@@ -350,7 +350,7 @@ public class MovePanel extends AbstractMovePanel {
       });
       if (route.isUnload()) {
         final Match<Unit> notLandAndCanMove = Match.allOf(enoughMovement, Matches.unitIsNotLand());
-        final Match<Unit> landOrCanMove = Match.anyOf(Matches.UnitIsLand, notLandAndCanMove);
+        final Match<Unit> landOrCanMove = Match.anyOf(Matches.unitIsLand(), notLandAndCanMove);
         movableBuilder.add(landOrCanMove);
       } else {
         movableBuilder.add(enoughMovement);
@@ -458,7 +458,7 @@ public class MovePanel extends AbstractMovePanel {
     // when the
     // only consider the non land units
     if (route.getStart().isWater() && route.getEnd() != null && route.getEnd().isWater() && !route.isLoad()) {
-      best = Match.getMatches(best, Matches.UnitIsLand.invert());
+      best = Match.getMatches(best, Matches.unitIsLand().invert());
     }
     sortUnitsToMove(best, route);
     Collections.reverse(best);
@@ -1075,7 +1075,7 @@ public class MovePanel extends AbstractMovePanel {
       // are we unloading everything? if we are then we dont need to select the transports
       final Match.CompositeBuilder<Unit> unloadableBuilder = Match.newCompositeBuilder(
           Matches.unitIsOwnedBy(getCurrentPlayer()),
-          Matches.UnitIsLand);
+          Matches.unitIsLand());
       if (nonCombat) {
         unloadableBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());
       }
@@ -1095,13 +1095,13 @@ public class MovePanel extends AbstractMovePanel {
           Matches.unitIsAirTransport(),
           Matches.unitIsAirTransportable());
       final boolean paratroopsLanding = Match.anyMatch(units, paratroopNBombersBuilder.all());
-      if (route.isLoad() && Match.anyMatch(units, Matches.UnitIsLand)) {
+      if (route.isLoad() && Match.anyMatch(units, Matches.unitIsLand())) {
         transports = getTransportsToLoad(route, units, false);
         if (transports.isEmpty()) {
           cancelMove();
           return;
         }
-      } else if ((route.isUnload() && Match.anyMatch(units, Matches.UnitIsLand)) || paratroopsLanding) {
+      } else if ((route.isUnload() && Match.anyMatch(units, Matches.unitIsLand())) || paratroopsLanding) {
         final List<Unit> unloadAble = Match.getMatches(selectedUnits, getUnloadableMatch());
         final Collection<Unit> canMove = new ArrayList<>(getUnitsToUnload(route, unloadAble));
         canMove.addAll(Match.getMatches(selectedUnits, getUnloadableMatch().invert()));

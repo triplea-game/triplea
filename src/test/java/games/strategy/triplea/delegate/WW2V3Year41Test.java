@@ -153,8 +153,8 @@ public class WW2V3Year41Test {
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 2);
     // should be 1 fighter and 1 bomber
-    assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);
-    assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
+    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
+    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
   }
 
   @Test
@@ -186,8 +186,8 @@ public class WW2V3Year41Test {
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 3);
     // should be 1 fighter and 2 bombers
-    assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 2);
-    assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
+    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber()), 2);
+    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
   }
 
   @Test
@@ -222,8 +222,8 @@ public class WW2V3Year41Test {
     assertEquals(casualties.size(), 2);
     assertEquals(4, randomSource.getTotalRolled());
     // should be 1 fighter and 2 bombers
-    assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);
-    assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
+    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
+    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
   }
 
   @Test
@@ -990,7 +990,7 @@ public class WW2V3Year41Test {
     // move troops from Libya
     move(li.getUnits().getMatches(Matches.unitOwnedBy(italians(gameData))), new Route(li, eg));
     // unload the transports
-    move(sz15.getUnits().getMatches(Matches.UnitIsLand), new Route(sz15, eg));
+    move(sz15.getUnits().getMatches(Matches.unitIsLand()), new Route(sz15, eg));
     move.end();
     // start the battle phase, this will ask the user to bombard
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1039,7 +1039,7 @@ public class WW2V3Year41Test {
     // move the fleet
     move(sz14.getUnits().getUnits(), new Route(sz14, sz15));
     // unload the transports
-    move(sz15.getUnits().getMatches(Matches.UnitIsLand), new Route(sz15, eg));
+    move(sz15.getUnits().getMatches(Matches.unitIsLand()), new Route(sz15, eg));
     move.end();
     // Set the tech for DDs bombard
     // ww2v3 doesn't have this tech, so this does nothing...
@@ -1094,11 +1094,11 @@ public class WW2V3Year41Test {
     // move troops from Libya
     move(li.getUnits().getMatches(Matches.unitOwnedBy(italians(gameData))), new Route(li, eg));
     // unload the transports
-    move(sz15.getUnits().getMatches(Matches.UnitIsLand), new Route(sz15, eg));
+    move(sz15.getUnits().getMatches(Matches.unitIsLand()), new Route(sz15, eg));
     // undo amphibious landing
     move.undoMove(move.getMovesMade().size() - 1);
     // move again
-    move(sz15.getUnits().getMatches(Matches.UnitIsLand), new Route(sz15, eg));
+    move(sz15.getUnits().getMatches(Matches.unitIsLand()), new Route(sz15, eg));
     move.end();
     // start the battle phase, this will ask the user to bombard
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1214,7 +1214,7 @@ public class WW2V3Year41Test {
     addTo(germany, armour(gameData).create(1, germans));
     final Route r = new Route(germany, sz5, karelia);
     final Collection<Unit> toMove = germany.getUnits().getMatches(Matches.unitCanBlitz());
-    toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+    toMove.addAll(germany.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
         new HashMap<>(), false, null, gameData);
@@ -1231,7 +1231,7 @@ public class WW2V3Year41Test {
     addTo(germany, armour(gameData).create(1, germans));
     final Route r = new Route(germany, sz5, karelia);
     final Collection<Unit> toMove = germany.getUnits().getMatches(Matches.unitCanBlitz());
-    toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+    toMove.addAll(germany.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     assertEquals(2, toMove.size());
     final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
         new HashMap<>(), false, null, gameData);

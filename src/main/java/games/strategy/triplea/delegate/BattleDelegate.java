@@ -484,7 +484,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         attackingUnitsNeedToBeAdded.removeAll(battle.getAttackingUnits());
         attackingUnitsNeedToBeAdded.removeAll(battle.getDependentUnits(battle.getAttackingUnits()));
         if (territory.isWater()) {
-          attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsLand.invert());
+          attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.unitIsLand().invert());
         } else {
           attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.unitIsSea().invert());
         }

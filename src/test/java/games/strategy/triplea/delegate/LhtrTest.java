@@ -157,8 +157,8 @@ public class LhtrTest {
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
-        uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
-    addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+        uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
+    addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
@@ -198,8 +198,8 @@ public class LhtrTest {
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
-        uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
-    addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+        uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
+    addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
