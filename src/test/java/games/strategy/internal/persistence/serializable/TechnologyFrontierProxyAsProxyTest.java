@@ -1,42 +1,38 @@
 package games.strategy.internal.persistence.serializable;
 
+import static games.strategy.engine.data.TestGameDataComponentFactory.newTechnologyFrontier;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TechnologyFrontier;
-import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
-import games.strategy.engine.data.TestGameDataComponentFactory;
-import games.strategy.engine.data.TestGameDataFactory;
-import games.strategy.persistence.serializable.AbstractProxyTestCase;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
 
-public final class TechnologyFrontierProxyAsProxyTest extends AbstractProxyTestCase<TechnologyFrontier> {
+public final class TechnologyFrontierProxyAsProxyTest
+    extends AbstractGameDataComponentProxyTestCase<TechnologyFrontier> {
   public TechnologyFrontierProxyAsProxyTest() {
     super(TechnologyFrontier.class);
   }
 
   @Override
-  protected Collection<TechnologyFrontier> createPrincipals() {
-    return Arrays.asList(TestGameDataComponentFactory.newTechnologyFrontier(
-        TestGameDataFactory.newValidGameData(),
-        "technologyFrontier"));
+  protected TechnologyFrontier newGameDataComponent(final GameData gameData) {
+    return newTechnologyFrontier(gameData, "technologyFrontier");
   }
 
   @Override
-  protected Collection<EqualityComparator> getEqualityComparators() {
-    return TestEqualityComparatorCollectionBuilder.forGameData()
-        .add(EngineDataEqualityComparators.FAKE_TECH_ADVANCE)
-        .add(EngineDataEqualityComparators.TECHNOLOGY_FRONTIER)
-        .build();
+  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
+    return Arrays.asList(
+        EngineDataEqualityComparators.FAKE_TECH_ADVANCE,
+        EngineDataEqualityComparators.TECHNOLOGY_FRONTIER);
   }
 
   @Override
-  protected Collection<ProxyFactory> getProxyFactories() {
-    return TestProxyFactoryCollectionBuilder.forGameData()
-        .add(FakeTechAdvanceProxy.FACTORY)
-        .add(TechnologyFrontierProxy.FACTORY)
-        .build();
+  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
+    return Arrays.asList(
+        FakeTechAdvanceProxy.FACTORY,
+        TechnologyFrontierProxy.FACTORY);
   }
 }

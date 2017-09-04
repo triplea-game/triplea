@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import games.strategy.test.EqualityComparator;
@@ -28,12 +29,9 @@ import games.strategy.test.EqualityComparatorRegistry;
  * @param <T> The type of the principal to be proxied.
  */
 public abstract class AbstractProxyTestCase<T> {
-  private final EqualityComparatorRegistry equalityComparatorRegistry =
-      EqualityComparatorRegistry.newInstance(getEqualityComparators());
-
+  private EqualityComparatorRegistry equalityComparatorRegistry;
   private final Class<T> principalType;
-
-  private final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance(getProxyFactories());
+  private ProxyRegistry proxyRegistry;
 
   protected AbstractProxyTestCase(final Class<T> principalType) {
     checkNotNull(principalType);
@@ -101,8 +99,14 @@ public abstract class AbstractProxyTestCase<T> {
     }
   }
 
+  @Before
+  public final void setUp() {
+    equalityComparatorRegistry = EqualityComparatorRegistry.newInstance(getEqualityComparators());
+    proxyRegistry = ProxyRegistry.newInstance(getProxyFactories());
+  }
+
   @Test
-  public void shouldBeAbleToRoundTripPrincipal() throws Exception {
+  public final void shouldBeAbleToRoundTripPrincipal() throws Exception {
     final Collection<T> principals = createPrincipals();
     assertThat(principals, is(not(empty())));
     for (final T expected : principals) {
