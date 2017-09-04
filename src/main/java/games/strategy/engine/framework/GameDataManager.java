@@ -137,26 +137,26 @@ public final class GameDataManager {
           System.out.println(message);
           return null;
         }
-        final String error = "<html>Incompatible engine versions. We are: "
+        final String error = "Incompatible engine versions. We are: "
             + ClientContext.engineVersion() + " . Trying to load game created with: " + readVersion
-            + "<br>To download the latest version of TripleA, Please visit "
-            + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE + "</html>";
+            + "\nTo download the latest version of TripleA, Please visit "
+            + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE;
         throw new IOException(error);
       } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion(), false)) {
         // we can still load it because first 3 numbers of the version are the same, however this save was made by a
         // newer engine, so prompt the user to upgrade
         final String messageString =
-            "<html>Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
-                + "<br>However, because the first 3 version numbers are the same as your current version, we can "
+            "Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
+                + "\nHowever, because the first 3 version numbers are the same as your current version, we can "
                 + "still open the savegame."
-                + "<br><br>This TripleA engine is version "
+                + "\n\nThis TripleA engine is version "
                 + ClientContext.engineVersion().toStringFull("_")
                 + " and you are trying to open a savegame made with version " + readVersion.toStringFull("_")
-                + "<br><br>To download the latest version of TripleA, Please visit "
+                + "\n\nTo download the latest version of TripleA, Please visit "
                 + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
-                + "<br><br>It is recommended that you upgrade to the latest version of TripleA before playing this "
+                + "\n\nIt is recommended that you upgrade to the latest version of TripleA before playing this "
                 + "savegame."
-                + "<br><br>Do you wish to continue and open this save with your current 'old' version?</html>";
+                + "\n\nDo you wish to continue and open this save with your current 'old' version?";
         final int answer =
             JOptionPane.showConfirmDialog(null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
         if (answer != JOptionPane.YES_OPTION) {
