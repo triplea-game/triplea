@@ -11,11 +11,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.config.client.GameEnginePropertyReader;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.GameSetting;
 import games.strategy.util.Version;
 
 /**
@@ -157,9 +160,7 @@ public final class ClientFileSystemHelper {
    *     retained between engine installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
-    final String path = ClientSetting.USER_MAPS_FOLDER_PATH.value();
-
-
+    final String path = getUserMapsFolderPath(ClientSetting.USER_MAPS_FOLDER_PATH, ClientSetting.MAP_FOLDER_OVERRIDE);
     final File mapsFolder = new File(path);
     if (!mapsFolder.exists()) {
       try {
@@ -172,6 +173,15 @@ public final class ClientFileSystemHelper {
       ClientLogger.logError("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
     }
     return mapsFolder;
+  }
+
+  @VisibleForTesting
+  static String getUserMapsFolderPath(
+      final GameSetting currentUserMapsFolderPathSetting,
+      final GameSetting overrideUserMapsFolderPathSetting) {
+    return overrideUserMapsFolderPathSetting.isSet()
+        ? overrideUserMapsFolderPathSetting.value()
+        : currentUserMapsFolderPathSetting.value();
   }
 
   /** Create a temporary file, checked exceptions are re-thrown as unchecked. */
