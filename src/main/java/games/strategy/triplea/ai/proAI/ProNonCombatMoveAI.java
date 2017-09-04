@@ -304,7 +304,7 @@ class ProNonCombatMoveAI {
 
     // Set unit with the fewest move options in each territory
     for (final Unit unit : sortedUnitMoveOptions.keySet()) {
-      if (Matches.UnitIsLand.match(unit)) {
+      if (Matches.unitIsLand().match(unit)) {
         for (final Territory t : sortedUnitMoveOptions.get(unit)) {
           final int unitValue = ProData.unitValueMap.getInt(unit.getType());
           int production = 0;
@@ -504,7 +504,7 @@ class ProNonCombatMoveAI {
               .territoryHasNeighborOwnedByAndHasLandUnit(data, ProUtils.getPotentialEnemyPlayers(player))
               .match(t);
       final boolean isNotFactoryAndOnlyAmphib = !t.isWater() && !hasFactory
-          && Match.noneMatch(moveMap.get(t).getMaxUnits(), Matches.UnitIsLand) && cantMoveUnitValue < 5;
+          && Match.noneMatch(moveMap.get(t).getMaxUnits(), Matches.unitIsLand()) && cantMoveUnitValue < 5;
       if (!patd.isCanHold() || patd.getValue() <= 0 || isLandAndCanOnlyBeAttackedByAir || isNotFactoryAndShouldHold
           || canAlreadyBeHeld || isNotFactoryAndHasNoEnemyNeighbors || isNotFactoryAndOnlyAmphib) {
         final double tuvSwing = minResult.getTUVSwing();
@@ -1584,7 +1584,7 @@ class ProNonCombatMoveAI {
     // TODO: consider if territory ends up being safe
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
       final Unit u = it.next();
-      if (Matches.UnitIsLand.match(u)) {
+      if (Matches.unitIsLand().match(u)) {
         Territory maxValueTerritory = null;
         double maxValue = 0;
         int maxNeedAmphibUnitValue = Integer.MIN_VALUE;
@@ -1661,7 +1661,7 @@ class ProNonCombatMoveAI {
         ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player, data)));
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
       final Unit u = it.next();
-      if (Matches.UnitIsLand.match(u)) {
+      if (Matches.unitIsLand().match(u)) {
         int minDistance = Integer.MAX_VALUE;
         Territory minTerritory = null;
         for (final Territory t : unitMoveMap.get(u)) {
@@ -1692,7 +1692,7 @@ class ProNonCombatMoveAI {
     // Move any remaining land units to safest territory (this is rarely used)
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
       final Unit u = it.next();
-      if (Matches.UnitIsLand.match(u)) {
+      if (Matches.unitIsLand().match(u)) {
 
         // Get all units that have already moved
         final List<Unit> alreadyMovedUnits = new ArrayList<>();

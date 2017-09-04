@@ -535,7 +535,7 @@ final class ProTechAI {
       return null;
     }
     final Match<Unit> sub = Match.allOf(Matches.unitIsSub().invert());
-    final Match<Unit> transport = Match.allOf(Matches.unitIsTransport().invert(), Matches.UnitIsLand.invert());
+    final Match<Unit> transport = Match.allOf(Matches.unitIsTransport().invert(), Matches.unitIsLand().invert());
     final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
         Matches.unitIsInfrastructure().invert(),
         Matches.alliedUnit(player, data).invert());

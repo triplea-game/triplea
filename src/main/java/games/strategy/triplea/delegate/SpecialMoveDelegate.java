@@ -250,7 +250,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     if (steps.isEmpty() || !Match.allMatch(steps, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
-    final boolean someLand = Match.anyMatch(airborne, Matches.UnitIsLand);
+    final boolean someLand = Match.anyMatch(airborne, Matches.unitIsLand());
     final boolean someSea = Match.anyMatch(airborne, Matches.unitIsSea());
     final boolean land = Matches.territoryIsLand().match(end);
     final boolean sea = Matches.territoryIsWater().match(end);
@@ -270,7 +270,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
         if (battle == null) {
           return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
-        } else if (land && someLand && !Match.anyMatch(battle.getAttackingUnits(), Matches.UnitIsLand)) {
+        } else if (land && someLand && !Match.anyMatch(battle.getAttackingUnits(), Matches.unitIsLand())) {
           return result.setErrorReturnResult("Battle Must Have Some Land Units Participating Already");
         } else if (sea && someSea && !Match.anyMatch(battle.getAttackingUnits(), Matches.unitIsSea())) {
           return result.setErrorReturnResult("Battle Must Have Some Sea Units Participating Already");

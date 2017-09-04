@@ -314,7 +314,7 @@ public class BattleTracker implements Serializable {
       if (changeTracker != null) {
         changeTracker.addChange(change);
       }
-      if (Match.anyMatch(units, Matches.UnitIsLand)
+      if (Match.anyMatch(units, Matches.unitIsLand())
           || Match.anyMatch(units, Matches.unitIsSea())) {
         addEmptyBattle(route, units, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute);
       }
@@ -496,7 +496,7 @@ public class BattleTracker implements Serializable {
       int totalMatches = 0;
       // Total Attacking Sea units = all units - land units - air units - submerged subs
       // Also subtract transports & subs (if they can't control sea zones)
-      totalMatches = arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.UnitIsLand)
+      totalMatches = arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.unitIsLand())
           - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
           - Match.countMatches(arrivedUnits, Matches.unitIsSubmerged());
       // If transports are restricted from controlling sea zones, subtract them
@@ -733,7 +733,7 @@ public class BattleTracker implements Serializable {
     // if the territory being taken over is water, then do not say any land units were in combat
     // (they may want to unload from the transport and attack)
     if (Matches.territoryIsWater().match(territory) && arrivedUnits != null) {
-      arrivedUnits.removeAll(Match.getMatches(arrivedUnits, Matches.UnitIsLand));
+      arrivedUnits.removeAll(Match.getMatches(arrivedUnits, Matches.unitIsLand()));
     }
     markWasInCombat(arrivedUnits, bridge, changeTracker);
   }
@@ -881,7 +881,7 @@ public class BattleTracker implements Serializable {
     // make amphibious assaults dependent on possible naval invasions
     // its only a dependency if we are unloading
     final IBattle precede = getDependentAmphibiousAssault(route);
-    if (precede != null && Match.anyMatch(units, Matches.UnitIsLand)) {
+    if (precede != null && Match.anyMatch(units, Matches.unitIsLand())) {
       addDependency(battle, precede);
     }
     // dont let land battles in the same territory occur before bombing

@@ -174,7 +174,7 @@ public class MovePerformer implements Serializable {
               Match.allOf(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
                   Matches.unitIsBeingTransported().invert()));
           final Match.CompositeBuilder<Unit> allBombingRaidBuilder = Match.newCompositeBuilder(
-              Matches.UnitIsStrategicBomber);
+              Matches.unitIsStrategicBomber());
           final boolean canCreateAirBattle =
               !enemyTargetsTotal.isEmpty()
                   && Properties.getRaidsMayBePreceededByAirBattles(data)
@@ -186,7 +186,7 @@ public class MovePerformer implements Serializable {
           final Collection<Unit> enemyTargets =
               Match.getMatches(enemyTargetsTotal,
                   Matches.unitIsOfTypes(UnitAttachment
-                      .getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.UnitIsStrategicBomber),
+                      .getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.unitIsStrategicBomber()),
                           data)));
           final boolean targetsOrEscort = !enemyTargets.isEmpty()
               || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle
@@ -338,7 +338,7 @@ public class MovePerformer implements Serializable {
     // if entered a non blitzed conquered territory, mark with 0 movement
     if (GameStepPropertiesHelper.isCombatMove(data)
         && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route))) {
-      for (final Unit unit : Match.getMatches(units, Matches.UnitIsLand)) {
+      for (final Unit unit : Match.getMatches(units, Matches.unitIsLand())) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }

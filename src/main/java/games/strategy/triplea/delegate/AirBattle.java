@@ -116,7 +116,7 @@ public class AirBattle extends AbstractBattle {
 
   private boolean shouldFightAirBattle() {
     if (m_isBombingRun) {
-      return Match.anyMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && !m_defendingUnits.isEmpty();
+      return Match.anyMatch(m_attackingUnits, Matches.unitIsStrategicBomber()) && !m_defendingUnits.isEmpty();
     } else {
       return !m_attackingUnits.isEmpty() && !m_defendingUnits.isEmpty();
     }
@@ -301,7 +301,7 @@ public class AirBattle extends AbstractBattle {
     // so we do not have to create normal battles, only bombing raids
     // setup new battle here
     if (m_isBombingRun) {
-      final Collection<Unit> bombers = Match.getMatches(m_attackingUnits, Matches.UnitIsStrategicBomber);
+      final Collection<Unit> bombers = Match.getMatches(m_attackingUnits, Matches.unitIsStrategicBomber());
       if (!bombers.isEmpty()) {
         HashMap<Unit, HashSet<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits()
@@ -348,7 +348,7 @@ public class AirBattle extends AbstractBattle {
     final String text;
     if (!m_attackingUnits.isEmpty()) {
       if (m_isBombingRun) {
-        if (Match.anyMatch(m_attackingUnits, Matches.UnitIsStrategicBomber)) {
+        if (Match.anyMatch(m_attackingUnits, Matches.unitIsStrategicBomber())) {
           m_whoWon = WhoWon.ATTACKER;
           if (m_defendingUnits.isEmpty()) {
             m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;

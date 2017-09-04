@@ -81,7 +81,7 @@ public class WW2V3Year42Test {
     // remove the russian units
     removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.unitCanBeDamaged().invert()));
     // move the bomber to attack
-    move(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber), new Route(germany, sz5, karrelia));
+    move(germany.getUnits().getMatches(Matches.unitIsStrategicBomber()), new Route(germany, sz5, karrelia));
     // move an infantry to invade
     move(baltic.getUnits().getMatches(Matches.unitIsInfantry()), new Route(baltic, karrelia));
     final BattleTracker battleTracker = MoveDelegate.getBattleTracker(gameData);

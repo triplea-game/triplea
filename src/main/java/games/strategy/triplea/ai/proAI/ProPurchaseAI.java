@@ -712,7 +712,7 @@ class ProPurchaseAI {
 
       // Check if territory needs AA
       final boolean enemyCanBomb =
-          Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.UnitIsStrategicBomber);
+          Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.unitIsStrategicBomber());
       final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.unitCanProduceUnitsAndCanBeDamaged());
       final boolean hasAaBombingDefense = t.getUnits().anyMatch(Matches.unitIsAaForBombingThisUnitOnly());
       ProLogger.debug(t + ", enemyCanBomb=" + enemyCanBomb + ", territoryCanBeBombed=" + territoryCanBeBombed

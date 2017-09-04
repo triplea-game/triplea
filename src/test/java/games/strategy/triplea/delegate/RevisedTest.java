@@ -320,11 +320,11 @@ public class RevisedTest {
     final Territory we = territory("Western Europe", gameData);
     final Territory se = territory("Southern Europe", gameData);
     final Route route = new Route(uk, territory("7 Sea Zone", gameData), we, se);
-    move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
+    move(uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), route);
     // the aa gun should have fired. the bomber no longer exists
-    assertTrue(se.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
-    assertTrue(we.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
-    assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
+    assertTrue(se.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
+    assertTrue(we.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
+    assertTrue(uk.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
   }
 
   @Test
@@ -345,12 +345,12 @@ public class RevisedTest {
     final Territory balk = territory("Balkans", gameData);
     addTo(uk, bomber(gameData).create(1, british));
     final Route route = new Route(uk, sz7, we, se, balk);
-    move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
+    move(uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), route);
     // the aa gun should have fired (one hit, one miss in each territory overflown). the bombers no longer exists
-    assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
-    assertTrue(we.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
-    assertTrue(se.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
-    assertTrue(balk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
+    assertTrue(uk.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
+    assertTrue(we.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
+    assertTrue(se.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
+    assertTrue(balk.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
   }
 
   @Test
@@ -379,11 +379,11 @@ public class RevisedTest {
     move(sz15.getUnits().getUnits(), new Route(sz15, sz14));
     move(sz14.getUnits().getMatches(Matches.unitIsInfantry()), new Route(sz14, se));
     final Route route = new Route(uk, territory("7 Sea Zone", gameData), we, se);
-    move(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), route);
+    move(uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), route);
     // the aa gun should have fired and hit
-    assertTrue(se.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
-    assertTrue(we.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
-    assertTrue(uk.getUnits().getMatches(Matches.UnitIsStrategicBomber).isEmpty());
+    assertTrue(se.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
+    assertTrue(we.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
+    assertTrue(uk.getUnits().getMatches(Matches.unitIsStrategicBomber()).isEmpty());
   }
 
   @Test
@@ -844,7 +844,7 @@ public class RevisedTest {
     final PlayerID british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
-    final List<Unit> bombers = uk.getUnits().getMatches(Matches.UnitIsStrategicBomber);
+    final List<Unit> bombers = uk.getUnits().getMatches(Matches.unitIsStrategicBomber());
     addTo(germany, bombers);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
@@ -923,8 +923,8 @@ public class RevisedTest {
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
-        uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
-    addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+        uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
+    addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,

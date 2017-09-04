@@ -181,11 +181,12 @@ public final class Matches {
     });
   }
 
-  public static final Match<Unit> UnitIsStrategicBomber =
-      Match.of(obj -> unitTypeIsStrategicBomber().match(obj.getType()));
+  public static Match<Unit> unitIsStrategicBomber() {
+    return Match.of(obj -> unitTypeIsStrategicBomber().match(obj.getType()));
+  }
 
   static Match<Unit> unitIsNotStrategicBomber() {
-    return UnitIsStrategicBomber.invert();
+    return unitIsStrategicBomber().invert();
   }
 
   static final Match<UnitType> unitTypeCanLandOnCarrier() {
@@ -1453,7 +1454,7 @@ public final class Matches {
   }
 
   public static Match<Territory> territoryHasLandUnitsOwnedBy(final PlayerID player) {
-    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(unitIsOwnedBy(player), UnitIsLand)));
+    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(unitIsOwnedBy(player), unitIsLand())));
   }
 
   public static Match<Territory> territoryHasUnitsOwnedBy(final PlayerID player) {
@@ -1487,7 +1488,7 @@ public final class Matches {
   }
 
   public static Match<Territory> territoryHasEnemyLandUnits(final PlayerID player, final GameData data) {
-    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(enemyUnit(player, data), UnitIsLand)));
+    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(enemyUnit(player, data), unitIsLand())));
   }
 
   public static Match<Territory> territoryHasEnemySeaUnits(final PlayerID player, final GameData data) {
@@ -1599,14 +1600,16 @@ public final class Matches {
     });
   }
 
-  public static final Match<Unit> UnitIsLand = Match.allOf(unitIsNotSea(), unitIsNotAir());
+  public static Match<Unit> unitIsLand() {
+    return Match.allOf(unitIsNotSea(), unitIsNotAir());
+  }
 
   public static Match<UnitType> unitTypeIsLand() {
     return Match.allOf(unitTypeIsNotSea(), unitTypeIsNotAir());
   }
 
   public static Match<Unit> unitIsNotLand() {
-    return UnitIsLand.invert();
+    return unitIsLand().invert();
   }
 
   public static Match<Unit> unitIsOfType(final UnitType type) {
@@ -1646,7 +1649,7 @@ public final class Matches {
   public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data) {
     final Match<Unit> sub = Match.allOf(Matches.unitIsSub().invert());
     final Match<Unit> transport =
-        Match.allOf(Matches.unitIsTransportButNotCombatTransport().invert(), Matches.UnitIsLand.invert());
+        Match.allOf(Matches.unitIsTransportButNotCombatTransport().invert(), Matches.unitIsLand().invert());
     final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
         Matches.unitIsInfrastructure().invert(),
         Matches.alliedUnit(player, data).invert());
@@ -1709,7 +1712,7 @@ public final class Matches {
         return true;
       }
       if (Matches.unitIsSea().match(damagedUnit)) {
-        final Match<Unit> repairUnitLand = Match.allOf(repairUnit, Matches.UnitIsLand);
+        final Match<Unit> repairUnitLand = Match.allOf(repairUnit, Matches.unitIsLand());
         final List<Territory> neighbors =
             new ArrayList<>(data.getMap().getNeighbors(territory, Matches.territoryIsLand()));
         for (final Territory current : neighbors) {
@@ -1717,7 +1720,7 @@ public final class Matches {
             return true;
           }
         }
-      } else if (Matches.UnitIsLand.match(damagedUnit)) {
+      } else if (Matches.unitIsLand().match(damagedUnit)) {
         final Match<Unit> repairUnitSea = Match.allOf(repairUnit, Matches.unitIsSea());
         final List<Territory> neighbors =
             new ArrayList<>(data.getMap().getNeighbors(territory, Matches.territoryIsWater()));
@@ -1772,7 +1775,7 @@ public final class Matches {
         return true;
       }
       if (Matches.unitIsSea().match(unitWhichWillGetBonus)) {
-        final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.UnitIsLand);
+        final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
         final List<Territory> neighbors =
             new ArrayList<>(data.getMap().getNeighbors(territory, Matches.territoryIsLand()));
         for (final Territory current : neighbors) {

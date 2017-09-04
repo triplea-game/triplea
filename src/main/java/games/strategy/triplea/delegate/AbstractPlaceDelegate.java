@@ -869,7 +869,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     final Collection<Unit> units = new ArrayList<>(allUnits);
     // if water, remove land. if land, remove water.
-    units.removeAll(Match.getMatches(units, water ? Matches.UnitIsLand : Matches.unitIsSea()));
+    units.removeAll(Match.getMatches(units, water ? Matches.unitIsLand() : Matches.unitIsSea()));
     final Collection<Unit> placeableUnits = new ArrayList<>();
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> allProducedUnits = unitsPlacedInTerritorySoFar(to);
@@ -879,7 +879,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
-      final Match<Unit> seaOrLandMatch = water ? Matches.unitIsSea() : Matches.UnitIsLand;
+      final Match<Unit> seaOrLandMatch = water ? Matches.unitIsSea() : Matches.unitIsLand();
       placeableUnits.addAll(Match.getMatches(units, Match.allOf(seaOrLandMatch, Matches.unitIsNotConstruction())));
       if (!water) {
         placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.unitIsNotConstruction())));
@@ -1076,7 +1076,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
         Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
-      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.unitIsLand().invert());
     } else {
       factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }
@@ -1558,7 +1558,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // land, and like sea if
     // in water.
     if (to.isWater()) {
-      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.unitIsLand().invert());
     } else {
       factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }

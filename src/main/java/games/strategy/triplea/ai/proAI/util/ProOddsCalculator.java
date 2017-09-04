@@ -160,7 +160,7 @@ public class ProOddsCalculator {
     territoryList.add(t);
     if (!territoryList.isEmpty() && Match.allMatch(territoryList, Matches.territoryIsLand())) {
       return new ProBattleResult(winPercentage, tuvSwing,
-          Match.anyMatch(averageAttackersRemaining, Matches.UnitIsLand), averageAttackersRemaining,
+          Match.anyMatch(averageAttackersRemaining, Matches.unitIsLand()), averageAttackersRemaining,
           averageDefendersRemaining, results.getAverageBattleRoundsFought());
     } else {
       return new ProBattleResult(winPercentage, tuvSwing, !averageAttackersRemaining.isEmpty(),

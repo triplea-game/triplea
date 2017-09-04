@@ -87,8 +87,8 @@ public class StratBombTest {
     final StrategicBombingRaidBattle battle =
         (StrategicBombingRaidBattle) tracker.getPendingBattle(wgermany, true, null);
     battle.addAttackChange(gameData.getMap().getRoute(uk, wgermany),
-        uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
-    // addTo(wgermany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+        uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
+    // addTo(wgermany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), wgermany, battle.getBattleType());
     // aa guns rolls 1,3,2 first one hits, remaining bombers roll 1 dice each
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1, 3, 2, 5, 4}));
