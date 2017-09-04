@@ -85,7 +85,9 @@ public final class EventThreadJOptionPane {
       final CountDownLatchHandler latchHandler) {
     checkNotNull(latchHandler);
 
-    showMessageDialog(parentComponent, createJLabelInScrollPane(message), title, messageType, latchHandler);
+    invokeAndWait(
+        latchHandler,
+        () -> JOptionPane.showMessageDialog(parentComponent, createJLabelInScrollPane(message), title, messageType));
   }
 
   private static void invokeAndWait(final CountDownLatchHandler latchHandler, final Runnable runnable) {
