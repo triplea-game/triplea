@@ -164,8 +164,6 @@ public final class GameDataManager {
         }
       }
       final GameData data = (GameData) input.readObject();
-      // TODO: expand this functionality (and keep it updated)
-      updateDataToBeCompatibleWithNewEngine(readVersion, data);
       loadDelegates(input, data);
       data.postDeSerialize();
       return data;
@@ -174,43 +172,6 @@ public final class GameDataManager {
     }
   }
 
-  /**
-   * Use this to keep compatibility between savegames when it is easy to do so.
-   * When it is not easy to do so, just make sure to include the last release's .jar file in the "old" folder for
-   * triplea.
-   * FYI: Engine version numbers work like this with regards to savegames:
-   * Any changes to the first 3 digits means that the savegame is not compatible between different engines.
-   * While any change only to the 4th (last) digit means that the savegame must be compatible between different engines.
-   *
-   * @param originalEngineVersion The engine version used to save the specified game data.
-   * @param data The game data to be updated.
-   */
-  private static void updateDataToBeCompatibleWithNewEngine(final Version originalEngineVersion, final GameData data) {
-    // whenever this gets out of date, just comment out (but keep as an example, by commenting out)
-    /*
-     * example1:
-     * final Version v1610 = new Version(1, 6, 1, 0);
-     * final Version v1620 = new Version(1, 6, 2, 0);
-     * if (originalEngineVersion.equals(v1610, false)
-     * && ClientContext.engineVersion().getVersion().isGreaterThan(v1610, false)
-     * && ClientContext.engineVersion().getVersion().isLessThan(v1620, true))
-     * {
-     * // if original save was done under 1.6.1.0, and new engine is greater than 1.6.1.0 and less than 1.6.2.0
-     * try
-     * {
-     * if (TechAdvance.getTechAdvances(data).isEmpty())
-     * {
-     * System.out.println("Adding tech to be compatible with 1.6.1.x");
-     * TechAdvance.createDefaultTechAdvances(data);
-     * TechAbilityAttachment.setDefaultTechnologyAttachments(data);
-     * }
-     * } catch (final Exception e)
-     * {
-     * ClientLogger.logQuietly(e);
-     * }
-     * }
-     */
-  }
 
   private static void loadDelegates(final ObjectInputStream input, final GameData data)
       throws ClassNotFoundException, IOException {
