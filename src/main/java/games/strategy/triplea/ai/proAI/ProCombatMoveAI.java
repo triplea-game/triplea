@@ -428,7 +428,7 @@ class ProCombatMoveAI {
         final ProBattleResult result = calc.estimateAttackBattleResults(t, new ArrayList<>(attackingUnits),
             patd.getMaxEnemyDefenders(player, data), patd.getMaxBombardUnits());
         final List<Unit> remainingUnitsToDefendWith =
-            Match.getMatches(result.getAverageAttackersRemaining(), Matches.UnitIsAir.invert());
+            Match.getMatches(result.getAverageAttackersRemaining(), Matches.unitIsAir().invert());
         ProLogger.debug(t + ", value=" + territoryValueMap.get(t) + ", averageAttackFromValue=" + averageValue
             + ", MyAttackers=" + attackingUnits.size() + ", RemainingUnits=" + remainingUnitsToDefendWith.size());
 
@@ -880,7 +880,7 @@ class ProCombatMoveAI {
         if (enemyAttackOptions.getMax(t) != null
             && !ProMatches.territoryIsWaterAndAdjacentToOwnedFactory(player, data).match(t)) {
           List<Unit> remainingUnitsToDefendWith =
-              Match.getMatches(result.getAverageAttackersRemaining(), Matches.UnitIsAir.invert());
+              Match.getMatches(result.getAverageAttackersRemaining(), Matches.unitIsAir().invert());
           ProBattleResult result2 = calc.calculateBattleResults(t, patd.getMaxEnemyUnits(),
               remainingUnitsToDefendWith, patd.getMaxBombardUnits());
           if (patd.isCanHold() && result2.getTUVSwing() > 0) {

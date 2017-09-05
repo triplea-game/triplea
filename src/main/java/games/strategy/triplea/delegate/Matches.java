@@ -67,7 +67,7 @@ import games.strategy.util.Util;
  * </p>
  *
  * <pre>
- * boolean hasLand = Match.anyMatch(someCollection, Matches.UnitIsAir);
+ * boolean hasLand = Match.anyMatch(someCollection, Matches.unitIsAir());
  * </pre>
  *
  * <p>
@@ -251,7 +251,9 @@ public final class Matches {
     });
   }
 
-  public static final Match<Unit> UnitIsAir = Match.of(unit -> UnitAttachment.get(unit.getType()).getIsAir());
+  public static Match<Unit> unitIsAir() {
+    return Match.of(unit -> UnitAttachment.get(unit.getType()).getIsAir());
+  }
 
   public static Match<Unit> unitIsNotAir() {
     return Match.of(unit -> !UnitAttachment.get(unit.getType()).getIsAir());

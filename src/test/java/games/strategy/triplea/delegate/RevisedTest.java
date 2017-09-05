@@ -220,7 +220,7 @@ public class RevisedTest {
     moveDelegate.undoMove(0);
     assertTrue(battle.getBattleTracker().wasConquered(sinkiang));
     // now move the planes into the territory
-    assertNull(moveDelegate.move(russia.getUnits().getMatches(Matches.UnitIsAir), r));
+    assertNull(moveDelegate.move(russia.getUnits().getMatches(Matches.unitIsAir()), r));
     // make sure they can't land, they can't because the territory was conquered
     assertEquals(1, moveDelegate.getTerritoriesWhereAirCantLand().size());
   }
@@ -717,7 +717,7 @@ public class RevisedTest {
     final Route sz50To45 = new Route();
     sz50To45.setStart(sz50);
     sz50To45.add(sz45);
-    String error = moveDelegate.move(sz50.getUnits().getMatches(Matches.UnitIsAir), sz50To45);
+    String error = moveDelegate.move(sz50.getUnits().getMatches(Matches.unitIsAir()), sz50To45);
     assertNull(error);
     assertEquals(1, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites(false).size());
     // we should be able to move the sub out of the sz

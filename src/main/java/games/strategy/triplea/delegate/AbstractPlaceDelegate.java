@@ -272,7 +272,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_INFRASTRUCTURE, m_player);
     } else if (Match.anyMatch(units, Matches.unitIsSea())) {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_SEA, m_player);
-    } else if (Match.anyMatch(units, Matches.UnitIsAir)) {
+    } else if (Match.anyMatch(units, Matches.unitIsAir())) {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_AIR, m_player);
     } else {
       m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_LAND, m_player);
@@ -882,12 +882,16 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Match<Unit> seaOrLandMatch = water ? Matches.unitIsSea() : Matches.unitIsLand();
       placeableUnits.addAll(Match.getMatches(units, Match.allOf(seaOrLandMatch, Matches.unitIsNotConstruction())));
       if (!water) {
-        placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.unitIsNotConstruction())));
+        placeableUnits.addAll(Match.getMatches(units, Match.allOf(
+            Matches.unitIsAir(),
+            Matches.unitIsNotConstruction())));
       } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
           && Match.anyMatch(allProducedUnits, Matches.unitIsCarrier()))
           || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
               && Match.anyMatch(to.getUnits().getUnits(), Matches.unitIsCarrier()))) {
-        placeableUnits.addAll(Match.getMatches(units, Match.allOf(Matches.UnitIsAir, Matches.unitCanLandOnCarrier())));
+        placeableUnits.addAll(Match.getMatches(units, Match.allOf(
+            Matches.unitIsAir(),
+            Matches.unitCanLandOnCarrier())));
       }
     }
     if (Match.anyMatch(units, Matches.unitIsConstruction())) {

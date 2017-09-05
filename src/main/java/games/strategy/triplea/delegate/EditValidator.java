@@ -90,13 +90,13 @@ class EditValidator {
             return "Can't add land units to water without enough transports";
           }
         }
-        if (Match.anyMatch(units, Matches.UnitIsAir)) {
-          if (Match.anyMatch(units, Match.allOf(Matches.UnitIsAir, Matches.unitCanLandOnCarrier().invert()))) {
+        if (Match.anyMatch(units, Matches.unitIsAir())) {
+          if (Match.anyMatch(units, Match.allOf(Matches.unitIsAir(), Matches.unitCanLandOnCarrier().invert()))) {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
           final Match<Unit> friendlyCarriers = Match.allOf(Matches.unitIsCarrier(), Matches.alliedUnit(player, data));
-          final Match<Unit> friendlyAirUnits = Match.allOf(Matches.UnitIsAir, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyAirUnits = Match.allOf(Matches.unitIsAir(), Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)

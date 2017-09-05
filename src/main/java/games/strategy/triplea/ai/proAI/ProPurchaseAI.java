@@ -455,7 +455,7 @@ class ProPurchaseAI {
 
         // If it can't currently be held then add to list
         final boolean isLandAndCanOnlyBeAttackedByAir =
-            !t.isWater() && !enemyAttackingUnits.isEmpty() && Match.allMatch(enemyAttackingUnits, Matches.UnitIsAir);
+            !t.isWater() && !enemyAttackingUnits.isEmpty() && Match.allMatch(enemyAttackingUnits, Matches.unitIsAir());
         if ((!t.isWater() && result.isHasLandUnitRemaining()) || result.getTUVSwing() > holdValue
             || (t.equals(ProData.myCapital) && !isLandAndCanOnlyBeAttackedByAir
                 && result.getWinPercentage() > (100 - ProData.winPercentage))) {

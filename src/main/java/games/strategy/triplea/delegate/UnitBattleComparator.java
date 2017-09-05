@@ -59,9 +59,9 @@ public class UnitBattleComparator implements Comparator<Unit> {
       }
       return 0;
     }
-    final boolean airOrCarrierOrTransport1 = Matches.UnitIsAir.match(u1) || Matches.unitIsCarrier().match(u1)
+    final boolean airOrCarrierOrTransport1 = Matches.unitIsAir().match(u1) || Matches.unitIsCarrier().match(u1)
         || (!transporting1 && Matches.unitIsTransport().match(u1));
-    final boolean airOrCarrierOrTransport2 = Matches.UnitIsAir.match(u2) || Matches.unitIsCarrier().match(u2)
+    final boolean airOrCarrierOrTransport2 = Matches.unitIsAir().match(u2) || Matches.unitIsCarrier().match(u2)
         || (!transporting2 && Matches.unitIsTransport().match(u2));
     final boolean subDestroyer1 = Matches.unitIsSub().match(u1) || Matches.unitIsDestroyer().match(u1);
     final boolean subDestroyer2 = Matches.unitIsSub().match(u2) || Matches.unitIsDestroyer().match(u2);

@@ -355,7 +355,7 @@ public class ProMatches {
       if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
         return false;
       }
-      final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.UnitIsAir);
+      final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitIsAir());
       return match.match(u);
     });
   }
@@ -433,15 +433,15 @@ public class ProMatches {
   }
 
   public static Match<Unit> unitIsAlliedNotOwnedAir(final PlayerID player, final GameData data) {
-    return Match.allOf(unitIsAlliedNotOwned(player, data), Matches.UnitIsAir);
+    return Match.allOf(unitIsAlliedNotOwned(player, data), Matches.unitIsAir());
   }
 
   static Match<Unit> unitIsAlliedAir(final PlayerID player, final GameData data) {
-    return Match.allOf(Matches.isUnitAllied(player, data), Matches.UnitIsAir);
+    return Match.allOf(Matches.isUnitAllied(player, data), Matches.unitIsAir());
   }
 
   public static Match<Unit> unitIsEnemyAir(final PlayerID player, final GameData data) {
-    return Match.allOf(Matches.enemyUnit(player, data), Matches.UnitIsAir);
+    return Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsAir());
   }
 
   public static Match<Unit> unitIsEnemyAndNotAA(final PlayerID player, final GameData data) {
@@ -465,7 +465,7 @@ public class ProMatches {
   }
 
   static Match<Unit> unitIsOwnedAir(final PlayerID player) {
-    return Match.allOf(Matches.unitOwnedBy(player), Matches.UnitIsAir);
+    return Match.allOf(Matches.unitOwnedBy(player), Matches.unitIsAir());
   }
 
   public static Match<Unit> unitIsOwnedAndMatchesTypeAndIsTransporting(final PlayerID player, final UnitType unitType) {

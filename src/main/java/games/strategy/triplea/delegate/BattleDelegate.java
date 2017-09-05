@@ -333,7 +333,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
         final Collection<Unit> neighbourUnits = attackingFromMap.get(neighbor);
         // If all units from a territory are air- no bombard
-        if (!neighbourUnits.isEmpty() && Match.allMatch(neighbourUnits, Matches.UnitIsAir)) {
+        if (!neighbourUnits.isEmpty() && Match.allMatch(neighbourUnits, Matches.unitIsAir())) {
           continue;
         }
         Collection<IBattle> battles = possibleBombardingTerritories.get(neighbor);
@@ -917,7 +917,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               }
             }
           }
-          if (Match.anyMatch(attackingUnits, Matches.UnitIsAir.invert())) {
+          if (Match.anyMatch(attackingUnits, Matches.unitIsAir().invert())) {
             // TODO: for now, we will hack and say that the attackers came from Everywhere, and hope the user will
             // choose the correct place
             // to retreat to! (TODO: Fix this)
@@ -1066,7 +1066,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Map<Territory, Collection<Unit>> defendingAirThatCanNotLand = m_battleTracker.getDefendingAirThatCanNotLand();
     final boolean isWW2v2orIsSurvivingAirMoveToLand = Properties.getWW2V2(data)
         || Properties.getSurvivingAirMoveToLand(data);
-    final Match<Unit> alliedDefendingAir = Match.allOf(Matches.UnitIsAir, Matches.unitWasScrambled().invert());
+    final Match<Unit> alliedDefendingAir = Match.allOf(Matches.unitIsAir(), Matches.unitWasScrambled().invert());
     for (final Entry<Territory, Collection<Unit>> entry : defendingAirThatCanNotLand.entrySet()) {
       final Territory battleSite = entry.getKey();
       final Collection<Unit> defendingAir = entry.getValue();
@@ -1092,7 +1092,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // Set up match criteria for allied carriers
       final Match<Unit> alliedCarrier = Match.allOf(Matches.unitIsCarrier(), Matches.alliedUnit(defender, data));
       // Set up match criteria for allied planes
-      final Match<Unit> alliedPlane = Match.allOf(Matches.UnitIsAir, Matches.alliedUnit(defender, data));
+      final Match<Unit> alliedPlane = Match.allOf(Matches.unitIsAir(), Matches.alliedUnit(defender, data));
       // See if neighboring carriers have any capacity available
       for (final Territory currentTerritory : areSeaNeighbors) {
         // get the capacity of the carriers and cost of fighters

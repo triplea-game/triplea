@@ -494,7 +494,7 @@ class ProNonCombatMoveAI {
       final int cantMoveUnitValue = TuvUtils.getTuv(moveMap.get(t).getCantMoveUnits(), ProData.unitValueMap);
       final List<Unit> maxEnemyUnits = patd.getMaxEnemyUnits();
       final boolean isLandAndCanOnlyBeAttackedByAir =
-          !t.isWater() && !maxEnemyUnits.isEmpty() && Match.allMatch(maxEnemyUnits, Matches.UnitIsAir);
+          !t.isWater() && !maxEnemyUnits.isEmpty() && Match.allMatch(maxEnemyUnits, Matches.unitIsAir());
       final boolean isNotFactoryAndShouldHold =
           !hasFactory && (minResult.getTUVSwing() <= 0 || !minResult.isHasLandUnitRemaining());
       final boolean canAlreadyBeHeld =
@@ -684,13 +684,13 @@ class ProNonCombatMoveAI {
         Territory maxWinTerritory = null;
         double maxWinPercentage = -1;
         for (final Territory t : sortedUnitMoveOptions.get(unit)) {
-          if (t.isWater() && Matches.UnitIsAir.match(unit)) {
+          if (t.isWater() && Matches.unitIsAir().match(unit)) {
             if (!ProTransportUtils.validateCarrierCapacity(player, t,
                 moveMap.get(t).getAllDefendersForCarrierCalcs(data, player), unit)) {
               continue; // skip moving air to water if not enough carrier capacity
             }
           }
-          if (!t.isWater() && !t.getOwner().equals(player) && Matches.UnitIsAir.match(unit)
+          if (!t.isWater() && !t.getOwner().equals(player) && Matches.unitIsAir().match(unit)
               && !ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
             continue; // skip moving air units to allied land without a factory
           }

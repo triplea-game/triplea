@@ -259,9 +259,9 @@ public class MovePerformer implements Serializable {
                 continue;
               }
               if ((t.equals(route.getEnd()) && !arrivedCopyForBattles.isEmpty()
-                  && Match.allMatch(arrivedCopyForBattles, Matches.UnitIsAir))
+                  && Match.allMatch(arrivedCopyForBattles, Matches.unitIsAir()))
                   || (!t.equals(route.getEnd()) && !presentFromStartTilEnd.isEmpty()
-                      && Match.allMatch(presentFromStartTilEnd, Matches.UnitIsAir))) {
+                      && Match.allMatch(presentFromStartTilEnd, Matches.unitIsAir()))) {
                 continue;
               }
               // createdBattle = true;
@@ -348,7 +348,7 @@ public class MovePerformer implements Serializable {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
-      for (final Unit unit : Match.getMatches(units, Match.allOf(Matches.unitIsSub(), Matches.UnitIsAir.invert()))) {
+      for (final Unit unit : Match.getMatches(units, Match.allOf(Matches.unitIsSub(), Matches.unitIsAir().invert()))) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }
@@ -428,7 +428,7 @@ public class MovePerformer implements Serializable {
       final BattleTracker tracker = getBattleTracker();
       final boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false, BattleType.NORMAL) != null;
       for (Unit unit : units) {
-        if (Matches.UnitIsAir.match(unit)) {
+        if (Matches.unitIsAir().match(unit)) {
           continue;
         }
         final Unit transportedBy = ((TripleAUnit) unit).getTransportedBy();

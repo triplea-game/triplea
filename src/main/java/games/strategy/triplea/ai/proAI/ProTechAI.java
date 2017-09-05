@@ -107,7 +107,7 @@ final class ProTechAI {
       float strength = 0.0F;
       enemyPlayer = playerIter.next();
       final Match<Unit> enemyPlane = Match.allOf(
-          Matches.UnitIsAir,
+          Matches.unitIsAir(),
           Matches.unitIsOwnedBy(enemyPlayer),
           Matches.unitCanMove());
       final Match<Unit> enemyTransport = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
@@ -461,7 +461,10 @@ final class ProTechAI {
     final Queue<Territory> q = new LinkedList<>();
     Territory lz = null;
     Territory ac = null;
-    final Match<Unit> enemyPlane = Match.allOf(Matches.UnitIsAir, Matches.unitIsOwnedBy(player), Matches.unitCanMove());
+    final Match<Unit> enemyPlane = Match.allOf(
+        Matches.unitIsAir(),
+        Matches.unitIsOwnedBy(player),
+        Matches.unitCanMove());
     final Match<Unit> enemyCarrier =
         Match.allOf(Matches.unitIsCarrier(), Matches.unitIsOwnedBy(player), Matches.unitCanMove());
     q.add(start);
