@@ -497,7 +497,7 @@ public class BattleTracker implements Serializable {
       // Total Attacking Sea units = all units - land units - air units - submerged subs
       // Also subtract transports & subs (if they can't control sea zones)
       totalMatches = arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.unitIsLand())
-          - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
+          - Match.countMatches(arrivedUnits, Matches.unitIsAir())
           - Match.countMatches(arrivedUnits, Matches.unitIsSubmerged());
       // If transports are restricted from controlling sea zones, subtract them
       final Match<Unit> transportsCanNotControl = Match.allOf(

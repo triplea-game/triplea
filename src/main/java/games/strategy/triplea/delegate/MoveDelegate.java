@@ -325,7 +325,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         Matches.unitIsOwnedBy(player).invert(), Matches.unitIsCarrier(),
         Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
     final Match<Unit> ownedFightersMatch =
-        Match.allOf(Matches.unitIsOwnedBy(player), Matches.UnitIsAir,
+        Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsAir(),
             Matches.unitCanLandOnCarrier(), Matches.unitHasMovementLeft());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {

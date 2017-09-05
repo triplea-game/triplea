@@ -116,7 +116,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     final Match<Unit> groundUnits =
         // we add factories and constructions later
         Match.allOf(Matches.unitIsLand(), Matches.unitIsNotConstruction());
-    final Match<Unit> airUnits = Match.allOf(Matches.UnitIsAir, Matches.unitIsNotConstruction());
+    final Match<Unit> airUnits = Match.allOf(Matches.unitIsAir(), Matches.unitIsNotConstruction());
     placeableUnits.addAll(Match.getMatches(units, groundUnits));
     placeableUnits.addAll(Match.getMatches(units, airUnits));
     if (Match.anyMatch(units, Matches.unitIsConstruction())) {

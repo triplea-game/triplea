@@ -559,7 +559,7 @@ public class MovePanel extends AbstractMovePanel {
     if (!route.isLoad()) {
       return Collections.emptyList();
     }
-    if (Match.anyMatch(unitsToLoad, Matches.UnitIsAir)) {
+    if (Match.anyMatch(unitsToLoad, Matches.unitIsAir())) {
       return Collections.emptyList();
     }
     final Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
@@ -1266,8 +1266,8 @@ public class MovePanel extends AbstractMovePanel {
             // which the route may actually change much)
             if (unitsThatCanMoveOnRoute.size() < selectedUnits.size() && (unitsThatCanMoveOnRoute.size() == 0
                 || (!unitsThatCanMoveOnRoute.isEmpty()
-                    && Match.allMatch(unitsThatCanMoveOnRoute, Matches.UnitIsAir)))) {
-              final Collection<Unit> airUnits = Match.getMatches(selectedUnits, Matches.UnitIsAir);
+                    && Match.allMatch(unitsThatCanMoveOnRoute, Matches.unitIsAir())))) {
+              final Collection<Unit> airUnits = Match.getMatches(selectedUnits, Matches.unitIsAir());
               if (airUnits.size() > 0) {
                 route = getRoute(getFirstSelectedTerritory(), territory, airUnits);
                 updateUnitsThatCanMoveOnRoute(airUnits, route);

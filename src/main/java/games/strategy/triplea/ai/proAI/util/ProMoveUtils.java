@@ -85,7 +85,7 @@ public class ProMoveUtils {
           // Land unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches
               .territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove, new ArrayList<>()));
-        } else if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.UnitIsAir)) {
+        } else if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.unitIsAir())) {
 
           // Air unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
@@ -284,7 +284,7 @@ public class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.UnitIsAir)) {
+        if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.unitIsAir())) {
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
               ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
         }

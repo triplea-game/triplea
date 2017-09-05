@@ -379,7 +379,7 @@ public class WW2V3Year41Test {
     // attack from bulgraia
     move(bulgaria.getUnits().getUnits(), new Route(bulgaria, ukraine));
     // add an air attack from east poland
-    move(poland.getUnits().getMatches(Matches.UnitIsAir), new Route(poland, eastPoland, ukraine));
+    move(poland.getUnits().getMatches(Matches.unitIsAir()), new Route(poland, eastPoland, ukraine));
     // we should not be able to retreat to east poland!
     // that territory is still owned by the enemy
     final MustFightBattle battle =
@@ -1124,7 +1124,7 @@ public class WW2V3Year41Test {
     move(sz8.getUnits().getUnits(), route);
     // make sure the fighter moved
     assertTrue(sz8.getUnits().getUnits().isEmpty());
-    assertFalse(sz1.getUnits().getMatches(Matches.UnitIsAir).isEmpty());
+    assertFalse(sz1.getUnits().getMatches(Matches.unitIsAir()).isEmpty());
   }
 
   @Test
@@ -1418,7 +1418,7 @@ public class WW2V3Year41Test {
           }
         });
     bridge.setRemote(dummyPlayer);
-    move(uk.getUnits().getMatches(Matches.UnitIsAir), gameData.getMap().getRoute(uk, sz5));
+    move(uk.getUnits().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(uk, sz5));
     // move units for amphib assault
     moveDelegate(gameData).end();
     bridge.setStepName("Combat");
@@ -1448,7 +1448,7 @@ public class WW2V3Year41Test {
     final Route route = new Route(neEurope, territory("Germany", gameData), territory("Poland", gameData),
         territory("Baltic States", gameData), territory("5 Sea Zone", gameData));
     // the fighter should be able to move, and hover in the sea zone until the carrier is placed
-    move(neEurope.getUnits().getMatches(Matches.UnitIsAir), route);
+    move(neEurope.getUnits().getMatches(Matches.unitIsAir()), route);
   }
 
   @Test
@@ -1465,7 +1465,7 @@ public class WW2V3Year41Test {
     final Territory neEurope = territory("Northwestern Europe", gameData);
     final Route route = new Route(neEurope, territory("Germany", gameData), territory("Poland", gameData),
         territory("Baltic States", gameData), territory("5 Sea Zone", gameData));
-    final String error = moveDelegate(gameData).move(neEurope.getUnits().getMatches(Matches.UnitIsAir), route);
+    final String error = moveDelegate(gameData).move(neEurope.getUnits().getMatches(Matches.unitIsAir()), route);
     assertNotNull(error);
   }
 

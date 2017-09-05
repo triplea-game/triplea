@@ -67,7 +67,7 @@ public class ProOddsCalculator {
     final double strengthDifference = ProBattleUtils.estimateStrengthDifference(t, attackingUnits, defendingUnits);
     if (strengthDifference > 55) {
       final boolean isLandAndCanOnlyBeAttackedByAir =
-          !t.isWater() && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
+          !t.isWater() && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, Matches.unitIsAir());
       return new ProBattleResult(100 + strengthDifference, 999 + strengthDifference, !isLandAndCanOnlyBeAttackedByAir,
           attackingUnits, new ArrayList<>(), 1);
     }
@@ -90,7 +90,7 @@ public class ProOddsCalculator {
 
     final boolean hasNoDefenders = Match.noneMatch(defendingUnits, Matches.unitIsNotInfrastructure());
     final boolean isLandAndCanOnlyBeAttackedByAir =
-        !t.isWater() && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, Matches.UnitIsAir);
+        !t.isWater() && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, Matches.unitIsAir());
     if (attackingUnits.size() == 0) {
       return new ProBattleResult();
     } else if (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir) {

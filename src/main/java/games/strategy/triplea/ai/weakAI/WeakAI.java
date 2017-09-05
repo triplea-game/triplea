@@ -520,7 +520,7 @@ public class WeakAI extends AbstractAI {
       final Route noAaRoute = Utils.findNearest(t, canLand, routeCondition, data);
       final Route aaRoute = Utils.findNearest(t, canLand, Matches.territoryIsImpassable().invert(), data);
       final Collection<Unit> airToLand =
-          t.getUnits().getMatches(Match.allOf(Matches.UnitIsAir, Matches.unitIsOwnedBy(player)));
+          t.getUnits().getMatches(Match.allOf(Matches.unitIsAir(), Matches.unitIsOwnedBy(player)));
       // dont bother to see if all the air units have enough movement points
       // to move without aa guns firing
       // simply move first over no aa, then with aa

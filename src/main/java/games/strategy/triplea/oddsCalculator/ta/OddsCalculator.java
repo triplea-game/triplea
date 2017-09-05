@@ -595,7 +595,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       if (submerge) {
         // submerge if all air vs subs
         final Match<Unit> seaSub = Match.allOf(Matches.unitIsSea(), Matches.unitIsSub());
-        final Match<Unit> planeNotDestroyer = Match.allOf(Matches.UnitIsAir, Matches.unitIsDestroyer().invert());
+        final Match<Unit> planeNotDestroyer = Match.allOf(Matches.unitIsAir(), Matches.unitIsDestroyer().invert());
         final List<Unit> ourUnits = getOurUnits();
         final List<Unit> enemyUnits = getEnemyUnits();
         if (ourUnits == null || enemyUnits == null) {
@@ -618,7 +618,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
           return null;
         }
         final Collection<Unit> unitsLeft = isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
-        final Collection<Unit> airLeft = Match.getMatches(unitsLeft, Matches.UnitIsAir);
+        final Collection<Unit> airLeft = Match.getMatches(unitsLeft, Matches.unitIsAir());
         if (retreatWhenOnlyAirLeft) {
           // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
           // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken

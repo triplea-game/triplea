@@ -124,7 +124,7 @@ public class LhtrTest {
     route.setStart(gameData.getMap().getTerritory("Ukraine S.S.R."));
     route.add(gameData.getMap().getTerritory("Caucasus"));
     route.add(gameData.getMap().getTerritory("West Russia"));
-    final List<Unit> fighter = route.getStart().getUnits().getMatches(Matches.UnitIsAir);
+    final List<Unit> fighter = route.getStart().getUnits().getMatches(Matches.unitIsAir());
     delegate.move(fighter, route);
   }
 
