@@ -151,13 +151,27 @@ public class MoveValidatorTest extends DelegateTest {
     assertFalse(results.isMoveValid());
 
     // Add germanRail to only destination so it fails
-    addTo(easternGermany, GameDataTestUtil.germanRail(twwGameData).create(1, germans));
+    final Collection<Unit> germanRail = GameDataTestUtil.germanRail(twwGameData).create(1, germans);
+    addTo(easternGermany, germanRail);
     results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
         new HashMap<>(), false, null, twwGameData);
     assertFalse(results.isMoveValid());
 
     // Add germanRail to start so move succeeds
     addTo(berlin, GameDataTestUtil.germanRail(twwGameData).create(1, germans));
+    results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
+        new HashMap<>(), false, null, twwGameData);
+    assertTrue(results.isMoveValid());
+
+    // Remove germanRail from destination so move fails
+    GameDataTestUtil.removeFrom(easternGermany, germanRail);
+    results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
+        new HashMap<>(), false, null, twwGameData);
+    assertFalse(results.isMoveValid());
+
+    // Add allied owned germanRail to destination so move succeeds
+    final PlayerID japan = GameDataTestUtil.japan(twwGameData);
+    addTo(easternGermany, GameDataTestUtil.germanRail(twwGameData).create(1, japan));
     results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
         new HashMap<>(), false, null, twwGameData);
     assertTrue(results.isMoveValid());

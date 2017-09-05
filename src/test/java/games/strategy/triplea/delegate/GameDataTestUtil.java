@@ -95,6 +95,15 @@ public class GameDataTestUtil {
   }
 
   /**
+   * Get the Japan PlayerID for the given GameData object.
+   *
+   * @return A Japan PlayerID.
+   */
+  public static PlayerID japan(final GameData data) {
+    return data.getPlayerList().getPlayerID("Japan");
+  }
+
+  /**
    * Get the chinese PlayerID for the given GameData object.
    *
    * @return A chinese PlayerID.
