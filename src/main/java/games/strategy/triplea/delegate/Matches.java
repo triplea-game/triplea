@@ -164,7 +164,7 @@ public final class Matches {
   static Match<Unit> unitIsTransportAndNotDestroyer() {
     return Match.of(unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return !Matches.unitIsDestroyer().match(unit) && ua.getTransportCapacity() != -1 && ua.getIsSea();
+      return !unitIsDestroyer().match(unit) && ua.getTransportCapacity() != -1 && ua.getIsSea();
     });
   }
 
@@ -431,8 +431,7 @@ public final class Matches {
    * Checks for having attack/defense and for providing support. Does not check for having AA ability.
    */
   public static Match<Unit> unitIsSupporterOrHasCombatAbility(final boolean attack) {
-    return Match.of(
-        unit -> Matches.unitTypeIsSupporterOrHasCombatAbility(attack, unit.getOwner()).match(unit.getType()));
+    return Match.of(unit -> unitTypeIsSupporterOrHasCombatAbility(attack, unit.getOwner()).match(unit.getType()));
   }
 
   /**
@@ -512,7 +511,7 @@ public final class Matches {
   }
 
   static Match<Territory> territoryHasOwnedCarrier(final PlayerID player) {
-    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsCarrier())));
+    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(unitIsOwnedBy(player), unitIsCarrier())));
   }
 
   public static Match<Unit> unitIsAlliedCarrier(final PlayerID player, final GameData data) {
@@ -601,8 +600,8 @@ public final class Matches {
           return true;
         }
       }
-      return Match.anyMatch(targets, Match.allOf(Matches.unitIsAirborne(),
-          Matches.unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA()))));
+      return Match.anyMatch(targets, Match.allOf(unitIsAirborne(),
+          unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA()))));
     });
   }
 
@@ -640,11 +639,11 @@ public final class Matches {
   static Match<Unit> unitIsAaThatCanFire(final Collection<Unit> unitsMovingOrAttacking,
       final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed, final PlayerID playerMovingOrAttacking,
       final Match<Unit> typeOfAa, final int battleRoundNumber, final boolean defending, final GameData data) {
-    return Match.allOf(Matches.enemyUnit(playerMovingOrAttacking, data),
-        Matches.unitIsBeingTransported().invert(),
-        Matches.unitIsAaThatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAa, airborneTechTargetsAllowed),
-        Matches.unitIsAaThatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).invert(),
-        Matches.unitIsAaThatCanFireOnRound(battleRoundNumber),
+    return Match.allOf(enemyUnit(playerMovingOrAttacking, data),
+        unitIsBeingTransported().invert(),
+        unitIsAaThatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAa, airborneTechTargetsAllowed),
+        unitIsAaThatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).invert(),
+        unitIsAaThatCanFireOnRound(battleRoundNumber),
         (defending ? unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
             : unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
   }
@@ -846,7 +845,7 @@ public final class Matches {
           return false;
         }
       }
-      return !(contestedDoNotProduce && !Matches.territoryHasNoEnemyUnits(player, data).match(t));
+      return !(contestedDoNotProduce && !territoryHasNoEnemyUnits(player, data).match(t));
     });
   }
 
@@ -882,8 +881,7 @@ public final class Matches {
           if (!data.getRelationshipTracker().isAtWar(player, current.getOwner())) {
             continue;
           }
-          if (data.getMap().getDistance(t, current,
-              Matches.territoryIsPassableAndNotRestricted(player, data)) != -1) {
+          if (data.getMap().getDistance(t, current, territoryIsPassableAndNotRestricted(player, data)) != -1) {
             return true;
           }
         }
@@ -906,8 +904,7 @@ public final class Matches {
           if (!data.getRelationshipTracker().isAtWar(player, current.getOwner())) {
             continue;
           }
-          if (data.getMap().getDistance(t, current,
-              Matches.territoryIsNotImpassableToLandUnits(player, data)) != -1) {
+          if (data.getMap().getDistance(t, current, territoryIsNotImpassableToLandUnits(player, data)) != -1) {
             return true;
           }
         }
@@ -931,8 +928,7 @@ public final class Matches {
   static Match<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
       final GameData data, final PlayerID player) {
     return Match.of(t -> data.getMap()
-        .getNeighbors(t, Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(data, player))
-        .size() > 0);
+        .getNeighbors(t, territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(data, player)).size() > 0);
   }
 
   public static Match<Territory> territoryHasWaterNeighbor(final GameData data) {
@@ -945,7 +941,7 @@ public final class Matches {
       if (!data.getRelationshipTracker().isAllied(t.getOwner(), player)) {
         return false;
       }
-      return t.getUnits().anyMatch(Match.allOf(Matches.alliedUnit(player, data), unitMatch));
+      return t.getUnits().anyMatch(Match.allOf(alliedUnit(player, data), unitMatch));
     });
   }
 
@@ -955,7 +951,7 @@ public final class Matches {
       if (!t.getOwner().equals(player)) {
         return false;
       }
-      return t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(player), unitMatch));
+      return t.getUnits().anyMatch(Match.allOf(unitIsOwnedBy(player), unitMatch));
     });
   }
 
@@ -964,7 +960,7 @@ public final class Matches {
       if (!t.getOwner().equals(player)) {
         return false;
       }
-      return t.getUnits().anyMatch(Matches.unitCanProduceUnits());
+      return t.getUnits().anyMatch(unitCanProduceUnits());
     });
   }
 
@@ -974,7 +970,7 @@ public final class Matches {
       if (!t.getOwner().equals(player)) {
         return false;
       }
-      if (!t.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
+      if (!t.getUnits().anyMatch(unitCanProduceUnits())) {
         return false;
       }
       final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(data);
@@ -987,7 +983,7 @@ public final class Matches {
       if (!isTerritoryAllied(player, data).match(t)) {
         return false;
       }
-      return t.getUnits().anyMatch(Matches.unitCanProduceUnits());
+      return t.getUnits().anyMatch(unitCanProduceUnits());
     });
   }
 
@@ -1000,7 +996,7 @@ public final class Matches {
       if (t.getOwner().isNull()) {
         return false;
       }
-      return t.getUnits().anyMatch(Match.allOf(Matches.enemyUnit(player, data), unitMatch));
+      return t.getUnits().anyMatch(Match.allOf(enemyUnit(player, data), unitMatch));
     });
   }
 
@@ -1065,7 +1061,7 @@ public final class Matches {
 
   public static Match<Territory> territoryIsPassableAndNotRestricted(final PlayerID player, final GameData data) {
     return Match.of(t -> {
-      if (Matches.territoryIsImpassable().match(t)) {
+      if (territoryIsImpassable().match(t)) {
         return false;
       }
       if (!Properties.getMovementByTerritoryRestricted(data)) {
@@ -1086,7 +1082,7 @@ public final class Matches {
     return Match.of(t -> {
       if (t.isWater()) {
         return true;
-      } else if (Matches.territoryIsPassableAndNotRestricted(player, data).invert().match(t)) {
+      } else if (territoryIsPassableAndNotRestricted(player, data).invert().match(t)) {
         return true;
       }
       return false;
@@ -1115,7 +1111,7 @@ public final class Matches {
     final boolean areNeutralsPassableByAir =
         neutralsPassable && Properties.getNeutralFlyoverAllowed(data);
     return Match.of(t -> {
-      if (Matches.territoryIsImpassable().match(t)) {
+      if (territoryIsImpassable().match(t)) {
         return false;
       }
       if ((!neutralsPassable || (hasAirUnitsNotBeingTransported && !areNeutralsPassableByAir))
@@ -1134,8 +1130,8 @@ public final class Matches {
           }
         }
       }
-      final boolean isWater = Matches.territoryIsWater().match(t);
-      final boolean isLand = Matches.territoryIsLand().match(t);
+      final boolean isWater = territoryIsWater().match(t);
+      final boolean isLand = territoryIsLand().match(t);
       if (hasLandUnitsNotBeingTransportedOrBeingLoaded && !isLand) {
         return false;
       }
@@ -1365,7 +1361,7 @@ public final class Matches {
       if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater()) {
         return false;
       }
-      if (!Matches.territoryIsPassableAndNotRestricted(player, data).match(t)) {
+      if (!territoryIsPassableAndNotRestricted(player, data).match(t)) {
         return false;
       }
       return data.getRelationshipTracker().isAtWar(player, t.getOwner());
@@ -1390,12 +1386,12 @@ public final class Matches {
       }
       final Match.CompositeBuilder<Unit> blitzableUnitsBuilder = Match.newCompositeBuilder(
           // we ignore neutral units
-          Matches.enemyUnit(player, data).invert());
+          enemyUnit(player, data).invert());
       // WW2V2, cant blitz through factories and aa guns
       // WW2V1, you can
       if (!Properties.getWW2V2(data)
           && !Properties.getBlitzThroughFactoriesAndAARestricted(data)) {
-        blitzableUnitsBuilder.add(Matches.unitIsInfrastructure());
+        blitzableUnitsBuilder.add(unitIsInfrastructure());
       }
       return t.getUnits().allMatch(blitzableUnitsBuilder.any());
     });
@@ -1444,7 +1440,7 @@ public final class Matches {
 
   public static Match<Unit> alliedUnitOfAnyOfThesePlayers(final Collection<PlayerID> players, final GameData data) {
     return Match.of(unit -> {
-      if (Matches.unitIsOwnedByOfAnyOfThesePlayers(players).match(unit)) {
+      if (unitIsOwnedByOfAnyOfThesePlayers(players).match(unit)) {
         return true;
       }
       return data.getRelationshipTracker().isAlliedWithAnyOfThesePlayers(unit.getOwner(), players);
@@ -1589,8 +1585,8 @@ public final class Matches {
       }
       // paratrooper on an air transport
       if (forceLoadParatroopersIfPossible) {
-        final Collection<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
-        final Collection<Unit> paratroops = Match.getMatches(units, Matches.unitIsAirTransportable());
+        final Collection<Unit> airTransports = Match.getMatches(units, unitIsAirTransport());
+        final Collection<Unit> paratroops = Match.getMatches(units, unitIsAirTransportable());
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
           if (TransportUtils.mapTransportsToLoad(paratroops, airTransports)
               .containsKey(dependent)) {
@@ -1649,21 +1645,18 @@ public final class Matches {
   }
 
   public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data) {
-    final Match<Unit> sub = Match.allOf(Matches.unitIsSub().invert());
-    final Match<Unit> transport =
-        Match.allOf(Matches.unitIsTransportButNotCombatTransport().invert(), Matches.unitIsLand().invert());
+    final Match<Unit> sub = Match.allOf(unitIsSub().invert());
+    final Match<Unit> transport = Match.allOf(unitIsTransportButNotCombatTransport().invert(), unitIsLand().invert());
     final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
-        Matches.unitIsInfrastructure().invert(),
-        Matches.alliedUnit(player, data).invert());
+        unitIsInfrastructure().invert(),
+        alliedUnit(player, data).invert());
     if (Properties.getIgnoreTransportInMovement(data)) {
       unitCondBuilder.add(transport);
     }
     if (Properties.getIgnoreSubInMovement(data)) {
       unitCondBuilder.add(sub);
     }
-    return Match.allOf(
-        Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(),
-        Matches.territoryIsWater());
+    return Match.allOf(territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(), territoryIsWater());
   }
 
   static Match<Unit> unitCanRepairOthers() {
@@ -1702,30 +1695,27 @@ public final class Matches {
   public static Match<Unit> unitCanBeRepairedByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {
     return Match.of(damagedUnit -> {
-      final Match<Unit> damaged = Match.allOf(
-          Matches.unitHasMoreThanOneHitPointTotal(),
-          Matches.unitHasTakenSomeDamage());
+      final Match<Unit> damaged = Match.allOf(unitHasMoreThanOneHitPointTotal(), unitHasTakenSomeDamage());
       if (!damaged.match(damagedUnit)) {
         return false;
       }
-      final Match<Unit> repairUnit = Match.allOf(Matches.alliedUnit(player, data),
-          Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(damagedUnit));
+      final Match<Unit> repairUnit = Match.allOf(alliedUnit(player, data),
+          unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit));
       if (Match.anyMatch(territory.getUnits().getUnits(), repairUnit)) {
         return true;
       }
-      if (Matches.unitIsSea().match(damagedUnit)) {
-        final Match<Unit> repairUnitLand = Match.allOf(repairUnit, Matches.unitIsLand());
+      if (unitIsSea().match(damagedUnit)) {
+        final Match<Unit> repairUnitLand = Match.allOf(repairUnit, unitIsLand());
         final List<Territory> neighbors =
-            new ArrayList<>(data.getMap().getNeighbors(territory, Matches.territoryIsLand()));
+            new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
         for (final Territory current : neighbors) {
           if (Match.anyMatch(current.getUnits().getUnits(), repairUnitLand)) {
             return true;
           }
         }
-      } else if (Matches.unitIsLand().match(damagedUnit)) {
-        final Match<Unit> repairUnitSea = Match.allOf(repairUnit, Matches.unitIsSea());
-        final List<Territory> neighbors =
-            new ArrayList<>(data.getMap().getNeighbors(territory, Matches.territoryIsWater()));
+      } else if (unitIsLand().match(damagedUnit)) {
+        final Match<Unit> repairUnitSea = Match.allOf(repairUnit, unitIsSea());
+        final List<Territory> neighbors = new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsWater()));
         for (final Territory current : neighbors) {
           if (Match.anyMatch(current.getUnits().getUnits(), repairUnitSea)) {
             return true;
@@ -1771,15 +1761,14 @@ public final class Matches {
   public static Match<Unit> unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {
     return Match.of(unitWhichWillGetBonus -> {
-      final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
+      final Match<Unit> givesBonusUnit = Match.allOf(alliedUnit(player, data),
           unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
       if (Match.anyMatch(territory.getUnits().getUnits(), givesBonusUnit)) {
         return true;
       }
-      if (Matches.unitIsSea().match(unitWhichWillGetBonus)) {
-        final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
-        final List<Territory> neighbors =
-            new ArrayList<>(data.getMap().getNeighbors(territory, Matches.territoryIsLand()));
+      if (unitIsSea().match(unitWhichWillGetBonus)) {
+        final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, unitIsLand());
+        final List<Territory> neighbors = new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
         for (final Territory current : neighbors) {
           if (Match.anyMatch(current.getUnits().getUnits(), givesBonusUnitLand)) {
             return true;
@@ -1823,7 +1812,7 @@ public final class Matches {
 
   static Match<Unit> unitWhichConsumesUnitsHasRequiredUnits(final Collection<Unit> unitsInTerritoryAtStartOfTurn) {
     return Match.of(unitWhichRequiresUnits -> {
-      if (!Matches.unitConsumesUnitsOnCreation().match(unitWhichRequiresUnits)) {
+      if (!unitConsumesUnitsOnCreation().match(unitWhichRequiresUnits)) {
         return true;
       }
       final UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
@@ -1832,11 +1821,11 @@ public final class Matches {
       boolean canBuild = true;
       for (final UnitType ut : requiredUnits) {
         final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = Match.allOf(
-            Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()),
-            Matches.unitIsOfType(ut),
-            Matches.unitHasNotTakenAnyBombingUnitDamage(),
-            Matches.unitHasNotTakenAnyDamage(),
-            Matches.unitIsNotDisabled());
+            unitIsOwnedBy(unitWhichRequiresUnits.getOwner()),
+            unitIsOfType(ut),
+            unitHasNotTakenAnyBombingUnitDamage(),
+            unitHasNotTakenAnyDamage(),
+            unitIsNotDisabled());
         final int requiredNumber = requiredUnitsMap.getInt(ut);
         final int numberInTerritory =
             Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
@@ -1867,11 +1856,11 @@ public final class Matches {
   public static Match<Unit> unitWhichRequiresUnitsHasRequiredUnitsInList(
       final Collection<Unit> unitsInTerritoryAtStartOfTurn) {
     return Match.of(unitWhichRequiresUnits -> {
-      if (!Matches.unitRequiresUnitsOnCreation().match(unitWhichRequiresUnits)) {
+      if (!unitRequiresUnitsOnCreation().match(unitWhichRequiresUnits)) {
         return true;
       }
       final Match<Unit> unitIsOwnedByAndNotDisabled = Match.allOf(
-          Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.unitIsNotDisabled());
+          unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), unitIsNotDisabled());
       unitsInTerritoryAtStartOfTurn
           .retainAll(Match.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
       boolean canBuild = false;
@@ -1882,7 +1871,7 @@ public final class Matches {
           boolean haveAll = true;
           final Collection<UnitType> requiredUnits = ua.getListedUnits(combo);
           for (final UnitType ut : requiredUnits) {
-            if (Match.countMatches(unitsInTerritoryAtStartOfTurn, Matches.unitIsOfType(ut)) < 1) {
+            if (Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOfType(ut)) < 1) {
               haveAll = false;
             }
             if (!haveAll) {
@@ -1913,13 +1902,13 @@ public final class Matches {
       }
 
       final Match<Unit> unitIsOwnedByAndNotDisabled = Match.allOf(
-          Matches.isUnitAllied(unit.getOwner(), data), Matches.unitIsNotDisabled());
+          isUnitAllied(unit.getOwner(), data), unitIsNotDisabled());
       final List<Unit> units = Match.getMatches(t.getUnits().getUnits(), unitIsOwnedByAndNotDisabled);
 
       for (final String[] array : ua.getRequiresUnitsToMove()) {
         boolean haveAll = true;
         for (final UnitType ut : ua.getListedUnits(array)) {
-          if (Match.noneMatch(units, Matches.unitIsOfType(ut))) {
+          if (Match.noneMatch(units, unitIsOfType(ut))) {
             haveAll = false;
             break;
           }
@@ -2009,7 +1998,7 @@ public final class Matches {
   public static Match<Territory> territoryAllowsCanMoveLandUnitsOverOwnedLand(final PlayerID ownerOfUnitsMoving,
       final GameData data) {
     return Match.of(t -> {
-      if (!Matches.territoryIsLand().match(t)) {
+      if (!territoryIsLand().match(t)) {
         return true;
       }
       final PlayerID territoryOwner = t.getOwner();
@@ -2030,7 +2019,7 @@ public final class Matches {
   public static Match<Territory> territoryAllowsCanMoveAirUnitsOverOwnedLand(final PlayerID ownerOfUnitsMoving,
       final GameData data) {
     return Match.of(t -> {
-      if (!Matches.territoryIsLand().match(t)) {
+      if (!territoryIsLand().match(t)) {
         return true;
       }
       final PlayerID territoryOwner = t.getOwner();
@@ -2265,7 +2254,7 @@ public final class Matches {
   public static Match<Territory> airCanLandOnThisAlliedNonConqueredLandTerritory(final PlayerID player,
       final GameData data) {
     return Match.of(t -> {
-      if (!Matches.territoryIsLand().match(t)) {
+      if (!territoryIsLand().match(t)) {
         return false;
       }
       final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(data);
@@ -2283,7 +2272,7 @@ public final class Matches {
 
   static Match<Territory> territoryAllowsRocketsCanFlyOver(final PlayerID player, final GameData data) {
     return Match.of(t -> {
-      if (!Matches.territoryIsLand().match(t)) {
+      if (!territoryIsLand().match(t)) {
         return true;
       }
       final PlayerID owner = t.getOwner();
@@ -2320,7 +2309,7 @@ public final class Matches {
       if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater()) {
         return false;
       }
-      if (!Matches.territoryIsPassableAndNotRestricted(attacker, t.getData()).match(t)) {
+      if (!territoryIsPassableAndNotRestricted(attacker, t.getData()).match(t)) {
         return false;
       }
       return relationshipTypeCanTakeOverOwnedTerritory()
@@ -2355,31 +2344,31 @@ public final class Matches {
       final Match.CompositeBuilder<UnitType> canBeInBattle = Match.newCompositeBuilder();
 
       final Match.CompositeBuilder<UnitType> supportOrNotInfrastructureOrAa = Match.newCompositeBuilder();
-      supportOrNotInfrastructureOrAa.add(Matches.unitTypeIsInfrastructure().invert());
-      supportOrNotInfrastructureOrAa.add(Matches.unitTypeIsSupporterOrHasCombatAbility(attack, player));
+      supportOrNotInfrastructureOrAa.add(unitTypeIsInfrastructure().invert());
+      supportOrNotInfrastructureOrAa.add(unitTypeIsSupporterOrHasCombatAbility(attack, player));
       if (!doNotIncludeAa) {
-        supportOrNotInfrastructureOrAa.add(Match.allOf(Matches.unitTypeIsAaForCombatOnly(),
-            Matches.unitTypeIsAaThatCanFireOnRound(battleRound)));
+        supportOrNotInfrastructureOrAa.add(Match.allOf(unitTypeIsAaForCombatOnly(),
+            unitTypeIsAaThatCanFireOnRound(battleRound)));
       }
       canBeInBattle.add(supportOrNotInfrastructureOrAa.any());
 
       if (attack) {
         if (!includeAttackersThatCanNotMove) {
-          canBeInBattle.add(Matches.unitTypeCanNotMoveDuringCombatMove().invert());
-          canBeInBattle.add(Matches.unitTypeCanMove(player));
+          canBeInBattle.add(unitTypeCanNotMoveDuringCombatMove().invert());
+          canBeInBattle.add(unitTypeCanMove(player));
         }
         if (isLandBattle) {
           if (doNotIncludeBombardingSeaUnits) {
-            canBeInBattle.add(Matches.unitTypeIsSea().invert());
+            canBeInBattle.add(unitTypeIsSea().invert());
           }
         } else { // is sea battle
-          canBeInBattle.add(Matches.unitTypeIsLand().invert());
+          canBeInBattle.add(unitTypeIsLand().invert());
         }
       } else { // defense
         if (isLandBattle) {
-          canBeInBattle.add(Matches.unitTypeIsSea().invert());
+          canBeInBattle.add(unitTypeIsSea().invert());
         } else { // is sea battle
-          canBeInBattle.add(Matches.unitTypeIsLand().invert());
+          canBeInBattle.add(unitTypeIsLand().invert());
         }
       }
 
