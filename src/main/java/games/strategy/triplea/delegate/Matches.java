@@ -1902,7 +1902,7 @@ public final class Matches {
   /**
    * Check if unit meets requiredUnitsToMove criteria and can move into territory.
    */
-  public static Match<Unit> unitHasRequiredUnitsToMove(final Territory t) {
+  public static Match<Unit> unitHasRequiredUnitsToMove(final Territory t, final GameData data) {
     return Match.of(unit -> {
 
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -1911,7 +1911,7 @@ public final class Matches {
       }
 
       final Match<Unit> unitIsOwnedByAndNotDisabled = Match.allOf(
-          Matches.unitIsOwnedBy(unit.getOwner()), Matches.unitIsNotDisabled());
+          Matches.isUnitAllied(unit.getOwner(), data), Matches.unitIsNotDisabled());
       final List<Unit> units = Match.getMatches(t.getUnits().getUnits(), unitIsOwnedByAndNotDisabled);
 
       for (final String[] array : ua.getRequiresUnitsToMove()) {
