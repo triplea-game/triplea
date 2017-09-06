@@ -13,6 +13,7 @@ import games.strategy.internal.persistence.serializable.JetPowerAdvanceProxy;
 import games.strategy.internal.persistence.serializable.LongRangeAircraftAdvanceProxy;
 import games.strategy.internal.persistence.serializable.MechanizedInfantryAdvanceProxy;
 import games.strategy.internal.persistence.serializable.ParatroopersAdvanceProxy;
+import games.strategy.internal.persistence.serializable.PlayerIdProxy;
 import games.strategy.internal.persistence.serializable.ProductionFrontierProxy;
 import games.strategy.internal.persistence.serializable.ProductionRuleProxy;
 import games.strategy.internal.persistence.serializable.PropertyBagMementoProxy;
@@ -53,6 +54,7 @@ final class ProxyRegistries {
         LongRangeAircraftAdvanceProxy.FACTORY,
         MechanizedInfantryAdvanceProxy.FACTORY,
         ParatroopersAdvanceProxy.FACTORY,
+        PlayerIdProxy.FACTORY,
         ProductionFrontierProxy.FACTORY,
         ProductionRuleProxy.FACTORY,
         PropertyBagMementoProxy.FACTORY,

@@ -83,6 +83,11 @@ public final class EngineDataEqualityComparators {
       ParatroopersAdvance.class,
       EngineDataEqualityComparators::techAdvanceEquals);
 
+  public static final EqualityComparator PLAYER_ID = EqualityComparator.newInstance(
+      PlayerID.class,
+      // TODO: add comparisons for other attributes
+      EngineDataEqualityComparators::namedAttachableEquals);
+
   public static final EqualityComparator PRODUCTION_FRONTIER = EqualityComparator.newInstance(
       ProductionFrontier.class,
       (context, o1, o2) -> defaultNamedEquals(context, o1, o2)
