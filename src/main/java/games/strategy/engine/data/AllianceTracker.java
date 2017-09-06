@@ -65,12 +65,12 @@ public class AllianceTracker implements Serializable {
    * @return a set of all the games alliances, this will return an empty set if you aren't using alliances.
    */
   public Set<String> getAlliances() {
-    final Iterator<PlayerID> keys = alliances.keySet().iterator();
-    final Set<String> rVal = new HashSet<>();
+    final Iterator<PlayerID> keys = this.alliances.keySet().iterator();
+    final Set<String> alliances = new HashSet<>();
     while (keys.hasNext()) {
-      rVal.addAll(alliances.get(keys.next()));
+      alliances.addAll(this.alliances.get(keys.next()));
     }
-    return rVal;
+    return alliances;
   }
 
   /**
@@ -82,20 +82,20 @@ public class AllianceTracker implements Serializable {
    */
   public Set<PlayerID> getPlayersInAlliance(final String allianceName) {
     final Iterator<PlayerID> keys = alliances.keySet().iterator();
-    final HashSet<PlayerID> rVal = new HashSet<>();
+    final HashSet<PlayerID> playersInAlliance = new HashSet<>();
     while (keys.hasNext()) {
       final PlayerID player = keys.next();
       if (alliances.get(player).contains(allianceName)) {
-        rVal.add(player);
+        playersInAlliance.add(player);
       }
     }
-    return rVal;
+    return playersInAlliance;
   }
 
   public Collection<String> getAlliancesPlayerIsIn(final PlayerID player) {
-    final Collection<String> rVal = alliances.get(player);
-    if (!rVal.isEmpty()) {
-      return rVal;
+    final Collection<String> alliancesPlayerIsIn = alliances.get(player);
+    if (!alliancesPlayerIsIn.isEmpty()) {
+      return alliancesPlayerIsIn;
     } else {
       return Collections.singleton(player.getName());
     }

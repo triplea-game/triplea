@@ -290,9 +290,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance, final Match<Territory> cond) {
-    final Set<Territory> rVal = getNeighbors(frontier, new HashSet<>(frontier), distance, cond);
-    rVal.removeAll(frontier);
-    return rVal;
+    final Set<Territory> neighbors = getNeighbors(frontier, new HashSet<>(frontier), distance, cond);
+    neighbors.removeAll(frontier);
+    return neighbors;
   }
 
   /**
@@ -301,9 +301,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance) {
-    final Set<Territory> rVal = getNeighbors(frontier, new HashSet<>(frontier), distance);
-    rVal.removeAll(frontier);
-    return rVal;
+    final Set<Territory> neighbors = getNeighbors(frontier, new HashSet<>(frontier), distance);
+    neighbors.removeAll(frontier);
+    return neighbors;
   }
 
   private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, int distance,
@@ -498,14 +498,14 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   public IntegerMap<Territory> getDistance(final Territory target, final Collection<Territory> territories,
       final Match<Territory> condition) {
-    final IntegerMap<Territory> rVal = new IntegerMap<>();
+    final IntegerMap<Territory> distances = new IntegerMap<>();
     if (target == null || territories == null || territories.isEmpty()) {
-      return rVal;
+      return distances;
     }
     for (final Territory t : territories) {
-      rVal.put(t, getDistance(target, t, condition));
+      distances.put(t, getDistance(target, t, condition));
     }
-    return rVal;
+    return distances;
   }
 
   /**

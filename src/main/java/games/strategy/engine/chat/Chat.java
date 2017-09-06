@@ -64,15 +64,15 @@ public class Chat {
   }
 
   private static LinkedHashSet<String> getTagText(final Tag tag) {
-    final LinkedHashSet<String> rVal = new LinkedHashSet<>();
+    final LinkedHashSet<String> tagText = new LinkedHashSet<>();
     if (tag == Tag.NONE) {
       return null;
     }
     if (tag == Tag.MODERATOR) {
-      rVal.add(TAG_MODERATOR);
+      tagText.add(TAG_MODERATOR);
     }
     // add more here....
-    return rVal;
+    return tagText;
   }
 
   String getNotesForNode(final INode node) {

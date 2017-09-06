@@ -172,14 +172,14 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   }
 
   public static LinkedHashMap<String, String> currentPlayers(final GameData data) {
-    final LinkedHashMap<String, String> rVal = new LinkedHashMap<>();
+    final LinkedHashMap<String, String> currentPlayers = new LinkedHashMap<>();
     if (data == null) {
-      return rVal;
+      return currentPlayers;
     }
     for (final PlayerID player : data.getPlayerList().getPlayers()) {
-      rVal.put(player.getName(), player.getWhoAmI().split(":")[1]);
+      currentPlayers.put(player.getName(), player.getWhoAmI().split(":")[1]);
     }
-    return rVal;
+    return currentPlayers;
   }
 
   public RulesAttachment getRulesAttachment() {

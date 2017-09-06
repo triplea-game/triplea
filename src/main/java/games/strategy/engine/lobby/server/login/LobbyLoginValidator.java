@@ -49,13 +49,13 @@ public class LobbyLoginValidator implements ILoginValidator {
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     // we need to give the user the salt key for the username
-    final Map<String, String> rVal = new HashMap<>();
+    final Map<String, String> challenge = new HashMap<>();
     final HashedPassword password = new DbUserController().getLegacyPassword(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
-      rVal.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
+      challenge.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
-    rVal.putAll(rsaAuthenticator.generatePublicKey());
-    return rVal;
+    challenge.putAll(rsaAuthenticator.generatePublicKey());
+    return challenge;
   }
 
   @Override

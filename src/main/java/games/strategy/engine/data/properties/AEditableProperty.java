@@ -31,9 +31,9 @@ public abstract class AEditableProperty implements IEditableProperty, Serializab
 
   @Override
   public JComponent getViewComponent() {
-    final JComponent rVal = getEditorComponent();
-    rVal.setEnabled(false);
-    return rVal;
+    final JComponent component = getEditorComponent();
+    component.setEnabled(false);
+    return component;
   }
 
   @Override

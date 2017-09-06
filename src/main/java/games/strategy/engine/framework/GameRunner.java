@@ -201,8 +201,8 @@ public class GameRunner {
   public static Optional<File> showSaveGameFileChooser() {
     // Non-Mac platforms should use the normal Swing JFileChooser
     final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-    final int rVal = fileChooser.showOpenDialog(mainFrame);
-    if (rVal == JFileChooser.APPROVE_OPTION) {
+    final int selectedOption = fileChooser.showOpenDialog(mainFrame);
+    if (selectedOption == JFileChooser.APPROVE_OPTION) {
       return Optional.of(fileChooser.getSelectedFile());
     }
     return Optional.empty();

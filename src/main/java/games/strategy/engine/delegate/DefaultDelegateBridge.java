@@ -72,9 +72,9 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation) throws IllegalArgumentException, IllegalStateException {
-    final int[] rVal = m_randomSource.getRandom(max, count, annotation);
-    m_randomStats.addRandom(rVal, player, diceType);
-    return rVal;
+    final int[] randomValues = m_randomSource.getRandom(max, count, annotation);
+    m_randomStats.addRandom(randomValues, player, diceType);
+    return randomValues;
   }
 
   @Override

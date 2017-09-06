@@ -30,7 +30,7 @@ final class DownloadFileParser {
   public static List<DownloadFileDescription> parse(final InputStream is) {
     final JSONArray yamlData = new JSONArray(new Yaml().loadAs(is, List.class));
 
-    final List<DownloadFileDescription> rVal = new ArrayList<>();
+    final List<DownloadFileDescription> downloads = new ArrayList<>();
     StreamSupport.stream(yamlData.spliterator(), false).map(JSONObject.class::cast).forEach(yaml -> {
       final String url = yaml.getString(Tags.url.toString());
       final String description = yaml.getString(Tags.description.toString());
@@ -50,8 +50,8 @@ final class DownloadFileParser {
       final String img = yaml.optString(Tags.img.toString());
       final DownloadFileDescription dl =
           new DownloadFileDescription(url, description, mapName, version, downloadType, mapCategory, img);
-      rVal.add(dl);
+      downloads.add(dl);
     });
-    return rVal;
+    return downloads;
   }
 }

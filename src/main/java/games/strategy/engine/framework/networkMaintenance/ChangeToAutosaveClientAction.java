@@ -26,11 +26,11 @@ public class ChangeToAutosaveClientAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final int rVal = JOptionPane.showConfirmDialog(m_parent,
+    final int selectedOption = JOptionPane.showConfirmDialog(m_parent,
         new JLabel("Change Game To: " + m_typeOfAutosave.toString().toLowerCase()),
         "Change Game To: " + m_typeOfAutosave.toString().toLowerCase(), JOptionPane.OK_CANCEL_OPTION,
         JOptionPane.QUESTION_MESSAGE);
-    if (rVal != JOptionPane.OK_OPTION) {
+    if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
     m_clientMessenger.changeToLatestAutosave(m_typeOfAutosave);

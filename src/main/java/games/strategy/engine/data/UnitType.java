@@ -92,35 +92,35 @@ public class UnitType extends NamedAttachable {
    */
   public static Map<PlayerID, List<UnitType>> getAllPlayerUnitsWithImages(final GameData data,
       final IUIContext uiContext, final boolean forceIncludeNeutralPlayer) {
-    final LinkedHashMap<PlayerID, List<UnitType>> rVal = new LinkedHashMap<>();
+    final LinkedHashMap<PlayerID, List<UnitType>> unitTypes = new LinkedHashMap<>();
     data.acquireReadLock();
     try {
       for (final PlayerID p : data.getPlayerList().getPlayers()) {
-        rVal.put(p, getPlayerUnitsWithImages(p, data, uiContext));
+        unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
       }
       final HashSet<UnitType> unitsSoFar = new HashSet<>();
-      for (final List<UnitType> l : rVal.values()) {
+      for (final List<UnitType> l : unitTypes.values()) {
         unitsSoFar.addAll(l);
       }
       final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
       all.removeAll(unitsSoFar);
       if (forceIncludeNeutralPlayer || !all.isEmpty()) {
-        rVal.put(PlayerID.NULL_PLAYERID, getPlayerUnitsWithImages(PlayerID.NULL_PLAYERID, data, uiContext));
-        unitsSoFar.addAll(rVal.get(PlayerID.NULL_PLAYERID));
+        unitTypes.put(PlayerID.NULL_PLAYERID, getPlayerUnitsWithImages(PlayerID.NULL_PLAYERID, data, uiContext));
+        unitsSoFar.addAll(unitTypes.get(PlayerID.NULL_PLAYERID));
         all.removeAll(unitsSoFar);
         if (!all.isEmpty()) {
-          rVal.put(null, new ArrayList<>(all));
+          unitTypes.put(null, new ArrayList<>(all));
         }
       }
     } finally {
       data.releaseReadLock();
     }
-    return rVal;
+    return unitTypes;
   }
 
   private static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data,
       final IUIContext uiContext) {
-    final ArrayList<UnitType> rVal = new ArrayList<>();
+    final ArrayList<UnitType> unitTypes = new ArrayList<>();
     data.acquireReadLock();
     try {
       // add first based on current production ability
@@ -129,8 +129,8 @@ public class UnitType extends NamedAttachable {
           for (final Entry<NamedAttachable, Integer> entry : productionRule.getResults().entrySet()) {
             if (UnitType.class.isAssignableFrom(entry.getKey().getClass())) {
               final UnitType ut = (UnitType) entry.getKey();
-              if (!rVal.contains(ut)) {
-                rVal.add(ut);
+              if (!unitTypes.contains(ut)) {
+                unitTypes.add(ut);
               }
             }
           }
@@ -144,22 +144,22 @@ public class UnitType extends NamedAttachable {
         for (final Unit u : t.getUnits()) {
           if (u.getOwner().equals(player)) {
             final UnitType ut = u.getType();
-            if (!rVal.contains(ut)) {
-              rVal.add(ut);
+            if (!unitTypes.contains(ut)) {
+              unitTypes.add(ut);
             }
           }
         }
       }
       // now check if we have the art for anything that is left
       for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
-        if (!rVal.contains(ut)) {
+        if (!unitTypes.contains(ut)) {
           try {
             final UnitImageFactory imageFactory = uiContext.getUnitImageFactory();
             if (imageFactory != null) {
               final Optional<Image> unitImage = imageFactory.getImage(ut, player, false, false);
               if (unitImage.isPresent()) {
-                if (!rVal.contains(ut)) {
-                  rVal.add(ut);
+                if (!unitTypes.contains(ut)) {
+                  unitTypes.add(ut);
                 }
               }
             }
@@ -172,6 +172,6 @@ public class UnitType extends NamedAttachable {
     } finally {
       data.releaseReadLock();
     }
-    return rVal;
+    return unitTypes;
   }
 }

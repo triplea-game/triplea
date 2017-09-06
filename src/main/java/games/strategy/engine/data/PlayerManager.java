@@ -66,13 +66,13 @@ public class PlayerManager {
   }
 
   public Set<String> getPlayedBy(final INode playerNode) {
-    final Set<String> rVal = new HashSet<>();
+    final Set<String> players = new HashSet<>();
     for (final String player : m_playerMapping.keySet()) {
       if (m_playerMapping.get(player).equals(playerNode)) {
-        rVal.add(player);
+        players.add(player);
       }
     }
-    return rVal;
+    return players;
   }
 
   /**
