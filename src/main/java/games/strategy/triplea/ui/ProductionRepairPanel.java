@@ -128,10 +128,10 @@ public class ProductionRepairPanel extends JPanel {
           Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
               Matches.unitHasTakenSomeBombingUnitDamage());
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
-          Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
+          Matches.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
       for (final RepairRule repairRule : player.getRepairFrontier()) {
         for (final Territory terr : terrsWithPotentiallyDamagedUnits) {
-          for (final Unit unit : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
+          for (final Unit unit : Matches.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
             if (!repairRule.getResults().keySet().iterator().next().equals(unit.getType())) {
               continue;
             }

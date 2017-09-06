@@ -333,7 +333,7 @@ public class ProPurchaseOption {
         final Set<Unit> supportableUnits = new HashSet<>();
         for (final UnitSupportAttachment usa2 : bonusType) {
           numSupportProvided += supportLeft.getInt(usa2);
-          supportableUnits.addAll(Match.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));
+          supportableUnits.addAll(Matches.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));
         }
         final int numSupportableUnits = supportableUnits.size();
 

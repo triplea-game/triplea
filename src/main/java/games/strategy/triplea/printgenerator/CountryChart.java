@@ -25,7 +25,7 @@ class CountryChart {
   protected void saveToFile(final PlayerID player, final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
     final Collection<Territory> terrCollection =
-        Match.getMatches(gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+        Matches.getMatches(gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     Iterator<Territory> terrIterator = terrCollection.iterator();
     Iterator<UnitType> availableUnits = gameData.getUnitTypeList().iterator();
     while (terrIterator.hasNext()) {
@@ -66,7 +66,7 @@ class CountryChart {
       countryFileWriter.write("\r\n");
       // Print Territories and Info
       terrIterator =
-          Match.getMatches(gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player)).iterator();
+          Matches.getMatches(gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player)).iterator();
       while (terrIterator.hasNext()) {
         final Territory currentTerritory = terrIterator.next();
         countryFileWriter.write(currentTerritory.getName());

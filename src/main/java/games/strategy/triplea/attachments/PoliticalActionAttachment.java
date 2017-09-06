@@ -141,7 +141,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     if (!Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
       return new ArrayList<>();
     }
-    return Match.getMatches(getPoliticalActionAttachments(player),
+    return Matches.getMatches(getPoliticalActionAttachments(player),
         Match.allOf(
             Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions),
             Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));

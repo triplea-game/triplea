@@ -92,7 +92,7 @@ public class ProTerritoryValueUtils {
         double nearbySeaProductionValue = 0;
         final Set<Territory> nearbySeaTerritories =
             data.getMap().getNeighbors(t, 4, ProMatches.territoryCanMoveSeaUnits(player, data, true));
-        final List<Territory> nearbyEnemySeaTerritories = Match.getMatches(nearbySeaTerritories,
+        final List<Territory> nearbyEnemySeaTerritories = Matches.getMatches(nearbySeaTerritories,
             ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld));
         for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaTerritories) {
           final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbyEnemySeaTerritory,
@@ -110,7 +110,7 @@ public class ProTerritoryValueUtils {
         // Determine sea value based on nearby enemy sea units
         double nearbyEnemySeaUnitValue = 0;
         final List<Territory> nearbyEnemySeaUnitTerritories =
-            Match.getMatches(nearbySeaTerritories, Matches.territoryHasEnemyUnits(player, data));
+            Matches.getMatches(nearbySeaTerritories, Matches.territoryHasEnemyUnits(player, data));
         for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaUnitTerritories) {
           final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbyEnemySeaTerritory,
               ProMatches.territoryCanMoveSeaUnits(player, data, true));
@@ -161,10 +161,10 @@ public class ProTerritoryValueUtils {
     final GameData data = ProData.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
     enemyCapitalsAndFactories.addAll(
-        Match.getMatches(allTerritories, ProMatches.territoryHasInfraFactoryAndIsOwnedByPlayersOrCantBeHeld(player,
+        Matches.getMatches(allTerritories, ProMatches.territoryHasInfraFactoryAndIsOwnedByPlayersOrCantBeHeld(player,
             ProUtils.getPotentialEnemyPlayers(player), territoriesThatCantBeHeld)));
     final int numPotentialEnemyTerritories =
-        Match.countMatches(allTerritories, Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
+        Matches.countMatches(allTerritories, Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
     if (enemyCapitalsAndFactories.size() * 2 >= numPotentialEnemyTerritories) {
       enemyCapitalsAndFactories.clear();
     }
@@ -230,7 +230,7 @@ public class ProTerritoryValueUtils {
     double nearbyEnemyValue = 0;
     final Set<Territory> nearbyTerritories =
         data.getMap().getNeighbors(t, 2, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
-    final List<Territory> nearbyEnemyTerritories = Match.getMatches(nearbyTerritories,
+    final List<Territory> nearbyEnemyTerritories = Matches.getMatches(nearbyTerritories,
         ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld));
     nearbyEnemyTerritories.removeAll(territoriesToAttack);
     for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories) {
@@ -292,7 +292,7 @@ public class ProTerritoryValueUtils {
     double nearbyLandValue = 0;
     final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 3);
     final List<Territory> nearbyLandTerritories =
-        Match.getMatches(nearbyTerritories, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
+        Matches.getMatches(nearbyTerritories, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
     nearbyLandTerritories.removeAll(territoriesToAttack);
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
       final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbyLandTerritory,

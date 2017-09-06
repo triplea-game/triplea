@@ -67,7 +67,7 @@ public class NonFightingBattle extends DependentBattle {
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
         && Match.anyMatch(units, Matches.unitIsLand())) {
       getAmphibiousAttackTerritories().add(route.getTerritoryBeforeEnd());
-      m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.unitIsLand()));
+      m_amphibiousLandAttackers.addAll(Matches.getMatches(units, Matches.unitIsLand()));
       m_isAmphibious = true;
     }
     return ChangeFactory.EMPTY_CHANGE;
@@ -126,7 +126,7 @@ public class NonFightingBattle extends DependentBattle {
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
       if (route.getEnd() != null && !route.getEnd().isWater() && Match.anyMatch(units, Matches.unitIsLand())) {
-        m_amphibiousLandAttackers.removeAll(Match.getMatches(units, Matches.unitIsLand()));
+        m_amphibiousLandAttackers.removeAll(Matches.getMatches(units, Matches.unitIsLand()));
       }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
@@ -157,7 +157,7 @@ public class NonFightingBattle extends DependentBattle {
     }
     Collection<Unit> lost = getDependentUnits(units);
     lost.addAll(Util.intersection(units, m_attackingUnits));
-    lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
+    lost = Matches.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
     if (lost.size() != 0) {
       final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, lost);

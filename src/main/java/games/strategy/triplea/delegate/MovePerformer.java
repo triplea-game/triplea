@@ -149,8 +149,8 @@ public class MovePerformer implements Serializable {
         // territory. This means they
         // are still dependent during the middle steps of the route.
         final Collection<Unit> dependentOnSomethingTilTheEndOfRoute = new ArrayList<>();
-        final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.unitIsAirTransport());
-        final Collection<Unit> paratroops = Match.getMatches(arrived, Matches.unitIsAirTransportable());
+        final Collection<Unit> airTransports = Matches.getMatches(arrived, Matches.unitIsAirTransport());
+        final Collection<Unit> paratroops = Matches.getMatches(arrived, Matches.unitIsAirTransportable());
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
           final Map<Unit, Unit> transportingAir =
               TransportUtils.mapTransportsToLoad(paratroops, airTransports);
@@ -170,7 +170,7 @@ public class MovePerformer implements Serializable {
           boolean ignoreBattle = false;
           // could it be a bombing raid
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
-          final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits,
+          final Collection<Unit> enemyTargetsTotal = Matches.getMatches(enemyUnits,
               Match.allOf(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
                   Matches.unitIsBeingTransported().invert()));
           final Match.CompositeBuilder<Unit> allBombingRaidBuilder = Match.newCompositeBuilder(
@@ -184,9 +184,9 @@ public class MovePerformer implements Serializable {
           }
           final boolean allCanBomb = !arrived.isEmpty() && Match.allMatch(arrived, allBombingRaidBuilder.any());
           final Collection<Unit> enemyTargets =
-              Match.getMatches(enemyTargetsTotal,
+              Matches.getMatches(enemyTargetsTotal,
                   Matches.unitIsOfTypes(UnitAttachment
-                      .getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.unitIsStrategicBomber()),
+                      .getAllowedBombingTargetsIntersection(Matches.getMatches(arrived, Matches.unitIsStrategicBomber()),
                           data)));
           final boolean targetsOrEscort = !enemyTargets.isEmpty()
               || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle
@@ -316,7 +316,7 @@ public class MovePerformer implements Serializable {
       taRouteEnd = TerritoryAttachment.get(routeEnd);
     }
     // only units owned by us need to be marked
-    final Iterator<Unit> iter = Match.getMatches(units, Matches.unitIsOwnedBy(id)).iterator();
+    final Iterator<Unit> iter = Matches.getMatches(units, Matches.unitIsOwnedBy(id)).iterator();
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     while (iter.hasNext()) {
       final TripleAUnit unit = (TripleAUnit) iter.next();
@@ -338,7 +338,7 @@ public class MovePerformer implements Serializable {
     // if entered a non blitzed conquered territory, mark with 0 movement
     if (GameStepPropertiesHelper.isCombatMove(data)
         && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route))) {
-      for (final Unit unit : Match.getMatches(units, Matches.unitIsLand())) {
+      for (final Unit unit : Matches.getMatches(units, Matches.unitIsLand())) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }
@@ -348,7 +348,7 @@ public class MovePerformer implements Serializable {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
-      for (final Unit unit : Match.getMatches(units, Match.allOf(Matches.unitIsSub(), Matches.unitIsAir().invert()))) {
+      for (final Unit unit : Matches.getMatches(units, Match.allOf(Matches.unitIsSub(), Matches.unitIsAir().invert()))) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }
@@ -370,7 +370,7 @@ public class MovePerformer implements Serializable {
     final boolean paratroopsLanding = Match.anyMatch(arrived, paratroopNAirTransports)
         && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
     final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =
-        MoveValidator.getDependents(Match.getMatches(arrived, Matches.unitCanTransport()));
+        MoveValidator.getDependents(Matches.getMatches(arrived, Matches.unitCanTransport()));
     // add newly created dependents
     if (m_newDependents != null) {
       for (final Entry<Unit, Collection<Unit>> entry : m_newDependents.entrySet()) {
@@ -386,7 +386,7 @@ public class MovePerformer implements Serializable {
     // If paratroops moved normally (within their normal movement) remove their dependency to the airTransports
     // So they can all continue to move normally
     if (!paratroopsLanding && !dependentAirTransportableUnits.isEmpty()) {
-      final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.unitIsAirTransport());
+      final Collection<Unit> airTransports = Matches.getMatches(arrived, Matches.unitIsAirTransport());
       airTransports.addAll(dependentAirTransportableUnits.keySet());
       MovePanel.clearDependents(airTransports);
     }

@@ -155,7 +155,7 @@ public class CanalAttachment extends DefaultAttachment {
   public HashSet<UnitType> getExcludedUnits() {
     if (m_excludedUnits == null) {
       return new HashSet<>(
-          Match.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
+          Matches.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
     }
     return m_excludedUnits;
   }

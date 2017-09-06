@@ -127,8 +127,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
         continue;
       }
       // map transports, try to fill
-      final Collection<Unit> transports = Match.getMatches(units, Matches.unitIsTransport());
-      final Collection<Unit> land = Match.getMatches(units, Matches.unitIsLand());
+      final Collection<Unit> transports = Matches.getMatches(units, Matches.unitIsTransport());
+      final Collection<Unit> land = Matches.getMatches(units, Matches.unitIsLand());
       for (final Unit toLoad : land) {
         final UnitAttachment ua = UnitAttachment.get(toLoad.getType());
         final int cost = ua.getTransportCost();

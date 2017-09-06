@@ -132,12 +132,12 @@ public class BattleDisplay extends JPanel {
     uiContext = mapPanel.getUiContext();
     casualties = new CasualtyNotificationPanel(data, this.mapPanel.getUiContext());
     if (killedUnits != null && attackingWaitingToDie != null && defendingWaitingToDie != null) {
-      final Collection<Unit> attackerUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
+      final Collection<Unit> attackerUnitsKilled = Matches.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
       attackerUnitsKilled.addAll(attackingWaitingToDie);
       if (!attackerUnitsKilled.isEmpty()) {
         updateKilledUnits(attackerUnitsKilled, attacker);
       }
-      final Collection<Unit> defenderUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
+      final Collection<Unit> defenderUnitsKilled = Matches.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
       defenderUnitsKilled.addAll(defendingWaitingToDie);
       if (!defenderUnitsKilled.isEmpty()) {
         updateKilledUnits(defenderUnitsKilled, defender);

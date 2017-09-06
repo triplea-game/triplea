@@ -66,8 +66,8 @@ public class ProSimulateTurnUtils {
         // Make updates to data
         final List<Unit> attackersToRemove = new ArrayList<>(attackers);
         attackersToRemove.removeAll(remainingUnits);
-        final List<Unit> defendersToRemove = Match.getMatches(defenders, Matches.unitIsInfrastructure().invert());
-        final List<Unit> infrastructureToChangeOwner = Match.getMatches(defenders, Matches.unitIsInfrastructure());
+        final List<Unit> defendersToRemove = Matches.getMatches(defenders, Matches.unitIsInfrastructure().invert());
+        final List<Unit> infrastructureToChangeOwner = Matches.getMatches(defenders, Matches.unitIsInfrastructure());
         ProLogger.debug("attackersToRemove=" + attackersToRemove);
         ProLogger.debug("defendersToRemove=" + defendersToRemove);
         ProLogger.debug("infrastructureToChangeOwner=" + infrastructureToChangeOwner);
@@ -167,7 +167,7 @@ public class ProSimulateTurnUtils {
       // Give capital and any allied territories back to original owner
       final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
-          Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
+          Matches.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       friendlyTerritories.add(t);
       for (final Territory item : friendlyTerritories) {
         if (item.getOwner() == terrOrigOwner) {
@@ -175,7 +175,7 @@ public class ProSimulateTurnUtils {
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
         delegateBridge.addChange(takeOverFriendlyTerritories);
-        final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
+        final Collection<Unit> units = Matches.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, t);
           delegateBridge.addChange(takeOverNonComUnits);

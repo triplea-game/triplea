@@ -346,7 +346,7 @@ public class TuvUtils {
    */
   public static int getTuv(final Collection<Unit> units, final PlayerID player, final IntegerMap<UnitType> costs,
       final GameData data) {
-    final Collection<Unit> playerUnits = Match.getMatches(units, Matches.alliedUnit(player, data));
+    final Collection<Unit> playerUnits = Matches.getMatches(units, Matches.alliedUnit(player, data));
     return getTuv(playerUnits, costs);
   }
 

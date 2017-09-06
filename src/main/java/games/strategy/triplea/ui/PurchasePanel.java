@@ -161,7 +161,7 @@ public class PurchasePanel extends ActionPanel {
         int totalProd = 0;
         getData().acquireReadLock();
         try {
-          for (final Territory t : Match.getMatches(getData().getMap().getTerritories(),
+          for (final Territory t : Matches.getMatches(getData().getMap().getTerritories(),
               Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getCurrentPlayer()))) {
             totalProd += TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, getCurrentPlayer(),
                 getData(), true, true);
@@ -182,7 +182,7 @@ public class PurchasePanel extends ActionPanel {
         }
         final PlayerID player = getCurrentPlayer();
         final Collection<Unit> unitsNeedingFactory =
-            Match.getMatches(player.getUnits().getUnits(), Matches.unitIsNotConstruction());
+            Matches.getMatches(player.getUnits().getUnits(), Matches.unitIsNotConstruction());
         if (!bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
           final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size())
               + " units, and can only place " + totalProd + " of them. Continue with purchase?";

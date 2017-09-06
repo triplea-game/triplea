@@ -151,7 +151,7 @@ public class ProTransportUtils {
     final GameData data = ProData.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
-    final Collection<Unit> airUnits = Match.getMatches(units, ProMatches.unitIsAlliedAir(player, data));
+    final Collection<Unit> airUnits = Matches.getMatches(units, ProMatches.unitIsAlliedAir(player, data));
     final List<Unit> airThatCantLand = new ArrayList<>();
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
@@ -172,7 +172,7 @@ public class ProTransportUtils {
     final GameData data = ProData.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
-    final Collection<Unit> airUnits = Match.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player, data));
+    final Collection<Unit> airUnits = Matches.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player, data));
     airUnits.add(newUnit);
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
@@ -204,7 +204,7 @@ public class ProTransportUtils {
     }
 
     // Find nearby air unit carrier cost
-    final Collection<Unit> airUnits = Match.getMatches(ownedNearbyUnits, ProMatches.unitIsOwnedAir(player));
+    final Collection<Unit> airUnits = Matches.getMatches(ownedNearbyUnits, ProMatches.unitIsOwnedAir(player));
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
       final int cost = ua.getCarrierCost();
@@ -219,7 +219,7 @@ public class ProTransportUtils {
     final List<Unit> units = new ArrayList<>(unitsToPlace);
     units.addAll(t.getUnits().getUnits());
     int capacity = AirMovementValidator.carrierCapacity(units, t);
-    final Collection<Unit> airUnits = Match.getMatches(units, ProMatches.unitIsOwnedAir(player));
+    final Collection<Unit> airUnits = Matches.getMatches(units, ProMatches.unitIsOwnedAir(player));
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
       final int cost = ua.getCarrierCost();

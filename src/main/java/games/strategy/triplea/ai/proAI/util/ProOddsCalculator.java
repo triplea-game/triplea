@@ -139,9 +139,9 @@ public class ProOddsCalculator {
     final List<Unit> averageAttackersRemaining = results.getAverageAttackingUnitsRemaining();
     final List<Unit> averageDefendersRemaining = results.getAverageDefendingUnitsRemaining();
     final List<Unit> mainCombatAttackers =
-        Match.getMatches(attackingUnits, Matches.unitCanBeInBattle(true, !t.isWater(), 1, false, true, true));
+        Matches.getMatches(attackingUnits, Matches.unitCanBeInBattle(true, !t.isWater(), 1, false, true, true));
     final List<Unit> mainCombatDefenders =
-        Match.getMatches(defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, false, true, true));
+        Matches.getMatches(defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, false, true, true));
     double tuvSwing = results.getAverageTUVswing(attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
     if (Matches.territoryIsNeutralButNotWater().match(t)) { // Set TUV swing for neutrals
       final double attackingUnitValue = TuvUtils.getTuv(mainCombatAttackers, ProData.unitValueMap);
@@ -149,7 +149,7 @@ public class ProOddsCalculator {
           results.getAverageTUVofUnitsLeftOver(ProData.unitValueMap, ProData.unitValueMap).getFirst();
       tuvSwing = remainingUnitValue - attackingUnitValue;
     }
-    final List<Unit> defendingTransportedUnits = Match.getMatches(defendingUnits, Matches.unitIsBeingTransported());
+    final List<Unit> defendingTransportedUnits = Matches.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) { // Add TUV swing for transported units
       final double transportedUnitValue = TuvUtils.getTuv(defendingTransportedUnits, ProData.unitValueMap);
       tuvSwing += transportedUnitValue * winPercentage / 100;

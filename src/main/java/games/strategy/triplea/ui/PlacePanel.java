@@ -133,15 +133,15 @@ public class PlacePanel extends AbstractMovePanel {
       if (territory.isWater()) {
         if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers()
             || isLhtrCarrierProductionRules() || GameStepPropertiesHelper.isBid(getData()))) {
-          units = Match.getMatches(units, Matches.unitIsSea());
+          units = Matches.getMatches(units, Matches.unitIsSea());
         } else {
           final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(
               Matches.unitIsSea(),
               Matches.unitCanLandOnCarrier());
-          units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
+          units = Matches.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {
-        units = Match.getMatches(units, Matches.unitIsNotSea());
+        units = Matches.getMatches(units, Matches.unitIsNotSea());
       }
       if (units.isEmpty()) {
         return Collections.emptyList();

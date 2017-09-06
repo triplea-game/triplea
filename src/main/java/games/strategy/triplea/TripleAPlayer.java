@@ -392,7 +392,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
             Matches.unitHasTakenSomeBombingUnitDamage());
         final Collection<Unit> damagedUnits = new ArrayList<>();
         for (final Territory t : data.getMap().getTerritories()) {
-          damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
+          damagedUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), myDamaged));
         }
         if (damagedUnits.size() > 0) {
           final HashMap<Unit, IntegerMap<RepairRule>> repair =

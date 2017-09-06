@@ -330,8 +330,8 @@ final class ProTechAI {
       }
     }
     if (attacking && !sea) {
-      final int art = Match.countMatches(units, Matches.unitIsArtillery());
-      final int artSupport = Match.countMatches(units, Matches.unitIsArtillerySupportable());
+      final int art = Matches.countMatches(units, Matches.unitIsArtillery());
+      final int artSupport = Matches.countMatches(units, Matches.unitIsArtillerySupportable());
       strength += Math.min(art, artSupport);
     }
     return strength;
@@ -615,7 +615,7 @@ final class ProTechAI {
     if (!neutral || Properties.getNeutralsImpassable(data)) {
       endCondBuilder.add(Matches.territoryIsNeutralButNotWater().invert());
     }
-    return findFontier(territory, endCondBuilder.all(), Match.always(), distance, data);
+    return findFontier(territory, endCondBuilder.all(), Matches.always(), distance, data);
   }
 
   /**

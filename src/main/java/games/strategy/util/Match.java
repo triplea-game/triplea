@@ -5,12 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * A utility for seeing which elements in a collection satisfy a given condition.
@@ -38,55 +33,6 @@ public final class Match<T> {
   }
 
   /**
-   * Returns a match whose condition is always satisfied.
-   *
-   * @return A match; never {@code null}.
-   */
-  public static <T> Match<T> always() {
-    return Match.of(it -> true);
-  }
-
-  /**
-   * Returns a match whose condition is never satisfied.
-   *
-   * @return A match; never {@code null}.
-   */
-  public static <T> Match<T> never() {
-    return Match.of(it -> false);
-  }
-
-  /**
-   * Returns the elements of the collection that match.
-   */
-  public static <T> List<T> getMatches(final Collection<T> collection, final Match<T> match) {
-    return collection.stream().filter(match::match).collect(Collectors.toList());
-  }
-
-  /**
-   * Only returns the first n matches.
-   * If n matches cannot be found will return all matches that
-   * can be found.
-   */
-  public static <T> List<T> getNMatches(final Collection<T> collection, final int max, final Match<T> match) {
-    if (max == 0 || collection.isEmpty()) {
-      return Collections.emptyList();
-    }
-    if (max < 0) {
-      throw new IllegalArgumentException("max must be positive, instead its:" + max);
-    }
-    final List<T> matches = new ArrayList<>(Math.min(max, collection.size()));
-    for (final T current : collection) {
-      if (match.match(current)) {
-        matches.add(current);
-      }
-      if (matches.size() == max) {
-        return matches;
-      }
-    }
-    return matches;
-  }
-
-  /**
    * returns true if all elements in the collection match.
    */
   public static <T> boolean allMatch(final Collection<T> collection, final Match<T> match) {
@@ -105,21 +51,6 @@ public final class Match<T> {
    */
   public static <T> boolean noneMatch(final Collection<T> collection, final Match<T> match) {
     return collection.stream().noneMatch(match::match);
-  }
-
-  /**
-   * Returns the number of matches found.
-   */
-  public static <T> int countMatches(final Collection<T> collection, final Match<T> match) {
-    return (int) collection.stream().filter(match::match).count();
-  }
-
-  /**
-   * return the keys where the value keyed by the key matches valueMatch.
-   */
-  public static <K, V> Set<K> getKeysWhereValueMatch(final Map<K, V> map, final Match<V> valueMatch) {
-    return map.entrySet().stream().filter(entry -> valueMatch.match(entry.getValue())).map(entry -> entry.getKey())
-        .collect(Collectors.toSet());
   }
 
   /**

@@ -1066,7 +1066,7 @@ public class UnitAttachment extends DefaultAttachment {
       final String filterForAbility, final GameData data) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
-        getUnitTypesFromUnitList(Match.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
+        getUnitTypesFromUnitList(Matches.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
       final Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
       for (final String receive : receives) {
@@ -1075,7 +1075,7 @@ public class UnitAttachment extends DefaultAttachment {
           continue;
         }
         map.put(Tuple.of(s[0], s[1]),
-            Match.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
+            Matches.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
       }
     }
     return map;
@@ -1091,7 +1091,7 @@ public class UnitAttachment extends DefaultAttachment {
     final IntegerMap<Tuple<String, String>> whichGive =
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
-      final Collection<Unit> receives = Match.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
+      final Collection<Unit> receives = Matches.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
           Matches.unitCanReceiveAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
       whichReceiveNoDuplicates.addAll(receives);
       unitsCopy.removeAll(receives);
@@ -2654,7 +2654,7 @@ public class UnitAttachment extends DefaultAttachment {
       stackingMatchBuilder.add(Matches.isUnitAllied(owner, data));
     }
     // else if (stackingType.equals("total"))
-    final int totalInTerritory = Match.countMatches(t.getUnits().getUnits(), stackingMatchBuilder.all());
+    final int totalInTerritory = Matches.countMatches(t.getUnits().getUnits(), stackingMatchBuilder.all());
     return Math.max(0, max - totalInTerritory);
   }
 
@@ -3088,7 +3088,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Give Attack Bonus To Other Units, ");
     } else {
       final List<UnitSupportAttachment> supports =
-          Match.getMatches(UnitSupportAttachment.get(unitType), Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
+          Matches.getMatches(UnitSupportAttachment.get(unitType), Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
       if (supports.size() > 0) {
         if (supports.size() > 2) {
           stats.append("can Modify Power Of Other Units, ");

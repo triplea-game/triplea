@@ -171,14 +171,14 @@ public class AirBattle extends AbstractBattle {
             attackerSuicideBuilder.add(Matches.unitIsNotStrategicBomber());
           }
           if (Match.anyMatch(m_attackingUnits, attackerSuicideBuilder.all())) {
-            final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.unitIsSuicide());
+            final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
             m_attackingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
             tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, attackerCosts, m_data);
             m_attackerLostTUV += tuvLostAttacker;
           }
           if (Match.anyMatch(m_defendingUnits, Matches.unitIsSuicide())) {
-            final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.unitIsSuicide());
+            final List<Unit> suicideUnits = Matches.getMatches(m_defendingUnits, Matches.unitIsSuicide());
             m_defendingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
             tuvLostDefender = TuvUtils.getTuv(suicideUnits, m_defender, defenderCosts, m_data);
@@ -301,7 +301,7 @@ public class AirBattle extends AbstractBattle {
     // so we do not have to create normal battles, only bombing raids
     // setup new battle here
     if (m_isBombingRun) {
-      final Collection<Unit> bombers = Match.getMatches(m_attackingUnits, Matches.unitIsStrategicBomber());
+      final Collection<Unit> bombers = Matches.getMatches(m_attackingUnits, Matches.unitIsStrategicBomber());
       if (!bombers.isEmpty()) {
         HashMap<Unit, HashSet<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits()
@@ -310,7 +310,7 @@ public class AirBattle extends AbstractBattle {
                 Matches.unitIsBeingTransported().invert()));
         for (final Unit unit : bombers) {
           final Collection<Unit> enemyTargets =
-              Match.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
+              Matches.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
           if (!enemyTargets.isEmpty()) {
             Unit target = null;
             if (enemyTargets.size() > 1

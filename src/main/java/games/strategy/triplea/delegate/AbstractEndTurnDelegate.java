@@ -363,7 +363,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return 0;
     }
     final GameMap map = data.getMap();
-    final Collection<Territory> blockable = Match.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone());
+    final Collection<Territory> blockable = Matches.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone());
     if (blockable.isEmpty()) {
       return 0;
     }
@@ -377,14 +377,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     for (final Territory b : blockable) {
       // match will check for land, convoy zones, and also contested territories
       final List<Territory> viableNeighbors =
-          Match.getMatches(map.getNeighbors(b), Match.allOf(Matches.isTerritoryOwnedBy(player),
+          Matches.getMatches(map.getNeighbors(b), Match.allOf(Matches.isTerritoryOwnedBy(player),
               Matches.territoryCanCollectIncomeFrom(player, data)));
       final int maxLoss = getProduction(viableNeighbors);
       if (maxLoss <= 0) {
         continue;
       }
       int loss = 0;
-      final Collection<Unit> enemies = Match.getMatches(b.getUnits().getUnits(), enemyUnits);
+      final Collection<Unit> enemies = Matches.getMatches(b.getUnits().getUnits(), enemyUnits);
       if (enemies.isEmpty()) {
         continue;
       }

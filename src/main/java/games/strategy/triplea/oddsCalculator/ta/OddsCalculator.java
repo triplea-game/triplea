@@ -343,7 +343,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     final List<Unit> order = new ArrayList<>();
     for (final Tuple<Integer, UnitType> section : map) {
       final List<Unit> unitsOfType =
-          Match.getNMatches(unitsLeft, section.getFirst(), Matches.unitIsOfType(section.getSecond()));
+          Matches.getNMatches(unitsLeft, section.getFirst(), Matches.unitIsOfType(section.getSecond()));
       order.addAll(unitsOfType);
       unitsLeft.removeAll(unitsOfType);
     }
@@ -618,7 +618,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
           return null;
         }
         final Collection<Unit> unitsLeft = isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
-        final Collection<Unit> airLeft = Match.getMatches(unitsLeft, Matches.unitIsAir());
+        final Collection<Unit> airLeft = Matches.getMatches(unitsLeft, Matches.unitIsAir());
         if (retreatWhenOnlyAirLeft) {
           // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
           // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken
@@ -656,7 +656,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
         // no land units left, but we have a non land unit to kill and land unit was killed
         if (!Match.anyMatch(notKilled, Matches.unitIsLand()) && Match.anyMatch(notKilled, Matches.unitIsNotLand())
             && Match.anyMatch(killedUnits, Matches.unitIsLand())) {
-          final List<Unit> notKilledAndNotLand = Match.getMatches(notKilled, Matches.unitIsNotLand());
+          final List<Unit> notKilledAndNotLand = Matches.getMatches(notKilled, Matches.unitIsNotLand());
           // sort according to cost
           Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());
           // remove the last killed unit, this should be the strongest

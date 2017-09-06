@@ -77,7 +77,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
               TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
           // get all triggers that are satisfied based on the tested conditions.
           final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-              Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+              Matches.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
           // now list out individual types to fire, once for each of the matches above.
           TriggerAttachment.triggerProductionChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
               true);

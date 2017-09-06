@@ -62,7 +62,7 @@ public class ProData {
     }
     areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    myUnitTerritories = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+    myUnitTerritories = Matches.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     unitTerritoryMap = ProUtils.createUnitTerritoryMap();
     unitValueMap = TuvUtils.getCostsForTuv(player, data);
     purchaseOptions = new ProPurchaseOptionMap(player, data);

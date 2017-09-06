@@ -757,7 +757,7 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
     final Tuple<Integer, Integer> movementLeft =
-        TripleAUnit.getMinAndMaxMovementLeft(Match.getMatches(units, Matches.unitIsBeingTransported().invert()));
+        TripleAUnit.getMinAndMaxMovementLeft(Matches.getMatches(units, Matches.unitIsBeingTransported().invert()));
     movementLeftForCurrentUnits =
         movementLeft.getFirst() + (movementLeft.getSecond() > movementLeft.getFirst() ? "+" : "");
     final Set<UnitCategory> categories = UnitSeperator.categorize(units);

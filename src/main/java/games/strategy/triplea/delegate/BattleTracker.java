@@ -151,7 +151,7 @@ public class BattleTracker implements Serializable {
   boolean didAllThesePlayersJustGoToWarThisTurn(final PlayerID p1, final Collection<Unit> enemyUnits,
       final GameData data) {
     final Set<PlayerID> enemies = new HashSet<>();
-    for (final Unit u : Match.getMatches(enemyUnits, Matches.unitIsEnemyOf(data, p1))) {
+    for (final Unit u : Matches.getMatches(enemyUnits, Matches.unitIsEnemyOf(data, p1))) {
       enemies.add(u.getOwner());
     }
     for (final PlayerID e : enemies) {
@@ -307,7 +307,7 @@ public class BattleTracker implements Serializable {
       // create both an air battle and a normal battle
       if (!airBattleCompleted && Properties.getBattlesMayBePreceededByAirBattles(data)
           && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, bombing)) {
-        addAirBattle(route, Match.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts()), id, data, false);
+        addAirBattle(route, Matches.getMatches(units, AirBattle.attackingGroundSeaBattleEscorts()), id, data, false);
       }
       final Change change = addMustFightBattleChange(route, units, id, data);
       bridge.addChange(change);
@@ -383,7 +383,7 @@ public class BattleTracker implements Serializable {
       final IDelegateBridge bridge, final UndoableMove changeTracker,
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     final GameData data = bridge.getData();
-    final Collection<Unit> canConquer = Match.getMatches(units,
+    final Collection<Unit> canConquer = Matches.getMatches(units,
         Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).invert());
     if (Match.noneMatch(canConquer, Matches.unitIsNotAir())) {
       return;
@@ -409,9 +409,9 @@ public class BattleTracker implements Serializable {
     }
     // we handle the end of the route later
     conquered.remove(route.getEnd());
-    final Collection<Territory> blitzed = Match.getMatches(conquered, Matches.territoryIsBlitzable(id, data));
-    m_blitzed.addAll(Match.getMatches(blitzed, Matches.isTerritoryEnemy(id, data)));
-    m_conquered.addAll(Match.getMatches(conquered, Matches.isTerritoryEnemy(id, data)));
+    final Collection<Territory> blitzed = Matches.getMatches(conquered, Matches.territoryIsBlitzable(id, data));
+    m_blitzed.addAll(Matches.getMatches(blitzed, Matches.isTerritoryEnemy(id, data)));
+    m_conquered.addAll(Matches.getMatches(conquered, Matches.isTerritoryEnemy(id, data)));
     for (final Territory current : conquered) {
       IBattle nonFight = getPendingBattle(current, false, BattleType.NORMAL);
       // TODO: if we ever want to scramble to a blitzed territory, then we need to fix this
@@ -496,20 +496,20 @@ public class BattleTracker implements Serializable {
       int totalMatches = 0;
       // Total Attacking Sea units = all units - land units - air units - submerged subs
       // Also subtract transports & subs (if they can't control sea zones)
-      totalMatches = arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.unitIsLand())
-          - Match.countMatches(arrivedUnits, Matches.unitIsAir())
-          - Match.countMatches(arrivedUnits, Matches.unitIsSubmerged());
+      totalMatches = arrivedUnits.size() - Matches.countMatches(arrivedUnits, Matches.unitIsLand())
+          - Matches.countMatches(arrivedUnits, Matches.unitIsAir())
+          - Matches.countMatches(arrivedUnits, Matches.unitIsSubmerged());
       // If transports are restricted from controlling sea zones, subtract them
       final Match<Unit> transportsCanNotControl = Match.allOf(
           Matches.unitIsTransportAndNotDestroyer(),
           Matches.unitIsTransportButNotCombatTransport());
       if (!Properties.getTransportControlSeaZone(data)) {
-        totalMatches -= Match.countMatches(arrivedUnits, transportsCanNotControl);
+        totalMatches -= Matches.countMatches(arrivedUnits, transportsCanNotControl);
       }
       // TODO check if istrn and NOT isDD
       // If subs are restricted from controlling sea zones, subtract them
       if (Properties.getSubControlSeaZoneRestricted(data)) {
-        totalMatches -= Match.countMatches(arrivedUnits, Matches.unitIsSub());
+        totalMatches -= Matches.countMatches(arrivedUnits, Matches.unitIsSub());
       }
       if (totalMatches == 0) {
         return;
@@ -527,13 +527,13 @@ public class BattleTracker implements Serializable {
         }
         final PlayerID convoyOwner = convoy.getOwner();
         if (relationshipTracker.isAllied(id, convoyOwner)) {
-          if (Match.getMatches(cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data)).size() <= 0) {
+          if (Matches.getMatches(cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data)).size() <= 0) {
             bridge.getHistoryWriter()
                 .addChildToEvent(convoyOwner.getName() + " gains " + cta.getProduction() + " production in "
                     + convoy.getName() + " for the liberation the convoy route in " + territory.getName());
           }
         } else if (relationshipTracker.isAtWar(id, convoyOwner)) {
-          if (Match.getMatches(cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data)).size() == 1) {
+          if (Matches.getMatches(cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data)).size() == 1) {
             bridge.getHistoryWriter()
                 .addChildToEvent(convoyOwner.getName() + " loses " + cta.getProduction() + " production in "
                     + convoy.getName() + " due to the capture of the convoy route in " + territory.getName());
@@ -707,7 +707,7 @@ public class BattleTracker implements Serializable {
       // if it is give it back to the original owner
       final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
-          Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
+          Matches.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       // give back the factories as well.
       for (final Territory item : friendlyTerritories) {
         if (item.getOwner() == terrOrigOwner) {
@@ -719,7 +719,7 @@ public class BattleTracker implements Serializable {
         if (changeTracker != null) {
           changeTracker.addChange(takeOverFriendlyTerritories);
         }
-        final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
+        final Collection<Unit> units = Matches.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);
           bridge.addChange(takeOverNonComUnits);
@@ -733,7 +733,7 @@ public class BattleTracker implements Serializable {
     // if the territory being taken over is water, then do not say any land units were in combat
     // (they may want to unload from the transport and attack)
     if (Matches.territoryIsWater().match(territory) && arrivedUnits != null) {
-      arrivedUnits.removeAll(Match.getMatches(arrivedUnits, Matches.unitIsLand()));
+      arrivedUnits.removeAll(Matches.getMatches(arrivedUnits, Matches.unitIsLand()));
     }
     markWasInCombat(arrivedUnits, bridge, changeTracker);
   }
@@ -789,7 +789,7 @@ public class BattleTracker implements Serializable {
     // change any units that change unit types on capture
     if (Properties.getUnitsCanBeChangedOnCapture(data)) {
       final Collection<Unit> toReplace =
-          Match.getMatches(nonCom, Matches.unitWhenCapturedChangesIntoDifferentUnitType());
+          Matches.getMatches(nonCom, Matches.unitWhenCapturedChangesIntoDifferentUnitType());
       for (final Unit u : toReplace) {
         final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> map =
             UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
@@ -865,7 +865,7 @@ public class BattleTracker implements Serializable {
       return ChangeFactory.EMPTY_CHANGE;
     }
     // if just an enemy factory &/or AA then no battle
-    final Collection<Unit> enemyUnits = Match.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
+    final Collection<Unit> enemyUnits = Matches.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
     if (route.getEnd() != null && !enemyUnits.isEmpty() && Match.allMatch(enemyUnits, Matches.unitIsInfrastructure())) {
       return ChangeFactory.EMPTY_CHANGE;
     }
@@ -979,7 +979,7 @@ public class BattleTracker implements Serializable {
     if (dependent == null) {
       return Collections.emptyList();
     }
-    return Match.getMatches(dependent, Matches.battleIsEmpty().invert());
+    return Matches.getMatches(dependent, Matches.battleIsEmpty().invert());
   }
 
   /**
@@ -1158,7 +1158,7 @@ public class BattleTracker implements Serializable {
 
   private static List<Unit> getSortedDefendingUnits(final IDelegateBridge bridge, final GameData gameData,
       final Territory territory, final List<Unit> defenders) {
-    final List<Unit> sortedUnitsList = new ArrayList<>(Match.getMatches(defenders,
+    final List<Unit> sortedUnitsList = new ArrayList<>(Matches.getMatches(defenders,
         Matches.unitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
     Collections.sort(sortedUnitsList,
         new UnitBattleComparator(false, TuvUtils.getCostsForTuv(bridge.getPlayerID(), gameData),
