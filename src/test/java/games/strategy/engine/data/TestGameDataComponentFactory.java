@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Arrays;
 
+import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.FakeTechAdvance;
 import games.strategy.util.IntegerMap;
 
@@ -120,6 +121,25 @@ public final class TestGameDataComponentFactory {
         newFakeTechAdvance(gameData, "Tech Advance 1"),
         newFakeTechAdvance(gameData, "Tech Advance 2")));
     return technologyFrontier;
+  }
+
+  /**
+   * Creates a new {@link Unit} instance.
+   *
+   * @param gameData The game data that owns the component.
+   * @param owner The player that owns the unit.
+   * @param typeName The name of the unit type.
+   *
+   * @return A new {@link Unit} instance.
+   */
+  public static Unit newUnit(final GameData gameData, final PlayerID owner, final String typeName) {
+    checkNotNull(gameData);
+    checkNotNull(owner);
+    checkNotNull(typeName);
+
+    final Unit unit = new Unit(newUnitType(gameData, typeName), owner, gameData, new GUID());
+    unit.setHits(42);
+    return unit;
   }
 
   /**
