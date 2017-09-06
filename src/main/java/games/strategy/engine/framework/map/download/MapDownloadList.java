@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static games.strategy.util.PredicateUtils.not;
+import static games.strategy.util.Util.not;
 
 import java.util.ArrayList;
 import java.util.Collection;

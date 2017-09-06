@@ -29,8 +29,16 @@ public class UtilTest {
         "6bed2b94f7204211ba1ce66869096a59898688088d482e12c95a9778d2adf2ab"
             + "aee05890f97f73e4274742c69adf51406c0535452c9ec2e2adbf98048526b30c",
         Util.sha512("WWII"));
-    
+
     catchException(() -> Util.sha512(null));
     assertThat(caughtException(), is(instanceOf(NullPointerException.class)));
+  }
+
+  @Test
+  public void not_ShouldReturnLogicalNegationOfPredicate() {
+    final Object t = new Object();
+
+    assertThat(Util.not(it -> false).test(t), is(true));
+    assertThat(Util.not(it -> true).test(t), is(false));
   }
 }
