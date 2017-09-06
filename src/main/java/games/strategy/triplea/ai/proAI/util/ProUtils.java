@@ -146,7 +146,8 @@ public class ProUtils {
     for (final PlayerID otherPlayer : enemyPlayers) {
       enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
     }
-    enemyCapitals.retainAll(Matches.getMatches(enemyCapitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
+    enemyCapitals
+        .retainAll(Matches.getMatches(enemyCapitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
     enemyCapitals
         .retainAll(Matches.getMatches(enemyCapitals, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player))));
     return enemyCapitals;

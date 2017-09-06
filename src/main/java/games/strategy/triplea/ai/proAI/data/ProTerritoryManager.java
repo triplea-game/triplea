@@ -791,8 +791,8 @@ public class ProTerritoryManager {
         final Set<Territory> potentialTerritories =
             new HashSet<>(Matches.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
         if (!isCombatMove && Matches.unitCanLandOnCarrier().match(myAirUnit)) {
-          potentialTerritories
-              .addAll(Matches.getMatches(possibleMoveTerritories, Matches.territoryIsInList(possibleCarrierTerritories)));
+          potentialTerritories.addAll(
+              Matches.getMatches(possibleMoveTerritories, Matches.territoryIsInList(possibleCarrierTerritories)));
         }
 
 

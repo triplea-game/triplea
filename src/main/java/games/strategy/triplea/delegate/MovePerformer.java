@@ -186,7 +186,8 @@ public class MovePerformer implements Serializable {
           final Collection<Unit> enemyTargets =
               Matches.getMatches(enemyTargetsTotal,
                   Matches.unitIsOfTypes(UnitAttachment
-                      .getAllowedBombingTargetsIntersection(Matches.getMatches(arrived, Matches.unitIsStrategicBomber()),
+                      .getAllowedBombingTargetsIntersection(
+                          Matches.getMatches(arrived, Matches.unitIsStrategicBomber()),
                           data)));
           final boolean targetsOrEscort = !enemyTargets.isEmpty()
               || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle
@@ -348,7 +349,8 @@ public class MovePerformer implements Serializable {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
-      for (final Unit unit : Matches.getMatches(units, Match.allOf(Matches.unitIsSub(), Matches.unitIsAir().invert()))) {
+      for (final Unit unit : Matches.getMatches(units,
+          Match.allOf(Matches.unitIsSub(), Matches.unitIsAir().invert()))) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }

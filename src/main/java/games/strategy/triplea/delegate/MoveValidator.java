@@ -1051,7 +1051,8 @@ public class MoveValidator {
     // if we are land make sure no water in route except for transport
     // situations
     final Collection<Unit> land = Matches.getMatches(units, Matches.unitIsLand());
-    final Collection<Unit> landAndAir = Matches.getMatches(units, Match.anyOf(Matches.unitIsLand(), Matches.unitIsAir()));
+    final Collection<Unit> landAndAir =
+        Matches.getMatches(units, Match.anyOf(Matches.unitIsLand(), Matches.unitIsAir()));
     // make sure we can be transported
     final Match<Unit> cantBeTransported = Matches.unitCanBeTransported().invert();
     for (final Unit unit : Matches.getMatches(land, cantBeTransported)) {

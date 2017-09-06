@@ -296,7 +296,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!didIt) {
       throw new IllegalStateException("Something wrong with consuming/upgrading units");
     }
-    final Collection<Unit> factoryAndInfrastructure = Matches.getMatches(placeableUnits, Matches.unitIsInfrastructure());
+    final Collection<Unit> factoryAndInfrastructure =
+        Matches.getMatches(placeableUnits, Matches.unitIsInfrastructure());
     if (!factoryAndInfrastructure.isEmpty()) {
       change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
     }

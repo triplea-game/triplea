@@ -127,7 +127,8 @@ public class Fire implements IExecutable {
           final Collection<Unit> playerTransports = Matches.getMatches(transportsOnly, match);
           final int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
           transportsOnly.removeAll(
-              Matches.getNMatches(playerTransports, transportsToRemove, Matches.unitIsTransportButNotCombatTransport()));
+              Matches.getNMatches(playerTransports, transportsToRemove,
+                  Matches.unitIsTransportButNotCombatTransport()));
         }
         m_killed = nonTransports;
         m_damaged = Collections.emptyList();

@@ -238,8 +238,9 @@ public class AirMovementValidator {
       }
       final Collection<Unit> ownedCarriersInLandingSpot = Matches.getMatches(unitsInLandingSpot, ownedCarrierMatch);
       // get air we own here, but exclude any air that can fly to allied land
-      final Collection<Unit> airInLandingSpot = Matches.getMatches(Matches.getMatches(unitsInLandingSpot, ownedAirMatch),
-          unitCanFindLand(data, landingSpot).invert());
+      final Collection<Unit> airInLandingSpot =
+          Matches.getMatches(Matches.getMatches(unitsInLandingSpot, ownedAirMatch),
+              unitCanFindLand(data, landingSpot).invert());
       // add allied air (it can't fly away)
       airInLandingSpot.addAll(Matches.getMatches(unitsInLandingSpot, alliedNotOwnedAirMatch));
       // make sure we don't count this again

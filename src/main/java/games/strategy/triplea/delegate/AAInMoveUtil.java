@@ -93,7 +93,8 @@ class AAInMoveUtil implements Serializable {
     // stacks are backwards
     Collections.reverse(aaTypes);
     for (final String currentTypeAa : aaTypes) {
-      final Collection<Unit> currentPossibleAa = Matches.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
+      final Collection<Unit> currentPossibleAa =
+          Matches.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
       final Set<UnitType> targetUnitTypesForThisTypeAa =
           UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);

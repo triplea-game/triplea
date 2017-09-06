@@ -191,7 +191,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         }
       }
       final CompositeChange change = new CompositeChange();
-      final Collection<Unit> factoryAndInfrastructure = Matches.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
+      final Collection<Unit> factoryAndInfrastructure =
+          Matches.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
       if (!factoryAndInfrastructure.isEmpty()) {
         change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, m_currentPickingPlayer));
       }
