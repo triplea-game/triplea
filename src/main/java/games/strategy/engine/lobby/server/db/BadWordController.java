@@ -50,11 +50,11 @@ public class BadWordController {
     try (final Connection con = Database.getDerbyConnection();
         final PreparedStatement ps = con.prepareStatement(sql);
         final ResultSet rs = ps.executeQuery()) {
-      final List<String> rVal = new ArrayList<>();
+      final List<String> badWords = new ArrayList<>();
       while (rs.next()) {
-        rVal.add(rs.getString(1));
+        badWords.add(rs.getString(1));
       }
-      return rVal;
+      return badWords;
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error reading bad words", sqle);
     }

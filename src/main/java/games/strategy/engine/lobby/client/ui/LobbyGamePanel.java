@@ -198,21 +198,21 @@ class LobbyGamePanel extends JPanel {
   }
 
   private List<Action> getGamesListRightClickActions(final GameDescription description) {
-    final List<Action> rVal = new ArrayList<>();
-    rVal.add(getJoinGameAction());
-    rVal.add(getHostGameAction());
+    final List<Action> actions = new ArrayList<>();
+    actions.add(getJoinGameAction());
+    actions.add(getHostGameAction());
     if (isAdmin()) {
-      rVal.add(getHostSupportInfoAction(description));
-      rVal.add(getHostInfoAction());
-      rVal.add(getChatLogOfHeadlessHostBotAction(description));
-      rVal.add(getMutePlayerHeadlessHostBotAction(description));
-      rVal.add(getBootPlayerHeadlessHostBotAction(description));
-      rVal.add(getBanPlayerHeadlessHostBotAction(description));
-      rVal.add(getStopGameHeadlessHostBotAction(description));
-      rVal.add(getShutDownHeadlessHostBotAction(description));
-      rVal.add(getBootGameAction());
+      actions.add(getHostSupportInfoAction(description));
+      actions.add(getHostInfoAction());
+      actions.add(getChatLogOfHeadlessHostBotAction(description));
+      actions.add(getMutePlayerHeadlessHostBotAction(description));
+      actions.add(getBootPlayerHeadlessHostBotAction(description));
+      actions.add(getBanPlayerHeadlessHostBotAction(description));
+      actions.add(getStopGameHeadlessHostBotAction(description));
+      actions.add(getShutDownHeadlessHostBotAction(description));
+      actions.add(getBootGameAction());
     }
-    return rVal;
+    return actions;
   }
 
   private static Action getHostSupportInfoAction(final GameDescription description) {
@@ -381,9 +381,9 @@ class LobbyGamePanel extends JPanel {
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
+        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -451,9 +451,9 @@ class LobbyGamePanel extends JPanel {
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
+        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -490,9 +490,9 @@ class LobbyGamePanel extends JPanel {
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
+        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -541,9 +541,9 @@ class LobbyGamePanel extends JPanel {
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
+        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -575,9 +575,9 @@ class LobbyGamePanel extends JPanel {
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
+        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -608,9 +608,9 @@ class LobbyGamePanel extends JPanel {
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int rVal = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel, "Host Remote Access Password?",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (rVal != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
+        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
     final String password = new String(passwordField.getPassword());

@@ -41,8 +41,9 @@ public class SetMapClientAction extends AbstractAction {
       JOptionPane.showMessageDialog(m_parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    final int rVal = JOptionPane.showConfirmDialog(m_parent, combo, "Change Game To: ", JOptionPane.OK_CANCEL_OPTION);
-    if (rVal != JOptionPane.OK_OPTION) {
+    final int selectedOption =
+        JOptionPane.showConfirmDialog(m_parent, combo, "Change Game To: ", JOptionPane.OK_CANCEL_OPTION);
+    if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
     final String name = (String) combo.getSelectedItem();

@@ -28,7 +28,7 @@ import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.ui.SaveGameFileChooser.AUTOSAVE_TYPE;
 
 public class ClientSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 6942605803526295372L;
@@ -298,16 +298,16 @@ public class ClientSetupPanel extends SetupPanel {
     if (!isServerHeadless) {
       return new ArrayList<>();
     }
-    final List<Action> rVal = new ArrayList<>();
-    rVal.add(clientModel.getHostBotSetMapClientAction(this));
-    rVal.add(clientModel.getHostBotChangeGameOptionsClientAction(this));
-    rVal.add(clientModel.getHostBotChangeGameToSaveGameClientAction());
-    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
-    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2));
-    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
-    rVal.add(clientModel.getHostBotChangeToAutosaveClientAction(this, SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
-    rVal.add(clientModel.getHostBotGetGameSaveClientAction(this));
-    return rVal;
+    final List<Action> actions = new ArrayList<>();
+    actions.add(clientModel.getHostBotSetMapClientAction(this));
+    actions.add(clientModel.getHostBotChangeGameOptionsClientAction(this));
+    actions.add(clientModel.getHostBotChangeGameToSaveGameClientAction());
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE2));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_ODD));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+    actions.add(clientModel.getHostBotGetGameSaveClientAction(this));
+    return actions;
   }
 
   @Override

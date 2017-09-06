@@ -125,14 +125,14 @@ public class LobbyFrame extends JFrame {
     }
     final IModeratorController controller = (IModeratorController) m_client.getRemoteMessenger()
         .getRemote(ModeratorController.getModeratorControllerName());
-    final List<Action> rVal = new ArrayList<>();
-    rVal.add(SwingAction.of("Boot " + clickedOn.getName(), e -> {
+    final List<Action> actions = new ArrayList<>();
+    actions.add(SwingAction.of("Boot " + clickedOn.getName(), e -> {
       if (!confirm("Boot " + clickedOn.getName())) {
         return;
       }
       controller.boot(clickedOn);
     }));
-    rVal.add(SwingAction.of("Ban Player", e -> {
+    actions.add(SwingAction.of("Ban Player", e -> {
       final int resultBanType = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of ban: <br>"
               + "Please consult other admins before banning longer than 1 day. <br>"
@@ -196,7 +196,7 @@ public class LobbyFrame extends JFrame {
       controller.boot(clickedOn);
     }));
 
-    rVal.add(SwingAction.of("Mute Player", e -> {
+    actions.add(SwingAction.of("Mute Player", e -> {
       final int resultMuteType = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
           "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
@@ -253,7 +253,7 @@ public class LobbyFrame extends JFrame {
         controller.muteMac(clickedOn, Date.from(expire));
       }
     }));
-    rVal.add(SwingAction.of("Quick Mute", e -> {
+    actions.add(SwingAction.of("Quick Mute", e -> {
       final JLabel label = new JLabel("How many minutes should this player be muted?");
       final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 0, 60 * 24 * 2, 1));
       final JPanel panel = new JPanel();
@@ -275,14 +275,14 @@ public class LobbyFrame extends JFrame {
         controller.muteMac(clickedOn, Date.from(expire));
       }
     }));
-    rVal.add(SwingAction.of("Show player information", e -> {
+    actions.add(SwingAction.of("Show player information", e -> {
       final String text = controller.getInformationOn(clickedOn);
       final JTextPane textPane = new JTextPane();
       textPane.setEditable(false);
       textPane.setText(text);
       JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
     }));
-    return rVal;
+    return actions;
   }
 
   @VisibleForTesting
@@ -312,9 +312,9 @@ public class LobbyFrame extends JFrame {
   }
 
   private boolean confirm(final String question) {
-    final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(this), question, "Question",
-        JOptionPane.OK_CANCEL_OPTION);
-    return rVal == JOptionPane.OK_OPTION;
+    final int selectionOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(this), question,
+        "Question", JOptionPane.OK_CANCEL_OPTION);
+    return selectionOption == JOptionPane.OK_OPTION;
   }
 
   public LobbyClient getLobbyClient() {

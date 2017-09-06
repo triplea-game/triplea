@@ -29,10 +29,9 @@ public class PropertiesSelector {
   public static Object getButton(final JComponent parent, final String title,
       final List<IEditableProperty> properties, final Object... buttonOptions) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      // throw new IllegalStateException("Must run from EventDispatchThread");
-      final AtomicReference<Object> rVal = new AtomicReference<>();
-      SwingAction.invokeAndWait(() -> rVal.set(showDialog(parent, title, properties, buttonOptions)));
-      return rVal.get();
+      final AtomicReference<Object> buttonRef = new AtomicReference<>();
+      SwingAction.invokeAndWait(() -> buttonRef.set(showDialog(parent, title, properties, buttonOptions)));
+      return buttonRef.get();
     } else {
       return showDialog(parent, title, properties, buttonOptions);
     }

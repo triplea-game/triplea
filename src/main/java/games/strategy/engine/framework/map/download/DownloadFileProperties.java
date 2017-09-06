@@ -21,13 +21,13 @@ class DownloadFileProperties {
     if (!fromZip(zipFile).exists()) {
       return new DownloadFileProperties();
     }
-    final DownloadFileProperties rVal = new DownloadFileProperties();
+    final DownloadFileProperties downloadFileProperties = new DownloadFileProperties();
     try (final FileInputStream fis = new FileInputStream(fromZip(zipFile))) {
-      rVal.props.load(fis);
+      downloadFileProperties.props.load(fis);
     } catch (final IOException e) {
       ClientLogger.logError("Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
     }
-    return rVal;
+    return downloadFileProperties;
   }
 
   static void saveForZip(final File zipFile, final DownloadFileProperties props) {

@@ -99,8 +99,7 @@ class LobbyGameController implements ILobbyGameController {
   @Override
   public Map<GUID, GameDescription> listGames() {
     synchronized (m_mutex) {
-      final Map<GUID, GameDescription> rVal = new HashMap<>(m_allGames);
-      return rVal;
+      return new HashMap<>(m_allGames);
     }
   }
 

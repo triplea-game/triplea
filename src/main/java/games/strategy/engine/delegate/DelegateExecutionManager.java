@@ -57,8 +57,8 @@ public class DelegateExecutionManager {
    * </p>
    */
   public boolean blockDelegateExecution(final int timeToWaitMs) throws InterruptedException {
-    final boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMs, TimeUnit.MILLISECONDS);
-    if (!rVal) {
+    final boolean lockAcquired = m_readWriteLock.writeLock().tryLock(timeToWaitMs, TimeUnit.MILLISECONDS);
+    if (!lockAcquired) {
       if (sm_logger.isLoggable(Level.FINE)) {
         sm_logger.fine("Could not block delegate execution. Read Lock count: " + m_readWriteLock.getReadLockCount()
             + " Write Hold count: " + m_readWriteLock.getWriteHoldCount() + " Queue Length: "
@@ -79,7 +79,7 @@ public class DelegateExecutionManager {
         sm_logger.fine(Thread.currentThread().getName() + " block delegate execution.");
       }
     }
-    return rVal;
+    return lockAcquired;
   }
 
   /**
