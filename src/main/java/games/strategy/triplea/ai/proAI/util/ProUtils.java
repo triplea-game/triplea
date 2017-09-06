@@ -20,7 +20,6 @@ import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 
 /**

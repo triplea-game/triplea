@@ -17,7 +17,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Triple;
 
 @MapSupport

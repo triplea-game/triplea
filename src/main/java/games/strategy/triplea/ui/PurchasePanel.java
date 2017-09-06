@@ -26,7 +26,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 public class PurchasePanel extends ActionPanel {
   private static final long serialVersionUID = -6121756876868623355L;

@@ -26,7 +26,6 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.Match;
 
 public class DiceRollTest {
   private GameData gameData;

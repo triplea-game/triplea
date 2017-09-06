@@ -18,7 +18,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
-import games.strategy.util.Match;
 
 /**
  * The Purpose of this class is to hold shared and simple methods used by RulesAttachment.

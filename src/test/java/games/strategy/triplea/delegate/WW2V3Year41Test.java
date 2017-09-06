@@ -93,7 +93,6 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 public class WW2V3Year41Test {
   private GameData gameData;

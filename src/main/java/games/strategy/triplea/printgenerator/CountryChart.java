@@ -17,7 +17,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 class CountryChart {
   private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();

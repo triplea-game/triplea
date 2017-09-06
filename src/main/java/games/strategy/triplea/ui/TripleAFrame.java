@@ -153,7 +153,6 @@ import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LocalizeHtml;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 

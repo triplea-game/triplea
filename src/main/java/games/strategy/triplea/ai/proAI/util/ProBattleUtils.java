@@ -24,7 +24,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
-import games.strategy.util.Match;
 
 /**
  * Pro AI battle utilities.

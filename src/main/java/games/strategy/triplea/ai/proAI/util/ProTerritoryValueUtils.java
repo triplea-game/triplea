@@ -16,7 +16,6 @@ import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.util.Match;
 
 /**
  * Pro AI battle utilities.

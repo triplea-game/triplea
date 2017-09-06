@@ -33,7 +33,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.Match;
 
 public class BattleCalculatorTest {
   private ITestDelegateBridge bridge;

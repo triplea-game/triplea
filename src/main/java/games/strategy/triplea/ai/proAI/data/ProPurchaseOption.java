@@ -21,7 +21,6 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 public class ProPurchaseOption {
 

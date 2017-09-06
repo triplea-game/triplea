@@ -32,7 +32,6 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.Match;
 
 /**
  * Pro AI simulate turn utilities.

@@ -60,7 +60,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 

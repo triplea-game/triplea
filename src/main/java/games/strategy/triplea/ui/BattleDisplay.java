@@ -76,7 +76,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**

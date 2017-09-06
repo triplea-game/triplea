@@ -16,7 +16,6 @@ import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.Match;
 
 public class ProTerritory {
 
