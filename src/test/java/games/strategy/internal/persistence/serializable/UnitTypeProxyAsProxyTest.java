@@ -1,6 +1,6 @@
 package games.strategy.internal.persistence.serializable;
 
-import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
+import static games.strategy.engine.data.TestGameDataComponentFactory.newUnitType;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,9 +18,7 @@ public final class UnitTypeProxyAsProxyTest extends AbstractGameDataComponentPro
 
   @Override
   protected UnitType newGameDataComponent(final GameData gameData) {
-    final UnitType unitType = new UnitType("unitType", gameData);
-    initializeAttachable(unitType);
-    return unitType;
+    return newUnitType(gameData, "unitType");
   }
 
   @Override

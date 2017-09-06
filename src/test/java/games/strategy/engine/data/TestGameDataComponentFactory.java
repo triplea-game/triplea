@@ -28,6 +28,24 @@ public final class TestGameDataComponentFactory {
   }
 
   /**
+   * Creates a new {@link PlayerID} instance.
+   *
+   * @param gameData The game data that owns the component.
+   * @param name The component name.
+   *
+   * @return A new {@link PlayerID} instance.
+   */
+  public static PlayerID newPlayerId(final GameData gameData, final String name) {
+    checkNotNull(gameData);
+    checkNotNull(name);
+
+    final PlayerID playerId = new PlayerID(name, gameData);
+    // TODO: initialize other attributes
+    initializeAttachable(playerId);
+    return playerId;
+  }
+
+  /**
    * Creates a new {@link ProductionRule} instance.
    *
    * @param gameData The game data that owns the component.
@@ -102,6 +120,23 @@ public final class TestGameDataComponentFactory {
         newFakeTechAdvance(gameData, "Tech Advance 1"),
         newFakeTechAdvance(gameData, "Tech Advance 2")));
     return technologyFrontier;
+  }
+
+  /**
+   * Creates a new {@link UnitType} instance.
+   *
+   * @param gameData The game data that owns the component.
+   * @param name The component name.
+   *
+   * @return A new {@link UnitType} instance.
+   */
+  public static UnitType newUnitType(final GameData gameData, final String name) {
+    checkNotNull(gameData);
+    checkNotNull(name);
+
+    final UnitType unitType = new UnitType(name, gameData);
+    initializeAttachable(unitType);
+    return unitType;
   }
 
   /**

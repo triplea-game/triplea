@@ -138,6 +138,14 @@ public final class EngineDataEqualityComparators {
       (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
           && context.equals(o1.getFrontiers(), o2.getFrontiers()));
 
+  public static final EqualityComparator UNIT = EqualityComparator.newInstance(
+      Unit.class,
+      (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
+          && (o1.getHits() == o2.getHits())
+          && context.equals(o1.getID(), o2.getID())
+          && context.equals(o1.getOwner(), o2.getOwner())
+          && context.equals(o1.getType(), o2.getType()));
+
   public static final EqualityComparator UNIT_TYPE = EqualityComparator.newInstance(
       UnitType.class,
       EngineDataEqualityComparators::namedAttachableEquals);

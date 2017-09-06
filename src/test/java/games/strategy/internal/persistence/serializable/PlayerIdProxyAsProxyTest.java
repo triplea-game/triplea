@@ -1,6 +1,6 @@
 package games.strategy.internal.persistence.serializable;
 
-import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
+import static games.strategy.engine.data.TestGameDataComponentFactory.newPlayerId;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,10 +18,7 @@ public final class PlayerIdProxyAsProxyTest extends AbstractGameDataComponentPro
 
   @Override
   protected PlayerID newGameDataComponent(final GameData gameData) {
-    final PlayerID playerId = new PlayerID("playerId", gameData);
-    // TODO: initialize other attributes
-    initializeAttachable(playerId);
-    return playerId;
+    return newPlayerId(gameData, "playerId");
   }
 
   @Override
