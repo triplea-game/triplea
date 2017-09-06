@@ -1,5 +1,7 @@
 package games.strategy.net;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -8,12 +10,11 @@ import java.rmi.dgc.VMID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A globally unique id. <br>
+ * A globally unique id.
  * Backed by a java.rmi.dgc.VMID.
- * Written across the network often, so this class is
- * externalizable to increase effeciency
+ * Written across the network often, so this class is externalizable to increase efficiency.
  */
-public class GUID implements Externalizable {
+public final class GUID implements Externalizable {
   private static final long serialVersionUID = 8426441559602874190L;
   // this prefix is unique across vms
   private static VMID vmPrefix = new VMID();
@@ -32,6 +33,21 @@ public class GUID implements Externalizable {
       vmPrefix = new VMID();
       lastId = new AtomicInteger();
     }
+  }
+
+  public GUID(final VMID prefix, final int id) {
+    checkNotNull(prefix);
+
+    m_id = id;
+    m_prefix = prefix;
+  }
+
+  public int getId() {
+    return m_id;
+  }
+
+  public VMID getPrefix() {
+    return m_prefix;
   }
 
   @Override
