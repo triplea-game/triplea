@@ -3,6 +3,7 @@ package games.strategy.engine.framework;
 import games.strategy.internal.persistence.serializable.AaRadarAdvanceProxy;
 import games.strategy.internal.persistence.serializable.DestroyerBombardTechAdvanceProxy;
 import games.strategy.internal.persistence.serializable.GameDataProxy;
+import games.strategy.internal.persistence.serializable.GuidProxy;
 import games.strategy.internal.persistence.serializable.HeavyBomberAdvanceProxy;
 import games.strategy.internal.persistence.serializable.ImprovedArtillerySupportAdvanceProxy;
 import games.strategy.internal.persistence.serializable.ImprovedShipyardsAdvanceProxy;
@@ -13,6 +14,7 @@ import games.strategy.internal.persistence.serializable.JetPowerAdvanceProxy;
 import games.strategy.internal.persistence.serializable.LongRangeAircraftAdvanceProxy;
 import games.strategy.internal.persistence.serializable.MechanizedInfantryAdvanceProxy;
 import games.strategy.internal.persistence.serializable.ParatroopersAdvanceProxy;
+import games.strategy.internal.persistence.serializable.PlayerIdProxy;
 import games.strategy.internal.persistence.serializable.ProductionFrontierProxy;
 import games.strategy.internal.persistence.serializable.ProductionRuleProxy;
 import games.strategy.internal.persistence.serializable.PropertyBagMementoProxy;
@@ -25,6 +27,9 @@ import games.strategy.internal.persistence.serializable.SuperSubsAdvanceProxy;
 import games.strategy.internal.persistence.serializable.TechnologyFrontierListProxy;
 import games.strategy.internal.persistence.serializable.TechnologyFrontierProxy;
 import games.strategy.internal.persistence.serializable.TripleAProxy;
+import games.strategy.internal.persistence.serializable.UnitCollectionProxy;
+import games.strategy.internal.persistence.serializable.UnitProxy;
+import games.strategy.internal.persistence.serializable.UnitTypeProxy;
 import games.strategy.internal.persistence.serializable.VersionProxy;
 import games.strategy.internal.persistence.serializable.WarBondsAdvanceProxy;
 import games.strategy.persistence.serializable.ProxyRegistry;
@@ -42,6 +47,7 @@ final class ProxyRegistries {
         AaRadarAdvanceProxy.FACTORY,
         DestroyerBombardTechAdvanceProxy.FACTORY,
         GameDataProxy.FACTORY,
+        GuidProxy.FACTORY,
         HeavyBomberAdvanceProxy.FACTORY,
         ImprovedArtillerySupportAdvanceProxy.FACTORY,
         ImprovedShipyardsAdvanceProxy.FACTORY,
@@ -52,6 +58,7 @@ final class ProxyRegistries {
         LongRangeAircraftAdvanceProxy.FACTORY,
         MechanizedInfantryAdvanceProxy.FACTORY,
         ParatroopersAdvanceProxy.FACTORY,
+        PlayerIdProxy.FACTORY,
         ProductionFrontierProxy.FACTORY,
         ProductionRuleProxy.FACTORY,
         PropertyBagMementoProxy.FACTORY,
@@ -64,6 +71,9 @@ final class ProxyRegistries {
         TechnologyFrontierProxy.FACTORY,
         TechnologyFrontierListProxy.FACTORY,
         TripleAProxy.FACTORY,
+        UnitProxy.FACTORY,
+        UnitCollectionProxy.FACTORY,
+        UnitTypeProxy.FACTORY,
         VersionProxy.FACTORY,
         WarBondsAdvanceProxy.FACTORY);
   }

@@ -1,6 +1,6 @@
 package games.strategy.engine.data;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.net.GUID;
@@ -14,12 +14,21 @@ public class Unit extends GameDataComponent {
   private final UnitType m_type;
 
   /**
-   * Creates new Unit. Should use a call to UnitType.create(). Owner can be null
+   * Creates new Unit. Owner can be null.
    */
   public Unit(final UnitType type, final PlayerID owner, final GameData data) {
+    this(type, owner, data, new GUID());
+  }
+
+  public Unit(final UnitType type, final PlayerID owner, final GameData data, final GUID id) {
     super(data);
-    m_type = Preconditions.checkNotNull(type);
-    m_uid = new GUID();
+
+    checkNotNull(type);
+    checkNotNull(id);
+
+    m_type = type;
+    m_uid = id;
+
     setOwner(owner);
   }
 

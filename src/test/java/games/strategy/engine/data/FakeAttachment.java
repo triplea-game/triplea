@@ -1,6 +1,10 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Objects;
+
+import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.MoreObjects;
 
@@ -9,12 +13,15 @@ import games.strategy.engine.data.annotations.InternalDoNotExport;
 /**
  * Fake implementation of {@link IAttachment} useful for testing.
  */
+@Immutable
 public final class FakeAttachment implements IAttachment {
   private static final long serialVersionUID = 3686559484645729844L;
 
   private final String name;
 
   public FakeAttachment(final String name) {
+    checkNotNull(name);
+
     this.name = name;
   }
 

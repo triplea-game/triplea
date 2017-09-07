@@ -83,6 +83,11 @@ public final class EngineDataEqualityComparators {
       ParatroopersAdvance.class,
       EngineDataEqualityComparators::techAdvanceEquals);
 
+  public static final EqualityComparator PLAYER_ID = EqualityComparator.newInstance(
+      PlayerID.class,
+      // TODO: add comparisons for other attributes
+      EngineDataEqualityComparators::namedAttachableEquals);
+
   public static final EqualityComparator PRODUCTION_FRONTIER = EqualityComparator.newInstance(
       ProductionFrontier.class,
       (context, o1, o2) -> defaultNamedEquals(context, o1, o2)
@@ -132,6 +137,24 @@ public final class EngineDataEqualityComparators {
       TechnologyFrontierList.class,
       (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
           && context.equals(o1.getFrontiers(), o2.getFrontiers()));
+
+  public static final EqualityComparator UNIT = EqualityComparator.newInstance(
+      Unit.class,
+      (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
+          && (o1.getHits() == o2.getHits())
+          && context.equals(o1.getID(), o2.getID())
+          && context.equals(o1.getOwner(), o2.getOwner())
+          && context.equals(o1.getType(), o2.getType()));
+
+  public static final EqualityComparator UNIT_COLLECTION = EqualityComparator.newInstance(
+      UnitCollection.class,
+      (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
+          && context.equals(o1.getHolder(), o2.getHolder())
+          && context.equals(o1.getUnits(), o2.getUnits()));
+
+  public static final EqualityComparator UNIT_TYPE = EqualityComparator.newInstance(
+      UnitType.class,
+      EngineDataEqualityComparators::namedAttachableEquals);
 
   public static final EqualityComparator WAR_BONDS_ADVANCE = EqualityComparator.newInstance(
       WarBondsAdvance.class,
