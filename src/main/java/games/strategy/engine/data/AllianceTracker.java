@@ -82,7 +82,7 @@ public class AllianceTracker implements Serializable {
    */
   public Set<PlayerID> getPlayersInAlliance(final String allianceName) {
     final Iterator<PlayerID> keys = alliances.keySet().iterator();
-    final HashSet<PlayerID> playersInAlliance = new HashSet<>();
+    final Set<PlayerID> playersInAlliance = new HashSet<>();
     while (keys.hasNext()) {
       final PlayerID player = keys.next();
       if (alliances.get(player).contains(allianceName)) {
