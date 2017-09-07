@@ -173,7 +173,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
    */
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions) {
-    return Match.getMatches(getUserActionAttachments(player), Match.allOf(
+    return Matches.getMatches(getUserActionAttachments(player), Match.allOf(
         Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }
 

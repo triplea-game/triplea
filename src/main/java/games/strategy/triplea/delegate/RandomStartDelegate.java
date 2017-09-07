@@ -80,9 +80,9 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     final Match<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
     final Match<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
     final List<Territory> allPickableTerritories =
-        Match.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
+        Matches.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
     final List<PlayerID> playersCanPick = new ArrayList<>();
-    playersCanPick.addAll(Match.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
+    playersCanPick.addAll(Matches.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
     // we need a main event
     if (!playersCanPick.isEmpty()) {
       m_bridge.getHistoryWriter().startEvent("Assigning Territories");
@@ -114,7 +114,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         final CompositeChange change = new CompositeChange();
         change.add(ChangeFactory.changeOwner(picked, m_currentPickingPlayer));
         final Collection<Unit> factoryAndInfrastructure =
-            Match.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
+            Matches.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
         if (!factoryAndInfrastructure.isEmpty()) {
           change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, m_currentPickingPlayer));
         }
@@ -145,7 +145,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         final CompositeChange change = new CompositeChange();
         change.add(ChangeFactory.changeOwner(picked, m_currentPickingPlayer));
         final Collection<Unit> factoryAndInfrastructure =
-            Match.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
+            Matches.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
         if (!factoryAndInfrastructure.isEmpty()) {
           change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, m_currentPickingPlayer));
         }
@@ -191,7 +191,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         }
       }
       final CompositeChange change = new CompositeChange();
-      final Collection<Unit> factoryAndInfrastructure = Match.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
+      final Collection<Unit> factoryAndInfrastructure =
+          Matches.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
       if (!factoryAndInfrastructure.isEmpty()) {
         change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, m_currentPickingPlayer));
       }

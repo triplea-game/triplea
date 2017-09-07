@@ -247,15 +247,15 @@ public class RevisedTest {
     gameData.performChange(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
     // submerge the russian sub
     final TripleAUnit sub =
-        (TripleAUnit) Match.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOwnedBy(russians)).iterator().next();
+        (TripleAUnit) Matches.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOwnedBy(russians)).iterator().next();
     sub.setSubmerged(true);
     // now move an infantry through the sz
     String results =
-        moveDelegate.move(Match.getNMatches(germany.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
+        moveDelegate.move(Matches.getNMatches(germany.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
             gameData.getMap().getRoute(germany, sz5),
-            Match.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOfType(trnType)));
+            Matches.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOfType(trnType)));
     assertNull(results);
-    results = moveDelegate.move(Match.getNMatches(sz5.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
+    results = moveDelegate.move(Matches.getNMatches(sz5.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
         gameData.getMap().getRoute(sz5, karelia));
     assertNull(results);
     moveDelegate.end();

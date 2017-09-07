@@ -84,7 +84,7 @@ public class FinishedBattle extends AbstractBattle {
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
         && Match.anyMatch(units, Matches.unitIsLand())) {
       m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
-      m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.unitIsLand()));
+      m_amphibiousLandAttackers.addAll(Matches.getMatches(units, Matches.unitIsLand()));
       m_isAmphibious = true;
     }
     return ChangeFactory.EMPTY_CHANGE;
@@ -110,7 +110,7 @@ public class FinishedBattle extends AbstractBattle {
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
       if (route.getEnd() != null && !route.getEnd().isWater() && Match.anyMatch(units, Matches.unitIsLand())) {
-        m_amphibiousLandAttackers.removeAll(Match.getMatches(units, Matches.unitIsLand()));
+        m_amphibiousLandAttackers.removeAll(Matches.getMatches(units, Matches.unitIsLand()));
       }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault

@@ -155,7 +155,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
             && Match.allMatch(unitChoices, Matches.unitIsOfType(unitChoices.get(0).getType()))) {
           // if we have only 1 unit type, set it to that
           pickedUnits.clear();
-          pickedUnits.addAll(Match.getNMatches(unitChoices, unitsPerPick, Match.always()));
+          pickedUnits.addAll(Matches.getNMatches(unitChoices, unitsPerPick, Matches.always()));
         } else {
           EventThreadJOptionPane.showMessageDialog(parent, "Must Choose Units For This Territory",
               "Must Choose Units For This Territory", JOptionPane.WARNING_MESSAGE);

@@ -117,12 +117,12 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
         // we add factories and constructions later
         Match.allOf(Matches.unitIsLand(), Matches.unitIsNotConstruction());
     final Match<Unit> airUnits = Match.allOf(Matches.unitIsAir(), Matches.unitIsNotConstruction());
-    placeableUnits.addAll(Match.getMatches(units, groundUnits));
-    placeableUnits.addAll(Match.getMatches(units, airUnits));
+    placeableUnits.addAll(Matches.getMatches(units, groundUnits));
+    placeableUnits.addAll(Matches.getMatches(units, airUnits));
     if (Match.anyMatch(units, Matches.unitIsConstruction())) {
       final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
       final Collection<Unit> skipUnit = new ArrayList<>();
-      for (final Unit currentUnit : Match.getMatches(units, Matches.unitIsConstruction())) {
+      for (final Unit currentUnit : Matches.getMatches(units, Matches.unitIsConstruction())) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
           // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
@@ -131,15 +131,15 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
           if (skipUnit.contains(currentUnit)) {
             continue;
           }
-          placeableUnits.addAll(Match.getNMatches(units, maxUnits, Matches.unitIsOfType(currentUnit.getType())));
-          skipUnit.addAll(Match.getMatches(units, Matches.unitIsOfType(currentUnit.getType())));
+          placeableUnits.addAll(Matches.getNMatches(units, maxUnits, Matches.unitIsOfType(currentUnit.getType())));
+          skipUnit.addAll(Matches.getMatches(units, Matches.unitIsOfType(currentUnit.getType())));
         }
       }
     }
     // remove any units that require other units to be consumed on creation (veqryn)
     if (Match.anyMatch(placeableUnits, Matches.unitConsumesUnitsOnCreation())) {
       final Collection<Unit> unitsWhichConsume =
-          Match.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
+          Matches.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {
         if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
           placeableUnits.remove(unit);
@@ -156,7 +156,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
       typesAlreadyChecked.add(ut);
       placeableUnits2
-          .addAll(Match.getNMatches(placeableUnits, UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
+          .addAll(Matches.getNMatches(placeableUnits, UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
               "placementLimit", ut, to, player, getData()), Matches.unitIsOfType(ut)));
     }
     return placeableUnits2;

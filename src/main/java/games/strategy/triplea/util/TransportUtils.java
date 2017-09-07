@@ -20,7 +20,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 
 public class TransportUtils {
@@ -108,8 +107,8 @@ public class TransportUtils {
   public static Map<Unit, Unit> mapTransportsAlreadyLoaded(final Collection<Unit> units,
       final Collection<Unit> transports) {
 
-    final Collection<Unit> canBeTransported = Match.getMatches(units, Matches.unitCanBeTransported());
-    final Collection<Unit> canTransport = Match.getMatches(transports, Matches.unitCanTransport());
+    final Collection<Unit> canBeTransported = Matches.getMatches(units, Matches.unitCanBeTransported());
+    final Collection<Unit> canTransport = Matches.getMatches(transports, Matches.unitCanTransport());
 
     final Map<Unit, Unit> mapping = new HashMap<>();
     for (final Unit currentTransported : canBeTransported) {
@@ -145,7 +144,7 @@ public class TransportUtils {
   public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
 
-    final Collection<Unit> airTransports = Match.getMatches(transports, Matches.unitIsAirTransport());
+    final Collection<Unit> airTransports = Matches.getMatches(transports, Matches.unitIsAirTransport());
     final List<Unit> canBeTransported = sortByTransportCostDescending(units);
 
     // Define the max of all units that could be loaded
@@ -159,9 +158,9 @@ public class TransportUtils {
       for (final UnitCategory transportType : transportTypes) {
         final int transportCapacity = UnitAttachment.get(transportType.getType()).getTransportCapacity();
         if (transportCost > 0 && transportCapacity >= transportCost) {
-          final int transportCount = Match.countMatches(airTransports, Matches.unitIsOfType(transportType.getType()));
+          final int transportCount = Matches.countMatches(airTransports, Matches.unitIsOfType(transportType.getType()));
           final int ttlTransportCapacity = transportCount * (int) Math.floor(transportCapacity / transportCost);
-          totalLoad.addAll(Match.getNMatches(canBeTransported, ttlTransportCapacity,
+          totalLoad.addAll(Matches.getNMatches(canBeTransported, ttlTransportCapacity,
               Matches.unitIsOfType(unitType.getType())));
         }
       }
@@ -193,7 +192,7 @@ public class TransportUtils {
       final int movementLeft2 = TripleAUnit.get(o2).getMovementLeft();
       return Integer.compare(movementLeft2, movementLeft1);
     };
-    final List<Unit> canTransport = Match.getMatches(transports, Matches.unitCanTransport());
+    final List<Unit> canTransport = Matches.getMatches(transports, Matches.unitCanTransport());
     Collections.sort(canTransport, transportCapacityComparator);
     return canTransport;
   }
@@ -204,7 +203,7 @@ public class TransportUtils {
       final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
       return Integer.compare(cost2, cost1);
     };
-    final List<Unit> canBeTransported = Match.getMatches(units, Matches.unitCanBeTransported());
+    final List<Unit> canBeTransported = Matches.getMatches(units, Matches.unitCanBeTransported());
     Collections.sort(canBeTransported, transportCostComparator);
     return canBeTransported;
   }
@@ -239,8 +238,8 @@ public class TransportUtils {
 
   private static Map<Unit, List<Unit>> findTransportsThatUnitsCouldUnloadFrom(final Collection<Unit> units,
       final Collection<Unit> transports) {
-    final List<Unit> canBeTransported = Match.getMatches(units, Matches.unitCanBeTransported());
-    final List<Unit> canTransport = Match.getMatches(transports, Matches.unitCanTransport());
+    final List<Unit> canBeTransported = Matches.getMatches(units, Matches.unitCanBeTransported());
+    final List<Unit> canTransport = Matches.getMatches(transports, Matches.unitCanTransport());
     final Map<Unit, List<Unit>> result = new LinkedHashMap<>();
     for (final Unit unit : canBeTransported) {
       final List<Unit> transportOptions = new ArrayList<>();

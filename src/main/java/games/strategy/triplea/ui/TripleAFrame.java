@@ -153,7 +153,6 @@ import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LocalizeHtml;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
@@ -979,7 +978,7 @@ public class TripleAFrame extends MainGameFrame {
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     if (messageAndDialogThreadPool == null) {
       return Tuple.of(territoryChoices.iterator().next(),
-          new HashSet<>(Match.getNMatches(unitChoices, unitsPerPick, Match.always())));
+          new HashSet<>(Matches.getNMatches(unitChoices, unitsPerPick, Matches.always())));
     }
     // total hacks
     messageAndDialogThreadPool.waitForAll();

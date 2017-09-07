@@ -93,7 +93,6 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 public class WW2V3Year41Test {
   private GameData gameData;
@@ -145,7 +144,7 @@ public class WW2V3Year41Test {
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
     final DiceRoll roll =
         DiceRoll.rollAA(
-            Match.getMatches(planes,
+            Matches.getMatches(planes,
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
             defendingAa, bridge, territory("Germany", gameData), true);
@@ -153,8 +152,8 @@ public class WW2V3Year41Test {
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 2);
     // should be 1 fighter and 1 bomber
-    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
   }
 
   @Test
@@ -176,7 +175,7 @@ public class WW2V3Year41Test {
     bridge.setRandomSource(randomSource);
     final DiceRoll roll =
         DiceRoll.rollAA(
-            Match.getMatches(planes,
+            Matches.getMatches(planes,
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
             defendingAa, bridge, territory("Germany", gameData), true);
@@ -186,8 +185,8 @@ public class WW2V3Year41Test {
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 3);
     // should be 1 fighter and 2 bombers
-    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber()), 2);
-    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 2);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
   }
 
   @Test
@@ -210,7 +209,7 @@ public class WW2V3Year41Test {
     bridge.setRandomSource(randomSource);
     final DiceRoll roll =
         DiceRoll.rollAA(
-            Match.getMatches(planes,
+            Matches.getMatches(planes,
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
             defendingAa, bridge, territory("Germany", gameData), true);
@@ -222,8 +221,8 @@ public class WW2V3Year41Test {
     assertEquals(casualties.size(), 2);
     assertEquals(4, randomSource.getTotalRolled());
     // should be 1 fighter and 2 bombers
-    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(Match.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
   }
 
   @Test
@@ -1046,7 +1045,7 @@ public class WW2V3Year41Test {
     // TechAttachment.get(italians).setDestroyerBombard("true");
     UnitAttachment.get(destroyer(gameData)).setCanBombard("true");
     // Set the bombard strength for the DDs
-    final Collection<Unit> dds = Match.getMatches(sz15.getUnits().getUnits(), Matches.unitIsDestroyer());
+    final Collection<Unit> dds = Matches.getMatches(sz15.getUnits().getUnits(), Matches.unitIsDestroyer());
     final Iterator<Unit> ddIter = dds.iterator();
     while (ddIter.hasNext()) {
       final Unit unit = ddIter.next();
@@ -1384,7 +1383,7 @@ public class WW2V3Year41Test {
     bomberAndParatroop.addAll(germany.getUnits().getMatches(Matches.unitIsAirTransport()));
     final List<Unit> tanks = poland.getUnits().getMatches(Matches.unitCanBlitz());
     move(tanks, new Route(poland, eastPoland, beloRussia));
-    final List<Unit> airTransports = Match.getMatches(bomberAndParatroop, Matches.unitIsAirTransport());
+    final List<Unit> airTransports = Matches.getMatches(bomberAndParatroop, Matches.unitIsAirTransport());
     for (final Unit airTransport : airTransports) {
       for (final Unit unit : paratrooper) {
         final Change change = TransportTracker.loadTransportChange((TripleAUnit) airTransport, unit);
@@ -1488,7 +1487,7 @@ public class WW2V3Year41Test {
     IntegerMap<RepairRule> repairs = new IntegerMap<>();
     repairs.put(repair, 1);
     String error = del.purchaseRepair(Collections.singletonMap(
-        Match.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(), repairs));
+        Matches.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(), repairs));
     assertValid(error);
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
     // Find cost
@@ -1510,7 +1509,7 @@ public class WW2V3Year41Test {
     repairs = new IntegerMap<>();
     repairs.put(repair, 2);
     error = del.purchaseRepair(Collections.singletonMap(
-        Match.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(), repairs));
+        Matches.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(), repairs));
     assertValid(error);
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
     // Find cost
@@ -1535,7 +1534,7 @@ public class WW2V3Year41Test {
     // we have 1 damaged marker, but trying to repair 2
     repairs.put(repair, 2);
     final String error = del.purchaseRepair(Collections.singletonMap(
-        Match.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(), repairs));
+        Matches.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(), repairs));
     // it is no longer an error, we just math max 0 it
     assertValid(error);
     assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);

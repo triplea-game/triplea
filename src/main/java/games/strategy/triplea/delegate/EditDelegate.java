@@ -57,7 +57,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       owners.add(u.getOwner());
     }
     for (final PlayerID p : owners) {
-      final List<Unit> unitsOwned = Match.getMatches(units, Matches.unitIsOwnedBy(p));
+      final List<Unit> unitsOwned = Matches.getMatches(units, Matches.unitIsOwnedBy(p));
       logEvent("Removing units owned by " + p.getName() + " from " + territory.getName() + ": "
           + MyFormatter.unitsToTextNoOwner(unitsOwned), unitsOwned);
       m_bridge.addChange(ChangeFactory.removeUnits(territory, unitsOwned));
@@ -90,8 +90,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
           }
           final Match<Unit> friendlySeaTransports =
               Match.allOf(Matches.unitIsTransport(), Matches.unitIsSea(), Matches.alliedUnit(player, data));
-          final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
-          final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.unitIsLand());
+          final Collection<Unit> seaTransports = Matches.getMatches(units, friendlySeaTransports);
+          final Collection<Unit> landUnitsToAdd = Matches.getMatches(units, Matches.unitIsLand());
           if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }

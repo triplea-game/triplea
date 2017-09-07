@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import static games.strategy.util.PredicateUtils.not;
+import static games.strategy.util.Util.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -76,6 +76,47 @@ import games.strategy.util.Util;
  */
 public final class Matches {
   private Matches() {}
+
+  /**
+   * Returns a match whose condition is always satisfied.
+   *
+   * @return A match; never {@code null}.
+   */
+  public static <T> Match<T> always() {
+    return Match.of(it -> true);
+  }
+
+  /**
+   * Returns a match whose condition is never satisfied.
+   *
+   * @return A match; never {@code null}.
+   */
+  public static <T> Match<T> never() {
+    return Match.of(it -> false);
+  }
+
+  /**
+   * Returns the number of matches found.
+   */
+  public static <T> int countMatches(final Collection<T> collection, final Match<T> match) {
+    return (int) collection.stream().filter(match::match).count();
+  }
+
+  /**
+   * Returns the elements of the collection that match.
+   */
+  public static <T> List<T> getMatches(final Collection<T> collection, final Match<T> match) {
+    return collection.stream().filter(match::match).collect(Collectors.toList());
+  }
+
+  /**
+   * Only returns the first n matches.
+   * If n matches cannot be found will return all matches that
+   * can be found.
+   */
+  public static <T> List<T> getNMatches(final Collection<T> collection, final int max, final Match<T> match) {
+    return collection.stream().filter(match::match).limit(max).collect(Collectors.toList());
+  }
 
   public static Match<UnitType> unitTypeHasMoreThanOneHitPointTotal() {
     return Match.of(ut -> UnitAttachment.get(ut).getHitPoints() > 1);
@@ -1585,8 +1626,8 @@ public final class Matches {
       }
       // paratrooper on an air transport
       if (forceLoadParatroopersIfPossible) {
-        final Collection<Unit> airTransports = Match.getMatches(units, unitIsAirTransport());
-        final Collection<Unit> paratroops = Match.getMatches(units, unitIsAirTransportable());
+        final Collection<Unit> airTransports = getMatches(units, unitIsAirTransport());
+        final Collection<Unit> paratroops = getMatches(units, unitIsAirTransportable());
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
           if (TransportUtils.mapTransportsToLoad(paratroops, airTransports)
               .containsKey(dependent)) {
@@ -1827,8 +1868,7 @@ public final class Matches {
             unitHasNotTakenAnyDamage(),
             unitIsNotDisabled());
         final int requiredNumber = requiredUnitsMap.getInt(ut);
-        final int numberInTerritory =
-            Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
+        final int numberInTerritory = countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
         if (numberInTerritory < requiredNumber) {
           canBuild = false;
         }
@@ -1861,8 +1901,7 @@ public final class Matches {
       }
       final Match<Unit> unitIsOwnedByAndNotDisabled = Match.allOf(
           unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), unitIsNotDisabled());
-      unitsInTerritoryAtStartOfTurn
-          .retainAll(Match.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
+      unitsInTerritoryAtStartOfTurn.retainAll(getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
       boolean canBuild = false;
       final UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
       final ArrayList<String[]> unitComboPossibilities = ua.getRequiresUnits();
@@ -1871,7 +1910,7 @@ public final class Matches {
           boolean haveAll = true;
           final Collection<UnitType> requiredUnits = ua.getListedUnits(combo);
           for (final UnitType ut : requiredUnits) {
-            if (Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOfType(ut)) < 1) {
+            if (countMatches(unitsInTerritoryAtStartOfTurn, unitIsOfType(ut)) < 1) {
               haveAll = false;
             }
             if (!haveAll) {
@@ -1903,7 +1942,7 @@ public final class Matches {
 
       final Match<Unit> unitIsOwnedByAndNotDisabled = Match.allOf(
           isUnitAllied(unit.getOwner(), data), unitIsNotDisabled());
-      final List<Unit> units = Match.getMatches(t.getUnits().getUnits(), unitIsOwnedByAndNotDisabled);
+      final List<Unit> units = getMatches(t.getUnits().getUnits(), unitIsOwnedByAndNotDisabled);
 
       for (final String[] array : ua.getRequiresUnitsToMove()) {
         boolean haveAll = true;

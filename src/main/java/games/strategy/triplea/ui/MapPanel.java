@@ -60,7 +60,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
@@ -757,7 +756,7 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
     final Tuple<Integer, Integer> movementLeft =
-        TripleAUnit.getMinAndMaxMovementLeft(Match.getMatches(units, Matches.unitIsBeingTransported().invert()));
+        TripleAUnit.getMinAndMaxMovementLeft(Matches.getMatches(units, Matches.unitIsBeingTransported().invert()));
     movementLeftForCurrentUnits =
         movementLeft.getFirst() + (movementLeft.getSecond() > movementLeft.getFirst() ? "+" : "");
     final Set<UnitCategory> categories = UnitSeperator.categorize(units);

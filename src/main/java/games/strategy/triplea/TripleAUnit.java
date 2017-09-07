@@ -124,7 +124,7 @@ public class TripleAUnit extends Unit {
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
-    return Match.getMatches(transportedUnitsPossible,
+    return Matches.getMatches(transportedUnitsPossible,
         Match.of(o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this));
   }
 
@@ -408,7 +408,7 @@ public class TripleAUnit extends Unit {
     } else {
       factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }
-    final Collection<Unit> factories = Match.getMatches(units, factoryMatchBuilder.all());
+    final Collection<Unit> factories = Matches.getMatches(units, factoryMatchBuilder.all());
     if (factories.isEmpty()) {
       return null;
     }

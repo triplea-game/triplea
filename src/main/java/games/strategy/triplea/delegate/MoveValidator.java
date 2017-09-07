@@ -134,7 +134,7 @@ public class MoveValidator {
       final PlayerID player, final MoveValidationResult result) {
     if (!units.isEmpty()
         && !getEditMode(data)) {
-      final Collection<Unit> matches = Match.getMatches(units,
+      final Collection<Unit> matches = Matches.getMatches(units,
           Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data, true).invert());
       if (matches.isEmpty() || !Match.allMatch(matches, Matches.unitIsOwnedBy(player))) {
         result.setError("Player, " + player.getName() + ", is not owner of all the units: "
@@ -283,7 +283,7 @@ public class MoveValidator {
           && (units.isEmpty() || !Match.allMatch(units, Matches.unitIsAir()))) {
         return result.setErrorReturnResult("Cannot blitz out of a battle further into enemy territory");
       }
-      for (final Unit u : Match.getMatches(units, Match.allOf(
+      for (final Unit u : Matches.getMatches(units, Match.allOf(
           Matches.unitCanBlitz().invert(),
           Matches.unitIsNotAir()))) {
         result.addDisallowedUnit("Not all units can blitz out of empty enemy territory", u);
@@ -304,7 +304,7 @@ public class MoveValidator {
     // Don't allow aa guns (and other disallowed units) to move in combat unless they are in a transport
     if (Match.anyMatch(units, Matches.unitCanNotMoveDuringCombatMove())
         && (!route.getStart().isWater() || !route.getEnd().isWater())) {
-      for (final Unit unit : Match.getMatches(units, Matches.unitCanNotMoveDuringCombatMove())) {
+      for (final Unit unit : Matches.getMatches(units, Matches.unitCanNotMoveDuringCombatMove())) {
         result.addDisallowedUnit("Cannot move AA guns in combat movement phase", unit);
       }
     }
@@ -336,7 +336,7 @@ public class MoveValidator {
       } else if (allEnemyBlitzable && !(route.getStart().isWater() || route.getEnd().isWater())) {
         final Match<Unit> blitzingUnit = Match.anyOf(Matches.unitCanBlitz(), Matches.unitIsAir());
         final Match<Unit> nonBlitzing = blitzingUnit.invert();
-        final Collection<Unit> nonBlitzingUnits = Match.getMatches(units, nonBlitzing);
+        final Collection<Unit> nonBlitzingUnits = Matches.getMatches(units, nonBlitzing);
         // remove any units that gain blitz due to certain abilities
         nonBlitzingUnits.removeAll(UnitAttachment.getUnitsWhichReceivesAbilityWhenWith(units, "canBlitz", data));
         final Match<Territory> territoryIsNotEnd = Matches.territoryIs(route.getEnd()).invert();
@@ -347,7 +347,7 @@ public class MoveValidator {
         final boolean wasStartFoughtOver =
             AbstractMoveDelegate.getBattleTracker(data).wasConquered(route.getStart())
                 || AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(route.getStart());
-        nonBlitzingUnits.addAll(Match.getMatches(units, Matches.unitIsOfTypes(TerritoryEffectHelper
+        nonBlitzingUnits.addAll(Matches.getMatches(units, Matches.unitIsOfTypes(TerritoryEffectHelper
             .getUnitTypesThatLostBlitz((wasStartFoughtOver ? route.getAllTerritories() : route.getSteps())))));
         for (final Unit unit : nonBlitzingUnits) {
           // TODO: we need to actually test if the units is being air transported, or mech-land-transported.
@@ -392,7 +392,7 @@ public class MoveValidator {
     }
     // See if we are doing invasions in combat phase, with units or transports that can't do invasion.
     if (route.isUnload() && Matches.isTerritoryEnemy(player, data).match(route.getEnd())) {
-      for (final Unit unit : Match.getMatches(units, Matches.unitCanInvade().invert())) {
+      for (final Unit unit : Matches.getMatches(units, Matches.unitCanInvade().invert())) {
         result.addDisallowedUnit(unit.getUnitType().getName() + " can't invade from "
             + TripleAUnit.get(unit).getTransportedBy().getUnitType().getName(), unit);
       }
@@ -524,7 +524,7 @@ public class MoveValidator {
     }
     // subs may possibly carry units...
     if (isSubmersibleSubsAllowed(data)) {
-      final Collection<Unit> matches = Match.getMatches(units, Matches.unitIsBeingTransported().invert());
+      final Collection<Unit> matches = Matches.getMatches(units, Matches.unitIsBeingTransported().invert());
       if (!matches.isEmpty() && Match.allMatch(matches, Matches.unitIsSub())) {
         // this is ok unless there are destroyer on the path
         if (MoveValidator.enemyDestroyerOnPath(route, player, data)) {
@@ -555,7 +555,7 @@ public class MoveValidator {
     }
     if (!isEditMode) {
       // make sure all units are at least friendly
-      for (final Unit unit : Match.getMatches(units, Matches.enemyUnit(player, data))) {
+      for (final Unit unit : Matches.getMatches(units, Matches.enemyUnit(player, data))) {
         result.addDisallowedUnit("Can only move friendly units", unit);
       }
       // check we have enough movement
@@ -566,7 +566,7 @@ public class MoveValidator {
       } else {
         moveTest = units;
       }
-      for (final Unit unit : Match.getMatches(moveTest, Matches.unitIsOwnedBy(player).invert())) {
+      for (final Unit unit : Matches.getMatches(moveTest, Matches.unitIsOwnedBy(player).invert())) {
         // allow allied fighters to move with carriers
         if (!(UnitAttachment.get(unit.getType()).getCarrierCost() > 0 && data.getRelationshipTracker().isAllied(player,
             unit.getOwner()))) {
@@ -576,7 +576,7 @@ public class MoveValidator {
       // Initialize available Mechanized Inf support
       int mechanizedSupportAvailable = getMechanizedSupportAvail(units, player);
       final Map<Unit, Collection<Unit>> dependencies =
-          getDependents(Match.getMatches(units, Matches.unitCanTransport()));
+          getDependents(Matches.getMatches(units, Matches.unitCanTransport()));
       // add those just added
       // TODO: do not EVER user something from the UI in a validation method. Only the local computer (ie: client) has a
       // copy of this UI
@@ -675,7 +675,7 @@ public class MoveValidator {
     // if we are water make sure no land
     if (Match.anyMatch(units, Matches.unitIsSea())) {
       if (route.hasLand()) {
-        for (final Unit unit : Match.getMatches(units, Matches.unitIsSea())) {
+        for (final Unit unit : Matches.getMatches(units, Matches.unitIsSea())) {
           result.addDisallowedUnit("Sea units cannot go on land", unit);
         }
       }
@@ -683,7 +683,7 @@ public class MoveValidator {
     // test for stack limits per unit
     if (route.getEnd() != null) {
       final Collection<Unit> unitsWithStackingLimits =
-          Match.getMatches(units, Match.anyOf(Matches.unitHasMovementLimit(), Matches.unitHasAttackingLimit()));
+          Matches.getMatches(units, Match.anyOf(Matches.unitHasMovementLimit(), Matches.unitHasAttackingLimit()));
       for (final Territory t : route.getSteps()) {
         final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
         if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(t)
@@ -693,7 +693,7 @@ public class MoveValidator {
             int maxAllowed =
                 UnitAttachment
                     .getMaximumNumberOfThisUnitTypeToReachStackingLimit("attackingLimit", ut, t, player, data);
-            maxAllowed -= Match.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
+            maxAllowed -= Matches.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
             if (maxAllowed > 0) {
               unitsAllowedSoFar.add(unit);
             } else {
@@ -709,7 +709,7 @@ public class MoveValidator {
             final UnitType ut = unit.getType();
             int maxAllowed =
                 UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit("movementLimit", ut, t, player, data);
-            maxAllowed -= Match.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
+            maxAllowed -= Matches.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
             if (maxAllowed > 0) {
               unitsAllowedSoFar.add(unit);
             } else {
@@ -741,7 +741,7 @@ public class MoveValidator {
     int mechanizedSupportAvailable = 0;
     if (TechAttachment.isMechanizedInfantry(player)) {
       final Match<Unit> transportLand = Match.allOf(Matches.unitIsLandTransport(), Matches.unitIsOwnedBy(player));
-      mechanizedSupportAvailable = Match.countMatches(units, transportLand);
+      mechanizedSupportAvailable = Matches.countMatches(units, transportLand);
     }
     return mechanizedSupportAvailable;
   }
@@ -862,9 +862,9 @@ public class MoveValidator {
     if (checkForAlreadyTransported) {
       // TODO Leaving unitIsTransport() for potential use with amphib transports (hovercraft, ducks, etc...)
       final List<Unit> transports =
-          Match.getMatches(units, Match.anyOf(Matches.unitIsTransport(), Matches.unitIsAirTransport()));
+          Matches.getMatches(units, Match.anyOf(Matches.unitIsTransport(), Matches.unitIsAirTransport()));
       final List<Unit> transportable =
-          Match.getMatches(units, Match.anyOf(Matches.unitCanBeTransported(), Matches.unitIsAirTransportable()));
+          Matches.getMatches(units, Match.anyOf(Matches.unitCanBeTransported(), Matches.unitIsAirTransportable()));
       // Check if there are transports in the group to be checked
       if (alreadyLoaded.keySet().containsAll(transports)) {
         // Check each transportable unit -vs those already loaded.
@@ -904,7 +904,7 @@ public class MoveValidator {
   }
 
   private static Collection<Unit> getNonLand(final Collection<Unit> units) {
-    return Match.getMatches(units, Match.anyOf(Matches.unitIsAir(), Matches.unitIsSea()));
+    return Matches.getMatches(units, Match.anyOf(Matches.unitIsAir(), Matches.unitIsSea()));
   }
 
   public static int getMaxMovement(final Collection<Unit> units) {
@@ -1050,11 +1050,12 @@ public class MoveValidator {
     }
     // if we are land make sure no water in route except for transport
     // situations
-    final Collection<Unit> land = Match.getMatches(units, Matches.unitIsLand());
-    final Collection<Unit> landAndAir = Match.getMatches(units, Match.anyOf(Matches.unitIsLand(), Matches.unitIsAir()));
+    final Collection<Unit> land = Matches.getMatches(units, Matches.unitIsLand());
+    final Collection<Unit> landAndAir =
+        Matches.getMatches(units, Match.anyOf(Matches.unitIsLand(), Matches.unitIsAir()));
     // make sure we can be transported
     final Match<Unit> cantBeTransported = Matches.unitCanBeTransported().invert();
-    for (final Unit unit : Match.getMatches(land, cantBeTransported)) {
+    for (final Unit unit : Matches.getMatches(land, cantBeTransported)) {
       result.addDisallowedUnit("Not all units can be transported", unit);
     }
     // make sure that the only the first or last territory is land
@@ -1184,11 +1185,11 @@ public class MoveValidator {
     // final List<Unit> paratroopsRequiringTransport = getParatroopsRequiringTransport(units, route);
     // due to various problems with units like tanks, we will assume that if we are in this method, then all the land
     // units need transports
-    final List<Unit> paratroopsRequiringTransport = Match.getMatches(units, Matches.unitIsAirTransportable());
+    final List<Unit> paratroopsRequiringTransport = Matches.getMatches(units, Matches.unitIsAirTransportable());
     if (paratroopsRequiringTransport.isEmpty()) {
       return false;
     }
-    final List<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
+    final List<Unit> airTransports = Matches.getMatches(units, Matches.unitIsAirTransport());
     final List<Unit> allParatroops =
         TransportUtils.findUnitsToLoadOnAirTransports(paratroopsRequiringTransport, airTransports);
     if (!allParatroops.containsAll(paratroopsRequiringTransport)) {
@@ -1206,7 +1207,7 @@ public class MoveValidator {
     if (units.isEmpty() || !Match.allMatch(units, Match.anyOf(Matches.unitIsAir(), Matches.unitIsLand()))) {
       return true;
     }
-    for (final Unit unit : Match.getMatches(units, Matches.unitIsNotAirTransportable())) {
+    for (final Unit unit : Matches.getMatches(units, Matches.unitIsNotAirTransportable())) {
       if (Matches.unitIsLand().match(unit)) {
         return true;
       }
@@ -1215,7 +1216,7 @@ public class MoveValidator {
   }
 
   private static List<Unit> getParatroopsRequiringTransport(final Collection<Unit> units, final Route route) {
-    return Match.getMatches(units, Match.allOf(Matches.unitIsAirTransportable(), Match.of(u -> {
+    return Matches.getMatches(units, Match.allOf(Matches.unitIsAirTransportable(), Match.of(u -> {
       return TripleAUnit.get(u).getMovementLeft() < route.getMovementCost(u) || route.crossesWater()
           || route.getEnd().isWater();
     })));
@@ -1241,7 +1242,7 @@ public class MoveValidator {
       if (paratroopsRequiringTransport.isEmpty()) {
         return result;
       }
-      final List<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
+      final List<Unit> airTransports = Matches.getMatches(units, Matches.unitIsAirTransport());
       // TODO kev change below to mapAirTransports (or modify mapTransports to handle air cargo)
       // Map<Unit, Unit> airTransportsAndParatroops = MoveDelegate.mapTransports(route, paratroopsRequiringTransport,
       // airTransports);
@@ -1271,7 +1272,7 @@ public class MoveValidator {
         }
       }
       if (!Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data)) {
-        for (final Territory current : Match.getMatches(route.getMiddleSteps(), Matches.territoryIsLand())) {
+        for (final Territory current : Matches.getMatches(route.getMiddleSteps(), Matches.territoryIsLand())) {
           if (Matches.isTerritoryEnemy(player, data).match(current)) {
             return result.setErrorReturnResult("Must stop paratroops in first enemy territory");
           }
@@ -1375,7 +1376,7 @@ public class MoveValidator {
   private static Map<Unit, Collection<Unit>> transportsMustMoveWith(final Collection<Unit> units) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     // map transports
-    final Collection<Unit> transports = Match.getMatches(units, Matches.unitIsTransport());
+    final Collection<Unit> transports = Matches.getMatches(units, Matches.unitIsTransport());
     final Iterator<Unit> iter = transports.iterator();
     while (iter.hasNext()) {
       final Unit transport = iter.next();
@@ -1388,7 +1389,7 @@ public class MoveValidator {
   private static Map<Unit, Collection<Unit>> airTransportsMustMoveWith(final Collection<Unit> units,
       final Map<Unit, Collection<Unit>> newDependents) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
-    final Collection<Unit> airTransports = Match.getMatches(units, Matches.unitIsAirTransport());
+    final Collection<Unit> airTransports = Matches.getMatches(units, Matches.unitIsAirTransport());
     // Then check those that have already had their transportedBy set
     for (final Unit airTransport : airTransports) {
       if (!mustMoveWith.containsKey(airTransport)) {
@@ -1417,7 +1418,7 @@ public class MoveValidator {
         Matches.alliedUnit(player, data),
         Matches.unitIsOwnedBy(player).invert(),
         Matches.unitCanLandOnCarrier());
-    final Collection<Unit> alliedAir = Match.getMatches(startUnits, friendlyNotOwnedAir);
+    final Collection<Unit> alliedAir = Matches.getMatches(startUnits, friendlyNotOwnedAir);
     if (alliedAir.isEmpty()) {
       return Collections.emptyMap();
     }
@@ -1426,7 +1427,7 @@ public class MoveValidator {
         Matches.unitIsCarrier(),
         Matches.alliedUnit(player, data),
         Matches.unitIsOwnedBy(player).invert());
-    final Collection<Unit> alliedCarrier = Match.getMatches(startUnits, friendlyNotOwnedCarrier);
+    final Collection<Unit> alliedCarrier = Matches.getMatches(startUnits, friendlyNotOwnedCarrier);
     final Iterator<Unit> alliedCarrierIter = alliedCarrier.iterator();
     while (alliedCarrierIter.hasNext()) {
       final Unit carrier = alliedCarrierIter.next();
@@ -1439,7 +1440,7 @@ public class MoveValidator {
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>();
     // get air that must be carried by our carriers
     final Collection<Unit> ownedCarrier =
-        Match.getMatches(units, Match.allOf(Matches.unitIsCarrier(), Matches.unitIsOwnedBy(player)));
+        Matches.getMatches(units, Match.allOf(Matches.unitIsCarrier(), Matches.unitIsOwnedBy(player)));
     final Iterator<Unit> ownedCarrierIter = ownedCarrier.iterator();
     while (ownedCarrierIter.hasNext()) {
       final Unit carrier = ownedCarrierIter.next();
@@ -1532,7 +1533,7 @@ public class MoveValidator {
     }
     // we don't want to look at the dependents
     final Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent =
-        new ArrayList<>(Match.getMatches(units,
+        new ArrayList<>(Matches.getMatches(units,
             Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, defaultRoute, player, data, true)
                 .invert()));
     boolean mustGoLand = false;

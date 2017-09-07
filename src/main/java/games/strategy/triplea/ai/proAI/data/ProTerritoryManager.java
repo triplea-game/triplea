@@ -119,7 +119,7 @@ public class ProTerritoryManager {
 
       // Check if I can win without amphib units and ignore AA since max units might have lots of planes
       List<Unit> defenders =
-          Match.getMatches(patd.getMaxEnemyDefenders(player, data), ProMatches.unitIsEnemyAndNotAA(player, data));
+          Matches.getMatches(patd.getMaxEnemyDefenders(player, data), ProMatches.unitIsEnemyAndNotAA(player, data));
       if (isIgnoringRelationships) {
         defenders = new ArrayList<>(t.getUnits().getUnits());
       }
@@ -284,7 +284,7 @@ public class ProTerritoryManager {
     final Set<Unit> movedTransports = new HashSet<>();
     for (final ProTerritory patd : attackOptions.getTerritoryMap().values()) {
       movedTransports.addAll(patd.getAmphibAttackMap().keySet());
-      movedTransports.addAll(Match.getMatches(patd.getUnits(), Matches.unitIsTransport()));
+      movedTransports.addAll(Matches.getMatches(patd.getUnits(), Matches.unitIsTransport()));
     }
     return movedTransports.size() >= attackOptions.getTransportList().size();
   }
@@ -327,7 +327,7 @@ public class ProTerritoryManager {
     for (final Territory t : moveMap.keySet()) {
       if (t.isWater() || !toSeaOnly) {
         final HashSet<Territory> canScrambleFrom = new HashSet<>(
-            Match.getMatches(data.getMap().getNeighbors(t, maxScrambleDistance), canScrambleBuilder.all()));
+            Matches.getMatches(data.getMap().getNeighbors(t, maxScrambleDistance), canScrambleBuilder.all()));
         if (!canScrambleFrom.isEmpty()) {
           scrambleTerrs.put(t, canScrambleFrom);
         }
@@ -431,7 +431,7 @@ public class ProTerritoryManager {
     // Loop through each enemy to determine the maximum number of enemy units that can attack each territory
     for (final PlayerID alliedPlayer : alliedPlayers) {
       final List<Territory> alliedUnitTerritories =
-          Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(alliedPlayer));
+          Matches.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(alliedPlayer));
       final Map<Territory, ProTerritory> attackMap = new HashMap<>();
       final Map<Unit, Set<Territory>> unitAttackMap = new HashMap<>();
       final Map<Unit, Set<Territory>> transportAttackMap = new HashMap<>();
@@ -457,7 +457,7 @@ public class ProTerritoryManager {
     // Loop through each enemy to determine the maximum number of enemy units that can attack each territory
     for (final PlayerID enemyPlayer : enemyPlayers) {
       final List<Territory> enemyUnitTerritories =
-          Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(enemyPlayer));
+          Matches.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(enemyPlayer));
       enemyUnitTerritories.removeAll(clearedTerritories);
       final Map<Territory, ProTerritory> attackMap = new HashMap<>();
       final Map<Unit, Set<Territory>> unitAttackMap = new HashMap<>();
@@ -467,7 +467,7 @@ public class ProTerritoryManager {
       enemyAttackMaps.add(attackMap);
       findAttackOptions(enemyPlayer, enemyUnitTerritories, attackMap, unitAttackMap, transportAttackMap, bombardMap,
           transportMapList, enemyTerritories, new ArrayList<>(alliedTerritories), territoriesToCheck, true, true);
-      alliedTerritories.addAll(Match.getMatches(attackMap.keySet(), Matches.territoryIsLand()));
+      alliedTerritories.addAll(Matches.getMatches(attackMap.keySet(), Matches.territoryIsLand()));
       enemyTerritories.removeAll(alliedTerritories);
     }
     return new ProOtherMoveOptions(enemyAttackMaps, player, true);
@@ -522,12 +522,12 @@ public class ProTerritoryManager {
     final List<PlayerID> enemyPlayers = ProUtils.getEnemyPlayersInTurnOrder(player);
     final List<Map<Territory, ProTerritory>> enemyMoveMaps = new ArrayList<>();
     final List<Territory> clearedTerritories =
-        Match.getMatches(data.getMap().getTerritories(), Matches.isTerritoryAllied(player, data));
+        Matches.getMatches(data.getMap().getTerritories(), Matches.isTerritoryAllied(player, data));
 
     // Loop through each enemy to determine the maximum number of enemy units that can defend each territory
     for (final PlayerID enemyPlayer : enemyPlayers) {
       final List<Territory> enemyUnitTerritories =
-          Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(enemyPlayer));
+          Matches.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(enemyPlayer));
       final Map<Territory, ProTerritory> moveMap = new HashMap<>();
       final Map<Unit, Set<Territory>> unitMoveMap = new HashMap<>();
       final Map<Unit, Set<Territory>> transportMoveMap = new HashMap<>();
@@ -579,7 +579,7 @@ public class ProTerritoryManager {
             ProMatches.territoryCanMoveSeaUnits(player, data, isCombatMove));
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
-            new HashSet<>(Match.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
+            new HashSet<>(Matches.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
         if (!isCombatMove) {
           potentialTerritories.add(myUnitTerritory);
         }
@@ -675,7 +675,7 @@ public class ProTerritoryManager {
         }
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
-            new HashSet<>(Match.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
+            new HashSet<>(Matches.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
         if (!isCombatMove) {
           potentialTerritories.add(myUnitTerritory);
         }
@@ -789,10 +789,10 @@ public class ProTerritoryManager {
         }
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
-            new HashSet<>(Match.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
+            new HashSet<>(Matches.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
         if (!isCombatMove && Matches.unitCanLandOnCarrier().match(myAirUnit)) {
-          potentialTerritories
-              .addAll(Match.getMatches(possibleMoveTerritories, Matches.territoryIsInList(possibleCarrierTerritories)));
+          potentialTerritories.addAll(
+              Matches.getMatches(possibleMoveTerritories, Matches.territoryIsInList(possibleCarrierTerritories)));
         }
 
 
@@ -817,12 +817,12 @@ public class ProTerritoryManager {
           if (isCombatMove && (remainingMoves < myRouteLength || myUnitTerritory.isWater())) {
             final Set<Territory> possibleLandingTerritories =
                 data.getMap().getNeighbors(potentialTerritory, remainingMoves, canFlyOverMatch);
-            final List<Territory> landingTerritories = Match.getMatches(possibleLandingTerritories,
+            final List<Territory> landingTerritories = Matches.getMatches(possibleLandingTerritories,
                 ProMatches.territoryCanLandAirUnits(player, data, isCombatMove, enemyTerritories, alliedTerritories));
             List<Territory> carrierTerritories = new ArrayList<>();
             if (Matches.unitCanLandOnCarrier().match(myAirUnit)) {
               carrierTerritories =
-                  Match.getMatches(possibleLandingTerritories, Matches.territoryIsInList(possibleCarrierTerritories));
+                  Matches.getMatches(possibleLandingTerritories, Matches.territoryIsInList(possibleCarrierTerritories));
             }
             if (landingTerritories.isEmpty() && carrierTerritories.isEmpty()) {
               continue;

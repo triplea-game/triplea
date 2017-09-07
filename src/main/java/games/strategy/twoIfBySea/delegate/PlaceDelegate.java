@@ -7,7 +7,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 /**
  * Logic for placing units.
@@ -20,7 +19,7 @@ public class PlaceDelegate extends AbstractPlaceDelegate {
   @Override
   protected int getProduction(final Territory territory) {
     final Collection<Unit> allUnits = territory.getUnits().getUnits();
-    final int factoryCount = Match.countMatches(allUnits, Matches.unitCanProduceUnits());
+    final int factoryCount = Matches.countMatches(allUnits, Matches.unitCanProduceUnits());
     return 5 * factoryCount;
   }
 }

@@ -105,7 +105,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
             // get all triggers that are satisfied based on the tested conditions.
             final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-                Match.getMatches(toFireBeforeBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+                Matches.getMatches(toFireBeforeBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 
             // now list out individual types to fire, once for each of the matches above.
             TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
@@ -149,7 +149,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
           // get all triggers that are satisfied based on the tested conditions.
           final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-              Match.getMatches(toFireAfterBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+              Matches.getMatches(toFireAfterBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 
           // now list out individual types to fire, once for each of the matches above.
           TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
@@ -334,7 +334,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         continue;
       }
       final Collection<Unit> crippledAlliedCarriers =
-          Match.getMatches(t.getUnits().getUnits(), crippledAlliedCarriersMatch);
+          Matches.getMatches(t.getUnits().getUnits(), crippledAlliedCarriersMatch);
       if (crippledAlliedCarriers.isEmpty()) {
         continue;
       }
@@ -365,20 +365,20 @@ public class MoveDelegate extends AbstractMoveDelegate {
           final Collection<Unit> givesBonusUnits = new ArrayList<>();
           final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
               Matches.unitCanGiveBonusMovementToThisUnit(u));
-          givesBonusUnits.addAll(Match.getMatches(t.getUnits().getUnits(), givesBonusUnit));
+          givesBonusUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), givesBonusUnit));
           if (Matches.unitIsSea().match(u)) {
             final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
             final List<Territory> neighbors =
                 new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
             for (final Territory current : neighbors) {
-              givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
+              givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
             }
           } else if (Matches.unitIsLand().match(u)) {
             final Match<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.unitIsSea());
             final List<Territory> neighbors =
                 new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
             for (final Territory current : neighbors) {
-              givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
+              givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
             }
           }
           for (final Unit bonusGiver : givesBonusUnits) {
@@ -450,7 +450,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
     // now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air
     // units to leave while damaged, we need to remove those air units now
-    final Collection<Unit> damagedCarriers = Match.getMatches(fullyRepaired.keySet(),
+    final Collection<Unit> damagedCarriers = Matches.getMatches(fullyRepaired.keySet(),
         Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
 
     // now cycle through those now-repaired carriers, and remove allied air from being dependent

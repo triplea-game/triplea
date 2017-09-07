@@ -118,7 +118,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+            Matches.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerActivateTriggerOther(testedConditions, toFireTestedAndSatisfied, m_bridge, null, null,
             true, true, true, true);

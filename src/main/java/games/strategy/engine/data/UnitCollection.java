@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -191,11 +192,11 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   public int countMatches(final Match<Unit> predicate) {
-    return Match.countMatches(m_units, predicate);
+    return Matches.countMatches(m_units, predicate);
   }
 
   public List<Unit> getMatches(final Match<Unit> predicate) {
-    return Match.getMatches(m_units, predicate);
+    return Matches.getMatches(m_units, predicate);
   }
 
   @Override

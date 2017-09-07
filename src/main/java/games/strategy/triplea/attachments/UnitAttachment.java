@@ -1066,7 +1066,7 @@ public class UnitAttachment extends DefaultAttachment {
       final String filterForAbility, final GameData data) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
-        getUnitTypesFromUnitList(Match.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
+        getUnitTypesFromUnitList(Matches.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
       final Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
       for (final String receive : receives) {
@@ -1075,7 +1075,7 @@ public class UnitAttachment extends DefaultAttachment {
           continue;
         }
         map.put(Tuple.of(s[0], s[1]),
-            Match.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
+            Matches.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
       }
     }
     return map;
@@ -1091,7 +1091,7 @@ public class UnitAttachment extends DefaultAttachment {
     final IntegerMap<Tuple<String, String>> whichGive =
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
-      final Collection<Unit> receives = Match.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
+      final Collection<Unit> receives = Matches.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
           Matches.unitCanReceiveAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
       whichReceiveNoDuplicates.addAll(receives);
       unitsCopy.removeAll(receives);
@@ -2654,7 +2654,7 @@ public class UnitAttachment extends DefaultAttachment {
       stackingMatchBuilder.add(Matches.isUnitAllied(owner, data));
     }
     // else if (stackingType.equals("total"))
-    final int totalInTerritory = Match.countMatches(t.getUnits().getUnits(), stackingMatchBuilder.all());
+    final int totalInTerritory = Matches.countMatches(t.getUnits().getUnits(), stackingMatchBuilder.all());
     return Math.max(0, max - totalInTerritory);
   }
 
@@ -2870,23 +2870,27 @@ public class UnitAttachment extends DefaultAttachment {
         + (m_targetsAA != null ? (m_targetsAA.size() == 0 ? "empty" : m_targetsAA.toString()) : "all air units")
         + "  willNotFireIfPresent:"
         + (m_willNotFireIfPresent != null
-            ? (m_willNotFireIfPresent.size() == 0 ? "empty" : m_willNotFireIfPresent.toString()) : "null")
+            ? (m_willNotFireIfPresent.size() == 0 ? "empty" : m_willNotFireIfPresent.toString())
+            : "null")
         + "  isRocket:" + m_isRocket + "  canProduceUnits:" + m_canProduceUnits + "  canProduceXUnits:"
         + m_canProduceXUnits + "  createsUnitsList:"
         + (m_createsUnitsList != null ? (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString())
             : "null")
         + "  createsResourcesList:"
         + (m_createsResourcesList != null
-            ? (m_createsResourcesList.size() == 0 ? "empty" : m_createsResourcesList.toString()) : "null")
+            ? (m_createsResourcesList.size() == 0 ? "empty" : m_createsResourcesList.toString())
+            : "null")
         + "  fuelCost:" + (m_fuelCost != null ? (m_fuelCost.size() == 0 ? "empty" : m_fuelCost.toString()) : "null")
         + "  isInfrastructure:" + m_isInfrastructure + "  isConstruction:" + m_isConstruction + "  constructionType:"
         + m_constructionType + "  constructionsPerTerrPerTypePerTurn:" + m_constructionsPerTerrPerTypePerTurn
         + "  maxConstructionsPerTypePerTerr:" + m_maxConstructionsPerTypePerTerr + "  destroyedWhenCapturedBy:"
         + (m_destroyedWhenCapturedBy != null
-            ? (m_destroyedWhenCapturedBy.size() == 0 ? "empty" : m_destroyedWhenCapturedBy.toString()) : "null")
+            ? (m_destroyedWhenCapturedBy.size() == 0 ? "empty" : m_destroyedWhenCapturedBy.toString())
+            : "null")
         + "  canBeCapturedOnEnteringBy:"
         + (m_canBeCapturedOnEnteringBy != null
-            ? (m_canBeCapturedOnEnteringBy.size() == 0 ? "empty" : m_canBeCapturedOnEnteringBy.toString()) : "null")
+            ? (m_canBeCapturedOnEnteringBy.size() == 0 ? "empty" : m_canBeCapturedOnEnteringBy.toString())
+            : "null")
         + "  canBeDamaged:" + m_canBeDamaged + "  canDieFromReachingMaxDamage:" + m_canDieFromReachingMaxDamage
         + "  maxOperationalDamage:" + m_maxOperationalDamage + "  maxDamage:" + m_maxDamage
         + "  unitPlacementRestrictions:"
@@ -2895,7 +2899,8 @@ public class UnitAttachment extends DefaultAttachment {
             : "null")
         + "  requiresUnits:"
         + (m_requiresUnits != null
-            ? (m_requiresUnits.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(m_requiresUnits)) : "null")
+            ? (m_requiresUnits.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(m_requiresUnits))
+            : "null")
         + "  consumesUnits:"
         + (m_consumesUnits != null ? (m_consumesUnits.size() == 0 ? "empty" : m_consumesUnits.toString()) : "null")
         + "  requiresUnitsToMove:"
@@ -2908,13 +2913,16 @@ public class UnitAttachment extends DefaultAttachment {
         + m_isSuicide + "  isSuicide:" + m_isSuicide + "  isCombatTransport:" + m_isCombatTransport
         + "  canInvadeOnlyFrom:"
         + (m_canInvadeOnlyFrom != null
-            ? (m_canInvadeOnlyFrom.length == 0 ? "empty" : Arrays.toString(m_canInvadeOnlyFrom)) : "null")
+            ? (m_canInvadeOnlyFrom.length == 0 ? "empty" : Arrays.toString(m_canInvadeOnlyFrom))
+            : "null")
         + "  canBeGivenByTerritoryTo:"
         + (m_canBeGivenByTerritoryTo != null
-            ? (m_canBeGivenByTerritoryTo.size() == 0 ? "empty" : m_canBeGivenByTerritoryTo.toString()) : "null")
+            ? (m_canBeGivenByTerritoryTo.size() == 0 ? "empty" : m_canBeGivenByTerritoryTo.toString())
+            : "null")
         + "  receivesAbilityWhenWith:"
         + (m_receivesAbilityWhenWith != null
-            ? (m_receivesAbilityWhenWith.size() == 0 ? "empty" : m_receivesAbilityWhenWith.toString()) : "null")
+            ? (m_receivesAbilityWhenWith.size() == 0 ? "empty" : m_receivesAbilityWhenWith.toString())
+            : "null")
         + "  whenCombatDamaged:"
         + (m_whenCombatDamaged != null ? (m_whenCombatDamaged.size() == 0 ? "empty" : m_whenCombatDamaged.toString())
             : "null")
@@ -2926,7 +2934,8 @@ public class UnitAttachment extends DefaultAttachment {
         + "  canScramble:" + m_canScramble + "  maxScrambleDistance:" + m_maxScrambleDistance + "  isAirBase:"
         + m_isAirBase + "  maxScrambleCount:" + m_maxScrambleCount + "  whenCapturedChangesInto:"
         + (m_whenCapturedChangesInto != null
-            ? (m_whenCapturedChangesInto.size() == 0 ? "empty" : m_whenCapturedChangesInto.toString()) : "null")
+            ? (m_whenCapturedChangesInto.size() == 0 ? "empty" : m_whenCapturedChangesInto.toString())
+            : "null")
         + "  canIntercept:" + m_canIntercept + "  canEscort:" + m_canEscort + "  canAirBattle:" + m_canAirBattle
         + "  airDefense:" + m_airDefense + "  airAttack:" + m_airAttack + "  canNotMoveDuringCombatMove:"
         + m_canNotMoveDuringCombatMove + "  movementLimit:"
@@ -3088,7 +3097,8 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Give Attack Bonus To Other Units, ");
     } else {
       final List<UnitSupportAttachment> supports =
-          Match.getMatches(UnitSupportAttachment.get(unitType), Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
+          Matches.getMatches(UnitSupportAttachment.get(unitType),
+              Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
       if (supports.size() > 0) {
         if (supports.size() > 2) {
           stats.append("can Modify Power Of Other Units, ");

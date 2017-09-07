@@ -71,7 +71,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+            Matches.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerUnitPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
             true);

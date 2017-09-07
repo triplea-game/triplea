@@ -169,7 +169,7 @@ public class WeakAI extends AbstractAI {
       return;
     }
     List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.unitIsInfrastructure().invert());
-    unitsToLoad = Match.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getPlayerID()));
+    unitsToLoad = Matches.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getPlayerID()));
     for (final Territory neighbor : data.getMap().getNeighbors(capitol)) {
       if (!neighbor.isWater()) {
         continue;
@@ -540,7 +540,7 @@ public class WeakAI extends AbstractAI {
     final Match<Territory> walkInto =
         Match.anyOf(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
             Matches.isTerritoryFreeNeutral(data));
-    final List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
+    final List<Territory> enemyOwned = Matches.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);
     Collections.sort(enemyOwned, (o1, o2) -> {
       // -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
@@ -794,7 +794,7 @@ public class WeakAI extends AbstractAI {
     List<RepairRule> rrules = Collections.emptyList();
     final Match<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCanProduceUnits());
     final List<Territory> rfactories =
-        Match.getMatches(Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));
+        Matches.getMatches(Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));
     // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
@@ -816,7 +816,7 @@ public class WeakAI extends AbstractAI {
           continue;
         }
         final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(
-            Match.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
+            Matches.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
         if (Matches.unitHasTakenSomeBombingUnitDamage().match(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }

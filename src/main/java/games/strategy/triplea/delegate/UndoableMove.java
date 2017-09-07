@@ -130,9 +130,9 @@ public class UndoableMove extends AbstractUndoableMove {
                 .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerID(), data),
                     Matches.unitIsAtMaxDamageOrNotCanBeDamaged(end).invert(),
                     Matches.unitIsBeingTransported().invert()));
-            final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal,
+            final Collection<Unit> enemyTargets = Matches.getMatches(enemyTargetsTotal,
                 Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(
-                    Match.getMatches(Collections.singleton(unit), Matches.unitIsStrategicBomber()), data)));
+                    Matches.getMatches(Collections.singleton(unit), Matches.unitIsStrategicBomber()), data)));
             if (enemyTargets.size() > 1
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                 && !Properties.getRaidsMayBePreceededByAirBattles(data)) {
