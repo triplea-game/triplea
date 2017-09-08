@@ -41,15 +41,27 @@ public class CryptoRandomSource implements IRandomSource {
     return ints;
   }
 
-  static int[] xor(final int[] val1, final int[] val2, final int max) {
+  /**
+   * Mixes the values from the specified sources ensuring that all of the mixed values are in the range [0, max).
+   *
+   * @param val1 The first source of values.
+   * @param val2 The second source of values.
+   * @param max The maximum mixed value, exclusive.
+   *
+   * @return The mixed values.
+   *
+   * @throws IllegalArgumentException If {@code val1} and {@code val2} have different lengths.
+   */
+  static int[] mix(final int[] val1, final int[] val2, final int max) {
     if (val1.length != val2.length) {
       throw new IllegalArgumentException("Arrays not of same length");
     }
-    final int[] xorValues = new int[val1.length];
+
+    final int[] mixedValues = new int[val1.length];
     for (int i = 0; i < val1.length; i++) {
-      xorValues[i] = (val1[i] + val2[i]) % max;
+      mixedValues[i] = (val1[i] + val2[i]) % max;
     }
-    return xorValues;
+    return mixedValues;
   }
 
   // the remote players who involved in rolling the dice
@@ -99,6 +111,6 @@ public class CryptoRandomSource implements IRandomSource {
     vault.unlock(localId);
     remote.verifyNumbers();
     // finally, we join the two together to get the real value
-    return xor(localRandom, remoteNumbers, max);
+    return mix(localRandom, remoteNumbers, max);
   }
 }
