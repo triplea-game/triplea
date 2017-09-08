@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.server.login;
 
 import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -15,12 +16,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.junit.Test;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.db.BadWordController;
-import games.strategy.engine.lobby.server.db.DbUserController;
 import games.strategy.engine.lobby.server.db.HashedPassword;
+import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
@@ -57,7 +59,7 @@ public class LobbyLoginValidatorTest {
       response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, "wrong"));
       return response;
     }));
-    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new DbUserController().getPassword(name).value));
+    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new UserController().getPassword(name).value));
   }
 
   @Test
@@ -128,27 +130,9 @@ public class LobbyLoginValidatorTest {
     assertError(generateChallenge(null).apply(challenge -> response), "user");
   }
 
-  @Test
-  public void testLegacyLoginCombined() {
-    final String name = Util.createUniqueTimeStamp();
-    final String password = "foo";
-    final String hashedPassword = MD5Crypt.crypt(password);
-    final Map<String, String> response = new HashMap<>();
-    final ChallengeResultFunction challengeFunction = generateChallenge(name, new HashedPassword(hashedPassword));
-    assertNull(challengeFunction.apply(challenge -> {
-      response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
-      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
-      assertEquals(challenge.get(LobbyLoginValidator.SALT_KEY), MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
-      return response;
-    }));
-    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new DbUserController().getPassword(name).value));
-    response.remove(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY);
-    assertNull(challengeFunction.apply(challenge -> response));
-    assertEquals(hashedPassword, new DbUserController().getLegacyPassword(name).value);
-  }
 
   private static void createUser(final String name, final String email, final HashedPassword password) {
-    new DbUserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
+    new UserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
   }
 
   private ChallengeResultFunction generateChallenge(final HashedPassword password) {

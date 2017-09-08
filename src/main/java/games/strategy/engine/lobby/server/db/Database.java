@@ -1,24 +1,17 @@
 package games.strategy.engine.lobby.server.db;
 
-import java.io.File;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.lobby.server.LobbyContext;
-import games.strategy.util.ThreadUtil;
 
 /**
  * Utility to get connections to the database.
@@ -42,37 +35,8 @@ import games.strategy.util.ThreadUtil;
 public class Database {
   private static final Logger logger = Logger.getLogger(Database.class.getName());
   private static final Object dbSetupLock = new Object();
-  private static boolean isDbSetup = false;
+  private static final boolean isDbSetup = false;
   private static boolean areDbTablesCreated = false;
-
-  private static File getCurrentDataBaseDir() {
-    final File dbRootDir = getDBRoot();
-    final File dbDir = new File(dbRootDir, "current");
-    if (!dbDir.exists()) {
-      if (!dbDir.mkdirs()) {
-        throw new IllegalStateException("Could not create derby dir");
-      }
-    }
-    return dbDir;
-  }
-
-  private static File getDBRoot() {
-    final File root;
-    if (System.getProperties().containsKey(ServerLauncher.SERVER_ROOT_DIR_PROPERTY)) {
-      root = new File(System.getProperties().getProperty(ServerLauncher.SERVER_ROOT_DIR_PROPERTY));
-    } else {
-      root = ClientFileSystemHelper.getRootFolder();
-    }
-    if (!root.exists()) {
-      throw new IllegalStateException("Root dir does not exist");
-    }
-    return new File(root, "derby_db");
-  }
-
-  public static Connection getDerbyConnection() {
-    final String url = "jdbc:derby:ta_users;create=true";
-    return getConnection(url, getDbProps());
-  }
 
   public static Connection getPostgresConnection() {
     final Connection connection = getConnection("jdbc:postgresql://localhost/ta_users", getPostgresDbProps());
@@ -84,18 +48,15 @@ public class Database {
     return connection;
   }
 
+  private static Properties getPostgresDbProps() {
+    final Properties props = new Properties();
+    props.put("user", LobbyContext.lobbyPropertyReader().getPostgresUser());
+    props.put("password", LobbyContext.lobbyPropertyReader().getPostgresPassword());
+    return props;
+  }
+
   public static Connection getConnection(final String url, final Properties props) {
-    ensureDbIsSetup();
     final Connection conn;
-    /*
-     * The connection specifies create=true to cause
-     * the database to be created. To remove the database,
-     * remove the directory derbyDB and its contents.
-     * The directory derbyDB will be created under
-     * the directory that the system property
-     * derby.system.home points to, or the current
-     * directory if derby.system.home is not set.
-     */
     try {
       conn = DriverManager.getConnection(url, props);
     } catch (final SQLException e) {
@@ -182,86 +143,5 @@ public class Database {
         throw new IllegalStateException("Could not create tables");
       }
     }
-  }
-
-  /**
-   * Set up folders and environment variables for database.
-   */
-  private static void ensureDbIsSetup() {
-    synchronized (dbSetupLock) {
-      if (isDbSetup) {
-        return;
-      }
-      // setup the derby location
-      System.getProperties().setProperty("derby.system.home", getCurrentDataBaseDir().getAbsolutePath());
-      // shut the database down on finish
-      Runtime.getRuntime().addShutdownHook(new Thread(() -> shutDownDB()));
-      isDbSetup = true;
-    }
-    // we want to backup the database on occassion
-    final Thread backupThread = new Thread(() -> {
-      while (true) {
-        // wait 7 days
-        if (!ThreadUtil.sleep(7 * 24 * 60 * 60 * 1000)) {
-          break;
-        }
-        backup();
-      }
-    }, "TripleA Database Backup Thread");
-    backupThread.setDaemon(true);
-    backupThread.start();
-  }
-
-  private static Properties getDbProps() {
-    final Properties props = new Properties();
-    props.put("user", "user1");
-    props.put("password", "user1");
-    return props;
-  }
-
-  private static Properties getPostgresDbProps() {
-    final Properties props = new Properties();
-    props.put("user", LobbyContext.lobbyPropertyReader().getPostgresUser());
-    props.put("password", LobbyContext.lobbyPropertyReader().getPostgresPassword());
-    return props;
-  }
-
-
-  static void backup() {
-    final String backupDirName =
-        "backup_at_" + DateTimeFormatter.ofPattern("yyyy_MM_dd__kk_mm_ss").format(LocalDateTime.now());
-    final File backupRootDir = getBackupDir();
-    final File backupDir = new File(backupRootDir, backupDirName);
-    if (!backupDir.mkdirs()) {
-      logger.severe("Could not create backup dir" + backupDirName);
-      return;
-    }
-    logger.info("Backing up database to " + backupDir.getAbsolutePath());
-    try (final Connection con = getDerbyConnection()) {
-      // http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
-      final String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
-      try (final CallableStatement cs = con.prepareCall(sqlstmt)) {
-        cs.setString(1, backupDir.getAbsolutePath());
-        cs.execute();
-      }
-    } catch (final Exception e) {
-      logger.log(Level.SEVERE, "Could not back up database", e);
-    }
-    logger.info("Done backing up database");
-  }
-
-  private static File getBackupDir() {
-    return new File(getDBRoot(), "backups");
-  }
-
-  private static void shutDownDB() {
-    try {
-      DriverManager.getConnection("jdbc:derby:ta_users;shutdown=true");
-    } catch (final SQLException se) {
-      if (se.getErrorCode() != 45000) {
-        logger.log(Level.WARNING, se.getMessage(), se);
-      }
-    }
-    logger.info("Database shut down");
   }
 }

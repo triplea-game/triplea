@@ -13,9 +13,13 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 
-// TODO: Lobby DB Migration - merge with DbUserController once completed
 public class UserController implements UserDao {
   private final Supplier<Connection> connectionSupplier;
+
+
+  public UserController() {
+    this(Database::getPostgresConnection);
+  }
 
   UserController(final Supplier<Connection> connectionSupplier) {
     this.connectionSupplier = connectionSupplier;
@@ -110,7 +114,7 @@ public class UserController implements UserDao {
           }
         }
       } else {
-        HashedPassword actualPassword = getPassword(userName);
+        final HashedPassword actualPassword = getPassword(userName);
         if (actualPassword == null) {
           return false;
         }

@@ -38,7 +38,7 @@ public class MutedMacController {
     }
     logger.fine("Muting mac:" + mac);
 
-    try (final Connection con = Database.getDerbyConnection();
+    try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)")) {
       ps.setString(1, mac);
       ps.setTimestamp(2, muteTillTs);
@@ -58,7 +58,7 @@ public class MutedMacController {
   private void removeMutedMac(final String mac) {
     logger.fine("Removing muted mac:" + mac);
 
-    try (final Connection con = Database.getDerbyConnection();
+    try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac = ?")) {
       ps.setString(1, mac);
       ps.execute();
@@ -85,7 +85,7 @@ public class MutedMacController {
     boolean expired = false;
     final String sql = "select mac, mute_till from muted_macs where mac = ?";
 
-    try (final Connection con = Database.getDerbyConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (final Connection con = Database.getPostgresConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
       try (final ResultSet rs = ps.executeQuery()) {
         final boolean found = rs.next();
