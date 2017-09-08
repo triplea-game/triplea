@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public final class RemoteMethodCallTest {
   @Test
-  public void stringToClass_ShouldReturnArgWhenStringIsNull() {
+  public void stringToClass_ShouldReturnClassOfArgWhenStringIsNull() {
     assertThat(RemoteMethodCall.stringToClass(null, new Object()), is(Object.class));
   }
 
