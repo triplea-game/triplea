@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.server.login;
 
 import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -15,12 +16,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.junit.Test;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.db.BadWordController;
-import games.strategy.engine.lobby.server.db.DbUserController;
 import games.strategy.engine.lobby.server.db.HashedPassword;
+import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
@@ -41,6 +43,30 @@ public class LobbyLoginValidatorTest {
     assertNotNull(challengeFunction.apply(challenge -> response));
   }
 
+  private ChallengeResultFunction generateChallenge(final HashedPassword password) {
+    return generateChallenge(Util.createUniqueTimeStamp(), password);
+  }
+
+  private ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
+    final SocketAddress address = new InetSocketAddress(5000);
+    final String mac = MacFinder.getHashedMacAddress();
+    final String email = "none@none.none";
+    if (password != null) {
+      createUser(name, email, password);
+    }
+    final Map<String, String> challenge = loginValidator.getChallengeProperties(name, address);
+    return responseGetter -> {
+      final Map<String, String> response = responseGetter.apply(challenge);
+      response.putIfAbsent(LobbyLoginValidator.EMAIL_KEY, email);
+      response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+      return loginValidator.verifyConnection(challenge, response, name, mac, address);
+    };
+  }
+
+  private static void createUser(final String name, final String email, final HashedPassword password) {
+    new UserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
+  }
+
   @Test
   public void testCreateNewUser() {
     final String name = Util.createUniqueTimeStamp();
@@ -57,7 +83,7 @@ public class LobbyLoginValidatorTest {
       response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, "wrong"));
       return response;
     }));
-    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new DbUserController().getPassword(name).value));
+    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new UserController().getPassword(name).value));
   }
 
   @Test
@@ -84,30 +110,15 @@ public class LobbyLoginValidatorTest {
   @Test
   public void testAnonymousLoginBadName() {
     final String name = "bitCh" + Util.createUniqueTimeStamp();
-    new BadWordController().addBadWord("bitCh");
+    try {
+      new BadWordController().addBadWord("bitCh");
+    } catch (final Exception ignore) {
+      // this is probably a duplicate insertion error, we can ignore that as it only means we already added the bad
+      // word previously
+    }
     assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME,
         generateChallenge(name, new HashedPassword(MD5Crypt.crypt("foo"))).apply(challenge -> new HashMap<>(
             Collections.singletonMap(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
-  }
-
-  @Test
-  public void testLegacyLogin() {
-    final String hashedPassword = MD5Crypt.crypt("foo");
-    final Map<String, String> response = new HashMap<>();
-    final ChallengeResultFunction challengeFunction = generateChallenge(new HashedPassword(hashedPassword));
-    assertNull(challengeFunction.apply(challenge -> {
-      response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
-      assertEquals(challenge.get(LobbyLoginValidator.SALT_KEY), MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
-      return response;
-    }));
-    // with a bad password
-    assertNotNull(challengeFunction.apply(challenge -> {
-      final Map<String, String> falsePassResponse = new HashMap<>(response);
-      falsePassResponse.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("wrong"));
-      return falsePassResponse;
-    }));
-    // with a non existent user
-    assertNotNull(generateChallenge(null).apply(challenge -> response));
   }
 
   @Test
@@ -126,49 +137,6 @@ public class LobbyLoginValidatorTest {
         .apply(challenge -> new HashMap<>(RsaAuthenticator.getEncryptedPassword(challenge, "wrong"))), "password");
     // with a non existent user
     assertError(generateChallenge(null).apply(challenge -> response), "user");
-  }
-
-  @Test
-  public void testLegacyLoginCombined() {
-    final String name = Util.createUniqueTimeStamp();
-    final String password = "foo";
-    final String hashedPassword = MD5Crypt.crypt(password);
-    final Map<String, String> response = new HashMap<>();
-    final ChallengeResultFunction challengeFunction = generateChallenge(name, new HashedPassword(hashedPassword));
-    assertNull(challengeFunction.apply(challenge -> {
-      response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
-      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
-      assertEquals(challenge.get(LobbyLoginValidator.SALT_KEY), MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
-      return response;
-    }));
-    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new DbUserController().getPassword(name).value));
-    response.remove(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY);
-    assertNull(challengeFunction.apply(challenge -> response));
-    assertEquals(hashedPassword, new DbUserController().getLegacyPassword(name).value);
-  }
-
-  private static void createUser(final String name, final String email, final HashedPassword password) {
-    new DbUserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
-  }
-
-  private ChallengeResultFunction generateChallenge(final HashedPassword password) {
-    return generateChallenge(Util.createUniqueTimeStamp(), password);
-  }
-
-  private ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
-    final SocketAddress address = new InetSocketAddress(5000);
-    final String mac = MacFinder.getHashedMacAddress();
-    final String email = "none@none.none";
-    if (password != null) {
-      createUser(name, email, password);
-    }
-    final Map<String, String> challenge = loginValidator.getChallengeProperties(name, address);
-    return responseGetter -> {
-      final Map<String, String> response = responseGetter.apply(challenge);
-      response.putIfAbsent(LobbyLoginValidator.EMAIL_KEY, email);
-      response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-      return loginValidator.verifyConnection(challenge, response, name, mac, address);
-    };
   }
 
   private static void assertError(final String errorMessage, final String... strings) {

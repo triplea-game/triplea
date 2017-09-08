@@ -38,9 +38,7 @@ public class BannedMacController {
     if (banTill != null) {
       banTillTs = new Timestamp(banTill.toEpochMilli());
     }
-    logger.fine("Banning mac:" + mac);
-
-    try (final Connection con = Database.getDerbyConnection();
+    try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)")) {
       ps.setString(1, mac);
       ps.setTimestamp(2, banTillTs);
@@ -58,9 +56,7 @@ public class BannedMacController {
   }
 
   private void removeBannedMac(final String mac) {
-    logger.fine("Removing banned mac:" + mac);
-
-    try (final Connection con = Database.getDerbyConnection();
+    try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?")) {
       ps.setString(1, mac);
       ps.execute();
@@ -80,7 +76,7 @@ public class BannedMacController {
     Timestamp banTill = null;
     final String sql = "select mac, ban_till from banned_macs where mac = ?";
 
-    try (final Connection con = Database.getDerbyConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (final Connection con = Database.getPostgresConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
       try (final ResultSet rs = ps.executeQuery()) {
         found = rs.next();

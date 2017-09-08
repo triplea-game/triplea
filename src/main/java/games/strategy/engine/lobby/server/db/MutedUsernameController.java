@@ -38,7 +38,7 @@ public class MutedUsernameController {
     }
     logger.fine("Muting username:" + username);
 
-    try (final Connection con = Database.getDerbyConnection();
+    try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps =
             con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)")) {
       ps.setString(1, username);
@@ -59,7 +59,7 @@ public class MutedUsernameController {
   private void removeMutedUsername(final String username) {
     logger.fine("Removing muted username:" + username);
 
-    try (final Connection con = Database.getDerbyConnection();
+    try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?")) {
       ps.setString(1, username);
       ps.execute();
@@ -86,7 +86,7 @@ public class MutedUsernameController {
     boolean expired = false;
     final String sql = "select username, mute_till from muted_usernames where username = ?";
 
-    try (final Connection con = Database.getDerbyConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (final Connection con = Database.getPostgresConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
         final boolean found = rs.next();

@@ -18,8 +18,8 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import games.strategy.engine.lobby.server.db.DbUserController;
 import games.strategy.engine.lobby.server.db.HashedPassword;
+import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
@@ -40,7 +40,7 @@ public class ModeratorControllerTest {
     moderatorController = new ModeratorController(serverMessenger, null);
     final String adminName = Util.createUniqueTimeStamp();
 
-    new DbUserController().createUser(
+    new UserController().createUser(
         new DBUser(
             new DBUser.UserName(adminName),
             new DBUser.UserEmail("n@n.n"),

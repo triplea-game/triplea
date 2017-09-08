@@ -109,7 +109,7 @@ public class MD5Crypt {
     /*
      * Two MD5 hashes are used
      */
-    MessageDigest ctx;
+    final MessageDigest ctx;
     MessageDigest ctx1;
     try {
       ctx = MessageDigest.getInstance("md5");
@@ -236,9 +236,6 @@ public class MD5Crypt {
   }
 
   public static String getSalt(final String magic, final String encrypted) {
-    if (!encrypted.startsWith(magic)) {
-      throw new IllegalStateException("Magic doesnt mactch encrypted");
-    }
     final String valNoMagic = encrypted.substring(magic.length());
     return valNoMagic.substring(0, valNoMagic.indexOf("$"));
   }

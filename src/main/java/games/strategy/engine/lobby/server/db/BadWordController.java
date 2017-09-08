@@ -15,8 +15,7 @@ public class BadWordController {
   private static final Logger logger = Logger.getLogger(BadWordController.class.getName());
 
   public void addBadWord(final String word) {
-    logger.fine("Adding bad word word:" + word);
-    try (final Connection con = Database.getDerbyConnection();
+    try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?)")) {
       ps.setString(1, word);
       ps.execute();
@@ -33,8 +32,7 @@ public class BadWordController {
   }
 
   void removeBannedWord(final String word) {
-    logger.fine("Removing banned word:" + word);
-    try (final Connection con = Database.getDerbyConnection();
+    try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
       ps.setString(1, word);
       ps.execute();
@@ -47,7 +45,7 @@ public class BadWordController {
   public List<String> list() {
     final String sql = "select word from bad_words";
 
-    try (final Connection con = Database.getDerbyConnection();
+    try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement(sql);
         final ResultSet rs = ps.executeQuery()) {
       final List<String> badWords = new ArrayList<>();
