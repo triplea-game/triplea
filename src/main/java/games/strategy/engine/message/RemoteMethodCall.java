@@ -8,6 +8,10 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.util.Tuple;
 
 /**
@@ -89,34 +93,41 @@ public class RemoteMethodCall implements Externalizable {
   private static Class<?>[] stringsToClasses(final String[] strings, final Object[] args) {
     final Class<?>[] classes = new Class<?>[strings.length];
     for (int i = 0; i < strings.length; i++) {
-      try {
-        // null if we skipped writing because the arg is the expected
-        // class, this saves some space since generally the arg will
-        // be of the correct type
-        if (strings[i] == null) {
-          classes[i] = args[i].getClass();
-        } else if (strings[i].equals("int")) {
-          classes[i] = Integer.TYPE;
-        } else if (strings[i].equals("short")) {
-          classes[i] = Short.TYPE;
-        } else if (strings[i].equals("byte")) {
-          classes[i] = Byte.TYPE;
-        } else if (strings[i].equals("long")) {
-          classes[i] = Long.TYPE;
-        } else if (strings[i].equals("float")) {
-          classes[i] = Float.TYPE;
-        } else if (strings[i].equals("double")) {
-          classes[i] = Double.TYPE;
-        } else if (strings[i].equals("boolean")) {
-          classes[i] = Boolean.TYPE;
-        } else {
-          classes[i] = Class.forName(strings[i]);
-        }
-      } catch (final ClassNotFoundException e) {
-        throw new IllegalStateException(e);
-      }
+      classes[i] = stringToClass(strings[i], args[i]);
     }
     return classes;
+  }
+
+  @VisibleForTesting
+  static Class<?> stringToClass(final @Nullable String string, final Object arg) {
+    // null if we skipped writing because the arg is the expected class.
+    // this saves some space since generally the arg will be of the correct type.
+    if (string == null) {
+      return arg.getClass();
+    }
+
+    switch (string) {
+      case "int":
+        return Integer.TYPE;
+      case "short":
+        return Short.TYPE;
+      case "byte":
+        return Byte.TYPE;
+      case "long":
+        return Long.TYPE;
+      case "float":
+        return Float.TYPE;
+      case "double":
+        return Double.TYPE;
+      case "boolean":
+        return Boolean.TYPE;
+      default:
+        try {
+          return Class.forName(string);
+        } catch (final ClassNotFoundException e) {
+          throw new IllegalStateException(e);
+        }
+    }
   }
 
   private static String[] classesToString(final Class<?>[] classes, final Object[] args) {
