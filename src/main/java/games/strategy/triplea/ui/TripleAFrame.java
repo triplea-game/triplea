@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -60,12 +61,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolTip;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -112,6 +115,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -904,6 +908,7 @@ public class TripleAFrame extends MainGameFrame {
       final JList<Unit> list = new JList<>(new Vector<>(potentialTargets));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setSelectedIndex(0);
+      list.setCellRenderer(new UnitRenderer());
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
       if (bombers != null) {
@@ -922,6 +927,37 @@ public class TripleAFrame extends MainGameFrame {
       selected.set((Unit) list.getSelectedValue());
     }
     return selected.get();
+  }
+
+  @SuppressWarnings("serial")
+  class UnitRenderer extends JLabel implements ListCellRenderer<Unit> {
+
+    public UnitRenderer() {
+      setOpaque(true);
+    }
+
+    @Override
+    public Component getListCellRendererComponent(final JList<? extends Unit> list, final Unit unit, final int index,
+        final boolean isSelected, final boolean cellHasFocus) {
+
+      setText(unit.toString() + ", damage=" + TripleAUnit.get(unit).getUnitDamage());
+      final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(unit.getType(), unit.getOwner(),
+          Matches.unitHasTakenSomeBombingUnitDamage().match(unit), Matches.unitIsDisabled().match(unit));
+      if (icon.isPresent()) {
+        setIcon(icon.get());
+      }
+      setBorder(new EmptyBorder(0, 0, 0, 10));
+
+      if (isSelected) {
+        setBackground(list.getSelectionBackground());
+        setForeground(list.getSelectionForeground());
+      } else {
+        setBackground(list.getBackground());
+        setForeground(list.getForeground());
+      }
+
+      return this;
+    }
   }
 
   public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
