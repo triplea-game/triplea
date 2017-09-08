@@ -141,11 +141,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   static TerritoryAttachment get(final Territory t, final String nameOfAttachment) {
-    final TerritoryAttachment rVal = (TerritoryAttachment) t.getAttachment(nameOfAttachment);
-    if (rVal == null && !t.isWater()) {
+    final TerritoryAttachment territoryAttachment = (TerritoryAttachment) t.getAttachment(nameOfAttachment);
+    if (territoryAttachment == null && !t.isWater()) {
       throw new IllegalStateException("No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
     }
-    return rVal;
+    return territoryAttachment;
   }
 
   /**
@@ -674,7 +674,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(final Territory t, final GameData data) {
-    final Set<Territory> rVal = new HashSet<>();
+    final Set<Territory> territories = new HashSet<>();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null || !ta.getConvoyRoute()) {
       return null;
@@ -685,10 +685,10 @@ public class TerritoryAttachment extends DefaultAttachment {
         continue;
       }
       if (cta.getConvoyAttached().contains(t)) {
-        rVal.add(current);
+        territories.add(current);
       }
     }
-    return rVal;
+    return territories;
   }
 
   public String toStringForInfo(final boolean useHtml, final boolean includeAttachedToName) {

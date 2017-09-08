@@ -106,9 +106,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
    */
   @Override
   public Set<INode> getNodes() {
-    final Set<INode> rVal = new HashSet<>(nodeToChannel.keySet());
-    rVal.add(node);
-    return rVal;
+    final Set<INode> nodes = new HashSet<>(nodeToChannel.keySet());
+    nodes.add(node);
+    return nodes;
   }
 
   @Override

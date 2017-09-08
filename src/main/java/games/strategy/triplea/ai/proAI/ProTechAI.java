@@ -590,15 +590,15 @@ final class ProTechAI {
    */
   private static List<Territory> getNeighboringLandTerritories(final GameData data, final PlayerID player,
       final Territory check) {
-    final ArrayList<Territory> rVal = new ArrayList<>();
+    final ArrayList<Territory> territories = new ArrayList<>();
     final List<Territory> checkList = getExactNeighbors(check, 1, data, false);
     for (final Territory t : checkList) {
       if (Matches.isTerritoryAllied(player, data).match(t)
           && Matches.territoryIsNotImpassableToLandUnits(player, data).match(t)) {
-        rVal.add(t);
+        territories.add(t);
       }
     }
-    return rVal;
+    return territories;
   }
 
   /**

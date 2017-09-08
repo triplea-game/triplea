@@ -48,20 +48,20 @@ public class UnitAttachment extends DefaultAttachment {
    * Convenience method.
    */
   public static UnitAttachment get(final UnitType type) {
-    final UnitAttachment rVal = (UnitAttachment) type.getAttachment(Constants.UNIT_ATTACHMENT_NAME);
-    if (rVal == null) {
+    final UnitAttachment unitAttachment = (UnitAttachment) type.getAttachment(Constants.UNIT_ATTACHMENT_NAME);
+    if (unitAttachment == null) {
       throw new IllegalStateException("No unit type attachment for:" + type.getName());
     }
-    return rVal;
+    return unitAttachment;
   }
 
   static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
-    final UnitAttachment rVal = (UnitAttachment) type.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    final UnitAttachment unitAttachment = (UnitAttachment) type.getAttachment(nameOfAttachment);
+    if (unitAttachment == null) {
       throw new IllegalStateException(
           "No unit type attachment for:" + type.getName() + " with name:" + nameOfAttachment);
     }
-    return rVal;
+    return unitAttachment;
   }
 
   private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
@@ -2363,9 +2363,9 @@ public class UnitAttachment extends DefaultAttachment {
     for (final Unit u : aaUnitsAlreadyVerified) {
       aaSet.add(UnitAttachment.get(u.getType()).getTypeAA());
     }
-    final List<String> rVal = new ArrayList<>(aaSet);
-    Collections.sort(rVal);
-    return rVal;
+    final List<String> aaTypes = new ArrayList<>(aaSet);
+    Collections.sort(aaTypes);
+    return aaTypes;
   }
 
   /**
@@ -2788,29 +2788,29 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Collection<UnitType> getListedUnits(final String[] list) {
-    final List<UnitType> rVal = new ArrayList<>();
+    final List<UnitType> unitTypes = new ArrayList<>();
     for (final String name : list) {
       // Validate all units exist
       final UnitType ut = getData().getUnitTypeList().getUnitType(name);
       if (ut == null) {
         throw new IllegalStateException("No unit called: " + name + thisErrorMsg());
       }
-      rVal.add(ut);
+      unitTypes.add(ut);
     }
-    return rVal;
+    return unitTypes;
   }
 
   private Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
-    final List<Territory> rVal = new ArrayList<>();
+    final List<Territory> territories = new ArrayList<>();
     for (final String name : list) {
       // Validate all territories exist
       final Territory territory = getData().getMap().getTerritory(name);
       if (territory == null) {
         throw new GameParseException("No territory called: " + name + thisErrorMsg());
       }
-      rVal.add(territory);
+      territories.add(territory);
     }
-    return rVal;
+    return territories;
   }
 
   private static boolean playerHasRockets(final PlayerID player) {

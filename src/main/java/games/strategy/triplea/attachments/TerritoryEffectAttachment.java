@@ -37,21 +37,22 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
    * @return TerritoryEffectAttachment belonging to the RelationshipType pr
    */
   public static TerritoryEffectAttachment get(final TerritoryEffect te) {
-    final TerritoryEffectAttachment rVal =
+    final TerritoryEffectAttachment territoryEffectAttachment =
         (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
-    if (rVal == null) {
+    if (territoryEffectAttachment == null) {
       throw new IllegalStateException("No territoryEffect attachment for:" + te.getName());
     }
-    return rVal;
+    return territoryEffectAttachment;
   }
 
   static TerritoryEffectAttachment get(final TerritoryEffect te, final String nameOfAttachment) {
-    final TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    final TerritoryEffectAttachment territoryEffectAttachment =
+        (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
+    if (territoryEffectAttachment == null) {
       throw new IllegalStateException(
           "No territoryEffect attachment for:" + te.getName() + " with name:" + nameOfAttachment);
     }
-    return rVal;
+    return territoryEffectAttachment;
   }
 
   /**

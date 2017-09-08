@@ -161,13 +161,13 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   @Override
   public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
       final Territory from) {
-    final List<Unit> rVal = new ArrayList<>();
+    final List<Unit> fighters = new ArrayList<>();
     for (final Unit fighter : fightersThatCanBeMoved) {
       if (Math.random() < 0.8) {
-        rVal.add(fighter);
+        fighters.add(fighter);
       }
     }
-    return rVal;
+    return fighters;
   }
 
   @Override
@@ -265,7 +265,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     if (attackTokens.size() <= 0) {
       return null;
     }
-    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal = new HashMap<>();
+    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
     for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
       if (attackTokens.size() <= 0) {
         continue;
@@ -282,19 +282,19 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         final int num = Math.min(attackTokens.getInt(r),
             (UnitAttachment.get(u.getType()).getHitPoints() * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
         resourceMap.put(r, num);
-        HashMap<Unit, IntegerMap<Resource>> attMap = rVal.get(t);
+        HashMap<Unit, IntegerMap<Resource>> attMap = kamikazeSuicideAttacks.get(t);
         if (attMap == null) {
           attMap = new HashMap<>();
         }
         attMap.put(u, resourceMap);
-        rVal.put(t, attMap);
+        kamikazeSuicideAttacks.put(t, attMap);
         attackTokens.add(r, -num);
         if (attackTokens.getInt(r) <= 0) {
           attackTokens.removeKey(r);
         }
       }
     }
-    return rVal;
+    return kamikazeSuicideAttacks;
   }
 
   @Override

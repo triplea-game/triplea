@@ -200,17 +200,17 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       throw new IOException("Cound not find end index");
     }
     final StringTokenizer tokenizer = new StringTokenizer(string.substring(startIndex, endIndex), " ,", false);
-    final int[] rVal = new int[count];
+    final int[] dice = new int[count];
     for (int i = 0; i < count; i++) {
       try {
         // -1 since we are 0 based
-        rVal[i] = Integer.parseInt(tokenizer.nextToken()) - 1;
+        dice[i] = Integer.parseInt(tokenizer.nextToken()) - 1;
       } catch (final NumberFormatException ex) {
         ClientLogger.logQuietly("Number format parsing: " + string, ex);
         throw new IOException(ex.getMessage());
       }
     }
-    return rVal;
+    return dice;
   }
 
   @Override
