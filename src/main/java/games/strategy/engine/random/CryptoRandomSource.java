@@ -1,5 +1,11 @@
 package games.strategy.engine.random;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
@@ -15,29 +21,29 @@ public class CryptoRandomSource implements IRandomSource {
   private final IRandomSource m_plainRandom = new PlainRandomSource();
 
   /**
-   * converts an int[] to a byte[].
+   * Converts an {@code int} array to a {@code byte} array. Each {@code int} will be encoded in little endian order in
+   * the {@code byte} array.
    */
-  public static byte[] intsToBytes(final int[] ints) {
-    final byte[] bytes = new byte[ints.length * 4];
-    for (int i = 0; i < ints.length; i++) {
-      bytes[4 * i] = (byte) (0x000000FF & ints[i]);
-      bytes[(4 * i) + 1] = (byte) ((0x000000FF & (ints[i] >> 8)));
-      bytes[(4 * i) + 2] = (byte) ((0x000000FF & (ints[i] >> 16)));
-      bytes[(4 * i) + 3] = (byte) ((0x000000FF & (ints[i] >> 24)));
-    }
+  @VisibleForTesting
+  static byte[] intsToBytes(final int[] ints) {
+    final ByteBuffer byteBuffer = ByteBuffer.allocate(ints.length * 4).order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.asIntBuffer().put(ints);
+    final byte[] bytes = new byte[byteBuffer.remaining()];
+    byteBuffer.get(bytes);
     return bytes;
   }
 
-  static int byteToIntUnsigned(final byte val) {
-    return val & 0xff;
-  }
-
+  /**
+   * Converts a {@code byte} array to an {@code int} array. The {@code byte} array is assumed to contain {@code int}s
+   * encoded in little endian order.
+   */
   static int[] bytesToInts(final byte[] bytes) {
-    final int[] ints = new int[bytes.length / 4];
-    for (int i = 0; i < ints.length; i++) {
-      ints[i] = byteToIntUnsigned(bytes[4 * i]) + (byteToIntUnsigned(bytes[4 * i + 1]) << 8)
-          + (byteToIntUnsigned(bytes[4 * i + 2]) << 16) + (byteToIntUnsigned(bytes[4 * i + 3]) << 24);
-    }
+    final ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length).order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.put(bytes);
+    byteBuffer.rewind();
+    final IntBuffer intBuffer = byteBuffer.asIntBuffer();
+    final int[] ints = new int[intBuffer.remaining()];
+    intBuffer.get(ints);
     return ints;
   }
 
