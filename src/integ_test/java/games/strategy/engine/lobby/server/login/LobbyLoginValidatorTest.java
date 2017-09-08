@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -40,6 +41,30 @@ public class LobbyLoginValidatorTest {
     assertNull(challengeFunction.apply(challenge -> response));
     // try to create a duplicate user, should not work
     assertNotNull(challengeFunction.apply(challenge -> response));
+  }
+
+  private ChallengeResultFunction generateChallenge(final HashedPassword password) {
+    return generateChallenge(Util.createUniqueTimeStamp(), password);
+  }
+
+  private ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
+    final SocketAddress address = new InetSocketAddress(5000);
+    final String mac = MacFinder.getHashedMacAddress();
+    final String email = "none@none.none";
+    if (password != null) {
+      createUser(name, email, password);
+    }
+    final Map<String, String> challenge = loginValidator.getChallengeProperties(name, address);
+    return responseGetter -> {
+      final Map<String, String> response = responseGetter.apply(challenge);
+      response.putIfAbsent(LobbyLoginValidator.EMAIL_KEY, email);
+      response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+      return loginValidator.verifyConnection(challenge, response, name, mac, address);
+    };
+  }
+
+  private static void createUser(final String name, final String email, final HashedPassword password) {
+    new UserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
   }
 
   @Test
@@ -85,6 +110,12 @@ public class LobbyLoginValidatorTest {
   @Test
   public void testAnonymousLoginBadName() {
     final String name = "bitCh" + Util.createUniqueTimeStamp();
+    try {
+      new BadWordController().addBadWord("bitCh");
+    } catch (final Exception ignore) {
+      // this is probably a duplicate insertion error, we can ignore that as it only means we already added the bad
+      // word previously
+    }
     assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME,
         generateChallenge(name, new HashedPassword(MD5Crypt.crypt("foo"))).apply(challenge -> new HashMap<>(
             Collections.singletonMap(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
@@ -106,31 +137,6 @@ public class LobbyLoginValidatorTest {
         .apply(challenge -> new HashMap<>(RsaAuthenticator.getEncryptedPassword(challenge, "wrong"))), "password");
     // with a non existent user
     assertError(generateChallenge(null).apply(challenge -> response), "user");
-  }
-
-
-  private static void createUser(final String name, final String email, final HashedPassword password) {
-    new UserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
-  }
-
-  private ChallengeResultFunction generateChallenge(final HashedPassword password) {
-    return generateChallenge(Util.createUniqueTimeStamp(), password);
-  }
-
-  private ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
-    final SocketAddress address = new InetSocketAddress(5000);
-    final String mac = MacFinder.getHashedMacAddress();
-    final String email = "none@none.none";
-    if (password != null) {
-      createUser(name, email, password);
-    }
-    final Map<String, String> challenge = loginValidator.getChallengeProperties(name, address);
-    return responseGetter -> {
-      final Map<String, String> response = responseGetter.apply(challenge);
-      response.putIfAbsent(LobbyLoginValidator.EMAIL_KEY, email);
-      response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-      return loginValidator.verifyConnection(challenge, response, name, mac, address);
-    };
   }
 
   private static void assertError(final String errorMessage, final String... strings) {
