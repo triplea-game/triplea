@@ -128,8 +128,7 @@ public class UndoableMove extends AbstractUndoableMove {
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal = end.getUnits()
                 .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerID(), data),
-                    Matches.unitIsAtMaxDamageOrNotCanBeDamaged(end).invert(),
-                    Matches.unitIsBeingTransported().invert()));
+                    Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().invert()));
             final Collection<Unit> enemyTargets = Matches.getMatches(enemyTargetsTotal,
                 Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(
                     Matches.getMatches(Collections.singleton(unit), Matches.unitIsStrategicBomber()), data)));
@@ -170,7 +169,7 @@ public class UndoableMove extends AbstractUndoableMove {
         throw new IllegalStateException("other should not be null");
       }
       if (// if the other move has moves that depend on this
-          !Util.intersection(other.getUnits(), this.getUnits()).isEmpty()
+      !Util.intersection(other.getUnits(), this.getUnits()).isEmpty()
           // if the other move has transports that we are loading
           || !Util.intersection(other.m_units, this.m_loaded).isEmpty()
           // or we are moving through a previously conqueured territory

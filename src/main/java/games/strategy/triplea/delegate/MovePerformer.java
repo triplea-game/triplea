@@ -171,8 +171,7 @@ public class MovePerformer implements Serializable {
           // could it be a bombing raid
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
           final Collection<Unit> enemyTargetsTotal = Matches.getMatches(enemyUnits,
-              Match.allOf(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert(),
-                  Matches.unitIsBeingTransported().invert()));
+              Match.allOf(Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().invert()));
           final Match.CompositeBuilder<Unit> allBombingRaidBuilder = Match.newCompositeBuilder(
               Matches.unitIsStrategicBomber());
           final boolean canCreateAirBattle =
@@ -276,8 +275,8 @@ public class MovePerformer implements Serializable {
         // actually move the units
         if (route.getStart() != null && route.getEnd() != null) {
           // ChangeFactory.addUnits(route.getEnd(), arrived);
-          Change remove = ChangeFactory.removeUnits(route.getStart(), units);
-          Change add = ChangeFactory.addUnits(route.getEnd(), arrived);
+          final Change remove = ChangeFactory.removeUnits(route.getStart(), units);
+          final Change add = ChangeFactory.addUnits(route.getEnd(), arrived);
           change.add(add, remove);
         }
         m_bridge.addChange(change);
@@ -395,7 +394,7 @@ public class MovePerformer implements Serializable {
     // load the transports
     if (route.isLoad() || paratroopsLanding) {
       // mark transports as having transported
-      for (Unit load : transporting.keySet()) {
+      for (final Unit load : transporting.keySet()) {
         final Unit transport = transporting.get(load);
         if (!TransportTracker.transporting(transport).contains(load)) {
           final Change change = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
@@ -429,7 +428,7 @@ public class MovePerformer implements Serializable {
       // any pending battles in the unloading zone?
       final BattleTracker tracker = getBattleTracker();
       final boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false, BattleType.NORMAL) != null;
-      for (Unit unit : units) {
+      for (final Unit unit : units) {
         if (Matches.unitIsAir().match(unit)) {
           continue;
         }

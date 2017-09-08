@@ -93,7 +93,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
     final Match<Unit> defenders = Match.allOf(Matches.enemyUnit(m_attacker, m_data),
-        Match.anyOf(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
+        Match.anyOf(Matches.unitCanBeDamaged(),
             Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
                 Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data)));
     if (m_targets.isEmpty()) {
