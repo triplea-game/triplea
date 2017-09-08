@@ -62,7 +62,7 @@ public class Database {
     } catch (final SQLException e) {
       throw new IllegalStateException("Could not create db connection", e);
     }
-    ensureDbTablesAreCreated(conn);
+//    ensureDbTablesAreCreated(conn);
     return conn;
   }
 

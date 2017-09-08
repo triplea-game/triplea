@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.LobbyServer;
-import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -86,30 +85,9 @@ public class LobbyLoginValidatorTest {
   @Test
   public void testAnonymousLoginBadName() {
     final String name = "bitCh" + Util.createUniqueTimeStamp();
-    new BadWordController().addBadWord("bitCh");
     assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME,
         generateChallenge(name, new HashedPassword(MD5Crypt.crypt("foo"))).apply(challenge -> new HashMap<>(
             Collections.singletonMap(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
-  }
-
-  @Test
-  public void testLegacyLogin() {
-    final String hashedPassword = MD5Crypt.crypt("foo");
-    final Map<String, String> response = new HashMap<>();
-    final ChallengeResultFunction challengeFunction = generateChallenge(new HashedPassword(hashedPassword));
-    assertNull(challengeFunction.apply(challenge -> {
-      response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
-      assertEquals(challenge.get(LobbyLoginValidator.SALT_KEY), MD5Crypt.getSalt(MD5Crypt.MAGIC, hashedPassword));
-      return response;
-    }));
-    // with a bad password
-    assertNotNull(challengeFunction.apply(challenge -> {
-      final Map<String, String> falsePassResponse = new HashMap<>(response);
-      falsePassResponse.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("wrong"));
-      return falsePassResponse;
-    }));
-    // with a non existent user
-    assertNotNull(generateChallenge(null).apply(challenge -> response));
   }
 
   @Test
