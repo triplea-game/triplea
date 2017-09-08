@@ -20,7 +20,7 @@ class Utils {
    * All the territories that border one of our territories.
    */
   static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
-    final ArrayList<Territory> territories = new ArrayList<>();
+    final List<Territory> territories = new ArrayList<>();
     for (final Territory t : data.getMap()) {
       if (Matches.isTerritoryEnemy(player, data).match(t) && !t.getOwner().isNull()) {
         if (!data.getMap().getNeighbors(t, Matches.isTerritoryOwnedBy(player)).isEmpty()) {
@@ -36,7 +36,7 @@ class Utils {
     if (AIUtils.strength(units, true, sea) < maxStrength) {
       return new ArrayList<>(units);
     }
-    final ArrayList<Unit> unitsUpToStrength = new ArrayList<>();
+    final List<Unit> unitsUpToStrength = new ArrayList<>();
     for (final Unit u : units) {
       unitsUpToStrength.add(u);
       if (AIUtils.strength(unitsUpToStrength, true, sea) > maxStrength) {
