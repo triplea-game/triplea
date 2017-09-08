@@ -47,12 +47,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
-    final UserActionAttachment userActionAttachment = (UserActionAttachment) player.getAttachment(nameOfAttachment);
-    if (userActionAttachment == null) {
-      throw new IllegalStateException(
-          "UserActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-    }
-    return userActionAttachment;
+    return getAttachment(player, nameOfAttachment, UserActionAttachment.class);
   }
 
   // instance variables:
