@@ -1,6 +1,8 @@
 package games.strategy.engine.random;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -21,6 +23,17 @@ public class CryptoRandomSourceTest {
     assertEquals(CryptoRandomSource.byteToIntUnsigned((byte) 0), 0);
     assertEquals(CryptoRandomSource.byteToIntUnsigned((byte) 1), 1);
     assertEquals(CryptoRandomSource.byteToIntUnsigned(((byte) 0xFF)), 0xFF);
+  }
+
+  @Test
+  public void testMix() {
+    final int[] val1 = {0, 0, 0, 1, 1, 1, 2, 2, 2};
+    final int[] val2 = {0, 1, 2, 0, 1, 2, 0, 1, 2};
+    final int max = 3;
+
+    final int[] mixedValues = CryptoRandomSource.mix(val1, val2, max);
+
+    assertThat(mixedValues, is(new int[] {0, 1, 2, 1, 2, 0, 2, 0, 1}));
   }
 
   @Test

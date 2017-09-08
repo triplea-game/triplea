@@ -78,7 +78,7 @@ public class RemoteRandom implements IRemoteRandom {
       e1.printStackTrace();
       throw new IllegalStateException("Could not unlock numbers, cheating suspected");
     }
-    final int[] verifiedNumbers = CryptoRandomSource.xor(remoteNumbers, m_localNumbers, m_max);
+    final int[] verifiedNumbers = CryptoRandomSource.mix(remoteNumbers, m_localNumbers, m_max);
     addVerifiedRandomNumber(new VerifiedRandomNumbers(m_annotation, verifiedNumbers));
     m_waitingForUnlock = false;
   }
