@@ -14,7 +14,7 @@ import org.junit.Test;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.util.MD5Crypt;
 
-public class DbUserControllerIntegrationTest {
+public class UserControllerIntegrationTest {
 
   private static final DbTestConnection POSTGRES =
       new DbTestConnection(
