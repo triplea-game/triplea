@@ -76,9 +76,9 @@ class EndPoint {
       throw new IllegalArgumentException(m_remoteClass + " is not assignable from " + implementor.getClass());
     }
     synchronized (m_implementorsMutext) {
-      final boolean rVal = m_implementors.isEmpty();
+      final boolean isFirstImplementor = m_implementors.isEmpty();
       m_implementors.add(implementor);
-      return rVal;
+      return isFirstImplementor;
     }
   }
 

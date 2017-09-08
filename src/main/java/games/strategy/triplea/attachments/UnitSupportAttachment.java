@@ -68,11 +68,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   static UnitSupportAttachment get(final UnitType u, final String nameOfAttachment) {
-    final UnitSupportAttachment rVal = (UnitSupportAttachment) u.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    final UnitSupportAttachment unitSupportAttachment = (UnitSupportAttachment) u.getAttachment(nameOfAttachment);
+    if (unitSupportAttachment == null) {
       throw new IllegalStateException("No unit type attachment for:" + u.getName() + " with name:" + nameOfAttachment);
     }
-    return rVal;
+    return unitSupportAttachment;
   }
 
   public static Set<UnitSupportAttachment> get(final GameData data) {

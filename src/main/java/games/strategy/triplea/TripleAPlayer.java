@@ -721,8 +721,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (attackTokens.size() <= 0) {
       return null;
     }
-    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal =
-        new HashMap<>();
+    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
     for (final Entry<Resource, Integer> entry : attackTokens.entrySet()) {
       final Resource r = entry.getKey();
       final int max = entry.getValue();
@@ -730,7 +729,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, r, max);
       for (final Entry<Territory, IntegerMap<Unit>> selectionEntry : selection.entrySet()) {
         final Territory t = selectionEntry.getKey();
-        HashMap<Unit, IntegerMap<Resource>> currentTerr = rVal.get(t);
+        HashMap<Unit, IntegerMap<Resource>> currentTerr = kamikazeSuicideAttacks.get(t);
         if (currentTerr == null) {
           currentTerr = new HashMap<>();
         }
@@ -743,10 +742,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
           currentUnit.add(r, unitEntry.getValue());
           currentTerr.put(u, currentUnit);
         }
-        rVal.put(t, currentTerr);
+        kamikazeSuicideAttacks.put(t, currentTerr);
       }
     }
-    return rVal;
+    return kamikazeSuicideAttacks;
   }
 
   @Override

@@ -18,14 +18,14 @@ public class CryptoRandomSource implements IRandomSource {
    * converts an int[] to a byte[].
    */
   public static byte[] intsToBytes(final int[] ints) {
-    final byte[] rVal = new byte[ints.length * 4];
+    final byte[] bytes = new byte[ints.length * 4];
     for (int i = 0; i < ints.length; i++) {
-      rVal[4 * i] = (byte) (0x000000FF & ints[i]);
-      rVal[(4 * i) + 1] = (byte) ((0x000000FF & (ints[i] >> 8)));
-      rVal[(4 * i) + 2] = (byte) ((0x000000FF & (ints[i] >> 16)));
-      rVal[(4 * i) + 3] = (byte) ((0x000000FF & (ints[i] >> 24)));
+      bytes[4 * i] = (byte) (0x000000FF & ints[i]);
+      bytes[(4 * i) + 1] = (byte) ((0x000000FF & (ints[i] >> 8)));
+      bytes[(4 * i) + 2] = (byte) ((0x000000FF & (ints[i] >> 16)));
+      bytes[(4 * i) + 3] = (byte) ((0x000000FF & (ints[i] >> 24)));
     }
-    return rVal;
+    return bytes;
   }
 
   static int byteToIntUnsigned(final byte val) {
@@ -33,23 +33,23 @@ public class CryptoRandomSource implements IRandomSource {
   }
 
   static int[] bytesToInts(final byte[] bytes) {
-    final int[] rVal = new int[bytes.length / 4];
-    for (int i = 0; i < rVal.length; i++) {
-      rVal[i] = byteToIntUnsigned(bytes[4 * i]) + (byteToIntUnsigned(bytes[4 * i + 1]) << 8)
+    final int[] ints = new int[bytes.length / 4];
+    for (int i = 0; i < ints.length; i++) {
+      ints[i] = byteToIntUnsigned(bytes[4 * i]) + (byteToIntUnsigned(bytes[4 * i + 1]) << 8)
           + (byteToIntUnsigned(bytes[4 * i + 2]) << 16) + (byteToIntUnsigned(bytes[4 * i + 3]) << 24);
     }
-    return rVal;
+    return ints;
   }
 
   static int[] xor(final int[] val1, final int[] val2, final int max) {
     if (val1.length != val2.length) {
       throw new IllegalArgumentException("Arrays not of same length");
     }
-    final int[] rVal = new int[val1.length];
+    final int[] xorValues = new int[val1.length];
     for (int i = 0; i < val1.length; i++) {
-      rVal[i] = (val1[i] + val2[i]) % max;
+      xorValues[i] = (val1[i] + val2[i]) % max;
     }
-    return rVal;
+    return xorValues;
   }
 
   // the remote players who involved in rolling the dice

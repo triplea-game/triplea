@@ -20,15 +20,15 @@ class Utils {
    * All the territories that border one of our territories.
    */
   static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
-    final ArrayList<Territory> rVal = new ArrayList<>();
+    final ArrayList<Territory> territories = new ArrayList<>();
     for (final Territory t : data.getMap()) {
       if (Matches.isTerritoryEnemy(player, data).match(t) && !t.getOwner().isNull()) {
         if (!data.getMap().getNeighbors(t, Matches.isTerritoryOwnedBy(player)).isEmpty()) {
-          rVal.add(t);
+          territories.add(t);
         }
       }
     }
-    return rVal;
+    return territories;
   }
 
   static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
@@ -36,14 +36,14 @@ class Utils {
     if (AIUtils.strength(units, true, sea) < maxStrength) {
       return new ArrayList<>(units);
     }
-    final ArrayList<Unit> rVal = new ArrayList<>();
+    final ArrayList<Unit> unitsUpToStrength = new ArrayList<>();
     for (final Unit u : units) {
-      rVal.add(u);
-      if (AIUtils.strength(rVal, true, sea) > maxStrength) {
-        return rVal;
+      unitsUpToStrength.add(u);
+      if (AIUtils.strength(unitsUpToStrength, true, sea) > maxStrength) {
+        return unitsUpToStrength;
       }
     }
-    return rVal;
+    return unitsUpToStrength;
   }
 
   static float getStrengthOfPotentialAttackers(final Territory location, final GameData data) {

@@ -32,11 +32,11 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   static PlayerAttachment get(final PlayerID p, final String nameOfAttachment) {
-    final PlayerAttachment rVal = p.getPlayerAttachment(); // (PlayerAttachment) p.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    final PlayerAttachment playerAttachment = p.getPlayerAttachment();
+    if (playerAttachment == null) {
       throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
     }
-    return rVal;
+    return playerAttachment;
   }
 
   private int m_vps = 0;

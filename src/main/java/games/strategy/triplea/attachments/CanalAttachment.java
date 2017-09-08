@@ -29,7 +29,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   public static Set<Territory> getAllCanalSeaZones(final String canalName, final GameData data) {
-    final Set<Territory> rVal = new HashSet<>();
+    final Set<Territory> territories = new HashSet<>();
     for (final Territory t : data.getMap()) {
       final Set<CanalAttachment> canalAttachments = get(t);
       if (canalAttachments.isEmpty()) {
@@ -37,38 +37,38 @@ public class CanalAttachment extends DefaultAttachment {
       }
       for (final CanalAttachment canalAttachment : canalAttachments) {
         if (canalAttachment.getCanalName().equals(canalName)) {
-          rVal.add(t);
+          territories.add(t);
         }
       }
     }
-    if (rVal.size() != 2) {
+    if (territories.size() != 2) {
       throw new IllegalStateException(
-          "Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):" + rVal);
+          "Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):" + territories);
     }
-    return rVal;
+    return territories;
   }
 
   public static Set<CanalAttachment> get(final Territory t) {
-    final Set<CanalAttachment> rVal = new HashSet<>();
+    final Set<CanalAttachment> canalAttachments = new HashSet<>();
     final Map<String, IAttachment> map = t.getAttachments();
     final Iterator<String> iter = map.keySet().iterator();
     while (iter.hasNext()) {
       final IAttachment attachment = map.get(iter.next());
       final String name = attachment.getName();
       if (name.startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
-        rVal.add((CanalAttachment) attachment);
+        canalAttachments.add((CanalAttachment) attachment);
       }
     }
-    return rVal;
+    return canalAttachments;
   }
 
   static CanalAttachment get(final Territory t, final String nameOfAttachment) {
-    final CanalAttachment rVal = (CanalAttachment) t.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    final CanalAttachment canalAttachment = (CanalAttachment) t.getAttachment(nameOfAttachment);
+    if (canalAttachment == null) {
       throw new IllegalStateException(
           "CanalAttachment: No canal attachment for:" + t.getName() + " with name: " + nameOfAttachment);
     }
-    return rVal;
+    return canalAttachment;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

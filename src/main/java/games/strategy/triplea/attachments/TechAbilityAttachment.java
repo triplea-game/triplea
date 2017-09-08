@@ -49,21 +49,19 @@ public class TechAbilityAttachment extends DefaultAttachment {
         return hardCodedTechAttachment;
       }
     }
-    final TechAbilityAttachment rVal =
-        (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
-    return rVal;
+    return (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
   }
 
   /**
    * Convenience method.
    */
   public static TechAbilityAttachment get(final TechAdvance type, final String nameOfAttachment) {
-    final TechAbilityAttachment rVal = (TechAbilityAttachment) type.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    final TechAbilityAttachment techAbilityAttachment = (TechAbilityAttachment) type.getAttachment(nameOfAttachment);
+    if (techAbilityAttachment == null) {
       throw new IllegalStateException(
           "No technology attachment for:" + type.getName() + " with name:" + nameOfAttachment);
     }
-    return rVal;
+    return techAbilityAttachment;
   }
 
   // unitAbilitiesGained Static Strings
@@ -1026,24 +1024,24 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public static HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA(final PlayerID player,
       final GameData data) {
-    final HashMap<String, HashSet<UnitType>> rVal = new HashMap<>();
+    final HashMap<String, HashSet<UnitType>> airborneTargettedByAa = new HashMap<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
         final HashMap<String, HashSet<UnitType>> mapAa = taa.getAirborneTargettedByAA();
         if (mapAa != null && !mapAa.isEmpty()) {
           for (final Entry<String, HashSet<UnitType>> entry : mapAa.entrySet()) {
-            HashSet<UnitType> current = rVal.get(entry.getKey());
+            HashSet<UnitType> current = airborneTargettedByAa.get(entry.getKey());
             if (current == null) {
               current = new HashSet<>();
             }
             current.addAll(entry.getValue());
-            rVal.put(entry.getKey(), current);
+            airborneTargettedByAa.put(entry.getKey(), current);
           }
         }
       }
     }
-    return rVal;
+    return airborneTargettedByAa;
   }
 
   public void clearAirborneTargettedByAA() {
