@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.util.PropertyUtil;
@@ -35,6 +37,35 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
    */
   @Override
   public abstract void validate(final GameData data) throws GameParseException;
+
+  /**
+   * Gets the attachment with the specified name and type from the specified object.
+   *
+   * @param namedAttachable The object from which the attachment is to be retrieved.
+   * @param attachmentName The name of the attachment to retrieve.
+   * @param attachmentType The type of the attachment to retrieve.
+   *
+   * @return The requested attachment.
+   *
+   * @throws IllegalStateException If the requested attachment is not found in the specified object.
+   * @throws ClassCastException If the requested attachment is not of the specified type.
+   */
+  protected static <T extends IAttachment> T getAttachment(
+      final NamedAttachable namedAttachable,
+      final String attachmentName,
+      final Class<T> attachmentType) {
+    checkNotNull(namedAttachable);
+    checkNotNull(attachmentName);
+    checkNotNull(attachmentType);
+
+    final T attachment = attachmentType.cast(namedAttachable.getAttachment(attachmentName));
+    if (attachment == null) {
+      throw new IllegalStateException(String.format("No attachment named '%s' of type '%s' for object named '%s'",
+          attachmentName, attachmentType, namedAttachable.getName()));
+    }
+
+    return attachment;
+  }
 
   /**
    * Throws an error if format is invalid.

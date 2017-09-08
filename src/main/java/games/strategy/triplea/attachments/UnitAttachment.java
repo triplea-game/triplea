@@ -48,20 +48,11 @@ public class UnitAttachment extends DefaultAttachment {
    * Convenience method.
    */
   public static UnitAttachment get(final UnitType type) {
-    final UnitAttachment unitAttachment = (UnitAttachment) type.getAttachment(Constants.UNIT_ATTACHMENT_NAME);
-    if (unitAttachment == null) {
-      throw new IllegalStateException("No unit type attachment for:" + type.getName());
-    }
-    return unitAttachment;
+    return get(type, Constants.UNIT_ATTACHMENT_NAME);
   }
 
   static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
-    final UnitAttachment unitAttachment = (UnitAttachment) type.getAttachment(nameOfAttachment);
-    if (unitAttachment == null) {
-      throw new IllegalStateException(
-          "No unit type attachment for:" + type.getName() + " with name:" + nameOfAttachment);
-    }
-    return unitAttachment;
+    return getAttachment(type, nameOfAttachment, UnitAttachment.class);
   }
 
   private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {

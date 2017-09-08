@@ -63,12 +63,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   static CanalAttachment get(final Territory t, final String nameOfAttachment) {
-    final CanalAttachment canalAttachment = (CanalAttachment) t.getAttachment(nameOfAttachment);
-    if (canalAttachment == null) {
-      throw new IllegalStateException(
-          "CanalAttachment: No canal attachment for:" + t.getName() + " with name: " + nameOfAttachment);
-    }
-    return canalAttachment;
+    return getAttachment(t, nameOfAttachment, CanalAttachment.class);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

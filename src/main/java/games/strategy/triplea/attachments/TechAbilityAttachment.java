@@ -56,12 +56,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    * Convenience method.
    */
   public static TechAbilityAttachment get(final TechAdvance type, final String nameOfAttachment) {
-    final TechAbilityAttachment techAbilityAttachment = (TechAbilityAttachment) type.getAttachment(nameOfAttachment);
-    if (techAbilityAttachment == null) {
-      throw new IllegalStateException(
-          "No technology attachment for:" + type.getName() + " with name:" + nameOfAttachment);
-    }
-    return techAbilityAttachment;
+    return getAttachment(type, nameOfAttachment, TechAbilityAttachment.class);
   }
 
   // unitAbilitiesGained Static Strings
