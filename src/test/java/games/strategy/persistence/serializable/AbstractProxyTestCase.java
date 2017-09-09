@@ -119,8 +119,11 @@ public abstract class AbstractProxyTestCase<T> {
     }
   }
 
+  /**
+   * Subclasses may override and are required to call the superclass implementation first.
+   */
   @Before
-  public final void initializeRegistries() {
+  public void setUp() {
     equalityComparatorRegistry = EqualityComparatorRegistry.newInstance(getEqualityComparators());
     proxyRegistry = ProxyRegistry.newInstance(getProxyFactories());
   }

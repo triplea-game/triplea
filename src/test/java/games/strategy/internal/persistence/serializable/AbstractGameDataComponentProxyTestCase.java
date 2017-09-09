@@ -98,22 +98,13 @@ public abstract class AbstractGameDataComponentProxyTestCase<T extends GameDataC
   }
 
   /**
-   * Allows subclasses to initialize secondary game data components required to support the primary game data component
-   * under test and that must be referenced during the entire fixture lifecycle (i.e. they are typically stored as
-   * fields in the fixture).
-   *
-   * <p>
-   * This implementation does nothing. Subclasses may override and are not required to call the superclass
-   * implementation.
-   * </p>
-   *
-   * @param gameData The game data that owns all game data components in the fixture.
+   * Subclasses may override and are required to call the superclass implementation first.
    */
-  protected void initializeGameDataComponents(final GameData gameData) {}
-
   @Before
-  public final void initializeGameData() {
+  @Override
+  public void setUp() {
+    super.setUp();
+
     gameData = TestGameDataFactory.newValidGameData();
-    initializeGameDataComponents(gameData);
   }
 }

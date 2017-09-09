@@ -6,6 +6,8 @@ import static games.strategy.engine.data.TestGameDataComponentFactory.newUnit;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.junit.Before;
+
 import games.strategy.engine.data.EngineDataEqualityComparators;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -41,12 +43,15 @@ public final class UnitProxyAsProxyTest extends AbstractGameDataComponentProxyTe
   }
 
   @Override
-  protected void initializeGameDataComponents(final GameData gameData) {
-    playerId = newPlayerId(gameData, "playerId");
-  }
-
-  @Override
   protected void prepareDeserializedPrincipal(final Unit actual) {
     actual.setOwner(playerId);
+  }
+
+  @Before
+  @Override
+  public void setUp() {
+    super.setUp();
+
+    playerId = newPlayerId(getGameData(), "playerId");
   }
 }
