@@ -174,7 +174,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite, m_battleSite);
     if (m_attackingUnits.isEmpty() || (m_defendingUnits.isEmpty()
-        || Match.noneMatch(m_defendingUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert()))) {
+        || Match.noneMatch(m_defendingUnits, Matches.unitCanBeDamaged()))) {
       endBeforeRolling(bridge);
       return;
     }
