@@ -929,8 +929,12 @@ public class TripleAFrame extends MainGameFrame {
     return selected.get();
   }
 
-  @SuppressWarnings("serial")
-  class UnitRenderer extends JLabel implements ListCellRenderer<Unit> {
+  /**
+   * Create a unit option with icon and description.
+   */
+  private class UnitRenderer extends JLabel implements ListCellRenderer<Unit> {
+
+    private static final long serialVersionUID = 1749164256040268579L;
 
     public UnitRenderer() {
       setOpaque(true);
@@ -948,6 +952,7 @@ public class TripleAFrame extends MainGameFrame {
       }
       setBorder(new EmptyBorder(0, 0, 0, 10));
 
+      // Set selected option to highlighted color
       if (isSelected) {
         setBackground(list.getSelectionBackground());
         setForeground(list.getSelectionForeground());
