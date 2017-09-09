@@ -306,8 +306,7 @@ public class AirBattle extends AbstractBattle {
         HashMap<Unit, HashSet<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits()
             .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerID(), m_data),
-                Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
-                Matches.unitIsBeingTransported().invert()));
+                Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().invert()));
         for (final Unit unit : bombers) {
           final Collection<Unit> enemyTargets =
               Matches.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
