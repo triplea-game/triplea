@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.junit.Before;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
@@ -19,13 +21,15 @@ import games.strategy.test.EqualityComparator;
  */
 public abstract class AbstractGameDataComponentProxyTestCase<T extends GameDataComponent>
     extends AbstractProxyTestCase<T> {
+  private GameData gameData;
+
   protected AbstractGameDataComponentProxyTestCase(final Class<T> principalType) {
     super(principalType);
   }
 
   @Override
   protected final Collection<T> createPrincipals() {
-    return Arrays.asList(newGameDataComponent(TestGameDataFactory.newValidGameData()));
+    return Arrays.asList(newGameDataComponent(gameData));
   }
 
   /**
@@ -81,5 +85,35 @@ public abstract class AbstractGameDataComponentProxyTestCase<T extends GameDataC
    */
   protected Collection<ProxyFactory> getAdditionalProxyFactories() {
     return Collections.emptyList();
+  }
+
+  /**
+   * Gets the fixture game data.
+   *
+   * @return The fixture game data.
+   */
+  protected final GameData getGameData() {
+    assert gameData != null;
+    return gameData;
+  }
+
+  /**
+   * Allows subclasses to initialize secondary game data components required to support the primary game data component
+   * under test and that must be referenced during the entire fixture lifecycle (i.e. they are typically stored as
+   * fields in the fixture).
+   *
+   * <p>
+   * This implementation does nothing. Subclasses may override and are not required to call the superclass
+   * implementation.
+   * </p>
+   *
+   * @param gameData The game data that owns all game data components in the fixture.
+   */
+  protected void initializeGameDataComponents(final GameData gameData) {}
+
+  @Before
+  public final void initializeGameData() {
+    gameData = TestGameDataFactory.newValidGameData();
+    initializeGameDataComponents(gameData);
   }
 }

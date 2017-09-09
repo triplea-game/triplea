@@ -86,6 +86,26 @@ public abstract class AbstractProxyTestCase<T> {
    */
   protected abstract Collection<ProxyFactory> getProxyFactories();
 
+  /**
+   * Allows subclasses to modify the actual principal immediately after it is deserialized but before it is compared to
+   * the expected principal.
+   *
+   * <p>
+   * This method may be used by subclasses to initialize the state of the principal that is not serialized by the proxy
+   * but is considered as part of the equality comparison. Typically, such state would be back references to objects
+   * that contain a reference to the principal. Such circular references are not supported by proxy serialization and
+   * must be re-established post-deserialization.
+   * </p>
+   *
+   * <p>
+   * This implementation does nothing. Subclasses may override and are not required to call the superclass
+   * implementation.
+   * </p>
+   *
+   * @param actual The actual principal.
+   */
+  protected void prepareDeserializedPrincipal(final T actual) {}
+
   private static Object readObject(final ByteArrayOutputStream baos) throws Exception {
     try (final InputStream is = new ByteArrayInputStream(baos.toByteArray());
         final ObjectInputStream ois = new ObjectInputStream(is)) {
@@ -100,7 +120,7 @@ public abstract class AbstractProxyTestCase<T> {
   }
 
   @Before
-  public final void setUp() {
+  public final void initializeRegistries() {
     equalityComparatorRegistry = EqualityComparatorRegistry.newInstance(getEqualityComparators());
     proxyRegistry = ProxyRegistry.newInstance(getProxyFactories());
   }
@@ -119,6 +139,7 @@ public abstract class AbstractProxyTestCase<T> {
       assertThat(untypedActual, is(not(nullValue())));
       assertThat(untypedActual, is(instanceOf(principalType)));
       final T actual = principalType.cast(untypedActual);
+      prepareDeserializedPrincipal(actual);
       assertPrincipalEquals(expected, actual);
     }
   }
