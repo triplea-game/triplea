@@ -1,6 +1,5 @@
 package games.strategy.internal.persistence.serializable;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -26,20 +25,6 @@ public abstract class AbstractGameDataComponentProxyTestCase<T extends GameDataC
   protected AbstractGameDataComponentProxyTestCase(final Class<T> principalType) {
     super(principalType);
   }
-
-  @Override
-  protected final Collection<T> createPrincipals() {
-    return Arrays.asList(newGameDataComponent(gameData));
-  }
-
-  /**
-   * Creates an instance of the game data component whose capability to be persisted via a proxy will be tested.
-   *
-   * @param gameData The game data that owns the component.
-   *
-   * @return The game data component to be tested.
-   */
-  protected abstract T newGameDataComponent(GameData gameData);
 
   @Override
   protected final Collection<EqualityComparator> getEqualityComparators() {

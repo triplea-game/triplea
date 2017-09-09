@@ -9,7 +9,6 @@ import java.util.Collection;
 import org.junit.Before;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.persistence.serializable.ProxyFactory;
@@ -23,8 +22,8 @@ public final class UnitProxyAsProxyTest extends AbstractGameDataComponentProxyTe
   }
 
   @Override
-  protected Unit newGameDataComponent(final GameData gameData) {
-    return newUnit(gameData, playerId, "unitType");
+  protected Collection<Unit> createPrincipals() {
+    return Arrays.asList(newUnit(getGameData(), playerId, "unitType"));
   }
 
   @Override

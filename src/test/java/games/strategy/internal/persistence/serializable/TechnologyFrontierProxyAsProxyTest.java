@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
@@ -18,8 +17,8 @@ public final class TechnologyFrontierProxyAsProxyTest
   }
 
   @Override
-  protected TechnologyFrontier newGameDataComponent(final GameData gameData) {
-    return newTechnologyFrontier(gameData, "technologyFrontier");
+  protected Collection<TechnologyFrontier> createPrincipals() {
+    return Arrays.asList(newTechnologyFrontier(getGameData(), "technologyFrontier"));
   }
 
   @Override

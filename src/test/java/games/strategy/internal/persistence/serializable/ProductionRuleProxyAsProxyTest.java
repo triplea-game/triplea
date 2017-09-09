@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
@@ -18,8 +17,8 @@ public final class ProductionRuleProxyAsProxyTest extends AbstractGameDataCompon
   }
 
   @Override
-  protected ProductionRule newGameDataComponent(final GameData gameData) {
-    return newProductionRule(gameData, "productionRule");
+  protected Collection<ProductionRule> createPrincipals() {
+    return Arrays.asList(newProductionRule(getGameData(), "productionRule"));
   }
 
   @Override

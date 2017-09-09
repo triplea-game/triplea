@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
@@ -17,8 +16,8 @@ public final class ResourceProxyAsProxyTest extends AbstractGameDataComponentPro
   }
 
   @Override
-  protected Resource newGameDataComponent(final GameData gameData) {
-    return newResource(gameData, "resource");
+  protected Collection<Resource> createPrincipals() {
+    return Arrays.asList(newResource(getGameData(), "resource"));
   }
 
   @Override

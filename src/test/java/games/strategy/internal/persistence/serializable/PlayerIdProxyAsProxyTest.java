@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
@@ -18,8 +17,8 @@ public final class PlayerIdProxyAsProxyTest extends AbstractGameDataComponentPro
   }
 
   @Override
-  protected PlayerID newGameDataComponent(final GameData gameData) {
-    return newPlayerId(gameData, "playerId");
+  protected Collection<PlayerID> createPrincipals() {
+    return Arrays.asList(newPlayerId(getGameData(), "playerId"));
   }
 
   @Override

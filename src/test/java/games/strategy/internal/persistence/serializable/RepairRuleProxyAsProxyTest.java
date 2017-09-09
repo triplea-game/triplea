@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
@@ -18,8 +17,8 @@ public final class RepairRuleProxyAsProxyTest extends AbstractGameDataComponentP
   }
 
   @Override
-  protected RepairRule newGameDataComponent(final GameData gameData) {
-    return newRepairRule(gameData, "repairRule");
+  protected Collection<RepairRule> createPrincipals() {
+    return Arrays.asList(newRepairRule(getGameData(), "repairRule"));
   }
 
   @Override
