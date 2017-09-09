@@ -8,4 +8,8 @@
     
     TOC 11 signup has now started, $100 first place prize:
     https://forums.triplea-game.org/topic/69/revised-tournament-of-champions-11-toc-11
+    
+    *** Lobby Database was Wiped Out during Migration ***
+    Our legacy database died while we were migrating off of it. If you had a password
+    protected account, please re-create it to register in our brand new lobby database.
   error_message:  
