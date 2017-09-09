@@ -40,10 +40,43 @@ public final class TestGameDataComponentFactory {
     checkNotNull(gameData);
     checkNotNull(name);
 
-    final PlayerID playerId = new PlayerID(name, gameData);
-    // TODO: initialize other attributes
+    final PlayerID playerId = new PlayerID(name, true, true, "defaultType", true, gameData);
+    playerId.setIsDisabled(true);
+    playerId.setProductionFrontier(newProductionFrontier(gameData, "productionFrontier"));
+    playerId.setRepairFrontier(newRepairFrontier(gameData, "repairFrontier"));
+    playerId.setWhoAmI("null:anyone");
+
     initializeAttachable(playerId);
+
+    playerId.getResources().addResource(newResource(gameData, "resource1"), 11);
+    playerId.getResources().addResource(newResource(gameData, "resource2"), 22);
+
+    playerId.getTechnologyFrontierList().addTechnologyFrontiers(Arrays.asList(
+        newTechnologyFrontier(gameData, "technologyFrontier1"),
+        newTechnologyFrontier(gameData, "technologyFrontier2")));
+
+    playerId.getUnits().addAll(Arrays.asList(
+        newUnit(gameData, playerId, "unitType1"),
+        newUnit(gameData, playerId, "unitType2")));
+
     return playerId;
+  }
+
+  /**
+   * Creates a new {@link ProductionFrontier} instance.
+   *
+   * @param gameData The game data that owns the component.
+   * @param name The component name.
+   *
+   * @return A new {@link ProductionFrontier} instance.
+   */
+  public static ProductionFrontier newProductionFrontier(final GameData gameData, final String name) {
+    checkNotNull(gameData);
+    checkNotNull(name);
+
+    return new ProductionFrontier(name, gameData, Arrays.asList(
+        newProductionRule(gameData, "productionRule1"),
+        newProductionRule(gameData, "productionRule2")));
   }
 
   /**
@@ -73,6 +106,23 @@ public final class TestGameDataComponentFactory {
     integerMap.add(newResource(gameData, "resource3"), 33);
     integerMap.add(newResource(gameData, "resource4"), 44);
     return integerMap;
+  }
+
+  /**
+   * Creates a new {@link RepairFrontier} instance.
+   *
+   * @param gameData The game data that owns the component.
+   * @param name The component name.
+   *
+   * @return A new {@link RepairFrontier} instance.
+   */
+  public static RepairFrontier newRepairFrontier(final GameData gameData, final String name) {
+    checkNotNull(gameData);
+    checkNotNull(name);
+
+    return new RepairFrontier(name, gameData, Arrays.asList(
+        newRepairRule(gameData, "repairRule1"),
+        newRepairRule(gameData, "repairRule2")));
   }
 
   /**
