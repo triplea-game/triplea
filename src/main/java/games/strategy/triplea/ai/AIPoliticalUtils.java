@@ -12,7 +12,6 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 /**
  * Basic utility methods to handle basic AI stuff for Politics this AI always
@@ -52,7 +51,7 @@ public class AIPoliticalUtils {
       }
       if (isFree(nextAction)) {
         acceptableActions.add(nextAction);
-      } else if (Match.countMatches(validActions, Matches.politicalActionHasCostBetween(0, 0)) > 1) {
+      } else if (Matches.countMatches(validActions, Matches.politicalActionHasCostBetween(0, 0)) > 1) {
         if (Math.random() < .9 && isAcceptableCost(nextAction, id, data)) {
           acceptableActions.add(nextAction);
         }

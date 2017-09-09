@@ -7,8 +7,6 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.LineNumberReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.swing.JLabel;
@@ -98,15 +97,9 @@ public class AutoPlacementFinder {
           final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
           final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
           final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-          try (final FileReader reader = new FileReader(file);
-              final LineNumberReader reader2 = new LineNumberReader(reader)) {
-            int i = 0;
-            while (true) {
-              reader2.setLineNumber(i);
-              final String line = reader2.readLine();
-              if (line == null) {
-                break;
-              }
+          try (final Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+              final String line = scanner.nextLine();
               if (line.contains(scaleProperty)) {
                 try {
                   scale =
@@ -134,7 +127,6 @@ public class AutoPlacementFinder {
                 }
               }
             }
-            i++;
           }
           if (found) {
             final int result = JOptionPane.showConfirmDialog(new JPanel(),
@@ -404,8 +396,8 @@ public class AutoPlacementFinder {
       final Collection<Polygon> containedCountryPolygons, final List<Rectangle2D> placementRects,
       final List<Point> placementPoints, final Rectangle2D place, final int x, final int y) {
     place.setFrame(x, y, placeWidth, placeHeight);
+    // make sure it is not in or intersects the contained country
     if (containedIn(place, countryPolygons) && !intersectsOneOf(place, placementRects)
-        // make sure it is not in or intersects the contained country
         && (!containedIn(place, containedCountryPolygons) && !intersectsOneOf(place, containedCountryPolygons))) {
       placementPoints.add(new Point((int) place.getX(), (int) place.getY()));
       final Rectangle2D newRect = new Rectangle2D.Double();

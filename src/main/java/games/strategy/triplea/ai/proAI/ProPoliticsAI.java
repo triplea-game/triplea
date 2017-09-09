@@ -50,7 +50,7 @@ class ProPoliticsAI {
         AIPoliticalUtils.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
     ProLogger.trace("War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
-        Match.getMatches(actionChoicesTowardsWar, Match.allOf(
+        Matches.getMatches(actionChoicesTowardsWar, Match.allOf(
             Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())));
     ProLogger.trace("Valid War options: " + validWarActions);
 
@@ -65,7 +65,7 @@ class ProPoliticsAI {
         final PlayerID player2 = data.getPlayerList().getPlayerID(s[1]);
         final RelationshipType oldRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
         final RelationshipType newRelation = data.getRelationshipTypeList().getRelationshipType(s[2]);
-        if (!oldRelation.equals(newRelation) && Matches.RelationshipTypeIsAtWar.match(newRelation)
+        if (!oldRelation.equals(newRelation) && Matches.relationshipTypeIsAtWar().match(newRelation)
             && (player1.equals(player) || player2.equals(player))) {
           PlayerID warPlayer = player2;
           if (warPlayer.equals(player)) {

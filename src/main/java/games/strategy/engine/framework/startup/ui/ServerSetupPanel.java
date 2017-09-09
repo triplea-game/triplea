@@ -468,17 +468,17 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public List<Action> getUserActions() {
-    final List<Action> rVal = new ArrayList<>();
-    rVal.add(new BootPlayerAction(this, model.getMessenger()));
-    rVal.add(new BanPlayerAction(this, model.getMessenger()));
-    rVal.add(new MutePlayerAction(this, model.getMessenger()));
-    rVal.add(
+    final List<Action> actions = new ArrayList<>();
+    actions.add(new BootPlayerAction(this, model.getMessenger()));
+    actions.add(new BanPlayerAction(this, model.getMessenger()));
+    actions.add(new MutePlayerAction(this, model.getMessenger()));
+    actions.add(
         new SetPasswordAction(this, lobbyWatcher, (ClientLoginValidator) model.getMessenger().getLoginValidator()));
     if (lobbyWatcher != null && lobbyWatcher.isActive()) {
-      rVal.add(new EditGameCommentAction(lobbyWatcher, ServerSetupPanel.this));
-      rVal.add(new RemoveGameFromLobbyAction(lobbyWatcher));
+      actions.add(new EditGameCommentAction(lobbyWatcher, ServerSetupPanel.this));
+      actions.add(new RemoveGameFromLobbyAction(lobbyWatcher));
     }
-    return rVal;
+    return actions;
   }
 
   @Override

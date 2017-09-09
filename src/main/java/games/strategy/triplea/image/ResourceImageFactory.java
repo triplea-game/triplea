@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
@@ -83,7 +82,7 @@ public class ResourceImageFactory {
   /**
    * Return a icon image.
    */
-  public ImageIcon getIcon(final Resource type, final GameData data, final boolean large) {
+  public ImageIcon getIcon(final Resource type, final boolean large) {
     final String fullName = type.getName() + (large ? "_large" : "");
     if (m_icons.containsKey(fullName)) {
       return m_icons.get(fullName);

@@ -155,13 +155,13 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     boolean ownsLand = false;
     for (final Territory t : data.getMap().getTerritories()) {
       if (t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(this),
-          Matches.unitHasAttackValueOfAtLeast(1), Matches.unitCanMove(), Matches.UnitIsLand))) {
+          Matches.unitHasAttackValueOfAtLeast(1), Matches.unitCanMove(), Matches.unitIsLand()))) {
         return true;
       }
       if (t.getOwner().equals(this)) {
         ownsLand = true;
       }
-      if (t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(this), Matches.UnitCanProduceUnits))) {
+      if (t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(this), Matches.unitCanProduceUnits()))) {
         hasFactory = true;
       }
       if (ownsLand && hasFactory) {
@@ -172,14 +172,14 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   }
 
   public static LinkedHashMap<String, String> currentPlayers(final GameData data) {
-    final LinkedHashMap<String, String> rVal = new LinkedHashMap<>();
+    final LinkedHashMap<String, String> currentPlayers = new LinkedHashMap<>();
     if (data == null) {
-      return rVal;
+      return currentPlayers;
     }
     for (final PlayerID player : data.getPlayerList().getPlayers()) {
-      rVal.put(player.getName(), player.getWhoAmI().split(":")[1]);
+      currentPlayers.put(player.getName(), player.getWhoAmI().split(":")[1]);
     }
-    return rVal;
+    return currentPlayers;
   }
 
   public RulesAttachment getRulesAttachment() {

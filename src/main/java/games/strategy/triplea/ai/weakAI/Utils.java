@@ -20,15 +20,15 @@ class Utils {
    * All the territories that border one of our territories.
    */
   static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
-    final ArrayList<Territory> rVal = new ArrayList<>();
+    final List<Territory> territories = new ArrayList<>();
     for (final Territory t : data.getMap()) {
       if (Matches.isTerritoryEnemy(player, data).match(t) && !t.getOwner().isNull()) {
         if (!data.getMap().getNeighbors(t, Matches.isTerritoryOwnedBy(player)).isEmpty()) {
-          rVal.add(t);
+          territories.add(t);
         }
       }
     }
-    return rVal;
+    return territories;
   }
 
   static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
@@ -36,20 +36,20 @@ class Utils {
     if (AIUtils.strength(units, true, sea) < maxStrength) {
       return new ArrayList<>(units);
     }
-    final ArrayList<Unit> rVal = new ArrayList<>();
+    final List<Unit> unitsUpToStrength = new ArrayList<>();
     for (final Unit u : units) {
-      rVal.add(u);
-      if (AIUtils.strength(rVal, true, sea) > maxStrength) {
-        return rVal;
+      unitsUpToStrength.add(u);
+      if (AIUtils.strength(unitsUpToStrength, true, sea) > maxStrength) {
+        return unitsUpToStrength;
       }
     }
-    return rVal;
+    return unitsUpToStrength;
   }
 
   static float getStrengthOfPotentialAttackers(final Territory location, final GameData data) {
     float strength = 0;
     for (final Territory t : data.getMap().getNeighbors(location,
-        location.isWater() ? Matches.TerritoryIsWater : Matches.TerritoryIsLand)) {
+        location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
       final List<Unit> enemies = t.getUnits().getMatches(Matches.enemyUnit(location.getOwner(), data));
       strength += AIUtils.strength(enemies, true, location.isWater());
     }
@@ -74,9 +74,9 @@ class Utils {
   }
 
   static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID us, final GameData data) {
-    for (final PlayerID player : Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data))) {
+    for (final PlayerID player : Matches.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data))) {
       for (final Territory capital : TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {
-        if (data.getMap().getDistance(t, capital, Matches.TerritoryIsLand) != -1) {
+        if (data.getMap().getDistance(t, capital, Matches.territoryIsLand()) != -1) {
           return true;
         }
       }
@@ -90,7 +90,7 @@ class Utils {
     final Iterator<Territory> waterFactIter = water.iterator();
     while (waterFactIter.hasNext()) {
       final Territory waterFact = waterFactIter.next();
-      if (!Matches.TerritoryIsWater.match(waterFact)) {
+      if (!Matches.territoryIsWater().match(waterFact)) {
         waterFactIter.remove();
       }
     }

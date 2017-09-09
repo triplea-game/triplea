@@ -26,7 +26,7 @@ public final class EventThreadJOptionPaneTest {
   public final Timeout globalTimeout = new Timeout(5, TimeUnit.SECONDS);
 
   @Spy
-  private final CountDownLatchHandler latchHandler = new CountDownLatchHandler(true);
+  private final CountDownLatchHandler latchHandler = new CountDownLatchHandler();
 
   @Test
   public void testInvokeAndWaitWithSupplier_ShouldRunSupplierOnEventDispatchThreadWhenNotCalledFromEventDispatchThread()
@@ -79,15 +79,6 @@ public final class EventThreadJOptionPaneTest {
 
     verify(latchHandler, times(1)).addShutdownLatch(any(CountDownLatch.class));
     verify(latchHandler, times(1)).removeShutdownLatch(any(CountDownLatch.class));
-  }
-
-  @Test
-  public void testInvokeAndWaitWithSupplier_ShouldRunSuccessfullyWhenLatchHandlerIsNull() {
-    final Object expectedResult = new Object();
-
-    final Object actualResult = EventThreadJOptionPane.invokeAndWait(null, () -> Optional.of(expectedResult)).get();
-
-    assertThat(actualResult, is(expectedResult));
   }
 
   @Test

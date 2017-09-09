@@ -3,9 +3,13 @@ package games.strategy.triplea.delegate;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import javax.annotation.Nullable;
 
@@ -27,6 +31,10 @@ import games.strategy.util.Match;
 
 @RunWith(Enclosed.class)
 public final class MatchesTests {
+
+  private static final Match<Integer> IS_ZERO_MATCH = Match.of(it -> it == 0);
+  private static final Object VALUE = new Object();
+
   private static <T> Matcher<Match<T>> matches(final @Nullable T value) {
     return new TypeSafeDiagnosingMatcher<Match<T>>() {
       @Override
@@ -61,6 +69,69 @@ public final class MatchesTests {
         return true;
       }
     };
+  }
+
+  @Test
+  public void testAlways() {
+    assertTrue(Matches.always().match(VALUE));
+  }
+
+  @Test
+  public void testNever() {
+    assertFalse(Matches.never().match(VALUE));
+  }
+
+  @Test
+  public void testCountMatches() {
+    assertEquals(0, Matches.countMatches(Arrays.asList(), IS_ZERO_MATCH));
+
+    assertEquals(1, Matches.countMatches(Arrays.asList(0), IS_ZERO_MATCH));
+    assertEquals(1, Matches.countMatches(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
+
+    assertEquals(2, Matches.countMatches(Arrays.asList(0, 0), IS_ZERO_MATCH));
+    assertEquals(2, Matches.countMatches(Arrays.asList(-1, 0, 1, 0), IS_ZERO_MATCH));
+  }
+
+  @Test
+  public void testGetMatches() {
+    final Collection<Integer> input = Arrays.asList(-1, 0, 1);
+
+    assertEquals("empty collection", Arrays.asList(), Matches.getMatches(Arrays.asList(), Matches.always()));
+    assertEquals("none match", Arrays.asList(), Matches.getMatches(input, Matches.never()));
+    assertEquals("some match", Arrays.asList(-1, 1), Matches.getMatches(input, IS_ZERO_MATCH.invert()));
+    assertEquals("all match", Arrays.asList(-1, 0, 1), Matches.getMatches(input, Matches.always()));
+  }
+
+  @Test
+  public void testGetNMatches() {
+    final Collection<Integer> input = Arrays.asList(-1, 0, 1);
+
+    assertEquals("empty collection", Arrays.asList(), Matches.getNMatches(Arrays.asList(), 999, Matches.always()));
+    assertEquals("max = 0", Arrays.asList(), Matches.getNMatches(input, 0, Matches.never()));
+    assertEquals("none match", Arrays.asList(), Matches.getNMatches(input, input.size(), Matches.never()));
+    assertEquals("some match; max < count",
+        Arrays.asList(0),
+        Matches.getNMatches(Arrays.asList(-1, 0, 0, 1), 1, IS_ZERO_MATCH));
+    assertEquals("some match; max = count",
+        Arrays.asList(0, 0),
+        Matches.getNMatches(Arrays.asList(-1, 0, 0, 1), 2, IS_ZERO_MATCH));
+    assertEquals("some match; max > count",
+        Arrays.asList(0, 0),
+        Matches.getNMatches(Arrays.asList(-1, 0, 0, 1), 3, IS_ZERO_MATCH));
+    assertEquals("all match; max < count",
+        Arrays.asList(-1, 0),
+        Matches.getNMatches(input, input.size() - 1, Matches.always()));
+    assertEquals("all match; max = count",
+        Arrays.asList(-1, 0, 1),
+        Matches.getNMatches(input, input.size(), Matches.always()));
+    assertEquals("all match; max > count",
+        Arrays.asList(-1, 0, 1),
+        Matches.getNMatches(input, input.size() + 1, Matches.always()));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testGetNMatches_ShouldThrowExceptionWhenMaxIsNegative() {
+    Matches.getNMatches(Arrays.asList(-1, 0, 1), -1, Matches.always());
   }
 
   public static final class TerritoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyTest {

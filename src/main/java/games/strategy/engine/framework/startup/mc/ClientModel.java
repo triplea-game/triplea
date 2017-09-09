@@ -58,7 +58,6 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 public class ClientModel implements IMessengerErrorListener {
@@ -144,8 +143,7 @@ public class ClientModel implements IMessengerErrorListener {
     ClientSetting.flush();
     final int port = props.getPort();
     if (port >= 65536 || port <= 0) {
-      EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE,
-          new CountDownLatchHandler(true));
+      EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
       return false;
     }
     final String address = props.getHost();
@@ -158,7 +156,7 @@ public class ClientModel implements IMessengerErrorListener {
     } catch (final Exception ioe) {
       ioe.printStackTrace(System.out);
       EventThreadJOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error",
-          JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
+          JOptionPane.ERROR_MESSAGE);
       return false;
     }
     m_messenger.addErrorListener(this);
@@ -271,8 +269,7 @@ public class ClientModel implements IMessengerErrorListener {
     public void cannotJoinGame(final String reason) {
       SwingUtilities.invokeLater(() -> {
         m_typePanelModel.showSelectType();
-        EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason,
-            new CountDownLatchHandler(true));
+        EventThreadJOptionPane.showMessageDialog(m_ui, "Could not join game: " + reason);
       });
     }
   };
@@ -413,7 +410,7 @@ public class ClientModel implements IMessengerErrorListener {
     // In case for example there are many game windows open, it may not be clear which game disconnected.
     GameRunner.getChat().sendMessage("*** Was Disconnected ***", false);
     EventThreadJOptionPane.showMessageDialog(m_ui, "Connection to game host lost.\nPlease save and restart.",
-        "Connection Lost!", JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
+        "Connection Lost!", JOptionPane.ERROR_MESSAGE);
   }
 
   public IChatPanel getChatPanel() {

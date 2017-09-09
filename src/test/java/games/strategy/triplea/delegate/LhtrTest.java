@@ -124,7 +124,7 @@ public class LhtrTest {
     route.setStart(gameData.getMap().getTerritory("Ukraine S.S.R."));
     route.add(gameData.getMap().getTerritory("Caucasus"));
     route.add(gameData.getMap().getTerritory("West Russia"));
-    final List<Unit> fighter = route.getStart().getUnits().getMatches(Matches.UnitIsAir);
+    final List<Unit> fighter = route.getStart().getUnits().getMatches(Matches.unitIsAir());
     delegate.move(fighter, route);
   }
 
@@ -157,8 +157,8 @@ public class LhtrTest {
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
-        uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
-    addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+        uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
+    addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
@@ -198,8 +198,8 @@ public class LhtrTest {
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
-        uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
-    addTo(germany, uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+        uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
+    addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,

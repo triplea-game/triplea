@@ -42,19 +42,23 @@ def getEngineVersion() {
 
 version = getEngineVersion()
 
-compileJava {
-    options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:all"
+sourceSets {
+    integTest {
+        java.srcDir 'src/integ_test/java'
+        resources.srcDir 'src/integ_test/resources'
+
+        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testRuntime
+        runtimeClasspath = output + compileClasspath
+    }
 }
-compileTestJava {
-    options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:all"
-}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
     options.incremental = true
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:all"
 }
 
 jar {
@@ -65,16 +69,6 @@ jar {
 
 repositories {
     jcenter()
-}
-
-sourceSets {
-    integTest {
-        java.srcDir 'src/integ_test/java'
-        resources.srcDir 'src/integ_test/resources'
-
-        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testRuntime
-        runtimeClasspath = output + compileClasspath
-    }
 }
 
 dependencies {
@@ -97,7 +91,6 @@ dependencies {
 
     testCompile 'eu.codearte.catch-exception:catch-exception:2.0.0-ALPHA-1'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3'
-    testCompile 'org.apache.derby:derby:10.10.1.1'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.mockito:mockito-core:2.8.47'
     testCompile 'junit:junit:4.12'
@@ -209,9 +202,6 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
             into('config/lobby')
         }
     }
-    from(configurations.testCompile.files { dep -> dep.name == 'derby' }) {
-        into('lib')
-    }
     from(renameShadowJar.output) {
         into('bin')
     }
@@ -268,7 +258,7 @@ check {
 }
 
 checkstyle {
-    toolVersion = "7.6.1"
+    toolVersion = "8.0"
     configProperties = [samedir: configFile.parent]
 }
 

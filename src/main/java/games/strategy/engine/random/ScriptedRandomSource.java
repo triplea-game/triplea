@@ -86,18 +86,18 @@ public class ScriptedRandomSource implements IRandomSource {
       throw new IllegalArgumentException("count must be > 0, annotation:" + annotation);
     }
     m_rolled += count;
-    final int[] rVal = new int[count];
+    final int[] numbers = new int[count];
     for (int i = 0; i < count; i++) {
       if (m_numbers[m_currentIndex] == ERROR) {
         throw new IllegalStateException("Random number generator generating scripted error");
       }
-      rVal[i] = m_numbers[m_currentIndex];
+      numbers[i] = m_numbers[m_currentIndex];
       m_currentIndex++;
       if (m_currentIndex >= m_numbers.length) {
         m_currentIndex = 0;
       }
     }
-    return rVal;
+    return numbers;
   }
 
   public int getTotalRolled() {

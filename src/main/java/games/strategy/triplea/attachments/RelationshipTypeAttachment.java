@@ -47,20 +47,11 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * @return RelationshipTypeAttachment belonging to the RelationshipType pr
    */
   public static RelationshipTypeAttachment get(final RelationshipType pr) {
-    final RelationshipTypeAttachment rVal =
-        (RelationshipTypeAttachment) pr.getAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
-    if (rVal == null) {
-      throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
-    }
-    return rVal;
+    return get(pr, Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
   }
 
   static RelationshipTypeAttachment get(final RelationshipType pr, final String nameOfAttachment) {
-    final RelationshipTypeAttachment rVal = (RelationshipTypeAttachment) pr.getAttachment(nameOfAttachment);
-    if (rVal == null) {
-      throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
-    }
-    return rVal;
+    return getAttachment(pr, nameOfAttachment, RelationshipTypeAttachment.class);
   }
 
   /**

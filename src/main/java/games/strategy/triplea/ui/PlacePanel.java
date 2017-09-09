@@ -84,8 +84,7 @@ public class PlacePanel extends AbstractMovePanel {
       if (units.isEmpty()) {
         return;
       }
-      final UnitChooser chooser =
-          new UnitChooser(units, Collections.emptyMap(), getData(), false, getMap().getUiContext());
+      final UnitChooser chooser = new UnitChooser(units, Collections.emptyMap(), false, getMap().getUiContext());
       final String messageText = "Place units in " + territory.getName();
       if (maxUnits[0] >= 0) {
         chooser.setMaxAndShowMaxButton(maxUnits[0]);
@@ -134,13 +133,15 @@ public class PlacePanel extends AbstractMovePanel {
       if (territory.isWater()) {
         if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers()
             || isLhtrCarrierProductionRules() || GameStepPropertiesHelper.isBid(getData()))) {
-          units = Match.getMatches(units, Matches.UnitIsSea);
+          units = Matches.getMatches(units, Matches.unitIsSea());
         } else {
-          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
-          units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
+          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(
+              Matches.unitIsSea(),
+              Matches.unitCanLandOnCarrier());
+          units = Matches.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {
-        units = Match.getMatches(units, Matches.unitIsNotSea());
+        units = Matches.getMatches(units, Matches.unitIsNotSea());
       }
       if (units.isEmpty()) {
         return Collections.emptyList();
@@ -161,7 +162,7 @@ public class PlacePanel extends AbstractMovePanel {
 
   private void updateUnits() {
     final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
-    unitsToPlace.setUnitsFromCategories(unitCategories, getData());
+    unitsToPlace.setUnitsFromCategories(unitCategories);
   }
 
   @Override

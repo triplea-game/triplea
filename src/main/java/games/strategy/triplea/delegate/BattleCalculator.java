@@ -586,15 +586,15 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Match<Unit> match = Match.allOf(Matches.UnitIsLand, Matches.unitWasNotAmphibious());
-    killedNonAmphibUnits.addAll(Match.getMatches(killed, match));
+    final Match<Unit> match = Match.allOf(Matches.unitIsLand(), Matches.unitWasNotAmphibious());
+    killedNonAmphibUnits.addAll(Matches.getMatches(killed, match));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
       return killed;
     }
     // Get a list of all units that are amphibious and remove those that are killed
-    allAmphibUnits.addAll(Match.getMatches(targets, Matches.unitWasAmphibious()));
-    allAmphibUnits.removeAll(Match.getMatches(killed, Matches.unitWasAmphibious()));
+    allAmphibUnits.addAll(Matches.getMatches(targets, Matches.unitWasAmphibious()));
+    allAmphibUnits.removeAll(Matches.getMatches(killed, Matches.unitWasAmphibious()));
     final Iterator<Unit> allAmphibUnitsIter = allAmphibUnits.iterator();
     // Get a collection of the unit types of the amphib units
     while (allAmphibUnitsIter.hasNext()) {
@@ -607,7 +607,7 @@ public class BattleCalculator {
     // For each killed unit- see if there is an amphib unit that can be killed instead
     for (final Unit unit : killedNonAmphibUnits) {
       if (amphibTypes.contains(unit.getType())) { // add a unit from the collection
-        final List<Unit> oneAmphibUnit = Match.getNMatches(allAmphibUnits, 1, Matches.unitIsOfType(unit.getType()));
+        final List<Unit> oneAmphibUnit = Matches.getNMatches(allAmphibUnits, 1, Matches.unitIsOfType(unit.getType()));
         if (oneAmphibUnit.size() > 0) {
           final Unit amphibUnit = oneAmphibUnit.iterator().next();
           killed.remove(unit);

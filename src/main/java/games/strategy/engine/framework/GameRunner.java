@@ -30,6 +30,7 @@ import org.triplea.client.ui.javafx.TripleA;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
+import games.strategy.debug.LoggingConfiguration;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
@@ -53,7 +54,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
@@ -118,6 +118,8 @@ public class GameRunner {
    * Warning: game engine code invokes this method to spawn new game clients.
    */
   public static void main(final String[] args) {
+    LoggingConfiguration.initialize();
+
     if (!ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
       ErrorConsole.getConsole();
     }
@@ -199,8 +201,8 @@ public class GameRunner {
   public static Optional<File> showSaveGameFileChooser() {
     // Non-Mac platforms should use the normal Swing JFileChooser
     final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-    final int rVal = fileChooser.showOpenDialog(mainFrame);
-    if (rVal == JFileChooser.APPROVE_OPTION) {
+    final int selectedOption = fileChooser.showOpenDialog(mainFrame);
+    if (selectedOption == JFileChooser.APPROVE_OPTION) {
       return Optional.of(fileChooser.getSelectedFile());
     }
     return Optional.empty();
@@ -400,7 +402,7 @@ public class GameRunner {
           .isLessThan(latestEngineOut.getLatestVersionOut())) {
         SwingUtilities
             .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
-                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false, new CountDownLatchHandler(true)));
+                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE));
         return true;
       }
     } catch (final Exception e) {

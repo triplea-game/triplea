@@ -128,10 +128,10 @@ public class ProductionRepairPanel extends JPanel {
           Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
               Matches.unitHasTakenSomeBombingUnitDamage());
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
-          Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
+          Matches.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
       for (final RepairRule repairRule : player.getRepairFrontier()) {
         for (final Territory terr : terrsWithPotentiallyDamagedUnits) {
-          for (final Unit unit : Match.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
+          for (final Unit unit : Matches.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
             if (!repairRule.getResults().keySet().iterator().next().equals(unit.getType())) {
               continue;
             }
@@ -243,7 +243,7 @@ public class ProductionRepairPanel extends JPanel {
       }
       repairResults = rule.getResults().getInt(type);
       final TripleAUnit taUnit = (TripleAUnit) repairUnit;
-      final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(type, id, data,
+      final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(type, id,
           Matches.unitHasTakenSomeBombingUnitDamage().match(repairUnit), Matches.unitIsDisabled().match(repairUnit));
       final String text = "<html> x " + ResourceCollection.toStringForHTML(cost, data) + "</html>";
 

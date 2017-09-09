@@ -212,9 +212,9 @@ public class Vault {
   }
 
   public List<VaultID> knownIds() {
-    final ArrayList<VaultID> rVal = new ArrayList<>(m_verifiedValues.keySet());
-    rVal.addAll(m_unverifiedValues.keySet());
-    return rVal;
+    final ArrayList<VaultID> knownIds = new ArrayList<>(m_verifiedValues.keySet());
+    knownIds.addAll(m_unverifiedValues.keySet());
+    return knownIds;
   }
 
   /**

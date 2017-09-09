@@ -44,8 +44,8 @@ class RelationshipChange extends Change {
     data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerID(m_player1),
         data.getPlayerList().getPlayerID(m_player2), data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
     // now redraw territories in case of new hostility
-    if (Matches.RelationshipTypeIsAtWar.match(data.getRelationshipTypeList().getRelationshipType(m_NewRelation))) {
-      for (final Territory t : Match.getMatches(data.getMap().getTerritories(),
+    if (Matches.relationshipTypeIsAtWar().match(data.getRelationshipTypeList().getRelationshipType(m_NewRelation))) {
+      for (final Territory t : Matches.getMatches(data.getMap().getTerritories(),
           Match.allOf(
               Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player1)),
               Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player2))))) {

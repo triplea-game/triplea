@@ -51,7 +51,7 @@ class EditValidator {
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player) {
     String result = null;
-    if (Matches.TerritoryIsWater.match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
+    if (Matches.territoryIsWater().match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }
@@ -69,15 +69,15 @@ class EditValidator {
     final PlayerID player = units.iterator().next().getOwner();
     // check land/water sanity
     if (territory.isWater()) {
-      if (units.isEmpty() || !Match.allMatch(units, Matches.UnitIsSea)) {
-        if (Match.anyMatch(units, Matches.UnitIsLand)) {
+      if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsSea())) {
+        if (Match.anyMatch(units, Matches.unitIsLand())) {
           if (units.isEmpty() || !Match.allMatch(units, Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
-              Match.allOf(Matches.UnitIsTransport, Matches.UnitIsSea, Matches.alliedUnit(player, data));
-          final Collection<Unit> seaTransports = Match.getMatches(units, friendlySeaTransports);
-          final Collection<Unit> landUnitsToAdd = Match.getMatches(units, Matches.UnitIsLand);
+              Match.allOf(Matches.unitIsTransport(), Matches.unitIsSea(), Matches.alliedUnit(player, data));
+          final Collection<Unit> seaTransports = Matches.getMatches(units, friendlySeaTransports);
+          final Collection<Unit> landUnitsToAdd = Matches.getMatches(units, Matches.unitIsLand());
           if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
@@ -90,13 +90,13 @@ class EditValidator {
             return "Can't add land units to water without enough transports";
           }
         }
-        if (Match.anyMatch(units, Matches.UnitIsAir)) {
-          if (Match.anyMatch(units, Match.allOf(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert()))) {
+        if (Match.anyMatch(units, Matches.unitIsAir())) {
+          if (Match.anyMatch(units, Match.allOf(Matches.unitIsAir(), Matches.unitCanLandOnCarrier().invert()))) {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
-          final Match<Unit> friendlyCarriers = Match.allOf(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
-          final Match<Unit> friendlyAirUnits = Match.allOf(Matches.UnitIsAir, Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyCarriers = Match.allOf(Matches.unitIsCarrier(), Matches.alliedUnit(player, data));
+          final Match<Unit> friendlyAirUnits = Match.allOf(Matches.unitIsAir(), Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)
@@ -111,10 +111,10 @@ class EditValidator {
     } else {
       /*
        * // Can't add to enemy territory
-       * if (Matches.isTerritoryEnemy(player, data).match(territory) && !Matches.TerritoryIsWater.match(territory))
+       * if (Matches.isTerritoryEnemy(player, data).match(territory) && !Matches.territoryIsWater().match(territory))
        * return "Can't add units to enemy territory";
        */
-      if (Match.anyMatch(units, Matches.UnitIsSea)) {
+      if (Match.anyMatch(units, Matches.unitIsSea())) {
         return "Can't add sea units to land";
       }
     }
@@ -138,13 +138,13 @@ class EditValidator {
       return result;
     }
     // if transport selected, all transported units must be deleted too
-    for (final Unit unit : Match.getMatches(units, Matches.unitCanTransport())) {
+    for (final Unit unit : Matches.getMatches(units, Matches.unitCanTransport())) {
       if (!units.containsAll(TransportTracker.transporting(unit))) {
         return "Can't remove transport without removing transported units";
       }
     }
     // if transported units selected, transport must be deleted too
-    for (final Unit unit : Match.getMatches(units, Matches.unitCanBeTransported())) {
+    for (final Unit unit : Matches.getMatches(units, Matches.unitCanBeTransported())) {
       final Unit transport = TransportTracker.transportedBy(unit);
       if (transport != null && !units.contains(transport)) {
         return "Can't remove transported units without removing transport";
@@ -272,7 +272,7 @@ class EditValidator {
     return result;
   }
 
-  static String validateChangePoliticalRelationships(final GameData data,
+  static String validateChangePoliticalRelationships(
       final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
     final String result = null;
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {

@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 public class BattleResults extends GameDataComponent {
   private static final long serialVersionUID = 1381361441940258702L;
@@ -61,11 +60,11 @@ public class BattleResults extends GameDataComponent {
   }
 
   public int getAttackingCombatUnitsLeft() {
-    return Match.countMatches(m_remainingAttackingUnits, Matches.UnitIsNotInfrastructure);
+    return Matches.countMatches(m_remainingAttackingUnits, Matches.unitIsNotInfrastructure());
   }
 
   public int getDefendingCombatUnitsLeft() {
-    return Match.countMatches(m_remainingDefendingUnits, Matches.UnitIsNotInfrastructure);
+    return Matches.countMatches(m_remainingDefendingUnits, Matches.unitIsNotInfrastructure());
   }
 
   public int getBattleRoundsFought() {

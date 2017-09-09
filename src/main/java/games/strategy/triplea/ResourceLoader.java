@@ -127,8 +127,8 @@ public class ResourceLoader implements Closeable {
     }
     ClientLogger.logQuietly("Loading map: " + mapName + ", from: " + match.get().getAbsolutePath());
 
-    final List<String> rVal = new ArrayList<>();
-    rVal.add(match.get().getAbsolutePath());
+    final List<String> paths = new ArrayList<>();
+    paths.add(match.get().getAbsolutePath());
     // find dependencies
     try (final URLClassLoader url = new URLClassLoader(new URL[] {match.get().toURI().toURL()})) {
       final URL dependencesUrl = url.getResource("dependencies.txt");
@@ -143,7 +143,7 @@ public class ResourceLoader implements Closeable {
             final StringTokenizer tokens = new StringTokenizer(dependencies, ",", false);
             while (tokens.hasMoreTokens()) {
               // add the dependencies recursivly
-              rVal.addAll(getPaths(tokens.nextToken()));
+              paths.addAll(getPaths(tokens.nextToken()));
             }
           }
         }
@@ -152,7 +152,7 @@ public class ResourceLoader implements Closeable {
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }
-    return rVal;
+    return paths;
   }
 
 
@@ -190,8 +190,7 @@ public class ResourceLoader implements Closeable {
   }
 
   public boolean hasPath(final String path) {
-    final URL rVal = m_loader.getResource(path);
-    return rVal != null;
+    return m_loader.getResource(path) != null;
   }
 
   /**

@@ -736,11 +736,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       if (terrs.length == 1) {
         if (terrs[0].equals("original")) {
           final Collection<PlayerID> allies =
-              Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedWithAnyOfThesePlayers(players, data));
+              Matches.getMatches(data.getPlayerList().getPlayers(),
+                  Matches.isAlliedWithAnyOfThesePlayers(players, data));
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, allies, data);
         } else if (terrs[0].equals("enemy")) {
           final Collection<PlayerID> enemies =
-              Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players, data));
+              Matches.getMatches(data.getPlayerList().getPlayers(),
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
@@ -748,11 +750,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       } else if (terrs.length == 2) {
         if (terrs[1].equals("original")) {
           final Collection<PlayerID> allies =
-              Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedWithAnyOfThesePlayers(players, data));
+              Matches.getMatches(data.getPlayerList().getPlayers(),
+                  Matches.isAlliedWithAnyOfThesePlayers(players, data));
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, allies, data);
         } else if (terrs[1].equals("enemy")) {
           final Collection<PlayerID> enemies =
-              Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players, data));
+              Matches.getMatches(data.getPlayerList().getPlayers(),
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
@@ -772,7 +776,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
         } else if (terrs[0].equals("enemy")) {
           final Collection<PlayerID> enemies =
-              Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players, data));
+              Matches.getMatches(data.getPlayerList().getPlayers(),
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
@@ -782,7 +787,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
         } else if (terrs[1].equals("enemy")) {
           final Collection<PlayerID> enemies =
-              Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWarWithAnyOfThesePlayers(players, data));
+              Matches.getMatches(data.getPlayerList().getPlayers(),
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
         } else {
           listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
@@ -898,11 +904,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         return false;
       }
       if (!(relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
-          && Matches.RelationshipTypeIsAllied.match(currentRelationshipType)
+          && Matches.relationshipTypeIsAllied().match(currentRelationshipType)
           || relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
-              && Matches.RelationshipTypeIsNeutral.match(currentRelationshipType)
+              && Matches.relationshipTypeIsNeutral().match(currentRelationshipType)
           || relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-              && Matches.RelationshipTypeIsAtWar.match(currentRelationshipType)
+              && Matches.relationshipTypeIsAtWar().match(currentRelationshipType)
           || currentRelationshipType
               .equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2])))) {
         return false;
@@ -931,11 +937,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     for (final Territory terr : territories) {
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("direct")) {
-        allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
+        allUnits.removeAll(Matches.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
       } else if (exclType.equals("allied")) {
-        allUnits.retainAll(Match.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+        allUnits.retainAll(Matches.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy")) {
-        allUnits.retainAll(Match.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+        allUnits.retainAll(Matches.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
       } else {
         return false;
       }
@@ -958,7 +964,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
               hasEnough = allUnits.size() >= unitsNeeded;
             } else {
               final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));
-              hasEnough = Match.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() >= unitsNeeded;
+              hasEnough = Matches.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() >= unitsNeeded;
             }
             if (!hasEnough) {
               break;
@@ -1001,15 +1007,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Territory terr = ownedTerrIter.next();
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("allied")) { // any allied units in the territory. (does not include owned units)
-        allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
-        allUnits.retainAll(Match.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+        allUnits.removeAll(Matches.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
+        allUnits.retainAll(Matches.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("direct")) {
-        allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
+        allUnits.removeAll(Matches.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
       } else if (exclType.equals("enemy")) { // any enemy units in the territory
-        allUnits.retainAll(Match.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+        allUnits.retainAll(Matches.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory
         allUnits.retainAll(
-            Match.getMatches(allUnits, Match.allOf(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
+            Matches.getMatches(allUnits, Match.allOf(Matches.enemyUnitOfAnyOfThesePlayers(players, data),
                 Matches.unitIsNotSub(), Matches.unitIsNotTransportButCouldBeCombatTransport())));
       } else {
         return false;
@@ -1032,7 +1038,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             hasLess = allUnits.size() <= unitsMax;
           } else {
             final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));
-            hasLess = Match.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() <= unitsMax;
+            hasLess = Matches.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() <= unitsMax;
           }
           if (!hasLess) {
             break;
@@ -1065,7 +1071,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     int numberMet = 0;
     boolean satisfied = false;
     final Collection<PlayerID> allies =
-        Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedWithAnyOfThesePlayers(players, data));
+        Matches.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedWithAnyOfThesePlayers(players, data));
     for (final Territory listedTerr : listedTerrs) {
       // if the territory owner is an ally
       if (Matches.isTerritoryOwnedBy(allies).match(listedTerr)) {

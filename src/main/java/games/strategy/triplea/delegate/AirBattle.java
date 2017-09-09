@@ -116,7 +116,7 @@ public class AirBattle extends AbstractBattle {
 
   private boolean shouldFightAirBattle() {
     if (m_isBombingRun) {
-      return Match.anyMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && !m_defendingUnits.isEmpty();
+      return Match.anyMatch(m_attackingUnits, Matches.unitIsStrategicBomber()) && !m_defendingUnits.isEmpty();
     } else {
       return !m_attackingUnits.isEmpty() && !m_defendingUnits.isEmpty();
     }
@@ -171,14 +171,14 @@ public class AirBattle extends AbstractBattle {
             attackerSuicideBuilder.add(Matches.unitIsNotStrategicBomber());
           }
           if (Match.anyMatch(m_attackingUnits, attackerSuicideBuilder.all())) {
-            final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.unitIsSuicide());
+            final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
             m_attackingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
             tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, attackerCosts, m_data);
             m_attackerLostTUV += tuvLostAttacker;
           }
           if (Match.anyMatch(m_defendingUnits, Matches.unitIsSuicide())) {
-            final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.unitIsSuicide());
+            final List<Unit> suicideUnits = Matches.getMatches(m_defendingUnits, Matches.unitIsSuicide());
             m_defendingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
             tuvLostDefender = TuvUtils.getTuv(suicideUnits, m_defender, defenderCosts, m_data);
@@ -301,16 +301,15 @@ public class AirBattle extends AbstractBattle {
     // so we do not have to create normal battles, only bombing raids
     // setup new battle here
     if (m_isBombingRun) {
-      final Collection<Unit> bombers = Match.getMatches(m_attackingUnits, Matches.UnitIsStrategicBomber);
+      final Collection<Unit> bombers = Matches.getMatches(m_attackingUnits, Matches.unitIsStrategicBomber());
       if (!bombers.isEmpty()) {
         HashMap<Unit, HashSet<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits()
             .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerID(), m_data),
-                Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
-                Matches.unitIsBeingTransported().invert()));
+                Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().invert()));
         for (final Unit unit : bombers) {
           final Collection<Unit> enemyTargets =
-              Match.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
+              Matches.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
           if (!enemyTargets.isEmpty()) {
             Unit target = null;
             if (enemyTargets.size() > 1
@@ -348,7 +347,7 @@ public class AirBattle extends AbstractBattle {
     final String text;
     if (!m_attackingUnits.isEmpty()) {
       if (m_isBombingRun) {
-        if (Match.anyMatch(m_attackingUnits, Matches.UnitIsStrategicBomber)) {
+        if (Match.anyMatch(m_attackingUnits, Matches.unitIsStrategicBomber())) {
           m_whoWon = WhoWon.ATTACKER;
           if (m_defendingUnits.isEmpty()) {
             m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
@@ -638,14 +637,13 @@ public class AirBattle extends AbstractBattle {
     return Match.of(u -> UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0);
   }
 
-  static Match<Unit> attackingGroundSeaBattleEscorts(final PlayerID attacker, final GameData data) {
-    final Match<Unit> canIntercept = Matches.unitCanAirBattle;
-    return canIntercept;
+  static Match<Unit> attackingGroundSeaBattleEscorts() {
+    return Matches.unitCanAirBattle();
   }
 
   private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
     final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
-        Matches.unitCanAirBattle,
+        Matches.unitCanAirBattle(),
         Matches.unitIsEnemyOf(data, attacker),
         Matches.unitWasInAirBattle().invert());
     if (!Properties.getCanScrambleIntoAirBattles(data)) {
@@ -656,7 +654,7 @@ public class AirBattle extends AbstractBattle {
 
   private static Match<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
     final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
-        Matches.unitCanIntercept,
+        Matches.unitCanIntercept(),
         Matches.unitIsEnemyOf(data, attacker),
         Matches.unitWasInAirBattle().invert());
     if (!Properties.getCanScrambleIntoAirBattles(data)) {

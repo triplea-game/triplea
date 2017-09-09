@@ -36,7 +36,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       final PlayerID player) {
     // we can place if no enemy units and its water
     if (to.isWater()) {
-      if (Match.anyMatch(units, Matches.UnitIsLand)) {
+      if (Match.anyMatch(units, Matches.unitIsLand())) {
         return "Cant place land units at sea";
       } else if (to.getUnits().anyMatch(Matches.enemyUnit(player, getData()))) {
         return "Cant place in sea zone containing enemy units";
@@ -47,7 +47,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
     } else {
       // we can place on territories we own
-      if (Match.anyMatch(units, Matches.UnitIsSea)) {
+      if (Match.anyMatch(units, Matches.unitIsSea())) {
         return "Cant place sea units on land";
       } else if (to.getOwner() == null) {
         return "You dont own " + to.getName();
@@ -115,14 +115,14 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     final Collection<Unit> placeableUnits = new ArrayList<>();
     final Match<Unit> groundUnits =
         // we add factories and constructions later
-        Match.allOf(Matches.UnitIsLand, Matches.UnitIsNotConstruction);
-    final Match<Unit> airUnits = Match.allOf(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
-    placeableUnits.addAll(Match.getMatches(units, groundUnits));
-    placeableUnits.addAll(Match.getMatches(units, airUnits));
+        Match.allOf(Matches.unitIsLand(), Matches.unitIsNotConstruction());
+    final Match<Unit> airUnits = Match.allOf(Matches.unitIsAir(), Matches.unitIsNotConstruction());
+    placeableUnits.addAll(Matches.getMatches(units, groundUnits));
+    placeableUnits.addAll(Matches.getMatches(units, airUnits));
     if (Match.anyMatch(units, Matches.unitIsConstruction())) {
       final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
       final Collection<Unit> skipUnit = new ArrayList<>();
-      for (final Unit currentUnit : Match.getMatches(units, Matches.unitIsConstruction())) {
+      for (final Unit currentUnit : Matches.getMatches(units, Matches.unitIsConstruction())) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
           // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
@@ -131,15 +131,15 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
           if (skipUnit.contains(currentUnit)) {
             continue;
           }
-          placeableUnits.addAll(Match.getNMatches(units, maxUnits, Matches.unitIsOfType(currentUnit.getType())));
-          skipUnit.addAll(Match.getMatches(units, Matches.unitIsOfType(currentUnit.getType())));
+          placeableUnits.addAll(Matches.getNMatches(units, maxUnits, Matches.unitIsOfType(currentUnit.getType())));
+          skipUnit.addAll(Matches.getMatches(units, Matches.unitIsOfType(currentUnit.getType())));
         }
       }
     }
     // remove any units that require other units to be consumed on creation (veqryn)
     if (Match.anyMatch(placeableUnits, Matches.unitConsumesUnitsOnCreation())) {
       final Collection<Unit> unitsWhichConsume =
-          Match.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
+          Matches.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {
         if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
           placeableUnits.remove(unit);
@@ -156,7 +156,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
       typesAlreadyChecked.add(ut);
       placeableUnits2
-          .addAll(Match.getNMatches(placeableUnits, UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
+          .addAll(Matches.getNMatches(placeableUnits, UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
               "placementLimit", ut, to, player, getData()), Matches.unitIsOfType(ut)));
     }
     return placeableUnits2;

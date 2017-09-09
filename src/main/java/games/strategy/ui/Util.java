@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 public final class Util {
@@ -72,7 +71,7 @@ public final class Util {
 
   public static void notifyError(final Component parent, final String message) {
     EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Error",
-        JOptionPane.ERROR_MESSAGE, new CountDownLatchHandler(true));
+        JOptionPane.ERROR_MESSAGE);
   }
 
   /**

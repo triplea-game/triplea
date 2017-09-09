@@ -105,8 +105,8 @@ public class AIUtils {
       }
     }
     if (attacking) {
-      final int art = Match.countMatches(units, Matches.unitIsArtillery());
-      final int artSupport = Match.countMatches(units, Matches.unitIsArtillerySupportable());
+      final int art = Matches.countMatches(units, Matches.unitIsArtillery());
+      final int artSupport = Matches.countMatches(units, Matches.unitIsArtillerySupportable());
       strength += Math.min(art, artSupport);
     }
     return strength;
@@ -131,7 +131,7 @@ public class AIUtils {
   }
 
   static List<Unit> interleaveCarriersAndPlanes(final List<Unit> units, final int planesThatDontNeedToLand) {
-    if (!(Match.anyMatch(units, Matches.UnitIsCarrier) && Match.anyMatch(units, Matches.UnitCanLandOnCarrier))) {
+    if (!(Match.anyMatch(units, Matches.unitIsCarrier()) && Match.anyMatch(units, Matches.unitCanLandOnCarrier()))) {
       return units;
     }
     // Clone the current list
@@ -157,7 +157,7 @@ public class AIUtils {
         // If this is the first carrier seek
         if (seekedCarrier == null) {
           final int seekedCarrierIndex = getIndexOfLastUnitMatching(result,
-              Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+              Match.allOf(Matches.unitIsCarrier(), Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
             // No carriers left
             break;
@@ -186,7 +186,7 @@ public class AIUtils {
             filledCarriers.add(seekedCarrier);
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Match.allOf(Matches.unitIsCarrier(), Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;
@@ -224,7 +224,7 @@ public class AIUtils {
             }
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Match.allOf(Matches.unitIsCarrier(), Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;

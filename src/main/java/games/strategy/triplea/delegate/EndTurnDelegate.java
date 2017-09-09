@@ -77,7 +77,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final Match<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCreatesUnits());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+      final Collection<Unit> myCreators = Matches.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
       if (myCreators != null && !myCreators.isEmpty()) {
         final Collection<Unit> toAdd = new ArrayList<>();
         final Collection<Unit> toAddSea = new ArrayList<>();
@@ -87,10 +87,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           final IntegerMap<UnitType> createsUnitsMap = ua.getCreatesUnitsList();
           final Collection<UnitType> willBeCreated = createsUnitsMap.keySet();
           for (final UnitType ut : willBeCreated) {
-            if (UnitAttachment.get(ut).getIsSea() && Matches.TerritoryIsLand.match(t)) {
+            if (UnitAttachment.get(ut).getIsSea() && Matches.territoryIsLand().match(t)) {
               toAddSea.addAll(ut.create(createsUnitsMap.getInt(ut), player));
             } else if (!UnitAttachment.get(ut).getIsSea() && !UnitAttachment.get(ut).getIsAir()
-                && Matches.TerritoryIsWater.match(t)) {
+                && Matches.territoryIsWater().match(t)) {
               toAddLand.addAll(ut.create(createsUnitsMap.getInt(ut), player));
             } else {
               toAdd.addAll(ut.create(createsUnitsMap.getInt(ut), player));
@@ -106,7 +106,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           change.add(place);
         }
         if (!toAddSea.isEmpty()) {
-          final Match<Territory> myTerrs = Match.allOf(Matches.TerritoryIsWater);
+          final Match<Territory> myTerrs = Match.allOf(Matches.territoryIsWater());
           final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (waterNeighbors != null && !waterNeighbors.isEmpty()) {
             final Territory tw = getRandomTerritory(waterNeighbors, bridge);
@@ -119,7 +119,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           }
         }
         if (!toAddLand.isEmpty()) {
-          final Match<Territory> myTerrs = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand);
+          final Match<Territory> myTerrs = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.territoryIsLand());
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (landNeighbors != null && !landNeighbors.isEmpty()) {
             final Territory tl = getRandomTerritory(landNeighbors, bridge);
@@ -168,7 +168,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final Match<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCreatesResources());
     final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+      final Collection<Unit> myCreators = Matches.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
       for (final Unit unit : myCreators) {
         final IntegerMap<Resource> generatedResourcesMap = UnitAttachment.get(unit.getType()).getCreatesResourcesList();
         resourceTotalsMap.add(generatedResourcesMap);
@@ -221,13 +221,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
           Match.anyOf(TriggerAttachment.resourceMatch()));
       toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(Collections.singleton(player)), endTurnDelegateTriggerMatch, bridge));
+          new HashSet<>(Collections.singleton(player)), endTurnDelegateTriggerMatch));
       allConditionsNeeded.addAll(
           AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(toFirePossible), null));
     }
     // add conditions required for national objectives (nat objs that have uses left)
     final List<RulesAttachment> natObjs =
-        Match.getMatches(RulesAttachment.getNationalObjectives(player), availableUses);
+        Matches.getMatches(RulesAttachment.getNationalObjectives(player), availableUses);
     allConditionsNeeded
         .addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(natObjs), null));
     if (allConditionsNeeded.isEmpty()) {
@@ -242,7 +242,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       if (!toFirePossible.isEmpty()) {
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+            Matches.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true,
             true, true, true)).append("<br />");

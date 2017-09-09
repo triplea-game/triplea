@@ -75,7 +75,7 @@ public class AirThatCantLandUtilTest {
     assertEquals(balkans, cantLand.iterator().next());
     airThatCantLandUtil.removeAirThatCantLand(player, false);
     // jsut the original german fighter
-    assertEquals(1, balkans.getUnits().getMatches(Matches.UnitIsAir).size());
+    assertEquals(1, balkans.getUnits().getMatches(Matches.unitIsAir()).size());
   }
 
   @Test
@@ -90,7 +90,7 @@ public class AirThatCantLandUtilTest {
     assertEquals(1, cantLand.size());
     assertEquals(sz55, cantLand.iterator().next());
     airThatCantLandUtil.removeAirThatCantLand(player, false);
-    assertEquals(0, sz55.getUnits().getMatches(Matches.UnitIsAir).size());
+    assertEquals(0, sz55.getUnits().getMatches(Matches.unitIsAir()).size());
   }
 
   @Test
@@ -102,7 +102,7 @@ public class AirThatCantLandUtilTest {
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
     airThatCantLandUtil.removeAirThatCantLand(player, true);
-    assertEquals(2, sz55.getUnits().getMatches(Matches.UnitIsAir).size());
+    assertEquals(2, sz55.getUnits().getMatches(Matches.unitIsAir()).size());
   }
 
   @Test
@@ -119,7 +119,7 @@ public class AirThatCantLandUtilTest {
     assertEquals(sz52, cantLand.iterator().next());
     airThatCantLandUtil.removeAirThatCantLand(player, false);
     // just the original american fighter, plus one that can land on the carrier
-    assertEquals(2, sz52.getUnits().getMatches(Matches.UnitIsAir).size());
+    assertEquals(2, sz52.getUnits().getMatches(Matches.unitIsAir()).size());
   }
 
   @Test
@@ -146,7 +146,7 @@ public class AirThatCantLandUtilTest {
     gameData.performChange(ChangeFactory.addUnits(sz44, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
     final int preCountSz52 = sz52.getUnits().size();
-    final int preCountAirSz44 = sz44.getUnits().getMatches(Matches.UnitIsAir).size();
+    final int preCountAirSz44 = sz44.getUnits().getMatches(Matches.unitIsAir()).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
@@ -243,7 +243,7 @@ public class AirThatCantLandUtilTest {
     gameData.performChange(ChangeFactory.addUnits(sz9, fighterType.create(1, americans)));
     // Get total number of defending units before the battle
     final int preCountCanada = eastCanada.getUnits().size();
-    final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.UnitIsAir).size();
+    final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.unitIsAir()).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");
@@ -293,7 +293,7 @@ public class AirThatCantLandUtilTest {
     initDel.end();
     // Get total number of defending units before the battle
     final int preCountCanada = eastCanada.getUnits().size();
-    final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.UnitIsAir).size();
+    final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.unitIsAir()).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     bridge.setStepName("CombatMove");

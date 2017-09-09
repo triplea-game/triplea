@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -93,16 +94,16 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     if (maxUnits < 0) {
       throw new IllegalArgumentException("value must be positiive.  Instead its:" + maxUnits);
     }
-    final Collection<Unit> rVal = new ArrayList<>();
+    final Collection<Unit> units = new ArrayList<>();
     for (final Unit current : m_units) {
       if (current.getType().equals(type)) {
-        rVal.add(current);
-        if (rVal.size() == maxUnits) {
-          return rVal;
+        units.add(current);
+        if (units.size() == maxUnits) {
+          return units;
         }
       }
     }
-    return rVal;
+    return units;
   }
 
   /**
@@ -191,11 +192,11 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   public int countMatches(final Match<Unit> predicate) {
-    return Match.countMatches(m_units, predicate);
+    return Matches.countMatches(m_units, predicate);
   }
 
   public List<Unit> getMatches(final Match<Unit> predicate) {
-    return Match.getMatches(m_units, predicate);
+    return Matches.getMatches(m_units, predicate);
   }
 
   @Override

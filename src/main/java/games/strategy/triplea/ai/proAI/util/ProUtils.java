@@ -20,7 +20,6 @@ import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 
 /**
@@ -122,7 +121,7 @@ public class ProUtils {
     for (final Iterator<PlayerID> it = otherPlayers.iterator(); it.hasNext();) {
       final PlayerID otherPlayer = it.next();
       final RelationshipType relation = data.getRelationshipTracker().getRelationshipType(player, otherPlayer);
-      if (Matches.RelationshipTypeIsAllied.match(relation) || isNeutralPlayer(otherPlayer)) {
+      if (Matches.relationshipTypeIsAllied().match(relation) || isNeutralPlayer(otherPlayer)) {
         it.remove();
       }
     }
@@ -147,9 +146,10 @@ public class ProUtils {
     for (final PlayerID otherPlayer : enemyPlayers) {
       enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
     }
-    enemyCapitals.retainAll(Match.getMatches(enemyCapitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
     enemyCapitals
-        .retainAll(Match.getMatches(enemyCapitals, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player))));
+        .retainAll(Matches.getMatches(enemyCapitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
+    enemyCapitals
+        .retainAll(Matches.getMatches(enemyCapitals, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player))));
     return enemyCapitals;
   }
 
@@ -159,8 +159,8 @@ public class ProUtils {
     for (final PlayerID alliedPlayer : players) {
       capitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(alliedPlayer, data));
     }
-    capitals.retainAll(Match.getMatches(capitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
-    capitals.retainAll(Match.getMatches(capitals, Matches.isTerritoryAllied(player, data)));
+    capitals.retainAll(Matches.getMatches(capitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
+    capitals.retainAll(Matches.getMatches(capitals, Matches.isTerritoryAllied(player, data)));
     return capitals;
   }
 
@@ -169,7 +169,7 @@ public class ProUtils {
     final Set<Territory> landTerritories =
         data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
     final List<Territory> enemyLandTerritories =
-        Match.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player)));
+        Matches.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getPotentialEnemyPlayers(player)));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyLandTerritories) {
       final int distance = data.getMap().getDistance(t, enemyLandTerritory,
@@ -190,7 +190,7 @@ public class ProUtils {
     final Set<Territory> landTerritories =
         data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
     final List<Territory> enemyLandTerritories =
-        Match.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getEnemyPlayers(player)));
+        Matches.getMatches(landTerritories, Matches.isTerritoryOwnedBy(getEnemyPlayers(player)));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyLandTerritories) {
       if (territoryValueMap.get(enemyLandTerritory) <= 0) {
@@ -216,11 +216,11 @@ public class ProUtils {
       final Territory t) {
     final Set<Territory> neighborTerritories = data.getMap().getNeighbors(t, 9);
     final List<Territory> enemyOrAdjacentLandTerritories =
-        Match.getMatches(neighborTerritories, ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player, data));
+        Matches.getMatches(neighborTerritories, ProMatches.territoryIsOrAdjacentToEnemyNotNeutralLand(player, data));
     int minDistance = 10;
     for (final Territory enemyLandTerritory : enemyOrAdjacentLandTerritories) {
       final int distance =
-          data.getMap().getDistance_IgnoreEndForCondition(t, enemyLandTerritory, Matches.TerritoryIsWater);
+          data.getMap().getDistance_IgnoreEndForCondition(t, enemyLandTerritory, Matches.territoryIsWater());
       if (distance > 0 && distance < minDistance) {
         minDistance = distance;
       }

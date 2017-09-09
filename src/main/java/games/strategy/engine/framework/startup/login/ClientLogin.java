@@ -11,7 +11,6 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.net.IConnectionLogin;
-import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 
 /**
@@ -74,7 +73,6 @@ public class ClientLogin implements IConnectionLogin {
 
   @Override
   public void notifyFailedLogin(final String message) {
-    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parentComponent), message,
-        new CountDownLatchHandler(true));
+    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parentComponent), message);
   }
 }

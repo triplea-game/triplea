@@ -10,6 +10,8 @@ import java.util.Arrays;
 import org.junit.After;
 import org.junit.Test;
 
+import games.strategy.triplea.settings.ClientSetting;
+
 public class ArgParserTest {
 
 
@@ -23,7 +25,7 @@ public class ArgParserTest {
     assertThat("check precondition, system property for our test key should not be set yet.",
         System.getProperty(TestData.propKey), nullValue());
 
-    boolean result = ArgParser.handleCommandLineArgs(
+    final boolean result = ArgParser.handleCommandLineArgs(
         TestData.sampleArgInput, TestData.samplePropertyNameSet);
 
     assertThat("prop key was supplied as an available value, "
@@ -52,7 +54,7 @@ public class ArgParserTest {
           try {
             ArgParser.handleCommandLineArgs(invalidInput, new String[] {"a"});
             fail("Did not throw an exception as expected on input: " + Arrays.asList(invalidInput));
-          } catch (IllegalArgumentException expected) {
+          } catch (final IllegalArgumentException expected) {
             // expected
           }
         });
@@ -75,6 +77,15 @@ public class ArgParserTest {
   }
 
   @Test
+  public void singleUrlArgIsUrlDecoded() {
+    final String testUrl = "triplea:Something%20with+spaces%20and%20Special%20chars%20%F0%9F%A4%94";
+    ArgParser.handleCommandLineArgs(new String[] {testUrl}, new String[] {GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY});
+    assertThat("if we pass only one arg prefixed with 'triplea:',"
+        + " it should be properly URL-decoded as it's probably coming from a browser",
+        System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY), is("Something with spaces and Special chars 🤔"));
+  }
+
+  @Test
   public void returnFalseIfWeCannotMapKeysToAvailableSet() {
     final String[] validKeys = {"a", "b"};
     Arrays.asList(
@@ -89,6 +100,24 @@ public class ArgParserTest {
             ArgParser.handleCommandLineArgs(invalidInput, validKeys), is(false)));
   }
 
+  @Test
+  public void mapFolderOverrideClientSettingIsSetWhenSpecified() {
+    ClientSetting.MAP_FOLDER_OVERRIDE.save("some value");
+    final String mapFolderPath = "/path/to/maps";
+
+    ArgParser.handleCommandLineArgs(new String[] {"mapFolder=" + mapFolderPath}, new String[] {GameRunner.MAP_FOLDER});
+
+    assertThat(ClientSetting.MAP_FOLDER_OVERRIDE.value(), is(mapFolderPath));
+  }
+
+  @Test
+  public void mapFolderOverrideClientSettingIsResetWhenNotSpecified() {
+    ClientSetting.MAP_FOLDER_OVERRIDE.save("some value");
+
+    ArgParser.handleCommandLineArgs(new String[0], new String[0]);
+
+    assertThat(ClientSetting.MAP_FOLDER_OVERRIDE.value(), is(ClientSetting.MAP_FOLDER_OVERRIDE.defaultValue));
+  }
 
   private interface TestData {
     String propKey = "key";

@@ -180,7 +180,7 @@ public class ProAI extends AbstractAI {
 
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = ProPurchaseUtils.findPurchaseTerritories(player);
-      final List<Territory> possibleFactoryTerritories = Match.getMatches(data.getMap().getTerritories(),
+      final List<Territory> possibleFactoryTerritories = Matches.getMatches(data.getMap().getTerritories(),
           ProMatches.territoryHasNoInfraFactoryAndIsNotConqueredOwnedLand(player, data));
       if (purchaseTerritories.isEmpty() && possibleFactoryTerritories.isEmpty()) {
         ProLogger.info("No possible place or factory territories owned so exiting purchase logic");
@@ -298,7 +298,7 @@ public class ProAI extends AbstractAI {
         + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker
         + ", isStrafing=" + isStrafing);
     if ((isStrafing || (isAttacker && strengthDifference > 50))
-        && (battleTerritory.isWater() || Match.anyMatch(attackers, Matches.UnitIsLand))) {
+        && (battleTerritory.isWater() || Match.anyMatch(attackers, Matches.unitIsLand()))) {
       return null;
     }
     calc.setData(getGameData());

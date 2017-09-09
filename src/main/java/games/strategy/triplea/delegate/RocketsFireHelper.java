@@ -130,7 +130,7 @@ public class RocketsFireHelper {
 
   Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player) {
     final Set<Territory> territories = new HashSet<>();
-    final Match<Unit> ownedRockets = rocketMatch(player, data);
+    final Match<Unit> ownedRockets = rocketMatch(player);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
     for (final Territory current : data.getMap()) {
       if (tracker.wasConquered(current)) {
@@ -143,7 +143,7 @@ public class RocketsFireHelper {
     return territories;
   }
 
-  Match<Unit> rocketMatch(final PlayerID player, final GameData data) {
+  private static Match<Unit> rocketMatch(final PlayerID player) {
     return Match.allOf(Matches.unitIsRocket(), Matches.unitIsOwnedBy(player), Matches.unitIsNotDisabled(),
         Matches.unitIsBeingTransported().invert(), Matches.unitIsSubmerged().invert(), Matches.unitHasNotMoved());
   }
@@ -188,14 +188,14 @@ public class RocketsFireHelper {
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
         Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
     final Collection<Unit> enemyTargetsTotal =
-        Match.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
+        Matches.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
     final Collection<Unit> targets = new ArrayList<>();
     final Collection<Unit> rockets;
     // attackFrom could be null if WW2V1
     if (attackFrom == null) {
       rockets = null;
     } else {
-      rockets = new ArrayList<>(Match.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player, data)));
+      rockets = new ArrayList<>(Matches.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player)));
     }
     final int numberOfAttacks = (rockets == null ? 1
         : Math.min(TechAbilityAttachment.getRocketNumberPerTerritory(player, data),
@@ -217,7 +217,7 @@ public class RocketsFireHelper {
         }
       }
       final Collection<Unit> enemyTargets =
-          Match.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
+          Matches.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
       if (enemyTargets.isEmpty()) {
         // TODO: this sucks
         return;
@@ -420,9 +420,9 @@ public class RocketsFireHelper {
     }
     // kill any units that can die if they have reached max damage (veqryn)
     if (Match.anyMatch(targets, Matches.unitCanDieFromReachingMaxDamage())) {
-      final List<Unit> unitsCanDie = Match.getMatches(targets, Matches.unitCanDieFromReachingMaxDamage());
+      final List<Unit> unitsCanDie = Matches.getMatches(targets, Matches.unitCanDieFromReachingMaxDamage());
       unitsCanDie
-          .retainAll(Match.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
+          .retainAll(Matches.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
       if (!unitsCanDie.isEmpty()) {
         final Change removeDead = ChangeFactory.removeUnits(attackedTerritory, unitsCanDie);
         final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + attackedTerritory.getName();

@@ -26,7 +26,6 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.Match;
 
 public class DiceRollTest {
   private GameData gameData;
@@ -256,7 +255,7 @@ public class DiceRollTest {
     final DiceRoll hit =
         DiceRoll
             .rollAA(
-                Match.getMatches(fighterList,
+                Matches.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -267,7 +266,7 @@ public class DiceRollTest {
     final DiceRoll miss =
         DiceRoll
             .rollAA(
-                Match.getMatches(fighterList,
+                Matches.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -279,7 +278,7 @@ public class DiceRollTest {
     final DiceRoll hitNoRoll =
         DiceRoll
             .rollAA(
-                Match.getMatches(fighterList,
+                Matches.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -305,7 +304,7 @@ public class DiceRollTest {
     final DiceRoll hit =
         DiceRoll
             .rollAA(
-                Match.getMatches(fighterList,
+                Matches.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -332,7 +331,7 @@ public class DiceRollTest {
     final DiceRoll hit =
         DiceRoll
             .rollAA(
-                Match.getMatches(fighterList,
+                Matches.getMatches(fighterList,
                     Matches.unitIsOfTypes(
                         UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
                 aaGunList, bridge, finnland, true);
@@ -342,7 +341,7 @@ public class DiceRollTest {
     final DiceRoll miss =
         DiceRoll
             .rollAA(
-                Match.getMatches(fighterList,
+                Matches.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -354,7 +353,7 @@ public class DiceRollTest {
     final DiceRoll hitNoRoll =
         DiceRoll
             .rollAA(
-                Match.getMatches(fighterList,
+                Matches.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -370,7 +369,7 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {2, 3}));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, new MockBattle(germany), "",
@@ -387,7 +386,7 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 1}));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
@@ -402,7 +401,7 @@ public class DiceRollTest {
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, true);
     final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 1}));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
@@ -420,7 +419,7 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {2, 3}));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, new MockBattle(germany), "",
@@ -439,7 +438,7 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 2}));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, new MockBattle(germany), "",
@@ -457,7 +456,7 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
     testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 1}));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, new MockBattle(germany), "",
@@ -473,7 +472,7 @@ public class DiceRollTest {
     final PlayerID british = GameDataTestUtil.british(gameData);
     final Territory location = gameData.getMap().getTerritory("United Kingdom");
     final Unit bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber).get(0);
+        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber()).get(0);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(location);
     // default 1 roll
     assertThat(BattleCalculator.getRolls(bombers, british, false, true, territoryEffects), is(1));

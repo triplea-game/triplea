@@ -48,20 +48,11 @@ public class UnitAttachment extends DefaultAttachment {
    * Convenience method.
    */
   public static UnitAttachment get(final UnitType type) {
-    final UnitAttachment rVal = (UnitAttachment) type.getAttachment(Constants.UNIT_ATTACHMENT_NAME);
-    if (rVal == null) {
-      throw new IllegalStateException("No unit type attachment for:" + type.getName());
-    }
-    return rVal;
+    return get(type, Constants.UNIT_ATTACHMENT_NAME);
   }
 
   static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
-    final UnitAttachment rVal = (UnitAttachment) type.getAttachment(nameOfAttachment);
-    if (rVal == null) {
-      throw new IllegalStateException(
-          "No unit type attachment for:" + type.getName() + " with name:" + nameOfAttachment);
-    }
-    return rVal;
+    return getAttachment(type, nameOfAttachment, UnitAttachment.class);
   }
 
   private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
@@ -187,6 +178,9 @@ public class UnitAttachment extends DefaultAttachment {
   // territory, owned by player, not be disabled)
   private ArrayList<String[]> m_requiresUnits = new ArrayList<>();
   private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<>();
+  // multiple colon delimited lists of the unit combos required for
+  // this unit to move into a territory. (units must be owned by player, not be disabled)
+  private ArrayList<String[]> m_requiresUnitsToMove = new ArrayList<>();
   // a colon delimited list of territories where this unit may not be placed
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates m_unitPlacementRestrictions with an inverted list of territories
@@ -959,6 +953,41 @@ public class UnitAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+  public void setRequiresUnitsToMove(final String value) throws GameParseException {
+    final String[] array = value.split(":");
+    if (array.length == 0) {
+      throw new GameParseException("requiresUnitsToMove must have at least 1 unit type" + thisErrorMsg());
+    }
+    for (final String s : array) {
+      final UnitType ut = getData().getUnitTypeList().getUnitType(s);
+      if (ut == null) {
+        throw new GameParseException("No unit called:" + s + thisErrorMsg());
+      }
+    }
+    m_requiresUnitsToMove.add(array);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setRequiresUnitsToMove(final ArrayList<String[]> value) {
+    m_requiresUnitsToMove = value;
+  }
+
+  public ArrayList<String[]> getRequiresUnitsToMove() {
+    return m_requiresUnitsToMove;
+  }
+
+  public void clearRequiresUnitsToMove() {
+    m_requiresUnitsToMove.clear();
+  }
+
+  public void resetRequiresUnitsToMove() {
+    m_requiresUnitsToMove = new ArrayList<>();
+  }
+
+  /**
+   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+   */
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setWhenCombatDamaged(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (!(s.length == 3 || s.length == 4)) {
@@ -1028,7 +1057,7 @@ public class UnitAttachment extends DefaultAttachment {
       final String filterForAbility, final GameData data) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
-        getUnitTypesFromUnitList(Match.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
+        getUnitTypesFromUnitList(Matches.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
       final Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
       for (final String receive : receives) {
@@ -1037,7 +1066,7 @@ public class UnitAttachment extends DefaultAttachment {
           continue;
         }
         map.put(Tuple.of(s[0], s[1]),
-            Match.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
+            Matches.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
       }
     }
     return map;
@@ -1053,7 +1082,7 @@ public class UnitAttachment extends DefaultAttachment {
     final IntegerMap<Tuple<String, String>> whichGive =
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
-      final Collection<Unit> receives = Match.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
+      final Collection<Unit> receives = Matches.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
           Matches.unitCanReceiveAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
       whichReceiveNoDuplicates.addAll(receives);
       unitsCopy.removeAll(receives);
@@ -2325,9 +2354,9 @@ public class UnitAttachment extends DefaultAttachment {
     for (final Unit u : aaUnitsAlreadyVerified) {
       aaSet.add(UnitAttachment.get(u.getType()).getTypeAA());
     }
-    final List<String> rVal = new ArrayList<>(aaSet);
-    Collections.sort(rVal);
-    return rVal;
+    final List<String> aaTypes = new ArrayList<>(aaSet);
+    Collections.sort(aaTypes);
+    return aaTypes;
   }
 
   /**
@@ -2616,7 +2645,7 @@ public class UnitAttachment extends DefaultAttachment {
       stackingMatchBuilder.add(Matches.isUnitAllied(owner, data));
     }
     // else if (stackingType.equals("total"))
-    final int totalInTerritory = Match.countMatches(t.getUnits().getUnits(), stackingMatchBuilder.all());
+    final int totalInTerritory = Matches.countMatches(t.getUnits().getUnits(), stackingMatchBuilder.all());
     return Math.max(0, max - totalInTerritory);
   }
 
@@ -2750,29 +2779,29 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public Collection<UnitType> getListedUnits(final String[] list) {
-    final List<UnitType> rVal = new ArrayList<>();
+    final List<UnitType> unitTypes = new ArrayList<>();
     for (final String name : list) {
       // Validate all units exist
       final UnitType ut = getData().getUnitTypeList().getUnitType(name);
       if (ut == null) {
         throw new IllegalStateException("No unit called: " + name + thisErrorMsg());
       }
-      rVal.add(ut);
+      unitTypes.add(ut);
     }
-    return rVal;
+    return unitTypes;
   }
 
   private Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
-    final List<Territory> rVal = new ArrayList<>();
+    final List<Territory> territories = new ArrayList<>();
     for (final String name : list) {
       // Validate all territories exist
       final Territory territory = getData().getMap().getTerritory(name);
       if (territory == null) {
         throw new GameParseException("No territory called: " + name + thisErrorMsg());
       }
-      rVal.add(territory);
+      territories.add(territory);
     }
-    return rVal;
+    return territories;
   }
 
   private static boolean playerHasRockets(final PlayerID player) {
@@ -2832,23 +2861,27 @@ public class UnitAttachment extends DefaultAttachment {
         + (m_targetsAA != null ? (m_targetsAA.size() == 0 ? "empty" : m_targetsAA.toString()) : "all air units")
         + "  willNotFireIfPresent:"
         + (m_willNotFireIfPresent != null
-            ? (m_willNotFireIfPresent.size() == 0 ? "empty" : m_willNotFireIfPresent.toString()) : "null")
+            ? (m_willNotFireIfPresent.size() == 0 ? "empty" : m_willNotFireIfPresent.toString())
+            : "null")
         + "  isRocket:" + m_isRocket + "  canProduceUnits:" + m_canProduceUnits + "  canProduceXUnits:"
         + m_canProduceXUnits + "  createsUnitsList:"
         + (m_createsUnitsList != null ? (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString())
             : "null")
         + "  createsResourcesList:"
         + (m_createsResourcesList != null
-            ? (m_createsResourcesList.size() == 0 ? "empty" : m_createsResourcesList.toString()) : "null")
+            ? (m_createsResourcesList.size() == 0 ? "empty" : m_createsResourcesList.toString())
+            : "null")
         + "  fuelCost:" + (m_fuelCost != null ? (m_fuelCost.size() == 0 ? "empty" : m_fuelCost.toString()) : "null")
         + "  isInfrastructure:" + m_isInfrastructure + "  isConstruction:" + m_isConstruction + "  constructionType:"
         + m_constructionType + "  constructionsPerTerrPerTypePerTurn:" + m_constructionsPerTerrPerTypePerTurn
         + "  maxConstructionsPerTypePerTerr:" + m_maxConstructionsPerTypePerTerr + "  destroyedWhenCapturedBy:"
         + (m_destroyedWhenCapturedBy != null
-            ? (m_destroyedWhenCapturedBy.size() == 0 ? "empty" : m_destroyedWhenCapturedBy.toString()) : "null")
+            ? (m_destroyedWhenCapturedBy.size() == 0 ? "empty" : m_destroyedWhenCapturedBy.toString())
+            : "null")
         + "  canBeCapturedOnEnteringBy:"
         + (m_canBeCapturedOnEnteringBy != null
-            ? (m_canBeCapturedOnEnteringBy.size() == 0 ? "empty" : m_canBeCapturedOnEnteringBy.toString()) : "null")
+            ? (m_canBeCapturedOnEnteringBy.size() == 0 ? "empty" : m_canBeCapturedOnEnteringBy.toString())
+            : "null")
         + "  canBeDamaged:" + m_canBeDamaged + "  canDieFromReachingMaxDamage:" + m_canDieFromReachingMaxDamage
         + "  maxOperationalDamage:" + m_maxOperationalDamage + "  maxDamage:" + m_maxDamage
         + "  unitPlacementRestrictions:"
@@ -2857,22 +2890,30 @@ public class UnitAttachment extends DefaultAttachment {
             : "null")
         + "  requiresUnits:"
         + (m_requiresUnits != null
-            ? (m_requiresUnits.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(m_requiresUnits)) : "null")
+            ? (m_requiresUnits.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(m_requiresUnits))
+            : "null")
         + "  consumesUnits:"
         + (m_consumesUnits != null ? (m_consumesUnits.size() == 0 ? "empty" : m_consumesUnits.toString()) : "null")
+        + "  requiresUnitsToMove:"
+        + (m_requiresUnitsToMove != null
+            ? (m_requiresUnitsToMove.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(m_requiresUnitsToMove))
+            : "null")
         + "  canOnlyBePlacedInTerritoryValuedAtX:" + m_canOnlyBePlacedInTerritoryValuedAtX + "  maxBuiltPerPlayer:"
         + m_maxBuiltPerPlayer + "  special:"
         + (m_special != null ? (m_special.size() == 0 ? "empty" : m_special.toString()) : "null") + "  isSuicide:"
         + m_isSuicide + "  isSuicide:" + m_isSuicide + "  isCombatTransport:" + m_isCombatTransport
         + "  canInvadeOnlyFrom:"
         + (m_canInvadeOnlyFrom != null
-            ? (m_canInvadeOnlyFrom.length == 0 ? "empty" : Arrays.toString(m_canInvadeOnlyFrom)) : "null")
+            ? (m_canInvadeOnlyFrom.length == 0 ? "empty" : Arrays.toString(m_canInvadeOnlyFrom))
+            : "null")
         + "  canBeGivenByTerritoryTo:"
         + (m_canBeGivenByTerritoryTo != null
-            ? (m_canBeGivenByTerritoryTo.size() == 0 ? "empty" : m_canBeGivenByTerritoryTo.toString()) : "null")
+            ? (m_canBeGivenByTerritoryTo.size() == 0 ? "empty" : m_canBeGivenByTerritoryTo.toString())
+            : "null")
         + "  receivesAbilityWhenWith:"
         + (m_receivesAbilityWhenWith != null
-            ? (m_receivesAbilityWhenWith.size() == 0 ? "empty" : m_receivesAbilityWhenWith.toString()) : "null")
+            ? (m_receivesAbilityWhenWith.size() == 0 ? "empty" : m_receivesAbilityWhenWith.toString())
+            : "null")
         + "  whenCombatDamaged:"
         + (m_whenCombatDamaged != null ? (m_whenCombatDamaged.size() == 0 ? "empty" : m_whenCombatDamaged.toString())
             : "null")
@@ -2884,7 +2925,8 @@ public class UnitAttachment extends DefaultAttachment {
         + "  canScramble:" + m_canScramble + "  maxScrambleDistance:" + m_maxScrambleDistance + "  isAirBase:"
         + m_isAirBase + "  maxScrambleCount:" + m_maxScrambleCount + "  whenCapturedChangesInto:"
         + (m_whenCapturedChangesInto != null
-            ? (m_whenCapturedChangesInto.size() == 0 ? "empty" : m_whenCapturedChangesInto.toString()) : "null")
+            ? (m_whenCapturedChangesInto.size() == 0 ? "empty" : m_whenCapturedChangesInto.toString())
+            : "null")
         + "  canIntercept:" + m_canIntercept + "  canEscort:" + m_canEscort + "  canAirBattle:" + m_canAirBattle
         + "  airDefense:" + m_airDefense + "  airAttack:" + m_airAttack + "  canNotMoveDuringCombatMove:"
         + m_canNotMoveDuringCombatMove + "  movementLimit:"
@@ -3046,7 +3088,8 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Give Attack Bonus To Other Units, ");
     } else {
       final List<UnitSupportAttachment> supports =
-          Match.getMatches(UnitSupportAttachment.get(unitType), Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
+          Matches.getMatches(UnitSupportAttachment.get(unitType),
+              Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
       if (supports.size() > 0) {
         if (supports.size() > 2) {
           stats.append("can Modify Power Of Other Units, ");
@@ -3214,6 +3257,30 @@ public class UnitAttachment extends DefaultAttachment {
       } else {
         stats.append("unit can only be Placed Where There Is: ");
         final Iterator<String[]> requiredIter = getRequiresUnits().iterator();
+        while (requiredIter.hasNext()) {
+          final String[] required = requiredIter.next();
+          if (required.length == 1) {
+            stats.append(required[0]);
+          } else {
+            stats.append(Arrays.toString(required));
+          }
+          if (requiredIter.hasNext()) {
+            stats.append(" Or ");
+          }
+        }
+        stats.append(", ");
+      }
+    }
+    if (getRequiresUnitsToMove() != null && !getRequiresUnitsToMove().isEmpty()) {
+      final List<String> totalUnitsListed = new ArrayList<>();
+      for (final String[] list : getRequiresUnitsToMove()) {
+        totalUnitsListed.addAll(Arrays.asList(list));
+      }
+      if (totalUnitsListed.size() > 4) {
+        stats.append("unit Requires Other Units Present To Be Moved, ");
+      } else {
+        stats.append("unit can only be Moved Where There Is: ");
+        final Iterator<String[]> requiredIter = getRequiresUnitsToMove().iterator();
         while (requiredIter.hasNext()) {
           final String[] required = requiredIter.next();
           if (required.length == 1) {

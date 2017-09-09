@@ -158,7 +158,7 @@ public class TileManager {
     }
   }
 
-  public void createTiles(final Rectangle bounds, final GameData data, final MapData mapData) {
+  public void createTiles(final Rectangle bounds) {
     acquireLock();
     try {
       // create our tiles

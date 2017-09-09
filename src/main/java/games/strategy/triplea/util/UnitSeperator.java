@@ -29,13 +29,6 @@ public class UnitSeperator {
         sort);
   }
 
-  public static Set<UnitCategory> categorize(final boolean sort, final Collection<Unit> units,
-      final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final boolean categorizeTerritories) {
-    return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /* ctgzTrnMovement */false,
-        sort);
-  }
-
   /**
    * Break the units into discrete categories.
    * Do this based on unit owner, and optionally dependent units and movement
@@ -65,7 +58,7 @@ public class UnitSeperator {
     }
     for (final Unit current : units) {
       int unitMovement = -1;
-      if (categorizeMovement || (categorizeTrnMovement && Matches.UnitIsTransport.match(current))) {
+      if (categorizeMovement || (categorizeTrnMovement && Matches.unitIsTransport().match(current))) {
         unitMovement = TripleAUnit.get(current).getMovementLeft();
       }
       int unitTransportCost = -1;
@@ -111,11 +104,5 @@ public class UnitSeperator {
       final boolean categorizeMovement, final boolean categorizeTransportCost) {
     // sort by default
     return categorize(units, dependent, categorizeMovement, categorizeTransportCost, true);
-  }
-
-  public static Set<UnitCategory> categorize(final Map<Unit, Collection<Unit>> dependent, final Collection<Unit> units,
-      final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean categorizeTerritories) {
-    // sort by default
-    return categorize(true, units, dependent, categorizeMovement, categorizeTransportCost, categorizeTerritories);
   }
 }

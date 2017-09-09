@@ -33,6 +33,11 @@ final class TestProxyFactoryCollectionBuilder {
     return this;
   }
 
+  TestProxyFactoryCollectionBuilder addAll(final Collection<ProxyFactory> proxyFactories) {
+    this.proxyFactories.addAll(proxyFactories);
+    return this;
+  }
+
   Collection<ProxyFactory> build() {
     return new ArrayList<>(proxyFactories);
   }

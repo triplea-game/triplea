@@ -95,6 +95,15 @@ public class GameDataTestUtil {
   }
 
   /**
+   * Get the Japan PlayerID for the given GameData object.
+   *
+   * @return A Japan PlayerID.
+   */
+  public static PlayerID japan(final GameData data) {
+    return data.getPlayerList().getPlayerID("Japan");
+  }
+
+  /**
    * Get the chinese PlayerID for the given GameData object.
    *
    * @return A chinese PlayerID.
@@ -219,6 +228,20 @@ public class GameDataTestUtil {
    */
   public static UnitType germanFactory(final GameData data) {
     return unitType("germanFactory", data);
+  }
+
+  /**
+   * Returns a germanTrain UnitType object for the specified GameData object.
+   */
+  public static UnitType germanTrain(final GameData data) {
+    return unitType("germanTrain", data);
+  }
+
+  /**
+   * Returns a germanRail UnitType object for the specified GameData object.
+   */
+  public static UnitType germanRail(final GameData data) {
+    return unitType("germanRail", data);
   }
 
   /**

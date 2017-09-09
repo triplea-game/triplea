@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import javax.swing.ImageIcon;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -108,8 +107,7 @@ public class UnitImageFactory {
   /**
    * Return the appropriate unit image.
    */
-  public Optional<Image> getImage(final UnitType type, final PlayerID player, final GameData data,
-      final boolean damaged,
+  public Optional<Image> getImage(final UnitType type, final PlayerID player, final boolean damaged,
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
@@ -159,10 +157,9 @@ public class UnitImageFactory {
     return Optional.ofNullable(image);
   }
 
-  public Optional<Image> getHighlightImage(final UnitType type, final PlayerID player, final GameData data,
-      final boolean damaged,
+  public Optional<Image> getHighlightImage(final UnitType type, final PlayerID player, final boolean damaged,
       final boolean disabled) {
-    final Optional<Image> baseImage = getImage(type, player, data, damaged, disabled);
+    final Optional<Image> baseImage = getImage(type, player, damaged, disabled);
     if (!baseImage.isPresent()) {
       return Optional.empty();
     }
@@ -184,8 +181,7 @@ public class UnitImageFactory {
   /**
    * Return a icon image for a unit.
    */
-  public Optional<ImageIcon> getIcon(final UnitType type, final PlayerID player, final GameData data,
-      final boolean damaged,
+  public Optional<ImageIcon> getIcon(final UnitType type, final PlayerID player, final boolean damaged,
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();

@@ -18,7 +18,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
-import games.strategy.util.Match;
 
 /**
  * The Purpose of this class is to hold shared and simple methods used by RulesAttachment.
@@ -291,7 +290,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     } else if (name.equals("originalNoWater")) { // get all originally owned territories, but no water or impassables
       final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {
-        originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
+        originalTerrs.addAll(Matches.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
             // TODO: does this account for occupiedTerrOf???
             Matches.territoryIsNotImpassableToLandUnits(player, data)));
       }
@@ -307,7 +306,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     } else if (name.equals("controlledNoWater")) {
       final Set<Territory> ownedTerrsNoWater = new HashSet<>();
       for (final PlayerID player : players) {
-        ownedTerrsNoWater.addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player),
+        ownedTerrsNoWater.addAll(Matches.getMatches(gameMap.getTerritoriesOwnedBy(player),
             Matches.territoryIsNotImpassableToLandUnits(player, data)));
       }
       setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
@@ -352,11 +351,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         // Get the list of territories
         return getListedTerritories(terrs, true, true);
       } else {
-        final Set<Territory> rVal = getTerritoriesBasedOnStringName(terrs[1], players, data);
+        final Set<Territory> territories = getTerritoriesBasedOnStringName(terrs[1], players, data);
         // set it a second time, since getTerritoriesBasedOnStringName also sets it (so do it
         setTerritoryCount(String.valueOf(terrs[0]));
         // after the method call).
-        return rVal;
+        return territories;
       }
     } else {
       // Get the list of territories
@@ -378,10 +377,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    */
   public Set<Territory> getListedTerritories(final String[] list, final boolean testFirstItemForCount,
       final boolean mustSetTerritoryCount) {
-    final Set<Territory> rVal = new HashSet<>();
+    final Set<Territory> territories = new HashSet<>();
     // this list is null, empty, or contains "", so return a blank list of territories
     if (list == null || list.length == 0 || (list.length == 1 && (list[0] == null || list[0].length() == 0))) {
-      return rVal;
+      return territories;
     }
     boolean haveSetCount = false;
     for (int i = 0; i < list.length; i++) {
@@ -418,13 +417,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       if (territory == null) {
         throw new IllegalStateException("No territory called:" + name + thisErrorMsg());
       }
-      rVal.add(territory);
+      territories.add(territory);
     }
     if (mustSetTerritoryCount && !haveSetCount) {
       // if we have not set it, then set it to be the size of this list
-      setTerritoryCount(String.valueOf(rVal.size()));
+      setTerritoryCount(String.valueOf(territories.size()));
     }
-    return rVal;
+    return territories;
   }
 
   @Override

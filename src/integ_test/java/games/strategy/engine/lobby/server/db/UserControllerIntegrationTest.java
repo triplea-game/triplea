@@ -14,10 +14,7 @@ import org.junit.Test;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.util.MD5Crypt;
 
-public class DbUserControllerIntegrationTest {
-
-  private static final DbTestConnection DERBY =
-      new DbTestConnection(Database::getDerbyConnection, new DbUserController());
+public class UserControllerIntegrationTest {
 
   private static final DbTestConnection POSTGRES =
       new DbTestConnection(
@@ -26,7 +23,7 @@ public class DbUserControllerIntegrationTest {
 
   @Test
   public void testCreate() throws Exception {
-    testCreate(DERBY);
+    testCreate(POSTGRES);
   }
 
   private static void testCreate(final DbTestConnection dbTestConnection) throws Exception {
@@ -56,14 +53,10 @@ public class DbUserControllerIntegrationTest {
     }
   }
 
-  @Test
-  public void testCreatePostgres() throws Exception {
-    testCreate(POSTGRES);
-  }
 
   @Test
   public void testGet() throws Exception {
-    testGet(DERBY);
+    testGet(POSTGRES);
   }
 
   private static void testGet(final DbTestConnection dbTestConnection) throws Exception {
@@ -78,13 +71,8 @@ public class DbUserControllerIntegrationTest {
   }
 
   @Test
-  public void testGetPostgres() throws Exception {
-    testGet(POSTGRES);
-  }
-
-  @Test
   public void testDoesUserExist() {
-    testDoesUserExist(DERBY);
+    testDoesUserExist(POSTGRES);
   }
 
   private static void testDoesUserExist(final DbTestConnection dbTestConnection) {
@@ -102,7 +90,7 @@ public class DbUserControllerIntegrationTest {
 
   @Test
   public void testCreateDupe() throws Exception {
-    testCreateDupe(DERBY);
+    testCreateDupe(POSTGRES);
   }
 
   private static void testCreateDupe(final DbTestConnection dbTestConnection) throws Exception {
@@ -119,13 +107,8 @@ public class DbUserControllerIntegrationTest {
   }
 
   @Test
-  public void testCreateDupePostgres() throws Exception {
-    testCreateDupe(POSTGRES);
-  }
-
-  @Test
   public void testLogin() throws Exception {
-    testLogin(DERBY);
+    testLogin(POSTGRES);
   }
 
   private static void testLogin(final DbTestConnection dbTestConnection) throws Exception {
@@ -137,13 +120,8 @@ public class DbUserControllerIntegrationTest {
   }
 
   @Test
-  public void testLoginPostgres() throws Exception {
-    testLogin(POSTGRES);
-  }
-
-  @Test
   public void testUpdate() throws Exception {
-    testUpdate(DERBY);
+    testUpdate(POSTGRES);
   }
 
   private static void testUpdate(final DbTestConnection dbTestConnection) throws Exception {
@@ -165,10 +143,6 @@ public class DbUserControllerIntegrationTest {
     }
   }
 
-  @Test
-  public void testUpdatePostgres() throws Exception {
-    testUpdate(POSTGRES);
-  }
 
   private static class DbTestConnection {
     final Supplier<Connection> connectionSupplier;

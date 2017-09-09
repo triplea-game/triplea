@@ -127,7 +127,7 @@ public class DiceRoll implements Externalizable {
             "Duplicate Units Detected: Original List:" + defendingAaForThisRoll + "  HashSet:" + duplicatesCheckSet2);
       }
     }
-    final List<Unit> defendingAa = Match.getMatches(defendingAaForThisRoll,
+    final List<Unit> defendingAa = Matches.getMatches(defendingAaForThisRoll,
         (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
             : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
     if (defendingAa.isEmpty()) {
@@ -186,7 +186,7 @@ public class DiceRoll implements Externalizable {
       final int[] dice, final List<Die> sortedDice, final boolean defending,
       final Collection<Unit> defendingAaForThisRoll, final Collection<Unit> validAttackingUnitsForThisRoll,
       final GameData data, final boolean fillInSortedDiceAndRecordHits) {
-    final List<Unit> defendingAa = Match.getMatches(defendingAaForThisRoll,
+    final List<Unit> defendingAa = Matches.getMatches(defendingAaForThisRoll,
         (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
             : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
     if (defendingAa.size() <= 0) {
@@ -211,8 +211,8 @@ public class DiceRoll implements Externalizable {
     // any sense)
     // set up all 3 groups of aa guns
     final List<Unit> normalNonInfiniteAa = new ArrayList<>(defendingAa);
-    final List<Unit> infiniteAa = Match.getMatches(defendingAa, Matches.unitMaxAaAttacksIsInfinite());
-    final List<Unit> overstackAa = Match.getMatches(defendingAa, Matches.unitMayOverStackAa());
+    final List<Unit> infiniteAa = Matches.getMatches(defendingAa, Matches.unitMaxAaAttacksIsInfinite());
+    final List<Unit> overstackAa = Matches.getMatches(defendingAa, Matches.unitMayOverStackAa());
     overstackAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(overstackAa);
@@ -474,7 +474,7 @@ public class DiceRoll implements Externalizable {
             strength += ua.getIsMarine();
           }
         }
-        if (ua.getIsSea() && isAmphibiousBattle && Matches.TerritoryIsLand.match(location)) {
+        if (ua.getIsSea() && isAmphibiousBattle && Matches.territoryIsLand().match(location)) {
           // change the strength to be bombard, not attack/defense, because this is a
           strength = ua.getBombard();
           // bombarding naval unit
@@ -648,14 +648,14 @@ public class DiceRoll implements Externalizable {
       }
       final Match<Unit> canSupport = Match.allOf(
           Matches.unitIsOfType((UnitType) rule.getAttachedTo()), Matches.unitOwnedBy(rule.getPlayers()));
-      final List<Unit> supporters = Match.getMatches(unitsGivingTheSupport, canSupport);
+      final List<Unit> supporters = Matches.getMatches(unitsGivingTheSupport, canSupport);
       int numSupport = supporters.size();
       if (numSupport <= 0) {
         continue;
       }
       final List<Unit> impArtTechUnits = new ArrayList<>();
       if (rule.getImpArtTech()) {
-        impArtTechUnits.addAll(Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()));
+        impArtTechUnits.addAll(Matches.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()));
       }
       numSupport += impArtTechUnits.size();
       supportLeft.put(rule, numSupport * rule.getNumber());

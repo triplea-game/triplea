@@ -1,15 +1,16 @@
 package games.strategy.net;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.io.IOUtils;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
@@ -174,21 +175,7 @@ public class MacFinder {
       return null;
     }
     try {
-      final StringBuilder builder = new StringBuilder();
-      try (final BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-        while (true) {
-          try {
-            final String line = in.readLine();
-            if (line == null) {
-              break;
-            }
-            builder.append(line).append("\r\n");
-          } catch (final IOException e) {
-            break;
-          }
-        }
-      }
-      return builder.toString();
+      return IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
     } catch (final IOException e) {
       ClientLogger.logQuietly("IOException while executing command: " + command, e);
       return null;

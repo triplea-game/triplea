@@ -55,9 +55,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   }
 
   private static List<File> allMapFiles() {
-    final List<File> rVal = new ArrayList<>();
-    rVal.addAll(safeListFiles(ClientFileSystemHelper.getUserMapsFolder()));
-    return rVal;
+    return new ArrayList<>(safeListFiles(ClientFileSystemHelper.getUserMapsFolder()));
   }
 
   private static List<File> safeListFiles(final File f) {

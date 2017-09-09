@@ -264,7 +264,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return all territories in this route match the given match (start territory is not tested).
    */
   public Collection<Territory> getMatches(final Match<Territory> match) {
-    return Match.getMatches(m_steps, match);
+    return Matches.getMatches(m_steps, match);
   }
 
   @Override
@@ -410,7 +410,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (getStart().isWater()) {
       return true;
     }
-    return Match.anyMatch(getSteps(), Matches.TerritoryIsWater);
+    return Match.anyMatch(getSteps(), Matches.territoryIsWater());
   }
 
   /**
@@ -420,7 +420,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (!getStart().isWater()) {
       return true;
     }
-    return getAllTerritories().isEmpty() || !Match.allMatch(getAllTerritories(), Matches.TerritoryIsWater);
+    return getAllTerritories().isEmpty() || !Match.allMatch(getAllTerritories(), Matches.territoryIsWater());
   }
 
   public int getLargestMovementCost(final Collection<Unit> units) {
@@ -451,7 +451,7 @@ public class Route implements Serializable, Iterable<Territory> {
       final PlayerID currentPlayer, final GameData data /* , final boolean mustFight */) {
     final Set<Unit> units = new HashSet<>(unitsAll);
 
-    units.removeAll(Match.getMatches(unitsAll,
+    units.removeAll(Matches.getMatches(unitsAll,
         Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(unitsAll, route, currentPlayer, data, true)));
     final ResourceCollection movementCharge = new ResourceCollection(data);
     for (final Unit unit : units) {

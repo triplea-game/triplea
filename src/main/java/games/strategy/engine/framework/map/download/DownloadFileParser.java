@@ -3,8 +3,10 @@ package games.strategy.engine.framework.map.download;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.StreamSupport;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.yaml.snakeyaml.Yaml;
 
 import games.strategy.util.Version;
@@ -26,42 +28,30 @@ final class DownloadFileParser {
   }
 
   public static List<DownloadFileDescription> parse(final InputStream is) {
-    @SuppressWarnings("unchecked")
-    final List<Map<String, String>> yamlData = new Yaml().loadAs(is, List.class);
+    final JSONArray yamlData = new JSONArray(new Yaml().loadAs(is, List.class));
 
-    final List<DownloadFileDescription> rVal = new ArrayList<>();
-    for (final Map<String, String> yaml : yamlData) {
-      final String url = yaml.get(Tags.url.toString());
-      final String description = yaml.get(Tags.description.toString());
-      final String mapName = yaml.get(Tags.mapName.toString());
+    final List<DownloadFileDescription> downloads = new ArrayList<>();
+    StreamSupport.stream(yamlData.spliterator(), false).map(JSONObject.class::cast).forEach(yaml -> {
+      final String url = yaml.getString(Tags.url.toString());
+      final String description = yaml.getString(Tags.description.toString());
+      final String mapName = yaml.getString(Tags.mapName.toString());
 
-      Version version = null;
-      final Object versionObject = yaml.get(Tags.version.toString());
-      if (versionObject != null) {
-        version = new Version(String.valueOf(versionObject));
-      }
+      final Version version = new Version(yaml.getInt(Tags.version.toString()), 0);
+      final DownloadFileDescription.DownloadType downloadType = yaml.optEnum(
+          DownloadFileDescription.DownloadType.class,
+          Tags.mapType.toString(),
+          DownloadFileDescription.DownloadType.MAP);
 
-      DownloadFileDescription.DownloadType downloadType = DownloadFileDescription.DownloadType.MAP;
+      final DownloadFileDescription.MapCategory mapCategory = yaml.optEnum(
+          DownloadFileDescription.MapCategory.class,
+          Tags.mapCategory.toString(),
+          DownloadFileDescription.MapCategory.EXPERIMENTAL);
 
-      final String mapTypeString = yaml.get(Tags.mapType.toString());
-      if (mapTypeString != null) {
-        downloadType = DownloadFileDescription.DownloadType.valueOf(mapTypeString);
-      }
-
-      DownloadFileDescription.MapCategory mapCategory = DownloadFileDescription.MapCategory.EXPERIMENTAL;
-      String mapCategoryString = yaml.get(Tags.mapCategory.toString());
-      if (mapCategoryString != null) {
-        mapCategory = DownloadFileDescription.MapCategory.valueOf(mapCategoryString);
-      }
-
-      String img = yaml.get(Tags.img.toString());
-      if (img == null) {
-        img = "";
-      }
+      final String img = yaml.optString(Tags.img.toString());
       final DownloadFileDescription dl =
           new DownloadFileDescription(url, description, mapName, version, downloadType, mapCategory, img);
-      rVal.add(dl);
-    }
-    return rVal;
+      downloads.add(dl);
+    });
+    return downloads;
   }
 }

@@ -217,12 +217,12 @@ class SerializedHistory implements Serializable {
   }
 
   public Object readResolve() {
-    final History rVal = new History(m_data);
-    final HistoryWriter historyWriter = rVal.getHistoryWriter();
+    final History history = new History(m_data);
+    final HistoryWriter historyWriter = history.getHistoryWriter();
     for (final SerializationWriter element : m_Writers) {
       element.write(historyWriter);
     }
-    return rVal;
+    return history;
   }
 }
 

@@ -128,11 +128,10 @@ public class UndoableMove extends AbstractUndoableMove {
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal = end.getUnits()
                 .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerID(), data),
-                    Matches.unitIsAtMaxDamageOrNotCanBeDamaged(end).invert(),
-                    Matches.unitIsBeingTransported().invert()));
-            final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal,
+                    Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().invert()));
+            final Collection<Unit> enemyTargets = Matches.getMatches(enemyTargetsTotal,
                 Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(
-                    Match.getMatches(Collections.singleton(unit), Matches.UnitIsStrategicBomber), data)));
+                    Matches.getMatches(Collections.singleton(unit), Matches.unitIsStrategicBomber()), data)));
             if (enemyTargets.size() > 1
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                 && !Properties.getRaidsMayBePreceededByAirBattles(data)) {
@@ -169,8 +168,8 @@ public class UndoableMove extends AbstractUndoableMove {
         System.err.println(undoableMoves);
         throw new IllegalStateException("other should not be null");
       }
-      if (// if the other move has moves that depend on this
-          !Util.intersection(other.getUnits(), this.getUnits()).isEmpty()
+      // if the other move has moves that depend on this
+      if (!Util.intersection(other.getUnits(), this.getUnits()).isEmpty()
           // if the other move has transports that we are loading
           || !Util.intersection(other.m_units, this.m_loaded).isEmpty()
           // or we are moving through a previously conqueured territory

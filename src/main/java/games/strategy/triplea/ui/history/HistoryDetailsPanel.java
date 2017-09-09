@@ -99,7 +99,7 @@ public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel 
   private void renderUnits(final GridBagConstraints mainConstraints, final Collection<Unit> units) {
     final Collection<UnitCategory> unitsCategories = UnitSeperator.categorize(units);
     final SimpleUnitPanel unitsPanel = new SimpleUnitPanel(mapPanel.getUiContext());
-    unitsPanel.setUnitsFromCategories(unitsCategories, data);
+    unitsPanel.setUnitsFromCategories(unitsCategories);
     add(unitsPanel, mainConstraints);
   }
 }

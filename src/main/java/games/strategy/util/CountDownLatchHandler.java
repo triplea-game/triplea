@@ -20,15 +20,17 @@ public class CountDownLatchHandler {
 
   private final boolean releaseLatchOnInterrupt;
 
+  public CountDownLatchHandler() {
+    this(true);
+  }
+
   public CountDownLatchHandler(final boolean releaseLatchOnInterrupt) {
     this.releaseLatchOnInterrupt = releaseLatchOnInterrupt;
   }
 
   /**
-   * If "releaseLatchOnInterrupt" was set to true (defaults to false) on construction of this handler, then
-   * interruptLatch will release and
-   * remove the latch.
-   * Otherwise does nothing.
+   * If {@code releaseLatchOnInterrupt} was set to true upon construction of this handler, then this method will release
+   * and remove the latch; otherwise it does nothing.
    */
   public void interruptLatch(final CountDownLatch latch) {
     if (releaseLatchOnInterrupt) {
@@ -66,8 +68,8 @@ public class CountDownLatchHandler {
   }
 
   /**
-   * Add a latch that will be released when this handler shuts down.
-   * If this handler is already shutdown, then we will release the latch immediately.
+   * Add a latch that will be released when this handler shuts down. If this handler is already shutdown, then we will
+   * release the latch immediately.
    */
   public void addShutdownLatch(final CountDownLatch latch) {
     synchronized (this) {

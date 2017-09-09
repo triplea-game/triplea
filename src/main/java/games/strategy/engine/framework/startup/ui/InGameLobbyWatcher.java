@@ -99,11 +99,11 @@ public class InGameLobbyWatcher {
 
       @Override
       public Map<String, String> getProperties(final Map<String, String> challengProperties) {
-        final Map<String, String> rVal = new HashMap<>();
-        rVal.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-        rVal.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-        rVal.put(LobbyLoginValidator.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
-        return rVal;
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
+        properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+        properties.put(LobbyLoginValidator.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
+        return properties;
       }
     };
     try {

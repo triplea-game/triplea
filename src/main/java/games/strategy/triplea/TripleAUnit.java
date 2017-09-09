@@ -124,7 +124,7 @@ public class TripleAUnit extends Unit {
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
-    return Match.getMatches(transportedUnitsPossible,
+    return Matches.getMatches(transportedUnitsPossible,
         Match.of(o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this));
   }
 
@@ -369,7 +369,7 @@ public class TripleAUnit extends Unit {
         // can use "production" or "unitProduction"
         return territoryUnitProduction * 2;
       } else {
-        if (Matches.UnitCanProduceUnits.match(u)) {
+        if (Matches.unitCanProduceUnits().match(u)) {
           if (ua.getCanProduceXUnits() < 0) {
             // can use "production" or "unitProduction"
             return territoryUnitProduction * ua.getMaxDamage();
@@ -404,11 +404,11 @@ public class TripleAUnit extends Unit {
         Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
         Matches.unitIsBeingTransported().invert());
     if (producer.isWater()) {
-      factoryMatchBuilder.add(Matches.UnitIsLand.invert());
+      factoryMatchBuilder.add(Matches.unitIsLand().invert());
     } else {
-      factoryMatchBuilder.add(Matches.UnitIsSea.invert());
+      factoryMatchBuilder.add(Matches.unitIsSea().invert());
     }
-    final Collection<Unit> factories = Match.getMatches(units, factoryMatchBuilder.all());
+    final Collection<Unit> factories = Matches.getMatches(units, factoryMatchBuilder.all());
     if (factories.isEmpty()) {
       return null;
     }
@@ -431,7 +431,7 @@ public class TripleAUnit extends Unit {
     if (u == null) {
       return 0;
     }
-    if (!Matches.UnitCanProduceUnits.match(u)) {
+    if (!Matches.unitCanProduceUnits().match(u)) {
       return 0;
     }
     int productionCapacity = 0;

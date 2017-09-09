@@ -10,7 +10,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import games.strategy.util.Match;
+import games.strategy.triplea.delegate.Matches;
 
 public class MapTest {
   Territory aa;
@@ -123,7 +123,7 @@ public class MapTest {
 
   @Test
   public void testImpossibleConditionRoute() {
-    assertNull(map.getRoute(aa, ba, Match.never()));
+    assertNull(map.getRoute(aa, ba, Matches.never()));
   }
 
   @Test

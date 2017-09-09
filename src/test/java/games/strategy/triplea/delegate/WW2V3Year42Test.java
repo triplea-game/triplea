@@ -57,7 +57,7 @@ public class WW2V3Year42Test {
     final Route sz13To12 = new Route();
     sz13To12.setStart(sz13);
     sz13To12.add(sz12);
-    final List<Unit> transports = sz13.getUnits().getMatches(Matches.UnitIsTransport);
+    final List<Unit> transports = sz13.getUnits().getMatches(Matches.unitIsTransport());
     assertEquals(1, transports.size());
     final String error = moveDelegate.move(transports, sz13To12);
     assertEquals(error, null);
@@ -81,7 +81,7 @@ public class WW2V3Year42Test {
     // remove the russian units
     removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.unitCanBeDamaged().invert()));
     // move the bomber to attack
-    move(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber), new Route(germany, sz5, karrelia));
+    move(germany.getUnits().getMatches(Matches.unitIsStrategicBomber()), new Route(germany, sz5, karrelia));
     // move an infantry to invade
     move(baltic.getUnits().getMatches(Matches.unitIsInfantry()), new Route(baltic, karrelia));
     final BattleTracker battleTracker = MoveDelegate.getBattleTracker(gameData);
@@ -156,7 +156,7 @@ public class WW2V3Year42Test {
     // attack with a german sub
     move(sz7.getUnits().getUnits(), new Route(sz7, sz6, sz5));
     // move the transport away
-    move(sz5.getUnits().getMatches(Matches.UnitIsTransport), new Route(sz5, sz6));
+    move(sz5.getUnits().getMatches(Matches.unitIsTransport()), new Route(sz5, sz6));
     moveDelegate(gameData).end();
     // adding of lingering units was moved from end of combat-move phase, to start of battle phase
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);

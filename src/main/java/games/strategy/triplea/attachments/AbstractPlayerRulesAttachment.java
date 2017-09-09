@@ -67,11 +67,11 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
    * @return new rule attachment
    */
   public static RulesAttachment get(final PlayerID player) {
-    final RulesAttachment rVal = player.getRulesAttachment();
-    if (rVal == null) {
+    final RulesAttachment rulesAttachment = player.getRulesAttachment();
+    if (rulesAttachment == null) {
       throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName());
     }
-    return rVal;
+    return rulesAttachment;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)

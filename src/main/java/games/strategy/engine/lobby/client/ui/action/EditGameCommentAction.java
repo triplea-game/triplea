@@ -27,10 +27,10 @@ public class EditGameCommentAction extends AbstractAction {
       return;
     }
     final String current = m_lobbyWatcher.getComments();
-    final String rVal = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(m_parent),
+    final String gameComments = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(m_parent),
         "Edit the comments for the game", current);
-    if (rVal != null) {
-      m_lobbyWatcher.setGameComments(rVal);
+    if (gameComments != null) {
+      m_lobbyWatcher.setGameComments(gameComments);
     }
   }
 }

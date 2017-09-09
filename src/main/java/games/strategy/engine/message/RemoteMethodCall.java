@@ -8,6 +8,10 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.util.Tuple;
 
 /**
@@ -87,51 +91,58 @@ public class RemoteMethodCall implements Externalizable {
   }
 
   private static Class<?>[] stringsToClasses(final String[] strings, final Object[] args) {
-    final Class<?>[] rVal = new Class<?>[strings.length];
+    final Class<?>[] classes = new Class<?>[strings.length];
     for (int i = 0; i < strings.length; i++) {
-      try {
-        // null if we skipped writing because the arg is the expected
-        // class, this saves some space since generally the arg will
-        // be of the correct type
-        if (strings[i] == null) {
-          rVal[i] = args[i].getClass();
-        } else if (strings[i].equals("int")) {
-          rVal[i] = Integer.TYPE;
-        } else if (strings[i].equals("short")) {
-          rVal[i] = Short.TYPE;
-        } else if (strings[i].equals("byte")) {
-          rVal[i] = Byte.TYPE;
-        } else if (strings[i].equals("long")) {
-          rVal[i] = Long.TYPE;
-        } else if (strings[i].equals("float")) {
-          rVal[i] = Float.TYPE;
-        } else if (strings[i].equals("double")) {
-          rVal[i] = Double.TYPE;
-        } else if (strings[i].equals("boolean")) {
-          rVal[i] = Boolean.TYPE;
-        } else {
-          rVal[i] = Class.forName(strings[i]);
-        }
-      } catch (final ClassNotFoundException e) {
-        throw new IllegalStateException(e);
-      }
+      classes[i] = stringToClass(strings[i], args[i]);
     }
-    return rVal;
+    return classes;
+  }
+
+  @VisibleForTesting
+  static Class<?> stringToClass(final @Nullable String string, final Object arg) {
+    // null if we skipped writing because the arg is the expected class.
+    // this saves some space since generally the arg will be of the correct type.
+    if (string == null) {
+      return arg.getClass();
+    }
+
+    switch (string) {
+      case "int":
+        return Integer.TYPE;
+      case "short":
+        return Short.TYPE;
+      case "byte":
+        return Byte.TYPE;
+      case "long":
+        return Long.TYPE;
+      case "float":
+        return Float.TYPE;
+      case "double":
+        return Double.TYPE;
+      case "boolean":
+        return Boolean.TYPE;
+      default:
+        try {
+          return Class.forName(string);
+        } catch (final ClassNotFoundException e) {
+          throw new IllegalStateException(e);
+        }
+    }
   }
 
   private static String[] classesToString(final Class<?>[] classes, final Object[] args) {
     // as an optimization, if args[i].getClass == classes[i] then leave classes[i] as null
     // this will reduce the amount of info we write over the network in the common
     // case where the object is the same type as its arg
-    final String[] rVal = new String[classes.length];
+    final String[] string = new String[classes.length];
     for (int i = 0; i < classes.length; i++) {
       if (args != null && args[i] != null && classes[i] == args[i].getClass()) {
-        rVal[i] = null;
+        string[i] = null;
       } else {
-        rVal[i] = classes[i].getName();
+        string[i] = classes[i].getName();
       }
     }
-    return rVal;
+    return string;
   }
 
   @Override

@@ -93,14 +93,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
     final Match<Unit> defenders = Match.allOf(Matches.enemyUnit(m_attacker, m_data),
-        Match.anyOf(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
+        Match.anyOf(Matches.unitCanBeDamaged(),
             Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
                 Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data)));
     if (m_targets.isEmpty()) {
-      m_defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
+      m_defendingUnits = Matches.getMatches(m_battleSite.getUnits().getUnits(), defenders);
     } else {
       final List<Unit> targets =
-          Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(m_attackingUnits,
+          Matches.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(m_attackingUnits,
               airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
       targets.addAll(m_targets.keySet());
       m_defendingUnits = targets;
@@ -174,7 +174,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite, m_battleSite);
     if (m_attackingUnits.isEmpty() || (m_defendingUnits.isEmpty()
-        || Match.noneMatch(m_defendingUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert()))) {
+        || Match.noneMatch(m_defendingUnits, Matches.unitCanBeDamaged()))) {
       endBeforeRolling(bridge);
       return;
     }
@@ -242,7 +242,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
         // kill any suicide attackers (veqryn)
         if (Match.anyMatch(m_attackingUnits, Matches.unitIsSuicide())) {
-          final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.unitIsSuicide());
+          final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
           m_attackingUnits.removeAll(suicideUnits);
           final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
           final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
@@ -255,9 +255,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // kill any units that can die if they have reached max damage (veqryn)
         if (Match.anyMatch(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage())) {
           final List<Unit> unitsCanDie =
-              Match.getMatches(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
+              Matches.getMatches(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
           unitsCanDie
-              .retainAll(Match.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
+              .retainAll(Matches.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
           if (!unitsCanDie.isEmpty()) {
             // m_targets.removeAll(unitsCanDie);
             final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
@@ -351,15 +351,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
       for (final String currentTypeAa : m_AAtypes) {
         final Collection<Unit> currentPossibleAa =
-            Match.getMatches(m_defendingAA, Matches.unitIsAaOfTypeAa(currentTypeAa));
+            Matches.getMatches(m_defendingAA, Matches.unitIsAaOfTypeAa(currentTypeAa));
         final Set<UnitType> targetUnitTypesForThisTypeAa =
             UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(m_data);
         final Set<UnitType> airborneTypesTargettedToo =
             TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAa);
         if (determineAttackers) {
-          validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, Match.anyOf(
+          validAttackingUnitsForThisRoll = Matches.getMatches(m_attackingUnits, Match.anyOf(
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-              Match.allOf(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+              Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
 
         final IExecutable roll = new IExecutable() {

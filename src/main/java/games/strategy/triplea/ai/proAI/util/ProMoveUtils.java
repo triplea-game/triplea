@@ -65,7 +65,7 @@ public class ProMoveUtils {
         moveUnits.add(unitList);
 
         // If carrier has dependent allied fighters then move them too
-        if (Matches.UnitIsCarrier.match(u)) {
+        if (Matches.unitIsCarrier().match(u)) {
           final Map<Unit, Collection<Unit>> carrierMustMoveWith =
               MoveValidator.carrierMustMoveWith(startTerritory.getUnits().getUnits(), startTerritory, data, player);
           if (carrierMustMoveWith.containsKey(u)) {
@@ -75,17 +75,17 @@ public class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (Match.anyMatch(unitList, Matches.UnitIsSea)) {
+        if (Match.anyMatch(unitList, Matches.unitIsSea())) {
 
           // Sea unit (including carriers with planes)
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
               ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
-        } else if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.UnitIsLand)) {
+        } else if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.unitIsLand())) {
 
           // Land unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches
               .territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove, new ArrayList<>()));
-        } else if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.UnitIsAir)) {
+        } else if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.unitIsAir())) {
 
           // Air unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
@@ -284,7 +284,7 @@ public class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.UnitIsAir)) {
+        if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.unitIsAir())) {
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
               ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
         }

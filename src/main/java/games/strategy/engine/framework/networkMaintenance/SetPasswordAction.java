@@ -35,9 +35,9 @@ public class SetPasswordAction extends AbstractAction {
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int rVal = JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(m_parent), panel, "Enter Password",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (rVal != JOptionPane.OK_OPTION) {
+    final int selectedOption = JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(m_parent), panel,
+        "Enter Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
     final String password = new String(passwordField.getPassword());

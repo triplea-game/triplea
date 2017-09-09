@@ -91,13 +91,13 @@ public class InitializationDelegate extends BaseTripleADelegate {
     initAiStartingBonusIncome(bridge);
     initDeleteAssetsOfDisabledPlayers(bridge);
     initTransportedLandUnits(bridge);
-    resetUnitState(bridge);
+    resetUnitState();
   }
 
   /**
    * The initTransportedLandUnits has some side effects, and we need to reset unit state to get rid of them.
    */
-  private void resetUnitState(final IDelegateBridge bridge) {
+  private void resetUnitState() {
     final Change change = MoveDelegate.getResetUnitStateChange(getData());
     if (!change.isEmpty()) {
       m_bridge.getHistoryWriter().startEvent("Cleaning up unit state.");
@@ -123,12 +123,12 @@ public class InitializationDelegate extends BaseTripleADelegate {
         continue;
       }
       final Collection<Unit> units = current.getUnits().getUnits();
-      if (units.size() == 0 || !Match.anyMatch(units, Matches.UnitIsLand)) {
+      if (units.size() == 0 || !Match.anyMatch(units, Matches.unitIsLand())) {
         continue;
       }
       // map transports, try to fill
-      final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
-      final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
+      final Collection<Unit> transports = Matches.getMatches(units, Matches.unitIsTransport());
+      final Collection<Unit> land = Matches.getMatches(units, Matches.unitIsLand());
       for (final Unit toLoad : land) {
         final UnitAttachment ua = UnitAttachment.get(toLoad.getType());
         final int cost = ua.getTransportCost();
@@ -336,7 +336,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
         if (territoryAttachment.getOriginalOwner() == null && current.getOwner() != null) {
           changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
         }
-        final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.UnitIsInfrastructure);
+        final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.unitIsInfrastructure());
         changes.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
       } else if (!current.isWater()) {
         final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);

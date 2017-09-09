@@ -76,7 +76,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
@@ -132,12 +131,12 @@ public class BattleDisplay extends JPanel {
     uiContext = mapPanel.getUiContext();
     casualties = new CasualtyNotificationPanel(data, this.mapPanel.getUiContext());
     if (killedUnits != null && attackingWaitingToDie != null && defendingWaitingToDie != null) {
-      final Collection<Unit> attackerUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
+      final Collection<Unit> attackerUnitsKilled = Matches.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
       attackerUnitsKilled.addAll(attackingWaitingToDie);
       if (!attackerUnitsKilled.isEmpty()) {
         updateKilledUnits(attackerUnitsKilled, attacker);
       }
-      final Collection<Unit> defenderUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
+      final Collection<Unit> defenderUnitsKilled = Matches.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
       defenderUnitsKilled.addAll(defendingWaitingToDie);
       if (!defenderUnitsKilled.isEmpty()) {
         updateKilledUnits(defenderUnitsKilled, defender);
@@ -517,7 +516,7 @@ public class BattleDisplay extends JPanel {
         public void actionPerformed(final ActionEvent e) {
           final String messageText = message + " " + btnText + ".";
           if (chooser == null || chooserScrollPane == null) {
-            chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, gameData, allowMultipleHitsPerUnit,
+            chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, allowMultipleHitsPerUnit,
                 mapPanel.getUiContext());
             chooser.setTitle(messageText);
             if (isEditMode) {
@@ -832,7 +831,7 @@ public class BattleDisplay extends JPanel {
         }
         for (int i = 0; i <= gameData.getDiceSides(); i++) {
           if (shift[i] > 0) {
-            columns.get(i).add(new TableData(category.getOwner(), shift[i], category.getType(), gameData,
+            columns.get(i).add(new TableData(category.getOwner(), shift[i], category.getType(),
                 category.hasDamageOrBombingUnitDamage(), category.getDisabled(), uiContext));
           }
         }
@@ -881,10 +880,10 @@ public class BattleDisplay extends JPanel {
 
     private TableData() {}
 
-    TableData(final PlayerID player, final int count, final UnitType type, final GameData data, final boolean damaged,
+    TableData(final PlayerID player, final int count, final UnitType type, final boolean damaged,
         final boolean disabled, final IUIContext uiContext) {
       this.count = count;
-      icon = uiContext.getUnitImageFactory().getIcon(type, player, data, damaged, disabled);
+      icon = uiContext.getUnitImageFactory().getIcon(type, player, damaged, disabled);
     }
 
     void updateStamp(final JLabel stamp) {
@@ -959,7 +958,7 @@ public class BattleDisplay extends JPanel {
         final JPanel panel = new JPanel();
         // TODO Kev determine if we need to identify if the unit is hit/disabled
         final Optional<ImageIcon> unitImage =
-            uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), data,
+            uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(),
                 damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
         final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
         panel.add(unit);

@@ -86,9 +86,9 @@ public class AvailableGames {
   }
 
   private static List<File> allMapFiles() {
-    final List<File> rVal = new ArrayList<>();
-    rVal.addAll(safeListFiles(ClientFileSystemHelper.getUserMapsFolder()));
-    return rVal;
+    final List<File> files = new ArrayList<>();
+    files.addAll(safeListFiles(ClientFileSystemHelper.getUserMapsFolder()));
+    return files;
   }
 
   private static List<File> safeListFiles(final File f) {

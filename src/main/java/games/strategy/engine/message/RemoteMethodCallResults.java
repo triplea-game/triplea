@@ -49,8 +49,8 @@ public class RemoteMethodCallResults implements Externalizable {
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-    final boolean rVal = in.read() == 1;
-    if (rVal) {
+    final boolean hasReturnValue = in.read() == 1;
+    if (hasReturnValue) {
       m_rVal = in.readObject();
     } else {
       m_exception = (Throwable) in.readObject();

@@ -70,14 +70,14 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
                 TriggerAttachment.prodFrontierEditMatch(), TriggerAttachment.purchaseMatch()));
         // get all possible triggers based on this match.
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-            new HashSet<>(Collections.singleton(m_player)), purchaseDelegateTriggerMatch, m_bridge);
+            new HashSet<>(Collections.singleton(m_player)), purchaseDelegateTriggerMatch);
         if (!toFirePossible.isEmpty()) {
           // get all conditions possibly needed by these triggers, and then test them.
           final HashMap<ICondition, Boolean> testedConditions =
               TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
           // get all triggers that are satisfied based on the tested conditions.
           final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-              Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+              Matches.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
           // now list out individual types to fire, once for each of the matches above.
           TriggerAttachment.triggerProductionChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
               true);

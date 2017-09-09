@@ -5,7 +5,7 @@ package games.strategy.triplea.settings;
  * course of the game, either directly or indirectly. For example, default window size may saved here,
  * which could be set from a UI control or it could be based on the last window size used.
  */
-interface GameSetting {
+public interface GameSetting {
   /**
    * @return True if the setting has been specified by the user or updated from default.
    */

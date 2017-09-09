@@ -93,13 +93,14 @@ class AAInMoveUtil implements Serializable {
     // stacks are backwards
     Collections.reverse(aaTypes);
     for (final String currentTypeAa : aaTypes) {
-      final Collection<Unit> currentPossibleAa = Match.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
+      final Collection<Unit> currentPossibleAa =
+          Matches.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
       final Set<UnitType> targetUnitTypesForThisTypeAa =
           UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
-          Match.getMatches(units, Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-              Match.allOf(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+          Matches.getMatches(units, Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
+              Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing
       // until you got the roll you wanted

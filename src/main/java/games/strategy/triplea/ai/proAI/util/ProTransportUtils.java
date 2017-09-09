@@ -151,7 +151,7 @@ public class ProTransportUtils {
     final GameData data = ProData.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(units, t);
-    final Collection<Unit> airUnits = Match.getMatches(units, ProMatches.unitIsAlliedAir(player, data));
+    final Collection<Unit> airUnits = Matches.getMatches(units, ProMatches.unitIsAlliedAir(player, data));
     final List<Unit> airThatCantLand = new ArrayList<>();
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
@@ -172,7 +172,7 @@ public class ProTransportUtils {
     final GameData data = ProData.getData();
 
     int capacity = AirMovementValidator.carrierCapacity(existingUnits, t);
-    final Collection<Unit> airUnits = Match.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player, data));
+    final Collection<Unit> airUnits = Matches.getMatches(existingUnits, ProMatches.unitIsAlliedAir(player, data));
     airUnits.add(newUnit);
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
@@ -204,7 +204,7 @@ public class ProTransportUtils {
     }
 
     // Find nearby air unit carrier cost
-    final Collection<Unit> airUnits = Match.getMatches(ownedNearbyUnits, ProMatches.unitIsOwnedAir(player));
+    final Collection<Unit> airUnits = Matches.getMatches(ownedNearbyUnits, ProMatches.unitIsOwnedAir(player));
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
       final int cost = ua.getCarrierCost();
@@ -219,7 +219,7 @@ public class ProTransportUtils {
     final List<Unit> units = new ArrayList<>(unitsToPlace);
     units.addAll(t.getUnits().getUnits());
     int capacity = AirMovementValidator.carrierCapacity(units, t);
-    final Collection<Unit> airUnits = Match.getMatches(units, ProMatches.unitIsOwnedAir(player));
+    final Collection<Unit> airUnits = Matches.getMatches(units, ProMatches.unitIsOwnedAir(player));
     for (final Unit airUnit : airUnits) {
       final UnitAttachment ua = UnitAttachment.get(airUnit.getType());
       final int cost = ua.getCarrierCost();
@@ -232,7 +232,7 @@ public class ProTransportUtils {
 
   public static List<Unit> interleaveUnitsCarriersAndPlanes(final List<Unit> units,
       final int planesThatDontNeedToLand) {
-    if (!(Match.anyMatch(units, Matches.UnitIsCarrier) && Match.anyMatch(units, Matches.UnitCanLandOnCarrier))) {
+    if (!(Match.anyMatch(units, Matches.unitIsCarrier()) && Match.anyMatch(units, Matches.unitCanLandOnCarrier()))) {
       return units;
     }
 
@@ -258,7 +258,7 @@ public class ProTransportUtils {
         // If this is the first carrier seek and not last unit
         if (seekedCarrier == null && i > 0) {
           final int seekedCarrierIndex = AIUtils.getIndexOfLastUnitMatching(result,
-              Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+              Match.allOf(Matches.unitIsCarrier(), Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
             break; // No carriers left
           }
@@ -288,7 +288,7 @@ public class ProTransportUtils {
 
             // Find the next carrier
             seekedCarrier = AIUtils.getLastUnitMatching(result,
-                Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Match.allOf(Matches.unitIsCarrier(), Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
             }
@@ -331,7 +331,7 @@ public class ProTransportUtils {
 
             // Find the next carrier
             seekedCarrier = AIUtils.getLastUnitMatching(result,
-                Match.allOf(Matches.UnitIsCarrier, Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Match.allOf(Matches.unitIsCarrier(), Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
             }

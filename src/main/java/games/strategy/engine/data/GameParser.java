@@ -454,14 +454,14 @@ public class GameParser {
   }
 
   private static List<Node> getNonTextNodesIgnoring(final Node node, final String ignore) {
-    final List<Node> rVal = getNonTextNodes(node);
-    final Iterator<Node> iter = rVal.iterator();
+    final List<Node> nonTextNodes = getNonTextNodes(node);
+    final Iterator<Node> iter = nonTextNodes.iterator();
     while (iter.hasNext()) {
       if (((Element) iter.next()).getTagName().equals(ignore)) {
         iter.remove();
       }
     }
-    return rVal;
+    return nonTextNodes;
   }
 
   private static List<Node> getNonTextNodes(final Node node) {
@@ -976,13 +976,13 @@ public class GameParser {
   }
 
   private static Properties pareStepProperties(final List<Element> properties) {
-    final Properties rVal = new Properties();
+    final Properties stepProperties = new Properties();
     for (final Element stepProperty : properties) {
       final String name = stepProperty.getAttribute("name");
       final String value = stepProperty.getAttribute("value");
-      rVal.setProperty(name, value);
+      stepProperties.setProperty(name, value);
     }
-    return rVal;
+    return stepProperties;
   }
 
   private void parseProduction(final Node root) throws GameParseException {

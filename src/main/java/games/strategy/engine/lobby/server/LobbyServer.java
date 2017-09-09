@@ -15,11 +15,10 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.util.Version;
 
 public class LobbyServer {
-  private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
-
   public static final String ADMIN_USERNAME = "Admin";
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
+  private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
   private final Messengers m_messengers;
 
   private LobbyServer(final int port) {
@@ -37,13 +36,14 @@ public class LobbyServer {
     final ModeratorController moderatorController = new ModeratorController(server, m_messengers);
     moderatorController.register(m_messengers.getRemoteMessenger());
     new ChatController(LOBBY_CHAT, m_messengers, moderatorController);
+
     // register the status controller
-    final StatusManager statusManager = new StatusManager(m_messengers);
-    // we dont need this manager now
-    statusManager.shutDown();
+    new StatusManager(m_messengers).shutDown();
+
     final LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_messengers
         .getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
     controller.register(m_messengers.getRemoteMessenger());
+
     // now we are open for business
     server.setAcceptNewConnections(true);
   }
@@ -56,7 +56,7 @@ public class LobbyServer {
     try {
       logger.info("Starting database");
       // initialize the database
-      Database.getDerbyConnection().close();
+      // TODO: this open/close may not be necessary, 'initialize the database' may be just legacy left over from derby
       Database.getPostgresConnection().close();
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
       final int port = LobbyContext.lobbyPropertyReader().getPort();

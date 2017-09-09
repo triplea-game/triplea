@@ -17,7 +17,6 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Triple;
 
 @MapSupport
@@ -33,11 +32,11 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   static PlayerAttachment get(final PlayerID p, final String nameOfAttachment) {
-    final PlayerAttachment rVal = p.getPlayerAttachment(); // (PlayerAttachment) p.getAttachment(nameOfAttachment);
-    if (rVal == null) {
+    final PlayerAttachment playerAttachment = p.getPlayerAttachment();
+    if (playerAttachment == null) {
       throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
     }
-    return rVal;
+    return playerAttachment;
   }
 
   private int m_vps = 0;
@@ -255,16 +254,16 @@ public class PlayerAttachment extends DefaultAttachment {
       final Collection<Unit> currentInTerritory = toMoveInto.getUnits().getUnits();
       // first remove units that do not apply to our current type
       if (type.equals("owned")) {
-        currentInTerritory.removeAll(Match.getMatches(currentInTerritory, Matches.unitIsOwnedBy(owner).invert()));
-        copyUnitsMoving.removeAll(Match.getMatches(copyUnitsMoving, Matches.unitIsOwnedBy(owner).invert()));
+        currentInTerritory.removeAll(Matches.getMatches(currentInTerritory, Matches.unitIsOwnedBy(owner).invert()));
+        copyUnitsMoving.removeAll(Matches.getMatches(copyUnitsMoving, Matches.unitIsOwnedBy(owner).invert()));
       } else if (type.equals("allied")) {
-        currentInTerritory.removeAll(Match.getMatches(currentInTerritory, Matches.alliedUnit(owner, data).invert()));
-        copyUnitsMoving.removeAll(Match.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).invert()));
+        currentInTerritory.removeAll(Matches.getMatches(currentInTerritory, Matches.alliedUnit(owner, data).invert()));
+        copyUnitsMoving.removeAll(Matches.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).invert()));
       }
       // else if (type.equals("total"))
       // now remove units that are not part of our list
-      currentInTerritory.retainAll(Match.getMatches(currentInTerritory, Matches.unitIsOfTypes(unitsToTest)));
-      copyUnitsMoving.retainAll(Match.getMatches(copyUnitsMoving, Matches.unitIsOfTypes(unitsToTest)));
+      currentInTerritory.retainAll(Matches.getMatches(currentInTerritory, Matches.unitIsOfTypes(unitsToTest)));
+      copyUnitsMoving.retainAll(Matches.getMatches(copyUnitsMoving, Matches.unitIsOfTypes(unitsToTest)));
       // now test
       if (max < (currentInTerritory.size() + copyUnitsMoving.size())) {
         return false;

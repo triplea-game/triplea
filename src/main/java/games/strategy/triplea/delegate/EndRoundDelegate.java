@@ -28,7 +28,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CountDownLatchHandler;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.LocalizeHtml;
 import games.strategy.util.Match;
@@ -112,14 +111,14 @@ public class EndRoundDelegate extends BaseTripleADelegate {
                   TriggerAttachment.activateTriggerMatch(), TriggerAttachment.victoryMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch, m_bridge);
+          new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final HashMap<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            Match.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+            Matches.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerActivateTriggerOther(testedConditions, toFireTestedAndSatisfied, m_bridge, null, null,
             true, true, true, true);
@@ -183,7 +182,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     if (Properties.getTriggers(data)) {
       final CompositeChange change = new CompositeChange();
       for (final PlayerID player : data.getPlayerList().getPlayers()) {
-        change.add(AbstractTriggerAttachment.triggerSetUsedForThisRound(player, m_bridge));
+        change.add(AbstractTriggerAttachment.triggerSetUsedForThisRound(player));
       }
       if (!change.isEmpty()) {
         m_bridge.getHistoryWriter().startEvent("Setting uses for triggers used this round.");
@@ -296,9 +295,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         }
         // this is currently the ONLY instance of JOptionPane that is allowed outside of the UI classes. maybe there is
         // a better way?
-        stopGame = (JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null,
-            ("<html>" + displayMessage + "</html>"), "Continue Game?  (" + title + ")", JOptionPane.YES_NO_OPTION,
-            new CountDownLatchHandler(true)));
+        stopGame = JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null,
+            "<html>" + displayMessage + "</html>", "Continue Game?  (" + title + ")", JOptionPane.YES_NO_OPTION);
       }
       if (stopGame) {
         bridge.stopGameSequence();

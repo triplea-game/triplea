@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -60,12 +61,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolTip;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -112,6 +115,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -153,7 +157,6 @@ import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LocalizeHtml;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
@@ -751,8 +754,8 @@ public class TripleAFrame extends MainGameFrame {
     if (messageAndDialogThreadPool == null) {
       return;
     }
-    messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this, displayMessage,
-        "Error", JOptionPane.ERROR_MESSAGE, true, getUiContext().getCountDownLatchHandler()));
+    messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
+        displayMessage, "Error", JOptionPane.ERROR_MESSAGE, getUiContext().getCountDownLatchHandler()));
   }
 
   /**
@@ -782,8 +785,8 @@ public class TripleAFrame extends MainGameFrame {
     }
     final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
     if (messageAndDialogThreadPool != null) {
-      messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialog(TripleAFrame.this,
-          displayMessage, title, JOptionPane.INFORMATION_MESSAGE, true, getUiContext().getCountDownLatchHandler()));
+      messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
+          displayMessage, title, JOptionPane.INFORMATION_MESSAGE, getUiContext().getCountDownLatchHandler()));
     }
   }
 
@@ -802,7 +805,7 @@ public class TripleAFrame extends MainGameFrame {
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     int carrierCount = 0;
     for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, id)) {
-      carrierCount += p.getUnits().getMatches(Matches.UnitIsCarrier).size();
+      carrierCount += p.getUnits().getMatches(Matches.unitIsCarrier()).size();
     }
     final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
     if (canProduceCarriersUnderFighter && carrierCount > 0) {
@@ -905,6 +908,7 @@ public class TripleAFrame extends MainGameFrame {
       final JList<Unit> list = new JList<>(new Vector<>(potentialTargets));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setSelectedIndex(0);
+      list.setCellRenderer(new UnitRenderer());
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
       if (bombers != null) {
@@ -923,6 +927,42 @@ public class TripleAFrame extends MainGameFrame {
       selected.set((Unit) list.getSelectedValue());
     }
     return selected.get();
+  }
+
+  /**
+   * Create a unit option with icon and description.
+   */
+  private class UnitRenderer extends JLabel implements ListCellRenderer<Unit> {
+
+    private static final long serialVersionUID = 1749164256040268579L;
+
+    public UnitRenderer() {
+      setOpaque(true);
+    }
+
+    @Override
+    public Component getListCellRendererComponent(final JList<? extends Unit> list, final Unit unit, final int index,
+        final boolean isSelected, final boolean cellHasFocus) {
+
+      setText(unit.toString() + ", damage=" + TripleAUnit.get(unit).getUnitDamage());
+      final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(unit.getType(), unit.getOwner(),
+          Matches.unitHasTakenSomeBombingUnitDamage().match(unit), Matches.unitIsDisabled().match(unit));
+      if (icon.isPresent()) {
+        setIcon(icon.get());
+      }
+      setBorder(new EmptyBorder(0, 0, 0, 10));
+
+      // Set selected option to highlighted color
+      if (isSelected) {
+        setBackground(list.getSelectionBackground());
+        setForeground(list.getSelectionForeground());
+      } else {
+        setBackground(list.getBackground());
+        setForeground(list.getForeground());
+      }
+
+      return this;
+    }
   }
 
   public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
@@ -979,7 +1019,7 @@ public class TripleAFrame extends MainGameFrame {
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     if (messageAndDialogThreadPool == null) {
       return Tuple.of(territoryChoices.iterator().next(),
-          new HashSet<>(Match.getNMatches(unitChoices, unitsPerPick, Match.always())));
+          new HashSet<>(Matches.getNMatches(unitChoices, unitsPerPick, Matches.always())));
     }
     // total hacks
     messageAndDialogThreadPool.waitForAll();
@@ -1149,7 +1189,7 @@ public class TripleAFrame extends MainGameFrame {
           final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
           final int maxAllowed =
               Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
-          final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
+          final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
           chooser.setMaxAndShowMaxButton(maxAllowed);
           choosers.add(Tuple.of(from, chooser));
           panelChooser.add(chooser);
@@ -1234,7 +1274,7 @@ public class TripleAFrame extends MainGameFrame {
         panelChooser.add(whereFrom);
         panelChooser.add(new JLabel(" "));
         final int maxAllowed = possible.size();
-        final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), data, false, uiContext);
+        final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
         panelChooser.add(chooser);
         final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
@@ -1944,7 +1984,7 @@ public class TripleAFrame extends MainGameFrame {
     final AtomicReference<JScrollPane> panelRef = new AtomicReference<>();
     final AtomicReference<UnitChooser> chooserRef = new AtomicReference<>();
     SwingAction.invokeAndWait(() -> {
-      final UnitChooser chooser = new UnitChooser(fighters, Collections.emptyMap(), data, false, uiContext);
+      final UnitChooser chooser = new UnitChooser(fighters, Collections.emptyMap(), false, uiContext);
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
       final int availHeight = screenResolution.height - 120;
       final int availWidth = screenResolution.width - 40;
