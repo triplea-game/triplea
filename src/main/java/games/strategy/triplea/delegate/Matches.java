@@ -1702,7 +1702,8 @@ public final class Matches {
 
   static Match<Unit> unitCanRepairOthers() {
     return Match.of(unit -> {
-      if (unitIsDisabled().match(unit) || unitIsBeingTransported().match(unit)) {
+      if (unitIsDisabled().match(unit) || unitIsBeingTransported().match(unit)
+          || !TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(unit.getOwner(), unit.getData())) {
         return false;
       }
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
