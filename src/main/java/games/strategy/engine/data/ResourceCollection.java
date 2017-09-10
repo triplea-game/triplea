@@ -34,6 +34,13 @@ public class ResourceCollection extends GameDataComponent {
     m_resources.add(resources);
   }
 
+  @Override
+  public void setGameData(final GameData gameData) {
+    super.setGameData(gameData);
+
+    m_resources.keySet().forEach(it -> it.setGameData(gameData));
+  }
+
   public void addResource(final Resource resource, final int quantity) {
     if (quantity < 0) {
       throw new IllegalArgumentException("quantity must be positive");

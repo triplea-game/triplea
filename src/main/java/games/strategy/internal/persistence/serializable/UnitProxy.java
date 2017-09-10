@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import javax.annotation.concurrent.Immutable;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -14,6 +13,13 @@ import games.strategy.persistence.serializable.ProxyFactory;
 
 /**
  * A serializable proxy for the {@link Unit} class.
+ *
+ * <p>
+ * This proxy does not serialize the game data owner to avoid a circular reference. Instances of {@link Unit} created
+ * from this proxy will always have their game data set to {@code null}. Proxies that may compose instances of this
+ * proxy are required to manually restore the game data in their {@code readResolve()} method via a context-dependent
+ * mechanism.
+ * </p>
  *
  * <p>
  * This proxy does not serialize the unit owner to avoid a circular reference. Instances of {@link Unit} created from
@@ -28,7 +34,6 @@ public final class UnitProxy implements Proxy {
 
   public static final ProxyFactory FACTORY = ProxyFactory.newInstance(Unit.class, UnitProxy::new);
 
-  private final GameData gameData;
   private final int hits;
   private final GUID id;
   private final UnitType type;
@@ -36,7 +41,6 @@ public final class UnitProxy implements Proxy {
   public UnitProxy(final Unit unit) {
     checkNotNull(unit);
 
-    gameData = unit.getData();
     hits = unit.getHits();
     id = unit.getId();
     type = unit.getType();
@@ -44,7 +48,7 @@ public final class UnitProxy implements Proxy {
 
   @Override
   public Object readResolve() {
-    final Unit unit = new Unit(type, PlayerID.NULL_PLAYERID, gameData, id);
+    final Unit unit = new Unit(type, PlayerID.NULL_PLAYERID, null, id);
     unit.setHits(hits);
     return unit;
   }

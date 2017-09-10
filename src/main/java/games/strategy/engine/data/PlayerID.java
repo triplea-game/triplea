@@ -41,6 +41,17 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     m_technologyFrontiers = new TechnologyFrontierList(data);
   }
 
+  @Override
+  public void setGameData(final GameData gameData) {
+    super.setGameData(gameData);
+
+    m_productionFrontier.setGameData(gameData);
+    m_repairFrontier.setGameData(gameData);
+    m_resources.setGameData(gameData);
+    m_technologyFrontiers.setGameData(gameData);
+    m_unitsHeld.setGameData(gameData);
+  }
+
   public boolean getOptional() {
     return m_optional;
   }

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.persistence.serializable.Proxy;
@@ -14,6 +13,13 @@ import games.strategy.persistence.serializable.ProxyFactory;
 
 /**
  * A serializable proxy for the {@link ProductionFrontier} class.
+ *
+ * <p>
+ * This proxy does not serialize the game data owner to avoid a circular reference. Instances of
+ * {@link ProductionFrontier} created from this proxy will always have their game data set to {@code null}. Proxies that
+ * may compose instances of this proxy are required to manually restore the game data in their {@code readResolve()}
+ * method via a context-dependent mechanism.
+ * </p>
  */
 @Immutable
 public final class ProductionFrontierProxy implements Proxy {
@@ -22,20 +28,18 @@ public final class ProductionFrontierProxy implements Proxy {
   public static final ProxyFactory FACTORY =
       ProxyFactory.newInstance(ProductionFrontier.class, ProductionFrontierProxy::new);
 
-  private final GameData gameData;
   private final String name;
   private final List<ProductionRule> rules;
 
   public ProductionFrontierProxy(final ProductionFrontier productionFrontier) {
     checkNotNull(productionFrontier);
 
-    gameData = productionFrontier.getData();
     name = productionFrontier.getName();
     rules = productionFrontier.getRules();
   }
 
   @Override
   public Object readResolve() {
-    return new ProductionFrontier(name, gameData, rules);
+    return new ProductionFrontier(name, null, rules);
   }
 }

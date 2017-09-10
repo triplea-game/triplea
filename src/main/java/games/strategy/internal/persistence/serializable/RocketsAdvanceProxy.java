@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.persistence.serializable.Proxy;
 import games.strategy.persistence.serializable.ProxyFactory;
@@ -14,6 +13,13 @@ import games.strategy.triplea.delegate.RocketsAdvance;
 
 /**
  * A serializable proxy for the {@link RocketsAdvance} class.
+ *
+ * <p>
+ * This proxy does not serialize the game data owner to avoid a circular reference. Instances of {@link RocketsAdvance}
+ * created from this proxy will always have their game data set to {@code null}. Proxies that may compose instances of
+ * this proxy are required to manually restore the game data in their {@code readResolve()} method via a
+ * context-dependent mechanism.
+ * </p>
  */
 @Immutable
 public final class RocketsAdvanceProxy implements Proxy {
@@ -22,18 +28,16 @@ public final class RocketsAdvanceProxy implements Proxy {
   public static final ProxyFactory FACTORY = ProxyFactory.newInstance(RocketsAdvance.class, RocketsAdvanceProxy::new);
 
   private final Map<String, IAttachment> attachments;
-  private final GameData gameData;
 
   public RocketsAdvanceProxy(final RocketsAdvance rocketsAdvance) {
     checkNotNull(rocketsAdvance);
 
     attachments = rocketsAdvance.getAttachments();
-    gameData = rocketsAdvance.getData();
   }
 
   @Override
   public Object readResolve() {
-    final RocketsAdvance rocketsAdvance = new RocketsAdvance(gameData);
+    final RocketsAdvance rocketsAdvance = new RocketsAdvance(null);
     attachments.forEach(rocketsAdvance::addAttachment);
     return rocketsAdvance;
   }

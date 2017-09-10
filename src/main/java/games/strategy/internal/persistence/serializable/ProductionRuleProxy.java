@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import javax.annotation.concurrent.Immutable;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
@@ -14,6 +13,13 @@ import games.strategy.util.IntegerMap;
 
 /**
  * A serializable proxy for the {@link ProductionRule} class.
+ *
+ * <p>
+ * This proxy does not serialize the game data owner to avoid a circular reference. Instances of {@link ProductionRule}
+ * created from this proxy will always have their game data set to {@code null}. Proxies that may compose instances of
+ * this proxy are required to manually restore the game data in their {@code readResolve()} method via a
+ * context-dependent mechanism.
+ * </p>
  */
 @Immutable
 public final class ProductionRuleProxy implements Proxy {
@@ -22,7 +28,6 @@ public final class ProductionRuleProxy implements Proxy {
   public static final ProxyFactory FACTORY = ProxyFactory.newInstance(ProductionRule.class, ProductionRuleProxy::new);
 
   private final IntegerMap<Resource> costs;
-  private final GameData gameData;
   private final String name;
   private final IntegerMap<NamedAttachable> results;
 
@@ -30,13 +35,12 @@ public final class ProductionRuleProxy implements Proxy {
     checkNotNull(productionRule);
 
     costs = productionRule.getCosts();
-    gameData = productionRule.getData();
     name = productionRule.getName();
     results = productionRule.getResults();
   }
 
   @Override
   public Object readResolve() {
-    return new ProductionRule(name, gameData, results, costs);
+    return new ProductionRule(name, null, results, costs);
   }
 }

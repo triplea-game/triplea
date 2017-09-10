@@ -24,6 +24,13 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
     m_rules = new ArrayList<>(rules);
   }
 
+  @Override
+  public void setGameData(final GameData gameData) {
+    super.setGameData(gameData);
+
+    m_rules.forEach(it -> it.setGameData(gameData));
+  }
+
   public void addRule(final ProductionRule rule) {
     if (m_rules.contains(rule)) {
       throw new IllegalStateException("Rule already added:" + rule);

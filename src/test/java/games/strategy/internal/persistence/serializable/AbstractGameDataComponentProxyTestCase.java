@@ -85,6 +85,14 @@ public abstract class AbstractGameDataComponentProxyTestCase<T extends GameDataC
   /**
    * Subclasses may override and are required to call the superclass implementation first.
    */
+  @Override
+  protected void prepareDeserializedPrincipal(final T actual) {
+    actual.setGameData(gameData);
+  }
+
+  /**
+   * Subclasses may override and are required to call the superclass implementation first.
+   */
   @Before
   @Override
   public void setUp() {

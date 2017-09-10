@@ -43,6 +43,8 @@ public final class UnitProxyAsProxyTest extends AbstractGameDataComponentProxyTe
 
   @Override
   protected void prepareDeserializedPrincipal(final Unit actual) {
+    super.prepareDeserializedPrincipal(actual);
+
     actual.setOwner(playerId);
   }
 
