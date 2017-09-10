@@ -208,6 +208,12 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // while loading.
     if (GameStepPropertiesHelper.isResetUnitStateAtEnd(data)) {
       resetUnitStateAndDelegateState();
+    } else {
+
+      // Only air units can move during both CM and NCM in the same turn so moved units are set to no moves left
+      final List<Unit> alreadyMovedUnits =
+          Matches.getMatches(data.getUnits().getUnits(), Match.allOf(Matches.unitHasMoved(), Matches.unitIsNotAir()));
+      m_bridge.addChange(ChangeFactory.markNoMovementChange(alreadyMovedUnits));
     }
     m_needToInitialize = true;
     m_needToDoRockets = true;
