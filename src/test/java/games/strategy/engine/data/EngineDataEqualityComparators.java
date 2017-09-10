@@ -85,8 +85,18 @@ public final class EngineDataEqualityComparators {
 
   public static final EqualityComparator PLAYER_ID = EqualityComparator.newInstance(
       PlayerID.class,
-      // TODO: add comparisons for other attributes
-      EngineDataEqualityComparators::namedAttachableEquals);
+      (context, o1, o2) -> namedAttachableEquals(context, o1, o2)
+          && (o1.getCanBeDisabled() == o2.getCanBeDisabled())
+          && context.equals(o1.getDefaultType(), o2.getDefaultType())
+          && (o1.getIsDisabled() == o2.getIsDisabled())
+          && (o1.getOptional() == o2.getOptional())
+          && context.equals(o1.getProductionFrontier(), o2.getProductionFrontier())
+          && context.equals(o1.getRepairFrontier(), o2.getRepairFrontier())
+          && context.equals(o1.getResources(), o2.getResources())
+          && context.equals(o1.getTechnologyFrontierList(), o2.getTechnologyFrontierList())
+          && context.equals(o1.getUnits(), o2.getUnits())
+          && context.equals(o1.getWhoAmI(), o2.getWhoAmI())
+          && (o1.isHidden() == o2.isHidden()));
 
   public static final EqualityComparator PRODUCTION_FRONTIER = EqualityComparator.newInstance(
       ProductionFrontier.class,

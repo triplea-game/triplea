@@ -20,14 +20,11 @@ import games.strategy.internal.persistence.serializable.ProductionRuleProxy;
 import games.strategy.internal.persistence.serializable.PropertyBagMementoProxy;
 import games.strategy.internal.persistence.serializable.RepairFrontierProxy;
 import games.strategy.internal.persistence.serializable.RepairRuleProxy;
-import games.strategy.internal.persistence.serializable.ResourceCollectionProxy;
 import games.strategy.internal.persistence.serializable.ResourceProxy;
 import games.strategy.internal.persistence.serializable.RocketsAdvanceProxy;
 import games.strategy.internal.persistence.serializable.SuperSubsAdvanceProxy;
-import games.strategy.internal.persistence.serializable.TechnologyFrontierListProxy;
 import games.strategy.internal.persistence.serializable.TechnologyFrontierProxy;
 import games.strategy.internal.persistence.serializable.TripleAProxy;
-import games.strategy.internal.persistence.serializable.UnitCollectionProxy;
 import games.strategy.internal.persistence.serializable.UnitProxy;
 import games.strategy.internal.persistence.serializable.UnitTypeProxy;
 import games.strategy.internal.persistence.serializable.VersionProxy;
@@ -65,14 +62,11 @@ final class ProxyRegistries {
         RepairFrontierProxy.FACTORY,
         RepairRuleProxy.FACTORY,
         ResourceProxy.FACTORY,
-        ResourceCollectionProxy.FACTORY,
         RocketsAdvanceProxy.FACTORY,
         SuperSubsAdvanceProxy.FACTORY,
         TechnologyFrontierProxy.FACTORY,
-        TechnologyFrontierListProxy.FACTORY,
         TripleAProxy.FACTORY,
         UnitProxy.FACTORY,
-        UnitCollectionProxy.FACTORY,
         UnitTypeProxy.FACTORY,
         VersionProxy.FACTORY,
         WarBondsAdvanceProxy.FACTORY);

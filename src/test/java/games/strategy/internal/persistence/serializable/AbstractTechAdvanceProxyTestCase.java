@@ -3,6 +3,7 @@ package games.strategy.internal.persistence.serializable;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.data.TestGameDataComponentFactory.initializeAttachable;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
@@ -40,10 +41,10 @@ public abstract class AbstractTechAdvanceProxyTestCase<T extends TechAdvance>
   }
 
   @Override
-  protected final T newGameDataComponent(final GameData gameData) {
-    final T techAdvance = newTechAdvance.apply(gameData);
+  protected final Collection<T> createPrincipals() {
+    final T techAdvance = newTechAdvance.apply(getGameData());
     initializeAttachable(techAdvance);
-    return techAdvance;
+    return Arrays.asList(techAdvance);
   }
 
   @Override

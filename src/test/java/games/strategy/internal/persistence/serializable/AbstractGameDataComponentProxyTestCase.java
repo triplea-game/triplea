@@ -1,8 +1,9 @@
 package games.strategy.internal.persistence.serializable;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+
+import org.junit.Before;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
@@ -19,23 +20,11 @@ import games.strategy.test.EqualityComparator;
  */
 public abstract class AbstractGameDataComponentProxyTestCase<T extends GameDataComponent>
     extends AbstractProxyTestCase<T> {
+  private GameData gameData;
+
   protected AbstractGameDataComponentProxyTestCase(final Class<T> principalType) {
     super(principalType);
   }
-
-  @Override
-  protected final Collection<T> createPrincipals() {
-    return Arrays.asList(newGameDataComponent(TestGameDataFactory.newValidGameData()));
-  }
-
-  /**
-   * Creates an instance of the game data component whose capability to be persisted via a proxy will be tested.
-   *
-   * @param gameData The game data that owns the component.
-   *
-   * @return The game data component to be tested.
-   */
-  protected abstract T newGameDataComponent(GameData gameData);
 
   @Override
   protected final Collection<EqualityComparator> getEqualityComparators() {
@@ -81,5 +70,26 @@ public abstract class AbstractGameDataComponentProxyTestCase<T extends GameDataC
    */
   protected Collection<ProxyFactory> getAdditionalProxyFactories() {
     return Collections.emptyList();
+  }
+
+  /**
+   * Gets the fixture game data.
+   *
+   * @return The fixture game data.
+   */
+  protected final GameData getGameData() {
+    assert gameData != null;
+    return gameData;
+  }
+
+  /**
+   * Subclasses may override and are required to call the superclass implementation first.
+   */
+  @Before
+  @Override
+  public void setUp() {
+    super.setUp();
+
+    gameData = TestGameDataFactory.newValidGameData();
   }
 }
