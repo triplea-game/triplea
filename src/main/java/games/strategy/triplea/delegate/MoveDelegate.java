@@ -211,9 +211,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
     } else {
 
       // Only air units can move during both CM and NCM in the same turn so moved units are set to no moves left
-      final List<Unit> alreadyMovedUnits =
+      final List<Unit> alreadyMovedNonAirUnits =
           Matches.getMatches(data.getUnits().getUnits(), Match.allOf(Matches.unitHasMoved(), Matches.unitIsNotAir()));
-      m_bridge.addChange(ChangeFactory.markNoMovementChange(alreadyMovedUnits));
+      m_bridge.addChange(ChangeFactory.markNoMovementChange(alreadyMovedNonAirUnits));
     }
     m_needToInitialize = true;
     m_needToDoRockets = true;
