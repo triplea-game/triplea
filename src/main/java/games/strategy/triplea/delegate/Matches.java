@@ -1702,8 +1702,7 @@ public final class Matches {
 
   static Match<Unit> unitCanRepairOthers() {
     return Match.of(unit -> {
-      if (unitIsDisabled().match(unit) || unitIsBeingTransported().match(unit)
-          || !TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(unit.getOwner(), unit.getData())) {
+      if (unitIsDisabled().match(unit) || unitIsBeingTransported().match(unit)) {
         return false;
       }
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -1716,9 +1715,11 @@ public final class Matches {
 
   static Match<Unit> unitCanRepairThisUnit(final Unit damagedUnit) {
     return Match.of(unitCanRepair -> {
-      final UnitType type = unitCanRepair.getUnitType();
-      final UnitAttachment ua = UnitAttachment.get(type);
-      // TODO: make sure the unit is operational
+      // Damaged units can only be repaired by facilities if the unit owner controls their capital
+      if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(damagedUnit.getOwner(), damagedUnit.getData())) {
+        return false;
+      }
+      final UnitAttachment ua = UnitAttachment.get(unitCanRepair.getType());
       return ua.getRepairsUnits() != null && ua.getRepairsUnits().keySet().contains(damagedUnit.getType());
     });
   }
