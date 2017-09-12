@@ -5,12 +5,9 @@ import static games.strategy.engine.data.TestGameDataComponentFactory.initialize
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.function.Function;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.persistence.serializable.ProxyFactory;
-import games.strategy.test.EqualityComparator;
 import games.strategy.triplea.delegate.TechAdvance;
 
 /**
@@ -20,24 +17,14 @@ import games.strategy.triplea.delegate.TechAdvance;
  */
 public abstract class AbstractTechAdvanceProxyTestCase<T extends TechAdvance>
     extends AbstractGameDataComponentProxyTestCase<T> {
-  private final EqualityComparator equalityComparator;
   private final Function<GameData, T> newTechAdvance;
-  private final ProxyFactory proxyFactory;
 
-  protected AbstractTechAdvanceProxyTestCase(
-      final Class<T> principalType,
-      final Function<GameData, T> newTechAdvance,
-      final EqualityComparator equalityComparator,
-      final ProxyFactory proxyFactory) {
+  protected AbstractTechAdvanceProxyTestCase(final Class<T> principalType, final Function<GameData, T> newTechAdvance) {
     super(principalType);
 
     checkNotNull(newTechAdvance);
-    checkNotNull(equalityComparator);
-    checkNotNull(proxyFactory);
 
-    this.equalityComparator = equalityComparator;
     this.newTechAdvance = newTechAdvance;
-    this.proxyFactory = proxyFactory;
   }
 
   @Override
@@ -45,15 +32,5 @@ public abstract class AbstractTechAdvanceProxyTestCase<T extends TechAdvance>
     final T techAdvance = newTechAdvance.apply(getGameData());
     initializeAttachable(techAdvance);
     return Arrays.asList(techAdvance);
-  }
-
-  @Override
-  protected final Collection<EqualityComparator> getAdditionalEqualityComparators() {
-    return Collections.singletonList(equalityComparator);
-  }
-
-  @Override
-  protected final Collection<ProxyFactory> getAdditionalProxyFactories() {
-    return Collections.singletonList(proxyFactory);
   }
 }

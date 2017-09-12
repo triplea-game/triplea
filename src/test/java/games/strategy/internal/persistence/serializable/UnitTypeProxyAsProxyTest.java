@@ -5,10 +5,7 @@ import static games.strategy.engine.data.TestGameDataComponentFactory.newUnitTyp
 import java.util.Arrays;
 import java.util.Collection;
 
-import games.strategy.engine.data.EngineDataEqualityComparators;
 import games.strategy.engine.data.UnitType;
-import games.strategy.persistence.serializable.ProxyFactory;
-import games.strategy.test.EqualityComparator;
 
 public final class UnitTypeProxyAsProxyTest extends AbstractGameDataComponentProxyTestCase<UnitType> {
   public UnitTypeProxyAsProxyTest() {
@@ -18,15 +15,5 @@ public final class UnitTypeProxyAsProxyTest extends AbstractGameDataComponentPro
   @Override
   protected Collection<UnitType> createPrincipals() {
     return Arrays.asList(newUnitType(getGameData(), "unitType"));
-  }
-
-  @Override
-  protected Collection<EqualityComparator> getAdditionalEqualityComparators() {
-    return Arrays.asList(EngineDataEqualityComparators.UNIT_TYPE);
-  }
-
-  @Override
-  protected Collection<ProxyFactory> getAdditionalProxyFactories() {
-    return Arrays.asList(UnitTypeProxy.FACTORY);
   }
 }

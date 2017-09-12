@@ -2,8 +2,10 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
@@ -40,6 +42,7 @@ public final class GameDataMemento {
     String DICE_SIDES = "diceSides";
     String LOADER = "loader";
     String NAME = "name";
+    String PLAYER_IDS = "playerIds";
     String VERSION = "version";
   }
 
@@ -106,6 +109,7 @@ public final class GameDataMemento {
         propertiesByName.put(PropertyNames.DICE_SIDES, gameData.getDiceSides());
         propertiesByName.put(PropertyNames.LOADER, gameData.getGameLoader());
         propertiesByName.put(PropertyNames.NAME, gameData.getGameName());
+        propertiesByName.put(PropertyNames.PLAYER_IDS, gameData.getPlayerList().getPlayers());
         propertiesByName.put(PropertyNames.VERSION, gameData.getGameVersion());
         // TODO: handle remaining properties
       } finally {
@@ -132,8 +136,12 @@ public final class GameDataMemento {
         gameData.setDiceSides(getRequiredProperty(propertiesByName, PropertyNames.DICE_SIDES, Integer.class));
         gameData.setGameLoader(getRequiredProperty(propertiesByName, PropertyNames.LOADER, IGameLoader.class));
         gameData.setGameName(getRequiredProperty(propertiesByName, PropertyNames.NAME, String.class));
+        gameData.getPlayerList().addPlayerIds(
+            getRequiredCollectionProperty(propertiesByName, PropertyNames.PLAYER_IDS, PlayerID.class));
         gameData.setGameVersion(getRequiredProperty(propertiesByName, PropertyNames.VERSION, Version.class));
         // TODO: handle remaining properties
+
+        gameData.resetComponents();
       } finally {
         gameData.releaseWriteLock();
       }
@@ -157,6 +165,17 @@ public final class GameDataMemento {
       } catch (final ClassCastException e) {
         throw new MementoImportException(String.format("memento property '%s' has wrong type", name), e);
       }
+    }
+
+    private static <T> Collection<T> getRequiredCollectionProperty(
+        final Map<String, Object> propertiesByName,
+        final String name,
+        final Class<T> elementType) throws MementoImportException {
+      @SuppressWarnings("unchecked")
+      final Collection<Object> collection = getRequiredProperty(propertiesByName, name, Collection.class);
+      return collection.stream()
+          .map(elementType::cast)
+          .collect(Collectors.toList());
     }
   }
 }

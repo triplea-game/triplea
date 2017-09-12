@@ -41,7 +41,8 @@ public final class EngineDataEqualityComparators {
       (context, o1, o2) -> (o1.getDiceSides() == o2.getDiceSides())
           && areBothNullOrBothNotNull(o1.getGameLoader(), o2.getGameLoader())
           && context.equals(o1.getGameName(), o2.getGameName())
-          && context.equals(o1.getGameVersion(), o2.getGameVersion()));
+          && context.equals(o1.getGameVersion(), o2.getGameVersion())
+          && context.equals(o1.getPlayerList(), o2.getPlayerList()));
 
   private static boolean areBothNullOrBothNotNull(final Object o1, final Object o2) {
     return (o1 == null) == (o2 == null);
@@ -97,6 +98,11 @@ public final class EngineDataEqualityComparators {
           && context.equals(o1.getUnits(), o2.getUnits())
           && context.equals(o1.getWhoAmI(), o2.getWhoAmI())
           && (o1.isHidden() == o2.isHidden()));
+
+  public static final EqualityComparator PLAYER_LIST = EqualityComparator.newInstance(
+      PlayerList.class,
+      (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
+          && context.equals(o1.getPlayers(), o2.getPlayers()));
 
   public static final EqualityComparator PRODUCTION_FRONTIER = EqualityComparator.newInstance(
       ProductionFrontier.class,

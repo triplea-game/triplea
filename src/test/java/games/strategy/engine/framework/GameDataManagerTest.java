@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TestGameDataFactory;
+import games.strategy.persistence.serializable.ProxyRegistry;
 
 public class GameDataManagerTest {
   @Test
@@ -43,9 +44,13 @@ public class GameDataManagerTest {
 
   private static byte[] saveGameInProxySerializationFormat(final GameData gameData) throws Exception {
     try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-      GameDataManager.saveGameInProxySerializationFormat(baos, gameData, Collections.emptyMap());
+      GameDataManager.saveGameInProxySerializationFormat(baos, gameData, Collections.emptyMap(), newProxyRegistry());
       return baos.toByteArray();
     }
+  }
+
+  private static ProxyRegistry newProxyRegistry() {
+    return ProxyRegistry.newInstance(TestProxyFactoryCollectionBuilder.forGameData().build());
   }
 
   private static GameData loadGameInProxySerializationFormat(final byte[] bytes) throws Exception {
@@ -74,7 +79,7 @@ public class GameDataManagerTest {
     final OutputStream os = mock(OutputStream.class);
     final GameData gameData = TestGameDataFactory.newValidGameData();
 
-    GameDataManager.saveGameInProxySerializationFormat(os, gameData, Collections.emptyMap());
+    GameDataManager.saveGameInProxySerializationFormat(os, gameData, Collections.emptyMap(), newProxyRegistry());
 
     verify(os, never()).close();
   }

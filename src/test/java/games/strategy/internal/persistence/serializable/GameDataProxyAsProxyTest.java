@@ -6,6 +6,7 @@ import java.util.Collection;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
 import games.strategy.engine.data.TestGameDataFactory;
+import games.strategy.engine.framework.TestProxyFactoryCollectionBuilder;
 import games.strategy.persistence.serializable.AbstractProxyTestCase;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
