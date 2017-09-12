@@ -81,7 +81,8 @@ public class BannedUsernameController {
     Timestamp banTill = null;
     final String sql = "select username, ban_till from banned_usernames where username = ?";
 
-    try (final Connection con = Database.getPostgresConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (final Connection con = Database.getPostgresConnection();
+        final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
         found = rs.next();

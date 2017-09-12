@@ -22,8 +22,7 @@ public class DBUser implements Serializable {
 
 
   @VisibleForTesting
-  static final Collection<String> forbiddenNameParts =
-      Arrays.asList(InGameLobbyWatcher.LOBBY_WATCHER_NAME, "admin");
+  static final Collection<String> forbiddenNameParts = Arrays.asList(InGameLobbyWatcher.LOBBY_WATCHER_NAME, "admin");
 
   public enum Role {
     NOT_ADMIN, ADMIN
@@ -69,7 +68,7 @@ public class DBUser implements Serializable {
   }
 
   /**
-   *  Convenience constructor for non-admin users.
+   * Convenience constructor for non-admin users.
    */
   public DBUser(final UserName name, final UserEmail email) {
     this(name, email, Role.NOT_ADMIN);
@@ -117,7 +116,9 @@ public class DBUser implements Serializable {
 
   /**
    * Example usage:
-   * <pre><code>
+   * 
+   * <pre>
+   * <code>
    *   String proposedUserName = getUserInput();
    *   if(!DBUser.isValidUserName(proposedUserName)) {
    *     String validationErrorMessage =  DBUser.getUserNameValidationErrorMessage(proposedUserName();
@@ -125,6 +126,7 @@ public class DBUser implements Serializable {
    *   }
    * </code>
    * </pre>
+   * 
    * @return Assuming an invalid user name - returns an error message String.
    * @throws IllegalStateException if the username is valid. Only call this method if 'isValidUserName()' return false
    */

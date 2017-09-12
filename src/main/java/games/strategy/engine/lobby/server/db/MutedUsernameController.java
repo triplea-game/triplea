@@ -86,7 +86,8 @@ public class MutedUsernameController {
     boolean expired = false;
     final String sql = "select username, mute_till from muted_usernames where username = ?";
 
-    try (final Connection con = Database.getPostgresConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (final Connection con = Database.getPostgresConnection();
+        final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
         final boolean found = rs.next();
