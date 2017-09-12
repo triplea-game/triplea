@@ -22,7 +22,7 @@ alter table banned_ips owner to postgres;
 
 
 create table banned_macs (
-    mac character varying(40) not null primary key,
+    mac character(34) not null primary key,
     ban_till timestamp with time zone
 );
 alter table banned_macs owner to postgres;
@@ -43,7 +43,7 @@ alter table muted_ips owner to postgres;
 
 
 create table muted_macs (
-    mac character varying(40) not null primary key,
+    mac character(34) not null primary key,
     mute_till timestamp with time zone
 );
 alter table muted_macs owner to postgres;
