@@ -36,21 +36,15 @@ public class BannedMacController {
     }
     Timestamp banTillTs = null;
     if (banTill != null) {
-      banTillTs = new Timestamp(banTill.toEpochMilli());
+      banTillTs = Timestamp.from(banTill);
     }
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)")) {
+        final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?) on conflict do update")) {
       ps.setString(1, mac);
       ps.setTimestamp(2, banTillTs);
       ps.execute();
       con.commit();
     } catch (final SQLException sqle) {
-      if (sqle.getErrorCode() == 30000) {
-        // this is ok
-        // the mac is banned as expected
-        logger.info("Tried to create duplicate banned mac:" + mac + " error:" + sqle.getMessage());
-        return;
-      }
       throw new IllegalStateException("Error inserting banned mac:" + mac, sqle);
     }
   }

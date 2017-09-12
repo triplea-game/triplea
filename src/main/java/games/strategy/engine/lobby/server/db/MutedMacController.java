@@ -34,23 +34,18 @@ public class MutedMacController {
     }
     Timestamp muteTillTs = null;
     if (muteTill != null) {
-      muteTillTs = new Timestamp(muteTill.toEpochMilli());
+      muteTillTs = Timestamp.from(muteTill);
     }
     logger.fine("Muting mac:" + mac);
 
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)")) {
+        final PreparedStatement ps =
+            con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?) on conflict do update")) {
       ps.setString(1, mac);
       ps.setTimestamp(2, muteTillTs);
       ps.execute();
       con.commit();
     } catch (final SQLException sqle) {
-      if (sqle.getErrorCode() == 30000) {
-        // this is ok
-        // the mac is muted as expected
-        logger.info("Tried to create duplicate muted mac:" + mac + " error:" + sqle.getMessage());
-        return;
-      }
       throw new IllegalStateException("Error inserting muted mac:" + mac, sqle);
     }
   }

@@ -34,24 +34,19 @@ public class MutedUsernameController {
     }
     Timestamp muteTillTs = null;
     if (muteTill != null) {
-      muteTillTs = new Timestamp(muteTill.toEpochMilli());
+      muteTillTs = Timestamp.from(muteTill);
     }
     logger.fine("Muting username:" + username);
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps =
-            con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)")) {
+            con.prepareStatement(
+                "insert into muted_usernames (username, mute_till) values (?, ?) on conflict do update")) {
       ps.setString(1, username);
       ps.setTimestamp(2, muteTillTs);
       ps.execute();
       con.commit();
     } catch (final SQLException sqle) {
-      if (sqle.getErrorCode() == 30000) {
-        // this is ok
-        // the username is muted as expected
-        logger.info("Tried to create duplicate muted username:" + username + " error:" + sqle.getMessage());
-        return;
-      }
       throw new IllegalStateException("Error inserting muted username:" + username, sqle);
     }
   }
