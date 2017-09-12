@@ -45,7 +45,8 @@ public class UserController implements UserDao {
 
   private HashedPassword getPasswordFromColumn(final String username, final String column) {
     try (final Connection con = connectionSupplier.get();
-        final PreparedStatement ps = con.prepareStatement("select " + column + " from ta_users where username=?")) {
+        final PreparedStatement ps =
+            con.prepareStatement(String.format("select %s from ta_users where username=?", column))) {
       ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
@@ -80,8 +81,8 @@ public class UserController implements UserDao {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
-        final PreparedStatement ps =
-            con.prepareStatement("update ta_users set " + column + "=?,  email=?, admin=? where username=?")) {
+        final PreparedStatement ps = con.prepareStatement(
+            String.format("update ta_users set %s=?, email=?, admin=? where username=?", column))) {
       ps.setString(1, hashedPassword.value);
       ps.setString(2, user.getEmail());
       ps.setString(3, user.getName());
@@ -123,8 +124,8 @@ public class UserController implements UserDao {
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
-        final PreparedStatement ps =
-            con.prepareStatement("insert into ta_users (username, " + passwordColumn + ", email) values (?, ?, ?)")) {
+        final PreparedStatement ps = con.prepareStatement(
+            String.format("insert into ta_users (username, %s, email) values (?, ?, ?)", passwordColumn))) {
       ps.setString(1, user.getName());
       ps.setString(2, hashedPassword.value);
       ps.setString(3, user.getEmail());
