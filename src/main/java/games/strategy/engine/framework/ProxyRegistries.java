@@ -7,7 +7,6 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.internal.persistence.serializable.AaRadarAdvanceProxy;
 import games.strategy.internal.persistence.serializable.DestroyerBombardTechAdvanceProxy;
-import games.strategy.internal.persistence.serializable.GameDataProxy;
 import games.strategy.internal.persistence.serializable.GuidProxy;
 import games.strategy.internal.persistence.serializable.HeavyBomberAdvanceProxy;
 import games.strategy.internal.persistence.serializable.ImprovedArtillerySupportAdvanceProxy;
@@ -53,7 +52,6 @@ public final class ProxyRegistries {
     return Arrays.asList(
         AaRadarAdvanceProxy.FACTORY,
         DestroyerBombardTechAdvanceProxy.FACTORY,
-        GameDataProxy.FACTORY,
         GuidProxy.FACTORY,
         HeavyBomberAdvanceProxy.FACTORY,
         ImprovedArtillerySupportAdvanceProxy.FACTORY,
