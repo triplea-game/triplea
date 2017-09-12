@@ -77,6 +77,20 @@ public class UserController implements UserDao {
     }
   }
 
+  public void makeAdmin(final DBUser user, final boolean admin) {
+    Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
+
+    try (final Connection con = connectionSupplier.get();
+        final PreparedStatement ps = con.prepareStatement("update ta_users set admin=? where username = ?")) {
+      ps.setBoolean(1, admin);
+      ps.setString(2, user.getName());
+      ps.execute();
+      con.commit();
+    } catch (final SQLException e) {
+      throw new IllegalStateException(String.format("Error while trying to make %s an admin", user.getName()), e);
+    }
+  }
+
   @Override
   public void createUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkState(hashedPassword.isValidSyntax());
@@ -84,11 +98,10 @@ public class UserController implements UserDao {
 
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps =
-            con.prepareStatement("insert into ta_users (username, password, email, admin) values (?, ?, ?, ?)")) {
+            con.prepareStatement("insert into ta_users (username, password, email) values (?, ?, ?)")) {
       ps.setString(1, user.getName());
       ps.setString(2, hashedPassword.value);
       ps.setString(3, user.getEmail());
-      ps.setBoolean(4, user.isAdmin());
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
