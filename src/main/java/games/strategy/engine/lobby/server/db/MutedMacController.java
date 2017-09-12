@@ -32,17 +32,13 @@ public class MutedMacController {
     if (isMacMuted(mac)) {
       removeMutedMac(mac);
     }
-    Timestamp muteTillTs = null;
-    if (muteTill != null) {
-      muteTillTs = Timestamp.from(muteTill);
-    }
     logger.fine("Muting mac:" + mac);
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps =
             con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?) on conflict do update")) {
       ps.setString(1, mac);
-      ps.setTimestamp(2, muteTillTs);
+      ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
       ps.execute();
       con.commit();
     } catch (final SQLException sqle) {
