@@ -2,9 +2,9 @@ create table ta_users (
     username character varying(40) not null primary key,
     password character varying(60) not null,
     email character varying(254) not null,
-    joined timestamp with time zone,
-    lastlogin timestamp with time zone,
-    admin integer not null
+    joined timestamp with time zone not null default current_timestamp,
+    lastlogin timestamp with time zone not null default current_timestamp,
+    admin boolean not null default false
 );
 alter table ta_users owner to postgres;
 
