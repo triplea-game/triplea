@@ -29,7 +29,7 @@ alter table banned_macs owner to postgres;
 
 
 create table banned_usernames (
-    username character varying(40) not null primary key references ta_users on delete cascade on update cascade,
+    username character varying(40) not null primary key, -- references ta_users on delete cascade on update cascade,
     ban_till timestamp with time zone
 );
 alter table banned_usernames owner to postgres;
@@ -50,7 +50,7 @@ alter table muted_macs owner to postgres;
 
 
 create table muted_usernames (
-    username character varying(40) not null primary key references ta_users on delete cascade on update cascade,
+    username character varying(40) not null primary key, -- references ta_users on delete cascade on update cascade,
     mute_till timestamp with time zone
 );
 alter table muted_usernames owner to postgres;
