@@ -36,24 +36,19 @@ public class BannedUsernameController {
     }
     Timestamp banTillTs = null;
     if (banTill != null) {
-      banTillTs = new Timestamp(banTill.toEpochMilli());
+      banTillTs = Timestamp.from(banTill);
     }
     logger.fine("Banning username:" + username);
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps =
-            con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)")) {
+            con.prepareStatement(
+                "insert into banned_usernames (username, ban_till) values (?, ?) on conflict do update")) {
       ps.setString(1, username);
       ps.setTimestamp(2, banTillTs);
       ps.execute();
       con.commit();
     } catch (final SQLException sqle) {
-      if (sqle.getErrorCode() == 30000) {
-        // this is ok
-        // the username is banned as expected
-        logger.info("Tried to create duplicate banned username:" + username + " error:" + sqle.getMessage());
-        return;
-      }
       throw new IllegalStateException("Error inserting banned username:" + username, sqle);
     }
   }
