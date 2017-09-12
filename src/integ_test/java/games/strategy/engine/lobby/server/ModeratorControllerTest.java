@@ -2,7 +2,6 @@ package games.strategy.engine.lobby.server;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -40,12 +38,11 @@ public class ModeratorControllerTest {
     moderatorController = new ModeratorController(serverMessenger, null);
     final String adminName = Util.createUniqueTimeStamp();
 
-    new UserController().createUser(
-        new DBUser(
-            new DBUser.UserName(adminName),
-            new DBUser.UserEmail("n@n.n"),
-            DBUser.Role.ADMIN),
-        new HashedPassword(MD5Crypt.crypt(adminName)));
+    final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
+
+    final UserController userController = new UserController();
+    userController.createUser(dbUser, new HashedPassword(MD5Crypt.crypt(adminName)));
+    userController.makeAdmin(dbUser, true);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
   }
