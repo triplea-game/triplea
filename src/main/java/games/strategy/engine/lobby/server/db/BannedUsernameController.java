@@ -41,9 +41,8 @@ public class BannedUsernameController {
     logger.fine("Banning username:" + username);
 
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps =
-            con.prepareStatement(
-                "insert into banned_usernames (username, ban_till) values (?, ?) on conflict do update")) {
+        final PreparedStatement ps = con.prepareStatement(
+            "insert into banned_usernames (username, ban_till) values (?, ?) on conflict do update")) {
       ps.setString(1, username);
       ps.setTimestamp(2, banTillTs);
       ps.execute();
