@@ -34,17 +34,13 @@ public class BannedUsernameController {
     if (isUsernameBanned(username).getFirst()) {
       removeBannedUsername(username);
     }
-    Timestamp banTillTs = null;
-    if (banTill != null) {
-      banTillTs = Timestamp.from(banTill);
-    }
     logger.fine("Banning username:" + username);
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement(
             "insert into banned_usernames (username, ban_till) values (?, ?) on conflict do update")) {
       ps.setString(1, username);
-      ps.setTimestamp(2, banTillTs);
+      ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
       ps.execute();
       con.commit();
     } catch (final SQLException sqle) {

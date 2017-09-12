@@ -13,6 +13,7 @@ import java.util.List;
 public class BadWordController {
   public void addBadWord(final String word) {
     try (final Connection con = Database.getPostgresConnection();
+        // If the word already is present we don't need to add it twice.
         final PreparedStatement ps =
             con.prepareStatement("insert into bad_words (word) values (?) on conflict do nothing")) {
       ps.setString(1, word);

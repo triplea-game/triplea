@@ -34,15 +34,11 @@ public class BannedMacController {
     if (isMacBanned(mac).getFirst()) {
       removeBannedMac(mac);
     }
-    Timestamp banTillTs = null;
-    if (banTill != null) {
-      banTillTs = Timestamp.from(banTill);
-    }
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps =
             con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?) on conflict do update")) {
       ps.setString(1, mac);
-      ps.setTimestamp(2, banTillTs);
+      ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
       ps.execute();
       con.commit();
     } catch (final SQLException sqle) {
