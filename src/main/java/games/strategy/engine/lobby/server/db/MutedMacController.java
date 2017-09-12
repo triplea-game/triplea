@@ -54,7 +54,7 @@ public class MutedMacController {
     logger.fine("Removing muted mac:" + mac);
 
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac = ?")) {
+        final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac=?")) {
       ps.setString(1, mac);
       ps.execute();
       con.commit();
@@ -76,9 +76,7 @@ public class MutedMacController {
    * Returns epoch milli second timestamp of when a mute expires or negative one if there is no mute.
    */
   public long getMacUnmuteTime(final String mac) {
-    long result = -1;
-    boolean expired = false;
-    final String sql = "select mac, mute_till from muted_macs where mac = ?";
+    final String sql = "select mac, mute_till from muted_macs where mac=?";
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement(sql)) {
@@ -87,24 +85,19 @@ public class MutedMacController {
         final boolean found = rs.next();
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);
-          result = muteTill.getTime();
-          if (result < System.currentTimeMillis()) {
+          if (muteTill.toInstant().isBefore(Instant.now())) {
             logger.fine("Mute expired for:" + mac);
-            expired = true;
+            // If the mute has expired, allow the mac
+            removeMutedMac(mac);
+            // Signal as not-muted
+            return -1;
           }
-        } else {
-          result = -1;
+          return muteTill.getTime();
         }
+        return -1;
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing muted mac existence:" + mac, sqle);
     }
-    // If the mute has expired, allow the mac
-    if (expired) {
-      removeMutedMac(mac);
-      // Signal as not-muted
-      result = -1;
-    }
-    return result;
   }
 }
