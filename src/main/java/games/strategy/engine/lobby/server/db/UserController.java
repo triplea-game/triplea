@@ -31,19 +31,30 @@ public class UserController implements UserDao {
    * @return null if the user does not exist.
    */
   @Override
-  public HashedPassword getPassword(final String userName) {
-    final String sql = "select password from ta_users where username = ?";
-    try (final Connection con = connectionSupplier.get(); final PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, userName);
+  public HashedPassword getPassword(final String username) {
+    return getPasswordFromColumn(username, "coalesce(password, bcrypt_password)");
+  }
+
+  /**
+   * @return null if the user does not exist or the user has no legacy password stored.
+   */
+  @Override
+  public HashedPassword getMd5Password(final String username) {
+    return getPasswordFromColumn(username, "password");
+  }
+
+  private HashedPassword getPasswordFromColumn(final String username, final String column) {
+    try (final Connection con = connectionSupplier.get();
+        final PreparedStatement ps = con.prepareStatement("select " + column + " from ta_users where username=?")) {
+      ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
-        String returnValue = null;
         if (rs.next()) {
-          returnValue = rs.getString(1);
+          return new HashedPassword(rs.getString(1));
         }
-        return returnValue == null ? null : new HashedPassword(returnValue);
+        return null;
       }
     } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error getting password for user:" + userName, sqle);
+      throw new IllegalStateException("Error getting password for user: " + username, sqle);
     }
   }
 
@@ -62,11 +73,15 @@ public class UserController implements UserDao {
 
   @Override
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
+    updateUser(user, hashedPassword, hashedPassword.isBcrypted() ? "bcrypt_password" : "password");
+  }
+
+  private void updateUser(final DBUser user, final HashedPassword hashedPassword, final String column) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps =
-            con.prepareStatement("update ta_users set password = ?,  email = ? where username = ?")) {
+            con.prepareStatement("update ta_users set " + column + " = ?,  email = ? where username = ?")) {
       ps.setString(1, hashedPassword.value);
       ps.setString(2, user.getEmail());
       ps.setString(3, user.getName());
@@ -100,6 +115,10 @@ public class UserController implements UserDao {
 
   @Override
   public void createUser(final DBUser user, final HashedPassword hashedPassword) {
+    createUser(user, hashedPassword, hashedPassword.isBcrypted() ? "bcrypt_password" : "password");
+  }
+
+  private void createUser(final DBUser user, final HashedPassword hashedPassword, final String passwordColumn) {
     Preconditions.checkState(hashedPassword.isValidSyntax());
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 

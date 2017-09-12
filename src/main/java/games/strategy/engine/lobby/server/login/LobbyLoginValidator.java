@@ -50,7 +50,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     // we need to give the user the salt key for the username
     final Map<String, String> challenge = new HashMap<>();
-    final HashedPassword password = new UserController().getPassword(userName);
+    final HashedPassword password = new UserController().getMd5Password(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
       challenge.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
@@ -177,9 +177,16 @@ public class LobbyLoginValidator implements ILoginValidator {
       }
 
       return RsaAuthenticator.decryptPasswordForAction(key.get(), propertiesReadFromClient, pass -> {
+        final String legacyHashedPassword = propertiesReadFromClient.get(HASHED_PASSWORD_KEY);
         if (hashedPassword.isBcrypted()) {
-          return userDao.login(clientName, new HashedPassword(pass)) ? null : errorMessage;
-        } else if (userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
+          if (userDao.login(clientName, new HashedPassword(pass))) {
+            if (legacyHashedPassword != null) {
+              userDao.updateUser(userDao.getUserByName(clientName), new HashedPassword(legacyHashedPassword));
+            }
+            return null;
+          }
+          return errorMessage;
+        } else if (userDao.login(clientName, new HashedPassword(legacyHashedPassword))) {
           userDao.updateUser(userDao.getUserByName(clientName),
               new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt())));
           return null;
@@ -190,9 +197,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
     if (!userDao.login(clientName, new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY)))) {
       return errorMessage;
-    } else {
-      return null;
     }
+    return null;
   }
 
   private static String anonymousLogin(final Map<String, String> propertiesReadFromClient, final String userName) {
