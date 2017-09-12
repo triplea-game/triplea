@@ -39,9 +39,8 @@ public class MutedUsernameController {
     logger.fine("Muting username:" + username);
 
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps =
-            con.prepareStatement(
-                "insert into muted_usernames (username, mute_till) values (?, ?) on conflict do update")) {
+        final PreparedStatement ps = con.prepareStatement(
+            "insert into muted_usernames (username, mute_till) values (?, ?) on conflict do update")) {
       ps.setString(1, username);
       ps.setTimestamp(2, muteTillTs);
       ps.execute();

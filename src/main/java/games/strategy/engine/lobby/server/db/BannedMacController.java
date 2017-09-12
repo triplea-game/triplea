@@ -39,7 +39,8 @@ public class BannedMacController {
       banTillTs = Timestamp.from(banTill);
     }
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?) on conflict do update")) {
+        final PreparedStatement ps =
+            con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?) on conflict do update")) {
       ps.setString(1, mac);
       ps.setTimestamp(2, banTillTs);
       ps.execute();
