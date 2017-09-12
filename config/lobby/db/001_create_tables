@@ -1,56 +1,56 @@
-CREATE TABLE ta_users (
-    username character varying(40) NOT NULL PRIMARY KEY,
-    password character varying(60) NOT NULL,
-    email character varying(254) NOT NULL,
+create table ta_users (
+    username character varying(40) not null primary key,
+    password character varying(60) not null,
+    email character varying(254) not null,
     joined timestamp with time zone,
     lastlogin timestamp with time zone,
-    admin integer NOT NULL
+    admin integer not null
 );
-ALTER TABLE ta_users owner TO postgres;
+alter table ta_users owner to postgres;
 
-CREATE TABLE bad_words (
-    word character varying(40) NOT NULL PRIMARY KEY
+create table bad_words (
+    word character varying(40) not null primary key
 );
-ALTER TABLE bad_words owner TO postgres;
+alter table bad_words owner to postgres;
 
 
-CREATE TABLE banned_ips (
-    ip character varying(40) NOT NULL PRIMARY KEY,
+create table banned_ips (
+    ip character varying(40) not null primary key,
     ban_till timestamp with time zone
 );
-ALTER TABLE banned_ips owner TO postgres;
+alter table banned_ips owner to postgres;
 
 
-CREATE TABLE banned_macs (
-    mac character varying(40) NOT NULL PRIMARY KEY,
+create table banned_macs (
+    mac character varying(40) not null primary key,
     ban_till timestamp with time zone
 );
-ALTER TABLE banned_macs owner TO postgres;
+alter table banned_macs owner to postgres;
 
 
-CREATE TABLE banned_usernames (
-    username character varying(40) NOT NULL PRIMARY KEY REFERENCES ta_users ON DELETE CASCADE ON UPDATE CASCADE,
+create table banned_usernames (
+    username character varying(40) not null primary key references ta_users on delete cascade on update cascade,
     ban_till timestamp with time zone
 );
-ALTER TABLE banned_usernames owner TO postgres;
+alter table banned_usernames owner to postgres;
 
 
-CREATE TABLE muted_ips (
-    ip character varying(40) NOT NULL PRIMARY KEY,
+create table muted_ips (
+    ip character varying(40) not null primary key,
     mute_till timestamp with time zone
 );
-ALTER TABLE muted_ips owner TO postgres;
+alter table muted_ips owner to postgres;
 
 
-CREATE TABLE muted_macs (
-    mac character varying(40) NOT NULL PRIMARY KEY,
+create table muted_macs (
+    mac character varying(40) not null primary key,
     mute_till timestamp with time zone
 );
-ALTER TABLE muted_macs owner TO postgres;
+alter table muted_macs owner to postgres;
 
 
-CREATE TABLE muted_usernames (
-    username character varying(40) NOT NULL PRIMARY KEY REFERENCES ta_users ON DELETE CASCADE ON UPDATE CASCADE,
+create table muted_usernames (
+    username character varying(40) not null primary key references ta_users on delete cascade on update cascade,
     mute_till timestamp with time zone
 );
-ALTER TABLE muted_usernames owner TO postgres;
+alter table muted_usernames owner to postgres;
