@@ -134,8 +134,7 @@ public class UserController implements UserDao {
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException(
-          "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword.mask(),
-          sqle);
+          "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword.mask(), sqle);
     }
   }
 

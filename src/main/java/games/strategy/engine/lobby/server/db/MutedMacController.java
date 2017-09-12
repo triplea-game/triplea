@@ -85,7 +85,8 @@ public class MutedMacController {
     boolean expired = false;
     final String sql = "select mac, mute_till from muted_macs where mac = ?";
 
-    try (final Connection con = Database.getPostgresConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (final Connection con = Database.getPostgresConnection();
+        final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
       try (final ResultSet rs = ps.executeQuery()) {
         final boolean found = rs.next();
