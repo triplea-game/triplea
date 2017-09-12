@@ -52,7 +52,7 @@ public class BannedMacController {
 
   private void removeBannedMac(final String mac) {
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?")) {
+        final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac=?")) {
       ps.setString(1, mac);
       ps.execute();
       con.commit();
@@ -66,32 +66,26 @@ public class BannedMacController {
    * database any mac's whose ban has expired.
    */
   public Tuple<Boolean, Timestamp> isMacBanned(final String mac) {
-    boolean found = false;
-    boolean expired = false;
-    Timestamp banTill = null;
-    final String sql = "select mac, ban_till from banned_macs where mac = ?";
+    final String sql = "select mac, ban_till from banned_macs where mac=?";
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
       try (final ResultSet rs = ps.executeQuery()) {
-        found = rs.next();
         // If the ban has expired, allow the mac
-        if (found) {
-          banTill = rs.getTimestamp(2);
-          if (banTill != null && banTill.getTime() < System.currentTimeMillis()) {
+        if (rs.next()) {
+          final Timestamp banTill = rs.getTimestamp(2);
+          if (banTill != null && banTill.toInstant().isBefore(Instant.now())) {
             logger.fine("Ban expired for:" + mac);
-            expired = true;
+            removeBannedMac(mac);
+            return Tuple.of(false, banTill);
           }
+          return Tuple.of(true, banTill);
         }
+        return Tuple.of(false, null);
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing banned mac existence:" + mac, sqle);
     }
-    if (expired) {
-      removeBannedMac(mac);
-      return Tuple.of(false, banTill);
-    }
-    return Tuple.of(found, banTill);
   }
 }
