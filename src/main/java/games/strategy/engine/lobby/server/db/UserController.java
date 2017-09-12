@@ -81,7 +81,7 @@ public class UserController implements UserDao {
 
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps =
-            con.prepareStatement("update ta_users set " + column + " = ?,  email = ? where username = ?")) {
+            con.prepareStatement("update ta_users set " + column + "=?,  email=?, admin=? where username=?")) {
       ps.setString(1, hashedPassword.value);
       ps.setString(2, user.getEmail());
       ps.setString(3, user.getName());
@@ -124,7 +124,7 @@ public class UserController implements UserDao {
 
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps =
-            con.prepareStatement("insert into ta_users (username, password, email) values (?, ?, ?)")) {
+            con.prepareStatement("insert into ta_users (username, " + passwordColumn + ", email) values (?, ?, ?)")) {
       ps.setString(1, user.getName());
       ps.setString(2, hashedPassword.value);
       ps.setString(3, user.getEmail());
