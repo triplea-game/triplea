@@ -381,11 +381,3 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
 }
-
-
-class PurchaseExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = 2326864364534284490L;
-  Serializable superState;
-  // add other variables here:
-  public boolean m_needToInitialize;
-}

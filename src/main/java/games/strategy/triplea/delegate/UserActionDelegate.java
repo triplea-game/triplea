@@ -295,9 +295,3 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     return IUserActionDelegate.class;
   }
 }
-
-
-class UserActionExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = -7521031770074984272L;
-  Serializable superState;
-}

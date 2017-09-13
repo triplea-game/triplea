@@ -349,10 +349,3 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   @Override
   public void pusLost(final Territory t, final int amt) {}
 }
-
-
-class SpecialMoveExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = 7781410008392307104L;
-  Serializable superState;
-  public boolean m_needToInitialize;
-}
