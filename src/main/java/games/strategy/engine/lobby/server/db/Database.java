@@ -25,7 +25,8 @@ public class Database {
    */
   public static Connection getPostgresConnection() {
     try {
-      final Connection connection =  DriverManager.getConnection("jdbc:postgresql://localhost/ta_users", connectionProperties);
+      final Connection connection =
+          DriverManager.getConnection("jdbc:postgresql://localhost/ta_users", connectionProperties);
       connection.setAutoCommit(false);
       return connection;
     } catch (final SQLException e) {
