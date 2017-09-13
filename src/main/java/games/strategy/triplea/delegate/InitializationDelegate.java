@@ -354,10 +354,3 @@ public class InitializationDelegate extends BaseTripleADelegate {
     return null;
   }
 }
-
-
-class InitializationExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = -9000446777655823735L;
-  Serializable superState;
-  public boolean m_needToInitialize;
-}
