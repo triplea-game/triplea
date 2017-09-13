@@ -42,7 +42,7 @@ public class ModeratorControllerTest {
 
     final UserController userController = new UserController();
     userController.createUser(dbUser, new HashedPassword(MD5Crypt.crypt(adminName)));
-    userController.makeAdmin(dbUser, true);
+    userController.makeAdmin(dbUser);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
   }

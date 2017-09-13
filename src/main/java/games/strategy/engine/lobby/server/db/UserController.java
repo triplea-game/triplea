@@ -77,12 +77,12 @@ public class UserController implements UserDao {
     }
   }
 
-  public void makeAdmin(final DBUser user, final boolean admin) {
+  public void makeAdmin(final DBUser user) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps = con.prepareStatement("update ta_users set admin=? where username = ?")) {
-      ps.setBoolean(1, admin);
+      ps.setBoolean(1, user.isAdmin());
       ps.setString(2, user.getName());
       ps.execute();
       con.commit();
