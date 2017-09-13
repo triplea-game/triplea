@@ -12,28 +12,28 @@ public class IllegalCharacterRemover {
    * Designed to remove / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
    */
   public static String removeIllegalCharacter(final String text) {
-    final StringBuilder rVal = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
     for (int i = 0; i < text.length(); ++i) {
       if (!isIllegalFileNameChar(text.charAt(i))) {
-        rVal.append(text.charAt(i));
+        sb.append(text.charAt(i));
       }
     }
-    return rVal.toString();
+    return sb.toString();
   }
 
   /**
    * Designed to replace / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
    */
   public static String replaceIllegalCharacter(final String text, final char replacement) {
-    final StringBuilder rVal = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
     for (int i = 0; i < text.length(); ++i) {
       if (!isIllegalFileNameChar(text.charAt(i))) {
-        rVal.append(text.charAt(i));
+        sb.append(text.charAt(i));
       } else {
-        rVal.append(replacement);
+        sb.append(replacement);
       }
     }
-    return rVal.toString();
+    return sb.toString();
   }
 
   private static boolean isIllegalFileNameChar(final char c) {

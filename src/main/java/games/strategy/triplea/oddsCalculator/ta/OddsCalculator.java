@@ -165,7 +165,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   private AggregateResults calculate(final int count) {
     isRunning = true;
     final long start = System.currentTimeMillis();
-    final AggregateResults rVal = new AggregateResults(count);
+    final AggregateResults aggregateResults = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
     // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
     // the AI and a human
@@ -191,17 +191,17 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       // battle.setAttackingFromAndMap(attackingFromMap);
       bridge1.setBattle(battle);
       battle.fight(bridge);
-      rVal.addResult(new BattleResults(battle, gameData));
+      aggregateResults.addResult(new BattleResults(battle, gameData));
       // restore the game to its original state
       gameData.performChange(allChanges.invert());
       battleTracker.clear();
       battleTracker.clearBattleRecords();
     }
     // BattleCalculator.DisableCasualtySortingCaching();
-    rVal.setTime(System.currentTimeMillis() - start);
+    aggregateResults.setTime(System.currentTimeMillis() - start);
     isRunning = false;
     cancelled = false;
-    return rVal;
+    return aggregateResults;
   }
 
   @Override

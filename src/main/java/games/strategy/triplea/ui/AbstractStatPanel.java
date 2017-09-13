@@ -40,13 +40,13 @@ public abstract class AbstractStatPanel extends JPanel {
    * @return all the alliances with more than one player.
    */
   public Collection<String> getAlliances() {
-    final Collection<String> rVal = new TreeSet<>();
+    final Collection<String> alliances = new TreeSet<>();
     for (final String alliance : gameData.getAllianceTracker().getAlliances()) {
       if (gameData.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
-        rVal.add(alliance);
+        alliances.add(alliance);
       }
     }
-    return rVal;
+    return alliances;
   }
 
   public List<PlayerID> getPlayers() {

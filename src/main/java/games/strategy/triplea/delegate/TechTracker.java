@@ -26,15 +26,15 @@ public class TechTracker implements Serializable {
    * tech frontier).
    */
   public static Collection<TechAdvance> getCurrentTechAdvances(final PlayerID id, final GameData data) {
-    final Collection<TechAdvance> rVal = new ArrayList<>();
+    final Collection<TechAdvance> techAdvances = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(id);
     // search all techs
     for (final TechAdvance ta : TechAdvance.getTechAdvances(data)) {
       if (ta.hasTech(attachment)) {
-        rVal.add(ta);
+        techAdvances.add(ta);
       }
     }
-    return rVal;
+    return techAdvances;
   }
 
   /**
@@ -43,7 +43,7 @@ public class TechTracker implements Serializable {
    * already.
    */
   public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final PlayerID id) {
-    final Collection<TechnologyFrontier> rVal = new ArrayList<>();
+    final Collection<TechnologyFrontier> technologyFrontiers = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(id);
     for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(id)) {
       boolean has = true;
@@ -54,10 +54,10 @@ public class TechTracker implements Serializable {
         }
       }
       if (has) {
-        rVal.add(tf);
+        technologyFrontiers.add(tf);
       }
     }
-    return rVal;
+    return technologyFrontiers;
   }
 
   public static synchronized void addAdvance(final PlayerID player, final IDelegateBridge bridge,

@@ -420,9 +420,9 @@ public class DiceRoll implements Externalizable {
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers, final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
-    final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<>();
+    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRolls = new HashMap<>();
     if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
-      return rVal;
+      return unitPowerAndRolls;
     }
     // get all supports, friendly and enemy
     final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<>();
@@ -505,9 +505,9 @@ public class DiceRoll implements Externalizable {
           strength = 0;
         }
       }
-      rVal.put(current, Tuple.of(strength, rolls));
+      unitPowerAndRolls.put(current, Tuple.of(strength, rolls));
     }
-    return rVal;
+    return unitPowerAndRolls;
   }
 
   public static int getTotalPower(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
@@ -610,9 +610,9 @@ public class DiceRoll implements Externalizable {
       dice.add(new Die(random[0], rollFor, hit ? DieType.HIT : DieType.MISS));
     }
     // Create DiceRoll object
-    final DiceRoll rVal = new DiceRoll(dice, hitCount);
-    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
-    return rVal;
+    final DiceRoll diceRoll = new DiceRoll(dice, hitCount);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+    return diceRoll;
   }
 
   /**
@@ -937,9 +937,9 @@ public class DiceRoll implements Externalizable {
         }
       }
     }
-    final DiceRoll rVal = new DiceRoll(dice, hitCount);
-    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
-    return rVal;
+    final DiceRoll diceRoll = new DiceRoll(dice, hitCount);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+    return diceRoll;
   }
 
   /**
@@ -1016,9 +1016,9 @@ public class DiceRoll implements Externalizable {
         }
       }
     }
-    final DiceRoll rVal = new DiceRoll(dice, hitCount);
-    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
-    return rVal;
+    final DiceRoll diceRoll = new DiceRoll(dice, hitCount);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+    return diceRoll;
   }
 
   private static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data) {
@@ -1104,13 +1104,13 @@ public class DiceRoll implements Externalizable {
    *         0..MAX_DICE
    */
   public List<Die> getRolls(final int rollAt) {
-    final List<Die> rVal = new ArrayList<>();
+    final List<Die> dice = new ArrayList<>();
     for (final Die die : m_rolls) {
       if (die.getRolledAt() == rollAt) {
-        rVal.add(die);
+        dice.add(die);
       }
     }
-    return rVal;
+    return dice;
   }
 
   public int size() {

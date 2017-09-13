@@ -200,9 +200,9 @@ public class PoliticsPanel extends ActionPanel {
   });
 
   private boolean youSureDoNothing() {
-    final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PoliticsPanel.this),
+    final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PoliticsPanel.this),
         "Are you sure you dont want to do anything?", "End Politics", JOptionPane.YES_NO_OPTION);
-    return rVal == JOptionPane.YES_OPTION;
+    return selectedOption == JOptionPane.YES_OPTION;
   }
 
   /**

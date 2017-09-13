@@ -471,10 +471,10 @@ public class MovePerformer implements Serializable {
       m_aaInMoveUtil = new AAInMoveUtil();
     }
     m_aaInMoveUtil.initialize(m_bridge);
-    final Collection<Unit> rVal =
+    final Collection<Unit> unitsToRemove =
         m_aaInMoveUtil.fireAA(route, units, UnitComparator.getLowestToHighestMovementComparator(), m_currentMove);
     m_aaInMoveUtil = null;
-    return rVal;
+    return unitsToRemove;
   }
 
   private static boolean isIgnoreTransportInMovement(final GameData data) {
