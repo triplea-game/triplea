@@ -76,7 +76,7 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.IllegalCharacterRemover;
+import games.strategy.util.FileNameUtils;
 import games.strategy.util.Tuple;
 import games.strategy.util.UrlStreams;
 
@@ -158,7 +158,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       final ObjectiveProperties op = ObjectiveProperties.getInstance();
       final Collection<PlayerID> allPlayers = gameData.getPlayerList().getPlayers();
       final String gameName =
-          IllegalCharacterRemover.replaceIllegalCharacter(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
+          FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
       final List<String> sectionsSorters = new ArrayList<>();
       final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
