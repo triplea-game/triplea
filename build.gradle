@@ -184,7 +184,7 @@ task prepareGameEngineProperties() {
 
 task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets, prepareGameEngineProperties]) {
     classifier 'all_platforms'
-    ['assets', 'dice_servers', 'old'].each { folder ->
+    ['assets', 'dice_servers'].each { folder ->
         from(folder) {
             into(folder)
         }
