@@ -117,9 +117,8 @@ public class GameSelectorModel extends Observable {
   }
 
   public GameData getGameData(final InputStream input) {
-    final GameData newData;
     try {
-      newData = GameDataManager.loadGame(input, null);
+      final GameData newData = GameDataManager.loadGame(input);
       if (newData != null) {
         return newData;
       }

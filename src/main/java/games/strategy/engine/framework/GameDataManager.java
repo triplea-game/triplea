@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
@@ -64,9 +63,8 @@ public final class GameDataManager {
   public static GameData loadGame(final File file) throws IOException {
     checkNotNull(file);
 
-    try (final FileInputStream fis = new FileInputStream(file);
-        final InputStream is = new BufferedInputStream(fis)) {
-      return loadGame(is, getPath(file));
+    try (final InputStream is = new BufferedInputStream(new FileInputStream(file))) {
+      return loadGame(is);
     }
   }
 
@@ -75,26 +73,17 @@ public final class GameDataManager {
    *
    * @param is The stream from which the game data will be loaded. The caller is responsible for closing this stream; it
    *        will not be closed when this method returns.
-   * @param path The path to the file from which the game data originated or {@code null} if none.
    *
    * @return The loaded game data.
    *
    * @throws IOException If an error occurs while loading the game.
    */
-  public static GameData loadGame(final InputStream is, final @Nullable String path) throws IOException {
+  public static GameData loadGame(final InputStream is) throws IOException {
     checkNotNull(is);
 
     return ClientSetting.TEST_USE_PROXY_SERIALIZATION.booleanValue()
         ? loadGameInProxySerializationFormat(is)
-        : loadGameInSerializationFormat(is, path);
-  }
-
-  private static String getPath(final File file) {
-    try {
-      return file.getCanonicalPath();
-    } catch (final IOException e) {
-      return file.getPath();
-    }
+        : loadGameInSerializationFormat(is);
   }
 
   @VisibleForTesting
@@ -103,8 +92,7 @@ public final class GameDataManager {
   }
 
   private static Memento loadMemento(final InputStream is) throws IOException {
-    try (final GZIPInputStream gzipis = new GZIPInputStream(is);
-        final ObjectInputStream ois = new ObjectInputStream(gzipis)) {
+    try (final ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(is))) {
       return (Memento) ois.readObject();
     } catch (final ClassNotFoundException e) {
       throw new IOException(e);
@@ -120,9 +108,7 @@ public final class GameDataManager {
     }
   }
 
-  private static GameData loadGameInSerializationFormat(
-      final InputStream inputStream,
-      final @Nullable String savegamePath)
+  private static GameData loadGameInSerializationFormat(final InputStream inputStream)
       throws IOException {
     final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
     try {
