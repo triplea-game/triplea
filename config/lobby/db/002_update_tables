@@ -1,25 +1,24 @@
-alter table ta_users alter column email type varchar(254);
-alter table ta_users alter column joined type timestamptz;
-alter table ta_users alter column joined set default current_timestamp;
-alter table ta_users alter column lastlogin type timestamptz;
-alter table ta_users alter column lastlogin set default current_timestamp;
-alter table ta_users alter column admin type boolean using case when admin=0 then false else true end;
-alter table ta_users alter column admin set default false;
+alter table ta_users
+    alter column email type varchar(254),
+    alter column joined type timestamptz,
+    alter column joined set default current_timestamp,
+    alter column lastlogin type timestamptz,
+    alter column lastlogin set default current_timestamp,
+    alter column admin type boolean using case when admin=0 then false else true end,
+    alter column admin set default false;
 
 drop table banned_ips;
 
-alter table banned_macs alter column mac type character(34);
-alter table banned_macs alter column ban_till type timestamptz;
+alter table banned_macs
+    alter column mac type character(34),
+    alter column ban_till type timestamptz;
 
--- delete from banned_usernames where username not in (select username from ta_users);
--- alter table banned_usernames add constraint banned_usernames_username_fkey foreign key (username) references ta_users (username) on update cascade on delete cascade;
 alter table banned_usernames alter column ban_till type timestamptz;
 
 drop table muted_ips;
 
-alter table muted_macs alter column mac type character(34);
-alter table muted_macs alter column mute_till type timestamptz;
+alter table muted_macs
+    alter column mac type character(34),
+    alter column mute_till type timestamptz;
 
--- delete from muted_usernames where username not in (select username from ta_users);
--- alter table muted_usernames add constraint muted_usernames_username_fkey foreign key (username) references ta_users (username) on update cascade on delete cascade;
 alter table muted_usernames alter column mute_till type timestamptz;
