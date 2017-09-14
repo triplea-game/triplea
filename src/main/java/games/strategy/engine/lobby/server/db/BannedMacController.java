@@ -17,13 +17,6 @@ public class BannedMacController {
   private static final Logger logger = Logger.getLogger(BannedMacController.class.getName());
 
   /**
-   * Ban the mac permanently.
-   */
-  public void addBannedMac(final String mac) {
-    addBannedMac(mac, null);
-  }
-
-  /**
    * Ban the given mac. If banTill is not null, the ban will expire when banTill is reached.
    *
    * <p>
