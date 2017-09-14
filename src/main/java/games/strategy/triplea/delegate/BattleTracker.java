@@ -80,7 +80,8 @@ public class BattleTracker implements Serializable {
   private BattleRecords m_battleRecords = null;
   // to keep track of all relationships that have changed this turn
   // (so we can validate things like transports loading in newly created hostile zones)
-  private final Collection<Tuple<Tuple<PlayerID, PlayerID>, //
+  private final Collection<Tuple<//
+      Tuple<PlayerID, PlayerID>, //
       Tuple<RelationshipType, RelationshipType>>> m_relationshipChangesThisTurn = new ArrayList<>();
 
   /**
@@ -165,7 +166,8 @@ public class BattleTracker implements Serializable {
   private boolean didThesePlayersJustGoToWarThisTurn(final PlayerID p1, final PlayerID p2) {
     // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war,
     // and newRelation is war
-    for (final Tuple<Tuple<PlayerID, PlayerID>, //
+    for (final Tuple<//
+        Tuple<PlayerID, PlayerID>, //
         Tuple<RelationshipType, RelationshipType>> t : m_relationshipChangesThisTurn) {
       final Tuple<PlayerID, PlayerID> players = t.getFirst();
       if (players.getFirst().equals(p1)) {
