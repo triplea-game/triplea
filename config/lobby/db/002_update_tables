@@ -1,3 +1,5 @@
+start transaction;
+
 alter table ta_users
     alter column email type varchar(254),
     alter column joined type timestamptz,
@@ -22,3 +24,5 @@ alter table muted_macs
     alter column mute_till type timestamptz;
 
 alter table muted_usernames alter column mute_till type timestamptz;
+
+commit;
