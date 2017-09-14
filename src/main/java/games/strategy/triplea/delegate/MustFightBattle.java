@@ -825,7 +825,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         if (getBattlePower(true, m_attackingUnits, bridge, new ArrayList<>()) > 0) {
           final List<Unit> unitsToRemove = new ArrayList<>();
           if (getBattlePower(false, m_defendingUnits, bridge, unitsToRemove) == 0) {
-            remove(new ArrayList<>(Match.getMatches(unitsToRemove, Matches.UnitIsInfrastructure.invert())),
+            remove(new ArrayList<>(Matches.getMatches(unitsToRemove, Matches.unitIsInfrastructure().invert())),
                 bridge, m_battleSite, true);
           }
         }
@@ -2776,9 +2776,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private int getBattlePower(final boolean attack, final List<Unit> units, final IDelegateBridge bridge,
       final List<Unit> unitsToRemove) {
     final Match<Unit> unitTypes = Matches.unitCanBeInBattle(attack, !m_battleSite.isWater(), 1, false, !attack, true);
-    final List<Unit> sortedUnits = new ArrayList<>(Match.getMatches(units, unitTypes));
+    final List<Unit> sortedUnits = new ArrayList<>(Matches.getMatches(units, unitTypes));
     Collections.sort(sortedUnits, new UnitBattleComparator(false,
-        BattleCalculator.getCostsForTUV(bridge.getPlayerID(), m_data),
+        TuvUtils.getCostsForTuv(bridge.getPlayerID(), m_data),
         TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
     Collections.reverse(sortedUnits);
     unitsToRemove.addAll(sortedUnits);
