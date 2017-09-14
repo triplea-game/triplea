@@ -3,20 +3,17 @@ create table bad_words (
 );
 alter table bad_words owner to postgres;
 
-
 create table banned_ips (
     ip character varying(40) not null primary key,
     ban_till timestamp without time zone
 );
 alter table banned_ips owner to postgres;
 
-
 create table banned_macs (
     mac character varying(40) not null primary key,
     ban_till timestamp without time zone
 );
 alter table banned_macs owner to postgres;
-
 
 create table banned_usernames (
     username character varying(40) not null primary key,
