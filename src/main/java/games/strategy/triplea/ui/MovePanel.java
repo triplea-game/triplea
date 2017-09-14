@@ -278,7 +278,7 @@ public class MovePanel extends AbstractMovePanel {
     }
     allUnitsInSelectedTransports.retainAll(candidateUnits);
     sortUnitsToMove(allUnitsInSelectedTransports, route);
-    final List<Unit> rVal = new ArrayList<>();
+    final List<Unit> selectedUnitsToUnload = new ArrayList<>();
     final List<Unit> sortedTransports = new ArrayList<>(chosenTransports);
     Collections.sort(sortedTransports, UnitComparator.getIncreasingCapacityComparator(sortedTransports));
     final Collection<Unit> selectedUnits = new ArrayList<>(unitsToUnload);
@@ -294,7 +294,7 @@ public class MovePanel extends AbstractMovePanel {
           if (selected.getType().equals(candidate.getType()) && selected.getOwner().equals(candidate.getOwner())
               && selected.getHits() == candidate.getHits()) {
             hasChanged = true;
-            rVal.add(candidate);
+            selectedUnitsToUnload.add(candidate);
             allUnitsInSelectedTransports.remove(candidate);
             selectedIter.remove();
             break;
@@ -313,13 +313,13 @@ public class MovePanel extends AbstractMovePanel {
         final Unit candidate = candidateIter.next();
         if (selected.getType().equals(candidate.getType()) && selected.getOwner().equals(candidate.getOwner())
             && selected.getHits() == candidate.getHits()) {
-          rVal.add(candidate);
+          selectedUnitsToUnload.add(candidate);
           candidateIter.remove();
           break;
         }
       }
     }
-    return rVal;
+    return selectedUnitsToUnload;
   }
 
   private Match<Unit> getUnloadableMatch(final Route route, final Collection<Unit> units) {
@@ -1424,9 +1424,9 @@ public class MovePanel extends AbstractMovePanel {
   @Override
   protected boolean doneMoveAction() {
     if (undoableMovesPanel.getCountOfMovesMade() == 0) {
-      final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(MovePanel.this),
+      final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(MovePanel.this),
           "Are you sure you dont want to move?", "End Move", JOptionPane.YES_NO_OPTION);
-      return rVal == JOptionPane.YES_OPTION;
+      return selectedOption == JOptionPane.YES_OPTION;
     }
     return true;
   }

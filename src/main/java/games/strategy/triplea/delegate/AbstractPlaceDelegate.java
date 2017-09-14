@@ -137,11 +137,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   protected Collection<Unit> getAlreadyProduced(final Territory t) {
     // this list might be modified later
-    final Collection<Unit> rVal = new ArrayList<>();
+    final Collection<Unit> alreadyProducedUnits = new ArrayList<>();
     if (m_produced.containsKey(t)) {
-      rVal.addAll(m_produced.get(t));
+      alreadyProducedUnits.addAll(m_produced.get(t));
     }
-    return rVal;
+    return alreadyProducedUnits;
   }
 
   @Override
@@ -1032,10 +1032,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   protected IntegerMap<Territory> getMaxUnitsToBePlacedMap(final Collection<Unit> units, final Territory to,
       final PlayerID player, final boolean countSwitchedProductionToNeighbors) {
-    final IntegerMap<Territory> rVal = new IntegerMap<>();
+    final IntegerMap<Territory> maxUnitsToBePlacedMap = new IntegerMap<>();
     final List<Territory> producers = getAllProducers(to, player, units);
     if (producers.isEmpty()) {
-      return rVal;
+      return maxUnitsToBePlacedMap;
     }
     Collections.sort(producers, getBestProducerComparator(to, units, player));
     final Collection<Territory> notUsableAsOtherProducers = new ArrayList<>();
@@ -1047,9 +1047,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           : new ArrayList<>(units));
       final int prodT = getMaxUnitsToBePlacedFrom(producerTerritory, unitsCanBePlacedByThisProducer, to, player,
           countSwitchedProductionToNeighbors, notUsableAsOtherProducers, currentAvailablePlacementForOtherProducers);
-      rVal.put(producerTerritory, prodT);
+      maxUnitsToBePlacedMap.put(producerTerritory, prodT);
     }
-    return rVal;
+    return maxUnitsToBePlacedMap;
   }
 
   /**
@@ -1685,9 +1685,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   protected Collection<Territory> getListedTerritories(final String[] list) {
-    final List<Territory> rVal = new ArrayList<>();
+    final List<Territory> territories = new ArrayList<>();
     if (list == null) {
-      return rVal;
+      return territories;
     }
     for (final String name : list) {
       // Validate all territories exist
@@ -1695,9 +1695,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (territory == null) {
         throw new IllegalStateException("Rules & Conditions: No territory called:" + name);
       }
-      rVal.add(territory);
+      territories.add(territory);
     }
-    return rVal;
+    return territories;
   }
 
   @Override

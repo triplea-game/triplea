@@ -226,8 +226,7 @@ public class UnitsDrawer implements IDrawable {
     } else {
       selectedUnitsBuilder.add(Matches.unitHasNotTakenAnyBombingUnitDamage());
     }
-    final List<Unit> rVal = t.getUnits().getMatches(selectedUnitsBuilder.all());
-    return Tuple.of(t, rVal);
+    return Tuple.of(t, t.getUnits().getMatches(selectedUnitsBuilder.all()));
   }
 
   @Override

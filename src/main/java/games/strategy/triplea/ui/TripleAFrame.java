@@ -562,10 +562,10 @@ public class TripleAFrame extends MainGameFrame {
 
   @Override
   public void shutdown() {
-    final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
+    final int selectedOption = EventThreadJOptionPane.showConfirmDialog(this,
         "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program",
         JOptionPane.YES_NO_OPTION, getUiContext().getCountDownLatchHandler());
-    if (rVal != JOptionPane.OK_OPTION) {
+    if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
     stopGame();
@@ -574,10 +574,10 @@ public class TripleAFrame extends MainGameFrame {
 
   @Override
   public void leaveGame() {
-    final int rVal = EventThreadJOptionPane.showConfirmDialog(this,
+    final int selectedOption = EventThreadJOptionPane.showConfirmDialog(this,
         "Are you sure you want to leave the current game?\nUnsaved game data will be lost.", "Leave Game",
         JOptionPane.YES_NO_OPTION, getUiContext().getCountDownLatchHandler());
-    if (rVal != JOptionPane.OK_OPTION) {
+    if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
     if (game instanceof ServerGame) {
@@ -1043,7 +1043,7 @@ public class TripleAFrame extends MainGameFrame {
       }
     }
     actionButtons.changeToPickTerritoryAndUnits(player);
-    final Tuple<Territory, Set<Unit>> rVal =
+    final Tuple<Territory, Set<Unit>> territoryAndUnits =
         actionButtons.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
     final int index = tabsPanel == null ? -1 : tabsPanel.indexOfTab("Actions");
     if (index != -1 && inHistory) {
@@ -1064,7 +1064,7 @@ public class TripleAFrame extends MainGameFrame {
     if (actionButtons != null && actionButtons.getCurrent() != null) {
       actionButtons.getCurrent().setActive(false);
     }
-    return rVal;
+    return territoryAndUnits;
   }
 
   public HashMap<Territory, IntegerMap<Unit>> selectKamikazeSuicideAttacks(

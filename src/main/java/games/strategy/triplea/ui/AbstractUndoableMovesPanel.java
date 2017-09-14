@@ -152,12 +152,12 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     buttonsBox.add(viewbutton);
     buttonsBox.add(cancelButton);
     buttonsBox.add(Box.createHorizontalGlue());
-    final Box rVal = new Box(BoxLayout.Y_AXIS);
-    rVal.add(unitsBox);
-    rVal.add(textBox);
-    rVal.add(buttonsBox);
-    rVal.add(new JLabel(" "));
-    return rVal;
+    final Box containerBox = new Box(BoxLayout.Y_AXIS);
+    containerBox.add(unitsBox);
+    containerBox.add(textBox);
+    containerBox.add(buttonsBox);
+    containerBox.add(new JLabel(" "));
+    return containerBox;
   }
 
   public int getCountOfMovesMade() {

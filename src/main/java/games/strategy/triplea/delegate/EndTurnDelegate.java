@@ -320,7 +320,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
    */
   private static ResourceCollection getResourceProduction(final Collection<Territory> territories,
       final GameData data) {
-    final ResourceCollection rVal = new ResourceCollection(data);
+    final ResourceCollection resources = new ResourceCollection(data);
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);
       if (attachment == null) {
@@ -332,9 +332,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       }
       // Match will Check if territory is originally owned convoy center, or if contested
       if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).match(current)) {
-        rVal.add(toAdd);
+        resources.add(toAdd);
       }
     }
-    return rVal;
+    return resources;
   }
 }

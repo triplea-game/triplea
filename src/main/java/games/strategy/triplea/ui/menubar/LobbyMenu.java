@@ -387,8 +387,8 @@ public class LobbyMenu extends JMenuBar {
       return;
     }
     final CreateUpdateAccountPanel panel = CreateUpdateAccountPanel.newUpdatePanel(user);
-    final CreateUpdateAccountPanel.ReturnValue rVal = panel.show(lobbyFrame);
-    if (rVal == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
+    final CreateUpdateAccountPanel.ReturnValue returnValue = panel.show(lobbyFrame);
+    if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
     //TODO: Replace MD5Crypt.crypt with an encryption algorithm

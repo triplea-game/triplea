@@ -240,25 +240,25 @@ public abstract class AbstractUIContext implements IUIContext {
    */
   public static Map<String, String> getSkins(final GameData data) {
     final String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
-    final Map<String, String> rVal = new LinkedHashMap<>();
-    rVal.put("Original", mapName);
-    rVal.putAll(getSkins(mapName));
-    return rVal;
+    final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
+    skinsByDisplayName.put("Original", mapName);
+    skinsByDisplayName.putAll(getSkins(mapName));
+    return skinsByDisplayName;
   }
 
   private static Map<String, String> getSkins(final String mapName) {
-    final Map<String, String> rVal = new HashMap<>();
+    final Map<String, String> skinsByDisplayName = new HashMap<>();
     final File[] files = ClientFileSystemHelper.getUserMapsFolder().listFiles();
     if (files == null) {
-      return rVal;
+      return skinsByDisplayName;
     }
     for (final File f : files) {
       if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
         final String displayName = f.getName().replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
-        rVal.put(displayName, f.getName());
+        skinsByDisplayName.put(displayName, f.getName());
       }
     }
-    return rVal;
+    return skinsByDisplayName;
   }
 
   private static boolean mapSkinNameMatchesMapName(final String mapSkin, final String mapName) {

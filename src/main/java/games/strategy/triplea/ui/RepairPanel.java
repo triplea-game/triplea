@@ -119,9 +119,9 @@ public class RepairPanel extends ActionPanel {
     public void actionPerformed(final ActionEvent event) {
       final boolean hasPurchased = getTotalValues(repair) != 0;
       if (!hasPurchased) {
-        final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(RepairPanel.this),
+        final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(RepairPanel.this),
             "Are you sure you dont want to repair anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
-        if (rVal != JOptionPane.YES_OPTION) {
+        if (selectedOption != JOptionPane.YES_OPTION) {
           return;
         }
       }
