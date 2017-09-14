@@ -520,6 +520,7 @@ public class GameRunner {
           "Host is using version " + engineVersionOfGameToJoin.toStringFull("_")
               + ". You need to have the same engine version in order to join this game.",
           "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
+      return;
     }
     joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), newClassPath, messengers);
   }
