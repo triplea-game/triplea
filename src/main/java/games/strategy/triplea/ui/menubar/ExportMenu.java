@@ -49,7 +49,7 @@ import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.IllegalCharacterRemover;
+import games.strategy.util.FileNameUtils;
 import games.strategy.util.LocalizeHtml;
 
 class ExportMenu {
@@ -94,7 +94,7 @@ class ExportMenu {
     }
     String defaultFileName =
         "xml_" + dateTimeFormatter.format(LocalDateTime.now()) + "_" + gameData.getGameName() + "_round_" + round;
-    defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+    defaultFileName = FileNameUtils.removeIllegalCharacters(defaultFileName);
     defaultFileName = defaultFileName + ".xml";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
@@ -158,7 +158,7 @@ class ExportMenu {
     String defaultFileName =
         "stats_" + dateTimeFormatter.format(LocalDateTime.now()) + "_" + gameData.getGameName() + "_round_"
             + currentRound + (showPhaseStats ? "_full" : "_short");
-    defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+    defaultFileName = FileNameUtils.removeIllegalCharacters(defaultFileName);
     defaultFileName = defaultFileName + ".csv";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
@@ -400,7 +400,7 @@ class ExportMenu {
       chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
       final File rootDir = new File(System.getProperties().getProperty("user.dir"));
       String defaultFileName = gameData.getGameName() + "_unit_stats";
-      defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+      defaultFileName = FileNameUtils.removeIllegalCharacters(defaultFileName);
       defaultFileName = defaultFileName + ".html";
       chooser.setSelectedFile(new File(rootDir, defaultFileName));
       if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
