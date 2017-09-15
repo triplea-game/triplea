@@ -63,7 +63,8 @@ public final class GameDataManager {
   public static GameData loadGame(final File file) throws IOException {
     checkNotNull(file);
 
-    try (final InputStream is = new BufferedInputStream(new FileInputStream(file))) {
+    try (final InputStream fis = new FileInputStream(file);
+        final InputStream is = new BufferedInputStream(fis)) {
       return loadGame(is);
     }
   }
@@ -92,7 +93,8 @@ public final class GameDataManager {
   }
 
   private static Memento loadMemento(final InputStream is) throws IOException {
-    try (final ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(is))) {
+    try (final InputStream gzipis = new GZIPInputStream(is);
+        final ObjectInputStream ois = new ObjectInputStream(gzipis)) {
       return (Memento) ois.readObject();
     } catch (final ClassNotFoundException e) {
       throw new IOException(e);
@@ -108,8 +110,7 @@ public final class GameDataManager {
     }
   }
 
-  private static GameData loadGameInSerializationFormat(final InputStream inputStream)
-      throws IOException {
+  private static GameData loadGameInSerializationFormat(final InputStream inputStream) throws IOException {
     final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
     try {
       final Version readVersion = (Version) input.readObject();
