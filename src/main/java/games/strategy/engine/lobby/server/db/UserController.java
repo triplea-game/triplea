@@ -77,6 +77,11 @@ public class UserController implements UserDao {
     }
   }
 
+  /**
+   * A method similar to update user, used by tests only.
+   * Does only affect the admin state of the given user.
+   * The DB is updated with user.isAdmin()
+   */
   public void makeAdmin(final DBUser user) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
