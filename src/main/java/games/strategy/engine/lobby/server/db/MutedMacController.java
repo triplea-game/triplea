@@ -15,13 +15,6 @@ public class MutedMacController {
   private static final Logger logger = Logger.getLogger(MutedMacController.class.getName());
 
   /**
-   * Mute the mac permanently.
-   */
-  public void addMutedMac(final String mac) {
-    addMutedMac(mac, null);
-  }
-
-  /**
    * Mute the given mac. If muteTill is not null, the mute will expire when muteTill is reached.
    *
    * <p>
