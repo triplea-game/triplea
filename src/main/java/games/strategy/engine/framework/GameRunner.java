@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -253,20 +254,23 @@ public class GameRunner {
     SwingUtilities.invokeLater(() -> {
       mainFrame.requestFocus();
       mainFrame.toFront();
-      mainFrame.setVisible(true);
 
       SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
 
       ProAI.gameOverClearCache();
       new Thread(() -> {
-        gameSelectorModel.loadDefaultGame(false);
-        final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
-        if (fileName.length() > 0) {
-          gameSelectorModel.load(new File(fileName), mainFrame);
-        }
-        final String downloadableMap = System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
-        if (!downloadableMap.isEmpty()) {
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
+        try {
+          gameSelectorModel.loadDefaultGame(false);
+          final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+          if (fileName.length() > 0) {
+            gameSelectorModel.load(new File(fileName), mainFrame);
+          }
+          final String downloadableMap = System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
+          if (!downloadableMap.isEmpty()) {
+            SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
+          }
+        } finally {
+          SwingUtilities.invokeLater(() -> mainFrame.setVisible(true));
         }
       }).start();
 
@@ -451,36 +455,6 @@ public class GameRunner {
     return img;
   }
 
-  static void startGame(final String savegamePath, final String classpath) {
-    final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath);
-    if (savegamePath != null && savegamePath.length() > 0) {
-      commands.add("-D" + GameRunner.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
-    }
-    // add in any existing command line items
-    for (final String property : GameRunner.COMMAND_LINE_ARGS) {
-      // we add game property above, and we add version bin in the populateBasicJavaArgs
-      if (GameRunner.TRIPLEA_GAME_PROPERTY.equals(property)
-          || GameRunner.TRIPLEA_ENGINE_VERSION_BIN.equals(property)) {
-        continue;
-      }
-      final String value = System.getProperty(property);
-      if (value != null) {
-        commands.add("-D" + property + "=" + value);
-      } else if (GameRunner.LOBBY_HOST.equals(property) || GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
-          || GameRunner.LOBBY_GAME_HOSTED_BY.equals(property)) {
-        // for these 3 properties, we clear them after hosting, but back them up.
-        final String oldValue = System.getProperty(property + GameRunner.OLD_EXTENSION);
-        if (oldValue != null) {
-          commands.add("-D" + property + "=" + oldValue);
-        }
-      }
-    }
-    // classpath for main
-    commands.add(GameRunner.class.getName());
-    ProcessRunnerUtil.exec(commands);
-  }
-
   public static void hostGame(final int port, final String playerName, final String comments, final String password,
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
@@ -490,9 +464,8 @@ public class GameRunner {
     commands.add("-D" + TRIPLEA_NAME_PROPERTY + "=" + playerName);
     commands.add("-D" + LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
-    commands
-        .add("-D" + GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + "="
-            + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
+    commands.add("-D" + GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + "="
+        + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
@@ -525,8 +498,7 @@ public class GameRunner {
     joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), newClassPath, messengers);
   }
 
-  // newClassPath can be null
-  private static void joinGame(final int port, final String hostAddressIp, final String newClassPath,
+  private static void joinGame(final int port, final String hostAddressIp, final @Nullable String newClassPath,
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
