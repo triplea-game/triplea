@@ -17,13 +17,6 @@ public class BannedUsernameController {
   private static final Logger logger = Logger.getLogger(BannedUsernameController.class.getName());
 
   /**
-   * Ban the username permanently.
-   */
-  public void addBannedUsername(final String username) {
-    addBannedUsername(username, null);
-  }
-
-  /**
    * Ban the given username. If banTill is not null, the ban will expire when banTill is reached.
    *
    * <p>
@@ -64,32 +57,26 @@ public class BannedUsernameController {
    * database any username's whose ban has expired.
    */
   public Tuple<Boolean, Timestamp> isUsernameBanned(final String username) {
-    boolean found = false;
-    boolean expired = false;
-    Timestamp banTill = null;
     final String sql = "select username, ban_till from banned_usernames where username = ?";
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
-        found = rs.next();
         // If the ban has expired, allow the username
-        if (found) {
-          banTill = rs.getTimestamp(2);
-          if (banTill != null && banTill.getTime() < System.currentTimeMillis()) {
+        if (rs.next()) {
+          final Timestamp banTill = rs.getTimestamp(2);
+          if (banTill != null && banTill.toInstant().isBefore(Instant.now())) {
             logger.fine("Ban expired for:" + username);
-            expired = true;
+            removeBannedUsername(username);
+            return Tuple.of(false, banTill);
           }
+          return Tuple.of(true, banTill);
         }
+        return Tuple.of(false, null);
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing banned username existence:" + username, sqle);
     }
-    if (expired) {
-      removeBannedUsername(username);
-      return Tuple.of(false, banTill);
-    }
-    return Tuple.of(found, banTill);
   }
 }

@@ -15,13 +15,6 @@ public class MutedUsernameController {
   private static final Logger logger = Logger.getLogger(MutedUsernameController.class.getName());
 
   /**
-   * Mute the username permanently.
-   */
-  public void addMutedUsername(final String username) {
-    addMutedUsername(username, null);
-  }
-
-  /**
    * Mute the given username. If muteTill is not null, the mute will expire when muteTill is reached.
    *
    * <p>
@@ -70,8 +63,6 @@ public class MutedUsernameController {
    * Returns epoch milli's of when mute expires, or negative one if there is no active mute.
    */
   public long getUsernameUnmuteTime(final String username) {
-    long result = -1;
-    boolean expired = false;
     final String sql = "select username, mute_till from muted_usernames where username = ?";
 
     try (final Connection con = Database.getPostgresConnection();
@@ -81,24 +72,19 @@ public class MutedUsernameController {
         final boolean found = rs.next();
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);
-          result = muteTill.getTime();
-          if (result < System.currentTimeMillis()) {
+          if (muteTill.toInstant().isBefore(Instant.now())) {
+            // If the mute has expired, allow the username
             logger.fine("Mute expired for:" + username);
-            expired = true;
+            removeMutedUsername(username);
+            // Signal as not-muted
+            return -1;
           }
-        } else {
-          result = -1;
+          return muteTill.getTime();
         }
+        return -1;
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing muted username existence:" + username, sqle);
     }
-    // If the mute has expired, allow the username
-    if (expired) {
-      removeMutedUsername(username);
-      // Signal as not-muted
-      result = -1;
-    }
-    return result;
   }
 }
