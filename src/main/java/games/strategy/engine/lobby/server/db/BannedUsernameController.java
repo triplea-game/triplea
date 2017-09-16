@@ -31,14 +31,12 @@ public class BannedUsernameController {
    * </p>
    */
   public void addBannedUsername(final String username, final Instant banTill) {
-    if (isUsernameBanned(username).getFirst()) {
-      removeBannedUsername(username);
-    }
     logger.fine("Banning username:" + username);
 
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement(
-            "insert into banned_usernames (username, ban_till) values (?, ?) on conflict do update")) {
+        final PreparedStatement ps =
+            con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)"
+                + " on conflict (username) do update set ban_till=excluded.ban_till")) {
       ps.setString(1, username);
       ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
       ps.execute();

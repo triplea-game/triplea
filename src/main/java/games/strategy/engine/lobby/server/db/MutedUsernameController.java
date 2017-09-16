@@ -29,14 +29,12 @@ public class MutedUsernameController {
    * </p>
    */
   public void addMutedUsername(final String username, final Instant muteTill) {
-    if (isUsernameMuted(username)) {
-      removeMutedUsername(username);
-    }
     logger.fine("Muting username:" + username);
 
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement(
-            "insert into muted_usernames (username, mute_till) values (?, ?) on conflict do update")) {
+        final PreparedStatement ps =
+            con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)"
+                + " on conflict (username) do update set mute_till=excluded.mute_till")) {
       ps.setString(1, username);
       ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
       ps.execute();
