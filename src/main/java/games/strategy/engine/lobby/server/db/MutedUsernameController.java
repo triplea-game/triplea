@@ -72,6 +72,9 @@ public class MutedUsernameController {
         final boolean found = rs.next();
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);
+          if (muteTill == null) {
+            return Long.MAX_VALUE;
+          }
           if (muteTill.toInstant().isBefore(Instant.now())) {
             // If the mute has expired, allow the username
             logger.fine("Mute expired for:" + username);
