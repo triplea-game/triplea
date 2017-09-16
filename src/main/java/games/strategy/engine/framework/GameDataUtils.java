@@ -25,7 +25,7 @@ public class GameDataUtils {
       sink.close();
       final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
       sink = null;
-      return GameDataManager.loadGame(source, null);
+      return GameDataManager.loadGame(source);
     } catch (final IOException ex) {
       ClientLogger.logQuietly(ex);
       return null;
