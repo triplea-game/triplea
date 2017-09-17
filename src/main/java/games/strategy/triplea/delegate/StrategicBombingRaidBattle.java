@@ -607,25 +607,22 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               }
               final UnitAttachment ua = UnitAttachment.get(u.getType());
               int maxDice = ua.getBombingMaxDieSides();
-              int bonus = ua.getBombingBonus();
+              final int bonus = ua.getBombingBonus();
               // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for
               // the map, and zero for the bonus.
               if (maxDice < 0) {
                 maxDice = diceSides;
               }
-              if (bonus < 0) {
-                bonus = 0;
-              }
               // now we roll, or don't if there is nothing to roll.
               if (maxDice > 0) {
                 final int[] dicerolls = bridge.getRandom(maxDice, rolls, m_attacker, DiceType.BOMBING, annotation);
                 for (final int die : dicerolls) {
-                  m_dice[i] = die + bonus;
+                  m_dice[i] = Math.max(0, die + bonus);
                   i++;
                 }
               } else {
                 for (int j = 0; j < rolls; j++) {
-                  m_dice[i] = bonus;
+                  m_dice[i] = Math.max(0, bonus);
                   i++;
                 }
               }
@@ -648,7 +645,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             if (maxDice < 0 || doNotUseBombingBonus) {
               maxDice = diceSides;
             }
-            if (bonus < 0 || doNotUseBombingBonus) {
+            if (doNotUseBombingBonus) {
               bonus = 0;
             }
             // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this
@@ -662,12 +659,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             if (maxDice > 0) {
               final int[] dicerolls = bridge.getRandom(maxDice, rolls, m_attacker, DiceType.BOMBING, annotation);
               for (final int die : dicerolls) {
-                m_dice[i] = die + bonus;
+                m_dice[i] = Math.max(0, die + bonus);
                 i++;
               }
             } else {
               for (int j = 0; j < rolls; j++) {
-                m_dice[i] = bonus;
+                m_dice[i] = Math.max(0, bonus);
                 i++;
               }
             }
