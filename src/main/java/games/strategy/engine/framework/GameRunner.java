@@ -254,23 +254,20 @@ public class GameRunner {
     SwingUtilities.invokeLater(() -> {
       mainFrame.requestFocus();
       mainFrame.toFront();
+      mainFrame.setVisible(true);
 
       SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
 
       ProAI.gameOverClearCache();
       new Thread(() -> {
-        try {
-          gameSelectorModel.loadDefaultGame(false);
-          final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
-          if (fileName.length() > 0) {
-            gameSelectorModel.load(new File(fileName), mainFrame);
-          }
-          final String downloadableMap = System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
-          if (!downloadableMap.isEmpty()) {
-            SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
-          }
-        } finally {
-          SwingUtilities.invokeLater(() -> mainFrame.setVisible(true));
+        gameSelectorModel.loadDefaultGame(false);
+        final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+        if (fileName.length() > 0) {
+          gameSelectorModel.load(new File(fileName), mainFrame);
+        }
+        final String downloadableMap = System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
+        if (!downloadableMap.isEmpty()) {
+          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
         }
       }).start();
 
