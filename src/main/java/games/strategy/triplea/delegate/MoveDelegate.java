@@ -484,20 +484,24 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Set<Unit> repairUnitsForThisUnit = new HashSet<>();
     final PlayerID owner = unitToBeRepaired.getOwner();
     final Match<Unit> repairUnit = Match.allOf(Matches.alliedUnit(owner, data),
-        Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired));
+        Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
     repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
     if (Matches.unitIsSea().match(unitToBeRepaired)) {
-      final Match<Unit> repairUnitLand = Match.allOf(repairUnit, Matches.unitIsLand());
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
       for (final Territory current : neighbors) {
+        final Match<Unit> repairUnitLand = Match.allOf(Matches.alliedUnit(owner, data),
+            Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, current),
+            Matches.unitIsLand());
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
       }
     } else if (Matches.unitIsLand().match(unitToBeRepaired)) {
-      final Match<Unit> repairUnitSea = Match.allOf(repairUnit, Matches.unitIsSea());
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater()));
       for (final Territory current : neighbors) {
+        final Match<Unit> repairUnitSea = Match.allOf(Matches.alliedUnit(owner, data),
+            Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, current),
+            Matches.unitIsSea());
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitSea));
       }
     }

@@ -1713,11 +1713,32 @@ public final class Matches {
     });
   }
 
-  static Match<Unit> unitCanRepairThisUnit(final Unit damagedUnit) {
+  static Match<Unit> unitCanRepairThisUnit(final Unit damagedUnit, final Territory territoryOfRepairUnit) {
     return Match.of(unitCanRepair -> {
-      // Damaged units can only be repaired by facilities if the unit owner controls their capital
-      if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(damagedUnit.getOwner(), damagedUnit.getData())) {
-        return false;
+      final Set<PlayerID> players =
+          GameStepPropertiesHelper.getCombinedTurns(damagedUnit.getData(), damagedUnit.getOwner());
+      if (players.size() > 1) {
+
+        // If combined turns then can repair as long as at least 1 capital is owned except at territories that a
+        // combined capital isn't owned
+        boolean atLeastOnePlayerOwnsCapital = false;
+        for (final PlayerID player : players) {
+          final boolean ownCapital =
+              TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(damagedUnit.getOwner(), damagedUnit.getData());
+          atLeastOnePlayerOwnsCapital = atLeastOnePlayerOwnsCapital || ownCapital;
+          if (!ownCapital && territoryOfRepairUnit.getOwner().equals(player)) {
+            return false;
+          }
+        }
+        if (!atLeastOnePlayerOwnsCapital) {
+          return false;
+        }
+      } else {
+
+        // Damaged units can only be repaired by facilities if the unit owner controls their capital
+        if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(damagedUnit.getOwner(), damagedUnit.getData())) {
+          return false;
+        }
       }
       final UnitAttachment ua = UnitAttachment.get(unitCanRepair.getType());
       return ua.getRepairsUnits() != null && ua.getRepairsUnits().keySet().contains(damagedUnit.getType());
@@ -1743,23 +1764,25 @@ public final class Matches {
         return false;
       }
       final Match<Unit> repairUnit = Match.allOf(alliedUnit(player, data),
-          unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit));
+          unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit, territory));
       if (Match.anyMatch(territory.getUnits().getUnits(), repairUnit)) {
         return true;
       }
       if (unitIsSea().match(damagedUnit)) {
-        final Match<Unit> repairUnitLand = Match.allOf(repairUnit, unitIsLand());
         final List<Territory> neighbors =
             new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
         for (final Territory current : neighbors) {
+          final Match<Unit> repairUnitLand = Match.allOf(alliedUnit(player, data),
+              unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit, current), unitIsLand());
           if (Match.anyMatch(current.getUnits().getUnits(), repairUnitLand)) {
             return true;
           }
         }
       } else if (unitIsLand().match(damagedUnit)) {
-        final Match<Unit> repairUnitSea = Match.allOf(repairUnit, unitIsSea());
         final List<Territory> neighbors = new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsWater()));
         for (final Territory current : neighbors) {
+          final Match<Unit> repairUnitSea = Match.allOf(alliedUnit(player, data),
+              unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit, current), unitIsSea());
           if (Match.anyMatch(current.getUnits().getUnits(), repairUnitSea)) {
             return true;
           }
