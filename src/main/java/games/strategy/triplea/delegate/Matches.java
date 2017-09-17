@@ -1724,7 +1724,7 @@ public final class Matches {
         boolean atLeastOnePlayerOwnsCapital = false;
         for (final PlayerID player : players) {
           final boolean ownCapital =
-              TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(damagedUnit.getOwner(), damagedUnit.getData());
+              TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, damagedUnit.getData());
           atLeastOnePlayerOwnsCapital = atLeastOnePlayerOwnsCapital || ownCapital;
           if (!ownCapital && territoryOfRepairUnit.getOwner().equals(player)) {
             return false;
