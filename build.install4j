@@ -209,7 +209,7 @@
                         <void property="imageAnchor">
                           <object class="java.lang.Enum" method="valueOf">
                             <class>com.install4j.api.beans.Anchor</class>
-                            <string>CENTER</string>
+                            <string>WEST</string>
                           </object>
                         </void>
                         <void property="imageEdgeBackgroundColor">
@@ -772,7 +772,7 @@ return true;</string>
                         <void property="imageAnchor">
                           <object class="java.lang.Enum" method="valueOf">
                             <class>com.install4j.api.beans.Anchor</class>
-                            <string>CENTER</string>
+                            <string>WEST</string>
                           </object>
                         </void>
                         <void property="imageEdgeBackgroundColor">
@@ -960,7 +960,7 @@ return true;</string>
                         <void property="imageAnchor">
                           <object class="java.lang.Enum" method="valueOf">
                             <class>com.install4j.api.beans.Anchor</class>
-                            <string>CENTER</string>
+                            <string>WEST</string>
                           </object>
                         </void>
                         <void property="imageEdgeBackgroundColor">
@@ -1157,7 +1157,7 @@ return true;</string>
                         <void property="imageAnchor">
                           <object class="java.lang.Enum" method="valueOf">
                             <class>com.install4j.api.beans.Anchor</class>
-                            <string>CENTER</string>
+                            <string>WEST</string>
                           </object>
                         </void>
                         <void property="imageEdgeBackgroundColor">
