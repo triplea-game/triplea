@@ -21,7 +21,7 @@ public class UnitsList implements Serializable, Iterable<Unit> {
   }
 
   public void put(final Unit unit) {
-    m_allUnits.put(unit.getID(), unit);
+    m_allUnits.put(unit.getId(), unit);
   }
 
   /*

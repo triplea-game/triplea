@@ -132,7 +132,7 @@ public class CommentPanel extends JPanel {
         final Pattern p = Pattern.compile("^COMMENT: (.*)");
         final Matcher m = p.matcher(title);
         if (m.matches()) {
-          final PlayerID playerId = data.getSequence().getStep().getPlayerID();
+          final PlayerID playerId = data.getSequence().getStep().getPlayerId();
           final int round = data.getSequence().getRound();
           final String player = playerId.getName();
           final Icon icon = iconMap.get(playerId);
@@ -177,7 +177,7 @@ public class CommentPanel extends JPanel {
       if (node instanceof Round) {
         round++;
       } else if (node instanceof Step) {
-        final PlayerID playerId = ((Step) node).getPlayerID();
+        final PlayerID playerId = ((Step) node).getPlayerId();
         if (playerId != null) {
           player = playerId.getName();
           icon = iconMap.get(playerId);

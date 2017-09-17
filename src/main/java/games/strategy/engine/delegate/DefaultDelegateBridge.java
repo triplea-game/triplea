@@ -47,7 +47,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
 
   @Override
   public PlayerID getPlayerID() {
-    return m_data.getSequence().getStep().getPlayerID();
+    return m_data.getSequence().getStep().getPlayerId();
   }
 
   public void setRandomSource(final IRandomSource randomSource) {

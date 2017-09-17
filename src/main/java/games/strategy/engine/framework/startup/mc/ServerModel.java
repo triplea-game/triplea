@@ -197,7 +197,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
     options.dispose();
-    if (!options.getOKPressed()) {
+    if (!options.getOkPressed()) {
       return null;
     }
     final String name = options.getName();

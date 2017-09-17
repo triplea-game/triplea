@@ -125,7 +125,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // allow user to cancel move if aa guns will fire
     final AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
     aaInMoveUtil.initialize(m_bridge);
-    final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAAWillFire(route, units);
+    final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {
       if (!getRemotePlayer().confirmMoveInFaceOfAA(aaFiringTerritores)) {
         return null;

@@ -47,7 +47,7 @@ import games.strategy.util.Tuple;
 public class BattleCalculator {
   private static final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 
-  public static void clearOOLCache() {
+  public static void clearOolCache() {
     oolCache.clear();
   }
 
@@ -92,7 +92,7 @@ public class BattleCalculator {
   /**
    * Choose plane casualties according to specified rules.
    */
-  public static CasualtyDetails getAACasualties(final boolean defending, final Collection<Unit> planes,
+  static CasualtyDetails getAaCasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> allFriendlyUnits, final Collection<Unit> defendingAa, final Collection<Unit> allEnemyUnits,
       final DiceRoll dice, final IDelegateBridge bridge, final PlayerID firingPlayer, final PlayerID hitPlayer,
       final GUID battleId, final Territory terr, final Collection<TerritoryEffect> territoryEffects,
@@ -110,7 +110,7 @@ public class BattleCalculator {
           dice.getHits(), allowMultipleHitsPerUnit);
     } else {
       if (Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
-        return getLowLuckAACasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
+        return getLowLuckAaCasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
       } else {
         // priority goes: choose -> individually -> random
         // if none are set, we roll individually
@@ -153,7 +153,7 @@ public class BattleCalculator {
     return Tuple.of(groupsOfSize, toRoll);
   }
 
-  private static CasualtyDetails getLowLuckAACasualties(final boolean defending, final Collection<Unit> planes,
+  private static CasualtyDetails getLowLuckAaCasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> defendingAa, final DiceRoll dice, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
     {
@@ -183,7 +183,7 @@ public class BattleCalculator {
     }
     final int chosenDiceSize = attackThenDiceSides.getSecond();
     final Triple<Integer, Integer, Boolean> triple =
-        DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAa,
+        DiceRoll.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAa,
             planes, data, false);
     final boolean allSameAttackPower = triple.getThird();
     // multiple HP units need to be counted multiple times:
@@ -395,7 +395,7 @@ public class BattleCalculator {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Triple<Integer, Integer, Boolean> triple =
-        DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAa,
+        DiceRoll.getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, !defending, defendingAa,
             planes, bridge.getData(), false);
     final boolean allSameAttackPower = triple.getThird();
     if (!allSameAttackPower) {

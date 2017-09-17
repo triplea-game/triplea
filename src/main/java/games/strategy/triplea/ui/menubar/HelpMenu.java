@@ -159,7 +159,7 @@ public class HelpMenu {
     if (player == null || unitImageFactory == null) {
       return "no image";
     }
-    final Optional<URL> imageUrl = unitImageFactory.getBaseImageURL(unitType.getName(), player);
+    final Optional<URL> imageUrl = unitImageFactory.getBaseImageUrl(unitType.getName(), player);
     final String imageLocation = imageUrl.isPresent() ? imageUrl.get().toString() : "";
 
     return "<img src=\"" + imageLocation + "\" border=\"0\"/>";

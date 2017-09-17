@@ -39,7 +39,7 @@ class OwnerChange extends Change {
     return player.getName();
   }
 
-  private static PlayerID getPlayerID(final String name, final GameData data) {
+  private static PlayerID getPlayerId(final String name, final GameData data) {
     if (name == null) {
       return null;
     }
@@ -54,7 +54,7 @@ class OwnerChange extends Change {
   @Override
   protected void perform(final GameData data) {
     // both names could be null
-    data.getMap().getTerritory(m_territory).setOwner(getPlayerID(m_new, data));
+    data.getMap().getTerritory(m_territory).setOwner(getPlayerId(m_new, data));
   }
 
   @Override

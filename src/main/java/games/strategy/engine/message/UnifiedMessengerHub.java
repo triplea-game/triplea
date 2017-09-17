@@ -173,7 +173,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       if (invocation.isWaitingOn(to)) {
         final RemoteMethodCallResults results =
             new RemoteMethodCallResults(new ConnectionLostException("Connection to " + to.getName() + " lost"));
-        final HubInvocationResults hubResults = new HubInvocationResults(results, invocation.getMethodCallID());
+        final HubInvocationResults hubResults = new HubInvocationResults(results, invocation.getMethodCallId());
         results(hubResults, to);
       }
     }

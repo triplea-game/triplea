@@ -170,7 +170,7 @@ public class GameSelectorModelTest {
     when(mockEntry.getGameData()).thenReturn(mockGameData);
     prepareMockGameDataExpectations();
     try {
-      when(mockEntry.getURI()).thenReturn(new URI("abc"));
+      when(mockEntry.getUri()).thenReturn(new URI("abc"));
     } catch (final URISyntaxException e) {
       throw new RuntimeException(e);
     }

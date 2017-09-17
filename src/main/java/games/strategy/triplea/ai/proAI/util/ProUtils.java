@@ -48,10 +48,10 @@ public class ProUtils {
         currentIndex -= sequence.size();
       }
       final GameStep step = sequence.getStep(currentIndex);
-      final PlayerID stepPlayer = step.getPlayerID();
+      final PlayerID stepPlayer = step.getPlayerId();
       if (step.getName().endsWith("CombatMove") && stepPlayer != null && !stepPlayer.equals(player)
           && !players.contains(stepPlayer)) {
-        players.add(step.getPlayerID());
+        players.add(step.getPlayerId());
       }
     }
     return players;
@@ -250,7 +250,7 @@ public class ProUtils {
   public static boolean isNeutralPlayer(final PlayerID player) {
     final GameData data = ProData.getData();
     for (final GameStep gameStep : data.getSequence()) {
-      if (player.equals(gameStep.getPlayerID())) {
+      if (player.equals(gameStep.getPlayerId())) {
         return false;
       }
     }

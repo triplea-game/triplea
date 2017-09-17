@@ -55,7 +55,7 @@ public class MapImage {
     return propertyMapFont;
   }
 
-  public static Color getPropertyTerritoryNameAndPUAndCommentcolor() {
+  public static Color getPropertyTerritoryNameAndPuAndCommentColor() {
     if (propertyTerritoryNameAndPuAndCommentColor == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyTerritoryNameAndPuAndCommentColor =

@@ -754,7 +754,7 @@ public class GameParser {
       final String defaultType = current.getAttribute("defaultType");
       final boolean isHidden = current.getAttribute("isHidden").equals("true");
       final PlayerID newPlayer = new PlayerID(name, isOptional, canBeDisabled, defaultType, isHidden, data);
-      playerList.addPlayerID(newPlayer);
+      playerList.addPlayerId(newPlayer);
     }
   }
 

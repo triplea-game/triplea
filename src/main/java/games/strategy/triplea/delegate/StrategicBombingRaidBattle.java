@@ -478,7 +478,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           /* defending */false, m_battleID, /* head-less */false, 0, allowMultipleHitsPerUnit);
       return casualtySelection;
     }
-    final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validAttackingUnitsForThisRoll,
+    final CasualtyDetails casualties = BattleCalculator.getAaCasualties(false, validAttackingUnitsForThisRoll,
         m_attackingUnits, defendingAa, m_defendingUnits, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite,
         m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
     final int totalExpectingHits =

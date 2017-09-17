@@ -104,7 +104,7 @@ class ExportMenu {
     try {
       gameData.acquireReadLock();
       final GameDataExporter exporter = new GameDataExporter(gameData);
-      xmlFile = exporter.getXML();
+      xmlFile = exporter.getXml();
     } finally {
       gameData.releaseReadLock();
     }
@@ -322,18 +322,18 @@ class ExportMenu {
           continue;
         }
         final Step step = (Step) element;
-        if (step.getPlayerID() == null || step.getPlayerID().isNull()) {
+        if (step.getPlayerId() == null || step.getPlayerId().isNull()) {
           continue;
         }
         // this is to stop from having multiple entries for each players turn.
         if (!showPhaseStats) {
-          if (step.getPlayerID() == currentPlayer) {
+          if (step.getPlayerId() == currentPlayer) {
             continue;
           }
         }
-        currentPlayer = step.getPlayerID();
+        currentPlayer = step.getPlayerId();
         clone.getHistory().gotoNode(element);
-        final String playerName = step.getPlayerID() == null ? "" : step.getPlayerID().getName() + ": ";
+        final String playerName = step.getPlayerId() == null ? "" : step.getPlayerId().getName() + ": ";
         String stepName = step.getStepName();
         // copied directly from TripleAPlayer, will probably have to be updated in the future if more delegates are made
         if (stepName.endsWith("Bid")) {

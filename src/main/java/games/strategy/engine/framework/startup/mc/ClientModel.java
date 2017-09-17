@@ -115,7 +115,7 @@ public class ClientModel implements IMessengerErrorListener {
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
     options.dispose();
-    if (!options.getOKPressed()) {
+    if (!options.getOkPressed()) {
       return null;
     }
     final ClientProps props = new ClientProps();

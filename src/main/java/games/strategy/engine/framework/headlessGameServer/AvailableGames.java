@@ -54,7 +54,7 @@ public class AvailableGames {
    * Can return null.
    */
   public GameData getGameData(final String gameName) {
-    return getGameDataFromXML(availableGames.get(gameName));
+    return getGameDataFromXml(availableGames.get(gameName));
   }
 
   /**
@@ -184,7 +184,7 @@ public class AvailableGames {
     return false;
   }
 
-  private static GameData getGameDataFromXML(final URI uri) {
+  private static GameData getGameDataFromXml(final URI uri) {
     if (uri == null) {
       return null;
     }

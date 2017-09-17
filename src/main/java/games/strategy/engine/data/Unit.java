@@ -32,7 +32,7 @@ public class Unit extends GameDataComponent {
     setOwner(owner);
   }
 
-  public GUID getID() {
+  public GUID getId() {
     return m_uid;
   }
 
@@ -122,7 +122,7 @@ public class Unit extends GameDataComponent {
                   ? "UNKNOWN OWNER" : m_owner.getName())
               + " in territory: " + ((this.getData() != null && this.getData().getMap() != null)
                   ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY")
-              + " with id: " + getID();
+              + " with id: " + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return 0;
     }
@@ -139,7 +139,7 @@ public class Unit extends GameDataComponent {
                   ? "UNKNOWN OWNER" : m_owner.getName())
               + " in territory: " + ((this.getData() != null && this.getData().getMap() != null)
                   ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY")
-              + " with id: " + getID();
+              + " with id: " + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return text;
     }

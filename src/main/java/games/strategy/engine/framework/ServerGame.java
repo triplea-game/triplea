@@ -515,7 +515,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void waitForPlayerToFinishStep() {
-    final PlayerID playerId = getCurrentStep().getPlayerID();
+    final PlayerID playerId = getCurrentStep().getPlayerId();
     // no player specified for the given step
     if (playerId == null) {
       return;
@@ -542,7 +542,7 @@ public class ServerGame extends AbstractGame {
     final String delegateName = currentStep.getDelegate().getName();
     final String displayName = currentStep.getDisplayName();
     final int round = m_data.getSequence().getRound();
-    final PlayerID id = currentStep.getPlayerID();
+    final PlayerID id = currentStep.getPlayerId();
     notifyGameStepListeners(stepName, delegateName, id, round, displayName);
     getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, round, displayName, loadedFromSavedGame);
   }
@@ -553,7 +553,7 @@ public class ServerGame extends AbstractGame {
     // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
     // the first delegate to
     // start before making changes.
-    if (getCurrentStep() == null || getCurrentStep().getPlayerID() == null || (m_firstRun)) {
+    if (getCurrentStep() == null || getCurrentStep().getPlayerId() == null || (m_firstRun)) {
       m_firstRun = false;
       return;
     }

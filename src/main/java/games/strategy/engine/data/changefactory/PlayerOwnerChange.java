@@ -28,8 +28,8 @@ class PlayerOwnerChange extends Change {
     m_new = new HashMap<>();
     m_location = location.getName();
     for (final Unit unit : units) {
-      m_old.put(unit.getID(), unit.getOwner().getName());
-      m_new.put(unit.getID(), newOwner.getName());
+      m_old.put(unit.getId(), unit.getOwner().getName());
+      m_new.put(unit.getId(), newOwner.getName());
     }
   }
 

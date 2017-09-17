@@ -38,7 +38,7 @@ public final class UnitProxy implements Proxy {
 
     gameData = unit.getData();
     hits = unit.getHits();
-    id = unit.getID();
+    id = unit.getId();
     type = unit.getType();
   }
 

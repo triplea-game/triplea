@@ -131,7 +131,7 @@ public class TechTracker implements Serializable {
     return TechAttachment.get(player).getIncreasedFactoryProduction();
   }
 
-  public static boolean hasAARadar(final PlayerID player) {
+  public static boolean hasAaRadar(final PlayerID player) {
     return TechAttachment.get(player).getAARadar();
   }
 }

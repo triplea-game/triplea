@@ -135,11 +135,11 @@ public class UnitImageFactory {
     return Optional.of(scaledImage);
   }
 
-  public Optional<URL> getBaseImageURL(final String baseImageName, final PlayerID id) {
-    return getBaseImageURL(baseImageName, id, m_resourceLoader);
+  public Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerID id) {
+    return getBaseImageUrl(baseImageName, id, m_resourceLoader);
   }
 
-  private static Optional<URL> getBaseImageURL(final String baseImageName, final PlayerID id,
+  private static Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerID id,
       final ResourceLoader resourceLoader) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
@@ -148,10 +148,10 @@ public class UnitImageFactory {
   }
 
   private Optional<Image> getBaseImage(final String baseImageName, final PlayerID id) {
-    final Optional<URL> imageLocation = getBaseImageURL(baseImageName, id);
+    final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, id);
     Image image = null;
     if (imageLocation.isPresent()) {
-      image = Toolkit.getDefaultToolkit().getImage(getBaseImageURL(baseImageName, id).get());
+      image = Toolkit.getDefaultToolkit().getImage(getBaseImageUrl(baseImageName, id).get());
       Util.ensureImageLoaded(image);
     }
     return Optional.ofNullable(image);
@@ -207,14 +207,14 @@ public class UnitImageFactory {
         if (TechTracker.hasRocket(id) && UnitAttachment.get(type).getIsRocket()) {
           name = new StringBuilder("rockets");
         }
-        if (TechTracker.hasAARadar(id) && Matches.unitTypeIsAaForAnything().match(type)) {
+        if (TechTracker.hasAaRadar(id) && Matches.unitTypeIsAaForAnything().match(type)) {
           name.append("_r");
         }
       } else if (UnitAttachment.get(type).getIsRocket() && Matches.unitTypeIsAaForAnything().match(type)) {
         if (TechTracker.hasRocket(id)) {
           name.append("_rockets");
         }
-        if (TechTracker.hasAARadar(id)) {
+        if (TechTracker.hasAaRadar(id)) {
           name.append("_r");
         }
       } else if (UnitAttachment.get(type).getIsRocket()) {
@@ -222,7 +222,7 @@ public class UnitImageFactory {
           name.append("_rockets");
         }
       } else if (Matches.unitTypeIsAaForAnything().match(type)) {
-        if (TechTracker.hasAARadar(id)) {
+        if (TechTracker.hasAaRadar(id)) {
           name.append("_r");
         }
       }

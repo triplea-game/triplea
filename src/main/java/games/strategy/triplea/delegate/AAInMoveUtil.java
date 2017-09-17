@@ -48,11 +48,11 @@ class AAInMoveUtil implements Serializable {
     return m_bridge.getData();
   }
 
-  private boolean isAlwaysONAAEnabled() {
+  private boolean isAlwaysOnAaEnabled() {
     return Properties.getAlwaysOnAA(getData());
   }
 
-  private boolean isAATerritoryRestricted() {
+  private boolean isAaTerritoryRestricted() {
     return Properties.getAATerritoryRestricted(getData());
   }
 
@@ -67,7 +67,7 @@ class AAInMoveUtil implements Serializable {
   /**
    * Fire aa guns. Returns units to remove.
    */
-  Collection<Unit> fireAA(final Route route, final Collection<Unit> units, final Comparator<Unit> decreasingMovement,
+  Collection<Unit> fireAa(final Route route, final Collection<Unit> units, final Comparator<Unit> decreasingMovement,
       final UndoableMove currentMove) {
     if (m_executionStack.isEmpty()) {
       populateExecutionStack(route, units, decreasingMovement, currentMove);
@@ -79,7 +79,7 @@ class AAInMoveUtil implements Serializable {
   /**
    * Fire the aa units in the given territory, hits are removed from units.
    */
-  private void fireAA(final Territory territory, final Collection<Unit> units, final UndoableMove currentMove) {
+  private void fireAa(final Territory territory, final Collection<Unit> units, final UndoableMove currentMove) {
     if (units.isEmpty()) {
       return;
     }
@@ -163,13 +163,13 @@ class AAInMoveUtil implements Serializable {
     // select units with lowest movement first
     targets.sort(decreasingMovement);
     final List<IExecutable> executables = new ArrayList<>();
-    for (Territory location : getTerritoriesWhereAAWillFire(route, units)) {
+    for (Territory location : getTerritoriesWhereAaWillFire(route, units)) {
       executables.add(new IExecutable() {
         private static final long serialVersionUID = -1545771595683434276L;
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireAA(location, targets, currentMove);
+          fireAa(location, targets, currentMove);
         }
       });
     }
@@ -177,10 +177,10 @@ class AAInMoveUtil implements Serializable {
     m_executionStack.push(executables);
   }
 
-  Collection<Territory> getTerritoriesWhereAAWillFire(final Route route, final Collection<Unit> units) {
-    final boolean alwaysOnAa = isAlwaysONAAEnabled();
+  Collection<Territory> getTerritoriesWhereAaWillFire(final Route route, final Collection<Unit> units) {
+    final boolean alwaysOnAa = isAlwaysOnAaEnabled();
     // Just the attacked territory will have AA firing
-    if (!alwaysOnAa && isAATerritoryRestricted()) {
+    if (!alwaysOnAa && isAaTerritoryRestricted()) {
       return Collections.emptyList();
     }
     final GameData data = getData();
@@ -268,7 +268,7 @@ class AAInMoveUtil implements Serializable {
   private void selectCasualties(final DiceRoll dice, final Collection<Unit> allFriendlyUnits,
       final Collection<Unit> validTargetedUnitsForThisRoll, final Collection<Unit> defendingAa,
       final Collection<Unit> allEnemyUnits, final Territory territory, final String currentTypeAa) {
-    final CasualtyDetails casualties = BattleCalculator.getAACasualties(false, validTargetedUnitsForThisRoll,
+    final CasualtyDetails casualties = BattleCalculator.getAaCasualties(false, validTargetedUnitsForThisRoll,
         allFriendlyUnits, defendingAa, allEnemyUnits, dice, m_bridge, territory.getOwner(), m_player, null, territory,
         TerritoryEffectHelper.getEffects(territory), false, new ArrayList<>());
     getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),

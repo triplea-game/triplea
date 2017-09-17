@@ -148,7 +148,7 @@ public class WW2V3Year41Test {
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
             defendingAa, bridge, territory("Germany", gameData), true);
-    final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAa,
+    final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 2);
     // should be 1 fighter and 1 bomber
@@ -181,7 +181,7 @@ public class WW2V3Year41Test {
             defendingAa, bridge, territory("Germany", gameData), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
-    final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAa,
+    final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 3);
     // should be 1 fighter and 2 bombers
@@ -216,7 +216,7 @@ public class WW2V3Year41Test {
     assertEquals(roll.getHits(), 2);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
-    final Collection<Unit> casualties = BattleCalculator.getAACasualties(false, planes, planes, defendingAa,
+    final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(casualties.size(), 2);
     assertEquals(4, randomSource.getTotalRolled());

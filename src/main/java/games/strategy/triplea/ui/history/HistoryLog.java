@@ -96,7 +96,7 @@ public class HistoryLog extends JFrame {
       curNode = (HistoryNode) curNode.getPreviousNode();
     }
     if (stepNode != null) {
-      curPlayer = stepNode.getPlayerID();
+      curPlayer = stepNode.getPlayerId();
       if (players.isEmpty()) {
         players.add(curPlayer);
       }
@@ -107,10 +107,10 @@ public class HistoryLog extends JFrame {
         if (stepNode == null) {
           break;
         }
-        if (stepNode.getPlayerID() == null) {
+        if (stepNode.getPlayerId() == null) {
           break;
         }
-        if (!players.contains(stepNode.getPlayerID())) {
+        if (!players.contains(stepNode.getPlayerId())) {
           break;
         }
       }
@@ -129,7 +129,7 @@ public class HistoryLog extends JFrame {
       for (final Object pathNode : pathToNode) {
         final HistoryNode node = (HistoryNode) pathNode;
         if (node instanceof Step) {
-          curPlayer = ((Step) node).getPlayerID();
+          curPlayer = ((Step) node).getPlayerId();
         }
       }
     }
@@ -139,7 +139,7 @@ public class HistoryLog extends JFrame {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
         if (node instanceof Step) {
           final String title = node.getTitle();
-          final PlayerID playerId = ((Step) node).getPlayerID();
+          final PlayerID playerId = ((Step) node).getPlayerId();
           if (!title.equals("Initializing Delegates")) {
             if (playerId != null) {
               curPlayer = playerId;
@@ -148,7 +148,7 @@ public class HistoryLog extends JFrame {
         }
       }
       curNode = curNode.getNextSibling();
-    } while ((curNode instanceof Step) && ((Step) curNode).getPlayerID().equals(curPlayer));
+    } while ((curNode instanceof Step) && ((Step) curNode).getPlayerId().equals(curPlayer));
     return curPlayer;
   }
 
@@ -172,7 +172,7 @@ public class HistoryLog extends JFrame {
           logWriter.println();
         }
         if (node instanceof Step) {
-          currentPlayer = ((Step) node).getPlayerID();
+          currentPlayer = ((Step) node).getPlayerId();
         }
       }
     }
@@ -351,7 +351,7 @@ public class HistoryLog extends JFrame {
             logWriter.println(indent + title);
           }
         } else if (node instanceof Step) {
-          final PlayerID playerId = ((Step) node).getPlayerID();
+          final PlayerID playerId = ((Step) node).getPlayerId();
           if (!title.equals("Initializing Delegates")) {
             logWriter.println();
             logWriter.print(indent + title);
@@ -373,7 +373,7 @@ public class HistoryLog extends JFrame {
         }
       } // while (nodeEnum.hasMoreElements())
       curNode = curNode.getNextSibling();
-    } while (curNode != null && (curNode instanceof Step) && players.contains(((Step) curNode).getPlayerID()));
+    } while (curNode != null && (curNode instanceof Step) && players.contains(((Step) curNode).getPlayerId()));
     // if we are mid-phase, this might not get flushed
     if (moving && !moveList.isEmpty()) {
       final Iterator<String> moveIter = moveList.iterator();
@@ -407,7 +407,7 @@ public class HistoryLog extends JFrame {
     PlayerID player;
     data.acquireReadLock();
     try {
-      player = data.getSequence().getStep().getPlayerID();
+      player = data.getSequence().getStep().getPlayerId();
       territories = data.getMap().getTerritories();
     } finally {
       data.releaseReadLock();

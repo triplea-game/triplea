@@ -31,7 +31,7 @@ public class PlayerOrderComparator implements Comparator<PlayerID> {
       gameData.releaseReadLock();
     }
     for (final GameStep s : sequence) {
-      if (s.getPlayerID() == null) {
+      if (s.getPlayerId() == null) {
         continue;
       }
       final IDelegate delegate;
@@ -52,9 +52,9 @@ public class PlayerOrderComparator implements Comparator<PlayerID> {
       } else if (s.getName() != null && (s.getName().endsWith("Bid") || s.getName().endsWith("BidPlace"))) {
         continue;
       }
-      if (s.getPlayerID().equals(p1)) {
+      if (s.getPlayerId().equals(p1)) {
         return -1;
-      } else if (s.getPlayerID().equals(p2)) {
+      } else if (s.getPlayerId().equals(p2)) {
         return 1;
       }
     }

@@ -189,7 +189,7 @@ public class ProPurchaseOptionMap {
     return seaSubOptions;
   }
 
-  public List<ProPurchaseOption> getAAOptions() {
+  public List<ProPurchaseOption> getAaOptions() {
     return aaOptions;
   }
 
