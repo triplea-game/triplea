@@ -221,7 +221,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     final Collection<Territory> territories = data.getMap().getTerritories();
     while (allianceIter.hasNext()) {
       allianceName = allianceIter.next();
-      final int vcAmount = getVCAmount(data, allianceName, victoryType);
+      final int vcAmount = getVcAmount(data, allianceName, victoryType);
       final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
       int teamVCs = 0;
       for (final Territory t : territories) {
@@ -245,7 +245,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     return data.getProperties().get(alliance + " Economic Victory", 200);
   }
 
-  private static int getVCAmount(final GameData data, final String alliance, final String type) {
+  private static int getVcAmount(final GameData data, final String alliance, final String type) {
     int defaultVc = 20;
     if (type.equals(" Total Victory VCs")) {
       defaultVc = 18;

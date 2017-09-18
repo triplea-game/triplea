@@ -169,11 +169,11 @@ public class BattleRecord implements Serializable {
     this.defender = defender;
   }
 
-  protected int getAttackerLostTUV() {
+  int getAttackerLostTuv() {
     return attackerLostTUV;
   }
 
-  protected int getDefenderLostTUV() {
+  int getDefenderLostTuv() {
     return defenderLostTUV;
   }
 

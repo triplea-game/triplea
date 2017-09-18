@@ -63,7 +63,7 @@ public class GameSelectorModel extends Observable {
     if (entry.getGameData() != null) {
       ClientSetting.DEFAULT_GAME_NAME_PREF.save(entry.getGameData().getGameName());
     }
-    ClientSetting.DEFAULT_GAME_URI_PREF.save(entry.getURI().toString());
+    ClientSetting.DEFAULT_GAME_URI_PREF.save(entry.getUri().toString());
     ClientSetting.flush();
   }
 

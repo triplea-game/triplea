@@ -147,7 +147,7 @@ public class ServerOptions extends JDialog {
     content.add(buttons, BorderLayout.SOUTH);
   }
 
-  public boolean getOKPressed() {
+  public boolean getOkPressed() {
     return okPressed;
   }
 

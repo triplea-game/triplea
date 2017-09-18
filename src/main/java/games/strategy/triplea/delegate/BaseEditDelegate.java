@@ -53,7 +53,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
     return getEditMode(getData());
   }
 
-  protected String checkPlayerID() {
+  private String checkPlayerId() {
     final IRemotePlayer remotePlayer = getRemotePlayer();
     if (!m_bridge.getPlayerID().equals(remotePlayer.getPlayerID())) {
       return "Edit actions can only be performed during players turn";
@@ -62,7 +62,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   }
 
   protected String checkEditMode() {
-    final String result = checkPlayerID();
+    final String result = checkPlayerId();
     if (null != result) {
       return result;
     }
@@ -84,7 +84,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
 
   public String addComment(final String message) {
     String result = null;
-    if (null != (result = checkPlayerID())) {
+    if (null != (result = checkPlayerId())) {
       return result;
     }
     logEvent("COMMENT: " + message, null);

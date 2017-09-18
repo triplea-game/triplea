@@ -487,14 +487,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   List<String> determineStepStrings(final boolean showFirstRun) {
     final List<String> steps = new ArrayList<>();
-    if (canFireOffensiveAA()) {
+    if (canFireOffensiveAa()) {
       for (final String typeAa : UnitAttachment.getAllOfTypeAAs(m_offensiveAA)) {
         steps.add(m_attacker.getName() + " " + typeAa + AA_GUNS_FIRE_SUFFIX);
         steps.add(m_defender.getName() + SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
         steps.add(m_defender.getName() + REMOVE_PREFIX + typeAa + CASUALTIES_SUFFIX);
       }
     }
-    if (canFireDefendingAA()) {
+    if (canFireDefendingAa()) {
       for (final String typeAa : UnitAttachment.getAllOfTypeAAs(m_defendingAA)) {
         steps.add(m_defender.getName() + " " + typeAa + AA_GUNS_FIRE_SUFFIX);
         steps.add(m_attacker.getName() + SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
@@ -679,15 +679,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void addFightStartToStack(final boolean firstRun, final List<IExecutable> steps) {
-    final boolean offensiveAa = canFireOffensiveAA();
-    final boolean defendingAa = canFireDefendingAA();
+    final boolean offensiveAa = canFireOffensiveAa();
+    final boolean defendingAa = canFireDefendingAa();
     if (offensiveAa) {
       steps.add(new IExecutable() {
         private static final long serialVersionUID = 3802352588499530533L;
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireOffensiveAAGuns();
+          fireOffensiveAaGuns();
         }
       });
     }
@@ -697,7 +697,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireDefensiveAAGuns();
+          fireDefensiveAaGuns();
         }
       });
     }
@@ -2144,11 +2144,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return Properties.getTransportCasualtiesRestricted(m_data);
   }
 
-  private void fireOffensiveAAGuns() {
+  private void fireOffensiveAaGuns() {
     m_stack.push(new FireAA(false));
   }
 
-  private void fireDefensiveAAGuns() {
+  private void fireDefensiveAaGuns() {
     m_stack.push(new FireAA(true));
   }
 
@@ -2165,7 +2165,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      if ((m_defending && !canFireDefendingAA()) || (!m_defending && !canFireOffensiveAA())) {
+      if ((m_defending && !canFireDefendingAa()) || (!m_defending && !canFireOffensiveAa())) {
         return;
       }
       for (final String currentTypeAa : (m_defending ? m_defendingAAtypes : m_offensiveAAtypes)) {
@@ -2250,7 +2250,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       // send defender the dice roll so he can see what the dice are while he waits for attacker to select casualties
       getDisplay(bridge).notifyDice(m_dice, (m_defending ? m_attacker.getName() : m_defender.getName())
           + SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
-      return BattleCalculator.getAACasualties(!m_defending, validAttackingUnitsForThisRoll,
+      return BattleCalculator.getAaCasualties(!m_defending, validAttackingUnitsForThisRoll,
           (m_defending ? m_attackingUnits : m_defendingUnits), defendingAa,
           (m_defending ? m_defendingUnits : m_attackingUnits), m_dice, bridge, (m_defending ? m_defender : m_attacker),
           (m_defending ? m_attacker : m_defender), m_battleID, m_battleSite, m_territoryEffects, m_isAmphibious,
@@ -2293,14 +2293,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private boolean canFireDefendingAA() {
+  private boolean canFireDefendingAa() {
     if (m_defendingAA == null) {
       updateDefendingAAUnits();
     }
     return m_defendingAA.size() > 0;
   }
 
-  private boolean canFireOffensiveAA() {
+  private boolean canFireOffensiveAa() {
     if (m_offensiveAA == null) {
       updateOffensiveAAUnits();
     }

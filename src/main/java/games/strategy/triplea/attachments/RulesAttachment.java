@@ -683,49 +683,49 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && getDirectPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectPresenceTerritories();
-      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "direct", getTerritoryCount(), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getAlliedPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedPresenceTerritories();
-      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "allied", getTerritoryCount(), players, data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getEnemyPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemyPresenceTerritories();
-      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXML(terrs, players, data), "enemy",
+      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXml(terrs, players, data), "enemy",
           getTerritoryCount(), players, data);
     }
     // Check for direct unit exclusions (veqryn)
     if (objectiveMet && getDirectExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectExclusionTerritories();
-      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "direct", getTerritoryCount(), players, data);
     }
     // Check for allied unit exclusions
     if (objectiveMet && getAlliedExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedExclusionTerritories();
-      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "allied", getTerritoryCount(), players, data);
     }
     // Check for enemy unit exclusions (ANY UNITS)
     if (objectiveMet && getEnemyExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemyExclusionTerritories();
-      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "enemy", getTerritoryCount(), players, data);
     }
     // Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
     if (objectiveMet && getEnemySurfaceExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemySurfaceExclusionTerritories();
-      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXML(terrs, players, data),
+      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "enemy_surface", getTerritoryCount(), players, data);
     }
     // Check for Territory Ownership rules
@@ -738,31 +738,31 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           final Collection<PlayerID> allies =
               Matches.getMatches(data.getPlayerList().getPlayers(),
                   Matches.isAlliedWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, allies, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
         } else if (terrs[0].equals("enemy")) {
           final Collection<PlayerID> enemies =
               Matches.getMatches(data.getPlayerList().getPlayers(),
                   Matches.isAtWarWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
         }
       } else if (terrs.length == 2) {
         if (terrs[1].equals("original")) {
           final Collection<PlayerID> allies =
               Matches.getMatches(data.getPlayerList().getPlayers(),
                   Matches.isAlliedWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, allies, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
         } else if (terrs[1].equals("enemy")) {
           final Collection<PlayerID> enemies =
               Matches.getMatches(data.getPlayerList().getPlayers(),
                   Matches.isAtWarWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
         }
       } else {
-        listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+        listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
       }
       objectiveMet = checkAlliedOwnership(listedTerritories, getTerritoryCount(), players, data);
     }
@@ -773,28 +773,28 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       Set<Territory> listedTerritories;
       if (terrs.length == 1) {
         if (terrs[0].equals("original")) {
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
         } else if (terrs[0].equals("enemy")) {
           final Collection<PlayerID> enemies =
               Matches.getMatches(data.getPlayerList().getPlayers(),
                   Matches.isAtWarWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
         }
       } else if (terrs.length == 2) {
         if (terrs[1].equals("original")) {
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
         } else if (terrs[1].equals("enemy")) {
           final Collection<PlayerID> enemies =
               Matches.getMatches(data.getPlayerList().getPlayers(),
                   Matches.isAtWarWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, enemies, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
         } else {
-          listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
         }
       } else {
-        listedTerritories = getTerritoryListBasedOnInputFromXML(terrs, players, data);
+        listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
       }
       objectiveMet = checkDirectOwnership(listedTerritories, getTerritoryCount(), players);
     }
@@ -816,7 +816,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final int requiredDestroyedTuv = getInt(s[0]);
       if (requiredDestroyedTuv >= 0) {
         final boolean justCurrentRound = s[1].equals("currentRound");
-        final int destroyedTuvForThisRoundSoFar = BattleRecordsList.getTUVdamageCausedByPlayer(playerAttachedTo,
+        final int destroyedTuvForThisRoundSoFar = BattleRecordsList.getTuvDamageCausedByPlayer(playerAttachedTo,
             data.getBattleRecordsList(), 0, data.getSequence().getRound(), justCurrentRound, false);
         if (requiredDestroyedTuv > destroyedTuvForThisRoundSoFar) {
           objectiveMet = false;

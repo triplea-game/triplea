@@ -149,7 +149,7 @@ public class DiceRoll implements Externalizable {
     // LOW LUCK
     if (Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
       final String annotation = "Roll " + typeAa + " in " + location.getName();
-      final Triple<Integer, Integer, Boolean> triple = getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
+      final Triple<Integer, Integer, Boolean> triple = getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
           null, null, defending, defendingAa, validAttackingUnitsForThisRoll, data, false);
       final int totalPower = triple.getFirst();
       hits += getLowLuckHits(bridge, sortedDice, totalPower, chosenDiceSizeForAll, defendingAa.get(0).getOwner(),
@@ -158,7 +158,7 @@ public class DiceRoll implements Externalizable {
       final String annotation = "Roll " + typeAa + " in " + location.getName();
       final int[] dice = bridge.getRandom(chosenDiceSizeForAll, totalAAattacksTotal, defendingAa.get(0).getOwner(),
           DiceType.COMBAT, annotation);
-      hits += getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(dice, sortedDice, defending, defendingAa,
+      hits += getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(dice, sortedDice, defending, defendingAa,
           validAttackingUnitsForThisRoll, data, true).getSecond();
     }
     final DiceRoll roll = new DiceRoll(sortedDice, hits);
@@ -182,7 +182,7 @@ public class DiceRoll implements Externalizable {
    *         true, but if one
    *         roll is at 1 and another roll is at 2, then we return false)
    */
-  public static Triple<Integer, Integer, Boolean> getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
+  public static Triple<Integer, Integer, Boolean> getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
       final int[] dice, final List<Die> sortedDice, final boolean defending,
       final Collection<Unit> defendingAaForThisRoll, final Collection<Unit> validAttackingUnitsForThisRoll,
       final GameData data, final boolean fillInSortedDiceAndRecordHits) {
@@ -1026,7 +1026,7 @@ public class DiceRoll implements Externalizable {
     if (player.isNull() || data.getSequence().getRound() != 1 || isNegateDominatingFirstRoundAttack(player)) {
       return false;
     }
-    return isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerID());
+    return isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
   }
 
   private static boolean isDominatingFirstRoundAttack(final PlayerID player) {

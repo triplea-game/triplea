@@ -399,7 +399,7 @@ class ViewMenu {
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
       final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null,
-          MapImage.getPropertyTerritoryNameAndPUAndCommentcolor());
+          MapImage.getPropertyTerritoryNameAndPuAndCommentColor());
       final ColorProperty unitCountColor =
           new ColorProperty("Unit Count Color", null, MapImage.getPropertyUnitCountColor());
       final ColorProperty factoryDamageColor =

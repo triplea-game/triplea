@@ -172,7 +172,7 @@ class ProPurchaseAI {
 
       // Prioritize land place options purchase AA then land units
       final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
-      purchaseAAUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions.getAAOptions());
+      purchaseAAUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions.getAaOptions());
       purchaseLandUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions, territoryValueMap);
 
       // Prioritize sea territories that need defended and purchase additional defenders
@@ -264,7 +264,7 @@ class ProPurchaseAI {
 
     // Prioritize land place options purchase AA then land units
     final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
-    purchaseAAUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions.getAAOptions());
+    purchaseAAUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions.getAaOptions());
     purchaseLandUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions, territoryValueMap);
 
     // Prioritize sea territories that need defended and purchase additional defenders

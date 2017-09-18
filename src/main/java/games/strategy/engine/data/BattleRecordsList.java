@@ -83,7 +83,7 @@ public class BattleRecordsList extends GameDataComponent {
   }
 
   // Interpretation stuff below
-  public static int getTUVdamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList brl,
+  public static int getTuvDamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList brl,
       final int beginningRound, final int endRound, final boolean currentRoundOnly, final boolean includeNullPlayer) {
     int damageCausedByAttacker = 0;
     final Collection<BattleRecords> brs = new ArrayList<>();
@@ -109,7 +109,7 @@ public class BattleRecordsList extends GameDataComponent {
     }
     for (final BattleRecords br : brs) {
       damageCausedByAttacker += BattleRecords
-          .getLostTUVforBattleRecords(BattleRecords.getRecordsForPlayerID(attacker, br), false, includeNullPlayer);
+          .getLostTuvForBattleRecords(BattleRecords.getRecordsForPlayerId(attacker, br), false, includeNullPlayer);
     }
     return damageCausedByAttacker;
   }
@@ -142,7 +142,7 @@ public class BattleRecordsList extends GameDataComponent {
     // null for attacker means any attacker
     for (final BattleRecords br : brs) {
       if (BattleRecords.getWereThereBattlesInTerritoriesMatching(
-          (attacker == null ? BattleRecords.getAllRecords(br) : BattleRecords.getRecordsForPlayerID(attacker, br)),
+          (attacker == null ? BattleRecords.getAllRecords(br) : BattleRecords.getRecordsForPlayerId(attacker, br)),
           attacker, defender, battleType, anyOfTheseTerritories)) {
         return true;
       }

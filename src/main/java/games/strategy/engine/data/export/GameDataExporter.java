@@ -540,8 +540,8 @@ public class GameDataExporter {
           | IllegalAccessException e) {
         ClientLogger.logError("An Error occured whilst trying to sequence in game " + data.getGameName(), e);
       }
-      if (step.getPlayerID() != null) {
-        xmlfile.append(" player=\"").append(step.getPlayerID().getName()).append("\"");
+      if (step.getPlayerId() != null) {
+        xmlfile.append(" player=\"").append(step.getPlayerId().getName()).append("\"");
       }
       if (step.getDisplayName() != null) {
         xmlfile.append(" display=\"").append(step.getDisplayName()).append("\"");
@@ -694,7 +694,7 @@ public class GameDataExporter {
     xmlfile.append("</game>\n");
   }
 
-  public String getXML() {
+  public String getXml() {
     return xmlfile.toString();
   }
 }

@@ -141,7 +141,7 @@ public class ProAI extends AbstractAI {
   protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
       final PlayerID player) {
     final long start = System.currentTimeMillis();
-    BattleCalculator.clearOOLCache();
+    BattleCalculator.clearOolCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     calc.setData(data);
@@ -164,7 +164,7 @@ public class ProAI extends AbstractAI {
   protected void purchase(final boolean purchaseForBid, int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
-    BattleCalculator.clearOOLCache();
+    BattleCalculator.clearOolCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     if (pusToSpend <= 0) {
@@ -215,11 +215,11 @@ public class ProAI extends AbstractAI {
       final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
       for (int i = nextStepIndex; i < gameSteps.size(); i++) {
         final GameStep step = gameSteps.get(i);
-        if (!playerCopy.equals(step.getPlayerID())) {
+        if (!playerCopy.equals(step.getPlayerId())) {
           continue;
         }
         dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(),
-            step.getPlayerID());
+            step.getPlayerId());
         final String stepName = step.getName();
         ProLogger.info("Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
@@ -259,7 +259,7 @@ public class ProAI extends AbstractAI {
   protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
       final PlayerID player) {
     final long start = System.currentTimeMillis();
-    BattleCalculator.clearOOLCache();
+    BattleCalculator.clearOolCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     purchaseAI.place(storedPurchaseTerritories, placeDelegate);

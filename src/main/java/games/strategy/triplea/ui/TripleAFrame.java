@@ -412,7 +412,7 @@ public class TripleAFrame extends MainGameFrame {
         PlayerID player1 = null;
         data.acquireReadLock();
         try {
-          player1 = data.getSequence().getStep().getPlayerID();
+          player1 = data.getSequence().getStep().getPlayerId();
         } finally {
           data.releaseReadLock();
         }
@@ -1416,7 +1416,7 @@ public class TripleAFrame extends MainGameFrame {
     try {
       round = data.getSequence().getRound();
       stepDisplayName = data.getSequence().getStep().getDisplayName();
-      player = data.getSequence().getStep().getPlayerID();
+      player = data.getSequence().getStep().getPlayerId();
     } finally {
       data.releaseReadLock();
     }
@@ -1756,7 +1756,7 @@ public class TripleAFrame extends MainGameFrame {
               enumeration.nextElement();
               int round = 0;
               String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
-              PlayerID currentPlayer = datacopy.getSequence().getStep(0).getPlayerID();
+              PlayerID currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
               while (enumeration.hasMoreElements()) {
                 final HistoryNode node = (HistoryNode) enumeration.nextElement();
                 if (node instanceof Round) {
@@ -1764,7 +1764,7 @@ public class TripleAFrame extends MainGameFrame {
                   currentPlayer = null;
                   stepDisplayName = node.getTitle();
                 } else if (node instanceof Step) {
-                  currentPlayer = ((Step) node).getPlayerID();
+                  currentPlayer = ((Step) node).getPlayerId();
                   stepDisplayName = node.getTitle();
                 }
               }

@@ -481,7 +481,7 @@ public class GameData implements Serializable {
     final Iterator<GameStep> stepIter = sequence.iterator();
     while (stepIter.hasNext()) {
       final GameStep step = stepIter.next();
-      if (playersWhoShouldBeRemoved.contains(step.getPlayerID())) {
+      if (playersWhoShouldBeRemoved.contains(step.getPlayerId())) {
         stepIter.remove();
         if (index < currentIndex) {
           toSubtract++;

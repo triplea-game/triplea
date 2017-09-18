@@ -17,7 +17,7 @@ public class Step extends IndexedHistoryNode {
     m_player = player;
   }
 
-  public PlayerID getPlayerID() {
+  public PlayerID getPlayerId() {
     return m_player;
   }
 

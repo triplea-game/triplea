@@ -31,7 +31,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     for (int i = 0; i < m_steps.size(); i++) {
       final GameStep step = m_steps.get(i);
       if (step != null && step.getDisplayName().equalsIgnoreCase(stepDisplayName)) {
-        if ((player == null && step.getPlayerID() == null) || (player != null && player.equals(step.getPlayerID()))) {
+        if ((player == null && step.getPlayerId() == null) || (player != null && player.equals(step.getPlayerId()))) {
           m_currentIndex = i;
           found = true;
           break;

@@ -152,7 +152,7 @@ public final class EngineDataEqualityComparators {
       Unit.class,
       (context, o1, o2) -> gameDataComponentEquals(context, o1, o2)
           && (o1.getHits() == o2.getHits())
-          && context.equals(o1.getID(), o2.getID())
+          && context.equals(o1.getId(), o2.getId())
           && context.equals(o1.getOwner(), o2.getOwner())
           && context.equals(o1.getType(), o2.getType()));
 
