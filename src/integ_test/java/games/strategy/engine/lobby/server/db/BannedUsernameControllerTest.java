@@ -56,11 +56,11 @@ public class BannedUsernameControllerTest {
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(hashedUsername);
     assertTrue(usernameDetails.getFirst());
     assertNull(usernameDetails.getSecond());
-    final Instant banTill = Instant.now().plusSeconds(100L);
-    controller.addBannedUsername(hashedUsername, banTill);
+    final Instant banUntill = Instant.now().plusSeconds(100L);
+    controller.addBannedUsername(hashedUsername, banUntill);
     final Tuple<Boolean, Timestamp> usernameDetails2 = controller.isUsernameBanned(hashedUsername);
     assertTrue(usernameDetails2.getFirst());
-    assertEquals(banTill, usernameDetails2.getSecond().toInstant());
+    assertEquals(banUntill, usernameDetails2.getSecond().toInstant());
   }
 
   private String banUsername(final Instant length) {
