@@ -297,7 +297,7 @@ public class ProTerritory {
       return "territory=" + territory.getName();
     } else {
       return "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing="
-          + battleResult.getTUVSwing() + ", hasRemainingLandUnit=" + battleResult.isHasLandUnitRemaining();
+          + battleResult.getTuvSwing() + ", hasRemainingLandUnit=" + battleResult.isHasLandUnitRemaining();
     }
   }
 

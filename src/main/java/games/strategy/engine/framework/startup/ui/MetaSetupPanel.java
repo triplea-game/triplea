@@ -120,7 +120,7 @@ public class MetaSetupPanel extends SetupPanel {
 
   private void setupListeners() {
     startLocal.addActionListener(e -> model.showLocal());
-    startPbem.addActionListener(e -> model.showPBEM());
+    startPbem.addActionListener(e -> model.showPbem());
     hostGame.addActionListener(e -> model.showServer(MetaSetupPanel.this));
     connectToHostedGame.addActionListener(e -> model.showClient(MetaSetupPanel.this));
     connectToLobby.addActionListener(e -> connectToLobby());

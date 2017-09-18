@@ -38,7 +38,7 @@ public class ProBattleResult {
     return winPercentage;
   }
 
-  public double getTUVSwing() {
+  public double getTuvSwing() {
     return TUVSwing;
   }
 

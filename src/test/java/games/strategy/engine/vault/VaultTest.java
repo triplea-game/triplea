@@ -96,7 +96,7 @@ public class VaultTest {
   public void temporarilyDisabledSoPleaseRunManuallytestServerLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final VaultID id = serverVault.lock(data);
-    clientVault.waitForID(id, 1000);
+    clientVault.waitForId(id, 1000);
     assertTrue(clientVault.knowsAbout(id));
     serverVault.unlock(id);
     clientVault.waitForIdToUnlock(id, 1000);
@@ -110,7 +110,7 @@ public class VaultTest {
   public void testClientLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final VaultID id = clientVault.lock(data);
-    serverVault.waitForID(id, 1000);
+    serverVault.waitForId(id, 1000);
     assertTrue(serverVault.knowsAbout(id));
     clientVault.unlock(id);
     serverVault.waitForIdToUnlock(id, 1000);
@@ -129,8 +129,8 @@ public class VaultTest {
     final byte[] data2 = new byte[] {0xE, 0xF, 2, 1, 3, 1, 2, 12, 3, 31, 124, 12, 1};
     final VaultID id1 = serverVault.lock(data1);
     final VaultID id2 = serverVault.lock(data2);
-    clientVault.waitForID(id1, 2000);
-    clientVault.waitForID(id2, 2000);
+    clientVault.waitForId(id1, 2000);
+    clientVault.waitForId(id2, 2000);
     assertTrue(clientVault.knowsAbout(id1));
     assertTrue(clientVault.knowsAbout(id2));
     serverVault.unlock(id1);

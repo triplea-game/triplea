@@ -35,7 +35,7 @@ public class ProLogUI {
     settingsWindow.setVisible(true);
   }
 
-  static void notifyAILogMessage(final Level level, final String message) {
+  static void notifyAiLogMessage(final Level level, final String message) {
     if (settingsWindow == null) {
       return;
     }

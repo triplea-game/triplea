@@ -477,7 +477,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!at.isWater()) {
       return null;
     }
-    if (!canMoveExistingFightersToNewCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) {
+    if (!canMoveExistingFightersToNewCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData())) {
       return null;
     }
     if (Match.noneMatch(units, Matches.unitIsCarrier())) {
@@ -886,9 +886,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         placeableUnits.addAll(Matches.getMatches(units, Match.allOf(
             Matches.unitIsAir(),
             Matches.unitIsNotConstruction())));
-      } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
+      } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
           && Match.anyMatch(allProducedUnits, Matches.unitIsCarrier()))
-          || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
+          || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
               && Match.anyMatch(to.getUnits().getUnits(), Matches.unitIsCarrier()))) {
         placeableUnits.addAll(Matches.getMatches(units, Match.allOf(
             Matches.unitIsAir(),

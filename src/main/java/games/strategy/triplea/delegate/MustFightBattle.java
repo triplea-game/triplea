@@ -293,7 +293,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return m_attacker.getName() + " attack " + m_defender.getName() + " in " + m_battleSite.getName();
   }
 
-  private void updateDefendingAAUnits() {
+  private void updateDefendingAaUnits() {
     final Collection<Unit> canFire = new ArrayList<>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
     canFire.addAll(m_defendingUnits);
     canFire.addAll(m_defendingWaitingToDie);
@@ -308,7 +308,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     Collections.reverse(m_defendingAAtypes);
   }
 
-  private void updateOffensiveAAUnits() {
+  private void updateOffensiveAaUnits() {
     final Collection<Unit> canFire = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
     canFire.addAll(m_attackingUnits);
     canFire.addAll(m_attackingWaitingToDie);
@@ -360,8 +360,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     addDependentUnits(transporting(m_defendingUnits));
     addDependentUnits(transporting(m_attackingUnits));
     // determine any AA
-    updateOffensiveAAUnits();
-    updateDefendingAAUnits();
+    updateOffensiveAaUnits();
+    updateDefendingAaUnits();
     // list the steps
     m_stepStrings = determineStepStrings(true);
     final ITripleADisplay display = getDisplay(bridge);
@@ -978,8 +978,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         if (!m_isOver) {
           m_round++;
           // determine any AA
-          updateOffensiveAAUnits();
-          updateDefendingAAUnits();
+          updateOffensiveAaUnits();
+          updateDefendingAaUnits();
           m_stepStrings = determineStepStrings(false);
           final ITripleADisplay display = getDisplay(bridge);
           display.listBattleSteps(m_battleID, m_stepStrings);
@@ -2188,7 +2188,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
               m_dice =
-                  DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_battleSite, m_defending);
+                  DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_battleSite, m_defending);
               if (!m_headless) {
                 if (currentTypeAa.equals("AA")) {
                   if (m_dice.getHits() > 0) {
@@ -2233,7 +2233,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              notifyCasualtiesAA(bridge, currentTypeAa);
+              notifyCasualtiesAa(bridge, currentTypeAa);
               removeCasualties(m_casualties.getKilled(), ReturnFire.ALL, !m_defending, bridge, m_defending);
             }
           }
@@ -2257,7 +2257,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           m_amphibiousLandAttackers);
     }
 
-    private void notifyCasualtiesAA(final IDelegateBridge bridge, final String currentTypeAa) {
+    private void notifyCasualtiesAa(final IDelegateBridge bridge, final String currentTypeAa) {
       if (m_headless) {
         return;
       }
@@ -2295,14 +2295,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private boolean canFireDefendingAa() {
     if (m_defendingAA == null) {
-      updateDefendingAAUnits();
+      updateDefendingAaUnits();
     }
     return m_defendingAA.size() > 0;
   }
 
   private boolean canFireOffensiveAa() {
     if (m_offensiveAA == null) {
-      updateOffensiveAAUnits();
+      updateOffensiveAaUnits();
     }
     return m_offensiveAA.size() > 0;
   }

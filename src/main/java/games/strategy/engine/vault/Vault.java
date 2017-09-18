@@ -300,7 +300,7 @@ public class Vault {
    * Waits until we know about a given vault id.
    * waits for at most timeout milliseconds
    */
-  public void waitForID(final VaultID id, final long timeoutMs) {
+  public void waitForId(final VaultID id, final long timeoutMs) {
     if (timeoutMs <= 0) {
       throw new IllegalArgumentException("Must suppply positive timeout argument");
     }

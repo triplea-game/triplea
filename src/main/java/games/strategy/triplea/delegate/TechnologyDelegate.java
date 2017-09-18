@@ -176,7 +176,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return Properties.getSelectableTechRoll(getData());
   }
 
-  private boolean isLL_TECH_ONLY() {
+  private boolean isLowLuckTechOnly() {
     return Properties.getLL_TECH_ONLY(getData());
   }
 
@@ -217,7 +217,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       final ITripleAPlayer tripleaPlayer = getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(techRolls, diceSides, true, annotation, diceSides);
       techHits = getTechHits(random);
-    } else if (isLL_TECH_ONLY()) {
+    } else if (isLowLuckTechOnly()) {
       techHits = techRolls / diceSides;
       remainder = techRolls % diceSides;
       if (remainder > 0) {
@@ -235,7 +235,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
     final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
-    final DiceRoll renderDice = (isLL_TECH_ONLY() ? new DiceRoll(random, techHits, remainder, false)
+    final DiceRoll renderDice = (isLowLuckTechOnly() ? new DiceRoll(random, techHits, remainder, false)
         : new DiceRoll(random, techHits, diceSides - 1, true));
     m_bridge.getHistoryWriter()
         .startEvent(

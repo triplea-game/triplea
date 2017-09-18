@@ -245,7 +245,7 @@ public class ProductionRepairPanel extends JPanel {
       final TripleAUnit taUnit = (TripleAUnit) repairUnit;
       final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(type, id,
           Matches.unitHasTakenSomeBombingUnitDamage().match(repairUnit), Matches.unitIsDisabled().match(repairUnit));
-      final String text = "<html> x " + ResourceCollection.toStringForHTML(cost, data) + "</html>";
+      final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
 
       final JLabel label =
           icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);

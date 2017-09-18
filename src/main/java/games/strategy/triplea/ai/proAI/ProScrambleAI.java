@@ -51,8 +51,8 @@ class ProScrambleAI {
     final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
     final ProBattleResult minResult = calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger
-        .debug(scrambleTo + ", minTUVSwing=" + minResult.getTUVSwing() + ", minWin%=" + minResult.getWinPercentage());
-    if (minResult.getTUVSwing() <= 0 && minResult.getWinPercentage() < (100 - ProData.minWinPercentage)) {
+        .debug(scrambleTo + ", minTUVSwing=" + minResult.getTuvSwing() + ", minWin%=" + minResult.getWinPercentage());
+    if (minResult.getTuvSwing() <= 0 && minResult.getWinPercentage() < (100 - ProData.minWinPercentage)) {
       return null;
     }
 
@@ -78,8 +78,8 @@ class ProScrambleAI {
     defenders.addAll(allScramblers);
     final ProBattleResult maxResult = calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger
-        .debug(scrambleTo + ", maxTUVSwing=" + maxResult.getTUVSwing() + ", maxWin%=" + maxResult.getWinPercentage());
-    if (maxResult.getTUVSwing() >= minResult.getTUVSwing()) {
+        .debug(scrambleTo + ", maxTUVSwing=" + maxResult.getTuvSwing() + ", maxWin%=" + maxResult.getWinPercentage());
+    if (maxResult.getTuvSwing() >= minResult.getTuvSwing()) {
       return null;
     }
 
@@ -114,13 +114,13 @@ class ProScrambleAI {
       final List<Unit> currentDefenders = (List<Unit>) battle.getDefendingUnits();
       currentDefenders.addAll(unitsToScramble);
       result = calc.calculateBattleResults(scrambleTo, attackers, currentDefenders, bombardingUnits);
-      ProLogger.debug(scrambleTo + ", TUVSwing=" + result.getTUVSwing() + ", Win%=" + result.getWinPercentage()
+      ProLogger.debug(scrambleTo + ", TUVSwing=" + result.getTuvSwing() + ", Win%=" + result.getWinPercentage()
           + ", addedUnit=" + u);
-      if (result.getTUVSwing() <= 0 && result.getWinPercentage() < (100 - ProData.minWinPercentage)) {
+      if (result.getTuvSwing() <= 0 && result.getWinPercentage() < (100 - ProData.minWinPercentage)) {
         break;
       }
     }
-    if (result.getTUVSwing() >= minResult.getTUVSwing()) {
+    if (result.getTuvSwing() >= minResult.getTuvSwing()) {
       return null;
     }
 

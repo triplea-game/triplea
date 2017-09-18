@@ -781,7 +781,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       if (m_resources != null) {
         if (useHtml) {
           sb.append("&nbsp;&nbsp;&nbsp;&nbsp;")
-              .append((m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
+              .append((m_resources.toStringForHtml()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
         } else {
           sb.append(m_resources.toString());
         }

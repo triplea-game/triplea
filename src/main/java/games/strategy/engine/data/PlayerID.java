@@ -133,7 +133,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     return m_whoAmI;
   }
 
-  public boolean isAI() {
+  public boolean isAi() {
     return m_whoAmI.split(":")[0].equalsIgnoreCase("AI");
   }
 

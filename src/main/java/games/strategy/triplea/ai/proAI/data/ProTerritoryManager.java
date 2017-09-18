@@ -119,7 +119,7 @@ public class ProTerritoryManager {
 
       // Check if I can win without amphib units and ignore AA since max units might have lots of planes
       List<Unit> defenders =
-          Matches.getMatches(patd.getMaxEnemyDefenders(player, data), ProMatches.unitIsEnemyAndNotAA(player, data));
+          Matches.getMatches(patd.getMaxEnemyDefenders(player, data), ProMatches.unitIsEnemyAndNotAa(player, data));
       if (isIgnoringRelationships) {
         defenders = new ArrayList<>(t.getUnits().getUnits());
       }
@@ -799,7 +799,7 @@ public class ProTerritoryManager {
         for (final Territory potentialTerritory : potentialTerritories) {
 
           // Find route ignoring impassable and territories with AA
-          Match<Territory> canFlyOverMatch = ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, isCombatMove);
+          Match<Territory> canFlyOverMatch = ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove);
           if (isCheckingEnemyAttacks) {
             canFlyOverMatch = ProMatches.territoryCanMoveAirUnits(player, data, isCombatMove);
           }

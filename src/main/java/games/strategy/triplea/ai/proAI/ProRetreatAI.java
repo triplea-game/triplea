@@ -89,7 +89,7 @@ class ProRetreatAI {
     if (result.isHasLandUnitRemaining() || Match.noneMatch(attackers, Matches.unitIsAir())) {
       territoryValue = result.getWinPercentage() / 100 * (2 * production * (1 + isFactory) * (1 + isCapital));
     }
-    double battleValue = result.getTUVSwing() + territoryValue;
+    double battleValue = result.getTuvSwing() + territoryValue;
     if (!isAttacker) {
       battleValue = -battleValue;
     }
@@ -114,12 +114,12 @@ class ProRetreatAI {
         }
       }
       ProLogger.debug(player.getName() + " retreating from territory " + battleTerritory + " to " + retreatTerritory
-          + " because AttackValue=" + battleValue + ", TUVSwing=" + result.getTUVSwing() + ", possibleTerritories="
+          + " because AttackValue=" + battleValue + ", TUVSwing=" + result.getTuvSwing() + ", possibleTerritories="
           + possibleTerritories.size());
       return retreatTerritory;
     }
     ProLogger.debug(player.getName() + " not retreating from territory " + battleTerritory + " with AttackValue="
-        + battleValue + ", TUVSwing=" + result.getTUVSwing());
+        + battleValue + ", TUVSwing=" + result.getTuvSwing());
 
     return null;
   }
