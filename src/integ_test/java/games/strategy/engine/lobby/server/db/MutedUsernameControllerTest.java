@@ -3,17 +3,18 @@ package games.strategy.engine.lobby.server.db;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 
 import org.junit.Test;
 
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 
 public class MutedUsernameControllerTest {
 
-  private final MutedUsernameController controller = new MutedUsernameController();
+  private final MutedUsernameController controller = spy(new MutedUsernameController());
 
   @Test
   public void testMuteUsernameForever() {
@@ -24,13 +25,12 @@ public class MutedUsernameControllerTest {
 
   @Test
   public void testMuteUsername() {
-    final Instant banUntil = Instant.now().plusSeconds(2L);
+    final Instant banUntil = Instant.now();
+    when(controller.now()).thenReturn(Instant.now().minusSeconds(1L));
     final String username = muteUsername(banUntil);
     assertTrue(controller.isUsernameMuted(username));
     assertEquals(banUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
-    while (banUntil.isAfter(Instant.now())) {
-      ThreadUtil.sleep(100);
-    }
+    when(controller.now()).thenCallRealMethod();
     assertFalse(controller.isUsernameMuted(username));
   }
 
