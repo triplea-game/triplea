@@ -36,6 +36,8 @@ public class MutedUsernameController extends TimedController {
       } catch (final SQLException sqle) {
         throw new IllegalStateException("Error inserting muted username:" + username, sqle);
       }
+    } else {
+      removeMutedUsername(username);
     }
   }
 

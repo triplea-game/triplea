@@ -35,6 +35,16 @@ public class MutedMacControllerTest {
   }
 
   @Test
+  public void testUnmuteMac() {
+    final Instant muteUntil = Instant.now().plusSeconds(100L);
+    final String username = muteUsername(muteUntil);
+    assertTrue(controller.isMacMuted(username));
+    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(username)));
+    controller.addMutedMac(username, Instant.now().minusSeconds(10L));
+    assertFalse(controller.isMacMuted(username));
+  }
+
+  @Test
   public void testMuteMacInThePast() {
     final Instant muteUntil = Instant.now().minusSeconds(10L);
     final String username = muteUsername(muteUntil);
