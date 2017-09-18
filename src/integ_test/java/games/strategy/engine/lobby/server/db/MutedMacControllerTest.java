@@ -26,19 +26,19 @@ public class MutedMacControllerTest {
 
   @Test
   public void testMuteMac() {
-    final Instant banUntil = Instant.now();
+    final Instant muteUntil = Instant.now();
     when(controller.now()).thenReturn(Instant.now().minusSeconds(1L));
-    final String username = muteUsername(banUntil);
+    final String username = muteUsername(muteUntil);
     assertTrue(controller.isMacMuted(username));
-    assertEquals(banUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(username)));
+    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(username)));
     when(controller.now()).thenCallRealMethod();
     assertFalse(controller.isMacMuted(username));
   }
 
   @Test
   public void testMuteMacInThePast() {
-    final Instant banUntil = Instant.now().minusSeconds(10L);
-    final String username = muteUsername(banUntil);
+    final Instant muteUntil = Instant.now().minusSeconds(10L);
+    final String username = muteUsername(muteUntil);
     assertFalse(controller.isMacMuted(username));
   }
 
@@ -47,10 +47,10 @@ public class MutedMacControllerTest {
     final String username = muteUsername(null);
     assertTrue(controller.isMacMuted(username));
     assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(username));
-    final Instant banTill = Instant.now().plusSeconds(100L);
-    controller.addMutedMac(username, banTill);
+    final Instant muteUntill = Instant.now().plusSeconds(100L);
+    controller.addMutedMac(username, muteUntill);
     assertTrue(controller.isMacMuted(username));
-    assertEquals(banTill, Instant.ofEpochMilli(controller.getMacUnmuteTime(username)));
+    assertEquals(muteUntill, Instant.ofEpochMilli(controller.getMacUnmuteTime(username)));
   }
 
   private String muteUsername(final Instant length) {
