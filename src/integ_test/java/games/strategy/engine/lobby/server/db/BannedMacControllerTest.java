@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -11,13 +13,12 @@ import java.time.Instant;
 import org.junit.Test;
 
 import games.strategy.util.MD5Crypt;
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
 public class BannedMacControllerTest {
 
-  private final BannedMacController controller = new BannedMacController();
+  private final BannedMacController controller = spy(new BannedMacController());
 
   @Test
   public void testBanMacForever() {
@@ -29,14 +30,13 @@ public class BannedMacControllerTest {
 
   @Test
   public void testBanMac() {
-    final Instant banUntil = Instant.now().plusSeconds(2L);
+    final Instant banUntil = Instant.now();
+    when(controller.now()).thenReturn(Instant.now().minusSeconds(1L));
     final String hashedMac = banMac(banUntil);
     final Tuple<Boolean, Timestamp> macDetails = controller.isMacBanned(hashedMac);
     assertTrue(macDetails.getFirst());
     assertEquals(banUntil, macDetails.getSecond().toInstant());
-    while (banUntil.isAfter(Instant.now())) {
-      ThreadUtil.sleep(100);
-    }
+    when(controller.now()).thenCallRealMethod();
     final Tuple<Boolean, Timestamp> macDetails2 = controller.isMacBanned(hashedMac);
     assertFalse(macDetails2.getFirst());
     assertEquals(banUntil, macDetails2.getSecond().toInstant());

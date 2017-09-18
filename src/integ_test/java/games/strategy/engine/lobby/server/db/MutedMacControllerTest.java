@@ -3,18 +3,19 @@ package games.strategy.engine.lobby.server.db;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 
 import org.junit.Test;
 
 import games.strategy.util.MD5Crypt;
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Util;
 
 public class MutedMacControllerTest {
 
-  private final MutedMacController controller = new MutedMacController();
+  private final MutedMacController controller = spy(new MutedMacController());
 
   @Test
   public void testMuteMacForever() {
@@ -25,13 +26,12 @@ public class MutedMacControllerTest {
 
   @Test
   public void testMuteMac() {
-    final Instant banUntil = Instant.now().plusSeconds(2L);
+    final Instant banUntil = Instant.now();
+    when(controller.now()).thenReturn(Instant.now().minusSeconds(1L));
     final String username = muteUsername(banUntil);
     assertTrue(controller.isMacMuted(username));
     assertEquals(banUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(username)));
-    while (banUntil.isAfter(Instant.now())) {
-      ThreadUtil.sleep(100);
-    }
+    when(controller.now()).thenCallRealMethod();
     assertFalse(controller.isMacMuted(username));
   }
 

@@ -4,19 +4,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 
 import org.junit.Test;
 
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
 public class BannedUsernameControllerTest {
 
-  private final BannedUsernameController controller = new BannedUsernameController();
+  private final BannedUsernameController controller = spy(new BannedUsernameController());
 
   @Test
   public void testBanUsernameForever() {
@@ -28,14 +29,13 @@ public class BannedUsernameControllerTest {
 
   @Test
   public void testBanUsername() {
-    final Instant banUntil = Instant.now().plusSeconds(2L);
+    final Instant banUntil = Instant.now();
+    when(controller.now()).thenReturn(Instant.now().minusSeconds(1L));
     final String hashedUsername = banUsername(banUntil);
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(hashedUsername);
     assertTrue(usernameDetails.getFirst());
     assertEquals(banUntil, usernameDetails.getSecond().toInstant());
-    while (banUntil.isAfter(Instant.now())) {
-      ThreadUtil.sleep(100);
-    }
+    when(controller.now()).thenCallRealMethod();
     final Tuple<Boolean, Timestamp> usernameDetails2 = controller.isUsernameBanned(hashedUsername);
     assertFalse(usernameDetails2.getFirst());
     assertEquals(banUntil, usernameDetails2.getSecond().toInstant());
