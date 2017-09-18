@@ -41,7 +41,7 @@ public class BannedUsernameControllerTest {
   }
 
   @Test
-  public void testUnban() {
+  public void testUnbanUsername() {
     final Instant banUntil = Instant.now().plusSeconds(100L);
     final String username = banUsername(banUntil);
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(username);
@@ -50,7 +50,7 @@ public class BannedUsernameControllerTest {
     controller.addBannedUsername(username, Instant.now().minusSeconds(10L));
     final Tuple<Boolean, Timestamp> usernameDetails2 = controller.isUsernameBanned(username);
     assertFalse(usernameDetails2.getFirst());
-    assertNull(usernameDetails2.getSecond().toInstant());
+    assertNull(usernameDetails2.getSecond());
   }
 
   @Test
