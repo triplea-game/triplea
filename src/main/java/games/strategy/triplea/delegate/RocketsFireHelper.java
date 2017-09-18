@@ -56,7 +56,7 @@ public class RocketsFireHelper {
     return Properties.getRocketAttacksPerFactoryInfinite(data);
   }
 
-  private static boolean isPUCap(final GameData data) {
+  private static boolean isPuCap(final GameData data) {
     return Properties.getPUCap(data);
   }
 
@@ -370,7 +370,7 @@ public class RocketsFireHelper {
       // in WW2V2, limit rocket attack cost to production value of factory.
     } else if (isWW2V2(data) || isLimitRocketDamageToProduction(data)) {
       // If we are limiting total PUs lost then take that into account
-      if (isPUCap(data) || isLimitRocketDamagePerTurn(data)) {
+      if (isPuCap(data) || isLimitRocketDamagePerTurn(data)) {
         final int alreadyLost = DelegateFinder.moveDelegate(data).pusAlreadyLost(attackedTerritory);
         territoryProduction -= alreadyLost;
         territoryProduction = Math.max(0, territoryProduction);

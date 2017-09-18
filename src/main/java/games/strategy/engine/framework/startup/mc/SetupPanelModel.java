@@ -37,7 +37,7 @@ public class SetupPanelModel extends Observable {
     setGameTypePanel(new LocalSetupPanel(m_gameSelectorModel));
   }
 
-  public void showPBEM() {
+  public void showPbem() {
     setGameTypePanel(new PBEMSetupPanel(m_gameSelectorModel));
   }
 

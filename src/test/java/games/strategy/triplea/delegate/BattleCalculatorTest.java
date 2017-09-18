@@ -92,7 +92,7 @@ public class BattleCalculatorTest {
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
     final DiceRoll roll =
         DiceRoll
-            .rollAA(
+            .rollAa(
                 Matches.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
@@ -120,7 +120,7 @@ public class BattleCalculatorTest {
     bridge.setRandomSource(randomSource);
     final DiceRoll roll =
         DiceRoll
-            .rollAA(
+            .rollAa(
                 Matches.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
@@ -163,7 +163,7 @@ public class BattleCalculatorTest {
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
     final DiceRoll roll =
         DiceRoll
-            .rollAA(
+            .rollAa(
                 Matches.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
@@ -202,7 +202,7 @@ public class BattleCalculatorTest {
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR}));
     final DiceRoll roll =
         DiceRoll
-            .rollAA(
+            .rollAa(
                 Matches.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
@@ -232,7 +232,7 @@ public class BattleCalculatorTest {
     bridge.setRandomSource(randomSource);
     final DiceRoll roll =
         DiceRoll
-            .rollAA(
+            .rollAa(
                 Matches.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
@@ -266,7 +266,7 @@ public class BattleCalculatorTest {
     bridge.setRandomSource(randomSource);
     final DiceRoll roll =
         DiceRoll
-            .rollAA(
+            .rollAa(
                 Matches.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
@@ -297,7 +297,7 @@ public class BattleCalculatorTest {
     bridge.setRandomSource(randomSource);
     final DiceRoll roll =
         DiceRoll
-            .rollAA(
+            .rollAa(
                 Matches.getMatches(planes,
                     Matches
                         .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),

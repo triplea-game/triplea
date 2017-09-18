@@ -112,7 +112,7 @@ public class DiceRoll implements Externalizable {
     return totalAAattacksNormal + totalAAattacksSurplus;
   }
 
-  static DiceRoll rollAA(final Collection<Unit> validAttackingUnitsForThisRoll,
+  static DiceRoll rollAa(final Collection<Unit> validAttackingUnitsForThisRoll,
       final Collection<Unit> defendingAaForThisRoll, final IDelegateBridge bridge, final Territory location,
       final boolean defending) {
     {
@@ -193,7 +193,7 @@ public class DiceRoll implements Externalizable {
       return Triple.of(0, 0, false);
     }
     // we want to make sure the higher powers fire
-    sortAAHighToLow(defendingAa, data, defending);
+    sortAaHighToLow(defendingAa, data, defending);
     // this is confusing, but what we want to do is the following:
     // any aa that are NOT infinite attacks, and NOT overstack, will fire first individually ((because their
     // power/dicesides might be
@@ -318,7 +318,7 @@ public class DiceRoll implements Externalizable {
     return Triple.of(totalPower, hits, (rolledAt.size() == 1));
   }
 
-  private static void sortAAHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
+  private static void sortAaHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
     final Comparator<Unit> comparator = (u1, u2) -> {
       final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
       final Tuple<Integer, Integer> tuple2 = getAAattackAndMaxDiceSides(Collections.singleton(u2), data, defending);

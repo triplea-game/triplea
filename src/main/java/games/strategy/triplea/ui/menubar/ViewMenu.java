@@ -427,14 +427,14 @@ class ViewMenu {
           JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 2);
       if (result == 1) {
         MapImage.resetPropertyMapFont();
-        MapImage.resetPropertyTerritoryNameAndPUAndCommentcolor();
+        MapImage.resetPropertyTerritoryNameAndPuAndCommentColor();
         MapImage.resetPropertyUnitCountColor();
         MapImage.resetPropertyUnitFactoryDamageColor();
         MapImage.resetPropertyUnitHitDamageColor();
         frame.getMapPanel().resetMap();
       } else if (result == 0) {
         MapImage.setPropertyMapFont(new Font("Ariel", Font.BOLD, fontsize.getValue()));
-        MapImage.setPropertyTerritoryNameAndPUAndCommentcolor((Color) territoryNameColor.getValue());
+        MapImage.setPropertyTerritoryNameAndPuAndCommentColor((Color) territoryNameColor.getValue());
         MapImage.setPropertyUnitCountColor((Color) unitCountColor.getValue());
         MapImage.setPropertyUnitFactoryDamageColor((Color) factoryDamageColor.getValue());
         MapImage.setPropertyUnitHitDamageColor((Color) hitDamageColor.getValue());

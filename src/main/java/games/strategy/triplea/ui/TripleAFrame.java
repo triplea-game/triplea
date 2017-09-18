@@ -801,7 +801,7 @@ public class TripleAFrame extends MainGameFrame {
       sb.append("<li>").append(t.getName()).append("</li>");
     }
     sb.append("</ul></html>");
-    final boolean lhtrProd = AirThatCantLandUtil.isLHTRCarrierProduction(data)
+    final boolean lhtrProd = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     int carrierCount = 0;
     for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, id)) {

@@ -68,7 +68,7 @@ public class ProData {
     minCostPerHitPoint = getMinCostPerHitPoint(purchaseOptions.getLandOptions());
   }
 
-  public static ProAI getProAI() {
+  public static ProAI getProAi() {
     return proAI;
   }
 

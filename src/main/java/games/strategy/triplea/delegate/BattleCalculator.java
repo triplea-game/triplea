@@ -103,7 +103,7 @@ public class BattleCalculator {
     final GameData data = bridge.getData();
     final boolean allowMultipleHitsPerUnit =
         !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.unitAaShotDamageableInsteadOfKillingInstantly());
-    if (isChooseAA(data)) {
+    if (isChooseAa(data)) {
       final String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return selectCasualties(null, hitPlayer, planes, allFriendlyUnits, firingPlayer, allEnemyUnits, amphibious,
           amphibiousLandAttackers, terr, territoryEffects, bridge, text, dice, defending, battleId, false,
@@ -114,10 +114,10 @@ public class BattleCalculator {
       } else {
         // priority goes: choose -> individually -> random
         // if none are set, we roll individually
-        if (isRollAAIndividually(data)) {
+        if (isRollAaIndividually(data)) {
           return individuallyFiredAaCasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
         }
-        if (isRandomAACasualties(data)) {
+        if (isRandomAaCasualties(data)) {
           return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
         }
         return individuallyFiredAaCasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
@@ -995,21 +995,21 @@ public class BattleCalculator {
   /**
    * @return Random AA Casualties - casualties randomly assigned.
    */
-  private static boolean isRandomAACasualties(final GameData data) {
+  private static boolean isRandomAaCasualties(final GameData data) {
     return Properties.getRandomAACasualties(data);
   }
 
   /**
    * @return Roll AA Individually - roll against each aircraft.
    */
-  private static boolean isRollAAIndividually(final GameData data) {
+  private static boolean isRollAaIndividually(final GameData data) {
     return Properties.getRollAAIndividually(data);
   }
 
   /**
    * @return Choose AA - attacker selects casualties.
    */
-  private static boolean isChooseAA(final GameData data) {
+  private static boolean isChooseAa(final GameData data) {
     return Properties.getChoose_AA_Casualties(data);
   }
 

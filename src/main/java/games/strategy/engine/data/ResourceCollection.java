@@ -228,11 +228,11 @@ public class ResourceCollection extends GameDataComponent {
     return sb.toString().replaceFirst(lineSeparator, "");
   }
 
-  public String toStringForHTML() {
-    return toStringForHTML(m_resources, getData());
+  public String toStringForHtml() {
+    return toStringForHtml(m_resources, getData());
   }
 
-  public static String toStringForHTML(final IntegerMap<Resource> resources, final GameData data) {
+  public static String toStringForHtml(final IntegerMap<Resource> resources, final GameData data) {
     return toString(resources, data, "<br />");
   }
 

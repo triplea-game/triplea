@@ -143,7 +143,7 @@ public class WW2V3Year41Test {
     // don't allow rolling, 6 of each is deterministic
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
     final DiceRoll roll =
-        DiceRoll.rollAA(
+        DiceRoll.rollAa(
             Matches.getMatches(planes,
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
@@ -174,7 +174,7 @@ public class WW2V3Year41Test {
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, 1});
     bridge.setRandomSource(randomSource);
     final DiceRoll roll =
-        DiceRoll.rollAA(
+        DiceRoll.rollAa(
             Matches.getMatches(planes,
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
@@ -208,7 +208,7 @@ public class WW2V3Year41Test {
         new ScriptedRandomSource(new int[] {5, 0, 0, 0, ScriptedRandomSource.ERROR});
     bridge.setRandomSource(randomSource);
     final DiceRoll roll =
-        DiceRoll.rollAA(
+        DiceRoll.rollAa(
             Matches.getMatches(planes,
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
