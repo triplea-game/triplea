@@ -38,6 +38,8 @@ public class BannedUsernameController extends TimedController {
       } catch (final SQLException sqle) {
         throw new IllegalStateException("Error inserting banned username:" + username, sqle);
       }
+    } else {
+      removeBannedUsername(username);
     }
   }
 

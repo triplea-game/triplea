@@ -35,6 +35,8 @@ public class BannedMacController extends TimedController {
       } catch (final SQLException sqle) {
         throw new IllegalStateException("Error inserting banned mac:" + mac, sqle);
       }
+    } else {
+      removeBannedMac(mac);
     }
   }
 

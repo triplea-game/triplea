@@ -35,6 +35,8 @@ public class MutedMacController extends TimedController {
       } catch (final SQLException sqle) {
         throw new IllegalStateException("Error inserting muted mac:" + mac, sqle);
       }
+    } else {
+      removeMutedMac(mac);
     }
   }
 
