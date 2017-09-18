@@ -367,7 +367,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return change;
   }
 
-  public static Change giveBonusMovementToUnits(final PlayerID player, final GameData data, final Territory t,
+  static Change giveBonusMovementToUnits(final PlayerID player, final GameData data, final Territory t,
       final Collection<Unit> units) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits().getUnits()) {
