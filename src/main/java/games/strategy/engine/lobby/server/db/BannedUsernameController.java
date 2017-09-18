@@ -13,7 +13,7 @@ import games.strategy.util.Tuple;
 /**
  * Utility class to create/read/delete banned usernames (there is no update).
  */
-public class BannedUsernameController {
+public class BannedUsernameController extends TimedController {
   private static final Logger logger = Logger.getLogger(BannedUsernameController.class.getName());
 
   /**
@@ -66,7 +66,7 @@ public class BannedUsernameController {
         // If the ban has expired, allow the username
         if (rs.next()) {
           final Timestamp banTill = rs.getTimestamp(2);
-          if (banTill != null && banTill.toInstant().isBefore(Instant.now())) {
+          if (banTill != null && banTill.toInstant().isBefore(now())) {
             logger.fine("Ban expired for:" + username);
             removeBannedUsername(username);
             return Tuple.of(false, banTill);

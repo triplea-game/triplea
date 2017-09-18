@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 /**
  * Utilitiy class to create/read/delete muted macs (there is no update).
  */
-public class MutedMacController {
+public class MutedMacController extends TimedController {
   private static final Logger logger = Logger.getLogger(MutedMacController.class.getName());
 
   /**
@@ -55,7 +55,7 @@ public class MutedMacController {
    */
   public boolean isMacMuted(final String mac) {
     final long muteTill = getMacUnmuteTime(mac);
-    return muteTill > System.currentTimeMillis();
+    return muteTill > now().toEpochMilli();
   }
 
   /**
@@ -74,7 +74,7 @@ public class MutedMacController {
           if (muteTill == null) {
             return Long.MAX_VALUE;
           }
-          if (muteTill.toInstant().isBefore(Instant.now())) {
+          if (muteTill.toInstant().isBefore(now())) {
             logger.fine("Mute expired for:" + mac);
             // If the mute has expired, allow the mac
             removeMutedMac(mac);
