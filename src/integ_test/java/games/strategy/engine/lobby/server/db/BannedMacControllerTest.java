@@ -51,7 +51,7 @@ public class BannedMacControllerTest {
     controller.addBannedMac(hashedMac, Instant.now().minusSeconds(10L));
     final Tuple<Boolean, Timestamp> macDetails2 = controller.isMacBanned(hashedMac);
     assertFalse(macDetails2.getFirst());
-    assertNull(macDetails2.getSecond().toInstant());
+    assertNull(macDetails2.getSecond());
   }
 
   @Test
