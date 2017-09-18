@@ -13,7 +13,7 @@ import games.strategy.util.Tuple;
 /**
  * Utilitiy class to create/read/delete banned macs (there is no update).
  */
-public class BannedMacController {
+public class BannedMacController extends TimedController {
   private static final Logger logger = Logger.getLogger(BannedMacController.class.getName());
 
   /**
@@ -61,7 +61,7 @@ public class BannedMacController {
         // If the ban has expired, allow the mac
         if (rs.next()) {
           final Timestamp banTill = rs.getTimestamp(2);
-          if (banTill != null && banTill.toInstant().isBefore(Instant.now())) {
+          if (banTill != null && banTill.toInstant().isBefore(now())) {
             logger.fine("Ban expired for:" + mac);
             removeBannedMac(mac);
             return Tuple.of(false, banTill);

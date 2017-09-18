@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 /**
  * Utilitiy class to create/read/delete muted usernames (there is no update).
  */
-public class MutedUsernameController {
+public class MutedUsernameController extends TimedController {
   private static final Logger logger = Logger.getLogger(MutedUsernameController.class.getName());
 
   /**
@@ -56,7 +56,7 @@ public class MutedUsernameController {
    */
   public boolean isUsernameMuted(final String username) {
     final long muteTill = getUsernameUnmuteTime(username);
-    return muteTill > System.currentTimeMillis();
+    return muteTill > now().toEpochMilli();
   }
 
   /**
@@ -75,7 +75,7 @@ public class MutedUsernameController {
           if (muteTill == null) {
             return Long.MAX_VALUE;
           }
-          if (muteTill.toInstant().isBefore(Instant.now())) {
+          if (muteTill.toInstant().isBefore(now())) {
             // If the mute has expired, allow the username
             logger.fine("Mute expired for:" + username);
             removeMutedUsername(username);
