@@ -38,18 +38,18 @@ public class EmailLimitTest {
     createAccountWithEmail(getStringWithLength(64) + "@" + getStringWithLength(189));
   }
 
-  private String getStringWithLength(final int length) {
+  private static String getStringWithLength(final int length) {
     return Strings.padStart(Util.createUniqueTimeStamp(), length, 'a');
   }
 
-  private void createAccountWithEmail(final String email) {
-    try (PreparedStatement ps =
+  private static void createAccountWithEmail(final String email) {
+    try (final PreparedStatement ps =
         connection.prepareStatement("insert into ta_users (username, email, password) values (?, ?, ?)")) {
       ps.setString(1, Util.createUniqueTimeStamp());
       ps.setString(2, email);
       ps.setString(3, MD5Crypt.crypt("password"));
       ps.execute();
-    } catch (SQLException e) {
+    } catch (final SQLException e) {
       throw new AssertionError(e);
     }
   }

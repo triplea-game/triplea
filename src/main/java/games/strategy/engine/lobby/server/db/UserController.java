@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -82,6 +83,7 @@ public class UserController implements UserDao {
    * Does only affect the admin state of the given user.
    * The DB is updated with user.isAdmin()
    */
+  @VisibleForTesting
   public void makeAdmin(final DBUser user) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
