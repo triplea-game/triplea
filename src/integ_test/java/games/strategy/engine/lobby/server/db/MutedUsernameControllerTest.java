@@ -26,7 +26,7 @@ public class MutedUsernameControllerTest {
   @Test
   public void testMuteUsername() {
     final Instant muteUntil = Instant.now();
-    when(controller.now()).thenReturn(Instant.now().minusSeconds(1L));
+    when(controller.now()).thenReturn(Instant.now().minusSeconds(1000L));
     final String username = muteUsername(muteUntil);
     assertTrue(controller.isUsernameMuted(username));
     assertEquals(muteUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
@@ -37,6 +37,14 @@ public class MutedUsernameControllerTest {
   @Test
   public void testMuteUsernameInThePast() {
     final Instant muteUntil = Instant.now().minusSeconds(10L);
+    final String username = muteUsername(muteUntil);
+    assertFalse(controller.isUsernameMuted(username));
+  }
+
+  @Test
+  public void testMuteUsernameInTooNearFuture() {
+    final Instant muteUntil = Instant.now();
+    when(controller.now()).thenReturn(muteUntil.minusSeconds(10L));
     final String username = muteUsername(muteUntil);
     assertFalse(controller.isUsernameMuted(username));
   }
