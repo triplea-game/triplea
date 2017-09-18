@@ -29,13 +29,12 @@ public class BannedUsernameControllerTest {
 
   @Test
   public void testBanUsername() {
-    final Instant banUntil = Instant.now();
-    when(controller.now()).thenReturn(Instant.now().minusSeconds(1000L));
+    final Instant banUntil = Instant.now().plusSeconds(100L);
     final String hashedUsername = banUsername(banUntil);
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(hashedUsername);
     assertTrue(usernameDetails.getFirst());
     assertEquals(banUntil, usernameDetails.getSecond().toInstant());
-    when(controller.now()).thenCallRealMethod();
+    when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
     final Tuple<Boolean, Timestamp> usernameDetails2 = controller.isUsernameBanned(hashedUsername);
     assertFalse(usernameDetails2.getFirst());
     assertEquals(banUntil, usernameDetails2.getSecond().toInstant());
@@ -48,8 +47,8 @@ public class BannedUsernameControllerTest {
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(hashedUsername);
     assertFalse(usernameDetails.getFirst());
     assertNull(usernameDetails.getSecond());
-  }  
-  
+  }
+
   @Test
   public void testBanMacInTooNearFuture() {
     final Instant banUntil = Instant.now();

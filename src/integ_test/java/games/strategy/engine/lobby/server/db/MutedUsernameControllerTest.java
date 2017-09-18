@@ -25,12 +25,11 @@ public class MutedUsernameControllerTest {
 
   @Test
   public void testMuteUsername() {
-    final Instant muteUntil = Instant.now();
-    when(controller.now()).thenReturn(Instant.now().minusSeconds(1000L));
+    final Instant muteUntil = Instant.now().plusSeconds(100L);
     final String username = muteUsername(muteUntil);
     assertTrue(controller.isUsernameMuted(username));
     assertEquals(muteUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
-    when(controller.now()).thenCallRealMethod();
+    when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
     assertFalse(controller.isUsernameMuted(username));
   }
 
