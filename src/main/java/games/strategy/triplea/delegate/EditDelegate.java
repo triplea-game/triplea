@@ -16,6 +16,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
@@ -110,6 +111,9 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     logEvent("Adding units owned by " + units.iterator().next().getOwner().getName() + " to " + territory.getName()
         + ": " + MyFormatter.unitsToTextNoOwner(units), units);
     m_bridge.addChange(ChangeFactory.addUnits(territory, units));
+    if (Properties.getUnitsMayGiveBonusMovement(getData()) && GameStepPropertiesHelper.isGiveBonusMovement(data)) {
+      m_bridge.addChange(MoveDelegate.giveBonusMovementToUnits(player, data, territory, units));
+    }
     if (mapLoading != null && !mapLoading.isEmpty()) {
       for (final Entry<Unit, Unit> entry : mapLoading.entrySet()) {
         m_bridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey()));

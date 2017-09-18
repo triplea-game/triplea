@@ -362,41 +362,48 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      for (final Unit u : t.getUnits().getUnits()) {
-        if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).match(u)) {
-          if (!Matches.isUnitAllied(player, data).match(u)) {
-            continue;
+      change.add(giveBonusMovementToUnits(player, data, t, t.getUnits().getUnits()));
+    }
+    return change;
+  }
+
+  static Change giveBonusMovementToUnits(final PlayerID player, final GameData data, final Territory t,
+      final Collection<Unit> units) {
+    final CompositeChange change = new CompositeChange();
+    for (final Unit u : t.getUnits().getUnits()) {
+      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).match(u)) {
+        if (!Matches.isUnitAllied(player, data).match(u)) {
+          continue;
+        }
+        int bonusMovement = Integer.MIN_VALUE;
+        final Collection<Unit> givesBonusUnits = new ArrayList<>();
+        final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
+            Matches.unitCanGiveBonusMovementToThisUnit(u));
+        givesBonusUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), givesBonusUnit));
+        if (Matches.unitIsSea().match(u)) {
+          final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
+          final List<Territory> neighbors =
+              new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
+          for (final Territory current : neighbors) {
+            givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
           }
-          int bonusMovement = Integer.MIN_VALUE;
-          final Collection<Unit> givesBonusUnits = new ArrayList<>();
-          final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
-              Matches.unitCanGiveBonusMovementToThisUnit(u));
-          givesBonusUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), givesBonusUnit));
-          if (Matches.unitIsSea().match(u)) {
-            final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
-            final List<Territory> neighbors =
-                new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
-            for (final Territory current : neighbors) {
-              givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
-            }
-          } else if (Matches.unitIsLand().match(u)) {
-            final Match<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.unitIsSea());
-            final List<Territory> neighbors =
-                new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
-            for (final Territory current : neighbors) {
-              givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
-            }
+        } else if (Matches.unitIsLand().match(u)) {
+          final Match<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.unitIsSea());
+          final List<Territory> neighbors =
+              new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
+          for (final Territory current : neighbors) {
+            givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
           }
-          for (final Unit bonusGiver : givesBonusUnits) {
-            final int tempBonus = UnitAttachment.get(bonusGiver.getType()).getGivesMovement().getInt(u.getType());
-            if (tempBonus > bonusMovement) {
-              bonusMovement = tempBonus;
-            }
+        }
+        for (final Unit bonusGiver : givesBonusUnits) {
+          final int tempBonus = UnitAttachment.get(bonusGiver.getType()).getGivesMovement().getInt(u.getType());
+          if (tempBonus > bonusMovement) {
+            bonusMovement = tempBonus;
           }
-          if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0) {
-            bonusMovement = Math.max(bonusMovement, (UnitAttachment.get(u.getType()).getMovement(player) * -1));
-            change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, TripleAUnit.BONUS_MOVEMENT));
-          }
+        }
+        if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0) {
+          bonusMovement = Math.max(bonusMovement, (UnitAttachment.get(u.getType()).getMovement(player) * -1));
+          change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, TripleAUnit.BONUS_MOVEMENT));
         }
       }
     }
