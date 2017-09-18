@@ -24,15 +24,17 @@ public class BannedMacController extends TimedController {
    * </p>
    */
   public void addBannedMac(final String mac, final Instant banTill) {
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)"
-            + " on conflict (mac) do update set ban_till=excluded.ban_till")) {
-      ps.setString(1, mac);
-      ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
-      ps.execute();
-      con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error inserting banned mac:" + mac, sqle);
+    if (banTill == null || banTill.isAfter(now().plusSeconds(10L))) {
+      try (final Connection con = Database.getPostgresConnection();
+          final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)"
+              + " on conflict (mac) do update set ban_till=excluded.ban_till")) {
+        ps.setString(1, mac);
+        ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
+        ps.execute();
+        con.commit();
+      } catch (final SQLException sqle) {
+        throw new IllegalStateException("Error inserting banned mac:" + mac, sqle);
+      }
     }
   }
 

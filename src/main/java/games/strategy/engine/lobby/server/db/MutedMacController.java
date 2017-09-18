@@ -22,17 +22,19 @@ public class MutedMacController extends TimedController {
    * </p>
    */
   public void addMutedMac(final String mac, final Instant muteTill) {
-    logger.fine("Muting mac:" + mac);
+    if (muteTill == null || muteTill.isAfter(now().plusSeconds(10L))) {
+      logger.fine("Muting mac:" + mac);
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)"
-            + " on conflict (mac) do update set mute_till=excluded.mute_till")) {
-      ps.setString(1, mac);
-      ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
-      ps.execute();
-      con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error inserting muted mac:" + mac, sqle);
+      try (final Connection con = Database.getPostgresConnection();
+          final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)"
+              + " on conflict (mac) do update set mute_till=excluded.mute_till")) {
+        ps.setString(1, mac);
+        ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
+        ps.execute();
+        con.commit();
+      } catch (final SQLException sqle) {
+        throw new IllegalStateException("Error inserting muted mac:" + mac, sqle);
+      }
     }
   }
 

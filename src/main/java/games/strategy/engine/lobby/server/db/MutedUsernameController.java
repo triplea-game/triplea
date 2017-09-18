@@ -22,18 +22,20 @@ public class MutedUsernameController extends TimedController {
    * </p>
    */
   public void addMutedUsername(final String username, final Instant muteTill) {
-    logger.fine("Muting username:" + username);
+    if (muteTill == null || muteTill.isAfter(now().plusSeconds(10L))) {
+      logger.fine("Muting username:" + username);
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps =
-            con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)"
-                + " on conflict (username) do update set mute_till=excluded.mute_till")) {
-      ps.setString(1, username);
-      ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
-      ps.execute();
-      con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error inserting muted username:" + username, sqle);
+      try (final Connection con = Database.getPostgresConnection();
+          final PreparedStatement ps =
+              con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)"
+                  + " on conflict (username) do update set mute_till=excluded.mute_till")) {
+        ps.setString(1, username);
+        ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
+        ps.execute();
+        con.commit();
+      } catch (final SQLException sqle) {
+        throw new IllegalStateException("Error inserting muted username:" + username, sqle);
+      }
     }
   }
 

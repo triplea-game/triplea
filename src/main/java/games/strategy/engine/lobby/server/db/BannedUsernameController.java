@@ -24,18 +24,20 @@ public class BannedUsernameController extends TimedController {
    * </p>
    */
   public void addBannedUsername(final String username, final Instant banTill) {
-    logger.fine("Banning username:" + username);
+    if (banTill == null || banTill.isAfter(now().plusSeconds(10L))) {
+      logger.fine("Banning username:" + username);
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps =
-            con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)"
-                + " on conflict (username) do update set ban_till=excluded.ban_till")) {
-      ps.setString(1, username);
-      ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
-      ps.execute();
-      con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error inserting banned username:" + username, sqle);
+      try (final Connection con = Database.getPostgresConnection();
+          final PreparedStatement ps =
+              con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)"
+                  + " on conflict (username) do update set ban_till=excluded.ban_till")) {
+        ps.setString(1, username);
+        ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
+        ps.execute();
+        con.commit();
+      } catch (final SQLException sqle) {
+        throw new IllegalStateException("Error inserting banned username:" + username, sqle);
+      }
     }
   }
 
