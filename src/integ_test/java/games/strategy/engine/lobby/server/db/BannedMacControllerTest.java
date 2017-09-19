@@ -19,10 +19,11 @@ import games.strategy.util.Util;
 public class BannedMacControllerTest {
 
   private final BannedMacController controller = spy(new BannedMacController());
+  private final String hashedMac = MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
 
   @Test
   public void testBanMacForever() {
-    final String hashedMac = banMac(null);
+    banMacForSeconds(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> macDetails = controller.isMacBanned(hashedMac);
     assertTrue(macDetails.getFirst());
     assertNull(macDetails.getSecond());
@@ -30,8 +31,7 @@ public class BannedMacControllerTest {
 
   @Test
   public void testBanMac() {
-    final Instant banUntil = Instant.now().plusSeconds(100L);
-    final String hashedMac = banMac(banUntil);
+    final Instant banUntil = banMacForSeconds(100L);
     final Tuple<Boolean, Timestamp> macDetails = controller.isMacBanned(hashedMac);
     assertTrue(macDetails.getFirst());
     assertEquals(banUntil, macDetails.getSecond().toInstant());
@@ -43,12 +43,11 @@ public class BannedMacControllerTest {
 
   @Test
   public void testUnbanMac() {
-    final Instant banUntil = Instant.now().plusSeconds(100L);
-    final String hashedMac = banMac(banUntil);
+    final Instant banUntil = banMacForSeconds(100L);
     final Tuple<Boolean, Timestamp> macDetails = controller.isMacBanned(hashedMac);
     assertTrue(macDetails.getFirst());
     assertEquals(banUntil, macDetails.getSecond().toInstant());
-    controller.addBannedMac(hashedMac, Instant.now().minusSeconds(10L));
+    banMacForSeconds(-10L);
     final Tuple<Boolean, Timestamp> macDetails2 = controller.isMacBanned(hashedMac);
     assertFalse(macDetails2.getFirst());
     assertNull(macDetails2.getSecond());
@@ -56,8 +55,7 @@ public class BannedMacControllerTest {
 
   @Test
   public void testBanMacInThePast() {
-    final Instant banUntil = Instant.now().minusSeconds(10L);
-    final String hashedMac = banMac(banUntil);
+    banMacForSeconds(-10L);
     final Tuple<Boolean, Timestamp> macDetails = controller.isMacBanned(hashedMac);
     assertFalse(macDetails.getFirst());
     assertNull(macDetails.getSecond());
@@ -65,7 +63,7 @@ public class BannedMacControllerTest {
 
   @Test
   public void testBanMacUpdate() {
-    final String hashedMac = banMac(null);
+    banMacForSeconds(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> macDetails = controller.isMacBanned(hashedMac);
     assertTrue(macDetails.getFirst());
     assertNull(macDetails.getSecond());
@@ -76,9 +74,9 @@ public class BannedMacControllerTest {
     assertEquals(banUntill, macDetails2.getSecond().toInstant());
   }
 
-  private String banMac(final Instant length) {
-    final String hashedMac = MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
-    controller.addBannedMac(hashedMac, length);
-    return hashedMac;
+  private Instant banMacForSeconds(final long length) {
+    final Instant banEnd = length == Long.MAX_VALUE ? null : Instant.now().plusSeconds(length);
+    controller.addBannedMac(hashedMac, banEnd);
+    return banEnd;
   }
 }

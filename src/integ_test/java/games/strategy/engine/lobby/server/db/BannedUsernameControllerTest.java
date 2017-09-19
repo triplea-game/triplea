@@ -18,10 +18,11 @@ import games.strategy.util.Util;
 public class BannedUsernameControllerTest {
 
   private final BannedUsernameController controller = spy(new BannedUsernameController());
+  private final String username = Util.createUniqueTimeStamp();
 
   @Test
   public void testBanUsernameForever() {
-    final String username = banUsername(null);
+    banUsername(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(username);
     assertTrue(usernameDetails.getFirst());
     assertNull(usernameDetails.getSecond());
@@ -29,8 +30,7 @@ public class BannedUsernameControllerTest {
 
   @Test
   public void testBanUsername() {
-    final Instant banUntil = Instant.now().plusSeconds(100L);
-    final String username = banUsername(banUntil);
+    final Instant banUntil = banUsername(100L);
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(username);
     assertTrue(usernameDetails.getFirst());
     assertEquals(banUntil, usernameDetails.getSecond().toInstant());
@@ -42,8 +42,7 @@ public class BannedUsernameControllerTest {
 
   @Test
   public void testUnbanUsername() {
-    final Instant banUntil = Instant.now().plusSeconds(100L);
-    final String username = banUsername(banUntil);
+    final Instant banUntil = banUsername(100L);
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(username);
     assertTrue(usernameDetails.getFirst());
     assertEquals(banUntil, usernameDetails.getSecond().toInstant());
@@ -55,8 +54,7 @@ public class BannedUsernameControllerTest {
 
   @Test
   public void testBanUsernameInThePast() {
-    final Instant banUntil = Instant.now().minusSeconds(10L);
-    final String username = banUsername(banUntil);
+    banUsername(-10L);
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(username);
     assertFalse(usernameDetails.getFirst());
     assertNull(usernameDetails.getSecond());
@@ -64,7 +62,7 @@ public class BannedUsernameControllerTest {
 
   @Test
   public void testBanUsernameUpdate() {
-    final String username = banUsername(null);
+    banUsername(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(username);
     assertTrue(usernameDetails.getFirst());
     assertNull(usernameDetails.getSecond());
@@ -75,9 +73,9 @@ public class BannedUsernameControllerTest {
     assertEquals(banUntill, usernameDetails2.getSecond().toInstant());
   }
 
-  private String banUsername(final Instant length) {
-    final String username = Util.createUniqueTimeStamp();
-    controller.addBannedUsername(username, length);
-    return username;
+  private Instant banUsername(final long length) {
+    final Instant endBan = length == Long.MAX_VALUE ? null : Instant.now().plusSeconds(length);
+    controller.addBannedUsername(username, endBan);
+    return endBan;
   }
 }
