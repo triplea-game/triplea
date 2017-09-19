@@ -349,7 +349,7 @@ public class ServerGame extends AbstractGame {
   private void autoSave(final String fileName) {
     final File autoSaveDir = new File(
         ClientSetting.SAVE_GAMES_FOLDER_PATH.value()
-        + (SystemProperties.isWindows() ? "\\" : "/" + "autoSave"));
+        + (SystemProperties.isWindows() ? "\\" : "/") + "autoSave");
     if (!autoSaveDir.exists()) {
       autoSaveDir.mkdirs();
     }
