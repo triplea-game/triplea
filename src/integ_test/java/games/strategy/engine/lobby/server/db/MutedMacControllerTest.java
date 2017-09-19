@@ -16,18 +16,18 @@ import games.strategy.util.Util;
 public class MutedMacControllerTest {
 
   private final MutedMacController controller = spy(new MutedMacController());
+  final String hashedMac = MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
 
   @Test
   public void testMuteMacForever() {
-    final String hashedMac = muteMac(null);
+    muteMac(Long.MAX_VALUE);
     assertTrue(controller.isMacMuted(hashedMac));
     assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(hashedMac));
   }
 
   @Test
   public void testMuteMac() {
-    final Instant muteUntil = Instant.now().plusSeconds(100L);
-    final String hashedMac = muteMac(muteUntil);
+    final Instant muteUntil = muteMac(100L);
     assertTrue(controller.isMacMuted(hashedMac));
     assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
     when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
@@ -36,8 +36,7 @@ public class MutedMacControllerTest {
 
   @Test
   public void testUnmuteMac() {
-    final Instant muteUntil = Instant.now().plusSeconds(100L);
-    final String hashedMac = muteMac(muteUntil);
+    final Instant muteUntil = muteMac(100L);
     assertTrue(controller.isMacMuted(hashedMac));
     assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
     controller.addMutedMac(hashedMac, Instant.now().minusSeconds(10L));
@@ -46,14 +45,13 @@ public class MutedMacControllerTest {
 
   @Test
   public void testMuteMacInThePast() {
-    final Instant muteUntil = Instant.now().minusSeconds(10L);
-    final String hashedMac = muteMac(muteUntil);
+    muteMac(-10L);
     assertFalse(controller.isMacMuted(hashedMac));
   }
 
   @Test
   public void testMuteMacUpdate() {
-    final String hashedMac = muteMac(null);
+    muteMac(Long.MAX_VALUE);
     assertTrue(controller.isMacMuted(hashedMac));
     assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(hashedMac));
     final Instant muteUntill = Instant.now().plusSeconds(100L);
@@ -62,9 +60,9 @@ public class MutedMacControllerTest {
     assertEquals(muteUntill, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
   }
 
-  private String muteMac(final Instant length) {
-    final String hashedMac = MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
-    controller.addMutedMac(hashedMac, length);
-    return hashedMac;
+  private Instant muteMac(final long length) {
+    final Instant muteEnd = length == Long.MAX_VALUE ? null : Instant.now().plusSeconds(length);
+    controller.addMutedMac(hashedMac, muteEnd);
+    return muteEnd;
   }
 }
