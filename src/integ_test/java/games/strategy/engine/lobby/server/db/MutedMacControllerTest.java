@@ -20,14 +20,14 @@ public class MutedMacControllerTest {
 
   @Test
   public void testMuteMacForever() {
-    muteMac(Long.MAX_VALUE);
+    muteMacForSeconds(Long.MAX_VALUE);
     assertTrue(controller.isMacMuted(hashedMac));
     assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(hashedMac));
   }
 
   @Test
   public void testMuteMac() {
-    final Instant muteUntil = muteMac(100L);
+    final Instant muteUntil = muteMacForSeconds(100L);
     assertTrue(controller.isMacMuted(hashedMac));
     assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
     when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
@@ -36,31 +36,30 @@ public class MutedMacControllerTest {
 
   @Test
   public void testUnmuteMac() {
-    final Instant muteUntil = muteMac(100L);
+    final Instant muteUntil = muteMacForSeconds(100L);
     assertTrue(controller.isMacMuted(hashedMac));
     assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
-    controller.addMutedMac(hashedMac, Instant.now().minusSeconds(10L));
+    muteMacForSeconds(-10L);
     assertFalse(controller.isMacMuted(hashedMac));
   }
 
   @Test
   public void testMuteMacInThePast() {
-    muteMac(-10L);
+    muteMacForSeconds(-10L);
     assertFalse(controller.isMacMuted(hashedMac));
   }
 
   @Test
   public void testMuteMacUpdate() {
-    muteMac(Long.MAX_VALUE);
+    muteMacForSeconds(Long.MAX_VALUE);
     assertTrue(controller.isMacMuted(hashedMac));
     assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(hashedMac));
-    final Instant muteUntill = Instant.now().plusSeconds(100L);
-    controller.addMutedMac(hashedMac, muteUntill);
+    final Instant muteUntil = muteMacForSeconds(100L);
     assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(muteUntill, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
+    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
   }
 
-  private Instant muteMac(final long length) {
+  private Instant muteMacForSeconds(final long length) {
     final Instant muteEnd = length == Long.MAX_VALUE ? null : Instant.now().plusSeconds(length);
     controller.addMutedMac(hashedMac, muteEnd);
     return muteEnd;
