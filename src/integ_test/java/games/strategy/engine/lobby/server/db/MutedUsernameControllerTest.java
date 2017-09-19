@@ -53,15 +53,14 @@ public class MutedUsernameControllerTest {
     muteUsernameForSeconds(Long.MAX_VALUE);
     assertTrue(controller.isUsernameMuted(username));
     assertEquals(Long.MAX_VALUE, controller.getUsernameUnmuteTime(username));
-    final Instant muteUntil = Instant.now().plusSeconds(100L);
-    controller.addMutedUsername(username, muteUntil);
+    final Instant muteUntil = muteUsernameForSeconds(100L);
     assertTrue(controller.isUsernameMuted(username));
     assertEquals(muteUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
   }
 
   private Instant muteUsernameForSeconds(final long length) {
-    final Instant endMute = length == Long.MAX_VALUE ? null : Instant.now().plusSeconds(length);
-    controller.addMutedUsername(username, endMute);
-    return endMute;
+    final Instant muteEnd = length == Long.MAX_VALUE ? null : Instant.now().plusSeconds(length);
+    controller.addMutedUsername(username, muteEnd);
+    return muteEnd;
   }
 }
