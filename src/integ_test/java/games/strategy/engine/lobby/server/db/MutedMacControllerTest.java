@@ -19,36 +19,36 @@ public class MutedMacControllerTest {
 
   @Test
   public void testMuteMacForever() {
-    final String username = muteUsername(null);
-    assertTrue(controller.isMacMuted(username));
-    assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(username));
+    final String hashedMac = muteMac(null);
+    assertTrue(controller.isMacMuted(hashedMac));
+    assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(hashedMac));
   }
 
   @Test
   public void testMuteMac() {
     final Instant muteUntil = Instant.now().plusSeconds(100L);
-    final String username = muteUsername(muteUntil);
-    assertTrue(controller.isMacMuted(username));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(username)));
+    final String hashedMac = muteMac(muteUntil);
+    assertTrue(controller.isMacMuted(hashedMac));
+    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
     when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
-    assertFalse(controller.isMacMuted(username));
+    assertFalse(controller.isMacMuted(hashedMac));
   }
 
   @Test
   public void testUnmuteMac() {
     final Instant muteUntil = Instant.now().plusSeconds(100L);
-    final String username = muteUsername(muteUntil);
-    assertTrue(controller.isMacMuted(username));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(username)));
-    controller.addMutedMac(username, Instant.now().minusSeconds(10L));
-    assertFalse(controller.isMacMuted(username));
+    final String hashedMac = muteMac(muteUntil);
+    assertTrue(controller.isMacMuted(hashedMac));
+    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
+    controller.addMutedMac(hashedMac, Instant.now().minusSeconds(10L));
+    assertFalse(controller.isMacMuted(hashedMac));
   }
 
   @Test
   public void testMuteMacInThePast() {
     final Instant muteUntil = Instant.now().minusSeconds(10L);
-    final String username = muteUsername(muteUntil);
-    assertFalse(controller.isMacMuted(username));
+    final String hashedMac = muteMac(muteUntil);
+    assertFalse(controller.isMacMuted(hashedMac));
   }
 
 
@@ -56,22 +56,22 @@ public class MutedMacControllerTest {
   public void testMuteMacInTooNearFuture() {
     final Instant muteUntil = Instant.now();
     when(controller.now()).thenReturn(muteUntil.minusSeconds(10L));
-    final String username = muteUsername(muteUntil);
-    assertFalse(controller.isMacMuted(username));
+    final String hashedMac = muteMac(muteUntil);
+    assertFalse(controller.isMacMuted(hashedMac));
   }
 
   @Test
   public void testMuteMacUpdate() {
-    final String username = muteUsername(null);
-    assertTrue(controller.isMacMuted(username));
-    assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(username));
+    final String hashedMac = muteMac(null);
+    assertTrue(controller.isMacMuted(hashedMac));
+    assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(hashedMac));
     final Instant muteUntill = Instant.now().plusSeconds(100L);
-    controller.addMutedMac(username, muteUntill);
-    assertTrue(controller.isMacMuted(username));
-    assertEquals(muteUntill, Instant.ofEpochMilli(controller.getMacUnmuteTime(username)));
+    controller.addMutedMac(hashedMac, muteUntill);
+    assertTrue(controller.isMacMuted(hashedMac));
+    assertEquals(muteUntill, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
   }
 
-  private String muteUsername(final Instant length) {
+  private String muteMac(final Instant length) {
     final String hashedMac = MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
     controller.addMutedMac(hashedMac, length);
     return hashedMac;
