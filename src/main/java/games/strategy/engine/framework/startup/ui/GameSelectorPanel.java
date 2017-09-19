@@ -370,7 +370,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
       if (file == null || !file.exists()) {
         return;
       }
-      model.load(file, this);
+      synchronized (model) {
+        model.load(file, this);
+      }
       setOriginalPropertiesMap(model.getGameData());
     } else {
       final NewGameChooserEntry entry =

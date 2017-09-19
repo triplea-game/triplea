@@ -191,12 +191,14 @@ public class MainPanel extends JPanel implements Observer {
 
   private static void play(final ISetupPanel gameSetupPanel, final SetupPanelModel gameTypePanelModel,
       final MainPanel mainPanel) {
-    gameSetupPanel.preStartGame();
-    final ILauncher launcher = gameTypePanelModel.getPanel().getLauncher();
-    if (launcher != null) {
-      launcher.launch(mainPanel);
+    synchronized (gameTypePanelModel.getGameSelectorModel()) {
+      gameSetupPanel.preStartGame();
+      final ILauncher launcher = gameTypePanelModel.getPanel().getLauncher();
+      if (launcher != null) {
+        launcher.launch(mainPanel);
+      }
+      gameSetupPanel.postStartGame();
     }
-    gameSetupPanel.postStartGame();
   }
 
   private void setWidgetActivation() {
@@ -205,11 +207,7 @@ public class MainPanel extends JPanel implements Observer {
       return;
     }
     gameTypePanelModel.setWidgetActivation();
-    if (gameSetupPanel != null) {
-      playButton.setEnabled(gameSetupPanel.canGameStart());
-    } else {
-      playButton.setEnabled(false);
-    }
+    playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart());
   }
 
   @Override
