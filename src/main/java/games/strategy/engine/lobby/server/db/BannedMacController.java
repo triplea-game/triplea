@@ -24,7 +24,7 @@ public class BannedMacController extends TimedController {
    * </p>
    */
   public void addBannedMac(final String mac, final Instant banTill) {
-    if (banTill == null || banTill.isAfter(now().plusSeconds(10L))) {
+    if (banTill == null || banTill.isAfter(now())) {
       try (final Connection con = Database.getPostgresConnection();
           final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)"
               + " on conflict (mac) do update set ban_till=excluded.ban_till")) {

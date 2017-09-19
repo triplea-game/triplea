@@ -51,15 +51,6 @@ public class MutedMacControllerTest {
     assertFalse(controller.isMacMuted(hashedMac));
   }
 
-
-  @Test
-  public void testMuteMacInTooNearFuture() {
-    final Instant muteUntil = Instant.now();
-    when(controller.now()).thenReturn(muteUntil.minusSeconds(10L));
-    final String hashedMac = muteMac(muteUntil);
-    assertFalse(controller.isMacMuted(hashedMac));
-  }
-
   @Test
   public void testMuteMacUpdate() {
     final String hashedMac = muteMac(null);

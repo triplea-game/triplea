@@ -24,7 +24,7 @@ public class BannedUsernameController extends TimedController {
    * </p>
    */
   public void addBannedUsername(final String username, final Instant banTill) {
-    if (banTill == null || banTill.isAfter(now().plusSeconds(10L))) {
+    if (banTill == null || banTill.isAfter(now())) {
       logger.fine("Banning username:" + username);
 
       try (final Connection con = Database.getPostgresConnection();

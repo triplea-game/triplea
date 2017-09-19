@@ -22,7 +22,7 @@ public class MutedUsernameController extends TimedController {
    * </p>
    */
   public void addMutedUsername(final String username, final Instant muteTill) {
-    if (muteTill == null || muteTill.isAfter(now().plusSeconds(10L))) {
+    if (muteTill == null || muteTill.isAfter(now())) {
       logger.fine("Muting username:" + username);
 
       try (final Connection con = Database.getPostgresConnection();
