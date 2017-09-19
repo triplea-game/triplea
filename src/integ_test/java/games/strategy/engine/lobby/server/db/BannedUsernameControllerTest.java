@@ -63,16 +63,6 @@ public class BannedUsernameControllerTest {
   }
 
   @Test
-  public void testBanMacInTooNearFuture() {
-    final Instant banUntil = Instant.now();
-    when(controller.now()).thenReturn(banUntil.minusSeconds(10L));
-    final String hashedMac = banUsername(banUntil);
-    final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(hashedMac);
-    assertFalse(usernameDetails.getFirst());
-    assertNull(usernameDetails.getSecond());
-  }
-
-  @Test
   public void testBanUsernameUpdate() {
     final String username = banUsername(null);
     final Tuple<Boolean, Timestamp> usernameDetails = controller.isUsernameBanned(username);

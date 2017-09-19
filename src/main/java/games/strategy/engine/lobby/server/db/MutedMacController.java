@@ -22,7 +22,7 @@ public class MutedMacController extends TimedController {
    * </p>
    */
   public void addMutedMac(final String mac, final Instant muteTill) {
-    if (muteTill == null || muteTill.isAfter(now().plusSeconds(10L))) {
+    if (muteTill == null || muteTill.isAfter(now())) {
       logger.fine("Muting mac:" + mac);
 
       try (final Connection con = Database.getPostgresConnection();

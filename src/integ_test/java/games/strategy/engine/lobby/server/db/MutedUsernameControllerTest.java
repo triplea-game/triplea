@@ -51,14 +51,6 @@ public class MutedUsernameControllerTest {
   }
 
   @Test
-  public void testMuteUsernameInTooNearFuture() {
-    final Instant muteUntil = Instant.now();
-    when(controller.now()).thenReturn(muteUntil.minusSeconds(10L));
-    final String username = muteUsername(muteUntil);
-    assertFalse(controller.isUsernameMuted(username));
-  }
-
-  @Test
   public void testMuteUsernameUpdate() {
     final String username = muteUsername(null);
     assertTrue(controller.isUsernameMuted(username));

@@ -64,16 +64,6 @@ public class BannedMacControllerTest {
   }
 
   @Test
-  public void testBanMacInTooNearFuture() {
-    final Instant banUntil = Instant.now();
-    when(controller.now()).thenReturn(banUntil.minusSeconds(10L));
-    final String hashedMac = banMac(banUntil);
-    final Tuple<Boolean, Timestamp> macDetails = controller.isMacBanned(hashedMac);
-    assertFalse(macDetails.getFirst());
-    assertNull(macDetails.getSecond());
-  }
-
-  @Test
   public void testBanMacUpdate() {
     final String hashedMac = banMac(null);
     final Tuple<Boolean, Timestamp> macDetails = controller.isMacBanned(hashedMac);
