@@ -73,7 +73,7 @@ public class LobbyLogin {
             @Override
             public Map<String, String> getProperties(final Map<String, String> challengProperties) {
               final Map<String, String> props = new HashMap<>();
-              if (panel.isAnonymous()) {
+              if (panel.isAnonymousLogin()) {
                 props.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
               } else {
                 final boolean isUpdatedLobby = RsaAuthenticator.canProcessChallenge(challengProperties);
@@ -97,9 +97,10 @@ public class LobbyLogin {
               return props;
             }
           });
-      // sucess, store prefs
-      LoginPanel.storePrefs(panel.getUserName(), panel.isAnonymous());
-      return new LobbyClient(messenger, panel.isAnonymous());
+
+      // lobby login was successful if we reach this point
+      panel.getLobbyLoginPreferences().save();
+      return new LobbyClient(messenger, panel.isAnonymousLogin());
     } catch (final CouldNotLogInException e) {
       // this has already been dealt with
       return loginToServer();
@@ -114,26 +115,30 @@ public class LobbyLogin {
   }
 
   private LobbyClient loginToServer() {
-    final LoginPanel panel = new LoginPanel();
-    final LoginPanel.ReturnValue value = panel.show(parentWindow);
-    if (value == LoginPanel.ReturnValue.LOGON) {
-      return login(panel);
-    } else if (value == LoginPanel.ReturnValue.CANCEL) {
-      return null;
-    } else if (value == LoginPanel.ReturnValue.CREATE_ACCOUNT) {
-      return createAccount();
-    } else {
-      throw new IllegalStateException("??");
+    final LoginPanel loginPanel = new LoginPanel(LobbyLoginPreferences.load());
+    final LoginPanel.ReturnValue returnValue = loginPanel.show(parentWindow);
+    switch (returnValue) {
+      case LOGON:
+        return login(loginPanel);
+      case CANCEL:
+        return null;
+      case CREATE_ACCOUNT:
+        return createAccount();
+      default:
+        throw new AssertionError("unknown login panel return value: " + returnValue);
     }
   }
 
   private LobbyClient createAccount() {
-    final CreateUpdateAccountPanel createAccount = CreateUpdateAccountPanel.newCreatePanel();
-    final CreateUpdateAccountPanel.ReturnValue value = createAccount.show(parentWindow);
-    if (value == CreateUpdateAccountPanel.ReturnValue.OK) {
-      return createAccount(createAccount);
-    } else {
-      return null;
+    final CreateUpdateAccountPanel createAccountPanel = CreateUpdateAccountPanel.newCreatePanel();
+    final CreateUpdateAccountPanel.ReturnValue returnValue = createAccountPanel.show(parentWindow);
+    switch (returnValue) {
+      case OK:
+        return createAccount(createAccountPanel);
+      case CANCEL:
+        return null;
+      default:
+        throw new AssertionError("unknown create account panel return value: " + returnValue);
     }
   }
 
@@ -161,8 +166,9 @@ public class LobbyLogin {
               return props;
             }
           });
-      // default
-      LoginPanel.storePrefs(createAccount.getUserName(), false);
+
+      // lobby login was successful if we reach this point
+      createAccount.getLobbyLoginPreferences().save();
       return new LobbyClient(messenger, false);
     } catch (final CouldNotLogInException clne) {
       // this has already been dealt with
