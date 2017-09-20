@@ -466,8 +466,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     EditorPaneCellEditor() {
       super(new JTextField());
       final JEditorPane textArea = new JEditorPane();
-      // textArea.setWrapStyleWord(true);
-      // textArea.setLineWrap(true);
       textArea.setEditable(false);
       textArea.setContentType("text/html");
       final JScrollPane scrollPane = new JScrollPane(textArea);
@@ -496,8 +494,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     private final Map<JTable, Map<Integer, Map<Integer, Integer>>> cellSizes = new HashMap<>();
 
     EditorPaneTableCellRenderer() {
-      // setLineWrap(true);
-      // setWrapStyleWord(true);
       setEditable(false);
       setContentType("text/html");
     }

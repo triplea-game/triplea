@@ -101,7 +101,6 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
               + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very "
               + "soon. Player Bridge GameOver=" + getPlayerBridge().isGameOver()
               + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
-          // getPlayerBridge().printErrorStatus();
           // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)
           break;
         }
@@ -118,5 +117,4 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   public boolean isGameStopped() {
     return isStoppedGame;
   }
-  // public abstract Class<?> getRemotePlayerType();
 }
