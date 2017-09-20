@@ -42,7 +42,7 @@ public class PlayerOrder {
           && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
         continue;
       }
-      final PlayerID currentPlayerId = currentStep.getPlayerID();
+      final PlayerID currentPlayerId = currentStep.getPlayerId();
       if (currentPlayerId != null && !currentPlayerId.isNull()) {
         playerSet.add(currentPlayerId);
       }

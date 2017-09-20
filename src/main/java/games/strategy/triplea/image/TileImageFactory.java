@@ -174,9 +174,9 @@ public final class TileImageFactory {
 
   private Image getImage(final String fileName, final boolean transparent) {
     synchronized (m_mutex) {
-      final Image rVal = isImageLoaded(fileName);
-      if (rVal != null) {
-        return rVal;
+      final Image image = isImageLoaded(fileName);
+      if (image != null) {
+        return image;
       }
       // This is null if there is no image
       final URL url = m_resourceLoader.getResource(fileName);

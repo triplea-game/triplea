@@ -89,7 +89,7 @@ public class ProMoveUtils {
 
           // Air unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
-              ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, isCombatMove));
+              ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove));
         }
         if (route == null) {
           ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
@@ -286,7 +286,7 @@ public class ProMoveUtils {
         Route route = null;
         if (!unitList.isEmpty() && Match.allMatch(unitList, Matches.unitIsAir())) {
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
-              ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
+              ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
         }
         moveRoutes.add(route);
       }

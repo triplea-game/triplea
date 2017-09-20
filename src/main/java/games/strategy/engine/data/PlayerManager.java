@@ -90,26 +90,26 @@ public class PlayerManager {
     PlayerID local = null;
     for (final String player : m_playerMapping.keySet()) {
       if (m_playerMapping.get(player).equals(localNode)) {
-        local = data.getPlayerList().getPlayerID(player);
+        local = data.getPlayerList().getPlayerId(player);
         break;
       }
     }
     // we arent playing anyone, return any
     if (local == null) {
       final String remote = m_playerMapping.keySet().iterator().next();
-      return data.getPlayerList().getPlayerID(remote);
+      return data.getPlayerList().getPlayerId(remote);
     }
     String any = null;
     for (final String player : m_playerMapping.keySet()) {
       if (!m_playerMapping.get(player).equals(localNode)) {
         any = player;
-        final PlayerID remotePlayerId = data.getPlayerList().getPlayerID(player);
+        final PlayerID remotePlayerId = data.getPlayerList().getPlayerId(player);
         if (!data.getRelationshipTracker().isAllied(local, remotePlayerId)) {
           return remotePlayerId;
         }
       }
     }
     // no un allied players were found, any will do
-    return data.getPlayerList().getPlayerID(any);
+    return data.getPlayerList().getPlayerId(any);
   }
 }

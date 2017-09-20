@@ -207,14 +207,14 @@ public class ProSortMoveOptionsUtils {
           for (final Territory t : o1.getValue()) {
             if (!attackMap.get(t).isCurrentlyWins()) {
               distance1 += data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(o1.getKey()), t,
-                  ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
+                  ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
             }
           }
           int distance2 = 0;
           for (final Territory t : o2.getValue()) {
             if (!attackMap.get(t).isCurrentlyWins()) {
               distance2 += data.getMap().getDistance_IgnoreEndForCondition(unitTerritoryMap.get(o2.getKey()), t,
-                  ProMatches.territoryCanMoveAirUnitsAndNoAA(player, data, true));
+                  ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
             }
           }
           if (distance1 != distance2) {

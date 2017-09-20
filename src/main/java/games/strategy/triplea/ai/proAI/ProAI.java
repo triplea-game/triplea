@@ -141,7 +141,7 @@ public class ProAI extends AbstractAI {
   protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
       final PlayerID player) {
     final long start = System.currentTimeMillis();
-    BattleCalculator.clearOOLCache();
+    BattleCalculator.clearOolCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     calc.setData(data);
@@ -164,7 +164,7 @@ public class ProAI extends AbstractAI {
   protected void purchase(final boolean purchaseForBid, int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
-    BattleCalculator.clearOOLCache();
+    BattleCalculator.clearOolCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     if (pusToSpend <= 0) {
@@ -200,7 +200,7 @@ public class ProAI extends AbstractAI {
         data.releaseReadLock();
       }
       calc.setData(dataCopy);
-      final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerID(player.getName());
+      final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
       moveDel.setDelegateBridgeAndPlayer(bridge);
@@ -215,11 +215,11 @@ public class ProAI extends AbstractAI {
       final int nextStepIndex = dataCopy.getSequence().getStepIndex() + 1;
       for (int i = nextStepIndex; i < gameSteps.size(); i++) {
         final GameStep step = gameSteps.get(i);
-        if (!playerCopy.equals(step.getPlayerID())) {
+        if (!playerCopy.equals(step.getPlayerId())) {
           continue;
         }
         dataCopy.getSequence().setRoundAndStep(dataCopy.getSequence().getRound(), step.getDisplayName(),
-            step.getPlayerID());
+            step.getPlayerId());
         final String stepName = step.getName();
         ProLogger.info("Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
@@ -259,7 +259,7 @@ public class ProAI extends AbstractAI {
   protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
       final PlayerID player) {
     final long start = System.currentTimeMillis();
-    BattleCalculator.clearOOLCache();
+    BattleCalculator.clearOolCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     purchaseAI.place(storedPurchaseTerritories, placeDelegate);
@@ -394,15 +394,6 @@ public class ProAI extends AbstractAI {
     return myCasualties;
   }
 
-  /**
-   * Ask the player which units, if any, they want to scramble to defend against the attacker.
-   *
-   * @param scrambleTo
-   *        - the territory we are scrambling to defend in, where the units will end up if scrambled
-   * @param possibleScramblers
-   *        - possible units which we could scramble, with where they are from and how many allowed from that location
-   * @return a list of units to scramble mapped to where they are coming from
-   */
   @Override
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
@@ -448,8 +439,8 @@ public class ProAI extends AbstractAI {
 
     // Calculate battle results
     final ProBattleResult result = calc.calculateBattleResults(unitTerritory, attackers, defenders, new HashSet<>());
-    ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTUVSwing());
-    return result.getTUVSwing() > 0;
+    ProLogger.debug(player.getName() + " sub attack TUVSwing=" + result.getTuvSwing());
+    return result.getTuvSwing() > 0;
   }
 
   @Override

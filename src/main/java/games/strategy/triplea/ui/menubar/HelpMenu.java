@@ -140,7 +140,7 @@ public class HelpMenu {
           i++;
           hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
               .append(">").append("<td>").append(getUnitImageUrl(ut, player, iuiContext)).append("</td>").append("<td>")
-              .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHTML())
+              .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHtml())
               .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
         }
         i++;
@@ -159,7 +159,7 @@ public class HelpMenu {
     if (player == null || unitImageFactory == null) {
       return "no image";
     }
-    final Optional<URL> imageUrl = unitImageFactory.getBaseImageURL(unitType.getName(), player);
+    final Optional<URL> imageUrl = unitImageFactory.getBaseImageUrl(unitType.getName(), player);
     final String imageLocation = imageUrl.isPresent() ? imageUrl.get().toString() : "";
 
     return "<img src=\"" + imageLocation + "\" border=\"0\"/>";

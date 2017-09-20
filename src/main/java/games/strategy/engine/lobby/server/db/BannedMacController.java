@@ -76,7 +76,8 @@ public class BannedMacController {
     Timestamp banTill = null;
     final String sql = "select mac, ban_till from banned_macs where mac = ?";
 
-    try (final Connection con = Database.getPostgresConnection(); final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (final Connection con = Database.getPostgresConnection();
+        final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
       try (final ResultSet rs = ps.executeQuery()) {
         found = rs.next();

@@ -4,19 +4,15 @@
 # Note at the end we configure install4j with our license key. After that final step, install4j can be used.
 #
 
-if [ -z "$INSTALL4J_LICENSE" ]; then
- echo "Error: required license environment variable: INSTALL4J_LICENSE, was not set"
+if [ -z "$INSTALL4J_7_LICENSE" ]; then
+ echo "Error: required license environment variable: INSTALL4J_7_LICENSE, was not set"
  exit -1
 fi
 
-mkdir -p ~/.install4j6/jres
-
 echo "Downloading and installing install4j"
-wget --no-verbose -O install4j_unix.sh https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_6_1_6.sh
+wget --no-verbose -O install4j_unix.sh https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_7_0_1.sh
 chmod +x install4j_unix.sh
-./install4j_unix.sh -q -dir ~/install4j6
-
-mkdir -p ~/.gradle
+./install4j_unix.sh -q -dir ~/install4j
 
 ## Next, append install4jHomeDir property to ~/.gradle/gradle.properties, 
 ## iff the property is not already present in the file
@@ -24,11 +20,12 @@ mkdir -p ~/.gradle
 ## The grep simply does the check if the property is there, the echo then 
 ## does the append, the CD subshell gets us the absolute path to the home folder,
 ## and last this is appended to the gradle properties file
-grep -q "install4jHomeDir" ~/.gradle/gradle.properties 2> /dev/null || echo "install4jHomeDir=$(cd ~ && pwd)/install4j6" >> ~/.gradle/gradle.properties
+mkdir -p ~/.gradle
+grep -q "install4jHomeDir" ~/.gradle/gradle.properties 2> /dev/null \
+    || echo "install4jHomeDir=$(cd ~ && pwd)/install4j" >> ~/.gradle/gradle.properties
 
 echo "Now Running Install4j to build OS specific installers"
-~/install4j6/bin/install4jc -L $INSTALL4J_LICENSE
+~/install4j/bin/install4jc -L $INSTALL4J_7_LICENSE
 
 echo "Environment Now ready to execute 'gradle release'"
 echo ""
-

@@ -71,7 +71,7 @@ public class ProPurchaseUtils {
     if (isBid) {
       placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
     }
-    final IDelegateBridge bridge = new ProDummyDelegateBridge(ProData.getProAI(), player, data);
+    final IDelegateBridge bridge = new ProDummyDelegateBridge(ProData.getProAi(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
     final String s = placeDelegate.canUnitsBePlaced(t, units, player);
     return s == null;

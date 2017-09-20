@@ -80,8 +80,8 @@ public class TripleAMenuBar extends JMenuBar {
       return new File(fileDialog.getDirectory(), GameDataFileUtils.addExtensionIfAbsent(fileName));
     } else { // Non-Mac platforms should use the normal Swing JFileChooser
       final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-      final int rVal = fileChooser.showSaveDialog(frame);
-      if (rVal != JFileChooser.APPROVE_OPTION) {
+      final int selectedOption = fileChooser.showSaveDialog(frame);
+      if (selectedOption != JFileChooser.APPROVE_OPTION) {
         return null;
       }
       File f = fileChooser.getSelectedFile();

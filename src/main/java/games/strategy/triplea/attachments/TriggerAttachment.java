@@ -620,11 +620,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange
           + " \n Use: player1:player2:oldRelation:newRelation\n" + thisErrorMsg());
     }
-    if (getData().getPlayerList().getPlayerID(s[0]) == null) {
+    if (getData().getPlayerList().getPlayerId(s[0]) == null) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0]
           + " unknown " + thisErrorMsg());
     }
-    if (getData().getPlayerList().getPlayerID(s[1]) == null) {
+    if (getData().getPlayerList().getPlayerId(s[1]) == null) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1]
           + " unknown " + thisErrorMsg());
     }
@@ -892,7 +892,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   public void setPlayers(final String names) throws GameParseException {
     final String[] s = names.split(":");
     for (final String element : s) {
-      final PlayerID player = getData().getPlayerList().getPlayerID(element);
+      final PlayerID player = getData().getPlayerList().getPlayerId(element);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
       }
@@ -1463,12 +1463,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     if (!s[1].equalsIgnoreCase("any")) {
-      final PlayerID oldOwner = getData().getPlayerList().getPlayerID(s[1]);
+      final PlayerID oldOwner = getData().getPlayerList().getPlayerId(s[1]);
       if (oldOwner == null) {
         throw new GameParseException("No such player: " + s[1] + thisErrorMsg());
       }
     }
-    final PlayerID newOwner = getData().getPlayerList().getPlayerID(s[2]);
+    final PlayerID newOwner = getData().getPlayerList().getPlayerId(s[2]);
     if (newOwner == null) {
       throw new GameParseException("No such player: " + s[2] + thisErrorMsg());
     }
@@ -1998,8 +1998,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final String relationshipChange : t.getRelationshipChange()) {
         final String[] s = relationshipChange.split(":");
-        final PlayerID player1 = data.getPlayerList().getPlayerID(s[0]);
-        final PlayerID player2 = data.getPlayerList().getPlayerID(s[1]);
+        final PlayerID player1 = data.getPlayerList().getPlayerId(s[0]);
+        final PlayerID player2 = data.getPlayerList().getPlayerId(s[1]);
         final RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
         if (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
             || (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
@@ -2266,8 +2266,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           territories.add(territorySet);
         }
         // if null, then is must be "any", so then any player
-        final PlayerID oldOwner = data.getPlayerList().getPlayerID(s[1]);
-        final PlayerID newOwner = data.getPlayerList().getPlayerID(s[2]);
+        final PlayerID oldOwner = data.getPlayerList().getPlayerId(s[1]);
+        final PlayerID newOwner = data.getPlayerList().getPlayerId(s[2]);
         final boolean captured = getBool(s[3]);
         for (final Territory terr : territories) {
           final PlayerID currentOwner = terr.getOwner();

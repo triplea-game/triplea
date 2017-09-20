@@ -148,9 +148,6 @@ public class TripleA implements IGameLoader {
     }
   }
 
-  /**
-   * Return an array of player types that can play on the server.
-   */
   @Override
   public String[] getServerPlayerTypes() {
     return new String[] {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, FAST_COMPUTER_PLAYER_TYPE,

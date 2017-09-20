@@ -43,9 +43,6 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   /** Creates a new instance of EndRoundDelegate. */
   public EndRoundDelegate() {}
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -55,7 +52,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     String victoryMessage = null;
     final GameData data = getData();
     if (isPacificTheater()) {
-      final PlayerID japanese = data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_JAPANESE);
+      final PlayerID japanese = data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
       final PlayerAttachment pa = PlayerAttachment.get(japanese);
       if (pa != null && pa.getVps() >= 22) {
         victoryMessage = "Axis achieve VP victory";
@@ -132,11 +129,11 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
     final PlayerList playerList = data.getPlayerList();
     // now test older maps that only use these 5 players, to see if someone has won
-    final PlayerID russians = playerList.getPlayerID(Constants.PLAYER_NAME_RUSSIANS);
-    final PlayerID germans = playerList.getPlayerID(Constants.PLAYER_NAME_GERMANS);
-    final PlayerID british = playerList.getPlayerID(Constants.PLAYER_NAME_BRITISH);
-    final PlayerID japanese = playerList.getPlayerID(Constants.PLAYER_NAME_JAPANESE);
-    final PlayerID americans = playerList.getPlayerID(Constants.PLAYER_NAME_AMERICANS);
+    final PlayerID russians = playerList.getPlayerId(Constants.PLAYER_NAME_RUSSIANS);
+    final PlayerID germans = playerList.getPlayerId(Constants.PLAYER_NAME_GERMANS);
+    final PlayerID british = playerList.getPlayerId(Constants.PLAYER_NAME_BRITISH);
+    final PlayerID japanese = playerList.getPlayerId(Constants.PLAYER_NAME_JAPANESE);
+    final PlayerID americans = playerList.getPlayerId(Constants.PLAYER_NAME_AMERICANS);
     if (germans == null || russians == null || british == null || japanese == null || americans == null
         || playerList.size() > 5) {
       return;
@@ -221,7 +218,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     final Collection<Territory> territories = data.getMap().getTerritories();
     while (allianceIter.hasNext()) {
       allianceName = allianceIter.next();
-      final int vcAmount = getVCAmount(data, allianceName, victoryType);
+      final int vcAmount = getVcAmount(data, allianceName, victoryType);
       final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
       int teamVCs = 0;
       for (final Territory t : territories) {
@@ -245,7 +242,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     return data.getProperties().get(alliance + " Economic Victory", 200);
   }
 
-  private static int getVCAmount(final GameData data, final String alliance, final String type) {
+  private static int getVcAmount(final GameData data, final String alliance, final String type) {
     int defaultVc = 20;
     if (type.equals(" Total Victory VCs")) {
       defaultVc = 18;
@@ -362,13 +359,4 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public Class<? extends IRemote> getRemoteType() {
     return null;
   }
-}
-
-
-class EndRoundExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = 8770361633528374127L;
-  Serializable superState;
-  // add other variables here:
-  public boolean m_gameOver = false;
-  public Collection<PlayerID> m_winners = new ArrayList<>();
 }

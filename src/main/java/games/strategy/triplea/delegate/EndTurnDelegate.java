@@ -73,7 +73,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   private String createUnits(final IDelegateBridge bridge) {
     final StringBuilder endTurnReport = new StringBuilder();
     final GameData data = getData();
-    final PlayerID player = data.getSequence().getStep().getPlayerID();
+    final PlayerID player = data.getSequence().getStep().getPlayerId();
     final Match<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCreatesUnits());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
@@ -164,7 +164,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
 
     // Find total unit generated resources for all owned units
     final GameData data = getData();
-    final PlayerID player = data.getSequence().getStep().getPlayerID();
+    final PlayerID player = data.getSequence().getStep().getPlayerId();
     final Match<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCreatesResources());
     final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
@@ -210,7 +210,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
    */
   private String determineNationalObjectives(final IDelegateBridge bridge) {
     final GameData data = getData();
-    final PlayerID player = data.getSequence().getStep().getPlayerID();
+    final PlayerID player = data.getSequence().getStep().getPlayerId();
     // First figure out all the conditions that will be tested, so we can test them all at the same time.
     final HashSet<TriggerAttachment> toFirePossible = new HashSet<>();
     final HashSet<ICondition> allConditionsNeeded = new HashSet<>();
@@ -320,7 +320,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
    */
   private static ResourceCollection getResourceProduction(final Collection<Territory> territories,
       final GameData data) {
-    final ResourceCollection rVal = new ResourceCollection(data);
+    final ResourceCollection resources = new ResourceCollection(data);
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);
       if (attachment == null) {
@@ -332,9 +332,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       }
       // Match will Check if territory is originally owned convoy center, or if contested
       if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).match(current)) {
-        rVal.add(toAdd);
+        resources.add(toAdd);
       }
     }
-    return rVal;
+    return resources;
   }
 }

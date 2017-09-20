@@ -44,9 +44,6 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     setupBoard();
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     super.end();
@@ -263,12 +260,4 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       return m_costs.getInt(u1.getType()) - m_costs.getInt(u2.getType());
     }
   }
-}
-
-
-class RandomStartExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = 607794506772555083L;
-  Serializable superState;
-  // add other variables here:
-  public PlayerID m_currentPickingPlayer;
 }

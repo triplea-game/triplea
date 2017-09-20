@@ -16,15 +16,11 @@ public class UserManager implements IUserManager {
     messenger.registerRemote(this, IUserManager.USER_MANAGER);
   }
 
-  /**
-   * Update the user info, returning an error string if an error occurs.
-   */
   @Override
   public String updateUser(final String userName, final String emailAddress, final String hashedPassword) {
     final INode remote = MessageContext.getSender();
     if (!userName.equals(remote.getName())) {
-      logger
-          .severe("Tried to update user permission, but not correct user, userName:" + userName + " node:" + remote);
+      logger.severe("Tried to update user permission, but not correct user, userName:" + userName + " node:" + remote);
       return "Sorry, but I can't let you do that";
     }
 
@@ -36,9 +32,9 @@ public class UserManager implements IUserManager {
     }
     final HashedPassword password = new HashedPassword(hashedPassword);
     if (!password.isValidSyntax()) {
-      //TODO: encrypt hashedPassword and pass it to updateUser
-      //new DbUserController().updateUser(user, decryptedPassword);
-      //return null;
+      // TODO: encrypt hashedPassword and pass it to updateUser
+      // new DbUserController().updateUser(user, decryptedPassword);
+      // return null;
       return "Password is not hashed correctly";
     }
 
@@ -50,9 +46,6 @@ public class UserManager implements IUserManager {
     return null;
   }
 
-  /**
-   * Update the user info, returning an error string if an error occurs.
-   */
   @Override
   public DBUser getUserInfo(final String userName) {
     final INode remote = MessageContext.getSender();

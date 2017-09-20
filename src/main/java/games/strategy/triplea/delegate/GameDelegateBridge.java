@@ -57,9 +57,6 @@ public class GameDelegateBridge implements IDelegateBridge {
     return m_bridge.getRandom(max, player, diceType, annotation);
   }
 
-  /**
-   * Delegates should not use random data that comes from any other source.
-   */
   @Override
   public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation) {

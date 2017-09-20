@@ -42,9 +42,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   /** Creates new PoliticsDelegate. */
   public PoliticsDelegate() {}
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -360,8 +357,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChange : paa.getRelationshipChange()) {
       final String[] s = relationshipChange.split(":");
-      final PlayerID player1 = getData().getPlayerList().getPlayerID(s[0]);
-      final PlayerID player2 = getData().getPlayerList().getPlayerID(s[1]);
+      final PlayerID player1 = getData().getPlayerList().getPlayerId(s[0]);
+      final PlayerID player2 = getData().getPlayerList().getPlayerId(s[1]);
       final RelationshipType oldRelation = getData().getRelationshipTracker().getRelationshipType(player1, player2);
       final RelationshipType newRelation = getData().getRelationshipTypeList().getRelationshipType(s[2]);
       if (oldRelation.equals(newRelation)) {
@@ -431,8 +428,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChangeString : paa.getRelationshipChange()) {
       final String[] relationshipChange = relationshipChangeString.split(":");
-      final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
-      final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
+      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
+      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
       if (!(p1.equals(player) || p2.equals(player))) {
         continue;
       }
@@ -473,8 +470,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChangeString : paa.getRelationshipChange()) {
       final String[] relationshipChange = relationshipChangeString.split(":");
-      final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
-      final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
+      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
+      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
       if (!(p1.equals(player) || p2.equals(player))) {
         continue;
       }
@@ -599,12 +596,4 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       bridge.addChange(change);
     }
   }
-}
-
-
-class PoliticsExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = -3829812751864156598L;
-  Serializable superState;
-  // add other variables here:
-  // public HashMap<ICondition, Boolean> m_testedConditions = null;
 }

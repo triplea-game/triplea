@@ -35,10 +35,4 @@ public interface IGamePlayer extends IRemotePlayer {
    * Called when the game is stopped (like if we are closing the window or leaving the game).
    */
   void stopGame();
-  /*
-   * (now in superclass)
-   *
-   * @return the id of this player. This id is initialized by the initialize method in IGamePlayer.
-   * public PlayerID getPlayerID();
-   */
 }

@@ -205,11 +205,7 @@ public class MainPanel extends JPanel implements Observer {
       return;
     }
     gameTypePanelModel.setWidgetActivation();
-    if (gameSetupPanel != null) {
-      playButton.setEnabled(gameSetupPanel.canGameStart());
-    } else {
-      playButton.setEnabled(false);
-    }
+    playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart());
   }
 
   @Override

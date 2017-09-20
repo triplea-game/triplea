@@ -32,8 +32,8 @@ public final class ClientFileSystemHelper {
 
   /**
    * @return Folder that is the 'root' of the tripleA binary installation. This folder and
-   *     contents contains the versioned content downloaded and initially installed. This is
-   *     in contrast to the user root folder that is not replaced between between installations.
+   *         contents contains the versioned content downloaded and initially installed. This is
+   *         in contrast to the user root folder that is not replaced between between installations.
    */
   public static File getRootFolder() {
     final String fileName = getGameRunnerFileLocation(GameRunner.class.getSimpleName() + ".class");
@@ -105,48 +105,15 @@ public final class ClientFileSystemHelper {
   private static boolean folderContainsGamePropsFile(final File folder) {
     final File[] files = folder.listFiles();
 
-    final List<String> fileNames = (files == null) ? Collections.emptyList() :
-        Arrays.stream(files).map(File::getName).collect(Collectors.toList());
+    final List<String> fileNames = (files == null) ? Collections.emptyList()
+        : Arrays.stream(files).map(File::getName).collect(Collectors.toList());
     return fileNames.contains(GameEnginePropertyReader.GAME_ENGINE_PROPERTY_FILE);
   }
 
   /**
-   * @return True if the game is running in context of an 'old' or legacy jar.
-   *     The game when detected it needs to run an old version will launch a new process
-   *     with an old jar. This method returns true if this process is such a process,
-   *     false otherwise.
-   */
-  public static boolean areWeOldExtraJar() {
-    final URL url = GameRunner.class.getResource(GameRunner.class.getSimpleName() + ".class");
-    String fileName = url.getFile();
-    try {
-      fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8.name());
-    } catch (final UnsupportedEncodingException e) {
-      ClientLogger.logQuietly(e);
-    }
-    final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    if (fileName.contains(tripleaJarNameWithEngineVersion)) {
-      final String subString = fileName.substring("file:/".length() - (SystemProperties.isWindows() ? 0 : 1),
-          fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
-      final File f = new File(subString);
-      if (!f.exists()) {
-        throw new IllegalStateException("File not found:" + f);
-      }
-      String path;
-      try {
-        path = f.getCanonicalPath();
-      } catch (final IOException e) {
-        path = f.getPath();
-      }
-      return path.contains("old");
-    }
-    return false;
-  }
-
-  /**
    * @return Folder where tripleA 'user data' is stored between game installations. This folder
-   *     would contain as some examples: save games, downloaded maps. This location is currently
-   *     not configurable (ideally we would allow this to be set during install perhaps).
+   *         would contain as some examples: save games, downloaded maps. This location is currently
+   *         not configurable (ideally we would allow this to be set during install perhaps).
    */
   public static File getUserRootFolder() {
     final File userHome = new File(System.getProperties().getProperty("user.home"));
@@ -156,8 +123,8 @@ public final class ClientFileSystemHelper {
 
   /**
    * @return Folder where maps are downloaded and stored. Default location is relative
-   *     to users home folder and not the engine install folder, this allows it to be
-   *     retained between engine installations. Users can override this location in settings.
+   *         to users home folder and not the engine install folder, this allows it to be
+   *         retained between engine installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
     final String path = getUserMapsFolderPath(ClientSetting.USER_MAPS_FOLDER_PATH, ClientSetting.MAP_FOLDER_OVERRIDE);

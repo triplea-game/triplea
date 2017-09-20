@@ -148,9 +148,9 @@ public class PurchasePanel extends ActionPanel {
     public void actionPerformed(final ActionEvent event) {
       final boolean hasPurchased = purchase.totalValues() != 0;
       if (!hasPurchased) {
-        final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this),
+        final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this),
             "Are you sure you dont want to buy anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
-        if (rVal != JOptionPane.YES_OPTION) {
+        if (selectedOption != JOptionPane.YES_OPTION) {
           return;
         }
       }
@@ -185,9 +185,9 @@ public class PurchasePanel extends ActionPanel {
         if (!bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
           final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size())
               + " units, and can only place " + totalProd + " of them. Continue with purchase?";
-          final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this), text,
-              "End Purchase", JOptionPane.YES_NO_OPTION);
-          if (rVal != JOptionPane.YES_OPTION) {
+          final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this),
+              text, "End Purchase", JOptionPane.YES_NO_OPTION);
+          if (selectedOption != JOptionPane.YES_OPTION) {
             return;
           }
         }

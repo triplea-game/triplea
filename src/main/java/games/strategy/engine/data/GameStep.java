@@ -67,7 +67,7 @@ public class GameStep extends GameDataComponent {
     return m_name;
   }
 
-  public PlayerID getPlayerID() {
+  public PlayerID getPlayerId() {
     return m_player;
   }
 

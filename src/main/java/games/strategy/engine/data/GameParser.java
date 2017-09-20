@@ -293,7 +293,7 @@ public class GameParser {
    */
   private PlayerID getPlayerId(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, data.getPlayerList()::getPlayerID, "player");
+    return getValidatedObject(element, attribute, mustFind, data.getPlayerList()::getPlayerId, "player");
   }
 
   /**
@@ -754,7 +754,7 @@ public class GameParser {
       final String defaultType = current.getAttribute("defaultType");
       final boolean isHidden = current.getAttribute("isHidden").equals("true");
       final PlayerID newPlayer = new PlayerID(name, isOptional, canBeDisabled, defaultType, isHidden, data);
-      playerList.addPlayerID(newPlayer);
+      playerList.addPlayerId(newPlayer);
     }
   }
 

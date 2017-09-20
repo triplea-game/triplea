@@ -14,17 +14,11 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   private static final String EDITMODE_ON = "Turning on Edit Mode";
   private static final String EDITMODE_OFF = "Turning off Edit Mode";
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -53,7 +47,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
     return getEditMode(getData());
   }
 
-  protected String checkPlayerID() {
+  private String checkPlayerId() {
     final IRemotePlayer remotePlayer = getRemotePlayer();
     if (!m_bridge.getPlayerID().equals(remotePlayer.getPlayerID())) {
       return "Edit actions can only be performed during players turn";
@@ -62,7 +56,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   }
 
   protected String checkEditMode() {
-    final String result = checkPlayerID();
+    final String result = checkPlayerId();
     if (null != result) {
       return result;
     }
@@ -84,7 +78,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
 
   public String addComment(final String message) {
     String result = null;
-    if (null != (result = checkPlayerID())) {
+    if (null != (result = checkPlayerId())) {
       return result;
     }
     logEvent("COMMENT: " + message, null);

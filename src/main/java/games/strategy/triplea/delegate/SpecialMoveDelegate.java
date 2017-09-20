@@ -44,9 +44,6 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   // private boolean m_allowAirborne = true;
   public SpecialMoveDelegate() {}
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
@@ -125,7 +122,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // allow user to cancel move if aa guns will fire
     final AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
     aaInMoveUtil.initialize(m_bridge);
-    final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAAWillFire(route, units);
+    final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {
       if (!getRemotePlayer().confirmMoveInFaceOfAA(aaFiringTerritores)) {
         return null;
@@ -348,11 +345,4 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public void pusLost(final Territory t, final int amt) {}
-}
-
-
-class SpecialMoveExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = 7781410008392307104L;
-  Serializable superState;
-  public boolean m_needToInitialize;
 }

@@ -442,9 +442,6 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     return dice;
   }
 
-  /**
-   * The given phase has started. We parse the phase name and call the appropriate method.
-   */
   @Override
   public final void start(final String name) {
     super.start(name);

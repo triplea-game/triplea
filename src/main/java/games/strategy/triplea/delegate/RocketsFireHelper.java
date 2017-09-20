@@ -56,7 +56,7 @@ public class RocketsFireHelper {
     return Properties.getRocketAttacksPerFactoryInfinite(data);
   }
 
-  private static boolean isPUCap(final GameData data) {
+  private static boolean isPuCap(final GameData data) {
     return Properties.getPUCap(data);
   }
 
@@ -87,7 +87,7 @@ public class RocketsFireHelper {
   private void fireWW2V2(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> attackedTerritories = new HashSet<>();
-    final Map<Territory,Territory> attackingFromTerritories = new LinkedHashMap<>();
+    final Map<Territory, Territory> attackingFromTerritories = new LinkedHashMap<>();
     final boolean oneAttackPerTerritory = !isRocketAttacksPerFactoryInfinite(data);
     for (final Territory territory : rocketTerritories) {
       final Set<Territory> targets = getTargetsWithinRange(territory, data, player);
@@ -101,7 +101,7 @@ public class RocketsFireHelper {
       final Territory target = getTarget(targets, bridge, territory);
       if (target != null) {
         attackedTerritories.add(target);
-        attackingFromTerritories.put(target,territory);
+        attackingFromTerritories.put(target, territory);
       }
     }
     for (final Territory target : attackedTerritories) {
@@ -258,14 +258,11 @@ public class RocketsFireHelper {
         for (final Unit u : rockets) {
           final UnitAttachment ua = UnitAttachment.get(u.getType());
           int maxDice = ua.getBombingMaxDieSides();
-          int bonus = ua.getBombingBonus();
+          final int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
           // map, and zero for the bonus.
           if (maxDice < 0) {
             maxDice = diceSides;
-          }
-          if (bonus < 0) {
-            bonus = 0;
           }
           // we only roll once for rockets, so if there are other rockets here we just roll for the best rocket
           if ((bonus + ((maxDice + 1) / 2)) > (highestBonus + ((highestMaxDice + 1) / 2))) {
@@ -319,7 +316,7 @@ public class RocketsFireHelper {
           if (maxDice < 0 || doNotUseBombingBonus) {
             maxDice = diceSides;
           }
-          if (bonus < 0 || doNotUseBombingBonus) {
+          if (doNotUseBombingBonus) {
             bonus = 0;
           }
           // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case
@@ -370,10 +367,10 @@ public class RocketsFireHelper {
       damageMap.put(target, totalDamage);
       bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
       // attackedTerritory.notifyChanged();
-    // in WW2V2, limit rocket attack cost to production value of factory.
+      // in WW2V2, limit rocket attack cost to production value of factory.
     } else if (isWW2V2(data) || isLimitRocketDamageToProduction(data)) {
       // If we are limiting total PUs lost then take that into account
-      if (isPUCap(data) || isLimitRocketDamagePerTurn(data)) {
+      if (isPuCap(data) || isLimitRocketDamagePerTurn(data)) {
         final int alreadyLost = DelegateFinder.moveDelegate(data).pusAlreadyLost(attackedTerritory);
         territoryProduction -= alreadyLost;
         territoryProduction = Math.max(0, territoryProduction);

@@ -293,7 +293,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return m_attacker.getName() + " attack " + m_defender.getName() + " in " + m_battleSite.getName();
   }
 
-  private void updateDefendingAAUnits() {
+  private void updateDefendingAaUnits() {
     final Collection<Unit> canFire = new ArrayList<>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
     canFire.addAll(m_defendingUnits);
     canFire.addAll(m_defendingWaitingToDie);
@@ -308,7 +308,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     Collections.reverse(m_defendingAAtypes);
   }
 
-  private void updateOffensiveAAUnits() {
+  private void updateOffensiveAaUnits() {
     final Collection<Unit> canFire = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
     canFire.addAll(m_attackingUnits);
     canFire.addAll(m_attackingWaitingToDie);
@@ -360,8 +360,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     addDependentUnits(transporting(m_defendingUnits));
     addDependentUnits(transporting(m_attackingUnits));
     // determine any AA
-    updateOffensiveAAUnits();
-    updateDefendingAAUnits();
+    updateOffensiveAaUnits();
+    updateDefendingAaUnits();
     // list the steps
     m_stepStrings = determineStepStrings(true);
     final ITripleADisplay display = getDisplay(bridge);
@@ -487,14 +487,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   List<String> determineStepStrings(final boolean showFirstRun) {
     final List<String> steps = new ArrayList<>();
-    if (canFireOffensiveAA()) {
+    if (canFireOffensiveAa()) {
       for (final String typeAa : UnitAttachment.getAllOfTypeAAs(m_offensiveAA)) {
         steps.add(m_attacker.getName() + " " + typeAa + AA_GUNS_FIRE_SUFFIX);
         steps.add(m_defender.getName() + SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
         steps.add(m_defender.getName() + REMOVE_PREFIX + typeAa + CASUALTIES_SUFFIX);
       }
     }
-    if (canFireDefendingAA()) {
+    if (canFireDefendingAa()) {
       for (final String typeAa : UnitAttachment.getAllOfTypeAAs(m_defendingAA)) {
         steps.add(m_defender.getName() + " " + typeAa + AA_GUNS_FIRE_SUFFIX);
         steps.add(m_attacker.getName() + SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
@@ -679,15 +679,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void addFightStartToStack(final boolean firstRun, final List<IExecutable> steps) {
-    final boolean offensiveAa = canFireOffensiveAA();
-    final boolean defendingAa = canFireDefendingAA();
+    final boolean offensiveAa = canFireOffensiveAa();
+    final boolean defendingAa = canFireDefendingAa();
     if (offensiveAa) {
       steps.add(new IExecutable() {
         private static final long serialVersionUID = 3802352588499530533L;
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireOffensiveAAGuns();
+          fireOffensiveAaGuns();
         }
       });
     }
@@ -697,7 +697,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireDefensiveAAGuns();
+          fireDefensiveAaGuns();
         }
       });
     }
@@ -822,6 +822,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        if (getBattlePower(true, m_attackingUnits, bridge, new ArrayList<>()) > 0) {
+          final List<Unit> unitsToRemove = new ArrayList<>();
+          if (getBattlePower(false, m_defendingUnits, bridge, unitsToRemove) == 0) {
+            remove(new ArrayList<>(Matches.getMatches(unitsToRemove, Matches.unitIsInfrastructure().invert())),
+                bridge, m_battleSite, true);
+          }
+        }
         clearWaitingToDie(bridge);
       }
     });
@@ -971,8 +978,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         if (!m_isOver) {
           m_round++;
           // determine any AA
-          updateOffensiveAAUnits();
-          updateDefendingAAUnits();
+          updateOffensiveAaUnits();
+          updateDefendingAaUnits();
           m_stepStrings = determineStepStrings(false);
           final ITripleADisplay display = getDisplay(bridge);
           display.listBattleSteps(m_battleID, m_stepStrings);
@@ -2137,11 +2144,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return Properties.getTransportCasualtiesRestricted(m_data);
   }
 
-  private void fireOffensiveAAGuns() {
+  private void fireOffensiveAaGuns() {
     m_stack.push(new FireAA(false));
   }
 
-  private void fireDefensiveAAGuns() {
+  private void fireDefensiveAaGuns() {
     m_stack.push(new FireAA(true));
   }
 
@@ -2158,7 +2165,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      if ((m_defending && !canFireDefendingAA()) || (!m_defending && !canFireOffensiveAA())) {
+      if ((m_defending && !canFireDefendingAa()) || (!m_defending && !canFireOffensiveAa())) {
         return;
       }
       for (final String currentTypeAa : (m_defending ? m_defendingAAtypes : m_offensiveAAtypes)) {
@@ -2181,7 +2188,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
               m_dice =
-                  DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_battleSite, m_defending);
+                  DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_battleSite, m_defending);
               if (!m_headless) {
                 if (currentTypeAa.equals("AA")) {
                   if (m_dice.getHits() > 0) {
@@ -2226,7 +2233,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              notifyCasualtiesAA(bridge, currentTypeAa);
+              notifyCasualtiesAa(bridge, currentTypeAa);
               removeCasualties(m_casualties.getKilled(), ReturnFire.ALL, !m_defending, bridge, m_defending);
             }
           }
@@ -2243,14 +2250,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       // send defender the dice roll so he can see what the dice are while he waits for attacker to select casualties
       getDisplay(bridge).notifyDice(m_dice, (m_defending ? m_attacker.getName() : m_defender.getName())
           + SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
-      return BattleCalculator.getAACasualties(!m_defending, validAttackingUnitsForThisRoll,
+      return BattleCalculator.getAaCasualties(!m_defending, validAttackingUnitsForThisRoll,
           (m_defending ? m_attackingUnits : m_defendingUnits), defendingAa,
           (m_defending ? m_defendingUnits : m_attackingUnits), m_dice, bridge, (m_defending ? m_defender : m_attacker),
           (m_defending ? m_attacker : m_defender), m_battleID, m_battleSite, m_territoryEffects, m_isAmphibious,
           m_amphibiousLandAttackers);
     }
 
-    private void notifyCasualtiesAA(final IDelegateBridge bridge, final String currentTypeAa) {
+    private void notifyCasualtiesAa(final IDelegateBridge bridge, final String currentTypeAa) {
       if (m_headless) {
         return;
       }
@@ -2286,16 +2293,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private boolean canFireDefendingAA() {
+  private boolean canFireDefendingAa() {
     if (m_defendingAA == null) {
-      updateDefendingAAUnits();
+      updateDefendingAaUnits();
     }
     return m_defendingAA.size() > 0;
   }
 
-  private boolean canFireOffensiveAA() {
+  private boolean canFireOffensiveAa() {
     if (m_offensiveAA == null) {
-      updateOffensiveAAUnits();
+      updateOffensiveAaUnits();
     }
     return m_offensiveAA.size() > 0;
   }
@@ -2766,6 +2773,19 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
+  private int getBattlePower(final boolean attack, final List<Unit> units, final IDelegateBridge bridge,
+      final List<Unit> unitsToRemove) {
+    final Match<Unit> unitTypes = Matches.unitCanBeInBattle(attack, !m_battleSite.isWater(), 1, false, !attack, true);
+    final List<Unit> sortedUnits = new ArrayList<>(Matches.getMatches(units, unitTypes));
+    Collections.sort(sortedUnits, new UnitBattleComparator(!attack,
+        TuvUtils.getCostsForTuv(bridge.getPlayerID(), m_data),
+        TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
+    Collections.reverse(sortedUnits);
+    unitsToRemove.addAll(sortedUnits);
+    return DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnits, units, !attack,
+        false, m_data, m_battleSite, TerritoryEffectHelper.getEffects(m_battleSite), false, null), m_data);
+  }
+
   /**
    * Returns a map of transport -> collection of transported units.
    */
@@ -2773,25 +2793,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return TransportTracker.transporting(units);
   }
 
-  /**
-   * Return attacking from Collection.
-   */
   @Override
   public Collection<Territory> getAttackingFrom() {
     return m_attackingFrom;
   }
 
-  /**
-   * Return attacking from Map.
-   */
   @Override
   public Map<Territory, Collection<Unit>> getAttackingFromMap() {
     return m_attackingFromMap;
   }
 
-  /**
-   * @return territories where there are amphibious attacks.
-   */
   @Override
   public Collection<Territory> getAmphibiousAttackTerritories() {
     return m_amphibiousAttackFrom;

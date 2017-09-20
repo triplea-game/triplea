@@ -56,7 +56,7 @@ public class RemoteRandom implements IRemoteRandom {
     m_annotation = annotation;
     m_max = max;
     m_localNumbers = m_plainRandom.getRandom(max, count, annotation);
-    m_game.getVault().waitForID(remoteVaultId, 15000);
+    m_game.getVault().waitForId(remoteVaultId, 15000);
     if (!m_game.getVault().knowsAbout(remoteVaultId)) {
       throw new IllegalStateException(
           "Vault id not known, have:" + m_game.getVault().knownIds() + " looking for:" + remoteVaultId);

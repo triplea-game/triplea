@@ -427,7 +427,7 @@ public class PlayerAttachment extends DefaultAttachment {
   public void setGiveUnitControl(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_giveUnitControl.add(tempPlayer);
       } else {
@@ -460,7 +460,7 @@ public class PlayerAttachment extends DefaultAttachment {
   public void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_captureUnitOnEnteringBy.add(tempPlayer);
       } else {
@@ -493,7 +493,7 @@ public class PlayerAttachment extends DefaultAttachment {
   public void setShareTechnology(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_shareTechnology.add(tempPlayer);
       } else {
@@ -526,7 +526,7 @@ public class PlayerAttachment extends DefaultAttachment {
   public void setHelpPayTechCost(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_helpPayTechCost.add(tempPlayer);
       } else {

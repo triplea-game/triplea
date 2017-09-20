@@ -370,7 +370,7 @@ public class UnitAttachment extends DefaultAttachment {
   public void setCanBeGivenByTerritoryTo(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_canBeGivenByTerritoryTo.add(tempPlayer);
       } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
@@ -405,7 +405,7 @@ public class UnitAttachment extends DefaultAttachment {
   public void setCanBeCapturedOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_canBeCapturedOnEnteringBy.add(tempPlayer);
       } else {
@@ -442,11 +442,11 @@ public class UnitAttachment extends DefaultAttachment {
           + "playerFrom:playerTo:keepAttributes:unitType:howMany "
           + "(you may have additional unitType:howMany:unitType:howMany, etc" + thisErrorMsg());
     }
-    final PlayerID pfrom = getData().getPlayerList().getPlayerID(s[0]);
+    final PlayerID pfrom = getData().getPlayerList().getPlayerId(s[0]);
     if (pfrom == null && !s[0].equals("any")) {
       throw new GameParseException("whenCapturedChangesInto: No player named: " + s[0] + thisErrorMsg());
     }
-    final PlayerID pto = getData().getPlayerList().getPlayerID(s[1]);
+    final PlayerID pto = getData().getPlayerList().getPlayerId(s[1]);
     if (pto == null && !s[1].equals("any")) {
       throw new GameParseException("whenCapturedChangesInto: No player named: " + s[1] + thisErrorMsg());
     }
@@ -490,16 +490,16 @@ public class UnitAttachment extends DefaultAttachment {
     // this is called by
     // destroyedWhenCapturedBy
     String byOrFrom = "BY";
-    if (value.startsWith("BY:") && getData().getPlayerList().getPlayerID("BY") == null) {
+    if (value.startsWith("BY:") && getData().getPlayerList().getPlayerId("BY") == null) {
       byOrFrom = "BY";
       value = value.replaceFirst("BY:", "");
-    } else if (value.startsWith("FROM:") && getData().getPlayerList().getPlayerID("FROM") == null) {
+    } else if (value.startsWith("FROM:") && getData().getPlayerList().getPlayerId("FROM") == null) {
       byOrFrom = "FROM";
       value = value.replaceFirst("FROM:", "");
     }
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_destroyedWhenCapturedBy.add(Tuple.of(byOrFrom, tempPlayer));
       } else {

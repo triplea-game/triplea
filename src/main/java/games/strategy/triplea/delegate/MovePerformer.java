@@ -108,7 +108,7 @@ public class MovePerformer implements Serializable {
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        final Collection<Unit> aaCasualties = fireAA(route, units);
+        final Collection<Unit> aaCasualties = fireAa(route, units);
         final Set<Unit> aaCasualtiesWithDependents = new HashSet<>();
         // need to remove any dependents here
         if (aaCasualties != null) {
@@ -466,15 +466,15 @@ public class MovePerformer implements Serializable {
   /**
    * Fire aa guns. Returns units to remove.
    */
-  private Collection<Unit> fireAA(final Route route, final Collection<Unit> units) {
+  private Collection<Unit> fireAa(final Route route, final Collection<Unit> units) {
     if (m_aaInMoveUtil == null) {
       m_aaInMoveUtil = new AAInMoveUtil();
     }
     m_aaInMoveUtil.initialize(m_bridge);
-    final Collection<Unit> rVal =
-        m_aaInMoveUtil.fireAA(route, units, UnitComparator.getLowestToHighestMovementComparator(), m_currentMove);
+    final Collection<Unit> unitsToRemove =
+        m_aaInMoveUtil.fireAa(route, units, UnitComparator.getLowestToHighestMovementComparator(), m_currentMove);
     m_aaInMoveUtil = null;
-    return rVal;
+    return unitsToRemove;
   }
 
   private static boolean isIgnoreTransportInMovement(final GameData data) {

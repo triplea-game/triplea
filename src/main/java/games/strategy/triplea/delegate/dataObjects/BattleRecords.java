@@ -76,7 +76,7 @@ public class BattleRecords implements Serializable {
     return records;
   }
 
-  public static Collection<BattleRecord> getRecordsForPlayerID(final PlayerID player, final BattleRecords brs) {
+  public static Collection<BattleRecord> getRecordsForPlayerId(final PlayerID player, final BattleRecords brs) {
     final Collection<BattleRecord> playerRecords = new ArrayList<>();
     if (brs.m_records.get(player) == null) {
       return playerRecords;
@@ -87,7 +87,7 @@ public class BattleRecords implements Serializable {
     return playerRecords;
   }
 
-  public static int getLostTUVforBattleRecords(final Collection<BattleRecord> brs, final boolean attackerLostTuv,
+  public static int getLostTuvForBattleRecords(final Collection<BattleRecord> brs, final boolean attackerLostTuv,
       final boolean includeNullPlayer) {
     int lostTuv = 0;
     for (final BattleRecord br : brs) {
@@ -96,9 +96,9 @@ public class BattleRecords implements Serializable {
         continue;
       }
       if (attackerLostTuv) {
-        lostTuv += br.getAttackerLostTUV();
+        lostTuv += br.getAttackerLostTuv();
       } else {
-        lostTuv += br.getDefenderLostTUV();
+        lostTuv += br.getDefenderLostTuv();
       }
     }
     return lostTuv;

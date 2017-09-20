@@ -248,7 +248,7 @@ public class GameData implements Serializable {
   public UnitHolder getUnitHolder(final String name, final String type) {
     ensureLockHeld();
     if (type.equals(UnitHolder.PLAYER)) {
-      return playerList.getPlayerID(name);
+      return playerList.getPlayerId(name);
     } else if (type.equals(UnitHolder.TERRITORY)) {
       return map.getTerritory(name);
     } else {
@@ -481,7 +481,7 @@ public class GameData implements Serializable {
     final Iterator<GameStep> stepIter = sequence.iterator();
     while (stepIter.hasNext()) {
       final GameStep step = stepIter.next();
-      if (playersWhoShouldBeRemoved.contains(step.getPlayerID())) {
+      if (playersWhoShouldBeRemoved.contains(step.getPlayerId())) {
         stepIter.remove();
         if (index < currentIndex) {
           toSubtract++;

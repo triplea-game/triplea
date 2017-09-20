@@ -20,9 +20,18 @@ public abstract class DependentBattle extends AbstractBattle {
     super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
   }
 
+  /**
+   * Return attacking from Collection.
+   */
   public abstract Collection<Territory> getAttackingFrom();
 
+  /**
+   * Return attacking from Map.
+   */
   public abstract Map<Territory, Collection<Unit>> getAttackingFromMap();
 
+  /**
+   * @return territories where there are amphibious attacks.
+   */
   public abstract Collection<Territory> getAmphibiousAttackTerritories();
 }

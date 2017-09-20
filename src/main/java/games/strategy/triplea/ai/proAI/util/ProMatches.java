@@ -41,7 +41,7 @@ public class ProMatches {
         Matches.territoryIsPassableAndNotRestricted(player, data));
   }
 
-  public static Match<Territory> territoryCanMoveAirUnitsAndNoAA(final PlayerID player, final GameData data,
+  public static Match<Territory> territoryCanMoveAirUnitsAndNoAa(final PlayerID player, final GameData data,
       final boolean isCombatMove) {
     return Match.allOf(ProMatches.territoryCanMoveAirUnits(player, data, isCombatMove),
         Matches.territoryHasEnemyAaForAnything(player, data).invert());
@@ -444,7 +444,7 @@ public class ProMatches {
     return Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsAir());
   }
 
-  public static Match<Unit> unitIsEnemyAndNotAA(final PlayerID player, final GameData data) {
+  public static Match<Unit> unitIsEnemyAndNotAa(final PlayerID player, final GameData data) {
     return Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsAaForAnything().invert());
   }
 

@@ -579,33 +579,21 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     return ui.getBattlePanel().getBombardment(unit, unitTerritory, territories, noneAvailable);
   }
 
-  /*
-   * Ask if the player wants to attack subs
-   */
   @Override
   public boolean selectAttackSubs(final Territory unitTerritory) {
     return ui.getBattlePanel().getAttackSubs(unitTerritory);
   }
 
-  /*
-   * Ask if the player wants to attack transports
-   */
   @Override
   public boolean selectAttackTransports(final Territory unitTerritory) {
     return ui.getBattlePanel().getAttackTransports(unitTerritory);
   }
 
-  /*
-   * Ask if the player wants to attack units
-   */
   @Override
   public boolean selectAttackUnits(final Territory unitTerritory) {
     return ui.getBattlePanel().getAttackUnits(unitTerritory);
   }
 
-  /*
-   * Ask if the player wants to shore bombard
-   */
   @Override
   public boolean selectShoreBombard(final Territory unitTerritory) {
     return ui.getBattlePanel().getShoreBombard(unitTerritory);

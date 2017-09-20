@@ -271,10 +271,10 @@ public class ProductionPanel extends JPanel {
       final int numberOfUnitsGiven = rule.getResults().totalValues();
       final String text;
       if (numberOfUnitsGiven > 1) {
-        text = "<html> x " + ResourceCollection.toStringForHTML(cost, data) + "<br>" + "for " + numberOfUnitsGiven
+        text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "<br>" + "for " + numberOfUnitsGiven
             + "<br>" + " units</html>";
       } else {
-        text = "<html> x " + ResourceCollection.toStringForHTML(cost, data) + "</html>";
+        text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
       }
       final JLabel label =
           icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);

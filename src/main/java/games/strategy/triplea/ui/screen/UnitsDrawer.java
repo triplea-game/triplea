@@ -89,7 +89,7 @@ public class UnitsDrawer implements IDrawable {
     if (type == null) {
       throw new IllegalStateException("Type not found:" + unitType);
     }
-    final PlayerID owner = data.getPlayerList().getPlayerID(playerName);
+    final PlayerID owner = data.getPlayerList().getPlayerId(playerName);
     final Optional<Image> img =
         uiContext.getUnitImageFactory().getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
 
@@ -215,7 +215,7 @@ public class UnitsDrawer implements IDrawable {
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
     final Match.CompositeBuilder<Unit> selectedUnitsBuilder = Match.newCompositeBuilder(
         Matches.unitIsOfType(type),
-        Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(playerName)));
+        Matches.unitIsOwnedBy(data.getPlayerList().getPlayerId(playerName)));
     if (damaged > 0) {
       selectedUnitsBuilder.add(Matches.unitHasTakenSomeDamage());
     } else {
@@ -226,8 +226,7 @@ public class UnitsDrawer implements IDrawable {
     } else {
       selectedUnitsBuilder.add(Matches.unitHasNotTakenAnyBombingUnitDamage());
     }
-    final List<Unit> rVal = t.getUnits().getMatches(selectedUnitsBuilder.all());
-    return Tuple.of(t, rVal);
+    return Tuple.of(t, t.getUnits().getMatches(selectedUnitsBuilder.all()));
   }
 
   @Override

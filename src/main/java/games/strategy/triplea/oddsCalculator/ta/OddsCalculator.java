@@ -131,9 +131,9 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
     this.attacker =
-        gameData.getPlayerList().getPlayerID(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
+        gameData.getPlayerList().getPlayerId(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
     this.defender =
-        gameData.getPlayerList().getPlayerID(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
+        gameData.getPlayerList().getPlayerId(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
     this.location = gameData.getMap().getTerritory(location.getName());
     attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
     defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
@@ -165,7 +165,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   private AggregateResults calculate(final int count) {
     isRunning = true;
     final long start = System.currentTimeMillis();
-    final AggregateResults rVal = new AggregateResults(count);
+    final AggregateResults aggregateResults = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
     // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
     // the AI and a human
@@ -188,20 +188,18 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       battle.isAmphibious();
       battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
           (amphibious ? attackingUnits : new ArrayList<>()), defender, territoryEffects);
-      // battle.setAttackingFromAndMap(attackingFromMap);
       bridge1.setBattle(battle);
       battle.fight(bridge);
-      rVal.addResult(new BattleResults(battle, gameData));
+      aggregateResults.addResult(new BattleResults(battle, gameData));
       // restore the game to its original state
       gameData.performChange(allChanges.invert());
       battleTracker.clear();
       battleTracker.clearBattleRecords();
     }
-    // BattleCalculator.DisableCasualtySortingCaching();
-    rVal.setTime(System.currentTimeMillis() - start);
+    aggregateResults.setTime(System.currentTimeMillis() - start);
     isRunning = false;
     cancelled = false;
-    return rVal;
+    return aggregateResults;
   }
 
   @Override

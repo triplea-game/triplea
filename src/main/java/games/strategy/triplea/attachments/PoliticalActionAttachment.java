@@ -87,11 +87,11 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange
           + " \n Use: player1:player2:newRelation\n" + thisErrorMsg());
     }
-    if (getData().getPlayerList().getPlayerID(s[0]) == null) {
+    if (getData().getPlayerList().getPlayerId(s[0]) == null) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0]
           + " unknown in: " + getName() + thisErrorMsg());
     }
-    if (getData().getPlayerList().getPlayerID(s[1]) == null) {
+    if (getData().getPlayerList().getPlayerId(s[1]) == null) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1]
           + " unknown in: " + getName() + thisErrorMsg());
     }
@@ -126,8 +126,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     final HashSet<PlayerID> otherPlayers = new HashSet<>();
     for (final String relationshipChange : m_relationshipChange) {
       final String[] s = relationshipChange.split(":");
-      otherPlayers.add(getData().getPlayerList().getPlayerID(s[0]));
-      otherPlayers.add(getData().getPlayerList().getPlayerID(s[1]));
+      otherPlayers.add(getData().getPlayerList().getPlayerId(s[0]));
+      otherPlayers.add(getData().getPlayerList().getPlayerId(s[1]));
     }
     otherPlayers.remove((getAttachedTo()));
     return otherPlayers;

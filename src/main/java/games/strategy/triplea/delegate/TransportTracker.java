@@ -218,7 +218,7 @@ public class TransportTracker {
   }
 
   static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units) {
-    final Collection<Unit> rVal = new ArrayList<>();
+    final Collection<Unit> loadedUnits = new ArrayList<>();
     for (final Unit u : units) {
       // a unit loaded onto an allied transport
       // cannot be unloaded in the same turn, so
@@ -231,10 +231,10 @@ public class TransportTracker {
       if (taUnit.getWasLoadedThisTurn() && taUnit.getTransportedBy() != null
           // an allied transport if the owner of the transport is not the owner of the unit
           && !taUnit.getTransportedBy().getOwner().equals(taUnit.getOwner())) {
-        rVal.add(u);
+        loadedUnits.add(u);
       }
     }
-    return rVal;
+    return loadedUnits;
   }
 
   static boolean hasTransportUnloadedInPreviousPhase(final Unit transport) {

@@ -58,28 +58,28 @@ public class TerritoryEffectHelper {
   }
 
   public static Set<UnitType> getUnitTypesThatLostBlitz(final Collection<Territory> steps) {
-    final Set<UnitType> rVal = new HashSet<>();
+    final Set<UnitType> unitTypes = new HashSet<>();
     for (final Territory location : steps) {
       for (final TerritoryEffect effect : getEffects(location)) {
-        rVal.addAll(TerritoryEffectAttachment.get(effect).getNoBlitz());
+        unitTypes.addAll(TerritoryEffectAttachment.get(effect).getNoBlitz());
       }
     }
-    return rVal;
+    return unitTypes;
   }
 
   public static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(final Territory location) {
-    final Set<UnitType> rVal = new HashSet<>();
+    final Set<UnitType> unitTypes = new HashSet<>();
     for (final TerritoryEffect effect : getEffects(location)) {
-      rVal.addAll(TerritoryEffectAttachment.get(effect).getUnitsNotAllowed());
+      unitTypes.addAll(TerritoryEffectAttachment.get(effect).getUnitsNotAllowed());
     }
-    return rVal;
+    return unitTypes;
   }
 
   static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(final Collection<Territory> steps) {
-    final Set<UnitType> rVal = new HashSet<>();
+    final Set<UnitType> unitTypes = new HashSet<>();
     for (final Territory location : steps) {
-      rVal.addAll(getUnitTypesForUnitsNotAllowedIntoTerritory(location));
+      unitTypes.addAll(getUnitTypesForUnitsNotAllowedIntoTerritory(location));
     }
-    return rVal;
+    return unitTypes;
   }
 }

@@ -26,9 +26,6 @@ import games.strategy.triplea.ui.UserActionText;
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {
   public UserActionDelegate() {}
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -294,10 +291,4 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   public Class<IUserActionDelegate> getRemoteType() {
     return IUserActionDelegate.class;
   }
-}
-
-
-class UserActionExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = -7521031770074984272L;
-  Serializable superState;
 }

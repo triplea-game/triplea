@@ -164,7 +164,7 @@ public class AirMovementValidator {
         Matches.isUnitAllied(player, data), Matches.unitIsCarrier());
     // final Match<Unit> airAlliedNotOwned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(),
     // Matches.isUnitAllied(player, data), Matches.unitIsAir(), Matches.unitCanLandOnCarrier());
-    final boolean landAirOnNewCarriers = AirThatCantLandUtil.isLHTRCarrierProduction(data)
+    final boolean landAirOnNewCarriers = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     // final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
     final List<Unit> carriersInProductionQueue = player.getUnits().getMatches(Matches.unitIsCarrier());

@@ -180,25 +180,16 @@ public class NonFightingBattle extends DependentBattle {
     }
   }
 
-  /**
-   *  Return attacking from Collection.
-   */
   @Override
   public Collection<Territory> getAttackingFrom() {
     return m_attackingFrom;
   }
 
-  /**
-   *  Return attacking from Map.
-   */
   @Override
   public Map<Territory, Collection<Unit>> getAttackingFromMap() {
     return m_attackingFromMap;
   }
 
-  /**
-   * @return territories where there are amphibious attacks.
-   */
   @Override
   public Collection<Territory> getAmphibiousAttackTerritories() {
     return m_amphibiousAttackFrom;

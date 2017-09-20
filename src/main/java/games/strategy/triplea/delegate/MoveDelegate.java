@@ -55,17 +55,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   public MoveDelegate() {}
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -183,9 +177,6 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     super.end();
@@ -208,6 +199,12 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // while loading.
     if (GameStepPropertiesHelper.isResetUnitStateAtEnd(data)) {
       resetUnitStateAndDelegateState();
+    } else {
+
+      // Only air units can move during both CM and NCM in the same turn so moved units are set to no moves left
+      final List<Unit> alreadyMovedNonAirUnits =
+          Matches.getMatches(data.getUnits().getUnits(), Match.allOf(Matches.unitHasMoved(), Matches.unitIsNotAir()));
+      m_bridge.addChange(ChangeFactory.markNoMovementChange(alreadyMovedNonAirUnits));
     }
     m_needToInitialize = true;
     m_needToDoRockets = true;
@@ -356,41 +353,48 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      for (final Unit u : t.getUnits().getUnits()) {
-        if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).match(u)) {
-          if (!Matches.isUnitAllied(player, data).match(u)) {
-            continue;
+      change.add(giveBonusMovementToUnits(player, data, t, t.getUnits().getUnits()));
+    }
+    return change;
+  }
+
+  static Change giveBonusMovementToUnits(final PlayerID player, final GameData data, final Territory t,
+      final Collection<Unit> units) {
+    final CompositeChange change = new CompositeChange();
+    for (final Unit u : t.getUnits().getUnits()) {
+      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).match(u)) {
+        if (!Matches.isUnitAllied(player, data).match(u)) {
+          continue;
+        }
+        int bonusMovement = Integer.MIN_VALUE;
+        final Collection<Unit> givesBonusUnits = new ArrayList<>();
+        final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
+            Matches.unitCanGiveBonusMovementToThisUnit(u));
+        givesBonusUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), givesBonusUnit));
+        if (Matches.unitIsSea().match(u)) {
+          final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
+          final List<Territory> neighbors =
+              new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
+          for (final Territory current : neighbors) {
+            givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
           }
-          int bonusMovement = Integer.MIN_VALUE;
-          final Collection<Unit> givesBonusUnits = new ArrayList<>();
-          final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
-              Matches.unitCanGiveBonusMovementToThisUnit(u));
-          givesBonusUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), givesBonusUnit));
-          if (Matches.unitIsSea().match(u)) {
-            final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
-            final List<Territory> neighbors =
-                new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
-            for (final Territory current : neighbors) {
-              givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
-            }
-          } else if (Matches.unitIsLand().match(u)) {
-            final Match<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.unitIsSea());
-            final List<Territory> neighbors =
-                new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
-            for (final Territory current : neighbors) {
-              givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
-            }
+        } else if (Matches.unitIsLand().match(u)) {
+          final Match<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.unitIsSea());
+          final List<Territory> neighbors =
+              new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
+          for (final Territory current : neighbors) {
+            givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
           }
-          for (final Unit bonusGiver : givesBonusUnits) {
-            final int tempBonus = UnitAttachment.get(bonusGiver.getType()).getGivesMovement().getInt(u.getType());
-            if (tempBonus > bonusMovement) {
-              bonusMovement = tempBonus;
-            }
+        }
+        for (final Unit bonusGiver : givesBonusUnits) {
+          final int tempBonus = UnitAttachment.get(bonusGiver.getType()).getGivesMovement().getInt(u.getType());
+          if (tempBonus > bonusMovement) {
+            bonusMovement = tempBonus;
           }
-          if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0) {
-            bonusMovement = Math.max(bonusMovement, (UnitAttachment.get(u.getType()).getMovement(player) * -1));
-            change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, TripleAUnit.BONUS_MOVEMENT));
-          }
+        }
+        if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0) {
+          bonusMovement = Math.max(bonusMovement, (UnitAttachment.get(u.getType()).getMovement(player) * -1));
+          change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, TripleAUnit.BONUS_MOVEMENT));
         }
       }
     }
@@ -478,20 +482,24 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Set<Unit> repairUnitsForThisUnit = new HashSet<>();
     final PlayerID owner = unitToBeRepaired.getOwner();
     final Match<Unit> repairUnit = Match.allOf(Matches.alliedUnit(owner, data),
-        Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired));
+        Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
     repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
     if (Matches.unitIsSea().match(unitToBeRepaired)) {
-      final Match<Unit> repairUnitLand = Match.allOf(repairUnit, Matches.unitIsLand());
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
       for (final Territory current : neighbors) {
+        final Match<Unit> repairUnitLand = Match.allOf(Matches.alliedUnit(owner, data),
+            Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, current),
+            Matches.unitIsLand());
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
       }
     } else if (Matches.unitIsLand().match(unitToBeRepaired)) {
-      final Match<Unit> repairUnitSea = Match.allOf(repairUnit, Matches.unitIsSea());
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater()));
       for (final Territory current : neighbors) {
+        final Match<Unit> repairUnitSea = Match.allOf(Matches.alliedUnit(owner, data),
+            Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, current),
+            Matches.unitIsSea());
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitSea));
       }
     }
@@ -547,7 +555,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // allow user to cancel move if aa guns will fire
     final AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
     aaInMoveUtil.initialize(m_bridge);
-    final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAAWillFire(route, units);
+    final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {
       if (!getRemotePlayer().confirmMoveInFaceOfAA(aaFiringTerritores)) {
         return null;
@@ -580,7 +588,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   private void removeAirThatCantLand() {
     final GameData data = getData();
-    final boolean lhtrCarrierProd = AirThatCantLandUtil.isLHTRCarrierProduction(data)
+    final boolean lhtrCarrierProd = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     boolean hasProducedCarriers = false;
     for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, m_player)) {
@@ -603,30 +611,13 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
   }
 
-  /**
-   * @return The number of PUs that have been lost by bombing, rockets, etc.
-   */
   @Override
   public int pusAlreadyLost(final Territory t) {
     return m_PUsLost.getInt(t);
   }
 
-  /**
-   * Add more PUs lost to a territory due to bombing, rockets, etc.
-   */
   @Override
   public void pusLost(final Territory t, final int amt) {
     m_PUsLost.add(t, amt);
   }
-}
-
-
-class MoveExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = 5352248885420819215L;
-  Serializable superState;
-  // add other variables here:
-  public boolean m_firstRun = true;
-  public boolean m_needToInitialize;
-  public boolean m_needToDoRockets;
-  public IntegerMap<Territory> m_PUsLost;
 }

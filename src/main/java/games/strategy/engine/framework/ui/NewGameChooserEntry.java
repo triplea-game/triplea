@@ -143,7 +143,7 @@ public class NewGameChooserEntry {
     return gameData;
   }
 
-  public URI getURI() {
+  public URI getUri() {
     return url;
   }
 

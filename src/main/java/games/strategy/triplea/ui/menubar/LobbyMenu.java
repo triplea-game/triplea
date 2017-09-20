@@ -230,7 +230,7 @@ public class LobbyMenu extends JMenuBar {
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0),
-            Date.from(Instant.ofEpochMilli(0)));
+            Date.from(Instant.EPOCH));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -271,7 +271,7 @@ public class LobbyMenu extends JMenuBar {
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banMac(new Node("None (Admin menu originated unban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-            Date.from(Instant.ofEpochMilli(0)));
+            Date.from(Instant.EPOCH));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -387,11 +387,11 @@ public class LobbyMenu extends JMenuBar {
       return;
     }
     final CreateUpdateAccountPanel panel = CreateUpdateAccountPanel.newUpdatePanel(user);
-    final CreateUpdateAccountPanel.ReturnValue rVal = panel.show(lobbyFrame);
-    if (rVal == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
+    final CreateUpdateAccountPanel.ReturnValue returnValue = panel.show(lobbyFrame);
+    if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
-    //TODO: Replace MD5Crypt.crypt with an encryption algorithm
+    // TODO: Replace MD5Crypt.crypt with an encryption algorithm
     final String error = manager.updateUser(panel.getUserName(), panel.getEmail(), MD5Crypt.crypt(panel.getPassword()));
     if (error != null) {
       JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);

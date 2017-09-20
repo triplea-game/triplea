@@ -200,9 +200,9 @@ public class PoliticsPanel extends ActionPanel {
   });
 
   private boolean youSureDoNothing() {
-    final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PoliticsPanel.this),
+    final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PoliticsPanel.this),
         "Are you sure you dont want to do anything?", "End Politics", JOptionPane.YES_NO_OPTION);
-    return rVal == JOptionPane.YES_OPTION;
+    return selectedOption == JOptionPane.YES_OPTION;
   }
 
   /**
@@ -258,10 +258,10 @@ public class PoliticsPanel extends ActionPanel {
       final RelationshipType paa1NewType = relationshipTypeList.getRelationshipType(paa1RelationChange[2]);
       final RelationshipType paa2NewType = relationshipTypeList.getRelationshipType(paa2RelationChange[2]);
       // sort by player
-      final PlayerID paa1p1 = gameData.getPlayerList().getPlayerID(paa1RelationChange[0]);
-      final PlayerID paa1p2 = gameData.getPlayerList().getPlayerID(paa1RelationChange[1]);
-      final PlayerID paa2p1 = gameData.getPlayerList().getPlayerID(paa2RelationChange[0]);
-      final PlayerID paa2p2 = gameData.getPlayerList().getPlayerID(paa2RelationChange[1]);
+      final PlayerID paa1p1 = gameData.getPlayerList().getPlayerId(paa1RelationChange[0]);
+      final PlayerID paa1p2 = gameData.getPlayerList().getPlayerId(paa1RelationChange[1]);
+      final PlayerID paa2p1 = gameData.getPlayerList().getPlayerId(paa2RelationChange[0]);
+      final PlayerID paa2p2 = gameData.getPlayerList().getPlayerId(paa2RelationChange[1]);
       final PlayerID paa1OtherPlayer = (player.equals(paa1p1) ? paa1p2 : paa1p1);
       final PlayerID paa2OtherPlayer = (player.equals(paa2p1) ? paa2p2 : paa2p1);
       if (!paa1OtherPlayer.equals(paa2OtherPlayer)) {

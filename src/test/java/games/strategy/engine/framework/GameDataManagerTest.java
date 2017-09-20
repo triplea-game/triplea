@@ -27,7 +27,7 @@ public class GameDataManagerTest {
     final GameData data = new GameData();
     final ByteArrayOutputStream sink = new ByteArrayOutputStream();
     GameDataManager.saveGame(sink, data);
-    final GameData loaded = GameDataManager.loadGame(new ByteArrayInputStream(sink.toByteArray()), null);
+    final GameData loaded = GameDataManager.loadGame(new ByteArrayInputStream(sink.toByteArray()));
     assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
   }
 

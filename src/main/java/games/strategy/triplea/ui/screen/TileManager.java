@@ -112,18 +112,18 @@ public class TileManager {
     }
     acquireLock();
     try {
-      final List<Tile> rVal = new ArrayList<>();
+      final List<Tile> tilesInBounds = new ArrayList<>();
       for (final Tile tile : tiles) {
         final Rectangle tileBounds = tile.getBounds();
         if (bounds.contains(tileBounds) || tileBounds.intersects(bounds)) {
-          rVal.add(tile);
+          tilesInBounds.add(tile);
         }
       }
       if (boundsXshift != null) {
         for (final Tile tile : tiles) {
           final Rectangle tileBounds = tile.getBounds();
           if (boundsXshift.contains(tileBounds) || tileBounds.intersects(boundsXshift)) {
-            rVal.add(tile);
+            tilesInBounds.add(tile);
           }
         }
       }
@@ -131,11 +131,11 @@ public class TileManager {
         for (final Tile tile : tiles) {
           final Rectangle tileBounds = tile.getBounds();
           if (boundsYshift.contains(tileBounds) || tileBounds.intersects(boundsYshift)) {
-            rVal.add(tile);
+            tilesInBounds.add(tile);
           }
         }
       }
-      return rVal;
+      return tilesInBounds;
     } finally {
       releaseLock();
     }
@@ -309,7 +309,7 @@ public class TileManager {
     }
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
     if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers()) {
-      final PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
+      final PlayerID capitalOf = data.getPlayerList().getPlayerId(ta.getCapital());
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
     if (ta != null && (ta.getVictoryCity() != 0)) {
@@ -420,8 +420,8 @@ public class TileManager {
           bounds.y = mapDataHeight - bounds.height;
         }
       }
-      final Image rVal = Util.createImage(squareLength, squareLength, false);
-      final Graphics2D graphics = (Graphics2D) rVal.getGraphics();
+      final Image territoryImage = Util.createImage(squareLength, squareLength, false);
+      final Graphics2D graphics = (Graphics2D) territoryImage.getGraphics();
       graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
       graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
           RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
@@ -459,7 +459,7 @@ public class TileManager {
         bounds.y += mapDataHeight;
       }
       graphics.dispose();
-      return rVal;
+      return territoryImage;
     } finally {
       releaseLock();
     }

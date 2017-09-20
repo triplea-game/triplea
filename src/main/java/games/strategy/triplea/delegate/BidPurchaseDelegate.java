@@ -65,9 +65,6 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     return false;
   }
 
-  /**
-   * subclasses can over ride this method to use different restrictions as to what a player can buy.
-   */
   @Override
   protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player) {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
@@ -93,9 +90,6 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     return (m_bid - m_spent) + " PU unused";
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     super.end();
@@ -129,13 +123,4 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     m_spent = s.m_spent;
     m_hasBid = s.m_hasBid;
   }
-}
-
-
-class BidPurchaseExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = 6896164200767186673L;
-  Serializable superState;
-  int m_bid;
-  int m_spent;
-  boolean m_hasBid;
 }

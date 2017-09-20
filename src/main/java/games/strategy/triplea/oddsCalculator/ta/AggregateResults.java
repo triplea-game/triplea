@@ -79,7 +79,7 @@ public class AggregateResults implements Serializable {
   /**
    * First is Attacker, Second is Defender.
    */
-  public Tuple<Double, Double> getAverageTUVofUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTuv,
+  public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTuv,
       final IntegerMap<UnitType> defenderCostsForTuv) {
     if (m_results.isEmpty()) { // can be empty!
       return Tuple.of(0.0, 0.0);
@@ -93,7 +93,7 @@ public class AggregateResults implements Serializable {
     return Tuple.of(attackerTuv / m_results.size(), defenderTuv / m_results.size());
   }
 
-  public double getAverageTUVswing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,
+  public double getAverageTuvSwing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,
       final Collection<Unit> defenders, final GameData data) {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
@@ -103,7 +103,7 @@ public class AggregateResults implements Serializable {
     final int attackerTuv = TuvUtils.getTuv(attackers, attackerCostsForTuv);
     final int defenderTuv = TuvUtils.getTuv(defenders, defenderCostsForTuv);
     // could we possibly cause a bug by comparing UnitType's from one game data, to a different game data's UnitTypes?
-    final Tuple<Double, Double> average = getAverageTUVofUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
+    final Tuple<Double, Double> average = getAverageTuvOfUnitsLeftOver(attackerCostsForTuv, defenderCostsForTuv);
     final double attackerLost = attackerTuv - average.getFirst();
     final double defenderLost = defenderTuv - average.getSecond();
     return defenderLost - attackerLost;

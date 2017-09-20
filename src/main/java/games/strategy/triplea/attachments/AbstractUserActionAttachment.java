@@ -100,7 +100,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   public void setActionAccept(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_actionAccept.add(tempPlayer);
       } else {

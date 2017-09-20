@@ -65,10 +65,6 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     m_endBaseStepsFinished = false;
   }
 
-  /**
-   * Returns the state of the Delegate.
-   * All classes should super.saveState if they override this.
-   */
   @Override
   public Serializable saveState() {
     final BaseDelegateState state = new BaseDelegateState();
@@ -127,11 +123,4 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     }
     return (ITripleAPlayer) bridge.getRemotePlayer(player);
   }
-}
-
-
-class BaseDelegateState implements Serializable {
-  private static final long serialVersionUID = 7130686697155151908L;
-  public boolean m_startBaseStepsFinished = false;
-  public boolean m_endBaseStepsFinished = false;
 }

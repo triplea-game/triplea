@@ -48,7 +48,7 @@ class InvocationInProgress {
     return m_results;
   }
 
-  GUID getMethodCallID() {
+  GUID getMethodCallId() {
     return m_methodCall.methodCallID;
   }
 

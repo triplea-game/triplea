@@ -227,9 +227,9 @@ public class UserActionPanel extends ActionPanel {
     }
 
     private boolean youSureDoNothing() {
-      final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
+      final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
           "Are you sure you dont want to do anything?", "End Actions", JOptionPane.YES_NO_OPTION);
-      return rVal == JOptionPane.YES_OPTION;
+      return selectedOption == JOptionPane.YES_OPTION;
     }
   };
 

@@ -14,6 +14,13 @@ import games.strategy.persistence.serializable.ProxyFactory;
 
 /**
  * A serializable proxy for the {@link Unit} class.
+ *
+ * <p>
+ * This proxy does not serialize the unit owner to avoid a circular reference. Instances of {@link Unit} created from
+ * this proxy will always have their owner set to {@link PlayerID#NULL_PLAYERID}. Proxies that may compose instances of
+ * this proxy are required to manually restore the unit owner in their {@code readResolve()} method via a
+ * context-dependent mechanism.
+ * </p>
  */
 @Immutable
 public final class UnitProxy implements Proxy {
@@ -24,7 +31,6 @@ public final class UnitProxy implements Proxy {
   private final GameData gameData;
   private final int hits;
   private final GUID id;
-  private final PlayerID owner;
   private final UnitType type;
 
   public UnitProxy(final Unit unit) {
@@ -32,14 +38,13 @@ public final class UnitProxy implements Proxy {
 
     gameData = unit.getData();
     hits = unit.getHits();
-    id = unit.getID();
-    owner = unit.getOwner();
+    id = unit.getId();
     type = unit.getType();
   }
 
   @Override
   public Object readResolve() {
-    final Unit unit = new Unit(type, owner, gameData, id);
+    final Unit unit = new Unit(type, PlayerID.NULL_PLAYERID, gameData, id);
     unit.setHits(hits);
     return unit;
   }

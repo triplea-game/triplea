@@ -1,12 +1,11 @@
 package games.strategy.internal.persistence.serializable;
 
-import static games.strategy.engine.data.TestGameDataComponentFactory.newRepairRule;
+import static games.strategy.engine.data.TestGameDataComponentFactory.newRepairFrontier;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.RepairFrontier;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
@@ -18,10 +17,8 @@ public final class RepairFrontierProxyAsProxyTest extends AbstractGameDataCompon
   }
 
   @Override
-  protected RepairFrontier newGameDataComponent(final GameData gameData) {
-    return new RepairFrontier("repairFrontier", gameData, Arrays.asList(
-        newRepairRule(gameData, "repairRule1"),
-        newRepairRule(gameData, "repairRule2")));
+  protected Collection<RepairFrontier> createPrincipals() {
+    return Arrays.asList(newRepairFrontier(getGameData(), "repairFrontier"));
   }
 
   @Override

@@ -27,7 +27,7 @@ public class AirThatCantLandUtil {
     m_bridge = bridge;
   }
 
-  public static boolean isLHTRCarrierProduction(final GameData data) {
+  public static boolean isLhtrCarrierProduction(final GameData data) {
     return Properties.getLHTRCarrierProductionRules(data);
   }
 

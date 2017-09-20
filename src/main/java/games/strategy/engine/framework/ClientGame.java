@@ -74,7 +74,7 @@ public class ClientGame extends AbstractGame {
               m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
             }
             while (!m_data.getSequence().getStep().getName().equals(stepName)
-                || !m_data.getSequence().getStep().getPlayerID().equals(player)
+                || !m_data.getSequence().getStep().getPlayerId().equals(player)
                 || !m_data.getSequence().getStep().getDelegate().getName().equals(delegateName)) {
               m_data.getSequence().next();
               if (m_data.getSequence().testWeAreOnLastStep()) {
@@ -172,7 +172,7 @@ public class ClientGame extends AbstractGame {
         PlayerID player;
         m_data.acquireReadLock();
         try {
-          player = m_data.getPlayerList().getPlayerID(gp.getName());
+          player = m_data.getPlayerList().getPlayerId(gp.getName());
         } finally {
           m_data.releaseReadLock();
         }

@@ -55,7 +55,7 @@ public class MapImage {
     return propertyMapFont;
   }
 
-  public static Color getPropertyTerritoryNameAndPUAndCommentcolor() {
+  public static Color getPropertyTerritoryNameAndPuAndCommentColor() {
     if (propertyTerritoryNameAndPuAndCommentColor == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyTerritoryNameAndPuAndCommentColor =
@@ -96,7 +96,7 @@ public class MapImage {
     propertyMapFont = font;
   }
 
-  public static void setPropertyTerritoryNameAndPUAndCommentcolor(final Color color) {
+  public static void setPropertyTerritoryNameAndPuAndCommentColor(final Color color) {
     final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
     pref.putInt(PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_STRING, color.getRGB());
     propertyTerritoryNameAndPuAndCommentColor = color;
@@ -126,7 +126,7 @@ public class MapImage {
     propertyMapFont = new Font("Ariel", Font.BOLD, 12);
   }
 
-  public static void resetPropertyTerritoryNameAndPUAndCommentcolor() {
+  public static void resetPropertyTerritoryNameAndPuAndCommentColor() {
     final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
     pref.remove(PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_STRING);
     propertyTerritoryNameAndPuAndCommentColor = Color.black;

@@ -197,7 +197,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
     options.dispose();
-    if (!options.getOKPressed()) {
+    if (!options.getOkPressed()) {
       return null;
     }
     final String name = options.getName();
@@ -679,35 +679,34 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     sb.append(channelMessenger);
     return sb.toString();
   }
-}
 
+  private static final class ServerProps {
+    private String name;
+    private int port;
+    private String password;
 
-class ServerProps {
-  private String name;
-  private int port;
-  private String password;
+    String getPassword() {
+      return password;
+    }
 
-  public String getPassword() {
-    return password;
-  }
+    void setPassword(final String password) {
+      this.password = password;
+    }
 
-  public void setPassword(final String password) {
-    this.password = password;
-  }
+    String getName() {
+      return name;
+    }
 
-  public String getName() {
-    return name;
-  }
+    void setName(final String name) {
+      this.name = name;
+    }
 
-  public void setName(final String name) {
-    this.name = name;
-  }
+    int getPort() {
+      return port;
+    }
 
-  public int getPort() {
-    return port;
-  }
-
-  public void setPort(final int port) {
-    this.port = port;
+    void setPort(final int port) {
+      this.port = port;
+    }
   }
 }

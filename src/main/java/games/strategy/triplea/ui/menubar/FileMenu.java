@@ -69,7 +69,7 @@ class FileMenu {
         gameData.acquireReadLock();
         final GameStep step = gameData.getSequence().getStep();
         final PlayerID currentPlayer = (step == null ? PlayerID.NULL_PLAYERID
-            : (step.getPlayerID() == null ? PlayerID.NULL_PLAYERID : step.getPlayerID()));
+            : (step.getPlayerId() == null ? PlayerID.NULL_PLAYERID : step.getPlayerId()));
         final int round = gameData.getSequence().getRound();
         final HistoryLog historyLog = new HistoryLog();
         historyLog.printFullTurn(gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));

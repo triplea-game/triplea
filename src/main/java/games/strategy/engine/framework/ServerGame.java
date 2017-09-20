@@ -347,9 +347,8 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSave(final String fileName) {
-    final File autoSaveDir = new File(
-        ClientSetting.SAVE_GAMES_FOLDER_PATH.value()
-        + (SystemProperties.isWindows() ? "\\" : "/" + "autoSave"));
+    final File autoSaveDir = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), "autoSave");
+    // Above creates an autoSave subdirectorty pathname below the game games path
     if (!autoSaveDir.exists()) {
       autoSaveDir.mkdirs();
     }
@@ -515,7 +514,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void waitForPlayerToFinishStep() {
-    final PlayerID playerId = getCurrentStep().getPlayerID();
+    final PlayerID playerId = getCurrentStep().getPlayerId();
     // no player specified for the given step
     if (playerId == null) {
       return;
@@ -542,7 +541,7 @@ public class ServerGame extends AbstractGame {
     final String delegateName = currentStep.getDelegate().getName();
     final String displayName = currentStep.getDisplayName();
     final int round = m_data.getSequence().getRound();
-    final PlayerID id = currentStep.getPlayerID();
+    final PlayerID id = currentStep.getPlayerId();
     notifyGameStepListeners(stepName, delegateName, id, round, displayName);
     getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, round, displayName, loadedFromSavedGame);
   }
@@ -553,7 +552,7 @@ public class ServerGame extends AbstractGame {
     // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
     // the first delegate to
     // start before making changes.
-    if (getCurrentStep() == null || getCurrentStep().getPlayerID() == null || (m_firstRun)) {
+    if (getCurrentStep() == null || getCurrentStep().getPlayerId() == null || (m_firstRun)) {
       m_firstRun = false;
       return;
     }
@@ -574,7 +573,7 @@ public class ServerGame extends AbstractGame {
                   + ((player.getName().endsWith("s") || player.getName().endsWith("ese")
                       || player.getName().endsWith("ish")) ? " are" : " is")
                   + " now being played by: " + player.getType());
-      final PlayerID p = data.getPlayerList().getPlayerID(player.getName());
+      final PlayerID p = data.getPlayerList().getPlayerId(player.getName());
       final String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getType());
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
@@ -587,7 +586,7 @@ public class ServerGame extends AbstractGame {
       bridge.getHistoryWriter().addChildToEvent(
           player + ((player.endsWith("s") || player.endsWith("ese") || player.endsWith("ish")) ? " are" : " is")
               + " now being played by: Human:Client");
-      final PlayerID p = data.getPlayerList().getPlayerID(player);
+      final PlayerID p = data.getPlayerList().getPlayerId(player);
       final String newWhoAmI = "Human:Client";
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));

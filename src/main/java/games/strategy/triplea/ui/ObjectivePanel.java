@@ -76,7 +76,7 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.IllegalCharacterRemover;
+import games.strategy.util.FileNameUtils;
 import games.strategy.util.Tuple;
 import games.strategy.util.UrlStreams;
 
@@ -158,7 +158,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       final ObjectiveProperties op = ObjectiveProperties.getInstance();
       final Collection<PlayerID> allPlayers = gameData.getPlayerList().getPlayers();
       final String gameName =
-          IllegalCharacterRemover.replaceIllegalCharacter(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
+          FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
       final List<String> sectionsSorters = new ArrayList<>();
       final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
@@ -210,7 +210,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
           continue;
         }
-        final PlayerID player = gameData.getPlayerList().getPlayerID(key[0]);
+        final PlayerID player = gameData.getPlayerList().getPlayerId(key[0]);
         if (player == null) {
           // could be an old map, or an old save, so we don't want to stop the game from running.
           System.err.println("objective.properties player does not exist: " + key[0]);
@@ -466,8 +466,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     EditorPaneCellEditor() {
       super(new JTextField());
       final JEditorPane textArea = new JEditorPane();
-      // textArea.setWrapStyleWord(true);
-      // textArea.setLineWrap(true);
       textArea.setEditable(false);
       textArea.setContentType("text/html");
       final JScrollPane scrollPane = new JScrollPane(textArea);
@@ -496,8 +494,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     private final Map<JTable, Map<Integer, Map<Integer, Integer>>> cellSizes = new HashMap<>();
 
     EditorPaneTableCellRenderer() {
-      // setLineWrap(true);
-      // setWrapStyleWord(true);
       setEditable(false);
       setContentType("text/html");
     }

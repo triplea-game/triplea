@@ -76,14 +76,14 @@ public abstract class AbstractBattle implements IBattle {
 
   @Override
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
-    final Collection<Unit> rVal = new ArrayList<>();
+    final Collection<Unit> dependentUnits = new ArrayList<>();
     for (final Unit unit : units) {
       final Collection<Unit> dependent = m_dependentUnits.get(unit);
       if (dependent != null) {
-        rVal.addAll(dependent);
+        dependentUnits.addAll(dependent);
       }
     }
-    return rVal;
+    return dependentUnits;
   }
 
   protected void removeUnitsThatNoLongerExist() {

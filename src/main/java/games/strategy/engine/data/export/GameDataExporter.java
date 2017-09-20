@@ -346,7 +346,7 @@ public class GameDataExporter {
     xmlfile.append("    </attachmentList>\n");
   }
 
-  private static String printAttachmentOptionsBasedOnOriginalXML(
+  private static String printAttachmentOptionsBasedOnOriginalXml(
       final ArrayList<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment) {
     if (attachmentPlusValues.isEmpty()) {
       return "";
@@ -376,7 +376,7 @@ public class GameDataExporter {
     try {
       // TODO: none of the attachment exporter classes have been updated since TripleA version 1.3.2.2
       final String attachmentOptions;
-      attachmentOptions = printAttachmentOptionsBasedOnOriginalXML(attachmentPlusValues.getSecond(), attachment);
+      attachmentOptions = printAttachmentOptionsBasedOnOriginalXml(attachmentPlusValues.getSecond(), attachment);
       final NamedAttachable attachTo = (NamedAttachable) attachment.getAttachedTo();
       // TODO: keep this list updated
       String type = "";
@@ -540,8 +540,8 @@ public class GameDataExporter {
           | IllegalAccessException e) {
         ClientLogger.logError("An Error occured whilst trying to sequence in game " + data.getGameName(), e);
       }
-      if (step.getPlayerID() != null) {
-        xmlfile.append(" player=\"").append(step.getPlayerID().getName()).append("\"");
+      if (step.getPlayerId() != null) {
+        xmlfile.append(" player=\"").append(step.getPlayerId().getName()).append("\"");
       }
       if (step.getDisplayName() != null) {
         xmlfile.append(" display=\"").append(step.getDisplayName()).append("\"");
@@ -694,7 +694,7 @@ public class GameDataExporter {
     xmlfile.append("</game>\n");
   }
 
-  public String getXML() {
+  public String getXml() {
     return xmlfile.toString();
   }
 }

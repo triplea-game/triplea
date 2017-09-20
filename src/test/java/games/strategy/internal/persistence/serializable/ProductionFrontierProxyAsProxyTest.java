@@ -1,12 +1,11 @@
 package games.strategy.internal.persistence.serializable;
 
-import static games.strategy.engine.data.TestGameDataComponentFactory.newProductionRule;
+import static games.strategy.engine.data.TestGameDataComponentFactory.newProductionFrontier;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import games.strategy.engine.data.EngineDataEqualityComparators;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
@@ -19,10 +18,8 @@ public final class ProductionFrontierProxyAsProxyTest
   }
 
   @Override
-  protected ProductionFrontier newGameDataComponent(final GameData gameData) {
-    return new ProductionFrontier("productionFrontier", gameData, Arrays.asList(
-        newProductionRule(gameData, "productionRule1"),
-        newProductionRule(gameData, "productionRule2")));
+  protected Collection<ProductionFrontier> createPrincipals() {
+    return Arrays.asList(newProductionFrontier(getGameData(), "productionFrontier"));
   }
 
   @Override

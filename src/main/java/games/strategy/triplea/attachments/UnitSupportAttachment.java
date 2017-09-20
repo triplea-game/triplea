@@ -251,7 +251,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public void setPlayers(final String names) throws GameParseException {
     final String[] s = names.split(":");
     for (final String element : s) {
-      final PlayerID player = getData().getPlayerList().getPlayerID(element);
+      final PlayerID player = getData().getPlayerList().getPlayerId(element);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
       } else {

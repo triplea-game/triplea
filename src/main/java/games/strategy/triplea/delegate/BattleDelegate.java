@@ -60,17 +60,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean m_needToCleanup = true;
   protected IBattle m_currentBattle = null;
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -103,9 +97,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     m_battleTracker.fightBattleIfOnlyOne(m_bridge);
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     if (m_needToRecordBattleStatistics) {
@@ -1571,22 +1562,4 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   public IBattle getCurrentBattle() {
     return m_currentBattle;
   }
-}
-
-
-class BattleExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = 7899007486408723505L;
-  Serializable superState;
-  // add other variables here:
-  BattleTracker m_battleTracker = new BattleTracker();
-  // public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
-  public boolean m_needToInitialize;
-  boolean m_needToScramble;
-  boolean m_needToKamikazeSuicideAttacks;
-  boolean m_needToClearEmptyAirBattleAttacks;
-  boolean m_needToAddBombardmentSources;
-  boolean m_needToRecordBattleStatistics;
-  boolean m_needToCheckDefendingPlanesCanLand;
-  boolean m_needToCleanup;
-  IBattle m_currentBattle;
 }

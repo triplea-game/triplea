@@ -43,9 +43,6 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     m_game.addGameStepListener(gameStepListener);
   }
 
-  /**
-   * Get the name of the current step being executed.
-   */
   @Override
   public String getStepName() {
     return m_currentStep;
@@ -56,9 +53,6 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     return m_game.isGameOver();
   }
 
-  /**
-   * Return the game data.
-   */
   @Override
   public GameData getGameData() {
     return m_game.getData();

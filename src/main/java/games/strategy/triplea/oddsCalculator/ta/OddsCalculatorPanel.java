@@ -145,9 +145,9 @@ class OddsCalculatorPanel extends JPanel {
       try {
         landBattleCheckBox.setSelected(!location.isWater());
         // default to the current player
-        if (data.getSequence().getStep().getPlayerID() != null
-            && !data.getSequence().getStep().getPlayerID().isNull()) {
-          attackerCombo.setSelectedItem(data.getSequence().getStep().getPlayerID());
+        if (data.getSequence().getStep().getPlayerId() != null
+            && !data.getSequence().getStep().getPlayerId().isNull()) {
+          attackerCombo.setSelectedItem(data.getSequence().getStep().getPlayerId());
         }
         if (!location.isWater()) {
           defenderCombo.setSelectedItem(location.getOwner());
@@ -447,7 +447,7 @@ class OddsCalculatorPanel extends JPanel {
       roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
       try {
         data.acquireReadLock();
-        averageChangeInTUV.setText("" + formatValue(results.get().getAverageTUVswing(getAttacker(),
+        averageChangeInTUV.setText("" + formatValue(results.get().getAverageTuvSwing(getAttacker(),
             mainCombatAttackers, getDefender(), mainCombatDefenders, data)));
       } finally {
         data.releaseReadLock();

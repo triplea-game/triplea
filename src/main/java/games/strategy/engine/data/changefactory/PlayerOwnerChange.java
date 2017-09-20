@@ -28,8 +28,8 @@ class PlayerOwnerChange extends Change {
     m_new = new HashMap<>();
     m_location = location.getName();
     for (final Unit unit : units) {
-      m_old.put(unit.getID(), unit.getOwner().getName());
-      m_new.put(unit.getID(), newOwner.getName());
+      m_old.put(unit.getId(), unit.getOwner().getName());
+      m_new.put(unit.getId(), newOwner.getName());
     }
   }
 
@@ -52,7 +52,7 @@ class PlayerOwnerChange extends Change {
         throw new IllegalStateException("Wrong owner, expecting" + m_old.get(id) + " but got " + unit.getOwner());
       }
       final String owner = m_new.get(id);
-      final PlayerID player = data.getPlayerList().getPlayerID(owner);
+      final PlayerID player = data.getPlayerList().getPlayerId(owner);
       unit.setOwner(player);
     }
     data.getMap().getTerritory(m_location).notifyChanged();

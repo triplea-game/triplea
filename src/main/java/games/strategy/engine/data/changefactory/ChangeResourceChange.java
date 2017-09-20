@@ -35,7 +35,7 @@ class ChangeResourceChange extends Change {
   @Override
   protected void perform(final GameData data) {
     final Resource resource = data.getResourceList().getResource(m_resource);
-    final ResourceCollection resources = data.getPlayerList().getPlayerID(m_player).getResources();
+    final ResourceCollection resources = data.getPlayerList().getPlayerId(m_player).getResources();
     if (m_quantity > 0) {
       resources.addResource(resource, m_quantity);
     } else if (m_quantity < 0) {

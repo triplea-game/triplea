@@ -172,7 +172,7 @@ class ProPurchaseAI {
 
       // Prioritize land place options purchase AA then land units
       final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
-      purchaseAAUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions.getAAOptions());
+      purchaseAaUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions.getAaOptions());
       purchaseLandUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions, territoryValueMap);
 
       // Prioritize sea territories that need defended and purchase additional defenders
@@ -264,7 +264,7 @@ class ProPurchaseAI {
 
     // Prioritize land place options purchase AA then land units
     final List<ProPlaceTerritory> prioritizedLandTerritories = prioritizeLandTerritories(purchaseTerritories);
-    purchaseAAUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions.getAAOptions());
+    purchaseAaUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions.getAaOptions());
     purchaseLandUnits(purchaseTerritories, prioritizedLandTerritories, purchaseOptions, territoryValueMap);
 
     // Prioritize sea territories that need defended and purchase additional defenders
@@ -449,14 +449,14 @@ class ProPurchaseAI {
               ProData.unitValueMap);
           holdValue = unitValue / 8;
         }
-        ProLogger.trace(t.getName() + " TUVSwing=" + result.getTUVSwing() + ", win%=" + result.getWinPercentage()
+        ProLogger.trace(t.getName() + " TUVSwing=" + result.getTuvSwing() + ", win%=" + result.getWinPercentage()
             + ", hasLandUnitRemaining=" + result.isHasLandUnitRemaining() + ", holdValue=" + holdValue
             + ", enemyAttackers=" + enemyAttackingUnits + ", defenders=" + placeTerritory.getDefendingUnits());
 
         // If it can't currently be held then add to list
         final boolean isLandAndCanOnlyBeAttackedByAir =
             !t.isWater() && !enemyAttackingUnits.isEmpty() && Match.allMatch(enemyAttackingUnits, Matches.unitIsAir());
-        if ((!t.isWater() && result.isHasLandUnitRemaining()) || result.getTUVSwing() > holdValue
+        if ((!t.isWater() && result.isHasLandUnitRemaining()) || result.getTuvSwing() > holdValue
             || (t.equals(ProData.myCapital) && !isLandAndCanOnlyBeAttackedByAir
                 && result.getWinPercentage() > (100 - ProData.winPercentage))) {
           needToDefendTerritories.add(placeTerritory);
@@ -616,9 +616,9 @@ class ProPurchaseAI {
               enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
           // Break if it can be held
-          if ((!t.equals(ProData.myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0)
+          if ((!t.equals(ProData.myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTuvSwing() <= 0)
               || (t.equals(ProData.myCapital) && finalResult.getWinPercentage() < (100 - ProData.winPercentage)
-                  && finalResult.getTUVSwing() <= 0)) {
+                  && finalResult.getTuvSwing() <= 0)) {
             break;
           }
         }
@@ -628,19 +628,19 @@ class ProPurchaseAI {
       final boolean hasLocalSuperiority =
           ProBattleUtils.territoryHasLocalLandSuperiority(t, ProBattleUtils.SHORT_RANGE, player, purchaseTerritories);
       if (!finalResult.isHasLandUnitRemaining()
-          || (finalResult.getTUVSwing() - resourceTracker.getTempPUs(data) / 2) < placeTerritory.getMinBattleResult()
-              .getTUVSwing()
+          || (finalResult.getTuvSwing() - resourceTracker.getTempPUs(data) / 2) < placeTerritory.getMinBattleResult()
+              .getTuvSwing()
           || t.equals(ProData.myCapital) || (!t.isWater() && hasLocalSuperiority)) {
         resourceTracker.confirmTempPurchases();
         ProLogger.trace(
-            t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTUVSwing() + ", hasLandUnitRemaining="
+            t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTuvSwing() + ", hasLandUnitRemaining="
                 + finalResult.isHasLandUnitRemaining() + ", hasLocalSuperiority=" + hasLocalSuperiority);
         addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
       } else {
         resourceTracker.clearTempPurchases();
         setCantHoldPlaceTerritory(placeTerritory, purchaseTerritories);
         ProLogger.trace(t + ", unable to defend with placedUnits=" + unitsToPlace + ", TUVSwing="
-            + finalResult.getTUVSwing() + ", minTUVSwing=" + placeTerritory.getMinBattleResult().getTUVSwing());
+            + finalResult.getTuvSwing() + ", minTUVSwing=" + placeTerritory.getMinBattleResult().getTuvSwing());
       }
     }
   }
@@ -683,7 +683,7 @@ class ProPurchaseAI {
     return prioritizedLandTerritories;
   }
 
-  private void purchaseAAUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
+  private void purchaseAaUnits(final Map<Territory, ProPurchaseTerritory> purchaseTerritories,
       final List<ProPlaceTerritory> prioritizedLandTerritories, final List<ProPurchaseOption> specialPurchaseOptions) {
 
     if (resourceTracker.isEmpty()) {
@@ -926,15 +926,15 @@ class ProPurchaseAI {
             defenders, enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
         // Check if it can't be held or if it can then that it wasn't conquered this turn
-        if (result.isHasLandUnitRemaining() || result.getTUVSwing() > 0) {
+        if (result.isHasLandUnitRemaining() || result.getTuvSwing() > 0) {
           territoriesThatCantBeHeld.add(t);
           ProLogger.trace("Can't hold territory: " + t.getName() + ", hasLandUnitRemaining="
-              + result.isHasLandUnitRemaining() + ", TUVSwing=" + result.getTUVSwing() + ", enemyAttackers="
+              + result.isHasLandUnitRemaining() + ", TUVSwing=" + result.getTuvSwing() + ", enemyAttackers="
               + enemyAttackingUnits.size() + ", myDefenders=" + defenders.size());
         } else {
           purchaseFactoryTerritories.add(t);
           ProLogger.trace("Possible factory: " + t.getName() + ", hasLandUnitRemaining="
-              + result.isHasLandUnitRemaining() + ", TUVSwing=" + result.getTUVSwing() + ", enemyAttackers="
+              + result.isHasLandUnitRemaining() + ", TUVSwing=" + result.getTuvSwing() + ", enemyAttackers="
               + enemyAttackingUnits.size() + ", myDefenders=" + defenders.size());
         }
       }
@@ -1182,7 +1182,7 @@ class ProPurchaseAI {
 
             // If it can be held then break
             if (!hasOnlyRetreatingSubs
-                && (result.getTUVSwing() < -1 || result.getWinPercentage() < ProData.winPercentage)) {
+                && (result.getTuvSwing() < -1 || result.getWinPercentage() < ProData.winPercentage)) {
               break;
             }
 
@@ -1214,7 +1214,7 @@ class ProPurchaseAI {
             }
             ProLogger
                 .trace(t + ", added sea defender for defense: " + selectedOption.getUnitType().getName() + ", TUVSwing="
-                    + result.getTUVSwing() + ", win%=" + result.getWinPercentage() + ", unusedCarrierCapacity="
+                    + result.getTuvSwing() + ", win%=" + result.getWinPercentage() + ", unusedCarrierCapacity="
                     + unusedCarrierCapacity + ", unusedLocalCarrierCapacity=" + unusedLocalCarrierCapacity);
 
             // Find current battle result
@@ -1231,15 +1231,15 @@ class ProPurchaseAI {
         }
 
         // Check to see if its worth trying to defend the territory
-        if (result.getTUVSwing() < 0 || result.getWinPercentage() < ProData.winPercentage) {
+        if (result.getTuvSwing() < 0 || result.getWinPercentage() < ProData.winPercentage) {
           resourceTracker.confirmTempPurchases();
-          ProLogger.trace(t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + result.getTUVSwing()
+          ProLogger.trace(t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + result.getTuvSwing()
               + ", hasLandUnitRemaining=" + result.isHasLandUnitRemaining());
           addUnitsToPlaceTerritory(placeTerritory, unitsToPlace, purchaseTerritories);
         } else {
           resourceTracker.clearTempPurchases();
           setCantHoldPlaceTerritory(placeTerritory, purchaseTerritories);
-          ProLogger.trace(t + ", can't defend TUVSwing=" + result.getTUVSwing() + ", win%=" + result.getWinPercentage()
+          ProLogger.trace(t + ", can't defend TUVSwing=" + result.getTuvSwing() + ", win%=" + result.getWinPercentage()
               + ", tried to placeDefenders=" + unitsToPlace + ", enemyAttackers="
               + enemyAttackOptions.getMax(t).getMaxUnits());
           continue;
@@ -1849,23 +1849,23 @@ class ProPurchaseAI {
             enemyAttackOptions.getMax(t).getMaxBombardUnits());
 
         // Break if it can be held
-        if ((!t.equals(ProData.myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTUVSwing() <= 0)
+        if ((!t.equals(ProData.myCapital) && !finalResult.isHasLandUnitRemaining() && finalResult.getTuvSwing() <= 0)
             || (t.equals(ProData.myCapital) && finalResult.getWinPercentage() < (100 - ProData.winPercentage)
-                && finalResult.getTUVSwing() <= 0)) {
+                && finalResult.getTuvSwing() <= 0)) {
           break;
         }
       }
 
       // Check to see if its worth trying to defend the territory
       if (!finalResult.isHasLandUnitRemaining()
-          || finalResult.getTUVSwing() < placeTerritory.getMinBattleResult().getTUVSwing()
+          || finalResult.getTuvSwing() < placeTerritory.getMinBattleResult().getTuvSwing()
           || t.equals(ProData.myCapital)) {
-        ProLogger.trace(t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTUVSwing());
+        ProLogger.trace(t + ", placedUnits=" + unitsToPlace + ", TUVSwing=" + finalResult.getTuvSwing());
         doPlace(t, unitsToPlace, placeDelegate);
       } else {
         setCantHoldPlaceTerritory(placeTerritory, placeNonConstructionTerritories);
         ProLogger.trace(t + ", unable to defend with placedUnits=" + unitsToPlace + ", TUVSwing="
-            + finalResult.getTUVSwing() + ", minTUVSwing=" + placeTerritory.getMinBattleResult().getTUVSwing());
+            + finalResult.getTuvSwing() + ", minTUVSwing=" + placeTerritory.getMinBattleResult().getTuvSwing());
       }
     }
   }

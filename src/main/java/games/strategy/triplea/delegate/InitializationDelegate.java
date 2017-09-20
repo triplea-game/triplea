@@ -43,9 +43,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
     m_displayName = displayName;
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -215,7 +212,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     // so remove the bid steps that arent used
     for (final GameStep step : data.getSequence()) {
       if (step.getDelegate() instanceof BidPlaceDelegate || step.getDelegate() instanceof BidPurchaseDelegate) {
-        if (!BidPurchaseDelegate.doesPlayerHaveBid(data, step.getPlayerID())) {
+        if (!BidPurchaseDelegate.doesPlayerHaveBid(data, step.getPlayerId())) {
           step.setMaxRunCount(0);
         }
       }
@@ -353,11 +350,4 @@ public class InitializationDelegate extends BaseTripleADelegate {
   public Class<? extends IRemote> getRemoteType() {
     return null;
   }
-}
-
-
-class InitializationExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = -9000446777655823735L;
-  Serializable superState;
-  public boolean m_needToInitialize;
 }

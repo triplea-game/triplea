@@ -115,7 +115,7 @@ public class ClientModel implements IMessengerErrorListener {
     options.setLocationRelativeTo(ui);
     options.setVisible(true);
     options.dispose();
-    if (!options.getOKPressed()) {
+    if (!options.getOkPressed()) {
       return null;
     }
     final ClientProps props = new ClientProps();
@@ -299,7 +299,7 @@ public class ClientModel implements IMessengerErrorListener {
     try {
       // this normally takes a couple seconds, but can take
       // up to 60 seconds for a freaking huge game
-      data = GameDataManager.loadGame(new ByteArrayInputStream(gameData), null);
+      data = GameDataManager.loadGame(new ByteArrayInputStream(gameData));
     } catch (final IOException ex) {
       ClientLogger.logQuietly(ex);
       return;

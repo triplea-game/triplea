@@ -112,7 +112,7 @@ public class DiceRoll implements Externalizable {
     return totalAAattacksNormal + totalAAattacksSurplus;
   }
 
-  static DiceRoll rollAA(final Collection<Unit> validAttackingUnitsForThisRoll,
+  static DiceRoll rollAa(final Collection<Unit> validAttackingUnitsForThisRoll,
       final Collection<Unit> defendingAaForThisRoll, final IDelegateBridge bridge, final Territory location,
       final boolean defending) {
     {
@@ -149,7 +149,7 @@ public class DiceRoll implements Externalizable {
     // LOW LUCK
     if (Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
       final String annotation = "Roll " + typeAa + " in " + location.getName();
-      final Triple<Integer, Integer, Boolean> triple = getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
+      final Triple<Integer, Integer, Boolean> triple = getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
           null, null, defending, defendingAa, validAttackingUnitsForThisRoll, data, false);
       final int totalPower = triple.getFirst();
       hits += getLowLuckHits(bridge, sortedDice, totalPower, chosenDiceSizeForAll, defendingAa.get(0).getOwner(),
@@ -158,7 +158,7 @@ public class DiceRoll implements Externalizable {
       final String annotation = "Roll " + typeAa + " in " + location.getName();
       final int[] dice = bridge.getRandom(chosenDiceSizeForAll, totalAAattacksTotal, defendingAa.get(0).getOwner(),
           DiceType.COMBAT, annotation);
-      hits += getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(dice, sortedDice, defending, defendingAa,
+      hits += getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(dice, sortedDice, defending, defendingAa,
           validAttackingUnitsForThisRoll, data, true).getSecond();
     }
     final DiceRoll roll = new DiceRoll(sortedDice, hits);
@@ -182,7 +182,7 @@ public class DiceRoll implements Externalizable {
    *         true, but if one
    *         roll is at 1 and another roll is at 2, then we return false)
    */
-  public static Triple<Integer, Integer, Boolean> getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
+  public static Triple<Integer, Integer, Boolean> getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
       final int[] dice, final List<Die> sortedDice, final boolean defending,
       final Collection<Unit> defendingAaForThisRoll, final Collection<Unit> validAttackingUnitsForThisRoll,
       final GameData data, final boolean fillInSortedDiceAndRecordHits) {
@@ -193,7 +193,7 @@ public class DiceRoll implements Externalizable {
       return Triple.of(0, 0, false);
     }
     // we want to make sure the higher powers fire
-    sortAAHighToLow(defendingAa, data, defending);
+    sortAaHighToLow(defendingAa, data, defending);
     // this is confusing, but what we want to do is the following:
     // any aa that are NOT infinite attacks, and NOT overstack, will fire first individually ((because their
     // power/dicesides might be
@@ -318,7 +318,7 @@ public class DiceRoll implements Externalizable {
     return Triple.of(totalPower, hits, (rolledAt.size() == 1));
   }
 
-  private static void sortAAHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
+  private static void sortAaHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
     final Comparator<Unit> comparator = (u1, u2) -> {
       final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
       final Tuple<Integer, Integer> tuple2 = getAAattackAndMaxDiceSides(Collections.singleton(u2), data, defending);
@@ -420,9 +420,9 @@ public class DiceRoll implements Externalizable {
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers, final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
-    final Map<Unit, Tuple<Integer, Integer>> rVal = new HashMap<>();
+    final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRolls = new HashMap<>();
     if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
-      return rVal;
+      return unitPowerAndRolls;
     }
     // get all supports, friendly and enemy
     final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<>();
@@ -505,9 +505,9 @@ public class DiceRoll implements Externalizable {
           strength = 0;
         }
       }
-      rVal.put(current, Tuple.of(strength, rolls));
+      unitPowerAndRolls.put(current, Tuple.of(strength, rolls));
     }
-    return rVal;
+    return unitPowerAndRolls;
   }
 
   public static int getTotalPower(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
@@ -610,9 +610,9 @@ public class DiceRoll implements Externalizable {
       dice.add(new Die(random[0], rollFor, hit ? DieType.HIT : DieType.MISS));
     }
     // Create DiceRoll object
-    final DiceRoll rVal = new DiceRoll(dice, hitCount);
-    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
-    return rVal;
+    final DiceRoll diceRoll = new DiceRoll(dice, hitCount);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+    return diceRoll;
   }
 
   /**
@@ -937,9 +937,9 @@ public class DiceRoll implements Externalizable {
         }
       }
     }
-    final DiceRoll rVal = new DiceRoll(dice, hitCount);
-    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
-    return rVal;
+    final DiceRoll diceRoll = new DiceRoll(dice, hitCount);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+    return diceRoll;
   }
 
   /**
@@ -1016,9 +1016,9 @@ public class DiceRoll implements Externalizable {
         }
       }
     }
-    final DiceRoll rVal = new DiceRoll(dice, hitCount);
-    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
-    return rVal;
+    final DiceRoll diceRoll = new DiceRoll(dice, hitCount);
+    bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+    return diceRoll;
   }
 
   private static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data) {
@@ -1026,7 +1026,7 @@ public class DiceRoll implements Externalizable {
     if (player.isNull() || data.getSequence().getRound() != 1 || isNegateDominatingFirstRoundAttack(player)) {
       return false;
     }
-    return isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerID());
+    return isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
   }
 
   private static boolean isDominatingFirstRoundAttack(final PlayerID player) {
@@ -1104,13 +1104,13 @@ public class DiceRoll implements Externalizable {
    *         0..MAX_DICE
    */
   public List<Die> getRolls(final int rollAt) {
-    final List<Die> rVal = new ArrayList<>();
+    final List<Die> dice = new ArrayList<>();
     for (final Die die : m_rolls) {
       if (die.getRolledAt() == rollAt) {
-        rVal.add(die);
+        dice.add(die);
       }
     }
-    return rVal;
+    return dice;
   }
 
   public int size() {

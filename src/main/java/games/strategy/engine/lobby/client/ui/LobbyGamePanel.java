@@ -320,7 +320,7 @@ class LobbyGamePanel extends JPanel {
     options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
     options.setNameEditable(false);
     options.setVisible(true);
-    if (!options.getOKPressed()) {
+    if (!options.getOkPressed()) {
       return;
     }
     GameRunner.hostGame(options.getPort(), options.getName(), options.getComments(), options.getPassword(),

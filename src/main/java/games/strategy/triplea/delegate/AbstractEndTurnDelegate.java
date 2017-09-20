@@ -56,9 +56,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     // figure out our current PUs before we do anything else, including super methods
@@ -174,7 +171,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   protected void showEndTurnReport(final String endTurnReport) {
-    if (endTurnReport != null && endTurnReport.trim().length() > 6 && !m_player.isAI()) {
+    if (endTurnReport != null && endTurnReport.trim().length() > 6 && !m_player.isAi()) {
       final ITripleAPlayer currentPlayer = getRemotePlayer(m_player);
       final String player = m_player.getName();
       currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >" + END_TURN_REPORT_STRING + player
@@ -182,9 +179,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     super.end();
@@ -581,13 +575,4 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return 1;
     };
   }
-}
-
-
-class EndTurnExtendedDelegateState implements Serializable {
-  private static final long serialVersionUID = -3939461840835898284L;
-  Serializable superState;
-  // add other variables here:
-  public boolean m_needToInitialize;
-  public boolean m_hasPostedTurnSummary;
 }
