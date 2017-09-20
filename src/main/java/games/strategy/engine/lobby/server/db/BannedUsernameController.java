@@ -13,15 +13,8 @@ import games.strategy.util.Tuple;
 /**
  * Utility class to create/read/delete banned usernames (there is no update).
  */
-public class BannedUsernameController {
+public class BannedUsernameController extends TimedController {
   private static final Logger logger = Logger.getLogger(BannedUsernameController.class.getName());
-
-  /**
-   * Ban the username permanently.
-   */
-  public void addBannedUsername(final String username) {
-    addBannedUsername(username, null);
-  }
 
   /**
    * Ban the given username. If banTill is not null, the ban will expire when banTill is reached.
@@ -31,30 +24,22 @@ public class BannedUsernameController {
    * </p>
    */
   public void addBannedUsername(final String username, final Instant banTill) {
-    if (isUsernameBanned(username).getFirst()) {
-      removeBannedUsername(username);
-    }
-    Timestamp banTillTs = null;
-    if (banTill != null) {
-      banTillTs = new Timestamp(banTill.toEpochMilli());
-    }
-    logger.fine("Banning username:" + username);
+    if (banTill == null || banTill.isAfter(now())) {
+      logger.fine("Banning username:" + username);
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps =
-            con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)")) {
-      ps.setString(1, username);
-      ps.setTimestamp(2, banTillTs);
-      ps.execute();
-      con.commit();
-    } catch (final SQLException sqle) {
-      if (sqle.getErrorCode() == 30000) {
-        // this is ok
-        // the username is banned as expected
-        logger.info("Tried to create duplicate banned username:" + username + " error:" + sqle.getMessage());
-        return;
+      try (final Connection con = Database.getPostgresConnection();
+          final PreparedStatement ps =
+              con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)"
+                  + " on conflict (username) do update set ban_till=excluded.ban_till")) {
+        ps.setString(1, username);
+        ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
+        ps.execute();
+        con.commit();
+      } catch (final SQLException sqle) {
+        throw new IllegalStateException("Error inserting banned username:" + username, sqle);
       }
-      throw new IllegalStateException("Error inserting banned username:" + username, sqle);
+    } else {
+      removeBannedUsername(username);
     }
   }
 
@@ -76,32 +61,26 @@ public class BannedUsernameController {
    * database any username's whose ban has expired.
    */
   public Tuple<Boolean, Timestamp> isUsernameBanned(final String username) {
-    boolean found = false;
-    boolean expired = false;
-    Timestamp banTill = null;
     final String sql = "select username, ban_till from banned_usernames where username = ?";
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
-        found = rs.next();
         // If the ban has expired, allow the username
-        if (found) {
-          banTill = rs.getTimestamp(2);
-          if (banTill != null && banTill.getTime() < System.currentTimeMillis()) {
+        if (rs.next()) {
+          final Timestamp banTill = rs.getTimestamp(2);
+          if (banTill != null && banTill.toInstant().isBefore(now())) {
             logger.fine("Ban expired for:" + username);
-            expired = true;
+            removeBannedUsername(username);
+            return Tuple.of(false, banTill);
           }
+          return Tuple.of(true, banTill);
         }
+        return Tuple.of(false, null);
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing banned username existence:" + username, sqle);
     }
-    if (expired) {
-      removeBannedUsername(username);
-      return Tuple.of(false, banTill);
-    }
-    return Tuple.of(found, banTill);
   }
 }

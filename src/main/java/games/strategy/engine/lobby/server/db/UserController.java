@@ -5,10 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.function.Supplier;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -64,16 +66,35 @@ public class UserController implements UserDao {
 
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps =
-            con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?")) {
+            con.prepareStatement("update ta_users set password = ?,  email = ? where username = ?")) {
       ps.setString(1, hashedPassword.value);
       ps.setString(2, user.getEmail());
-      ps.setInt(3, user.isAdmin() ? 1 : 0);
-      ps.setString(4, user.getName());
+      ps.setString(3, user.getName());
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new IllegalStateException(
-          "Error updating name:" + user.getName() + " email: " + user.getEmail() + " pwd: " + hashedPassword.mask(), e);
+      throw new IllegalStateException(String.format("Error updating name: %s email: %s pwd: %s",
+          user.getName(), user.getEmail(), hashedPassword.mask()), e);
+    }
+  }
+
+  /**
+   * A method similar to update user, used by tests only.
+   * Does only affect the admin state of the given user.
+   * The DB is updated with user.isAdmin()
+   */
+  @VisibleForTesting
+  public void makeAdmin(final DBUser user) {
+    Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
+
+    try (final Connection con = connectionSupplier.get();
+        final PreparedStatement ps = con.prepareStatement("update ta_users set admin=? where username = ?")) {
+      ps.setBoolean(1, user.isAdmin());
+      ps.setString(2, user.getName());
+      ps.execute();
+      con.commit();
+    } catch (final SQLException e) {
+      throw new IllegalStateException(String.format("Error while trying to make %s an admin", user.getName()), e);
     }
   }
 
@@ -83,14 +104,11 @@ public class UserController implements UserDao {
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
-        final PreparedStatement ps = con.prepareStatement(
-            "insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)")) {
+        final PreparedStatement ps =
+            con.prepareStatement("insert into ta_users (username, password, email) values (?, ?, ?)")) {
       ps.setString(1, user.getName());
       ps.setString(2, hashedPassword.value);
       ps.setString(3, user.getEmail());
-      ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-      ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-      ps.setInt(6, user.isAdmin() ? 1 : 0);
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
@@ -126,7 +144,7 @@ public class UserController implements UserDao {
       // update last login time
       try (
           final PreparedStatement ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
-        ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+        ps.setTimestamp(1, Timestamp.from(Instant.now()));
         ps.setString(2, userName);
         ps.execute();
         con.commit();

@@ -13,15 +13,8 @@ import games.strategy.util.Tuple;
 /**
  * Utilitiy class to create/read/delete banned macs (there is no update).
  */
-public class BannedMacController {
+public class BannedMacController extends TimedController {
   private static final Logger logger = Logger.getLogger(BannedMacController.class.getName());
-
-  /**
-   * Ban the mac permanently.
-   */
-  public void addBannedMac(final String mac) {
-    addBannedMac(mac, null);
-  }
 
   /**
    * Ban the given mac. If banTill is not null, the ban will expire when banTill is reached.
@@ -31,33 +24,25 @@ public class BannedMacController {
    * </p>
    */
   public void addBannedMac(final String mac, final Instant banTill) {
-    if (isMacBanned(mac).getFirst()) {
-      removeBannedMac(mac);
-    }
-    Timestamp banTillTs = null;
-    if (banTill != null) {
-      banTillTs = new Timestamp(banTill.toEpochMilli());
-    }
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)")) {
-      ps.setString(1, mac);
-      ps.setTimestamp(2, banTillTs);
-      ps.execute();
-      con.commit();
-    } catch (final SQLException sqle) {
-      if (sqle.getErrorCode() == 30000) {
-        // this is ok
-        // the mac is banned as expected
-        logger.info("Tried to create duplicate banned mac:" + mac + " error:" + sqle.getMessage());
-        return;
+    if (banTill == null || banTill.isAfter(now())) {
+      try (final Connection con = Database.getPostgresConnection();
+          final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)"
+              + " on conflict (mac) do update set ban_till=excluded.ban_till")) {
+        ps.setString(1, mac);
+        ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
+        ps.execute();
+        con.commit();
+      } catch (final SQLException sqle) {
+        throw new IllegalStateException("Error inserting banned mac:" + mac, sqle);
       }
-      throw new IllegalStateException("Error inserting banned mac:" + mac, sqle);
+    } else {
+      removeBannedMac(mac);
     }
   }
 
   private void removeBannedMac(final String mac) {
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?")) {
+        final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac=?")) {
       ps.setString(1, mac);
       ps.execute();
       con.commit();
@@ -71,32 +56,26 @@ public class BannedMacController {
    * database any mac's whose ban has expired.
    */
   public Tuple<Boolean, Timestamp> isMacBanned(final String mac) {
-    boolean found = false;
-    boolean expired = false;
-    Timestamp banTill = null;
-    final String sql = "select mac, ban_till from banned_macs where mac = ?";
+    final String sql = "select mac, ban_till from banned_macs where mac=?";
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
       try (final ResultSet rs = ps.executeQuery()) {
-        found = rs.next();
         // If the ban has expired, allow the mac
-        if (found) {
-          banTill = rs.getTimestamp(2);
-          if (banTill != null && banTill.getTime() < System.currentTimeMillis()) {
+        if (rs.next()) {
+          final Timestamp banTill = rs.getTimestamp(2);
+          if (banTill != null && banTill.toInstant().isBefore(now())) {
             logger.fine("Ban expired for:" + mac);
-            expired = true;
+            removeBannedMac(mac);
+            return Tuple.of(false, banTill);
           }
+          return Tuple.of(true, banTill);
         }
+        return Tuple.of(false, null);
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing banned mac existence:" + mac, sqle);
     }
-    if (expired) {
-      removeBannedMac(mac);
-      return Tuple.of(false, banTill);
-    }
-    return Tuple.of(found, banTill);
   }
 }

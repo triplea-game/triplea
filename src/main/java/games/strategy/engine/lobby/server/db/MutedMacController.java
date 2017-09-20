@@ -11,15 +11,8 @@ import java.util.logging.Logger;
 /**
  * Utilitiy class to create/read/delete muted macs (there is no update).
  */
-public class MutedMacController {
+public class MutedMacController extends TimedController {
   private static final Logger logger = Logger.getLogger(MutedMacController.class.getName());
-
-  /**
-   * Mute the mac permanently.
-   */
-  public void addMutedMac(final String mac) {
-    addMutedMac(mac, null);
-  }
 
   /**
    * Mute the given mac. If muteTill is not null, the mute will expire when muteTill is reached.
@@ -29,29 +22,21 @@ public class MutedMacController {
    * </p>
    */
   public void addMutedMac(final String mac, final Instant muteTill) {
-    if (isMacMuted(mac)) {
-      removeMutedMac(mac);
-    }
-    Timestamp muteTillTs = null;
-    if (muteTill != null) {
-      muteTillTs = new Timestamp(muteTill.toEpochMilli());
-    }
-    logger.fine("Muting mac:" + mac);
+    if (muteTill == null || muteTill.isAfter(now())) {
+      logger.fine("Muting mac:" + mac);
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)")) {
-      ps.setString(1, mac);
-      ps.setTimestamp(2, muteTillTs);
-      ps.execute();
-      con.commit();
-    } catch (final SQLException sqle) {
-      if (sqle.getErrorCode() == 30000) {
-        // this is ok
-        // the mac is muted as expected
-        logger.info("Tried to create duplicate muted mac:" + mac + " error:" + sqle.getMessage());
-        return;
+      try (final Connection con = Database.getPostgresConnection();
+          final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)"
+              + " on conflict (mac) do update set mute_till=excluded.mute_till")) {
+        ps.setString(1, mac);
+        ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
+        ps.execute();
+        con.commit();
+      } catch (final SQLException sqle) {
+        throw new IllegalStateException("Error inserting muted mac:" + mac, sqle);
       }
-      throw new IllegalStateException("Error inserting muted mac:" + mac, sqle);
+    } else {
+      removeMutedMac(mac);
     }
   }
 
@@ -59,7 +44,7 @@ public class MutedMacController {
     logger.fine("Removing muted mac:" + mac);
 
     try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac = ?")) {
+        final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac=?")) {
       ps.setString(1, mac);
       ps.execute();
       con.commit();
@@ -74,16 +59,14 @@ public class MutedMacController {
    */
   public boolean isMacMuted(final String mac) {
     final long muteTill = getMacUnmuteTime(mac);
-    return muteTill > System.currentTimeMillis();
+    return muteTill > now().toEpochMilli();
   }
 
   /**
    * Returns epoch milli second timestamp of when a mute expires or negative one if there is no mute.
    */
   public long getMacUnmuteTime(final String mac) {
-    long result = -1;
-    boolean expired = false;
-    final String sql = "select mac, mute_till from muted_macs where mac = ?";
+    final String sql = "select mac, mute_till from muted_macs where mac=?";
 
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement(sql)) {
@@ -92,24 +75,22 @@ public class MutedMacController {
         final boolean found = rs.next();
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);
-          result = muteTill.getTime();
-          if (result < System.currentTimeMillis()) {
-            logger.fine("Mute expired for:" + mac);
-            expired = true;
+          if (muteTill == null) {
+            return Long.MAX_VALUE;
           }
-        } else {
-          result = -1;
+          if (muteTill.toInstant().isBefore(now())) {
+            logger.fine("Mute expired for:" + mac);
+            // If the mute has expired, allow the mac
+            removeMutedMac(mac);
+            // Signal as not-muted
+            return -1;
+          }
+          return muteTill.getTime();
         }
+        return -1;
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing muted mac existence:" + mac, sqle);
     }
-    // If the mute has expired, allow the mac
-    if (expired) {
-      removeMutedMac(mac);
-      // Signal as not-muted
-      result = -1;
-    }
-    return result;
   }
 }
