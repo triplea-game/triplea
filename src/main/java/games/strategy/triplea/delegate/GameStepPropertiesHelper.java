@@ -45,7 +45,7 @@ public class GameStepPropertiesHelper {
       if (allowedPlayers != null) {
         allowedIDs = new HashSet<>();
         for (final String p : allowedPlayers.split(":")) {
-          final PlayerID id = data.getPlayerList().getPlayerID(p);
+          final PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
             System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
                 + GameStep.PROPERTY_turnSummaryPlayers + " player: " + p + " DOES NOT EXIST");
@@ -241,7 +241,7 @@ public class GameStepPropertiesHelper {
       }
       if (allowedPlayers != null) {
         for (final String p : allowedPlayers.split(":")) {
-          final PlayerID id = data.getPlayerList().getPlayerID(p);
+          final PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
             System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
                 + GameStep.PROPERTY_combinedTurns + " player: " + p + " DOES NOT EXIST");
@@ -325,7 +325,7 @@ public class GameStepPropertiesHelper {
       }
       if (allowedPlayers != null) {
         for (final String p : allowedPlayers.split(":")) {
-          final PlayerID id = data.getPlayerList().getPlayerID(p);
+          final PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
             System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
                 + GameStep.PROPERTY_repairPlayers + " player: " + p + " DOES NOT EXIST");

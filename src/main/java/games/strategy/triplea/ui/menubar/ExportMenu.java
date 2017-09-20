@@ -179,7 +179,7 @@ class ExportMenu {
       // the players for the stat panel are only relevant with respect to
       // the game data they belong to
       for (int i = 0; i < players.length; i++) {
-        players[i] = clone.getPlayerList().getPlayerID(players[i].getName());
+        players[i] = clone.getPlayerList().getPlayerId(players[i].getName());
       }
       text.append(defaultFileName + ",");
       text.append("\n");

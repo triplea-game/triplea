@@ -2278,8 +2278,8 @@ public final class Matches {
     return Match.of(paa -> {
       for (final String relationshipChangeString : paa.getRelationshipChange()) {
         final String[] relationshipChange = relationshipChangeString.split(":");
-        final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
-        final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
+        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
+        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
         if (player != null && !(p1.equals(player) || p2.equals(player))) {
           continue;
         }
@@ -2298,8 +2298,8 @@ public final class Matches {
     return Match.of(paa -> {
       for (final String relationshipChangeString : paa.getRelationshipChange()) {
         final String[] relationshipChange = relationshipChangeString.split(":");
-        final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
-        final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
+        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
+        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
         if (!currentPlayer.equals(p1)) {
           if (p1.amNotDeadYet(data)) {
             return true;

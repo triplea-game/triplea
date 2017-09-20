@@ -52,7 +52,7 @@ class PlayerOwnerChange extends Change {
         throw new IllegalStateException("Wrong owner, expecting" + m_old.get(id) + " but got " + unit.getOwner());
       }
       final String owner = m_new.get(id);
-      final PlayerID player = data.getPlayerList().getPlayerID(owner);
+      final PlayerID player = data.getPlayerList().getPlayerId(owner);
       unit.setOwner(player);
     }
     data.getMap().getTerritory(m_location).notifyChanged();

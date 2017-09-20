@@ -24,7 +24,7 @@ class PlayerWhoAmIChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    final PlayerID player = data.getPlayerList().getPlayerID(m_player);
+    final PlayerID player = data.getPlayerList().getPlayerId(m_player);
     player.setWhoAmI(m_endWhoAmI);
   }
 

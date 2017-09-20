@@ -37,7 +37,7 @@ public class GameDataTestUtil {
    * @return A german PlayerID.
    */
   public static PlayerID germans(final GameData data) {
-    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_GERMANS);
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_GERMANS);
   }
 
   /**
@@ -46,7 +46,7 @@ public class GameDataTestUtil {
    * @return A german PlayerID.
    */
   public static PlayerID germany(final GameData data) {
-    return data.getPlayerList().getPlayerID("Germany");
+    return data.getPlayerList().getPlayerId("Germany");
   }
 
   /**
@@ -55,7 +55,7 @@ public class GameDataTestUtil {
    * @return A italian PlayerID.
    */
   static PlayerID italians(final GameData data) {
-    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_ITALIANS);
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_ITALIANS);
   }
 
   /**
@@ -64,7 +64,7 @@ public class GameDataTestUtil {
    * @return A russian PlayerID.
    */
   public static PlayerID russians(final GameData data) {
-    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_RUSSIANS);
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_RUSSIANS);
   }
 
   /**
@@ -73,7 +73,7 @@ public class GameDataTestUtil {
    * @return A american PlayerID.
    */
   public static PlayerID americans(final GameData data) {
-    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_AMERICANS);
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_AMERICANS);
   }
 
   /**
@@ -82,7 +82,7 @@ public class GameDataTestUtil {
    * @return A british PlayerID.
    */
   public static PlayerID british(final GameData data) {
-    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_BRITISH);
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_BRITISH);
   }
 
   /**
@@ -91,7 +91,7 @@ public class GameDataTestUtil {
    * @return A japanese PlayerID.
    */
   public static PlayerID japanese(final GameData data) {
-    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_JAPANESE);
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
   }
 
   /**
@@ -100,7 +100,7 @@ public class GameDataTestUtil {
    * @return A Japan PlayerID.
    */
   public static PlayerID japan(final GameData data) {
-    return data.getPlayerList().getPlayerID("Japan");
+    return data.getPlayerList().getPlayerId("Japan");
   }
 
   /**
@@ -109,7 +109,7 @@ public class GameDataTestUtil {
    * @return A chinese PlayerID.
    */
   public static PlayerID chinese(final GameData data) {
-    return data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_CHINESE);
+    return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_CHINESE);
   }
 
   /**

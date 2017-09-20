@@ -141,7 +141,7 @@ public class StatPanel extends AbstractStatPanel {
   }
 
   protected ImageIcon getIcon(final String playerName) {
-    final PlayerID player = gameData.getPlayerList().getPlayerID(playerName);
+    final PlayerID player = gameData.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       return null;
     }

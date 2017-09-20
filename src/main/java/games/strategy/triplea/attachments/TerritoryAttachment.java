@@ -56,7 +56,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
-        final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+        final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
         if (whoseCapital == null) {
           throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
         }
@@ -94,7 +94,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
-        final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+        final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
         if (whoseCapital == null) {
           throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
         }
@@ -121,7 +121,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
-        final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+        final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
         if (whoseCapital == null) {
           throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
         }
@@ -288,7 +288,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       m_capital = null;
       return;
     }
-    final PlayerID p = getData().getPlayerList().getPlayerID(value);
+    final PlayerID p = getData().getPlayerList().getPlayerId(value);
     if (p == null) {
       throw new GameParseException("No Player named: " + value + thisErrorMsg());
     }
@@ -397,7 +397,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     if (player == null) {
       m_originalOwner = null;
     }
-    final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(player);
+    final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(player);
     if (tempPlayer == null) {
       throw new GameParseException("No player named: " + player + thisErrorMsg());
     }
@@ -437,7 +437,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void setChangeUnitOwners(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_changeUnitOwners.add(tempPlayer);
       } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
@@ -472,7 +472,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         m_captureUnitOnEnteringBy.add(tempPlayer);
       } else {
@@ -509,7 +509,7 @@ public class TerritoryAttachment extends DefaultAttachment {
           "whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
     }
     for (final String name : s) {
-      final PlayerID player = getData().getPlayerList().getPlayerID(name);
+      final PlayerID player = getData().getPlayerList().getPlayerId(name);
       if (player == null) {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }

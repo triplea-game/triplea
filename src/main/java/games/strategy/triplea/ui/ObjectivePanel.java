@@ -210,7 +210,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
           continue;
         }
-        final PlayerID player = gameData.getPlayerList().getPlayerID(key[0]);
+        final PlayerID player = gameData.getPlayerList().getPlayerId(key[0]);
         if (player == null) {
           // could be an old map, or an old save, so we don't want to stop the game from running.
           System.err.println("objective.properties player does not exist: " + key[0]);

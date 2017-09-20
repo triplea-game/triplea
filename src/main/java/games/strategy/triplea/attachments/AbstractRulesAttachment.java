@@ -62,7 +62,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   public void setPlayers(final String names) throws GameParseException {
     final PlayerList pl = getData().getPlayerList();
     for (final String p : names.split(":")) {
-      final PlayerID player = pl.getPlayerID(p);
+      final PlayerID player = pl.getPlayerId(p);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + p + thisErrorMsg());
       }

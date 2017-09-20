@@ -65,7 +65,7 @@ public abstract class AbstractGame implements IGame {
   private void setupLocalPlayers(final Set<IGamePlayer> localPlayers) {
     final PlayerList playerList = m_data.getPlayerList();
     for (final IGamePlayer gp : localPlayers) {
-      final PlayerID player = playerList.getPlayerID(gp.getName());
+      final PlayerID player = playerList.getPlayerId(gp.getName());
       m_gamePlayers.put(player, gp);
       final IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);

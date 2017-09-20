@@ -32,7 +32,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
     return m_players.size();
   }
 
-  public PlayerID getPlayerID(final String name) {
+  public PlayerID getPlayerId(final String name) {
     if (PlayerID.NULL_PLAYERID.getName().equals(name)) {
       return PlayerID.NULL_PLAYERID;
     }

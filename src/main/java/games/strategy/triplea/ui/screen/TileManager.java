@@ -309,7 +309,7 @@ public class TileManager {
     }
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
     if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers()) {
-      final PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
+      final PlayerID capitalOf = data.getPlayerList().getPlayerId(ta.getCapital());
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
     if (ta != null && (ta.getVictoryCity() != 0)) {

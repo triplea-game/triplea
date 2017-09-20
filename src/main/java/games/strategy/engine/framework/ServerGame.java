@@ -573,7 +573,7 @@ public class ServerGame extends AbstractGame {
                   + ((player.getName().endsWith("s") || player.getName().endsWith("ese")
                       || player.getName().endsWith("ish")) ? " are" : " is")
                   + " now being played by: " + player.getType());
-      final PlayerID p = data.getPlayerList().getPlayerID(player.getName());
+      final PlayerID p = data.getPlayerList().getPlayerId(player.getName());
       final String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getType());
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
@@ -586,7 +586,7 @@ public class ServerGame extends AbstractGame {
       bridge.getHistoryWriter().addChildToEvent(
           player + ((player.endsWith("s") || player.endsWith("ese") || player.endsWith("ish")) ? " are" : " is")
               + " now being played by: Human:Client");
-      final PlayerID p = data.getPlayerList().getPlayerID(player);
+      final PlayerID p = data.getPlayerList().getPlayerId(player);
       final String newWhoAmI = "Human:Client";
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
