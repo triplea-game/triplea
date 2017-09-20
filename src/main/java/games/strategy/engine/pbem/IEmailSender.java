@@ -46,8 +46,18 @@ public interface IEmailSender extends IBean {
    */
   IEmailSender doClone();
 
+  /**
+   * Get the user name used to login to the smtp server to send the email.
+   *
+   * @return the userName or null if no authentication is required
+   */
   String getUserName();
 
+  /**
+   * Get the password used to authenticate.
+   *
+   * @return the password or null
+   */
   String getPassword();
 
   /**
@@ -58,8 +68,20 @@ public interface IEmailSender extends IBean {
    */
   boolean areCredentialsSaved();
 
+  /**
+   * Set the userName used for authentication with the smtp server.
+   *
+   * @param userName
+   *        the userName or null if no authentication is required
+   */
   void setUserName(String userName);
 
+  /**
+   * Set the password to authenticate with.
+   *
+   * @param password
+   *        the password or null
+   */
   void setPassword(String password);
 
   /**

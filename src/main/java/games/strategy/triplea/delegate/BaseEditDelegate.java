@@ -14,17 +14,11 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   private static final String EDITMODE_ON = "Turning on Edit Mode";
   private static final String EDITMODE_OFF = "Turning off Edit Mode";
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();

@@ -80,10 +80,6 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     return randomSource.getRandom(max, count, annotation);
   }
 
-  /**
-   * Changing the player has the effect of commiting the current transaction.
-   * Player is initialized to the player specified in the xml data.
-   */
   @Override
   public void setPlayerId(final PlayerID playerId) {
     this.playerId = playerId;

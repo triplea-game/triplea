@@ -120,9 +120,6 @@ public class MapPanel extends ImageScrollerLargeView {
       private boolean is5Pressed = false;
       private int lastActive = -1;
 
-      /**
-       * Invoked when the mouse exits a component.
-       */
       @Override
       public void mouseExited(final MouseEvent e) {
         if (unitsChanged(null)) {

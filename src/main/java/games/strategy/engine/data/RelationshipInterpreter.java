@@ -149,7 +149,11 @@ public class RelationshipInterpreter extends GameDataComponent {
    * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2
    * players.
    *
-   * @return RelationshipType between these to players
+   * @param p1
+   *        Player1 in the relationship
+   * @param p2
+   *        Player2 in the relationship
+   * @return the current RelationshipType between those two players
    */
   RelationshipType getRelationshipType(final PlayerID p1, final PlayerID p2) {
     return getData().getRelationshipTracker().getRelationshipType(p1, p2);

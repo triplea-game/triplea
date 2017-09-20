@@ -55,17 +55,11 @@ public final class TestDelegate extends AbstractDelegate {
     return IRemote.class;
   }
 
-  /**
-   * Returns the state of the Delegate.
-   */
   @Override
   public Serializable saveState() {
     return null;
   }
 
-  /**
-   * Loads the delegates state.
-   */
   @Override
   public void loadState(final Serializable state) {}
 

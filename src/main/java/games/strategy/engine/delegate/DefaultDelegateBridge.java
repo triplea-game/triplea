@@ -66,9 +66,6 @@ public class DefaultDelegateBridge implements IDelegateBridge {
     return random;
   }
 
-  /**
-   * Delegates should not use random data that comes from any other source.
-   */
   @Override
   public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation) throws IllegalArgumentException, IllegalStateException {
@@ -91,9 +88,6 @@ public class DefaultDelegateBridge implements IDelegateBridge {
     }
   }
 
-  /**
-   * Returns the current step name.
-   */
   @Override
   public String getStepName() {
     return m_data.getSequence().getStep().getName();

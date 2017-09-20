@@ -394,15 +394,6 @@ public class ProAI extends AbstractAI {
     return myCasualties;
   }
 
-  /**
-   * Ask the player which units, if any, they want to scramble to defend against the attacker.
-   *
-   * @param scrambleTo
-   *        - the territory we are scrambling to defend in, where the units will end up if scrambled
-   * @param possibleScramblers
-   *        - possible units which we could scramble, with where they are from and how many allowed from that location
-   * @return a list of units to scramble mapped to where they are coming from
-   */
   @Override
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {

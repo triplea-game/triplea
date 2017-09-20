@@ -32,9 +32,6 @@ public abstract class AbstractDelegate implements IDelegate {
     m_displayName = displayName;
   }
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     m_bridge = delegateBridge;
@@ -78,18 +75,11 @@ public abstract class AbstractDelegate implements IDelegate {
     return null;
   }
 
-  /**
-   * Loads the delegate state.
-   */
   @Override
   public void loadState(final Serializable state) {
     // nothing to save
   }
 
-  /**
-   * If this class implements an interface which inherits from IRemote, returns the class of that interface.
-   * Otherwise, returns null.
-   */
   @Override
   public abstract Class<? extends IRemote> getRemoteType();
 

@@ -43,9 +43,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
     m_displayName = displayName;
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();

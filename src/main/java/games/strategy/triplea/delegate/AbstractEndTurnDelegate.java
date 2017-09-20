@@ -56,9 +56,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     // figure out our current PUs before we do anything else, including super methods
@@ -182,9 +179,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     }
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     super.end();

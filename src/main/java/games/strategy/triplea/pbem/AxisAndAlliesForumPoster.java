@@ -242,11 +242,6 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     return "AxisAndAllies.org";
   }
 
-  /**
-   * Create a clone of the poster.
-   *
-   * @return a copy
-   */
   @Override
   public IForumPoster doClone() {
     final AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster();

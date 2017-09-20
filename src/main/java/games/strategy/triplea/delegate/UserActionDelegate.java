@@ -26,9 +26,6 @@ import games.strategy.triplea.ui.UserActionText;
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {
   public UserActionDelegate() {}
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();

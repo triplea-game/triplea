@@ -17,5 +17,8 @@ public interface IPurchaseDelegate extends IRemote, IDelegate {
    */
   String purchase(IntegerMap<ProductionRule> productionRules);
 
+  /**
+   * Returns an error code, or null if all is good.
+   */
   String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> productionRules);
 }

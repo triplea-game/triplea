@@ -226,10 +226,6 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     }
   }
 
-  /**
-   * @param players
-   *        - a collection of Strings representing player names.
-   */
   @Override
   public synchronized void updatePlayerList(final Collection<INode> players) {
     final Runnable runner = () -> {

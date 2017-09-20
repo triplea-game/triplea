@@ -192,44 +192,22 @@ public class GenericEmailSender implements IEmailSender {
     }
   }
 
-  /**
-   * Get the user name used to login to the smtp server to send the email.
-   *
-   * @return the userName or null if no authentication is required
-   */
   @Override
   public String getUserName() {
     return USE_TRANSIENT_CREDENTIAL.equals(m_userName) ? transientUserName : m_userName;
   }
 
-  /**
-   * Set the userName used for authentication with the smtp server.
-   *
-   * @param userName
-   *        the userName or null if no authentication is required
-   */
   @Override
   public void setUserName(final String userName) {
     m_userName = credentialsSaved ? userName : USE_TRANSIENT_CREDENTIAL;
     transientUserName = userName;
   }
 
-  /**
-   * Get the password used to authenticate.
-   *
-   * @return the password or null
-   */
   @Override
   public String getPassword() {
     return USE_TRANSIENT_CREDENTIAL.equals(m_password) ? transientPassword : m_password;
   }
 
-  /**
-   * Set the password to authenticate with.
-   *
-   * @param password
-   *        the password or null
-   */
   @Override
   public void setPassword(final String password) {
     m_password = credentialsSaved ? password : USE_TRANSIENT_CREDENTIAL;
@@ -335,11 +313,6 @@ public class GenericEmailSender implements IEmailSender {
     m_toAddress = to;
   }
 
-  /**
-   * Get the To address configured.
-   *
-   * @return the to address, or multiple separated by space
-   */
   @Override
   public String getToAddress() {
     return m_toAddress;

@@ -32,9 +32,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     setAttachedTo(attachable);
   }
 
-  /**
-   * Called after ALL attachments are created.
-   */
   @Override
   public abstract void validate(final GameData data) throws GameParseException;
 

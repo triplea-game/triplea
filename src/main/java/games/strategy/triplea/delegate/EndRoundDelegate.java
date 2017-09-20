@@ -43,9 +43,6 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   /** Creates a new instance of EndRoundDelegate. */
   public EndRoundDelegate() {}
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();

@@ -60,17 +60,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean m_needToCleanup = true;
   protected IBattle m_currentBattle = null;
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -103,9 +97,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     m_battleTracker.fightBattleIfOnlyOne(m_bridge);
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     if (m_needToRecordBattleStatistics) {

@@ -57,17 +57,11 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     m_techCost = -1;
   }
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
