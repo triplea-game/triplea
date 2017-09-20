@@ -27,9 +27,6 @@ public class BooleanProperty extends AEditableProperty {
     mValue = value;
   }
 
-  /**
-   * @return component used to edit this property.
-   */
   @Override
   public JComponent getEditorComponent() {
     final JCheckBox box = new JCheckBox("");

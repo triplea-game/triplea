@@ -16,9 +16,6 @@ public class UserManager implements IUserManager {
     messenger.registerRemote(this, IUserManager.USER_MANAGER);
   }
 
-  /**
-   * Update the user info, returning an error string if an error occurs.
-   */
   @Override
   public String updateUser(final String userName, final String emailAddress, final String hashedPassword) {
     final INode remote = MessageContext.getSender();
@@ -49,9 +46,6 @@ public class UserManager implements IUserManager {
     return null;
   }
 
-  /**
-   * Update the user info, returning an error string if an error occurs.
-   */
   @Override
   public DBUser getUserInfo(final String userName) {
     final INode remote = MessageContext.getSender();

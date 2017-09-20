@@ -55,17 +55,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   public MoveDelegate() {}
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));
   }
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -183,9 +177,6 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     super.end();
@@ -620,17 +611,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
   }
 
-  /**
-   * @return The number of PUs that have been lost by bombing, rockets, etc.
-   */
   @Override
   public int pusAlreadyLost(final Territory t) {
     return m_PUsLost.getInt(t);
   }
 
-  /**
-   * Add more PUs lost to a territory due to bombing, rockets, etc.
-   */
   @Override
   public void pusLost(final Territory t, final int amt) {
     m_PUsLost.add(t, amt);

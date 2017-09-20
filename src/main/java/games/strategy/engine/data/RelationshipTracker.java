@@ -36,15 +36,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
     m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
   }
 
-  /**
-   * will give you the relationshipType that currently exists between 2 players.
-   *
-   * @param p1
-   *        Player1 in the relationship
-   * @param p2
-   *        Player2 in the relationship
-   * @return the current RelationshipType between those two players
-   */
   @Override
   public RelationshipType getRelationshipType(final PlayerID p1, final PlayerID p2) {
     return getRelationship(p1, p2).getRelationshipType();

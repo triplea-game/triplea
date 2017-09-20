@@ -101,9 +101,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     listeners.remove(listener);
   }
 
-  /**
-   * Get a list of nodes.
-   */
   @Override
   public Set<INode> getNodes() {
     final Set<INode> nodes = new HashSet<>(nodeToChannel.keySet());
@@ -136,9 +133,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     return !shutdown;
   }
 
-  /**
-   * Send a message to the given node.
-   */
   @Override
   public void send(final Serializable msg, final INode to) {
     if (shutdown) {
@@ -160,9 +154,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     nioSocket.send(socketChannel, header);
   }
 
-  /**
-   * Send a message to all nodes.
-   */
   @Override
   public void broadcast(final Serializable msg) {
     final MessageHeader header = new MessageHeader(node, msg);

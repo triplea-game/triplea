@@ -88,9 +88,6 @@ public class TripleADisplay implements ITripleADisplay {
     ui.getBattlePanel().notifyRetreat(retreating);
   }
 
-  /**
-   * Show dice for the given battle and step.
-   */
   @Override
   public void notifyDice(final DiceRoll dice, final String stepName) {
     ui.getBattlePanel().showDice(dice, stepName);

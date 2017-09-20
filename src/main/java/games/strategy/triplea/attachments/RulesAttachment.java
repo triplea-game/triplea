@@ -1147,11 +1147,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return found >= m_techCount;
   }
 
-  /**
-   * Called after the attachment is created.
-   *
-   * @throws GameParseException validation failed
-   */
   @Override
   public void validate(final GameData data) throws GameParseException {
     super.validate(data);

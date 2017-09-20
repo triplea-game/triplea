@@ -65,10 +65,6 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     m_endBaseStepsFinished = false;
   }
 
-  /**
-   * Returns the state of the Delegate.
-   * All classes should super.saveState if they override this.
-   */
   @Override
   public Serializable saveState() {
     final BaseDelegateState state = new BaseDelegateState();

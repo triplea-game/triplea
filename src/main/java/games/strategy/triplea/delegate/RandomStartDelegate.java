@@ -44,9 +44,6 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     setupBoard();
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     super.end();

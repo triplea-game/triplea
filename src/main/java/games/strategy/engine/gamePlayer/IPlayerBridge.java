@@ -28,7 +28,7 @@ public interface IPlayerBridge {
   IRemote getRemotePersistentDelegate(String name);
 
   /**
-   * Get the name of the current step being exectued.
+   * Get the name of the current step being executed.
    */
   String getStepName();
 

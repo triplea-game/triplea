@@ -52,9 +52,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   private boolean m_needToInitialize = true;
   public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -149,9 +146,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return player.getResources().has(costs);
   }
 
-  /**
-   * Returns an error code, or null if all is good.
-   */
   @Override
   public String purchase(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = getCosts(productionRules);
@@ -240,9 +234,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return null;
   }
 
-  /**
-   * Returns an error code, or null if all is good.
-   */
   @Override
   public String purchaseRepair(final Map<Unit, IntegerMap<RepairRule>> repairRules) {
     final IntegerMap<Resource> costs = getRepairCosts(repairRules, m_player);

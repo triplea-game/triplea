@@ -67,9 +67,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     super.start();
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     super.end();
@@ -1607,11 +1604,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return null;
   }
 
-  /**
-   * Get what air units must move before the end of the players turn.
-   *
-   * @return a list of Territories with air units that must move
-   */
   @Override
   public Collection<Territory> getTerritoriesWhereAirCantLand() {
     return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);

@@ -30,9 +30,6 @@ import games.strategy.util.Triple;
  * Edit game state.
  */
 public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();

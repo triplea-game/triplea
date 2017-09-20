@@ -42,9 +42,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   /** Creates new PoliticsDelegate. */
   public PoliticsDelegate() {}
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();

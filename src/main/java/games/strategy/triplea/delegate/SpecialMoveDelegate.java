@@ -44,9 +44,6 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   // private boolean m_allowAirborne = true;
   public SpecialMoveDelegate() {}
 
-  /**
-   * Called before the delegate will run, AND before "start" is called.
-   */
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     super.setDelegateBridgeAndPlayer(new GameDelegateBridge(delegateBridge));

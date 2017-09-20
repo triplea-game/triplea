@@ -35,9 +35,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   public AbstractMoveDelegate() {}
 
-  /**
-   * Called before the delegate will run.
-   */
   @Override
   public void start() {
     super.start();
@@ -48,9 +45,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     }
   }
 
-  /**
-   * Called before the delegate will stop running.
-   */
   @Override
   public void end() {
     super.end();
@@ -225,8 +219,14 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     return poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
   }
 
+  /**
+   * @return The number of PUs that have been lost by bombing, rockets, etc.
+   */
   public abstract int pusAlreadyLost(final Territory t);
 
+  /**
+   * Add more PUs lost to a territory due to bombing, rockets, etc.
+   */
   public abstract void pusLost(final Territory t, final int amt);
 
   @Override

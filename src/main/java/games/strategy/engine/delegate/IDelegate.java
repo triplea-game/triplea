@@ -46,11 +46,15 @@ public interface IDelegate {
   IDelegateBridge getBridge();
 
   /**
+   * Returns the state of the Delegate.
+   *
    * @return state of the Delegate.
    */
   Serializable saveState();
 
   /**
+   * Loads the delegate state.
+   *
    * @param state
    *        the delegates state.
    */

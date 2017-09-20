@@ -54,12 +54,6 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
     }
   }
 
-  /**
-   * Loads cached game options into the gameData.
-   *
-   * @param gameData
-   *        the game to load the cached game options into
-   */
   @Override
   @SuppressWarnings("unchecked")
   // generics are compile time only, and lost during serialization

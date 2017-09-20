@@ -15,19 +15,11 @@ public abstract class BasePersistentDelegate extends AbstractDelegate implements
     super();
   }
 
-  /**
-   * Called before the delegate will run.
-   * All classes should call super.start if they override this.
-   */
   @Override
   public void start() {
     super.start();
   }
 
-  /**
-   * Called before the delegate will stop running.
-   * All classes should call super.end if they override this.
-   */
   @Override
   public void end() {
     super.end();
