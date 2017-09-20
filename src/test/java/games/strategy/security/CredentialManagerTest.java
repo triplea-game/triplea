@@ -1,4 +1,4 @@
-package games.strategy.engine.pbem;
+package games.strategy.security;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
