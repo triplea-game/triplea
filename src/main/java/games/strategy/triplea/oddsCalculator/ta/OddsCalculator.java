@@ -188,7 +188,6 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       battle.isAmphibious();
       battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
           (amphibious ? attackingUnits : new ArrayList<>()), defender, territoryEffects);
-      // battle.setAttackingFromAndMap(attackingFromMap);
       bridge1.setBattle(battle);
       battle.fight(bridge);
       aggregateResults.addResult(new BattleResults(battle, gameData));
@@ -197,7 +196,6 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       battleTracker.clear();
       battleTracker.clearBattleRecords();
     }
-    // BattleCalculator.DisableCasualtySortingCaching();
     aggregateResults.setTime(System.currentTimeMillis() - start);
     isRunning = false;
     cancelled = false;
