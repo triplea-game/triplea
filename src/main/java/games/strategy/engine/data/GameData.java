@@ -248,7 +248,7 @@ public class GameData implements Serializable {
   public UnitHolder getUnitHolder(final String name, final String type) {
     ensureLockHeld();
     if (type.equals(UnitHolder.PLAYER)) {
-      return playerList.getPlayerID(name);
+      return playerList.getPlayerId(name);
     } else if (type.equals(UnitHolder.TERRITORY)) {
       return map.getTerritory(name);
     } else {

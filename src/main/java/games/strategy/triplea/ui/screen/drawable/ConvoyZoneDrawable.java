@@ -30,9 +30,9 @@ public class ConvoyZoneDrawable implements IDrawable {
       final AffineTransform unscaled, final AffineTransform scaled) {
     Image img;
     if (mapData.useNation_convoyFlags()) {
-      img = uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerID(player));
+      img = uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerId(player));
     } else {
-      img = uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerID(player));
+      img = uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerId(player));
     }
     final Point point = mapData.getConvoyMarkerLocation(data.getMap().getTerritory(location));
     graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);

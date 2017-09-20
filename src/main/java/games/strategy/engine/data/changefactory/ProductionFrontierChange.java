@@ -28,7 +28,7 @@ class ProductionFrontierChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    final PlayerID player = data.getPlayerList().getPlayerID(m_player);
+    final PlayerID player = data.getPlayerList().getPlayerId(m_player);
     final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(m_endFrontier);
     player.setProductionFrontier(frontier);
   }

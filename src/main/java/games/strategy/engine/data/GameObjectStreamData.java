@@ -53,7 +53,7 @@ public class GameObjectStreamData implements Externalizable {
     try {
       switch (m_type) {
         case PLAYERID:
-          return data.getPlayerList().getPlayerID(m_name);
+          return data.getPlayerList().getPlayerId(m_name);
         case TERRITORY:
           return data.getMap().getTerritory(m_name);
         case UNITTYPE:

@@ -55,7 +55,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     String victoryMessage = null;
     final GameData data = getData();
     if (isPacificTheater()) {
-      final PlayerID japanese = data.getPlayerList().getPlayerID(Constants.PLAYER_NAME_JAPANESE);
+      final PlayerID japanese = data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
       final PlayerAttachment pa = PlayerAttachment.get(japanese);
       if (pa != null && pa.getVps() >= 22) {
         victoryMessage = "Axis achieve VP victory";
@@ -132,11 +132,11 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
     final PlayerList playerList = data.getPlayerList();
     // now test older maps that only use these 5 players, to see if someone has won
-    final PlayerID russians = playerList.getPlayerID(Constants.PLAYER_NAME_RUSSIANS);
-    final PlayerID germans = playerList.getPlayerID(Constants.PLAYER_NAME_GERMANS);
-    final PlayerID british = playerList.getPlayerID(Constants.PLAYER_NAME_BRITISH);
-    final PlayerID japanese = playerList.getPlayerID(Constants.PLAYER_NAME_JAPANESE);
-    final PlayerID americans = playerList.getPlayerID(Constants.PLAYER_NAME_AMERICANS);
+    final PlayerID russians = playerList.getPlayerId(Constants.PLAYER_NAME_RUSSIANS);
+    final PlayerID germans = playerList.getPlayerId(Constants.PLAYER_NAME_GERMANS);
+    final PlayerID british = playerList.getPlayerId(Constants.PLAYER_NAME_BRITISH);
+    final PlayerID japanese = playerList.getPlayerId(Constants.PLAYER_NAME_JAPANESE);
+    final PlayerID americans = playerList.getPlayerId(Constants.PLAYER_NAME_AMERICANS);
     if (germans == null || russians == null || british == null || japanese == null || americans == null
         || playerList.size() > 5) {
       return;

@@ -77,8 +77,8 @@ public class ParserTest {
   @Test
   public void testAllianceMade() {
     final PlayerList players = gameData.getPlayerList();
-    final PlayerID castro = players.getPlayerID("castro");
-    final PlayerID chretian = players.getPlayerID("chretian");
+    final PlayerID castro = players.getPlayerId("castro");
+    final PlayerID chretian = players.getPlayerId("chretian");
     final RelationshipTracker alliances = gameData.getRelationshipTracker();
     assertEquals(true, alliances.isAllied(castro, chretian));
   }
@@ -107,7 +107,7 @@ public class ParserTest {
   @Test
   public void testPlayerProduction() {
     final ProductionFrontier cf = gameData.getProductionFrontierList().getProductionFrontier("canProd");
-    final PlayerID can = gameData.getPlayerList().getPlayerID("chretian");
+    final PlayerID can = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(can.getProductionFrontier(), cf);
   }
 
@@ -121,7 +121,7 @@ public class ParserTest {
     assertEquals(att.getValue(), "inf");
     att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "us of a");
-    att = (TestAttachment) gameData.getPlayerList().getPlayerID("chretian")
+    att = (TestAttachment) gameData.getPlayerList().getPlayerId("chretian")
         .getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
     assertEquals(att.getValue(), "liberal");
   }
@@ -138,7 +138,7 @@ public class ParserTest {
 
   @Test
   public void testUnitsHeldInitialized() {
-    final PlayerID bush = gameData.getPlayerList().getPlayerID("bush");
+    final PlayerID bush = gameData.getPlayerList().getPlayerId("bush");
     assertEquals(bush.getUnits().getUnitCount(), 20);
   }
 
@@ -150,7 +150,7 @@ public class ParserTest {
 
   @Test
   public void testResourcesGiven() {
-    final PlayerID chretian = gameData.getPlayerList().getPlayerID("chretian");
+    final PlayerID chretian = gameData.getPlayerList().getPlayerId("chretian");
     final Resource resource = gameData.getResourceList().getResource("silver");
     assertEquals(200, chretian.getResources().getQuantity(resource));
   }

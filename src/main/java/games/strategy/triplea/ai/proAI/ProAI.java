@@ -200,7 +200,7 @@ public class ProAI extends AbstractAI {
         data.releaseReadLock();
       }
       calc.setData(dataCopy);
-      final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerID(player.getName());
+      final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
       moveDel.setDelegateBridgeAndPlayer(bridge);

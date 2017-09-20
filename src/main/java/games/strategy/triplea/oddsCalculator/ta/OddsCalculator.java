@@ -131,9 +131,9 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
     this.attacker =
-        gameData.getPlayerList().getPlayerID(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
+        gameData.getPlayerList().getPlayerId(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
     this.defender =
-        gameData.getPlayerList().getPlayerID(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
+        gameData.getPlayerList().getPlayerId(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
     this.location = gameData.getMap().getTerritory(location.getName());
     attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
     defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);

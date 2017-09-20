@@ -189,11 +189,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       throw new GameParseException(
           "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..." + thisErrorMsg());
     }
-    final PlayerID attacker = getData().getPlayerList().getPlayerID(s[0]);
+    final PlayerID attacker = getData().getPlayerList().getPlayerId(s[0]);
     if (attacker == null && !s[0].equalsIgnoreCase("any")) {
       throw new GameParseException("no player named: " + s[0] + thisErrorMsg());
     }
-    final PlayerID defender = getData().getPlayerList().getPlayerID(s[1]);
+    final PlayerID defender = getData().getPlayerList().getPlayerId(s[1]);
     if (defender == null && !s[1].equalsIgnoreCase("any")) {
       throw new GameParseException("no player named: " + s[1] + thisErrorMsg());
     }
@@ -252,11 +252,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           "relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\""
               + thisErrorMsg());
     }
-    if (getData().getPlayerList().getPlayerID(s[0]) == null) {
+    if (getData().getPlayerList().getPlayerId(s[0]) == null) {
       throw new GameParseException(
           "playername: " + s[0] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
-    if (getData().getPlayerList().getPlayerID(s[1]) == null) {
+    if (getData().getPlayerList().getPlayerId(s[1]) == null) {
       throw new GameParseException(
           "playername: " + s[1] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
@@ -574,7 +574,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     m_atWarPlayers = new HashSet<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
-      final PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
+      final PlayerID player = getData().getPlayerList().getPlayerId(s[i]);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
       }
@@ -833,8 +833,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       for (final Tuple<String, ArrayList<Territory>> entry : m_battle) {
         final String[] type = entry.getFirst().split(":");
         // they could be "any", and if they are "any" then this would be null, which is good!
-        final PlayerID attacker = data.getPlayerList().getPlayerID(type[0]);
-        final PlayerID defender = data.getPlayerList().getPlayerID(type[1]);
+        final PlayerID attacker = data.getPlayerList().getPlayerId(type[0]);
+        final PlayerID defender = data.getPlayerList().getPlayerId(type[1]);
         final String resultType = type[2];
         final String roundType = type[3];
         int start = 0;
@@ -895,8 +895,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkRelationships() {
     for (final String encodedRelationCheck : m_relationship) {
       final String[] relationCheck = encodedRelationCheck.split(":");
-      final PlayerID p1 = getData().getPlayerList().getPlayerID(relationCheck[0]);
-      final PlayerID p2 = getData().getPlayerList().getPlayerID(relationCheck[1]);
+      final PlayerID p1 = getData().getPlayerList().getPlayerId(relationCheck[0]);
+      final PlayerID p2 = getData().getPlayerList().getPlayerId(relationCheck[1]);
       final int relationshipsExistance = Integer.parseInt(relationCheck[3]);
       final Relationship currentRelationship = getData().getRelationshipTracker().getRelationship(p1, p2);
       final RelationshipType currentRelationshipType = currentRelationship.getRelationshipType();

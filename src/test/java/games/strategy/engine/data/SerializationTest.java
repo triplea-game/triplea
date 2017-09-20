@@ -39,9 +39,9 @@ public class SerializationTest {
 
   @Test
   public void testWritePlayerId() throws Exception {
-    final PlayerID id = gameDataSource.getPlayerList().getPlayerID("chretian");
+    final PlayerID id = gameDataSource.getPlayerList().getPlayerId("chretian");
     final PlayerID readId = (PlayerID) serialize(id);
-    final PlayerID localId = gameDataSink.getPlayerList().getPlayerID("chretian");
+    final PlayerID localId = gameDataSink.getPlayerList().getPlayerId("chretian");
     assertTrue(localId != readId);
   }
 

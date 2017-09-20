@@ -72,7 +72,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
         final List<Icon> icons = new ArrayList<>(players.size());
         for (final String player : players) {
           if (uiContext != null && uiContext.getFlagImageFactory() != null) {
-            icons.add(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerID(player))));
+            icons.add(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerId(player))));
           }
         }
         maxIconCounter = Math.max(maxIconCounter, icons.size());

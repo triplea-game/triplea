@@ -172,7 +172,7 @@ public class ClientGame extends AbstractGame {
         PlayerID player;
         m_data.acquireReadLock();
         try {
-          player = m_data.getPlayerList().getPlayerID(gp.getName());
+          player = m_data.getPlayerList().getPlayerId(gp.getName());
         } finally {
           m_data.releaseReadLock();
         }

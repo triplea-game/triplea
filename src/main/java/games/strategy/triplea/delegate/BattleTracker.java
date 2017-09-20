@@ -569,7 +569,7 @@ public class BattleTracker implements Serializable {
     // instead it is relying on the fact that the capital should be owned by the person it is attached to
     if (isTerritoryOwnerAnEnemy && ta.getCapital() != null) {
       // if the capital is owned by the capitols player take the money
-      final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+      final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
       final PlayerAttachment pa = PlayerAttachment.get(id);
       final PlayerAttachment paWhoseCapital = PlayerAttachment.get(whoseCapital);
       final List<Territory> capitalsList =
@@ -652,8 +652,8 @@ public class BattleTracker implements Serializable {
     if (isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.territoryHasWhenCapturedByGoesTo().match(territory)) {
       for (final String value : ta.getWhenCapturedByGoesTo()) {
         final String[] s = value.split(":");
-        final PlayerID capturingPlayer = data.getPlayerList().getPlayerID(s[0]);
-        final PlayerID goesToPlayer = data.getPlayerList().getPlayerID(s[1]);
+        final PlayerID capturingPlayer = data.getPlayerList().getPlayerId(s[0]);
+        final PlayerID goesToPlayer = data.getPlayerList().getPlayerId(s[1]);
         if (capturingPlayer.equals(goesToPlayer)) {
           continue;
         }
@@ -796,11 +796,11 @@ public class BattleTracker implements Serializable {
         final PlayerID currentOwner = u.getOwner();
         for (final String value : map.keySet()) {
           final String[] s = value.split(":");
-          if (!(s[0].equals("any") || data.getPlayerList().getPlayerID(s[0]).equals(currentOwner))) {
+          if (!(s[0].equals("any") || data.getPlayerList().getPlayerId(s[0]).equals(currentOwner))) {
             continue;
           }
           // we could use "id" or "newOwner" here... not sure which to use
-          if (!(s[1].equals("any") || data.getPlayerList().getPlayerID(s[1]).equals(id))) {
+          if (!(s[1].equals("any") || data.getPlayerList().getPlayerId(s[1]).equals(id))) {
             continue;
           }
           final CompositeChange changes = new CompositeChange();

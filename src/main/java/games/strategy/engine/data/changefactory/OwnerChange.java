@@ -43,7 +43,7 @@ class OwnerChange extends Change {
     if (name == null) {
       return null;
     }
-    return data.getPlayerList().getPlayerID(name);
+    return data.getPlayerList().getPlayerId(name);
   }
 
   @Override
