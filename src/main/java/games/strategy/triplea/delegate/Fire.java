@@ -19,8 +19,9 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.util.Match;
 
 public class Fire implements IExecutable {
-  // compatible with 0.9.0.2 saved games
+
   private static final long serialVersionUID = -3687054738070722403L;
+
   private final String m_stepName;
   private final Collection<Unit> m_firingUnits;
   private final Collection<Unit> m_attackableUnits;
@@ -51,12 +52,6 @@ public class Fire implements IExecutable {
       final Map<Unit, Collection<Unit>> dependentUnits, final boolean headless,
       final Territory battleSite, final Collection<TerritoryEffect> territoryEffects,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
-    /*
-     * This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing.
-     * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back
-     * to:
-     * m_attackableUnits = attackableUnits;
-     */
     m_attackableUnits = Matches.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
     m_canReturnFire = canReturnFire;
     m_firingUnits = firingUnits;
@@ -118,7 +113,7 @@ public class Fire implements IExecutable {
           }
         }
         final Iterator<PlayerID> playerIter = alliedHitPlayer.iterator();
-        // Leave enough transports for each defender for overlfows so they can select who loses them.
+        // Leave enough transports for each defender for overflows so they can select who loses them.
         while (playerIter.hasNext()) {
           final PlayerID player = playerIter.next();
           final Match<Unit> match = Match.allOf(
@@ -132,7 +127,6 @@ public class Fire implements IExecutable {
         }
         m_killed = nonTransports;
         m_damaged = Collections.emptyList();
-        // m_confirmOwnCasualties = true;
         if (extraHits > transportsOnly.size()) {
           extraHits = transportsOnly.size();
         }
@@ -189,7 +183,7 @@ public class Fire implements IExecutable {
         // someone else will deal with this, ignore
       }
     };
-    // execute in a seperate thread to allow either player to click continue first.
+    // execute in a separate thread to allow either player to click continue first.
     final Thread t = new Thread(r, "Click to continue waiter");
     t.start();
     if (m_confirmOwnCasualties) {
@@ -210,9 +204,8 @@ public class Fire implements IExecutable {
    */
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    // add to the stack so we will execute,
-    // we want to roll dice, select casualties, then notify in that order, so
-    // push onto the stack in reverse order
+    // add to the stack so we will execute, we want to roll dice, select casualties, then notify in that order, so push
+    // onto the stack in reverse order
     final IExecutable rollDice = new IExecutable() {
       private static final long serialVersionUID = 7578210876028725797L;
 
@@ -230,7 +223,6 @@ public class Fire implements IExecutable {
       }
     };
     final IExecutable notifyCasualties = new IExecutable() {
-      // compatible with 0.9.0.2 saved games
       private static final long serialVersionUID = -9173385989239225660L;
 
       @Override
@@ -250,4 +242,5 @@ public class Fire implements IExecutable {
   private static boolean isTransportCasualtiesRestricted(final GameData data) {
     return Properties.getTransportCasualtiesRestricted(data);
   }
+
 }
