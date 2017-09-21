@@ -28,13 +28,13 @@ public class UserController implements UserDao {
   }
 
   @Override
-  public HashedPassword getPassword(final String username) {
-    return getPassword(username, false);
+  public HashedPassword getMd5Password(final String username) {
+    return getPassword(username, true);
   }
 
   @Override
-  public HashedPassword getMd5Password(final String username) {
-    return getPassword(username, true);
+  public HashedPassword getPassword(final String username) {
+    return getPassword(username, false);
   }
 
   private HashedPassword getPassword(final String username, final boolean legacy) {
