@@ -162,8 +162,7 @@ public class UserController implements UserDao {
         }
       }
       // update last login time
-      try (
-          final PreparedStatement ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
+      try (final PreparedStatement ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
         ps.setTimestamp(1, Timestamp.from(Instant.now()));
         ps.setString(2, userName);
         ps.execute();
@@ -172,7 +171,7 @@ public class UserController implements UserDao {
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException(
-          "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword.mask(), sqle);
+          String.format("Error validating password name: %s pwd: %s", userName, hashedPassword.mask()), sqle);
     }
   }
 
@@ -191,7 +190,7 @@ public class UserController implements UserDao {
             rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
       }
     } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error getting user:" + userName, sqle);
+      throw new IllegalStateException("Error getting user: " + userName, sqle);
     }
   }
 }
