@@ -118,8 +118,8 @@ public class UserController implements UserDao {
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
-        final PreparedStatement ps = con
-            .prepareStatement("insert into ta_users (username, password, bcrypt_password, email) values (?, ?, ?)")) {
+        final PreparedStatement ps = con.prepareStatement(
+            "insert into ta_users (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
       ps.setString(1, user.getName());
       ps.setString(2, hashedPassword.isBcrypted() ? null : hashedPassword.value);
       ps.setString(3, hashedPassword.isBcrypted() ? hashedPassword.value : null);
