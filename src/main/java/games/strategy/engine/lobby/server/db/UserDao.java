@@ -4,8 +4,14 @@ import games.strategy.engine.lobby.server.userDB.DBUser;
 
 public interface UserDao {
 
+  /**
+   * @return null if the user does not exist.
+   */
   HashedPassword getPassword(String username);
 
+  /**
+   * @return null if the user does not exist or the user has no legacy password stored.
+   */
   HashedPassword getMd5Password(String username);
 
   boolean doesUserExist(String username);
