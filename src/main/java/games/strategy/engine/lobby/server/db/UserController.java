@@ -32,7 +32,7 @@ public class UserController implements UserDao {
    */
   @Override
   public HashedPassword getPassword(final String username) {
-    return getPasswordFromColumn(username, "coalesce(password, bcrypt_password)");
+    return getPassword(username, false);
   }
 
   /**
@@ -40,17 +40,17 @@ public class UserController implements UserDao {
    */
   @Override
   public HashedPassword getMd5Password(final String username) {
-    return getPasswordFromColumn(username, "password");
+    return getPassword(username, true);
   }
 
-  private HashedPassword getPasswordFromColumn(final String username, final String column) {
+  private HashedPassword getPassword(final String username, final boolean legacy) {
     try (final Connection con = connectionSupplier.get();
-        final PreparedStatement ps =
-            con.prepareStatement(String.format("select %s from ta_users where username=?", column))) {
+        final PreparedStatement ps = con
+            .prepareStatement("select password, coalesce(password, bcrypt_password) from ta_users where username=?")) {
       ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          return new HashedPassword(rs.getString(1));
+          return new HashedPassword(rs.getString(legacy ? 1 : 2));
         }
         return null;
       }
@@ -74,15 +74,11 @@ public class UserController implements UserDao {
 
   @Override
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
-    updateUser(user, hashedPassword, hashedPassword.isBcrypted() ? "bcrypt_password" : "password");
-  }
-
-  private void updateUser(final DBUser user, final HashedPassword hashedPassword, final String column) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps = con.prepareStatement(
-            String.format("update ta_users set %s=?, email=?, admin=? where username=?", column))) {
+            String.format("update ta_users set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
       ps.setString(1, hashedPassword.value);
       ps.setString(2, user.getEmail());
       ps.setString(3, user.getName());
@@ -92,6 +88,14 @@ public class UserController implements UserDao {
       throw new IllegalStateException(String.format("Error updating name: %s email: %s pwd: %s",
           user.getName(), user.getEmail(), hashedPassword.mask()), e);
     }
+  }
+
+  /**
+   * Workaround utility method.
+   * Should be removed in the next incompatible release.
+   */
+  private String getPasswordColumn(final HashedPassword hashedPassword) {
+    return hashedPassword.isBcrypted() ? "bcrypt_password" : "password";
   }
 
   /**
@@ -116,19 +120,16 @@ public class UserController implements UserDao {
 
   @Override
   public void createUser(final DBUser user, final HashedPassword hashedPassword) {
-    createUser(user, hashedPassword, hashedPassword.isBcrypted() ? "bcrypt_password" : "password");
-  }
-
-  private void createUser(final DBUser user, final HashedPassword hashedPassword, final String passwordColumn) {
     Preconditions.checkState(hashedPassword.isValidSyntax());
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
-        final PreparedStatement ps = con.prepareStatement(
-            String.format("insert into ta_users (username, %s, email) values (?, ?, ?)", passwordColumn))) {
+        final PreparedStatement ps = con
+            .prepareStatement("insert into ta_users (username, password, bcrypt_password, email) values (?, ?, ?)")) {
       ps.setString(1, user.getName());
-      ps.setString(2, hashedPassword.value);
-      ps.setString(3, user.getEmail());
+      ps.setString(2, hashedPassword.isBcrypted() ? null : hashedPassword.value);
+      ps.setString(3, hashedPassword.isBcrypted() ? hashedPassword.value : null);
+      ps.setString(4, user.getEmail());
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
