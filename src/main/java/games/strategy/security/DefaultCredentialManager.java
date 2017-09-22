@@ -1,4 +1,6 @@
-package games.strategy.engine.pbem;
+package games.strategy.security;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -10,6 +12,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.prefs.Preferences;
 
+import javax.annotation.Nullable;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -19,29 +22,23 @@ import javax.crypto.spec.SecretKeySpec;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * Provides a facility to protect a credential before writing it to storage and to subsequently unprotect a protected
- * credential after reading it from storage.
+ * Default implementation of {@link CredentialManager}.
  *
  * <p>
- * The credential manager uses a user-specific master password to protect individual credentials. The master password is
- * stored unencrypted in the user's preference tree. Thus, the master password is in an area of the user's system that
- * has the required permissions to ensure access only by the user. The master password will automatically be created if
- * it does not exist.
- * </p>
- *
- * <p>
- * Instances of this class are not thread safe.
+ * This implementation stores the user's master password unencrypted in the user's preference tree. Thus, the master
+ * password is in an area of the user's system that has the required permissions to ensure access only by the user. The
+ * master password will automatically be created if it does not exist.
  * </p>
  */
-final class CredentialManager implements AutoCloseable {
+final class DefaultCredentialManager implements CredentialManager {
   private static final String CIPHER_ALGORITHM = "AES";
 
   @VisibleForTesting
-  static final String PREFERENCE_KEY_MASTER_PASSWORD = "CREDENTIAL_MANAGER_MASTER_PASSWORD";
+  static final String PREFERENCE_KEY_MASTER_PASSWORD = "DEFAULT_CREDENTIAL_MANAGER_MASTER_PASSWORD";
 
   private final char[] masterPassword;
 
-  private CredentialManager(final char[] masterPassword) {
+  private DefaultCredentialManager(final char[] masterPassword) {
     this.masterPassword = masterPassword;
   }
 
@@ -53,11 +50,11 @@ final class CredentialManager implements AutoCloseable {
    * user and saved.
    * </p>
    *
-   * @return A new credential manager; never {@code null}.
+   * @return A new credential manager.
    *
    * @throws CredentialManagerException If no saved master password exists and a new master password cannot be created.
    */
-  static CredentialManager newInstance() throws CredentialManagerException {
+  static DefaultCredentialManager newInstance() throws CredentialManagerException {
     try {
       return newInstance(getMasterPassword());
     } catch (final GeneralSecurityException e) {
@@ -66,8 +63,8 @@ final class CredentialManager implements AutoCloseable {
   }
 
   @VisibleForTesting
-  static CredentialManager newInstance(final char[] masterPassword) {
-    return new CredentialManager(masterPassword);
+  static DefaultCredentialManager newInstance(final char[] masterPassword) {
+    return new DefaultCredentialManager(masterPassword);
   }
 
   private static char[] getMasterPassword() throws GeneralSecurityException {
@@ -84,7 +81,7 @@ final class CredentialManager implements AutoCloseable {
     return masterPassword;
   }
 
-  private static char[] loadMasterPassword(final Preferences preferences) {
+  private static @Nullable char[] loadMasterPassword(final Preferences preferences) {
     final byte[] encodedMasterPassword = preferences.getByteArray(PREFERENCE_KEY_MASTER_PASSWORD, null);
     if (encodedMasterPassword == null) {
       return null;
@@ -143,25 +140,9 @@ final class CredentialManager implements AutoCloseable {
     scrub(masterPassword);
   }
 
-  /**
-   * Protects the unprotected credential contained in the specified string.
-   *
-   * <p>
-   * <strong>IT IS STRONGLY RECOMMENDED TO USE {@link #protect(char[])} INSTEAD!</strong> Strings are immutable and
-   * the secret data contained in the argument cannot be scrubbed. This data may then be leaked outside of this
-   * process (e.g. if memory is paged to disk).
-   * </p>
-   *
-   * @param unprotectedCredentialAsString The unprotected credential as a string; must not be {@code null}.
-   *
-   * @return The protected credential; never {@code null}.
-   *
-   * @throws CredentialManagerException If the unprotected credential cannot be protected.
-   *
-   * @see #unprotectToString(String)
-   */
-  String protect(final String unprotectedCredentialAsString) throws CredentialManagerException {
-    assert unprotectedCredentialAsString != null;
+  @Override
+  public String protect(final String unprotectedCredentialAsString) throws CredentialManagerException {
+    checkNotNull(unprotectedCredentialAsString);
 
     final char[] unprotectedCredential = unprotectedCredentialAsString.toCharArray();
     try {
@@ -171,19 +152,9 @@ final class CredentialManager implements AutoCloseable {
     }
   }
 
-  /**
-   * Protects the unprotected credential contained in the specified character array.
-   *
-   * @param unprotectedCredential The unprotected credential as a character array; must not be {@code null}.
-   *
-   * @return The protected credential; never {@code null}.
-   *
-   * @throws CredentialManagerException If the unprotected credential cannot be protected.
-   *
-   * @see #unprotect(String)
-   */
-  String protect(final char[] unprotectedCredential) throws CredentialManagerException {
-    assert unprotectedCredential != null;
+  @Override
+  public String protect(final char[] unprotectedCredential) throws CredentialManagerException {
+    checkNotNull(unprotectedCredential);
 
     try {
       final byte[] plaintext = encodeCharsToBytes(unprotectedCredential);
@@ -235,26 +206,9 @@ final class CredentialManager implements AutoCloseable {
     return encodedSalt + "." + encodedCiphertext;
   }
 
-  /**
-   * Unprotects the specified protected credential into a string.
-   *
-   * <p>
-   * <strong>IT IS STRONGLY RECOMMENDED TO USE {@link #unprotect(String)} INSTEAD!</strong> Strings are immutable and
-   * the secret data contained in the return value cannot be scrubbed. This data may then be leaked outside of this
-   * process (e.g. if memory is paged to disk).
-   * </p>
-   *
-   * @param protectedCredential The protected credential previously created by {@link #protect(String)}; must not be
-   *        {@code null}.
-   *
-   * @return The unprotected credential as a string; never {@code null}.
-   *
-   * @throws CredentialManagerException If the protected credential cannot be unprotected.
-   *
-   * @see #protect(String)
-   */
-  String unprotectToString(final String protectedCredential) throws CredentialManagerException {
-    assert protectedCredential != null;
+  @Override
+  public String unprotectToString(final String protectedCredential) throws CredentialManagerException {
+    checkNotNull(protectedCredential);
 
     final char[] unprotectedCredential = unprotect(protectedCredential);
     final String unprotectedCredentialAsString = new String(unprotectedCredential);
@@ -262,20 +216,9 @@ final class CredentialManager implements AutoCloseable {
     return unprotectedCredentialAsString;
   }
 
-  /**
-   * Unprotects the specified protected credential into a character array.
-   *
-   * @param protectedCredential The protected credential previously created by {@link #protect(char[])}; must not be
-   *        {@code null}.
-   *
-   * @return The unprotected credential as a character array; never {@code null}.
-   *
-   * @throws CredentialManagerException If the protected credential cannot be unprotected.
-   *
-   * @see #protect(char[])
-   */
-  char[] unprotect(final String protectedCredential) throws CredentialManagerException {
-    assert protectedCredential != null;
+  @Override
+  public char[] unprotect(final String protectedCredential) throws CredentialManagerException {
+    checkNotNull(protectedCredential);
 
     try {
       final CiphertextAndSalt ciphertextAndSalt = parseProtectedCredential(protectedCredential);

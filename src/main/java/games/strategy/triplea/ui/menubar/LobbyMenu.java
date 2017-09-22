@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
+import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
 import games.strategy.engine.lobby.server.IModeratorController;
@@ -386,16 +387,21 @@ public class LobbyMenu extends JMenuBar {
       JOptionPane.showMessageDialog(this, "No user info found", "Error", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    final CreateUpdateAccountPanel panel = CreateUpdateAccountPanel.newUpdatePanel(user);
+
+    final CreateUpdateAccountPanel panel = CreateUpdateAccountPanel.newUpdatePanel(user, LobbyLoginPreferences.load());
     final CreateUpdateAccountPanel.ReturnValue returnValue = panel.show(lobbyFrame);
     if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
+
     // TODO: Replace MD5Crypt.crypt with an encryption algorithm
     final String error = manager.updateUser(panel.getUserName(), panel.getEmail(), MD5Crypt.crypt(panel.getPassword()));
     if (error != null) {
       JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
+      return;
     }
+
+    panel.getLobbyLoginPreferences().save();
   }
 
   private void createFileMenu(final JMenuBar menuBar) {

@@ -9,6 +9,8 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
+import games.strategy.security.CredentialManager;
+import games.strategy.security.CredentialManagerException;
 
 /**
  * Abstract Forum poster that takes care of storing the username, password, and other common properties.

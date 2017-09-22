@@ -1,4 +1,4 @@
-package games.strategy.engine.pbem;
+package games.strategy.security;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
@@ -24,17 +24,17 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public final class CredentialManagerTest {
+public final class DefaultCredentialManagerTest {
   private static final char[] MASTER_PASSWORD = "MASTER←PASSWORD↑WITH→UNICODE↓CHARS".toCharArray();
 
   @Mock
   private Preferences preferences;
 
-  private CredentialManager credentialManager;
+  private DefaultCredentialManager credentialManager;
 
   @Before
   public void setUp() throws Exception {
-    credentialManager = CredentialManager.newInstance(MASTER_PASSWORD);
+    credentialManager = DefaultCredentialManager.newInstance(MASTER_PASSWORD);
   }
 
   @After
@@ -56,33 +56,33 @@ public final class CredentialManagerTest {
   public void getMasterPassword_ShouldCreateAndSaveMasterPasswordWhenMasterPasswordDoesNotExist() throws Exception {
     givenMasterPasswordDoesNotExist();
 
-    final char[] masterPassword = CredentialManager.getMasterPassword(preferences);
+    final char[] masterPassword = DefaultCredentialManager.getMasterPassword(preferences);
 
     thenMasterPasswordExistsAndIs(masterPassword);
   }
 
   private void givenMasterPasswordDoesNotExist() {
-    when(preferences.getByteArray(eq(CredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
+    when(preferences.getByteArray(eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
         .then(returnsSecondArg());
   }
 
   private void thenMasterPasswordExistsAndIs(final char[] masterPassword) {
-    verify(preferences).putByteArray(CredentialManager.PREFERENCE_KEY_MASTER_PASSWORD,
-        CredentialManager.encodeCharsToBytes(masterPassword));
+    verify(preferences).putByteArray(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD,
+        DefaultCredentialManager.encodeCharsToBytes(masterPassword));
   }
 
   @Test
   public void getMasterPassword_ShouldLoadMasterPasswordWhenMasterPasswordExists() throws Exception {
     givenMasterPasswordExists(MASTER_PASSWORD);
 
-    final char[] actual = CredentialManager.getMasterPassword(preferences);
+    final char[] actual = DefaultCredentialManager.getMasterPassword(preferences);
 
     assertThat(actual, is(MASTER_PASSWORD));
   }
 
   private void givenMasterPasswordExists(final char[] masterPassword) {
-    when(preferences.getByteArray(eq(CredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
-        .thenReturn(CredentialManager.encodeCharsToBytes(masterPassword));
+    when(preferences.getByteArray(eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
+        .thenReturn(DefaultCredentialManager.encodeCharsToBytes(masterPassword));
   }
 
   @Test

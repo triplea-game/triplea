@@ -29,6 +29,8 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
+import games.strategy.security.CredentialManager;
+import games.strategy.security.CredentialManagerException;
 import games.strategy.triplea.help.HelpSupport;
 
 /**
