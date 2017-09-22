@@ -362,13 +362,13 @@ final class SelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        comboBox.setSelectedItem(clientSetting.value());
+        comboBox.setSelectedItem(clientSetting.defaultValue);
         clearError();
       }
 
       @Override
       public void reset() {
-        comboBox.setSelectedItem(clientSetting.defaultValue);
+        comboBox.setSelectedItem(clientSetting.value());
         clearError();
       }
     };
