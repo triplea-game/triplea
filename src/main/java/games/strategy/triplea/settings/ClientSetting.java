@@ -6,10 +6,13 @@ import java.util.prefs.Preferences;
 
 import javax.swing.UIManager;
 
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
+
 import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.system.SystemProperties;
 
 /**
  * List of settings that can be adjusted and stored with a Client's OS. On windows this would be the registry,
@@ -58,7 +61,7 @@ public enum ClientSetting implements GameSetting {
 
   LOBBY_LAST_USED_PORT,
 
-  LOOK_AND_FEEL_PREF(UIManager.getSystemLookAndFeelClassName()),
+  LOOK_AND_FEEL_PREF(getDefaultLookAndFeelClassName()),
 
   MAP_EDGE_SCROLL_SPEED(30),
 
@@ -129,6 +132,13 @@ public enum ClientSetting implements GameSetting {
 
   ClientSetting(final boolean defaultValue) {
     this(String.valueOf(defaultValue));
+  }
+
+  private static String getDefaultLookAndFeelClassName() {
+    // stay consistent with mac look and feel if we are on a mac
+    return SystemProperties.isMac()
+        ? UIManager.getSystemLookAndFeelClassName()
+        : SubstanceGraphiteLookAndFeel.class.getName();
   }
 
   public static void showSettingsWindow() {
