@@ -2,6 +2,8 @@ package games.strategy.engine.lobby.server;
 
 import java.util.logging.Logger;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -31,15 +33,10 @@ public class UserManager implements IUserManager {
       return user.getValidationErrorMessage();
     }
     final HashedPassword password = new HashedPassword(hashedPassword);
-    if (!password.isValidSyntax()) {
-      // TODO: encrypt hashedPassword and pass it to updateUser
-      // new DbUserController().updateUser(user, decryptedPassword);
-      // return null;
-      return "Password is not hashed correctly";
-    }
 
     try {
-      new UserController().updateUser(user, password);
+      new UserController().updateUser(user,
+          password.isValidSyntax() ? password : new HashedPassword(BCrypt.hashpw(hashedPassword, BCrypt.gensalt())));
     } catch (final IllegalStateException e) {
       return e.getMessage();
     }

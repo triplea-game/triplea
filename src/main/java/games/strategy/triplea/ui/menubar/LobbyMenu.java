@@ -21,6 +21,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import com.google.common.base.Strings;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
@@ -30,6 +32,7 @@ import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.IUserManager;
 import games.strategy.engine.lobby.server.ModeratorController;
+import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
@@ -393,9 +396,10 @@ public class LobbyMenu extends JMenuBar {
     if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
-
-    // TODO: Replace MD5Crypt.crypt with an encryption algorithm
-    final String error = manager.updateUser(panel.getUserName(), panel.getEmail(), MD5Crypt.crypt(panel.getPassword()));
+    final String error = Strings.emptyToNull(Strings
+        .nullToEmpty(manager.updateUser(panel.getUserName(), panel.getEmail(), MD5Crypt.crypt(panel.getPassword())))
+        + Strings.nullToEmpty(manager.updateUser(panel.getUserName(), panel.getEmail(),
+            RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()))));
     if (error != null) {
       JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
       return;

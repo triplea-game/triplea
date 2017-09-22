@@ -77,6 +77,13 @@ public class UserController implements UserDao {
       ps.setString(2, user.getEmail());
       ps.setString(3, user.getName());
       ps.execute();
+      if (!hashedPassword.isBcrypted()) {
+        try (final PreparedStatement ps2 =
+            con.prepareStatement("update ta_users set bcrypt_password=null where username=?")) {
+          ps.setString(1, user.getName());
+          ps.execute();
+        }
+      }
       con.commit();
     } catch (final SQLException e) {
       throw new IllegalStateException(String.format("Error updating name: %s email: %s pwd: %s",
