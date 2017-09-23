@@ -28,7 +28,7 @@ public class UserController implements UserDao {
   }
 
   @Override
-  public HashedPassword getMd5Password(final String username) {
+  public HashedPassword getLegacyPassword(final String username) {
     return getPassword(username, true);
   }
 
@@ -40,7 +40,7 @@ public class UserController implements UserDao {
   private HashedPassword getPassword(final String username, final boolean legacy) {
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps = con
-            .prepareStatement("select password, coalesce(password, bcrypt_password) from ta_users where username=?")) {
+            .prepareStatement("select password, coalesce(bcrypt_password, password) from ta_users where username=?")) {
       ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
@@ -95,7 +95,7 @@ public class UserController implements UserDao {
    * Workaround utility method.
    * Should be removed in the next incompatible release.
    */
-  private String getPasswordColumn(final HashedPassword hashedPassword) {
+  private static String getPasswordColumn(final HashedPassword hashedPassword) {
     return hashedPassword.isBcrypted() ? "bcrypt_password" : "password";
   }
 

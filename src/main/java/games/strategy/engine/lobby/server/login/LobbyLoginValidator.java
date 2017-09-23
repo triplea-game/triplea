@@ -50,7 +50,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     // we need to give the user the salt key for the username
     final Map<String, String> challenge = new HashMap<>();
-    final HashedPassword password = new UserController().getMd5Password(userName);
+    final HashedPassword password = new UserController().getLegacyPassword(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
       challenge.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
