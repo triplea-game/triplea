@@ -12,7 +12,7 @@ public interface UserDao {
   /**
    * @return null if the user does not exist or the user has no legacy password stored.
    */
-  HashedPassword getMd5Password(String username);
+  HashedPassword getLegacyPassword(String username);
 
   boolean doesUserExist(String username);
 
