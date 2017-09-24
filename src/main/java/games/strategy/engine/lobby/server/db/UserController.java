@@ -69,15 +69,16 @@ public class UserController implements UserDao {
   @Override
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
+    final HashedPassword realHash = bCryptIfNotAlreadyHashed(hashedPassword);
 
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps = con.prepareStatement(
-            String.format("update ta_users set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
-      ps.setString(1, hashedPassword.value);
+            String.format("update ta_users set %s=?, email=? where username=?", getPasswordColumn(realHash)))) {
+      ps.setString(1, realHash.value);
       ps.setString(2, user.getEmail());
       ps.setString(3, user.getName());
       ps.execute();
-      if (!hashedPassword.isBcrypted()) {
+      if (!realHash.isBcrypted()) {
         try (final PreparedStatement ps2 =
             con.prepareStatement("update ta_users set bcrypt_password=null where username=?")) {
           ps2.setString(1, user.getName());
@@ -87,8 +88,15 @@ public class UserController implements UserDao {
       con.commit();
     } catch (final SQLException e) {
       throw new IllegalStateException(String.format("Error updating name: %s email: %s pwd: %s",
-          user.getName(), user.getEmail(), hashedPassword.mask()), e);
+          user.getName(), user.getEmail(), realHash.mask()), e);
     }
+  }
+  
+  private static HashedPassword bCryptIfNotAlreadyHashed(final HashedPassword hash) {
+    if(!hash.isValidSyntax()) {
+      return new HashedPassword(BCrypt.hashpw(hash.value, BCrypt.gensalt()));
+    }
+    return hash;
   }
 
   /**
