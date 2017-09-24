@@ -85,10 +85,9 @@ public class LobbyLogin {
                     // continue as before
                     internalError.set("No account with that name exists");
                   }
-                  salt = "none";
+                  salt = MD5Crypt.newSalt();
                 }
-                final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
-                props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
+                props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(panel.getPassword(), salt));
                 if (isUpdatedLobby) {
                   props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, panel.getPassword()));
                 }
