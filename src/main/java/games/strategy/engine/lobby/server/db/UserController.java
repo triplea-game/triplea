@@ -80,8 +80,8 @@ public class UserController implements UserDao {
       if (!hashedPassword.isBcrypted()) {
         try (final PreparedStatement ps2 =
             con.prepareStatement("update ta_users set bcrypt_password=null where username=?")) {
-          ps.setString(1, user.getName());
-          ps.execute();
+          ps2.setString(1, user.getName());
+          ps2.execute();
         }
       }
       con.commit();
