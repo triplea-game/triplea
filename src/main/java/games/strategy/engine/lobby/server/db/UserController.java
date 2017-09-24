@@ -69,7 +69,7 @@ public class UserController implements UserDao {
   @Override
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-    final HashedPassword realHash = bCryptIfNotAlreadyHashed(hashedPassword);
+    final HashedPassword realHash = bcryptIfNotAlreadyHashed(hashedPassword);
 
     try (final Connection con = connectionSupplier.get();
         final PreparedStatement ps = con.prepareStatement(
@@ -92,7 +92,7 @@ public class UserController implements UserDao {
     }
   }
 
-  private static HashedPassword bCryptIfNotAlreadyHashed(final HashedPassword hash) {
+  private static HashedPassword bcryptIfNotAlreadyHashed(final HashedPassword hash) {
     if (!hash.isValidSyntax()) {
       return new HashedPassword(BCrypt.hashpw(hash.value, BCrypt.gensalt()));
     }
