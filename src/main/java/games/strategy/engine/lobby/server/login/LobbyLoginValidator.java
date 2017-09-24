@@ -180,7 +180,7 @@ public class LobbyLoginValidator implements ILoginValidator {
         final String legacyHashedPassword = propertiesReadFromClient.get(HASHED_PASSWORD_KEY);
         if (hashedPassword.isBcrypted()) {
           if (userDao.login(clientName, new HashedPassword(pass))) {
-            if (legacyHashedPassword != null) {
+            if (legacyHashedPassword != null && userDao.getLegacyPassword(clientName) == null) {
               userDao.updateUser(userDao.getUserByName(clientName), new HashedPassword(legacyHashedPassword));
             }
             return null;
