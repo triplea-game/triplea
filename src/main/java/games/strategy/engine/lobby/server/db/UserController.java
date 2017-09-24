@@ -91,9 +91,9 @@ public class UserController implements UserDao {
           user.getName(), user.getEmail(), realHash.mask()), e);
     }
   }
-  
+
   private static HashedPassword bCryptIfNotAlreadyHashed(final HashedPassword hash) {
-    if(!hash.isValidSyntax()) {
+    if (!hash.isValidSyntax()) {
       return new HashedPassword(BCrypt.hashpw(hash.value, BCrypt.gensalt()));
     }
     return hash;
