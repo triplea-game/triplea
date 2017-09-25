@@ -74,7 +74,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   protected void doAfterEnd() {
-    final PlayerID player = m_bridge.getPlayerID();
+    final PlayerID player = m_bridge.getPlayerId();
     // clear all units not placed
     final Collection<Unit> units = player.getUnits().getUnits();
     final GameData data = getData();

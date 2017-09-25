@@ -116,7 +116,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   private boolean checkEnoughMoney(final UserActionAttachment uaa) {
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = uaa.getCostPU();
-    final int has = m_bridge.getPlayerID().getResources().getQuantity(pus);
+    final int has = m_bridge.getPlayerId().getResources().getQuantity(pus);
     return has >= cost;
   }
 
@@ -132,14 +132,14 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     if (cost > 0) {
       // don't notify user of spending money anymore
       // notifyMoney(uaa, true);
-      final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on User Action: "
+      final String transcriptText = m_bridge.getPlayerId().getName() + " spend " + cost + " PU on User Action: "
           + MyFormatter.attachmentNameToText(uaa.getName());
       m_bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), pus, -cost);
+      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), pus, -cost);
       m_bridge.addChange(charge);
     } else {
       final String transcriptText =
-          m_bridge.getPlayerID().getName() + " takes action: " + MyFormatter.attachmentNameToText(uaa.getName());
+          m_bridge.getPlayerId().getName() + " takes action: " + MyFormatter.attachmentNameToText(uaa.getName());
       // we must start an event anyway
       m_bridge.getHistoryWriter().startEvent(transcriptText);
     }
@@ -250,7 +250,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     // play a sound
     getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_FAILURE, m_player);
     final String transcriptText =
-        m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(uaa.getName());
+        m_bridge.getPlayerId().getName() + " fails on action: " + MyFormatter.attachmentNameToText(uaa.getName());
     m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
     sendNotification(UserActionText.getInstance().getNotificationFailure(uaa.getText()));
     notifyOtherPlayers(UserActionText.getInstance().getNotificationFailureOthers(uaa.getText()));

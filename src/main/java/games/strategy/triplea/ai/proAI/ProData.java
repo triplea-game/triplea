@@ -41,7 +41,7 @@ public class ProData {
   public static double minCostPerHitPoint = Double.MAX_VALUE;
 
   public static void initialize(final ProAI proAi) {
-    hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerID(), false);
+    hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerId(), false);
   }
 
   public static void initializeSimulation(final ProAI proAi, final GameData data, final PlayerID player) {

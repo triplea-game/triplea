@@ -12,5 +12,5 @@ public interface IRemotePlayer extends IRemote {
   /**
    * @return The id of this player. This id is initialized by the initialize method in IGamePlayer.
    */
-  PlayerID getPlayerID();
+  PlayerID getPlayerId();
 }

@@ -675,7 +675,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     @Override
-    public PlayerID getPlayerID() {
+    public PlayerID getPlayerId() {
       return PlayerID.NULL_PLAYERID;
     }
 
@@ -755,7 +755,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     @Override
-    public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
+    public boolean confirmMoveInFaceOfAa(final Collection<Territory> aaFiringTerritories) {
       throw new UnsupportedOperationException();
     }
 

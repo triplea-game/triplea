@@ -880,7 +880,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             + MyFormatter.attachmentNameToText(this.getName()) + ")";
         delegateBridge.getHistoryWriter().startEvent(notificationMessage);
         changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, true);
-        ((ITripleAPlayer) delegateBridge.getRemotePlayer(delegateBridge.getPlayerID()))
+        ((ITripleAPlayer) delegateBridge.getRemotePlayer(delegateBridge.getPlayerId()))
             .reportMessage(notificationMessage, notificationMessage);
       }
     }

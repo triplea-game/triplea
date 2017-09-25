@@ -23,7 +23,7 @@ public class LocalPlayers {
       return false;
     }
     for (final IGamePlayer gamePlayer : m_localPlayers) {
-      if (gamePlayer.getPlayerID().equals(id) && AbstractHumanPlayer.class.isAssignableFrom(gamePlayer.getClass())) {
+      if (gamePlayer.getPlayerId().equals(id) && AbstractHumanPlayer.class.isAssignableFrom(gamePlayer.getClass())) {
         return true;
       }
     }
