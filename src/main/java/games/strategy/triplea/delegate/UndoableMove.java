@@ -95,7 +95,7 @@ public class UndoableMove extends AbstractUndoableMove {
   protected void undoSpecific(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     final BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-    battleTracker.undoBattle(m_route, m_units, bridge.getPlayerID(), bridge);
+    battleTracker.undoBattle(m_route, m_units, bridge.getPlayerId(), bridge);
     // clean up dependencies
     final Iterator<UndoableMove> iter1 = m_iDependOn.iterator();
     while (iter1.hasNext()) {
@@ -127,7 +127,7 @@ public class UndoableMove extends AbstractUndoableMove {
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal = end.getUnits()
-                .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerID(), data),
+                .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerId(), data),
                     Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().invert()));
             final Collection<Unit> enemyTargets = Matches.getMatches(enemyTargetsTotal,
                 Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(
@@ -136,7 +136,7 @@ public class UndoableMove extends AbstractUndoableMove {
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                 && !Properties.getRaidsMayBePreceededByAirBattles(data)) {
               while (target == null) {
-                target = ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerID())).whatShouldBomberBomb(end,
+                target = ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerId())).whatShouldBomberBomb(end,
                     enemyTargets, Collections.singletonList(unit));
               }
             } else if (!enemyTargets.isEmpty()) {

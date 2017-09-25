@@ -44,8 +44,8 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public PlayerID getPlayerID() {
-    return m_bridge.getPlayerID();
+  public PlayerID getPlayerId() {
+    return m_bridge.getPlayerId();
   }
 
   /**

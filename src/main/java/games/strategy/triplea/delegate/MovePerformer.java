@@ -53,7 +53,7 @@ public class MovePerformer implements Serializable {
   void initialize(final AbstractMoveDelegate delegate) {
     m_moveDelegate = delegate;
     m_bridge = delegate.getBridge();
-    m_player = m_bridge.getPlayerID();
+    m_player = m_bridge.getPlayerId();
     if (m_aaInMoveUtil != null) {
       m_aaInMoveUtil.initialize(m_bridge);
     }

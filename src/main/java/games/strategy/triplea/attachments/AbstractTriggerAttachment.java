@@ -219,7 +219,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
             + diceSides + " Result: " + rollResult + "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
     bridge.getHistoryWriter().startEvent(notificationMessage);
     changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, testChance, true);
-    ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerID())).reportMessage(notificationMessage,
+    ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerId())).reportMessage(notificationMessage,
         notificationMessage);
     return testChance;
   }

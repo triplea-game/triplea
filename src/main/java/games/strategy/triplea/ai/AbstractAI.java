@@ -177,7 +177,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
+  public boolean confirmMoveInFaceOfAa(final Collection<Territory> aaFiringTerritories) {
     return true;
   }
 
@@ -209,7 +209,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
     // we are dead, just accept
-    if (!getPlayerID().amNotDeadYet(getGameData())) {
+    if (!getPlayerId().amNotDeadYet(getGameData())) {
       return true;
     }
     // not related to politics? just accept i guess
@@ -217,23 +217,23 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       return true;
     }
     // politics from ally? accept
-    if (Matches.isAllied(getPlayerID(), getGameData()).match(playerSendingProposal)) {
+    if (Matches.isAllied(getPlayerId(), getGameData()).match(playerSendingProposal)) {
       return true;
     }
     // would we normally be allies?
     final List<String> allies = Arrays.asList(Constants.PLAYER_NAME_AMERICANS,
         Constants.PLAYER_NAME_AUSTRALIANS, Constants.PLAYER_NAME_BRITISH, Constants.PLAYER_NAME_CANADIANS,
         Constants.PLAYER_NAME_CHINESE, Constants.PLAYER_NAME_FRENCH, Constants.PLAYER_NAME_RUSSIANS);
-    if (allies.contains(getPlayerID().getName()) && allies.contains(playerSendingProposal.getName())) {
+    if (allies.contains(getPlayerId().getName()) && allies.contains(playerSendingProposal.getName())) {
       return true;
     }
     final List<String> axis = Arrays.asList(Constants.PLAYER_NAME_GERMANS, Constants.PLAYER_NAME_ITALIANS,
         Constants.PLAYER_NAME_JAPANESE, Constants.PLAYER_NAME_PUPPET_STATES);
-    if (axis.contains(getPlayerID().getName()) && axis.contains(playerSendingProposal.getName())) {
+    if (axis.contains(getPlayerId().getName()) && axis.contains(playerSendingProposal.getName())) {
       return true;
     }
     final Collection<String> myAlliances =
-        new HashSet<>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerID()));
+        new HashSet<>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerId()));
     myAlliances.retainAll(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
     if (!myAlliances.isEmpty()) {
       return true;
@@ -244,7 +244,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   @Override
   public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack) {
-    final PlayerID id = getPlayerID();
+    final PlayerID id = getPlayerId();
     // we are going to just assign random attacks to each unit randomly, til we run out of tokens to attack with.
     final PlayerAttachment pa = PlayerAttachment.get(id);
     if (pa == null) {
@@ -302,7 +302,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       final List<Unit> unitChoices, final int unitsPerPick) {
     pause();
     final GameData data = getGameData();
-    final PlayerID me = getPlayerID();
+    final PlayerID me = getPlayerId();
     final Territory picked;
     if (territoryChoices == null || territoryChoices.isEmpty()) {
       picked = null;
@@ -445,7 +445,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   @Override
   public final void start(final String name) {
     super.start(name);
-    final PlayerID id = getPlayerID();
+    final PlayerID id = getPlayerId();
     if (name.endsWith("Bid")) {
       final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
       final String propertyName = id.getName() + " bid";
@@ -587,7 +587,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   protected void politicalActions() {
     final IPoliticsDelegate remotePoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
     final GameData data = getGameData();
-    final PlayerID id = getPlayerID();
+    final PlayerID id = getPlayerId();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     // We want to test the conditions each time to make sure they are still valid

@@ -35,7 +35,7 @@ public abstract class AbstractDelegate implements IDelegate {
   @Override
   public void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge) {
     m_bridge = delegateBridge;
-    m_player = delegateBridge.getPlayerID();
+    m_player = delegateBridge.getPlayerId();
   }
 
   /**

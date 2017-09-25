@@ -2677,7 +2677,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Match<Unit> unitTypes = Matches.unitCanBeInBattle(attack, !m_battleSite.isWater(), 1, false, !attack, true);
     final List<Unit> sortedUnits = new ArrayList<>(Matches.getMatches(units, unitTypes));
     Collections.sort(sortedUnits, new UnitBattleComparator(!attack,
-        TuvUtils.getCostsForTuv(bridge.getPlayerID(), m_data),
+        TuvUtils.getCostsForTuv(bridge.getPlayerId(), m_data),
         TerritoryEffectHelper.getEffects(m_battleSite), m_data, false, false));
     Collections.reverse(sortedUnits);
     unitsToRemove.addAll(sortedUnits);

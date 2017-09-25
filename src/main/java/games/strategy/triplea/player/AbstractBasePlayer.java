@@ -64,7 +64,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   }
 
   @Override
-  public final PlayerID getPlayerID() {
+  public final PlayerID getPlayerId() {
     return playerID;
   }
 
@@ -90,7 +90,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
         i++;
         if (i > 30 && !shownErrorMessage) {
           System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStep
-              + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerID().getName()
+              + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerId().getName()
               + ", Game: " + getGameData().getGameName()
               + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
           shownErrorMessage = true;
@@ -100,7 +100,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
           System.err.println("Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
               + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very "
               + "soon. Player Bridge GameOver=" + getPlayerBridge().isGameOver()
-              + ", PlayerID: " + getPlayerID().getName() + ", Game: " + getGameData().getGameName());
+              + ", PlayerID: " + getPlayerId().getName() + ", Game: " + getGameData().getGameName());
           // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)
           break;
         }

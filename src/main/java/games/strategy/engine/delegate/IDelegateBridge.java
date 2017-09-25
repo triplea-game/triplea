@@ -32,7 +32,7 @@ public interface IDelegateBridge {
    */
   IRemotePlayer getRemotePlayer(PlayerID id);
 
-  PlayerID getPlayerID();
+  PlayerID getPlayerId();
 
   /**
    * Returns the current step name.

@@ -313,7 +313,7 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    when(dummyPlayer.confirmMoveInFaceOfAA(any())).thenReturn(true);
+    when(dummyPlayer.confirmMoveInFaceOfAa(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", gameData);
@@ -335,7 +335,7 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    when(dummyPlayer.confirmMoveInFaceOfAA(any())).thenReturn(true);
+    when(dummyPlayer.confirmMoveInFaceOfAa(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     bridge.setRandomSource(new ScriptedRandomSource(0, 4));
     final Territory uk = territory("United Kingdom", gameData);
@@ -363,7 +363,7 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    when(dummyPlayer.confirmMoveInFaceOfAA(any())).thenReturn(true);
+    when(dummyPlayer.confirmMoveInFaceOfAa(any())).thenReturn(true);
     bridge.setRemote(dummyPlayer);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", gameData);

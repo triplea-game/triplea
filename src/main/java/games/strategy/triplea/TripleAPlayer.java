@@ -110,7 +110,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     // (ISomeDelegate) getPlayerBridge().getRemote()
     // We should never touch the game data directly. All changes to game data are done through the remote,
     // which then changes the game using the DelegateBridge -> change factory
-    ui.requiredTurnSeries(getPlayerID());
+    ui.requiredTurnSeries(getPlayerId());
     boolean badStep = false;
     enableEditModeMenu();
     if (name.endsWith("Tech")) {
@@ -123,7 +123,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
       move(nonCombat, name);
       if (!nonCombat) {
-        ui.waitForMoveForumPoster(getPlayerID(), getPlayerBridge());
+        ui.waitForMoveForumPoster(getPlayerId(), getPlayerBridge());
         // TODO only do forum post if there is a combat
       }
     } else if (name.endsWith("Battle")) {
@@ -203,7 +203,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
 
     final PoliticalActionAttachment actionChoice =
-        ui.getPoliticalActionChoice(getPlayerID(), firstRun, politicsDelegate);
+        ui.getPoliticalActionChoice(getPlayerId(), firstRun, politicsDelegate);
     if (actionChoice != null) {
       politicsDelegate.attemptAction(actionChoice);
       politics(false);
@@ -225,7 +225,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
-    final UserActionAttachment actionChoice = ui.getUserActionChoice(getPlayerID(), firstRun, userActionDelegate);
+    final UserActionAttachment actionChoice = ui.getUserActionChoice(getPlayerId(), firstRun, userActionDelegate);
     if (actionChoice != null) {
       userActionDelegate.attemptAction(actionChoice);
       userActions(false);
@@ -236,10 +236,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
     final GameData data = getGameData();
-    if (!getPlayerID().amNotDeadYet(data) || getPlayerBridge().isGameOver()) {
+    if (!getPlayerId().amNotDeadYet(data) || getPlayerBridge().isGameOver()) {
       return true;
     }
-    return ui.acceptAction(playerSendingProposal, "To " + getPlayerID().getName() + ": " + acceptanceQuestion,
+    return ui.acceptAction(playerSendingProposal, "To " + getPlayerId().getName() + ": " + acceptanceQuestion,
         politics);
   }
 
@@ -260,7 +260,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
 
 
-    final PlayerID id = getPlayerID();
+    final PlayerID id = getPlayerId();
     if (!m_soundPlayedAlreadyTechnology) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, id);
       m_soundPlayedAlreadyTechnology = true;
@@ -294,7 +294,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       throw new IllegalStateException(errorContext, e);
     }
 
-    final PlayerID id = getPlayerID();
+    final PlayerID id = getPlayerId();
 
     if (nonCombat && !m_soundPlayedAlreadyNonCombatMove) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id);
@@ -349,7 +349,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (airCantLand.isEmpty()) {
       return true;
     } else {
-      return ui.getOkToLetAirDie(getPlayerID(), airCantLand, movePhase);
+      return ui.getOkToLetAirDie(getPlayerId(), airCantLand, movePhase);
     }
   }
 
@@ -375,7 +375,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       return;
     }
 
-    final PlayerID id = getPlayerID();
+    final PlayerID id = getPlayerId();
     // play a sound for this phase
     if (!bid && !m_soundPlayedAlreadyPurchase) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, id);
@@ -456,7 +456,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       throw new IllegalStateException(errorContext, e);
     }
 
-    final PlayerID id = getPlayerID();
+    final PlayerID id = getPlayerId();
     while (true) {
       if (getPlayerBridge().isGameOver()) {
         return;
@@ -494,7 +494,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final PlayerID id = getPlayerID();
+    final PlayerID id = getPlayerId();
     final IAbstractPlaceDelegate placeDel;
     try {
       placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
@@ -546,14 +546,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
-    if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerID(), data)) {
+    if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerId(), data)) {
       // do not play if we are reloading a savegame from pbem (gets annoying)
       if (!endTurnDelegate.getHasPostedTurnSummary()) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerID());
+        ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerId());
       }
       m_soundPlayedAlreadyEndTurn = true;
     }
-    ui.waitForEndTurn(getPlayerID(), getPlayerBridge());
+    ui.waitForEndTurn(getPlayerId(), getPlayerBridge());
   }
 
   @Override
@@ -628,7 +628,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   @Override
-  public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
+  public boolean confirmMoveInFaceOfAa(final Collection<Territory> aaFiringTerritories) {
     final String question = "Your units will be fired on in: "
         + MyFormatter.defaultNamedToTextList(aaFiringTerritories, " and ", false) + ".  Do you still want to move?";
     return ui.getOk(question);
@@ -689,7 +689,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   @Override
   public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack) {
-    final PlayerID id = getPlayerID();
+    final PlayerID id = getPlayerId();
     final PlayerAttachment pa = PlayerAttachment.get(id);
     if (pa == null) {
       return null;
@@ -742,6 +742,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     if (territoryChoices == null || territoryChoices.isEmpty() || unitsPerPick < 1) {
       return Tuple.of(null, new HashSet<Unit>());
     }
-    return ui.pickTerritoryAndUnits(this.getPlayerID(), territoryChoices, unitChoices, unitsPerPick);
+    return ui.pickTerritoryAndUnits(this.getPlayerId(), territoryChoices, unitChoices, unitsPerPick);
   }
 }

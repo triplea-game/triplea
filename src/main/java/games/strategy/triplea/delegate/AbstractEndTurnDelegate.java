@@ -61,8 +61,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     // figure out our current PUs before we do anything else, including super methods
     final GameData data = m_bridge.getData();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
-    final int leftOverPUs = m_bridge.getPlayerID().getResources().getQuantity(pus);
-    final IntegerMap<Resource> leftOverResources = m_bridge.getPlayerID().getResources().getResourcesCopy();
+    final int leftOverPUs = m_bridge.getPlayerId().getResources().getQuantity(pus);
+    final IntegerMap<Resource> leftOverResources = m_bridge.getPlayerId().getResources().getResourcesCopy();
     super.start();
     if (!m_needToInitialize) {
       return;
@@ -160,7 +160,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
     }
     if (GameStepPropertiesHelper.isRepairUnits(data)) {
-      MoveDelegate.repairMultipleHitPointUnits(m_bridge, m_bridge.getPlayerID());
+      MoveDelegate.repairMultipleHitPointUnits(m_bridge, m_bridge.getPlayerId());
     }
     if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null
         && !pa.getGiveUnitControl().isEmpty()) {
@@ -284,7 +284,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   private static void changeUnitOwnership(final IDelegateBridge bridge) {
-    final PlayerID player = bridge.getPlayerID();
+    final PlayerID player = bridge.getPlayerId();
     final PlayerAttachment pa = PlayerAttachment.get(player);
     final Collection<PlayerID> possibleNewOwners = pa.getGiveUnitControl();
     final Collection<Territory> territories = bridge.getData().getMap().getTerritories();

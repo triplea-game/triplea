@@ -197,7 +197,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         final String transcriptText = m_player.getName() + " No more available tech advances.";
         m_bridge.getHistoryWriter().startEvent(transcriptText);
         final Change removeTokens =
-            ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -currTokens);
+            ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), techTokens, -currTokens);
         m_bridge.addChange(removeTokens);
       }
       return new TechResults("No more available tech advances.");
@@ -245,7 +245,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
           + (techHits > 0 ? "successful" : "unsuccessful") + " research.";
       m_bridge.getHistoryWriter().startEvent(transcriptText);
       final Change removeTokens =
-          ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -currTokens);
+          ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), techTokens, -currTokens);
       m_bridge.addChange(removeTokens);
     }
     final Collection<TechAdvance> advances;
@@ -291,7 +291,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
-      final int has = m_bridge.getPlayerID().getResources().getQuantity(pus);
+      final int has = m_bridge.getPlayerId().getResources().getQuantity(pus);
       return has >= cost;
     } else {
       int runningTotal = 0;
@@ -311,9 +311,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
-      final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " on tech rolls";
+      final String transcriptText = m_bridge.getPlayerId().getName() + " spend " + cost + " on tech rolls";
       m_bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), pus, -cost);
+      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), pus, -cost);
       m_bridge.addChange(charge);
     } else {
       for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet()) {
@@ -331,7 +331,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     if (isWW2V3TechModel()) {
       final Resource tokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
-      final Change newTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), tokens, rolls);
+      final Change newTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), tokens, rolls);
       m_bridge.addChange(newTokens);
     }
   }
@@ -399,7 +399,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private List<TechAdvance> getAvailableAdvances() {
-    return getAvailableTechs(m_bridge.getPlayerID(), getData());
+    return getAvailableTechs(m_bridge.getPlayerId(), getData());
   }
 
   public static List<TechAdvance> getAvailableTechs(final PlayerID player, final GameData data) {
@@ -410,7 +410,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 
   private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory) {
     final Collection<TechAdvance> playersAdvances =
-        TechTracker.getCurrentTechAdvances(m_bridge.getPlayerID(), getData());
+        TechTracker.getCurrentTechAdvances(m_bridge.getPlayerId(), getData());
     final List<TechAdvance> available = Util.difference(techCategory.getTechs(), playersAdvances);
     return available;
   }
