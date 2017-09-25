@@ -169,7 +169,7 @@ public class WeakAI extends AbstractAI {
       return;
     }
     List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.unitIsInfrastructure().invert());
-    unitsToLoad = Matches.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getPlayerID()));
+    unitsToLoad = Matches.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getPlayerId()));
     for (final Territory neighbor : data.getMap().getNeighbors(capitol)) {
       if (!neighbor.isWater()) {
         continue;

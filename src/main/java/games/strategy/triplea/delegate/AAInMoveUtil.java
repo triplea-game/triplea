@@ -40,7 +40,7 @@ class AAInMoveUtil implements Serializable {
 
   public AAInMoveUtil initialize(final IDelegateBridge bridge) {
     m_bridge = bridge;
-    m_player = bridge.getPlayerID();
+    m_player = bridge.getPlayerId();
     return this;
   }
 

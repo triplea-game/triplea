@@ -260,8 +260,8 @@ public class BattlePanel extends ActionPanel {
         PBEMDiceRoller.setFocusWindow(battleFrame);
         boolean foundHumanInBattle = false;
         for (final IGamePlayer gamePlayer : getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
-          if ((gamePlayer.getPlayerID().equals(attacker) && gamePlayer instanceof TripleAPlayer)
-              || (gamePlayer.getPlayerID().equals(defender) && gamePlayer instanceof TripleAPlayer)) {
+          if ((gamePlayer.getPlayerId().equals(attacker) && gamePlayer instanceof TripleAPlayer)
+              || (gamePlayer.getPlayerId().equals(defender) && gamePlayer instanceof TripleAPlayer)) {
             foundHumanInBattle = true;
             break;
           }

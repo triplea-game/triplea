@@ -77,7 +77,7 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public PlayerID getPlayerID() {
+  public PlayerID getPlayerId() {
     return m_player;
   }
 

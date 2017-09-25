@@ -267,13 +267,13 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (cost > 0) {
       // don't notify user of spending money anymore
       // notifyMoney(paa, true);
-      final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on Political Action: "
+      final String transcriptText = m_bridge.getPlayerId().getName() + " spend " + cost + " PU on Political Action: "
           + MyFormatter.attachmentNameToText(paa.getName());
       m_bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), pus, -cost);
+      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), pus, -cost);
       m_bridge.addChange(charge);
     } else {
-      final String transcriptText = m_bridge.getPlayerID().getName() + " takes Political Action: "
+      final String transcriptText = m_bridge.getPlayerId().getName() + " takes Political Action: "
           + MyFormatter.attachmentNameToText(paa.getName());
       // we must start an event anyway
       m_bridge.getHistoryWriter().startEvent(transcriptText);
@@ -288,7 +288,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private boolean checkEnoughMoney(final PoliticalActionAttachment paa) {
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = paa.getCostPU();
-    final int has = m_bridge.getPlayerID().getResources().getQuantity(pus);
+    final int has = m_bridge.getPlayerId().getResources().getQuantity(pus);
     return has >= cost;
   }
 
@@ -301,7 +301,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private void notifyFailure(final PoliticalActionAttachment paa) {
     getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, m_player);
     final String transcriptText =
-        m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
+        m_bridge.getPlayerId().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
     m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
     sendNotification(PoliticsText.getInstance().getNotificationFailure(paa.getText()));
     notifyOtherPlayers(PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
@@ -366,7 +366,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       }
       change.add(ChangeFactory.relationshipChange(player1, player2, oldRelation, newRelation));
       m_bridge.getHistoryWriter()
-          .addChildToEvent(m_bridge.getPlayerID().getName() + " succeeds on action: "
+          .addChildToEvent(m_bridge.getPlayerId().getName() + " succeeds on action: "
               + MyFormatter.attachmentNameToText(paa.getName()) + ": Changing Relationship for " + player1.getName()
               + " and " + player2.getName() + " from " + oldRelation.getName() + " to " + newRelation.getName());
       MoveDelegate.getBattleTracker(getData()).addRelationshipChangesThisTurn(player1, player2, oldRelation,

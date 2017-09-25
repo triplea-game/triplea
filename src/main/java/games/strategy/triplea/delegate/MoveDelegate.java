@@ -188,9 +188,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // WW2V2/WW2V3, fires at end of combat move
     // WW2V1, fires at end of non combat move
     if (GameStepPropertiesHelper.isFireRockets(data)) {
-      if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerID())) {
+      if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerId())) {
         final RocketsFireHelper helper = new RocketsFireHelper();
-        helper.fireRockets(m_bridge, m_bridge.getPlayerID());
+        helper.fireRockets(m_bridge, m_bridge.getPlayerId());
         m_needToDoRockets = false;
       }
     }
@@ -557,7 +557,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     aaInMoveUtil.initialize(m_bridge);
     final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {
-      if (!getRemotePlayer().confirmMoveInFaceOfAA(aaFiringTerritores)) {
+      if (!getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
         return null;
       }
     }

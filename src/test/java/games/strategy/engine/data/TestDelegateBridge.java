@@ -90,7 +90,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   }
 
   @Override
-  public PlayerID getPlayerID() {
+  public PlayerID getPlayerId() {
     return playerId;
   }
 

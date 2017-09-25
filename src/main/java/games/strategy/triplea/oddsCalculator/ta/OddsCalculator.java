@@ -441,7 +441,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     }
 
     @Override
-    public PlayerID getPlayerID() {
+    public PlayerID getPlayerId() {
       return attacker;
     }
 
@@ -568,7 +568,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {}
 
     @Override
-    public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories) {
+    public boolean confirmMoveInFaceOfAa(final Collection<Territory> aaFiringTerritories) {
       throw new UnsupportedOperationException();
     }
 

@@ -246,7 +246,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * Add bombardment units to battles. Made public for test purposes only.
    */
   void addBombardmentSources() {
-    final PlayerID attacker = m_bridge.getPlayerID();
+    final PlayerID attacker = m_bridge.getPlayerId();
     final ITripleAPlayer remotePlayer = getRemotePlayer();
     final Match<Unit> ownedAndCanBombard =
         Match.allOf(Matches.unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
@@ -408,7 +408,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    */
   private static void setupUnitsInSameTerritoryBattles(final BattleTracker battleTracker,
       final IDelegateBridge bridge) {
-    final PlayerID player = bridge.getPlayerID();
+    final PlayerID player = bridge.getPlayerId();
     final GameData data = bridge.getData();
     final boolean ignoreTransports = isIgnoreTransportInMovement(data);
     final boolean ignoreSubs = isIgnoreSubInMovement(data);
@@ -561,7 +561,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (!Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(data)) {
       return;
     }
-    final PlayerID player = bridge.getPlayerID();
+    final PlayerID player = bridge.getPlayerId();
     final Iterator<Territory> battleTerritories = Matches
         .getMatches(
             data.getMap().getTerritories(),

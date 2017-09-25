@@ -279,7 +279,7 @@ public class ProAI extends AbstractAI {
 
     // Get battle data
     final GameData data = getGameData();
-    final PlayerID player = getPlayerID();
+    final PlayerID player = getPlayerId();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
@@ -344,7 +344,7 @@ public class ProAI extends AbstractAI {
 
       // Get battle data
       final GameData data = getGameData();
-      final PlayerID player = getPlayerID();
+      final PlayerID player = getPlayerId();
       final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
       final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
@@ -401,7 +401,7 @@ public class ProAI extends AbstractAI {
 
     // Get battle data
     final GameData data = getGameData();
-    final PlayerID player = getPlayerID();
+    final PlayerID player = getPlayerId();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
 
@@ -423,7 +423,7 @@ public class ProAI extends AbstractAI {
 
     // Get battle data
     final GameData data = getGameData();
-    final PlayerID player = getPlayerID();
+    final PlayerID player = getPlayerId();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(unitTerritory, false, BattleType.NORMAL);
 

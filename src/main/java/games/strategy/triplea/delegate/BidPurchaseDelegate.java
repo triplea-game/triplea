@@ -79,7 +79,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (m_hasBid) {
       return;
     }
-    m_bid = getBidAmount(m_bridge.getData(), m_bridge.getPlayerID());
+    m_bid = getBidAmount(m_bridge.getData(), m_bridge.getPlayerId());
     m_spent = 0;
   }
 
@@ -98,8 +98,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
       return;
     }
     m_bridge.getHistoryWriter()
-        .startEvent(m_bridge.getPlayerID().getName() + " retains " + unspent + " PUS not spent in bid phase");
-    final Change unspentChange = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(),
+        .startEvent(m_bridge.getPlayerId().getName() + " retains " + unspent + " PUS not spent in bid phase");
+    final Change unspentChange = ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(),
         super.getData().getResourceList().getResource(Constants.PUS), unspent);
     m_bridge.addChange(unspentChange);
     m_hasBid = false;

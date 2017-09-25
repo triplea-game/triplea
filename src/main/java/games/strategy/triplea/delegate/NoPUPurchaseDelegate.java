@@ -32,7 +32,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate {
   public void start() {
     super.start();
     isPacific = isPacificTheater();
-    final PlayerID player = m_bridge.getPlayerID();
+    final PlayerID player = m_bridge.getPlayerId();
     final Collection<Territory> territories = getData().getMap().getTerritoriesOwnedBy(player);
     final Collection<Unit> units = getProductionUnits(territories, player);
     final Change productionChange = ChangeFactory.addUnits(player, units);

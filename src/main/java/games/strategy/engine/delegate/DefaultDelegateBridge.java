@@ -46,7 +46,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public PlayerID getPlayerID() {
+  public PlayerID getPlayerId() {
     return m_data.getSequence().getStep().getPlayerId();
   }
 
@@ -105,7 +105,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
 
   @Override
   public IRemotePlayer getRemotePlayer() {
-    return getRemotePlayer(getPlayerID());
+    return getRemotePlayer(getPlayerId());
   }
 
   @Override
