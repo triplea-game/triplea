@@ -29,7 +29,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
-public class LobbyLoginValidatorTest {
+public class LobbyLoginValidatorIntegrationTest {
   private final ILoginValidator loginValidator = new LobbyLoginValidator();
 
   @Test

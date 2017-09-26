@@ -1,5 +1,8 @@
 package games.strategy.engine.lobby.server.db;
 
+import java.util.Objects;
+
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 
 import games.strategy.util.MD5Crypt;
@@ -9,7 +12,7 @@ import games.strategy.util.MD5Crypt;
  * If the given String is not matching the format
  * of MD5Crypt or BCrypt hashes isValidSyntax returns false.
  */
-public class HashedPassword {
+public final class HashedPassword {
   public final String value;
 
   public HashedPassword(final String hashedPassword) {
@@ -27,7 +30,7 @@ public class HashedPassword {
     return value != null && value.matches("^\\$2a\\$.{56}$");
   }
 
-  private boolean isMd5Crypted() {
+  public boolean isMd5Crypted() {
     return value != null && value.startsWith(MD5Crypt.MAGIC);
   }
 
@@ -37,5 +40,28 @@ public class HashedPassword {
   public String mask() {
     return value.replaceAll(".", "*");
   }
-}
 
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj == this) {
+      return true;
+    } else if (!(obj instanceof HashedPassword)) {
+      return false;
+    }
+
+    final HashedPassword other = (HashedPassword) obj;
+    return Objects.equals(value, other.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(value);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("value", mask())
+        .toString();
+  }
+}
