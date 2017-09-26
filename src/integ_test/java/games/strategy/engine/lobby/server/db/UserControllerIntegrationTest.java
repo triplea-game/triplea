@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -20,6 +21,7 @@ import javax.annotation.Nullable;
 import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
+import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
@@ -53,15 +55,14 @@ public class UserControllerIntegrationTest {
 
   @Test
   public void testDoesUserExist() {
-    final DBUser user = createUserWithMd5CryptHash();
-
-    assertTrue(controller.doesUserExist(user.getName()));
+    assertTrue(controller.doesUserExist(createUserWithMd5CryptHash().getName()));
+    assertTrue(controller.doesUserExist(createUserWithBCryptHash().getName()));
   }
 
   @Test
   public void testCreateDupe() throws Exception {
-    final DBUser user = createUserWithMd5CryptHash();
-    catchException(() -> controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName()))));
+    catchException(() -> controller.createUser(createUserWithMd5CryptHash(),
+        new HashedPassword(MD5Crypt.crypt(Util.createUniqueTimeStamp()))));
     assertThat("Should not be allowed to create a dupe user", caughtException(), is(not(equalTo(null))));
   }
 
@@ -69,7 +70,10 @@ public class UserControllerIntegrationTest {
   public void testLogin() throws Exception {
     final String password = MD5Crypt.crypt(Util.createUniqueTimeStamp());
     final DBUser user = createUserWithHash(password, s -> s);
+    controller.updateUser(user,
+        new HashedPassword(BCrypt.hashpw(RsaAuthenticator.hashPasswordWithSalt(password), BCrypt.gensalt())));
     assertTrue(controller.login(user.getName(), new HashedPassword(password)));
+    assertTrue(controller.login(user.getName(), new HashedPassword(RsaAuthenticator.hashPasswordWithSalt(password))));
   }
 
   @Test
@@ -80,6 +84,9 @@ public class UserControllerIntegrationTest {
     final String email2 = "foo@foo.foo";
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
+        new HashedPassword(bcrypt(obfuscate(Util.createUniqueTimeStamp()))));
+    controller.updateUser(
+        new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
         new HashedPassword(password2));
     try (final Connection con = connectionSupplier.get()) {
       final String sql = " select * from ta_users where username = '" + user.getName() + "'";
@@ -87,6 +94,7 @@ public class UserControllerIntegrationTest {
       assertTrue(rs.next());
       assertEquals(email2, rs.getString("email"));
       assertEquals(password2, rs.getString("password"));
+      assertNull(rs.getString("bcrypt_password"));
     }
   }
 
@@ -114,5 +122,13 @@ public class UserControllerIntegrationTest {
       assertTrue(rs.next());
       return rs.getInt(1);
     }
+  }
+
+  private static String bcrypt(final String string) {
+    return BCrypt.hashpw(string, BCrypt.gensalt());
+  }
+
+  private static String obfuscate(final String string) {
+    return RsaAuthenticator.hashPasswordWithSalt(string);
   }
 }
