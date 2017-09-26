@@ -47,8 +47,15 @@ public class UtilTest {
 
   @Test
   public void testToRealDate() {
-    final Instant instant = Instant.ofEpochMilli(Long.MAX_VALUE).plusMillis(1);
-    final Date date = new Date(Long.MAX_VALUE + 1);
+    final Instant instant = Instant.ofEpochMilli(Long.MAX_VALUE).plusMillis(1L);
+    final Date date = new Date(Long.MAX_VALUE + 1L);
     assertEquals(date, Util.toRealDate(instant));
+    Util.toRealDate(Instant.MAX);
+  }
+
+  @Test
+  public void testInvalidInstantFailure() {
+    catchException(() -> Util.toRealDate(Instant.ofEpochMilli(-1L)));
+    assertThat(caughtException(), is(instanceOf(IllegalArgumentException.class)));
   }
 }

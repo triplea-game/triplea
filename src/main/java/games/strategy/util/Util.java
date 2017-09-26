@@ -157,13 +157,10 @@ public class Util {
    * Essentially a better version of {@link Date#from(Instant)}.
    */
   public static Date toRealDate(final Instant instant) {
-    if (instant.getEpochSecond() < 0 && instant.getNano() > 0) {
-      long millis = (instant.getEpochSecond() + 1) * 1000;
-      long adjustment = instant.getNano() / 1000_000 - 1000;
-      return new Date(millis + adjustment);
-    } else {
-      long millis = instant.getEpochSecond() * 1000;
-      return new Date(millis + (instant.getNano() / 1000_000));
+    if (instant.getEpochSecond() < 0) {
+      throw new IllegalArgumentException("Instant for " + instant.toString() + " cannot be represented as a Date.");
     }
+    final long millis = instant.getEpochSecond() * 1000;
+    return new Date(millis + (instant.getNano() / 1000_000));
   }
 }
