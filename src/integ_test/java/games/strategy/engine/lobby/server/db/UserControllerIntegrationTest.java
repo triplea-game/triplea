@@ -12,12 +12,17 @@ import static org.junit.Assert.assertTrue;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 import org.junit.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.util.MD5Crypt;
+import games.strategy.util.Util;
 
 public class UserControllerIntegrationTest {
 
@@ -26,19 +31,18 @@ public class UserControllerIntegrationTest {
 
   @Test
   public void testCreate() throws Exception {
-    final DBUser user = newUser();
     final int startCount = getUserCount();
 
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+    createUserWithMd5CryptHash();
+    assertEquals(getUserCount(), startCount + 1);
 
-    final int endCount = getUserCount();
-    assertEquals(endCount, startCount + 1);
+    createUserWithBCryptHash();
+    assertEquals(getUserCount(), startCount + 2);
   }
 
   @Test
   public void testGet() throws Exception {
-    final DBUser user = newUser();
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+    final DBUser user = createUserWithMd5CryptHash();
 
     final DBUser loadedUser = controller.getUserByName(user.getName());
 
@@ -49,36 +53,28 @@ public class UserControllerIntegrationTest {
 
   @Test
   public void testDoesUserExist() {
-    final DBUser user = newUser();
-
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+    final DBUser user = createUserWithMd5CryptHash();
 
     assertTrue(controller.doesUserExist(user.getName()));
   }
 
   @Test
   public void testCreateDupe() throws Exception {
-    final DBUser user = newUser();
-
-    controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName())));
+    final DBUser user = createUserWithMd5CryptHash();
     catchException(() -> controller.createUser(user, new HashedPassword(MD5Crypt.crypt(user.getName()))));
     assertThat("Should not be allowed to create a dupe user", caughtException(), is(not(equalTo(null))));
   }
 
   @Test
   public void testLogin() throws Exception {
-    final DBUser user = newUser();
-    final HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.getName()));
-    controller.createUser(user, password);
-
-    assertTrue(controller.login(user.getName(), password));
+    final String password = MD5Crypt.crypt(Util.createUniqueTimeStamp());
+    final DBUser user = createUserWithHash(password, s -> s);
+    assertTrue(controller.login(user.getName(), new HashedPassword(password)));
   }
 
   @Test
   public void testUpdate() throws Exception {
-    final DBUser user = newUser();
-    final HashedPassword password = new HashedPassword(MD5Crypt.crypt(user.getName()));
-    controller.createUser(user, password);
+    final DBUser user = createUserWithMd5CryptHash();
     assertTrue(controller.doesUserExist(user.getName()));
     final String password2 = MD5Crypt.crypt("foo");
     final String email2 = "foo@foo.foo";
@@ -94,12 +90,21 @@ public class UserControllerIntegrationTest {
     }
   }
 
-  private static DBUser newUser() {
+  private DBUser createUserWithMd5CryptHash() {
+    return createUserWithHash(Util.createUniqueTimeStamp(), MD5Crypt::crypt);
+  }
+
+  private DBUser createUserWithBCryptHash() {
+    return createUserWithHash(Util.createUniqueTimeStamp(), s -> BCrypt.hashpw(s, BCrypt.gensalt()));
+  }
+
+  private DBUser createUserWithHash(final @Nullable String password, final Function<String, String> hashingMethod) {
     final String name = UUID.randomUUID().toString().substring(0, 20);
-    final String email = name + "@none.none";
-    return new DBUser(
+    final DBUser user = new DBUser(
         new DBUser.UserName(name),
-        new DBUser.UserEmail(email));
+        new DBUser.UserEmail(name + "@none.none"));
+    controller.createUser(user, new HashedPassword(hashingMethod.apply(password)));
+    return user;
   }
 
   private static int getUserCount() throws Exception {
