@@ -13,16 +13,10 @@ import games.strategy.util.Tuple;
 /**
  * Utility class to create/read/delete banned usernames (there is no update).
  */
-public class BannedUsernameController extends TimedController {
+public class BannedUsernameController extends TimedController implements BannedUsernameDao {
   private static final Logger logger = Logger.getLogger(BannedUsernameController.class.getName());
 
-  /**
-   * Ban the given username. If banTill is not null, the ban will expire when banTill is reached.
-   *
-   * <p>
-   * If this username is already banned, this call will update the ban_end.
-   * </p>
-   */
+  @Override
   public void addBannedUsername(final String username, final Instant banTill) {
     if (banTill == null || banTill.isAfter(now())) {
       logger.fine("Banning username:" + username);
@@ -57,9 +51,9 @@ public class BannedUsernameController extends TimedController {
   }
 
   /**
-   * Is the given username banned? This may have the side effect of removing from the
-   * database any username's whose ban has expired.
+   * This implementation has the side effect of removing any usernames whose ban has expired.
    */
+  @Override
   public Tuple<Boolean, Timestamp> isUsernameBanned(final String username) {
     final String sql = "select username, ban_till from banned_usernames where username = ?";
 

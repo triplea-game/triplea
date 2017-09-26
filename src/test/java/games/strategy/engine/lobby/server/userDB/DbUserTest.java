@@ -10,6 +10,8 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+
 public class DbUserTest {
 
   private static void verifyValid(final DBUser validDbUser) {
@@ -22,6 +24,11 @@ public class DbUserTest {
     assertThat("DBUser values were expected to be invalid: " + invalidDbUser,
         invalidDbUser.isValid(), is(false));
     assertThat(invalidDbUser.getValidationErrorMessage(), not(emptyString()));
+  }
+
+  @Test
+  public void shouldBeEquatableAndHashable() {
+    EqualsVerifier.forClass(DBUser.class).verify();
   }
 
   @Test

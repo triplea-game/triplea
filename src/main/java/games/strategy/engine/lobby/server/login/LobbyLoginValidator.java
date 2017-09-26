@@ -13,13 +13,17 @@ import java.util.logging.Logger;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.db.BadWordController;
+import games.strategy.engine.lobby.server.db.BadWordDao;
 import games.strategy.engine.lobby.server.db.BannedMacController;
+import games.strategy.engine.lobby.server.db.BannedMacDao;
 import games.strategy.engine.lobby.server.db.BannedUsernameController;
+import games.strategy.engine.lobby.server.db.BannedUsernameDao;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.db.UserDao;
@@ -37,20 +41,51 @@ public class LobbyLoginValidator implements ILoginValidator {
   public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
   public static final String EMAIL_KEY = "EMAIL";
   public static final String SALT_KEY = "SALT";
+  @VisibleForTesting
   static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
+  @VisibleForTesting
+  static final String AUTHENTICATION_FAILED = "Incorrect username or password";
   private static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
   private static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
   private static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
   private static final String INVALID_MAC = "Invalid mac address.";
   private static final Logger logger = Logger.getLogger(LobbyLoginValidator.class.getName());
 
+  private final BadWordDao badWordDao;
+  private final BannedMacDao bannedMacDao;
+  private final BannedUsernameDao bannedUsernameDao;
+  private final BcryptSaltGenerator bcryptSaltGenerator;
   private final RsaAuthenticator rsaAuthenticator = new RsaAuthenticator();
+  private final UserDao userDao;
+
+  public LobbyLoginValidator() {
+    this(
+        new BadWordController(),
+        new BannedMacController(),
+        new BannedUsernameController(),
+        new UserController(),
+        () -> BCrypt.gensalt());
+  }
+
+  @VisibleForTesting
+  LobbyLoginValidator(
+      final BadWordDao badWordDao,
+      final BannedMacDao bannedMacDao,
+      final BannedUsernameDao bannedUsernameDao,
+      final UserDao userDao,
+      final BcryptSaltGenerator bcryptSaltGenerator) {
+    this.badWordDao = badWordDao;
+    this.bannedMacDao = bannedMacDao;
+    this.bannedUsernameDao = bannedUsernameDao;
+    this.bcryptSaltGenerator = bcryptSaltGenerator;
+    this.userDao = userDao;
+  }
 
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
     // we need to give the user the salt key for the username
     final Map<String, String> challenge = new HashMap<>();
-    final HashedPassword password = new UserController().getLegacyPassword(userName);
+    final HashedPassword password = userDao.getLegacyPassword(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
       challenge.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
@@ -102,14 +137,14 @@ public class LobbyLoginValidator implements ILoginValidator {
       // Must have been tampered with
       return INVALID_MAC;
     }
-    final Tuple<Boolean, Timestamp> macBanned = new BannedMacController().isMacBanned(hashedMac);
+    final Tuple<Boolean, Timestamp> macBanned = bannedMacDao.isMacBanned(hashedMac);
     if (macBanned.getFirst()) {
       return YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(macBanned.getSecond());
     }
     // test for username ban after testing normal bans, because if it is only a username ban then the user should know
     // they can change their
     // name
-    final Tuple<Boolean, Timestamp> usernameBanned = new BannedUsernameController().isUsernameBanned(clientName);
+    final Tuple<Boolean, Timestamp> usernameBanned = bannedUsernameDao.isUsernameBanned(clientName);
     if (usernameBanned.getFirst()) {
       return USERNAME_HAS_BEEN_BANNED + " " + getBanDurationBreakdown(usernameBanned.getSecond());
     }
@@ -158,14 +193,13 @@ public class LobbyLoginValidator implements ILoginValidator {
     return (sb.toString());
   }
 
-  private static List<String> getBadWords() {
-    return new BadWordController().list();
+  private List<String> getBadWords() {
+    return badWordDao.list();
   }
 
   private String validatePassword(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String clientName) {
-    final String errorMessage = "Incorrect username or password";
-    final UserDao userDao = new UserController();
+    final String errorMessage = AUTHENTICATION_FAILED;
     final HashedPassword hashedPassword = userDao.getPassword(clientName);
     if (hashedPassword == null) {
       return errorMessage;
@@ -182,14 +216,15 @@ public class LobbyLoginValidator implements ILoginValidator {
           if (userDao.login(clientName, new HashedPassword(pass))) {
             if (legacyHashedPassword != null && userDao.getLegacyPassword(clientName).value.isEmpty()) {
               userDao.updateUser(userDao.getUserByName(clientName), new HashedPassword(legacyHashedPassword));
-              userDao.updateUser(userDao.getUserByName(clientName), new HashedPassword(pass));
+              userDao.updateUser(userDao.getUserByName(clientName),
+                  new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt())));
             }
             return null;
           }
           return errorMessage;
         } else if (userDao.login(clientName, new HashedPassword(legacyHashedPassword))) {
           userDao.updateUser(userDao.getUserByName(clientName),
-              new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt())));
+              new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt())));
           return null;
         } else {
           return errorMessage;
@@ -202,8 +237,8 @@ public class LobbyLoginValidator implements ILoginValidator {
     return null;
   }
 
-  private static String anonymousLogin(final Map<String, String> propertiesReadFromClient, final String userName) {
-    if (new UserController().doesUserExist(userName)) {
+  private String anonymousLogin(final Map<String, String> propertiesReadFromClient, final String userName) {
+    if (userDao.doesUserExist(userName)) {
       return "Can't login anonymously, username already exists";
     }
     // If this is a lobby watcher, use a different set of validation
@@ -237,7 +272,7 @@ public class LobbyLoginValidator implements ILoginValidator {
       return user.getValidationErrorMessage();
     }
 
-    if (new UserController().doesUserExist(user.getName())) {
+    if (userDao.doesUserExist(user.getName())) {
       return "That user name has already been taken";
     }
 
@@ -249,8 +284,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
       return RsaAuthenticator.decryptPasswordForAction(privateKey.get(), propertiesReadFromClient, pass -> {
-        final UserDao userDao = new UserController();
-        final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, BCrypt.gensalt()));
+        final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt()));
         if (password.isValidSyntax()) {
           userDao.createUser(user, password);
           userDao.updateUser(user, newPass);
@@ -265,10 +299,16 @@ public class LobbyLoginValidator implements ILoginValidator {
     }
 
     try {
-      new UserController().createUser(user, password);
+      userDao.createUser(user, password);
       return null;
     } catch (final Exception e) {
       return e.getMessage();
     }
+  }
+
+  @FunctionalInterface
+  @VisibleForTesting
+  interface BcryptSaltGenerator {
+    String newSalt();
   }
 }

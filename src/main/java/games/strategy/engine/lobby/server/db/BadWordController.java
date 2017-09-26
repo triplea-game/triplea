@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utilitiy class to create/read/delete bad words (there is no update).
+ * Utility class to create/read/delete bad words (there is no update).
  */
-public class BadWordController {
+public final class BadWordController implements BadWordDao {
+  @Override
   public void addBadWord(final String word) {
     try (final Connection con = Database.getPostgresConnection();
         // If the word already is present we don't need to add it twice.
@@ -35,6 +36,7 @@ public class BadWordController {
     }
   }
 
+  @Override
   public List<String> list() {
     final String sql = "select word from bad_words";
 

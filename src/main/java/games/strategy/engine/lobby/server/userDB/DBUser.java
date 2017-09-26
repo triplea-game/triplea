@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.server.userDB;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -13,7 +14,7 @@ import games.strategy.util.Util;
  * Note, the DBUser data type is passed between lobby and client.
  * TODO: annotate this class and others to identify them. Longer term drop the reflection.
  */
-public class DBUser implements Serializable {
+public final class DBUser implements Serializable {
   private static final long serialVersionUID = -5289923058375302916L;
 
   private final String m_name;
@@ -134,6 +135,24 @@ public class DBUser implements Serializable {
     return new UserName(userName).validate();
   }
 
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj == this) {
+      return true;
+    } else if (!(obj instanceof DBUser)) {
+      return false;
+    }
+
+    final DBUser other = (DBUser) obj;
+    return Objects.equals(m_email, other.m_email)
+        && Objects.equals(m_name, other.m_name)
+        && (userRole == other.userRole);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(m_email, m_name, userRole);
+  }
 
   @Override
   public String toString() {
