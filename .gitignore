@@ -4,6 +4,7 @@
 .project
 .settings
 .checkstyle
+triplea.iml
 
 *.backup
 *.swp
