@@ -7,6 +7,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.3'
     id 'com.install4j.gradle' version '7.0.1'
     id "de.qaware.seu.as.code.git" version "2.2.0"
+    id "net.ltgt.errorprone" version "0.0.11"
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -56,9 +57,9 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
+    options.compilerArgs += [ '-Xep:DeadException:WARN', '-Xep:GuardedByValidator:OFF', '-Xlint:all' ]
     options.incremental = true
     options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:all"
 }
 
 jar {
@@ -72,6 +73,7 @@ repositories {
 }
 
 dependencies {
+    errorprone 'com.google.errorprone:error_prone_core:2.0.5'
     compile 'commons-io:commons-io:2.5'
     compile 'postgresql:postgresql:9.1-901-1.jdbc4'
     compile 'com.github.insubstantial:substance:7.3'
@@ -99,6 +101,7 @@ dependencies {
 test {
     exclude '**/*Tests.class'
 }
+
 
 task integTest(type: Test) {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
