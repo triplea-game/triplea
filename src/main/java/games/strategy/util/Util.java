@@ -158,7 +158,7 @@ public class Util {
    */
   public static Date toRealDate(final Instant instant) {
     if (instant.getEpochSecond() < 0) {
-      throw new IllegalArgumentException("Instant for " + instant.toString() + " cannot be represented as a Date.");
+      throw new IllegalArgumentException("Instant for " + instant + " cannot be represented as a Date.");
     }
     final long millis = instant.getEpochSecond() * 1000;
     return new Date(millis + (instant.getNano() / 1000_000));
