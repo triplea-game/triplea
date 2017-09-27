@@ -27,6 +27,11 @@ import games.strategy.util.Version;
  */
 public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
+  @VisibleForTesting
+  static final int MAC_ADDRESS_LENGTH = 28;
+  @VisibleForTesting
+  static final String MAC_MAGIC_STRING_PREFIX = MD5Crypt.MAGIC + "MH$";
+
 
   @VisibleForTesting
   interface ErrorMessages {
@@ -39,6 +44,16 @@ public final class ClientLoginValidator implements ILoginValidator {
 
   private final IServerMessenger serverMessenger;
   private String password;
+
+  /**
+   * Returns true if the parameter value is the correct length of a md5 hashed value,
+   * and if also it starts with the correct string value.
+   */
+  public static boolean isValidMac(final String value) {
+    return value.length() == MAC_ADDRESS_LENGTH
+            && value.startsWith(MAC_MAGIC_STRING_PREFIX)
+            && value.matches("[0-9a-zA-Z$./]+");
+  }
 
   public ClientLoginValidator(final IServerMessenger serverMessenger) {
     this.serverMessenger = serverMessenger;
@@ -99,10 +114,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     if (hashedMac == null) {
       return ErrorMessages.UNABLE_TO_OBTAIN_MAC;
-    } else if (hashedMac.length() != 28
-        || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")
-        || !hashedMac.matches("[0-9a-zA-Z$./]+")) {
-      // Must have been tampered with
+    } else if (!isValidMac(hashedMac)) {
       return ErrorMessages.INVALID_MAC;
     } else if (serverMessenger.isMacMiniBanned(hashedMac)) {
       return ErrorMessages.YOU_HAVE_BEEN_BANNED;
