@@ -98,7 +98,7 @@ public class InGameLobbyWatcher {
       public void notifyFailedLogin(final String message) {}
 
       @Override
-      public Map<String, String> getProperties(final Map<String, String> challengProperties) {
+      public Map<String, String> getProperties(final Map<String, String> challengeProperties) {
         final Map<String, String> properties = new HashMap<>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
         properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
