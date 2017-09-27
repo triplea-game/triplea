@@ -5,7 +5,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -160,11 +165,11 @@ public class LobbyMenu extends JMenuBar {
           return;
         }
       }
-      final Instant expire = Instant.now().plusMillis(requestTimespanSupplication());
+      final TemporalAmount duration = requestTimespanSupplication();
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), Date.from(expire));
+        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), toDate(duration));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -201,12 +206,12 @@ public class LobbyMenu extends JMenuBar {
           return;
         }
       }
-      final Instant expire = Instant.now().plusMillis(requestTimespanSupplication());
+      final TemporalAmount duration = requestTimespanSupplication();
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-            Date.from(expire));
+            toDate(duration));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -284,7 +289,7 @@ public class LobbyMenu extends JMenuBar {
     parentMenu.add(item);
   }
 
-  private long requestTimespanSupplication() {
+  private TemporalAmount requestTimespanSupplication() {
     final List<String> timeUnits = new ArrayList<>();
     timeUnits.add("Minute");
     timeUnits.add("Hour");
@@ -298,38 +303,38 @@ public class LobbyMenu extends JMenuBar {
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(),
             timeUnits.toArray()[3]);
     if (result < 0) {
-      return -1;
+      return Duration.ofMillis(-1);
     }
     final String selectedTimeUnit = (String) timeUnits.toArray()[result];
     if (selectedTimeUnit.equals("Forever")) {
-      return Long.MAX_VALUE;
+      return null;
     }
-    final String stringr = JOptionPane.showInputDialog(
-        lobbyFrame,
-        "Now please enter the length of time: (In " + selectedTimeUnit + "s) ",
-        1);
+    final String stringr = JOptionPane.showInputDialog(lobbyFrame,
+        "Now please enter the length of time: (In " + selectedTimeUnit + "s) ", 1);
     if (stringr == null) {
-      return -1;
+      return Duration.ofMillis(-1);
     }
     final long result2 = Long.parseLong(stringr);
     if (result2 < 0) {
-      return -1;
+      return Duration.ofMillis(-1);
     }
-    long ticks = 0;
-    if (selectedTimeUnit.equals("Minute")) {
-      ticks = result2 * 1000 * 60;
-    } else if (selectedTimeUnit.equals("Hour")) {
-      ticks = result2 * 1000 * 60 * 60;
-    } else if (selectedTimeUnit.equals("Day")) {
-      ticks = result2 * 1000 * 60 * 60 * 24;
-    } else if (selectedTimeUnit.equals("Week")) {
-      ticks = result2 * 1000 * 60 * 60 * 24 * 7;
-    } else if (selectedTimeUnit.equals("Month")) {
-      ticks = result2 * 1000 * 60 * 60 * 24 * 30;
-    } else if (selectedTimeUnit.equals("Year")) {
-      ticks = result2 * 1000 * 60 * 60 * 24 * 365;
+
+    switch (selectedTimeUnit) {
+      case "Minute":
+        return Duration.ofMinutes(result2);
+      case "Hour":
+        return Duration.ofHours(result2);
+      case "Day":
+        return Duration.ofDays(result2);
+      case "Week":
+        return Period.ofWeeks((int) result2);
+      case "Month":
+        return Period.ofMonths((int) result2);
+      case "Year":
+        return Period.ofYears((int) result2);
+      default:
+        throw new IllegalArgumentException("Invalid time unit: " + selectedTimeUnit);
     }
-    return ticks;
   }
 
   private void createSettingsMenu(final LobbyMenu menuBar) {
@@ -422,5 +427,11 @@ public class LobbyMenu extends JMenuBar {
       final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> lobbyFrame.shutdown()));
       parentMenu.add(menuFileExit);
     }
+  }
+
+  private static Date toDate(final TemporalAmount amount) {
+    return amount != null
+        ? Date.from(LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC).plus(amount).toInstant(ZoneOffset.UTC))
+        : null;
   }
 }
