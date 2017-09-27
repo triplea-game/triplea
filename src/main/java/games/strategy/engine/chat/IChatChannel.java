@@ -6,6 +6,9 @@ import games.strategy.net.INode;
 
 /**
  * Chat messages occur on this channel.
+ * <p>
+ * RMI warning: the ordering of methods cannot be changed, these methods will be invoked by method order number
+ * </p>
  */
 public interface IChatChannel extends IChannelSubscribor {
   // we get the sender from MessageContext
