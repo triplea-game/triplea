@@ -112,8 +112,8 @@ public class ThreadPoolTest {
     public void run() {
       synchronized (this) {
         try {
-          wait(10);
-        } catch (final InterruptedException ie) {
+          Thread.sleep(10L);
+        } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
         }
         super.run();
