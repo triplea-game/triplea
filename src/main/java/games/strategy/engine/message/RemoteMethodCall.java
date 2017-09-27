@@ -147,7 +147,7 @@ public class RemoteMethodCall implements Externalizable {
 
   @Override
   public String toString() {
-    return "Remote method call:" + m_methodName + " on:" + m_remoteName;
+    return "Remote method call, method name:" + m_methodName + " remote name:" + m_remoteName;
   }
 
   @Override
@@ -179,7 +179,7 @@ public class RemoteMethodCall implements Externalizable {
 
   /**
    * After we have been de-serialized, we do not transmit enough
-   * informatin to determine the method without being told
+   * information to determine the method without being told
    * what class we operate on.
    */
   public void resolve(final Class<?> remoteType) {
