@@ -20,6 +20,7 @@ import javax.swing.event.HyperlinkListener;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.net.OpenFileUtility;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 
 class EngineVersionProperties {
@@ -37,9 +38,9 @@ class EngineVersionProperties {
   private EngineVersionProperties(final Properties props) {
     latestVersionOut =
         new Version(props.getProperty("LATEST", ClientContext.engineVersion().toStringFull(".")));
-    link = props.getProperty("LINK", "http://triplea-game.github.io/");
-    linkAlt = props.getProperty("LINK_ALT", "http://triplea-game.github.io/download/");
-    changelogLink = props.getProperty("CHANGELOG", "http://triplea-game.github.io/release_notes/");
+    link = props.getProperty("LINK", UrlConstants.TRIPLEA_WEBSITE.toString());
+    linkAlt = props.getProperty("LINK_ALT", UrlConstants.TRIPLEA_WEBSITE + "download/");
+    changelogLink = props.getProperty("CHANGELOG", UrlConstants.TRIPLEA_WEBSITE + "release_notes/");
   }
 
   static EngineVersionProperties contactServerForEngineVersionProperties() {
