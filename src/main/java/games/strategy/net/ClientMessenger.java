@@ -13,7 +13,11 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.HubInvoke;
@@ -23,6 +27,7 @@ import games.strategy.net.nio.ClientQuarantineConversation;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
+import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
@@ -37,7 +42,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private volatile boolean m_shutDown = false;
 
   /**
-   * Note, the name paramater passed in here may not match the name of the
+   * Note, the name parameter passed in here may not match the name of the
    * ClientMessenger after it has been constructed.
    */
   public ClientMessenger(final String host, final int port, final String name, final String mac,
@@ -45,31 +50,34 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     this(host, port, name, mac, new DefaultObjectStreamFactory(), login);
   }
 
+
   /**
-   * Note, the name paramater passed in here may not match the name of the
+   * Note, the name parameter passed in here may not match the name of the
    * ClientMessenger after it has been constructed.
    */
+  @VisibleForTesting
   public ClientMessenger(final String host, final int port, final String name, final String mac)
       throws IOException {
-    this(host, port, name, mac, new DefaultObjectStreamFactory());
+    this(host, port, name, mac, new DefaultObjectStreamFactory(), null);
   }
 
   /**
-   * Note, the name paramater passed in here may not match the name of the
-   * ClientMessenger after it has been constructed.
-   */
-  public ClientMessenger(final String host, final int port, final String name, final String mac,
-      final IObjectStreamFactory streamFact) throws IOException {
-    this(host, port, name, mac, streamFact, null);
-  }
-
-  /**
-   * Note, the name paramater passed in here may not match the name of the
+   * Note, the name parameter passed in here may not match the name of the
    * ClientMessenger after it has been constructed.
    */
   public ClientMessenger(final String host, final int port, final String name, final String mac,
       final IObjectStreamFactory streamFact, final IConnectionLogin login)
       throws IOException {
+    Preconditions.checkNotNull(mac);
+
+    Preconditions.checkState(mac.length() == 28,
+        "incorrect mac length: " + mac.length() + ", value = " + mac);
+    final String startString = MD5Crypt.MAGIC + "MH$";
+    Preconditions.checkState(mac.startsWith(startString),
+        "mac must start with expected start string: " + startString + ", value was: "+  mac);
+    
+    Preconditions.checkState(ClientLoginValidator.isValidMac(mac),
+        "Not a valid mac: " + mac + ", length: " + mac.length());
     m_socketChannel = SocketChannel.open();
     m_socketChannel.configureBlocking(false);
     final InetSocketAddress remote = new InetSocketAddress(host, port);
@@ -253,7 +261,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
 
   private void bareBonesSendMessageToServer(final String methodName, final Object... messages) {
     final List<Object> args = new ArrayList<>();
-    final Class<? extends Object>[] argTypes = new Class<?>[messages.length];
+    final Class<?>[] argTypes = new Class<?>[messages.length];
     for (int i = 0; i < messages.length; i++) {
       final Object message = messages[i];
       args.add(message);
@@ -304,8 +312,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     try (InputStream is = new FileInputStream(file)) {
       is.read(bytes);
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to read file: " + file);
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to read file: " + file, e);
     }
     return bytes;
   }
