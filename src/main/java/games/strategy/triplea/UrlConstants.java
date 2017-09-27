@@ -12,7 +12,7 @@ package games.strategy.triplea;
  */
 public enum UrlConstants {
   GITHUB_ISSUES("https://github.com/triplea-game/triplea/issues/new"),
-  RULE_BOOK("https://triplea-game.github.io/files/TripleA_RuleBook.pdf"),
+  RULE_BOOK("http://www.triplea-game.org/files/TripleA_RuleBook.pdf"),
   LOBBY_PROPS("https://raw.githubusercontent.com/triplea-game/triplea/master/lobby_server.yaml"),
   PAYPAL_DONATE("https://sourceforge.net/donate/index.php?group_id=44492"),
   GITHUB_HELP("http://www.triplea-game.org/help/"),
