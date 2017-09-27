@@ -57,7 +57,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs += [ '-Xep:DeadException:WARN', '-Xep:GuardedByValidator:OFF', '-Xlint:all' ]
+    options.compilerArgs += [ '-Xlint:all' ]
     options.incremental = true
     options.encoding = 'UTF-8'
 }
