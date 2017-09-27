@@ -71,13 +71,13 @@ public class LobbyLogin {
             }
 
             @Override
-            public Map<String, String> getProperties(final Map<String, String> challengProperties) {
+            public Map<String, String> getProperties(final Map<String, String> challengeProperties) {
               final Map<String, String> props = new HashMap<>();
               if (panel.isAnonymousLogin()) {
                 props.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
               } else {
-                final boolean isUpdatedLobby = RsaAuthenticator.canProcessChallenge(challengProperties);
-                String salt = challengProperties.get(LobbyLoginValidator.SALT_KEY);
+                final boolean isUpdatedLobby = RsaAuthenticator.canProcessChallenge(challengeProperties);
+                String salt = challengeProperties.get(LobbyLoginValidator.SALT_KEY);
                 if (salt == null) {
                   if (!isUpdatedLobby) {
                     // the server does not have a salt value
@@ -89,7 +89,7 @@ public class LobbyLogin {
                 }
                 props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(panel.getPassword(), salt));
                 if (isUpdatedLobby) {
-                  props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, panel.getPassword()));
+                  props.putAll(RsaAuthenticator.getEncryptedPassword(challengeProperties, panel.getPassword()));
                 }
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
@@ -152,15 +152,15 @@ public class LobbyLogin {
             }
 
             @Override
-            public Map<String, String> getProperties(final Map<String, String> challengProperties) {
+            public Map<String, String> getProperties(final Map<String, String> challengeProperties) {
               final Map<String, String> props = new HashMap<>();
               props.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
               props.put(LobbyLoginValidator.EMAIL_KEY, createAccount.getEmail());
               // TODO: Don't send the md5-hashed password once the lobby removes the support, kept for
               // backwards-compatibility
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
-              if (RsaAuthenticator.canProcessChallenge(challengProperties)) {
-                props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, createAccount.getPassword()));
+              if (RsaAuthenticator.canProcessChallenge(challengeProperties)) {
+                props.putAll(RsaAuthenticator.getEncryptedPassword(challengeProperties, createAccount.getPassword()));
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;

@@ -16,7 +16,7 @@ public interface IConnectionLogin {
   /**
    * Get the properties to log in given the challenge Properties.
    */
-  Map<String, String> getProperties(Map<String, String> challengProperties);
+  Map<String, String> getProperties(Map<String, String> challengeProperties);
 
   /**
    * A notification that the login failed. The error message supplied should be shown to the user.
