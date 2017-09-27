@@ -5,9 +5,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -148,5 +150,17 @@ public class Util {
     checkNotNull(p);
 
     return p.negate();
+  }
+
+  /**
+   * Workaround for http://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8187708
+   * Essentially a better version of {@link Date#from(Instant)}.
+   */
+  public static Date toRealDate(final Instant instant) {
+    if (instant.getEpochSecond() < 0) {
+      throw new IllegalArgumentException("Instant for " + instant + " cannot be represented as a Date.");
+    }
+    final long millis = instant.getEpochSecond() * 1000;
+    return new Date(millis + (instant.getNano() / 1000_000));
   }
 }

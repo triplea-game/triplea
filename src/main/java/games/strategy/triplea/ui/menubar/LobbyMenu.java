@@ -38,6 +38,7 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.MD5Crypt;
+import games.strategy.util.Util;
 
 public class LobbyMenu extends JMenuBar {
   private static final long serialVersionUID = 4980621864542042057L;
@@ -161,7 +162,7 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), Date.from(expire));
+        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), Util.toRealDate(expire));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -203,7 +204,7 @@ public class LobbyMenu extends JMenuBar {
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
         controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-            Date.from(expire));
+            Util.toRealDate(expire));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }

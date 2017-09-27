@@ -7,6 +7,9 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import java.time.Instant;
+import java.util.Date;
+
 import org.junit.Test;
 
 public class UtilTest {
@@ -40,5 +43,19 @@ public class UtilTest {
 
     assertThat(Util.not(it -> false).test(t), is(true));
     assertThat(Util.not(it -> true).test(t), is(false));
+  }
+
+  @Test
+  public void testToRealDate() {
+    final Instant instant = Instant.ofEpochMilli(Long.MAX_VALUE).plusMillis(1L);
+    final Date date = new Date(Long.MAX_VALUE + 1L);
+    assertEquals(date, Util.toRealDate(instant));
+    Util.toRealDate(Instant.MAX);
+  }
+
+  @Test
+  public void testInvalidInstantFailure() {
+    catchException(() -> Util.toRealDate(Instant.ofEpochMilli(-1L)));
+    assertThat(caughtException(), is(instanceOf(IllegalArgumentException.class)));
   }
 }
