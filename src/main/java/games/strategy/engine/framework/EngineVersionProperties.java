@@ -39,8 +39,8 @@ class EngineVersionProperties {
     latestVersionOut =
         new Version(props.getProperty("LATEST", ClientContext.engineVersion().toStringFull(".")));
     link = props.getProperty("LINK", UrlConstants.TRIPLEA_WEBSITE.toString());
-    linkAlt = props.getProperty("LINK_ALT", UrlConstants.TRIPLEA_WEBSITE + "download/");
-    changelogLink = props.getProperty("CHANGELOG", UrlConstants.TRIPLEA_WEBSITE + "release_notes/");
+    linkAlt = props.getProperty("LINK_ALT", UrlConstants.DOWNLOAD_WEBSITE.toString());
+    changelogLink = props.getProperty("CHANGELOG", UrlConstants.RELEASE_NOTES.toString());
   }
 
   static EngineVersionProperties contactServerForEngineVersionProperties() {
