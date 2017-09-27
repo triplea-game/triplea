@@ -74,7 +74,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
         "incorrect mac length: " + mac.length() + ", value = " + mac);
     final String startString = MD5Crypt.MAGIC + "MH$";
     Preconditions.checkArgument(mac.startsWith(startString),
-        "mac must start with expected start string: " + startString + ", value was: "+  mac);
+        "mac must start with expected start string: " + startString + ", value was: " + mac);
     
     Preconditions.checkArgument(ClientLoginValidator.isValidMac(mac),
         "Not a valid mac: " + mac + ", length: " + mac.length());
