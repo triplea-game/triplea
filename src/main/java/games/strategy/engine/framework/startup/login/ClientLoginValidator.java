@@ -124,12 +124,12 @@ public final class ClientLoginValidator implements ILoginValidator {
       final String errorMessage = authenticate(propertiesSentToClient, propertiesReadFromClient);
 
       if (!Objects.equals(errorMessage, ErrorMessages.NO_ERROR)) {
-          // sleep on average 2 seconds
-          // try to prevent flooding to guess the password
-          ThreadUtil.sleep((int) (4_000 * Math.random()));
-          return errorMessage;
-        }
+        // sleep on average 2 seconds
+        // try to prevent flooding to guess the password
+        ThreadUtil.sleep((int) (4_000 * Math.random()));
+        return errorMessage;
       }
+    }
     return ErrorMessages.NO_ERROR;
   }
 
