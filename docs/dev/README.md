@@ -11,7 +11,7 @@
 *IntelliJ*
   - Plugins:
     - Eclipse Code Formatter : can be used to pick up the eclipse formatter file, format then will conform to project spec (based on google java format)
-    - checkstyle-IDEA
+    - checkstyle-IDEA : after installing, head to settings, in the checkstyle plugin settings, add the TripleA checkstyle file via the UI
 
 
 ### Gradle - Building and Running the Code
