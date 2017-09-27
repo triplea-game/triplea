@@ -24,13 +24,14 @@ import org.json.JSONObject;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.net.OpenFileUtility;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.help.HelpSupport;
 
 public class TripleAForumPoster extends AbstractForumPoster {
 
   private static final long serialVersionUID = -3380344469767981030L;
 
-  private static final String tripleAForumURL = "https://forums.triplea-game.org";
+  private static final String tripleAForumURL = UrlConstants.TRIPLEA_FORUM.toString();
 
   @Override
   public boolean postTurnSummary(final String summary, final String title) {
