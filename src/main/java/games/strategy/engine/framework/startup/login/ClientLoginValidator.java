@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -119,14 +120,14 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     if (Boolean.TRUE.toString().equals(propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY))) {
       final String errorMessage = authenticate(propertiesSentToClient, propertiesReadFromClient);
-      if (errorMessage != ErrorMessages.NO_ERROR) {
-        // sleep on average 2 seconds
-        // try to prevent flooding to guess the password
-        ThreadUtil.sleep((int) (4_000 * Math.random()));
-        return errorMessage;
-      }
-    }
 
+      if (!Objects.equals(errorMessage, ErrorMessages.NO_ERROR)) {
+          // sleep on average 2 seconds
+          // try to prevent flooding to guess the password
+          ThreadUtil.sleep((int) (4_000 * Math.random()));
+          return errorMessage;
+        }
+      }
     return ErrorMessages.NO_ERROR;
   }
 
