@@ -26,7 +26,7 @@ public class HashedPasswordTest {
     ).forEach(valid ->
         assertThat(
             "Expecting this to look valid, starts with magic: " + valid,
-            new HashedPassword(valid).isValidSyntax(), is(true)));
+            new HashedPassword(valid).isHashedWithSalt(), is(true)));
   }
 
   @Test
@@ -40,6 +40,6 @@ public class HashedPasswordTest {
     ).forEach(invalid ->
         assertThat(
             "Expecting this to look invalid, does not start with magic: " + invalid,
-            new HashedPassword(invalid).isValidSyntax(), is(false)));
+            new HashedPassword(invalid).isHashedWithSalt(), is(false)));
   }
 }

@@ -22,7 +22,7 @@ public final class HashedPassword {
   /**
    * Returns true if the hashed password looks like it could be a hash.
    */
-  public boolean isValidSyntax() {
+  public boolean isHashedWithSalt() {
     return isMd5Crypted() || isBcrypted();
   }
 

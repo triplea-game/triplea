@@ -285,7 +285,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
       return RsaAuthenticator.decryptPasswordForAction(privateKey.get(), propertiesReadFromClient, pass -> {
         final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt()));
-        if (password.isValidSyntax()) {
+        if (password.isHashedWithSalt()) {
           userDao.createUser(user, password);
           userDao.updateUser(user, newPass);
         } else {
@@ -294,7 +294,7 @@ public class LobbyLoginValidator implements ILoginValidator {
         return null;
       });
     }
-    if (!password.isValidSyntax()) {
+    if (!password.isHashedWithSalt()) {
       return "Password is not hashed correctly";
     }
 
