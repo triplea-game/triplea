@@ -35,7 +35,7 @@ public class HashedPassword {
    * Returns the value of this HashedPassword object with all characters replaces with asterisks.
    */
   public String mask() {
-    return value.replaceAll(".", "*");
+    return Strings.repeat("*", value.length());
   }
 }
 
