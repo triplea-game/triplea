@@ -21,6 +21,8 @@ public enum UrlConstants {
   TRIPLEA_LOBBY_RULES("https://forums.triplea-game.org/topic/4"),
   LATEST_GAME_DOWNLOAD_WEBSITE("http://www.triplea-game.org/download/"),
   TRIPLEA_WEBSITE("http://www.triplea-game.org/"),
+  DOWNLOAD_WEBSITE("http://www.triplea-game.org/download/"),
+  RELEASE_NOTES("http://www.triplea-game.org/release_notes/"),
   MAP_DOWNLOAD_LIST("https://raw.githubusercontent.com/triplea-game/triplea/master/triplea_maps.yaml"),
   MAP_MAKER_HELP("https://github.com/triplea-game/triplea/blob/master/docs/map_making/map_and_map_skin_making_overview.md");
 
