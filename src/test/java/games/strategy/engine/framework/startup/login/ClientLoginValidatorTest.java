@@ -23,13 +23,12 @@ import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorM
 
 
 @RunWith(Enclosed.class)
-public final class ClientLoginValidatorTests {
+public final class ClientLoginValidatorTest {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
   private static final String MAGIC_MAC_START = ClientLoginValidator.MAC_MAGIC_STRING_PREFIX;
 
-  @RunWith(Enclosed.class)
   public static final class MacValidation {
     @Test
     public void invalidMacs() {
