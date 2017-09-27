@@ -8,10 +8,16 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import games.strategy.util.MD5Crypt;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class HashedPasswordTest {
   @Test
-  public void isValidSyntax() throws Exception {
+  public void shouldBeEquatableAndHashable() {
+    EqualsVerifier.forClass(HashedPassword.class).verify();
+  }
+
+  @Test
+  public void isValidSyntax() {
     Arrays.asList(
         MD5Crypt.MAGIC,
         MD5Crypt.MAGIC + " ",
@@ -20,11 +26,11 @@ public class HashedPasswordTest {
     ).forEach(valid ->
         assertThat(
             "Expecting this to look valid, starts with magic: " + valid,
-            new HashedPassword(valid).isValidSyntax(), is(true)));
+            new HashedPassword(valid).isHashedWithSalt(), is(true)));
   }
 
   @Test
-  public void isValidSyntaxInvalidCases() throws Exception {
+  public void isValidSyntaxInvalidCases() {
     Arrays.asList(
         "",
         "abc",
@@ -34,6 +40,6 @@ public class HashedPasswordTest {
     ).forEach(invalid ->
         assertThat(
             "Expecting this to look invalid, does not start with magic: " + invalid,
-            new HashedPassword(invalid).isValidSyntax(), is(false)));
+            new HashedPassword(invalid).isHashedWithSalt(), is(false)));
   }
 }

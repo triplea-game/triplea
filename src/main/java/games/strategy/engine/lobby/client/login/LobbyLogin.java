@@ -85,10 +85,9 @@ public class LobbyLogin {
                     // continue as before
                     internalError.set("No account with that name exists");
                   }
-                  salt = "none";
+                  salt = MD5Crypt.newSalt();
                 }
-                final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
-                props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
+                props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(panel.getPassword(), salt));
                 if (isUpdatedLobby) {
                   props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, panel.getPassword()));
                 }
@@ -157,7 +156,8 @@ public class LobbyLogin {
               final Map<String, String> props = new HashMap<>();
               props.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
               props.put(LobbyLoginValidator.EMAIL_KEY, createAccount.getEmail());
-              // TODO: Don't send the md5-hashed password once the lobby is updated
+              // TODO: Don't send the md5-hashed password once the lobby removes the support, kept for
+              // backwards-compatibility
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
               if (RsaAuthenticator.canProcessChallenge(challengProperties)) {
                 props.putAll(RsaAuthenticator.getEncryptedPassword(challengProperties, createAccount.getPassword()));

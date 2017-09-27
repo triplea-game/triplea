@@ -8,22 +8,18 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import games.strategy.util.Tuple;
 
 /**
- * Utilitiy class to create/read/delete banned macs (there is no update).
+ * Utility class to create/read/delete banned macs (there is no update).
  */
-public class BannedMacController extends TimedController {
+public class BannedMacController extends TimedController implements BannedMacDao {
   private static final Logger logger = Logger.getLogger(BannedMacController.class.getName());
 
-  /**
-   * Ban the given mac. If banTill is not null, the ban will expire when banTill is reached.
-   *
-   * <p>
-   * If this mac is already banned, this call will update the ban_end.
-   * </p>
-   */
-  public void addBannedMac(final String mac, final Instant banTill) {
+  @Override
+  public void addBannedMac(final String mac, final @Nullable Instant banTill) {
     if (banTill == null || banTill.isAfter(now())) {
       try (final Connection con = Database.getPostgresConnection();
           final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)"
@@ -52,10 +48,10 @@ public class BannedMacController extends TimedController {
   }
 
   /**
-   * Is the given mac banned? This may have the side effect of removing from the
-   * database any mac's whose ban has expired.
+   * This implementation has the side effect of removing any MACs whose ban has expired.
    */
-  public Tuple<Boolean, Timestamp> isMacBanned(final String mac) {
+  @Override
+  public Tuple<Boolean, /* @Nullable */ Timestamp> isMacBanned(final String mac) {
     final String sql = "select mac, ban_till from banned_macs where mac=?";
 
     try (final Connection con = Database.getPostgresConnection();

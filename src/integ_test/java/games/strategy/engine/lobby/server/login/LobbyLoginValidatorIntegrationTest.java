@@ -29,7 +29,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
-public class LobbyLoginValidatorTest {
+public class LobbyLoginValidatorIntegrationTest {
   private final ILoginValidator loginValidator = new LobbyLoginValidator();
 
   @Test
@@ -37,7 +37,7 @@ public class LobbyLoginValidatorTest {
     final ChallengeResultFunction challengeFunction = generateChallenge(null);
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
-    response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("123", "foo"));
+    response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("123"));
     assertNull(challengeFunction.apply(challenge -> response));
     // try to create a duplicate user, should not work
     assertNotNull(challengeFunction.apply(challenge -> response));

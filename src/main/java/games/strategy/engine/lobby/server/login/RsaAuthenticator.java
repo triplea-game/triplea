@@ -164,8 +164,7 @@ public final class RsaAuthenticator {
    * before hashing. This way the hash cannot be used on other websites even if the password
    * and the authentication system is the same.
    */
-  @VisibleForTesting
-  static String hashPasswordWithSalt(final String password) {
+  public static String hashPasswordWithSalt(final String password) {
     return Util.sha512(PSEUDO_SALT + password);
   }
 

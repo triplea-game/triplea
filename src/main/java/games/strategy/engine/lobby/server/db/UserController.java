@@ -23,40 +23,47 @@ public class UserController implements UserDao {
     this(Database::getPostgresConnection);
   }
 
+  @VisibleForTesting
   UserController(final Supplier<Connection> connectionSupplier) {
     this.connectionSupplier = connectionSupplier;
   }
 
-  /**
-   * @return null if the user does not exist.
-   */
   @Override
-  public HashedPassword getPassword(final String userName) {
-    final String sql = "select password from ta_users where username = ?";
-    try (final Connection con = connectionSupplier.get(); final PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, userName);
+  public HashedPassword getLegacyPassword(final String username) {
+    return getPassword(username, true);
+  }
+
+  @Override
+  public HashedPassword getPassword(final String username) {
+    return getPassword(username, false);
+  }
+
+  private HashedPassword getPassword(final String username, final boolean legacy) {
+    try (final Connection con = connectionSupplier.get();
+        final PreparedStatement ps = con
+            .prepareStatement("select password, coalesce(bcrypt_password, password) from ta_users where username=?")) {
+      ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
-        String returnValue = null;
         if (rs.next()) {
-          returnValue = rs.getString(1);
+          return new HashedPassword(rs.getString(legacy ? 1 : 2));
         }
-        return returnValue == null ? null : new HashedPassword(returnValue);
+        return null;
       }
     } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error getting password for user:" + userName, sqle);
+      throw new IllegalStateException("Error getting password for user: " + username, sqle);
     }
   }
 
   @Override
-  public boolean doesUserExist(final String userName) {
+  public boolean doesUserExist(final String username) {
     final String sql = "select username from ta_users where upper(username) = upper(?)";
     try (final Connection con = connectionSupplier.get(); final PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, userName);
+      ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
         return rs.next();
       }
     } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error testing for existence of user:" + userName, sqle);
+      throw new IllegalStateException("Error testing for existence of user:" + username, sqle);
     }
   }
 
@@ -65,17 +72,32 @@ public class UserController implements UserDao {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
-        final PreparedStatement ps =
-            con.prepareStatement("update ta_users set password = ?,  email = ? where username = ?")) {
+        final PreparedStatement ps = con.prepareStatement(
+            String.format("update ta_users set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
       ps.setString(1, hashedPassword.value);
       ps.setString(2, user.getEmail());
       ps.setString(3, user.getName());
       ps.execute();
+      if (!hashedPassword.isBcrypted()) {
+        try (final PreparedStatement ps2 =
+            con.prepareStatement("update ta_users set bcrypt_password=null where username=?")) {
+          ps2.setString(1, user.getName());
+          ps2.execute();
+        }
+      }
       con.commit();
     } catch (final SQLException e) {
       throw new IllegalStateException(String.format("Error updating name: %s email: %s pwd: %s",
           user.getName(), user.getEmail(), hashedPassword.mask()), e);
     }
+  }
+
+  /**
+   * Workaround utility method.
+   * Should be removed in the next incompatible release.
+   */
+  private static String getPasswordColumn(final HashedPassword hashedPassword) {
+    return hashedPassword.isBcrypted() ? "bcrypt_password" : "password";
   }
 
   /**
@@ -100,15 +122,16 @@ public class UserController implements UserDao {
 
   @Override
   public void createUser(final DBUser user, final HashedPassword hashedPassword) {
-    Preconditions.checkState(hashedPassword.isValidSyntax());
+    Preconditions.checkState(hashedPassword.isHashedWithSalt());
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
-        final PreparedStatement ps =
-            con.prepareStatement("insert into ta_users (username, password, email) values (?, ?, ?)")) {
+        final PreparedStatement ps = con.prepareStatement(
+            "insert into ta_users (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
       ps.setString(1, user.getName());
-      ps.setString(2, hashedPassword.value);
-      ps.setString(3, user.getEmail());
+      ps.setString(2, hashedPassword.isBcrypted() ? null : hashedPassword.value);
+      ps.setString(3, hashedPassword.isBcrypted() ? hashedPassword.value : null);
+      ps.setString(4, user.getEmail());
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
@@ -118,12 +141,12 @@ public class UserController implements UserDao {
   }
 
   @Override
-  public boolean login(final String userName, final HashedPassword hashedPassword) {
+  public boolean login(final String username, final HashedPassword hashedPassword) {
     try (final Connection con = connectionSupplier.get()) {
-      if (hashedPassword.isValidSyntax()) {
+      if (hashedPassword.isHashedWithSalt()) {
         try (final PreparedStatement ps =
             con.prepareStatement("select username from  ta_users where username = ? and password = ?")) {
-          ps.setString(1, userName);
+          ps.setString(1, username);
           ps.setString(2, hashedPassword.value);
           try (final ResultSet rs = ps.executeQuery()) {
             if (!rs.next()) {
@@ -132,7 +155,7 @@ public class UserController implements UserDao {
           }
         }
       } else {
-        final HashedPassword actualPassword = getPassword(userName);
+        final HashedPassword actualPassword = getPassword(username);
         if (actualPassword == null) {
           return false;
         }
@@ -142,25 +165,24 @@ public class UserController implements UserDao {
         }
       }
       // update last login time
-      try (
-          final PreparedStatement ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
+      try (final PreparedStatement ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
         ps.setTimestamp(1, Timestamp.from(Instant.now()));
-        ps.setString(2, userName);
+        ps.setString(2, username);
         ps.execute();
         con.commit();
         return true;
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException(
-          "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword.mask(), sqle);
+          String.format("Error validating password name: %s pwd: %s", username, hashedPassword.mask()), sqle);
     }
   }
 
   @Override
-  public DBUser getUserByName(final String userName) {
+  public DBUser getUserByName(final String username) {
     final String sql = "select * from ta_users where username = ?";
     try (final Connection con = connectionSupplier.get(); final PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, userName);
+      ps.setString(1, username);
       try (final ResultSet rs = ps.executeQuery()) {
         if (!rs.next()) {
           return null;
@@ -171,7 +193,7 @@ public class UserController implements UserDao {
             rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
       }
     } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error getting user:" + userName, sqle);
+      throw new IllegalStateException("Error getting user: " + username, sqle);
     }
   }
 }
