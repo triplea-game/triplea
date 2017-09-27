@@ -132,7 +132,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 
   public GameStep getStep(final int index) {
     if ((index < 0) || (index >= m_steps.size())) {
-      throw new IllegalArgumentException("Attempt to access invalid state: " + index);
+      throw new IllegalArgumentException("Attempt to access invalid state: " + index + ", steps = " + m_steps);
     }
     return m_steps.get(index);
   }
