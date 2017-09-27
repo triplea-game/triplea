@@ -9,9 +9,9 @@
   - [Gradle plugin](http://plugins.netbeans.org/plugin/44510/gradle-support)
 
 *IntelliJ*
-  - [eclipse code formatter plugin](https://plugins.jetbrains.com/plugin/6546-eclipse-code-formatter)
-  - checkstyle
-  - save actions
+  - Plugins:
+    - Eclipse Code Formatter : can be used to pick up the eclipse formatter file, format then will conform to project spec (based on google java format)
+    - checkstyle-IDEA
 
 
 ### Gradle - Building and Running the Code
