@@ -20,7 +20,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorMessages;
-import games.strategy.util.MD5Crypt;
 
 
 @RunWith(Enclosed.class)
@@ -28,7 +27,7 @@ public final class ClientLoginValidatorTests {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
-  private static final String MAGIC_MAC_START = MD5Crypt.MAGIC + "MH$";
+  private static final String MAGIC_MAC_START = ClientLoginValidator.MAC_MAGIC_STRING_PREFIX;
 
   @RunWith(Enclosed.class)
   public static final class MacValidation {

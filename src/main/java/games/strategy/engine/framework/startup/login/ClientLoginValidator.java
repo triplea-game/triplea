@@ -29,6 +29,8 @@ public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
   @VisibleForTesting
   static final int MAC_ADDRESS_LENGTH = 28;
+  @VisibleForTesting
+  static final String MAC_MAGIC_STRING_PREFIX = MD5Crypt.MAGIC + "MH$";
 
 
   @VisibleForTesting
@@ -49,7 +51,7 @@ public final class ClientLoginValidator implements ILoginValidator {
    */
   public static boolean isValidMac(final String value) {
     return value.length() == MAC_ADDRESS_LENGTH
-            && value.startsWith(MD5Crypt.MAGIC + "MH$")
+            && value.startsWith(MAC_MAGIC_STRING_PREFIX)
             && value.matches("[0-9a-zA-Z$./]+");
   }
 
