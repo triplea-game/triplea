@@ -182,8 +182,8 @@ public class UnifiedMessenger {
   public Object getImplementor(final String name) {
     synchronized (m_endPointMutex) {
       final EndPoint endPoint = m_localEndPoints.get(name);
-      Preconditions.checkNotNull(endPoint, "local endpoints: " +
-          m_localEndPoints + " did not contain: " + name + ", messenger addr: " + super.toString());
+      Preconditions.checkNotNull(endPoint, "local endpoints: "
+              + m_localEndPoints + " did not contain: " + name + ", messenger addr: " + super.toString());
       return endPoint.getFirstImplementor();
     }
   }
@@ -303,7 +303,9 @@ public class UnifiedMessenger {
       synchronized (m_pendingLock) {
         m_results.put(methodId, results.results);
         final CountDownLatch latch = m_pendingInvocations.remove(methodId);
-        Preconditions.checkNotNull(latch, "method id: " + methodId + ", was not present in pending invocations: " + m_pendingInvocations + ", unified messenger addr: " + super.toString());
+        Preconditions.checkNotNull(latch, String.format(
+                "method id: %s, was not present in pending invocations: %s, unified messenger addr: %s",
+                methodId, m_pendingInvocations, super.toString()));
         latch.countDown();
       }
     }
