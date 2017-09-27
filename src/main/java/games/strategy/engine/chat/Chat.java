@@ -37,7 +37,7 @@ public class Chat {
   // mutex used for access synchronization to nodes
   // TODO: check if this mutex is used for something else as well
   private final Object mutexNodes = new Object();
-  private List<INode> nodes;
+  private final List<INode> nodes;
   // this queue is filled ONLY in init phase when chatInitVersion is default (-1) and nodes should not be changed
   // until end of
   // initialization
@@ -55,6 +55,57 @@ public class Chat {
     LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND
   }
 
+  public Chat(final IMessenger messenger, final String chatName, final IChannelMessenger channelMessenger,
+      final IRemoteMessenger remoteMessenger, final CHAT_SOUND_PROFILE chatSoundProfile) {
+
+    this.chatSoundProfile = chatSoundProfile;
+    this.messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
+    statusManager = new StatusManager(messengers);
+    chatChannelName = ChatController.getChatChannelName(chatName);
+    this.chatName = chatName;
+    sentMessages = new SentMessagesHistory();
+
+    // the order of events is significant.
+    // 1 register our channel listener
+    // once the channel is registered, we are guaranteed that
+    // when we receive the response from our init(...) message, our channel
+    // subscriber has been added, and will see any messages broadcasted by the server
+    // 2 call the init message on the server remote. Any add or join messages sent from the server
+    // will queue until we receive the init return value (they queue since they see the init version is -1)
+    // 3 when we receive the init message response, acquire the lock, and initialize our state
+    // and run any queued messages. Queued messages may be ignored if the
+    // server version is incorrect.
+    // this all seems a lot more involved than it needs to be.
+    final IChatController controller = (IChatController) messengers.getRemoteMessenger()
+        .getRemote(ChatController.getChatControlerRemoteName(chatName));
+    messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor,
+        new RemoteName(chatChannelName, IChatChannel.class));
+    final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
+    final Map<INode, Tag> chatters = init.getFirst();
+    synchronized (mutexNodes) {
+      nodes = new ArrayList<>(chatters.keySet());
+    }
+    chatInitVersion = init.getSecond();
+    synchronized (mutexQueue) {
+      queuedInitMessages.forEach(Runnable::run);
+      assignNodeTags(chatters);
+      queuedInitMessages = null;
+    }
+    updateConnections();
+  }
+
+  private void updateConnections() {
+    synchronized (mutexNodes) {
+      if (nodes == null) {
+        return;
+      }
+      final List<INode> playerNames = new ArrayList<>(nodes);
+      Collections.sort(playerNames);
+      for (final IChatListener listener : listeners) {
+        listener.updatePlayerList(playerNames);
+      }
+    }
+  }
   private void addToNotesMap(final INode node, final Tag tag) {
     if (tag == Tag.NONE) {
       return;
@@ -88,22 +139,6 @@ public class Chat {
     return sb.toString();
   }
 
-  /** Creates a new instance of Chat. */
-  public Chat(final String chatName, final Messengers messengers, final CHAT_SOUND_PROFILE chatSoundProfile) {
-    this.chatSoundProfile = chatSoundProfile;
-    this.messengers = messengers;
-    statusManager = new StatusManager(messengers);
-    chatChannelName = ChatController.getChatChannelName(chatName);
-    this.chatName = chatName;
-    sentMessages = new SentMessagesHistory();
-    init();
-  }
-
-  public Chat(final IMessenger messenger, final String chatName, final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger, final CHAT_SOUND_PROFILE chatSoundProfile) {
-    this(chatName, new Messengers(messenger, remoteMessenger, channelMessenger), chatSoundProfile);
-  }
-
   public SentMessagesHistory getSentMessagesHistory() {
     return sentMessages;
   }
@@ -123,38 +158,6 @@ public class Chat {
 
   public Object getMutex() {
     return mutexNodes;
-  }
-
-  private void init() {
-    // the order of events is significant.
-    // 1 register our channel listener
-    // once the channel is registered, we are guaranteed that
-    // when we receive the response from our init(...) message, our channel
-    // subscriber has been added, and will see any messages broadcasted by the server
-    // 2 call the init message on the server remote. Any add or join messages sent from the server
-    // will queue until we receive the init return value (they queue since they see the init version is -1)
-    // 3 when we receive the init message response, acquire the lock, and initialize our state
-    // and run any queued messages. Queued messages may be ignored if the
-    // server version is incorrect.
-    // this all seems a lot more involved than it needs to be.
-    final IChatController controller = (IChatController) messengers.getRemoteMessenger()
-        .getRemote(ChatController.getChatControlerRemoteName(chatName));
-    messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor,
-        new RemoteName(chatChannelName, IChatChannel.class));
-    final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
-    final Map<INode, Tag> chatters = init.getFirst();
-    synchronized (mutexNodes) {
-      nodes = new ArrayList<>(chatters.keySet());
-    }
-    chatInitVersion = init.getSecond().longValue();
-    synchronized (mutexQueue) {
-      queuedInitMessages.add(0, () -> assignNodeTags(chatters));
-      for (final Runnable job : queuedInitMessages) {
-        job.run();
-      }
-      queuedInitMessages = null;
-    }
-    updateConnections();
   }
 
   /**
@@ -201,19 +204,6 @@ public class Chat {
     sentMessages.append(message);
   }
 
-  private void updateConnections() {
-    synchronized (mutexNodes) {
-      if (nodes == null) {
-        return;
-      }
-      final List<INode> playerNames = new ArrayList<>(nodes);
-      Collections.sort(playerNames);
-      for (final IChatListener listener : listeners) {
-        listener.updatePlayerList(playerNames);
-      }
-    }
-  }
-
   void setIgnored(final INode node, final boolean isIgnored) {
     if (isIgnored) {
       ignoreList.add(node.getName());
@@ -222,7 +212,7 @@ public class Chat {
     }
   }
 
-  public boolean isIgnored(final INode node) {
+  boolean isIgnored(final INode node) {
     return ignoreList.shouldIgnore(node.getName());
   }
 
@@ -372,7 +362,7 @@ public class Chat {
       }
     }
 
-    private void handleSlap(String message, INode from) {
+    private void handleSlap(final String message, final INode from) {
       for (final IChatListener listener : listeners) {
         chatHistory.add(new ChatMessage(message, from.getName(), false));
         listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);
@@ -381,7 +371,6 @@ public class Chat {
 
     @Override
     public void ping() {
-      // System.out.println("Pinged");
     }
   };
 
@@ -390,7 +379,7 @@ public class Chat {
    *
    * @return the messages that have occured so far.
    */
-  public List<ChatMessage> getChatHistory() {
+  List<ChatMessage> getChatHistory() {
     return chatHistory;
   }
 }
