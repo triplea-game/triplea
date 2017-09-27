@@ -82,15 +82,11 @@ public class Chat {
         new RemoteName(chatChannelName, IChatChannel.class));
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
-    synchronized (mutexNodes) {
-      nodes = new ArrayList<>(chatters.keySet());
-    }
+    nodes = new ArrayList<>(chatters.keySet());
     chatInitVersion = init.getSecond();
-    synchronized (mutexQueue) {
-      queuedInitMessages.forEach(Runnable::run);
-      assignNodeTags(chatters);
-      queuedInitMessages = null;
-    }
+    queuedInitMessages.forEach(Runnable::run);
+    assignNodeTags(chatters);
+    queuedInitMessages = null;
     updateConnections();
   }
 
@@ -106,6 +102,7 @@ public class Chat {
       }
     }
   }
+  
   private void addToNotesMap(final INode node, final Tag tag) {
     if (tag == Tag.NONE) {
       return;
