@@ -122,7 +122,7 @@ public class UserController implements UserDao {
 
   @Override
   public void createUser(final DBUser user, final HashedPassword hashedPassword) {
-    Preconditions.checkState(hashedPassword.isValidSyntax());
+    Preconditions.checkState(hashedPassword.isHashedWithSalt());
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
     try (final Connection con = connectionSupplier.get();
@@ -143,7 +143,7 @@ public class UserController implements UserDao {
   @Override
   public boolean login(final String username, final HashedPassword hashedPassword) {
     try (final Connection con = connectionSupplier.get()) {
-      if (hashedPassword.isValidSyntax()) {
+      if (hashedPassword.isHashedWithSalt()) {
         try (final PreparedStatement ps =
             con.prepareStatement("select username from  ta_users where username = ? and password = ?")) {
           ps.setString(1, username);

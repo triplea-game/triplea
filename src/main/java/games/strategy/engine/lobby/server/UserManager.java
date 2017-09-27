@@ -36,7 +36,7 @@ public class UserManager implements IUserManager {
 
     try {
       new UserController().updateUser(user,
-          password.isValidSyntax() ? password : new HashedPassword(BCrypt.hashpw(hashedPassword, BCrypt.gensalt())));
+          password.isHashedWithSalt() ? password : new HashedPassword(BCrypt.hashpw(hashedPassword, BCrypt.gensalt())));
     } catch (final IllegalStateException e) {
       return e.getMessage();
     }
