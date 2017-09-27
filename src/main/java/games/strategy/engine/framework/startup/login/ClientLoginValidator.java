@@ -26,6 +26,9 @@ import games.strategy.util.Version;
  */
 public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
+  @VisibleForTesting
+  static final int MAC_ADDRESS_LENGTH = 28;
+
 
   @VisibleForTesting
   interface ErrorMessages {
@@ -38,6 +41,16 @@ public final class ClientLoginValidator implements ILoginValidator {
 
   private final IServerMessenger serverMessenger;
   private String password;
+
+  /**
+   * Returns true if the parameter value is the correct length of a md5 hashed value,
+   * and if also it starts with the correct string value.
+   */
+  public static boolean isValidMac(final String value) {
+    return value.length() == MAC_ADDRESS_LENGTH
+            && value.startsWith(MD5Crypt.MAGIC + "MH$")
+            && value.matches("[0-9a-zA-Z$./]+");
+  }
 
   public ClientLoginValidator(final IServerMessenger serverMessenger) {
     this.serverMessenger = serverMessenger;
@@ -115,12 +128,6 @@ public final class ClientLoginValidator implements ILoginValidator {
     }
 
     return ErrorMessages.NO_ERROR;
-  }
-
-  public static boolean isValidMac(final String value) {
-    return value.length() == 28
-        && value.startsWith(MD5Crypt.MAGIC + "MH$")
-        && value.matches("[0-9a-zA-Z$./]+");
   }
 
   @VisibleForTesting

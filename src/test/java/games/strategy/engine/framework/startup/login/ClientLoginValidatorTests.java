@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.net.SocketAddress;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.junit.Before;
@@ -15,24 +16,46 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorMessages;
-import games.strategy.net.IServerMessenger;
+import games.strategy.util.MD5Crypt;
+
 
 @RunWith(Enclosed.class)
 public final class ClientLoginValidatorTests {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
+  private static final String MAGIC_MAC_START = MD5Crypt.MAGIC + "MH$";
+
+  @RunWith(Enclosed.class)
+  public static final class MacValidation {
+    @Test
+    public void invalidMacs() {
+      Arrays.asList(
+              MAGIC_MAC_START + "no spaces allowed",
+              MAGIC_MAC_START + "tooShort",
+              MAGIC_MAC_START + "#%@symbol",
+              Strings.repeat("0", ClientLoginValidator.MAC_ADDRESS_LENGTH)
+      ).forEach(invalidValue -> assertThat(ClientLoginValidator.isValidMac(invalidValue), is(false)));
+    }
+
+    @Test
+    public void validMac() {
+      int remainingPaddingLength = ClientLoginValidator.MAC_ADDRESS_LENGTH - MAGIC_MAC_START.length();
+      String valid = MAGIC_MAC_START + Strings.repeat("0", remainingPaddingLength);
+
+      assertThat(ClientLoginValidator.isValidMac(valid), is(true));
+    }
+  }
+
   @RunWith(Enclosed.class)
   public static final class GetChallengePropertiesTests {
     public abstract static class AbstractTestCase {
       @InjectMocks
       ClientLoginValidator clientLoginValidator;
-
-      @Mock
-      private IServerMessenger serverMessenger;
 
       @Mock
       private SocketAddress socketAddress;
@@ -91,9 +114,6 @@ public final class ClientLoginValidatorTests {
   public static final class AuthenticateTest {
     @InjectMocks
     private ClientLoginValidator clientLoginValidator;
-
-    @Mock
-    private IServerMessenger serverMessenger;
 
     @Before
     public void givenPasswordSet() {
