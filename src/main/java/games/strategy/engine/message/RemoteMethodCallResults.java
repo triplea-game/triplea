@@ -56,4 +56,11 @@ public class RemoteMethodCallResults implements Externalizable {
       m_exception = (Throwable) in.readObject();
     }
   }
+
+  @Override
+  public String toString() {
+    final String exceptionMsg = (m_exception == null) ? "none" : m_exception.toString();
+    return "Return value: '" + m_rVal + "', exception: " + exceptionMsg;
+  }
+
 }
