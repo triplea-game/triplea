@@ -29,7 +29,7 @@ public final class ClientLoginValidatorTests {
 
   private static final String MAGIC_MAC_START = ClientLoginValidator.MAC_MAGIC_STRING_PREFIX;
 
-  public static final class MacValidation {
+  public static final class MacValidationTest {
     @Test
     public void invalidMacs() {
       Arrays.asList(
