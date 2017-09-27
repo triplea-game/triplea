@@ -23,7 +23,7 @@ import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorM
 
 
 @RunWith(Enclosed.class)
-public final class ClientLoginValidatorTest {
+public final class ClientLoginValidatorTests {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
