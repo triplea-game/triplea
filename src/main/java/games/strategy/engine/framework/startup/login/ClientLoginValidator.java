@@ -4,7 +4,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -99,10 +98,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     if (hashedMac == null) {
       return ErrorMessages.UNABLE_TO_OBTAIN_MAC;
-    } else if (hashedMac.length() != 28
-        || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")
-        || !hashedMac.matches("[0-9a-zA-Z$./]+")) {
-      // Must have been tampered with
+    } else if (!isValidMac(hashedMac)) {
       return ErrorMessages.INVALID_MAC;
     } else if (serverMessenger.isMacMiniBanned(hashedMac)) {
       return ErrorMessages.YOU_HAVE_BEEN_BANNED;
@@ -110,7 +106,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     if (Boolean.TRUE.toString().equals(propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY))) {
       final String errorMessage = authenticate(propertiesSentToClient, propertiesReadFromClient);
-      if (!Objects.equals(errorMessage, ErrorMessages.NO_ERROR)) {
+      if (errorMessage != ErrorMessages.NO_ERROR) {
         // sleep on average 2 seconds
         // try to prevent flooding to guess the password
         ThreadUtil.sleep((int) (4_000 * Math.random()));
@@ -119,6 +115,12 @@ public final class ClientLoginValidator implements ILoginValidator {
     }
 
     return ErrorMessages.NO_ERROR;
+  }
+
+  public static boolean isValidMac(final String value) {
+    return value.length() == 28
+        && value.startsWith(MD5Crypt.MAGIC + "MH$")
+        && value.matches("[0-9a-zA-Z$./]+");
   }
 
   @VisibleForTesting
