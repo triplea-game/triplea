@@ -146,7 +146,7 @@ class NioReader {
       } catch (final Exception e) {
         // catch unhandles exceptions to that the reader
         // thread doesnt die
-        logger.log(Level.WARNING, "error in reader", e);
+        logger.log(Level.SEVERE, "error in reader", e);
       }
     }
   }
