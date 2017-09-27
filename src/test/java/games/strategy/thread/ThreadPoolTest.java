@@ -7,6 +7,8 @@ import java.util.Collection;
 
 import org.junit.Test;
 
+import games.strategy.util.ThreadUtil;
+
 public class ThreadPoolTest {
 
   @Test
@@ -111,11 +113,7 @@ public class ThreadPoolTest {
     @Override
     public void run() {
       synchronized (this) {
-        try {
-          Thread.sleep(10L);
-        } catch (final InterruptedException e) {
-          Thread.currentThread().interrupt();
-        }
+        ThreadUtil.sleep(10L);
         super.run();
       }
     }
