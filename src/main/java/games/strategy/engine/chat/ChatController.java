@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import games.strategy.engine.lobby.server.IModeratorController;
-import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
@@ -31,7 +30,7 @@ public class ChatController implements IChatController {
   private final IChannelMessenger channelMessenger;
   private final String chatName;
   private final Map<INode, Tag> chatters = new HashMap<>();
-  protected final Object mutex = new Object();
+  private final Object mutex = new Object();
   private final String chatChannel;
   private long version;
   private final ScheduledExecutorService pingThread = Executors.newScheduledThreadPool(1);
@@ -49,7 +48,7 @@ public class ChatController implements IChatController {
     }
   };
 
-  public static RemoteName getChatControlerRemoteName(final String chatName) {
+  static RemoteName getChatControlerRemoteName(final String chatName) {
     return new RemoteName(CHAT_REMOTE + chatName, IChatController.class);
   }
 
@@ -77,7 +76,7 @@ public class ChatController implements IChatController {
     }, 180, 60, TimeUnit.SECONDS);
   }
 
-  public ChatController(final String name, final Messengers messenger, final ModeratorController moderatorController) {
+  public ChatController(final String name, final Messengers messenger, final IModeratorController moderatorController) {
     this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(),
         moderatorController);
   }
@@ -97,9 +96,7 @@ public class ChatController implements IChatController {
   }
 
   private IChatChannel getChatBroadcaster() {
-    final IChatChannel chatter =
-        (IChatChannel) channelMessenger.getChannelBroadcastor(new RemoteName(chatChannel, IChatChannel.class));
-    return chatter;
+    return (IChatChannel) channelMessenger.getChannelBroadcastor(new RemoteName(chatChannel, IChatChannel.class));
   }
 
   // a player has joined
@@ -128,8 +125,8 @@ public class ChatController implements IChatController {
     leaveChatInternal(MessageContext.getSender());
   }
 
-  protected void leaveChatInternal(final INode node) {
-    long version;
+  private void leaveChatInternal(final INode node) {
+    final long version;
     synchronized (mutex) {
       chatters.remove(node);
       this.version++;
