@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -25,7 +24,7 @@ public abstract class AbstractStatPanel extends JPanel {
    * Does not call initLayout() because initLayout may depend on some private tables being created with GameData first.
    * So make sure you call initLayout() yourself.
    */
-  public AbstractStatPanel(final GameData data) {
+  AbstractStatPanel(final GameData data) {
     gameData = data;
   }
 
@@ -51,21 +50,21 @@ public abstract class AbstractStatPanel extends JPanel {
 
   public List<PlayerID> getPlayers() {
     final List<PlayerID> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
-    Collections.sort(players, new PlayerOrderComparator(gameData));
+    players.sort(new PlayerOrderComparator(gameData));
     return players;
   }
 
   class ResourceStat extends AbstractStat {
     final Resource resource;
 
-    public ResourceStat(final Resource resource) {
+    ResourceStat(final Resource resource) {
       super();
       this.resource = resource;
     }
 
     @Override
     public String getName() {
-      return resource.getName();
+      return resource == null ? "" : resource.getName();
     }
 
     @Override
