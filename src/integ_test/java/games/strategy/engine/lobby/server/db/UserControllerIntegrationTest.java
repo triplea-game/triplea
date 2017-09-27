@@ -43,14 +43,9 @@ public class UserControllerIntegrationTest {
   }
 
   @Test
-  public void testGet() throws Exception {
+  public void testGet() {
     final DBUser user = createUserWithMd5CryptHash();
-
-    final DBUser loadedUser = controller.getUserByName(user.getName());
-
-    assertEquals(loadedUser.getName(), user.getName());
-    assertEquals(loadedUser.getEmail(), user.getEmail());
-    assertEquals(loadedUser.isAdmin(), user.isAdmin());
+    assertEquals(user, controller.getUserByName(user.getName()));
   }
 
   @Test
@@ -60,20 +55,19 @@ public class UserControllerIntegrationTest {
   }
 
   @Test
-  public void testCreateDupe() throws Exception {
+  public void testCreateDupe() {
     catchException(() -> controller.createUser(createUserWithMd5CryptHash(),
         new HashedPassword(MD5Crypt.crypt(Util.createUniqueTimeStamp()))));
     assertThat("Should not be allowed to create a dupe user", caughtException(), is(not(equalTo(null))));
   }
 
   @Test
-  public void testLogin() throws Exception {
+  public void testLogin() {
     final String password = MD5Crypt.crypt(Util.createUniqueTimeStamp());
-    final DBUser user = createUserWithHash(password, s -> s);
-    controller.updateUser(user,
-        new HashedPassword(BCrypt.hashpw(RsaAuthenticator.hashPasswordWithSalt(password), BCrypt.gensalt())));
+    final DBUser user = createUserWithHash(password, Function.identity());
+    controller.updateUser(user, new HashedPassword(bcrypt(obfuscate(password))));
     assertTrue(controller.login(user.getName(), new HashedPassword(password)));
-    assertTrue(controller.login(user.getName(), new HashedPassword(RsaAuthenticator.hashPasswordWithSalt(password))));
+    assertTrue(controller.login(user.getName(), new HashedPassword(obfuscate(password))));
   }
 
   @Test
@@ -103,7 +97,7 @@ public class UserControllerIntegrationTest {
   }
 
   private DBUser createUserWithBCryptHash() {
-    return createUserWithHash(Util.createUniqueTimeStamp(), s -> BCrypt.hashpw(s, BCrypt.gensalt()));
+    return createUserWithHash(Util.createUniqueTimeStamp(), UserControllerIntegrationTest::bcrypt);
   }
 
   private DBUser createUserWithHash(final @Nullable String password, final Function<String, String> hashingMethod) {
