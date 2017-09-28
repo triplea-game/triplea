@@ -613,11 +613,6 @@ public class ServerGame extends AbstractGame {
   }
 
   @Override
-  public boolean canSave() {
-    return true;
-  }
-
-  @Override
   public IRandomSource getRandomSource() {
     return m_randomSource;
   }

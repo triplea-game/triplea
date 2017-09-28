@@ -191,16 +191,6 @@ public class ClientGame extends AbstractGame {
     throw new UnsupportedOperationException();
   }
 
-  /**
-   * Clients cant save because they do not have the delegate data.
-   * It would be easy to get the server to save the game, and send the
-   * data to the client, I just havent bothered.
-   */
-  @Override
-  public boolean canSave() {
-    return false;
-  }
-
   @Override
   public IRandomSource getRandomSource() {
     return null;
