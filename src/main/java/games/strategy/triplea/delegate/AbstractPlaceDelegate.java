@@ -1112,10 +1112,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
     }
     // a factory can produce the same number of units as the number of PUs the territory generates each turn (or not, if
-    // it has
-    // canProduceXUnits)
-    int production = 0;
-    // int territoryValue = getProduction(producer);
+    // it has canProduceXUnits)
     final int maxConstructions =
         howManyOfEachConstructionCanPlace(to, producer, unitsCanBePlacedByThisProducer, player).totalValues();
     final boolean wasFactoryThereAtStart =
@@ -1128,7 +1125,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return Math.max(0, maxConstructions);
     }
     // getHowMuchCanUnitProduce accounts for IncreasedFactoryProduction, but does not account for maxConstructions
-    production = TripleAUnit.getProductionPotentialOfTerritory(unitsAtStartOfStepInTerritory(producer), producer,
+    int production = TripleAUnit.getProductionPotentialOfTerritory(unitsAtStartOfStepInTerritory(producer), producer,
         player, getData(), true, true);
     // increase the production by the number of constructions allowed
     if (maxConstructions > 0) {
@@ -1223,12 +1220,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @return gets the production of the territory.
    */
   protected int getProduction(final Territory territory) {
-    // Can be null!
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta != null) {
-      return ta.getProduction();
-    }
-    return 0;
+    return ta == null ? 0 : ta.getProduction();
   }
 
   /**

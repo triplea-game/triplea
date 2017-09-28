@@ -745,7 +745,7 @@ public class DiceRoll implements Externalizable {
       final boolean friendly) {
     // first, sort the lists inside each set
     final Comparator<UnitSupportAttachment> compList = (u1, u2) -> {
-      int compareTo = 0;
+      int compareTo;
       // we want to apply the biggest bonus first
       // Make sure stronger supports are ordered first if friendly, and worst are ordered first if enemy
       // TODO: it is possible that we will waste negative support if we reduce a units power to less than zero.

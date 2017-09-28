@@ -85,13 +85,8 @@ class ExportMenu {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
-    int round = 0;
-    try {
-      gameData.acquireReadLock();
-      round = gameData.getSequence().getRound();
-    } finally {
-      gameData.releaseReadLock();
-    }
+
+    final int round = gameData.getCurrentRound();
     String defaultFileName =
         "xml_" + dateTimeFormatter.format(LocalDateTime.now()) + "_" + gameData.getGameName() + "_round_" + round;
     defaultFileName = FileNameUtils.removeIllegalCharacters(defaultFileName);
@@ -148,13 +143,7 @@ class ExportMenu {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
-    int currentRound = 0;
-    try {
-      gameData.acquireReadLock();
-      currentRound = gameData.getSequence().getRound();
-    } finally {
-      gameData.releaseReadLock();
-    }
+    final int currentRound = gameData.getCurrentRound();
     String defaultFileName =
         "stats_" + dateTimeFormatter.format(LocalDateTime.now()) + "_" + gameData.getGameName() + "_round_"
             + currentRound + (showPhaseStats ? "_full" : "_short");

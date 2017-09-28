@@ -119,8 +119,6 @@ public class ProOddsCalculator {
       return new ProBattleResult();
     }
 
-    // Use battle calculator (hasLandUnitRemaining is always true for naval territories)
-    AggregateResults results = null;
     final int minArmySize = Math.min(attackingUnits.size(), defendingUnits.size());
     final int runCount = Math.max(16, 100 - minArmySize);
     final PlayerID attacker = attackingUnits.get(0).getOwner();
@@ -128,8 +126,9 @@ public class ProOddsCalculator {
     if (retreatWhenOnlyAirLeft) {
       calc.setRetreatWhenOnlyAirLeft(true);
     }
-    results = calc.setCalculateDataAndCalculate(attacker, defender, t, attackingUnits, defendingUnits,
-        new ArrayList<>(bombardingUnits), TerritoryEffectHelper.getEffects(t), runCount);
+    final AggregateResults results = calc.setCalculateDataAndCalculate(attacker, defender,
+            t, attackingUnits, defendingUnits, new ArrayList<>(bombardingUnits),
+            TerritoryEffectHelper.getEffects(t), runCount);
     if (retreatWhenOnlyAirLeft) {
       calc.setRetreatWhenOnlyAirLeft(false);
     }

@@ -289,7 +289,7 @@ public class ValidateAttachmentsTest {
       }
 
       // validate that there is a field and a getter
-      Field field = null;
+      final Field field;
       try {
         field = PropertyUtil.getPropertyField(propertyName, clazz);
         // adders must have a field of type IntegerMap, or be a collection of sorts
@@ -309,7 +309,7 @@ public class ValidateAttachmentsTest {
         continue;
       }
       final String resetterName = "reset" + capitalizeFirstLetter(propertyName);
-      Method resetterMethod = null;
+      final Method resetterMethod;
       try {
         resetterMethod = clazz.getMethod(resetterName);
         if (!resetterMethod.getReturnType().equals(void.class)) {

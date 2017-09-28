@@ -228,7 +228,7 @@ public class PointFileReaderWriter {
         char current = line.charAt(index);
         if (current == '<') {
           int x = 0;
-          int y = 0;
+          int y;
           int base = 0;
           // inside a poly
           while (true) {

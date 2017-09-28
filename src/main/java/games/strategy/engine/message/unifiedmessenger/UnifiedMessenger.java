@@ -271,15 +271,14 @@ public class UnifiedMessenger {
       // we get the next message notification
       // get the number for the invocation here
       final long methodRunNumber = local.takeANumber();
-      // we dont want to block the message thread, only one thread is
-      // reading messages
-      // per connection, so run with out thread pool
+      // we don't want to block the message thread, only one thread is
+      // reading messages per connection, so run with out thread pool
       final EndPoint localFinal = local;
       final Runnable task = () -> {
         final List<RemoteMethodCallResults> results =
             localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
         if (invoke.needReturnValues) {
-          RemoteMethodCallResults result = null;
+          final RemoteMethodCallResults result;
           if (results.size() == 1) {
             result = results.get(0);
           } else {

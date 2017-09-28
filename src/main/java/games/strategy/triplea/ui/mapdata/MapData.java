@@ -438,14 +438,13 @@ public class MapData implements Closeable {
     }
     // look in map.properties
     final String propertiesKey = PROPERTY_COLOR_PREFIX + playerName;
-    Color color = null;
+    Color color;
     try {
       color = getColorProperty(propertiesKey);
     } catch (final Exception e) {
       throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
     }
     if (color == null) {
-      System.out.println("No color defined for " + playerName + ".  Edit map.properties in the map folder to set it");
       color = defaultColors.remove(0);
     }
     // dont crash, use one of our default colors

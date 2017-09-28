@@ -811,8 +811,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (s.length <= 0) {
       throw new GameParseException("repairsUnits cannot be empty" + thisErrorMsg());
     }
-    int amount = 1;
     int i = 0;
+    int amount;
     try {
       amount = Integer.parseInt(s[0]);
       i++;

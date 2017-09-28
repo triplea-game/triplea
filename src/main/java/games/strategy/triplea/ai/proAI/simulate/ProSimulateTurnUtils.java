@@ -107,7 +107,7 @@ public class ProSimulateTurnUtils {
       ProLogger.debug("Transferring " + fromTerritory + " to " + toTerritory);
       final List<Unit> amphibUnits = new ArrayList<>();
       for (final Unit transport : amphibAttackMap.keySet()) {
-        Unit toTransport = null;
+        Unit toTransport;
         final List<Unit> toUnits = new ArrayList<>();
         if (isTransportingMap.get(transport)) {
           toTransport = transferLoadedTransport(transport, amphibAttackMap.get(transport), unitTerritoryMap, usedUnits,

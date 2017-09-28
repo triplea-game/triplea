@@ -131,7 +131,7 @@ class EditPanel extends ActionPanel {
         } finally {
           getData().releaseReadLock();
         }
-        boolean mustChoose = false;
+        final boolean mustChoose;
         if (selectedUnits.containsAll(allUnits)) {
           mustChoose = false;
         } else {
@@ -200,7 +200,7 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        Resource pus = null;
+        final Resource pus;
         getData().acquireReadLock();
         try {
           pus = getData().getResourceList().getResource(Constants.PUS);
@@ -250,7 +250,7 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        Vector<TechAdvance> techs = null;
+        final Vector<TechAdvance> techs;
         getData().acquireReadLock();
         try {
           techs = new Vector<>(TechnologyDelegate.getAvailableTechs(player, data));
@@ -304,7 +304,7 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        Vector<TechAdvance> techs = null;
+        final Vector<TechAdvance> techs;
         getData().acquireReadLock();
         try {
           techs = new Vector<>(TechTracker.getCurrentTechAdvances(player, data));

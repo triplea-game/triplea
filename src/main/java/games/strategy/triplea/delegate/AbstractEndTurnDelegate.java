@@ -105,7 +105,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       if (total < 0) {
         toAdd -= total;
-        total = 0;
       }
       final Change change = ChangeFactory.changeResourcesChange(m_player, pus, toAdd);
       m_bridge.addChange(change);
@@ -350,7 +349,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   // finds losses due to blockades, positive value returned.
-  protected int getBlockadeProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge bridge,
+  private int getBlockadeProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge bridge,
       final StringBuilder endTurnReport) {
     final PlayerAttachment playerRules = PlayerAttachment.get(player);
     if (playerRules != null && playerRules.getImmuneToBlockade()) {

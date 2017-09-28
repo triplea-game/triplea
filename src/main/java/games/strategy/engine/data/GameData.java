@@ -521,4 +521,20 @@ public class GameData implements Serializable {
     sb.append("]");
     return sb.toString();
   }
+
+  /**
+   * Returns the current game round (with locking).
+   * TODO: the locking here is probably not necessary! If the current round is updated immediately
+   * after we return from this method, then the lock will have been to no effect anyways!
+   */
+  public int getCurrentRound() {
+    final int round;
+    try {
+      acquireReadLock();
+      round = getSequence().getRound();
+    } finally {
+      releaseReadLock();
+    }
+    return round;
+  }
 }

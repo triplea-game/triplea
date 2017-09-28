@@ -78,7 +78,7 @@ public class GameParser {
     if (stream == null) {
       throw new IllegalArgumentException("Stream must be non null");
     }
-    Document doc = null;
+    Document doc;
     try {
       doc = getDocument(stream);
     } catch (final IOException | ParserConfigurationException e) {
@@ -404,14 +404,12 @@ public class GameParser {
    * Assumes a zero argument constructor.
    */
   private Object getInstance(final String className) throws GameParseException {
-    Object instance = null;
     try {
       final Class<?> instanceClass = Class.forName(className);
-      instance = instanceClass.getDeclaredConstructor().newInstance();
+      return instanceClass.getDeclaredConstructor().newInstance();
     } catch (final ReflectiveOperationException e) {
       throw new GameParseException(mapName, String.format("Unable to create instance of class <%s>", className), e);
     }
-    return instance;
   }
 
   /**
@@ -1047,8 +1045,7 @@ public class GameParser {
     }
     for (final Element current : elements) {
       // must find either a resource or a unit with the given name
-      NamedAttachable result = null;
-      result = getResource(current, "resourceOrUnit", false);
+      NamedAttachable result = getResource(current, "resourceOrUnit", false);
       if (result == null) {
         result = getUnitType(current, "resourceOrUnit", false);
       }
@@ -1067,8 +1064,7 @@ public class GameParser {
     }
     for (final Element current : elements) {
       // must find either a resource or a unit with the given name
-      NamedAttachable result = null;
-      result = getResource(current, "resourceOrUnit", false);
+      NamedAttachable result = getResource(current, "resourceOrUnit", false);
       if (result == null) {
         result = getUnitType(current, "resourceOrUnit", false);
       }
@@ -1244,7 +1240,7 @@ public class GameParser {
     for (final Element current : values) {
       // find the setter
       String name = null;
-      Method setter = null;
+      Method setter;
       try {
         name = current.getAttribute("name");
         if (name.length() == 0) {

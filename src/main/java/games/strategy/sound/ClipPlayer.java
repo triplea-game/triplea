@@ -111,7 +111,7 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
  * 6. Randomize the list's order, then pick one, and play the sound.
  */
 public class ClipPlayer {
-  protected static final String ASSETS_SOUNDS_FOLDER = "sounds";
+  private static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
   private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
@@ -162,7 +162,7 @@ public class ClipPlayer {
    *
    * @param beSilent new value for m_beSilent
    */
-  protected static void setBeSilent(final boolean beSilent) {
+  static void setBeSilent(final boolean beSilent) {
     final ClipPlayer clipPlayer = getInstance();
     clipPlayer.beSilent = beSilent;
     setBeSilentInPreferencesWithoutAffectingCurrent(beSilent);
@@ -189,13 +189,13 @@ public class ClipPlayer {
     }
   }
 
-  protected static boolean getBeSilent() {
+  static boolean getBeSilent() {
     final ClipPlayer clipPlayer = getInstance();
     return clipPlayer.beSilent;
   }
 
 
-  protected boolean isMuted(final String clipName) {
+  boolean isMuted(final String clipName) {
     if (mutedClips.contains(clipName)) {
       return true;
     }
@@ -220,13 +220,13 @@ public class ClipPlayer {
     return false;
   }
 
-  protected void setMute(final String clipName, final boolean value) {
+  void setMute(final String clipName, final boolean value) {
     // we want to avoid unnecessary calls to preferences
     final boolean isCurrentCorrect = mutedClips.contains(clipName) == value;
     if (isCurrentCorrect) {
       return;
     }
-    if (value == true) {
+    if (value) {
       mutedClips.add(clipName);
     } else {
       mutedClips.remove(clipName);
@@ -237,7 +237,7 @@ public class ClipPlayer {
 
 
   /** Flushes sounds preferences to persisted data store. This method is *slow* and resource expensive. */
-  protected void saveSoundPreferences() {
+  void saveSoundPreferences() {
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
     try {
       prefs.flush();
@@ -290,7 +290,7 @@ public class ClipPlayer {
 
   private Optional<URI> loadClip(final String clipName) {
     if (beSilent || isMuted(clipName)) {
-      return null;
+      return Optional.empty();
     }
     return Optional.ofNullable(loadClipPath(clipName));
   }

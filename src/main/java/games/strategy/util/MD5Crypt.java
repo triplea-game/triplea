@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 /**
- * A Java Implementation of the MD5Crypt function
+ * A Java Implementation of the MD5Crypt function.
  * Modified from the GANYMEDE network directory management system
  * released under the GNU General Public License
  * by the University of Texas at Austin
@@ -18,10 +18,11 @@ import java.util.Random;
  * - Added built-in java.security.MessageDigest (MD5) support
  * - Code cleanup
  * <br>
- * <br>
- * TODO Use SHA512(fast) or BCrypt(secure) in the future instead
- * this may be kept for backwards compatibility
+ *
+ * @deprecated Use SHA512(fast) or BCrypt(secure) in the future instead
+ * (kept for backwards compatibility)
  */
+@Deprecated // MD5 is not secure, use BCrypt or SHA512 (fast instead
 public class MD5Crypt {
   public static final String MAGIC = "$1$";
   // Character set allowed for the salt string
@@ -39,7 +40,7 @@ public class MD5Crypt {
    * @return A string of size (size) from the set A-Za-z0-9./
    */
   private static String to64(long v, int size) {
-    final StringBuffer result = new StringBuffer();
+    final StringBuilder result = new StringBuilder();
     while (--size >= 0) {
       result.append(itoa64.charAt((int) (v & 0x3f)));
       v >>>= 6;
@@ -130,7 +131,7 @@ public class MD5Crypt {
     if (salt.length() > 8) {
       salt = salt.substring(0, 8);
     }
-    /**
+    /*
      * Transformation set #1:
      * The password first, since that is what is most unknown
      * Magic string
@@ -148,7 +149,7 @@ public class MD5Crypt {
     for (int pl = password.length(); pl > 0; pl -= 16) {
       ctx.update(finalState, 0, pl > 16 ? 16 : pl);
     }
-    /**
+    /*
      * the original code claimed that finalState was being cleared
      * to keep dangerous bits out of memory,
      * but doing this is also required in order to get the right output.
@@ -163,12 +164,13 @@ public class MD5Crypt {
       }
     }
     finalState = ctx.digest();
-    /**
+    /*
      * and now, just to make sure things don't run too fast
      * On a 60 Mhz Pentium this takes 34 msec, so you would
      * need 30 seconds to build a 1000 entry dictionary...
      * (The above timings from the C version)
      */
+    // TODO: we are WAY faster than 60Mhz, this operation is likely nanoseconds.. (not even micro seconds, nano!)
     for (int i = 0; i < 1000; i++) {
       try {
         ctx1 = MessageDigest.getInstance("md5");
@@ -195,11 +197,11 @@ public class MD5Crypt {
       finalState = ctx1.digest();
     }
     /* Now make the output string */
-    final StringBuffer result = new StringBuffer();
+    final StringBuilder result = new StringBuilder();
     result.append(magic);
     result.append(salt);
     result.append("$");
-    /**
+    /*
      * Build a 22 byte output string from the set: A-Za-z0-9./
      */
     long l = (bytes2u(finalState[0]) << 16) | (bytes2u(finalState[6]) << 8) | bytes2u(finalState[12]);

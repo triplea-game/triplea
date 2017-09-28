@@ -176,7 +176,7 @@ public class ProAI extends AbstractAI {
     } else {
 
       // Repair factories
-      pusToSpend = purchaseAI.repair(pusToSpend, purchaseDelegate, data, player);
+      purchaseAI.repair(pusToSpend, purchaseDelegate, data, player);
 
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = ProPurchaseUtils.findPurchaseTerritories(player);

@@ -78,11 +78,10 @@ public class HistoryLog extends JFrame {
   }
 
   public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerID> playersAllowed) {
-    final HistoryNode printNode = data.getHistory().getLastNode();
-    HistoryNode curNode = printNode;
+    HistoryNode curNode = data.getHistory().getLastNode();
     Step stepNode = null;
     Step turnStartNode = null;
-    PlayerID curPlayer = null;
+    final PlayerID curPlayer;
     final Collection<PlayerID> players = new HashSet<>();
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
@@ -101,7 +100,7 @@ public class HistoryLog extends JFrame {
         players.add(curPlayer);
       }
       // get first step for this turn
-      while (stepNode != null) {
+      while (true) {
         turnStartNode = stepNode;
         stepNode = (Step) stepNode.getPreviousSibling();
         if (stepNode == null) {
@@ -152,7 +151,6 @@ public class HistoryLog extends JFrame {
     return curPlayer;
   }
 
-  @SuppressWarnings("unchecked")
   public void printRemainingTurn(final HistoryNode printNode, final boolean verbose, final int diceSides,
       final Collection<PlayerID> playersAllowed) {
     final PrintWriter logWriter = printWriter;
@@ -193,9 +191,9 @@ public class HistoryLog extends JFrame {
       while (nodeEnum.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
         final String title = node.getTitle();
-        String indent = "";
+        StringBuilder indent = new StringBuilder();
         for (int i = 0; i < node.getLevel(); i++) {
-          indent = indent + moreIndent;
+          indent.append(moreIndent);
         }
         // flush move list
         if (moving && !(node instanceof Renderable)) {
@@ -381,7 +379,6 @@ public class HistoryLog extends JFrame {
         logWriter.println(moveIter.next());
         moveIter.remove();
       }
-      moving = false;
     }
     logWriter.println();
     logWriter.println();
@@ -444,13 +441,10 @@ public class HistoryLog extends JFrame {
       final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
       // see if there's a flag
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      boolean hasFlag = false;
-      if (ta == null) {
-        hasFlag = false;
-      } else {
-        hasFlag = t.getOwner() != null && players.contains(t.getOwner())
-            && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
-      }
+      final boolean hasFlag = ta != null
+              && t.getOwner() != null
+              && players.contains(t.getOwner())
+              && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
       if (hasFlag || !ownedUnits.isEmpty()) {
         logWriter.print("    " + t.getName() + " : ");
         if (hasFlag && ownedUnits.isEmpty()) {
@@ -458,8 +452,6 @@ public class HistoryLog extends JFrame {
         } else if (hasFlag) {
           logWriter.print("1 flag, ");
         }
-        // else if (ownedUnits.isEmpty())
-        // logWriter.print("nothing");
         if (!ownedUnits.isEmpty()) {
           logWriter.println(MyFormatter.unitsToTextNoOwner(ownedUnits));
         }

@@ -34,13 +34,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
 
   public static boolean getEditMode(final GameData data) {
     final Object editMode = data.getProperties().get(Constants.EDIT_MODE);
-    if (editMode == null) {
-      return false;
-    }
-    if (!(editMode instanceof Boolean)) {
-      return false;
-    }
-    return (boolean) editMode;
+    return editMode != null && editMode instanceof Boolean && (boolean) editMode;
   }
 
   public boolean getEditMode() {
@@ -55,7 +49,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
     return null;
   }
 
-  protected String checkEditMode() {
+  String checkEditMode() {
     final String result = checkPlayerId();
     if (null != result) {
       return result;
@@ -77,8 +71,8 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   }
 
   public String addComment(final String message) {
-    String result = null;
-    if (null != (result = checkPlayerId())) {
+    String result = checkPlayerId();
+    if (result != null) {
       return result;
     }
     logEvent("COMMENT: " + message, null);
@@ -89,7 +83,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   // out whether it makes more sense to log a new event or a child.
   // If any child events came before us, then we'll log a child event.
   // Otherwise, we'll log a new event.
-  protected void logEvent(final String message, final Object renderingObject) {
+  void logEvent(final String message, final Object renderingObject) {
     // find last event node
     boolean foundChild = false;
     final GameData gameData = getData();

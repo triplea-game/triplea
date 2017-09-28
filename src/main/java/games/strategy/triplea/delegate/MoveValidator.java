@@ -1590,7 +1590,7 @@ public class MoveValidator {
           noEnemy, noAa, noNeutral));
     }
     for (final Match<Territory> t : tests) {
-      Match<Territory> testMatch = null;
+      final Match<Territory> testMatch;
       if (mustGoLand) {
         testMatch = Match.allOf(t, Matches.territoryIsLand(), noImpassable);
       } else if (mustGoSea) {

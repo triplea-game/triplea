@@ -282,7 +282,6 @@ final class UnitChooser extends JPanel {
           leftToSelect -= canSelect;
         } else {
           entry.set(entry.getHits(0) + canSelect);
-          leftToSelect = 0;
           break;
         }
       }

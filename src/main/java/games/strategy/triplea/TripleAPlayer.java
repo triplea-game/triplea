@@ -382,7 +382,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       m_soundPlayedAlreadyPurchase = true;
     }
     // Check if any factories need to be repaired
-    String error = null;
     if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null
         && !id.getRepairFrontier().getRules().isEmpty()) {
       final GameData data = getGameData();
@@ -409,7 +408,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
               ClientLogger.logQuietly(e);
               throw new IllegalStateException(errorContext, e);
             }
-            error = purchaseDel.purchaseRepair(repair);
+            final String error = purchaseDel.purchaseRepair(repair);
             if (error != null) {
               ui.notifyError(error);
               // dont give up, keep going
@@ -434,9 +433,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
-    error = purchaseDel.purchase(prod);
-    if (error != null) {
-      ui.notifyError(error);
+    final String purchaseError = purchaseDel.purchase(prod);
+    if (purchaseError != null) {
+      ui.notifyError(purchaseError);
       // dont give up, keep going
       purchase(bid);
     }

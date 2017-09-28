@@ -55,7 +55,7 @@ public class IndividualUnitPanel extends JPanel {
    * with the points per
    * unit.
    */
-  public IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data,
+  IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data,
       final IUIContext uiContext, final int max, final boolean showMinAndMax, final boolean showSelectAll,
       final ScrollableTextFieldListener optionalListener) {
     gameData = data;
@@ -215,7 +215,6 @@ public class IndividualUnitPanel extends JPanel {
           leftToSelect -= canSelect;
         } else {
           entry.setCount(leftToSelectForCurrent);
-          leftToSelect = 0;
           break;
         }
       }

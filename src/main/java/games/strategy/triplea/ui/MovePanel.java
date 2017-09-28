@@ -404,7 +404,7 @@ public class MovePanel extends AbstractMovePanel {
     }
     final Iterator<Territory> iter = forced.iterator();
     Territory last = getFirstSelectedTerritory();
-    Territory current = null;
+    Territory current;
     Route total = new Route();
     total.setStart(last);
     while (iter.hasNext()) {

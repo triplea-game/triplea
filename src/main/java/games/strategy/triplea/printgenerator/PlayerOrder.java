@@ -18,28 +18,26 @@ import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.InitializationDelegate;
 
-public class PlayerOrder {
+class PlayerOrder {
   private final List<PlayerID> playerSet = new ArrayList<>();
 
   private static <E> Set<E> removeDups(final Collection<E> c) {
     return new LinkedHashSet<>(c);
   }
 
-  protected void saveToFile(final PrintGenerationData printData) throws IOException {
+  void saveToFile(final PrintGenerationData printData) throws IOException {
     final GameData gameData = printData.getData();
-    final Iterator<GameStep> gameStepIterator = gameData.getSequence().iterator();
-    while (gameStepIterator.hasNext()) {
-      final GameStep currentStep = gameStepIterator.next();
+    for (GameStep currentStep : gameData.getSequence()) {
       if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {
         final String delegateClassName = currentStep.getDelegate().getClass().getName();
         if (delegateClassName.equals(InitializationDelegate.class.getName())
-            || delegateClassName.equals(BidPurchaseDelegate.class.getName())
-            || delegateClassName.equals(BidPlaceDelegate.class.getName())
-            || delegateClassName.equals(EndRoundDelegate.class.getName())) {
+                || delegateClassName.equals(BidPurchaseDelegate.class.getName())
+                || delegateClassName.equals(BidPlaceDelegate.class.getName())
+                || delegateClassName.equals(EndRoundDelegate.class.getName())) {
           continue;
         }
       } else if (currentStep.getName() != null
-          && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
+              && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
         continue;
       }
       final PlayerID currentPlayerId = currentStep.getPlayerId();

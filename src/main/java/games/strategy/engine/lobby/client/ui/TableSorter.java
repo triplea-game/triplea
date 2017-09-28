@@ -286,7 +286,7 @@ class TableSorter extends AbstractTableModel {
         final int column = directive.column;
         final Object o1 = tableModel.getValueAt(row1, column);
         final Object o2 = tableModel.getValueAt(row2, column);
-        int comparison = 0;
+        int comparison;
         // Define null less than everything, except null.
         if (o1 == null && o2 == null) {
           comparison = 0;

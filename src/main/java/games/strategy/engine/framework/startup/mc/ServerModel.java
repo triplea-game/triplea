@@ -331,28 +331,24 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
      */
     @Override
     public byte[] getSaveGame() {
-      System.out.println("Sending save game");
-
-      byte[] bytes = null;
       try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000)) {
         GameDataManager.saveGame(sink, data);
-        bytes = sink.toByteArray();
+        return sink.toByteArray();
       } catch (final IOException e) {
         ClientLogger.logQuietly(e);
         throw new IllegalStateException(e);
       }
-      return bytes;
     }
 
     @Override
     public byte[] getGameOptions() {
-      byte[] bytes = null;
       if (data == null || data.getProperties() == null || data.getProperties().getEditableProperties() == null
           || data.getProperties().getEditableProperties().isEmpty()) {
-        return bytes;
+        return null;
       }
       final List<IEditableProperty> currentEditableProperties = data.getProperties().getEditableProperties();
 
+      byte[] bytes = null;
       try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000)) {
         GameProperties.toOutputStream(sink, currentEditableProperties);
         bytes = sink.toByteArray();

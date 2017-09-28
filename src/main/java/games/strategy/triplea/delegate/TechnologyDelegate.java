@@ -204,7 +204,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     final String annotation = m_player.getName() + " rolling for tech.";
     final int[] random;
-    int techHits = 0;
+    int techHits;
     int remainder = 0;
     final int diceSides = data.getDiceSides();
     if (BaseEditDelegate.getEditMode(data)) {
@@ -347,7 +347,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private Collection<TechAdvance> getTechAdvances(int hits) {
-    List<TechAdvance> available = new ArrayList<>();
+    final List<TechAdvance> available;
     if (hits > 0 && isWW2V3TechModel()) {
       available = getAvailableAdvancesForCategory(m_techCategory);
       hits = 1;

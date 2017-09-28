@@ -291,15 +291,13 @@ class OddsCalculatorPanel extends JPanel {
     swapSidesButton.addActionListener(e -> {
       attackerOrderOfLosses = null;
       defenderOrderOfLosses = null;
-      List<Unit> getdefenders = new ArrayList<>();
-      List<Unit> getattackers = new ArrayList<>();
-      getdefenders = defendingUnitsPanel.getUnits();
-      getattackers = attackingUnitsPanel.getUnits();
+      List<Unit> getDefenders = defendingUnitsPanel.getUnits();
+      List<Unit> getAttackers = attackingUnitsPanel.getUnits();
       swapSidesCombo.setSelectedItem(getAttacker());
       attackerCombo.setSelectedItem(getDefender());
       defenderCombo.setSelectedItem(getSwapSides());
-      attackingUnitsPanel.init(getAttacker(), getdefenders, isLand());
-      defendingUnitsPanel.init(getDefender(), getattackers, isLand());
+      attackingUnitsPanel.init(getAttacker(), getDefenders, isLand());
+      defendingUnitsPanel.init(getDefender(), getAttackers, isLand());
       setWidgetActivation();
     });
     orderOfLossesButton.addActionListener(e -> {
@@ -626,7 +624,6 @@ class OddsCalculatorPanel extends JPanel {
       resultsText.add(new JScrollPane(territoryEffectsJList),
           new GridBagConstraints(0, row1, 1, territoryEffectsJList.getVisibleRowCount(), 0, 0,
               GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(10, 15, 0, 0), 0, 0));
-      row1 += territoryEffectsJList.getVisibleRowCount();
     }
     resultsText.add(retreatWhenOnlyAirLeftCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 5), 0, 0));
