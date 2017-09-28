@@ -72,7 +72,7 @@ public class LobbyFrame extends JFrame {
     m_client = client;
     setJMenuBar(new LobbyMenu(this));
     final Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(),
-        m_client.getRemoteMessenger(), Chat.CHAT_SOUND_PROFILE.LOBBY_CHATROOM);
+        m_client.getRemoteMessenger(), Chat.ChatSoundProfile.LOBBY_CHATROOM);
     m_chatMessagePanel = new ChatMessagePanel(chat);
     showServerMessage(lobbyServerProperties);
     m_chatMessagePanel.setShowTime(true);

@@ -8,7 +8,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import games.strategy.engine.chat.Chat.CHAT_SOUND_PROFILE;
+import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
@@ -32,7 +32,7 @@ public class ChatPanel extends JPanel implements IChatPanel {
 
   /** Creates a new instance of ChatPanel. */
   public ChatPanel(final IMessenger messenger, final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger, final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile) {
+      final IRemoteMessenger remoteMessenger, final String chatName, final ChatSoundProfile chatSoundProfile) {
     init();
     final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
     setChat(chat);
