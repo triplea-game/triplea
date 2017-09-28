@@ -167,7 +167,7 @@ public class LobbyMenu extends JMenuBar {
           return;
         }
       }
-      final Optional<TemporalAmount> duration = requestTimespanSupplication();
+      final Optional<TemporalAmount> duration = promptBanDuration();
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       if (duration.isPresent()) {
@@ -210,7 +210,7 @@ public class LobbyMenu extends JMenuBar {
           return;
         }
       }
-      final Optional<TemporalAmount> duration = requestTimespanSupplication();
+      final Optional<TemporalAmount> duration = promptBanDuration();
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       if (duration.isPresent()) {
@@ -295,7 +295,7 @@ public class LobbyMenu extends JMenuBar {
     parentMenu.add(item);
   }
 
-  private Optional<TemporalAmount> requestTimespanSupplication() {
+  private Optional<TemporalAmount> promptBanDuration() {
     final List<String> timeUnits = new ArrayList<>();
     timeUnits.add("Minute");
     timeUnits.add("Hour");
