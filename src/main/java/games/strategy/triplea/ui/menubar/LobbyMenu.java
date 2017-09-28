@@ -184,10 +184,9 @@ public class LobbyMenu extends JMenuBar {
   private void addBanMacAddressMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Ban Hashed Mac Address");
     item.addActionListener(e -> {
-      final String mac = JOptionPane.showInputDialog(null,
-          "Enter the hashed Mac Address that you want to ban from the lobby.\r\n\r\n"
-              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
-          "");
+      final String mac =
+          JOptionPane.showInputDialog(null, "Enter the hashed Mac Address that you want to ban from the lobby.\r\n\r\n"
+              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3", "");
       if (mac == null || mac.length() < 1) {
         return;
       }
