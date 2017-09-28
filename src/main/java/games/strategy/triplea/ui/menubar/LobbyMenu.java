@@ -171,7 +171,7 @@ public class LobbyMenu extends JMenuBar {
         final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
             .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
-          controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), toDate(duration));
+          controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), getExpirationDate(duration));
         } catch (final UnknownHostException ex) {
           ClientLogger.logQuietly(ex);
         }
@@ -214,7 +214,7 @@ public class LobbyMenu extends JMenuBar {
             .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
           controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-              toDate(duration));
+              getExpirationDate(duration));
         } catch (final UnknownHostException ex) {
           ClientLogger.logQuietly(ex);
         }
@@ -433,7 +433,7 @@ public class LobbyMenu extends JMenuBar {
     }
   }
 
-  private static Date toDate(final TemporalAmount amount) {
+  private static Date getExpirationDate(final TemporalAmount amount) {
     return !amount.equals(ChronoUnit.FOREVER.getDuration())
         ? Date.from(LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC).plus(amount).toInstant(ZoneOffset.UTC))
         : null;
