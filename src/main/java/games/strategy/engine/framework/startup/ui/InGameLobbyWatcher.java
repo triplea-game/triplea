@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.debug.HeartBeat;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.GameRunner;
@@ -113,8 +112,6 @@ public class InGameLobbyWatcher {
           getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
       final UnifiedMessenger um = new UnifiedMessenger(messenger);
       final RemoteMessenger rm = new RemoteMessenger(um);
-      final HeartBeat h = new HeartBeat(messenger.getServerNode());
-      rm.registerRemote(h, HeartBeat.getHeartBeatName(um.getLocalNode()));
       final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
       rm.registerRemote(rhu, RemoteHostUtils.getRemoteHostUtilsName(um.getLocalNode()));
       return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);

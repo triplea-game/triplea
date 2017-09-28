@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client;
 
-import games.strategy.debug.HeartBeat;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.message.IChannelMessenger;
@@ -9,23 +8,18 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 
 public class LobbyClient {
-  private final Messengers m_messengers;
-  private final boolean m_isAnonymousLogin;
+  private final Messengers messengers;
+  private final boolean isAnonymousLogin;
   private Boolean isAdmin;
 
   public LobbyClient(final IMessenger messenger, final boolean anonymousLogin) {
-    m_messengers = new Messengers(messenger);
-    m_isAnonymousLogin = anonymousLogin;
-    // add a heart beat server, to allow the server to ping us
-    // we only respond to the server
-    final HeartBeat heartBeatServer = new HeartBeat(m_messengers.getMessenger().getServerNode());
-    m_messengers.getRemoteMessenger().registerRemote(heartBeatServer,
-        HeartBeat.getHeartBeatName(m_messengers.getMessenger().getLocalNode()));
+    messengers = new Messengers(messenger);
+    isAnonymousLogin = anonymousLogin;
   }
 
   public boolean isAdmin() {
     if (isAdmin == null) {
-      final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger()
+      final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
           .getRemote(ModeratorController.getModeratorControllerName());
       isAdmin = controller.isAdmin();
     }
@@ -33,22 +27,22 @@ public class LobbyClient {
   }
 
   public boolean isAnonymousLogin() {
-    return m_isAnonymousLogin;
+    return isAnonymousLogin;
   }
 
   public IChannelMessenger getChannelMessenger() {
-    return m_messengers.getChannelMessenger();
+    return messengers.getChannelMessenger();
   }
 
   public IMessenger getMessenger() {
-    return m_messengers.getMessenger();
+    return messengers.getMessenger();
   }
 
   public IRemoteMessenger getRemoteMessenger() {
-    return m_messengers.getRemoteMessenger();
+    return messengers.getRemoteMessenger();
   }
 
   public Messengers getMessengers() {
-    return m_messengers;
+    return messengers;
   }
 }

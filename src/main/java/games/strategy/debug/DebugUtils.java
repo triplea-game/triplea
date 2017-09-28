@@ -1,6 +1,5 @@
 package games.strategy.debug;
 
-import java.awt.Frame;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
@@ -8,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
-import games.strategy.engine.ClientContext;
 
 /**
  * Moved out of Console class, so that we don't need swing.
@@ -75,39 +72,5 @@ public class DebugUtils {
       buf.append(property).append(" ").append(value).append("\n");
     }
     return buf.toString();
-  }
-
-  public static String getDebugReportHeadless() {
-    final StringBuilder result = new StringBuilder(500);
-    result.append(getThreadDumps());
-    result.append(getProperties());
-    result.append(getMemory());
-    result.append("ENGINE VERSION: ").append(ClientContext.engineVersion()).append("\n");
-    return result.toString();
-  }
-
-  public static String getDebugReportWithFramesAndWindows() {
-    final StringBuilder result = new StringBuilder(500);
-    result.append("CONSOLE_OUTPUT:\n");
-    result.append(ErrorConsole.getConsole().getText());
-    result.append("\n");
-    result.append(getThreadDumps());
-    result.append(getProperties());
-    result.append(getMemory());
-    result.append(getOpenAppWindows());
-    result.append("ENGINE VERSION: ").append(ClientContext.gameEnginePropertyReader().getEngineVersion()).append("\n");
-    return result.toString();
-  }
-
-  private static String getOpenAppWindows() {
-    final StringBuilder builder = new StringBuilder("WINDOWS\n");
-    for (final Frame f : Frame.getFrames()) {
-      if (f.isVisible()) {
-        builder.append("window:").append("class ").append(f.getClass()).append(" size ").append(f.getSize())
-            .append(" title ")
-            .append(f.getTitle()).append("\n");
-      }
-    }
-    return builder.toString();
   }
 }
