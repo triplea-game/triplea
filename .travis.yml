@@ -19,6 +19,7 @@ before_deploy:
 - ./.travis/install_install4j
 - ENGINE_VERSION="$(grep engine_version game_engine.properties | sed 's/.*= *//g').$TRAVIS_BUILD_NUMBER"
 - ./gradlew -PengineVersion="$ENGINE_VERSION" release
+- ./.travis/generate_artifact_checksums
 - ./.travis/push_tag $ENGINE_VERSION
 - ./.travis/push_maps
 deploy:
