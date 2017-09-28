@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.login;
 
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.net.SocketAddress;
@@ -122,7 +121,7 @@ public final class ClientLoginValidatorTests {
 
       final String errorMessage = clientLoginValidator.authenticate(challenge, response);
 
-      assertThat(errorMessage, is(nullValue()));
+      assertThat(errorMessage, is(ErrorMessages.NO_ERROR));
     }
 
     @Test
