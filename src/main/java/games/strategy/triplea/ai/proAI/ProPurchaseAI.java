@@ -750,7 +750,6 @@ class ProPurchaseAI {
 
       // Create new temp units
       resourceTracker.purchase(bestAaOption);
-      remainingUnitProduction -= bestAaOption.getQuantity();
       final List<Unit> unitsToPlace = bestAaOption.getUnitType().create(bestAaOption.getQuantity(), player, true);
       placeTerritory.getPlaceUnits().addAll(unitsToPlace);
       ProLogger.trace(t + ", placedUnits=" + unitsToPlace);
