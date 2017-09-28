@@ -20,12 +20,11 @@ public class GameDataUtils {
    */
   public static GameData cloneGameData(final GameData data, final boolean copyDelegates) {
     try {
-      ByteArrayOutputStream sink = new ByteArrayOutputStream(10000);
-      GameDataManager.saveGame(sink, data, copyDelegates);
-      sink.close();
-      final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
-      sink = null;
-      return GameDataManager.loadGame(source);
+      try (ByteArrayOutputStream sink = new ByteArrayOutputStream(10000)) {
+        GameDataManager.saveGame(sink, data, copyDelegates);
+        final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
+        return GameDataManager.loadGame(source);
+      }
     } catch (final IOException ex) {
       ClientLogger.logQuietly(ex);
       return null;
@@ -39,22 +38,23 @@ public class GameDataUtils {
   @SuppressWarnings("unchecked")
   public static <T> T translateIntoOtherGameData(final T object, final GameData translateInto) {
     try {
-      ByteArrayOutputStream sink = new ByteArrayOutputStream(1024);
-      try (final GameObjectOutputStream out = new GameObjectOutputStream(sink)) {
+      try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1024);
+           final GameObjectOutputStream out = new GameObjectOutputStream(sink)) {
         out.writeObject(object);
+
+        try (final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray())) {
+          final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);
+          try (final ObjectInputStream in = factory.create(source)) {
+            try {
+              return (T) in.readObject();
+            } catch (final ClassNotFoundException ex) {
+              throw new RuntimeException(ex);
+            }
+          }
+        }
       }
-      final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
-      sink = null;
-      final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);
-      final ObjectInputStream in = factory.create(source);
-      try {
-        return (T) in.readObject();
-      } catch (final ClassNotFoundException ex) {
-        // should never happen
-        throw new RuntimeException(ex);
-      }
-    } catch (final IOException ioe) {
-      throw new RuntimeException(ioe);
+    } catch (final IOException e) {
+      throw new RuntimeException(e);
     }
   }
 }
