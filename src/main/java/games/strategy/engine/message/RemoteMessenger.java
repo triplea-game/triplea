@@ -9,10 +9,10 @@ import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
  * An implementation of IRemoteMessenger based on MessageManager and Messenger.
  */
 public class RemoteMessenger implements IRemoteMessenger {
-  private final UnifiedMessenger m_unifiedMessenger;
+  private final UnifiedMessenger unifiedMessenger;
 
   public RemoteMessenger(final UnifiedMessenger messenger) {
-    m_unifiedMessenger = messenger;
+    unifiedMessenger = messenger;
   }
 
   @Override
@@ -23,14 +23,14 @@ public class RemoteMessenger implements IRemoteMessenger {
   @Override
   public IRemote getRemote(final RemoteName remoteName, final boolean ignoreResults) {
     final InvocationHandler ih =
-        new UnifiedInvocationHandler(m_unifiedMessenger, remoteName.getName(), ignoreResults, remoteName.getClazz());
+        new UnifiedInvocationHandler(unifiedMessenger, remoteName.getName(), ignoreResults, remoteName.getClazz());
     return (IRemote) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
         new Class<?>[] {remoteName.getClazz()}, ih);
   }
 
   @Override
   public void registerRemote(final Object implementor, final RemoteName name) {
-    m_unifiedMessenger.addImplementor(name, implementor, false);
+    unifiedMessenger.addImplementor(name, implementor, false);
   }
 
   @Override
@@ -40,21 +40,21 @@ public class RemoteMessenger implements IRemoteMessenger {
 
   @Override
   public void unregisterRemote(final String name) {
-    m_unifiedMessenger.removeImplementor(name, m_unifiedMessenger.getImplementor(name));
+    unifiedMessenger.removeImplementor(name, unifiedMessenger.getImplementor(name));
   }
 
   @Override
   public boolean isServer() {
-    return m_unifiedMessenger.isServer();
+    return unifiedMessenger.isServer();
   }
 
   @Override
   public boolean hasLocalImplementor(final RemoteName descriptor) {
-    return m_unifiedMessenger.getLocalEndPointCount(descriptor) == 1;
+    return unifiedMessenger.getLocalEndPointCount(descriptor) == 1;
   }
 
   @Override
   public String toString() {
-    return "RemoteMessenger: " + m_unifiedMessenger.toString();
+    return "RemoteMessenger: " + unifiedMessenger.toString();
   }
 }
