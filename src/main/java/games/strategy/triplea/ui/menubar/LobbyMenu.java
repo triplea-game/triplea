@@ -167,16 +167,15 @@ public class LobbyMenu extends JMenuBar {
           return;
         }
       }
-      final Optional<TemporalAmount> duration = promptBanDuration();
-      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-      if (duration.isPresent()) {
+      promptBanDuration().ifPresent(duration -> {
+        final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
+            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
-          controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), toDate(duration.get()));
+          controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), toDate(duration));
         } catch (final UnknownHostException ex) {
           ClientLogger.logQuietly(ex);
         }
-      }
+      });
     });
     item.setEnabled(true);
     parentMenu.add(item);
@@ -210,17 +209,16 @@ public class LobbyMenu extends JMenuBar {
           return;
         }
       }
-      final Optional<TemporalAmount> duration = promptBanDuration();
-      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-      if (duration.isPresent()) {
+      promptBanDuration().ifPresent(duration -> {
+        final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
+            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         try {
           controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-              toDate(duration.get()));
+              toDate(duration));
         } catch (final UnknownHostException ex) {
           ClientLogger.logQuietly(ex);
         }
-      }
+      });
     });
     item.setEnabled(true);
     parentMenu.add(item);
