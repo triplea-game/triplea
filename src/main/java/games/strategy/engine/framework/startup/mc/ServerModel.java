@@ -250,10 +250,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
       if (ui == null && headless) {
         chatPanel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
-            Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
+            Chat.ChatSoundProfile.GAME_CHATROOM);
       } else {
         chatPanel = new ChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
-            Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
+            Chat.ChatSoundProfile.GAME_CHATROOM);
       }
 
       serverMessenger.setAcceptNewConnections(true);

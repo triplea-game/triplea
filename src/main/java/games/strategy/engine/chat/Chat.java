@@ -49,14 +49,14 @@ public class Chat {
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
   private final HashMap<INode, LinkedHashSet<String>> notesMap = new HashMap<>();
   private static final String TAG_MODERATOR = "[Mod]";
-  private final CHAT_SOUND_PROFILE chatSoundProfile;
+  private final ChatSoundProfile chatSoundProfile;
 
-  public enum CHAT_SOUND_PROFILE {
+  public enum ChatSoundProfile {
     LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND
   }
 
   public Chat(final IMessenger messenger, final String chatName, final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger, final CHAT_SOUND_PROFILE chatSoundProfile) {
+      final IRemoteMessenger remoteMessenger, final ChatSoundProfile chatSoundProfile) {
 
     this.chatSoundProfile = chatSoundProfile;
     this.messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
@@ -78,7 +78,7 @@ public class Chat {
     // this all seems a lot more involved than it needs to be.
     final IChatController controller = (IChatController) messengers.getRemoteMessenger()
         .getRemote(ChatController.getChatControlerRemoteName(chatName));
-    messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor,
+    messengers.getChannelMessenger().registerChannelSubscriber(chatChannelSubscribor,
         new RemoteName(chatChannelName, IChatChannel.class));
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
@@ -136,24 +136,24 @@ public class Chat {
     return sb.toString();
   }
 
-  public SentMessagesHistory getSentMessagesHistory() {
+  SentMessagesHistory getSentMessagesHistory() {
     return sentMessages;
   }
 
-  public void addChatListener(final IChatListener listener) {
+  void addChatListener(final IChatListener listener) {
     listeners.add(listener);
     updateConnections();
   }
 
-  public StatusManager getStatusManager() {
+  StatusManager getStatusManager() {
     return statusManager;
   }
 
-  public void removeChatListener(final IChatListener listener) {
+  void removeChatListener(final IChatListener listener) {
     listeners.remove(listener);
   }
 
-  public Object getMutex() {
+  Object getMutex() {
     return mutexNodes;
   }
 
@@ -174,7 +174,7 @@ public class Chat {
    * Stop receiving events from the messenger.
    */
   public void shutdown() {
-    messengers.getChannelMessenger().unregisterChannelSubscriber(m_chatChannelSubscribor,
+    messengers.getChannelMessenger().unregisterChannelSubscriber(chatChannelSubscribor,
         new RemoteName(chatChannelName, IChatChannel.class));
     if (messengers.getMessenger().isConnected()) {
       final RemoteName chatControllerName = ChatController.getChatControlerRemoteName(chatName);
@@ -221,17 +221,17 @@ public class Chat {
     return messengers.getMessenger().getServerNode();
   }
 
-  private final List<INode> m_playersThatLeft_Last10 = new ArrayList<>();
+  private final List<INode> playersThatLeftLast10 = new ArrayList<>();
 
   public List<INode> getPlayersThatLeft_Last10() {
-    return new ArrayList<>(m_playersThatLeft_Last10);
+    return new ArrayList<>(playersThatLeftLast10);
   }
 
   public List<INode> getOnlinePlayers() {
     return new ArrayList<>(nodes);
   }
 
-  private final IChatChannel m_chatChannelSubscribor = new IChatChannel() {
+  private final IChatChannel chatChannelSubscribor = new IChatChannel() {
     private void assertMessageFromServer() {
       final INode senderNode = MessageContext.getSender();
       final INode serverNode = messengers.getMessenger().getServerNode();
@@ -299,7 +299,7 @@ public class Chat {
         }
         for (final IChatListener listener : listeners) {
           listener.addStatusMessage(node.getName() + " has joined");
-          if (chatSoundProfile == CHAT_SOUND_PROFILE.GAME_CHATROOM) {
+          if (chatSoundProfile == ChatSoundProfile.GAME_CHATROOM) {
             ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
           }
         }
@@ -328,9 +328,9 @@ public class Chat {
         for (final IChatListener listener : listeners) {
           listener.addStatusMessage(node.getName() + " has left");
         }
-        m_playersThatLeft_Last10.add(node);
-        if (m_playersThatLeft_Last10.size() > 10) {
-          m_playersThatLeft_Last10.remove(0);
+        playersThatLeftLast10.add(node);
+        if (playersThatLeftLast10.size() > 10) {
+          playersThatLeftLast10.remove(0);
         }
       }
     }

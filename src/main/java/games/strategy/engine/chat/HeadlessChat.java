@@ -9,7 +9,7 @@ import java.util.Set;
 import javax.swing.DefaultListCellRenderer;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.chat.Chat.CHAT_SOUND_PROFILE;
+import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
@@ -34,7 +34,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private PrintStream m_out = null;
 
   public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger, final String chatName, final CHAT_SOUND_PROFILE chatSoundProfile) {
+      final IRemoteMessenger remoteMessenger, final String chatName, final ChatSoundProfile chatSoundProfile) {
     final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
     setChat(chat);
   }

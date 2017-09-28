@@ -165,7 +165,7 @@ public class ClientModel implements IMessengerErrorListener {
     m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
     m_channelMessenger.registerChannelSubscriber(m_channelListener, IClientChannel.CHANNEL_NAME);
     m_chatPanel = new ChatPanel(m_messenger, m_channelMessenger, m_remoteMessenger, ServerModel.CHAT_NAME,
-        Chat.CHAT_SOUND_PROFILE.GAME_CHATROOM);
+        Chat.ChatSoundProfile.GAME_CHATROOM);
     if (getIsServerHeadlessTest()) {
       m_gameSelectorModel.setClientModelForHostBots(this);
       ((ChatPanel) m_chatPanel).getChatMessagePanel()

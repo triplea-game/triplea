@@ -116,7 +116,7 @@ public final class ChatIntegrationTest {
       final IMessenger messenger,
       final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
-    return new Chat(messenger, CHAT_NAME, channelMessenger, remoteMessenger, Chat.CHAT_SOUND_PROFILE.NO_SOUND);
+    return new Chat(messenger, CHAT_NAME, channelMessenger, remoteMessenger, Chat.ChatSoundProfile.NO_SOUND);
   }
 
   private static void waitFor(final Runnable assertion) throws InterruptedException {
