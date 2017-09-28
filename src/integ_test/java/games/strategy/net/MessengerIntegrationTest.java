@@ -19,7 +19,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 
-public class MessengerTest {
+public class MessengerIntegrationTest {
   private int serverPort = -1;
   private IServerMessenger serverMessenger;
   private IMessenger client1Messenger;

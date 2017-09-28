@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import games.strategy.util.Util;
 
-public class MutedUsernameControllerTest {
+public class MutedUsernameControllerIntegrationTest {
 
   private final MutedUsernameController controller = spy(new MutedUsernameController());
   private final String username = Util.createUniqueTimeStamp();
