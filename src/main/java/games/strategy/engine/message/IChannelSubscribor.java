@@ -13,5 +13,6 @@ package games.strategy.engine.message;
  * in any way. The values may be used in method calls to other
  * subscribors.
  */
+// TODO: fix typo in Subscribor, should be 'Subscriber'
 public interface IChannelSubscribor {
 }
