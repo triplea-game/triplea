@@ -17,8 +17,9 @@ description = 'TripleA is a free online turn based strategy game and board game 
 mainClassName = "games.strategy.engine.framework.GameRunner"
 
 ext {
-    rootFilesDir = file("$buildDir/rootFiles")
+    artifactsDir = file("$buildDir/artifacts")
     releasesDir = file("$buildDir/releases")
+    rootFilesDir = file("$buildDir/rootFiles")
     schemasDir = file('config/triplea/schemas')
 
     gameEnginePropertiesFile = file('game_engine.properties')
@@ -160,7 +161,7 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
 }
 
 task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
-    ext.output = file("$project.buildDir/libs/all/triplea.jar")
+    ext.output = file("$libsDir/all/triplea.jar")
     from shadowJar.archivePath
     into ext.output.parent
     rename shadowJar.archivePath.name, output.name
@@ -226,7 +227,31 @@ task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
     }
 }
 
-task release(group: 'release', dependsOn: [generateZipReleases, prepareInstallers]) {}
+task prepareArtifacts(group: 'release', dependsOn: [generateZipReleases, prepareInstallers]) {
+    doLast {
+        def artifacts = [
+            file("$libsDir/triplea-$version-all.jar"),
+            file("$distsDir/triplea-$version-all_platforms.zip"),
+            file("$distsDir/triplea-$version-server.zip"),
+            file("$releasesDir/TripleA_${version}_macos.dmg"),
+            file("$releasesDir/TripleA_${version}_unix.sh"),
+            file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
+            file("$releasesDir/TripleA_${version}_windows-64bit.exe")
+        ]
+        artifacts.each {
+            if (!it.exists()) {
+                throw new GradleException("artifact '$it' does not exist")
+            }
+        }
+
+        copy {
+            from artifacts
+            into artifactsDir
+        }
+    }
+}
+
+task release(group: 'release', dependsOn: [prepareArtifacts]) {}
 
 gradle.taskGraph.whenReady { graph ->
     graph.getAllTasks().any({
