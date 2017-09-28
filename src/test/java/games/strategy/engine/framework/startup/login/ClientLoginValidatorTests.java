@@ -41,8 +41,8 @@ public final class ClientLoginValidatorTests {
 
     @Test
     public void validMac() {
-      int remainingPaddingLength = ClientLoginValidator.MAC_ADDRESS_LENGTH - MAGIC_MAC_START.length();
-      String valid = MAGIC_MAC_START + Strings.repeat("0", remainingPaddingLength);
+      final int remainingPaddingLength = ClientLoginValidator.MAC_ADDRESS_LENGTH - MAGIC_MAC_START.length();
+      final String valid = MAGIC_MAC_START + Strings.repeat("0", remainingPaddingLength);
 
       assertThat(ClientLoginValidator.isValidMac(valid), is(true));
     }
