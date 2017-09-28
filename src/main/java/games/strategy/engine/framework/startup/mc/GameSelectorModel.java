@@ -48,7 +48,7 @@ public class GameSelectorModel extends Observable {
 
   public void resetGameDataToNull() {
     setGameData(null);
-     m_fileName = "";
+    fileName = "";
   }
 
   public void load(final GameData data, final String fileName) {
@@ -174,7 +174,7 @@ public class GameSelectorModel extends Observable {
   }
 
   /**
-   * We dont have a gane data (ie we are a remote player and the data has not been sent yet), but
+   * We don't have a game data (ie we are a remote player and the data has not been sent yet), but
    * we still want to display game info.
    */
   void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion) {
