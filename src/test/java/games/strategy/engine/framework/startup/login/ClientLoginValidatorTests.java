@@ -27,9 +27,9 @@ public final class ClientLoginValidatorTests {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
-  private static final String MAGIC_MAC_START = ClientLoginValidator.MAC_MAGIC_STRING_PREFIX;
-
   public static final class MacValidationTest {
+    private static final String MAGIC_MAC_START = ClientLoginValidator.MAC_MAGIC_STRING_PREFIX;
+
     @Test
     public void invalidMacs() {
       Arrays.asList(
