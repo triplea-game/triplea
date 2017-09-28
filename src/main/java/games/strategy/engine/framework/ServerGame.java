@@ -56,28 +56,27 @@ import games.strategy.triplea.settings.ClientSetting;
  * Lookups to get a GamePlayer from PlayerId and the current Delegate.
  */
 public class ServerGame extends AbstractGame {
-  public static final RemoteName SERVER_REMOTE =
+  static final RemoteName SERVER_REMOTE =
       new RemoteName("games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);
 
   public static final String GAME_HAS_BEEN_SAVED_PROPERTY =
       "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
 
-  // maps PlayerID->GamePlayer
-  private final RandomStats m_randomStats;
-  private IRandomSource m_randomSource = new PlainRandomSource();
-  private IRandomSource m_delegateRandomSource;
-  private final DelegateExecutionManager m_delegateExecutionManager = new DelegateExecutionManager();
-  private InGameLobbyWatcherWrapper m_inGameLobbyWatcher;
-  private boolean m_needToInitialize = true;
+  private final RandomStats randomStats;
+  private IRandomSource randomSource = new PlainRandomSource();
+  private IRandomSource delegateRandomSource;
+  private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
+  private InGameLobbyWatcherWrapper inGameLobbyWatcher;
+  private boolean needToInitialize = true;
   /**
    * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
    * returning.
    */
-  private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
+  private final CountDownLatch delegateExecutionStoppedLatch = new CountDownLatch(1);
   /**
    * Has the delegate signaled that delegate execution should stop.
    */
-  private volatile boolean m_delegateExecutionStopped = false;
+  private volatile boolean delegateExecutionStopped = false;
 
   /**
    * @param data
@@ -126,7 +125,7 @@ public class ServerGame extends AbstractGame {
         m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
       }
 
-      protected void setRenderingData(final Object renderingData) {
+      void setRenderingData(final Object renderingData) {
         assertCorrectCaller();
         m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
       }
@@ -147,7 +146,7 @@ public class ServerGame extends AbstractGame {
     };
     m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     setupDelegateMessaging(data);
-    m_randomStats = new RandomStats(m_remoteMessenger);
+    randomStats = new RandomStats(m_remoteMessenger);
     final IServerRemote serverRemote = () -> {
       final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
       try {
@@ -164,7 +163,7 @@ public class ServerGame extends AbstractGame {
   public void addObserver(final IObserverWaitingToJoin blockingObserver,
       final IObserverWaitingToJoin nonBlockingObserver, final INode newNode) {
     try {
-      if (!m_delegateExecutionManager.blockDelegateExecution(2000)) {
+      if (!delegateExecutionManager.blockDelegateExecution(2000)) {
         nonBlockingObserver.cannotJoinGame("Could not block delegate execution");
         return;
       }
@@ -198,7 +197,7 @@ public class ServerGame extends AbstractGame {
       ClientLogger.logQuietly(e);
       nonBlockingObserver.cannotJoinGame(e.getMessage());
     } finally {
-      m_delegateExecutionManager.resumeDelegateExecution();
+      delegateExecutionManager.resumeDelegateExecution();
     }
   }
 
@@ -215,7 +214,7 @@ public class ServerGame extends AbstractGame {
       return;
     }
     final Object wrappedDelegate =
-        m_delegateExecutionManager.createInboundImplementation(delegate, new Class<?>[] {delegate.getRemoteType()});
+        delegateExecutionManager.createInboundImplementation(delegate, new Class<?>[] {delegate.getRemoteType()});
     final RemoteName descriptor = getRemoteName(delegate);
     m_remoteMessenger.registerRemote(wrappedDelegate, descriptor);
   }
@@ -254,15 +253,15 @@ public class ServerGame extends AbstractGame {
       }
       startPersistentDelegates();
       if (gameHasBeenSaved) {
-        runStep(gameHasBeenSaved);
+        runStep(true);
       }
       while (!m_isGameOver) {
-        if (m_delegateExecutionStopped) {
+        if (delegateExecutionStopped) {
           // the delegate has told us to stop stepping through game steps
           try {
             // dont let this method return, as this method returning signals
             // that the game is over.
-            m_delegateExecutionStoppedLatch.await();
+            delegateExecutionStoppedLatch.await();
           } catch (final InterruptedException e) {
             // ignore
           }
@@ -286,7 +285,7 @@ public class ServerGame extends AbstractGame {
       System.out.println("Attempting to stop game.");
     }
     m_isGameOver = true;
-    m_delegateExecutionStoppedLatch.countDown();
+    delegateExecutionStoppedLatch.countDown();
     // tell the players (especially the AI's) that the game is stopping, so stop doing stuff.
     for (final IGamePlayer player : m_gamePlayers.values()) {
       // not sure whether to put this before or after we delegate execution block, but definitely before the game loader
@@ -295,7 +294,7 @@ public class ServerGame extends AbstractGame {
     }
     // block delegate execution to prevent outbound messages to the players while we shut down.
     try {
-      if (!m_delegateExecutionManager.blockDelegateExecution(16000)) {
+      if (!delegateExecutionManager.blockDelegateExecution(16000)) {
         System.err.println("Could not stop delegate execution.");
         if (HeadlessGameServer.getInstance() != null) {
           HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
@@ -303,7 +302,7 @@ public class ServerGame extends AbstractGame {
           ErrorConsole.getConsole().dumpStacks();
         }
         // Try one more time
-        if (!m_delegateExecutionManager.blockDelegateExecution(16000)) {
+        if (!delegateExecutionManager.blockDelegateExecution(16000)) {
           System.err.println("Exiting...");
           System.exit(-1);
         }
@@ -313,9 +312,9 @@ public class ServerGame extends AbstractGame {
     }
     // shutdown
     try {
-      m_delegateExecutionManager.setGameOver();
+      delegateExecutionManager.setGameOver();
       getGameModifiedBroadcaster().shutDown();
-      m_randomStats.shutDown();
+      randomStats.shutDown();
       m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
       m_remoteMessenger.unregisterRemote(SERVER_REMOTE);
       m_vault.shutDown();
@@ -337,7 +336,7 @@ public class ServerGame extends AbstractGame {
     } catch (final RuntimeException e) {
       ClientLogger.logQuietly(e);
     } finally {
-      m_delegateExecutionManager.resumeDelegateExecution();
+      delegateExecutionManager.resumeDelegateExecution();
     }
     m_data.getGameLoader().shutDown();
     if (HeadlessGameServer.headless()) {
@@ -374,7 +373,7 @@ public class ServerGame extends AbstractGame {
 
   private void saveGame(final OutputStream out) throws IOException {
     try {
-      if (!m_delegateExecutionManager.blockDelegateExecution(6000)) {
+      if (!delegateExecutionManager.blockDelegateExecution(6000)) {
         throw new IOException("Could not lock delegate execution");
       }
     } catch (final InterruptedException ie) {
@@ -383,7 +382,7 @@ public class ServerGame extends AbstractGame {
     try {
       GameDataManager.saveGame(out, m_data);
     } finally {
-      m_delegateExecutionManager.resumeDelegateExecution();
+      delegateExecutionManager.resumeDelegateExecution();
     }
   }
 
@@ -456,11 +455,11 @@ public class ServerGame extends AbstractGame {
    * @return true if the step should autosave.
    */
   private void endStep() {
-    m_delegateExecutionManager.enterDelegateExecution();
+    delegateExecutionManager.enterDelegateExecution();
     try {
       getCurrentStep().getDelegate().end();
     } finally {
-      m_delegateExecutionManager.leaveDelegateExecution();
+      delegateExecutionManager.leaveDelegateExecution();
     }
     getCurrentStep().incrementRunCount();
   }
@@ -471,18 +470,18 @@ public class ServerGame extends AbstractGame {
         continue;
       }
       final DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, this,
-          new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
-      if (m_delegateRandomSource == null) {
-        m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource,
+          new DelegateHistoryWriter(m_channelMessenger), randomStats, delegateExecutionManager);
+      if (delegateRandomSource == null) {
+        delegateRandomSource = (IRandomSource) delegateExecutionManager.createOutboundImplementation(randomSource,
             new Class<?>[] {IRandomSource.class});
       }
-      bridge.setRandomSource(m_delegateRandomSource);
-      m_delegateExecutionManager.enterDelegateExecution();
+      bridge.setRandomSource(delegateRandomSource);
+      delegateExecutionManager.enterDelegateExecution();
       try {
         delegate.setDelegateBridgeAndPlayer(bridge);
         delegate.start();
       } finally {
-        m_delegateExecutionManager.leaveDelegateExecution();
+        delegateExecutionManager.leaveDelegateExecution();
       }
     }
   }
@@ -490,26 +489,26 @@ public class ServerGame extends AbstractGame {
   private void startStep(final boolean stepIsRestoredFromSavedGame) {
     // dont save if we just loaded
     final DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, this,
-        new DelegateHistoryWriter(m_channelMessenger), m_randomStats, m_delegateExecutionManager);
-    if (m_delegateRandomSource == null) {
-      m_delegateRandomSource = (IRandomSource) m_delegateExecutionManager.createOutboundImplementation(m_randomSource,
+        new DelegateHistoryWriter(m_channelMessenger), randomStats, delegateExecutionManager);
+    if (delegateRandomSource == null) {
+      delegateRandomSource = (IRandomSource) delegateExecutionManager.createOutboundImplementation(randomSource,
           new Class<?>[] {IRandomSource.class});
     }
-    bridge.setRandomSource(m_delegateRandomSource);
+    bridge.setRandomSource(delegateRandomSource);
     // do any initialization of game data for all players here (not based on a delegate, and should not be)
     // we cannot do this the very first run through, because there are no history nodes yet. We should do after first
     // node is created.
-    if (m_needToInitialize) {
+    if (needToInitialize) {
       addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
     }
     notifyGameStepChanged(stepIsRestoredFromSavedGame);
-    m_delegateExecutionManager.enterDelegateExecution();
+    delegateExecutionManager.enterDelegateExecution();
     try {
       final IDelegate delegate = getCurrentStep().getDelegate();
       delegate.setDelegateBridgeAndPlayer(bridge);
       delegate.start();
     } finally {
-      m_delegateExecutionManager.leaveDelegateExecution();
+      delegateExecutionManager.leaveDelegateExecution();
     }
   }
 
@@ -595,7 +594,7 @@ public class ServerGame extends AbstractGame {
     if (!change.isEmpty()) {
       bridge.addChange(change);
     }
-    m_needToInitialize = false;
+    needToInitialize = false;
     if (!allPlayersString.isEmpty()) {
       throw new IllegalStateException("Not all Player Types (ai/human/client) could be added to game data.");
     }
@@ -614,27 +613,27 @@ public class ServerGame extends AbstractGame {
 
   @Override
   public IRandomSource getRandomSource() {
-    return m_randomSource;
+    return randomSource;
   }
 
   public void setRandomSource(final IRandomSource randomSource) {
-    m_randomSource = randomSource;
-    m_delegateRandomSource = null;
+    this.randomSource = randomSource;
+    delegateRandomSource = null;
   }
 
   public InGameLobbyWatcherWrapper getInGameLobbyWatcher() {
-    return m_inGameLobbyWatcher;
+    return inGameLobbyWatcher;
   }
 
   public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper inGameLobbyWatcher) {
-    m_inGameLobbyWatcher = inGameLobbyWatcher;
+    this.inGameLobbyWatcher = inGameLobbyWatcher;
   }
 
   public void stopGameSequence() {
-    m_delegateExecutionStopped = true;
+    delegateExecutionStopped = true;
   }
 
   public boolean isGameSequenceRunning() {
-    return !m_delegateExecutionStopped;
+    return !delegateExecutionStopped;
   }
 }
