@@ -45,8 +45,6 @@ public interface IGame {
    */
   void addChange(Change change);
 
-  boolean canSave();
-
   IRandomSource getRandomSource();
 
   /**
