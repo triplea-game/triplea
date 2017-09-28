@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -52,8 +51,7 @@ public final class ClientLoginValidatorTests {
   @RunWith(Enclosed.class)
   public static final class GetChallengePropertiesTests {
     public abstract static class AbstractTestCase {
-      @InjectMocks
-      ClientLoginValidator clientLoginValidator;
+      final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
 
       @Mock
       private SocketAddress socketAddress;
@@ -110,8 +108,7 @@ public final class ClientLoginValidatorTests {
 
   @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class AuthenticateTest {
-    @InjectMocks
-    private ClientLoginValidator clientLoginValidator;
+    private final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
 
     @Before
     public void givenPasswordSet() {
