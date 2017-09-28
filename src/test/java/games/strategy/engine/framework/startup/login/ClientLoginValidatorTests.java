@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.net.SocketAddress;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 import org.junit.Before;
@@ -30,12 +31,12 @@ public final class ClientLoginValidatorTests {
 
     @Test
     public void invalidMacs() {
-      Arrays.asList(
-              MAGIC_MAC_START + "no spaces allowed",
-              MAGIC_MAC_START + "tooShort",
-              MAGIC_MAC_START + "#%@symbol",
-              Strings.repeat("0", ClientLoginValidator.MAC_ADDRESS_LENGTH)
-      ).forEach(invalidValue -> assertThat(ClientLoginValidator.isValidMac(invalidValue), is(false)));
+      final Collection<String> macs = Arrays.asList(
+          MAGIC_MAC_START + "no spaces allowed",
+          MAGIC_MAC_START + "tooShort",
+          MAGIC_MAC_START + "#%@symbol",
+          Strings.repeat("0", ClientLoginValidator.MAC_ADDRESS_LENGTH));
+      macs.forEach(invalidValue -> assertThat(ClientLoginValidator.isValidMac(invalidValue), is(false)));
     }
 
     @Test
