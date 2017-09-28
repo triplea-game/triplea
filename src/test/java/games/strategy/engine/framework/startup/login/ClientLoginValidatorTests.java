@@ -1,18 +1,17 @@
 package games.strategy.engine.framework.startup.login;
 
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.net.SocketAddress;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -27,23 +26,23 @@ public final class ClientLoginValidatorTests {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
-  private static final String MAGIC_MAC_START = ClientLoginValidator.MAC_MAGIC_STRING_PREFIX;
-
   public static final class MacValidationTest {
+    private static final String MAGIC_MAC_START = ClientLoginValidator.MAC_MAGIC_STRING_PREFIX;
+
     @Test
     public void invalidMacs() {
-      Arrays.asList(
-              MAGIC_MAC_START + "no spaces allowed",
-              MAGIC_MAC_START + "tooShort",
-              MAGIC_MAC_START + "#%@symbol",
-              Strings.repeat("0", ClientLoginValidator.MAC_ADDRESS_LENGTH)
-      ).forEach(invalidValue -> assertThat(ClientLoginValidator.isValidMac(invalidValue), is(false)));
+      final Collection<String> macs = Arrays.asList(
+          MAGIC_MAC_START + "no spaces allowed",
+          MAGIC_MAC_START + "tooShort",
+          MAGIC_MAC_START + "#%@symbol",
+          Strings.repeat("0", ClientLoginValidator.MAC_ADDRESS_LENGTH));
+      macs.forEach(invalidValue -> assertThat(ClientLoginValidator.isValidMac(invalidValue), is(false)));
     }
 
     @Test
     public void validMac() {
-      int remainingPaddingLength = ClientLoginValidator.MAC_ADDRESS_LENGTH - MAGIC_MAC_START.length();
-      String valid = MAGIC_MAC_START + Strings.repeat("0", remainingPaddingLength);
+      final int remainingPaddingLength = ClientLoginValidator.MAC_ADDRESS_LENGTH - MAGIC_MAC_START.length();
+      final String valid = MAGIC_MAC_START + Strings.repeat("0", remainingPaddingLength);
 
       assertThat(ClientLoginValidator.isValidMac(valid), is(true));
     }
@@ -52,8 +51,7 @@ public final class ClientLoginValidatorTests {
   @RunWith(Enclosed.class)
   public static final class GetChallengePropertiesTests {
     public abstract static class AbstractTestCase {
-      @InjectMocks
-      ClientLoginValidator clientLoginValidator;
+      final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
 
       @Mock
       private SocketAddress socketAddress;
@@ -110,8 +108,7 @@ public final class ClientLoginValidatorTests {
 
   @RunWith(MockitoJUnitRunner.StrictStubs.class)
   public static final class AuthenticateTest {
-    @InjectMocks
-    private ClientLoginValidator clientLoginValidator;
+    private final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
 
     @Before
     public void givenPasswordSet() {
@@ -125,7 +122,7 @@ public final class ClientLoginValidatorTests {
 
       final String errorMessage = clientLoginValidator.authenticate(challenge, response);
 
-      assertThat(errorMessage, is(nullValue()));
+      assertThat(errorMessage, is(ErrorMessages.NO_ERROR));
     }
 
     @Test
