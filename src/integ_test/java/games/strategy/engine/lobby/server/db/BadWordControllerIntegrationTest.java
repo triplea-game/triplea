@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import games.strategy.util.Util;
 
-public class BadWordControllerTest {
+public class BadWordControllerIntegrationTest {
 
   @Test
   public void testInsertAndRemoveBadWord() {

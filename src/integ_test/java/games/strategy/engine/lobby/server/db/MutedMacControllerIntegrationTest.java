@@ -13,7 +13,7 @@ import org.junit.Test;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
-public class MutedMacControllerTest {
+public class MutedMacControllerIntegrationTest {
 
   private final MutedMacController controller = spy(new MutedMacController());
   final String hashedMac = MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");

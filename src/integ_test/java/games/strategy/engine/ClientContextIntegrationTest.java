@@ -7,7 +7,7 @@ import static org.hamcrest.core.Is.is;
 
 import org.junit.Test;
 
-public class ClientContextTest {
+public class ClientContextIntegrationTest {
 
   @Test
   public void verifyClientContext() {

@@ -15,7 +15,7 @@ import org.junit.Test;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
-public class BannedUsernameControllerTest {
+public class BannedUsernameControllerIntegrationTest {
 
   private final BannedUsernameController controller = spy(new BannedUsernameController());
   private final String username = Util.createUniqueTimeStamp();

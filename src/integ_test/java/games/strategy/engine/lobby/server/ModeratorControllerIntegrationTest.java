@@ -27,7 +27,7 @@ import games.strategy.net.Node;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
-public class ModeratorControllerTest {
+public class ModeratorControllerIntegrationTest {
   private final IServerMessenger serverMessenger = mock(IServerMessenger.class);
   private ModeratorController moderatorController;
   private ConnectionChangeListener connectionChangeListener;

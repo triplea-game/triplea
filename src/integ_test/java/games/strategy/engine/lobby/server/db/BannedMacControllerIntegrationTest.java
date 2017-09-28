@@ -16,7 +16,7 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
-public class BannedMacControllerTest {
+public class BannedMacControllerIntegrationTest {
 
   private final BannedMacController controller = spy(new BannedMacController());
   private final String hashedMac = MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
