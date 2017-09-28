@@ -41,7 +41,7 @@ public interface IGameLoader extends Serializable {
   /**
    * Get the type of the display.
    *
-   * @return an interface that extends IChannelSubscrobor
+   * @return an interface that extends IChannelSubscribor
    */
   Class<? extends IChannelSubscribor> getDisplayType();
 
