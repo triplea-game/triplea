@@ -18,7 +18,7 @@ import com.google.common.annotations.VisibleForTesting;
  * {@code System.err} and log records of all other levels to {@code System.out}.
  *
  * <p>
- * <strong>Configuration:</string> This handler does not currently support configuration through the {@link LogManager}.
+ * Configuration: This handler does not currently support configuration through the {@link LogManager}.
  * It always uses the following default configuration:
  * </p>
  *
@@ -33,6 +33,7 @@ public final class ConsoleHandler extends Handler {
   private final Supplier<PrintStream> errSupplier;
   private final Supplier<PrintStream> outSupplier;
 
+  @SuppressWarnings("unused")
   public ConsoleHandler() {
     this(() -> System.out, () -> System.err);
   }
