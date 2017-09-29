@@ -584,9 +584,7 @@ final class ProTechAI {
   }
 
   /**
-   * Gets the neighbors which are exactly a certain # of territories away (distance)
-   * Removes the inner circle neighbors
-   * neutral - whether to include neutral countries.
+   * Gets the neighbors which are one territory away.
    */
   private static List<Territory> getExactNeighbors(final Territory territory, final GameData data) {
     // old functionality retained, i.e. no route condition is imposed.
