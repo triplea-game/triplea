@@ -226,7 +226,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.territoryIsEmpty());
   }
 
-  private Match<PlayerID> getPlayerCanPickMatch() {
+  private static Match<PlayerID> getPlayerCanPickMatch() {
     return Match.of(player -> {
       if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
         return false;

@@ -41,7 +41,7 @@ public class MutedUsernameController extends TimedController {
     }
   }
 
-  private void removeMutedUsername(final String username) {
+  private static void removeMutedUsername(final String username) {
     logger.fine("Removing muted username:" + username);
 
     try (final Connection con = Database.getPostgresConnection();

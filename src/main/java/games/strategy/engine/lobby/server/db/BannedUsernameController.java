@@ -37,7 +37,7 @@ public class BannedUsernameController extends TimedController implements BannedU
     }
   }
 
-  private void removeBannedUsername(final String username) {
+  private static void removeBannedUsername(final String username) {
     logger.fine("Removing banned username:" + username);
 
     try (final Connection con = Database.getPostgresConnection();

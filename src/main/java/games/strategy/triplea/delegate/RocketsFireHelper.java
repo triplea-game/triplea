@@ -84,7 +84,10 @@ public class RocketsFireHelper {
     }
   }
 
-  private void fireWW2V2(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
+  private static void fireWW2V2(
+      final IDelegateBridge bridge,
+      final PlayerID player,
+      final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> attackedTerritories = new HashSet<>();
     final Map<Territory, Territory> attackingFromTerritories = new LinkedHashMap<>();
@@ -111,7 +114,10 @@ public class RocketsFireHelper {
   }
 
   /** In this rule set, each player only gets one rocket attack per turn. */
-  private void fireWW2V1(final IDelegateBridge bridge, final PlayerID player, final Set<Territory> rocketTerritories) {
+  private static void fireWW2V1(
+      final IDelegateBridge bridge,
+      final PlayerID player,
+      final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> targets = new HashSet<>();
     for (final Territory territory : rocketTerritories) {
@@ -178,7 +184,7 @@ public class RocketsFireHelper {
     return ((ITripleAPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
   }
 
-  private void fireRocket(final PlayerID player, final Territory attackedTerritory, final IDelegateBridge bridge,
+  private static void fireRocket(final PlayerID player, final Territory attackedTerritory, final IDelegateBridge bridge,
       final Territory attackFrom) {
     final GameData data = bridge.getData();
     final PlayerID attacked = attackedTerritory.getOwner();
