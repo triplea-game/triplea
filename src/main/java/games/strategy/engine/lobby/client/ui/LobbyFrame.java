@@ -39,6 +39,7 @@ import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.INode;
+import games.strategy.triplea.ui.TimespanDialog;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
@@ -134,66 +135,29 @@ public class LobbyFrame extends JFrame {
     }));
     actions.add(SwingAction.of("Ban Player", e -> {
       final int resultBanType = JOptionPane.showOptionDialog(LobbyFrame.this,
-          "<html>Select the type of ban: <br>"
-              + "Please consult other admins before banning longer than 1 day. <br>"
-              + "And please remember to report this ban.</html>",
+          "Select the type of ban:",
           "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           banOrMuteOptions.toArray(), banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
       if (resultBanType < 0) {
         return;
       }
-      final String selectedBanType = (String) banOrMuteOptions.toArray()[resultBanType];
+      final String selectedBanType = banOrMuteOptions.get(resultBanType);
       if (selectedBanType.equals("Cancel")) {
         return;
       }
-      final List<String> timeUnits = new ArrayList<>();
-      timeUnits.add(TimeUnitNames.MINUTE);
-      timeUnits.add(TimeUnitNames.HOUR);
-      timeUnits.add(TimeUnitNames.DAY);
-      timeUnits.add(TimeUnitNames.WEEK);
-      timeUnits.add(TimeUnitNames.MONTH);
-      timeUnits.add(TimeUnitNames.YEAR);
-      timeUnits.add("Forever");
-      timeUnits.add("Cancel");
-      final int resultTimespanUnit = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
-          "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-          timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
-      if (resultTimespanUnit < 0) {
-        return;
-      }
-      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTimespanUnit];
-      if (selectedTimeUnit.equalsIgnoreCase("Cancel")) {
-        return;
-      }
-      if (selectedTimeUnit.equals("Forever")) {
+      
+      new TimespanDialog().prompt(this, "Select Timespan",
+          "Please consult other admins before banning longer than 1 day. \n"
+      + "And please remember to report this ban.", date -> {
         if (selectedBanType.toLowerCase().contains("name")) {
-          controller.banUsername(clickedOn, null);
+          controller.banUsername(clickedOn, date);
         }
         if (selectedBanType.toLowerCase().contains("mac")) {
-          controller.banMac(clickedOn, null);
+          controller.banMac(clickedOn, date);
         }
         // Should we keep this auto?
         controller.boot(clickedOn);
-        return;
-      }
-      final String resultLengthOfTime = JOptionPane.showInputDialog(LobbyFrame.this,
-          "Now please enter the length of time to ban the player: (In " + selectedTimeUnit + "s) ", 1);
-      if (resultLengthOfTime == null) {
-        return;
-      }
-      final long result2 = Long.parseLong(resultLengthOfTime);
-      if (result2 < 0) {
-        return;
-      }
-      final Instant expire = addDuration(Instant.now(), result2, selectedTimeUnit);
-      if (selectedBanType.toLowerCase().contains("name")) {
-        controller.banUsername(clickedOn, Date.from(expire));
-      }
-      if (selectedBanType.toLowerCase().contains("mac")) {
-        controller.banMac(clickedOn, Date.from(expire));
-      }
-      // Should we keep this auto?
-      controller.boot(clickedOn);
+      });
     }));
 
     actions.add(SwingAction.of("Mute Player", e -> {
