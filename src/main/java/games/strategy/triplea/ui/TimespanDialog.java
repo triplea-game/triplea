@@ -15,6 +15,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
 
@@ -26,7 +28,8 @@ public class TimespanDialog {
   /**
    * The possible time units and corresponding mappings.
    */
-  private static enum TimeUnit {
+  @VisibleForTesting
+  enum TimeUnit {
     MINUTES("Minutes", i -> Instant.now().plus(i, ChronoUnit.MINUTES)),
     HOURS("Hours", i -> Instant.now().plus(i, ChronoUnit.HOURS)),
     DAYS("Days", i -> Instant.now().plus(i, ChronoUnit.DAYS)),
@@ -48,7 +51,8 @@ public class TimespanDialog {
       return name;
     }
 
-    private Instant getInstant(final Integer integer) {
+    @VisibleForTesting
+    Instant getInstant(final Integer integer) {
       return function.apply(integer);
     }
   }
