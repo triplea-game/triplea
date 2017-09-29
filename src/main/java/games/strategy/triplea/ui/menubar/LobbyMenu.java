@@ -159,14 +159,14 @@ public class LobbyMenu extends JMenuBar {
       }
       new TimespanDialog().prompt(lobbyFrame, "Select Timespan",
           "Please consult other admins before banning longer than 1 day.", date -> {
-        final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), date);
-        } catch (final UnknownHostException ex) {
-          ClientLogger.logQuietly(ex);
-        }
-      });
+            final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
+                .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+            try {
+              controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), date);
+            } catch (final UnknownHostException ex) {
+              ClientLogger.logQuietly(ex);
+            }
+          });
     });
     item.setEnabled(true);
     parentMenu.add(item);
@@ -199,15 +199,15 @@ public class LobbyMenu extends JMenuBar {
       }
       new TimespanDialog().prompt(lobbyFrame, "Select Timespan",
           "Please consult other admins before banning longer than 1 day.", date -> {
-        final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banMac(
-              new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac, date);
-        } catch (final UnknownHostException ex) {
-          ClientLogger.logQuietly(ex);
-        }
-      });
+            final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
+                .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+            try {
+              controller.banMac(
+                  new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac, date);
+            } catch (final UnknownHostException ex) {
+              ClientLogger.logQuietly(ex);
+            }
+          });
     });
     item.setEnabled(true);
     parentMenu.add(item);

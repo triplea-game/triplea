@@ -51,8 +51,8 @@ public class JLabelBuilder {
     if (maxSize != null) {
       label.setMaximumSize(maxSize);
     }
-    
-    if(border != null) {
+
+    if (border != null) {
       label.setBorder(border);
     }
 
@@ -73,7 +73,7 @@ public class JLabelBuilder {
     maxSize = new Dimension(width, height);
     return this;
   }
-  
+
   public JLabelBuilder border(final Border border) {
     this.border = border;
     return this;

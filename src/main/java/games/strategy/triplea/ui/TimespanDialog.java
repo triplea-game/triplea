@@ -53,6 +53,11 @@ public class TimespanDialog {
     }
   }
 
+  /**
+   * Prompts the user to enter a timespan.
+   * If the operation is not cancelled, the action Consumer is run.
+   * Not that the Date passed to the consumer can be null if the user chose forever.
+   */
   public void prompt(final Component parent, final String title, final String infoMessage,
       final Consumer<Date> action) {
     final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1));
