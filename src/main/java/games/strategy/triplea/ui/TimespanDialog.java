@@ -60,7 +60,7 @@ public class TimespanDialog {
    */
   public void prompt(final Component parent, final String title, final String infoMessage,
       final Consumer<Date> action) {
-    final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1));
+    final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     final JComboBox<TimeUnit> comboBox = new JComboBox<>(TimeUnit.values());
     comboBox.addActionListener(e -> spinner.setEnabled(!comboBox.getSelectedItem().equals(TimeUnit.FOREVER)));
     final int returnType = JOptionPane.showConfirmDialog(parent, JPanelBuilder.builder()
