@@ -682,7 +682,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     ui.getBattlePanel().confirmCasualties(battleId, message);
   }
 
-  public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
+  private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
     return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
   }
 

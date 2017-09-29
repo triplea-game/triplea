@@ -36,7 +36,7 @@ public class BannedMacController extends TimedController implements BannedMacDao
     }
   }
 
-  private void removeBannedMac(final String mac) {
+  private static void removeBannedMac(final String mac) {
     try (final Connection con = Database.getPostgresConnection();
         final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac=?")) {
       ps.setString(1, mac);

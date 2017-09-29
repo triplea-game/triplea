@@ -236,7 +236,7 @@ public class WeakAI extends AbstractAI {
     return units;
   }
 
-  private void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
+  private static void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
       final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel) {
     for (int i = 0; i < moveRoutes.size(); i++) {
       pause();
@@ -1016,7 +1016,10 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private void placeAllWeCanOn(final GameData data, final Territory placeAt, final IAbstractPlaceDelegate placeDelegate,
+  private static void placeAllWeCanOn(
+      final GameData data,
+      final Territory placeAt,
+      final IAbstractPlaceDelegate placeDelegate,
       final PlayerID player) {
     final PlaceableUnits pu = placeDelegate.getPlaceableUnits(player.getUnits().getUnits(), placeAt);
     if (pu.getErrorMessage() != null) {
@@ -1054,7 +1057,7 @@ public class WeakAI extends AbstractAI {
     }
   }
 
-  private void doPlace(final Territory where, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
+  private static void doPlace(final Territory where, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     final String message = del.placeUnits(new ArrayList<>(toPlace), where, IAbstractPlaceDelegate.BidMode.NOT_BID);
     if (message != null) {
       logger.fine(message);

@@ -40,7 +40,7 @@ public class MutedMacController extends TimedController {
     }
   }
 
-  private void removeMutedMac(final String mac) {
+  private static void removeMutedMac(final String mac) {
     logger.fine("Removing muted mac:" + mac);
 
     try (final Connection con = Database.getPostgresConnection();

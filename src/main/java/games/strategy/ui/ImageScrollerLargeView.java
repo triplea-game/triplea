@@ -304,7 +304,7 @@ public class ImageScrollerLargeView extends JComponent {
     return new Dimension(model.getMaxWidth(), model.getMaxHeight());
   }
 
-  private int getNewEdge(final int x, final int y, final int width, final int height) {
+  private static int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
     if (x < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += LEFT;
