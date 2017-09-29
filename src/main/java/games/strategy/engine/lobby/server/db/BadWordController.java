@@ -25,17 +25,6 @@ public final class BadWordController implements BadWordDao {
     }
   }
 
-  void removeBannedWord(final String word) {
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
-      ps.setString(1, word);
-      ps.execute();
-      con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error deleting banned word:" + word, sqle);
-    }
-  }
-
   @Override
   public List<String> list() {
     final String sql = "select word from bad_words";

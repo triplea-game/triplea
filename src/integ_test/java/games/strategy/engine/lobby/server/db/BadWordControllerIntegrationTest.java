@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 import org.junit.Test;
 
 import games.strategy.util.Util;
@@ -11,12 +14,12 @@ import games.strategy.util.Util;
 public class BadWordControllerIntegrationTest {
 
   @Test
-  public void testInsertAndRemoveBadWord() {
+  public void testInsertAndRemoveBadWord() throws Exception {
     final BadWordController controller = new BadWordController();
     final String word = Util.createUniqueTimeStamp();
     controller.addBadWord(word);
     assertTrue(controller.list().contains(word));
-    controller.removeBannedWord(word);
+    removeBadWord(word);
     assertFalse(controller.list().contains(word));
   }
 
@@ -29,5 +32,14 @@ public class BadWordControllerIntegrationTest {
     controller.addBadWord(word);
     assertTrue(controller.list().contains(word));
     assertEquals(previousCount + 1, controller.list().size());
+  }
+
+  private static void removeBadWord(final String word) throws Exception {
+    try (final Connection con = Database.getPostgresConnection();
+        final PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
+      ps.setString(1, word);
+      ps.execute();
+      con.commit();
+    }
   }
 }
