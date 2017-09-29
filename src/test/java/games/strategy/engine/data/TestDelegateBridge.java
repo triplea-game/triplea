@@ -85,10 +85,6 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     this.playerId = playerId;
   }
 
-  public boolean inTransaction() {
-    return false;
-  }
-
   @Override
   public PlayerID getPlayerId() {
     return playerId;
