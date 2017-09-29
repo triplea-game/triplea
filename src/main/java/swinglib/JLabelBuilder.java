@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.border.Border;
 
 import com.google.common.base.Preconditions;
 
@@ -20,6 +21,7 @@ public class JLabelBuilder {
   private String text;
   private Alignment alignment;
   private Dimension maxSize;
+  private Border border;
 
   private JLabelBuilder() {}
 
@@ -49,6 +51,10 @@ public class JLabelBuilder {
     if (maxSize != null) {
       label.setMaximumSize(maxSize);
     }
+    
+    if(border != null) {
+      label.setBorder(border);
+    }
 
     return label;
   }
@@ -65,6 +71,11 @@ public class JLabelBuilder {
 
   public JLabelBuilder maximumSize(final int width, final int height) {
     maxSize = new Dimension(width, height);
+    return this;
+  }
+  
+  public JLabelBuilder border(final Border border) {
+    this.border = border;
     return this;
   }
 
