@@ -41,8 +41,8 @@ final class ProTechAI {
     }
     final Territory myCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
-    float myStrength = (myCapitol == null || myCapitol.getUnits() == null) ? 0.0F :
-            strength(myCapitol.getUnits().getUnits(), false, false, false);
+    float myStrength = (myCapitol == null || myCapitol.getUnits() == null) ? 0.0F
+        : strength(myCapitol.getUnits().getUnits(), false, false, false);
     final List<Territory> areaStrength = getNeighboringLandTerritories(data, player, myCapitol);
     for (final Territory areaTerr : areaStrength) {
       myStrength += strength(areaTerr.getUnits().getUnits(), false, false, false) * 0.75F;
@@ -81,8 +81,8 @@ final class ProTechAI {
    */
   private static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
       final PlayerID player) {
-    boolean transportsFirst = false;
-    boolean ignoreOnlyPlanes = true;
+    final boolean transportsFirst = false;
+    final boolean ignoreOnlyPlanes = true;
 
     PlayerID enemyPlayer = null;
     final List<PlayerID> enemyPlayers = getEnemyPlayers(data, player);
@@ -613,11 +613,11 @@ final class ProTechAI {
    *        condition that all traversed internal territories must satisy
    */
   private static List<Territory> findFrontier(
-          final Territory start,
-          final Match<Territory> endCondition,
-          final Match<Territory> routeCondition,
-          final int distance,
-          final GameData data) {
+      final Territory start,
+      final Match<Territory> endCondition,
+      final Match<Territory> routeCondition,
+      final int distance,
+      final GameData data) {
     final Match<Territory> canGo = Match.anyOf(endCondition, routeCondition);
     final IntegerMap<Territory> visited = new IntegerMap<>();
     final Queue<Territory> q = new LinkedList<>();
