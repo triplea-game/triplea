@@ -12,35 +12,15 @@ import games.strategy.triplea.delegate.AbstractDelegate;
 public final class TestDelegate extends AbstractDelegate {
   public TestDelegate() {}
 
-  public boolean supportsTransactions() {
-    return false;
-  }
-
-  public void initialize(final String name) {
-    m_name = name;
-  }
-
   @Override
   public void initialize(final String name, final String displayName) {
     m_name = name;
-  }
-
-  public void startTransaction() {}
-
-  public void rollback() {}
-
-  public void commit() {}
-
-  public boolean inTransaction() {
-    return false;
   }
 
   @Override
   public String getName() {
     return m_name;
   }
-
-  public void cancelTransaction() {}
 
   @Override
   public void end() {}
