@@ -74,7 +74,7 @@ public class GameRunner {
   public static final String OLD_EXTENSION = ".old";
   // argument options below:
   public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
-  public static final String TRIPLEA_MAP_DOWNLOAD_PROPERTY = "triplea.map.download";
+  static final String TRIPLEA_MAP_DOWNLOAD_PROPERTY = "triplea.map.download";
   public static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
   public static final String TRIPLEA_CLIENT_PROPERTY = "triplea.client";
   public static final String TRIPLEA_HOST_PROPERTY = "triplea.host";
@@ -88,7 +88,7 @@ public class GameRunner {
   public static final String LOBBY_GAME_SUPPORT_EMAIL = "triplea.lobby.game.supportEmail";
   public static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
   public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
-  public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
+  static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
   private static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
   public static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
 
@@ -355,13 +355,12 @@ public class GameRunner {
         return;
       }
 
-      boolean busy = false;
-      busy = checkForTutorialMap();
+      boolean busy = checkForTutorialMap();
       if (!busy) {
         busy = checkForLatestEngineVersionOut();
       }
       if (!busy) {
-        busy = checkForUpdatedMaps();
+        checkForUpdatedMaps();
       }
     }, "Checking Latest TripleA Engine Version").start();
   }
@@ -378,7 +377,7 @@ public class GameRunner {
       final int day = localDateTime.get(ChronoField.DAY_OF_YEAR);
       // format year:day
       final String lastCheckTime = ClientSetting.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE.value();
-      if (!firstTimeThisVersion && lastCheckTime != null && lastCheckTime.trim().length() > 0) {
+      if (!firstTimeThisVersion && lastCheckTime.trim().length() > 0) {
         final String[] yearDay = lastCheckTime.split(":");
         if (Integer.parseInt(yearDay[0]) >= year && Integer.parseInt(yearDay[1]) + 1 >= day) {
           return false;
@@ -413,25 +412,18 @@ public class GameRunner {
       return false;
     }
 
-    final StringBuilder messageBuilder = new StringBuilder();
-    messageBuilder.append("<html>");
-    messageBuilder.append("Would you like to download the tutorial map?<br>");
-    messageBuilder.append("<br>");
-    messageBuilder.append("(You can always download it later using the Download Maps<br>");
-    messageBuilder.append("command if you don't want to do it now.)");
-    messageBuilder.append("</html>");
-    SwingComponents.promptUser("Welcome to TripleA", messageBuilder.toString(), () -> {
+    final String message = "<html>Would you like to download the tutorial map?<br><br>"
+            + "(You can always download it later using the Download Maps<br>"
+            + "command if you don't want to do it now.)</html>";
+    SwingComponents.promptUser("Welcome to TripleA", message, () -> {
       DownloadMapsWindow.showDownloadMapsWindowAndDownload("Tutorial");
     });
     return true;
   }
 
-  /**
-   * @return true if we have any out of date maps.
-   */
-  private static boolean checkForUpdatedMaps() {
+  private static void checkForUpdatedMaps() {
     final MapDownloadController downloadController = ClientContext.mapDownloadController();
-    return downloadController.checkDownloadedMapsAreLatest();
+    downloadController.checkDownloadedMapsAreLatest();
   }
 
 

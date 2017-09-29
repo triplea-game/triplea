@@ -19,9 +19,9 @@ public class HistorySynchronizer {
   // we do this because our data can change depending where in the history we
   // are
   // we want to be able to do this without changing the data for the game
-  private final GameData m_data;
-  private int m_currentRound;
-  private final IGame m_game;
+  private final GameData gameData;
+  private int currentRound;
+  private final IGame game;
 
   public HistorySynchronizer(final GameData data, final IGame game) {
     // this is not the way to use this.
@@ -29,25 +29,25 @@ public class HistorySynchronizer {
       throw new IllegalStateException(
           "You dont need a history synchronizer to synchronize game data that is managed by an IGame");
     }
-    m_data = data;
-    m_data.forceChangesOnlyInSwingEventThread();
+    gameData = data;
+    gameData.forceChangesOnlyInSwingEventThread();
     data.acquireReadLock();
     try {
-      m_currentRound = data.getSequence().getRound();
+      currentRound = data.getSequence().getRound();
     } finally {
       data.releaseReadLock();
     }
-    m_game = game;
-    m_game.getChannelMessenger().registerChannelSubscriber(m_gameModifiedChannelListener,
+    this.game = game;
+    this.game.getChannelMessenger().registerChannelSubscriber(gameModifiedChannelListener,
         IGame.GAME_MODIFICATION_CHANNEL);
   }
 
-  private final IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel() {
+  private final IGameModifiedChannel gameModifiedChannelListener = new IGameModifiedChannel() {
     @Override
     public void gameDataChanged(final Change change) {
       SwingUtilities.invokeLater(() -> {
         final Change localizedChange = (Change) translateIntoMyData(change);
-        m_data.getHistory().getHistoryWriter().addChange(localizedChange);
+        gameData.getHistory().getHistoryWriter().addChange(localizedChange);
       });
     }
 
@@ -61,21 +61,21 @@ public class HistorySynchronizer {
 
     @Override
     public void startHistoryEvent(final String event) {
-      SwingUtilities.invokeLater(() -> m_data.getHistory().getHistoryWriter().startEvent(event));
+      SwingUtilities.invokeLater(() -> gameData.getHistory().getHistoryWriter().startEvent(event));
     }
 
     @Override
     public void addChildToEvent(final String text, final Object renderingData) {
       SwingUtilities.invokeLater(() -> {
         final Object translatedRenderingData = translateIntoMyData(renderingData);
-        m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, translatedRenderingData));
+        gameData.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, translatedRenderingData));
       });
     }
 
-    protected void setRenderingData(final Object renderingData) {
+    void setRenderingData(final Object renderingData) {
       SwingUtilities.invokeLater(() -> {
         final Object translatedRenderingData = translateIntoMyData(renderingData);
-        m_data.getHistory().getHistoryWriter().setRenderingData(translatedRenderingData);
+        gameData.getHistory().getHistoryWriter().setRenderingData(translatedRenderingData);
       });
     }
 
@@ -87,11 +87,11 @@ public class HistorySynchronizer {
         return;
       }
       SwingUtilities.invokeLater(() -> {
-        if (m_currentRound != round) {
-          m_currentRound = round;
-          m_data.getHistory().getHistoryWriter().startNextRound(m_currentRound);
+        if (currentRound != round) {
+          currentRound = round;
+          gameData.getHistory().getHistoryWriter().startNextRound(currentRound);
         }
-        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+        gameData.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
       });
     }
 
@@ -100,7 +100,7 @@ public class HistorySynchronizer {
   };
 
   public void deactivate() {
-    m_game.getChannelMessenger().unregisterChannelSubscriber(m_gameModifiedChannelListener,
+    game.getChannelMessenger().unregisterChannelSubscriber(gameModifiedChannelListener,
         IGame.GAME_MODIFICATION_CHANNEL);
   }
 
@@ -112,6 +112,6 @@ public class HistorySynchronizer {
    * game.
    */
   private Object translateIntoMyData(final Object msg) {
-    return GameDataUtils.translateIntoOtherGameData(msg, m_data);
+    return GameDataUtils.translateIntoOtherGameData(msg, gameData);
   }
 }
