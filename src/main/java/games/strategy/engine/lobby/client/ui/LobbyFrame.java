@@ -6,10 +6,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.ZoneOffset;
-import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -26,7 +22,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.engine.chat.Chat;
@@ -46,16 +41,6 @@ import games.strategy.util.EventThreadJOptionPane;
 
 public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
-
-  @VisibleForTesting
-  interface TimeUnitNames {
-    String MINUTE = "Minute";
-    String HOUR = "Hour";
-    String DAY = "Day";
-    String WEEK = "Week";
-    String MONTH = "Month";
-    String YEAR = "Year";
-  }
 
   private static final List<String> banOrMuteOptions = ImmutableList.of(
       "Mac Address Only",
@@ -137,7 +122,7 @@ public class LobbyFrame extends JFrame {
       final int resultBanType = JOptionPane.showOptionDialog(LobbyFrame.this,
           "Select the type of ban:",
           "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-          banOrMuteOptions.toArray(), banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
+          banOrMuteOptions.toArray(), banOrMuteOptions.get(banOrMuteOptions.size() - 1));
       if (resultBanType < 0) {
         return;
       }
@@ -145,77 +130,45 @@ public class LobbyFrame extends JFrame {
       if (selectedBanType.equals("Cancel")) {
         return;
       }
-      
+
       new TimespanDialog().prompt(this, "Select Timespan",
           "Please consult other admins before banning longer than 1 day. \n"
-      + "And please remember to report this ban.", date -> {
-        if (selectedBanType.toLowerCase().contains("name")) {
-          controller.banUsername(clickedOn, date);
-        }
-        if (selectedBanType.toLowerCase().contains("mac")) {
-          controller.banMac(clickedOn, date);
-        }
-        // Should we keep this auto?
-        controller.boot(clickedOn);
-      });
+              + "And please remember to report this ban.",
+          date -> {
+            if (selectedBanType.toLowerCase().contains("name")) {
+              controller.banUsername(clickedOn, date);
+            }
+            if (selectedBanType.toLowerCase().contains("mac")) {
+              controller.banMac(clickedOn, date);
+            }
+            // Should we keep this auto?
+            controller.boot(clickedOn);
+          });
     }));
 
     actions.add(SwingAction.of("Mute Player", e -> {
       final int resultMuteType = JOptionPane.showOptionDialog(LobbyFrame.this,
           "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
           "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-          banOrMuteOptions.toArray(), banOrMuteOptions.toArray()[banOrMuteOptions.size() - 1]);
+          banOrMuteOptions.toArray(), banOrMuteOptions.get(banOrMuteOptions.size() - 1));
       if (resultMuteType < 0) {
         return;
       }
-      final String selectedMuteType = (String) banOrMuteOptions.toArray()[resultMuteType];
+      final String selectedMuteType = banOrMuteOptions.get(resultMuteType);
       if (selectedMuteType.equals("Cancel")) {
         return;
       }
-      final List<String> timeUnits = new ArrayList<>();
-      timeUnits.add(TimeUnitNames.MINUTE);
-      timeUnits.add(TimeUnitNames.HOUR);
-      timeUnits.add(TimeUnitNames.DAY);
-      timeUnits.add(TimeUnitNames.WEEK);
-      timeUnits.add(TimeUnitNames.MONTH);
-      timeUnits.add(TimeUnitNames.YEAR);
-      timeUnits.add("Forever");
-      timeUnits.add("Cancel");
-      final int resultTimespanUnit = JOptionPane.showOptionDialog(LobbyFrame.this, "Select the unit of measurement: ",
-          "Select Timespan Unit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-          timeUnits.toArray(), timeUnits.toArray()[timeUnits.size() - 1]);
-      if (resultTimespanUnit < 0) {
-        return;
-      }
-      final String selectedTimeUnit = (String) timeUnits.toArray()[resultTimespanUnit];
-      if (selectedTimeUnit.equals("Cancel")) {
-        return;
-      }
-      if (selectedTimeUnit.equals("Forever")) {
-        if (selectedMuteType.toLowerCase().contains("name")) {
-          controller.muteUsername(clickedOn, null);
-        }
-        if (selectedMuteType.toLowerCase().contains("mac")) {
-          controller.muteMac(clickedOn, null);
-        }
-        return;
-      }
-      final String resultLengthOfTime = JOptionPane.showInputDialog(LobbyFrame.this,
-          "Now please enter the length of time to mute the player: (In " + selectedTimeUnit + "s) ", 1);
-      if (resultLengthOfTime == null) {
-        return;
-      }
-      final long result2 = Long.parseLong(resultLengthOfTime);
-      if (result2 < 0) {
-        return;
-      }
-      final Instant expire = addDuration(Instant.now(), result2, selectedTimeUnit);
-      if (selectedMuteType.toLowerCase().contains("name")) {
-        controller.muteUsername(clickedOn, Date.from(expire));
-      }
-      if (selectedMuteType.toLowerCase().contains("mac")) {
-        controller.muteMac(clickedOn, Date.from(expire));
-      }
+      new TimespanDialog().prompt(this, "Select Timespan",
+          "Please consult other admins before banning longer than 1 day. \n"
+              + "And please remember to report this ban.",
+          date -> {
+            if (selectedMuteType.toLowerCase().contains("name")) {
+              controller.muteUsername(clickedOn, date);
+            }
+            if (selectedMuteType.toLowerCase().contains("mac")) {
+              controller.muteMac(clickedOn, date);
+            }
+          });
     }));
     actions.add(SwingAction.of("Quick Mute", e -> {
       final JLabel label = new JLabel("How many minutes should this player be muted?");
@@ -247,32 +200,6 @@ public class LobbyFrame extends JFrame {
       JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
     }));
     return actions;
-  }
-
-  @VisibleForTesting
-  static Instant addDuration(final Instant start, final long amountInUnits, final String unitName) {
-    return LocalDateTime.ofInstant(start, ZoneOffset.UTC)
-        .plus(toTemporalAmount(amountInUnits, unitName))
-        .toInstant(ZoneOffset.UTC);
-  }
-
-  private static TemporalAmount toTemporalAmount(final long amountInUnits, final String unitName) {
-    switch (unitName) {
-      case TimeUnitNames.MINUTE:
-        return Duration.ofMinutes(amountInUnits);
-      case TimeUnitNames.HOUR:
-        return Duration.ofHours(amountInUnits);
-      case TimeUnitNames.DAY:
-        return Duration.ofDays(amountInUnits);
-      case TimeUnitNames.WEEK:
-        return Period.ofWeeks((int) amountInUnits);
-      case TimeUnitNames.MONTH:
-        return Period.ofMonths((int) amountInUnits);
-      case TimeUnitNames.YEAR:
-        return Period.ofYears((int) amountInUnits);
-      default:
-        throw new IllegalArgumentException(String.format("unknown temporal unit name (%s)", unitName));
-    }
   }
 
   private boolean confirm(final String question) {
