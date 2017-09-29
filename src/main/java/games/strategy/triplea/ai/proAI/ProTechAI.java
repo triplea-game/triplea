@@ -350,10 +350,6 @@ final class ProTechAI {
    *
    * @param blitzHere
    *        - Territory expecting to be blitzed
-   * @param blitzTerrRoutes
-   *        - Territory which is being blitzed through (not guaranteed to be all possible route territories!)
-   * @param enemyPlayer
-   *        - the enemy Player
    * @return actual strength of enemy units (armor)
    */
   private static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
