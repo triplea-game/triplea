@@ -18,8 +18,14 @@ import javax.swing.border.EmptyBorder;
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
 
+/**
+ * A UI-Utility class that can be used to prompt the user for a ban or mute time.
+ */
 public class TimespanDialog {
-  
+
+  /**
+   * The possible time units and corresponding mappings.
+   */
   private static enum TimeUnit {
     MINUTES("Minutes", i -> Instant.now().plus(i, ChronoUnit.MINUTES)),
     HOURS("Hours", i -> Instant.now().plus(i, ChronoUnit.HOURS)),
@@ -28,26 +34,27 @@ public class TimespanDialog {
     MONTHS("Months", i -> LocalDateTime.now(ZoneOffset.UTC).plus(i, ChronoUnit.MONTHS).toInstant(ZoneOffset.UTC)),
     YEARS("Years", i -> LocalDateTime.now(ZoneOffset.UTC).plus(i, ChronoUnit.YEARS).toInstant(ZoneOffset.UTC)),
     FOREVER("Forever", i -> null);
-    
+
     private final String name;
     private final Function<Integer, Instant> function;
-    
+
     private TimeUnit(final String name, final Function<Integer, Instant> supplier) {
       this.name = name;
       this.function = supplier;
     }
-    
+
     @Override
     public String toString() {
       return name;
     }
-    
+
     private Instant getInstant(final Integer integer) {
       return function.apply(integer);
     }
   }
-  
-  public void prompt(final Component parent, final String title, final String infoMessage, final Consumer<Date> action){
+
+  public void prompt(final Component parent, final String title, final String infoMessage,
+      final Consumer<Date> action) {
     final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1));
     final JComboBox<TimeUnit> comboBox = new JComboBox<>(TimeUnit.values());
     comboBox.addActionListener(e -> spinner.setEnabled(!comboBox.getSelectedItem().equals(TimeUnit.FOREVER)));
@@ -57,13 +64,13 @@ public class TimespanDialog {
             .border(new EmptyBorder(0, 0, 5, 0))
             .build())
         .addSouth(JPanelBuilder.builder()
-          .horizontalBoxLayout()
-          .add(spinner)
-          .add(comboBox)
-          .build())
+            .horizontalBoxLayout()
+            .add(spinner)
+            .add(comboBox)
+            .build())
         .build(), title, JOptionPane.OK_CANCEL_OPTION);
-    if(returnType == JOptionPane.OK_OPTION) {
-      final Instant instant = ((TimeUnit)comboBox.getSelectedItem()).getInstant((Integer) spinner.getValue());
+    if (returnType == JOptionPane.OK_OPTION) {
+      final Instant instant = ((TimeUnit) comboBox.getSelectedItem()).getInstant((Integer) spinner.getValue());
       action.accept(instant == null ? null : Date.from(instant));
     }
   }
