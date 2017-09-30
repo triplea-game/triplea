@@ -131,7 +131,7 @@ public class LobbyFrame extends JFrame {
         return;
       }
 
-      new TimespanDialog().prompt(this, "Select Timespan",
+      TimespanDialog.prompt(this, "Select Timespan",
           "Please consult other admins before banning longer than 1 day. \n"
               + "And please remember to report this ban.",
           date -> {
@@ -158,8 +158,8 @@ public class LobbyFrame extends JFrame {
       if (selectedMuteType.equals("Cancel")) {
         return;
       }
-      new TimespanDialog().prompt(this, "Select Timespan",
-          "Please consult other admins before banning longer than 1 day. \n"
+      TimespanDialog.prompt(this, "Select Timespan",
+          "Please consult other admins before muting longer than 1 day. \n"
               + "And please remember to report this ban.",
           date -> {
             if (selectedMuteType.toLowerCase().contains("name")) {

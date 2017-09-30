@@ -41,9 +41,9 @@ public class TimespanDialog {
     private final String name;
     private final Function<Integer, Instant> function;
 
-    private TimeUnit(final String name, final Function<Integer, Instant> supplier) {
+    private TimeUnit(final String name, final Function<Integer, Instant> function) {
       this.name = name;
-      this.function = supplier;
+      this.function = function;
     }
 
     @Override
@@ -62,12 +62,12 @@ public class TimespanDialog {
    * If the operation is not cancelled, the action Consumer is run.
    * Not that the Date passed to the consumer can be null if the user chose forever.
    */
-  public void prompt(final Component parent, final String title, final String infoMessage,
+  public static void prompt(final Component parent, final String title, final String infoMessage,
       final Consumer<Date> action) {
     final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     final JComboBox<TimeUnit> comboBox = new JComboBox<>(TimeUnit.values());
     comboBox.addActionListener(e -> spinner.setEnabled(!comboBox.getSelectedItem().equals(TimeUnit.FOREVER)));
-    final int returnType = JOptionPane.showConfirmDialog(parent, JPanelBuilder.builder()
+    final int returnValue = JOptionPane.showConfirmDialog(parent, JPanelBuilder.builder()
         .addNorth(JLabelBuilder.builder()
             .text(infoMessage)
             .border(new EmptyBorder(0, 0, 5, 0))
@@ -78,7 +78,7 @@ public class TimespanDialog {
             .add(comboBox)
             .build())
         .build(), title, JOptionPane.OK_CANCEL_OPTION);
-    if (returnType == JOptionPane.OK_OPTION) {
+    if (returnValue == JOptionPane.OK_OPTION) {
       final Instant instant = ((TimeUnit) comboBox.getSelectedItem()).getInstant((Integer) spinner.getValue());
       action.accept(instant == null ? null : Date.from(instant));
     }

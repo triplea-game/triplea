@@ -157,7 +157,7 @@ public class LobbyMenu extends JMenuBar {
             JOptionPane.ERROR_MESSAGE);
         return;
       }
-      new TimespanDialog().prompt(lobbyFrame, "Select Timespan",
+      TimespanDialog.prompt(lobbyFrame, "Select Timespan",
           "Please consult other admins before banning longer than 1 day.", date -> {
             final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
                 .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
@@ -197,7 +197,7 @@ public class LobbyMenu extends JMenuBar {
             "Invalid Hashed Mac", JOptionPane.ERROR_MESSAGE);
         return;
       }
-      new TimespanDialog().prompt(lobbyFrame, "Select Timespan",
+      TimespanDialog.prompt(lobbyFrame, "Select Timespan",
           "Please consult other admins before banning longer than 1 day.", date -> {
             final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
                 .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
