@@ -50,17 +50,18 @@ public class TimespanDialogTest {
 
   @Test
   public void testNonNullDateInTheFuture() {
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.MINUTES, Integer.MAX_VALUE);
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.HOURS, Integer.MAX_VALUE);
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.DAYS, Integer.MAX_VALUE);
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.WEEKS, Integer.MAX_VALUE);
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.MONTHS, Integer.MAX_VALUE);
     // We can't use Integer#MAX_VALUE for years, because this will result in a long-overflow
+    // So we just limit the amount for every time unit
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.MINUTES, 99999999);
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.HOURS, 99999999);
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.DAYS, 99999999);
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.WEEKS, 99999999);
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.MONTHS, 99999999);
     TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
         JOptionPane.OK_OPTION, TimeUnit.YEARS, 99999999);
   }

@@ -66,7 +66,7 @@ public class TimespanDialog {
    */
   public static void prompt(final Component parent, final String title, final String infoMessage,
       final Consumer<Date> action) {
-    final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+    final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, 99999999, 1));
     spinner.addAncestorListener(new AncestorListener() {
 
       @Override
