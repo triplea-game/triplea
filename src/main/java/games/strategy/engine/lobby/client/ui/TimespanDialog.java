@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -65,6 +67,19 @@ public class TimespanDialog {
   public static void prompt(final Component parent, final String title, final String infoMessage,
       final Consumer<Date> action) {
     final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+    spinner.addAncestorListener(new AncestorListener() {
+
+      @Override
+      public void ancestorAdded(AncestorEvent e) {
+        e.getComponent().requestFocusInWindow();
+      }
+
+      @Override
+      public void ancestorMoved(AncestorEvent e) {}
+
+      @Override
+      public void ancestorRemoved(AncestorEvent e) {}
+    });
     final JComboBox<TimeUnit> comboBox = new JComboBox<>(TimeUnit.values());
     comboBox.addActionListener(e -> spinner.setEnabled(!comboBox.getSelectedItem().equals(TimeUnit.FOREVER)));
     final int returnValue = JOptionPane.showConfirmDialog(parent, JPanelBuilder.builder()
