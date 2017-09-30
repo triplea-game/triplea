@@ -17,9 +17,9 @@ public class TimespanDialogTest {
 
   @Test
   public void testForeverReturnsNull() {
-    assertNull(TimeUnit.FOREVER.getInstant((Integer.MAX_VALUE)));
-    assertNull(TimeUnit.FOREVER.getInstant((0)));
-    assertNull(TimeUnit.FOREVER.getInstant((Integer.MIN_VALUE)));
+    assertNull(TimeUnit.FOREVER.getInstant(Integer.MAX_VALUE));
+    assertNull(TimeUnit.FOREVER.getInstant(0));
+    assertNull(TimeUnit.FOREVER.getInstant(Integer.MIN_VALUE));
   }
 
   @Test
@@ -60,7 +60,7 @@ public class TimespanDialogTest {
         JOptionPane.OK_OPTION, TimeUnit.WEEKS, Integer.MAX_VALUE);
     TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
         JOptionPane.OK_OPTION, TimeUnit.MONTHS, Integer.MAX_VALUE);
-    // We can use Integer#MAX_VALUE for years, because this will result in a long-overflow
+    // We can't use Integer#MAX_VALUE for years, because this will result in a long-overflow
     TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
         JOptionPane.OK_OPTION, TimeUnit.YEARS, 99999999);
   }
