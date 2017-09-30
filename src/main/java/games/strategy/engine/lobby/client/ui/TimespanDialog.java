@@ -70,15 +70,15 @@ public class TimespanDialog {
     spinner.addAncestorListener(new AncestorListener() {
 
       @Override
-      public void ancestorAdded(AncestorEvent e) {
+      public void ancestorAdded(final AncestorEvent e) {
         e.getComponent().requestFocusInWindow();
       }
 
       @Override
-      public void ancestorMoved(AncestorEvent e) {}
+      public void ancestorMoved(final AncestorEvent e) {}
 
       @Override
-      public void ancestorRemoved(AncestorEvent e) {}
+      public void ancestorRemoved(final AncestorEvent e) {}
     });
     final JComboBox<TimeUnit> comboBox = new JComboBox<>(TimeUnit.values());
     comboBox.addActionListener(e -> spinner.setEnabled(!comboBox.getSelectedItem().equals(TimeUnit.FOREVER)));
