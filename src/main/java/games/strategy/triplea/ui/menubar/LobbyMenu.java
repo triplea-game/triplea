@@ -160,12 +160,10 @@ public class LobbyMenu extends JMenuBar {
       if (name1 == null || name1.length() < 1) {
         return;
       }
-      if (!DBUser.isValidUserName((name1))) {
-        if (JOptionPane.showConfirmDialog(lobbyFrame,
-            "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
-            JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
-          return;
-        }
+      if (!DBUser.isValidUserName(name1)) {
+        JOptionPane.showMessageDialog(lobbyFrame, "The username you entered is invalid.", "Invalid Username",
+            JOptionPane.ERROR_MESSAGE);
+        return;
       }
       promptBanDuration().ifPresent(duration -> {
         final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
@@ -202,11 +200,9 @@ public class LobbyMenu extends JMenuBar {
         error = null;
       }
       if (error != null) {
-        if (JOptionPane.showConfirmDialog(lobbyFrame,
-            "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
-            "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
-          return;
-        }
+        JOptionPane.showMessageDialog(lobbyFrame, "The hashed Mac Address you entered is invalid (" + error + ").",
+            "Invalid Hashed Mac", JOptionPane.ERROR_MESSAGE);
+        return;
       }
       promptBanDuration().ifPresent(duration -> {
         final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
@@ -232,11 +228,9 @@ public class LobbyMenu extends JMenuBar {
         return;
       }
       if (DBUser.isValidUserName(name1)) {
-        if (JOptionPane.showConfirmDialog(lobbyFrame,
-            "The username you entered is invalid. Do you want to ban it anyhow?", "Invalid Username",
-            JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
-          return;
-        }
+        JOptionPane.showMessageDialog(lobbyFrame, "The username you entered is invalid.", "Invalid Username",
+            JOptionPane.ERROR_MESSAGE);
+        return;
       }
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
@@ -273,11 +267,9 @@ public class LobbyMenu extends JMenuBar {
         error = null;
       }
       if (error != null) {
-        if (JOptionPane.showConfirmDialog(lobbyFrame,
-            "The hashed Mac Address you entered is invalid (" + error + "). Do you want to ban it anyhow?",
-            "Invalid Hashed Mac", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
-          return;
-        }
+        JOptionPane.showMessageDialog(lobbyFrame, "The hashed Mac Address you entered is invalid (" + error + ").",
+            "Invalid Hashed Mac", JOptionPane.ERROR_MESSAGE);
+        return;
       }
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
