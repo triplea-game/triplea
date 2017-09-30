@@ -34,7 +34,6 @@ import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.INode;
-import games.strategy.triplea.ui.TimespanDialog;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;

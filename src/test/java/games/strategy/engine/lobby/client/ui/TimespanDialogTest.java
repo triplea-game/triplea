@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.engine.lobby.client.ui;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -7,7 +7,7 @@ import java.time.Instant;
 
 import org.junit.Test;
 
-import games.strategy.triplea.ui.TimespanDialog.TimeUnit;
+import games.strategy.engine.lobby.client.ui.TimespanDialog.TimeUnit;
 
 public class TimespanDialogTest {
 

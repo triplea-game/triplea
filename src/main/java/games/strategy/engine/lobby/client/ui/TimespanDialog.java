@@ -1,4 +1,4 @@
-package games.strategy.triplea.ui;
+package games.strategy.engine.lobby.client.ui;
 
 import java.awt.Component;
 import java.time.Instant;
