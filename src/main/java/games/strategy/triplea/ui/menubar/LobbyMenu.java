@@ -227,7 +227,7 @@ public class LobbyMenu extends JMenuBar {
       if (name1 == null || name1.length() < 1) {
         return;
       }
-      if (DBUser.isValidUserName(name1)) {
+      if (!DBUser.isValidUserName(name1)) {
         JOptionPane.showMessageDialog(lobbyFrame, "The username you entered is invalid.", "Invalid Username",
             JOptionPane.ERROR_MESSAGE);
         return;
