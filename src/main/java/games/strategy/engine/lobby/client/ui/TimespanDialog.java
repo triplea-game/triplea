@@ -78,8 +78,14 @@ public class TimespanDialog {
             .add(comboBox)
             .build())
         .build(), title, JOptionPane.OK_CANCEL_OPTION);
-    if (returnValue == JOptionPane.OK_OPTION) {
-      final Instant instant = ((TimeUnit) comboBox.getSelectedItem()).getInstant((Integer) spinner.getValue());
+    runAction(action, returnValue, (TimeUnit) comboBox.getSelectedItem(), (Integer) spinner.getValue());
+  }
+
+  @VisibleForTesting
+  static void runAction(final Consumer<Date> action, final int returnType, final TimeUnit timeUnit,
+      final Integer duration) {
+    if (returnType == JOptionPane.OK_OPTION) {
+      final Instant instant = timeUnit.getInstant(duration);
       action.accept(instant == null ? null : Date.from(instant));
     }
   }

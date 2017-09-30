@@ -2,8 +2,12 @@ package games.strategy.engine.lobby.client.ui;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.time.Instant;
+import java.util.Date;
+
+import javax.swing.JOptionPane;
 
 import org.junit.Test;
 
@@ -13,7 +17,9 @@ public class TimespanDialogTest {
 
   @Test
   public void testForeverReturnsNull() {
-    assertNull(TimeUnit.FOREVER.getInstant((int) (Math.random() * Integer.MAX_VALUE)));
+    assertNull(TimeUnit.FOREVER.getInstant((Integer.MAX_VALUE)));
+    assertNull(TimeUnit.FOREVER.getInstant((0)));
+    assertNull(TimeUnit.FOREVER.getInstant((Integer.MIN_VALUE)));
   }
 
   @Test
@@ -35,5 +41,32 @@ public class TimespanDialogTest {
   @Test
   public void testPositiveIntIsInFuture() {
     assertTrue(Instant.now().isBefore(TimeUnit.MINUTES.getInstant(1)));
+  }
+
+  @Test
+  public void testCancelDoesExecuteNothing() {
+    TimespanDialog.runAction(d -> fail("Operation was not cancelled!"), JOptionPane.CANCEL_OPTION, TimeUnit.FOREVER, 0);
+  }
+
+  @Test
+  public void testNonNullDateInTheFuture() {
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.MINUTES, Integer.MAX_VALUE);
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.HOURS, Integer.MAX_VALUE);
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.DAYS, Integer.MAX_VALUE);
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.WEEKS, Integer.MAX_VALUE);
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.MONTHS, Integer.MAX_VALUE);
+    // We can use Integer#MAX_VALUE for years, because this will result in a long-overflow
+    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
+        JOptionPane.OK_OPTION, TimeUnit.YEARS, 99999999);
+  }
+
+  @Test
+  public void testForeverPassesNull() {
+    TimespanDialog.runAction(d -> assertNull(d), JOptionPane.OK_OPTION, TimeUnit.FOREVER, 0);
   }
 }
