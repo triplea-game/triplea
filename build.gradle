@@ -6,7 +6,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.12.0'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
     id 'com.install4j.gradle' version '7.0.1'
-    id "de.qaware.seu.as.code.git" version "2.2.0"
+    id 'de.undercouch.download' version '3.2.0'
     id "net.ltgt.errorprone" version "0.0.11"
 }
 
@@ -140,15 +140,6 @@ task jacocoRootReport(type: JacocoReport) {
     }
 }
 
-git {
-    assets {
-        url 'https://github.com/triplea-game/assets.git'
-        directory file("${buildDir}/assets")
-        branch 'master'
-        singleBranch true
-    }
-}
-
 task validateYamls(group: 'verification', description: 'Validates YAML files.') {
     doLast {
         def lobbyServerYamlFile = file('lobby_server.yaml')
@@ -167,7 +158,26 @@ task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
     rename shadowJar.archivePath.name, output.name
 }
 
-task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
+task downloadAssets(group: 'release') {
+    doLast {
+        [
+            'icons/triplea_icon_16_16.png',
+            'icons/triplea_icon_32_32.png',
+            'icons/triplea_icon_48_48.png',
+            'icons/triplea_icon_64_64.png',
+            'icons/triplea_icon_128_128.png',
+            'icons/triplea_icon_256_256.png',
+            'install4j/macosx-amd64-1.8.0_144.tar.gz',
+            'install4j/windows-amd64-1.8.0_144.tar.gz',
+            'install4j/windows-x86-1.8.0_144.tar.gz'
+        ].each { path ->
+            download {
+                src "https://raw.githubusercontent.com/triplea-game/assets/master/$path"
+                dest "$buildDir/assets/$path"
+                overwrite false
+            }
+        }
+    }
 }
 
 task prepareGameEngineProperties() {
@@ -185,7 +195,7 @@ task prepareGameEngineProperties() {
     }
 }
 
-task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets, prepareGameEngineProperties]) {
+task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, prepareGameEngineProperties]) {
     classifier 'all_platforms'
     ['assets', 'dice_servers'].each { folder ->
         from(folder) {
@@ -213,7 +223,7 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 task generateZipReleases(group: 'release', dependsOn: [allPlatform, lobbyServer]) {}
 
 import com.install4j.gradle.Install4jTask
-task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, updateAssets], group: 'release') {
+task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, downloadAssets], group: 'release') {
     projectFile = file('build.install4j')
     release project.version
     doFirst {
