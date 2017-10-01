@@ -159,7 +159,7 @@ public class LobbyFrame extends JFrame {
       }
       TimespanDialog.prompt(this, "Select Timespan",
           "Please consult other admins before muting longer than 1 day. \n"
-              + "And please remember to report this ban.",
+              + "And please remember to report this mute.",
           date -> {
             if (selectedMuteType.toLowerCase().contains("name")) {
               controller.muteUsername(clickedOn, date);
