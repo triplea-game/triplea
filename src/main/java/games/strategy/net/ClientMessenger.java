@@ -27,7 +27,6 @@ import games.strategy.net.nio.ClientQuarantineConversation;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
