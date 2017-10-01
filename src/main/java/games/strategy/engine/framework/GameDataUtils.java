@@ -19,12 +19,13 @@ public class GameDataUtils {
    * <strong>You should have the game data's read or write lock before calling this method</strong>
    */
   public static GameData cloneGameData(final GameData data, final boolean copyDelegates) {
-    try (ByteArrayOutputStream sink = new ByteArrayOutputStream(10000)) {
+    try {
+      final ByteArrayOutputStream sink = new ByteArrayOutputStream(10_000);
       GameDataManager.saveGame(sink, data, copyDelegates);
       final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
       return GameDataManager.loadGame(source);
-    } catch (final IOException ex) {
-      ClientLogger.logQuietly(ex);
+    } catch (final IOException e) {
+      ClientLogger.logQuietly(e);
       return null;
     }
   }
@@ -35,19 +36,18 @@ public class GameDataUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> T translateIntoOtherGameData(final T object, final GameData translateInto) {
-    try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1024);
-        final GameObjectOutputStream out = new GameObjectOutputStream(sink)) {
-      out.writeObject(object);
+    try {
+      final ByteArrayOutputStream sink = new ByteArrayOutputStream(1024);
+      try (final GameObjectOutputStream out = new GameObjectOutputStream(sink)) {
+        out.writeObject(object);
+      }
 
-      try (final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray())) {
-        final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);
-        try (final ObjectInputStream in = factory.create(source)) {
-          try {
-            return (T) in.readObject();
-          } catch (final ClassNotFoundException ex) {
-            throw new RuntimeException(ex);
-          }
-        }
+      final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);
+      try (final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
+          final ObjectInputStream in = factory.create(source)) {
+        return (T) in.readObject();
+      } catch (final ClassNotFoundException e) {
+        throw new RuntimeException(e);
       }
     } catch (final IOException e) {
       throw new RuntimeException(e);
