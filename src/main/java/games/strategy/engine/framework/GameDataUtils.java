@@ -9,7 +9,12 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameObjectOutputStream;
 
-public class GameDataUtils {
+/**
+ * A collection of useful methods for working with instances of {@link GameData}.
+ */
+public final class GameDataUtils {
+  private GameDataUtils() {}
+
   public static GameData cloneGameData(final GameData data) {
     return cloneGameData(data, false);
   }
