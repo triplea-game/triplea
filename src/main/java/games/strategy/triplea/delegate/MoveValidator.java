@@ -560,7 +560,7 @@ public class MoveValidator {
       }
       // check we have enough movement
       // exclude transported units
-      Collection<Unit> moveTest;
+      final Collection<Unit> moveTest;
       if (route.getStart().isWater()) {
         moveTest = MoveValidator.getNonLand(units);
       } else {
@@ -792,7 +792,7 @@ public class MoveValidator {
     final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
     boolean validMove = false;
-    List<Territory> steps;
+    final List<Territory> steps;
     if (ignoreRouteEnd) {
       steps = route.getMiddleSteps();
     } else {
@@ -1541,7 +1541,7 @@ public class MoveValidator {
     // If start and end are land, try a land route.
     // don't force a land route, since planes may be moving
     if (!start.isWater() && !end.isWater()) {
-      Route landRoute;
+      final Route landRoute;
       if (isNeutralsImpassable) {
         landRoute = data.getMap().getRoute_IgnoreEnd(start, end,
             Match.allOf(Matches.territoryIsLand(), noNeutral, noImpassable));
@@ -1573,7 +1573,7 @@ public class MoveValidator {
     }
     // these are the conditions we would like the route to satisfy, starting
     // with the most important
-    List<Match<Territory>> tests;
+    final List<Match<Territory>> tests;
     if (isNeutralsImpassable) {
       tests = new ArrayList<>(Arrays.asList(
           // best if no enemy and no neutral

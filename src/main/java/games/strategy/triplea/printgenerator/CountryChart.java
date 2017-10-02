@@ -68,8 +68,8 @@ class CountryChart {
         final Territory currentTerritory = terrIterator.next();
         countryFileWriter.write(currentTerritory.getName());
         final List<Map<UnitType, Integer>> currentList = infoMap.get(currentTerritory);
-        for (Map<UnitType, Integer> currentMap : currentList) {
-          for (UnitType unitTypeHere : currentMap.keySet()) {
+        for (final Map<UnitType, Integer> currentMap : currentList) {
+          for (final UnitType unitTypeHere : currentMap.keySet()) {
             final int here = currentMap.get(unitTypeHere);
             countryFileWriter.write("," + here);
           }

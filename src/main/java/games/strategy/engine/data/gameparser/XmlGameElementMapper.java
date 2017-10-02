@@ -154,7 +154,7 @@ public class XmlGameElementMapper {
     private final Attachable attachable;
     private final GameData gameData;
 
-    AttachmentData(String name, Attachable attachable, GameData gameData) {
+    AttachmentData(final String name, final Attachable attachable, final GameData gameData) {
       this.name = name;
       this.attachable = attachable;
       this.gameData = gameData;
@@ -171,18 +171,18 @@ public class XmlGameElementMapper {
       return Optional.empty();
     }
 
-    Supplier<IDelegate> delegateFactory = delegateMap.get(className);
+    final Supplier<IDelegate> delegateFactory = delegateMap.get(className);
     return Optional.of(delegateFactory.get());
   }
 
-  private static void handleMissingObjectError(String typeLabel, String value) {
+  private static void handleMissingObjectError(final String typeLabel, final String value) {
     ClientLogger.logError("Could not find " + typeLabel + " '" + value + "'. This is can be a map configuration"
         + " problem, and would need to be fixed in the map XML. Or, the map XML is using a feature from a newer game"
         + " engine version, and you will need to install the latest TripleA for it to be enabled. Meanwhile, the"
         + " functionality provided by this " + typeLabel + " will not available.");
   }
 
-  public Optional<IAttachment> getAttachment(String javaClass, String name, Attachable attachable, GameData data) {
+  public Optional<IAttachment> getAttachment(final String javaClass, final String name, final Attachable attachable, final GameData data) {
     if (!attachmentMap.containsKey(javaClass)) {
       handleMissingObjectError("attachment", javaClass);
       return Optional.empty();

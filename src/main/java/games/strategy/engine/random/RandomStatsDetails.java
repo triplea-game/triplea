@@ -57,8 +57,8 @@ public class RandomStatsDetails implements Serializable {
       if (localTotal % 2 != 0) {
         median = calcMedian((localTotal / 2) + 1, diceSides, stats);
       } else {
-        double tmp1 = calcMedian((localTotal / 2), diceSides, stats);
-        double tmp2 = calcMedian((localTotal / 2) + 1, diceSides, stats);
+        final double tmp1 = calcMedian((localTotal / 2), diceSides, stats);
+        final double tmp2 = calcMedian((localTotal / 2) + 1, diceSides, stats);
         median = (tmp1 + tmp2) / 2;
       }
       // calculate variance

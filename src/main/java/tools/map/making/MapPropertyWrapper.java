@@ -40,14 +40,12 @@ import games.strategy.util.Tuple;
  * @param <T>
  *        parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
-@SuppressWarnings("unchecked")
 public class MapPropertyWrapper<T> extends AEditableProperty {
   private static final long serialVersionUID = 6406798101396215624L;
-  private IEditableProperty property;
+  private final IEditableProperty property;
   // private final Class m_clazz;
   // private final T m_defaultValue;
   private final Method setter;
-  @SuppressWarnings("unused")
   private final Method getter;
 
   private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter,

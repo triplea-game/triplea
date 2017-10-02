@@ -13,12 +13,12 @@ public class Point {
     this(0, 0);
   }
 
-  public Point(double x, double y) {
+  public Point(final double x, final double y) {
     this.x = x;
     this.y = y;
   }
 
-  public Point(Point2D point) {
+  public Point(final Point2D point) {
     this(point.getX(), point.getY());
   }
 
@@ -26,7 +26,7 @@ public class Point {
     return x;
   }
 
-  public void setX(double x) {
+  public void setX(final double x) {
     this.x = x;
   }
 
@@ -34,11 +34,11 @@ public class Point {
     return y;
   }
 
-  public void setY(double y) {
+  public void setY(final double y) {
     this.y = y;
   }
 
-  public double distance(Point point) {
+  public double distance(final Point point) {
     return Math.sqrt(Math.pow(this.getX() - point.getX(), 2) + Math.pow(this.getY() - point.getY(), 2));
   }
 
@@ -59,9 +59,9 @@ public class Point {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (o instanceof Point) {
-      Point point = (Point) o;
+      final Point point = (Point) o;
       return point.x == this.x && point.y == this.y;
     }
     return false;

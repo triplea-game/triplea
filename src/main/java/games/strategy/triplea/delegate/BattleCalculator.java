@@ -479,7 +479,7 @@ public class BattleCalculator {
       final CasualtyDetails editSelection = tripleaPlayer.selectCasualties(targetsToPickFrom, dependents, 0, text, dice,
           player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, new CasualtyList(),
           battleId, battlesite, allowMultipleHitsPerUnit);
-      List<Unit> killed = editSelection.getKilled();
+      final List<Unit> killed = editSelection.getKilled();
       // if partial retreat is possible, kill amphibious units first
       if (isPartialAmphibiousRetreat(data)) {
         killAmphibiousFirst(killed, targetsToPickFrom);
@@ -593,7 +593,7 @@ public class BattleCalculator {
     allAmphibUnits.addAll(Matches.getMatches(targets, Matches.unitWasAmphibious()));
     allAmphibUnits.removeAll(Matches.getMatches(killed, Matches.unitWasAmphibious()));
     // Get a collection of the unit types of the amphib units
-    for (Unit unit : allAmphibUnits) {
+    for (final Unit unit : allAmphibUnits) {
       final UnitType ut = unit.getType();
       if (!amphibTypes.contains(ut)) {
         amphibTypes.add(ut);

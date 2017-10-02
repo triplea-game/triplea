@@ -76,7 +76,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       checkVictoryCities(m_bridge, victoryMessage, " Projection of Power VCs");
     }
     if (isEconomicVictory()) { // Check for regular economic victory
-      for (String allianceName : data.getAllianceTracker().getAlliances()) {
+      for (final String allianceName : data.getAllianceTracker().getAlliances()) {
         final int victoryAmount = getEconomicVictoryAmount(data, allianceName);
         final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
         final Iterator<PlayerID> teamIter = teamMembers.iterator();
@@ -212,7 +212,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     final GameData data = bridge.getData();
 
     final Collection<Territory> territories = data.getMap().getTerritories();
-    for (String allianceName : data.getAllianceTracker().getAlliances()) {
+    for (final String allianceName : data.getAllianceTracker().getAlliances()) {
       final int vcAmount = getVcAmount(data, allianceName, victoryType);
       final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
       int teamVCs = 0;

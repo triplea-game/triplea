@@ -732,7 +732,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && getAlliedOwnershipTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedOwnershipTerritories();
-      Set<Territory> listedTerritories;
+      final Set<Territory> listedTerritories;
       if (terrs.length == 1) {
         if (terrs[0].equals("original")) {
           final Collection<PlayerID> allies =
@@ -770,7 +770,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && getDirectOwnershipTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectOwnershipTerritories();
-      Set<Territory> listedTerritories;
+      final Set<Territory> listedTerritories;
       if (terrs.length == 1) {
         if (terrs[0].equals("original")) {
           listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);

@@ -30,7 +30,7 @@ import games.strategy.triplea.ui.screen.TileManager;
  */
 public class TileImageBreaker {
   private static String location = null;
-  private static JFrame observer = new JFrame();
+  private static final JFrame observer = new JFrame();
   private boolean baseMap;
   private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
@@ -151,7 +151,7 @@ public class TileImageBreaker {
   private static void handleCommandLineArgs(final String[] args) {
     // arg can only be the map folder location.
     if (args.length == 1) {
-      String value;
+      final String value;
       if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {

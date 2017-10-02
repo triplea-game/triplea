@@ -331,7 +331,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   private boolean canAirLand(final boolean movePhase, final PlayerID player) {
-    Collection<Territory> airCantLand;
+    final Collection<Territory> airCantLand;
     try {
       if (movePhase) {
         airCantLand = ((IMoveDelegate) getPlayerBridge().getRemoteDelegate()).getTerritoriesWhereAirCantLand(player);
@@ -354,7 +354,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   }
 
   private boolean canUnitsFight() {
-    Collection<Territory> unitsCantFight;
+    final Collection<Territory> unitsCantFight;
     try {
       unitsCantFight = ((IMoveDelegate) getPlayerBridge().getRemoteDelegate()).getTerritoriesWhereUnitsCantFight();
     } catch (final ClassCastException e) {

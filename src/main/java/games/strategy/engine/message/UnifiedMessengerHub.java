@@ -53,7 +53,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     if (msg instanceof HasEndPointImplementor) {
       synchronized (endPointMutex) {
         final HasEndPointImplementor hasEndPoint = (HasEndPointImplementor) msg;
-        Collection<INode> nodes = endPoints.computeIfAbsent(hasEndPoint.endPointName, k -> new ArrayList<>());
+        final Collection<INode> nodes = endPoints.computeIfAbsent(hasEndPoint.endPointName, k -> new ArrayList<>());
         if (nodes.contains(from)) {
           throw new IllegalStateException(
               "Already contained, new" + from + " existing, " + nodes + " name " + hasEndPoint.endPointName);
@@ -169,7 +169,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         nodes.remove(to);
       }
     }
-    for (InvocationInProgress invocation : invocations.values()) {
+    for (final InvocationInProgress invocation : invocations.values()) {
       if (invocation.isWaitingOn(to)) {
         final RemoteMethodCallResults results =
             new RemoteMethodCallResults(new ConnectionLostException("Connection to " + to.getName() + " lost"));

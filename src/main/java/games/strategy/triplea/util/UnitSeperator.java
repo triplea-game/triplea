@@ -50,7 +50,7 @@ public class UnitSeperator {
     // key and value are the same
     // we do this to take advanatge of .equals() on objects that
     // are equal in a special way
-    HashMap<UnitCategory, UnitCategory> categories;
+    final HashMap<UnitCategory, UnitCategory> categories;
     if (sort) {
       categories = new HashMap<>();
     } else {

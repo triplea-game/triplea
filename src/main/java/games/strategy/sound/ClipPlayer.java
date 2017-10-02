@@ -255,7 +255,7 @@ public class ClipPlayer {
    *        random.
    * @param playerId - the name of the player, or null
    */
-  public static void play(String clipPath, PlayerID playerId) {
+  public static void play(final String clipPath, final PlayerID playerId) {
     getInstance().playClip(clipPath, playerId);
   }
 
@@ -309,7 +309,7 @@ public class ClipPlayer {
     Collections.shuffle(availableSounds);
     try {
       return availableSounds.get(0).toURI();
-    } catch (URISyntaxException e) {
+    } catch (final URISyntaxException e) {
       throw Throwables.propagate(e);
     }
   }
@@ -363,7 +363,7 @@ public class ClipPlayer {
     if (thisSoundUrl == null) {
       return availableSounds;
     }
-    URI thisSoundUri;
+    final URI thisSoundUri;
     File thisSoundFile;
     // we are checking to see if this is a file, to see if it is a directory, or a sound, or a zipped directory, or a
     // zipped sound. There
@@ -455,7 +455,7 @@ public class ClipPlayer {
             final URL individualSoundUrl = soundFile.toURI().toURL();
             availableSounds.add(individualSoundUrl);
           } catch (final MalformedURLException e) {
-            String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
+            final String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
             ClientLogger.logQuietly(msg, e);
           }
         }
@@ -469,7 +469,7 @@ public class ClipPlayer {
     return availableSounds;
   }
 
-  private static boolean isZippedMp3(ZipEntry zipElement, String resourceAndPathUrl) {
+  private static boolean isZippedMp3(final ZipEntry zipElement, final String resourceAndPathUrl) {
     return zipElement != null && zipElement.getName() != null && zipElement.getName().contains(resourceAndPathUrl)
         && (zipElement.getName().endsWith(MP3_SUFFIX));
   }

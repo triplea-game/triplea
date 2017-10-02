@@ -37,7 +37,7 @@ public class ImageFactory {
         m_images.put(key, null);
         return null;
       }
-      Image image;
+      final Image image;
       try {
         image = ImageIO.read(url);
       } catch (final IOException e) {

@@ -20,7 +20,7 @@ public final class TestUtil {
 
   /** Create and returns a simple delete on exit temp file with contents equal to the String parameter. */
   public static File createTempFile(final String contents) {
-    File file;
+    final File file;
     try {
       file = File.createTempFile("testFile", ".tmp");
       file.deleteOnExit();

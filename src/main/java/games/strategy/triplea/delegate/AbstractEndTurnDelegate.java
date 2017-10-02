@@ -216,7 +216,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return 0;
     }
     final String annotation = player.getName() + " rolling to resolve War Bonds: ";
-    DiceRoll dice;
+    final DiceRoll dice;
     dice = DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int total = 0;
     for (int i = 0; i < dice.size(); i++) {

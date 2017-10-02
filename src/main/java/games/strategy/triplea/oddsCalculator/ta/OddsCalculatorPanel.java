@@ -291,8 +291,8 @@ class OddsCalculatorPanel extends JPanel {
     swapSidesButton.addActionListener(e -> {
       attackerOrderOfLosses = null;
       defenderOrderOfLosses = null;
-      List<Unit> getDefenders = defendingUnitsPanel.getUnits();
-      List<Unit> getAttackers = attackingUnitsPanel.getUnits();
+      final List<Unit> getDefenders = defendingUnitsPanel.getUnits();
+      final List<Unit> getAttackers = attackingUnitsPanel.getUnits();
       swapSidesCombo.setSelectedItem(getAttacker());
       attackerCombo.setSelectedItem(getDefender());
       defenderCombo.setSelectedItem(getSwapSides());

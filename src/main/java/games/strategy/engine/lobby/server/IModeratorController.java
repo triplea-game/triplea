@@ -27,7 +27,7 @@ public interface IModeratorController extends IRemote {
    *             Remove with next incompatible release.
    */
   @Deprecated
-  default void banIp(INode node, Date banExpires) {}
+  default void banIp(final INode node, final Date banExpires) {}
 
   /**
    * Ban the mac of the given INode.
@@ -49,7 +49,7 @@ public interface IModeratorController extends IRemote {
    *             Remove with next incompatible release.
    */
   @Deprecated
-  default void muteIp(INode node, Date muteExpires) {}
+  default void muteIp(final INode node, final Date muteExpires) {}
 
   /**
    * Mute the mac of the given INode.

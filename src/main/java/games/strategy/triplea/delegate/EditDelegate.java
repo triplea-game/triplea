@@ -171,7 +171,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changePUs(final PlayerID player, final int newTotal) {
-    String result = checkEditMode();
+    final String result = checkEditMode();
     if (result != null) {
       return result;
     }
@@ -190,7 +190,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changeTechTokens(final PlayerID player, final int newTotal) {
-    String result = checkEditMode();
+    final String result = checkEditMode();
     if (result != null) {
       return result;
     }

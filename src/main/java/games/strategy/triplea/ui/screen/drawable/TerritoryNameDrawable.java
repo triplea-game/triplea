@@ -75,8 +75,8 @@ public class TerritoryNameDrawable implements IDrawable {
     final FontMetrics fm = graphics.getFontMetrics();
 
     // if we specify a placement point, use it otherwise try to center it
-    int x;
-    int y;
+    final int x;
+    final int y;
     final Optional<Point> namePlace = mapData.getNamePlacementPoint(territory);
     if (namePlace.isPresent()) {
       x = namePlace.get().x;

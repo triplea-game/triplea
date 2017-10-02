@@ -73,7 +73,7 @@ public class History extends DefaultTreeModel {
   }
 
   private int getLastChange(final HistoryNode node) {
-    int lastChangeIndex;
+    final int lastChangeIndex;
     if (node == getRoot()) {
       lastChangeIndex = 0;
     } else if (node instanceof Event) {

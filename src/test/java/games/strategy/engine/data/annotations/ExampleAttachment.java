@@ -90,7 +90,7 @@ public class ExampleAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new IllegalStateException("Unit Attachments: givesMovement cannot be empty or have more than two fields");
     }
-    String unitTypeToProduce;
+    final String unitTypeToProduce;
     unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);

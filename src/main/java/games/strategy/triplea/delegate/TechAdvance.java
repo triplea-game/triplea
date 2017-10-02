@@ -164,7 +164,7 @@ public abstract class TechAdvance extends NamedAttachable {
       throw new IllegalArgumentException(s + " is not a valid technology");
     }
     final TechAdvance ta;
-    Constructor<? extends TechAdvance> constructor;
+    final Constructor<? extends TechAdvance> constructor;
     try {
       constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
       ta = constructor.newInstance(data);

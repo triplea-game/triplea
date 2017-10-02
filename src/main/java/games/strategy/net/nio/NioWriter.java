@@ -56,7 +56,7 @@ class NioWriter {
   }
 
   private void addNewSocketsToSelector() {
-    List<SocketChannel> socketsToWriteCopy;
+    final List<SocketChannel> socketsToWriteCopy;
     synchronized (mutex) {
       if (socketsToWake.isEmpty()) {
         return;

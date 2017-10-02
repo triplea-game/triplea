@@ -69,17 +69,17 @@ import games.strategy.util.Triple;
 
 class EditPanel extends ActionPanel {
   private static final long serialVersionUID = 5043639777373556106L;
-  private TripleAFrame frame;
-  private Action performMoveAction;
-  private Action addUnitsAction;
-  private Action delUnitsAction;
-  private Action changePUsAction;
-  private Action addTechAction;
-  private Action removeTechAction;
-  private Action changeUnitHitDamageAction;
-  private Action changeUnitBombingDamageAction;
-  private Action changeTerritoryOwnerAction;
-  private Action changePoliticalRelationships;
+  private final TripleAFrame frame;
+  private final Action performMoveAction;
+  private final Action addUnitsAction;
+  private final Action delUnitsAction;
+  private final Action changePUsAction;
+  private final Action addTechAction;
+  private final Action removeTechAction;
+  private final Action changeUnitHitDamageAction;
+  private final Action changeUnitBombingDamageAction;
+  private final Action changeTerritoryOwnerAction;
+  private final Action changePoliticalRelationships;
   private Action currentAction = null;
   private boolean active = false;
   private Point mouseSelectedPoint;
@@ -150,7 +150,7 @@ class EditPanel extends ActionPanel {
               UnitSeperator.categorize(selectedUnits, mustMoveWithDetails.getMustMoveWith(), true, true).size();
           mustChoose = (allCategories != selectedCategories);
         }
-        Collection<Unit> bestUnits;
+        final Collection<Unit> bestUnits;
         if (mustChoose) {
           final String chooserText = "Remove units from " + selectedTerritory + ":";
           final UnitChooser chooser = new UnitChooser(allUnits, selectedUnits, mustMoveWithDetails.getMustMoveWith(),

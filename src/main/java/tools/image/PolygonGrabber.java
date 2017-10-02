@@ -737,7 +737,7 @@ public class PolygonGrabber extends JFrame {
   private static void handleCommandLineArgs(final String[] args) {
     // arg can only be the map folder location.
     if (args.length == 1) {
-      String value;
+      final String value;
       if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {

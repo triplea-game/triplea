@@ -36,7 +36,7 @@ public class TimeManager {
    * @param dateTime The LocalDateTime representing the desired time
    * @return The formatted String
    */
-  public static String getLocalizedTimeWithoutSeconds(LocalDateTime dateTime) {
+  public static String getLocalizedTimeWithoutSeconds(final LocalDateTime dateTime) {
     return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.SHORT).toFormatter()
         .format(dateTime);
   }
@@ -47,7 +47,7 @@ public class TimeManager {
    * @param dateTime The DateTime which should be formatted
    * @return a Formatted String of the given DateTime
    */
-  public static String toDateString(LocalDateTime dateTime) {
+  public static String toDateString(final LocalDateTime dateTime) {
     return DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy").withZone(ZoneOffset.systemDefault())
         .format(dateTime);
   }

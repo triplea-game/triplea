@@ -19,7 +19,7 @@ enum FxmlManager {
   RELATIVE_FONT_PATH("./css/fonts/1942-report.ttf"),
   ICON_LOCATION("/games/strategy/engine/framework/ta_icon.png");
 
-  private String value;
+  private final String value;
 
   FxmlManager(final String value) {
     this.value = value;

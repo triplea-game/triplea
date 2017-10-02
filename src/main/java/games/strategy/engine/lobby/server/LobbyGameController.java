@@ -109,7 +109,7 @@ class LobbyGameController implements ILobbyGameController {
 
   @Override
   public String testGame(final GUID gameId) {
-    GameDescription description;
+    final GameDescription description;
     synchronized (m_mutex) {
       description = m_allGames.get(gameId);
     }

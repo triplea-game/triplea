@@ -97,7 +97,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     final JScrollPane scrollPane = new JScrollPane(localPlayerPanel);
     localPlayerPanel.addHierarchyListener(new HierarchyListener() {
       @Override
-      public void hierarchyChanged(HierarchyEvent e) {
+      public void hierarchyChanged(final HierarchyEvent e) {
         final Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
         if (window instanceof Dialog) {
           final Dialog dialog = (Dialog) window;
@@ -426,7 +426,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       Runtime.getRuntime().addShutdownHook(shutdown);
     }
 
-    @SuppressWarnings("unchecked")
     private Map<String, IBean> loadMap() {
       if (file.exists()) {
         try (FileInputStream fin = new FileInputStream(file);

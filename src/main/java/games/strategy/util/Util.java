@@ -127,12 +127,12 @@ public class Util {
    * @param input The input String to hash.
    * @return A hashed hexadecimal String of the input.
    */
-  public static String sha512(String input) {
+  public static String sha512(final String input) {
     Preconditions.checkNotNull(input);
     try {
       return BaseEncoding.base16()
           .encode(MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8))).toLowerCase();
-    } catch (NoSuchAlgorithmException e) {
+    } catch (final NoSuchAlgorithmException e) {
       throw new IllegalStateException(SHA_512 + " is not supported!", e);
     }
   }

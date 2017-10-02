@@ -200,7 +200,7 @@ public class MovePerformer implements Serializable {
               // CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory,
               // Matches.UnitCanBeDamagedButIsNotFactory);
               // determine which unit to bomb
-              Unit target;
+              final Unit target;
               if (enemyTargets.size() > 1
                   && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                   && !canCreateAirBattle) {

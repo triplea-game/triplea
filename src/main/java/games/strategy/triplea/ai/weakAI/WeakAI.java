@@ -785,7 +785,7 @@ public class WeakAI extends AbstractAI {
     final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
-    List<RepairRule> repairRules;
+    final List<RepairRule> repairRules;
     final Match<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCanProduceUnits());
     final List<Territory> repairFactories =
         Matches.getMatches(Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));

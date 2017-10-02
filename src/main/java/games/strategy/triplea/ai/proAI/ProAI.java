@@ -161,7 +161,7 @@ public class ProAI extends AbstractAI {
   }
 
   @Override
-  protected void purchase(final boolean purchaseForBid, int pusToSpend, final IPurchaseDelegate purchaseDelegate,
+  protected void purchase(final boolean purchaseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOolCache();

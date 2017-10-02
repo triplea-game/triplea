@@ -10,7 +10,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
  * be used by the GameData
  */
 public class GameDelegateHistoryWriter implements IDelegateHistoryWriter {
-  private IDelegateHistoryWriter m_delegateHistoryWriter;
+  private final IDelegateHistoryWriter m_delegateHistoryWriter;
   GameData m_data;
 
   GameDelegateHistoryWriter(final IDelegateHistoryWriter delegateHistoryWriter, final GameData data) {

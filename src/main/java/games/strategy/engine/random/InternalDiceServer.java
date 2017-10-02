@@ -16,7 +16,7 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  */
 public class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
-  private transient IRandomSource _randomSource;
+  private final transient IRandomSource _randomSource;
 
   public InternalDiceServer() {
     _randomSource = new PlainRandomSource();

@@ -133,7 +133,7 @@ public class TripleA implements IGameLoader {
           frame.setExtendedState(Frame.MAXIMIZED_BOTH);
           frame.toFront();
         });
-      } catch (InterruptedException e) {
+      } catch (final InterruptedException e) {
         ClientLogger.logQuietly(e);
       }
     }

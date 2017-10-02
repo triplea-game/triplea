@@ -436,7 +436,7 @@ class LobbyGamePanel extends JPanel {
     if (minutes == null) {
       return;
     }
-    int min;
+    final int min;
     try {
       min = Math.max(0, Math.min(60 * 24 * 2, Integer.parseInt((String) minutes)));
     } catch (final NumberFormatException e) {
@@ -526,7 +526,7 @@ class LobbyGamePanel extends JPanel {
     if (hours == null) {
       return;
     }
-    int hrs;
+    final int hrs;
     try {
       hrs = Math.max(0, Math.min(24 * 30, Integer.parseInt((String) hours)));
     } catch (final NumberFormatException e) {

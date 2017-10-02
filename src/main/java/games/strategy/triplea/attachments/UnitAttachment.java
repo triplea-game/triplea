@@ -1002,7 +1002,7 @@ public class UnitAttachment extends DefaultAttachment {
           + "be equal to or greater than the first" + thisErrorMsg());
     }
     final Tuple<Integer, Integer> fromTo = Tuple.of(from, to);
-    Tuple<String, String> effectNum;
+    final Tuple<String, String> effectNum;
     if (s.length == 3) {
       effectNum = Tuple.of(s[2], null);
     } else {
@@ -1788,7 +1788,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("givesMovement cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    String unitTypeToProduce;
+    final String unitTypeToProduce;
     unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
@@ -1826,7 +1826,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (s.length != 2) {
       throw new GameParseException("consumesUnits must have two fields" + thisErrorMsg());
     }
-    String unitTypeToProduce;
+    final String unitTypeToProduce;
     unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
@@ -1866,7 +1866,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("createsUnitsList cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    String unitTypeToProduce;
+    final String unitTypeToProduce;
     unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
@@ -1907,7 +1907,7 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           "createsResourcesList cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    String resourceToProduce;
+    final String resourceToProduce;
     resourceToProduce = s[1];
     // validate that this resource exists in the xml
     final Resource r = getData().getResourceList().getResource(resourceToProduce);
@@ -1944,7 +1944,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (s.length != 2) {
       throw new GameParseException("fuelCost must have two fields" + thisErrorMsg());
     }
-    String resourceToProduce;
+    final String resourceToProduce;
     resourceToProduce = s[1];
     // validate that this resource exists in the xml
     final Resource r = getData().getResourceList().getResource(resourceToProduce);

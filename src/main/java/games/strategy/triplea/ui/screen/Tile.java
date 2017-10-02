@@ -113,7 +113,7 @@ public class Tile {
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
     final AffineTransform unscaled = g.getTransform();
-    AffineTransform scaled;
+    final AffineTransform scaled;
     if (scale != 1) {
       scaled = new AffineTransform();
       scaled.scale(scale, scale);

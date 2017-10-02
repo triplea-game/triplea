@@ -17,7 +17,7 @@ class PuInfo {
 
   void saveToFile(final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
-    for (PlayerID currentPlayer : gameData.getPlayerList()) {
+    for (final PlayerID currentPlayer : gameData.getPlayerList()) {
       final Iterator<Resource> resourceIterator = gameData.getResourceList().getResources().iterator();
       final Map<Resource, Integer> resourceMap = new HashMap<>();
       while (resourceIterator.hasNext()) {
@@ -49,10 +49,10 @@ class PuInfo {
         }
         resourceWriter.write("\r\n");
         // Print Player's and Resource Amount's
-        for (PlayerID currentPlayer : gameData.getPlayerList()) {
+        for (final PlayerID currentPlayer : gameData.getPlayerList()) {
           resourceWriter.write(currentPlayer.getName());
           final Map<Resource, Integer> resourceMap = infoMap.get(currentPlayer);
-          for (Resource currentResource : resourceMap.keySet()) {
+          for (final Resource currentResource : resourceMap.keySet()) {
             final int amountResource = resourceMap.get(currentResource);
             resourceWriter.write("," + amountResource);
           }

@@ -24,8 +24,8 @@ class ResourceLocationTracker {
    * @param resourcePaths The list of paths used for a map as resources. From this we can determine if the map is being
    *        loaded from a zip or a directory, and if zip, if it matches any particular naming.
    */
-  ResourceLocationTracker(String mapName, URL[] resourcePaths) {
-    boolean isUsingMasterZip = Arrays.asList(resourcePaths)
+  ResourceLocationTracker(final String mapName, final URL[] resourcePaths) {
+    final boolean isUsingMasterZip = Arrays.asList(resourcePaths)
         .stream().filter(path -> path.toString().endsWith(MASTER_ZIP_IDENTIFYING_SUFFIX)).findAny().isPresent();
 
 

@@ -71,7 +71,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   }
 
   public String addComment(final String message) {
-    String result = checkPlayerId();
+    final String result = checkPlayerId();
     if (result != null) {
       return result;
     }

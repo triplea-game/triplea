@@ -727,8 +727,8 @@ public class DiceRoll implements Externalizable {
 
   public static void sortByStrength(final List<Unit> units, final boolean defending) {
     final Comparator<Unit> comp = (u1, u2) -> {
-      Integer v1;
-      Integer v2;
+      final Integer v1;
+      final Integer v2;
       if (defending) {
         v1 = UnitAttachment.get(u1.getType()).getDefense(u1.getOwner());
         v2 = UnitAttachment.get(u2.getType()).getDefense(u2.getOwner());
@@ -1074,7 +1074,7 @@ public class DiceRoll implements Externalizable {
     m_hits = hits;
     m_rolls = new ArrayList<>(dice.length);
     for (final int element : dice) {
-      boolean hit;
+      final boolean hit;
       if (hitOnlyIfEquals) {
         hit = (rollAt == element);
       } else {

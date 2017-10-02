@@ -82,7 +82,7 @@ class UnitInformation {
     if (data.getProductionFrontierList().getProductionFrontier("production") != null) {
       final List<ProductionRule> productionRules =
           data.getProductionFrontierList().getProductionFrontier("production").getRules();
-      for (ProductionRule currentRule : productionRules) {
+      for (final ProductionRule currentRule : productionRules) {
         final NamedAttachable currentType = currentRule.getResults().keySet().iterator().next();
         if (currentType.equals(type)) {
           return currentRule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));

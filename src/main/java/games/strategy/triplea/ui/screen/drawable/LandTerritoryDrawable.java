@@ -21,7 +21,7 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
     final Territory territory = data.getMap().getTerritory(territoryName);
-    Color territoryColor;
+    final Color territoryColor;
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (ta != null && ta.getIsImpassable()) {
       territoryColor = mapData.impassableColor();

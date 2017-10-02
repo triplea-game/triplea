@@ -66,7 +66,7 @@ public class DoubleProperty extends AEditableProperty {
   @Override
   public boolean validate(final Object value) {
     if (value instanceof Double) {
-      double d;
+      final double d;
       try {
         d = roundToPlace((Double) value, m_places, RoundingMode.FLOOR);
       } catch (final Exception e) {

@@ -221,7 +221,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     // add changes for spent resources
     final String remaining = removeFromPlayer(m_player, costs, changes);
     // add history event
-    String transcriptText;
+    final String transcriptText;
     if (!totalUnits.isEmpty()) {
       transcriptText =
           m_player.getName() + " buy " + MyFormatter.defaultNamedToTextList(totalAll, ", ", true) + "; " + remaining;
@@ -269,7 +269,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     // add changes for spent resources
     final String remaining = removeFromPlayer(m_player, costs, changes);
     // add history event
-    String transcriptText;
+    final String transcriptText;
     if (!damageMap.isEmpty()) {
       transcriptText = m_player.getName() + " repair damage of "
           + MyFormatter.integerUnitMapToString(repairMap, ", ", "x ", true) + "; " + remaining;

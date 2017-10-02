@@ -296,12 +296,12 @@ public class ConnectionFinder {
     int j;
     for (i = 0; i < length; i++) {
       j = (i + 1) % length;
-      double factor = (pointArray[i].getX() * pointArray[j].getY() - pointArray[j].getX() * pointArray[i].getY());
+      final double factor = (pointArray[i].getX() * pointArray[j].getY() - pointArray[j].getX() * pointArray[i].getY());
       cx += (pointArray[i].getX() + pointArray[j].getX()) * factor;
       cy += (pointArray[i].getY() + pointArray[j].getY()) * factor;
     }
     area *= 6.0f;
-    double factor = 1 / area;
+    final double factor = 1 / area;
     cx *= factor;
     cy *= factor;
     centroid.setLocation(cx, cy);

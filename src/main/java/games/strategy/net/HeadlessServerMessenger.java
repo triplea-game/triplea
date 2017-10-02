@@ -11,7 +11,7 @@ import games.strategy.debug.ClientLogger;
 
 public class HeadlessServerMessenger implements IServerMessenger {
 
-  private INode node;
+  private final INode node;
 
   public HeadlessServerMessenger() {
     try {

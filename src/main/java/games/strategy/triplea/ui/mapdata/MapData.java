@@ -416,7 +416,7 @@ public class MapData implements Closeable {
   }
 
   public Color getColorProperty(final String propertiesKey) throws IllegalStateException {
-    String colorString;
+    final String colorString;
     if (mapProperties.getProperty(propertiesKey) != null) {
       colorString = mapProperties.getProperty(propertiesKey);
       if (colorString.length() != 6) {

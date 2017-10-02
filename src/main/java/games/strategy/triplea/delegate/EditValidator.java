@@ -126,7 +126,7 @@ class EditValidator {
      * if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))
      * return "Not all units have the same owner";
      */
-    String result = validateTerritoryBasic(data, territory);
+    final String result = validateTerritoryBasic(data, territory);
     if (result != null) {
       return result;
     }
@@ -206,7 +206,7 @@ class EditValidator {
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
     }
-    String result = validateTerritoryBasic(data, territory);
+    final String result = validateTerritoryBasic(data, territory);
     if (result != null) {
       return result;
     }
@@ -237,7 +237,7 @@ class EditValidator {
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
     }
-    String result = validateTerritoryBasic(data, territory);
+    final String result = validateTerritoryBasic(data, territory);
     if (result != null) {
       return result;
     }

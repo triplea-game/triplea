@@ -78,7 +78,7 @@ public class GameParser {
     if (stream == null) {
       throw new IllegalArgumentException("Stream must be non null");
     }
-    Document doc;
+    final Document doc;
     try {
       doc = getDocument(stream);
     } catch (final IOException | ParserConfigurationException e) {
@@ -278,7 +278,7 @@ public class GameParser {
   }
 
   private <T> T getValidatedObject(final Element element, final String attribute,
-      final boolean mustFind, final Function<String, T> function, String errorName)
+      final boolean mustFind, final Function<String, T> function, final String errorName)
       throws GameParseException {
     final String name = element.getAttribute(attribute);
     final T attachable = function.apply(name);
@@ -356,7 +356,7 @@ public class GameParser {
     return getValidatedObject(element, attribute, mustFind, this::getTechnology, "technology");
   }
 
-  private TechAdvance getTechnology(String name) {
+  private TechAdvance getTechnology(final String name) {
     final TechnologyFrontier frontier = data.getTechnologyFrontier();
     TechAdvance type = frontier.getAdvanceByName(name);
     if (type == null) {
@@ -1240,7 +1240,7 @@ public class GameParser {
     for (final Element current : values) {
       // find the setter
       String name = null;
-      Method setter;
+      final Method setter;
       try {
         name = current.getAttribute("name");
         if (name.length() == 0) {

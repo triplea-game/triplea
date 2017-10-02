@@ -347,7 +347,7 @@ public class TileManager {
         UnitSeperator.categorize(territory.getUnits().getUnits()).iterator();
     while (unitCategoryIter.hasNext()) {
       final UnitCategory category = unitCategoryIter.next();
-      boolean overflow;
+      final boolean overflow;
       if (placementPoints.hasNext()) {
         lastPlace = new Point(placementPoints.next());
         overflow = false;
@@ -499,7 +499,7 @@ public class TileManager {
       drawer.draw(bounds, data, graphics, mapData, null, null);
     }
     if (!drawOutline) {
-      Color c;
+      final Color c;
       if (selected.isWater()) {
         c = Color.RED;
       } else {

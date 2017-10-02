@@ -191,7 +191,7 @@ public class HistoryLog extends JFrame {
       while (nodeEnum.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
         final String title = node.getTitle();
-        StringBuilder indent = new StringBuilder();
+        final StringBuilder indent = new StringBuilder();
         for (int i = 0; i < node.getLevel(); i++) {
           indent.append(moreIndent);
         }

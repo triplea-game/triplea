@@ -43,7 +43,7 @@ public class Vault {
   private static final RemoteName VAULT_CHANNEL =
       new RemoteName("games.strategy.engine.vault.IServerVault.VAULT_CHANNEL", IRemoteVault.class);
   private static final String ALGORITHM = "DES";
-  private SecretKeyFactory mSecretKeyFactory;
+  private final SecretKeyFactory mSecretKeyFactory;
   // 0xCAFEBABE
   // we encrypt both this value and data when we encrypt data.
   // when decrypting we ensure that KNOWN_VAL is correct
@@ -92,7 +92,7 @@ public class Vault {
   }
 
   private byte[] secretKeyToBytes(final SecretKey key) {
-    DESKeySpec ks;
+    final DESKeySpec ks;
     try {
       ks = (DESKeySpec) mSecretKeyFactory.getKeySpec(key, DESKeySpec.class);
       return ks.getKey();
@@ -125,7 +125,7 @@ public class Vault {
     }
     // we already know it, so might as well keep it
     m_verifiedValues.put(id, data);
-    Cipher cipher;
+    final Cipher cipher;
     try {
       cipher = Cipher.getInstance(ALGORITHM);
       cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -135,7 +135,7 @@ public class Vault {
     }
     // join the data and known value into one array
     final byte[] dataAndCheck = joinDataAndKnown(data);
-    byte[] encrypted;
+    final byte[] encrypted;
     try {
       encrypted = cipher.doFinal(dataAndCheck);
     } catch (final Exception e) {
@@ -252,7 +252,7 @@ public class Vault {
         return;
       }
       final SecretKey key = bytesToKey(secretKeyBytes);
-      Cipher cipher;
+      final Cipher cipher;
       try {
         cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
@@ -261,7 +261,7 @@ public class Vault {
         throw new IllegalStateException(e.getMessage());
       }
       final byte[] encrypted = m_unverifiedValues.remove(id);
-      byte[] decrypted;
+      final byte[] decrypted;
       try {
         decrypted = cipher.doFinal(encrypted);
       } catch (final Exception e1) {

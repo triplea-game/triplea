@@ -45,7 +45,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     if (ignore == null) {
       throw new IllegalStateException("Could not find ignore icon");
     }
-    Image img;
+    final Image img;
     try {
       img = ImageIO.read(ignore);
     } catch (final IOException e) {

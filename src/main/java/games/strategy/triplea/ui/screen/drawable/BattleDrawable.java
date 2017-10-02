@@ -61,7 +61,7 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
       }
     }
     if (draw) {
-      Color stripeColor;
+      final Color stripeColor;
       if (attacker == null || territory.isWater()) {
         stripeColor = Color.RED.brighter();
       } else {

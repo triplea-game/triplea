@@ -13,7 +13,7 @@ public class RouteCalculator {
   private final int mapWidth;
   private final int mapHeight;
 
-  public RouteCalculator(boolean isInfiniteX, boolean isInfiniteY, int mapWidth, int mapHeight) {
+  public RouteCalculator(final boolean isInfiniteX, final boolean isInfiniteY, final int mapWidth, final int mapHeight) {
     this.isInfiniteX = isInfiniteX;
     this.isInfiniteY = isInfiniteY;
     this.mapWidth = mapWidth;
@@ -26,7 +26,7 @@ public class RouteCalculator {
    * @param route The joints on the Map
    * @return A Point array which goes through Map Borders if necessary
    */
-  public Point[] getTranslatedRoute(Point... route) {
+  public Point[] getTranslatedRoute(final Point... route) {
     if (route == null || route.length == 0) {
       // Or the array is too small
       return route;
@@ -36,15 +36,15 @@ public class RouteCalculator {
       endPoint = route[route.length - 1];
       return route;
     }
-    List<Point> result = new ArrayList<>();
+    final List<Point> result = new ArrayList<>();
     Point previousPoint = null;
-    for (Point point : route) {
+    for (final Point point : route) {
       if (previousPoint == null) {
         previousPoint = point;
         result.add(point);
         continue;
       }
-      Point closestPoint = getClosestPoint(previousPoint, getPossiblePoints(point));
+      final Point closestPoint = getClosestPoint(previousPoint, getPossiblePoints(point));
       result.add(closestPoint);
       previousPoint = closestPoint;
     }
@@ -59,15 +59,15 @@ public class RouteCalculator {
    * @param pool Point List with all possible options
    * @return the closest point in the Pool to the source
    */
-  public static Point getClosestPoint(Point source, List<Point> pool) {
+  public static Point getClosestPoint(final Point source, final List<Point> pool) {
     double closestDistance = Double.MAX_VALUE;
     Point closestPoint = null;
-    for (Point possibleClosestPoint : pool) {
+    for (final Point possibleClosestPoint : pool) {
       if (closestPoint == null) {
         closestDistance = source.distance(possibleClosestPoint);
         closestPoint = possibleClosestPoint;
       } else {
-        double distance = source.distance(possibleClosestPoint);
+        final double distance = source.distance(possibleClosestPoint);
         if (closestDistance > distance) {
           closestPoint = possibleClosestPoint;
           closestDistance = distance;
@@ -85,8 +85,8 @@ public class RouteCalculator {
    * @return A List of all possible Points depending in map Properties
    *         size may vary
    */
-  public List<Point> getPossiblePoints(Point point) {
-    List<Point> result = new ArrayList<>();
+  public List<Point> getPossiblePoints(final Point point) {
+    final List<Point> result = new ArrayList<>();
     result.add(point);
     if (isInfiniteX && isInfiniteY) {
       result.addAll(Arrays.asList(
@@ -120,10 +120,10 @@ public class RouteCalculator {
    * @param points A Point array
    * @return Offset Point Arrays including points
    */
-  public List<Point[]> getAllPoints(Point... points) {
-    List<Point[]> allPoints = new ArrayList<>();
+  public List<Point[]> getAllPoints(final Point... points) {
+    final List<Point[]> allPoints = new ArrayList<>();
     for (int i = 0; i < points.length; i++) {
-      List<Point> subPoints = getPossiblePoints(points[i]);
+      final List<Point> subPoints = getPossiblePoints(points[i]);
       for (int y = 0; y < subPoints.size(); y++) {
         if (i == 0) {
           allPoints.add(new Point[points.length]);
@@ -141,11 +141,11 @@ public class RouteCalculator {
    * @param ycoords an array of yCoordinates
    * @return a List of corresponding Lines
    */
-  private static List<Line> getNormalizedLines(double[] xcoords, double[] ycoords) {
-    List<Line> lines = new ArrayList<>();
+  private static List<Line> getNormalizedLines(final double[] xcoords, final double[] ycoords) {
+    final List<Line> lines = new ArrayList<>();
     Point previousPoint = null;
     for (int i = 0; i < xcoords.length; i++) {
-      Point trimmedPoint = new Point(xcoords[i], ycoords[i]);
+      final Point trimmedPoint = new Point(xcoords[i], ycoords[i]);
       if (previousPoint != null) {
         lines.add(new Line(previousPoint, trimmedPoint));
       }
@@ -161,12 +161,12 @@ public class RouteCalculator {
    * @param ycoords an array of yCoordinates
    * @return a List of corresponding Lines on every possible screen
    */
-  public List<Line> getAllNormalizedLines(double[] xcoords, double[] ycoords) {
-    List<Line> centerLines = getNormalizedLines(xcoords, ycoords);
-    List<Line> result = new ArrayList<>();
-    for (Line line : centerLines) {
-      List<Point[]> allPoints = getAllPoints(line.getP1(), line.getP2());
-      for (Point[] points : allPoints) {
+  public List<Line> getAllNormalizedLines(final double[] xcoords, final double[] ycoords) {
+    final List<Line> centerLines = getNormalizedLines(xcoords, ycoords);
+    final List<Line> result = new ArrayList<>();
+    for (final Line line : centerLines) {
+      final List<Point[]> allPoints = getAllPoints(line.getP1(), line.getP2());
+      for (final Point[] points : allPoints) {
         result.add(new Line(points[0], points[1]));
       }
     }

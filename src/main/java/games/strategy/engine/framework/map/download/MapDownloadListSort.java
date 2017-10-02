@@ -25,7 +25,7 @@ public final class MapDownloadListSort {
     // Until we see a header, save each map to this List.
     // When we see a header, we'll sort this list, add it
     // to the return values, and then clear it.
-    List<DownloadFileDescription> maps = new ArrayList<>();
+    final List<DownloadFileDescription> maps = new ArrayList<>();
     for (final DownloadFileDescription download : downloads) {
       maps.add(download);
     }

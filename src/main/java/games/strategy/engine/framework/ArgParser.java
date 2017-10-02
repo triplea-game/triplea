@@ -29,7 +29,7 @@ public final class ArgParser {
         try {
           args[0] = GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY + "="
               + URLDecoder.decode(args[0].substring(TRIPLEA_PROTOCOL.length()), encoding);
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
           throw new AssertionError(encoding + " is not a supported encoding!", e);
         }
       } else {

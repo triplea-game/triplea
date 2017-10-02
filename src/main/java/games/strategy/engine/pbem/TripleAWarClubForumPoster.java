@@ -48,12 +48,12 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
    * @throws Exception
    *         if login fails
    */
-  private HttpContext login(CloseableHttpClient client) throws Exception {
+  private HttpContext login(final CloseableHttpClient client) throws Exception {
     final HttpPost httpPost = new HttpPost("http://www.tripleawarclub.org/user.php");
-    CookieStore cookieStore = new BasicCookieStore();
-    HttpContext httpContext = new BasicHttpContext();
+    final CookieStore cookieStore = new BasicCookieStore();
+    final HttpContext httpContext = new BasicHttpContext();
     httpContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);
-    List<NameValuePair> pairs = new ArrayList<>();
+    final List<NameValuePair> pairs = new ArrayList<>();
     pairs.add(new BasicNameValuePair("uname", getUsername()));
     pairs.add(new BasicNameValuePair("pass", getPassword()));
     pairs.add(new BasicNameValuePair("submit", "Login"));
@@ -95,12 +95,12 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
   public boolean postTurnSummary(final String summary, final String subject) {
     try (CloseableHttpClient client =
         HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build()) {
-      HttpContext httpContext = login(client);
+      final HttpContext httpContext = login(client);
       // load the reply page
       final String forumId = "20";
       final String url = WAR_CLUB_FORUM_URL + "/reply.php?forum=" + forumId + "&topic_id="
           + URLEncoder.encode(m_topicId, StandardCharsets.UTF_8.name());
-      String xoopsTokenRequest;
+      final String xoopsTokenRequest;
       HttpGet httpGet = new HttpGet(url);
       HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
@@ -116,7 +116,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         xoopsTokenRequest = m.group(1);
       }
 
-      MultipartEntityBuilder builder = MultipartEntityBuilder.create()
+      final MultipartEntityBuilder builder = MultipartEntityBuilder.create()
           .addTextBody("subject", subject)
           .addTextBody("message", summary)
           .addTextBody("forum", forumId)
@@ -132,8 +132,8 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
       if (m_includeSaveGame && m_saveGameFile != null) {
         builder.addBinaryBody("userfile", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM, m_saveGameFileName);
       }
-      HttpEntity entity = builder.build();
-      HttpPost httpPost = new HttpPost(WAR_CLUB_FORUM_URL + "/post.php");
+      final HttpEntity entity = builder.build();
+      final HttpPost httpPost = new HttpPost(WAR_CLUB_FORUM_URL + "/post.php");
       HttpProxy.addProxy(httpPost);
       httpPost.setEntity(entity);
 
@@ -154,7 +154,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster {
         httpGet = new HttpGet("http://www.tripleawarclub.org/user.php?op=logout");
         HttpProxy.addProxy(httpGet);
         client.execute(httpGet, httpContext);
-      } catch (Exception e) {
+      } catch (final Exception e) {
         ClientLogger.logQuietly("Failed to log out", e);
       }
     } catch (final Exception e) {

@@ -137,7 +137,7 @@ class EndPoint {
 
   private List<RemoteMethodCallResults> invokeMultiple(final RemoteMethodCall call, final INode messageOriginator) {
     // copy the implementors
-    List<Object> implementorsCopy;
+    final List<Object> implementorsCopy;
     synchronized (m_implementorsMutext) {
       implementorsCopy = new ArrayList<>(m_implementors);
     }
@@ -151,7 +151,7 @@ class EndPoint {
   private RemoteMethodCallResults invokeSingle(final RemoteMethodCall call, final Object implementor,
       final INode messageOriginator) {
     call.resolve(m_remoteClass);
-    Method method;
+    final Method method;
     try {
       method = implementor.getClass().getMethod(call.getMethodName(), call.getArgTypes());
       method.setAccessible(true);

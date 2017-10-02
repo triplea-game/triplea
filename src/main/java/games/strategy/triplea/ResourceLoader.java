@@ -199,7 +199,7 @@ public class ResourceLoader implements Closeable {
    *        File.separator)
    */
   public URL getResource(final String inputPath) {
-    String path = resourceLocationTracker.getMapPrefix() + inputPath;
+    final String path = resourceLocationTracker.getMapPrefix() + inputPath;
     return getMatchingResources(path).stream().findFirst().orElse(
         getMatchingResources(inputPath).stream().findFirst().orElseGet(
             () -> null));

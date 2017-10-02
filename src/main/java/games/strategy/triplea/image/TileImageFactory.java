@@ -39,7 +39,7 @@ public final class TileImageFactory {
   private static final String SHOW_MAP_BLEND_ALPHA = "BlendAlpha";
   private static float showMapBlendAlpha = 1.0f;
   private final Composite composite = AlphaComposite.Src;
-  private static GraphicsConfiguration configuration =
+  private static final GraphicsConfiguration configuration =
       GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
   private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
   private double m_scale = 1;

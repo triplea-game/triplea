@@ -27,7 +27,7 @@ class PlayerOrder {
 
   void saveToFile(final PrintGenerationData printData) throws IOException {
     final GameData gameData = printData.getData();
-    for (GameStep currentStep : gameData.getSequence()) {
+    for (final GameStep currentStep : gameData.getSequence()) {
       if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {
         final String delegateClassName = currentStep.getDelegate().getClass().getName();
         if (delegateClassName.equals(InitializationDelegate.class.getName())
