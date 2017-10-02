@@ -93,7 +93,7 @@ public class RandomStatsDetails implements Serializable {
         return i;
       }
     }
-    throw new RuntimeException(String.format("Unexpected sum (%s) was never greater than center point (%s)",
+    throw new AssertionError(String.format("Unexpected sum (%s) was never greater than center point (%s)",
                     sum, centerPoint));
   }
 
