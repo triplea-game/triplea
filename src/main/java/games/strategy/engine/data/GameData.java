@@ -528,13 +528,11 @@ public class GameData implements Serializable {
    * after we return from this method, then the lock will have been to no effect anyways!
    */
   public int getCurrentRound() {
-    final int round;
     try {
       acquireReadLock();
-      round = getSequence().getRound();
+      return getSequence().getRound();
     } finally {
       releaseReadLock();
     }
-    return round;
   }
 }
