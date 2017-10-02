@@ -40,17 +40,17 @@ public class TimespanDialog {
     YEARS("Years", i -> LocalDateTime.now(ZoneOffset.UTC).plus(i, ChronoUnit.YEARS).toInstant(ZoneOffset.UTC)),
     FOREVER("Forever", i -> null);
 
-    private final String name;
+    private final String displayName;
     private final Function<Integer, Instant> function;
 
     private TimeUnit(final String name, final Function<Integer, Instant> function) {
-      this.name = name;
+      this.displayName = name;
       this.function = function;
     }
 
     @Override
     public String toString() {
-      return name;
+      return displayName;
     }
 
     @VisibleForTesting
@@ -66,7 +66,7 @@ public class TimespanDialog {
    */
   public static void prompt(final Component parent, final String title, final String infoMessage,
       final Consumer<Date> action) {
-    final JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, 99999999, 1));
+    final JSpinner spinner = new JSpinner(new SpinnerNumberModel(1, 1, 99999999, 1));
     spinner.addAncestorListener(new AncestorListener() {
 
       @Override
