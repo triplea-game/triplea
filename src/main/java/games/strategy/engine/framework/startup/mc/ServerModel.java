@@ -348,14 +348,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       final List<IEditableProperty> currentEditableProperties = data.getProperties().getEditableProperties();
 
-      byte[] bytes = null;
       try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000)) {
         GameProperties.toOutputStream(sink, currentEditableProperties);
-        bytes = sink.toByteArray();
+        return sink.toByteArray();
       } catch (final IOException e) {
         ClientLogger.logQuietly(e);
       }
-      return bytes;
+      return null;
     }
 
     @Override
