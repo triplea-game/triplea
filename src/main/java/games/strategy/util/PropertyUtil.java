@@ -116,7 +116,7 @@ public class PropertyUtil {
         try {
           final Class<?> argType = value.getClass();
           return subject.getClass().getMethod(setterName, argType);
-        } catch (final NoSuchMethodException | NullPointerException nsmf) {
+        } catch (final NoSuchMethodException | NullPointerException e) {
           // TODO: do not catch NPE, that is control flow by exception handling,
           // instead detect the null value and return 'm' at that time.
 
