@@ -43,18 +43,17 @@ import games.strategy.util.Tuple;
 public class MapPropertyWrapper<T> extends AEditableProperty {
   private static final long serialVersionUID = 6406798101396215624L;
   private final IEditableProperty property;
-  // private final Class m_clazz;
-  // private final T m_defaultValue;
   private final Method setter;
-  private final Method getter;
 
-  private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter,
-      final Method getter) {
+  // TODO: remove the `getter` field when we can, kept around for serialization compatibility
+  @SuppressWarnings("unused")
+  private final Method getter = null;
+
+  private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter) {
     super(name, description);
-    // m_clazz = clazz;
     this.setter = setter;
-    this.getter = getter;
-    // m_defaultValue = defaultValue;
+
+
     if (defaultValue instanceof Boolean) {
       property = new BooleanProperty(name, description, ((Boolean) defaultValue));
     } else if (defaultValue instanceof Color) {
@@ -89,6 +88,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     return property.getValue();
   }
 
+  @SuppressWarnings("unchecked")
   public T getValueT() {
     return (T) property.getValue();
   }
@@ -127,16 +127,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       }
       final String propertyName =
           setter.getName().substring(Math.min(3, setter.getName().length()), setter.getName().length());
-      final Method getter;
-      try {
-        getter = object.getClass().getMethod("get" + propertyName);
-      } catch (final SecurityException e) {
-        ClientLogger.logQuietly(e);
-        continue;
-      } catch (final NoSuchMethodException e) {
-        ClientLogger.logQuietly(e);
-        continue;
-      }
+
       final String fieldName = Introspector.decapitalize(propertyName);
       final Field field = PropertyUtil.getPropertyField(fieldName, object.getClass());
       final Object currentValue;
@@ -151,7 +142,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       }
       try {
         final MapPropertyWrapper<?> wrapper =
-            new MapPropertyWrapper<>(propertyName, null, currentValue, setter, getter);
+            new MapPropertyWrapper<>(propertyName, null, currentValue, setter);
         properties.add(wrapper);
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);
