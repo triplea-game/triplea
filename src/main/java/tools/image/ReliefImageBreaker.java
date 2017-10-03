@@ -119,7 +119,7 @@ public class ReliefImageBreaker {
     while (true) {
       final String answer = JOptionPane.showInputDialog(null, "Only Do Sea Zones? Enter [Y/N]");
 
-      if(answer == null) {
+      if (answer == null) {
         continue;
       }
       if (answer.equalsIgnoreCase("Y")) {
