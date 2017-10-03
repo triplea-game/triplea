@@ -426,6 +426,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       Runtime.getRuntime().addShutdownHook(shutdown);
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, IBean> loadMap() {
       if (file.exists()) {
         try (FileInputStream fin = new FileInputStream(file);

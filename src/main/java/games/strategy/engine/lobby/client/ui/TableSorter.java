@@ -74,6 +74,7 @@ class TableSorter extends AbstractTableModel {
   private static final int NOT_SORTED = 0;
   private static final Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
   // TODO needs to be rewritten in order to remove the warning
+  @SuppressWarnings("unchecked")
   private static final Comparator<Object> COMPARABLE_COMAPRATOR =
       (Comparator<Object>) (o1, o2) -> ((Comparable<Object>) o1).compareTo(o2);
   private static final Comparator<Object> LEXICAL_COMPARATOR =
