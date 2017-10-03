@@ -49,7 +49,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     if (m_gameOver) {
       return;
     }
-    String victoryMessage = null;
+    String victoryMessage;
     final GameData data = getData();
     if (isPacificTheater()) {
       final PlayerID japanese = data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
@@ -76,10 +76,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       checkVictoryCities(m_bridge, victoryMessage, " Projection of Power VCs");
     }
     if (isEconomicVictory()) { // Check for regular economic victory
-      final Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
-      String allianceName = null;
-      while (allianceIter.hasNext()) {
-        allianceName = allianceIter.next();
+      for (final String allianceName : data.getAllianceTracker().getAlliances()) {
         final int victoryAmount = getEconomicVictoryAmount(data, allianceName);
         final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
         final Iterator<PlayerID> teamIter = teamMembers.iterator();
@@ -213,11 +210,9 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   private void checkVictoryCities(final IDelegateBridge bridge, final String victoryMessage,
       final String victoryType) {
     final GameData data = bridge.getData();
-    final Iterator<String> allianceIter = data.getAllianceTracker().getAlliances().iterator();
-    String allianceName = null;
+
     final Collection<Territory> territories = data.getMap().getTerritories();
-    while (allianceIter.hasNext()) {
-      allianceName = allianceIter.next();
+    for (final String allianceName : data.getAllianceTracker().getAlliances()) {
       final int vcAmount = getVcAmount(data, allianceName, victoryType);
       final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
       int teamVCs = 0;

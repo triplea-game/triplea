@@ -167,7 +167,6 @@ public class GameDataExporter {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private void printEditableProperty(final IEditableProperty prop) {
     String typeString = "";
     String value = "" + prop.getValue();
@@ -185,7 +184,7 @@ public class GameDataExporter {
       value = "0x" + Integer.toHexString((((Integer) prop.getValue()).intValue())).toUpperCase();
     }
     if (prop.getClass().equals(ComboProperty.class)) {
-      Field listField;
+      final Field listField;
       try {
         // TODO: unchecked reflection
         listField = ComboProperty.class.getDeclaredField(ComboProperty.POSSIBLE_VALUES_FIELD_NAME);

@@ -170,7 +170,7 @@ public class GameProperties extends GameDataComponent {
   @SuppressWarnings("unchecked")
   public static List<IEditableProperty> streamToIEditablePropertiesList(final byte[] byteArray)
       throws IOException, ClassNotFoundException, ClassCastException {
-    List<IEditableProperty> editableProperties = null;
+    final List<IEditableProperty> editableProperties;
 
     try (ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
         InputStream inputStream = new BufferedInputStream(byteStream);

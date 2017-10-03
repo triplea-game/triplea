@@ -234,7 +234,7 @@ public class ProPurchaseUtils {
 
     // Find all territories that I can place units on
     final RulesAttachment ra = player.getRulesAttachment();
-    List<Territory> ownedAndNotConqueredFactoryTerritories = new ArrayList<>();
+    List<Territory> ownedAndNotConqueredFactoryTerritories;
     if (ra != null && ra.getPlacementAnyTerritory()) {
       ownedAndNotConqueredFactoryTerritories = data.getMap().getTerritoriesOwnedBy(player);
     } else {

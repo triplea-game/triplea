@@ -217,7 +217,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   @Override
-  public boolean contains(Object object) {
+  public boolean contains(final Object object) {
     return m_units.contains(object);
   }
 
@@ -227,19 +227,19 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   @Override
-  public <T> T[] toArray(T[] array) {
+  public <T> T[] toArray(final T[] array) {
     return m_units.toArray(array);
   }
 
   @Override
-  public boolean remove(Object object) {
+  public boolean remove(final Object object) {
     final boolean result = m_units.remove(object);
     m_holder.notifyChanged();
     return result;
   }
 
   @Override
-  public boolean retainAll(Collection<?> collection) {
+  public boolean retainAll(final Collection<?> collection) {
     return m_units.retainAll(collection);
   }
 

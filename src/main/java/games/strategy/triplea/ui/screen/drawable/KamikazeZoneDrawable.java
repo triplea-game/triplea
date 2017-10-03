@@ -31,7 +31,7 @@ public class KamikazeZoneDrawable implements IDrawable {
     // Change so only original owner gets the kamikazi zone marker
     final Territory terr = data.getMap().getTerritory(location);
     final TerritoryAttachment ta = TerritoryAttachment.get(terr);
-    PlayerID owner = null;
+    PlayerID owner;
     if (Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data)) {
       owner = terr.getOwner();
       if (owner == null) {

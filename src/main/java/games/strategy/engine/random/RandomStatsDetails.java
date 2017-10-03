@@ -48,34 +48,28 @@ public class RandomStatsDetails implements Serializable {
       int localTotal = 0;
       // TODO: does this need to be updated to take data.getDiceSides() ?
       for (int i = 1; i <= diceSides; i++) {
-        sumTotal += i * stats.getInt(Integer.valueOf(i));
-        localTotal += stats.getInt(Integer.valueOf(i));
+        sumTotal += i * stats.getInt(i);
+        localTotal += stats.getInt(i);
       }
       total = localTotal;
       average = (sumTotal) / ((double) stats.totalValues());
-      /**
-       * calculate median
-       */
+      // calculate median
       if (localTotal % 2 != 0) {
         median = calcMedian((localTotal / 2) + 1, diceSides, stats);
       } else {
-        double tmp1 = 0;
-        double tmp2 = 0;
-        tmp1 = calcMedian((localTotal / 2), diceSides, stats);
-        tmp2 = calcMedian((localTotal / 2) + 1, diceSides, stats);
+        final double tmp1 = calcMedian((localTotal / 2), diceSides, stats);
+        final double tmp2 = calcMedian((localTotal / 2) + 1, diceSides, stats);
         median = (tmp1 + tmp2) / 2;
       }
       // calculate variance
       double sumOfSquaredMeanDeviations = 0;
       // TODO: does this need to be updated to take data.getDiceSides() ?
       for (int i = 1; i <= diceSides; i++) {
-        sumOfSquaredMeanDeviations += (stats.getInt(Integer.valueOf(i)) - (localTotal / diceSides))
-            * (stats.getInt(Integer.valueOf(i)) - (localTotal / diceSides));
+        sumOfSquaredMeanDeviations += (stats.getInt(i) - (localTotal / diceSides))
+            * (stats.getInt(i) - (localTotal / diceSides));
       }
       variance = sumOfSquaredMeanDeviations / (localTotal - 1);
-      /**
-       * calculate standard deviation
-       */
+      // calculate standard deviation
       stdDeviation = Math.sqrt(variance);
     } else {
       average = 0;
@@ -91,30 +85,16 @@ public class RandomStatsDetails implements Serializable {
     return m_data;
   }
 
-  public IntegerMap<Integer> getTotalData() {
-    return m_totalMap;
-  }
-
-  public Map<PlayerID, DiceStatistic> getPlayerStats() {
-    return m_playerStats;
-  }
-
-  public DiceStatistic getTotalStats() {
-    return m_totalStats;
-  }
-
   private static int calcMedian(final int centerPoint, final int diceSides, final IntegerMap<Integer> stats) {
     int sum = 0;
-    int i = 1;
-    for (i = 1; i <= diceSides; i++) {
-      sum += stats.getInt(Integer.valueOf(i));
+    for (int i = 1; i <= diceSides; i++) {
+      sum += stats.getInt(i);
       if (sum >= centerPoint) {
         return i;
       }
     }
-    // This is to stop java from complaining
-    return i;
-    // it should never reach this part.
+    throw new AssertionError(String.format("Unexpected sum (%s) was never greater than center point (%s)",
+                    sum, centerPoint));
   }
 
   private static String getStatsString(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,
@@ -139,24 +119,24 @@ public class RandomStatsDetails implements Serializable {
     return sb.toString();
   }
 
-  static String getAllStatsString(final RandomStatsDetails details, final String indentation) {
-    if (details.getTotalStats().getTotal() <= 0) {
+  private static String getAllStatsString(final RandomStatsDetails details, final String indentation) {
+    if (details.m_totalStats.getTotal() <= 0) {
       return "";
     }
     final StringBuilder sb = new StringBuilder();
     sb.append("Dice Statistics:\n\n");
-    sb.append(getStatsString(details.getTotalData(), details.getTotalStats(), "Total", indentation));
+    sb.append(getStatsString(details.m_totalMap, details.m_totalStats, "Total", indentation));
     if (details.getData().containsKey(null)) {
       sb.append("\n");
       sb.append(
-          getStatsString(details.getData().get(null), details.getPlayerStats().get(null), "Null / Other", indentation));
+          getStatsString(details.getData().get(null), details.m_playerStats.get(null), "Null / Other", indentation));
     }
     for (final Entry<PlayerID, IntegerMap<Integer>> entry : details.getData().entrySet()) {
       if (entry.getKey() == null) {
         continue;
       }
       sb.append("\n");
-      sb.append(getStatsString(entry.getValue(), details.getPlayerStats().get(entry.getKey()),
+      sb.append(getStatsString(entry.getValue(), details.m_playerStats.get(entry.getKey()),
           (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat"), indentation));
     }
     return sb.toString();
@@ -187,15 +167,15 @@ public class RandomStatsDetails implements Serializable {
     return panel;
   }
 
-  static JPanel getAllStats(final RandomStatsDetails details) {
+  private static JPanel getAllStats(final RandomStatsDetails details) {
     final Insets insets = new Insets(2, 2, 2, 2);
     final JPanel panel = new JPanel();
     panel.setLayout(new GridBagLayout());
     panel.setBorder(BorderFactory.createEmptyBorder());
-    panel.add(getStatsDisplay(details.getTotalData(), details.getTotalStats(), "Total"), new GridBagConstraints(0, 0, 1,
+    panel.add(getStatsDisplay(details.m_totalMap, details.m_totalStats, "Total"), new GridBagConstraints(0, 0, 1,
         1, 1, 1, GridBagConstraints.FIRST_LINE_START, GridBagConstraints.NONE, insets, 0, 0));
     if (details.getData().containsKey(null)) {
-      panel.add(getStatsDisplay(details.getData().get(null), details.getPlayerStats().get(null), "Null / Other"),
+      panel.add(getStatsDisplay(details.getData().get(null), details.m_playerStats.get(null), "Null / Other"),
           new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.FIRST_LINE_START, GridBagConstraints.NONE, insets,
               0, 0));
     }
@@ -206,7 +186,7 @@ public class RandomStatsDetails implements Serializable {
         continue;
       }
       panel.add(
-          getStatsDisplay(entry.getValue(), details.getPlayerStats().get(entry.getKey()),
+          getStatsDisplay(entry.getValue(), details.m_playerStats.get(entry.getKey()),
               (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat")),
           new GridBagConstraints((x / rows), 1 + (x % rows), 1, 1, 1, 1, GridBagConstraints.FIRST_LINE_START,
               GridBagConstraints.NONE, insets, 0, 0));

@@ -135,7 +135,7 @@ public class AirMovementValidator {
     final LinkedHashMap<Unit, Integer> map = new LinkedHashMap<>();
     for (final Unit unit : airBeingValidated) {
       // unit must be in either start or end.
-      int movementLeft;
+      final int movementLeft;
       if (Matches.unitIsOwnedBy(player).match(unit)) {
         movementLeft = getMovementLeftForAirUnitNotMovedYet(unit, route);
       } else {

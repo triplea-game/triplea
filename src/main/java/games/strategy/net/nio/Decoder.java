@@ -58,7 +58,7 @@ class Decoder {
   private void loop() {
     while (running) {
       try {
-        SocketReadData data;
+        final SocketReadData data;
         try {
           data = reader.take();
         } catch (final InterruptedException e) {
@@ -132,7 +132,7 @@ class Decoder {
 
   private MessageHeader readMessageHeader(final SocketChannel channel, final ObjectInputStream objectInput)
       throws IOException, ClassNotFoundException {
-    INode to;
+    final INode to;
     if (objectInput.read() == 1) {
       to = null;
     } else {
@@ -145,7 +145,7 @@ class Decoder {
         ((Node) to).readExternal(objectInput);
       }
     }
-    INode from;
+    final INode from;
     final int readMark = objectInput.read();
     if (readMark == 1) {
       from = nioSocket.getRemoteNode(channel);
@@ -155,7 +155,7 @@ class Decoder {
       from = new Node();
       ((Node) from).readExternal(objectInput);
     }
-    Serializable message;
+    final Serializable message;
     final byte type = (byte) objectInput.read();
     if (type != Byte.MAX_VALUE) {
       final Externalizable template = getTemplate(type);

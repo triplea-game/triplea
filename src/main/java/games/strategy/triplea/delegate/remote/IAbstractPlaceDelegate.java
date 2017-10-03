@@ -17,7 +17,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    */
   String placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
 
-  default String placeUnits(Collection<Unit> units, Territory at) {
+  default String placeUnits(final Collection<Unit> units, final Territory at) {
     return placeUnits(units, at, BidMode.NOT_BID);
   }
 

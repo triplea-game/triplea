@@ -21,7 +21,7 @@ public class BaseMapDrawable extends MapTileDrawable {
     if (noImage) {
       return null;
     }
-    Image image;
+    final Image image;
     if (unscaled) {
       image = uiContext.getTileImageFactory().getUnscaledUncachedBaseTile(x, y);
     } else {

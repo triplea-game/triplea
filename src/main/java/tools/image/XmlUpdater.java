@@ -35,7 +35,7 @@ public class XmlUpdater {
     }
     final Transformer trans = TransformerFactory.newInstance().newTransformer(new StreamSource(source));
 
-    ByteArrayOutputStream resultBuf;
+    final ByteArrayOutputStream resultBuf;
     try (
         final FileInputStream fileInputStream = new FileInputStream(gameXmlFile);
         final InputStream gameXmlStream = new BufferedInputStream(fileInputStream)) {
@@ -66,7 +66,7 @@ public class XmlUpdater {
   private static void handleCommandLineArgs(final String[] args) {
     // arg can only be the map folder location.
     if (args.length == 1) {
-      String value;
+      final String value;
       if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {

@@ -49,10 +49,10 @@ public class ConnectionFinder {
   private static StringBuffer territoryDefinitions = null;
   // how many pixels should each area become bigger in both x and y axis to see which area it overlaps?
   // default 8, or if LINE_THICKNESS if given 4x linethickness
-  public static int scalePixels = 8;
+  private static int scalePixels = 8;
   // how many pixels should the boundingbox of the overlapping area have for it to be considered a valid connection?
   // default 32, or if LINE_THICKNESS is given 16 x linethickness
-  public static double minOverlap = 32.0;
+  private static double minOverlap = 32.0;
 
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
@@ -294,15 +294,14 @@ public class ConnectionFinder {
     final Point2D centroid = new Point2D.Double();
     int i;
     int j;
-    double factor = 0;
     for (i = 0; i < length; i++) {
       j = (i + 1) % length;
-      factor = (pointArray[i].getX() * pointArray[j].getY() - pointArray[j].getX() * pointArray[i].getY());
+      final double factor = (pointArray[i].getX() * pointArray[j].getY() - pointArray[j].getX() * pointArray[i].getY());
       cx += (pointArray[i].getX() + pointArray[j].getX()) * factor;
       cy += (pointArray[i].getY() + pointArray[j].getY()) * factor;
     }
     area *= 6.0f;
-    factor = 1 / area;
+    final double factor = 1 / area;
     cx *= factor;
     cy *= factor;
     centroid.setLocation(cx, cy);
@@ -377,8 +376,7 @@ public class ConnectionFinder {
     final AffineTransform transform = AffineTransform.getTranslateInstance((1.0 - sx) * centroid.getX(),
         (1.0 - sy) * centroid.getY());
     transform.scale(sx, sy);
-    final Shape shape = transform.createTransformedShape(currentPolygon);
-    return shape;
+    return transform.createTransformedShape(currentPolygon);
   }
 
   private static void handleCommandLineArgs(final String[] args) {

@@ -21,7 +21,7 @@ import games.strategy.triplea.delegate.Matches;
 class CountryChart {
   private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();
 
-  protected void saveToFile(final PlayerID player, final PrintGenerationData printData) {
+  void saveToFile(final PlayerID player, final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
     final Collection<Territory> terrCollection =
         Matches.getMatches(gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
@@ -41,10 +41,8 @@ class CountryChart {
       infoMap.put(currentTerritory, unitPairs);
       availableUnits = gameData.getUnitTypeList().iterator();
     }
-    FileWriter countryFileWriter = null;
     final File outFile = new File(printData.getOutDir(), player.getName() + ".csv");
-    try {
-      countryFileWriter = new FileWriter(outFile, true);
+    try (FileWriter countryFileWriter = new FileWriter(outFile, true)) {
       // Print Title
       final int numUnits = gameData.getUnitTypeList().size();
       for (int i = 0; i < numUnits / 2 - 1 + numUnits % 2; i++) {
@@ -70,12 +68,8 @@ class CountryChart {
         final Territory currentTerritory = terrIterator.next();
         countryFileWriter.write(currentTerritory.getName());
         final List<Map<UnitType, Integer>> currentList = infoMap.get(currentTerritory);
-        final Iterator<Map<UnitType, Integer>> mapIterator = currentList.iterator();
-        while (mapIterator.hasNext()) {
-          final Map<UnitType, Integer> currentMap = mapIterator.next();
-          final Iterator<UnitType> unitTypeIter = currentMap.keySet().iterator();
-          while (unitTypeIter.hasNext()) {
-            final UnitType unitTypeHere = unitTypeIter.next();
+        for (final Map<UnitType, Integer> currentMap : currentList) {
+          for (final UnitType unitTypeHere : currentMap.keySet()) {
             final int here = currentMap.get(unitTypeHere);
             countryFileWriter.write("," + here);
           }

@@ -11,12 +11,12 @@ public class PrintGenerationData {
   /**
    * General Constructor.
    */
-  protected PrintGenerationData() {}
+  PrintGenerationData() {}
 
   /**
    * @return The outDir.
    */
-  protected File getOutDir() {
+  File getOutDir() {
     return outDir;
   }
 
@@ -24,7 +24,7 @@ public class PrintGenerationData {
    * @param outDir
    *        the outDir to set.
    */
-  protected void setOutDir(final File outDir) {
+  void setOutDir(final File outDir) {
     this.outDir = outDir;
   }
 

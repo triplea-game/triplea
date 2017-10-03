@@ -475,7 +475,7 @@ public class GameRunner {
       return;
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
-    String newClassPath = null;
+    final String newClassPath = null;
     final boolean sameVersion = ClientContext.engineVersion().equals(engineVersionOfGameToJoin);
     if (!sameVersion) {
       JOptionPane.showMessageDialog(parent,

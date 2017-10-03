@@ -13,18 +13,18 @@ public class Line {
   private double x2;
   private double y2;
 
-  private Line(double x1, double y1, double x2, double y2) {
+  private Line(final double x1, final double y1, final double x2, final double y2) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
     this.y2 = y2;
   }
 
-  public Line(Point2D point1, Point2D point2) {
+  public Line(final Point2D point1, final Point2D point2) {
     this(point1.getX(), point1.getY(), point2.getX(), point2.getY());
   }
 
-  public Line(Point point1, Point point2) {
+  public Line(final Point point1, final Point point2) {
     this(point1.getX(), point1.getY(), point2.getX(), point2.getY());
   }
 
@@ -32,7 +32,7 @@ public class Line {
     return x1;
   }
 
-  public void setX1(double x1) {
+  public void setX1(final double x1) {
     this.x1 = x1;
   }
 
@@ -40,7 +40,7 @@ public class Line {
     return y1;
   }
 
-  public void setY1(double y1) {
+  public void setY1(final double y1) {
     this.y1 = y1;
   }
 
@@ -48,7 +48,7 @@ public class Line {
     return x2;
   }
 
-  public void setX2(double x2) {
+  public void setX2(final double x2) {
     this.x2 = x2;
   }
 
@@ -56,7 +56,7 @@ public class Line {
     return y2;
   }
 
-  public void setY2(double y2) {
+  public void setY2(final double y2) {
     this.y2 = y2;
   }
 
@@ -89,9 +89,9 @@ public class Line {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (o instanceof Line) {
-      Line line = (Line) o;
+      final Line line = (Line) o;
       return line.x1 == x1 && line.x2 == x2 && line.y1 == y1 && line.y2 == y2;
     }
     return false;

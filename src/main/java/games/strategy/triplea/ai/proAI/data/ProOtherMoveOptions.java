@@ -59,7 +59,7 @@ public class ProOtherMoveOptions {
       for (final Territory t : moveMap.keySet()) {
 
         // Get current player
-        PlayerID movePlayer = null;
+        final PlayerID movePlayer;
         final Set<Unit> currentUnits = new HashSet<>(moveMap.get(t).getMaxUnits());
         currentUnits.addAll(moveMap.get(t).getMaxAmphibUnits());
         if (!currentUnits.isEmpty()) {

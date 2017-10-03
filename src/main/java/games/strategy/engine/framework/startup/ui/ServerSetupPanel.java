@@ -338,7 +338,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private final JCheckBox m_localCheckBox;
     private final JCheckBox m_enabledCheckBox;
     private final JComboBox<String> m_type;
-    private JLabel m_alliance;
+    private final JLabel m_alliance;
     private final String[] m_types;
 
     PlayerRow(final String playerName, final Map<String, String> reloadSelections,

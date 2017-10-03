@@ -800,7 +800,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             // TODO: maybe sort from biggest to smallest first?
             for (final Unit airbase : airbases) {
               final int allowedScramble = ((TripleAUnit) airbase).getMaxScrambleCount();
-              int newAllowed = allowedScramble;
+              final int newAllowed;
               if (allowedScramble > 0) {
                 if (allowedScramble >= numberScrambled) {
                   newAllowed = allowedScramble - numberScrambled;
@@ -975,7 +975,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final CompositeChange change = new CompositeChange();
         final Territory originatedFrom = TripleAUnit.get(u).getOriginatedFrom();
         Territory landingTerr = null;
-        String historyText = "";
+        final String historyText;
         if (!mustReturnToBase || !Matches.isTerritoryAllied(u.getOwner(), data).match(originatedFrom)) {
           final Collection<Territory> possible = whereCanAirLand(Collections.singletonList(u), t, u.getOwner(), data,
               m_battleTracker, carrierCostOfCurrentTerr, 1, !mustReturnToBase);
@@ -1097,7 +1097,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
       }
       if (isWW2v2orIsSurvivingAirMoveToLand) {
-        Territory territory = null;
+        Territory territory;
         while (canLandHere.size() > 1 && defendingAir.size() > 0) {
           territory = getRemotePlayer(defender).selectTerritoryForAirToLand(canLandHere, battleSite,
               "Select territory for air units to land. (Current territory is " + battleSite.getName() + "): "

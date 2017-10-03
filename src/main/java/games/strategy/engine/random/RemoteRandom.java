@@ -71,7 +71,7 @@ public class RemoteRandom implements IRemoteRandom {
     if (!vault.isUnlocked(m_remoteVaultID)) {
       throw new IllegalStateException("Server did not unlock random numbers, cheating is suspected");
     }
-    int[] remoteNumbers;
+    final int[] remoteNumbers;
     try {
       remoteNumbers = CryptoRandomSource.bytesToInts(vault.get(m_remoteVaultID));
     } catch (final NotUnlockedException e1) {

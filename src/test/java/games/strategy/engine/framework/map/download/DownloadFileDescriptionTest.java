@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
 import static org.hamcrest.Matchers.is;
+
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -114,7 +115,7 @@ public class DownloadFileDescriptionTest {
     mapInstallLocationTest(inputUrl, mapName, expected);
   }
 
-  private static void mapInstallLocationTest(String inputUrl, String mapName, File expected) {
+  private static void mapInstallLocationTest(final String inputUrl, final String mapName, final File expected) {
     final DownloadFileDescription testObj =     new DownloadFileDescription(inputUrl, "", mapName, new Version(0, 0),
         DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
 

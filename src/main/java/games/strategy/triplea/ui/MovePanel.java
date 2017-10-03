@@ -70,7 +70,7 @@ public class MovePanel extends AbstractMovePanel {
   private Point mouseLastUpdatePoint;
   // use a LinkedHashSet because we want to know the order
   private final Set<Unit> selectedUnits = new LinkedHashSet<>();
-  private static Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
+  private static final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
   // the must move with details for the currently selected territory
   // note this is kept in sync because we do not modify selectedTerritory directly
   // instead we only do so through the private setter
@@ -404,7 +404,7 @@ public class MovePanel extends AbstractMovePanel {
     }
     final Iterator<Territory> iter = forced.iterator();
     Territory last = getFirstSelectedTerritory();
-    Territory current = null;
+    Territory current;
     Route total = new Route();
     total.setStart(last);
     while (iter.hasNext()) {
@@ -768,7 +768,7 @@ public class MovePanel extends AbstractMovePanel {
             return;
           }
           final String text = "Select units to move from " + t.getName();
-          UnitChooser chooser;
+          final UnitChooser chooser;
           if (BaseEditDelegate.getEditMode(getData()) && !Matches
               .getMatches(unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove))).containsAll(unitsToMove)) {
             // use matcher to prevent units of different owners being chosen
@@ -1320,7 +1320,7 @@ public class MovePanel extends AbstractMovePanel {
     return Properties.getParatroopersCanMoveDuringNonCombat(data);
   }
 
-  private final List<Unit> userChooseUnits(final Set<Unit> defaultSelections,
+  private List<Unit> userChooseUnits(final Set<Unit> defaultSelections,
       final Match<Collection<Unit>> unitsToLoadMatch, final List<Unit> unitsToLoad, final String title,
       final String action) {
     // Allow player to select which to load.

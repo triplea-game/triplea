@@ -49,20 +49,15 @@ class EditValidator {
     return result;
   }
 
-  static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player) {
-    String result = null;
+  static String validateChangeTerritoryOwner(final GameData data, final Territory territory) {
     if (Matches.territoryIsWater().match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }
-    if ((result = validateTerritoryBasic(data, territory)) != null) {
-      return result;
-    }
-    return result;
+    return validateTerritoryBasic(data, territory);
   }
 
   static String validateAddUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
-    String result = null;
     if (units.isEmpty()) {
       return "No units selected";
     }
@@ -118,14 +113,11 @@ class EditValidator {
         return "Can't add sea units to land";
       }
     }
-    if ((result = validateTerritoryBasic(data, territory)) != null) {
-      return result;
-    }
-    return result;
+
+    return validateTerritoryBasic(data, territory);
   }
 
   static String validateRemoveUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
-    String result = null;
     if (units.isEmpty()) {
       return "No units selected";
     }
@@ -134,7 +126,8 @@ class EditValidator {
      * if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))
      * return "Not all units have the same owner";
      */
-    if ((result = validateTerritoryBasic(data, territory)) != null) {
+    final String result = validateTerritoryBasic(data, territory);
+    if (result != null) {
       return result;
     }
     // if transport selected, all transported units must be deleted too
@@ -152,7 +145,7 @@ class EditValidator {
     }
     // TODO: if carrier selected, all carried planes must be deleted too
     // TODO: if carried planes selected, carrier must be deleted too
-    return result;
+    return null;
   }
 
   static String validateAddTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player) {
@@ -210,11 +203,11 @@ class EditValidator {
 
   static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
       final Territory territory) {
-    String result = null;
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
     }
-    if ((result = validateTerritoryBasic(data, territory)) != null) {
+    final String result = validateTerritoryBasic(data, territory);
+    if (result != null) {
       return result;
     }
     final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
@@ -236,16 +229,16 @@ class EditValidator {
             + "unit, use remove unit)";
       }
     }
-    return result;
+    return null;
   }
 
   static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
       final Territory territory) {
-    String result = null;
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
     }
-    if ((result = validateTerritoryBasic(data, territory)) != null) {
+    final String result = validateTerritoryBasic(data, territory);
+    if (result != null) {
       return result;
     }
     if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
@@ -269,7 +262,7 @@ class EditValidator {
         return "Damage cannot be less than zero or greater than the max damage of the unit";
       }
     }
-    return result;
+    return null;
   }
 
   static String validateChangePoliticalRelationships(

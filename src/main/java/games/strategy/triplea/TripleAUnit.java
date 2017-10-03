@@ -434,7 +434,7 @@ public class TripleAUnit extends Unit {
     if (!Matches.unitCanProduceUnits().match(u)) {
       return 0;
     }
-    int productionCapacity = 0;
+    int productionCapacity;
     final UnitAttachment ua = UnitAttachment.get(u.getType());
     final TripleAUnit taUnit = (TripleAUnit) u;
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);

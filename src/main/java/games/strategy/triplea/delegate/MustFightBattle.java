@@ -1469,7 +1469,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     units = Matches.getMatches(units, Matches.unitIsTransport());
     final Collection<Unit> retreated = getTransportDependents(units);
     if (!retreated.isEmpty()) {
-      Territory retreatedFrom = null;
+      Territory retreatedFrom;
       for (final Unit unit : units) {
         retreatedFrom = TransportTracker.getTerritoryTransportHasUnloadedTo(unit);
         if (retreatedFrom != null) {

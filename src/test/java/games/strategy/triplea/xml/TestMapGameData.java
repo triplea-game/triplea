@@ -42,7 +42,7 @@ public enum TestMapGameData {
   }
 
   private InputStream getInputStream() throws IOException {
-    File f = new File(TEST_MAP_XML_PATH + value);
+    final File f = new File(TEST_MAP_XML_PATH + value);
     System.out.println("f .... => " + f.getAbsolutePath());
     return new FileInputStream(f);
   }

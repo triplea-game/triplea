@@ -727,8 +727,8 @@ public class DiceRoll implements Externalizable {
 
   public static void sortByStrength(final List<Unit> units, final boolean defending) {
     final Comparator<Unit> comp = (u1, u2) -> {
-      Integer v1;
-      Integer v2;
+      final Integer v1;
+      final Integer v2;
       if (defending) {
         v1 = UnitAttachment.get(u1.getType()).getDefense(u1.getOwner());
         v2 = UnitAttachment.get(u2.getType()).getDefense(u2.getOwner());
@@ -745,7 +745,7 @@ public class DiceRoll implements Externalizable {
       final boolean friendly) {
     // first, sort the lists inside each set
     final Comparator<UnitSupportAttachment> compList = (u1, u2) -> {
-      int compareTo = 0;
+      int compareTo;
       // we want to apply the biggest bonus first
       // Make sure stronger supports are ordered first if friendly, and worst are ordered first if enemy
       // TODO: it is possible that we will waste negative support if we reduce a units power to less than zero.
@@ -1074,7 +1074,7 @@ public class DiceRoll implements Externalizable {
     m_hits = hits;
     m_rolls = new ArrayList<>(dice.length);
     for (final int element : dice) {
-      boolean hit;
+      final boolean hit;
       if (hitOnlyIfEquals) {
         hit = (rollAt == element);
       } else {

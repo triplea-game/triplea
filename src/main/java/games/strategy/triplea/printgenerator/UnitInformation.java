@@ -25,16 +25,12 @@ class UnitInformation {
     return (s.length() > 0) ? Character.toUpperCase(s.charAt(0)) + s.substring(1) : s;
   }
 
-  protected void saveToFile(final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
-    FileWriter unitInformation = null;
-    final PrintGenerationData printData1 = printData;
-    data = printData1.getData();
-    final Map<UnitType, UnitAttachment> unitInfoMap1 = unitInfoMap;
-    final Iterator<UnitType> unitTypeIterator = unitInfoMap1.keySet().iterator();
-    printData1.getOutDir().mkdir();
-    final File outFile = new File(printData1.getOutDir(), "General Information.csv");
-    try {
-      unitInformation = new FileWriter(outFile);
+  void saveToFile(final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
+    data = printData.getData();
+    final Iterator<UnitType> unitTypeIterator = unitInfoMap.keySet().iterator();
+    printData.getOutDir().mkdir();
+    final File outFile = new File(printData.getOutDir(), "General Information.csv");
+    try (FileWriter unitInformation = new FileWriter(outFile)) {
       for (int i = 0; i < 8; i++) {
         unitInformation.write(",");
       }
@@ -49,7 +45,7 @@ class UnitInformation {
       unitInformation.write("\r\n");
       while (unitTypeIterator.hasNext()) {
         final UnitType currentType = unitTypeIterator.next();
-        final UnitAttachment currentAttachment = unitInfoMap1.get(currentType);
+        final UnitAttachment currentAttachment = unitInfoMap.get(currentType);
         if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
           unitInformation.write(currentType.getName() + ",");
         } else {
@@ -59,25 +55,24 @@ class UnitInformation {
         unitInformation.write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + ","
             + currentAttachment.getAttack(PlayerID.NULL_PLAYERID) + ","
             + currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + ","
-            + (currentAttachment.getCanBlitz(PlayerID.NULL_PLAYERID) == false ? "-" : "true") + ","
-            + (currentAttachment.getArtillery() == false ? "-" : "true") + ","
-            + (currentAttachment.getArtillerySupportable() == false ? "-" : "true") + ","
-            + (currentAttachment.getCanProduceUnits() == false ? "-" : "true") + ","
+            + (!currentAttachment.getCanBlitz(PlayerID.NULL_PLAYERID) ? "-" : "true") + ","
+            + (!currentAttachment.getArtillery() ? "-" : "true") + ","
+            + (!currentAttachment.getArtillerySupportable() ? "-" : "true") + ","
+            + (!currentAttachment.getCanProduceUnits() ? "-" : "true") + ","
             + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine()) + ","
             + (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
-            + (Matches.unitTypeIsAaForAnything().match(currentType) == false ? "-" : "true") + ","
-            + (currentAttachment.getIsAir() == false ? "-" : "true") + ","
-            + (currentAttachment.getIsStrategicBomber() == false ? "-" : "true") + ","
+            + (!Matches.unitTypeIsAaForAnything().match(currentType) ? "-" : "true") + ","
+            + (!currentAttachment.getIsAir() ? "-" : "true") + ","
+            + (!currentAttachment.getIsStrategicBomber() ? "-" : "true") + ","
             + (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + ","
-            + (currentAttachment.getIsSea() == false ? "-" : "true") + "," + (currentAttachment.getHitPoints()) + ","
+            + (!currentAttachment.getIsSea() ? "-" : "true") + "," + (currentAttachment.getHitPoints()) + ","
             + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","
             + (currentAttachment.getCarrierCapacity() == -1 ? "-" : currentAttachment.getCarrierCapacity()) + ","
-            + (currentAttachment.getIsSub() == false ? "-" : "true") + ","
-            + (currentAttachment.getIsDestroyer() == false ? "-" : "true"));
+            + (!currentAttachment.getIsSub() ? "-" : "true") + ","
+            + (!currentAttachment.getIsDestroyer() ? "-" : "true"));
         unitInformation.write("\r\n");
       }
       unitInformation.write("\r\n");
-      unitInformation.close();
     } catch (final IOException e) {
       ClientLogger.logError("There was an error while trying to save File " + outFile.toString(), e);
     }
@@ -87,13 +82,10 @@ class UnitInformation {
     if (data.getProductionFrontierList().getProductionFrontier("production") != null) {
       final List<ProductionRule> productionRules =
           data.getProductionFrontierList().getProductionFrontier("production").getRules();
-      final Iterator<ProductionRule> productionIterator = productionRules.iterator();
-      while (productionIterator.hasNext()) {
-        final ProductionRule currentRule = productionIterator.next();
+      for (final ProductionRule currentRule : productionRules) {
         final NamedAttachable currentType = currentRule.getResults().keySet().iterator().next();
         if (currentType.equals(type)) {
-          final int cost = currentRule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
-          return cost;
+          return currentRule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
         }
       }
     } else {

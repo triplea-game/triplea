@@ -668,7 +668,7 @@ public class MapPanel extends ImageScrollerLargeView {
     final List<Tile> tileList = tileManager.getTiles(bounds);
     bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getHeight(), bounds.getWidth());
     for (final Tile tile : tileList) {
-      Image img = null;
+      final Image img;
       tile.acquireLock();
       try {
         if (tile.isDirty()) {

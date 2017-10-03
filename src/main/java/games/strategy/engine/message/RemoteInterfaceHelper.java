@@ -52,7 +52,7 @@ class RemoteInterfaceHelper {
   /**
    * get methods does not guarantee an order, so sort.
    */
-  private static Comparator<Method> methodComparator = (o1, o2) -> {
+  private static final Comparator<Method> methodComparator = (o1, o2) -> {
     if (o1 == o2) {
       return 0;
     }

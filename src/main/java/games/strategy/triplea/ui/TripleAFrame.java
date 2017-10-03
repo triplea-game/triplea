@@ -409,7 +409,7 @@ public class TripleAFrame extends MainGameFrame {
         notesPanel.removeNotes();
       }
       if (pane.getComponentAt(sel).equals(editPanel)) {
-        PlayerID player1 = null;
+        final PlayerID player1;
         data.acquireReadLock();
         try {
           player1 = data.getSequence().getStep().getPlayerId();
@@ -1930,7 +1930,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private boolean getEditMode() {
-    boolean isEditMode = false;
+    final boolean isEditMode;
     // use GameData from mapPanel since it will follow current history node
     mapPanel.getData().acquireReadLock();
     try {
@@ -2056,10 +2056,6 @@ public class TripleAFrame extends MainGameFrame {
   @Override
   public IGame getGame() {
     return game;
-  }
-
-  public StatPanel getStatPanel() {
-    return statsPanel;
   }
 
   @Override

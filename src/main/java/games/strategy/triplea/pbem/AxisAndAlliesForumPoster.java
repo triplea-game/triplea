@@ -66,10 +66,10 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
    * @throws Exception
    *         if login fails
    */
-  private HttpContext login(CloseableHttpClient client) throws Exception {
-    HttpPost httpPost = new HttpPost("http://www.axisandallies.org/forums/index.php?action=login2");
-    CookieStore cookieStore = new BasicCookieStore();
-    HttpContext httpContext = new BasicHttpContext();
+  private HttpContext login(final CloseableHttpClient client) throws Exception {
+    final HttpPost httpPost = new HttpPost("http://www.axisandallies.org/forums/index.php?action=login2");
+    final CookieStore cookieStore = new BasicCookieStore();
+    final HttpContext httpContext = new BasicHttpContext();
     httpContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);
     HttpProxy.addProxy(httpPost);
     httpPost.addHeader("Accept", "*/*");
@@ -99,7 +99,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
         final Matcher m = p.matcher(value);
         if (m.matches()) {
           final String url = m.group(1);
-          HttpGet httpGet = new HttpGet(url);
+          final HttpGet httpGet = new HttpGet(url);
           HttpProxy.addProxy(httpGet);
           try (CloseableHttpResponse response2 = client.execute(httpGet, httpContext)) {
             status = response2.getStatusLine().getStatusCode();
@@ -120,18 +120,18 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
   @Override
   public boolean postTurnSummary(final String message, final String subject) {
     try (CloseableHttpClient client = HttpClients.createDefault()) {
-      HttpContext httpContext = login(client);
+      final HttpContext httpContext = login(client);
       // Now we load the post page, and find the hidden fields needed to post
-      HttpGet httpGet =
+      final HttpGet httpGet =
           new HttpGet("http://www.axisandallies.org/forums/index.php?action=post;topic=" + m_topicId + ".0");
       HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
         int status = response.getStatusLine().getStatusCode();
         String body = EntityUtils.toString(response.getEntity());
         if (status == 200) {
-          String numReplies;
-          String seqNum;
-          String sc;
+          final String numReplies;
+          final String seqNum;
+          final String sc;
           Matcher m = NUM_REPLIES_PATTERN.matcher(body);
           if (m.matches()) {
             numReplies = m.group(1);
@@ -151,10 +151,10 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
             throw new Exception("Hidden field 'sc' not found on page");
           }
           // now we have the required hidden fields to reply to
-          HttpPost httpPost =
+          final HttpPost httpPost =
               new HttpPost("http://www.axisandallies.org/forums/index.php?action=post2;start=0;board=40");
           // Construct the multi part post
-          MultipartEntityBuilder builder = MultipartEntityBuilder.create()
+          final MultipartEntityBuilder builder = MultipartEntityBuilder.create()
               .addTextBody("topic", m_topicId)
               .addTextBody("subject", subject)
               .addTextBody("icon", "xx")

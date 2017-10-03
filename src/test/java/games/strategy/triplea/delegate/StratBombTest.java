@@ -53,11 +53,11 @@ public class StratBombTest {
     gameData.performChange(ChangeFactory.addUnits(uk, Collections.singleton(tacBomber1)));
     gameData.performChange(ChangeFactory.addUnits(uk, Collections.singleton(tacBomber2)));
     final BattleTracker tracker = new BattleTracker();
-    List<Unit> attackers = new ArrayList<>();
+    final List<Unit> attackers = new ArrayList<>();
     attackers.add(stratBomber);
     attackers.add(tacBomber1);
     attackers.add(tacBomber2);
-    HashMap<Unit, HashSet<Unit>> targets = new HashMap<>();
+    final HashMap<Unit, HashSet<Unit>> targets = new HashMap<>();
     TripleAUnit airfield = null;
     TripleAUnit harbour = null;
     TripleAUnit factory = null;

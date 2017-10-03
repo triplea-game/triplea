@@ -264,13 +264,11 @@ public class WeakAI extends AbstractAI {
       moveRoutes.remove(1);
       moveUnits.remove(1);
     }
-    Territory firstSeaZoneOnAmphib = null;
-    Territory lastSeaZoneOnAmphib = null;
     if (amphibRoute == null) {
       return;
     }
-    firstSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(0);
-    lastSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(amphibRoute.numberOfSteps() - 1);
+    final Territory firstSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(0);
+    final Territory lastSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(amphibRoute.numberOfSteps() - 1);
     final Match<Unit> ownedAndNotMoved =
         Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved(), Transporting);
     final List<Unit> unitsToMove = new ArrayList<>();
@@ -289,10 +287,6 @@ public class WeakAI extends AbstractAI {
 
   /**
    * prepares moves for transports.
-   *
-   * @param maxTrans
-   *        -
-   *        if -1 unlimited
    */
   private static void populateNonCombatSea(final boolean nonCombat, final GameData data,
       final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player) {
@@ -791,26 +785,26 @@ public class WeakAI extends AbstractAI {
     final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
-    List<RepairRule> rrules = Collections.emptyList();
+    final List<RepairRule> repairRules;
     final Match<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCanProduceUnits());
-    final List<Territory> rfactories =
+    final List<Territory> repairFactories =
         Matches.getMatches(Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));
     // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-      rrules = player.getRepairFrontier().getRules();
+      repairRules = player.getRepairFrontier().getRules();
       final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
       final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<>();
       final int minimumUnitPrice = 3;
-      int diff = 0;
+      int diff;
       int capProduction = 0;
       Unit capUnit = null;
       Territory capUnitTerritory = null;
       int currentProduction = 0;
       // we should sort this
-      Collections.shuffle(rfactories);
-      for (final Territory fixTerr : rfactories) {
+      Collections.shuffle(repairFactories);
+      for (final Territory fixTerr : repairFactories) {
         if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
             .match(fixTerr)) {
           continue;
@@ -820,8 +814,6 @@ public class WeakAI extends AbstractAI {
         if (Matches.unitHasTakenSomeBombingUnitDamage().match(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }
-        final TripleAUnit taUnit = (TripleAUnit) possibleFactoryNeedingRepair;
-        diff = taUnit.getUnitDamage();
         if (fixTerr == capitol) {
           capProduction =
               TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
@@ -831,7 +823,7 @@ public class WeakAI extends AbstractAI {
         currentProduction +=
             TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
       }
-      rfactories.remove(capitol);
+      repairFactories.remove(capitol);
       unitsThatCanProduceNeedingRepair.remove(capUnit);
       // assume minimum unit price is 3, and that we are buying only that... if we over repair, oh well, that is better
       // than under-repairing
@@ -840,8 +832,8 @@ public class WeakAI extends AbstractAI {
       // if capitol is super safe, we don't have to do this. and if capitol is under siege, we should repair enough to
       // place all our units here
       int maxUnits = (totalPu - 1) / minimumUnitPrice;
-      if ((capProduction <= maxUnits / 2 || rfactories.isEmpty()) && capUnit != null) {
-        for (final RepairRule rrule : rrules) {
+      if ((capProduction <= maxUnits / 2 || repairFactories.isEmpty()) && capUnit != null) {
+        for (final RepairRule rrule : repairRules) {
           if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {
             continue;
           }
@@ -853,7 +845,7 @@ public class WeakAI extends AbstractAI {
           diff = taUnit.getUnitDamage();
           final int unitProductionAllowNegative =
               TripleAUnit.getHowMuchCanUnitProduce(capUnit, capUnitTerritory, player, data, false, true) - diff;
-          if (!rfactories.isEmpty()) {
+          if (!repairFactories.isEmpty()) {
             diff = Math.min(diff, (maxUnits / 2 - unitProductionAllowNegative) + 1);
           } else {
             diff = Math.min(diff, (maxUnits - unitProductionAllowNegative));
@@ -879,7 +871,7 @@ public class WeakAI extends AbstractAI {
       }
       int i = 0;
       while (currentProduction < maxUnits && i < 2) {
-        for (final RepairRule rrule : rrules) {
+        for (final RepairRule rrule : repairRules) {
           for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet()) {
             if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
               continue;
@@ -924,7 +916,7 @@ public class WeakAI extends AbstractAI {
             }
           }
         }
-        rfactories.add(capitol);
+        repairFactories.add(capitol);
         if (capUnit != null) {
           unitsThatCanProduceNeedingRepair.put(capUnit, capUnitTerritory);
         }
@@ -1051,7 +1043,6 @@ public class WeakAI extends AbstractAI {
     final List<Unit> landUnits = new ArrayList<>(player.getUnits().getMatches(Matches.unitIsLand()));
     if (!landUnits.isEmpty()) {
       final int landPlaceCount = Math.min(placementLeft, landUnits.size());
-      placementLeft -= landPlaceCount;
       final Collection<Unit> toPlace = landUnits.subList(0, landPlaceCount);
       doPlace(placeAt, toPlace, placeDelegate);
     }

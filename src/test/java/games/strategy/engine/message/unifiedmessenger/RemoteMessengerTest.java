@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -20,6 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -67,7 +69,7 @@ public class RemoteMessengerTest {
         return null;
       }
     }).when(serverMessenger).removeConnection(any());
-    Node dummyNode;
+    final Node dummyNode;
     try {
       dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     } catch (final UnknownHostException e) {

@@ -25,7 +25,7 @@ public class ReliefMapDrawable extends MapTileDrawable {
     if (!TileImageFactory.getShowReliefImages()) {
       return null;
     }
-    Image image;
+    final Image image;
     if (unscaled) {
       image = uiContext.getTileImageFactory().getUnscaledUncachedReliefTile(x, y);
     } else {

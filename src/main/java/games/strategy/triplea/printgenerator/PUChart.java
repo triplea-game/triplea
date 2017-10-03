@@ -78,7 +78,7 @@ class PUChart {
     g2d.drawString(string, 42 + 87 * x - h, 39 + 87 * y + k);
   }
 
-  protected void saveToFile() throws IOException {
+  void saveToFile() throws IOException {
     initializeMap();
     initializeAvoidMap();
     final int rows = 6;

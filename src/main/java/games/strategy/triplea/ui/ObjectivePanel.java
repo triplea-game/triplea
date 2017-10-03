@@ -216,7 +216,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           System.err.println("objective.properties player does not exist: " + key[0]);
           continue;
         }
-        IAttachment attachment = null;
+        final IAttachment attachment;
         try {
           if (key[1].contains(Constants.RULES_OBJECTIVE_PREFIX) || key[1].contains(Constants.RULES_CONDITION_PREFIX)) {
             attachment = RulesAttachment.get(player, key[1], allPlayers, true);

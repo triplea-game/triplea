@@ -30,14 +30,14 @@ public class XmlGameElementMapperTest {
 
   @Test
   public void getDelegateReturnsEmptyIfDelegateNameDoesNotExist() {
-    Optional<IDelegate> resultObject = testObj.getDelegate(NAME_THAT_DOES_NOT_EXIST);
+    final Optional<IDelegate> resultObject = testObj.getDelegate(NAME_THAT_DOES_NOT_EXIST);
     assertThat(resultObject.isPresent(), is(false));
   }
 
 
   @Test
   public void getDelegateHappyCase() {
-    Optional<IDelegate> resultObject = testObj.getDelegate(XmlGameElementMapper.BATTLE_DELEGATE_NAME);
+    final Optional<IDelegate> resultObject = testObj.getDelegate(XmlGameElementMapper.BATTLE_DELEGATE_NAME);
     assertThat(resultObject.isPresent(), is(true));
     assertThat(resultObject.get(), instanceOf(BattleDelegate.class));
   }
@@ -45,14 +45,14 @@ public class XmlGameElementMapperTest {
 
   @Test
   public void getAttachmentReturnsEmptyIfAttachmentNameDoesNotExist() {
-    Optional<IAttachment> resultObject = testObj.getAttachment(NAME_THAT_DOES_NOT_EXIST, "", null, null);
+    final Optional<IAttachment> resultObject = testObj.getAttachment(NAME_THAT_DOES_NOT_EXIST, "", null, null);
     assertThat(resultObject.isPresent(), is(false));
   }
 
 
   @Test
   public void getAttachmentHappyCase() {
-    Optional<IAttachment> resultObject =
+    final Optional<IAttachment> resultObject =
         testObj.getAttachment(XmlGameElementMapper.CANAL_ATTACHMENT_NAME, "", null, null);
     assertThat(resultObject.isPresent(), is(true));
     assertThat(resultObject.get(), instanceOf(CanalAttachment.class));

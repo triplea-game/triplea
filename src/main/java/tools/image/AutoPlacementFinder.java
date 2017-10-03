@@ -201,7 +201,7 @@ public class AutoPlacementFinder {
     final Iterator<String> terrIter = mapData.getTerritories().iterator();
     while (terrIter.hasNext()) {
       final String name = terrIter.next();
-      List<Point> points;
+      final List<Point> points;
       if (mapData.hasContainedTerritory(name)) {
         final Set<Polygon> containedPolygons = new HashSet<>();
         for (final String containedName : mapData.getContainedTerritory(name)) {
@@ -460,7 +460,7 @@ public class AutoPlacementFinder {
   private static void handleCommandLineArgs(final String[] args) {
     final String[] properties = getProperties();
     if (args.length == 1) {
-      String value;
+      final String value;
       if (args[0].startsWith(TRIPLEA_UNIT_ZOOM)) {
         value = getValue(args[0]);
       } else {
@@ -473,7 +473,7 @@ public class AutoPlacementFinder {
         // ignore malformed input
       }
     } else if (args.length == 2) {
-      String value0;
+      final String value0;
       if (args[0].startsWith(TRIPLEA_UNIT_WIDTH)) {
         value0 = getValue(args[0]);
       } else {
@@ -485,7 +485,7 @@ public class AutoPlacementFinder {
       } catch (final Exception ex) {
         // ignore malformed input
       }
-      String value1;
+      final String value1;
       if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT)) {
         value1 = getValue(args[1]);
       } else {

@@ -578,7 +578,7 @@ public class PlacementPicker extends JFrame {
   private static void handleCommandLineArgs(final String[] args) {
     final String[] properties = getProperties();
     if (args.length == 1) {
-      String value;
+      final String value;
       if (args[0].startsWith(TRIPLEA_UNIT_ZOOM)) {
         value = getValue(args[0]);
       } else {
@@ -591,7 +591,7 @@ public class PlacementPicker extends JFrame {
         // ignore malformed input
       }
     } else if (args.length == 2) {
-      String value0;
+      final String value0;
       if (args[0].startsWith(TRIPLEA_UNIT_WIDTH)) {
         value0 = getValue(args[0]);
       } else {
@@ -603,7 +603,7 @@ public class PlacementPicker extends JFrame {
       } catch (final Exception ex) {
         // ignore malformed input
       }
-      String value1;
+      final String value1;
       if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT)) {
         value1 = getValue(args[1]);
       } else {

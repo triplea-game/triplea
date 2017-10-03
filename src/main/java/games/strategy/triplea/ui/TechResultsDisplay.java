@@ -38,7 +38,7 @@ public class TechResultsDisplay extends JPanel {
     for (int i = 0; i < msg.getRolls().length; i++) {
       // add 1 since dice are 0 based
       final int roll = msg.getRolls()[i] + 1;
-      JLabel die;
+      final JLabel die;
       if (remainder > 0) {
         die = new JLabel(
             uiContext.getDiceImageFactory().getDieIcon(roll, roll <= remainder ? Die.DieType.HIT : Die.DieType.MISS));

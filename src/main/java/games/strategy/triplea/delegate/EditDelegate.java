@@ -40,11 +40,13 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String removeUnits(final Territory territory, final Collection<Unit> units) {
-    String result = null;
-    if (null != (result = checkEditMode())) {
+    String result = checkEditMode();
+    if (result != null) {
       return result;
     }
-    if (null != (result = EditValidator.validateRemoveUnits(getData(), territory, units))) {
+
+    result = EditValidator.validateRemoveUnits(getData(), territory, units);
+    if (result != null) {
       return result;
     }
     if (units == null || units.isEmpty()) {
@@ -65,11 +67,13 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String addUnits(final Territory territory, final Collection<Unit> units) {
-    String result = null;
-    if (null != (result = checkEditMode())) {
+    String result = checkEditMode();
+    if (result != null) {
       return result;
     }
-    if (null != (result = EditValidator.validateAddUnits(getData(), territory, units))) {
+
+    result = EditValidator.validateAddUnits(getData(), territory, units);
+    if (result != null) {
       return result;
     }
     if (units == null || units.isEmpty()) {
@@ -132,13 +136,14 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changeTerritoryOwner(final Territory territory, final PlayerID player) {
-    String result = null;
-    if (null != (result = checkEditMode())) {
+    String result = checkEditMode();
+    if (result != null) {
       return result;
     }
     final GameData data = getData();
     // validate this edit
-    if (null != (result = EditValidator.validateChangeTerritoryOwner(data, territory, player))) {
+    result = EditValidator.validateChangeTerritoryOwner(data, territory);
+    if (result != null) {
       return result;
     }
     logEvent("Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to "
@@ -166,8 +171,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changePUs(final PlayerID player, final int newTotal) {
-    String result = null;
-    if (null != (result = checkEditMode())) {
+    final String result = checkEditMode();
+    if (result != null) {
       return result;
     }
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
@@ -185,8 +190,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changeTechTokens(final PlayerID player, final int newTotal) {
-    String result = null;
-    if (null != (result = checkEditMode())) {
+    final String result = checkEditMode();
+    if (result != null) {
       return result;
     }
     final Resource techTokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
@@ -204,8 +209,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String addTechAdvance(final PlayerID player, final Collection<TechAdvance> advances) {
-    String result = null;
-    if (null != (result = checkEditMode())) {
+    String result = checkEditMode();
+    if (result != null) {
       return result;
     }
     if (null != (result = EditValidator.validateAddTech(getData(), advances, player))) {
@@ -220,8 +225,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String removeTechAdvance(final PlayerID player, final Collection<TechAdvance> advances) {
-    String result = null;
-    if (null != (result = checkEditMode())) {
+    String result = checkEditMode();
+    if (result != null) {
       return result;
     }
     if (null != (result = EditValidator.validateRemoveTech(getData(), advances, player))) {
@@ -236,11 +241,12 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory) {
-    String result = null;
-    if (null != (result = checkEditMode())) {
+    String result = checkEditMode();
+    if (result != null) {
       return result;
     }
-    if (null != (result = EditValidator.validateChangeHitDamage(getData(), unitDamageMap, territory))) {
+    result = EditValidator.validateChangeHitDamage(getData(), unitDamageMap, territory);
+    if (result != null) {
       return result;
     }
     // remove anyone who is the same
@@ -264,11 +270,12 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory) {
-    String result = null;
-    if (null != (result = checkEditMode())) {
+    String result = checkEditMode();
+    if (result != null) {
       return result;
     }
-    if (null != (result = EditValidator.validateChangeBombingDamage(getData(), unitDamageMap, territory))) {
+    result = EditValidator.validateChangeBombingDamage(getData(), unitDamageMap, territory);
+    if (result != null) {
       return result;
     }
     // remove anyone who is the same
@@ -295,14 +302,15 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   @Override
   public String changePoliticalRelationships(
       final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
-    String result = null;
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {
+      return null;
+    }
+    String result = checkEditMode();
+    if (result != null) {
       return result;
     }
-    if (null != (result = checkEditMode())) {
-      return result;
-    }
-    if (null != (result = EditValidator.validateChangePoliticalRelationships(relationshipChanges))) {
+    result = EditValidator.validateChangePoliticalRelationships(relationshipChanges);
+    if (result != null) {
       return result;
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(getData());

@@ -269,7 +269,6 @@ public class BattleCalculator {
             finalCasualtyDetails.addToKilled(unitHit);
           }
         }
-        hitsLeft = 0;
       } else {
         // kill one in every group
         for (final List<Unit> group : airSplit.getFirst()) {
@@ -292,7 +291,6 @@ public class BattleCalculator {
               finalCasualtyDetails.addToKilled(unitHit);
             }
           }
-          hitsLeft = 0;
         } else if (hitsLeft != 0) {
           // the remainder
           // roll all at once to prevent frequent random calls, important for pbem games
@@ -309,7 +307,6 @@ public class BattleCalculator {
               finalCasualtyDetails.addToKilled(unitHit);
             }
           }
-          hitsLeft = 0;
         }
       }
     }
@@ -482,10 +479,10 @@ public class BattleCalculator {
       final CasualtyDetails editSelection = tripleaPlayer.selectCasualties(targetsToPickFrom, dependents, 0, text, dice,
           player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, new CasualtyList(),
           battleId, battlesite, allowMultipleHitsPerUnit);
-      List<Unit> killed = editSelection.getKilled();
+      final List<Unit> killed = editSelection.getKilled();
       // if partial retreat is possible, kill amphibious units first
       if (isPartialAmphibiousRetreat(data)) {
-        killed = killAmphibiousFirst(killed, targetsToPickFrom);
+        killAmphibiousFirst(killed, targetsToPickFrom);
       }
       return editSelection;
     }
@@ -595,10 +592,8 @@ public class BattleCalculator {
     // Get a list of all units that are amphibious and remove those that are killed
     allAmphibUnits.addAll(Matches.getMatches(targets, Matches.unitWasAmphibious()));
     allAmphibUnits.removeAll(Matches.getMatches(killed, Matches.unitWasAmphibious()));
-    final Iterator<Unit> allAmphibUnitsIter = allAmphibUnits.iterator();
     // Get a collection of the unit types of the amphib units
-    while (allAmphibUnitsIter.hasNext()) {
-      final Unit unit = allAmphibUnitsIter.next();
+    for (final Unit unit : allAmphibUnits) {
       final UnitType ut = unit.getType();
       if (!amphibTypes.contains(ut)) {
         amphibTypes.add(ut);

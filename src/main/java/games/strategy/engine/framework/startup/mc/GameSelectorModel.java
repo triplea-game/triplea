@@ -254,7 +254,7 @@ public class GameSelectorModel extends Observable {
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
     // version of triplea
     // was using running a game within its root folder, we shouldn't open it)
-    NewGameChooserEntry selectedGame = null;
+    NewGameChooserEntry selectedGame;
     final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
     if (!forceFactoryDefault && userPreferredDefaultGameUri != null && userPreferredDefaultGameUri.length() > 0
         && userPreferredDefaultGameUri.contains(user)) {

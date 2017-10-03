@@ -40,7 +40,7 @@ public class InitialSetup {
       final PlayerID currentPlayer = playerIterator.next();
       new CountryChart().saveToFile(currentPlayer, printData);
     }
-    new PUInfo().saveToFile(printData);
+    new PuInfo().saveToFile(printData);
     try {
       new PlayerOrder().saveToFile(printData);
       new PUChart(printData).saveToFile();

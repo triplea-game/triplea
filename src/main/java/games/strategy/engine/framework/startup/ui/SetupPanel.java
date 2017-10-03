@@ -75,7 +75,7 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     return new ArrayList<>();
   }
 
-  void layoutPlayerComponents(JPanel panel, List<PlayerSelectorRow> playerRows, GameData data) {
+  void layoutPlayerComponents(final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameData data) {
     panel.removeAll();
     playerRows.clear();
     panel.setLayout(new GridBagLayout());

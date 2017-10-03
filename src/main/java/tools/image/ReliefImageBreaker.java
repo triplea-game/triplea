@@ -15,7 +15,6 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -37,7 +36,7 @@ import tools.map.making.ImageIoCompletionWatcher;
  */
 public class ReliefImageBreaker {
   private static String location = null;
-  private static JFrame observer = new JFrame();
+  private static final JFrame observer = new JFrame();
   private boolean seaZoneOnly;
   private MapData mapData;
   private static File mapFolderLocation = null;
@@ -72,7 +71,7 @@ public class ReliefImageBreaker {
    * One of the main methods that is used to create the actual maps. Calls on
    * various methods to get user input and create the maps.
    */
-  public void createMaps() throws IOException {
+  private void createMaps() throws IOException {
     // ask user to input image location
     final Image map = loadImage();
     if (map == null) {
@@ -112,25 +111,21 @@ public class ReliefImageBreaker {
   }
 
   /**
-   * Asks user wether to do sea zones only or not
+   * Asks user whether to do sea zones only or not.
    *
-   * @return java.lang.boolean TRUE to do seazones only.
+   * @return True to do seazones only.
    */
   private static boolean doSeaZone() {
-    String ans = "";
     while (true) {
-      ans = JOptionPane.showInputDialog(null, "Only Do Sea Zones? Enter [Y/N]");
-      if (ans == null) {
-        System.out.println("Cannot leave this blank!");
-        System.out.println("Retry");
-      } else {
-        if (ans.equalsIgnoreCase("Y")) {
-          return true;
-        } else if (ans.equalsIgnoreCase("N")) {
-          return false;
-        } else {
-          System.out.println("You must enter Y or N");
-        }
+      final String answer = JOptionPane.showInputDialog(null, "Only Do Sea Zones? Enter [Y/N]");
+
+      if(answer == null) {
+        continue;
+      }
+      if (answer.equalsIgnoreCase("Y")) {
+        return true;
+      } else if (answer == null || answer.equalsIgnoreCase("N")) {
+        return false;
       }
     }
   }
@@ -182,9 +177,7 @@ public class ReliefImageBreaker {
     final int width = bounds.width;
     final int height = bounds.height;
     final BufferedImage alphaChannelImage = Util.createImage(bounds.width, bounds.height, true);
-    final Iterator<Polygon> iter = mapData.getPolygons(territory).iterator();
-    while (iter.hasNext()) {
-      Polygon item = iter.next();
+    for (Polygon item : mapData.getPolygons(territory)) {
       item = new Polygon(item.xpoints, item.ypoints, item.npoints);
       item.translate(-bounds.x, -bounds.y);
       alphaChannelImage.getGraphics().fillPolygon(item);
@@ -238,7 +231,7 @@ public class ReliefImageBreaker {
   private static void handleCommandLineArgs(final String[] args) {
     // arg can only be the map folder location.
     if (args.length == 1) {
-      String value;
+      final String value;
       if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {

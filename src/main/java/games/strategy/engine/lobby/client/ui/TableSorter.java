@@ -194,7 +194,7 @@ class TableSorter extends AbstractTableModel {
 
   private Row[] getViewToModel() {
     final int tableModelRowCount = tableModel.getRowCount();
-    Row[] viewToModelRows = new Row[tableModelRowCount];
+    final Row[] viewToModelRows = new Row[tableModelRowCount];
     for (int row = 0; row < tableModelRowCount; row++) {
       viewToModelRows[row] = new Row(row);
     }
@@ -209,9 +209,9 @@ class TableSorter extends AbstractTableModel {
   }
 
   private int[] getModelToView() {
-    Row[] viewToModel = getViewToModel();
+    final Row[] viewToModel = getViewToModel();
 
-    int[] modelToViewRows = new int[viewToModel.length];
+    final int[] modelToViewRows = new int[viewToModel.length];
     for (int i = 0; i < viewToModel.length; i++) {
       modelToViewRows[viewToModel[i].modelIndex] = i;
     }
@@ -286,7 +286,7 @@ class TableSorter extends AbstractTableModel {
         final int column = directive.column;
         final Object o1 = tableModel.getValueAt(row1, column);
         final Object o2 = tableModel.getValueAt(row2, column);
-        int comparison = 0;
+        final int comparison;
         // Define null less than everything, except null.
         if (o1 == null && o2 == null) {
           comparison = 0;

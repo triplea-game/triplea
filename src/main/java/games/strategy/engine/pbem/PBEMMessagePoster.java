@@ -34,12 +34,12 @@ public class PBEMMessagePoster implements Serializable {
   private final IEmailSender m_emailSender;
   private transient File m_saveGameFile = null;
   private transient String m_turnSummary = null;
-  private transient String m_saveGameRef = null;
+  private final transient String m_saveGameRef = null;
   private transient String m_turnSummaryRef = null;
   private transient String m_emailSendStatus;
-  private transient PlayerID m_currentPlayer;
-  private transient int m_roundNumber;
-  private transient String m_gameNameAndInfo;
+  private final transient PlayerID m_currentPlayer;
+  private final transient int m_roundNumber;
+  private final transient String m_gameNameAndInfo;
 
   public PBEMMessagePoster(final GameData gameData, final PlayerID currentPlayer, final int roundNumber,
       final String title) {

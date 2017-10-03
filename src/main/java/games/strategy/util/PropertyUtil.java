@@ -116,10 +116,10 @@ public class PropertyUtil {
         try {
           final Class<?> argType = value.getClass();
           return subject.getClass().getMethod(setterName, argType);
-        } catch (final NoSuchMethodException nsmf) {
-          // Go ahead and try the first one
-          return m;
-        } catch (final NullPointerException n) {
+        } catch (final NoSuchMethodException | NullPointerException e) {
+          // TODO: do not catch NPE, that is control flow by exception handling,
+          // instead detect the null value and return 'm' at that time.
+
           // Go ahead and try the first one
           return m;
         }
@@ -130,15 +130,14 @@ public class PropertyUtil {
 
   private static Method getResetter(final String propertyName, final Object subject) {
     final String resetterName = "reset" + capitalizeFirstLetter(propertyName);
-    // for (final Method c : subject.getClass().getDeclaredMethods())
     for (final Method c : subject.getClass().getMethods()) {
       if (c.getName().equals(resetterName)) {
         try {
           return subject.getClass().getMethod(resetterName);
-        } catch (final NoSuchMethodException nsmf) {
-          // Go ahead and try the first one
-          return c;
-        } catch (final NullPointerException n) {
+        } catch (final NoSuchMethodException | NullPointerException e) {
+          // TODO: do not catch NPE, that is control flow by exception handling,
+          // instead detect the null value and return 'm' at that time.
+
           // Go ahead and try the first one
           return c;
         }

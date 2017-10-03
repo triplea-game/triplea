@@ -113,7 +113,7 @@ final class UnitChooser extends JPanel {
     if (total == -1) {
       return;
     }
-    Iterator<ChooserEntry> iter;
+    final Iterator<ChooserEntry> iter;
     final int selected = getSelectedCount();
     leftToSelect.setText("Left to select:" + (total - selected));
     iter = entries.iterator();
@@ -244,7 +244,7 @@ final class UnitChooser extends JPanel {
    */
   List<Unit> getSelectedDamagedMultipleHitPointUnits() {
     final List<Unit> selectedUnits = new ArrayList<>();
-    for (ChooserEntry chooserEntry : entries) {
+    for (final ChooserEntry chooserEntry : entries) {
       if (chooserEntry.hasMultipleHitPoints()) {
         // there may be some units being given multiple hits, while others get a single or no hits
         for (int i = 0; i < chooserEntry.size() - 1; i++) {
@@ -282,7 +282,6 @@ final class UnitChooser extends JPanel {
           leftToSelect -= canSelect;
         } else {
           entry.set(entry.getHits(0) + canSelect);
-          leftToSelect = 0;
           break;
         }
       }
@@ -327,7 +326,7 @@ final class UnitChooser extends JPanel {
     private final List<ScrollableTextField> hitTexts;
     private final List<JLabel> hitLabel = new ArrayList<>();
     private int leftToSelect = 0;
-    private static Insets nullInsets = new Insets(0, 0, 0, 0);
+    private static final Insets nullInsets = new Insets(0, 0, 0, 0);
     private final IUIContext uiContext;
 
     ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener,

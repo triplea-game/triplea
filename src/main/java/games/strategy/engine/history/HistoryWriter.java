@@ -34,14 +34,7 @@ public class HistoryWriter implements Serializable {
     assertCorrectThread();
     // we are being called for the first time
     if (m_current == null) {
-      int round = 0;
-      m_history.getGameData().acquireReadLock();
-      try {
-        round = m_history.getGameData().getSequence().getRound();
-      } finally {
-        m_history.getGameData().releaseReadLock();
-      }
-      startNextRound(round);
+      startNextRound(m_history.getGameData().getCurrentRound());
     }
     if (isCurrentEvent()) {
       closeCurrent();

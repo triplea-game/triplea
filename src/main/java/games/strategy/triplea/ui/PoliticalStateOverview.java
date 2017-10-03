@@ -150,7 +150,7 @@ public class PoliticalStateOverview extends JPanel {
             }
 
             // see if there is actually a change
-            RelationshipType actualRelationship = null;
+            final RelationshipType actualRelationship;
             data.acquireReadLock();
             try {
               actualRelationship = data.getRelationshipTracker().getRelationshipType(player1, player2);

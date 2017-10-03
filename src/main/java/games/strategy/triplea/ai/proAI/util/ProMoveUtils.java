@@ -330,7 +330,7 @@ public class ProMoveUtils {
             + ": route not valid " + moveRoutes.get(i) + " units: " + moveUnits.get(i));
         continue;
       }
-      String result;
+      final String result;
       if (transportsToLoad == null || transportsToLoad.get(i) == null) {
         result = moveDel.move(moveUnits.get(i), moveRoutes.get(i));
       } else {

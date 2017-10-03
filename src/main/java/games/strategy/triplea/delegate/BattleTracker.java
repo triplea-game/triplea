@@ -493,10 +493,9 @@ public class BattleTracker implements Serializable {
     // If this is a convoy (we wouldn't be in this method otherwise)
     // check to make sure attackers have more than just transports. If they don't, exit here.
     if (territory.isWater() && arrivedUnits != null) {
-      int totalMatches = 0;
       // Total Attacking Sea units = all units - land units - air units - submerged subs
       // Also subtract transports & subs (if they can't control sea zones)
-      totalMatches = arrivedUnits.size() - Matches.countMatches(arrivedUnits, Matches.unitIsLand())
+      int totalMatches = arrivedUnits.size() - Matches.countMatches(arrivedUnits, Matches.unitIsLand())
           - Matches.countMatches(arrivedUnits, Matches.unitIsAir())
           - Matches.countMatches(arrivedUnits, Matches.unitIsSubmerged());
       // If transports are restricted from controlling sea zones, subtract them
