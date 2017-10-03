@@ -167,6 +167,7 @@ public class GameDataExporter {
     }
   }
 
+  @SuppressWarnings("unchecked")
   private void printEditableProperty(final IEditableProperty prop) {
     String typeString = "";
     String value = "" + prop.getValue();
