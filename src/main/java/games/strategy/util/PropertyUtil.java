@@ -134,7 +134,7 @@ public class PropertyUtil {
       if (c.getName().equals(resetterName)) {
         try {
           return subject.getClass().getMethod(resetterName);
-        } catch (final NoSuchMethodException | NullPointerException nsmf) {
+        } catch (final NoSuchMethodException | NullPointerException e) {
           // TODO: do not catch NPE, that is control flow by exception handling,
           // instead detect the null value and return 'm' at that time.
 
