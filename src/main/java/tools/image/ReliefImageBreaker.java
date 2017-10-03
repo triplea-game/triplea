@@ -118,9 +118,13 @@ public class ReliefImageBreaker {
   private static boolean doSeaZone() {
     while (true) {
       final String answer = JOptionPane.showInputDialog(null, "Only Do Sea Zones? Enter [Y/N]");
+
+      if(answer == null) {
+        continue;
+      }
       if (answer.equalsIgnoreCase("Y")) {
         return true;
-      } else if (answer.equalsIgnoreCase("N")) {
+      } else if (answer == null || answer.equalsIgnoreCase("N")) {
         return false;
       }
     }
