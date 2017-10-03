@@ -4,6 +4,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+/**
+ * Implementation of {@link InvocationHandler} that delegates the {@link Object#equals(Object)},
+ * {@link Object#hashCode()}, and {@link Object#toString()} methods to the specified object.
+ */
 public class WrappedInvocationHandler implements InvocationHandler {
   private final Object delegate;
 
@@ -25,7 +29,7 @@ public class WrappedInvocationHandler implements InvocationHandler {
     return false;
   }
 
-  public boolean shouldHandle(final Method method, final Object[] args) {
+  protected boolean shouldHandle(final Method method, final Object[] args) {
     if (method.getName().equals("equals") && args != null && args.length == 1) {
       return true;
     } else if (method.getName().equals("hashCode") && args == null) {
@@ -36,11 +40,11 @@ public class WrappedInvocationHandler implements InvocationHandler {
     return false;
   }
 
-  public Object handle(final Method method, final Object[] args) {
+  protected Object handle(final Method method, final Object[] args) {
     if (method.getName().equals("equals") && args != null && args.length == 1) {
       return wrappedEquals(args[0]);
     } else if (method.getName().equals("hashCode") && args == null) {
-      return wrappedashCode();
+      return delegate.hashCode();
     } else if (method.getName().equals("toString") && args == null) {
       return delegate.toString();
     } else {
@@ -48,14 +52,10 @@ public class WrappedInvocationHandler implements InvocationHandler {
     }
   }
 
-  public int wrappedashCode() {
-    return delegate.hashCode();
-  }
-
   @Override
-  public Object invoke(final Object arg0, final Method arg1, final Object[] arg2) throws Throwable {
-    if (shouldHandle(arg1, arg2)) {
-      return handle(arg1, arg2);
+  public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+    if (shouldHandle(method, args)) {
+      return handle(method, args);
     }
     throw new IllegalStateException("not configured");
   }
