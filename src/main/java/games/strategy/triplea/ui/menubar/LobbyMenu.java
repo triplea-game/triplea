@@ -5,17 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -36,6 +27,7 @@ import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
+import games.strategy.engine.lobby.client.ui.TimespanDialog;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.IUserManager;
 import games.strategy.engine.lobby.server.ModeratorController;
@@ -153,27 +145,28 @@ public class LobbyMenu extends JMenuBar {
   private void addBanUsernameMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Ban Username");
     item.addActionListener(e -> {
-      final String name1 = JOptionPane.showInputDialog(null,
+      final String name = JOptionPane.showInputDialog(null,
           "Enter the username that you want to ban from the lobby.\r\n\r\n"
               + "Note that this ban is effective on any username, registered or anonymous, online or offline.",
           "");
-      if (name1 == null || name1.length() < 1) {
+      if (name == null || name.length() < 1) {
         return;
       }
-      if (!DBUser.isValidUserName(name1)) {
+      if (!DBUser.isValidUserName(name)) {
         JOptionPane.showMessageDialog(lobbyFrame, "The username you entered is invalid.", "Invalid Username",
             JOptionPane.ERROR_MESSAGE);
         return;
       }
-      promptBanDuration().ifPresent(duration -> {
-        final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0), getExpirationDate(duration));
-        } catch (final UnknownHostException ex) {
-          ClientLogger.logQuietly(ex);
-        }
-      });
+      TimespanDialog.prompt(lobbyFrame, "Select Timespan",
+          "Please consult other admins before banning longer than 1 day.", date -> {
+            final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
+                .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+            try {
+              controller.banUsername(new Node(name, InetAddress.getByName("0.0.0.0"), 0), date);
+            } catch (final UnknownHostException ex) {
+              ClientLogger.logQuietly(ex);
+            }
+          });
     });
     item.setEnabled(true);
     parentMenu.add(item);
@@ -204,16 +197,17 @@ public class LobbyMenu extends JMenuBar {
             "Invalid Hashed Mac", JOptionPane.ERROR_MESSAGE);
         return;
       }
-      promptBanDuration().ifPresent(duration -> {
-        final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        try {
-          controller.banMac(new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac,
-              getExpirationDate(duration));
-        } catch (final UnknownHostException ex) {
-          ClientLogger.logQuietly(ex);
-        }
-      });
+      TimespanDialog.prompt(lobbyFrame, "Select Timespan",
+          "Please consult other admins before banning longer than 1 day.", date -> {
+            final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
+                .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+            try {
+              controller.banMac(
+                  new Node("None (Admin menu originated ban)", InetAddress.getByName("0.0.0.0"), 0), mac, date);
+            } catch (final UnknownHostException ex) {
+              ClientLogger.logQuietly(ex);
+            }
+          });
     });
     item.setEnabled(true);
     parentMenu.add(item);
@@ -222,12 +216,12 @@ public class LobbyMenu extends JMenuBar {
   private void addUnbanUsernameMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Unban Username");
     item.addActionListener(e -> {
-      final String name1 =
+      final String name =
           JOptionPane.showInputDialog(null, "Enter the username that you want to unban from the lobby.", "");
-      if (name1 == null || name1.length() < 1) {
+      if (name == null || name.length() < 1) {
         return;
       }
-      if (!DBUser.isValidUserName(name1)) {
+      if (!DBUser.isValidUserName(name)) {
         JOptionPane.showMessageDialog(lobbyFrame, "The username you entered is invalid.", "Invalid Username",
             JOptionPane.ERROR_MESSAGE);
         return;
@@ -235,8 +229,7 @@ public class LobbyMenu extends JMenuBar {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
       try {
-        controller.banUsername(new Node(name1, InetAddress.getByName("0.0.0.0"), 0),
-            Date.from(Instant.EPOCH));
+        controller.banUsername(new Node(name, InetAddress.getByName("0.0.0.0"), 0), Date.from(Instant.EPOCH));
       } catch (final UnknownHostException ex) {
         ClientLogger.logQuietly(ex);
       }
@@ -248,10 +241,9 @@ public class LobbyMenu extends JMenuBar {
   private void addUnbanMacAddressMenu(final JMenu parentMenu) {
     final JMenuItem item = new JMenuItem("Unban Hashed Mac Address");
     item.addActionListener(e -> {
-      final String mac = JOptionPane.showInputDialog(null,
-          "Enter the hashed Mac Address that you want to unban from the lobby.\r\n\r\n"
-              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3",
-          "");
+      final String mac =
+          JOptionPane.showInputDialog(null, "Enter the hashed Mac Address that you want to unban from the lobby.\n\n"
+              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3", "");
       if (mac == null || mac.length() < 1) {
         return;
       }
@@ -282,54 +274,6 @@ public class LobbyMenu extends JMenuBar {
     });
     item.setEnabled(true);
     parentMenu.add(item);
-  }
-
-  private Optional<TemporalAmount> promptBanDuration() {
-    final List<String> timeUnits = new ArrayList<>();
-    timeUnits.add("Minute");
-    timeUnits.add("Hour");
-    timeUnits.add("Day");
-    timeUnits.add("Week");
-    timeUnits.add("Month");
-    timeUnits.add("Year");
-    timeUnits.add("Forever");
-    final int result =
-        JOptionPane.showOptionDialog(lobbyFrame, "Select the unit of measurement: ", "Select Timespan Unit",
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, timeUnits.toArray(),
-            timeUnits.toArray()[3]);
-    if (result < 0) {
-      return Optional.empty();
-    }
-    final String selectedTimeUnit = (String) timeUnits.toArray()[result];
-    if (selectedTimeUnit.equals("Forever")) {
-      return Optional.of(ChronoUnit.FOREVER.getDuration());
-    }
-    final String stringr = JOptionPane.showInputDialog(lobbyFrame,
-        "Now please enter the length of time: (In " + selectedTimeUnit + "s) ", 1);
-    if (stringr == null) {
-      return Optional.empty();
-    }
-    final long result2 = Long.parseLong(stringr);
-    if (result2 < 0) {
-      return Optional.empty();
-    }
-
-    switch (selectedTimeUnit) {
-      case "Minute":
-        return Optional.of(Duration.ofMinutes(result2));
-      case "Hour":
-        return Optional.of(Duration.ofHours(result2));
-      case "Day":
-        return Optional.of(Duration.ofDays(result2));
-      case "Week":
-        return Optional.of(Period.ofWeeks((int) result2));
-      case "Month":
-        return Optional.of(Period.ofMonths((int) result2));
-      case "Year":
-        return Optional.of(Period.ofYears((int) result2));
-      default:
-        throw new AssertionError("Invalid time unit: " + selectedTimeUnit);
-    }
   }
 
   private void createSettingsMenu(final LobbyMenu menuBar) {
@@ -422,11 +366,5 @@ public class LobbyMenu extends JMenuBar {
       final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> lobbyFrame.shutdown()));
       parentMenu.add(menuFileExit);
     }
-  }
-
-  private static Date getExpirationDate(final TemporalAmount amount) {
-    return !amount.equals(ChronoUnit.FOREVER.getDuration())
-        ? Date.from(LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC).plus(amount).toInstant(ZoneOffset.UTC))
-        : null;
   }
 }
