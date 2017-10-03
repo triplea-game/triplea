@@ -20,7 +20,7 @@ import java.util.Random;
  * <br>
  *
  * @deprecated Use SHA512(fast) or BCrypt(secure) in the future instead
- * (kept for backwards compatibility)
+ *             (kept for backwards compatibility)
  */
 @Deprecated // MD5 is not secure, use BCrypt or SHA512 (fast instead
 public class MD5Crypt {
