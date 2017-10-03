@@ -237,11 +237,13 @@ public class HistoryLog extends JFrame {
               moving = true;
             }
           } else if (details instanceof Collection) {
+            @SuppressWarnings("unchecked")
             final Collection<Object> objects = (Collection<Object>) details;
             final Iterator<Object> objIter = objects.iterator();
             if (objIter.hasNext()) {
               final Object obj = objIter.next();
               if (obj instanceof Unit) {
+                @SuppressWarnings("unchecked")
                 final Collection<Unit> allUnitsInDetails = (Collection<Unit>) details;
                 // purchase/place units - don't need details
                 Unit unit = (Unit) obj;
