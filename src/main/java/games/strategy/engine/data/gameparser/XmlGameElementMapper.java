@@ -182,7 +182,8 @@ public class XmlGameElementMapper {
         + " functionality provided by this " + typeLabel + " will not available.");
   }
 
-  public Optional<IAttachment> getAttachment(final String javaClass, final String name, final Attachable attachable, final GameData data) {
+  public Optional<IAttachment> getAttachment(final String javaClass, final String name, final Attachable attachable,
+      final GameData data) {
     if (!attachmentMap.containsKey(javaClass)) {
       handleMissingObjectError("attachment", javaClass);
       return Optional.empty();

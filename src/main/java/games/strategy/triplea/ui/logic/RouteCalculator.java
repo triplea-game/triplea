@@ -13,7 +13,8 @@ public class RouteCalculator {
   private final int mapWidth;
   private final int mapHeight;
 
-  public RouteCalculator(final boolean isInfiniteX, final boolean isInfiniteY, final int mapWidth, final int mapHeight) {
+  public RouteCalculator(final boolean isInfiniteX, final boolean isInfiniteY, final int mapWidth,
+      final int mapHeight) {
     this.isInfiniteX = isInfiniteX;
     this.isInfiniteY = isInfiniteY;
     this.mapWidth = mapWidth;

@@ -26,7 +26,8 @@ public class BonusIncomeUtils {
       if (resource.getName().equals(Constants.PUS)) {
         puIncomeBonus = Properties.getPuIncomeBonus(player, bridge.getData());
       }
-      final int bonusIncome = (int) Math.round(((double) amount * (double) (incomePercent - 100) / 100)) + puIncomeBonus;
+      final int bonusIncome =
+          (int) Math.round(((double) amount * (double) (incomePercent - 100) / 100)) + puIncomeBonus;
       if (bonusIncome == 0) {
         continue;
       }
