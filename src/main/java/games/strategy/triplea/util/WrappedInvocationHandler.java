@@ -30,6 +30,8 @@ public class WrappedInvocationHandler implements InvocationHandler {
       return true;
     } else if (method.getName().equals("hashCode") && args == null) {
       return true;
+    } else if (method.getName().equals("toString") && args == null) {
+      return true;
     }
     return false;
   }
@@ -39,6 +41,8 @@ public class WrappedInvocationHandler implements InvocationHandler {
       return wrappedEquals(args[0]);
     } else if (method.getName().equals("hashCode") && args == null) {
       return wrappedashCode();
+    } else if (method.getName().equals("toString") && args == null) {
+      return delegate.toString();
     } else {
       throw new IllegalStateException("how did we get here");
     }

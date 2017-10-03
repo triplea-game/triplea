@@ -1,24 +1,58 @@
 package games.strategy.triplea.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 import org.junit.Test;
 
 import games.strategy.test.TestUtil;
 
-public class WrappedInvocationHandlerTest {
+public final class WrappedInvocationHandlerTest {
+  private Object newProxy(final InvocationHandler handler) {
+    return Proxy.newProxyInstance(getClass().getClassLoader(), TestUtil.getClassArrayFrom(), handler);
+  }
 
   @Test
-  public void testEquals() {
-    final String s1 = "test";
-    final WrappedInvocationHandler handler = new WrappedInvocationHandler(s1);
-    final Object o1 = Proxy.newProxyInstance(getClass().getClassLoader(), TestUtil.getClassArrayFrom(), handler);
-    assertEquals(o1.hashCode(), s1.hashCode());
-    final String s2 = "test";
-    final WrappedInvocationHandler handler2 = new WrappedInvocationHandler(s2);
-    final Object o2 = Proxy.newProxyInstance(getClass().getClassLoader(), TestUtil.getClassArrayFrom(), handler2);
-    assertEquals(o1, o2);
+  public void equals_ShouldReturnTrueWhenOtherInstanceIsWrappedInvocationHandlerProxyWithEqualDelegate() {
+    final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
+    final Object proxy2 = newProxy(new WrappedInvocationHandler("test"));
+
+    assertTrue(proxy1.equals(proxy2));
+  }
+
+  @Test
+  public void equals_ShouldReturnFalseWhenOtherInstanceIsWrappedInvocationHandlerProxyWithUnequalDelegate() {
+    final Object proxy1 = newProxy(new WrappedInvocationHandler("test1"));
+    final Object proxy2 = newProxy(new WrappedInvocationHandler("test2"));
+
+    assertFalse(proxy1.equals(proxy2));
+  }
+
+  @Test
+  public void equals_ShouldReturnFalseWhenOtherInstanceIsProxyWithoutWrappedInvocationHandler() {
+    final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
+    final Object proxy2 = newProxy((proxy, method, args) -> null);
+
+    assertFalse(proxy1.equals(proxy2));
+  }
+
+  @Test
+  public void hashCode_ShouldReturnHashCodeOfDelegate() {
+    final Object delegate = "test";
+    final Object proxy = newProxy(new WrappedInvocationHandler(delegate));
+
+    assertEquals(delegate.hashCode(), proxy.hashCode());
+  }
+
+  @Test
+  public void toString_ShouldReturnToStringOfDelegate() {
+    final Object delegate = "test";
+    final Object proxy = newProxy(new WrappedInvocationHandler(delegate));
+
+    assertEquals(delegate.toString(), proxy.toString());
   }
 }
