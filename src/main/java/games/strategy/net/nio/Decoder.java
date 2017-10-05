@@ -1,6 +1,5 @@
 package games.strategy.net.nio;
 
-import java.io.ByteArrayInputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,6 +14,7 @@ import games.strategy.engine.message.HubInvocationResults;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.SpokeInvocationResults;
 import games.strategy.engine.message.SpokeInvoke;
+import games.strategy.io.IoUtils;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.INode;
 import games.strategy.net.IObjectStreamFactory;
@@ -70,9 +70,14 @@ class Decoder {
         if (logger.isLoggable(Level.FINEST)) {
           logger.finest("Decoding packet:" + data);
         }
-        final ByteArrayInputStream stream = new ByteArrayInputStream(data.getData());
         try {
-          final MessageHeader header = readMessageHeader(data.getChannel(), objectStreamFactory.create(stream));
+          final MessageHeader header = IoUtils.readFromMemory(data.getData(), is -> {
+            try {
+              return readMessageHeader(data.getChannel(), objectStreamFactory.create(is));
+            } catch (final ClassNotFoundException e) {
+              throw new IOException(e);
+            }
+          });
           if (logger.isLoggable(Level.FINEST)) {
             logger.log(Level.FINEST, "header decoded:" + header);
           }

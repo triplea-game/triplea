@@ -2,8 +2,6 @@ package games.strategy.engine.framework.startup.mc;
 
 import java.awt.Component;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +49,7 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import games.strategy.io.IoUtils;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
@@ -331,9 +330,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
      */
     @Override
     public byte[] getSaveGame() {
-      try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000)) {
-        GameDataManager.saveGame(sink, data);
-        return sink.toByteArray();
+      try {
+        return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
       } catch (final IOException e) {
         ClientLogger.logQuietly(e);
         throw new IllegalStateException(e);
@@ -348,9 +346,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       final List<IEditableProperty> currentEditableProperties = data.getProperties().getEditableProperties();
 
-      try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000)) {
-        GameProperties.toOutputStream(sink, currentEditableProperties);
-        return sink.toByteArray();
+      try {
+        return GameProperties.writeEditableProperties(currentEditableProperties);
       } catch (final IOException e) {
         ClientLogger.logQuietly(e);
       }
@@ -396,9 +393,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (headless == null || bytes == null) {
         return;
       }
-      try (ByteArrayInputStream input = new ByteArrayInputStream(bytes);
-          InputStream oinput = new BufferedInputStream(input)) {
-        headless.loadGameSave(oinput, fileName);
+      try {
+        IoUtils.consumeFromMemory(bytes, is -> {
+          try (InputStream oinput = new BufferedInputStream(is)) {
+            headless.loadGameSave(oinput, fileName);
+          }
+        });
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);
       }

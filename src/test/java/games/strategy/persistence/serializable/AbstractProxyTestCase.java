@@ -9,9 +9,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
@@ -20,6 +18,7 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 
+import games.strategy.io.IoUtils;
 import games.strategy.test.EqualityComparator;
 import games.strategy.test.EqualityComparatorRegistry;
 
@@ -106,17 +105,22 @@ public abstract class AbstractProxyTestCase<T> {
    */
   protected void prepareDeserializedPrincipal(final T actual) {}
 
-  private static Object readObject(final ByteArrayOutputStream baos) throws Exception {
-    try (final InputStream is = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream ois = new ObjectInputStream(is)) {
-      return ois.readObject();
-    }
+  private static Object readObject(final byte[] bytes) throws Exception {
+    return IoUtils.readFromMemory(bytes, is -> {
+      try (final ObjectInputStream ois = new ObjectInputStream(is)) {
+        return ois.readObject();
+      } catch (final ClassNotFoundException e) {
+        throw new IOException(e);
+      }
+    });
   }
 
-  private void writeObject(final ByteArrayOutputStream baos, final T obj) throws Exception {
-    try (final ObjectOutputStream oos = new ProxyableObjectOutputStream(baos, proxyRegistry)) {
-      oos.writeObject(obj);
-    }
+  private byte[] writeObject(final T obj) throws Exception {
+    return IoUtils.writeToMemory(os -> {
+      try (final ObjectOutputStream oos = new ProxyableObjectOutputStream(os, proxyRegistry)) {
+        oos.writeObject(obj);
+      }
+    });
   }
 
   /**
@@ -134,10 +138,9 @@ public abstract class AbstractProxyTestCase<T> {
     assertThat(principals, is(not(empty())));
     for (final T expected : principals) {
       assertThat(expected, is(not(nullValue())));
-      final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-      writeObject(baos, expected);
-      final Object untypedActual = readObject(baos);
+      final byte[] bytes = writeObject(expected);
+      final Object untypedActual = readObject(bytes);
 
       assertThat(untypedActual, is(not(nullValue())));
       assertThat(untypedActual, is(instanceOf(principalType)));

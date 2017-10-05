@@ -1,7 +1,6 @@
 package games.strategy.triplea.ai.proAI.logging;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -10,6 +9,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.io.IoUtils;
 import games.strategy.triplea.ai.proAI.ProAI;
 
 /**
@@ -30,7 +30,13 @@ public class ProLogSettings implements Serializable {
       try {
         final byte[] pool = Preferences.userNodeForPackage(ProAI.class).getByteArray(PROGRAM_SETTINGS, null);
         if (pool != null) {
-          result = (ProLogSettings) new ObjectInputStream(new ByteArrayInputStream(pool)).readObject();
+          result = IoUtils.readFromMemory(pool, is -> {
+            try (final ObjectInputStream ois = new ObjectInputStream(is)) {
+              return (ProLogSettings) ois.readObject();
+            } catch (final ClassNotFoundException e) {
+              throw new IOException(e);
+            }
+          });
         }
       } catch (final Exception ex) {
         ClientLogger.logQuietly(ex);
@@ -47,12 +53,14 @@ public class ProLogSettings implements Serializable {
 
   static void saveSettings(final ProLogSettings settings) {
     lastSettings = settings;
-    try (final ByteArrayOutputStream pool = new ByteArrayOutputStream(10000);
-        ObjectOutputStream outputStream = new ObjectOutputStream(pool)) {
-
-      outputStream.writeObject(settings);
+    try {
+      final byte[] bytes = IoUtils.writeToMemory(os -> {
+        try (final ObjectOutputStream outputStream = new ObjectOutputStream(os)) {
+          outputStream.writeObject(settings);
+        }
+      });
       final Preferences prefs = Preferences.userNodeForPackage(ProAI.class);
-      prefs.putByteArray(PROGRAM_SETTINGS, pool.toByteArray());
+      prefs.putByteArray(PROGRAM_SETTINGS, bytes);
       try {
         prefs.flush();
       } catch (final BackingStoreException ex) {

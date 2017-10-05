@@ -3,11 +3,12 @@ package games.strategy.engine.framework.map.download;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import games.strategy.io.IoUtils;
 
 public class DownloadFileParserTest {
 
@@ -15,9 +16,8 @@ public class DownloadFileParserTest {
 
 
   @Test
-  public void testParseMap() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestData());
-    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
+  public void testParseMap() throws Exception {
+    final List<DownloadFileDescription> games = parse(buildTestData());
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(0);
     assertThat(desc.getUrl(), is("http://example.com/games/game.zip"));
@@ -31,9 +31,8 @@ public class DownloadFileParserTest {
   }
 
   @Test
-  public void testParseModSkin() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestData());
-    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
+  public void testParseModSkin() throws Exception {
+    final List<DownloadFileDescription> games = parse(buildTestData());
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(2);
     assertThat(desc.isMap(), is(false));
@@ -42,9 +41,8 @@ public class DownloadFileParserTest {
   }
 
   @Test
-  public void testParseMapTool() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(buildTestData());
-    final List<DownloadFileDescription> games = DownloadFileParser.parse(inputStream);
+  public void testParseMapTool() throws Exception {
+    final List<DownloadFileDescription> games = parse(buildTestData());
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(3);
     assertThat(desc.isMap(), is(false));
@@ -52,6 +50,9 @@ public class DownloadFileParserTest {
     assertThat(desc.isMapTool(), is(true));
   }
 
+  private static List<DownloadFileDescription> parse(final byte[] bytes) throws Exception {
+    return IoUtils.readFromMemory(bytes, DownloadFileParser::parse);
+  }
 
   private static String createTypeTag(final DownloadFileParser.ValueType type) {
     return "  " + DownloadFileParser.Tags.mapType + ": " + type + "\n";
@@ -91,9 +92,8 @@ public class DownloadFileParserTest {
 
 
   @Test
-  public void testMapTypeDefaultsToMap() {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream(createSimpleGameXmlWithNoTypeTag());
-    final DownloadFileDescription download = DownloadFileParser.parse(inputStream).get(0);
+  public void testMapTypeDefaultsToMap() throws Exception {
+    final DownloadFileDescription download = parse(createSimpleGameXmlWithNoTypeTag()).get(0);
 
     assertThat(download.isMap(), is(true));
     assertThat(download.isMapSkin(), is(false));

@@ -8,9 +8,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,12 +16,14 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import games.strategy.io.IoUtils;
+
 /**
  * A fixture for testing the integration between the {@link ObjectInputStream} and {@link ProxyableObjectOutputStream}
  * classes.
  */
 public final class ProxyableObjectInputOutputStreamIntegrationTest {
-  private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+  private byte[] bytes;
 
   private Object readObject() throws Exception {
     return readObjects(1)[0];
@@ -31,12 +31,15 @@ public final class ProxyableObjectInputOutputStreamIntegrationTest {
 
   private Object[] readObjects(final int count) throws Exception {
     final Object[] objs = new Object[count];
-    try (final InputStream is = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream ois = new ObjectInputStream(is)) {
-      for (int i = 0; i < count; ++i) {
-        objs[i] = ois.readObject();
+    IoUtils.consumeFromMemory(bytes, is -> {
+      try (final ObjectInputStream ois = new ObjectInputStream(is)) {
+        for (int i = 0; i < count; ++i) {
+          objs[i] = ois.readObject();
+        }
+      } catch (final ClassNotFoundException e) {
+        throw new IOException(e);
       }
-    }
+    });
     return objs;
   }
 
@@ -45,11 +48,13 @@ public final class ProxyableObjectInputOutputStreamIntegrationTest {
   }
 
   private void writeObjects(final ProxyRegistry proxyRegistry, final Object... objs) throws Exception {
-    try (final ObjectOutputStream oos = new ProxyableObjectOutputStream(baos, proxyRegistry)) {
-      for (final Object obj : objs) {
-        oos.writeObject(obj);
+    bytes = IoUtils.writeToMemory(os -> {
+      try (final ObjectOutputStream oos = new ProxyableObjectOutputStream(os, proxyRegistry)) {
+        for (final Object obj : objs) {
+          oos.writeObject(obj);
+        }
       }
-    }
+    });
   }
 
   @Test

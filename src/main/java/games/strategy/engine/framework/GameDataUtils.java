@@ -1,13 +1,12 @@
 package games.strategy.engine.framework;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameObjectOutputStream;
+import games.strategy.io.IoUtils;
 
 /**
  * A collection of useful methods for working with instances of {@link GameData}.
@@ -25,10 +24,8 @@ public final class GameDataUtils {
    */
   public static GameData cloneGameData(final GameData data, final boolean copyDelegates) {
     try {
-      final ByteArrayOutputStream sink = new ByteArrayOutputStream(10_000);
-      GameDataManager.saveGame(sink, data, copyDelegates);
-      final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
-      return GameDataManager.loadGame(source);
+      final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, copyDelegates));
+      return IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
     } catch (final IOException e) {
       ClientLogger.logQuietly(e);
       return null;
@@ -42,18 +39,19 @@ public final class GameDataUtils {
   @SuppressWarnings("unchecked")
   public static <T> T translateIntoOtherGameData(final T object, final GameData translateInto) {
     try {
-      final ByteArrayOutputStream sink = new ByteArrayOutputStream(1024);
-      try (final GameObjectOutputStream out = new GameObjectOutputStream(sink)) {
-        out.writeObject(object);
-      }
-
-      final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);
-      try (final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
-          final ObjectInputStream in = factory.create(source)) {
-        return (T) in.readObject();
-      } catch (final ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      }
+      final byte[] bytes = IoUtils.writeToMemory(os -> {
+        try (final GameObjectOutputStream out = new GameObjectOutputStream(os)) {
+          out.writeObject(object);
+        }
+      });
+      return IoUtils.readFromMemory(bytes, is -> {
+        final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);
+        try (final ObjectInputStream in = factory.create(is)) {
+          return (T) in.readObject();
+        } catch (final ClassNotFoundException e) {
+          throw new IOException(e);
+        }
+      });
     } catch (final IOException e) {
       throw new RuntimeException(e);
     }

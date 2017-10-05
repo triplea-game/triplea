@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.mc;
 
 import java.awt.Component;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +47,7 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import games.strategy.io.IoUtils;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IClientMessenger;
@@ -299,7 +299,7 @@ public class ClientModel implements IMessengerErrorListener {
     try {
       // this normally takes a couple seconds, but can take
       // up to 60 seconds for a freaking huge game
-      data = GameDataManager.loadGame(new ByteArrayInputStream(gameData));
+      data = IoUtils.readFromMemory(gameData, GameDataManager::loadGame);
     } catch (final IOException ex) {
       ClientLogger.logQuietly(ex);
       return;

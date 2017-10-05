@@ -1,6 +1,5 @@
 package games.strategy.net.nio;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -8,6 +7,7 @@ import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import games.strategy.io.IoUtils;
 import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
@@ -38,9 +38,8 @@ class Encoder {
       throw new IllegalArgumentException("No to channel!");
     }
     try {
-      final ByteArrayOutputStream sink = new ByteArrayOutputStream(512);
-      write(header, objectStreamFactory.create(sink), to);
-      final SocketWriteData data = new SocketWriteData(sink.toByteArray(), sink.size());
+      final byte[] bytes = IoUtils.writeToMemory(os -> write(header, objectStreamFactory.create(os), to));
+      final SocketWriteData data = new SocketWriteData(bytes, bytes.length);
       if (logger.isLoggable(Level.FINER)) {
         logger.log(Level.FINER, "encoded  msg:" + header.getMessage() + " size:" + data.size());
       }

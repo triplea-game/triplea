@@ -1,6 +1,5 @@
 package games.strategy.engine.framework;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,6 +45,7 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.RandomStats;
+import games.strategy.io.IoUtils;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
@@ -148,14 +148,12 @@ public class ServerGame extends AbstractGame {
     setupDelegateMessaging(data);
     randomStats = new RandomStats(m_remoteMessenger);
     final IServerRemote serverRemote = () -> {
-      final ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
       try {
-        saveGame(sink);
+        return IoUtils.writeToMemory(this::saveGame);
       } catch (final IOException e) {
         ClientLogger.logQuietly(e);
         throw new IllegalStateException(e);
       }
-      return sink.toByteArray();
     };
     m_remoteMessenger.registerRemote(serverRemote, SERVER_REMOTE);
   }
@@ -173,11 +171,10 @@ public class ServerGame extends AbstractGame {
     }
     try {
       final CountDownLatch waitOnObserver = new CountDownLatch(1);
-      final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
-      saveGame(sink);
+      final byte[] bytes = IoUtils.writeToMemory(this::saveGame);
       new Thread(() -> {
         try {
-          blockingObserver.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
+          blockingObserver.joinGame(bytes, m_playerManager.getPlayerMapping());
           waitOnObserver.countDown();
         } catch (final ConnectionLostException cle) {
           System.out.println("Connection lost to observer while joining: " + newNode.getName());
