@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.launcher;
 
 import java.awt.Component;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -41,6 +40,7 @@ import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.random.CryptoRandomSource;
+import games.strategy.io.IoUtils;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
@@ -312,9 +312,7 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   private static byte[] gameDataToBytes(final GameData data) throws IOException {
-    final ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
-    GameDataManager.saveGame(sink, data);
-    return sink.toByteArray();
+    return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
   }
 
   public void connectionLost(final INode node) {

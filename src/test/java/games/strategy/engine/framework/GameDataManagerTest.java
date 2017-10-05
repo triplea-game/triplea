@@ -10,7 +10,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,15 +19,15 @@ import org.junit.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TestGameDataFactory;
+import games.strategy.io.IoUtils;
 import games.strategy.persistence.serializable.ProxyRegistry;
 
 public class GameDataManagerTest {
   @Test
   public void testLoadStoreKeepsGameUuid() throws IOException {
     final GameData data = new GameData();
-    final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-    GameDataManager.saveGame(sink, data);
-    final GameData loaded = GameDataManager.loadGame(new ByteArrayInputStream(sink.toByteArray()));
+    final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
+    final GameData loaded = IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
     assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
   }
 
@@ -43,10 +42,11 @@ public class GameDataManagerTest {
   }
 
   private static byte[] saveGameInProxySerializationFormat(final GameData gameData) throws Exception {
-    try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-      GameDataManager.saveGameInProxySerializationFormat(baos, gameData, Collections.emptyMap(), newProxyRegistry());
-      return baos.toByteArray();
-    }
+    return IoUtils.writeToMemory(os -> GameDataManager.saveGameInProxySerializationFormat(
+        os,
+        gameData,
+        Collections.emptyMap(),
+        newProxyRegistry()));
   }
 
   private static ProxyRegistry newProxyRegistry() {
@@ -54,9 +54,7 @@ public class GameDataManagerTest {
   }
 
   private static GameData loadGameInProxySerializationFormat(final byte[] bytes) throws Exception {
-    try (final ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-      return GameDataManager.loadGameInProxySerializationFormat(bais);
-    }
+    return IoUtils.readFromMemory(bytes, GameDataManager::loadGameInProxySerializationFormat);
   }
 
   @Test

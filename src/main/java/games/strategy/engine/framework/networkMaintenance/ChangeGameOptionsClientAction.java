@@ -2,7 +2,6 @@ package games.strategy.engine.framework.networkMaintenance;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       return;
     }
     try {
-      final List<IEditableProperty> properties = GameProperties.streamToIEditablePropertiesList(oldBytes);
+      final List<IEditableProperty> properties = GameProperties.readEditableProperties(oldBytes);
       final PropertiesUI pui = new PropertiesUI(properties, true);
       final JScrollPane scroll = new JScrollPane(pui);
       scroll.setBorder(null);
@@ -50,18 +49,13 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       if (buttonPressed != null && !buttonPressed.equals(cancel)) {
         // ok was clicked. changing them in the ui changes the underlying properties,
         // but it doesn't change the hosts, so we need to send it back to the host.
-        byte[] newBytes = null;
-        try (final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000)) {
-          GameProperties.toOutputStream(sink, properties);
-          newBytes = sink.toByteArray();
+        try {
+          m_serverRemote.changeToGameOptions(GameProperties.writeEditableProperties(properties));
         } catch (final IOException ex) {
           ClientLogger.logQuietly(ex);
         }
-        if (newBytes != null) {
-          m_serverRemote.changeToGameOptions(newBytes);
-        }
       }
-    } catch (final ClassNotFoundException | IOException | ClassCastException ex) {
+    } catch (final IOException | ClassCastException ex) {
       ClientLogger.logQuietly(ex);
     }
   }

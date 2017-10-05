@@ -3,7 +3,6 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,6 +30,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataMemento;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.io.IoUtils;
 import games.strategy.persistence.serializable.ProxyRegistry;
 import games.strategy.persistence.serializable.ProxyableObjectOutputStream;
 import games.strategy.triplea.UrlConstants;
@@ -261,23 +261,26 @@ public final class GameDataManager {
       final boolean saveDelegateInfo)
       throws IOException {
     // write internally first in case of error
-    final ByteArrayOutputStream bytes = new ByteArrayOutputStream(25000);
-    final ObjectOutputStream outStream = new ObjectOutputStream(bytes);
-    outStream.writeObject(ClientContext.engineVersion());
-    data.acquireReadLock();
-    try {
-      outStream.writeObject(data);
-      if (saveDelegateInfo) {
-        writeDelegates(data, outStream);
-      } else {
-        outStream.writeObject(DELEGATE_LIST_END);
+    final byte[] bytes = IoUtils.writeToMemory(os -> {
+      try (final ObjectOutputStream outStream = new ObjectOutputStream(os)) {
+        outStream.writeObject(ClientContext.engineVersion());
+        data.acquireReadLock();
+        try {
+          outStream.writeObject(data);
+          if (saveDelegateInfo) {
+            writeDelegates(data, outStream);
+          } else {
+            outStream.writeObject(DELEGATE_LIST_END);
+          }
+        } finally {
+          data.releaseReadLock();
+        }
       }
-    } finally {
-      data.releaseReadLock();
-    }
+    });
+
+    // now write to file
     try (final GZIPOutputStream zippedOut = new GZIPOutputStream(sink)) {
-      // now write to file
-      zippedOut.write(bytes.toByteArray());
+      zippedOut.write(bytes);
     }
   }
 

@@ -4,9 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -18,6 +16,7 @@ import org.junit.Test;
 
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.framework.GameObjectStreamFactory;
+import games.strategy.io.IoUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 
@@ -30,15 +29,18 @@ public class ChangeTest {
   }
 
   private Change serialize(final Change change) throws Exception {
-    final ByteArrayOutputStream sink = new ByteArrayOutputStream();
-    try (final ObjectOutputStream output = new GameObjectOutputStream(sink)) {
-      output.writeObject(change);
-    }
-    final InputStream source = new ByteArrayInputStream(sink.toByteArray());
-    try (final ObjectInputStream input =
-        new GameObjectInputStream(new GameObjectStreamFactory(gameData), source)) {
-      return (Change) input.readObject();
-    }
+    final byte[] bytes = IoUtils.writeToMemory(os -> {
+      try (final ObjectOutputStream output = new GameObjectOutputStream(os)) {
+        output.writeObject(change);
+      }
+    });
+    return IoUtils.readFromMemory(bytes, is -> {
+      try (final ObjectInputStream input = new GameObjectInputStream(new GameObjectStreamFactory(gameData), is)) {
+        return (Change) input.readObject();
+      } catch (final ClassNotFoundException e) {
+        throw new IOException(e);
+      }
+    });
   }
 
   @Test

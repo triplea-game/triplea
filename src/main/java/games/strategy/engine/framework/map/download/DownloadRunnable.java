@@ -2,7 +2,6 @@ package games.strategy.engine.framework.map.download;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +10,7 @@ import java.util.List;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.io.IoUtils;
 
 /**
  * Downloads a map index file, parses it and returns a <code>List</code> of <code>DownloadFileDescription</code>.
@@ -47,7 +47,7 @@ public class DownloadRunnable {
       tempFile.deleteOnExit();
       DownloadUtils.downloadToFile(urlString, tempFile);
       final byte[] contents = Files.readAllBytes(tempFile.toPath());
-      return DownloadFileParser.parse(new ByteArrayInputStream(contents));
+      return IoUtils.readFromMemory(contents, DownloadFileParser::parse);
     } catch (final IOException e) {
       ClientLogger.logError("Error - will show an empty list of downloads. Failed to get files from: " + urlString, e);
       return new ArrayList<>();
@@ -58,7 +58,7 @@ public class DownloadRunnable {
     final File targetFile = new File(urlString);
     try {
       final byte[] contents = Files.readAllBytes(targetFile.toPath());
-      final List<DownloadFileDescription> downloads = DownloadFileParser.parse(new ByteArrayInputStream(contents));
+      final List<DownloadFileDescription> downloads = IoUtils.readFromMemory(contents, DownloadFileParser::parse);
       checkNotNull(downloads);
       return downloads;
     } catch (final IOException e) {

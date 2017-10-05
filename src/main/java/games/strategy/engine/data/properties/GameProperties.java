@@ -1,13 +1,10 @@
 package games.strategy.engine.data.properties;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,6 +16,7 @@ import java.util.zip.GZIPOutputStream;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
+import games.strategy.io.IoUtils;
 
 /**
  * Properties of the current game. <br>
@@ -154,41 +152,54 @@ public class GameProperties extends GameDataComponent {
     return playerProperties.get(name);
   }
 
-  public static void toOutputStream(final OutputStream sink, final List<IEditableProperty> editableProperties)
-      throws IOException {
-    // write internally first in case of error
-    try (ByteArrayOutputStream bos = new ByteArrayOutputStream(5000);
-        ObjectOutputStream outStream = new ObjectOutputStream(bos);
-        GZIPOutputStream zippedOut = new GZIPOutputStream(sink)) {
-
-      outStream.writeObject(editableProperties);
-      zippedOut.write(bos.toByteArray());
-      zippedOut.flush();
-    }
+  /**
+   * Writes the specified list of editable properties to a byte array.
+   *
+   * @param editableProperties The list of editable properties to write.
+   *
+   * @return A byte array containing the list of editable properties.
+   *
+   * @throws IOException If an I/O error occurs while writing the list of editable properties.
+   */
+  public static byte[] writeEditableProperties(final List<IEditableProperty> editableProperties) throws IOException {
+    return IoUtils.writeToMemory(os -> {
+      try (final GZIPOutputStream gzipos = new GZIPOutputStream(os);
+          final ObjectOutputStream oos = new ObjectOutputStream(gzipos)) {
+        oos.writeObject(editableProperties);
+      }
+    });
   }
 
+  /**
+   * Reads a list of editable properties from the specified byte array.
+   *
+   * @param bytes The byte array containing the list of editable properties.
+   *
+   * @return The list of editable properties read from the specified byte array.
+   *
+   * @throws IOException If an I/O error occurs while reading the list of editable properties.
+   * @throws ClassCastException If {@code byteArray} contains an object other than a list of editable properties.
+   */
   @SuppressWarnings("unchecked")
-  public static List<IEditableProperty> streamToIEditablePropertiesList(final byte[] byteArray)
-      throws IOException, ClassNotFoundException, ClassCastException {
-    final List<IEditableProperty> editableProperties;
-
-    try (ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
-        InputStream inputStream = new BufferedInputStream(byteStream);
-        GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
-        ObjectInputStream objectStream = new ObjectInputStream(gzipInputStream)) {
-
-      editableProperties = (List<IEditableProperty>) objectStream.readObject();
-    }
-
-    return editableProperties;
+  public static List<IEditableProperty> readEditableProperties(final byte[] bytes)
+      throws IOException, ClassCastException {
+    return IoUtils.readFromMemory(bytes, is -> {
+      try (final InputStream bis = new BufferedInputStream(is);
+          final GZIPInputStream gzipis = new GZIPInputStream(bis);
+          final ObjectInputStream ois = new ObjectInputStream(gzipis)) {
+        return (List<IEditableProperty>) ois.readObject();
+      } catch (final ClassNotFoundException e) {
+        throw new IOException(e);
+      }
+    });
   }
 
   public static void applyByteMapToChangeProperties(final byte[] byteArray,
       final GameProperties gamePropertiesToBeChanged) {
     List<IEditableProperty> editableProperties = null;
     try {
-      editableProperties = streamToIEditablePropertiesList(byteArray);
-    } catch (final ClassNotFoundException | ClassCastException | IOException e) {
+      editableProperties = readEditableProperties(byteArray);
+    } catch (final ClassCastException | IOException e) {
       ClientLogger.logError(
           "An Error occured whilst trying to apply a Byte Map to Property. Bytes: " + Arrays.toString(byteArray), e);
     }

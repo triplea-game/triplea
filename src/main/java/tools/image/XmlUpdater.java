@@ -1,19 +1,22 @@
 package tools.image;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import games.strategy.io.IoUtils;
 
 public class XmlUpdater {
   private static File mapFolderLocation = null;
@@ -35,22 +38,24 @@ public class XmlUpdater {
     }
     final Transformer trans = TransformerFactory.newInstance().newTransformer(new StreamSource(source));
 
-    final ByteArrayOutputStream resultBuf;
-    try (
-        final FileInputStream fileInputStream = new FileInputStream(gameXmlFile);
-        final InputStream gameXmlStream = new BufferedInputStream(fileInputStream)) {
-      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      factory.setValidating(true);
-      // use a dummy game.dtd, this prevents the xml parser from adding default values
-      final URL url = XmlUpdater.class.getResource("");
-      final String system = url.toExternalForm();
-      final Source xmlSource = new StreamSource(gameXmlStream, system);
-      resultBuf = new ByteArrayOutputStream();
-      trans.transform(xmlSource, new StreamResult(resultBuf));
-    }
+    final byte[] resultBytes = IoUtils.writeToMemory(os -> {
+      try (
+          final FileInputStream fileInputStream = new FileInputStream(gameXmlFile);
+          final InputStream gameXmlStream = new BufferedInputStream(fileInputStream)) {
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(true);
+        // use a dummy game.dtd, this prevents the xml parser from adding default values
+        final URL url = XmlUpdater.class.getResource("");
+        final String system = url.toExternalForm();
+        final Source xmlSource = new StreamSource(gameXmlStream, system);
+        trans.transform(xmlSource, new StreamResult(os));
+      } catch (final TransformerException e) {
+        throw new IOException(e);
+      }
+    });
     gameXmlFile.renameTo(new File(gameXmlFile.getAbsolutePath() + ".backup"));
     try (final FileOutputStream outStream = new FileOutputStream(gameXmlFile)) {
-      outStream.write(resultBuf.toByteArray());
+      outStream.write(resultBytes);
     }
     System.out.println("Successfully updated:" + gameXmlFile);
   }
