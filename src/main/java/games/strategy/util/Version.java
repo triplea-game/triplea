@@ -3,6 +3,8 @@ package games.strategy.util;
 import java.io.Serializable;
 import java.util.StringTokenizer;
 
+import com.google.common.base.Joiner;
+
 /**
  * Represents a version string.
  * versions are of the form major.minor.point.micro
@@ -198,9 +200,7 @@ public class Version implements Serializable, Comparable<Object> {
    * Creates a complete version string, even if some version numbers are 0.
    */
   public String toStringFull() {
-    final String separator = ".";
-    return m_major + separator + m_minor + separator + m_point
-        + (separator + (m_micro == Integer.MAX_VALUE ? "dev" : m_micro));
+    return Joiner.on('.').join(m_major, m_minor, m_point, m_micro == Integer.MAX_VALUE ? "dev" : m_micro);
   }
 
   @Override
@@ -213,9 +213,6 @@ public class Version implements Serializable, Comparable<Object> {
    * Returns true if they are.
    */
   public boolean isCompatible(final Version otherVersion) {
-    if (otherVersion == null) {
-      return false;
-    }
-    return otherVersion.m_major == m_major && otherVersion.m_minor == m_minor;
+    return otherVersion != null && otherVersion.m_major == m_major && otherVersion.m_minor == m_minor;
   }
 }
