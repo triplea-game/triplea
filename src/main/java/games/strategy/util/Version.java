@@ -212,7 +212,7 @@ public class Version implements Serializable, Comparable<Object> {
    * Checks if The major and minor version numbers are equal.
    * Returns true if they are.
    */
-  public boolean isCompatible(final Version otherVersion) {
-    return otherVersion != null && otherVersion.m_major == m_major && otherVersion.m_minor == m_minor;
+  public boolean isCompatible(final Version other) {
+    return other != null && other.m_major == m_major && other.m_minor == m_minor && other.m_point == m_point;
   }
 }
