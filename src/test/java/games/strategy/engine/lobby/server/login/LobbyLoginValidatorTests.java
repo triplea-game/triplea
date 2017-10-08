@@ -34,6 +34,7 @@ import games.strategy.engine.lobby.server.db.BannedUsernameDao;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserDao;
 import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.security.TestSecurityUtils;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
 
@@ -68,12 +69,13 @@ public final class LobbyLoginValidatorTests {
     private final String md5CryptSalt = MD5Crypt.newSalt();
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
       lobbyLoginValidator = new LobbyLoginValidator(
           badWordDao,
           bannedMacDao,
           bannedUsernameDao,
           userDao,
+          new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair()),
           () -> bcryptSalt);
 
       givenNoMacIsBanned();
@@ -250,7 +252,7 @@ public final class LobbyLoginValidatorTests {
             .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
             .put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString())
             .put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString())
-            .putAll(RsaAuthenticator.getEncryptedPassword(challenge, PASSWORD))
+            .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
             .build();
       }
     }
@@ -353,7 +355,7 @@ public final class LobbyLoginValidatorTests {
         return challenge -> ImmutableMap.<String, String>builder()
             .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
             .put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString())
-            .putAll(RsaAuthenticator.getEncryptedPassword(challenge, PASSWORD))
+            .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
             .build();
       }
     }

@@ -89,7 +89,7 @@ public class LobbyLogin {
                 }
                 props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(panel.getPassword(), salt));
                 if (isUpdatedLobby) {
-                  props.putAll(RsaAuthenticator.getEncryptedPassword(challengeProperties, panel.getPassword()));
+                  props.putAll(RsaAuthenticator.newResponse(challengeProperties, panel.getPassword()));
                 }
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
@@ -160,7 +160,7 @@ public class LobbyLogin {
               // backwards-compatibility
               props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
               if (RsaAuthenticator.canProcessChallenge(challengeProperties)) {
-                props.putAll(RsaAuthenticator.getEncryptedPassword(challengeProperties, createAccount.getPassword()));
+                props.putAll(RsaAuthenticator.newResponse(challengeProperties, createAccount.getPassword()));
               }
               props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
               return props;

@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.server.login;
 
 import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -16,7 +15,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.junit.Test;
-
 import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.LobbyServer;
@@ -74,13 +72,13 @@ public class LobbyLoginValidatorIntegrationTest {
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
     assertNull(generateChallenge(name, null).apply(challenge -> {
-      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
+      response.putAll(RsaAuthenticator.newResponse(challenge, password));
       return response;
     }));
 
     // try to create a duplicate user, should not work
     assertNotNull(generateChallenge(name, null).apply(challenge -> {
-      response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, "wrong"));
+      response.putAll(RsaAuthenticator.newResponse(challenge, "wrong"));
       return response;
     }));
     assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new UserController().getPassword(name).value));
@@ -129,12 +127,12 @@ public class LobbyLoginValidatorIntegrationTest {
     assertNull(
         generateChallenge(user, new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())))
             .apply(challenge -> {
-              response.putAll(RsaAuthenticator.getEncryptedPassword(challenge, password));
+              response.putAll(RsaAuthenticator.newResponse(challenge, password));
               return response;
             }));
     // with a bad password
     assertError(generateChallenge(user, null)
-        .apply(challenge -> new HashMap<>(RsaAuthenticator.getEncryptedPassword(challenge, "wrong"))), "password");
+        .apply(challenge -> new HashMap<>(RsaAuthenticator.newResponse(challenge, "wrong"))), "password");
     // with a non existent user
     assertError(generateChallenge(null).apply(challenge -> response), "user");
   }

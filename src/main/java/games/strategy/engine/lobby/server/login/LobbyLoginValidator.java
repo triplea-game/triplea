@@ -2,12 +2,10 @@ package games.strategy.engine.lobby.server.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.security.PrivateKey;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -33,7 +31,16 @@ import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
-public class LobbyLoginValidator implements ILoginValidator {
+/**
+ * The server side of the lobby authentication protocol.
+ *
+ * <p>
+ * In the lobby authentication protocol, the server sends a challenge to the client based on the username of the client.
+ * Upon receiving the client's response, the server determines if the client has provided a valid password and gives
+ * them access to the lobby if authentication is successful.
+ * </p>
+ */
+public final class LobbyLoginValidator implements ILoginValidator {
   public static final String LOBBY_VERSION = "LOBBY_VERSION";
   public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
@@ -55,7 +62,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   private final BannedMacDao bannedMacDao;
   private final BannedUsernameDao bannedUsernameDao;
   private final BcryptSaltGenerator bcryptSaltGenerator;
-  private final RsaAuthenticator rsaAuthenticator = new RsaAuthenticator();
+  private final RsaAuthenticator rsaAuthenticator;
   private final UserDao userDao;
 
   public LobbyLoginValidator() {
@@ -64,6 +71,7 @@ public class LobbyLoginValidator implements ILoginValidator {
         new BannedMacController(),
         new BannedUsernameController(),
         new UserController(),
+        new RsaAuthenticator(),
         () -> BCrypt.gensalt());
   }
 
@@ -73,11 +81,13 @@ public class LobbyLoginValidator implements ILoginValidator {
       final BannedMacDao bannedMacDao,
       final BannedUsernameDao bannedUsernameDao,
       final UserDao userDao,
+      final RsaAuthenticator rsaAuthenticator,
       final BcryptSaltGenerator bcryptSaltGenerator) {
     this.badWordDao = badWordDao;
     this.bannedMacDao = bannedMacDao;
     this.bannedUsernameDao = bannedUsernameDao;
     this.bcryptSaltGenerator = bcryptSaltGenerator;
+    this.rsaAuthenticator = rsaAuthenticator;
     this.userDao = userDao;
   }
 
@@ -89,7 +99,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     if (password != null && Strings.emptyToNull(password.value) != null) {
       challenge.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
     }
-    challenge.putAll(rsaAuthenticator.generatePublicKey());
+    challenge.putAll(rsaAuthenticator.newChallenge());
     return challenge;
   }
 
@@ -97,8 +107,7 @@ public class LobbyLoginValidator implements ILoginValidator {
   public String verifyConnection(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String clientName, final String clientMac,
       final SocketAddress remoteAddress) {
-    final String error =
-        verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName, clientMac);
+    final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac);
     if (error != null) {
       logger.info("Bad login attempt from " + remoteAddress + " for user " + clientName + " error:" + error);
       AccessLog.failedLogin(clientName, ((InetSocketAddress) remoteAddress).getAddress(), error);
@@ -109,9 +118,10 @@ public class LobbyLoginValidator implements ILoginValidator {
     return error;
   }
 
-  private String verifyConnectionInternal(final Map<String, String> propertiesSentToClient,
+  private String verifyConnectionInternal(
       final Map<String, String> propertiesReadFromClient,
-      final String clientName, final String hashedMac) {
+      final String clientName,
+      final String hashedMac) {
     if (propertiesReadFromClient == null) {
       return "No Client Properties";
     }
@@ -149,12 +159,12 @@ public class LobbyLoginValidator implements ILoginValidator {
       return USERNAME_HAS_BEEN_BANNED + " " + getBanDurationBreakdown(usernameBanned.getSecond());
     }
     if (propertiesReadFromClient.containsKey(REGISTER_NEW_USER_KEY)) {
-      return createUser(propertiesSentToClient, propertiesReadFromClient, clientName);
+      return createUser(propertiesReadFromClient, clientName);
     }
     if (propertiesReadFromClient.containsKey(ANONYMOUS_LOGIN)) {
       return anonymousLogin(propertiesReadFromClient, clientName);
     } else {
-      return validatePassword(propertiesSentToClient, propertiesReadFromClient, clientName);
+      return validatePassword(propertiesReadFromClient, clientName);
     }
   }
 
@@ -197,20 +207,14 @@ public class LobbyLoginValidator implements ILoginValidator {
     return badWordDao.list();
   }
 
-  private String validatePassword(final Map<String, String> propertiesSentToClient,
-      final Map<String, String> propertiesReadFromClient, final String clientName) {
+  private String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
     final String errorMessage = AUTHENTICATION_FAILED;
     final HashedPassword hashedPassword = userDao.getPassword(clientName);
     if (hashedPassword == null) {
       return errorMessage;
     }
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
-      final Optional<PrivateKey> key = rsaAuthenticator.getPrivateKey(propertiesSentToClient);
-      if (!key.isPresent()) {
-        return errorMessage;
-      }
-
-      return RsaAuthenticator.decryptPasswordForAction(key.get(), propertiesReadFromClient, pass -> {
+      return rsaAuthenticator.decryptPasswordForAction(propertiesReadFromClient, pass -> {
         final String legacyHashedPassword = propertiesReadFromClient.get(HASHED_PASSWORD_KEY);
         if (hashedPassword.isBcrypted()) {
           if (userDao.login(clientName, new HashedPassword(pass))) {
@@ -262,8 +266,7 @@ public class LobbyLoginValidator implements ILoginValidator {
     return null;
   }
 
-  private String createUser(final Map<String, String> propertiesSentToClient,
-      final Map<String, String> propertiesReadFromClient, final String userName) {
+  private String createUser(final Map<String, String> propertiesReadFromClient, final String userName) {
     final DBUser user = new DBUser(
         new DBUser.UserName(userName),
         new DBUser.UserEmail(propertiesReadFromClient.get(EMAIL_KEY)));
@@ -276,14 +279,9 @@ public class LobbyLoginValidator implements ILoginValidator {
       return "That user name has already been taken";
     }
 
-    final Optional<PrivateKey> privateKey = rsaAuthenticator.getPrivateKey(propertiesSentToClient);
-    if (!privateKey.isPresent()) {
-      return "Decryption error, could not create account";
-    }
-
     final HashedPassword password = new HashedPassword(propertiesReadFromClient.get(HASHED_PASSWORD_KEY));
     if (RsaAuthenticator.canProcessResponse(propertiesReadFromClient)) {
-      return RsaAuthenticator.decryptPasswordForAction(privateKey.get(), propertiesReadFromClient, pass -> {
+      return rsaAuthenticator.decryptPasswordForAction(propertiesReadFromClient, pass -> {
         final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt()));
         if (password.isHashedWithSalt()) {
           userDao.createUser(user, password);
