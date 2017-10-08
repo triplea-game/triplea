@@ -185,11 +185,18 @@ public class Version implements Serializable, Comparable<Object> {
 
   private String toStringFull(final String separator, final boolean noMicro) {
     return m_major + separator + m_minor + separator + m_point
-      + (noMicro ? "" : (separator + (m_micro == Integer.MAX_VALUE ? "dev" : m_micro)));
+        + (noMicro ? "" : (separator + (m_micro == Integer.MAX_VALUE ? "dev" : m_micro)));
   }
 
   @Override
   public String toString() {
     return m_point == 0 && m_micro == 0 ? m_major + "." + m_minor : toStringFull(".", m_micro == 0);
+  }
+
+  public boolean isCompatible(final Version otherVersion) {
+    if (otherVersion == null) {
+      return false;
+    }
+    return otherVersion.m_major == m_major && otherVersion.m_minor == m_minor;
   }
 }

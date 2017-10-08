@@ -74,4 +74,12 @@ public class VersionTest {
     assertEquals("1.2.3.4", new Version(1, 2, 3, 4).getExactVersion());
     assertEquals("1.2.3.4.5", new Version("1.2.3.4.5").getExactVersion());
   }
+
+  @Test
+  public void testCompatible() {
+    assertTrue(new Version(1, 9).isCompatible(new Version(1, 9)));
+    assertFalse(new Version(2, 9).isCompatible(new Version(1, 9)));
+    assertFalse(new Version(1, 10).isCompatible(new Version(1, 9)));
+    assertFalse(new Version(2, 10).isCompatible(new Version(1, 9)));
+  }
 }
