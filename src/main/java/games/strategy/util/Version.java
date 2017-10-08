@@ -19,14 +19,23 @@ public class Version implements Serializable, Comparable<Object> {
   private final boolean microBlank;
   private final String exactVersion;
 
+  /**
+   * Constructs a Version object without the point and micro version, defaults those to 0.
+   */
   public Version(final int major, final int minor) {
     this(major, minor, 0);
   }
 
+  /**
+   * Constructs a Version object without the micro version, defaults to 0.
+   */
   public Version(final int major, final int minor, final int point) {
     this(major, minor, point, 0);
   }
 
+  /**
+   * Constructs a Version object with all version values set.
+   */
   public Version(final int major, final int minor, final int point, final int micro) {
     this.m_major = major;
     this.m_minor = minor;
@@ -89,18 +98,30 @@ public class Version implements Serializable, Comparable<Object> {
     return exactVersion != null ? exactVersion : toString();
   }
 
+  /**
+   * Returns the major version number.
+   */
   public int getMajor() {
     return m_major;
   }
 
+  /**
+   * Returns the minor version number.
+   */
   public int getMinor() {
     return m_minor;
   }
 
+  /**
+   * Returns the point version number.
+   */
   public int getPoint() {
     return m_point;
   }
 
+  /**
+   * Returns the micro version number.
+   */
   public int getMicro() {
     return m_micro;
   }
@@ -110,10 +131,6 @@ public class Version implements Serializable, Comparable<Object> {
     return compareTo(o) == 0;
   }
 
-  public boolean equals(final Object o, final boolean ignoreMicro) {
-    return compareTo(o, ignoreMicro) == 0;
-  }
-
   @Override
   public int hashCode() {
     return this.toString().hashCode();
@@ -121,22 +138,10 @@ public class Version implements Serializable, Comparable<Object> {
 
   @Override
   public int compareTo(final Object o) {
-    return compareTo(o, false);
-  }
-
-  public int compareTo(final Version other) {
-    return compareTo(other, false);
-  }
-
-  private int compareTo(final Object o, final boolean ignoreMicro) {
-    if (o == null) {
+    if (o == null || !(o instanceof Version)) {
       return -1;
     }
-    if (!(o instanceof Version)) {
-      return -1;
-    }
-    final Version other = (Version) o;
-    return compareTo(other, ignoreMicro);
+    return compareTo((Version) o, false);
   }
 
   private int compareTo(final Version other, final boolean ignoreMicro) {
@@ -167,32 +172,46 @@ public class Version implements Serializable, Comparable<Object> {
     return 0;
   }
 
+  /**
+   * Returns true, if the provided Version object is greater than this object.
+   */
   public boolean isGreaterThan(final Version other) {
     return isGreaterThan(other, false);
   }
 
+  /**
+   * Returns true, if the provided Version object is greater than this object.
+   * If ignoreMicro is set to true, the micro version number is ignored.
+   */
   public boolean isGreaterThan(final Version other, final boolean ignoreMicro) {
     return compareTo(other, ignoreMicro) < 0;
   }
 
+  /**
+   * Returns true, if the provided Version object is less than this object.
+   */
   public boolean isLessThan(final Version other) {
-    return compareTo(other, false) > 0;
+    return compareTo(other) > 0;
   }
 
-  public String toStringFull(final String separator) {
-    return toStringFull(separator, false);
-  }
-
-  private String toStringFull(final String separator, final boolean noMicro) {
+  /**
+   * Creates a complete version string, even if some version numbers are 0.
+   */
+  public String toStringFull() {
+    final String separator = ".";
     return m_major + separator + m_minor + separator + m_point
-        + (noMicro ? "" : (separator + (m_micro == Integer.MAX_VALUE ? "dev" : m_micro)));
+        + (separator + (m_micro == Integer.MAX_VALUE ? "dev" : m_micro));
   }
 
   @Override
   public String toString() {
-    return m_point == 0 && m_micro == 0 ? m_major + "." + m_minor : toStringFull(".", m_micro == 0);
+    return m_point == 0 && m_micro == 0 ? m_major + "." + m_minor : toStringFull();
   }
 
+  /**
+   * Checks if The major and minor version numbers are equal.
+   * Returns true if they are.
+   */
   public boolean isCompatible(final Version otherVersion) {
     if (otherVersion == null) {
       return false;

@@ -140,7 +140,7 @@ public class GameRunner {
         testVersion = new Version(version);
         // if successful we don't do anything
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
-        if (!engineVersion.equals(testVersion, false)) {
+        if (!engineVersion.equals(testVersion)) {
           System.out.println("Current Engine version in use: " + engineVersion);
         }
       } catch (final Exception e) {
@@ -479,7 +479,7 @@ public class GameRunner {
     final boolean isCompatible = ClientContext.engineVersion().isCompatible(engineVersionOfGameToJoin);
     if (!isCompatible) {
       JOptionPane.showMessageDialog(parent,
-          "Host is using version " + engineVersionOfGameToJoin.toStringFull(".")
+          "Host is using version " + engineVersionOfGameToJoin.toStringFull()
               + ". You need to have a compatible engine version in order to join this game.",
           "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
       return;

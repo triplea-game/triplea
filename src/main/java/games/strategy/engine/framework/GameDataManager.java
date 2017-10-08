@@ -129,7 +129,7 @@ public final class GameDataManager {
             + "\nTo download the latest version of TripleA, Please visit "
             + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE;
         throw new IOException(error);
-      } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion(), false)) {
+      } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion())) {
         // we can still load it because first 3 numbers of the version are the same, however this save was made by a
         // newer engine, so prompt the user to upgrade
         final String messageString =
@@ -137,8 +137,8 @@ public final class GameDataManager {
                 + "\nHowever, because the first 3 version numbers are the same as your current version, we can "
                 + "still open the savegame."
                 + "\n\nThis TripleA engine is version "
-                + ClientContext.engineVersion().toStringFull(".")
-                + " and you are trying to open a savegame made with version " + readVersion.toStringFull(".")
+                + ClientContext.engineVersion().toStringFull()
+                + " and you are trying to open a savegame made with version " + readVersion.toStringFull()
                 + "\n\nTo download the latest version of TripleA, Please visit "
                 + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
                 + "\n\nIt is recommended that you upgrade to the latest version of TripleA before playing this "
