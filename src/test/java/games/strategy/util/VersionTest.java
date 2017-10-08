@@ -42,22 +42,22 @@ public class VersionTest {
 
   @Test
   public void testRead1() {
-    assertTrue("1.2.3".equals(new Version("1.2.3").toString()));
+    assertEquals("1.2.3", new Version("1.2.3").toString());
   }
 
   @Test
   public void testRead2() {
-    assertTrue("1.2".equals(new Version("1.2").toString()));
+    assertEquals("1.2", new Version("1.2").toString());
   }
 
   @Test
   public void testRead3() {
-    assertTrue("1.2".equals(new Version("1.2.0").toString()));
+    assertEquals("1.2", new Version("1.2.0").toString());
   }
 
   @Test
   public void testRead4() {
-    assertTrue("1.2.3.dev".equals(new Version("1.2.3.dev").toString()));
+    assertEquals("1.2.3.dev", new Version("1.2.3.dev").toString());
   }
 
   @Test

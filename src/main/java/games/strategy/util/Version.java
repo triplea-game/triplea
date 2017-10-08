@@ -205,7 +205,7 @@ public class Version implements Serializable, Comparable<Object> {
 
   @Override
   public String toString() {
-    return m_point == 0 && m_micro == 0 ? m_major + "." + m_minor : toStringFull();
+    return m_micro != 0 ? toStringFull() : m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
   }
 
   /**
