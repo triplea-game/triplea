@@ -3,24 +3,25 @@ package games.strategy.engine.lobby.server.login;
 import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import games.strategy.security.TestSecurityUtils;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class RsaAuthenticatorTest {
+public final class RsaAuthenticatorTest {
+  private RsaAuthenticator rsaAuthenticator;
 
-  @Mock
-  private PrivateKey mockPrivateKey;
+  @Before
+  public void setUp() throws Exception {
+    rsaAuthenticator = new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair());
+  }
 
   @Test
   public void testCanProcess() {
@@ -33,23 +34,17 @@ public class RsaAuthenticatorTest {
   }
 
   @Test
-  public void testPublicKeysAreExpungedAfterLookup() {
-    final Cache<String, PrivateKey> rsaKeyCache = CacheBuilder.newBuilder().build();
-    final RsaAuthenticator rsaAuthenticator = new RsaAuthenticator(rsaKeyCache);
-    final String publicKey = "something";
+  public void testRoundTripPassword() {
+    final String password = "password";
     final Map<String, String> challenge = new HashMap<>();
-    challenge.put(RsaAuthenticator.RSA_PUBLIC_KEY, publicKey);
+    final Map<String, String> response = new HashMap<>();
+    @SuppressWarnings("unchecked")
+    final Function<String, String> action = mock(Function.class);
 
-    assertFalse("There are no public keys in a pristine instance, so we expect key lookup to fail",
-        rsaAuthenticator.getPrivateKey(challenge).isPresent());
+    challenge.putAll(rsaAuthenticator.newChallenge());
+    response.putAll(RsaAuthenticator.newResponse(challenge, password));
+    rsaAuthenticator.decryptPasswordForAction(response, action);
 
-    rsaKeyCache.put(publicKey, mockPrivateKey);
-
-    assertTrue("We just added a matching public key, we expect to find it",
-        rsaAuthenticator.getPrivateKey(challenge).isPresent());
-
-    assertFalse("A second lookup should now fail, the public key should be "
-        + "purged after the previous successful lookup.",
-        rsaAuthenticator.getPrivateKey(challenge).isPresent());
+    verify(action).apply(RsaAuthenticator.hashPasswordWithSalt(password));
   }
 }

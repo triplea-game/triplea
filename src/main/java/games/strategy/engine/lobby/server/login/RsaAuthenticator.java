@@ -3,19 +3,15 @@ package games.strategy.engine.lobby.server.login;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import javax.crypto.BadPaddingException;
@@ -24,14 +20,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 import games.strategy.util.Util;
 
 /**
- * A class which implements the TripleA-Lobby-Login authentication system using RSA encryption
- * for passwords.
+ * A class which implements the TripleA-Lobby-Login authentication system using RSA encryption for passwords.
  */
 public final class RsaAuthenticator {
   private static final String RSA = "RSA";
@@ -44,48 +37,40 @@ public final class RsaAuthenticator {
   @VisibleForTesting
   static final String RSA_PUBLIC_KEY = "RSAPUBLICKEY";
 
-  private final Cache<String, PrivateKey> rsaKeyCache;
+  private final KeyPair keyPair;
 
   RsaAuthenticator() {
-    this(CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build());
+    this(generateKeyPair());
   }
 
   @VisibleForTesting
-  RsaAuthenticator(final Cache<String, PrivateKey> rsaKeyCache) {
-    this.rsaKeyCache = rsaKeyCache;
+  RsaAuthenticator(final KeyPair keyPair) {
+    this.keyPair = keyPair;
   }
 
   /**
    * Returns true if the specified map contains the required values.
    */
   static boolean canProcessResponse(final Map<String, String> response) {
-    return response.get(ENCRYPTED_PASSWORD_KEY) != null;
+    return response.containsKey(ENCRYPTED_PASSWORD_KEY);
   }
 
   /**
    * Returns true if the specified map contains the required values.
    */
   public static boolean canProcessChallenge(final Map<String, String> challenge) {
-    return challenge.get(RSA_PUBLIC_KEY) != null;
+    return challenge.containsKey(RSA_PUBLIC_KEY);
   }
 
   /**
-   * Adds public key of a generated key-pair to the challenge map
-   * and stores the private key in a map.
+   * Creates a new challenge for the lobby server to send to the lobby client.
+   *
+   * @return The challenge as a collection of properties to be added to the message the lobby server sends the lobby
+   *         client.
    */
-  Map<String, String> generatePublicKey() {
-    return Collections.singletonMap(RSA_PUBLIC_KEY, storeKeyPair());
-  }
-
-  private String storeKeyPair() {
-    KeyPair keyPair;
-    String publicKey;
-    do {
-      keyPair = generateKeyPair();
-      publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-    } while (rsaKeyCache.getIfPresent(publicKey) != null);
-    rsaKeyCache.put(publicKey, keyPair.getPrivate());
-    return publicKey;
+  Map<String, String> newChallenge() {
+    return Collections.singletonMap(RSA_PUBLIC_KEY,
+        Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()));
   }
 
   private static KeyPair generateKeyPair() {
@@ -99,40 +84,27 @@ public final class RsaAuthenticator {
   }
 
   /**
-   * Looks up a public key from the 'challenge' param map that was original sent to the client, and
-   * then we return any matching private keys stored under that public key. If we find a private key,
-   * it is purged from cache before being returned.
-   */
-  Optional<PrivateKey> getPrivateKey(final Map<String, String> challenge) {
-    final String publicKey = challenge.get(RSA_PUBLIC_KEY);
-    final PrivateKey privateKey = rsaKeyCache.getIfPresent(publicKey);
-    rsaKeyCache.invalidate(publicKey);
-    return Optional.ofNullable(privateKey);
-  }
-
-  /**
-   * Attempts to decrypt the given password using the challenge and response parameters.
+   * Decrypts the password contained in the specified response and provides it to the specified action for further
+   * processing.
    *
-   * @param privateKey PrivateKey that was used to encrypted the password stored in the response param.
-   * @param response The response map containing the encrypte password.
-   * @param successfullDecryptionAction A {@link Function} which is executed if the password is successfully
-   *        encrypted. This methods returns the result of the given Function.
+   * @param response The response map containing the encrypted password.
+   * @param action A {@link Function} which is executed if the password is successfully decrypted.
+   *
+   * @return The result of {@code action} if the password is decrypted successfully; otherwise a message describing the
+   *         error that occurred during decryption.
+   *
+   * @throws IllegalStateException If the encryption cipher is not available.
    */
-  static String decryptPasswordForAction(
-      final Key privateKey,
-      final Map<String, String> response,
-      final Function<String, String> successfullDecryptionAction) {
-
+  String decryptPasswordForAction(final Map<String, String> response, final Function<String, String> action) {
     final String encryptedPassword = response.get(ENCRYPTED_PASSWORD_KEY);
-
     try {
       final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
-      cipher.init(Cipher.DECRYPT_MODE, privateKey);
-      return successfullDecryptionAction
+      cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
+      return action
           .apply(new String(cipher.doFinal(Base64.getDecoder().decode(encryptedPassword)), StandardCharsets.UTF_8));
-    } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+    } catch (final NoSuchAlgorithmException | NoSuchPaddingException e) {
       throw new IllegalStateException(e);
-    } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+    } catch (final InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
       return e.getMessage();
     }
   }
@@ -169,12 +141,15 @@ public final class RsaAuthenticator {
   }
 
   /**
-   * This method adds the encrypted password (using the specified public key and password)
-   * to the specified response map.
+   * Creates a response to the specified challenge for the lobby client to send to the lobby server.
+   *
+   * @param challenge The challenge as a collection of properties.
+   * @param password The lobby client's password.
+   *
+   * @return The response as a collection of properties to be added to the message the lobby client sends back to the
+   *         lobby server.
    */
-  public static Map<String, String> getEncryptedPassword(
-      final Map<String, String> challenge,
-      final String password) {
+  public static Map<String, String> newResponse(final Map<String, String> challenge, final String password) {
     return Collections.singletonMap(ENCRYPTED_PASSWORD_KEY, encryptPassword(challenge.get(RSA_PUBLIC_KEY), password));
   }
 }
