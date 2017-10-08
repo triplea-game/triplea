@@ -69,6 +69,10 @@ public class VersionTest {
   @Test
   public void testCompatible() {
     assertTrue(new Version(1, 9).isCompatible(new Version(1, 9)));
+    assertTrue(new Version(1, 9).isCompatible(new Version(1, 9, 1, 2)));
+    assertTrue(new Version(1, 9, 1, 2).isCompatible(new Version(1, 9, 3, 4)));
+    assertTrue(new Version(1, 9, 1).isCompatible(new Version(1, 9, 2, 3)));
+    assertTrue(new Version(1, 9, 1, 2).isCompatible(new Version(1, 9, 3)));
     assertFalse(new Version(2, 9).isCompatible(new Version(1, 9)));
     assertFalse(new Version(1, 10).isCompatible(new Version(1, 9)));
     assertFalse(new Version(2, 10).isCompatible(new Version(1, 9)));

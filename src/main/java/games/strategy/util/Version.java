@@ -140,7 +140,7 @@ public class Version implements Serializable, Comparable<Object> {
 
   @Override
   public int compareTo(final Object o) {
-    if (o == null || !(o instanceof Version)) {
+    if (!(o instanceof Version)) {
       return -1;
     }
     return compareTo((Version) o, false);
