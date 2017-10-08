@@ -2,6 +2,7 @@ package games.strategy.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -12,32 +13,32 @@ public class VersionTest {
   public void testCompare() {
     final Version v1 = new Version(0, 0, 0);
     final Version v2 = new Version(1, 0, 0);
-    assertFalse(v1.equals(v2));
-    assertFalse(v2.equals(v1));
+    assertNotEquals(v1, v2);
+    assertNotEquals(v2, v1);
   }
 
   @Test
   public void testCompare2() {
     final Version v1 = new Version(0, 0, 0);
     final Version v2 = new Version(1, 1, 0);
-    assertTrue(!v1.equals(v2));
-    assertTrue(!v2.equals(v1));
+    assertNotEquals(v1, v2);
+    assertNotEquals(v2, v1);
   }
 
   @Test
   public void testCompare3() {
     final Version v1 = new Version(0, 0, 0);
     final Version v2 = new Version(0, 1, 0);
-    assertTrue(!v1.equals(v2));
-    assertTrue(!v2.equals(v1));
+    assertNotEquals(v1, v2);
+    assertNotEquals(v2, v1);
   }
 
   @Test
   public void testCompare4() {
     final Version v1 = new Version(0, 0, 0);
     final Version v2 = new Version(0, 0, 1);
-    assertTrue(!v1.equals(v2));
-    assertTrue(!v2.equals(v1));
+    assertNotEquals(v1, v2);
+    assertNotEquals(v2, v1);
   }
 
   @Test
