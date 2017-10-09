@@ -16,7 +16,6 @@ public class Version implements Serializable, Comparable<Object> {
   private final int m_minor;
   private final int m_point;
   private final int m_micro;
-  private final boolean microBlank;
   private final String exactVersion;
 
   public Version(final int major, final int minor) {
@@ -32,7 +31,6 @@ public class Version implements Serializable, Comparable<Object> {
     this.m_minor = minor;
     this.m_point = point;
     this.m_micro = micro;
-    this.microBlank = false;
     exactVersion = toString();
   }
 
@@ -59,16 +57,9 @@ public class Version implements Serializable, Comparable<Object> {
         m_point = 0;
       }
       if (tokens.hasMoreTokens()) {
-        String micro = tokens.nextToken();
-        if (micro.equals("dev")) {
-          m_micro = Integer.MAX_VALUE;
-        } else {
-          m_micro = Integer.parseInt(micro);
-        }
-        microBlank = false;
+        m_micro = Integer.parseInt(tokens.nextToken());
       } else {
         m_micro = 0;
-        microBlank = true;
       }
     } catch (final NumberFormatException e) {
       throw new IllegalArgumentException("invalid version string:" + version);
@@ -156,7 +147,7 @@ public class Version implements Serializable, Comparable<Object> {
       return 1;
     } else if (other.m_point < m_point) {
       return -1;
-    } else if (!ignoreMicro && !microBlank && !other.microBlank) {
+    } else if (!ignoreMicro) {
       if (other.m_micro > m_micro) {
         return 1;
       } else if (other.m_micro < m_micro) {
@@ -183,13 +174,13 @@ public class Version implements Serializable, Comparable<Object> {
     return toStringFull(separator, false);
   }
 
-  private String toStringFull(final String separator, final boolean noMicro) {
-    return m_major + separator + m_minor + separator + m_point
-      + (noMicro ? "" : (separator + (m_micro == Integer.MAX_VALUE ? "dev" : m_micro)));
+  public String toStringFull(final String separator, final boolean noMicro) {
+    return m_major + separator + m_minor + separator + m_point + (noMicro ? "" : (separator + m_micro));
   }
 
   @Override
   public String toString() {
-    return m_point == 0 && m_micro == 0 ? m_major + "." + m_minor : toStringFull(".", m_micro == 0);
+    return m_major + "." + m_minor + ((m_point != 0 || m_micro != 0) ? "." + m_point : "")
+        + (m_micro != 0 ? "." + m_micro : "");
   }
 }
