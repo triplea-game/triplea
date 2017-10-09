@@ -140,7 +140,7 @@ public class GameRunner {
         testVersion = new Version(version);
         // if successful we don't do anything
         System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
-        if (!engineVersion.equals(testVersion)) {
+        if (!engineVersion.equals(testVersion, false)) {
           System.out.println("Current Engine version in use: " + engineVersion);
         }
       } catch (final Exception e) {
@@ -413,8 +413,8 @@ public class GameRunner {
     }
 
     final String message = "<html>Would you like to download the tutorial map?<br><br>"
-        + "(You can always download it later using the Download Maps<br>"
-        + "command if you don't want to do it now.)</html>";
+            + "(You can always download it later using the Download Maps<br>"
+            + "command if you don't want to do it now.)</html>";
     SwingComponents.promptUser("Welcome to TripleA", message, () -> {
       DownloadMapsWindow.showDownloadMapsWindowAndDownload("Tutorial");
     });
@@ -476,11 +476,11 @@ public class GameRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     final String newClassPath = null;
-    final boolean isCompatible = ClientContext.engineVersion().isCompatible(engineVersionOfGameToJoin);
-    if (!isCompatible) {
+    final boolean sameVersion = ClientContext.engineVersion().equals(engineVersionOfGameToJoin);
+    if (!sameVersion) {
       JOptionPane.showMessageDialog(parent,
-          "Host is using version " + engineVersionOfGameToJoin.toStringFull()
-              + ". You need to have a compatible engine version in order to join this game.",
+          "Host is using version " + engineVersionOfGameToJoin.toStringFull("_")
+              + ". You need to have the same engine version in order to join this game.",
           "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
       return;
     }

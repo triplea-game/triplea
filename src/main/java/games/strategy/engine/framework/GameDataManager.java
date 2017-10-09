@@ -115,7 +115,7 @@ public final class GameDataManager {
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
-      if (!readVersion.isCompatible(ClientContext.engineVersion())) {
+      if (!readVersion.equals(ClientContext.engineVersion(), true)) {
         // a hack for now, but a headless server should not try to open any savegame that is not its version
         if (headless) {
           final String message = "Incompatible game save, we are: " + ClientContext.engineVersion()
@@ -129,7 +129,7 @@ public final class GameDataManager {
             + "\nTo download the latest version of TripleA, Please visit "
             + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE;
         throw new IOException(error);
-      } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion())) {
+      } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion(), false)) {
         // we can still load it because first 3 numbers of the version are the same, however this save was made by a
         // newer engine, so prompt the user to upgrade
         final String messageString =
@@ -137,8 +137,8 @@ public final class GameDataManager {
                 + "\nHowever, because the first 3 version numbers are the same as your current version, we can "
                 + "still open the savegame."
                 + "\n\nThis TripleA engine is version "
-                + ClientContext.engineVersion().toStringFull()
-                + " and you are trying to open a savegame made with version " + readVersion.toStringFull()
+                + ClientContext.engineVersion().toStringFull("_")
+                + " and you are trying to open a savegame made with version " + readVersion.toStringFull("_")
                 + "\n\nTo download the latest version of TripleA, Please visit "
                 + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
                 + "\n\nIt is recommended that you upgrade to the latest version of TripleA before playing this "
