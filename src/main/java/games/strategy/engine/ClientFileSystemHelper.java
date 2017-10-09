@@ -67,7 +67,7 @@ public final class ClientFileSystemHelper {
 
   private static String getTripleaJarWithEngineVersionStringPath() {
     final Version version = ClientContext.engineVersion();
-    return "triplea_" + version.toStringFull("_") + ".jar!";
+    return "triplea_" + version.toStringFull().replaceAll("\\.", "_") + ".jar!";
   }
 
   private static File getRootFolderRelativeToJar(final String fileName, final String tripleaJarName) {
