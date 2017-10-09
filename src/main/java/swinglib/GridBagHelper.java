@@ -1,5 +1,6 @@
 package swinglib;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -9,17 +10,21 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 /**
- * Helper class for gridbag layouts with a fixed number of columns.
- * To use this class, you construct it using a component that has a GridBagLayout, and you specify
- * how many columns you want. Then just add components and they'll be added to the appropriate column
- * wrapping to the next row when needed.
- * <p>
+ * Helper class for GridBag layouts with a fixed number of columns.
+ * <br />
+ * Instead of adding a GridBagLayout, you can instantiate this helper
+ * with your Swing component instead, then add children to the helper.
+ * <br />
+ * Child components will wrap to the next row as needed.
+ * <br />
  * Example usage:
  * </p>
  * <code><pre>
+ * // precondition stuff
  * JPanel panelToHaveGridBag = new JPanel();
  * int columnCount = 2;
- * GridBagHelper helper = new GridBagHelper(panelToHaveGridBag, 2);
+ *
+ * GridBagHelper helper = new GridBagHelper(panelToHaveGridBag, columnCount);
  * // adding 10 elements would create a 2x5 grid
  * for(int i = 0; i < 10; i ++ ) {
  *   helper.addComponents(childComponent);
@@ -33,11 +38,30 @@ public final class GridBagHelper {
 
   private int elementCount = 0;
 
+
+
   public GridBagHelper(final JComponent parent, final int columns) {
     this.parent = parent;
-    this.parent.setLayout(new GridBagLayout());
+    parent.setLayout(new GridBagLayout());
     this.columns = columns;
     constraints = new GridBagConstraints();
+  }
+
+  /**
+   * Adds a component spanning multiple columns.
+   * 
+   * @param child The component to be added.
+   * @param columnSpan The number of columns to span.
+   */
+  public void add(final Component child, final ColumnSpan columnSpan) {
+    Preconditions.checkNotNull(child);
+    Preconditions.checkNotNull(columnSpan);
+    final GridBagConstraints gridBagConstraints = nextConstraint();
+    gridBagConstraints.gridwidth = columnSpan.value;
+
+    parent.add(child, constraints);
+    elementCount += columnSpan.value;
+    gridBagConstraints.gridwidth = 1;
   }
 
   /**
@@ -45,21 +69,13 @@ public final class GridBagHelper {
    * The child component is added to the grid bag layout at the next column (left to right), wrapping
    * to the next row when needed.
    */
-  public void add(final JComponent child) {
+  public void add(final Component child) {
     addAll(child);
   }
 
   /**
-   * Adds many components in one go, a convenience api {@see add}.
+   * Gets the next constraint that would be applied to the next component added.
    */
-  public void addAll(final JComponent ... children) {
-    Preconditions.checkArgument(children.length > 0);
-    for (final JComponent child : children) {
-      parent.add(child, nextConstraint());
-      elementCount++;
-    }
-  }
-
   @VisibleForTesting
   GridBagConstraints nextConstraint() {
     final int x = elementCount % columns;
@@ -72,7 +88,40 @@ public final class GridBagHelper {
 
     constraints.ipadx = 3;
     constraints.ipady = 3;
-    return constraints;
 
+    constraints.gridwidth = 1;
+    constraints.gridheight = 1;
+
+    return constraints;
+  }
+
+
+  /**
+   * Adds many components in one go, a convenience api {@see add}.
+   */
+  public void addAll(final Component... children) {
+    Preconditions.checkArgument(children.length > 0);
+    for (final Component child : children) {
+      parent.add(child, nextConstraint());
+      elementCount++;
+    }
+  }
+
+
+  /**
+   * Value class wrapper, represents how many columns a given cell should span in a {@code GridBagLayout}.
+   */
+  public static class ColumnSpan {
+
+    final int value;
+
+    private ColumnSpan(final int value) {
+      this.value = value;
+    }
+
+    public static ColumnSpan of(final int newValue) {
+      Preconditions.checkState(newValue > 0);
+      return new ColumnSpan(newValue);
+    }
   }
 }

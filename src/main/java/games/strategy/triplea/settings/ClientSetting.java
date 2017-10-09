@@ -1,6 +1,7 @@
 package games.strategy.triplea.settings;
 
 import java.io.File;
+
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -8,6 +9,7 @@ import javax.swing.UIManager;
 
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
@@ -109,7 +111,11 @@ public enum ClientSetting implements GameSetting {
 
   WHEEL_SCROLL_AMOUNT(60),
 
-  PLAYER_NAME(System.getProperty("user.name"));
+  PLAYER_NAME(System.getProperty("user.name")),
+
+  /* for testing purposes, to be used in unit tests only */
+  @VisibleForTesting
+  TEST_SETTING;
 
   public final String defaultValue;
 
@@ -167,8 +173,27 @@ public enum ClientSetting implements GameSetting {
     Preferences.userNodeForPackage(ClientSetting.class).put(name(), newValue);
   }
 
+  public static void save(final String key, final String value) {
+    Preferences.userNodeForPackage(ClientSetting.class).put(key, value);
+  }
+
+  public static String load(final String key) {
+    return Preferences.userNodeForPackage(ClientSetting.class).get(key, "");
+  }
+
+  public void saveAndFlush(final String newValue) {
+    save(newValue);
+    ClientSetting.flush();
+  }
+
+
   @Override
   public String value() {
     return Strings.nullToEmpty(Preferences.userNodeForPackage(ClientSetting.class).get(name(), defaultValue));
+  }
+
+  @Override
+  public void resetAndFlush() {
+    saveAndFlush(defaultValue);
   }
 }

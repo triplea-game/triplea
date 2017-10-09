@@ -2,13 +2,15 @@ package swinglib;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.awt.Font;
+
 import javax.swing.JButton;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 /**
- * Example usage:
+ * Example usage:.
  * <code><pre>
  *   JButton button = JButtonBuilder.builder()
  *     .text("button text")
@@ -21,31 +23,14 @@ public class JButtonBuilder {
   private String title;
   private String toolTip;
   private Runnable actionListener;
+  private boolean visible = true;
+  private boolean enabled = false;
+  private int biggerFont = 0;
 
   private JButtonBuilder() {}
 
   public static JButtonBuilder builder() {
     return new JButtonBuilder();
-  }
-
-  /** required - The text that will be on the button. */
-  public JButtonBuilder title(final String title) {
-    Preconditions.checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
-    this.title = title;
-    return this;
-  }
-
-  /** optional, but potentially required in the future. This is the hover text when hovering on the button. */
-  public JButtonBuilder toolTip(final String toolTip) {
-    Preconditions.checkArgument(!Strings.nullToEmpty(toolTip).trim().isEmpty());
-    this.toolTip = toolTip;
-    return this;
-  }
-
-  /** request, the event that occurs when the button is clicked. */
-  public JButtonBuilder actionListener(final Runnable actionListener) {
-    this.actionListener = checkNotNull(actionListener);
-    return this;
   }
 
   /**
@@ -54,14 +39,90 @@ public class JButtonBuilder {
    */
   public JButton build() {
     Preconditions.checkNotNull(title);
-    Preconditions.checkNotNull(actionListener);
+    Preconditions.checkState(!enabled || actionListener != null,
+        "Was enabled? " + enabled + ", action listener == null? " + (actionListener == null));
 
     final JButton button = new JButton(title);
     if (toolTip != null) {
       button.setToolTipText(toolTip);
     }
     button.addActionListener(e -> actionListener.run());
+    button.setVisible(visible);
+    button.setEnabled(enabled);
+
+    if (biggerFont > 0) {
+      button.setFont(
+          new Font(
+              button.getFont().getName(),
+              button.getFont().getStyle(),
+              button.getFont().getSize() + biggerFont));
+    }
+
     return button;
   }
 
+
+  /** required - The text that will be on the button. */
+  public JButtonBuilder title(final String title) {
+    Preconditions.checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
+    this.title = title;
+    return this;
+  }
+
+  /**
+   * Increases button text size by a default amount.
+   */
+  public JButtonBuilder biggerFont() {
+    return biggerFont(4);
+  }
+
+  /**
+   * Increases button text size.
+   * 
+   * @param plusAmount Text increase amount, typically somewhere around +2 to +4
+   */
+  public JButtonBuilder biggerFont(final int plusAmount) {
+    Preconditions.checkArgument(plusAmount > 0);
+    biggerFont = plusAmount;
+    return this;
+  }
+
+
+  /**
+   * Sets the text shown when hovering on the button.
+   */
+  public JButtonBuilder toolTip(final String toolTip) {
+    Preconditions.checkArgument(!Strings.nullToEmpty(toolTip).trim().isEmpty());
+    this.toolTip = toolTip;
+    return this;
+  }
+
+  /**
+   * Sets the event that occurs when the button is clicked.
+   * SIDE EFFECT: Enables the button
+   */
+  public JButtonBuilder actionListener(final Runnable actionListener) {
+    this.actionListener = checkNotNull(actionListener);
+    enabled = true;
+    return this;
+  }
+
+
+
+  /**
+   * Toggles whether the button is visible on screen or not.
+   * TODO: does an invisible component take up space?
+   */
+  public JButtonBuilder visible(final boolean visible) {
+    this.visible = visible;
+    return this;
+  }
+
+  /**
+   * Whether the button can be clicked on or not.
+   */
+  public JButtonBuilder enabled(final boolean enabled) {
+    this.enabled = enabled;
+    return this;
+  }
 }
