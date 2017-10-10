@@ -36,7 +36,9 @@ public final class PlainRandomSourceTest {
   public void getRandomSingle_ShouldThrowExceptionWhenMaxIsNotPositive() {
     catchException(() -> plainRandomSource.getRandom(0, ANNOTATION));
 
-    assertThat(caughtException(), is(instanceOf(IllegalArgumentException.class)));
+    assertThat(caughtException(), allOf(
+        is(instanceOf(IllegalArgumentException.class)),
+        hasMessageThat(containsString("max"))));
   }
 
   @Test
@@ -55,7 +57,9 @@ public final class PlainRandomSourceTest {
   public void getRandomMany_ShouldThrowExceptionWhenMaxIsNotPositive() {
     catchException(() -> plainRandomSource.getRandom(0, 1, ANNOTATION));
 
-    assertThat(caughtException(), is(instanceOf(IllegalArgumentException.class)));
+    assertThat(caughtException(), allOf(
+        is(instanceOf(IllegalArgumentException.class)),
+        hasMessageThat(containsString("max"))));
   }
 
   @Test
