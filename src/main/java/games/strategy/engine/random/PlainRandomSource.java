@@ -1,27 +1,11 @@
 package games.strategy.engine.random;
 
+import org.apache.commons.math3.random.MersenneTwister;
+
 /**
- * Gets random numbers from javas random number generators.
+ * A source of random numbers that uses a pseudorandom number generator.
  */
 public class PlainRandomSource implements IRandomSource {
-  /**
-   * Knowing the seed gives a player an advantage. Do something a little more clever than current time. which could
-   * potentially be guessed If the execution path is different before the first random call is made then the object will
-   * have a somewhat random address in the virtual machine, especially if a lot of UI and networking objects are created
-   * in response to semi-random mouse motion etc. if the execution is always the same then this may vary depending on
-   * the VM
-   */
-  private static long getSeed() {
-    final Object seedObj = new Object();
-    // hash code is an int, 32 bits
-    long seed = seedObj.hashCode();
-    seed += System.currentTimeMillis();
-    // seed with current time as well
-    seed += System.nanoTime();
-    return seed;
-  }
-
-
   private static MersenneTwister random;
 
   @Override
@@ -40,7 +24,7 @@ public class PlainRandomSource implements IRandomSource {
   @Override
   public synchronized int getRandom(final int max, final String annotation) throws IllegalArgumentException {
     if (random == null) {
-      random = new MersenneTwister(getSeed());
+      random = new MersenneTwister();
     }
     return random.nextInt(max);
   }
