@@ -1,5 +1,7 @@
 package games.strategy.engine.random;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -16,11 +18,10 @@ public final class PlainRandomSource implements IRandomSource {
   private static MersenneTwister random;
 
   @Override
-  public int[] getRandom(final int max, final int count, final String annotation)
-      throws IllegalArgumentException {
-    if (count <= 0) {
-      throw new IllegalArgumentException("count must be > 0, annotation:" + annotation);
-    }
+  public int[] getRandom(final int max, final int count, final String annotation) {
+    checkArgument(max > 0, String.format("max must be > 0 (%s)", annotation));
+    checkArgument(count > 0, String.format("count must be > 0 (%s)", annotation));
+
     final int[] numbers = new int[count];
     for (int i = 0; i < count; i++) {
       numbers[i] = getRandom(max, annotation);
@@ -29,11 +30,14 @@ public final class PlainRandomSource implements IRandomSource {
   }
 
   @Override
-  public int getRandom(final int max, final String annotation) throws IllegalArgumentException {
+  public int getRandom(final int max, final String annotation) {
+    checkArgument(max > 0, String.format("max must be > 0 (%s)", annotation));
+
     synchronized (classLock) {
       if (random == null) {
         random = new MersenneTwister();
       }
+
       return random.nextInt(max);
     }
   }
