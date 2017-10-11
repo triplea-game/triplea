@@ -51,8 +51,8 @@ public final class ClientLoginValidator implements ILoginValidator {
    */
   public static boolean isValidMac(final String value) {
     return value.length() == MAC_ADDRESS_LENGTH
-            && value.startsWith(MAC_MAGIC_STRING_PREFIX)
-            && value.matches("[0-9a-zA-Z$./]+");
+        && value.startsWith(MAC_MAGIC_STRING_PREFIX)
+        && value.matches("[0-9a-zA-Z$./]+");
   }
 
   public ClientLoginValidator(final IServerMessenger serverMessenger) {
@@ -98,7 +98,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (!ClientContext.engineVersion().equals(clientVersion, false)) {
+    if (!ClientContext.engineVersion().equals(clientVersion)) {
       return "Client is using " + clientVersion + " but server requires version " + ClientContext.engineVersion();
     }
 
