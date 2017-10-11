@@ -166,14 +166,14 @@ public class Version implements Serializable, Comparable<Object> {
   }
 
   /**
-   * Returns true, if the provided Version object is greater than this object.
+   * Returns true, if this object is greater than the provided Version object.
    */
   public boolean isGreaterThan(final Version other) {
     return isGreaterThan(other, false);
   }
 
   /**
-   * Returns true, if the provided Version object is greater than this object.
+   * Returns true, if this object is greater than the provided Version object.
    * If ignoreMicro is set to true, the micro version number is ignored.
    */
   public boolean isGreaterThan(final Version other, final boolean ignoreMicro) {
@@ -181,7 +181,7 @@ public class Version implements Serializable, Comparable<Object> {
   }
 
   /**
-   * Returns true, if the provided Version object is less than this object.
+   * Returns true, if this object is less than the provided Version object.
    */
   public boolean isLessThan(final Version other) {
     return compareTo(other) > 0;
