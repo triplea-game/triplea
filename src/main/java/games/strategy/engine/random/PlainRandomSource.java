@@ -6,16 +6,17 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.math3.random.MersenneTwister;
+import org.apache.commons.math3.random.RandomGenerator;
 
 /**
  * A source of random numbers that uses a pseudorandom number generator.
  */
 @ThreadSafe
 public final class PlainRandomSource implements IRandomSource {
-  private static final Object classLock = new Object();
+  private final Object lock = new Object();
 
-  @GuardedBy("classLock")
-  private static MersenneTwister random;
+  @GuardedBy("lock")
+  private final RandomGenerator random = new MersenneTwister();
 
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) {
@@ -33,11 +34,7 @@ public final class PlainRandomSource implements IRandomSource {
   public int getRandom(final int max, final String annotation) {
     checkArgument(max > 0, String.format("max must be > 0 (%s)", annotation));
 
-    synchronized (classLock) {
-      if (random == null) {
-        random = new MersenneTwister();
-      }
-
+    synchronized (lock) {
       return random.nextInt(max);
     }
   }
