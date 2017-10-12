@@ -7,7 +7,6 @@ import java.net.URLConnection;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -37,7 +36,7 @@ public final class LocalSystemChecker {
         urlConnection.setConnectTimeout(connectTimeoutInMilliseconds);
         urlConnection.connect();
       } catch (final Exception e) {
-        Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
     });
   }
@@ -47,7 +46,7 @@ public final class LocalSystemChecker {
       try {
         File.createTempFile("prefix", "suffix").delete();
       } catch (final IOException e) {
-        Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
     });
   }

@@ -4,10 +4,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 
 import games.strategy.ui.SwingAction;
@@ -24,10 +24,10 @@ public final class TestUtil {
     try {
       file = File.createTempFile("testFile", ".tmp");
       file.deleteOnExit();
-      Files.write(contents, file, java.nio.charset.StandardCharsets.UTF_8);
+      Files.asCharSink(file, StandardCharsets.UTF_8).write(contents);
       return file;
     } catch (final IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

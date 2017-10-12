@@ -9,8 +9,6 @@ import java.net.URLConnection;
 import java.util.Optional;
 import java.util.function.Function;
 
-import com.google.common.base.Throwables;
-
 /**
  * Utility class for opening input streams from URL and URI objects.
  */
@@ -54,7 +52,7 @@ public final class UrlStreams {
       try {
         return url.openConnection();
       } catch (final IOException e) {
-        throw Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
     };
   }

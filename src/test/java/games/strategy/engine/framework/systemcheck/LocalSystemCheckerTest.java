@@ -5,7 +5,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 
 public class LocalSystemCheckerTest {
@@ -13,7 +12,7 @@ public class LocalSystemCheckerTest {
   private static final SystemCheck PASSING_CHECK = new SystemCheck("no op", () -> {
   });
   private static final SystemCheck FAILING_CHECK =
-      new SystemCheck("throws exception", () -> Throwables.propagate(new Exception("test")));
+      new SystemCheck("throws exception", () -> SystemCheckTest.throwWrappedInRuntimeException(new Exception("test")));
 
   @Test
   public void testPassingCase() {
