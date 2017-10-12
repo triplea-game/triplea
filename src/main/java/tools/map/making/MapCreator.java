@@ -355,8 +355,8 @@ public class MapCreator extends JFrame {
         new Thread(() -> {
           try {
             TileImageBreaker.main(new String[0]);
-          } catch (final Exception e1) {
-            ClientLogger.logQuietly(e1);
+          } catch (final Exception exception) {
+            ClientLogger.logQuietly(exception);
           }
         }).start();
       }
@@ -371,8 +371,8 @@ public class MapCreator extends JFrame {
         new Thread(() -> {
           try {
             DecorationPlacer.main(new String[0]);
-          } catch (final Exception e2) {
-            ClientLogger.logQuietly(e2);
+          } catch (final Exception exception) {
+            ClientLogger.logQuietly(exception);
           }
         }).start();
       }
@@ -397,8 +397,8 @@ public class MapCreator extends JFrame {
         new Thread(() -> {
           try {
             ConnectionFinder.main(new String[0]);
-          } catch (final Exception e3) {
-            ClientLogger.logQuietly(e3);
+          } catch (final Exception exception) {
+            ClientLogger.logQuietly(exception);
           }
         }).start();
       }
@@ -422,8 +422,8 @@ public class MapCreator extends JFrame {
         new Thread(() -> {
           try {
             ReliefImageBreaker.main(new String[0]);
-          } catch (final Exception e4) {
-            ClientLogger.logQuietly(e4);
+          } catch (final Exception exception) {
+            ClientLogger.logQuietly(exception);
           }
         }).start();
       }
@@ -438,8 +438,8 @@ public class MapCreator extends JFrame {
         new Thread(() -> {
           try {
             ImageShrinker.main(new String[0]);
-          } catch (final Exception e5) {
-            ClientLogger.logQuietly(e5);
+          } catch (final Exception exception) {
+            ClientLogger.logQuietly(exception);
           }
         }).start();
       }
@@ -454,8 +454,8 @@ public class MapCreator extends JFrame {
         new Thread(() -> {
           try {
             TileImageReconstructor.main(new String[0]);
-          } catch (final Exception ex) {
-            ClientLogger.logQuietly(ex);
+          } catch (final Exception exception) {
+            ClientLogger.logQuietly(exception);
           }
         }).start();
       }

@@ -150,8 +150,7 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   /**
-   * Converts text to html, by transforming \n to <br/>
-   * .
+   * Converts text to html, by transforming \n to &lt;br/&gt;.
    *
    * @param string
    *        the string to transform
