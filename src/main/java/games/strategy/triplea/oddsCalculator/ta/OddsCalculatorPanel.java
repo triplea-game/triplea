@@ -362,7 +362,7 @@ class OddsCalculatorPanel extends JPanel {
         });
     final AtomicReference<Collection<Unit>> defenders = new AtomicReference<>();
     final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
-    final Thread calcThread = new Thread(() -> {
+    new Thread(() -> {
       try {
         // find a territory to fight in
         Territory location = null;
@@ -416,9 +416,7 @@ class OddsCalculatorPanel extends JPanel {
           dialog.dispose();
         });
       }
-    }, "Odds calc thread");
-    // Actually start thread.
-    calcThread.start();
+    }, "Odds calc thread").start();
     // the runnable setting the dialog visible must run after this code executes, since this code is running on the
     // swing event thread
     dialog.setVisible(true);

@@ -150,7 +150,7 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   /**
-   * Converts text to html, by transforming \n to <br/>.
+   * Converts text to html, by transforming \n to &lt;br/&gt;.
    *
    * @param string
    *        the string to transform
@@ -213,7 +213,8 @@ public class PBEMMessagePoster implements Serializable {
       }
       final ProgressWindow progressWindow = new ProgressWindow(mainGameFrame, "Posting " + title + "...");
       progressWindow.setVisible(true);
-      final Runnable t = () -> {
+      // start a new thread for posting the summary.
+      new Thread(() -> {
         boolean postOk = true;
         File saveGameFile = null;
         if (postingDelegate != null) {
@@ -280,7 +281,7 @@ public class PBEMMessagePoster implements Serializable {
         progressWindow.dispose();
         final boolean finalPostOk = postOk;
         final String finalMessage = sb1.toString();
-        final Runnable runnable = () -> {
+        SwingUtilities.invokeLater(() -> {
           if (postButton != null) {
             postButton.setEnabled(!finalPostOk);
           }
@@ -291,11 +292,8 @@ public class PBEMMessagePoster implements Serializable {
             JOptionPane.showMessageDialog(mainGameFrame, finalMessage, title + " Posted",
                 JOptionPane.ERROR_MESSAGE);
           }
-        };
-        SwingUtilities.invokeLater(runnable);
-      };
-      // start a new thread for posting the summary.
-      new Thread(t).start();
+        });
+      }).start();
     }
   }
 }

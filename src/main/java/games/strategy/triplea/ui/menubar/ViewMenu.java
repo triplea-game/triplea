@@ -279,14 +279,8 @@ class ViewMenu {
         return;
       }
       TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
-      final Thread t = new Thread("Triplea : Show map details thread") {
-        @Override
-        public void run() {
-          yield();
-          frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
-        }
-      };
-      t.start();
+      new Thread(() -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
+          "Triplea : Show map details thread").start();
     });
     menuGame.add(showMapDetails);
   }
@@ -308,15 +302,10 @@ class ViewMenu {
       TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
       TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
       TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
-      final Thread t = new Thread("Triplea : Show map Blends thread") {
-        @Override
-        public void run() {
-          frame.setScale(uiContext.getScale() * 100);
-          yield();
-          frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
-        }
-      };
-      t.start();
+      new Thread(() -> {
+        frame.setScale(uiContext.getScale() * 100);
+        frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
+      }, "Triplea : Show map Blends thread").start();
     });
     menuGame.add(showMapBlends);
   }

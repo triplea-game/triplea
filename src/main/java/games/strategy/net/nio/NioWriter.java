@@ -42,8 +42,7 @@ class NioWriter {
       logger.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
-    final Thread t = new Thread(() -> loop(), "NIO Writer - " + threadSuffix);
-    t.start();
+    new Thread(this::loop, "NIO Writer - " + threadSuffix).start();
   }
 
   void shutDown() {

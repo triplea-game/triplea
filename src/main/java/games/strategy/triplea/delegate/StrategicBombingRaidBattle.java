@@ -495,7 +495,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAa + CASUALTIES_SUFFIX, dice,
         m_attacker, new ArrayList<>(casualties.getKilled()), new ArrayList<>(casualties.getDamaged()),
         Collections.emptyMap());
-    final Runnable r = () -> {
+    final Thread t = new Thread(() -> {
       try {
         final ITripleAPlayer defender = (ITripleAPlayer) bridge.getRemotePlayer(m_defender);
         defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
@@ -506,8 +506,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       } catch (final Exception e) {
         // ignore
       }
-    };
-    final Thread t = new Thread(r, "click to continue waiter");
+    }, "click to continue waiter");
     t.start();
     final ITripleAPlayer attacker = (ITripleAPlayer) bridge.getRemotePlayer(m_attacker);
     attacker.confirmOwnCasualties(m_battleID, "Press space to continue");

@@ -175,7 +175,7 @@ public class ServerGame extends AbstractGame {
       final CountDownLatch waitOnObserver = new CountDownLatch(1);
       final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
       saveGame(sink);
-      (new Thread(() -> {
+      new Thread(() -> {
         try {
           blockingObserver.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
           waitOnObserver.countDown();
@@ -184,7 +184,7 @@ public class ServerGame extends AbstractGame {
         } catch (final Exception e) {
           ClientLogger.logQuietly(e);
         }
-      }, "Waiting on observer to finish joining: " + newNode.getName())).start();
+      }, "Waiting on observer to finish joining: " + newNode.getName()).start();
       try {
         if (!waitOnObserver.await(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");

@@ -220,12 +220,9 @@ public class BattlePanel extends ActionPanel {
 
   public void listBattle(final GUID battleId, final List<String> steps) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      final Runnable r = () -> {
-        // recursive call
-        listBattle(battleId, steps);
-      };
       try {
-        SwingUtilities.invokeLater(r);
+        // recursive call
+        SwingUtilities.invokeLater(() -> listBattle(battleId, steps));
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);
       }

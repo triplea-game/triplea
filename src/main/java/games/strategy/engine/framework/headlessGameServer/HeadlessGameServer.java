@@ -177,10 +177,10 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
-      (new Thread(() -> {
+      new Thread(() -> {
         System.out.println("Remote Shutdown Initiated.");
         System.exit(0);
-      })).start();
+      }).start();
       return null;
     }
     System.out.println("Attempted remote shutdown with invalid password.");
@@ -197,7 +197,7 @@ public class HeadlessGameServer {
     if (encryptedPassword.equals(hashedPassword)) {
       final ServerGame serverGame = m_iGame;
       if (serverGame != null) {
-        (new Thread(() -> {
+        new Thread(() -> {
           System.out.println("Remote Stop Game Initiated.");
           try {
             serverGame.saveGame(new File(
@@ -207,7 +207,7 @@ public class HeadlessGameServer {
             ClientLogger.logQuietly(e);
           }
           serverGame.stopGame();
-        })).start();
+        }).start();
       }
       return null;
     }
@@ -244,7 +244,7 @@ public class HeadlessGameServer {
     // (48 hours max)
     final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
     if (encryptedPassword.equals(hashedPassword)) {
-      (new Thread(() -> {
+      new Thread(() -> {
         if (getServerModel() == null) {
           return;
         }
@@ -272,7 +272,7 @@ public class HeadlessGameServer {
         } catch (final Exception e) {
           ClientLogger.logQuietly(e);
         }
-      })).start();
+      }).start();
       return null;
     }
     System.out.println("Attempted remote mute player with invalid password.");
@@ -287,7 +287,7 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
-      (new Thread(() -> {
+      new Thread(() -> {
         if (getServerModel() == null) {
           return;
         }
@@ -310,7 +310,7 @@ public class HeadlessGameServer {
         } catch (final Exception e) {
           ClientLogger.logQuietly(e);
         }
-      })).start();
+      }).start();
       return null;
     }
     System.out.println("Attempted remote boot player with invalid password.");
@@ -328,7 +328,7 @@ public class HeadlessGameServer {
     // milliseconds (30 days max)
     final Instant expire = Instant.now().plus(Duration.ofHours(Math.min(24 * 30, hours)));
     if (encryptedPassword.equals(hashedPassword)) {
-      (new Thread(() -> {
+      new Thread(() -> {
         if (getServerModel() == null) {
           return;
         }
@@ -368,7 +368,7 @@ public class HeadlessGameServer {
         } catch (final Exception e) {
           ClientLogger.logQuietly(e);
         }
-      })).start();
+      }).start();
       return null;
     }
     System.out.println("Attempted remote ban player with invalid password.");
@@ -404,15 +404,13 @@ public class HeadlessGameServer {
         m_gameSelectorModel.resetGameDataToNull();
       }
     }
-    final Runnable r = () -> {
+    new Thread(() -> {
       System.out.println("Headless Start");
       m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null);
       m_setupPanelModel.showSelectType();
       System.out.println("Waiting for users to connect.");
       waitForUsersHeadless();
-    };
-    final Thread t = new Thread(r, "Initialize Headless Server Setup Model");
-    t.start();
+    }, "Initialize Headless Server Setup Model").start();
 
     int reconnect;
     try {
@@ -552,7 +550,7 @@ public class HeadlessGameServer {
   private void waitForUsersHeadless() {
     setServerGame(null);
 
-    final Runnable r = () -> {
+    new Thread(() -> {
       while (!m_shutDown) {
         if (!ThreadUtil.sleep(8000)) {
           m_shutDown = true;
@@ -569,9 +567,7 @@ public class HeadlessGameServer {
           }
         }
       }
-    };
-    final Thread t = new Thread(r, "Headless Server Waiting For Users To Connect And Start");
-    t.start();
+    }, "Headless Server Waiting For Users To Connect And Start").start();
   }
 
   private static synchronized boolean startHeadlessGame(final SetupPanelModel setupPanelModel) {

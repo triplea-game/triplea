@@ -94,7 +94,7 @@ public class LobbyMenu extends JMenuBar {
     final JMenuItem revive = new JMenuItem("Display Players Information");
     revive.setEnabled(true);
     revive.addActionListener(event -> {
-      final Runnable runner = () -> {
+      new Thread(() -> {
         final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
             .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
         final StringBuilder builder = new StringBuilder();
@@ -106,7 +106,7 @@ public class LobbyMenu extends JMenuBar {
         for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
           builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
         }
-        final Runnable componentCreation = () -> {
+        SwingUtilities.invokeLater(() -> {
           final JDialog dialog = new JDialog(lobbyFrame, "Players Information");
           final JTextArea label = new JTextArea(builder.toString());
           label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -133,11 +133,8 @@ public class LobbyMenu extends JMenuBar {
           dialog.setLocationRelativeTo(lobbyFrame);
           dialog.setDefaultCloseOperation(2);
           dialog.setVisible(true);
-        };
-        SwingUtilities.invokeLater(componentCreation);
-      };
-      final Thread thread = new Thread(runner);
-      thread.start();
+        });
+      }).start();
     });
     parentMenu.add(revive);
   }

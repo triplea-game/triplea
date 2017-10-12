@@ -504,20 +504,17 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private void addZoomKeyboardShortcuts() {
-    final Runnable zoomIn = () -> {
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '+', () -> {
       if (getScale() < 100) {
         setScale(getScale() + 10);
       }
-    };
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '+', zoomIn);
+    });
 
-    final Runnable zoomOut = () -> {
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '-', () -> {
       if (getScale() > 16) {
         setScale(getScale() - 10);
       }
-    };
-
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '-', zoomOut);
+    });
   }
 
   /**
@@ -1572,11 +1569,10 @@ public class TripleAFrame extends MainGameFrame {
             info.setTipText("<html>" + tipText + "</html>");
             final Popup popup = popupFactory.getPopup(mapPanel, info, currentPoint.x, currentPoint.y);
             popup.show();
-            final Runnable disposePopup = () -> {
+            new Thread(() -> {
               ThreadUtil.sleep(5000);
               popup.hide();
-            };
-            new Thread(disposePopup, "popup waiter").start();
+            }, "popup waiter").start();
           }
         }
       }

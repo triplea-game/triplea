@@ -274,7 +274,7 @@ public class ClipPlayer {
     // "phase_technology_Japanese"
 
     if (clip != null) {
-      (new Thread(() -> {
+      new Thread(() -> {
         try {
           Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
           if (inputStream.isPresent()) {
@@ -284,7 +284,7 @@ public class ClipPlayer {
         } catch (Exception e) {
           ClientLogger.logError("Failed to play: " + clip, e);
         }
-      })).start();
+      }).start();
     }
   }
 

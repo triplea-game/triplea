@@ -182,7 +182,7 @@ public class UnifiedMessenger {
     synchronized (m_endPointMutex) {
       final EndPoint endPoint = m_localEndPoints.get(name);
       Preconditions.checkNotNull(endPoint, "local endpoints: "
-              + m_localEndPoints + " did not contain: " + name + ", messenger addr: " + super.toString());
+          + m_localEndPoints + " did not contain: " + name + ", messenger addr: " + super.toString());
       return endPoint.getFirstImplementor();
     }
   }
@@ -274,7 +274,7 @@ public class UnifiedMessenger {
       // we don't want to block the message thread, only one thread is
       // reading messages per connection, so run with out thread pool
       final EndPoint localFinal = local;
-      final Runnable task = () -> {
+      threadPool.execute(() -> {
         final List<RemoteMethodCallResults> results =
             localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
         if (invoke.needReturnValues) {
@@ -287,8 +287,7 @@ public class UnifiedMessenger {
           }
           send(new HubInvocationResults(result, invoke.methodCallID), from);
         }
-      };
-      threadPool.execute(task);
+      });
     } else if (msg instanceof SpokeInvocationResults) { // a remote machine is returning results
       // if this isn't the server, something is wrong
       // maybe an attempt to spoof a message
@@ -302,8 +301,8 @@ public class UnifiedMessenger {
         m_results.put(methodId, results.results);
         final CountDownLatch latch = m_pendingInvocations.remove(methodId);
         Preconditions.checkNotNull(latch, String.format(
-                "method id: %s, was not present in pending invocations: %s, unified messenger addr: %s",
-                methodId, m_pendingInvocations, super.toString()));
+            "method id: %s, was not present in pending invocations: %s, unified messenger addr: %s",
+            methodId, m_pendingInvocations, super.toString()));
         latch.countDown();
       }
     }
