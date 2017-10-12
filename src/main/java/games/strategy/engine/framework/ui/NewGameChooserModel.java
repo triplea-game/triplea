@@ -87,7 +87,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
       final Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
       while (zipEntryEnumeration.hasMoreElements()) {
         final ZipEntry entry = zipEntryEnumeration.nextElement();
-        if (entry.getName().contains("games/") &&  entry.getName().toLowerCase().endsWith(".xml")) {
+        if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
           final ZipProcessingResult result = processZipEntry(loader, entry, entries);
           if (result == ZipProcessingResult.ERROR) {
             badMapZip = true;
@@ -125,7 +125,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
    * parameter, then show confirmation of deletion.
    */
   private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, final Optional<String> errorDetails) {
-    final Runnable deleteMapRunnable = () -> {
+    SwingAction.invokeAndWait(() -> {
       String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
           + "\n(You may see this error message again if you keep the file)";
       String title = "Corrup Map File Found";
@@ -148,9 +148,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
         title = "File Removal Result";
         JOptionPane.showMessageDialog(null, message, title, messageType);
       }
-    };
-
-    SwingAction.invokeAndWait(deleteMapRunnable);
+    });
   }
 
   /**

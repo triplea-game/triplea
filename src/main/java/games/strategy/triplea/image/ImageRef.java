@@ -20,7 +20,7 @@ class ImageRef {
   private static final AtomicInteger imageCount = new AtomicInteger();
 
   static {
-    final Runnable r = () -> {
+    final Thread t = new Thread(() -> {
       while (true) {
         try {
           referenceQueue.remove();
@@ -29,8 +29,7 @@ class ImageRef {
           ClientLogger.logQuietly(e);
         }
       }
-    };
-    final Thread t = new Thread(r, "Tile Image Factory Soft Reference Reclaimer");
+    }, "Tile Image Factory Soft Reference Reclaimer");
     t.setDaemon(true);
     t.start();
   }

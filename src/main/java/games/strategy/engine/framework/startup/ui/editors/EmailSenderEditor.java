@@ -148,7 +148,8 @@ public class EmailSenderEditor extends EditorPanel {
   private void testEmail() {
     final ProgressWindow progressWindow = GameRunner.newProgressWindow("Sending test email...");
     progressWindow.setVisible(true);
-    final Runnable runnable = () -> {
+    // start a background thread
+    new Thread(() -> {
       // initialize variables to error state, override if successful
       String message = "An unknown occurred, report this as a bug on the TripleA dev forum";
       int messageType = JOptionPane.ERROR_MESSAGE;
@@ -181,10 +182,7 @@ public class EmailSenderEditor extends EditorPanel {
         });
         progressWindow.setVisible(false);
       }
-    };
-    // start a background thread
-    final Thread t = new Thread(runnable);
-    t.start();
+    }).start();
   }
 
   @Override

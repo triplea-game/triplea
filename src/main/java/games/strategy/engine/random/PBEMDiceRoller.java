@@ -212,13 +212,7 @@ public class PBEMDiceRoller implements IRandomSource {
       }
       m_reRollButton.setEnabled(false);
       m_exitButton.setEnabled(false);
-      final Thread t = new Thread("Triplea, roll in seperate thread") {
-        @Override
-        public void run() {
-          rollInSeperateThread();
-        }
-      };
-      t.start();
+      new Thread(this::rollInSeperateThread, "Triplea, roll in seperate thread").start();
     }
 
     private void closeAndReturn() {

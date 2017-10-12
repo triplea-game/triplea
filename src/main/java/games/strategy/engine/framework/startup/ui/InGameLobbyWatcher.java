@@ -166,13 +166,16 @@ public class InGameLobbyWatcher {
         || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
             : oldWatcher.gameDescription.getStartDateTime();
     final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
-        ? (HeadlessGameServer.headless() ? 0 : 1) : oldWatcher.gameDescription.getPlayerCount();
+        ? (HeadlessGameServer.headless() ? 0 : 1)
+        : oldWatcher.gameDescription.getPlayerCount();
     final GameStatus gameStatus =
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
-            ? GameStatus.WAITING_FOR_PLAYERS : oldWatcher.gameDescription.getStatus();
+            ? GameStatus.WAITING_FOR_PLAYERS
+            : oldWatcher.gameDescription.getStatus();
     final String gameRound =
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
-            ? "-" : oldWatcher.gameDescription.getRound();
+            ? "-"
+            : oldWatcher.gameDescription.getRound();
     gameDescription = new GameDescription(
         messenger.getLocalNode(),
         serverMessenger.getLocalNode().getPort(),
@@ -210,7 +213,7 @@ public class InGameLobbyWatcher {
       this.setGameStatus(oldWatcher.gameDescription.getStatus(), oldWatcher.game);
     }
     // if we loose our connection, then shutdown
-    final Runnable r = () -> {
+    new Thread(() -> {
       final String addressUsed = controller.testGame(gameId);
       // if the server cannot connect to us, then quit
       if (addressUsed != null) {
@@ -242,8 +245,7 @@ public class InGameLobbyWatcher {
           });
         }
       }
-    };
-    new Thread(r).start();
+    }).start();
   }
 
   void setGameSelectorModel(final GameSelectorModel model) {

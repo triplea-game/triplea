@@ -2176,15 +2176,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           new ArrayList<>(m_casualties.getDamaged()), m_dependentUnits);
       getRemote((m_defending ? m_attacker : m_defender), bridge).confirmOwnCasualties(m_battleID,
           "Press space to continue");
-      final Runnable r = () -> {
+      final Thread t = new Thread(() -> {
         try {
           getRemote((m_defending ? m_defender : m_attacker), bridge).confirmEnemyCasualties(m_battleID,
               "Press space to continue", (m_defending ? m_attacker : m_defender));
         } catch (final Exception e) {
           // ignore
         }
-      };
-      final Thread t = new Thread(r, "click to continue waiter");
+      }, "click to continue waiter");
       t.start();
       try {
         bridge.leaveDelegateExecution();

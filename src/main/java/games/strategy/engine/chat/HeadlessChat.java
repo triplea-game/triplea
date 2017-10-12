@@ -138,7 +138,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
     // TODO: I don't really think we need a new thread for this...
-    final Thread t = new Thread(() -> {
+    new Thread(() -> {
       if (from.equals(m_chat.getServerNode().getName())) {
         if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
           addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
@@ -157,8 +157,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
       }
       addChatMessage(message, from, thirdperson);
       ClipPlayer.play(sound);
-    });
-    t.start();
+    }).start();
   }
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {

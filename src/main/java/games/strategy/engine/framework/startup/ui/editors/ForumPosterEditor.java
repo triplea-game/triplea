@@ -114,7 +114,8 @@ public class ForumPosterEditor extends EditorPanel {
     final IForumPoster poster = (IForumPoster) getBean();
     final ProgressWindow progressWindow = GameRunner.newProgressWindow(poster.getTestMessage());
     progressWindow.setVisible(true);
-    final Runnable runnable = () -> {
+    // start a background thread
+    new Thread(() -> {
       if (poster.getIncludeSaveGame()) {
         try {
           final File f = File.createTempFile("123", "test");
@@ -156,10 +157,7 @@ public class ForumPosterEditor extends EditorPanel {
           // should never happen in a GUI app
         }
       });
-    };
-    // start a background thread
-    final Thread t = new Thread(runnable);
-    t.start();
+    }).start();
   }
 
   @Override

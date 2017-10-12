@@ -302,12 +302,7 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(MapPropertiesMaker.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            MapPropertiesMaker.main(new String[0]);
-          }
-        }).start();
+        new Thread(() -> MapPropertiesMaker.main(new String[0])).start();
       }
     }));
     panel2.add(mapPropertiesMakerButton);
@@ -317,12 +312,7 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(CenterPicker.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            CenterPicker.main(new String[0]);
-          }
-        }).start();
+        new Thread(() -> CenterPicker.main(new String[0])).start();
       }
     }));
     panel2.add(centerPickerButton);
@@ -332,14 +322,8 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(PolygonGrabber.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            PolygonGrabber.main(new String[0]);
-          }
-        }).start();
+        new Thread(() -> PolygonGrabber.main(new String[0])).start();
       }
-
     }));
     panel2.add(polygonGrabberButton);
     panel2.add(Box.createVerticalStrut(30));
@@ -348,14 +332,8 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(AutoPlacementFinder.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            AutoPlacementFinder.main(new String[0]);
-          }
-        }).start();
+        new Thread(() -> AutoPlacementFinder.main(new String[0])).start();
       }
-
     }));
     panel2.add(autoPlacerButton);
     panel2.add(Box.createVerticalStrut(30));
@@ -364,12 +342,7 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(PlacementPicker.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            PlacementPicker.main(new String[0]);
-          }
-        }).start();
+        new Thread(() -> PlacementPicker.main(new String[0])).start();
       }
     }));
     panel2.add(placementPickerButton);
@@ -379,14 +352,11 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(TileImageBreaker.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            try {
-              TileImageBreaker.main(new String[0]);
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
-            }
+        new Thread(() -> {
+          try {
+            TileImageBreaker.main(new String[0]);
+          } catch (final Exception e1) {
+            ClientLogger.logQuietly(e1);
           }
         }).start();
       }
@@ -398,14 +368,11 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(DecorationPlacer.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            try {
-              DecorationPlacer.main(new String[0]);
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
-            }
+        new Thread(() -> {
+          try {
+            DecorationPlacer.main(new String[0]);
+          } catch (final Exception e2) {
+            ClientLogger.logQuietly(e2);
           }
         }).start();
       }
@@ -427,14 +394,11 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(ConnectionFinder.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            try {
-              ConnectionFinder.main(new String[0]);
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
-            }
+        new Thread(() -> {
+          try {
+            ConnectionFinder.main(new String[0]);
+          } catch (final Exception e3) {
+            ClientLogger.logQuietly(e3);
           }
         }).start();
       }
@@ -455,14 +419,11 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(ReliefImageBreaker.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            try {
-              ReliefImageBreaker.main(new String[0]);
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
-            }
+        new Thread(() -> {
+          try {
+            ReliefImageBreaker.main(new String[0]);
+          } catch (final Exception e4) {
+            ClientLogger.logQuietly(e4);
           }
         }).start();
       }
@@ -474,14 +435,11 @@ public class MapCreator extends JFrame {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(ImageShrinker.class);
       } else {
-        (new Thread() {
-          @Override
-          public void run() {
-            try {
-              ImageShrinker.main(new String[0]);
-            } catch (final Exception e) {
-              ClientLogger.logQuietly(e);
-            }
+        new Thread(() -> {
+          try {
+            ImageShrinker.main(new String[0]);
+          } catch (final Exception e5) {
+            ClientLogger.logQuietly(e5);
           }
         }).start();
       }

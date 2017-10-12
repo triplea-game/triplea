@@ -422,8 +422,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
       map = loadMap();
       // add a shutdown, just in case someone forgets to call writeToDisk
-      final Thread shutdown = new Thread(this::writeToDisk);
-      Runtime.getRuntime().addShutdownHook(shutdown);
+      Runtime.getRuntime().addShutdownHook(new Thread(this::writeToDisk));
     }
 
     @SuppressWarnings("unchecked")

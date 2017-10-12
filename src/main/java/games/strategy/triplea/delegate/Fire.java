@@ -175,16 +175,15 @@ public class Fire implements IExecutable {
     }
     AbstractBattle.getDisplay(bridge).casualtyNotification(m_battleID, m_stepName, m_dice, m_hitPlayer,
         new ArrayList<>(m_killed), new ArrayList<>(m_damaged), m_dependentUnits);
-    final Runnable r = () -> {
+    // execute in a separate thread to allow either player to click continue first.
+    final Thread t = new Thread(() -> {
       try {
         AbstractBattle.getRemote(m_firingPlayer, bridge).confirmEnemyCasualties(m_battleID, "Press space to continue",
             m_hitPlayer);
       } catch (final Exception e) {
         // someone else will deal with this, ignore
       }
-    };
-    // execute in a separate thread to allow either player to click continue first.
-    final Thread t = new Thread(r, "Click to continue waiter");
+    }, "Click to continue waiter");
     t.start();
     if (m_confirmOwnCasualties) {
       AbstractBattle.getRemote(m_hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");

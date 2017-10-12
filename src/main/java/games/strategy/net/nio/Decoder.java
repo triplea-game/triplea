@@ -46,7 +46,7 @@ class Decoder {
     errorReporter = reporter;
     this.objectStreamFactory = objectStreamFactory;
     this.nioSocket = nioSocket;
-    thread = new Thread(() -> loop(), "Decoder -" + threadSuffix);
+    thread = new Thread(this::loop, "Decoder -" + threadSuffix);
     thread.start();
   }
 
