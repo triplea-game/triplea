@@ -25,10 +25,28 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
     m_techs.addAll(other.m_techs);
   }
 
+  @Override
+  public void setGameData(final GameData gameData) {
+    super.setGameData(gameData);
+
+    m_techs.forEach(it -> it.setGameData(gameData));
+
+    // Reorder here, as well, because addAdvance() may have been called before GameData was set
+    reorderTechsToMatchGameTechsOrder();
+  }
+
+  private void reorderTechsToMatchGameTechsOrder() {
+    final GameData gameData = getData();
+    if (gameData != null) {
+      Util.reorder(m_techs, gameData.getTechnologyFrontier().getTechs());
+      m_cachedTechs = null;
+    }
+  }
+
   public void addAdvance(final TechAdvance t) {
     m_cachedTechs = null;
     m_techs.add(t);
-    Util.reorder(m_techs, getData().getTechnologyFrontier().getTechs());
+    reorderTechsToMatchGameTechsOrder();
   }
 
   public void addAdvance(final List<TechAdvance> list) {

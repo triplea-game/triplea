@@ -9,6 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.TestEqualityComparatorCollectionBuilder;
 import games.strategy.engine.data.TestGameDataFactory;
+import games.strategy.engine.framework.TestProxyFactoryCollectionBuilder;
 import games.strategy.persistence.serializable.AbstractProxyTestCase;
 import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.test.EqualityComparator;
@@ -80,6 +81,14 @@ public abstract class AbstractGameDataComponentProxyTestCase<T extends GameDataC
   protected final GameData getGameData() {
     assert gameData != null;
     return gameData;
+  }
+
+  /**
+   * Subclasses may override and are required to call the superclass implementation first.
+   */
+  @Override
+  protected void prepareDeserializedPrincipal(final T actual) {
+    actual.setGameData(gameData);
   }
 
   /**

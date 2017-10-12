@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.MoreObjects;
+
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID> {
   private static final long serialVersionUID = -3895068111754745446L;
   // maps String playerName -> PlayerID
@@ -24,8 +26,19 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
     super(data);
   }
 
+  @Override
+  public void setGameData(final GameData gameData) {
+    super.setGameData(gameData);
+
+    m_players.values().forEach(it -> it.setGameData(gameData));
+  }
+
   void addPlayerId(final PlayerID player) {
     m_players.put(player.getName(), player);
+  }
+
+  void addPlayerIds(final Collection<PlayerID> playerIds) {
+    playerIds.forEach(this::addPlayerId);
   }
 
   public int size() {
@@ -77,5 +90,12 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
       playersEnabledListing.put(p.getName(), !p.getIsDisabled());
     }
     return playersEnabledListing;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("players", m_players)
+        .toString();
   }
 }

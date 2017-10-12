@@ -31,6 +31,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataMemento;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.persistence.serializable.ProxyRegistry;
 import games.strategy.persistence.serializable.ProxyableObjectOutputStream;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
@@ -213,13 +214,22 @@ public final class GameDataManager {
     }
   }
 
-  @VisibleForTesting
-  static void saveGameInProxySerializationFormat(
+  private static void saveGameInProxySerializationFormat(
       final OutputStream os,
       final GameData gameData,
       final Map<GameDataMemento.ExportOptionName, Object> optionsByName)
       throws IOException {
-    saveMemento(new CloseShieldOutputStream(os), toMemento(gameData, optionsByName));
+    saveMemento(new CloseShieldOutputStream(os), toMemento(gameData, optionsByName), ProxyRegistries.GAME_DATA_MEMENTO);
+  }
+
+  @VisibleForTesting
+  static void saveGameInProxySerializationFormat(
+      final OutputStream os,
+      final GameData gameData,
+      final Map<GameDataMemento.ExportOptionName, Object> optionsByName,
+      final ProxyRegistry proxyRegistry)
+      throws IOException {
+    saveMemento(new CloseShieldOutputStream(os), toMemento(gameData, optionsByName), proxyRegistry);
   }
 
   private static Memento toMemento(
@@ -234,9 +244,13 @@ public final class GameDataManager {
     }
   }
 
-  private static void saveMemento(final OutputStream os, final Memento memento) throws IOException {
+  private static void saveMemento(
+      final OutputStream os,
+      final Memento memento,
+      final ProxyRegistry proxyRegistry)
+      throws IOException {
     try (final GZIPOutputStream gzipos = new GZIPOutputStream(os);
-        final ObjectOutputStream oos = new ProxyableObjectOutputStream(gzipos, ProxyRegistries.GAME_DATA_MEMENTO)) {
+        final ObjectOutputStream oos = new ProxyableObjectOutputStream(gzipos, proxyRegistry)) {
       oos.writeObject(memento);
     }
   }

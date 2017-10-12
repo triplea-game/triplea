@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import java.util.Arrays;
+
 import games.strategy.triplea.TripleA;
 import games.strategy.util.Version;
 
@@ -16,11 +18,18 @@ public final class TestGameDataFactory {
    */
   public static GameData newValidGameData() {
     final GameData gameData = new GameData();
+
     gameData.setDiceSides(42);
     gameData.setGameLoader(new TripleA());
     gameData.setGameName("name");
     gameData.setGameVersion(new Version(1, 2, 3, 4));
+
+    gameData.getPlayerList().addPlayerIds(Arrays.asList(
+        TestGameDataComponentFactory.newPlayerId(gameData, "player1"),
+        TestGameDataComponentFactory.newPlayerId(gameData, "player2")));
+
     // TODO: initialize other attributes
+
     return gameData;
   }
 }

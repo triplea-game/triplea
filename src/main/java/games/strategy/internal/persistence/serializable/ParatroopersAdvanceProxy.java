@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.persistence.serializable.Proxy;
 import games.strategy.persistence.serializable.ProxyFactory;
@@ -14,6 +13,13 @@ import games.strategy.triplea.delegate.ParatroopersAdvance;
 
 /**
  * A serializable proxy for the {@link ParatroopersAdvance} class.
+ *
+ * <p>
+ * This proxy does not serialize the game data owner to avoid a circular reference. Instances of
+ * {@link ParatroopersAdvance} created from this proxy will always have their game data set to {@code null}. Proxies
+ * that may compose instances of this proxy are required to manually restore the game data in their
+ * {@code readResolve()} method via a context-dependent mechanism.
+ * </p>
  */
 @Immutable
 public final class ParatroopersAdvanceProxy implements Proxy {
@@ -23,18 +29,16 @@ public final class ParatroopersAdvanceProxy implements Proxy {
       ProxyFactory.newInstance(ParatroopersAdvance.class, ParatroopersAdvanceProxy::new);
 
   private final Map<String, IAttachment> attachments;
-  private final GameData gameData;
 
   public ParatroopersAdvanceProxy(final ParatroopersAdvance paratroopersAdvance) {
     checkNotNull(paratroopersAdvance);
 
     attachments = paratroopersAdvance.getAttachments();
-    gameData = paratroopersAdvance.getData();
   }
 
   @Override
   public Object readResolve() {
-    final ParatroopersAdvance paratroopersAdvance = new ParatroopersAdvance(gameData);
+    final ParatroopersAdvance paratroopersAdvance = new ParatroopersAdvance(null);
     attachments.forEach(paratroopersAdvance::addAttachment);
     return paratroopersAdvance;
   }

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
@@ -21,6 +20,13 @@ import games.strategy.util.IntegerMap;
 
 /**
  * A serializable proxy for the {@link PlayerID} class.
+ *
+ * <p>
+ * This proxy does not serialize the game data owner to avoid a circular reference. Instances of {@link PlayerID}
+ * created from this proxy will always have their game data set to {@code null}. Proxies that may compose instances of
+ * this proxy are required to manually restore the game data in their {@code readResolve()} method via a
+ * context-dependent mechanism.
+ * </p>
  */
 @Immutable
 public final class PlayerIdProxy implements Proxy {
@@ -32,7 +38,6 @@ public final class PlayerIdProxy implements Proxy {
   private final String defaultType;
   private final boolean disableable;
   private final boolean disabled;
-  private final GameData gameData;
   private final boolean hidden;
   private final String name;
   private final boolean optional;
@@ -50,7 +55,6 @@ public final class PlayerIdProxy implements Proxy {
     defaultType = playerId.getDefaultType();
     disableable = playerId.getCanBeDisabled();
     disabled = playerId.getIsDisabled();
-    gameData = playerId.getData();
     hidden = playerId.isHidden();
     name = playerId.getName();
     optional = playerId.getOptional();
@@ -64,7 +68,7 @@ public final class PlayerIdProxy implements Proxy {
 
   @Override
   public Object readResolve() {
-    final PlayerID playerId = new PlayerID(name, optional, disableable, defaultType, hidden, gameData);
+    final PlayerID playerId = new PlayerID(name, optional, disableable, defaultType, hidden, null);
     playerId.setIsDisabled(disabled);
     playerId.setProductionFrontier(productionFrontier);
     playerId.setRepairFrontier(repairFrontier);

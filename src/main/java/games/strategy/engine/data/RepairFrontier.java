@@ -24,6 +24,13 @@ public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
     m_rules = new ArrayList<>(rules);
   }
 
+  @Override
+  public void setGameData(final GameData gameData) {
+    super.setGameData(gameData);
+
+    m_rules.forEach(it -> it.setGameData(gameData));
+  }
+
   void addRule(final RepairRule rule) {
     if (m_rules.contains(rule)) {
       throw new IllegalStateException("Rule already added:" + rule);

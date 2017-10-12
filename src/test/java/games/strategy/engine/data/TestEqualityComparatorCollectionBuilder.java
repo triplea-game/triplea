@@ -24,9 +24,39 @@ public final class TestEqualityComparatorCollectionBuilder {
    */
   public static TestEqualityComparatorCollectionBuilder forGameData() {
     return new TestEqualityComparatorCollectionBuilder()
+        // --- main ---
         .add(CoreEqualityComparators.COLLECTION)
+        .add(CoreEqualityComparators.INTEGER_MAP)
         .add(CoreEqualityComparators.MAP)
-        .add(EngineDataEqualityComparators.GAME_DATA);
+        .add(EngineDataEqualityComparators.AA_RADAR_ADVANCE)
+        .add(EngineDataEqualityComparators.DESTROYER_BOMBARD_TECH_ADVANCE)
+        .add(EngineDataEqualityComparators.GAME_DATA)
+        .add(EngineDataEqualityComparators.HEAVY_BOMBER_ADVANCE)
+        .add(EngineDataEqualityComparators.IMPROVED_ARTILLERY_SUPPORT_ADVANCE)
+        .add(EngineDataEqualityComparators.IMPROVED_SHIPYARDS_ADVANCE)
+        .add(EngineDataEqualityComparators.INCREASED_FACTORY_PRODUCTION_ADVANCE)
+        .add(EngineDataEqualityComparators.INDUSTRIAL_TECHNOLOGY_ADVANCE)
+        .add(EngineDataEqualityComparators.JET_POWER_ADVANCE)
+        .add(EngineDataEqualityComparators.LONG_RANGE_AIRCRAFT_ADVANCE)
+        .add(EngineDataEqualityComparators.MECHANIZED_INFANTRY_ADVANCE)
+        .add(EngineDataEqualityComparators.PARATROOPERS_ADVANCE)
+        .add(EngineDataEqualityComparators.PLAYER_ID)
+        .add(EngineDataEqualityComparators.PLAYER_LIST)
+        .add(EngineDataEqualityComparators.PRODUCTION_FRONTIER)
+        .add(EngineDataEqualityComparators.PRODUCTION_RULE)
+        .add(EngineDataEqualityComparators.REPAIR_FRONTIER)
+        .add(EngineDataEqualityComparators.REPAIR_RULE)
+        .add(EngineDataEqualityComparators.RESOURCE)
+        .add(EngineDataEqualityComparators.RESOURCE_COLLECTION)
+        .add(EngineDataEqualityComparators.ROCKETS_ADVANCE)
+        .add(EngineDataEqualityComparators.SUPER_SUBS_ADVANCE)
+        .add(EngineDataEqualityComparators.TECHNOLOGY_FRONTIER)
+        .add(EngineDataEqualityComparators.TECHNOLOGY_FRONTIER_LIST)
+        .add(EngineDataEqualityComparators.UNIT)
+        .add(EngineDataEqualityComparators.UNIT_TYPE)
+        .add(EngineDataEqualityComparators.WAR_BONDS_ADVANCE)
+        // --- test ---
+        .add(EngineDataEqualityComparators.FAKE_TECH_ADVANCE);
   }
 
   /**

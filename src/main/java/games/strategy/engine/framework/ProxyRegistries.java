@@ -1,8 +1,12 @@
 package games.strategy.engine.framework;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.internal.persistence.serializable.AaRadarAdvanceProxy;
 import games.strategy.internal.persistence.serializable.DestroyerBombardTechAdvanceProxy;
-import games.strategy.internal.persistence.serializable.GameDataProxy;
 import games.strategy.internal.persistence.serializable.GuidProxy;
 import games.strategy.internal.persistence.serializable.HeavyBomberAdvanceProxy;
 import games.strategy.internal.persistence.serializable.ImprovedArtillerySupportAdvanceProxy;
@@ -29,21 +33,25 @@ import games.strategy.internal.persistence.serializable.UnitProxy;
 import games.strategy.internal.persistence.serializable.UnitTypeProxy;
 import games.strategy.internal.persistence.serializable.VersionProxy;
 import games.strategy.internal.persistence.serializable.WarBondsAdvanceProxy;
+import games.strategy.persistence.serializable.ProxyFactory;
 import games.strategy.persistence.serializable.ProxyRegistry;
 
-final class ProxyRegistries {
+/**
+ * A collection of pre-configured proxy registries.
+ */
+public final class ProxyRegistries {
   /**
    * A proxy registry that has been configured with all proxy factories required to serialize a game data memento.
    */
-  static final ProxyRegistry GAME_DATA_MEMENTO = newGameDataMementoProxyRegistry();
+  public static final ProxyRegistry GAME_DATA_MEMENTO = ProxyRegistry.newInstance(getGameDataMementoProxyFactories());
 
   private ProxyRegistries() {}
 
-  private static ProxyRegistry newGameDataMementoProxyRegistry() {
-    return ProxyRegistry.newInstance(
+  @VisibleForTesting
+  static Collection<ProxyFactory> getGameDataMementoProxyFactories() {
+    return Arrays.asList(
         AaRadarAdvanceProxy.FACTORY,
         DestroyerBombardTechAdvanceProxy.FACTORY,
-        GameDataProxy.FACTORY,
         GuidProxy.FACTORY,
         HeavyBomberAdvanceProxy.FACTORY,
         ImprovedArtillerySupportAdvanceProxy.FACTORY,
