@@ -20,7 +20,7 @@ public class ThreadPool {
    */
   public ThreadPool(final int max) {
     if (max < 1) {
-      throw new IllegalArgumentException("Max must be >= 1, instead its:" + max);
+      throw new IllegalArgumentException("Max must be >= 1, instead it's:" + max);
     }
     executorService = Executors.newFixedThreadPool(max);
   }
