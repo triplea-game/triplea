@@ -116,7 +116,7 @@ public final class GameDataManager {
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
-      if (readVersion.compareTo(ClientContext.engineVersion(), true) != 0) {
+      if (!readVersion.isCompatible(ClientContext.engineVersion())) {
         // a hack for now, but a headless server should not try to open any savegame that is not its version
         if (headless) {
           final String message = "Incompatible game save, we are: " + ClientContext.engineVersion()
@@ -138,8 +138,8 @@ public final class GameDataManager {
                 + "\nHowever, because the first 3 version numbers are the same as your current version, we can "
                 + "still open the savegame."
                 + "\n\nThis TripleA engine is version "
-                + ClientContext.engineVersion().toStringFull("_")
-                + " and you are trying to open a savegame made with version " + readVersion.toStringFull("_")
+                + ClientContext.engineVersion().toStringFull()
+                + " and you are trying to open a savegame made with version " + readVersion.toStringFull()
                 + "\n\nTo download the latest version of TripleA, Please visit "
                 + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
                 + "\n\nIt is recommended that you upgrade to the latest version of TripleA before playing this "
