@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 public class UtilTest {
@@ -32,6 +34,26 @@ public class UtilTest {
 
     catchException(() -> Util.sha512(null));
     assertThat(caughtException(), is(instanceOf(NullPointerException.class)));
+  }
+
+  @Test
+  public void isMailValid_ShouldReturnTrueWhenAddressIsValid() {
+    Arrays.asList(
+        "some@some.com",
+        "some.someMore@some.com",
+        "some@some.com some2@some2.com",
+        "some@some.com some2@some2.co.uk",
+        "some@some.com some2@some2.co.br",
+        "",
+        "some@some.some.some.com")
+        .forEach(it -> assertThat("'" + it + "' should be valid", Util.isMailValid(it), is(true)));
+  }
+
+  @Test
+  public void isMailValid_ShouldReturnFalseWhenAddressIsInvalid() {
+    Arrays.asList(
+        "test")
+        .forEach(it -> assertThat("'" + it + "' should be invalid", Util.isMailValid(it), is(false)));
   }
 
   @Test
