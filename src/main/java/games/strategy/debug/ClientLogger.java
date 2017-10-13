@@ -3,6 +3,8 @@ package games.strategy.debug;
 import java.io.PrintStream;
 import java.util.Collection;
 
+import javax.annotation.Nullable;
+
 /**
  * Provides methods for the client to write log messages.
  *
@@ -23,11 +25,11 @@ public class ClientLogger {
     log(developerOutputStream, e);
   }
 
-  public static void logQuietly(final String msg) {
+  public static void logQuietly(final @Nullable String msg) {
     developerOutputStream.println(msg);
   }
 
-  public static void logQuietly(final String msg, final Throwable e) {
+  public static void logQuietly(final @Nullable String msg, final Throwable e) {
     logQuietly(msg);
     logQuietly(e);
   }
@@ -36,11 +38,11 @@ public class ClientLogger {
     log(userOutputStream, e);
   }
 
-  public static void logError(final String msg) {
+  public static void logError(final @Nullable String msg) {
     userOutputStream.println(msg);
   }
 
-  public static void logError(final String msg, final Throwable e) {
+  public static void logError(final @Nullable String msg, final Throwable e) {
     logError(msg);
     logError(e);
   }
@@ -48,10 +50,10 @@ public class ClientLogger {
   /**
    * Logs the specified message and collection of errors to the user output stream.
    *
-   * @param msg The error message; may be {@code null}.
-   * @param throwables The collection of errors; must not be {@code null}.
+   * @param msg The error message.
+   * @param throwables The collection of errors.
    */
-  public static void logError(final String msg, final Collection<? extends Throwable> throwables) {
+  public static void logError(final @Nullable String msg, final Collection<? extends Throwable> throwables) {
     logError(msg);
     throwables.forEach(ClientLogger::logError);
   }
