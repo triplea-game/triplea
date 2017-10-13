@@ -1,11 +1,11 @@
 package games.strategy.engine.chat;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledDocument;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ChatPanelTest {
 
@@ -18,12 +18,12 @@ public class ChatPanelTest {
     }
     doc.insertString(0, buffer.toString(), null);
     ChatMessagePanel.trimLines(doc, 20);
-    assertEquals(doc.getLength(), 10);
+    assertEquals(10, doc.getLength());
     ChatMessagePanel.trimLines(doc, 10);
-    assertEquals(doc.getLength(), 10);
+    assertEquals(10, doc.getLength());
     ChatMessagePanel.trimLines(doc, 5);
-    assertEquals(doc.getLength(), 5);
+    assertEquals(5, doc.getLength());
     ChatMessagePanel.trimLines(doc, 1);
-    assertEquals(doc.getLength(), 1);
+    assertEquals(1, doc.getLength());
   }
 }
