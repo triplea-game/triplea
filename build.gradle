@@ -1,3 +1,12 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
+	}
+}
+
 plugins {
     id 'java'
     id 'application'
@@ -11,6 +20,7 @@ plugins {
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
+apply plugin: 'org.junit.platform.gradle.plugin'
 
 group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
@@ -96,7 +106,11 @@ dependencies {
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.mockito:mockito-core:2.10.0'
+    testCompile 'org.junit.platform:junit-platform-launcher:1.0.1'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.1'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
     testCompile 'junit:junit:4.12'
+    testRuntime 'org.junit.vintage:junit-vintage-engine:4.12.1'
 }
 
 test {
