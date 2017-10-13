@@ -7,7 +7,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -100,10 +99,6 @@ public class Util {
       ThreadUtil.sleep(1);
     }
     return "" + System.currentTimeMillis();
-  }
-
-  public static <T> void reorder(final List<T> reorder, final List<T> order) {
-    reorder.sort(Comparator.comparing(order::indexOf));
   }
 
   /**
