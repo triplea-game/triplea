@@ -35,7 +35,7 @@ public final class LocalSystemChecker {
         final URLConnection urlConnection = url.openConnection();
         urlConnection.setConnectTimeout(connectTimeoutInMilliseconds);
         urlConnection.connect();
-      } catch (final Exception e) {
+      } catch (final IOException e) {
         throw new RuntimeException(e);
       }
     });

@@ -21,7 +21,9 @@ public class SystemCheckTest {
 
   @Test
   public void testFailingSystemCheck() {
-    final SystemCheck check = new SystemCheck("msg", () -> throwWrappedInRuntimeException(testException));
+    final SystemCheck check = new SystemCheck("msg", () -> {
+      throw new RuntimeException(testException);
+    });
 
     assertThat(check.wasSuccess(), is(false));
     assertThat(check.getResultMessage(), is("msg: false"));
@@ -29,11 +31,9 @@ public class SystemCheckTest {
 
   @Test
   public void remembersAndReturnsExceptions() {
-    final SystemCheck check = new SystemCheck("msg", () -> throwWrappedInRuntimeException(testException));
+    final SystemCheck check = new SystemCheck("msg", () -> {
+      throw new RuntimeException(testException);
+    });
     assertThat(check.getException().isPresent(), is(true));
-  }
-
-  static void throwWrappedInRuntimeException(final Throwable throwable) {
-    throw new RuntimeException(throwable);
   }
 }

@@ -12,7 +12,9 @@ public class LocalSystemCheckerTest {
   private static final SystemCheck PASSING_CHECK = new SystemCheck("no op", () -> {
   });
   private static final SystemCheck FAILING_CHECK =
-      new SystemCheck("throws exception", () -> SystemCheckTest.throwWrappedInRuntimeException(new Exception("test")));
+      new SystemCheck("throws exception", () -> {
+        throw new RuntimeException(new Exception("test"));
+      });
 
   @Test
   public void testPassingCase() {
