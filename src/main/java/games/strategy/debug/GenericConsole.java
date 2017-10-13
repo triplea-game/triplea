@@ -27,7 +27,7 @@ public abstract class GenericConsole extends JFrame {
   private final AbstractAction threadDiagnoseAction =
       SwingAction.of("Enumerate Threads", e -> System.out.println(DebugUtils.getThreadDumps()));
 
-  public GenericConsole(final String title) {
+  protected GenericConsole(final String title) {
     super(title);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());

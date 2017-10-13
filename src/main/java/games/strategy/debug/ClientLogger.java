@@ -13,9 +13,11 @@ import javax.annotation.Nullable;
  * the {@code logQuietly()} methods will send their output to the developer output (standard output) stream.
  * </p>
  */
-public class ClientLogger {
+public final class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
   private static final PrintStream userOutputStream = System.err;
+
+  private ClientLogger() {}
 
   private static void log(final PrintStream stream, final Throwable e) {
     e.printStackTrace(stream);

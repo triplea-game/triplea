@@ -4,11 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 /**
- * Allows data written to a byte output stream to be read
- * safely friom a seperate thread.
- * Only readFully() is currently threadSafe for reading.
+ * Allows data written to a byte output stream to be read safely from a separate thread.
+ * Only readFully() is currently thread safe for reading.
  */
-class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
+final class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
   private final Object lock = new Object();
   private final PrintStream mirror;
 
@@ -36,9 +35,9 @@ class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
   /**
    * Read all data written to the stream.
    * Blocks until data is available.
-   * This is currently the only threadsafe method for reading.
+   * This is currently the only thread safe method for reading.
    */
-  public String readFully() {
+  String readFully() {
     synchronized (lock) {
       if (super.size() == 0) {
         try {
