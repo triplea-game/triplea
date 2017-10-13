@@ -12,13 +12,12 @@ import com.google.common.base.Joiner;
  * versions is the same, then the two versions are considered
  * equal
  */
-public class Version implements Serializable, Comparable<Object> {
+public class Version implements Serializable, Comparable<Version> {
   static final long serialVersionUID = -4770210855326775333L;
   private final int m_major;
   private final int m_minor;
   private final int m_point;
   private final int m_micro;
-  private final boolean microBlank;
   private final String exactVersion;
 
   /**
@@ -43,7 +42,6 @@ public class Version implements Serializable, Comparable<Object> {
     this.m_minor = minor;
     this.m_point = point;
     this.m_micro = micro;
-    this.microBlank = false;
     exactVersion = toString();
   }
 
@@ -76,10 +74,8 @@ public class Version implements Serializable, Comparable<Object> {
         } else {
           m_micro = Integer.parseInt(micro);
         }
-        microBlank = false;
       } else {
         m_micro = 0;
-        microBlank = true;
       }
     } catch (final NumberFormatException e) {
       throw new IllegalArgumentException("invalid version string:" + version);
@@ -130,7 +126,7 @@ public class Version implements Serializable, Comparable<Object> {
 
   @Override
   public boolean equals(final Object o) {
-    return compareTo(o) == 0;
+    return o instanceof Version ? compareTo((Version) o) == 0 : false;
   }
 
   @Override
@@ -139,19 +135,11 @@ public class Version implements Serializable, Comparable<Object> {
   }
 
   @Override
-  public int compareTo(final Object o) {
-    if (!(o instanceof Version)) {
-      return -1;
-    }
-    return compareTo((Version) o, false);
+  public int compareTo(final Version o) {
+    return o == null ? -1 : compareTo(o, false);
   }
 
-  /**
-   * Returns zero if versions are the same, subject to boolean parameter ignoreMicro,
-   * 1 if "other" is more recent than this version", -1 if "other" is less recent.
-   * If either version had a blank micro version, ignoreMicro is effectively forced on.
-   */
-  public int compareTo(final Version other, final boolean ignoreMicro) {
+  private int compareTo(final Version other, final boolean ignoreMicro) {
     if (other == null) {
       return -1;
     }
@@ -168,11 +156,15 @@ public class Version implements Serializable, Comparable<Object> {
       return 1;
     } else if (other.m_point < m_point) {
       return -1;
-    } else if (ignoreMicro || microBlank || other.microBlank || m_micro == other.m_micro) {
-      return 0;
-    } else {
-      return other.m_micro > m_micro ? 1 : -1;
+    } else if (!ignoreMicro) {
+      if (other.m_micro > m_micro) {
+        return 1;
+      } else if (other.m_micro < m_micro) {
+        return -1;
+      }
     }
+    // if the only difference is m_micro, then ignore
+    return 0;
   }
 
   /**
@@ -200,20 +192,23 @@ public class Version implements Serializable, Comparable<Object> {
   /**
    * Creates a complete version string with '.' as separator, even if some version numbers are 0.
    */
-  public String toStringFull(final String separator) {
-    return toStringFull(separator, false);
+  public String toStringFull() {
+    return toStringFull('.');
   }
 
   /**
    * Creates a complete version string with the given separator, even if some version numbers are 0.
    */
-  private String toStringFull(final String separator, final boolean noMicro) {
-    return m_major + separator + m_minor + separator + m_point
-      + (noMicro ? "" : (separator + (m_micro == Integer.MAX_VALUE ? "dev" : m_micro)));
+  public String toStringFull(final char separator) {
+    return Joiner.on(separator).join(m_major, m_minor, m_point, m_micro == Integer.MAX_VALUE ? "dev" : m_micro);
   }
 
   @Override
   public String toString() {
-    return m_point == 0 && m_micro == 0 ? m_major + "." + m_minor : toStringFull(".", m_micro == 0);
+    return m_micro != 0 ? toStringFull() : m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
+  }
+
+  public boolean isCompatible(Version other) {
+    return other != null && other.m_major == m_major && other.m_minor == m_minor && other.m_point == m_point;
   }
 }
