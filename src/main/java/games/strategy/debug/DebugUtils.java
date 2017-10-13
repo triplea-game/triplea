@@ -9,11 +9,15 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Moved out of Console class, so that we don't need swing.
+ * A collection of methods that provide information about the JVM state that may be useful for debugging.
  */
 public class DebugUtils {
   private static final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
 
+  /**
+   * Returns a message containing the stack trace of each active thread, as well as a listing of possibly-deadlocked
+   * threads.
+   */
   public static String getThreadDumps() {
     final StringBuilder result = new StringBuilder();
     result.append("THREAD DUMP\n");
@@ -48,6 +52,9 @@ public class DebugUtils {
     return result.toString();
   }
 
+  /**
+   * Returns a message containing information about current memory usage.
+   */
   public static String getMemory() {
     System.gc();
     System.runFinalization();

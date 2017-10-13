@@ -3,6 +3,14 @@ package games.strategy.debug;
 import java.io.PrintStream;
 import java.util.Collection;
 
+/**
+ * Provides methods for the client to write log messages.
+ *
+ * <p>
+ * In general, the {@code logError()} methods will send their output to the user output (standard error) stream, while
+ * the {@code logQuietly()} methods will send their output to the developer output (standard output) stream.
+ * </p>
+ */
 public class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
   private static final PrintStream userOutputStream = System.err;
