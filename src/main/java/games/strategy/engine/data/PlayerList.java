@@ -52,12 +52,6 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
     return m_players.get(name);
   }
 
-  public String[] getNames() {
-    final String[] values = new String[size()];
-    m_players.keySet().toArray(values);
-    return values;
-  }
-
   /**
    * @return a new arraylist copy of the players.
    */
