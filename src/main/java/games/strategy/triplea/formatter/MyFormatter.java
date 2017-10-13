@@ -47,7 +47,7 @@ public class MyFormatter {
     while (iter.hasNext()) {
       final Unit unit = iter.next();
       if (owner == null || owner.equals(unit.getOwner())) {
-        map.add(unit.getUnitType(), 1);
+        map.add(unit.getType(), 1);
       }
     }
     final StringBuilder buf = new StringBuilder();

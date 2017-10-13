@@ -199,8 +199,8 @@ public class TransportUtils {
 
   private static List<Unit> sortByTransportCostDescending(final Collection<Unit> units) {
     final Comparator<Unit> transportCostComparator = (o1, o2) -> {
-      final int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
-      final int cost2 = UnitAttachment.get((o2).getUnitType()).getTransportCost();
+      final int cost1 = UnitAttachment.get((o1).getType()).getTransportCost();
+      final int cost2 = UnitAttachment.get((o2).getType()).getTransportCost();
       return Integer.compare(cost2, cost1);
     };
     final List<Unit> canBeTransported = Matches.getMatches(units, Matches.unitCanBeTransported());

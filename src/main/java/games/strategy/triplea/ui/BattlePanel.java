@@ -532,7 +532,7 @@ public class BattlePanel extends ActionPanel {
     BombardComponent(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories,
         final boolean noneAvailable) {
       this.setLayout(new BorderLayout());
-      final String unitName = unit.getUnitType().getName() + " in " + unitTerritory;
+      final String unitName = unit.getType().getName() + " in " + unitTerritory;
       final JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
       this.add(label, BorderLayout.NORTH);
       final Vector<Object> listElements = new Vector<>(territories);

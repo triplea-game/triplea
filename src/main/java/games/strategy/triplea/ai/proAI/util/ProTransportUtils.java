@@ -247,7 +247,7 @@ public class ProTransportUtils {
     // Loop through all units, starting from the right, and rearrange units
     for (int i = result.size() - 1; i >= 0; i--) {
       final Unit unit = result.get(i);
-      final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getCarrierCost() > 0 || i == 0) { // If this is a plane or last unit
         // If we haven't ignored enough trailing planes and not last unit
         if (processedPlaneCount < planesThatDontNeedToLand && i > 0) {
@@ -264,7 +264,7 @@ public class ProTransportUtils {
           }
           seekedCarrier = result.get(seekedCarrierIndex);
           indexToPlaceCarrierAt = i + 1; // Tell the code to insert carrier to the right of this plane
-          spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
+          spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
         }
         if (ua.getCarrierCost() > 0) {
           spaceLeftOnSeekedCarrier -= ua.getCarrierCost();
@@ -295,7 +295,7 @@ public class ProTransportUtils {
 
             // Place next carrier right before this plane (which just filled the old carrier that was just moved)
             indexToPlaceCarrierAt = i;
-            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
+            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
           } else {
 
             // If it's later in the list
@@ -314,7 +314,7 @@ public class ProTransportUtils {
             final List<Unit> planesBetweenHereAndCarrier = new ArrayList<>();
             for (int i2 = i; i2 < carrierPlaceLocation; i2++) {
               final Unit unit2 = result.get(i2);
-              final UnitAttachment ua2 = UnitAttachment.get(unit2.getUnitType());
+              final UnitAttachment ua2 = UnitAttachment.get(unit2.getType());
               if (ua2.getCarrierCost() > 0) {
                 planesBetweenHereAndCarrier.add(unit2);
               }
@@ -338,7 +338,7 @@ public class ProTransportUtils {
 
             // Since we only moved planes up, just reduce next carrier place index by plane move count
             indexToPlaceCarrierAt = carrierPlaceLocation - planeMoveCount;
-            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
+            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
           }
         }
       }

@@ -325,7 +325,7 @@ class ProPurchaseAI {
             final List<Unit> unitsToPlace = new ArrayList<>();
             for (final Unit placeUnit : ppt.getPlaceUnits()) {
               for (final Unit myUnit : myUnits) {
-                if (myUnit.getUnitType().equals(placeUnit.getUnitType()) && !unitsToPlace.contains(myUnit)) {
+                if (myUnit.getType().equals(placeUnit.getType()) && !unitsToPlace.contains(myUnit)) {
                   unitsToPlace.add(myUnit);
                   break;
                 }
@@ -343,7 +343,7 @@ class ProPurchaseAI {
             final List<Unit> unitsToPlace = new ArrayList<>();
             for (final Unit placeUnit : ppt.getPlaceUnits()) {
               for (final Unit myUnit : myUnits) {
-                if (myUnit.getUnitType().equals(placeUnit.getUnitType()) && !unitsToPlace.contains(myUnit)) {
+                if (myUnit.getType().equals(placeUnit.getType()) && !unitsToPlace.contains(myUnit)) {
                   unitsToPlace.add(myUnit);
                   break;
                 }
@@ -1785,7 +1785,7 @@ class ProPurchaseAI {
       for (final Territory t : purchaseTerritories.keySet()) {
         for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
           for (final Unit u : ppt.getPlaceUnits()) {
-            if (u.getUnitType().equals(ppo.getUnitType()) && !unplacedUnits.contains(u)) {
+            if (u.getType().equals(ppo.getUnitType()) && !unplacedUnits.contains(u)) {
               numUnits++;
             }
           }

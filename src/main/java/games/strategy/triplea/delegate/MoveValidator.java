@@ -393,8 +393,8 @@ public class MoveValidator {
     // See if we are doing invasions in combat phase, with units or transports that can't do invasion.
     if (route.isUnload() && Matches.isTerritoryEnemy(player, data).match(route.getEnd())) {
       for (final Unit unit : Matches.getMatches(units, Matches.unitCanInvade().invert())) {
-        result.addDisallowedUnit(unit.getUnitType().getName() + " can't invade from "
-            + TripleAUnit.get(unit).getTransportedBy().getUnitType().getName(), unit);
+        result.addDisallowedUnit(unit.getType().getName() + " can't invade from "
+            + TripleAUnit.get(unit).getTransportedBy().getType().getName(), unit);
       }
     }
     return result;
@@ -1453,7 +1453,7 @@ public class MoveValidator {
 
   private static Collection<Unit> getCanCarry(final Unit carrier, final Collection<Unit> selectFrom,
       final PlayerID playerWhoIsDoingTheMovement, final GameData data) {
-    final UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
+    final UnitAttachment ua = UnitAttachment.get(carrier.getType());
     final Collection<Unit> canCarry = new ArrayList<>();
     int available = ua.getCarrierCapacity();
     final Iterator<Unit> iter = selectFrom.iterator();
@@ -1461,7 +1461,7 @@ public class MoveValidator {
     while (iter.hasNext()) {
       final Unit plane = iter.next();
       final TripleAUnit taPlane = (TripleAUnit) plane;
-      final UnitAttachment planeAttachment = UnitAttachment.get(plane.getUnitType());
+      final UnitAttachment planeAttachment = UnitAttachment.get(plane.getType());
       final int cost = planeAttachment.getCarrierCost();
       if (available >= cost) {
         // this is to test if they started in the same sea zone or not, and its not a very good way of testing it.
