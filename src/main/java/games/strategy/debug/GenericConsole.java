@@ -17,6 +17,9 @@ import javax.swing.WindowConstants;
 
 import games.strategy.ui.SwingAction;
 
+/**
+ * Superclass for all debug console windows.
+ */
 public abstract class GenericConsole extends JFrame {
   private static final long serialVersionUID = 5754914217052820386L;
 
