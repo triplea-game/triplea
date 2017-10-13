@@ -68,12 +68,8 @@ public class Version implements Serializable, Comparable<Version> {
         m_point = 0;
       }
       if (tokens.hasMoreTokens()) {
-        String micro = tokens.nextToken();
-        if (micro.equals("dev")) {
-          m_micro = Integer.MAX_VALUE;
-        } else {
-          m_micro = Integer.parseInt(micro);
-        }
+        final String micro = tokens.nextToken();
+        m_micro = micro.equals("dev") ? Integer.MAX_VALUE : Integer.parseInt(micro);
       } else {
         m_micro = 0;
       }
