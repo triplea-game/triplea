@@ -18,6 +18,7 @@ public class Version implements Serializable, Comparable<Object> {
   private final int m_minor;
   private final int m_point;
   private final int m_micro;
+  private final boolean microBlank;
   private final String exactVersion;
 
   /**
@@ -42,6 +43,7 @@ public class Version implements Serializable, Comparable<Object> {
     this.m_minor = minor;
     this.m_point = point;
     this.m_micro = micro;
+    this.microBlank = false;
     exactVersion = toString();
   }
 
@@ -68,9 +70,16 @@ public class Version implements Serializable, Comparable<Object> {
         m_point = 0;
       }
       if (tokens.hasMoreTokens()) {
-        m_micro = Integer.parseInt(tokens.nextToken());
+        String micro = tokens.nextToken();
+        if (micro.equals("dev")) {
+          m_micro = Integer.MAX_VALUE;
+        } else {
+          m_micro = Integer.parseInt(micro);
+        }
+        microBlank = false;
       } else {
         m_micro = 0;
+        microBlank = true;
       }
     } catch (final NumberFormatException e) {
       throw new IllegalArgumentException("invalid version string:" + version);
@@ -137,7 +146,12 @@ public class Version implements Serializable, Comparable<Object> {
     return compareTo((Version) o, false);
   }
 
-  private int compareTo(final Version other, final boolean ignoreMicro) {
+  /**
+   * Returns zero if versions are the same, subject to boolean parameter ignoreMicro,
+   * 1 if "other" is more recent than this version", -1 if "other" is less recent.
+   * If either version had a blank micro version, ignoreMicro is effectively forced on.
+   */
+  public int compareTo(final Version other, final boolean ignoreMicro) {
     if (other == null) {
       return -1;
     }
@@ -154,15 +168,11 @@ public class Version implements Serializable, Comparable<Object> {
       return 1;
     } else if (other.m_point < m_point) {
       return -1;
-    } else if (!ignoreMicro) {
-      if (other.m_micro > m_micro) {
-        return 1;
-      } else if (other.m_micro < m_micro) {
-        return -1;
-      }
+    } else if (ignoreMicro || microBlank || other.microBlank || m_micro == other.m_micro) {
+      return 0;
+    } else {
+      return other.m_micro > m_micro ? 1 : -1;
     }
-    // if the only difference is m_micro, then ignore
-    return 0;
   }
 
   /**
@@ -190,19 +200,20 @@ public class Version implements Serializable, Comparable<Object> {
   /**
    * Creates a complete version string with '.' as separator, even if some version numbers are 0.
    */
-  public String toStringFull() {
-    return toStringFull('.');
+  public String toStringFull(final String separator) {
+    return toStringFull(separator, false);
   }
 
   /**
    * Creates a complete version string with the given separator, even if some version numbers are 0.
    */
-  public String toStringFull(final char separator) {
-    return Joiner.on(separator).join(m_major, m_minor, m_point, m_micro);
+  private String toStringFull(final String separator, final boolean noMicro) {
+    return m_major + separator + m_minor + separator + m_point
+      + (noMicro ? "" : (separator + (m_micro == Integer.MAX_VALUE ? "dev" : m_micro)));
   }
 
   @Override
   public String toString() {
-    return m_micro != 0 ? toStringFull() : m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
+    return m_point == 0 && m_micro == 0 ? m_major + "." + m_minor : toStringFull(".", m_micro == 0);
   }
 }

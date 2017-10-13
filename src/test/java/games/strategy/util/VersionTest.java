@@ -57,6 +57,11 @@ public class VersionTest {
   }
 
   @Test
+  public void verifyDevVersionToString() {
+    assertEquals("1.2.3.dev", new Version("1.2.3.dev").toString());
+  }
+
+  @Test
   public void getExactVersion() {
     assertEquals("1.2.3.4", new Version(1, 2, 3, 4).getExactVersion());
     assertEquals("1.2.3.4.5", new Version("1.2.3.4.5").getExactVersion());
