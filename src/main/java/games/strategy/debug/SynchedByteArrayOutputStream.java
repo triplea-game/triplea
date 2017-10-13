@@ -10,15 +10,15 @@ import java.io.PrintStream;
  */
 class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
   private final Object lock = new Object();
-  private final PrintStream m_mirror;
+  private final PrintStream mirror;
 
   SynchedByteArrayOutputStream(final PrintStream mirror) {
-    m_mirror = mirror;
+    this.mirror = mirror;
   }
 
   public void write(final byte b) {
     synchronized (lock) {
-      m_mirror.write(b);
+      mirror.write(b);
       super.write(b);
       lock.notifyAll();
     }
@@ -28,7 +28,7 @@ class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
   public void write(final byte[] b, final int off, final int len) {
     synchronized (lock) {
       super.write(b, off, len);
-      m_mirror.write(b, off, len);
+      mirror.write(b, off, len);
       lock.notifyAll();
     }
   }
