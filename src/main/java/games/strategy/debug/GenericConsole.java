@@ -20,26 +20,28 @@ import games.strategy.ui.SwingAction;
 public abstract class GenericConsole extends JFrame {
   private static final long serialVersionUID = 5754914217052820386L;
 
-  private final JTextArea m_text = new JTextArea(20, 50);
+  private final JTextArea textArea = new JTextArea(20, 50);
+  private final AbstractAction threadDiagnoseAction =
+      SwingAction.of("Enumerate Threads", e -> System.out.println(DebugUtils.getThreadDumps()));
 
   public GenericConsole(final String title) {
     super(title);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
-    m_text.setLineWrap(true);
-    m_text.setWrapStyleWord(true);
-    final JScrollPane scroll = new JScrollPane(m_text);
+    textArea.setLineWrap(true);
+    textArea.setWrapStyleWord(true);
+    final JScrollPane scroll = new JScrollPane(textArea);
     getContentPane().add(scroll, BorderLayout.CENTER);
     final JToolBar actions = new JToolBar(SwingConstants.HORIZONTAL);
     getContentPane().add(actions, BorderLayout.SOUTH);
     actions.setFloatable(false);
-    actions.add(m_threadDiagnoseAction);
+    actions.add(threadDiagnoseAction);
     final AbstractAction memoryAction = SwingAction.of("Memory", e -> append(DebugUtils.getMemory()));
     actions.add(memoryAction);
     final AbstractAction propertiesAction = SwingAction.of("Properties", e -> append(DebugUtils.getProperties()));
     actions.add(propertiesAction);
     final Action copyAction = SwingAction.of("Copy to clipboard", e -> {
-      final String text = m_text.getText();
+      final String text = textArea.getText();
       final StringSelection select = new StringSelection(text);
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
     });
@@ -52,19 +54,19 @@ public abstract class GenericConsole extends JFrame {
   public abstract GenericConsole getConsoleInstance();
 
   public void append(final String s) {
-    m_text.append(s);
+    textArea.append(s);
   }
 
   public void clear() {
-    m_text.setText("");
+    textArea.setText("");
   }
 
   public void dumpStacks() {
-    m_threadDiagnoseAction.actionPerformed(null);
+    threadDiagnoseAction.actionPerformed(null);
   }
 
   public String getText() {
-    return m_text.getText();
+    return textArea.getText();
   }
 
   /**
@@ -72,7 +74,7 @@ public abstract class GenericConsole extends JFrame {
    */
   protected void displayStandardError() {
     final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.err);
-    final ThreadReader reader = new ThreadReader(out, m_text, true, getConsoleInstance());
+    final ThreadReader reader = new ThreadReader(out, textArea, true, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std err reader");
     thread.setDaemon(true);
     thread.start();
@@ -82,16 +84,11 @@ public abstract class GenericConsole extends JFrame {
 
   protected void displayStandardOutput() {
     final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.out);
-    final ThreadReader reader = new ThreadReader(out, m_text, false, getConsoleInstance());
+    final ThreadReader reader = new ThreadReader(out, textArea, false, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std out reader");
     thread.setDaemon(true);
     thread.start();
     final PrintStream print = new PrintStream(out);
     System.setOut(print);
   }
-
-  private final AbstractAction m_threadDiagnoseAction =
-      SwingAction.of("Enumerate Threads", e -> System.out.println(DebugUtils.getThreadDumps()));
 }
-
-
