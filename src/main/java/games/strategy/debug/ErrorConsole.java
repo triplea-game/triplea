@@ -6,9 +6,13 @@ import games.strategy.ui.SwingAction;
 /**
  * A debug console window that displays the standard output and standard error streams.
  */
-public class ErrorConsole extends GenericConsole {
+public final class ErrorConsole extends GenericConsole {
   private static final long serialVersionUID = -3489030525309243438L;
   private static ErrorConsole console;
+
+  private ErrorConsole() {
+    super("TripleA Console");
+  }
 
   /**
    * Gets the singleton instance of the {@code ErrorConsole} class.
@@ -30,10 +34,5 @@ public class ErrorConsole extends GenericConsole {
   @Override
   public GenericConsole getConsoleInstance() {
     return getConsole();
-  }
-
-  /** Creates a new instance of ErrorConsole. */
-  public ErrorConsole() {
-    super("TripleA Console");
   }
 }

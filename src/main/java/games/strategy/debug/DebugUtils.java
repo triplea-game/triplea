@@ -11,8 +11,10 @@ import java.util.Properties;
 /**
  * A collection of methods that provide information about the JVM state that may be useful for debugging.
  */
-public class DebugUtils {
+public final class DebugUtils {
   private static final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
+
+  private DebugUtils() {}
 
   /**
    * Returns a message containing the stack trace of each active thread, as well as a listing of possibly-deadlocked
@@ -69,7 +71,7 @@ public class DebugUtils {
     return buf.toString();
   }
 
-  public static String getProperties() {
+  static String getProperties() {
     final StringBuilder buf = new StringBuilder("SYSTEM PROPERTIES\n");
     final Properties props = System.getProperties();
     final List<String> keys = new ArrayList<>(props.stringPropertyNames());

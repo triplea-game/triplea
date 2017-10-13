@@ -4,7 +4,7 @@ import javax.swing.JTextArea;
 
 import games.strategy.util.ThreadUtil;
 
-class ThreadReader implements Runnable {
+final class ThreadReader implements Runnable {
   private static final int CONSOLE_UPDATE_INTERVAL_MS = 100;
   private final JTextArea text;
   private final SynchedByteArrayOutputStream in;
