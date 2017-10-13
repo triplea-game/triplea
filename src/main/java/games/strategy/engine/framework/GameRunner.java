@@ -476,8 +476,7 @@ public class GameRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     final String newClassPath = null;
-    final boolean compatibleVersion = ClientContext.engineVersion().isCompatible(engineVersionOfGameToJoin);
-    if (!compatibleVersion) {
+    if (!ClientContext.engineVersion().isCompatible(engineVersionOfGameToJoin)) {
       JOptionPane.showMessageDialog(parent,
           "Host is using version " + engineVersionOfGameToJoin.toStringFull()
               + ". You need to have a compatible engine version in order to join this game.",
