@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -103,27 +103,12 @@ public class Util {
   }
 
   public static <T> void reorder(final List<T> reorder, final List<T> order) {
-    final IntegerMap<T> map = new IntegerMap<>();
-    for (final T o : order) {
-      map.put(o, order.indexOf(o));
-    }
-    Collections.sort(reorder, (o1, o2) -> {
-      // get int returns 0 if no value
-      final int v1 = map.getInt(o1);
-      final int v2 = map.getInt(o2);
-      if (v1 > v2) {
-        return 1;
-      } else if (v1 == v2) {
-        return 0;
-      } else {
-        return -1;
-      }
-    });
+    reorder.sort(Comparator.comparing(order::indexOf));
   }
 
   /**
    * Creates a hash of the given String based on the SHA-512 algorithm.
-   * 
+   *
    * @param input The input String to hash.
    * @return A hashed hexadecimal String of the input.
    */

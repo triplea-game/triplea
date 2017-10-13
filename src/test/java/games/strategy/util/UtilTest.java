@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -62,5 +63,15 @@ public class UtilTest {
 
     assertThat(Util.not(it -> false).test(t), is(true));
     assertThat(Util.not(it -> true).test(t), is(false));
+  }
+
+  @Test
+  public void reorder_ShouldSortFirstListAccordingToSecondList() {
+    final List<Integer> reorder = Arrays.asList(1, 2, 3, 4, 5);
+    final List<Integer> order = Arrays.asList(5, 3, 1, 4, 2);
+
+    Util.reorder(reorder, order);
+
+    assertThat(reorder, is(order));
   }
 }
