@@ -198,7 +198,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!isAlliedAirIndependent()) {
       dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
       for (final Unit carrier : dependencies.keySet()) {
-        final UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
+        final UnitAttachment ua = UnitAttachment.get(carrier.getType());
         if (ua.getCarrierCapacity() == -1) {
           continue;
         }
@@ -2605,7 +2605,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
     final Comparator<Unit> comparator = (u1, u2) -> {
       int amphibComp = 0;
-      if (u1.getUnitType().equals(u2.getUnitType())) {
+      if (u1.getType().equals(u2.getType())) {
         final UnitAttachment ua = UnitAttachment.get(u1.getType());
         final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
         if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
@@ -2616,7 +2616,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
         return amphibComp;
       }
-      return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
+      return u1.getType().getName().compareTo(u2.getType().getName());
     };
     Collections.sort(units, comparator);
   }

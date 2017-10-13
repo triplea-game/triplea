@@ -38,6 +38,6 @@ public class AiUtilsTest {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final List<Unit> sorted = new ArrayList<>(germany.getUnits().getUnits());
     Collections.sort(sorted, AIUtils.getCostComparator());
-    assertEquals(sorted.get(0).getUnitType().getName(), Constants.UNIT_TYPE_INFANTRY);
+    assertEquals(sorted.get(0).getType().getName(), Constants.UNIT_TYPE_INFANTRY);
   }
 }

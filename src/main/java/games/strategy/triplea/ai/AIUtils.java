@@ -144,7 +144,7 @@ public class AIUtils {
     // Loop through all units, starting from the right, and rearrange units
     for (int i = result.size() - 1; i >= 0; i--) {
       final Unit unit = result.get(i);
-      final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
       // If this is a plane
       if (ua.getCarrierCost() > 0) {
         // If we haven't ignored enough trailing planes
@@ -165,7 +165,7 @@ public class AIUtils {
           seekedCarrier = result.get(seekedCarrierIndex);
           // Tell the code to insert carrier to the right of this plane
           indexToPlaceCarrierAt = i + 1;
-          spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
+          spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
         }
         spaceLeftOnSeekedCarrier -= ua.getCarrierCost();
         // If the carrier has been filled or overflowed
@@ -193,7 +193,7 @@ public class AIUtils {
             }
             // Place next carrier right before this plane (which just filled the old carrier that was just moved)
             indexToPlaceCarrierAt = i;
-            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
+            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
           } else { // If it's later in the list
             final int oldIndex = result.indexOf(seekedCarrier);
             int carrierPlaceLocation = indexToPlaceCarrierAt;
@@ -208,7 +208,7 @@ public class AIUtils {
             final List<Unit> planesBetweenHereAndCarrier = new ArrayList<>();
             for (int i2 = i; i2 < carrierPlaceLocation; i2++) {
               final Unit unit2 = result.get(i2);
-              final UnitAttachment ua2 = UnitAttachment.get(unit2.getUnitType());
+              final UnitAttachment ua2 = UnitAttachment.get(unit2.getType());
               if (ua2.getCarrierCost() > 0) {
                 planesBetweenHereAndCarrier.add(unit2);
               }
@@ -231,7 +231,7 @@ public class AIUtils {
             }
             // Since we only moved planes up, just reduce next carrier place index by plane move count
             indexToPlaceCarrierAt = carrierPlaceLocation - planeMoveCount;
-            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getUnitType()).getCarrierCapacity();
+            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
           }
         }
       }

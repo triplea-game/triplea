@@ -303,7 +303,7 @@ public abstract class AbstractBattle implements IBattle {
   static int getMaxHits(final Collection<Unit> units) {
     int count = 0;
     for (final Unit unit : units) {
-      count += UnitAttachment.get(unit.getUnitType()).getHitPoints();
+      count += UnitAttachment.get(unit.getType()).getHitPoints();
       count -= unit.getHits();
     }
     return count;

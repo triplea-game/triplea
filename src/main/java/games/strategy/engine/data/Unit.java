@@ -51,10 +51,6 @@ public class Unit extends GameDataComponent {
     return m_type;
   }
 
-  public UnitType getUnitType() {
-    return m_type;
-  }
-
   public PlayerID getOwner() {
     return m_owner;
   }

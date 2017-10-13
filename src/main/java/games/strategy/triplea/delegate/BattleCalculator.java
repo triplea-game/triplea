@@ -60,10 +60,10 @@ public class BattleCalculator {
   // units with least movement
   static void sortPreBattle(final List<Unit> units) {
     final Comparator<Unit> comparator = (u1, u2) -> {
-      if (u1.getUnitType().equals(u2.getUnitType())) {
+      if (u1.getType().equals(u2.getType())) {
         return UnitComparator.getLowestToHighestMovementComparator().compare(u1, u2);
       }
-      return u1.getUnitType().getName().compareTo(u2.getUnitType().getName());
+      return u1.getType().getName().compareTo(u2.getType().getName());
     };
     Collections.sort(units, comparator);
   }

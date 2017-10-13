@@ -834,7 +834,7 @@ public class WeakAI extends AbstractAI {
       int maxUnits = (totalPu - 1) / minimumUnitPrice;
       if ((capProduction <= maxUnits / 2 || repairFactories.isEmpty()) && capUnit != null) {
         for (final RepairRule rrule : repairRules) {
-          if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next())) {
+          if (!capUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())

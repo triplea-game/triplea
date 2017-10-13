@@ -751,7 +751,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     final IntegerMap<String> constructionMap = howManyOfEachConstructionCanPlace(to, to, units, player);
     for (final Unit currentUnit : Matches.getMatches(units, Matches.unitIsConstruction())) {
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
       /*
        * if (ua.getIsFactory() && !ua.getIsConstruction())
        * constructionMap.add("factory", -1);
@@ -818,7 +818,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     // account for any unit placement restrictions by territory
     for (final Unit currentUnit : units) {
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
       // Can be null!
       final TerritoryAttachment ta = TerritoryAttachment.get(to);
       if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
@@ -937,7 +937,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     final Collection<Unit> placeableUnits3 = new ArrayList<>();
     for (final Unit currentUnit : placeableUnits2) {
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
       // Can be null!
       final TerritoryAttachment ta = TerritoryAttachment.get(to);
       if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1
@@ -1258,7 +1258,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     while (unitHeldIter.hasNext()) {
       final Unit currentUnit = unitHeldIter.next();
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
       // account for any unit placement restrictions by territory
       if (isUnitPlacementRestrictions()) {
         final String[] terrs = ua.getUnitPlacementRestrictions();
@@ -1296,7 +1296,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final IntegerMap<String> unitMapTo = new IntegerMap<>();
     if (Match.anyMatch(unitsInTo, Matches.unitIsConstruction())) {
       for (final Unit currentUnit : Matches.getMatches(unitsInTo, Matches.unitIsConstruction())) {
-        final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+        final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
         /*
          * if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
          * unitMapTO.add("factory", 1);
@@ -1327,7 +1327,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Iterator<Unit> unitAlready = Matches.getMatches(unitsPlacedAlready, Matches.unitIsConstruction()).iterator();
     while (unitAlready.hasNext()) {
       final Unit currentUnit = unitAlready.next();
-      final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+      final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
       unitMapTypePerTurn.add(ua.getConstructionType(), -1);
     }
     // modify this list based on how many we can place per turn
@@ -1346,7 +1346,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
-    final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+    final UnitAttachment ua = UnitAttachment.get(unit.getType());
     if (/* !ua.getIsFactory() && */(!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1
         || ua.getMaxConstructionsPerTypePerTerr() < 1)) {
       return 0;

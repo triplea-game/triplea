@@ -613,11 +613,11 @@ public final class Matches {
   }
 
   static Match<Unit> unitHasMovementLimit() {
-    return Match.of(obj -> UnitAttachment.get(obj.getUnitType()).getMovementLimit() != null);
+    return Match.of(obj -> UnitAttachment.get(obj.getType()).getMovementLimit() != null);
   }
 
   static final Match<Unit> unitHasAttackingLimit() {
-    return Match.of(obj -> UnitAttachment.get(obj.getUnitType()).getAttackingLimit() != null);
+    return Match.of(obj -> UnitAttachment.get(obj.getType()).getAttackingLimit() != null);
   }
 
   private static Match<UnitType> unitTypeCanNotMoveDuringCombatMove() {
@@ -762,7 +762,7 @@ public final class Matches {
   }
 
   public static Match<Unit> unitIsInfantry() {
-    return Match.of(obj -> UnitAttachment.get(obj.getUnitType()).getIsInfantry());
+    return Match.of(obj -> UnitAttachment.get(obj.getType()).getIsInfantry());
   }
 
   public static Match<Unit> unitIsNotInfantry() {
@@ -778,7 +778,7 @@ public final class Matches {
       if (ta == null || !ta.getParatroopers()) {
         return false;
       }
-      final UnitType type = obj.getUnitType();
+      final UnitType type = obj.getType();
       final UnitAttachment ua = UnitAttachment.get(type);
       return ua.getIsAirTransportable();
     });
@@ -797,18 +797,18 @@ public final class Matches {
       if (ta == null || !ta.getParatroopers()) {
         return false;
       }
-      final UnitType type = obj.getUnitType();
+      final UnitType type = obj.getType();
       final UnitAttachment ua = UnitAttachment.get(type);
       return ua.getIsAirTransport();
     });
   }
 
   public static Match<Unit> unitIsArtillery() {
-    return Match.of(obj -> UnitAttachment.get(obj.getUnitType()).getArtillery());
+    return Match.of(obj -> UnitAttachment.get(obj.getType()).getArtillery());
   }
 
   public static Match<Unit> unitIsArtillerySupportable() {
-    return Match.of(obj -> UnitAttachment.get(obj.getUnitType()).getArtillerySupportable());
+    return Match.of(obj -> UnitAttachment.get(obj.getType()).getArtillerySupportable());
   }
 
   // TODO: CHECK whether this makes any sense
@@ -1804,7 +1804,7 @@ public final class Matches {
       if (unitIsDisabled().match(unitWhichCanGiveBonusMovement)) {
         return false;
       }
-      final UnitType type = unitWhichCanGiveBonusMovement.getUnitType();
+      final UnitType type = unitWhichCanGiveBonusMovement.getType();
       final UnitAttachment ua = UnitAttachment.get(type);
       // TODO: make sure the unit is operational
       return unitCanGiveBonusMovement().match(unitWhichCanGiveBonusMovement)
@@ -2032,7 +2032,7 @@ public final class Matches {
         return true;
       }
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.canInvadeFrom(transport.getUnitType().getName());
+      return ua.canInvadeFrom(transport.getType().getName());
     });
   }
 
