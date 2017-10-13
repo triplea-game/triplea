@@ -2,11 +2,11 @@ package games.strategy.engine.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.util.Util;
 
 public class TechnologyFrontier extends GameDataComponent implements Iterable<TechAdvance> {
   private static final long serialVersionUID = -5245743727479551766L;
@@ -38,7 +38,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   private void reorderTechsToMatchGameTechsOrder() {
     final GameData gameData = getData();
     if (gameData != null) {
-      Util.reorder(m_techs, gameData.getTechnologyFrontier().getTechs());
+      m_techs.sort(Comparator.comparing(gameData.getTechnologyFrontier().getTechs()::indexOf));
       m_cachedTechs = null;
     }
   }
