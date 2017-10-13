@@ -23,8 +23,6 @@ import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.google.common.base.Throwables;
-
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameRunner;
@@ -310,7 +308,7 @@ public class ClipPlayer {
     try {
       return availableSounds.get(0).toURI();
     } catch (final URISyntaxException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

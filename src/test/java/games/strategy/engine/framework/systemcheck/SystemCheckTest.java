@@ -5,8 +5,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.google.common.base.Throwables;
-
 public class SystemCheckTest {
 
   private final Exception testException = new Exception("Testing");
@@ -23,7 +21,9 @@ public class SystemCheckTest {
 
   @Test
   public void testFailingSystemCheck() {
-    final SystemCheck check = new SystemCheck("msg", () -> Throwables.propagate(testException));
+    final SystemCheck check = new SystemCheck("msg", () -> {
+      throw new RuntimeException(testException);
+    });
 
     assertThat(check.wasSuccess(), is(false));
     assertThat(check.getResultMessage(), is("msg: false"));
@@ -31,7 +31,9 @@ public class SystemCheckTest {
 
   @Test
   public void remembersAndReturnsExceptions() {
-    final SystemCheck check = new SystemCheck("msg", () -> Throwables.propagate(testException));
+    final SystemCheck check = new SystemCheck("msg", () -> {
+      throw new RuntimeException(testException);
+    });
     assertThat(check.getException().isPresent(), is(true));
   }
 }
