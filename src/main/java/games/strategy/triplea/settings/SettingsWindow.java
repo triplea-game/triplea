@@ -17,7 +17,6 @@ import javax.swing.SwingUtilities;
 import com.google.common.base.Preconditions;
 
 import games.strategy.ui.SwingComponents;
-import swinglib.GridBagHelper;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
@@ -86,17 +85,14 @@ enum SettingsWindow {
   }
 
   private static JComponent tabMainContents(final Iterable<ClientSettingUiBinding> settings) {
-    final JPanel contents = JPanelBuilder.builder()
-        .gridBagLayout()
-        .build();
-
-    final GridBagHelper grid = new GridBagHelper(contents, 3);
+    final JPanelBuilder contents = JPanelBuilder.builder()
+        .gridBagLayout(3);
 
     // Add settings, one per row, columns of 3:
     // setting title (JLabel) | input component (eg: radio buttons) | description (JTextArea)}
 
     settings.forEach(setting -> {
-      grid.add(JPanelBuilder.builder()
+      contents.add(JPanelBuilder.builder()
           .horizontalBoxLayout()
           .add(
               JLabelBuilder.builder()
@@ -106,9 +102,9 @@ enum SettingsWindow {
                   .build())
           .build());
 
-      grid.add(setting.buildSelectionComponent());
+      contents.add(setting.buildSelectionComponent());
 
-      grid.add(JScrollPaneBuilder.builder()
+      contents.add(JScrollPaneBuilder.builder()
           .view(JTextAreaBuilder.builder()
               .text(setting.description)
               .rows(2)
@@ -117,7 +113,7 @@ enum SettingsWindow {
               .build())
           .build());
     });
-    return SwingComponents.newJScrollPane(contents);
+    return SwingComponents.newJScrollPane(contents.build());
   }
 
   private static JPanel buttonPanel(final List<ClientSettingUiBinding> settings, final Runnable closeListener) {

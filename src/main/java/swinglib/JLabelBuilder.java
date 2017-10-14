@@ -9,10 +9,13 @@ import javax.swing.border.Border;
 import com.google.common.base.Preconditions;
 
 /**
+ * Builds a swing JLabel.
+ * <br />
  * Example usage:
  * <code><pre>
  *   JLabel label = JLabelBuilder.builder()
  *     .text("label text")
+ *     .leftAlign()
  *     .build();
  * </pre></code>
  */
@@ -21,6 +24,8 @@ public class JLabelBuilder {
   private String text;
   private Alignment alignment;
   private Dimension maxSize;
+  private int maxTextLength;
+  private String tooltip;
   private Border border;
 
   private JLabelBuilder() {}
@@ -37,7 +42,10 @@ public class JLabelBuilder {
     Preconditions.checkNotNull(text);
     Preconditions.checkState(!text.trim().isEmpty());
 
-    final JLabel label = new JLabel(text);
+    final String truncated = 
+        (maxTextLength > 0 && text.length() > maxTextLength) ? text.substring(0, maxTextLength) + "..." : text;
+
+    final JLabel label = new JLabel(truncated);
 
     if (alignment != null) {
       switch (alignment) {
@@ -48,6 +56,9 @@ public class JLabelBuilder {
       }
     }
 
+    if (tooltip != null) {
+      label.setToolTipText(tooltip);
+    }
     if (maxSize != null) {
       label.setMaximumSize(maxSize);
     }
@@ -76,6 +87,22 @@ public class JLabelBuilder {
 
   public JLabelBuilder border(final Border border) {
     this.border = border;
+    return this;
+  }
+
+  public JLabelBuilder tooltip(final String tooltip) {
+    this.tooltip = tooltip;
+    return this;
+  }
+
+
+  /**
+   * Builds a label with a max length enforced for the printed text. Text is truncated if exceeds the max
+   * length and the full text is placed into a hover-over tooltip.
+   */
+  public JLabelBuilder textWithMaxLength(final String text, final int maxTextLength) {
+    this.maxTextLength = maxTextLength;
+    this.text = text;
     return this;
   }
 

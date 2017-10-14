@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -30,8 +30,7 @@ public class JPanelBuilderTest {
   public void testBorder() {
     final int borderWidth = 3;
     final JPanel panel = JPanelBuilder.builder()
-        .border(JPanelBuilder.BorderType.EMPTY)
-        .borderWidth(borderWidth)
+        .borderEmpty(borderWidth)
         .build();
 
     assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
@@ -74,7 +73,7 @@ public class JPanelBuilderTest {
 
 
     assertThat(JPanelBuilder.builder()
-        .gridBagLayout()
+        .gridBagLayout(2)
         .build()
         .getLayout(),
         instanceOf(GridBagLayout.class));
@@ -82,6 +81,35 @@ public class JPanelBuilderTest {
     assertThat(JPanelBuilder.builder()
         .build()
         .getLayout(),
-        instanceOf(BorderLayout.class));
+        instanceOf(FlowLayout.class));
   }
+
+  @Test
+  public void emptyBorder() {
+    final int borderWidth = 100;
+    final JPanel panel = JPanelBuilder.builder()
+        .borderEmpty(borderWidth)
+        .build();
+    assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
+    final Insets insets = panel.getBorder().getBorderInsets(panel);
+    assertThat(insets.top, is(borderWidth));
+    assertThat(insets.bottom, is(borderWidth));
+    assertThat(insets.left, is(borderWidth));
+    assertThat(insets.right, is(borderWidth));
+  }
+
+
+  @Test
+  public void addLabel() {
+    final String labelText = "abc";
+
+    final JPanel panel = JPanelBuilder.builder()
+        .addLabel(labelText)
+        .build();
+
+    assertThat(panel.getComponents().length, is(1));
+    assertThat(panel.getComponents()[0], instanceOf(JLabel.class));
+    assertThat(((JLabel) panel.getComponents()[0]).getText(), is(labelText));
+  }
+
 }

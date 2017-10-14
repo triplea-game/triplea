@@ -7,7 +7,7 @@ package games.strategy.triplea.settings;
  */
 public interface GameSetting {
   /**
-   * @return True if the setting has been specified by the user or updated from default.
+   * Return true if the setting has been specified by the user or updated from default.
    */
   boolean isSet();
 
@@ -36,4 +36,6 @@ public interface GameSetting {
   default boolean booleanValue() {
     return Boolean.valueOf(value());
   }
+
+  void resetAndFlush();
 }
