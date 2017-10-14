@@ -42,7 +42,8 @@ public class JLabelBuilder {
     Preconditions.checkNotNull(text);
     Preconditions.checkState(!text.trim().isEmpty());
 
-    final String truncated = (maxTextLength > 0 && text.length() > maxTextLength) ? text.substring(0, maxTextLength) + "..." : text;
+    final String truncated = 
+        (maxTextLength > 0 && text.length() > maxTextLength) ? text.substring(0, maxTextLength) + "..." : text;
 
     final JLabel label = new JLabel(truncated);
 
