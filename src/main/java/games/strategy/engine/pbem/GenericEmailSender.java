@@ -180,15 +180,16 @@ public class GenericEmailSender implements IEmailSender {
       } catch (final Exception e) {
         // NoOp - the Date field is simply ignored in this case
       }
-      final Transport transport = session.getTransport("smtp");
-      if (getUserName() != null) {
-        transport.connect(getHost(), getPort(), getUserName(), getPassword());
-      } else {
-        transport.connect();
+
+      try (Transport transport = session.getTransport("smtp")) {
+        if (getUserName() != null) {
+          transport.connect(getHost(), getPort(), getUserName(), getPassword());
+        } else {
+          transport.connect();
+        }
+        mimeMessage.saveChanges();
+        transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
       }
-      mimeMessage.saveChanges();
-      transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-      transport.close();
     } catch (final MessagingException e) {
       throw new IOException(e.getMessage());
     }
