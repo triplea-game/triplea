@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.concurrent.GuardedBy;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -307,9 +309,7 @@ public class MessengerIntegrationTest {
 
     public void clearLastMessage() {
       synchronized (lock) {
-        if (messages.isEmpty()) {
-          waitForMessage();
-        }
+        waitForMessage();
         messages.remove(0);
         senders.remove(0);
       }
@@ -317,9 +317,7 @@ public class MessengerIntegrationTest {
 
     public Object getLastMessage() {
       synchronized (lock) {
-        if (messages.isEmpty()) {
-          waitForMessage();
-        }
+        waitForMessage();
         assertFalse(messages.isEmpty());
         return messages.get(0);
       }
@@ -327,18 +325,22 @@ public class MessengerIntegrationTest {
 
     public INode getLastSender() {
       synchronized (lock) {
-        if (messages.isEmpty()) {
-          waitForMessage();
-        }
+        waitForMessage();
         return senders.get(0);
       }
     }
 
+    @GuardedBy("lock")
     private void waitForMessage() {
-      try {
-        lock.wait(1500);
-      } catch (final InterruptedException e) {
-        fail("unexpected exception: " + e.getMessage());
+      assert Thread.holdsLock(lock);
+
+      while (messages.isEmpty()) {
+        try {
+          lock.wait(1500);
+        } catch (final InterruptedException e) {
+          Thread.currentThread().interrupt();
+          fail("unexpected exception: " + e.getMessage());
+        }
       }
     }
 
