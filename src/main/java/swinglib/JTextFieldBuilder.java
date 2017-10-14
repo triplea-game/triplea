@@ -1,7 +1,6 @@
 package swinglib;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -9,6 +8,8 @@ import javax.swing.JTextField;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+
+import games.strategy.ui.SwingAction;
 
 /**
  * Builder class for building swing text fields. Example usage:
@@ -125,26 +126,8 @@ public class JTextFieldBuilder {
     Preconditions.checkArgument(fields.length > 0);
     Preconditions.checkNotNull(fields[0]);
 
-    for (final JTextField field : Arrays.asList(fields)) {
-
-      field.addKeyListener(new KeyListener() {
-        @Override
-        public void keyTyped(final KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyPressed(final KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyReleased(final KeyEvent e) {
-          listener.accept(e);
-        }
-      });
-    }
-
+    Arrays.asList(fields).forEach(field ->
+        field.addKeyListener(SwingAction.keyReleaseListener(listener)));
   }
 
   /**
