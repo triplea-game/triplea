@@ -17,7 +17,6 @@ import javax.swing.SwingUtilities;
 import com.google.common.base.Preconditions;
 
 import games.strategy.ui.SwingComponents;
-import swinglib.GridBagHelper;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;

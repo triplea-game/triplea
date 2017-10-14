@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.image.BufferedImage;
@@ -13,8 +12,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.imageio.ImageIO;
@@ -273,7 +270,7 @@ public class JPanelBuilder {
     return this;
   }
 
-  public JPanelBuilder addEach(final List<? extends Component> components) {
+  public JPanelBuilder addEach(final Iterable<? extends Component> components) {
     components.forEach(this::add);
     return this;
   }
