@@ -40,10 +40,10 @@ final class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
    */
   String readFully() {
     synchronized (lock) {
-      if (super.size() == 0) {
+      while (super.size() == 0) {
         try {
           lock.wait();
-        } catch (final InterruptedException ie) {
+        } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
         }
       }
