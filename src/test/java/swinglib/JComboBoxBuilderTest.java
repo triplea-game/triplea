@@ -8,9 +8,11 @@ import javax.swing.JComboBox;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -41,7 +43,7 @@ public class JComboBoxBuilderTest {
 
   @Test
   public void basicBuilderWithMenuOptions() {
-    final JComboBox box = JComboBoxBuilder.builder()
+    final JComboBox<String> box = JComboBoxBuilder.builder()
         .menuOptions("option 1", "option 2", "option 3")
         .build();
 
@@ -62,7 +64,7 @@ public class JComboBoxBuilderTest {
     final AtomicInteger triggerCount = new AtomicInteger(0);
 
     final String secondOption = "option 2";
-    final JComboBox box = JComboBoxBuilder.builder()
+    final JComboBox<String> box = JComboBoxBuilder.builder()
         .menuOptions("option 1", secondOption, "option 3")
         .itemListener(value -> {
           if (value.equals(secondOption)) {
@@ -86,7 +88,7 @@ public class JComboBoxBuilderTest {
     MatcherAssert.assertThat("establish a preconditions state to avoid pollution between runs",
         ClientSetting.load(settingKey), Is.is(""));
 
-    final JComboBox box = JComboBoxBuilder.builder()
+    final JComboBox<String> box = JComboBoxBuilder.builder()
         .menuOptions("option 1", "option 2")
         .useLastSelectionAsFutureDefault(settingKey)
         .build();
@@ -107,7 +109,7 @@ public class JComboBoxBuilderTest {
   public void useLastSelectionAsFutureDefaultWithClientKey() throws Exception {
     ClientSetting.TEST_SETTING.saveAndFlush("");
 
-    final JComboBox box = JComboBoxBuilder.builder()
+    final JComboBox<String> box = JComboBoxBuilder.builder()
         .menuOptions("option 1", "option 2")
         .useLastSelectionAsFutureDefault(ClientSetting.TEST_SETTING)
         .build();
