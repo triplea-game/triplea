@@ -150,8 +150,7 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void notifyRetreat(final String messageShort, final String messageLong, final String step,
-      final PlayerID retreatingPlayer) {
+  public void notifyRetreat(final String messageLong, final String step) {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
         battleDisplay.battleInfo(messageLong, step);

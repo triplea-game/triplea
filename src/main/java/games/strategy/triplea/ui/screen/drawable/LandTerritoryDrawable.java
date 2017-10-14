@@ -28,7 +28,7 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
     } else {
       territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
     }
-    draw(bounds, graphics, mapData, scaled, territory, territoryColor);
+    draw(bounds, graphics, mapData, territory, territoryColor);
   }
 
   @Override

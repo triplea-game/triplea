@@ -82,11 +82,6 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     return units.size();
   }
 
-  // Allow player to place as many units as they want in bid phase
-  protected int getMaxUnitsToBePlaced(final Territory to, final PlayerID player) {
-    return -1;
-  }
-
   @Override
   protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to,
       final PlayerID player, final boolean countSwitchedProductionToNeighbors,

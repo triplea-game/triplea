@@ -137,8 +137,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
       final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat,
       final List<UndoableMove> undoableMoves, final GameData data) {
     if (moveType == MoveType.SPECIAL) {
-      return SpecialMoveDelegate.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat,
-          undoableMoves, data);
+      return SpecialMoveDelegate.validateMove(units, route, player, data);
     }
     return MoveValidator.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves,
         data);

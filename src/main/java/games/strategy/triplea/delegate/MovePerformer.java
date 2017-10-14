@@ -441,7 +441,7 @@ public class MovePerformer implements Serializable {
         }
         // unload the transports
         final Change change1 = TransportTracker.unloadTransportChange((TripleAUnit) unit,
-            m_currentMove.getRoute().getEnd(), m_player, pendingBattles);
+            m_currentMove.getRoute().getEnd(), pendingBattles);
         m_currentMove.addChange(change1);
         m_currentMove.unload(unit);
         m_bridge.addChange(change1);

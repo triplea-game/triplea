@@ -9,7 +9,6 @@ import java.util.Map;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -121,7 +120,7 @@ public class TransportTracker {
     return ((TripleAUnit) unit).getTransportedBy();
   }
 
-  static Change unloadTransportChange(final TripleAUnit unit, final Territory territory, final PlayerID id,
+  static Change unloadTransportChange(final TripleAUnit unit, final Territory territory,
       final boolean dependentBattle) {
     final CompositeChange change = new CompositeChange();
     final TripleAUnit transport = (TripleAUnit) transportedBy(unit);
@@ -151,7 +150,7 @@ public class TransportTracker {
     return change;
   }
 
-  static Change unloadAirTransportChange(final TripleAUnit unit, final Territory territory, final PlayerID id,
+  static Change unloadAirTransportChange(final TripleAUnit unit, final Territory territory,
       final boolean dependentBattle) {
     final CompositeChange change = new CompositeChange();
     final TripleAUnit transport = (TripleAUnit) transportedBy(unit);

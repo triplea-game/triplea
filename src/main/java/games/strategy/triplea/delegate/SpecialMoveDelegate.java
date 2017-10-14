@@ -103,9 +103,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // player.
     final PlayerID player = getUnitsOwner(units);
     // here we have our own new validation method....
-    final MoveValidationResult result =
-        SpecialMoveDelegate.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents,
-            GameStepPropertiesHelper.isNonCombatMove(data, false), m_movesToUndo, data);
+    final MoveValidationResult result = validateMove(units, route, player, data);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =
@@ -161,8 +159,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,
-      final PlayerID player, final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents,
-      final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data) {
+      final PlayerID player, final GameData data) {
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;

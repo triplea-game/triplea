@@ -290,7 +290,7 @@ public class TileManager {
         }
         // Blockades
         if (ta.getBlockadeZone()) {
-          drawing.add(new BlockadeZoneDrawable(territory, uiContext));
+          drawing.add(new BlockadeZoneDrawable(territory));
         }
         // Convoy Routes
         if (ta.getConvoyRoute()) {

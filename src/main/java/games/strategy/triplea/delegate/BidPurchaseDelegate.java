@@ -84,8 +84,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   }
 
   @Override
-  protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> resources,
-      final CompositeChange change) {
+  protected String removeFromPlayer(final IntegerMap<Resource> resources, final CompositeChange change) {
     m_spent = resources.getInt(super.getData().getResourceList().getResource(Constants.PUS));
     return (m_bid - m_spent) + " PU unused";
   }

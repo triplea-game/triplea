@@ -80,7 +80,7 @@ public class TripleADisplay implements ITripleADisplay {
     if (ui.getLocalPlayers().playing(retreatingPlayer)) {
       return;
     }
-    ui.getBattlePanel().notifyRetreat(shortMessage, message, step, retreatingPlayer);
+    ui.getBattlePanel().notifyRetreat(message, step);
   }
 
   @Override

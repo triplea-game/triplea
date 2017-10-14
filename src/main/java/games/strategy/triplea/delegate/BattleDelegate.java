@@ -390,7 +390,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (transport == null || !airTransports.contains(transport)) {
             continue;
           }
-          change.add(TransportTracker.unloadAirTransportChange(taUnit, battleSite, player, false));
+          change.add(TransportTracker.unloadAirTransportChange(taUnit, battleSite, false));
         }
         if (!change.isEmpty()) {
           bridge.getHistoryWriter().startEvent(player.getName() + " lands units in " + battleSite.getName());
