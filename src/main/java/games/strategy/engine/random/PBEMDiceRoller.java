@@ -18,7 +18,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
@@ -113,7 +112,6 @@ public class PBEMDiceRoller implements IRandomSource {
     private final String m_gameID;
     private final IRemoteDiceServer m_diceServer;
     private final String m_gameUUID;
-    private final Object m_lock = new Object();
     boolean m_test = false;
     private final JPanel m_buttons = new JPanel();
     private Window m_owner;
@@ -185,27 +183,13 @@ public class PBEMDiceRoller implements IRandomSource {
     }
 
     // should only be called if we are not visible
-    // can be called from any thread
+    // should be called from the event thread
     // wont return until the roll is done.
     void roll() throws IllegalStateException {
-      // if we are not the event thread, then start again in the event thread
-      // pausing this thread until we are done
-      if (!SwingUtilities.isEventDispatchThread()) {
-        synchronized (m_lock) {
-          SwingUtilities.invokeLater(() -> roll());
-          try {
-            m_lock.wait();
-          } catch (final InterruptedException e) {
-            ClientLogger.logQuietly(e);
-          }
-        }
-        return;
-      }
       rollInternal();
       setVisible(true);
     }
 
-    // should be called from the event thread
     private void rollInternal() throws IllegalStateException {
       if (!SwingUtilities.isEventDispatchThread()) {
         throw new IllegalStateException("Wrong thread");
@@ -216,12 +200,6 @@ public class PBEMDiceRoller implements IRandomSource {
     }
 
     private void closeAndReturn() {
-      // releast any threads waiting on the lock
-      if (m_lock != null) {
-        synchronized (m_lock) {
-          m_lock.notifyAll();
-        }
-      }
       SwingUtilities.invokeLater(() -> {
         setVisible(false);
         m_owner.toFront();
