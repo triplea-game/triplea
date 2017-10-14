@@ -15,7 +15,8 @@ final class SynchedByteArrayOutputStream extends ByteArrayOutputStream {
     this.mirror = mirror;
   }
 
-  public void write(final byte b) {
+  @Override
+  public void write(final int b) {
     synchronized (lock) {
       mirror.write(b);
       super.write(b);
