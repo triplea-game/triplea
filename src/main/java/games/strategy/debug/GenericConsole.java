@@ -49,7 +49,7 @@ public abstract class GenericConsole extends JFrame {
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
     });
     actions.add(copyAction);
-    final AbstractAction clearAction = SwingAction.of("Clear", e -> clear());
+    final AbstractAction clearAction = SwingAction.of("Clear", e -> textArea.setText(""));
     actions.add(clearAction);
     SwingUtilities.invokeLater(() -> pack());
   }
@@ -60,16 +60,8 @@ public abstract class GenericConsole extends JFrame {
     textArea.append(s);
   }
 
-  public void clear() {
-    textArea.setText("");
-  }
-
   public void dumpStacks() {
     threadDiagnoseAction.actionPerformed(null);
-  }
-
-  public String getText() {
-    return textArea.getText();
   }
 
   /**
