@@ -8,9 +8,8 @@ import javax.swing.JTextField;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsInstanceOf;
-import org.hamcrest.core.IsSame;
+
 import org.junit.Test;
-import org.mockito.internal.matchers.InstanceOf;
 
 public class JTabbedPaneBuilderTest {
   @Test
