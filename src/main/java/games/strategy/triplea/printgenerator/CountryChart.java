@@ -76,7 +76,6 @@ class CountryChart {
         }
         countryFileWriter.write("\r\n");
       }
-      countryFileWriter.close();
     } catch (final IOException e) {
       ClientLogger.logError("Failed Saving to File " + outFile.toString(), e);
     }
