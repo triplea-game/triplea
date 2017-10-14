@@ -1890,7 +1890,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   void removeCasualties(final Collection<Unit> killed, final ReturnFire returnFire, final boolean defender,
-      final IDelegateBridge bridge, final boolean isAa) {
+      final IDelegateBridge bridge) {
     if (killed.isEmpty()) {
       return;
     }
@@ -2142,7 +2142,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
               notifyCasualtiesAa(bridge, currentTypeAa);
-              removeCasualties(m_casualties.getKilled(), ReturnFire.ALL, !m_defending, bridge, m_defending);
+              removeCasualties(m_casualties.getKilled(), ReturnFire.ALL, !m_defending, bridge);
             }
           }
         };
@@ -2272,7 +2272,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           // remove dependency from paratroopers by unloading the air transports
           while (dependentsIter.hasNext()) {
             final Unit unit = dependentsIter.next();
-            change.add(TransportTracker.unloadAirTransportChange((TripleAUnit) unit, m_battleSite, m_attacker, false));
+            change.add(TransportTracker.unloadAirTransportChange((TripleAUnit) unit, m_battleSite, false));
           }
           bridge.addChange(change);
           // remove bombers from m_dependentUnits

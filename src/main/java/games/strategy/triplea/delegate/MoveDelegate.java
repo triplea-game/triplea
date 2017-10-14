@@ -353,13 +353,12 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      change.add(giveBonusMovementToUnits(player, data, t, t.getUnits().getUnits()));
+      change.add(giveBonusMovementToUnits(player, data, t));
     }
     return change;
   }
 
-  static Change giveBonusMovementToUnits(final PlayerID player, final GameData data, final Territory t,
-      final Collection<Unit> units) {
+  static Change giveBonusMovementToUnits(final PlayerID player, final GameData data, final Territory t) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits().getUnits()) {
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).match(u)) {

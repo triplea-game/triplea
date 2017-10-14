@@ -7,13 +7,12 @@ import java.awt.geom.AffineTransform;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class BlockadeZoneDrawable implements IDrawable {
   private final String location;
 
-  public BlockadeZoneDrawable(final Territory location, final IUIContext uiContext) {
+  public BlockadeZoneDrawable(final Territory location) {
     super();
     this.location = location.getName();
   }

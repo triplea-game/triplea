@@ -219,7 +219,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       changes.add(change);
     }
     // add changes for spent resources
-    final String remaining = removeFromPlayer(m_player, costs, changes);
+    final String remaining = removeFromPlayer(costs, changes);
     // add history event
     final String transcriptText;
     if (!totalUnits.isEmpty()) {
@@ -267,7 +267,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       changes.add(ChangeFactory.bombingUnitDamage(damageMap));
     }
     // add changes for spent resources
-    final String remaining = removeFromPlayer(m_player, costs, changes);
+    final String remaining = removeFromPlayer(costs, changes);
     // add history event
     final String transcriptText;
     if (!damageMap.isEmpty()) {
@@ -354,8 +354,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return IPurchaseDelegate.class;
   }
 
-  protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> costs,
-      final CompositeChange changes) {
+  protected String removeFromPlayer(final IntegerMap<Resource> costs, final CompositeChange changes) {
     final StringBuffer returnString = new StringBuffer("Remaining resources: ");
     final IntegerMap<Resource> left = m_player.getResources().getResourcesCopy();
     left.subtract(costs);
