@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -272,18 +273,16 @@ public class RemoteMessengerTest {
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
       final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
-      final Object lock = new Object();
+      final CountDownLatch latch = new CountDownLatch(1);
       final AtomicBoolean started = new AtomicBoolean(false);
       final IFoo foo = new IFoo() {
         @Override
         public void foo() {
-          synchronized (lock) {
-            try {
-              started.set(true);
-              lock.wait();
-            } catch (final InterruptedException e) {
-              // ignore interrupted exception
-            }
+          try {
+            started.set(true);
+            latch.await();
+          } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
           }
         }
       };
@@ -317,9 +316,7 @@ public class RemoteMessengerTest {
       // and an error should be thrown
       // give the thread a chance to execute
       t.join(200);
-      synchronized (lock) {
-        lock.notifyAll();
-      }
+      latch.countDown();
       assertNotNull(rme.get());
     } finally {
       shutdownServerAndClient(server, client);
