@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 
@@ -10,6 +11,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import games.strategy.engine.lobby.server.GameDescription;
+import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 import games.strategy.net.GUID;
 
 class LobbyGameTable extends JTable {
@@ -41,6 +43,10 @@ class LobbyGameTable extends JTable {
           c.setFont(italicFont);
         } else {
           c.setFont(defaultFont);
+        }
+        if (colIndex == LobbyGameTableModel.Column.Status.ordinal()
+            && gd.getStatus() == GameStatus.WAITING_FOR_PLAYERS) {
+          c.setBackground(new Color(0, 255, 0, 100));
         }
       }
     }
