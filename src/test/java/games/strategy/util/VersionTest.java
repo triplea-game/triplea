@@ -59,6 +59,7 @@ public class VersionTest {
   @Test
   public void verifyDevVersionToString() {
     assertEquals("1.2.3.dev", new Version("1.2.3.dev").toString());
+    assertEquals("1_2_3_dev", new Version("1.2.3.dev").toStringFull('_'));
   }
 
   @Test
