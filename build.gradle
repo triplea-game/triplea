@@ -113,11 +113,6 @@ dependencies {
     testRuntime 'org.junit.vintage:junit-vintage-engine:4.12.1'
 }
 
-test {
-    exclude '**/*Tests.class'
-}
-
-
 task integTest(type: Test) {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = 'Runs the integration tests.'
@@ -325,6 +320,12 @@ jacocoTestReport {
     reports {
         xml.enabled true
         html.enabled true
+    }
+}
+
+junitPlatform {
+    filters {
+        includeClassNamePattern '.*Test'
     }
 }
 
