@@ -327,3 +327,23 @@ jacocoTestReport {
         html.enabled true
     }
 }
+
+afterEvaluate {
+    def junitPlatformTest = tasks.junitPlatformTest
+
+    jacoco {
+        applyTo(junitPlatformTest)
+    }
+
+    task jacocoJunit5TestReport(type: JacocoReport) {
+        executionData junitPlatformTest
+        sourceSets sourceSets.main
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories = files(sourceSets.main.output)
+
+        reports {
+            xml.enabled true
+            html.enabled true
+        }
+    }
+}

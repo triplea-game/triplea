@@ -12,7 +12,7 @@ addons:
       - python3-yaml
 install: ./.travis/setup_lobby_database
 before_script: ./.travis/setup_gpg
-script: ./gradlew check jacocoTestReport -x validateYamls
+script: ./gradlew check jacocoJunit5TestReport -x validateYamls
 after_success:
 - ./.travis/update_checkstyle_thresholds
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
