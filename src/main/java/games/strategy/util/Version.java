@@ -175,14 +175,14 @@ public class Version implements Serializable, Comparable<Version> {
    * If ignoreMicro is set to true, the micro version number is ignored.
    */
   public boolean isGreaterThan(final Version other, final boolean ignoreMicro) {
-    return compareTo(other, ignoreMicro) < 0;
+    return other != null ? compareTo(other, ignoreMicro) < 0 : false;
   }
 
   /**
    * Returns true, if this object is less than the provided Version object.
    */
   public boolean isLessThan(final Version other) {
-    return compareTo(other) > 0;
+    return other != null ? compareTo(other) > 0 : false;
   }
 
   /**
