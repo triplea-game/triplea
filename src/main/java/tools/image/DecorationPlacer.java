@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -462,7 +463,7 @@ public class DecorationPlacer extends JFrame {
       if (fileName == null) {
         return;
       }
-      try (final FileOutputStream out = new FileOutputStream(fileName)) {
+      try (OutputStream out = new FileOutputStream(fileName)) {
         PointFileReaderWriter.writeOneToMany(out, new HashMap<>(currentPoints));
       }
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());

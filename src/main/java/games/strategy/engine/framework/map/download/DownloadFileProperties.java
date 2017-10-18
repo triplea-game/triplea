@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.Properties;
 
@@ -22,7 +24,7 @@ class DownloadFileProperties {
       return new DownloadFileProperties();
     }
     final DownloadFileProperties downloadFileProperties = new DownloadFileProperties();
-    try (final FileInputStream fis = new FileInputStream(fromZip(zipFile))) {
+    try (InputStream fis = new FileInputStream(fromZip(zipFile))) {
       downloadFileProperties.props.load(fis);
     } catch (final IOException e) {
       ClientLogger.logError("Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
@@ -31,7 +33,7 @@ class DownloadFileProperties {
   }
 
   static void saveForZip(final File zipFile, final DownloadFileProperties props) {
-    try (final FileOutputStream fos = new FileOutputStream(fromZip(zipFile))) {
+    try (OutputStream fos = new FileOutputStream(fromZip(zipFile))) {
       props.props.store(fos, null);
     } catch (final IOException e) {
       ClientLogger.logError("Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(), e);

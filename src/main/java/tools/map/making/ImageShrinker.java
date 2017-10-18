@@ -12,6 +12,7 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -55,7 +56,7 @@ public class ImageShrinker {
     graphics2D.drawImage(baseImg, 0, 0, thumbWidth, thumbHeight, null);
     // save thumbnail image to OUTFILE
     final File file = new File(new File(mapFile.getPath()).getParent() + File.separatorChar + "smallMap.jpeg");
-    try (final FileImageOutputStream out = new FileImageOutputStream(file)) {
+    try (ImageOutputStream out = new FileImageOutputStream(file)) {
       final ImageWriter encoder = ImageIO.getImageWritersByFormatName("JPEG").next();
       final JPEGImageWriteParam param = new JPEGImageWriteParam(null);
       param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);

@@ -70,13 +70,13 @@ public final class TestSecurityUtils {
     final KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);
 
     final X509EncodedKeySpec publicKeySpec;
-    try (final InputStream is = type.getResourceAsStream(getPublicKeyFileName(type))) {
+    try (InputStream is = type.getResourceAsStream(getPublicKeyFileName(type))) {
       publicKeySpec = new X509EncodedKeySpec(ByteStreams.toByteArray(is));
     }
     final PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
 
     final PKCS8EncodedKeySpec privateKeySpec;
-    try (final InputStream is = type.getResourceAsStream(getPrivateKeyFileName(type))) {
+    try (InputStream is = type.getResourceAsStream(getPrivateKeyFileName(type))) {
       privateKeySpec = new PKCS8EncodedKeySpec(ByteStreams.toByteArray(is));
     }
     final PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);

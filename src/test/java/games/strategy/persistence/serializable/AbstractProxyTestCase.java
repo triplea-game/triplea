@@ -107,7 +107,7 @@ public abstract class AbstractProxyTestCase<T> {
 
   private static Object readObject(final byte[] bytes) throws Exception {
     return IoUtils.readFromMemory(bytes, is -> {
-      try (final ObjectInputStream ois = new ObjectInputStream(is)) {
+      try (ObjectInputStream ois = new ObjectInputStream(is)) {
         return ois.readObject();
       } catch (final ClassNotFoundException e) {
         throw new IOException(e);
@@ -117,7 +117,7 @@ public abstract class AbstractProxyTestCase<T> {
 
   private byte[] writeObject(final T obj) throws Exception {
     return IoUtils.writeToMemory(os -> {
-      try (final ObjectOutputStream oos = new ProxyableObjectOutputStream(os, proxyRegistry)) {
+      try (ObjectOutputStream oos = new ProxyableObjectOutputStream(os, proxyRegistry)) {
         oos.writeObject(obj);
       }
     });

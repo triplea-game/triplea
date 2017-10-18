@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -341,9 +343,9 @@ public class MapPropertiesMaker extends JFrame {
       if (fileName == null) {
         return;
       }
-      final FileOutputStream sink = new FileOutputStream(fileName);
       final String stringToWrite = getOutPutString();
-      try (final OutputStreamWriter out = new OutputStreamWriter(sink)) {
+      try (OutputStream sink = new FileOutputStream(fileName);
+          Writer out = new OutputStreamWriter(sink)) {
         out.write(stringToWrite);
       }
       System.out.println("");

@@ -21,10 +21,9 @@ public class BannedUsernameController extends TimedController implements BannedU
     if (banTill == null || banTill.isAfter(now())) {
       logger.fine("Banning username:" + username);
 
-      try (final Connection con = Database.getPostgresConnection();
-          final PreparedStatement ps =
-              con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)"
-                  + " on conflict (username) do update set ban_till=excluded.ban_till")) {
+      try (Connection con = Database.getPostgresConnection();
+          PreparedStatement ps = con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)"
+              + " on conflict (username) do update set ban_till=excluded.ban_till")) {
         ps.setString(1, username);
         ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
         ps.execute();
@@ -40,8 +39,8 @@ public class BannedUsernameController extends TimedController implements BannedU
   private static void removeBannedUsername(final String username) {
     logger.fine("Removing banned username:" + username);
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from banned_usernames where username = ?")) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("delete from banned_usernames where username = ?")) {
       ps.setString(1, username);
       ps.execute();
       con.commit();
@@ -57,10 +56,10 @@ public class BannedUsernameController extends TimedController implements BannedU
   public Tuple<Boolean, Timestamp> isUsernameBanned(final String username) {
     final String sql = "select username, ban_till from banned_usernames where username = ?";
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
-      try (final ResultSet rs = ps.executeQuery()) {
+      try (ResultSet rs = ps.executeQuery()) {
         // If the ban has expired, allow the username
         if (rs.next()) {
           final Timestamp banTill = rs.getTimestamp(2);

@@ -64,8 +64,8 @@ public final class GameDataManager {
   public static GameData loadGame(final File file) throws IOException {
     checkNotNull(file);
 
-    try (final InputStream fis = new FileInputStream(file);
-        final InputStream is = new BufferedInputStream(fis)) {
+    try (InputStream fis = new FileInputStream(file);
+        InputStream is = new BufferedInputStream(fis)) {
       return loadGame(is);
     }
   }
@@ -94,8 +94,8 @@ public final class GameDataManager {
   }
 
   private static Memento loadMemento(final InputStream is) throws IOException {
-    try (final InputStream gzipis = new GZIPInputStream(is);
-        final ObjectInputStream ois = new ObjectInputStream(gzipis)) {
+    try (InputStream gzipis = new GZIPInputStream(is);
+        ObjectInputStream ois = new ObjectInputStream(gzipis)) {
       return (Memento) ois.readObject();
     } catch (final ClassNotFoundException e) {
       throw new IOException(e);
@@ -249,8 +249,8 @@ public final class GameDataManager {
       final Memento memento,
       final ProxyRegistry proxyRegistry)
       throws IOException {
-    try (final GZIPOutputStream gzipos = new GZIPOutputStream(os);
-        final ObjectOutputStream oos = new ProxyableObjectOutputStream(gzipos, proxyRegistry)) {
+    try (OutputStream gzipos = new GZIPOutputStream(os);
+        ObjectOutputStream oos = new ProxyableObjectOutputStream(gzipos, proxyRegistry)) {
       oos.writeObject(memento);
     }
   }
@@ -262,7 +262,7 @@ public final class GameDataManager {
       throws IOException {
     // write internally first in case of error
     final byte[] bytes = IoUtils.writeToMemory(os -> {
-      try (final ObjectOutputStream outStream = new ObjectOutputStream(os)) {
+      try (ObjectOutputStream outStream = new ObjectOutputStream(os)) {
         outStream.writeObject(ClientContext.engineVersion());
         data.acquireReadLock();
         try {
@@ -279,7 +279,7 @@ public final class GameDataManager {
     });
 
     // now write to file
-    try (final GZIPOutputStream zippedOut = new GZIPOutputStream(sink)) {
+    try (OutputStream zippedOut = new GZIPOutputStream(sink)) {
       zippedOut.write(bytes);
     }
   }

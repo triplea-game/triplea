@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,9 +40,8 @@ public class XmlUpdater {
     final Transformer trans = TransformerFactory.newInstance().newTransformer(new StreamSource(source));
 
     final byte[] resultBytes = IoUtils.writeToMemory(os -> {
-      try (
-          final FileInputStream fileInputStream = new FileInputStream(gameXmlFile);
-          final InputStream gameXmlStream = new BufferedInputStream(fileInputStream)) {
+      try (InputStream fileInputStream = new FileInputStream(gameXmlFile);
+          InputStream gameXmlStream = new BufferedInputStream(fileInputStream)) {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
         // use a dummy game.dtd, this prevents the xml parser from adding default values
@@ -54,7 +54,7 @@ public class XmlUpdater {
       }
     });
     gameXmlFile.renameTo(new File(gameXmlFile.getAbsolutePath() + ".backup"));
-    try (final FileOutputStream outStream = new FileOutputStream(gameXmlFile)) {
+    try (OutputStream outStream = new FileOutputStream(gameXmlFile)) {
       outStream.write(resultBytes);
     }
     System.out.println("Successfully updated:" + gameXmlFile);

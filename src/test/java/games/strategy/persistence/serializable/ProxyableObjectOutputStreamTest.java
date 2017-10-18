@@ -21,7 +21,7 @@ public final class ProxyableObjectOutputStreamTest {
     final Object expectedReplacedObj = "42";
     final ProxyRegistry proxyRegistry = givenProxyRegistryFor(obj, expectedReplacedObj);
     IoUtils.writeToMemory(os -> {
-      try (final ProxyableObjectOutputStream oos = new ProxyableObjectOutputStream(os, proxyRegistry)) {
+      try (ProxyableObjectOutputStream oos = new ProxyableObjectOutputStream(os, proxyRegistry)) {
         final Object actualReplacedObj = oos.replaceObject(obj);
 
         verify(proxyRegistry).getProxyFor(obj);
@@ -39,7 +39,7 @@ public final class ProxyableObjectOutputStreamTest {
   @Test
   public void replaceObject_ShouldReturnNullWhenObjectIsNull() throws Exception {
     IoUtils.writeToMemory(os -> {
-      try (final ProxyableObjectOutputStream oos = new ProxyableObjectOutputStream(os, ProxyRegistry.newInstance())) {
+      try (ProxyableObjectOutputStream oos = new ProxyableObjectOutputStream(os, ProxyRegistry.newInstance())) {
         final Object replacedObj = oos.replaceObject(null);
 
         assertThat(replacedObj, is(nullValue()));

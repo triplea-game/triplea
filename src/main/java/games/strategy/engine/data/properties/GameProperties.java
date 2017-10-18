@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -163,8 +164,8 @@ public class GameProperties extends GameDataComponent {
    */
   public static byte[] writeEditableProperties(final List<IEditableProperty> editableProperties) throws IOException {
     return IoUtils.writeToMemory(os -> {
-      try (final GZIPOutputStream gzipos = new GZIPOutputStream(os);
-          final ObjectOutputStream oos = new ObjectOutputStream(gzipos)) {
+      try (OutputStream gzipos = new GZIPOutputStream(os);
+          ObjectOutputStream oos = new ObjectOutputStream(gzipos)) {
         oos.writeObject(editableProperties);
       }
     });
@@ -184,9 +185,9 @@ public class GameProperties extends GameDataComponent {
   public static List<IEditableProperty> readEditableProperties(final byte[] bytes)
       throws IOException, ClassCastException {
     return IoUtils.readFromMemory(bytes, is -> {
-      try (final InputStream bis = new BufferedInputStream(is);
-          final GZIPInputStream gzipis = new GZIPInputStream(bis);
-          final ObjectInputStream ois = new ObjectInputStream(gzipis)) {
+      try (InputStream bis = new BufferedInputStream(is);
+          InputStream gzipis = new GZIPInputStream(bis);
+          ObjectInputStream ois = new ObjectInputStream(gzipis)) {
         return (List<IEditableProperty>) ois.readObject();
       } catch (final ClassNotFoundException e) {
         throw new IOException(e);

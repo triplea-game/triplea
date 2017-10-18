@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ class ExportMenu {
       gameData.releaseReadLock();
     }
     try {
-      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
+      try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
         writer.write(xmlFile);
       }
     } catch (final IOException e1) {
@@ -376,7 +377,7 @@ class ExportMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
+    try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
       writer.write(text.toString());
     } catch (final IOException e1) {
       ClientLogger.logQuietly(e1);
@@ -395,7 +396,7 @@ class ExportMenu {
       if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
         return;
       }
-      try (final FileWriter writer = new FileWriter(chooser.getSelectedFile())) {
+      try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
         writer.write(
             HelpMenu.getUnitStatsTable(gameData, iuiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
                 .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));

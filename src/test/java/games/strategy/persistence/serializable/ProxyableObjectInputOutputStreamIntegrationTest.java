@@ -32,7 +32,7 @@ public final class ProxyableObjectInputOutputStreamIntegrationTest {
   private Object[] readObjects(final int count) throws Exception {
     final Object[] objs = new Object[count];
     IoUtils.consumeFromMemory(bytes, is -> {
-      try (final ObjectInputStream ois = new ObjectInputStream(is)) {
+      try (ObjectInputStream ois = new ObjectInputStream(is)) {
         for (int i = 0; i < count; ++i) {
           objs[i] = ois.readObject();
         }
@@ -49,7 +49,7 @@ public final class ProxyableObjectInputOutputStreamIntegrationTest {
 
   private void writeObjects(final ProxyRegistry proxyRegistry, final Object... objs) throws Exception {
     bytes = IoUtils.writeToMemory(os -> {
-      try (final ObjectOutputStream oos = new ProxyableObjectOutputStream(os, proxyRegistry)) {
+      try (ObjectOutputStream oos = new ProxyableObjectOutputStream(os, proxyRegistry)) {
         for (final Object obj : objs) {
           oos.writeObject(obj);
         }

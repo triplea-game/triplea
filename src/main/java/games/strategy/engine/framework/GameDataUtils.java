@@ -2,6 +2,7 @@ package games.strategy.engine.framework;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -40,13 +41,13 @@ public final class GameDataUtils {
   public static <T> T translateIntoOtherGameData(final T object, final GameData translateInto) {
     try {
       final byte[] bytes = IoUtils.writeToMemory(os -> {
-        try (final GameObjectOutputStream out = new GameObjectOutputStream(os)) {
+        try (ObjectOutputStream out = new GameObjectOutputStream(os)) {
           out.writeObject(object);
         }
       });
       return IoUtils.readFromMemory(bytes, is -> {
         final GameObjectStreamFactory factory = new GameObjectStreamFactory(translateInto);
-        try (final ObjectInputStream in = factory.create(is)) {
+        try (ObjectInputStream in = factory.create(is)) {
           return (T) in.readObject();
         } catch (final ClassNotFoundException e) {
           throw new IOException(e);

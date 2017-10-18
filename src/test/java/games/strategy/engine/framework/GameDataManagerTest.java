@@ -59,7 +59,7 @@ public class GameDataManagerTest {
 
   @Test
   public void loadGameInProxySerializationFormat_ShouldNotCloseInputStream() throws Exception {
-    try (final InputStream is = spy(newInputStreamWithGameInProxySerializationFormat())) {
+    try (InputStream is = spy(newInputStreamWithGameInProxySerializationFormat())) {
       GameDataManager.loadGameInProxySerializationFormat(is);
 
       verify(is, never()).close();

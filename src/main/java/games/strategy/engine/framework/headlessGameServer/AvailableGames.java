@@ -123,10 +123,9 @@ public class AvailableGames {
 
   private static void populateFromZip(final File map, final Map<String, URI> availableGames,
       final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList) {
-    try (
-        final FileInputStream fis = new FileInputStream(map);
-        final ZipInputStream zis = new ZipInputStream(fis);
-        final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
+    try (InputStream fis = new FileInputStream(map);
+        ZipInputStream zis = new ZipInputStream(fis);
+        URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
       ZipEntry entry = zis.getNextEntry();
       while (entry != null) {
         if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {

@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -375,7 +376,7 @@ public class PolygonGrabber extends JFrame {
       if (polyName == null) {
         return;
       }
-      try (final FileOutputStream out = new FileOutputStream(polyName)) {
+      try (OutputStream out = new FileOutputStream(polyName)) {
         PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
       }
       System.out.println("Data written to :" + new File(polyName).getCanonicalPath());

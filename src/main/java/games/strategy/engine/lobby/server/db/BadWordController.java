@@ -13,10 +13,9 @@ import java.util.List;
 public final class BadWordController implements BadWordDao {
   @Override
   public void addBadWord(final String word) {
-    try (final Connection con = Database.getPostgresConnection();
+    try (Connection con = Database.getPostgresConnection();
         // If the word already is present we don't need to add it twice.
-        final PreparedStatement ps =
-            con.prepareStatement("insert into bad_words (word) values (?) on conflict do nothing")) {
+        PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?) on conflict do nothing")) {
       ps.setString(1, word);
       ps.execute();
       con.commit();
@@ -29,9 +28,9 @@ public final class BadWordController implements BadWordDao {
   public List<String> list() {
     final String sql = "select word from bad_words";
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement(sql);
-        final ResultSet rs = ps.executeQuery()) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()) {
       final List<String> badWords = new ArrayList<>();
       while (rs.next()) {
         badWords.add(rs.getString(1));
