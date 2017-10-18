@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.launcher;
 
 import java.awt.Component;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,10 +20,8 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataFileUtils;
-import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -42,7 +39,6 @@ import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.random.CryptoRandomSource;
-import games.strategy.io.IoUtils;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
@@ -308,10 +304,6 @@ public class ServerLauncher extends GameLauncher {
       return;
     }
     m_serverGame.addObserver(blockingObserver, nonBlockingObserver, newNode);
-  }
-
-  private static byte[] gameDataToBytes(final GameData data) throws IOException {
-    return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
   }
 
   public void connectionLost(final INode node) {

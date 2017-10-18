@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -28,6 +27,7 @@ import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
+import games.strategy.io.IoUtils;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.Tuple;
@@ -142,13 +142,11 @@ public class GameData implements Serializable {
    * copying the game data.
    */
   public byte[] toBytes() {
-    final ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
     try {
-      GameDataManager.saveGame(sink, this);
+      return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, this));
     } catch (final IOException e) {
       throw new RuntimeException("Failed to write game data to bytes", e);
     }
-    return sink.toByteArray();
   }
 
   /**
