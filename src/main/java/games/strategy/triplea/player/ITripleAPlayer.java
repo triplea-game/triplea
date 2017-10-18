@@ -33,7 +33,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * @param count
    *        - the number of casualties to select
    * @param message
-   *        - ui message to display
+   *        - uiComponent message to display
    * @param dice
    *        - the dice rolled for the casualties
    * @param hit

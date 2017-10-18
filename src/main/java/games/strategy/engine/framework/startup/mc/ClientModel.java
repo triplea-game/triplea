@@ -408,7 +408,10 @@ public class ClientModel implements IMessengerErrorListener {
   public void messengerInvalid(final IMessenger messenger, final Exception reason) {
     // The self chat disconnect notification is simply so we have an on-screen notification of the disconnect.
     // In case for example there are many game windows open, it may not be clear which game disconnected.
-    GameRunner.getChat().sendMessage("*** Was Disconnected ***", false);
+    GameRunner.getChat()
+            .orElseThrow(() -> new IllegalStateException("Expected to have a chat object, but none found! "
+                    + "This is probably a programmer error confusing a local single player game with a network game."))
+            .sendMessage("*** Was Disconnected ***", false);
     EventThreadJOptionPane.showMessageDialog(m_ui, "Connection to game host lost.\nPlease save and restart.",
         "Connection Lost!", JOptionPane.ERROR_MESSAGE);
   }
@@ -419,11 +422,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   boolean getIsServerHeadlessTest() {
     final IServerStartupRemote serverRemote = getServerStartup();
-    if (serverRemote != null) {
-      m_hostIsHeadlessBot = serverRemote.getIsServerHeadless();
-    } else {
-      m_hostIsHeadlessBot = false;
-    }
+    m_hostIsHeadlessBot = serverRemote != null && serverRemote.getIsServerHeadless();
     return m_hostIsHeadlessBot;
   }
 

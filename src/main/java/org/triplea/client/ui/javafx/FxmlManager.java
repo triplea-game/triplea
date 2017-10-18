@@ -14,7 +14,7 @@ enum FxmlManager {
   DOWNLOAD_PANE("./fxml/TripleADownload.fxml"),
   MAIN_MANU_PANE("./fxml/TripleAMainMenu.fxml"),
   SETTINGS_PANE("./fxml/TripleASettings.fxml"),
-  LANG_CLASS_BASENAME("org.triplea.client.ui.javafx.lang.TripleA"),
+  LANG_CLASS_BASENAME("org.triplea.client.uiComponent.javafx.lang.TripleA"),
   STYLESHEET_MAIN("/org/triplea/client/ui/javafx/css/main.css"),
   RELATIVE_FONT_PATH("./css/fonts/1942-report.ttf"),
   ICON_LOCATION("/games/strategy/engine/framework/ta_icon.png");

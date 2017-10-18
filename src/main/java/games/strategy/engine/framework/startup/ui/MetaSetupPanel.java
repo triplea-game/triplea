@@ -116,6 +116,16 @@ public class MetaSetupPanel extends SetupPanel {
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(00, 0, 0, 0), 0, 0));
+
+    if (ClientSetting.SHOW_BETA_FEATURES.booleanValue()) {
+      final JButton newUiButton = JButtonBuilder.builder()
+          .title("Launch new UI (does nothing)") // TODO: @DanVanAtta update text
+          .actionListener(() -> {
+          })// LaunchScreenWindow::show) // TODO: @DanVanAtta update this with rest of branch 'rewrite_rebased'
+          .build();
+      add(newUiButton, new GridBagConstraints(0, 13, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+          new Insets(10, 0, 0, 0), 0, 0));
+    }
   }
 
   private void setupListeners() {

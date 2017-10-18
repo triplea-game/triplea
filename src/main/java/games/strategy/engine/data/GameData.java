@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -23,6 +24,7 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.GameMapListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
@@ -136,6 +138,20 @@ public class GameData implements Serializable {
   }
 
   /**
+   * Converts the current GameData object to a byte array, useful for serialization or for
+   * copying the game data.
+   */
+  public byte[] toBytes() {
+    final ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
+    try {
+      GameDataManager.saveGame(sink, this);
+    } catch (final IOException e) {
+      throw new RuntimeException("Failed to write game data to bytes", e);
+    }
+    return sink.toByteArray();
+  }
+
+  /**
    * Print an exception report if we are testing the lock is held, and
    * do not currently hold the read or write lock.
    */
@@ -152,22 +168,21 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return a collection of all units in the game.
+   * Getter for the list of all units.
    */
   public UnitsList getUnits() {
-    // ensureLockHeld();
     return unitsList;
   }
 
   /**
-   * @return list of Players in the game.
+   * Getter for the list of all Players in the game.
    */
   public PlayerList getPlayerList() {
     return playerList;
   }
 
   /**
-   * @return list of resources available in the game.
+   * Getter for all resources available in the game.
    */
   public ResourceList getResourceList() {
     ensureLockHeld();
@@ -175,6 +190,8 @@ public class GameData implements Serializable {
   }
 
   /**
+   * Getter method for #productionFrontierList.
+   * 
    * @return list of production Frontiers for this game.
    */
   public ProductionFrontierList getProductionFrontierList() {
@@ -191,14 +208,14 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return The Technology Frontier for this game.
+   * Return The Technology Frontier for this game.
    */
   public TechnologyFrontier getTechnologyFrontier() {
     return technologyFrontier;
   }
 
   /**
-   * @return The list of production Frontiers for this game.
+   * Return The list of production Frontiers for this game.
    */
   public RepairFrontierList getRepairFrontierList() {
     ensureLockHeld();
@@ -206,7 +223,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return The list of Production Rules for the game.
+   * Return The list of Production Rules for the game.
    */
   public RepairRuleList getRepairRuleList() {
     ensureLockHeld();
@@ -214,7 +231,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return The Alliance Tracker for the game.
+   * Return The Alliance Tracker for the game.
    */
   public AllianceTracker getAllianceTracker() {
     ensureLockHeld();
@@ -222,8 +239,8 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return whether we should throw an error if changes to this game data are made outside of the swing
-   *         event thread.
+   * Return whether we should throw an error if changes to this game data are made outside of the swing
+   * event thread.
    */
   public boolean areChangesOnlyInSwingEventThread() {
     return forceInSwingEventThread;
@@ -402,6 +419,8 @@ public class GameData implements Serializable {
   }
 
   /**
+   * Returns true if the {@code readWriteLock} is not set.
+   * 
    * @return boolean, whether readWriteLock is missing
    *         This can happen in very odd circumstances while deserializing.
    */
@@ -409,6 +428,9 @@ public class GameData implements Serializable {
     return readWriteLock == null;
   }
 
+  /**
+   * Removes all listeners and uninitializes the #resourceLoader.
+   */
   public void clearAllListeners() {
     dataChangeListeners.clear();
     territoryListeners.clear();
@@ -437,9 +459,9 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return all relationshipTypes that are valid in this game, default there is the NullRelation (relation with the
-   *         Nullplayer / Neutral)
-   *         and the SelfRelation (Relation with yourself) all other relations are mapdesigner defined.
+   * Return all relationshipTypes that are valid in this game, default there is the NullRelation (relation with the
+   * Nullplayer / Neutral)
+   * and the SelfRelation (Relation with yourself) all other relations are mapdesigner defined.
    */
   public RelationshipTypeList getRelationshipTypeList() {
     ensureLockHeld();
@@ -447,7 +469,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return a tracker which tracks all current relationships that exist between all players.
+   * Return a tracker which tracks all current relationships that exist between all players.
    */
   public RelationshipTracker getRelationshipTracker() {
     ensureLockHeld();

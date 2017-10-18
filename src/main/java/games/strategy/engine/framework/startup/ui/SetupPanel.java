@@ -19,14 +19,15 @@ import javax.swing.JPanel;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.GameLauncher;
 import games.strategy.ui.SwingAction;
 
 abstract class SetupPanel extends JPanel implements ISetupPanel {
   private static final long serialVersionUID = 4001323470187210773L;
-  private static final String SET_ALL_DEFAULT_LABEL = "Default";
+  public static final String SET_ALL_DEFAULT_LABEL = "Default";
 
   private final List<Observer> listeners = new ArrayList<>();
+  private IChatPanel chatPanel;
 
   @Override
   public void addObserver(final Observer observer) {
@@ -45,9 +46,13 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     }
   }
 
+  public void setChatPanel(final IChatPanel chatPanel) {
+    this.chatPanel = chatPanel;
+  }
+
   @Override
   public IChatPanel getChatPanel() {
-    return null;
+    return chatPanel;
   }
 
   @Override
@@ -66,8 +71,8 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
   public void postStartGame() {}
 
   @Override
-  public ILauncher getLauncher() {
-    throw new IllegalStateException("NOt implemented");
+  public GameLauncher getLauncher() {
+    throw new IllegalStateException("Not implemented");
   }
 
   @Override

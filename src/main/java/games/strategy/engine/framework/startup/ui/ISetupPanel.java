@@ -7,7 +7,7 @@ import java.util.Observer;
 import javax.swing.Action;
 
 import games.strategy.engine.chat.IChatPanel;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.GameLauncher;
 
 /**
  * Made so that we can have a headless setup. (this is probably a hack, but used because i do not want to rewrite the
@@ -45,7 +45,7 @@ public interface ISetupPanel extends Serializable {
 
   void postStartGame();
 
-  ILauncher getLauncher();
+  GameLauncher getLauncher();
 
   List<Action> getUserActions();
 }

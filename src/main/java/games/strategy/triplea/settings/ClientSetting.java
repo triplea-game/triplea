@@ -1,7 +1,6 @@
 package games.strategy.triplea.settings;
 
 import java.io.File;
-
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -115,7 +114,15 @@ public enum ClientSetting implements GameSetting {
 
   /* for testing purposes, to be used in unit tests only */
   @VisibleForTesting
-  TEST_SETTING;
+  TEST_SETTING,
+
+  SELECTED_GAME_LOCATION,
+
+  FORUM_COMBO_BOX_SELECTION,
+
+  DICE_SERVER_FOR_FORUM_GAMES,
+
+  DICE_SERVER_FOR_PBEM_GAMES;
 
   public final String defaultValue;
 

@@ -20,7 +20,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.GameLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -576,7 +576,7 @@ public class HeadlessGameServer {
         System.out.println("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName()
             + ", Round: " + setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
         setupPanelModel.getPanel().preStartGame();
-        final ILauncher launcher = setupPanelModel.getPanel().getLauncher();
+        final GameLauncher launcher = setupPanelModel.getPanel().getLauncher();
         if (launcher != null) {
           launcher.launch(null);
         }

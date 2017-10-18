@@ -14,21 +14,27 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.random.IRandomSource;
+import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.ThreadUtil;
 
-public class LocalLauncher extends AbstractLauncher {
-  private static final Logger logger = Logger.getLogger(ILauncher.class.getName());
-  private final IRandomSource m_randomSource;
-  private final PlayerListing m_playerListing;
+public class LocalLauncher extends GameLauncher {
+  private static final Logger logger = Logger.getLogger(LocalLauncher.class.getName());
+  private final IRandomSource randomSource;
+  private final PlayerListing playerListing;
+
+  public LocalLauncher(final GameSelectorModel gameSelectorModel,
+      final PlayerListing playerListing) {
+    this(gameSelectorModel, new PlainRandomSource(), playerListing);
+  }
 
   public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource,
       final PlayerListing playerListing) {
     super(gameSelectorModel);
-    m_randomSource = randomSource;
-    m_playerListing = playerListing;
+    this.randomSource = randomSource;
+    this.playerListing = playerListing;
   }
 
   @Override
@@ -36,12 +42,12 @@ public class LocalLauncher extends AbstractLauncher {
     Exception exceptionLoadingGame = null;
     ServerGame game = null;
     try {
-      m_gameData.doPreGameStartDataModifications(m_playerListing);
+      m_gameData.doPreGameStartDataModifications(playerListing);
       final Messengers messengers = new Messengers(new HeadlessServerMessenger());
       final Set<IGamePlayer> gamePlayers =
-          m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
+          m_gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypes());
       game = new ServerGame(m_gameData, gamePlayers, new HashMap<>(), messengers);
-      game.setRandomSource(m_randomSource);
+      game.setRandomSource(randomSource);
       // for debugging, we can use a scripted random source
       if (ScriptedRandomSource.useScriptedRandom()) {
         game.setRandomSource(new ScriptedRandomSource());

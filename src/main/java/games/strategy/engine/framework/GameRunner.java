@@ -110,6 +110,10 @@ public class GameRunner {
           TRIPLEA_ENGINE_VERSION_BIN, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER};
 
 
+  public static SetupPanelModel getSetupPanelModel() {
+    return setupPanelModel;
+  }
+
   /**
    * Launches the "main" TripleA gui enabled game client.
    * No args will launch a client, additional args can be supplied to specify additional behavior.
@@ -212,6 +216,10 @@ public class GameRunner {
 
   public static WaitDialog newWaitDialog(final String message) {
     return new WaitDialog(mainFrame, message);
+  }
+
+  public static GameSelectorModel getGameSelectorModel() {
+    return gameSelectorModel;
   }
 
   /**
@@ -520,19 +528,15 @@ public class GameRunner {
    * todo, replace with something better
    * Get the chat for the game, or null if there is no chat.
    */
-  public static Chat getChat() {
+  public static Optional<Chat> getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
-    if (model instanceof ServerSetupPanel) {
-      return model.getChatPanel().getChat();
-    } else if (model instanceof ClientSetupPanel) {
-      return model.getChatPanel().getChat();
+    if (model instanceof ServerSetupPanel
+            || model instanceof ClientSetupPanel
+            || model.getChatPanel() != null) {
+      return Optional.of(model.getChatPanel().getChat());
     } else {
-      return null;
+      return Optional.empty();
     }
-  }
-
-  public static boolean hasChat() {
-    return getChat() != null;
   }
 
   /**

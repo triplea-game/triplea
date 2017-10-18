@@ -11,12 +11,10 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.GameLauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.engine.random.IRandomSource;
-import games.strategy.engine.random.PlainRandomSource;
 
 /** Setup panel when hosting a local game. */
 public class LocalSetupPanel extends SetupPanel implements Observer {
@@ -25,7 +23,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
 
   public LocalSetupPanel(final GameSelectorModel model) {
-    gameSelectorModel = model;
+    gameSelectorModel = model == null ? new GameSelectorModel() : model;
     layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData());
     setupListeners();
     setWidgetActivation();
@@ -83,8 +81,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   }
 
   @Override
-  public ILauncher getLauncher() {
-    final IRandomSource randomSource = new PlainRandomSource();
+  public GameLauncher getLauncher() {
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PlayerSelectorRow player : this.playerTypes) {
@@ -96,7 +93,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     final PlayerListing pl =
         new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
-    final LocalLauncher launcher = new LocalLauncher(gameSelectorModel, randomSource, pl);
+    final LocalLauncher launcher = new LocalLauncher(gameSelectorModel, pl);
     return launcher;
   }
 
