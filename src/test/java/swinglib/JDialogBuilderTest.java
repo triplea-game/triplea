@@ -4,8 +4,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeFalse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.awt.GraphicsEnvironment;
 
@@ -13,7 +14,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JDialogBuilderTest {
 
@@ -29,7 +30,7 @@ public class JDialogBuilderTest {
   }
 
   private static void assumeHeadedGraphicsEnvironment() {
-    assumeFalse("requires headed graphics environment", GraphicsEnvironment.isHeadless());
+    assumeFalse(GraphicsEnvironment.isHeadless(), "requires headed graphics environment");
   }
 
   @Test
@@ -47,11 +48,11 @@ public class JDialogBuilderTest {
     assertThat(dialog.getParent(), is(sameInstance(parentFrame)));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void contentsIsRequired() {
-    JDialogBuilder.builder()
+    assertThrows(NullPointerException.class, () -> JDialogBuilder.builder()
         .title("title")
-        .build();
+        .build());
   }
 
   @Test
@@ -66,25 +67,25 @@ public class JDialogBuilderTest {
     assertThat(dialog.getParent(), is(not(nullValue())));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void titleIsRequired() {
-    JDialogBuilder.builder()
+    assertThrows(NullPointerException.class, () -> JDialogBuilder.builder()
         .contents(new JPanel())
-        .build();
+        .build());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void contentsCanNotBeNull() {
-    JDialogBuilder.builder().contents(null);
+    assertThrows(NullPointerException.class, () -> JDialogBuilder.builder().contents(null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void parentFrameCanNotBeNull() {
-    JDialogBuilder.builder().parentFrame(null);
+    assertThrows(NullPointerException.class, () -> JDialogBuilder.builder().parentFrame(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void titleCanNotBeEmpty() {
-    JDialogBuilder.builder().title(" ");
+    assertThrows(IllegalArgumentException.class, () -> JDialogBuilder.builder().title(" "));
   }
 }

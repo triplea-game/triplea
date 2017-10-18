@@ -1,32 +1,31 @@
 package games.strategy.engine.framework.startup.login;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorMessages;
 
-
-@RunWith(Enclosed.class)
 public final class ClientLoginValidatorTests {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
-  public static final class MacValidationTest {
+  @Nested
+  public final class MacValidationTest {
     private static final String MAGIC_MAC_START = ClientLoginValidator.MAC_MAGIC_STRING_PREFIX;
 
     @Test
@@ -48,9 +47,11 @@ public final class ClientLoginValidatorTests {
     }
   }
 
-  @RunWith(Enclosed.class)
-  public static final class GetChallengePropertiesTests {
-    public abstract static class AbstractTestCase {
+
+  @Nested
+  public final class GetChallengePropertiesTests {
+    @Nested
+    public abstract class AbstractTestCase {
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
 
       @Mock
@@ -61,9 +62,10 @@ public final class ClientLoginValidatorTests {
       }
     }
 
-    @RunWith(MockitoJUnitRunner.StrictStubs.class)
-    public static final class WhenPasswordSetTest extends AbstractTestCase {
-      @Before
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenPasswordSetTest extends AbstractTestCase {
+      @BeforeEach
       public void givenPasswordSet() {
         clientLoginValidator.setGamePassword(PASSWORD);
       }
@@ -83,9 +85,10 @@ public final class ClientLoginValidatorTests {
       }
     }
 
-    @RunWith(MockitoJUnitRunner.StrictStubs.class)
-    public static final class WhenPasswordNotSetTest extends AbstractTestCase {
-      @Before
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenPasswordNotSetTest extends AbstractTestCase {
+      @BeforeEach
       public void givenPasswordNotSet() {
         clientLoginValidator.setGamePassword(null);
       }
@@ -106,11 +109,12 @@ public final class ClientLoginValidatorTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.StrictStubs.class)
-  public static final class AuthenticateTest {
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  public final class AuthenticateTest {
     private final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
 
-    @Before
+    @BeforeEach
     public void givenPasswordSet() {
       clientLoginValidator.setGamePassword(PASSWORD);
     }

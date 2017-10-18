@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JPanelBuilderTest {
 

@@ -105,12 +105,10 @@ dependencies {
     testCompile 'eu.codearte.catch-exception:catch-exception:2.0.0-ALPHA-1'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.mockito:mockito-core:2.10.0'
+    testCompile 'org.mockito:mockito-core:2.8.47'
     testCompile 'org.junit.platform:junit-platform-launcher:1.0.1'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.1'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
-    testCompile 'junit:junit:4.12'
-    testRuntime 'org.junit.vintage:junit-vintage-engine:4.12.1'
 }
 
 task integTest(type: Test) {
@@ -320,12 +318,6 @@ jacocoTestReport {
     reports {
         xml.enabled true
         html.enabled true
-    }
-}
-
-junitPlatform {
-    filters {
-        includeClassNamePattern '.*Test'
     }
 }
 

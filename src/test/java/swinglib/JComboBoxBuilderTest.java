@@ -1,5 +1,7 @@
 package swinglib;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.awt.event.ItemEvent;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -8,37 +10,30 @@ import javax.swing.JComboBox;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.triplea.settings.ClientSetting;
 
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class JComboBoxBuilderTest {
   @Mock
   private ItemEvent mockItemEvent;
 
-  @Before
-  public void setUp() {}
-
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void buildInvalidEmptyOptionSet() {
-    JComboBoxBuilder.builder()
+    assertThrows(IllegalArgumentException.class, () -> JComboBoxBuilder.builder()
         .menuOptions()
-        .build();
+        .build());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void builderNoMenuOptionSpecified() {
-    JComboBoxBuilder.builder()
-        .build();
+    assertThrows(IllegalStateException.class, JComboBoxBuilder.builder()::build);
   }
 
   @Test

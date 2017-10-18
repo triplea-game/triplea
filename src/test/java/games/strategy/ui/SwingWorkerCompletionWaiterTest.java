@@ -6,13 +6,13 @@ import java.beans.PropertyChangeEvent;
 
 import javax.swing.SwingWorker;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public final class SwingWorkerCompletionWaiterTest {
 
   private SwingWorkerCompletionWaiter waiter;
@@ -20,7 +20,7 @@ public final class SwingWorkerCompletionWaiterTest {
   @Mock
   private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     waiter = new SwingWorkerCompletionWaiter(progressWindow);
   }

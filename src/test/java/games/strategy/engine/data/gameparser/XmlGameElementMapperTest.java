@@ -6,8 +6,8 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.delegate.IDelegate;
@@ -23,7 +23,7 @@ public class XmlGameElementMapperTest {
 
   private XmlGameElementMapper testObj;
 
-  @Before
+  @BeforeEach
   public void setup() {
     testObj = new XmlGameElementMapper();
   }

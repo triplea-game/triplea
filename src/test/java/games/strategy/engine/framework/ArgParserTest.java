@@ -3,19 +3,19 @@ package games.strategy.engine.framework;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.triplea.settings.ClientSetting;
 
 public class ArgParserTest {
 
 
-  @After
+  @AfterEach
   public void teardown() {
     System.clearProperty(GameRunner.TRIPLEA_GAME_PROPERTY);
   }

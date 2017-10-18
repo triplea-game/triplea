@@ -8,7 +8,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge
 import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.setSelectAaCasualties;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -38,7 +38,7 @@ public class BattleCalculatorTest {
   private ITestDelegateBridge bridge;
   private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     final GameData data = TestMapGameData.REVISED.getGameData();
     bridge = getDelegateBridge(british(data), data);

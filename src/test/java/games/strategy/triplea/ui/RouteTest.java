@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -18,8 +18,8 @@ import java.awt.geom.Point2D;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -35,7 +35,7 @@ public class RouteTest {
   private final RouteDescription dummyRouteDescription =
       spy(new RouteDescription(dummyRoute, dummyPoints[0].toPoint(), dummyPoints[2].toPoint(), null));
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1].toPoint());
     when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000, 1000));
@@ -43,7 +43,7 @@ public class RouteTest {
 
   @Test
   public void testIndex() {
-    assertArrayEquals(spyRouteDrawer.createParameterizedIndex(new Point[] {}), new double[] {}, 0);
+    assertArrayEquals(spyRouteDrawer.createParameterizedIndex(new Point[] {}), new double[] {});
     assertEquals(dummyIndex.length, dummyPoints.length);
     // Not sure whether it makes sense to include a Test for specific values
     // The way the index is being calculated may change to a better System
@@ -67,8 +67,8 @@ public class RouteTest {
   public void testPointSplitting() {
     final double[] expectedXCoords = new double[] {0, 100, 0};
     final double[] expectedYCoords = new double[] {0, 0, 100};
-    assertArrayEquals(expectedXCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getX()), 0);
-    assertArrayEquals(expectedYCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getY()), 0);
+    assertArrayEquals(expectedXCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getX()));
+    assertArrayEquals(expectedYCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getY()));
   }
 
 

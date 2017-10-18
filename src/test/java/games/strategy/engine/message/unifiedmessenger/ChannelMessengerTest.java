@@ -1,13 +1,13 @@
 package games.strategy.engine.message.unifiedmessenger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.ChannelMessenger;
@@ -30,7 +30,7 @@ public class ChannelMessengerTest {
   private ChannelMessenger clientChannelMessenger;
   private UnifiedMessengerHub unifiedMessengerHub;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     serverPort = TestUtil.getUniquePort();
     serverMessenger = new ServerMessenger("Server", serverPort);
@@ -43,7 +43,7 @@ public class ChannelMessengerTest {
     clientChannelMessenger = new ChannelMessenger(new UnifiedMessenger(clientMessenger));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     try {
       if (serverMessenger != null) {

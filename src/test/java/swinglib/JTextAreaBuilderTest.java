@@ -2,10 +2,11 @@ package swinglib;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.swing.JTextArea;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JTextAreaBuilderTest {
 
@@ -36,9 +37,9 @@ public class JTextAreaBuilderTest {
     assertThat(area.getRows(), is(5));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void rowsNonZero() {
-    JTextAreaBuilder.builder().rows(0);
+    assertThrows(IllegalArgumentException.class, () -> JTextAreaBuilder.builder().rows(0));
   }
 
   @Test
@@ -50,9 +51,9 @@ public class JTextAreaBuilderTest {
     assertThat(area.getColumns(), is(20));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void columnsNonZero() {
-    JTextAreaBuilder.builder().columns(0);
+    assertThrows(IllegalArgumentException.class, () -> JTextAreaBuilder.builder().columns(0));
   }
 
   @Test

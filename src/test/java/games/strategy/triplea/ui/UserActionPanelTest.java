@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -9,11 +9,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
@@ -23,14 +23,14 @@ import games.strategy.engine.data.ResourceList;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public final class UserActionPanelTest {
   @Mock
   private GameData data;
 
   private Resource pus;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     pus = new Resource(Constants.PUS, data);
   }

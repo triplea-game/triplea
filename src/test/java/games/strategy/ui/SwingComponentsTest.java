@@ -4,11 +4,11 @@ import static games.strategy.ui.SwingComponents.appendExtensionIfAbsent;
 import static games.strategy.ui.SwingComponents.extensionWithLeadingPeriod;
 import static games.strategy.ui.SwingComponents.extensionWithoutLeadingPeriod;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class SwingComponentsTest {
   @Test

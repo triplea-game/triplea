@@ -2,11 +2,11 @@ package games.strategy.engine.framework.map.download;
 
 import static org.hamcrest.Matchers.is;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.util.Version;

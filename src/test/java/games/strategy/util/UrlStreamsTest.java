@@ -12,13 +12,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class UrlStreamsTest {
 
   private UrlStreams testObj;
@@ -31,7 +31,7 @@ public class UrlStreamsTest {
   private InputStream mockInputStream;
 
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     // set up the test object with a function that will return a mocked url connection
     testObj = new UrlStreams(url -> mockUrlConnection);

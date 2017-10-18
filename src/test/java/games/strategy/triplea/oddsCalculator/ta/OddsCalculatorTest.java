@@ -5,16 +5,16 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -27,7 +27,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class OddsCalculatorTest {
   private GameData gameData;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.REVISED.getGameData();
   }
@@ -81,8 +81,8 @@ public class OddsCalculatorTest {
     final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(gameData), germans(gameData),
         sz1, attacking, defending, Collections.emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
     calculator.shutdown();
-    assertEquals(results.getAttackerWinPercent(), 0.0, 0.0);
-    assertEquals(results.getDefenderWinPercent(), 1.0, 0.0);
+    assertEquals(results.getAttackerWinPercent(), 0.0);
+    assertEquals(results.getDefenderWinPercent(), 1.0);
   }
 
   @Test
@@ -97,7 +97,7 @@ public class OddsCalculatorTest {
     final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(gameData), germans(gameData),
         sz1, attacking, defending, Collections.emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
     calculator.shutdown();
-    assertEquals(results.getAttackerWinPercent(), 1.0, 0.0);
-    assertEquals(results.getDefenderWinPercent(), 0.0, 0.0);
+    assertEquals(results.getAttackerWinPercent(), 1.0);
+    assertEquals(results.getDefenderWinPercent(), 0.0);
   }
 }

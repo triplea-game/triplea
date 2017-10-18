@@ -8,14 +8,14 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class JScrollPaneBuilderTest {
   private final JScrollPaneBuilder builder = JScrollPaneBuilder.builder();

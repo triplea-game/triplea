@@ -1,15 +1,14 @@
 package games.strategy.util;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -17,7 +16,6 @@ import games.strategy.test.EqualityComparator;
 import games.strategy.test.EqualityComparatorRegistry;
 import games.strategy.test.TestUtil;
 
-@RunWith(Enclosed.class)
 public final class CoreEqualityComparatorsTests {
   private static EqualityComparatorRegistry newEqualityComparatorRegistryOf(
       final EqualityComparator primaryEqualityComparator,
@@ -28,10 +26,11 @@ public final class CoreEqualityComparatorsTests {
     return EqualityComparatorRegistry.newInstance(equalityComparators);
   }
 
-  public static final class CollectionTest {
+  @Nested
+  public final class CollectionTest {
     private final EqualityComparatorRegistry equalityComparatorRegistry = newEqualityComparatorRegistry();
 
-    private static EqualityComparatorRegistry newEqualityComparatorRegistry(
+    private EqualityComparatorRegistry newEqualityComparatorRegistry(
         final EqualityComparator... equalityComparators) {
       return newEqualityComparatorRegistryOf(CoreEqualityComparators.COLLECTION, equalityComparators);
     }
@@ -72,10 +71,11 @@ public final class CoreEqualityComparatorsTests {
     }
   }
 
-  public static final class MapTest {
+  @Nested
+  public final class MapTest {
     private final EqualityComparatorRegistry equalityComparatorRegistry = newEqualityComparatorRegistry();
 
-    private static EqualityComparatorRegistry newEqualityComparatorRegistry(
+    private EqualityComparatorRegistry newEqualityComparatorRegistry(
         final EqualityComparator... equalityComparators) {
       return newEqualityComparatorRegistryOf(CoreEqualityComparators.MAP, equalityComparators);
     }

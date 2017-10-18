@@ -1,13 +1,13 @@
 package games.strategy.engine.data;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.io.IoUtils;
@@ -18,7 +18,7 @@ public class SerializationTest {
   private GameData gameDataSource;
   private GameData gameDataSink;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameDataSource = TestMapGameData.TEST.getGameData();
     gameDataSink = TestMapGameData.TEST.getGameData();

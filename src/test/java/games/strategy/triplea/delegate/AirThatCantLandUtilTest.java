@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -9,8 +9,8 @@ import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.Map.Entry;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -30,7 +30,7 @@ public class AirThatCantLandUtilTest {
   private PlayerID americansPlayer;
   private UnitType fighterType;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.REVISED.getGameData();
     americansPlayer = GameDataTestUtil.americans(gameData);

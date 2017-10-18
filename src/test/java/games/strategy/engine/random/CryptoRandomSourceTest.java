@@ -1,16 +1,16 @@
 package games.strategy.engine.random;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CryptoRandomSourceTest {
 
   @Test
   public void testIntsToBytes() {
-    final byte[] bytes = CryptoRandomSource.intsToBytes(new int[] { 0xD1C2B3A4, 0x1A2B3C4D });
+    final byte[] bytes = CryptoRandomSource.intsToBytes(new int[] {0xD1C2B3A4, 0x1A2B3C4D});
     assertEquals(8, bytes.length);
     assertEquals((byte) 0xA4, bytes[0]);
     assertEquals((byte) 0xB3, bytes[1]);
@@ -26,7 +26,7 @@ public class CryptoRandomSourceTest {
   public void testBytesToInts() {
     final int[] ints = CryptoRandomSource.bytesToInts(new byte[] {
         (byte) 0xA4, (byte) 0xB3, (byte) 0xC2, (byte) 0xD1,
-        (byte) 0x4D, (byte) 0x3C, (byte) 0x2B, (byte) 0x1A });
+        (byte) 0x4D, (byte) 0x3C, (byte) 0x2B, (byte) 0x1A});
     assertEquals(2, ints.length);
     assertEquals(0xD1C2B3A4, ints[0]);
     assertEquals(0x1A2B3C4D, ints[1]);
@@ -49,7 +49,7 @@ public class CryptoRandomSourceTest {
         Integer.MAX_VALUE, Integer.MIN_VALUE};
     final int[] thereAndBack = CryptoRandomSource.bytesToInts(CryptoRandomSource.intsToBytes(ints));
     for (int i = 0; i < ints.length; i++) {
-      assertEquals("at " + i, ints[i], thereAndBack[i]);
+      assertEquals(ints[i], thereAndBack[i], "at " + i);
     }
   }
 }

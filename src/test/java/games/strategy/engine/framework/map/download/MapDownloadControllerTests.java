@@ -1,10 +1,10 @@
 package games.strategy.engine.framework.map.download;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -16,32 +16,33 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.framework.map.download.MapDownloadController.DownloadedMaps;
 import games.strategy.engine.framework.map.download.MapDownloadController.TutorialMapPreferences;
 import games.strategy.engine.framework.map.download.MapDownloadController.UserMaps;
 import games.strategy.util.Version;
 
-@RunWith(Enclosed.class)
 public final class MapDownloadControllerTests {
-  @RunWith(MockitoJUnitRunner.StrictStubs.class)
-  public static final class GetOutOfDateMapNamesTest {
-    private static final String MAP_NAME = "myMap";
+  
+  @Nested
+  @ExtendWith(MockitoExtension.class)
+  public final class GetOutOfDateMapNamesTest {
+    private final String MAP_NAME = "myMap";
 
-    private static final File MAP_ZIP_FILE_1 = new File("file1.zip");
+    private final File MAP_ZIP_FILE_1 = new File("file1.zip");
 
-    private static final File MAP_ZIP_FILE_2 = new File("file2.zip");
+    private final File MAP_ZIP_FILE_2 = new File("file2.zip");
 
-    private static final Version VERSION_1 = new Version(1, 0);
+    private final Version VERSION_1 = new Version(1, 0);
 
-    private static final Version VERSION_2 = new Version(2, 0);
+    private final Version VERSION_2 = new Version(2, 0);
 
-    private static final Version VERSION_UNKNOWN = null;
+    private final Version VERSION_UNKNOWN = null;
 
     @Mock
     private DownloadedMaps downloadedMaps;
@@ -56,15 +57,15 @@ public final class MapDownloadControllerTests {
       assertThat(outOfDateMapNames, contains(MAP_NAME));
     }
 
-    private static Collection<DownloadFileDescription> givenLatestMapVersionIs(final Version version) {
+    private Collection<DownloadFileDescription> givenLatestMapVersionIs(final Version version) {
       return givenDownload(newDownloadWithVersion(version));
     }
 
-    private static Collection<DownloadFileDescription> givenDownload(final DownloadFileDescription download) {
+    private Collection<DownloadFileDescription> givenDownload(final DownloadFileDescription download) {
       return Collections.singletonList(download);
     }
 
-    private static DownloadFileDescription newDownloadWithVersion(final Version version) {
+    private DownloadFileDescription newDownloadWithVersion(final Version version) {
       return new DownloadFileDescription(
           "url",
           "description",
@@ -130,8 +131,9 @@ public final class MapDownloadControllerTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.StrictStubs.class)
-  public static final class PreventPromptToDownloadTutorialMapTest {
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  public final class PreventPromptToDownloadTutorialMapTest {
     @Mock
     private TutorialMapPreferences tutorialMapPreferences;
 
@@ -147,8 +149,9 @@ public final class MapDownloadControllerTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.StrictStubs.class)
-  public static final class ShouldPromptToDownloadTutorialMapTest {
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  public final class ShouldPromptToDownloadTutorialMapTest {
     @Mock
     private TutorialMapPreferences tutorialMapPreferences;
 

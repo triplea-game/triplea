@@ -1,11 +1,11 @@
 package games.strategy.util;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.triplea.delegate.Matches;
 
@@ -55,30 +55,30 @@ public class MatchTest {
 
   @Test
   public void testAllMatch() {
-    assertTrue("empty collection", Match.allMatch(Arrays.asList(), IS_ZERO_MATCH));
-    assertFalse("none match", Match.allMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH));
-    assertFalse("some match", Match.allMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
-    assertTrue("all match (one element)", Match.allMatch(Arrays.asList(0), IS_ZERO_MATCH));
-    assertTrue("all match (multiple elements)", Match.allMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH));
+    assertTrue(Match.allMatch(Arrays.asList(), IS_ZERO_MATCH), "empty collection");
+    assertFalse(Match.allMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH), "none match");
+    assertFalse(Match.allMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH), "some match");
+    assertTrue(Match.allMatch(Arrays.asList(0), IS_ZERO_MATCH), "all match (one element)");
+    assertTrue(Match.allMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH), "all match (multiple elements)");
   }
 
   @Test
   public void testAnyMatch() {
-    assertFalse("empty collection", Match.anyMatch(Arrays.asList(), IS_ZERO_MATCH));
-    assertFalse("none match", Match.anyMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH));
-    assertTrue("some match (one element)", Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH));
-    assertTrue("some match (multiple elements)", Match.anyMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
-    assertTrue("all match (one element)", Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH));
-    assertTrue("all match (multiple elements)", Match.anyMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH));
+    assertFalse(Match.anyMatch(Arrays.asList(), IS_ZERO_MATCH), "empty collection");
+    assertFalse(Match.anyMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH), "none match");
+    assertTrue(Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH), "some match (one element)");
+    assertTrue(Match.anyMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH), "some match (multiple elements)");
+    assertTrue(Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH), "all match (one element)");
+    assertTrue(Match.anyMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH), "all match (multiple elements)");
   }
 
   @Test
   public void testNoneMatch() {
-    assertTrue("empty collection", Match.noneMatch(Arrays.asList(), IS_ZERO_MATCH));
-    assertTrue("none match (one element)", Match.noneMatch(Arrays.asList(-1), IS_ZERO_MATCH));
-    assertTrue("none match (multiple elements)", Match.noneMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH));
-    assertFalse("some match", Match.noneMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH));
-    assertFalse("all match", Match.noneMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH));
+    assertTrue(Match.noneMatch(Arrays.asList(), IS_ZERO_MATCH), "empty collection");
+    assertTrue(Match.noneMatch(Arrays.asList(-1), IS_ZERO_MATCH), "none match (one element)");
+    assertTrue(Match.noneMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH), "none match (multiple elements)");
+    assertFalse(Match.noneMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH), "some match");
+    assertFalse(Match.noneMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH), "all match");
   }
 
   @Test

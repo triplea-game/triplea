@@ -1,8 +1,8 @@
 package games.strategy.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -13,9 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.concurrent.GuardedBy;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.test.TestUtil;
@@ -30,7 +30,7 @@ public class MessengerIntegrationTest {
   private final MessageListener client1MessageListener = new MessageListener();
   private final MessageListener client2MessageListener = new MessageListener();
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     serverPort = TestUtil.getUniquePort();
     serverMessenger = new ServerMessenger("Server", serverPort);
@@ -54,7 +54,7 @@ public class MessengerIntegrationTest {
     assertEquals(serverMessenger.getNodes().size(), 3);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     try {
       if (serverMessenger != null) {
@@ -216,7 +216,7 @@ public class MessengerIntegrationTest {
 
       @Override
       public void connectionAdded(final INode to) {
-        fail();
+        fail("A connection should not be added.");
       }
     });
     client1Messenger.shutDown();

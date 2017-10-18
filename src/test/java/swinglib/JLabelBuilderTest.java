@@ -1,13 +1,14 @@
 package swinglib;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import org.hamcrest.MatcherAssert;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JLabelBuilderTest {
 
@@ -29,9 +30,9 @@ public class JLabelBuilderTest {
     MatcherAssert.assertThat(label.getAlignmentX(), is(JComponent.LEFT_ALIGNMENT));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void textIsRequired() {
-    JLabelBuilder.builder().build();
+    assertThrows(NullPointerException.class, JLabelBuilder.builder()::build);
   }
 
   @Test

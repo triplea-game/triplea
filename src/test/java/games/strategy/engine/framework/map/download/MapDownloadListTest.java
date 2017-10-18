@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -10,15 +10,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.util.Version;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class MapDownloadListTest {
   private static final String MAP_NAME = "new_test_order";
   private static final Version MAP_VERSION = new Version(10, 10);
@@ -32,7 +32,7 @@ public class MapDownloadListTest {
 
   private final List<DownloadFileDescription> descriptions = new ArrayList<>();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     descriptions.add(TEST_MAP);
   }

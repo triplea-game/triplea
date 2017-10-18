@@ -1,18 +1,18 @@
 package games.strategy.engine.lobby.client.ui;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.ILobbyGameController;
@@ -25,7 +25,7 @@ import games.strategy.net.INode;
 import games.strategy.test.TestUtil;
 import games.strategy.util.Tuple;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class LobbyGameTableModelTest {
 
   private LobbyGameTableModel testObj;
@@ -48,7 +48,7 @@ public class LobbyGameTableModelTest {
   @Mock
   private INode serverNode;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     fakeGameMap = new HashMap<>();
     fakeGame = Tuple.of(new GUID(), mockGameDescription);

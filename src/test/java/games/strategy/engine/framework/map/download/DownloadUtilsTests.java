@@ -3,12 +3,12 @@ package games.strategy.engine.framework.map.download;
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -28,26 +28,27 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.experimental.extensions.TemporaryFolder;
+import org.junit.experimental.extensions.TemporaryFolderExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.framework.map.download.DownloadUtils.DownloadLengthSupplier;
 
-@RunWith(Enclosed.class)
 public final class DownloadUtilsTests {
   private static final String URI = "some://uri";
 
-  @RunWith(MockitoJUnitRunner.StrictStubs.class)
-  public static final class DownloadToFileTest {
-    @Rule
-    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
+  @ExtendWith(MockitoExtension.class)
+  @ExtendWith(TemporaryFolderExtension.class)
+  @Nested
+  public final class DownloadToFileTest {
+    
+    private TemporaryFolder temporaryFolder;
 
     @Mock
     private CloseableHttpClient client;
@@ -66,9 +67,9 @@ public final class DownloadUtilsTests {
     /**
      * Sets up the test fixture.
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-      file = temporaryFolder.newFile();
+      file = temporaryFolder.newFile("filename1123");
 
       when(client.execute(any())).thenReturn(response);
       when(response.getEntity()).thenReturn(entity);
@@ -123,17 +124,18 @@ public final class DownloadUtilsTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.StrictStubs.class)
-  public static final class GetDownloadLengthFromCacheTest {
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  public final class GetDownloadLengthFromCacheTest {
     @Mock
     private DownloadLengthSupplier downloadLengthSupplier;
 
-    @Before
+    @BeforeEach
     public void setUp() {
       DownloadUtils.downloadLengthsByUri.clear();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
       DownloadUtils.downloadLengthsByUri.clear();
     }
@@ -173,8 +175,9 @@ public final class DownloadUtilsTests {
     }
   }
 
-  @RunWith(MockitoJUnitRunner.StrictStubs.class)
-  public static final class GetDownloadLengthFromHostTest {
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  public final class GetDownloadLengthFromHostTest {
     @Mock
     private CloseableHttpClient client;
 
@@ -190,7 +193,7 @@ public final class DownloadUtilsTests {
     /**
      * Sets up the test fixture.
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
       when(client.execute(any())).thenReturn(response);
       when(response.getFirstHeader(HttpHeaders.CONTENT_LENGTH)).thenReturn(contentLengthHeader);

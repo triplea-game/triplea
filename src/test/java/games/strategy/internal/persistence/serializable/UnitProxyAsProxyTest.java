@@ -6,7 +6,7 @@ import static games.strategy.engine.data.TestGameDataComponentFactory.newUnit;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
@@ -30,7 +30,7 @@ public final class UnitProxyAsProxyTest extends AbstractGameDataComponentProxyTe
     actual.setOwner(playerId);
   }
 
-  @Before
+  @BeforeEach
   @Override
   public void setUp() {
     super.setUp();

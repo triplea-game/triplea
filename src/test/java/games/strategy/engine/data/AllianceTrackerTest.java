@@ -1,10 +1,10 @@
 package games.strategy.engine.data;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -12,7 +12,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class AllianceTrackerTest {
   private GameData gameData;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.TEST.getGameData();
   }

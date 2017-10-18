@@ -1,8 +1,8 @@
 package games.strategy.engine.lobby.server.login;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -11,19 +11,21 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -38,12 +40,17 @@ import games.strategy.security.TestSecurityUtils;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
 
-@RunWith(Enclosed.class)
 public final class LobbyLoginValidatorTests {
-  private abstract static class AbstractTestCase {
+
+  interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {
+  }
+
+  @Nested
+  @ExtendWith(MockitoExtension.class)
+  abstract class AbstractTestCase {
     static final String EMAIL = "n@n.com";
     static final String PASSWORD = "password";
-    private static final SocketAddress REMOTE_ADDRESS = new InetSocketAddress(9999);
+    private final SocketAddress REMOTE_ADDRESS = new InetSocketAddress(9999);
     private static final String USERNAME = "username";
 
     @Mock
@@ -68,8 +75,8 @@ public final class LobbyLoginValidatorTests {
 
     private final String md5CryptSalt = MD5Crypt.newSalt();
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws IOException, GeneralSecurityException {
       lobbyLoginValidator = new LobbyLoginValidator(
           badWordDao,
           bannedMacDao,
@@ -86,7 +93,7 @@ public final class LobbyLoginValidatorTests {
       return BCrypt.hashpw(obfuscate(password), bcryptSalt);
     }
 
-    private static String obfuscate(final String password) {
+    private String obfuscate(final String password) {
       return RsaAuthenticator.hashPasswordWithSalt(password);
     }
 
@@ -185,12 +192,12 @@ public final class LobbyLoginValidatorTests {
       verify(userDao, never()).updateUser(any(DBUser.class), any(HashedPassword.class));
     }
 
-    interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {
-    }
+
   }
 
-  @RunWith(MockitoJUnitRunner.StrictStubs.class)
-  public static final class WhenUserIsAnonymousTest extends AbstractTestCase {
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  public final class WhenUserIsAnonymousTest extends AbstractTestCase {
     @Test
     public void shouldNotCreateOrUpdateUser() {
       givenUserDoesNotExist();
@@ -202,17 +209,18 @@ public final class LobbyLoginValidatorTests {
       thenUserShouldNotBeUpdated();
     }
 
-    private static ResponseGenerator givenAuthenticationResponse() {
+    private ResponseGenerator givenAuthenticationResponse() {
       return challenge -> ImmutableMap.of(
           LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
           LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
     }
   }
 
-  @RunWith(Enclosed.class)
-  public static final class WhenUserDoesNotExistTests {
-    @RunWith(MockitoJUnitRunner.StrictStubs.class)
-    public static final class WhenUsingLegacyClientTest extends AbstractTestCase {
+  @Nested
+  public final class WhenUserDoesNotExistTests {
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenUsingLegacyClientTest extends AbstractTestCase {
       @Test
       public void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
         givenUserDoesNotExist();
@@ -233,8 +241,9 @@ public final class LobbyLoginValidatorTests {
       }
     }
 
-    @RunWith(MockitoJUnitRunner.StrictStubs.class)
-    public static final class WhenUsingCurrentClientTest extends AbstractTestCase {
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenUsingCurrentClientTest extends AbstractTestCase {
       @Test
       public void shouldCreateNewUserWithBothPasswords() {
         givenUserDoesNotExist();
@@ -258,10 +267,11 @@ public final class LobbyLoginValidatorTests {
     }
   }
 
-  @RunWith(Enclosed.class)
-  public static final class WhenUserExistsTests {
-    @RunWith(MockitoJUnitRunner.StrictStubs.class)
-    public static final class WhenUsingLegacyClientTest extends AbstractTestCase {
+  @Nested
+  public final class WhenUserExistsTests {
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenUsingLegacyClientTest extends AbstractTestCase {
       @Test
       public void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
         givenUserDoesNotHaveBcryptedPassword();
@@ -305,8 +315,9 @@ public final class LobbyLoginValidatorTests {
       }
     }
 
-    @RunWith(MockitoJUnitRunner.StrictStubs.class)
-    public static final class WhenUsingCurrentClientTest extends AbstractTestCase {
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenUsingCurrentClientTest extends AbstractTestCase {
       @Test
       public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
         givenUserExists();

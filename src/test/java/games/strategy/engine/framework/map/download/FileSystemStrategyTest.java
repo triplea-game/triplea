@@ -1,15 +1,16 @@
 package games.strategy.engine.framework.map.download;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.experimental.extensions.TemporaryFolder;
+import org.junit.experimental.extensions.TemporaryFolderExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.google.common.io.Files;
 
@@ -20,19 +21,20 @@ import games.strategy.util.Version;
  * a properties file for each map that we download. Reading XMLs in Zips is can be
  * fast, so one day we should just read the versions directly from the map zip files.
  */
+@ExtendWith(TemporaryFolderExtension.class)
 public class FileSystemStrategyTest {
-  @Rule
-  public final TemporaryFolder temporaryFolder = new TemporaryFolder();
+
+  private TemporaryFolder temporaryFolder;
 
   private FileSystemAccessStrategy testObj;
 
   private File mapFile;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     testObj = new FileSystemAccessStrategy();
     final String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
-    mapFile = temporaryFolder.newFile();
+    mapFile = temporaryFolder.newFile("someothertestname");
     final File propFile = temporaryFolder.newFile(mapFile.getName() + ".properties");
     Files.write(text.getBytes(), propFile);
   }

@@ -2,6 +2,7 @@ package swinglib;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
@@ -9,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JButton;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JButtonBuilderTest {
 
@@ -41,26 +42,26 @@ public class JButtonBuilderTest {
     assertThat(button.getToolTipText(), is("toolTip"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void titleCannotBeEmpty() {
-    JButtonBuilder.builder().title("");
+    assertThrows(IllegalArgumentException.class, () -> JButtonBuilder.builder().title(""));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void titleIsRequired() {
-    JButtonBuilder.builder()
+    assertThrows(NullPointerException.class, () -> JButtonBuilder.builder()
         .actionListener(() -> {
         })
-        .build();
+        .build());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void actionListenerIsRequired() {
-    JButtonBuilder.builder().actionListener(null);
+    assertThrows(NullPointerException.class, () -> JButtonBuilder.builder().actionListener(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void toolTipCanNotBeEmptyIfSpecified() {
-    JButtonBuilder.builder().toolTip("");
+    assertThrows(IllegalArgumentException.class, () -> JButtonBuilder.builder().toolTip(""));
   }
 }

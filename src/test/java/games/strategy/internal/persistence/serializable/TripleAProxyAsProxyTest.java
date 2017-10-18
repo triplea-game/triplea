@@ -1,6 +1,6 @@
 package games.strategy.internal.persistence.serializable;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,7 +16,7 @@ public final class TripleAProxyAsProxyTest extends AbstractProxyTestCase<TripleA
 
   @Override
   protected void assertPrincipalEquals(final TripleA expected, final TripleA actual) {
-    assertTrue("no persistent state; all non-null instances are considered equal", true);
+    assertTrue(true, "no persistent state; all non-null instances are considered equal");
   }
 
   @Override
