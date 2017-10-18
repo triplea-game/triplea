@@ -26,12 +26,12 @@ public class SerializationTest {
 
   private Object serialize(final Object anObject) throws Exception {
     final byte[] bytes = IoUtils.writeToMemory(os -> {
-      try (final ObjectOutputStream output = new GameObjectOutputStream(os)) {
+      try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
         output.writeObject(anObject);
       }
     });
     return IoUtils.readFromMemory(bytes, is -> {
-      try (final ObjectInputStream input = new GameObjectInputStream(new GameObjectStreamFactory(gameDataSource), is)) {
+      try (ObjectInputStream input = new GameObjectInputStream(new GameObjectStreamFactory(gameDataSource), is)) {
         return input.readObject();
       } catch (final ClassNotFoundException e) {
         throw new IOException(e);

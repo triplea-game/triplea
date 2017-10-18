@@ -31,7 +31,7 @@ public class ProLogSettings implements Serializable {
         final byte[] pool = Preferences.userNodeForPackage(ProAI.class).getByteArray(PROGRAM_SETTINGS, null);
         if (pool != null) {
           result = IoUtils.readFromMemory(pool, is -> {
-            try (final ObjectInputStream ois = new ObjectInputStream(is)) {
+            try (ObjectInputStream ois = new ObjectInputStream(is)) {
               return (ProLogSettings) ois.readObject();
             } catch (final ClassNotFoundException e) {
               throw new IOException(e);
@@ -55,7 +55,7 @@ public class ProLogSettings implements Serializable {
     lastSettings = settings;
     try {
       final byte[] bytes = IoUtils.writeToMemory(os -> {
-        try (final ObjectOutputStream outputStream = new ObjectOutputStream(os)) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(os)) {
           outputStream.writeObject(settings);
         }
       });

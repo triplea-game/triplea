@@ -3,6 +3,7 @@ package games.strategy.engine.random;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -64,7 +65,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       if (!file.isDirectory() && file.getName().endsWith(".properties")) {
         try {
           final Properties props = new Properties();
-          try (final FileInputStream fin = new FileInputStream(file)) {
+          try (InputStream fin = new FileInputStream(file)) {
             props.load(fin);
             propFiles.add(props);
           }

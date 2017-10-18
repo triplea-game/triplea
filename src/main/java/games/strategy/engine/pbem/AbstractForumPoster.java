@@ -61,7 +61,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
   private void protectCredentials() {
     if (credentialsSaved) {
       credentialsProtected = true;
-      try (final CredentialManager credentialManager = CredentialManager.newInstance()) {
+      try (CredentialManager credentialManager = CredentialManager.newInstance()) {
         m_username = credentialManager.protect(m_username);
         m_password = credentialManager.protect(m_password);
       } catch (final CredentialManagerException e) {
@@ -81,7 +81,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
 
   private void unprotectCredentials() {
     if (credentialsProtected) {
-      try (final CredentialManager credentialManager = CredentialManager.newInstance()) {
+      try (CredentialManager credentialManager = CredentialManager.newInstance()) {
         m_username = credentialManager.unprotectToString(m_username);
         m_password = credentialManager.unprotectToString(m_password);
       } catch (final CredentialManagerException e) {

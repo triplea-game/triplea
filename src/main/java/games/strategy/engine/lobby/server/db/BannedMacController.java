@@ -21,8 +21,8 @@ public class BannedMacController extends TimedController implements BannedMacDao
   @Override
   public void addBannedMac(final String mac, final @Nullable Instant banTill) {
     if (banTill == null || banTill.isAfter(now())) {
-      try (final Connection con = Database.getPostgresConnection();
-          final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)"
+      try (Connection con = Database.getPostgresConnection();
+          PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)"
               + " on conflict (mac) do update set ban_till=excluded.ban_till")) {
         ps.setString(1, mac);
         ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
@@ -37,8 +37,8 @@ public class BannedMacController extends TimedController implements BannedMacDao
   }
 
   private static void removeBannedMac(final String mac) {
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac=?")) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac=?")) {
       ps.setString(1, mac);
       ps.execute();
       con.commit();
@@ -54,10 +54,10 @@ public class BannedMacController extends TimedController implements BannedMacDao
   public Tuple<Boolean, /* @Nullable */ Timestamp> isMacBanned(final String mac) {
     final String sql = "select mac, ban_till from banned_macs where mac=?";
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
-      try (final ResultSet rs = ps.executeQuery()) {
+      try (ResultSet rs = ps.executeQuery()) {
         // If the ban has expired, allow the mac
         if (rs.next()) {
           final Timestamp banTill = rs.getTimestamp(2);

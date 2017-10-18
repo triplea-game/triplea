@@ -60,7 +60,7 @@ public final class DownloadUtils {
   }
 
   private static Optional<Long> getDownloadLengthFromHost(final String uri) {
-    try (final CloseableHttpClient client = newHttpClient()) {
+    try (CloseableHttpClient client = newHttpClient()) {
       return getDownloadLengthFromHost(uri, client);
     } catch (final IOException e) {
       ClientLogger.logQuietly(String.format("failed to get download length for '%s'", uri), e);
@@ -72,7 +72,7 @@ public final class DownloadUtils {
   static Optional<Long> getDownloadLengthFromHost(
       final String uri,
       final CloseableHttpClient client) throws IOException {
-    try (final CloseableHttpResponse response = client.execute(newHttpHeadRequest(uri))) {
+    try (CloseableHttpResponse response = client.execute(newHttpHeadRequest(uri))) {
       final int statusCode = response.getStatusLine().getStatusCode();
       if (statusCode != HttpStatus.SC_OK) {
         throw new IOException(String.format("unexpected status code (%d)", statusCode));
@@ -162,8 +162,8 @@ public final class DownloadUtils {
     checkNotNull(uri);
     checkNotNull(file);
 
-    try (final FileOutputStream os = new FileOutputStream(file);
-        final CloseableHttpClient client = newHttpClient()) {
+    try (FileOutputStream os = new FileOutputStream(file);
+        CloseableHttpClient client = newHttpClient()) {
       downloadToFile(uri, os, client);
     }
   }
@@ -175,7 +175,7 @@ public final class DownloadUtils {
       final String uri,
       final FileOutputStream os,
       final CloseableHttpClient client) throws IOException {
-    try (final CloseableHttpResponse response = client.execute(newHttpGetRequest(uri))) {
+    try (CloseableHttpResponse response = client.execute(newHttpGetRequest(uri))) {
       final int statusCode = response.getStatusLine().getStatusCode();
       if (statusCode != HttpStatus.SC_OK) {
         throw new IOException(String.format("unexpected status code (%d)", statusCode));

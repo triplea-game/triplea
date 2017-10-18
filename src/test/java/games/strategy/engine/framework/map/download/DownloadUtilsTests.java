@@ -91,7 +91,7 @@ public final class DownloadUtilsTests {
     }
 
     private void downloadToFile() throws Exception {
-      try (final FileOutputStream os = new FileOutputStream(file)) {
+      try (FileOutputStream os = new FileOutputStream(file)) {
         DownloadUtils.downloadToFile(URI, os, client);
       }
     }

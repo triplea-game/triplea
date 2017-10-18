@@ -25,9 +25,8 @@ public class MutedUsernameController extends TimedController {
     if (muteTill == null || muteTill.isAfter(now())) {
       logger.fine("Muting username:" + username);
 
-      try (final Connection con = Database.getPostgresConnection();
-          final PreparedStatement ps =
-              con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)"
+      try (Connection con = Database.getPostgresConnection();
+          PreparedStatement ps = con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)"
                   + " on conflict (username) do update set mute_till=excluded.mute_till")) {
         ps.setString(1, username);
         ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
@@ -44,8 +43,8 @@ public class MutedUsernameController extends TimedController {
   private static void removeMutedUsername(final String username) {
     logger.fine("Removing muted username:" + username);
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?")) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?")) {
       ps.setString(1, username);
       ps.execute();
       con.commit();
@@ -69,10 +68,10 @@ public class MutedUsernameController extends TimedController {
   public long getUsernameUnmuteTime(final String username) {
     final String sql = "select username, mute_till from muted_usernames where username = ?";
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
-      try (final ResultSet rs = ps.executeQuery()) {
+      try (ResultSet rs = ps.executeQuery()) {
         final boolean found = rs.next();
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);

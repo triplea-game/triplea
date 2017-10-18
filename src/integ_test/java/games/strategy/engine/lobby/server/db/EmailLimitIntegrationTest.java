@@ -43,7 +43,7 @@ public class EmailLimitIntegrationTest {
   }
 
   private static void createAccountWithEmail(final String email) {
-    try (final PreparedStatement ps =
+    try (PreparedStatement ps =
         connection.prepareStatement("insert into ta_users (username, email, password) values (?, ?, ?)")) {
       ps.setString(1, Util.createUniqueTimeStamp());
       ps.setString(2, email);

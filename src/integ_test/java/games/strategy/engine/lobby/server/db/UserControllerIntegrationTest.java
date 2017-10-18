@@ -82,7 +82,7 @@ public class UserControllerIntegrationTest {
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
         new HashedPassword(password2));
-    try (final Connection con = connectionSupplier.get()) {
+    try (Connection con = connectionSupplier.get()) {
       final String sql = " select * from ta_users where username = '" + user.getName() + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
@@ -110,7 +110,7 @@ public class UserControllerIntegrationTest {
   }
 
   private static int getUserCount() throws Exception {
-    try (final Connection dbConnection = connectionSupplier.get()) {
+    try (Connection dbConnection = connectionSupplier.get()) {
       final String sql = "select count(*) from TA_USERS";
       final ResultSet rs = dbConnection.createStatement().executeQuery(sql);
       assertTrue(rs.next());

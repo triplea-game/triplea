@@ -33,7 +33,7 @@ public final class LoggingConfiguration {
       return;
     }
 
-    try (final InputStream is = LoggingConfiguration.class.getResourceAsStream("logging.properties")) {
+    try (InputStream is = LoggingConfiguration.class.getResourceAsStream("logging.properties")) {
       logManager.readConfiguration(is);
     } catch (final IOException e) {
       System.err.println("unable to set custom logging configuration using logging.properties");

@@ -25,8 +25,8 @@ public class MutedMacController extends TimedController {
     if (muteTill == null || muteTill.isAfter(now())) {
       logger.fine("Muting mac:" + mac);
 
-      try (final Connection con = Database.getPostgresConnection();
-          final PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)"
+      try (Connection con = Database.getPostgresConnection();
+          PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)"
               + " on conflict (mac) do update set mute_till=excluded.mute_till")) {
         ps.setString(1, mac);
         ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
@@ -43,8 +43,8 @@ public class MutedMacController extends TimedController {
   private static void removeMutedMac(final String mac) {
     logger.fine("Removing muted mac:" + mac);
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac=?")) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac=?")) {
       ps.setString(1, mac);
       ps.execute();
       con.commit();
@@ -68,10 +68,10 @@ public class MutedMacController extends TimedController {
   public long getMacUnmuteTime(final String mac) {
     final String sql = "select mac, mute_till from muted_macs where mac=?";
 
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
-      try (final ResultSet rs = ps.executeQuery()) {
+      try (ResultSet rs = ps.executeQuery()) {
         final boolean found = rs.next();
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);

@@ -97,7 +97,7 @@ public class AutoPlacementFinder {
           final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
           final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
           final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-          try (final Scanner scanner = new Scanner(file)) {
+          try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
               final String line = scanner.nextLine();
               if (line.contains(scaleProperty)) {

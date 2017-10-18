@@ -91,7 +91,7 @@ public class GenericEmailSender implements IEmailSender {
   private void protectCredentials() {
     if (credentialsSaved) {
       credentialsProtected = true;
-      try (final CredentialManager credentialManager = CredentialManager.newInstance()) {
+      try (CredentialManager credentialManager = CredentialManager.newInstance()) {
         m_userName = credentialManager.protect(m_userName);
         m_password = credentialManager.protect(m_password);
       } catch (final CredentialManagerException e) {
@@ -111,7 +111,7 @@ public class GenericEmailSender implements IEmailSender {
 
   private void unprotectCredentials() {
     if (credentialsProtected) {
-      try (final CredentialManager credentialManager = CredentialManager.newInstance()) {
+      try (CredentialManager credentialManager = CredentialManager.newInstance()) {
         m_userName = credentialManager.unprotectToString(m_userName);
         m_password = credentialManager.unprotectToString(m_password);
       } catch (final CredentialManagerException e) {

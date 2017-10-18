@@ -122,7 +122,7 @@ class LobbyGameController implements ILobbyGameController {
     final int port = description.getPort();
     final String host = description.getHostedBy().getAddress().getHostAddress();
     logger.fine("Testing game connection on host:" + host + " port:" + port);
-    try (final Socket s = new Socket()) {
+    try (Socket s = new Socket()) {
       s.connect(new InetSocketAddress(host, port), 10 * 1000);
       logger.fine("Connection test passed for host:" + host + " port:" + port);
       return null;

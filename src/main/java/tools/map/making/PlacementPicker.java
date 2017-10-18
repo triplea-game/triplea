@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -163,7 +164,7 @@ public class PlacementPicker extends JFrame {
           final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
           final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
           final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-          try (final Scanner scanner = new Scanner(file)) {
+          try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
               final String line = scanner.nextLine();
               if (line.contains(scaleProperty)) {
@@ -482,7 +483,7 @@ public class PlacementPicker extends JFrame {
       if (fileName == null) {
         return;
       }
-      try (final FileOutputStream out = new FileOutputStream(fileName)) {
+      try (OutputStream out = new FileOutputStream(fileName)) {
         PointFileReaderWriter.writeOneToMany(out, new HashMap<>(placements));
       }
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());

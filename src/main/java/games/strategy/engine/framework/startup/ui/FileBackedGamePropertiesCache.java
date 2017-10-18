@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,7 +48,8 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
       if (!cache.getParentFile().exists()) {
         cache.getParentFile().mkdirs();
       }
-      try (final ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(cache))) {
+      try (OutputStream os = new FileOutputStream(cache);
+          ObjectOutputStream out = new ObjectOutputStream(os)) {
         out.writeObject(serializableMap);
       }
     } catch (final IOException e) {
@@ -61,7 +64,8 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
     final File cache = getCacheFile(gameData);
     try {
       if (cache.exists()) {
-        try (final ObjectInputStream in = new ObjectInputStream(new FileInputStream(cache))) {
+        try (InputStream is = new FileInputStream(cache);
+            ObjectInputStream in = new ObjectInputStream(is)) {
           final Map<String, Serializable> serializedMap = (Map<String, Serializable>) in.readObject();
           for (final IEditableProperty property : gameData.getProperties().getEditableProperties()) {
             final Serializable ser = serializedMap.get(property.getName());

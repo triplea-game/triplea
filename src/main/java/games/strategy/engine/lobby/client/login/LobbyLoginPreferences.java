@@ -70,7 +70,7 @@ public final class LobbyLoginPreferences {
       return credentials;
     }
 
-    try (final CredentialManager credentialManager = credentialManagerFactory.create()) {
+    try (CredentialManager credentialManager = credentialManagerFactory.create()) {
       return new Credentials(
           credentials.userName.isEmpty() ? "" : credentialManager.unprotectToString(credentials.userName),
           credentials.password.isEmpty() ? "" : credentialManager.unprotectToString(credentials.password),
@@ -118,7 +118,7 @@ public final class LobbyLoginPreferences {
       final CredentialManagerFactory credentialManagerFactory) {
     assert !credentials.isProtected;
 
-    try (final CredentialManager credentialManager = credentialManagerFactory.create()) {
+    try (CredentialManager credentialManager = credentialManagerFactory.create()) {
       return new Credentials(
           credentialManager.protect(credentials.userName),
           credentialManager.protect(credentials.password),

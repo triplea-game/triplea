@@ -35,8 +35,8 @@ public class BadWordControllerIntegrationTest {
   }
 
   private static void removeBadWord(final String word) throws Exception {
-    try (final Connection con = Database.getPostgresConnection();
-        final PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
       ps.setString(1, word);
       ps.execute();
       con.commit();

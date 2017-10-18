@@ -204,7 +204,7 @@ public class ValidateAttachmentsTest {
 
   private static String formatStackTrace(final Throwable t) {
     final StringWriter stringWriter = new StringWriter();
-    try (final PrintWriter printWriter = new PrintWriter(stringWriter)) {
+    try (PrintWriter printWriter = new PrintWriter(stringWriter)) {
       t.printStackTrace(printWriter);
     }
     return stringWriter.toString();

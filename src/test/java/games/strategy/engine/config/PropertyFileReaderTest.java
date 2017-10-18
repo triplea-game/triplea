@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.Writer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class PropertyFileReaderTest {
     final File tempFile = File.createTempFile("test", "tmp");
     tempFile.deleteOnExit();
 
-    try (final FileWriter writer = new FileWriter(tempFile)) {
+    try (Writer writer = new FileWriter(tempFile)) {
       writer.write("a=b\n");
       writer.write(" 1 = 2 \n");
       writer.write("whitespace =      \n");
