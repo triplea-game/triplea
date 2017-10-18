@@ -61,7 +61,7 @@ import games.strategy.util.Version;
 
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
   public static final RemoteName SERVER_REMOTE_NAME =
-      new RemoteName("games.strategy.engine.framework.uiComponent.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
+      new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
   public IServerMessenger getServerMessenger() {
     return serverMessenger;
@@ -75,7 +75,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     HEADLESS, SWING_CLIENT_UI
   }
 
-  static final String CHAT_NAME = "games.strategy.engine.framework.uiComponent.ServerStartup.CHAT_NAME";
+  static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
     return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
