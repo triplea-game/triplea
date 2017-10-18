@@ -307,7 +307,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
           return;
         }
       } else if (isGame() && ((HubInvoke) msg.getMessage()).call.getRemoteName()
-          .equals("_ChatCtrlgames.strategy.engine.framework.uiComponent.ServerStartup.CHAT_NAME")) {
+          .equals("_ChatCtrlgames.strategy.engine.framework.ui.ServerStartup.CHAT_NAME")) {
         final String realName = msg.getFrom().getName().split(" ")[0];
         if (isUsernameMuted(realName)) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());

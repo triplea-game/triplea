@@ -33,7 +33,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * @param count
    *        - the number of casualties to select
    * @param message
-   *        - uiComponent message to display
+   *        - message to display in the UI
    * @param dice
    *        - the dice rolled for the casualties
    * @param hit
@@ -56,7 +56,6 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        - the territory where this happened
    * @param allowMultipleHitsPerUnit
    *        - can units be hit more than one time if they have more than one hitpoints left?
-   * @return CasualtyDetails
    */
   CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count,
       String message, DiceRoll dice, PlayerID hit, Collection<Unit> friendlyUnits, PlayerID enemyPlayer,
