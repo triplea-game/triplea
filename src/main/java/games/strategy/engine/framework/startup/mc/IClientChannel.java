@@ -9,7 +9,7 @@ import games.strategy.net.INode;
 
 public interface IClientChannel extends IChannelSubscribor {
   RemoteName CHANNEL_NAME =
-      new RemoteName("games.strategy.engine.framework.uiComponent.IClientChannel.CHANNEL", IClientChannel.class);
+      new RemoteName("games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);
 
   void playerListingChanged(PlayerListing listing);
 
