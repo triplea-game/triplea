@@ -1,14 +1,14 @@
 package games.strategy.engine.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.triplea.delegate.Matches;
 
@@ -32,7 +32,7 @@ public class MapTest {
   Territory nowhere;
   GameMap map;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // map, l is land, w is water
     // each territory is connected to
@@ -103,7 +103,7 @@ public class MapTest {
 
   @Test
   public void testNowhere() {
-    assertTrue(-1 == map.getDistance(aa, nowhere));
+    assertEquals(-1, map.getDistance(aa, nowhere));
   }
 
   @Test
@@ -118,7 +118,7 @@ public class MapTest {
 
   @Test
   public void testSame() {
-    assertTrue(0 == map.getDistance(aa, aa));
+    assertEquals(0, map.getDistance(aa, aa));
   }
 
   @Test
@@ -128,57 +128,55 @@ public class MapTest {
 
   @Test
   public void testOne() {
-    final int distance = map.getDistance(aa, ab);
-    assertTrue("" + distance, 1 == distance);
+    assertEquals(1, map.getDistance(aa, ab));
   }
 
   @Test
   public void testTwo() {
-    final int distance = map.getDistance(aa, ac);
-    assertTrue("" + distance, 2 == distance);
+    assertEquals(2, map.getDistance(aa, ac));
   }
 
   @Test
   public void testOverWater() {
-    assertTrue(map.getDistance(ca, cd) == 3);
+    assertEquals(3, map.getDistance(ca, cd));
   }
 
   @Test
   public void testOverWaterCantReach() {
-    assertTrue(map.getLandDistance(ca, cd) == -1);
+    assertEquals(-1, map.getLandDistance(ca, cd));
   }
 
   @Test
   public void testLong() {
-    assertTrue(map.getLandDistance(ad, da) == 6);
+    assertEquals(6, map.getLandDistance(ad, da));
   }
 
   @Test
   public void testLongRoute() {
     final Route route = map.getLandRoute(ad, da);
-    assertEquals(route.numberOfSteps(), 6);
+    assertEquals(6, route.numberOfSteps());
   }
 
   @Test
   public void testNeighborLandNoSeaConnect() {
-    assertTrue(-1 == map.getWaterDistance(aa, ab));
+    assertEquals(-1, map.getWaterDistance(aa, ab));
   }
 
   @Test
   public void testNeighborSeaNoLandConnect() {
-    assertTrue(-1 == map.getLandDistance(bc, bd));
+    assertEquals(-1, map.getLandDistance(bc, bd));
   }
 
   @Test
   public void testRouteToSelf() {
     final Route rt = map.getRoute(aa, aa);
-    assertTrue(rt.numberOfSteps() == 0);
+    assertEquals(0, rt.numberOfSteps());
   }
 
   @Test
   public void testRouteSizeOne() {
     final Route rt = map.getRoute(aa, ab);
-    assertTrue(rt.numberOfSteps() == 1);
+    assertEquals(1, rt.numberOfSteps());
   }
 
   @Test
@@ -190,36 +188,36 @@ public class MapTest {
   @Test
   public void testImpossibleLandRoute() {
     final Route rt = map.getLandRoute(aa, cd);
-    assertTrue(rt == null);
+    assertNull(rt);
   }
 
   @Test
   public void testImpossibleLandDistance() {
     final int distance = map.getLandDistance(aa, cd);
-    assertTrue("wrongDistance exp -1, got:" + distance, distance == -1);
+    assertEquals(-1, distance, "wrong distance");
   }
 
   @Test
   public void testWaterRout() {
     final Route rt = map.getWaterRoute(bd, dd);
-    assertTrue("bc:" + rt, rt.getTerritoryAtStep(0).equals(bc));
-    assertTrue("cc", rt.getTerritoryAtStep(1).equals(cc));
-    assertTrue("dc", rt.getTerritoryAtStep(2).equals(dc));
-    assertTrue("dd", rt.getTerritoryAtStep(3).equals(dd));
+    assertEquals(bc, rt.getTerritoryAtStep(0), "bc:" + rt);
+    assertEquals(cc, rt.getTerritoryAtStep(1), "cc");
+    assertEquals(dc, rt.getTerritoryAtStep(2), "dc");
+    assertEquals(dd, rt.getTerritoryAtStep(3), "dd");
   }
 
   @Test
   public void testMultiplePossible() {
     final Route rt = map.getRoute(aa, dd);
-    assertEquals(rt.getStart(), aa);
-    assertEquals(rt.getEnd(), dd);
-    assertEquals(rt.numberOfSteps(), 6);
+    assertEquals(aa, rt.getStart());
+    assertEquals(dd, rt.getEnd());
+    assertEquals(6, rt.numberOfSteps());
   }
 
   @Test
   public void testNeighbors() {
     final Set<Territory> neighbors = map.getNeighbors(aa);
-    assertTrue(neighbors.size() == 2);
+    assertEquals(2, neighbors.size());
     assertTrue(neighbors.contains(ab));
     assertTrue(neighbors.contains(ba));
   }
@@ -227,13 +225,13 @@ public class MapTest {
   @Test
   public void testNeighborsWithDistance() {
     Set<Territory> neighbors = map.getNeighbors(aa, 0);
-    assertTrue(neighbors.size() == 0);
+    assertEquals(0, neighbors.size());
     neighbors = map.getNeighbors(aa, 1);
-    assertTrue(neighbors.size() == 2);
+    assertEquals(2, neighbors.size());
     assertTrue(neighbors.contains(ab));
     assertTrue(neighbors.contains(ba));
     neighbors = map.getNeighbors(aa, 2);
-    assertTrue(neighbors.size() == 5);
+    assertEquals(5, neighbors.size());
     assertTrue(neighbors.contains(ab));
     assertTrue(neighbors.contains(ac));
     assertTrue(neighbors.contains(ba));

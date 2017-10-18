@@ -2,7 +2,7 @@ package games.strategy.engine.data;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
@@ -10,17 +10,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class UnitCollectionTest {
 
   @Mock
@@ -54,7 +54,7 @@ public class UnitCollectionTest {
   private int unitCountUnitTypeOne;
   private int unitCountUnitTypeTwo;
 
-  @Before
+  @BeforeEach
   public void setup() {
     unitTypeOne = new UnitType("Unit Type 1", mockGameData);
     unitTypeTwo = new UnitType("Unit Type 2", mockGameData);

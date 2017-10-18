@@ -1,10 +1,10 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -12,8 +12,8 @@ import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -35,7 +35,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class LhtrTest {
   private GameData gameData;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.LHTR.getGameData();
   }

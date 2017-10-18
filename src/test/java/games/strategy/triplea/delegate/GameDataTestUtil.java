@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -407,7 +407,7 @@ public class GameDataTestUtil {
    * Helper method to check if a String is null and otherwise print the String.
    */
   static void assertValid(final String string) {
-    Assert.assertNull(string, string);
+    Assertions.assertNull(string, string);
   }
 
   /**
@@ -415,7 +415,7 @@ public class GameDataTestUtil {
    * In this scenario used to verify an error message exists.
    */
   static void assertError(final String string) {
-    Assert.assertNotNull(string);
+    Assertions.assertNotNull(string);
   }
 
   /**

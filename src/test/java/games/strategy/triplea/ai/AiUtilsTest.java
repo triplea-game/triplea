@@ -1,13 +1,13 @@
 package games.strategy.triplea.ai;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -21,7 +21,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class AiUtilsTest {
   private GameData gameData;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.REVISED.getGameData();
   }

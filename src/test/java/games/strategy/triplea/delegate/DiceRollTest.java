@@ -3,14 +3,14 @@ package games.strategy.triplea.delegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -30,7 +30,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class DiceRollTest {
   private GameData gameData;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.LHTR.getGameData();
   }

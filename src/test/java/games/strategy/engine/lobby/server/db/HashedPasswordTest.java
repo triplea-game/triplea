@@ -5,7 +5,7 @@ import static org.hamcrest.core.Is.is;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.util.MD5Crypt;
 import nl.jqno.equalsverifier.EqualsVerifier;

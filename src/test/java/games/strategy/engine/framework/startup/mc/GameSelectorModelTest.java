@@ -1,11 +1,9 @@
 package games.strategy.engine.framework.startup.mc;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
-
-import static org.junit.Assert.assertThat;
-
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,14 +13,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Observer;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
@@ -31,7 +28,7 @@ import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.util.Version;
 
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class GameSelectorModelTest {
 
   private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
@@ -76,14 +73,14 @@ public class GameSelectorModelTest {
   @Mock
   private ClientModel mockClientModel;
 
-  @Before
+  @BeforeEach
   public void setup() {
     testObj = new GameSelectorModel();
     assertHasEmptyData(testObj);
     testObj.addObserver(mockObserver);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     testObj.deleteObservers();
   }

@@ -1,19 +1,18 @@
 package games.strategy.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-@RunWith(Enclosed.class)
 public final class EqualsPredicateTests {
   private static EqualsPredicate newEqualsPredicate(final EqualityComparator... equalityComparators) {
     return new EqualsPredicate(EqualityComparatorRegistry.newInstance(equalityComparators));
   }
 
-  public static final class NullAndReferenceEqualityTest {
+  @Nested
+  public final class NullAndReferenceEqualityTest {
     private final EqualsPredicate equalsPredicate = newEqualsPredicate();
 
     @Test
@@ -39,7 +38,8 @@ public final class EqualsPredicateTests {
     }
   }
 
-  public static final class EquatableObjectWithoutCustomComparatorTest {
+  @Nested
+  public final class EquatableObjectWithoutCustomComparatorTest {
     private final EqualsPredicate equalsPredicate = newEqualsPredicate();
 
     @Test
@@ -53,7 +53,8 @@ public final class EqualsPredicateTests {
     }
   }
 
-  public static final class EquatableObjectWithCustomComparatorTest {
+  @Nested
+  public final class EquatableObjectWithCustomComparatorTest {
     @Test
     public void shouldReturnTrueWhenObjectsAreEqual() {
       final EqualsPredicate equalsPredicate = newEqualsPredicate(
@@ -71,7 +72,8 @@ public final class EqualsPredicateTests {
     }
   }
 
-  public static final class NonEquatableObjectTest {
+  @Nested
+  public final class NonEquatableObjectTest {
     private final EqualsPredicate equalsPredicate = newEqualsPredicate(
         EqualityComparator.newInstance(FakeClass.class, (context, o1, o2) -> o1.value == o2.value));
 
@@ -86,7 +88,8 @@ public final class EqualsPredicateTests {
     }
   }
 
-  public static final class NonEquatableNestedObjectTest {
+  @Nested
+  public final class NonEquatableNestedObjectTest {
     private final EqualsPredicate equalsPredicate = newEqualsPredicate(
         EqualityComparator.newInstance(FakeClass.class, (context, o1, o2) -> o1.value == o2.value),
         EqualityComparator.newInstance(FakeNestedClass.class, (context, o1, o2) -> context.equals(o1.value, o2.value)));
@@ -105,7 +108,8 @@ public final class EqualsPredicateTests {
           new FakeNestedClass(new FakeClass(-42))));
     }
 
-    private static final class FakeNestedClass {
+    @Nested
+    private final class FakeNestedClass {
       final FakeClass value;
 
       FakeNestedClass(final FakeClass value) {
@@ -114,7 +118,8 @@ public final class EqualsPredicateTests {
     }
   }
 
-  public static final class NonEquatableCircularReferenceTest {
+  @Nested
+  public final class NonEquatableCircularReferenceTest {
     final EqualsPredicate equalsPredicate = newEqualsPredicate(
         EqualityComparator.newInstance(
             FakeOwnerClass.class,
@@ -159,7 +164,8 @@ public final class EqualsPredicateTests {
       assertFalse(equalsPredicate.test(owner1, owner2));
     }
 
-    private static final class FakeOwnerClass {
+    @Nested
+    private final class FakeOwnerClass {
       FakeOwneeClass ownee;
       final int value;
 
@@ -168,7 +174,8 @@ public final class EqualsPredicateTests {
       }
     }
 
-    private static final class FakeOwneeClass {
+    @Nested
+    private final class FakeOwneeClass {
       final FakeOwnerClass owner;
       final int value;
 
@@ -179,7 +186,8 @@ public final class EqualsPredicateTests {
     }
   }
 
-  private static final class FakeClass {
+  @Nested
+  private final class FakeClass {
     final int value;
 
     FakeClass(final int value) {

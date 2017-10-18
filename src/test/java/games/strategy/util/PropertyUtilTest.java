@@ -1,9 +1,10 @@
 package games.strategy.util;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.triplea.attachments.RulesAttachment;
 
@@ -59,14 +60,14 @@ public class PropertyUtilTest {
 
 
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testErrorCaseWithNoSetterMethod() {
-    PropertyUtil.set(BAR, NEW_VALUE, new NoSetterClass());
+    assertThrows(IllegalStateException.class, () -> PropertyUtil.set(BAR, NEW_VALUE, new NoSetterClass()));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testErrorCaseWithInvalidSetterMethod() {
-    PropertyUtil.set(BAR, NEW_VALUE, new InvalidSetterClass());
+    assertThrows(IllegalStateException.class, () ->PropertyUtil.set(BAR, NEW_VALUE, new InvalidSetterClass()));
   }
 
   @Test

@@ -1,14 +1,14 @@
 package games.strategy.engine.data;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -21,7 +21,7 @@ public class ChangeTripleATest {
   private GameData gameData;
   private Territory can;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     ClientContext.gameEnginePropertyReader();
     gameData = TestMapGameData.BIG_WORLD_1942.getGameData();

@@ -8,8 +8,7 @@ import javax.swing.JTextField;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsInstanceOf;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JTabbedPaneBuilderTest {
   @Test

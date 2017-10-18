@@ -1,9 +1,9 @@
 package games.strategy.engine.data.annotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.ResourceCollection;
@@ -140,7 +140,7 @@ public class ValidateAttachmentsTest {
    */
   @Test
   public void testAllAttachments() throws Exception {
-    assumeFalse("cannot scan for attachments in a headless environment", GraphicsEnvironment.isHeadless());
+    assumeFalse(GraphicsEnvironment.isHeadless(), "cannot scan for attachments in a headless environment");
 
     final File root = getRootClassesFolder();
     final String errors = findAttachmentsAndValidate(root, root);

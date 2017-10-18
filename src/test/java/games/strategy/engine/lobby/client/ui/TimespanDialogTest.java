@@ -1,15 +1,15 @@
 package games.strategy.engine.lobby.client.ui;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Instant;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.lobby.client.ui.TimespanDialog.TimeUnit;
 

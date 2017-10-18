@@ -1,7 +1,7 @@
 package games.strategy.debug;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -19,13 +19,13 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public final class ConsoleHandlerTest {
   private ConsoleHandler consoleHandler;
 
@@ -41,7 +41,7 @@ public final class ConsoleHandlerTest {
   @Mock
   private PrintStream out;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     consoleHandler = new ConsoleHandler(() -> out, () -> err);
     consoleHandler.setErrorManager(errorManager);

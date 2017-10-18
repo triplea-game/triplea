@@ -1,8 +1,8 @@
 package games.strategy.engine.lobby.server.login;
 
 import static java.util.Collections.singletonMap;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -10,15 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.security.TestSecurityUtils;
 
 public final class RsaAuthenticatorTest {
   private RsaAuthenticator rsaAuthenticator;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     rsaAuthenticator = new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair());
   }

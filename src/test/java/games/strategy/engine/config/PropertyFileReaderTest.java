@@ -2,13 +2,14 @@ package games.strategy.engine.config;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PropertyFileReaderTest {
 
@@ -19,7 +20,7 @@ public class PropertyFileReaderTest {
    * test data written to it. Subsequent tests will verify parsing
    * based on this data.
    */
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     final File tempFile = File.createTempFile("test", "tmp");
     tempFile.deleteOnExit();
@@ -52,17 +53,17 @@ public class PropertyFileReaderTest {
   }
 
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void throwsNullPointerOnNullInput() {
-    testObj.readProperty(null);
+    assertThrows(NullPointerException.class, () -> testObj.readProperty(null));
   }
 
   /**
    * Empty input parameter would be a mistake from the client, throw an error rather than continuing.
    */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void throwIfInputIsEmpty() {
-    testObj.readProperty("  ");
+    assertThrows(IllegalArgumentException.class, () -> testObj.readProperty("  "));
   }
 
 }

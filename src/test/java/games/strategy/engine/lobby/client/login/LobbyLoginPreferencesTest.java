@@ -1,7 +1,7 @@
 package games.strategy.engine.lobby.client.login;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.AdditionalAnswers.returnsSecondArg;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -14,11 +14,11 @@ import static org.mockito.Mockito.verify;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Stubber;
 
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences.PreferenceKeys;
@@ -26,7 +26,7 @@ import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public final class LobbyLoginPreferencesTest {
   private static final String PASSWORD = "password";
   private static final String PROTECTED_PASSWORD = String.format("PROTECTED(%s)", PASSWORD);

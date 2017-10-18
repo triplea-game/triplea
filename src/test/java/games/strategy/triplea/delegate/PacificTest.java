@@ -1,12 +1,12 @@
 package games.strategy.triplea.delegate;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
@@ -53,7 +53,7 @@ public class PacificTest extends DelegateTest {
   MoveDelegate delegate;
 
   @Override
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     super.setUp();
     gameData = TestMapGameData.PACIFIC_INCOMPLETE.getGameData();

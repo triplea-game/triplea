@@ -1,22 +1,21 @@
 package games.strategy.engine.framework.startup.login;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-@RunWith(Enclosed.class)
 public final class ClientLoginTests {
   private static final String PASSWORD = "password";
 
-  public static final class AddAuthenticationResponsePropertiesTest {
+  @Nested
+  public final class AddAuthenticationResponsePropertiesTest {
     @Test
     public void shouldCreateResponseProcessableByMd5CryptAuthenticatorWhenMd5CryptChallengePresent() {
       final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();

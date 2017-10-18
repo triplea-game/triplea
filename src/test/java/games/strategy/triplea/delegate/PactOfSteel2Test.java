@@ -1,14 +1,14 @@
 package games.strategy.triplea.delegate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -20,7 +20,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class PactOfSteel2Test {
   private GameData gameData;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
   }

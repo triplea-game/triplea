@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Strings;
 
@@ -22,7 +22,7 @@ public class EmailLimitIntegrationTest {
 
   private static Connection connection;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws SQLException {
     connection = Database.getPostgresConnection();
     connection.setAutoCommit(true);
@@ -54,7 +54,7 @@ public class EmailLimitIntegrationTest {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() throws SQLException {
     connection.close();
   }

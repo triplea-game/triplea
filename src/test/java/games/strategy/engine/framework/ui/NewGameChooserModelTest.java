@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.ui;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NewGameChooserModelTest {
 

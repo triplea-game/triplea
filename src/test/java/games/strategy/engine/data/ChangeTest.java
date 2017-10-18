@@ -1,8 +1,8 @@
 package games.strategy.engine.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.framework.GameObjectStreamFactory;
@@ -23,7 +23,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class ChangeTest {
   private GameData gameData;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.TEST.getGameData();
   }
@@ -71,8 +71,7 @@ public class ChangeTest {
 
     assertEquals(2, can.getUnits().getUnitCount());
     gameData.performChange(change.invert());
-    assertEquals("last change inverted, should have gained units.", 5,
-        can.getUnits().getUnitCount());
+    assertEquals(5, can.getUnits().getUnitCount(), "last change inverted, should have gained units.");
   }
 
   @Test

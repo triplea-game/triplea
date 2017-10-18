@@ -1,21 +1,20 @@
 package games.strategy.engine.framework;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import org.apache.commons.io.IOCase;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.framework.GameDataFileUtils.SaveGameFormat;
 
-@RunWith(Enclosed.class)
 public final class GameDataFileUtilsTests {
-  @RunWith(Enclosed.class)
-  public static final class AddExtensionTests {
-    public static final class WhenSaveGameFormatIsSerializationTest {
-      private static String addExtension(final String fileName) {
+  @Nested
+  public final class AddExtensionTests {
+    @Nested
+    public final class WhenSaveGameFormatIsSerializationTest {
+      private String addExtension(final String fileName) {
         return GameDataFileUtils.addExtension(fileName, SaveGameFormat.SERIALIZATION);
       }
 
@@ -30,8 +29,9 @@ public final class GameDataFileUtilsTests {
       }
     }
 
-    public static final class WhenSaveGameFormatIsProxySerializationTest {
-      private static String addExtension(final String fileName) {
+    @Nested
+    public final class WhenSaveGameFormatIsProxySerializationTest {
+      private String addExtension(final String fileName) {
         return GameDataFileUtils.addExtension(fileName, SaveGameFormat.PROXY_SERIALIZATION);
       }
 
@@ -47,12 +47,13 @@ public final class GameDataFileUtilsTests {
     }
   }
 
-  @RunWith(Enclosed.class)
-  public static final class AddExtensionIfAbsentTests {
-    @RunWith(Enclosed.class)
-    public static final class WhenSaveGameFormatIsSerializationTests {
-      public static final class WhenFileSystemIsCaseSensitiveTest {
-        private static String addExtensionIfAbsent(final String fileName) {
+  @Nested
+  public final class AddExtensionIfAbsentTests {
+    @Nested
+    public final class WhenSaveGameFormatIsSerializationTests {
+      @Nested
+      public final class WhenFileSystemIsCaseSensitiveTest {
+        private String addExtensionIfAbsent(final String fileName) {
           return GameDataFileUtils.addExtensionIfAbsent(fileName, SaveGameFormat.SERIALIZATION, IOCase.SENSITIVE);
         }
 
@@ -72,8 +73,9 @@ public final class GameDataFileUtilsTests {
         }
       }
 
-      public static final class WhenFileSystemIsCaseInsensitiveTest {
-        private static String addExtensionIfAbsent(final String fileName) {
+      @Nested
+      public final class WhenFileSystemIsCaseInsensitiveTest {
+        private String addExtensionIfAbsent(final String fileName) {
           return GameDataFileUtils.addExtensionIfAbsent(fileName, SaveGameFormat.SERIALIZATION, IOCase.INSENSITIVE);
         }
 
@@ -94,10 +96,11 @@ public final class GameDataFileUtilsTests {
       }
     }
 
-    @RunWith(Enclosed.class)
-    public static final class WhenSaveGameFormatIsProxySerializationTests {
-      public static final class WhenFileSystemIsCaseSensitiveTest {
-        private static String addExtensionIfAbsent(final String fileName) {
+    @Nested
+    public final class WhenSaveGameFormatIsProxySerializationTests {
+      @Nested
+      public final class WhenFileSystemIsCaseSensitiveTest {
+        private String addExtensionIfAbsent(final String fileName) {
           return GameDataFileUtils.addExtensionIfAbsent(fileName, SaveGameFormat.PROXY_SERIALIZATION, IOCase.SENSITIVE);
         }
 
@@ -117,8 +120,9 @@ public final class GameDataFileUtilsTests {
         }
       }
 
-      public static final class WhenFileSystemIsCaseInsensitiveTest {
-        private static String addExtensionIfAbsent(final String fileName) {
+      @Nested
+      public final class WhenFileSystemIsCaseInsensitiveTest {
+        private String addExtensionIfAbsent(final String fileName) {
           return GameDataFileUtils.addExtensionIfAbsent(
               fileName,
               SaveGameFormat.PROXY_SERIALIZATION,
@@ -143,12 +147,13 @@ public final class GameDataFileUtilsTests {
     }
   }
 
-  @RunWith(Enclosed.class)
-  public static final class IsCandidateFileNameTests {
-    @RunWith(Enclosed.class)
-    public static final class WhenSaveGameFormatIsSerializationTests {
-      public static final class WhenFileSystemIsCaseSensitiveTest {
-        private static boolean isCandidateFileName(final String fileName) {
+  @Nested
+  public final class IsCandidateFileNameTests {
+    @Nested
+    public final class WhenSaveGameFormatIsSerializationTests {
+      @Nested
+      public final class WhenFileSystemIsCaseSensitiveTest {
+        private boolean isCandidateFileName(final String fileName) {
           return GameDataFileUtils.isCandidateFileName(fileName, SaveGameFormat.SERIALIZATION, IOCase.SENSITIVE);
         }
 
@@ -188,8 +193,9 @@ public final class GameDataFileUtilsTests {
         }
       }
 
-      public static final class WhenFileSystemIsCaseInsensitiveTest {
-        private static boolean isCandidateFileName(final String fileName) {
+      @Nested
+      public final class WhenFileSystemIsCaseInsensitiveTest {
+        private boolean isCandidateFileName(final String fileName) {
           return GameDataFileUtils.isCandidateFileName(fileName, SaveGameFormat.SERIALIZATION, IOCase.INSENSITIVE);
         }
 
@@ -230,10 +236,11 @@ public final class GameDataFileUtilsTests {
       }
     }
 
-    @RunWith(Enclosed.class)
-    public static final class WhenSaveGameFormatIsProxySerializationTests {
-      public static final class WhenFileSystemIsCaseSensitiveTest {
-        private static boolean isCandidateFileName(final String fileName) {
+    @Nested
+    public final class WhenSaveGameFormatIsProxySerializationTests {
+      @Nested
+      public final class WhenFileSystemIsCaseSensitiveTest {
+        private boolean isCandidateFileName(final String fileName) {
           return GameDataFileUtils.isCandidateFileName(fileName, SaveGameFormat.PROXY_SERIALIZATION, IOCase.SENSITIVE);
         }
 
@@ -253,8 +260,9 @@ public final class GameDataFileUtilsTests {
         }
       }
 
-      public static final class WhenFileSystemIsCaseInsensitiveTest {
-        private static boolean isCandidateFileName(final String fileName) {
+      @Nested
+      public final class WhenFileSystemIsCaseInsensitiveTest {
+        private boolean isCandidateFileName(final String fileName) {
           return GameDataFileUtils.isCandidateFileName(
               fileName,
               SaveGameFormat.PROXY_SERIALIZATION,

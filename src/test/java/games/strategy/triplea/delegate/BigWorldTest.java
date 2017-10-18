@@ -6,8 +6,8 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -18,7 +18,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class BigWorldTest {
   private GameData gameData;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
   }

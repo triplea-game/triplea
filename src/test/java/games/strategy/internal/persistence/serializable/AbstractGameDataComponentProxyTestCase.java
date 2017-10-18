@@ -3,7 +3,7 @@ package games.strategy.internal.persistence.serializable;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
@@ -94,7 +94,7 @@ public abstract class AbstractGameDataComponentProxyTestCase<T extends GameDataC
   /**
    * Subclasses may override and are required to call the superclass implementation first.
    */
-  @Before
+  @BeforeEach
   @Override
   public void setUp() {
     super.setUp();

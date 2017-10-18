@@ -1,8 +1,8 @@
 package games.strategy.engine.data.util;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -10,11 +10,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
@@ -23,7 +23,7 @@ import games.strategy.engine.data.ResourceList;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public final class ResourceCollectionUtilsTest {
   @Mock
   private GameData data;
@@ -34,7 +34,7 @@ public final class ResourceCollectionUtilsTest {
 
   private Resource vps;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     pus = createResource(Constants.PUS);
     techTokens = createResource(Constants.TECH_TOKENS);

@@ -7,12 +7,12 @@ import static org.mockito.Mockito.verify;
 import java.util.Properties;
 import java.util.logging.LogManager;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public final class LoggingConfigurationTest {
   @Spy
   private final LogManager logManager = LogManager.getLogManager();

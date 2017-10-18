@@ -1,12 +1,12 @@
 package games.strategy.engine.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.DelegateList;
 import games.strategy.engine.data.GameData;
@@ -25,7 +25,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class ParserTest {
   private GameData gameData;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.GAME_EXAMPLE.getGameData();
   }
@@ -129,8 +129,8 @@ public class ParserTest {
   @Test
   public void testOwnerInitialze() {
     final Territory can = gameData.getMap().getTerritory("canada");
-    assertNotNull("couldnt find country", can);
-    assertNotNull("owner null", can.getOwner());
+    assertNotNull(can, "couldnt find country");
+    assertNotNull(can.getOwner(), "owner null");
     assertEquals(can.getOwner().getName(), "chretian");
     final Territory us = gameData.getMap().getTerritory("us");
     assertEquals(us.getOwner().getName(), "bush");

@@ -2,24 +2,23 @@ package games.strategy.engine.config.client;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class LobbyServerPropertiesFetcherTest {
 
   private static final Version fakeVersion = new Version("0.0.0.0");
@@ -32,7 +31,7 @@ public class LobbyServerPropertiesFetcherTest {
   /**
    * Sets up a test object with mocked dependencies. We will primarily verify control flow.
    */
-  @Before
+  @BeforeEach
   public void setup() {
     testObj = new LobbyServerPropertiesFetcher(mockFileDownloader);
   }
@@ -56,13 +55,15 @@ public class LobbyServerPropertiesFetcherTest {
     when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.success(temp));
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void throwsOnDownloadFailure() throws Exception {
-    final File temp = File.createTempFile("temp", "tmp");
-    temp.deleteOnExit();
-    when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.FAILURE);
+    assertThrows(IOException.class, () -> {
+      final File temp = File.createTempFile("temp", "tmp");
+      temp.deleteOnExit();
+      when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.FAILURE);
 
-    testObj.downloadAndParseRemoteFile(TestData.url, fakeVersion, (a, b) -> TestData.lobbyServerProperties);
+      testObj.downloadAndParseRemoteFile(TestData.url, fakeVersion, (a, b) -> TestData.lobbyServerProperties);
+    });
   }
 
 

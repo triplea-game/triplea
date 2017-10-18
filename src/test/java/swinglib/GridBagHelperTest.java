@@ -7,7 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GridBagHelperTest {
 

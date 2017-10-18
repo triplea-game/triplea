@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,8 +15,8 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.io.IoUtils;
 import games.strategy.test.EqualityComparator;
@@ -126,7 +126,7 @@ public abstract class AbstractProxyTestCase<T> {
   /**
    * Subclasses may override and are required to call the superclass implementation first.
    */
-  @Before
+  @BeforeEach
   public void setUp() {
     equalityComparatorRegistry = EqualityComparatorRegistry.newInstance(getEqualityComparators());
     proxyRegistry = ProxyRegistry.newInstance(getProxyFactories());

@@ -1,8 +1,8 @@
 package games.strategy.thread;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public final class LockUtilTest {
   private final LockUtil lockUtil = LockUtil.INSTANCE;
 
@@ -28,12 +28,12 @@ public final class LockUtilTest {
 
   private LockUtil.ErrorReporter oldErrorReporter;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     oldErrorReporter = lockUtil.setErrorReporter(errorReporter);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     lockUtil.setErrorReporter(oldErrorReporter);
   }

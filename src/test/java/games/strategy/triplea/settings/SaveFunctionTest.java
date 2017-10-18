@@ -9,17 +9,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JOptionPane;
 
 import org.hamcrest.MatcherAssert;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import com.google.common.collect.ImmutableMap;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class SaveFunctionTest {
 
   @Mock

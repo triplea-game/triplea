@@ -2,16 +2,16 @@ package games.strategy.engine.framework.startup.login;
 
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
@@ -31,7 +31,7 @@ public final class ClientLoginIntegrationTest {
   private IServerMessenger serverMessenger;
   private final int serverPort = TestUtil.getUniquePort();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     serverMessenger = newServerMessenger();
   }
@@ -49,7 +49,7 @@ public final class ClientLoginIntegrationTest {
     return clientLoginValidator;
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     serverMessenger.shutDown();
   }

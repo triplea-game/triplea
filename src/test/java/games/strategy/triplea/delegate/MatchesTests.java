@@ -1,12 +1,13 @@
 package games.strategy.triplea.delegate;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,10 +17,9 @@ import javax.annotation.Nullable;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -29,7 +29,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.Match;
 
-@RunWith(Enclosed.class)
 public final class MatchesTests {
 
   private static final Match<Integer> IS_ZERO_MATCH = Match.of(it -> it == 0);
@@ -96,45 +95,41 @@ public final class MatchesTests {
   public void testGetMatches() {
     final Collection<Integer> input = Arrays.asList(-1, 0, 1);
 
-    assertEquals("empty collection", Arrays.asList(), Matches.getMatches(Arrays.asList(), Matches.always()));
-    assertEquals("none match", Arrays.asList(), Matches.getMatches(input, Matches.never()));
-    assertEquals("some match", Arrays.asList(-1, 1), Matches.getMatches(input, IS_ZERO_MATCH.invert()));
-    assertEquals("all match", Arrays.asList(-1, 0, 1), Matches.getMatches(input, Matches.always()));
+    assertEquals(Arrays.asList(), Matches.getMatches(Arrays.asList(), Matches.always()), "empty collection");
+    assertEquals(Arrays.asList(), Matches.getMatches(input, Matches.never()), "none match");
+    assertEquals(Arrays.asList(-1, 1), Matches.getMatches(input, IS_ZERO_MATCH.invert()), "some match");
+    assertEquals(Arrays.asList(-1, 0, 1), Matches.getMatches(input, Matches.always()), "all match");
   }
 
   @Test
   public void testGetNMatches() {
     final Collection<Integer> input = Arrays.asList(-1, 0, 1);
 
-    assertEquals("empty collection", Arrays.asList(), Matches.getNMatches(Arrays.asList(), 999, Matches.always()));
-    assertEquals("max = 0", Arrays.asList(), Matches.getNMatches(input, 0, Matches.never()));
-    assertEquals("none match", Arrays.asList(), Matches.getNMatches(input, input.size(), Matches.never()));
-    assertEquals("some match; max < count",
-        Arrays.asList(0),
-        Matches.getNMatches(Arrays.asList(-1, 0, 0, 1), 1, IS_ZERO_MATCH));
-    assertEquals("some match; max = count",
-        Arrays.asList(0, 0),
-        Matches.getNMatches(Arrays.asList(-1, 0, 0, 1), 2, IS_ZERO_MATCH));
-    assertEquals("some match; max > count",
-        Arrays.asList(0, 0),
-        Matches.getNMatches(Arrays.asList(-1, 0, 0, 1), 3, IS_ZERO_MATCH));
-    assertEquals("all match; max < count",
-        Arrays.asList(-1, 0),
-        Matches.getNMatches(input, input.size() - 1, Matches.always()));
-    assertEquals("all match; max = count",
-        Arrays.asList(-1, 0, 1),
-        Matches.getNMatches(input, input.size(), Matches.always()));
-    assertEquals("all match; max > count",
-        Arrays.asList(-1, 0, 1),
-        Matches.getNMatches(input, input.size() + 1, Matches.always()));
+    assertEquals(Arrays.asList(), Matches.getNMatches(Arrays.asList(), 999, Matches.always()), "empty collection");
+    assertEquals(Arrays.asList(), Matches.getNMatches(input, 0, Matches.never()), "max = 0");
+    assertEquals(Arrays.asList(), Matches.getNMatches(input, input.size(), Matches.never()), "none match");
+    assertEquals(Arrays.asList(0), Matches.getNMatches(Arrays.asList(-1, 0, 0, 1), 1, IS_ZERO_MATCH),
+        "some match; max < count");
+    assertEquals(Arrays.asList(0, 0), Matches.getNMatches(Arrays.asList(-1, 0, 0, 1), 2, IS_ZERO_MATCH),
+        "some match; max = count");
+    assertEquals(Arrays.asList(0, 0), Matches.getNMatches(Arrays.asList(-1, 0, 0, 1), 3, IS_ZERO_MATCH),
+        "some match; max > count");
+    assertEquals(Arrays.asList(-1, 0), Matches.getNMatches(input, input.size() - 1, Matches.always()),
+        "all match; max < count");
+    assertEquals(Arrays.asList(-1, 0, 1), Matches.getNMatches(input, input.size(), Matches.always()),
+        "all match; max = count");
+    assertEquals(Arrays.asList(-1, 0, 1), Matches.getNMatches(input, input.size() + 1, Matches.always()),
+        "all match; max > count");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetNMatches_ShouldThrowExceptionWhenMaxIsNegative() {
-    Matches.getNMatches(Arrays.asList(-1, 0, 1), -1, Matches.always());
+    assertThrows(IllegalArgumentException.class,
+        () -> Matches.getNMatches(Arrays.asList(-1, 0, 1), -1, Matches.always()));
   }
 
-  public static final class TerritoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyTest {
+  @Nested
+  public final class TerritoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyTest {
     private GameData gameData;
     private PlayerID player;
     private PlayerID alliedPlayer;
@@ -161,7 +156,7 @@ public final class MatchesTests {
       return GameDataTestUtil.battleship(gameData).create(player);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
       gameData = TestMapGameData.DELEGATE_TEST.getGameData();
 
@@ -220,17 +215,18 @@ public final class MatchesTests {
     }
   }
 
-  public static final class TerritoryIsNotUnownedWaterTest {
+  @Nested
+  public final class TerritoryIsNotUnownedWaterTest {
     private GameData gameData;
     private PlayerID player;
     private Territory landTerritory;
     private Territory seaTerritory;
 
-    private static Match<Territory> newMatch() {
+    private Match<Territory> newMatch() {
       return Matches.territoryIsNotUnownedWater();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
       gameData = TestMapGameData.DELEGATE_TEST.getGameData();
 

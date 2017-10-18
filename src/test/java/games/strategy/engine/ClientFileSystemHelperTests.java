@@ -1,21 +1,21 @@
 package games.strategy.engine;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.experimental.extensions.MockitoExtension;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import games.strategy.triplea.settings.GameSetting;
 
-@RunWith(Enclosed.class)
 public final class ClientFileSystemHelperTests {
-  @RunWith(MockitoJUnitRunner.StrictStubs.class)
-  public static final class GetUserMapsFolderPathTest {
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  public final class GetUserMapsFolderPathTest {
     @Mock
     private GameSetting currentSetting;
 

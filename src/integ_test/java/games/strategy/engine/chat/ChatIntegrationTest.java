@@ -1,15 +1,17 @@
 package games.strategy.engine.chat;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.lobby.server.NullModeratorController;
 import games.strategy.engine.message.ChannelMessenger;
@@ -46,7 +48,7 @@ public final class ChatIntegrationTest {
   private final TestChatListener client2ChatListener = new TestChatListener();
   private NullModeratorController serverModeratorController;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     serverMessenger = new ServerMessenger("Server", serverPort);
     serverMessenger.setAcceptNewConnections(true);
@@ -66,7 +68,7 @@ public final class ChatIntegrationTest {
     serverModeratorController.register(serverRemoteMessenger);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (serverMessenger != null) {
       serverMessenger.shutDown();
@@ -79,28 +81,30 @@ public final class ChatIntegrationTest {
     }
   }
 
-  @Test(timeout = 15_000)
-  public void shouldBeAbleToChatAcrossMultipleNodes() throws Exception {
-    final ChatController controller = newChatController();
-    final Chat server = newChat(serverMessenger, serverChannelMessenger, serverRemoteMessenger);
-    server.addChatListener(serverChatListener);
-    final Chat client1 = newChat(client1Messenger, client1ChannelMessenger, client1RemoteMessenger);
-    client1.addChatListener(client1ChatListener);
-    final Chat client2 = newChat(client2Messenger, client2ChannelMessenger, client2RemoteMessenger);
-    client2.addChatListener(client2ChatListener);
-    waitFor(this::allNodesToConnect);
+  @Test
+  public void shouldBeAbleToChatAcrossMultipleNodes() {
+    assertTimeout(Duration.ofSeconds(15), () -> {
+      final ChatController controller = newChatController();
+      final Chat server = newChat(serverMessenger, serverChannelMessenger, serverRemoteMessenger);
+      server.addChatListener(serverChatListener);
+      final Chat client1 = newChat(client1Messenger, client1ChannelMessenger, client1RemoteMessenger);
+      client1.addChatListener(client1ChatListener);
+      final Chat client2 = newChat(client2Messenger, client2ChannelMessenger, client2RemoteMessenger);
+      client2.addChatListener(client2ChatListener);
+      waitFor(this::allNodesToConnect);
 
-    sendMessagesFrom(client2);
-    sendMessagesFrom(server);
-    sendMessagesFrom(client1);
-    waitFor(this::allMessagesToArrive);
+      sendMessagesFrom(client2);
+      sendMessagesFrom(server);
+      sendMessagesFrom(client1);
+      waitFor(this::allMessagesToArrive);
 
-    client1.shutdown();
-    client2.shutdown();
-    waitFor(this::clientNodesToDisconnect);
+      client1.shutdown();
+      client2.shutdown();
+      waitFor(this::clientNodesToDisconnect);
 
-    controller.deactivate();
-    waitFor(this::serverNodeToDisconnect);
+      controller.deactivate();
+      waitFor(this::serverNodeToDisconnect);
+    });
   }
 
   private ChatController newChatController() {

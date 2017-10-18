@@ -1,11 +1,10 @@
 package games.strategy.engine.message.unifiedmessenger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -19,10 +18,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -50,7 +48,7 @@ public class RemoteMessengerTest {
   private RemoteMessenger remoteMessenger;
   private UnifiedMessengerHub unifiedMessengerHub;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // simple set up for non networked testing
     final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
@@ -84,7 +82,7 @@ public class RemoteMessengerTest {
     serverPort = TestUtil.getUniquePort();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     serverMessenger = null;
     remoteMessenger = null;
