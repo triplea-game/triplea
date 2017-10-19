@@ -2,7 +2,7 @@ package games.strategy.debug;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import java.io.PrintStream;
 import java.time.Duration;
@@ -28,7 +28,7 @@ public final class SynchedByteArrayOutputStreamTest {
 
   @Test
   public void writeByte_ShouldTriggerReadFromDifferentThread() throws Exception {
-    assertTimeout(timeout, () -> {
+    assertTimeoutPreemptively(timeout, () -> {
       final String expected = "X";
       final AtomicReference<String> actualRef = new AtomicReference<>();
       final CountDownLatch readerThreadReadyLatch = new CountDownLatch(1);
@@ -52,7 +52,7 @@ public final class SynchedByteArrayOutputStreamTest {
 
   @Test
   public void writeBytes_ShouldTriggerReadFromDifferentThread() throws Exception {
-    assertTimeout(timeout, () -> {
+    assertTimeoutPreemptively(timeout, () -> {
       final String expected = "the quick brown fox";
       final AtomicReference<String> actualRef = new AtomicReference<>();
       final CountDownLatch readerThreadReadyLatch = new CountDownLatch(1);

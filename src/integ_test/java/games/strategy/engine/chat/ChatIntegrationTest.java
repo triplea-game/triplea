@@ -2,7 +2,7 @@ package games.strategy.engine.chat;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -83,7 +83,7 @@ public final class ChatIntegrationTest {
 
   @Test
   public void shouldBeAbleToChatAcrossMultipleNodes() {
-    assertTimeout(Duration.ofSeconds(15), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(15), () -> {
       final ChatController controller = newChatController();
       final Chat server = newChat(serverMessenger, serverChannelMessenger, serverRemoteMessenger);
       server.addChatListener(serverChatListener);

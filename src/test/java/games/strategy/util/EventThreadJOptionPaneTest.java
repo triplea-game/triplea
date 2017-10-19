@@ -2,7 +2,7 @@ package games.strategy.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,7 +29,7 @@ public final class EventThreadJOptionPaneTest {
   @Test
   public void testInvokeAndWaitWithSupplier_ShouldRunSupplierOnEventDispatchThreadWhenNotCalledFromEventDispatchThread()
       throws Exception {
-    assertTimeout(timeout, () -> {
+    assertTimeoutPreemptively(timeout, () -> {
       final CountDownLatch latch = new CountDownLatch(1);
       final AtomicBoolean runOnEventDispatchThread = new AtomicBoolean(false);
 
@@ -48,7 +48,7 @@ public final class EventThreadJOptionPaneTest {
 
   @Test
   public void testInvokeAndWaitWithSupplier_ShouldNotDeadlockWhenCalledFromEventDispatchThread() throws Exception {
-    assertTimeout(timeout, () -> {
+    assertTimeoutPreemptively(timeout, () -> {
       final CountDownLatch latch = new CountDownLatch(1);
       final AtomicBoolean run = new AtomicBoolean(false);
 
@@ -67,7 +67,7 @@ public final class EventThreadJOptionPaneTest {
 
   @Test
   public void testInvokeAndWaitWithSupplier_ShouldReturnSupplierResult() {
-    assertTimeout(timeout, () -> {
+    assertTimeoutPreemptively(timeout, () -> {
       final Object expectedResult = new Object();
 
       final Object actualResult =
@@ -79,7 +79,7 @@ public final class EventThreadJOptionPaneTest {
 
   @Test
   public void testInvokeAndWaitWithSupplier_ShouldRegisterAndUnregisterLatchWithLatchHandler() {
-    assertTimeout(timeout, () -> {
+    assertTimeoutPreemptively(timeout, () -> {
       EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.empty());
 
       verify(latchHandler, times(1)).addShutdownLatch(any(CountDownLatch.class));
@@ -89,7 +89,7 @@ public final class EventThreadJOptionPaneTest {
 
   @Test
   public void testInvokeAndWaitWithIntSupplier_ShouldReturnIntSupplierResult() {
-    assertTimeout(timeout, () -> {
+    assertTimeoutPreemptively(timeout, () -> {
       final int expectedResult = 42;
 
       final int actualResult = EventThreadJOptionPane.invokeAndWait(latchHandler, () -> expectedResult);
