@@ -1,6 +1,6 @@
 ## Tasks:
 
-- Testing groupo should have had at least 'okays' for any given game version.
+- Testing group should have had at least 'okays' for any given game version.
 - Verify the release notes: https://github.com/triplea-game/triplea-game.github.io/blob/master/release_notes.md
    - Should have just about all significant changes and bug fixes
 - Mark the target release version as latest: https://github.com/triplea-game/triplea/releases
