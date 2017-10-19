@@ -34,7 +34,7 @@ public class FileSystemStrategyTest {
   public void setUp() throws Exception {
     testObj = new FileSystemAccessStrategy();
     final String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
-    mapFile = temporaryFolder.newFile("someothertestname");
+    mapFile = temporaryFolder.newFile(getClass().getName());
     final File propFile = temporaryFolder.newFile(mapFile.getName() + ".properties");
     Files.write(text.getBytes(), propFile);
   }

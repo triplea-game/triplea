@@ -28,10 +28,8 @@ public class PlaceDelegateTest extends DelegateTest {
     return gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY).create(count, player);
   }
 
-  @Override
   @BeforeEach
-  public void setUp() throws Exception {
-    super.setUp();
+  public void setupPlaceDelegate() {
     bridge = super.getDelegateBridge(british);
     delegate = new PlaceDelegate();
     delegate.initialize("place");
