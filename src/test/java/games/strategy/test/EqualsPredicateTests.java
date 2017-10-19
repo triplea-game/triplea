@@ -108,7 +108,6 @@ public final class EqualsPredicateTests {
           new FakeNestedClass(new FakeClass(-42))));
     }
 
-    @Nested
     private final class FakeNestedClass {
       final FakeClass value;
 
@@ -164,7 +163,6 @@ public final class EqualsPredicateTests {
       assertFalse(equalsPredicate.test(owner1, owner2));
     }
 
-    @Nested
     private final class FakeOwnerClass {
       FakeOwneeClass ownee;
       final int value;
@@ -174,7 +172,6 @@ public final class EqualsPredicateTests {
       }
     }
 
-    @Nested
     private final class FakeOwneeClass {
       final FakeOwnerClass owner;
       final int value;
@@ -186,8 +183,7 @@ public final class EqualsPredicateTests {
     }
   }
 
-  @Nested
-  private final class FakeClass {
+  private static final class FakeClass {
     final int value;
 
     FakeClass(final int value) {

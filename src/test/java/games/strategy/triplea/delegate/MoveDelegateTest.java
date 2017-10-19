@@ -29,10 +29,8 @@ public class MoveDelegateTest extends DelegateTest {
   MoveDelegate delegate;
   ITestDelegateBridge bridge;
 
-  @Override
   @BeforeEach
-  public void setUp() throws Exception {
-    super.setUp();
+  public void setupMoveDelegate() {
     bridge = super.getDelegateBridge(british);
     bridge.setStepName("britishCombatMove");
     final InitializationDelegate initDel =

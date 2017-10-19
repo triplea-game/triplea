@@ -28,12 +28,6 @@ import games.strategy.util.Match;
 
 public class MoveValidatorTest extends DelegateTest {
 
-  @Override
-  @BeforeEach
-  public void setUp() throws Exception {
-    super.setUp();
-  }
-
   @Test
   public void testEnemyUnitsInPath() {
     // japanese unit in congo

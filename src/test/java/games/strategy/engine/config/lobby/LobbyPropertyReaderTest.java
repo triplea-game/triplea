@@ -24,7 +24,7 @@ public class LobbyPropertyReaderTest {
    */
   @BeforeEach
   public void setup() throws IOException {
-    final File testFile = tempFolderRule.newFile("testname");
+    final File testFile = tempFolderRule.newFile(getClass().getName());
 
     try (FileWriter writer = new FileWriter(testFile)) {
       writer.write(keyValuePair(LobbyPropertyReader.PropertyKeys.port, String.valueOf(TestData.fakePort)));

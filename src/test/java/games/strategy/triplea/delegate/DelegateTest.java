@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
@@ -78,7 +79,7 @@ public class DelegateTest {
   protected UnitType carrier;
   protected Resource pus;
 
-  @Test
+  @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.DELEGATE_TEST.getGameData();
     british = GameDataTestUtil.british(gameData);

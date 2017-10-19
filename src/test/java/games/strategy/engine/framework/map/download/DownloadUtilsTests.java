@@ -47,7 +47,7 @@ public final class DownloadUtilsTests {
   @ExtendWith(TemporaryFolderExtension.class)
   @Nested
   public final class DownloadToFileTest {
-    
+
     private TemporaryFolder temporaryFolder;
 
     @Mock
@@ -69,7 +69,7 @@ public final class DownloadUtilsTests {
      */
     @BeforeEach
     public void setUp() throws Exception {
-      file = temporaryFolder.newFile("filename1123");
+      file = temporaryFolder.newFile(getClass().getName());
 
       when(client.execute(any())).thenReturn(response);
       when(response.getEntity()).thenReturn(entity);
