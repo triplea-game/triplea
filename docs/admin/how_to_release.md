@@ -1,12 +1,11 @@
 ## Tasks:
 
-- Make sure some thorough testing has been done
+- Testing groupo should have had at least 'okays' for any given game version.
 - Verify the release notes: https://github.com/triplea-game/triplea-game.github.io/blob/master/release_notes.md
    - Should have just about all significant changes and bug fixes
+- Mark the target release version as latest: https://github.com/triplea-game/triplea/releases
 - Change the version number in the game_engine.properties file: https://github.com/triplea-game/triplea/blob/master/game_engine.properties
 - Update the lobby bots and the lobby server: https://github.com/triplea-game/lobby
-- Bump download version on the website: https://github.com/triplea-game/triplea-game.github.io/blob/master/_config.yml
-- Mark latest as a release: https://github.com/triplea-game/triplea/releases
 - Update partner sites:  
   - http://www.freewarefiles.com/TripleA_program_56699.html  
   - http://download.cnet.com/TripleA/3000-18516_4-75184098.html  
