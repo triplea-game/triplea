@@ -3,8 +3,8 @@ package games.strategy.ui;
 import static games.strategy.ui.SwingComponents.appendExtensionIfAbsent;
 import static games.strategy.ui.SwingComponents.extensionWithLeadingPeriod;
 import static games.strategy.ui.SwingComponents.extensionWithoutLeadingPeriod;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 

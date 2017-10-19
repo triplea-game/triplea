@@ -2,7 +2,6 @@ package games.strategy.engine.config.client;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
