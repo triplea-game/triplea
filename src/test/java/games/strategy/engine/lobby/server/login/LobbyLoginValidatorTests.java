@@ -50,7 +50,7 @@ public final class LobbyLoginValidatorTests {
   abstract class AbstractTestCase {
     static final String EMAIL = "n@n.com";
     static final String PASSWORD = "password";
-    private final SocketAddress REMOTE_ADDRESS = new InetSocketAddress(9999);
+    private final SocketAddress remoteAddress = new InetSocketAddress(9999);
     private static final String USERNAME = "username";
 
     @Mock
@@ -147,13 +147,13 @@ public final class LobbyLoginValidatorTests {
 
     final void whenAuthenticating(final ResponseGenerator responseGenerator) {
       final String hashedMac = "$1$MH$lW2b9Tx3VIpD4llOnivrP1";
-      final Map<String, String> challenge = lobbyLoginValidator.getChallengeProperties(USERNAME, REMOTE_ADDRESS);
+      final Map<String, String> challenge = lobbyLoginValidator.getChallengeProperties(USERNAME, remoteAddress);
       authenticationErrorMessage = lobbyLoginValidator.verifyConnection(
           challenge,
           responseGenerator.apply(challenge),
           USERNAME,
           hashedMac,
-          REMOTE_ADDRESS);
+          remoteAddress);
     }
 
     final void thenAuthenticationShouldFailWithMessage(final String errorMessage) {

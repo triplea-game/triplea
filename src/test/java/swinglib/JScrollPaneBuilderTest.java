@@ -3,12 +3,12 @@ package swinglib;
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.awt.Component;
 

@@ -2,12 +2,12 @@ package games.strategy.persistence.serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.test.Matchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

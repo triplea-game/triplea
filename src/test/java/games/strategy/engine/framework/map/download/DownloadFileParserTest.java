@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.util.List;
 

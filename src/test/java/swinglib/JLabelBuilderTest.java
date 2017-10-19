@@ -7,7 +7,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import org.hamcrest.MatcherAssert;
-
 import org.junit.jupiter.api.Test;
 
 public class JLabelBuilderTest {

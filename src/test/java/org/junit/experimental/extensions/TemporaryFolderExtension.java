@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 /**
  * Based off
  * https://raw.githubusercontent.com/rherrmann/junit5-experiments/master/src/main/java/com/codeaffine/junit5/TemporaryFolderExtension.java
+ * Replacement for the JUnit4 TemporaryFolder Rule.
  */
 public class TemporaryFolderExtension implements TestInstancePostProcessor, ParameterResolver {
 
