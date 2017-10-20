@@ -91,12 +91,12 @@ public class ServerGame extends AbstractGame {
   public ServerGame(final GameData data, final Set<IGamePlayer> localPlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
     super(data, localPlayers, remotePlayerMapping, messengers);
-    m_gameModifiedChannel = new IGameModifiedChannel() {
+    gameModifiedChannel = new IGameModifiedChannel() {
       @Override
       public void gameDataChanged(final Change change) {
         assertCorrectCaller();
-        m_data.performChange(change);
-        m_data.getHistory().getHistoryWriter().addChange(change);
+        gameData.performChange(change);
+        gameData.getHistory().getHistoryWriter().addChange(change);
       }
 
       private void assertCorrectCaller() {
@@ -116,18 +116,18 @@ public class ServerGame extends AbstractGame {
       @Override
       public void startHistoryEvent(final String event) {
         assertCorrectCaller();
-        m_data.getHistory().getHistoryWriter().startEvent(event);
+        gameData.getHistory().getHistoryWriter().startEvent(event);
       }
 
       @Override
       public void addChildToEvent(final String text, final Object renderingData) {
         assertCorrectCaller();
-        m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
+        gameData.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
       }
 
       void setRenderingData(final Object renderingData) {
         assertCorrectCaller();
-        m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
+        gameData.getHistory().getHistoryWriter().setRenderingData(renderingData);
       }
 
       @Override
@@ -137,16 +137,16 @@ public class ServerGame extends AbstractGame {
         if (loadedFromSavedGame) {
           return;
         }
-        m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+        gameData.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
       }
 
       // nothing to do, we call this
       @Override
       public void shutDown() {}
     };
-    m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+    channelMessenger.registerChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     setupDelegateMessaging(data);
-    randomStats = new RandomStats(m_remoteMessenger);
+    randomStats = new RandomStats(remoteMessenger);
     final IServerRemote serverRemote = () -> {
       try {
         return IoUtils.writeToMemory(this::saveGame);
@@ -155,7 +155,7 @@ public class ServerGame extends AbstractGame {
         throw new IllegalStateException(e);
       }
     };
-    m_remoteMessenger.registerRemote(serverRemote, SERVER_REMOTE);
+    remoteMessenger.registerRemote(serverRemote, SERVER_REMOTE);
   }
 
   public void addObserver(final IObserverWaitingToJoin blockingObserver,
@@ -174,7 +174,7 @@ public class ServerGame extends AbstractGame {
       final byte[] bytes = IoUtils.writeToMemory(this::saveGame);
       new Thread(() -> {
         try {
-          blockingObserver.joinGame(bytes, m_playerManager.getPlayerMapping());
+          blockingObserver.joinGame(bytes, playerManager.getPlayerMapping());
           waitOnObserver.countDown();
         } catch (final ConnectionLostException cle) {
           System.out.println("Connection lost to observer while joining: " + newNode.getName());
@@ -213,7 +213,7 @@ public class ServerGame extends AbstractGame {
     final Object wrappedDelegate =
         delegateExecutionManager.createInboundImplementation(delegate, new Class<?>[] {delegate.getRemoteType()});
     final RemoteName descriptor = getRemoteName(delegate);
-    m_remoteMessenger.registerRemote(wrappedDelegate, descriptor);
+    remoteMessenger.registerRemote(wrappedDelegate, descriptor);
   }
 
   public static RemoteName getRemoteName(final IDelegate delegate) {
@@ -232,7 +232,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private GameStep getCurrentStep() {
-    return m_data.getSequence().getStep();
+    return gameData.getSequence().getStep();
   }
 
 
@@ -244,15 +244,15 @@ public class ServerGame extends AbstractGame {
     try {
       // we dont want to notify that the step has been saved when reloading a saved game, since
       // in fact the step hasnt changed, we are just resuming where we left off
-      final boolean gameHasBeenSaved = m_data.getProperties().get(GAME_HAS_BEEN_SAVED_PROPERTY, false);
+      final boolean gameHasBeenSaved = gameData.getProperties().get(GAME_HAS_BEEN_SAVED_PROPERTY, false);
       if (!gameHasBeenSaved) {
-        m_data.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
+        gameData.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
       }
       startPersistentDelegates();
       if (gameHasBeenSaved) {
         runStep(true);
       }
-      while (!m_isGameOver) {
+      while (!isGameOver) {
         if (delegateExecutionStopped) {
           // the delegate has told us to stop stepping through game steps
           try {
@@ -267,7 +267,7 @@ public class ServerGame extends AbstractGame {
         }
       }
     } catch (final GameOverException e) {
-      if (!m_isGameOver) {
+      if (!isGameOver) {
         ClientLogger.logQuietly(e);
       }
     }
@@ -275,16 +275,16 @@ public class ServerGame extends AbstractGame {
 
   public void stopGame() {
     // we have already shut down
-    if (m_isGameOver) {
+    if (isGameOver) {
       System.out.println("Game previously stopped, cannot stop again.");
       return;
     } else if (HeadlessGameServer.headless()) {
       System.out.println("Attempting to stop game.");
     }
-    m_isGameOver = true;
+    isGameOver = true;
     delegateExecutionStoppedLatch.countDown();
     // tell the players (especially the AI's) that the game is stopping, so stop doing stuff.
-    for (final IGamePlayer player : m_gamePlayers.values()) {
+    for (final IGamePlayer player : gamePlayers.values()) {
       // not sure whether to put this before or after we delegate execution block, but definitely before the game loader
       // shutdown
       player.stopGame();
@@ -312,15 +312,15 @@ public class ServerGame extends AbstractGame {
       delegateExecutionManager.setGameOver();
       getGameModifiedBroadcaster().shutDown();
       randomStats.shutDown();
-      m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
-      m_remoteMessenger.unregisterRemote(SERVER_REMOTE);
-      m_vault.shutDown();
-      final Iterator<IGamePlayer> localPlayersIter = m_gamePlayers.values().iterator();
+      channelMessenger.unregisterChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+      remoteMessenger.unregisterRemote(SERVER_REMOTE);
+      vault.shutDown();
+      final Iterator<IGamePlayer> localPlayersIter = gamePlayers.values().iterator();
       while (localPlayersIter.hasNext()) {
         final IGamePlayer gp = localPlayersIter.next();
-        m_remoteMessenger.unregisterRemote(getRemoteName(gp.getPlayerId(), m_data));
+        remoteMessenger.unregisterRemote(getRemoteName(gp.getPlayerId(), gameData));
       }
-      final Iterator<IDelegate> delegateIter = m_data.getDelegateList().iterator();
+      final Iterator<IDelegate> delegateIter = gameData.getDelegateList().iterator();
       while (delegateIter.hasNext()) {
         final IDelegate delegate = delegateIter.next();
         final Class<? extends IRemote> remoteType = delegate.getRemoteType();
@@ -328,14 +328,14 @@ public class ServerGame extends AbstractGame {
         if (remoteType == null) {
           continue;
         }
-        m_remoteMessenger.unregisterRemote(getRemoteName(delegate));
+        remoteMessenger.unregisterRemote(getRemoteName(delegate));
       }
     } catch (final RuntimeException e) {
       ClientLogger.logQuietly(e);
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
     }
-    m_data.getGameLoader().shutDown();
+    gameData.getGameLoader().shutDown();
     if (HeadlessGameServer.headless()) {
       System.out.println("StopGame successful.");
     }
@@ -377,7 +377,7 @@ public class ServerGame extends AbstractGame {
       throw new IOException(ie.getMessage());
     }
     try {
-      GameDataManager.saveGame(out, m_data);
+      GameDataManager.saveGame(out, gameData);
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
     }
@@ -385,13 +385,13 @@ public class ServerGame extends AbstractGame {
 
   private void runStep(final boolean stepIsRestoredFromSavedGame) {
     if (getCurrentStep().hasReachedMaxRunCount()) {
-      m_data.getSequence().next();
+      gameData.getSequence().next();
       return;
     }
-    if (m_isGameOver) {
+    if (isGameOver) {
       return;
     }
-    final GameStep currentStep = m_data.getSequence().getStep();
+    final GameStep currentStep = gameData.getSequence().getStep();
     final IDelegate currentDelegate = currentStep.getDelegate();
     if (!stepIsRestoredFromSavedGame
         && currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
@@ -404,11 +404,11 @@ public class ServerGame extends AbstractGame {
         && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepStart()) {
       autoSaveBefore(currentDelegate);
     }
-    if (m_isGameOver) {
+    if (isGameOver) {
       return;
     }
     waitForPlayerToFinishStep();
-    if (m_isGameOver) {
+    if (isGameOver) {
       return;
     }
     // save after the step has advanced
@@ -419,12 +419,12 @@ public class ServerGame extends AbstractGame {
       autoSave(getAutoSaveAfterFileNameForGameStep(currentStep));
     }
     endStep();
-    if (m_isGameOver) {
+    if (isGameOver) {
       return;
     }
-    if (m_data.getSequence().next()) {
-      m_data.getHistory().getHistoryWriter().startNextRound(m_data.getSequence().getRound());
-      autoSave(m_data.getSequence().getRound() % 2 == 0
+    if (gameData.getSequence().next()) {
+      gameData.getHistory().getHistoryWriter().startNextRound(gameData.getSequence().getRound());
+      autoSave(gameData.getSequence().getRound() % 2 == 0
           ? SaveGameFileChooser.getAutoSaveEvenFileName()
           : SaveGameFileChooser.getAutoSaveOddFileName());
     }
@@ -462,12 +462,12 @@ public class ServerGame extends AbstractGame {
   }
 
   private void startPersistentDelegates() {
-    for (final IDelegate delegate : m_data.getDelegateList()) {
+    for (final IDelegate delegate : gameData.getDelegateList()) {
       if (!(delegate instanceof IPersistentDelegate)) {
         continue;
       }
-      final DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, this,
-          new DelegateHistoryWriter(m_channelMessenger), randomStats, delegateExecutionManager);
+      final DefaultDelegateBridge bridge = new DefaultDelegateBridge(gameData, this,
+          new DelegateHistoryWriter(channelMessenger), randomStats, delegateExecutionManager);
       if (delegateRandomSource == null) {
         delegateRandomSource = (IRandomSource) delegateExecutionManager.createOutboundImplementation(randomSource,
             new Class<?>[] {IRandomSource.class});
@@ -485,8 +485,8 @@ public class ServerGame extends AbstractGame {
 
   private void startStep(final boolean stepIsRestoredFromSavedGame) {
     // dont save if we just loaded
-    final DefaultDelegateBridge bridge = new DefaultDelegateBridge(m_data, this,
-        new DelegateHistoryWriter(m_channelMessenger), randomStats, delegateExecutionManager);
+    final DefaultDelegateBridge bridge = new DefaultDelegateBridge(gameData, this,
+        new DelegateHistoryWriter(channelMessenger), randomStats, delegateExecutionManager);
     if (delegateRandomSource == null) {
       delegateRandomSource = (IRandomSource) delegateExecutionManager.createOutboundImplementation(randomSource,
           new Class<?>[] {IRandomSource.class});
@@ -496,7 +496,7 @@ public class ServerGame extends AbstractGame {
     // we cannot do this the very first run through, because there are no history nodes yet. We should do after first
     // node is created.
     if (needToInitialize) {
-      addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
+      addPlayerTypesToGameData(gamePlayers.values(), playerManager, bridge);
     }
     notifyGameStepChanged(stepIsRestoredFromSavedGame);
     delegateExecutionManager.enterDelegateExecution();
@@ -518,15 +518,15 @@ public class ServerGame extends AbstractGame {
     if (!getCurrentStep().getDelegate().delegateCurrentlyRequiresUserInput()) {
       return;
     }
-    final IGamePlayer player = m_gamePlayers.get(playerId);
+    final IGamePlayer player = gamePlayers.get(playerId);
     if (player != null) {
       // a local player
       player.start(getCurrentStep().getName());
     } else {
       // a remote player
-      final INode destination = m_playerManager.getNode(playerId.getName());
+      final INode destination = playerManager.getNode(playerId.getName());
       final IGameStepAdvancer advancer =
-          (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
+          (IGameStepAdvancer) remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
       advancer.startPlayerStep(getCurrentStep().getName(), playerId);
     }
   }
@@ -536,7 +536,7 @@ public class ServerGame extends AbstractGame {
     final String stepName = currentStep.getName();
     final String delegateName = currentStep.getDelegate().getName();
     final String displayName = currentStep.getDisplayName();
-    final int round = m_data.getSequence().getRound();
+    final int round = gameData.getSequence().getRound();
     final PlayerID id = currentStep.getPlayerId();
     notifyGameStepListeners(stepName, delegateName, id, round, displayName);
     getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, round, displayName, loadedFromSavedGame);
@@ -548,8 +548,8 @@ public class ServerGame extends AbstractGame {
     // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
     // the first delegate to
     // start before making changes.
-    if (getCurrentStep() == null || getCurrentStep().getPlayerId() == null || (m_firstRun)) {
-      m_firstRun = false;
+    if (getCurrentStep() == null || getCurrentStep().getPlayerId() == null || (firstRun)) {
+      firstRun = false;
       return;
     }
     // we can't add a new event or add new changes if we are not in a step.
@@ -598,7 +598,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private IGameModifiedChannel getGameModifiedBroadcaster() {
-    return (IGameModifiedChannel) m_channelMessenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
+    return (IGameModifiedChannel) channelMessenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
   }
 
   @Override

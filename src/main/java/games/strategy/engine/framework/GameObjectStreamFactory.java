@@ -12,10 +12,10 @@ import games.strategy.engine.data.GameObjectOutputStream;
 import games.strategy.net.IObjectStreamFactory;
 
 public class GameObjectStreamFactory implements IObjectStreamFactory {
-  private GameData m_data;
+  private GameData gameData;
 
   public GameObjectStreamFactory(final GameData data) {
-    m_data = data;
+    gameData = data;
   }
 
   @Override
@@ -29,10 +29,10 @@ public class GameObjectStreamFactory implements IObjectStreamFactory {
   }
 
   public void setData(final GameData data) {
-    m_data = data;
+    gameData = data;
   }
 
   public GameData getData() {
-    return m_data;
+    return gameData;
   }
 }

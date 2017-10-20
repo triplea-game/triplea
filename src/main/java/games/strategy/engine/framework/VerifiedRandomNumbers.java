@@ -3,30 +3,30 @@ package games.strategy.engine.framework;
 import games.strategy.triplea.formatter.MyFormatter;
 
 public class VerifiedRandomNumbers {
-  private final int[] m_values;
-  private final String m_annotation;
+  private final int[] values;
+  private final String annotation;
 
   public VerifiedRandomNumbers(final String annotation, final int[] values) {
-    m_values = values;
-    m_annotation = annotation;
+    this.values = values;
+    this.annotation = annotation;
   }
 
   @Override
   public String toString() {
-    return "Rolled :" + MyFormatter.asDice(m_values) + " for " + m_annotation;
+    return "Rolled :" + MyFormatter.asDice(values) + " for " + annotation;
   }
 
   /**
-   * @return Returns the m_annotation.
+   * @return Returns the annotation.
    */
   public String getAnnotation() {
-    return m_annotation;
+    return annotation;
   }
 
   /**
-   * @return Returns the m_values.
+   * @return Returns the values.
    */
   public int[] getValues() {
-    return m_values;
+    return values;
   }
 }

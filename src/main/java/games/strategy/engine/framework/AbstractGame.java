@@ -31,46 +31,46 @@ import games.strategy.sound.ISound;
 public abstract class AbstractGame implements IGame {
   protected static final String DISPLAY_CHANNEL = "games.strategy.engine.framework.AbstractGame.DISPLAY_CHANNEL";
   protected static final String SOUND_CHANNEL = "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
-  protected final GameData m_data;
-  protected final IMessenger m_messenger;
-  protected final IRemoteMessenger m_remoteMessenger;
-  protected final IChannelMessenger m_channelMessenger;
-  protected final Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<>();
-  protected volatile boolean m_isGameOver = false;
-  protected final Vault m_vault;
-  protected IGameModifiedChannel m_gameModifiedChannel;
-  protected final PlayerManager m_playerManager;
-  protected boolean m_firstRun = true;
+  protected final GameData gameData;
+  protected final IMessenger messenger;
+  protected final IRemoteMessenger remoteMessenger;
+  protected final IChannelMessenger channelMessenger;
+  protected final Map<PlayerID, IGamePlayer> gamePlayers = new HashMap<>();
+  protected volatile boolean isGameOver = false;
+  protected final Vault vault;
+  protected IGameModifiedChannel gameModifiedChannel;
+  protected final PlayerManager playerManager;
+  protected boolean firstRun = true;
   protected final List<GameStepListener> gameStepListeners = new CopyOnWriteArrayList<>();
 
   protected AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
-    m_data = data;
-    m_messenger = messengers.getMessenger();
-    m_remoteMessenger = messengers.getRemoteMessenger();
-    m_channelMessenger = messengers.getChannelMessenger();
-    m_vault = new Vault(m_channelMessenger);
+    gameData = data;
+    messenger = messengers.getMessenger();
+    remoteMessenger = messengers.getRemoteMessenger();
+    channelMessenger = messengers.getChannelMessenger();
+    vault = new Vault(channelMessenger);
     final Map<String, INode> allPlayers = new HashMap<>(remotePlayerMapping);
     for (final IGamePlayer player : gamePlayers) {
       // this is necessary for Server games, but not needed for client games.
-      allPlayers.put(player.getName(), m_messenger.getLocalNode());
+      allPlayers.put(player.getName(), messenger.getLocalNode());
     }
-    m_playerManager = new PlayerManager(allPlayers);
-    if (m_playerManager == null) {
+    playerManager = new PlayerManager(allPlayers);
+    if (playerManager == null) {
       throw new IllegalArgumentException("Player manager cant be null");
     }
     setupLocalPlayers(gamePlayers);
   }
 
   private void setupLocalPlayers(final Set<IGamePlayer> localPlayers) {
-    final PlayerList playerList = m_data.getPlayerList();
+    final PlayerList playerList = gameData.getPlayerList();
     for (final IGamePlayer gp : localPlayers) {
       final PlayerID player = playerList.getPlayerId(gp.getName());
-      m_gamePlayers.put(player, gp);
+      gamePlayers.put(player, gp);
       final IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
-      final RemoteName descriptor = ServerGame.getRemoteName(gp.getPlayerId(), m_data);
-      m_remoteMessenger.registerRemote(gp, descriptor);
+      final RemoteName descriptor = ServerGame.getRemoteName(gp.getPlayerId(), gameData);
+      remoteMessenger.registerRemote(gp, descriptor);
     }
   }
 
@@ -95,37 +95,37 @@ public abstract class AbstractGame implements IGame {
 
   @Override
   public GameData getData() {
-    return m_data;
+    return gameData;
   }
 
   @Override
   public Vault getVault() {
-    return m_vault;
+    return vault;
   }
 
   @Override
   public boolean isGameOver() {
-    return m_isGameOver;
+    return isGameOver;
   }
 
   @Override
   public IRemoteMessenger getRemoteMessenger() {
-    return m_remoteMessenger;
+    return remoteMessenger;
   }
 
   @Override
   public IChannelMessenger getChannelMessenger() {
-    return m_channelMessenger;
+    return channelMessenger;
   }
 
   @Override
   public IMessenger getMessenger() {
-    return m_messenger;
+    return messenger;
   }
 
   @Override
   public PlayerManager getPlayerManager() {
-    return m_playerManager;
+    return playerManager;
   }
 
   @Override
@@ -144,13 +144,13 @@ public abstract class AbstractGame implements IGame {
 
   @Override
   public void addDisplay(final IDisplay display) {
-    display.initialize(new DefaultDisplayBridge(m_data));
-    m_channelMessenger.registerChannelSubscriber(display, getDisplayChannel(getData()));
+    display.initialize(new DefaultDisplayBridge(gameData));
+    channelMessenger.registerChannelSubscriber(display, getDisplayChannel(getData()));
   }
 
   @Override
   public void removeDisplay(final IDisplay display) {
-    m_channelMessenger.unregisterChannelSubscriber(display, getDisplayChannel(getData()));
+    channelMessenger.unregisterChannelSubscriber(display, getDisplayChannel(getData()));
   }
 
   public static RemoteName getSoundChannel(final GameData data) {
@@ -159,11 +159,11 @@ public abstract class AbstractGame implements IGame {
 
   @Override
   public void addSoundChannel(final ISound soundChannel) {
-    m_channelMessenger.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
+    channelMessenger.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
   }
 
   @Override
   public void removeSoundChannel(final ISound soundChannel) {
-    m_channelMessenger.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));
+    channelMessenger.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));
   }
 }

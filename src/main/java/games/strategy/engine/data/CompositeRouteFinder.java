@@ -15,8 +15,8 @@ import games.strategy.util.Match;
 public class CompositeRouteFinder {
   private static final Logger logger = Logger.getLogger(CompositeRouteFinder.class.getName());
 
-  private final GameMap m_map;
-  private final Map<Match<Territory>, Integer> m_matches;
+  private final GameMap map;
+  private final Map<Match<Territory>, Integer> matches;
 
   /**
    * This class can find composite routes between two territories.
@@ -33,20 +33,20 @@ public class CompositeRouteFinder {
    *        - Set of matches and scores. The lower a match is scored, the more favorable it is.
    */
   public CompositeRouteFinder(final GameMap map, final Map<Match<Territory>, Integer> matches) {
-    m_map = map;
-    m_matches = matches;
+    this.map = map;
+    this.matches = matches;
     logger.finer("Initializing CompositeRouteFinderClass...");
   }
 
   Route findRoute(final Territory start, final Territory end) {
     final Set<Territory> allMatchingTers =
-        new HashSet<>(Matches.getMatches(m_map.getTerritories(), Match.anyOf(m_matches.keySet())));
+        new HashSet<>(Matches.getMatches(map.getTerritories(), Match.anyOf(matches.keySet())));
     final Map<Territory, Integer> terScoreMap = createScoreMap();
     final Map<Territory, Integer> routeScoreMap = new HashMap<>();
     int bestRouteToEndScore = Integer.MAX_VALUE;
     final Map<Territory, Territory> previous = new HashMap<>();
     List<Territory> routeLeadersToProcess = new ArrayList<>();
-    for (final Territory ter : m_map.getNeighbors(start, Matches.territoryIsInList(allMatchingTers))) {
+    for (final Territory ter : map.getNeighbors(start, Matches.territoryIsInList(allMatchingTers))) {
       final int routeScore = terScoreMap.get(start) + terScoreMap.get(ter);
       routeScoreMap.put(ter, routeScore);
       routeLeadersToProcess.add(ter);
@@ -55,7 +55,7 @@ public class CompositeRouteFinder {
     while (routeLeadersToProcess.size() > 0) {
       final List<Territory> newLeaders = new ArrayList<>();
       for (final Territory oldLeader : routeLeadersToProcess) {
-        for (final Territory ter : m_map.getNeighbors(oldLeader, Matches.territoryIsInList(allMatchingTers))) {
+        for (final Territory ter : map.getNeighbors(oldLeader, Matches.territoryIsInList(allMatchingTers))) {
           final int routeScore = routeScoreMap.get(oldLeader) + terScoreMap.get(ter);
           if (routeLeadersToProcess.contains(ter) || ter.equals(start)) {
             continue;
@@ -102,7 +102,7 @@ public class CompositeRouteFinder {
 
   private Map<Territory, Integer> createScoreMap() {
     final Map<Territory, Integer> result = new HashMap<>();
-    for (final Territory ter : m_map.getTerritories()) {
+    for (final Territory ter : map.getTerritories()) {
       result.put(ter, getTerScore(ter));
     }
     return result;
@@ -113,8 +113,8 @@ public class CompositeRouteFinder {
    */
   private int getTerScore(final Territory ter) {
     int bestMatchingScore = Integer.MAX_VALUE;
-    for (final Match<Territory> match : m_matches.keySet()) {
-      final int score = m_matches.get(match);
+    for (final Match<Territory> match : matches.keySet()) {
+      final int score = matches.get(match);
       if (score < bestMatchingScore) { // If this is a 'better' match
         if (match.match(ter)) {
           bestMatchingScore = score;
