@@ -8,21 +8,21 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.triplea.player.AbstractHumanPlayer;
 
 public class LocalPlayers {
-  protected final Set<IGamePlayer> m_localPlayers;
+  protected final Set<IGamePlayer> localPlayers;
 
   public LocalPlayers(final Set<IGamePlayer> localPlayers) {
-    m_localPlayers = localPlayers;
+    this.localPlayers = localPlayers;
   }
 
   public Set<IGamePlayer> getLocalPlayers() {
-    return Collections.unmodifiableSet(m_localPlayers);
+    return Collections.unmodifiableSet(localPlayers);
   }
 
   public boolean playing(final PlayerID id) {
     if (id == null) {
       return false;
     }
-    for (final IGamePlayer gamePlayer : m_localPlayers) {
+    for (final IGamePlayer gamePlayer : localPlayers) {
       if (gamePlayer.getPlayerId().equals(id) && AbstractHumanPlayer.class.isAssignableFrom(gamePlayer.getClass())) {
         return true;
       }

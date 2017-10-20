@@ -25,13 +25,13 @@ import games.strategy.util.TimeManager;
 public class HeadlessChat implements IChatListener, IChatPanel {
   // roughly 1000 chat messages
   private static final int MAX_LENGTH = 1000 * 200;
-  private Chat m_chat;
-  private boolean m_showTime = true;
-  private StringBuffer m_allText = new StringBuffer();
+  private Chat chat;
+  private boolean showTime = true;
+  private StringBuffer allText = new StringBuffer();
   private final ChatFloodControl floodControl = new ChatFloodControl();
-  private final Set<String> m_hiddenPlayers = new HashSet<>();
-  private final Set<INode> m_players = new HashSet<>();
-  private PrintStream m_out = null;
+  private final Set<String> hiddenPlayers = new HashSet<>();
+  private final Set<INode> players = new HashSet<>();
+  private PrintStream out = null;
 
   public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger, final String chatName, final ChatSoundProfile chatSoundProfile) {
@@ -45,27 +45,27 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   }
 
   public void setPrintStream(final PrintStream out) {
-    m_out = out;
+    this.out = out;
   }
 
   @Override
   public String toString() {
-    return m_allText.toString();
+    return allText.toString();
   }
 
   @Override
   public String getAllText() {
-    return m_allText.toString();
+    return allText.toString();
   }
 
   @Override
   public Chat getChat() {
-    return m_chat;
+    return chat;
   }
 
   @Override
   public void setShowChatTime(final boolean showTime) {
-    m_showTime = showTime;
+    this.showTime = showTime;
   }
 
   @Override
@@ -74,42 +74,42 @@ public class HeadlessChat implements IChatListener, IChatPanel {
 
   @Override
   public synchronized void updatePlayerList(final Collection<INode> players) {
-    m_players.clear();
+    this.players.clear();
     for (final INode name : players) {
-      if (!m_hiddenPlayers.contains(name.getName())) {
-        m_players.add(name);
+      if (!hiddenPlayers.contains(name.getName())) {
+        this.players.add(name);
       }
     }
   }
 
   @Override
   public void shutDown() {
-    if (m_chat != null) {
-      m_chat.removeChatListener(this);
-      m_chat.shutdown();
+    if (chat != null) {
+      chat.removeChatListener(this);
+      chat.shutdown();
     }
-    m_chat = null;
+    chat = null;
   }
 
   @Override
   public void setChat(final Chat chat) {
-    if (m_chat != null) {
-      m_chat.removeChatListener(this);
+    if (this.chat != null) {
+      this.chat.removeChatListener(this);
     }
-    m_chat = chat;
-    if (m_chat != null) {
-      m_chat.addChatListener(this);
-      synchronized (m_chat.getMutex()) {
-        m_allText = new StringBuffer();
+    this.chat = chat;
+    if (this.chat != null) {
+      this.chat.addChatListener(this);
+      synchronized (this.chat.getMutex()) {
+        allText = new StringBuffer();
         try {
-          if (m_out != null) {
-            m_out.println();
+          if (out != null) {
+            out.println();
           }
         } catch (final Exception e) {
           ClientLogger.logQuietly(e);
         }
-        for (final ChatMessage message : m_chat.getChatHistory()) {
-          if (message.getFrom().equals(m_chat.getServerNode().getName())) {
+        for (final ChatMessage message : this.chat.getChatHistory()) {
+          if (message.getFrom().equals(this.chat.getServerNode().getName())) {
             if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
               addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
                   "ADMIN_CHAT_CONTROL", false);
@@ -139,7 +139,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
       final String sound) {
     // TODO: I don't really think we need a new thread for this...
     new Thread(() -> {
-      if (from.equals(m_chat.getServerNode().getName())) {
+      if (from.equals(chat.getServerNode().getName())) {
         if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
           addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
               "ADMIN_CHAT_CONTROL", false);
@@ -150,7 +150,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
         }
       }
       if (!floodControl.allow(from, System.currentTimeMillis())) {
-        if (from.equals(m_chat.getLocalNode().getName())) {
+        if (from.equals(chat.getLocalNode().getName())) {
           addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
         }
         return;
@@ -163,17 +163,17 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
     final String message = trimMessage(originalMessage);
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
-    final String prefix = thirdperson ? (m_showTime ? "* " + time + " " + from : "* " + from)
-        : (m_showTime ? time + " " + from + ": " : from + ": ");
+    final String prefix = thirdperson ? (showTime ? "* " + time + " " + from : "* " + from)
+        : (showTime ? time + " " + from + ": " : from + ": ");
     final String fullMessage = prefix + " " + message + "\n";
-    final String currentAllText = m_allText.toString();
+    final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
-      m_allText = new StringBuffer(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
+      allText = new StringBuffer(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
     }
-    m_allText.append(fullMessage);
+    allText.append(fullMessage);
     try {
-      if (m_out != null) {
-        m_out.print("CHAT: " + fullMessage);
+      if (out != null) {
+        out.print("CHAT: " + fullMessage);
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
@@ -183,14 +183,14 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   @Override
   public void addStatusMessage(final String message) {
     final String fullMessage = "--- " + message + " ---\n";
-    final String currentAllText = m_allText.toString();
+    final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
-      m_allText = new StringBuffer(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
+      allText = new StringBuffer(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
     }
-    m_allText.append(fullMessage);
+    allText.append(fullMessage);
     try {
-      if (m_out != null) {
-        m_out.print("CHAT: " + fullMessage);
+      if (out != null) {
+        out.print("CHAT: " + fullMessage);
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);

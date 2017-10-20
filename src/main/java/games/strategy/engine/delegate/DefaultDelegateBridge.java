@@ -23,35 +23,34 @@ import games.strategy.sound.ISound;
  * Default implementation of DelegateBridge.
  */
 public class DefaultDelegateBridge implements IDelegateBridge {
-  private final GameData m_data;
-  private final IGame m_game;
-  private final IDelegateHistoryWriter m_historyWriter;
-  private final RandomStats m_randomStats;
-  private final DelegateExecutionManager m_delegateExecutionManager;
-  private IRandomSource m_randomSource;
+  private final GameData gameData;
+  private final IGame game;
+  private final IDelegateHistoryWriter historyWriter;
+  private final RandomStats randomStats;
+  private final DelegateExecutionManager delegateExecutionManager;
+  private IRandomSource randomSource;
 
-  /** Creates new DefaultDelegateBridge. */
   public DefaultDelegateBridge(final GameData data, final IGame game, final IDelegateHistoryWriter historyWriter,
       final RandomStats randomStats, final DelegateExecutionManager delegateExecutionManager) {
-    m_data = data;
-    m_game = game;
-    m_historyWriter = historyWriter;
-    m_randomStats = randomStats;
-    m_delegateExecutionManager = delegateExecutionManager;
+    gameData = data;
+    this.game = game;
+    this.historyWriter = historyWriter;
+    this.randomStats = randomStats;
+    this.delegateExecutionManager = delegateExecutionManager;
   }
 
   @Override
   public GameData getData() {
-    return m_data;
+    return gameData;
   }
 
   @Override
   public PlayerID getPlayerId() {
-    return m_data.getSequence().getStep().getPlayerId();
+    return gameData.getSequence().getStep().getPlayerId();
   }
 
   public void setRandomSource(final IRandomSource randomSource) {
-    m_randomSource = randomSource;
+    this.randomSource = randomSource;
   }
 
   /**
@@ -61,16 +60,16 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
       throws IllegalArgumentException, IllegalStateException {
-    final int random = m_randomSource.getRandom(max, annotation);
-    m_randomStats.addRandom(random, player, diceType);
+    final int random = randomSource.getRandom(max, annotation);
+    randomStats.addRandom(random, player, diceType);
     return random;
   }
 
   @Override
   public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation) throws IllegalArgumentException, IllegalStateException {
-    final int[] randomValues = m_randomSource.getRandom(max, count, annotation);
-    m_randomStats.addRandom(randomValues, player, diceType);
+    final int[] randomValues = randomSource.getRandom(max, count, annotation);
+    randomStats.addRandom(randomValues, player, diceType);
     return randomValues;
   }
 
@@ -84,23 +83,23 @@ public class DefaultDelegateBridge implements IDelegateBridge {
       }
     }
     if (!change.isEmpty()) {
-      m_game.addChange(change);
+      game.addChange(change);
     }
   }
 
   @Override
   public String getStepName() {
-    return m_data.getSequence().getStep().getName();
+    return gameData.getSequence().getStep().getName();
   }
 
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
-    return m_historyWriter;
+    return historyWriter;
   }
 
   private Object getOutbound(final Object o) {
     final Class<?>[] interfaces = o.getClass().getInterfaces();
-    return m_delegateExecutionManager.createOutboundImplementation(o, interfaces);
+    return delegateExecutionManager.createOutboundImplementation(o, interfaces);
   }
 
   @Override
@@ -111,7 +110,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
     try {
-      final Object implementor = m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, m_data));
+      final Object implementor = game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, gameData));
       return (IRemotePlayer) getOutbound(implementor);
     } catch (final MessengerException me) {
       throw new GameOverException("Game Over!");
@@ -121,33 +120,33 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     final Object implementor =
-        m_game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getDisplayChannel(m_data));
+        game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getDisplayChannel(gameData));
     return (IDisplay) getOutbound(implementor);
   }
 
   @Override
   public ISound getSoundChannelBroadcaster() {
-    final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getSoundChannel(m_data));
+    final Object implementor = game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getSoundChannel(gameData));
     return (ISound) getOutbound(implementor);
   }
 
   @Override
   public Properties getStepProperties() {
-    return m_data.getSequence().getStep().getProperties();
+    return gameData.getSequence().getStep().getProperties();
   }
 
   @Override
   public void leaveDelegateExecution() {
-    m_delegateExecutionManager.leaveDelegateExecution();
+    delegateExecutionManager.leaveDelegateExecution();
   }
 
   @Override
   public void enterDelegateExecution() {
-    m_delegateExecutionManager.enterDelegateExecution();
+    delegateExecutionManager.enterDelegateExecution();
   }
 
   @Override
   public void stopGameSequence() {
-    ((ServerGame) m_game).stopGameSequence();
+    ((ServerGame) game).stopGameSequence();
   }
 }

@@ -13,20 +13,20 @@ import games.strategy.util.Match;
 // TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not
 // always...
 class RouteFinder {
-  private final GameMap m_map;
-  private final Match<Territory> m_condition;
-  private final Map<Territory, Territory> m_previous;
+  private final GameMap map;
+  private final Match<Territory> condition;
+  private final Map<Territory, Territory> previous;
 
   RouteFinder(final GameMap map, final Match<Territory> condition) {
-    m_map = map;
-    m_condition = condition;
-    m_previous = new HashMap<>();
+    this.map = map;
+    this.condition = condition;
+    previous = new HashMap<>();
   }
 
   Route findRoute(final Territory start, final Territory end) {
-    final Set<Territory> startSet = m_map.getNeighbors(start, m_condition);
+    final Set<Territory> startSet = map.getNeighbors(start, condition);
     for (final Territory t : startSet) {
-      m_previous.put(t, start);
+      previous.put(t, start);
     }
     if (calculate(startSet, end)) {
       return getRoute(start, end);
@@ -37,10 +37,10 @@ class RouteFinder {
   private boolean calculate(final Set<Territory> startSet, final Territory end) {
     final Set<Territory> nextSet = new HashSet<>();
     for (final Territory t : startSet) {
-      final Set<Territory> neighbors = m_map.getNeighbors(t, m_condition);
+      final Set<Territory> neighbors = map.getNeighbors(t, condition);
       for (final Territory neighbor : neighbors) {
-        if (!m_previous.containsKey(neighbor)) {
-          m_previous.put(neighbor, t);
+        if (!previous.containsKey(neighbor)) {
+          previous.put(neighbor, t);
           if (neighbor.equals(end)) {
             return true;
           }
@@ -62,7 +62,7 @@ class RouteFinder {
         return null;
       }
       route.add(current);
-      current = m_previous.get(current);
+      current = previous.get(current);
     }
     route.add(start);
     Collections.reverse(route);

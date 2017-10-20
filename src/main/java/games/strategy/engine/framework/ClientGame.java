@@ -29,11 +29,11 @@ public class ClientGame extends AbstractGame {
   public ClientGame(final GameData data, final Set<IGamePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
     super(data, gamePlayers, remotePlayerMapping, messengers);
-    m_gameModifiedChannel = new IGameModifiedChannel() {
+    gameModifiedChannel = new IGameModifiedChannel() {
       @Override
       public void gameDataChanged(final Change change) {
-        m_data.performChange(change);
-        m_data.getHistory().getHistoryWriter().addChange(change);
+        gameData.performChange(change);
+        gameData.getHistory().getHistoryWriter().addChange(change);
       }
 
       @Override
@@ -46,39 +46,39 @@ public class ClientGame extends AbstractGame {
 
       @Override
       public void startHistoryEvent(final String event) {
-        m_data.getHistory().getHistoryWriter().startEvent(event);
+        gameData.getHistory().getHistoryWriter().startEvent(event);
       }
 
       @Override
       public void addChildToEvent(final String text, final Object renderingData) {
-        m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
+        gameData.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
       }
 
       protected void setRenderingData(final Object renderingData) {
-        m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
+        gameData.getHistory().getHistoryWriter().setRenderingData(renderingData);
       }
 
       @Override
       public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
           final String displayName, final boolean loadedFromSavedGame) {
         // we want to skip the first iteration, since that simply advances us to step 0
-        if (m_firstRun) {
-          m_firstRun = false;
+        if (firstRun) {
+          firstRun = false;
         } else {
-          m_data.acquireWriteLock();
+          gameData.acquireWriteLock();
           try {
-            m_data.getSequence().next();
-            final int ourOriginalCurrentRound = m_data.getSequence().getRound();
+            gameData.getSequence().next();
+            final int ourOriginalCurrentRound = gameData.getSequence().getRound();
             int currentRound = ourOriginalCurrentRound;
-            if (m_data.getSequence().testWeAreOnLastStep()) {
-              m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
+            if (gameData.getSequence().testWeAreOnLastStep()) {
+              gameData.getHistory().getHistoryWriter().startNextRound(++currentRound);
             }
-            while (!m_data.getSequence().getStep().getName().equals(stepName)
-                || !m_data.getSequence().getStep().getPlayerId().equals(player)
-                || !m_data.getSequence().getStep().getDelegate().getName().equals(delegateName)) {
-              m_data.getSequence().next();
-              if (m_data.getSequence().testWeAreOnLastStep()) {
-                m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
+            while (!gameData.getSequence().getStep().getName().equals(stepName)
+                || !gameData.getSequence().getStep().getPlayerId().equals(player)
+                || !gameData.getSequence().getStep().getDelegate().getName().equals(delegateName)) {
+              gameData.getSequence().next();
+              if (gameData.getSequence().testWeAreOnLastStep()) {
+                gameData.getHistory().getHistoryWriter().startNextRound(++currentRound);
               }
             }
             // TODO: this is causing problems if the very last step is a client step. we end up creating a new round
@@ -95,11 +95,11 @@ public class ClientGame extends AbstractGame {
                   + " and new Client Round:" + currentRound);
             }
           } finally {
-            m_data.releaseWriteLock();
+            gameData.releaseWriteLock();
           }
         }
         if (!loadedFromSavedGame) {
-          m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+          gameData.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
         }
         notifyGameStepListeners(stepName, delegateName, player, round, displayName);
       }
@@ -109,9 +109,9 @@ public class ClientGame extends AbstractGame {
         ClientGame.this.shutDown();
       }
     };
-    m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+    channelMessenger.registerChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     final IGameStepAdvancer gameStepAdvancer = (stepName, player) -> {
-      if (m_isGameOver) {
+      if (isGameOver) {
         return;
       }
       // make sure we are in the correct step
@@ -121,13 +121,13 @@ public class ClientGame extends AbstractGame {
         int i = 0;
         boolean shownErrorMessage = false;
         while (true) {
-          m_data.acquireReadLock();
+          gameData.acquireReadLock();
           try {
-            if (m_data.getSequence().getStep().getName().equals(stepName) || m_isGameOver) {
+            if (gameData.getSequence().getStep().getName().equals(stepName) || isGameOver) {
               break;
             }
           } finally {
-            m_data.releaseReadLock();
+            gameData.releaseReadLock();
           }
           if (!ThreadUtil.sleep(100)) {
             break;
@@ -142,48 +142,48 @@ public class ClientGame extends AbstractGame {
           }
         }
       }
-      if (m_isGameOver) {
+      if (isGameOver) {
         return;
       }
-      final IGamePlayer gp = m_gamePlayers.get(player);
+      final IGamePlayer gp = this.gamePlayers.get(player);
       if (gp == null) {
         throw new IllegalStateException(
-            "Game player not found. Player:" + player + " on:" + m_channelMessenger.getLocalNode());
+            "Game player not found. Player:" + player + " on:" + channelMessenger.getLocalNode());
       }
       gp.start(stepName);
     };
-    m_remoteMessenger.registerRemote(gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
-    for (final PlayerID player : m_gamePlayers.keySet()) {
+    remoteMessenger.registerRemote(gameStepAdvancer, getRemoteStepAdvancerName(channelMessenger.getLocalNode()));
+    for (final PlayerID player : this.gamePlayers.keySet()) {
       final IRemoteRandom remoteRandom = new RemoteRandom(this);
-      m_remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
+      remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
     }
   }
 
   public void shutDown() {
-    if (m_isGameOver) {
+    if (isGameOver) {
       return;
     }
-    m_isGameOver = true;
+    isGameOver = true;
     try {
-      m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
-      m_remoteMessenger.unregisterRemote(getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
-      m_vault.shutDown();
-      for (final IGamePlayer gp : m_gamePlayers.values()) {
+      channelMessenger.unregisterChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+      remoteMessenger.unregisterRemote(getRemoteStepAdvancerName(channelMessenger.getLocalNode()));
+      vault.shutDown();
+      for (final IGamePlayer gp : gamePlayers.values()) {
         PlayerID player;
-        m_data.acquireReadLock();
+        gameData.acquireReadLock();
         try {
-          player = m_data.getPlayerList().getPlayerId(gp.getName());
+          player = gameData.getPlayerList().getPlayerId(gp.getName());
         } finally {
-          m_data.releaseReadLock();
+          gameData.releaseReadLock();
         }
-        m_gamePlayers.put(player, gp);
-        m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getPlayerId(), m_data));
-        m_remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
+        gamePlayers.put(player, gp);
+        remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getPlayerId(), gameData));
+        remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
       }
     } catch (final RuntimeException e) {
       ClientLogger.logQuietly(e);
     }
-    m_data.getGameLoader().shutDown();
+    gameData.getGameLoader().shutDown();
   }
 
   @Override
@@ -198,7 +198,7 @@ public class ClientGame extends AbstractGame {
 
   @Override
   public void saveGame(final File f) {
-    final IServerRemote server = (IServerRemote) m_remoteMessenger.getRemote(ServerGame.SERVER_REMOTE);
+    final IServerRemote server = (IServerRemote) remoteMessenger.getRemote(ServerGame.SERVER_REMOTE);
     final byte[] bytes = server.getSavedGame();
     try (FileOutputStream fout = new FileOutputStream(f)) {
       fout.write(bytes);

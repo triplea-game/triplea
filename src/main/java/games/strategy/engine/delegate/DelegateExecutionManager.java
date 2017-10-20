@@ -30,18 +30,18 @@ import games.strategy.triplea.util.WrappedInvocationHandler;
  * </p>
  */
 public class DelegateExecutionManager {
-  private final Logger sm_logger = Logger.getLogger(DelegateExecutionManager.class.getName());
+  private final Logger logger = Logger.getLogger(DelegateExecutionManager.class.getName());
   /*
    * Delegate execution can be thought of as a read/write lock.
    * Many delegates can be executing at one time (to execute you acquire the read lock), but
    * only 1 block can be held (the block is equivalent to the read lock).
    */
-  private final ReentrantReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
-  private final ThreadLocal<Boolean> m_currentThreadHasReadLock = new ThreadLocal<>();
-  private volatile boolean m_isGameOver = false;
+  private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+  private final ThreadLocal<Boolean> currentThreadHasReadLock = new ThreadLocal<>();
+  private volatile boolean isGameOver = false;
 
   public void setGameOver() {
-    m_isGameOver = true;
+    isGameOver = true;
   }
 
   /**
@@ -57,26 +57,26 @@ public class DelegateExecutionManager {
    * </p>
    */
   public boolean blockDelegateExecution(final int timeToWaitMs) throws InterruptedException {
-    final boolean lockAcquired = m_readWriteLock.writeLock().tryLock(timeToWaitMs, TimeUnit.MILLISECONDS);
+    final boolean lockAcquired = readWriteLock.writeLock().tryLock(timeToWaitMs, TimeUnit.MILLISECONDS);
     if (!lockAcquired) {
-      if (sm_logger.isLoggable(Level.FINE)) {
-        sm_logger.fine("Could not block delegate execution. Read Lock count: " + m_readWriteLock.getReadLockCount()
-            + " Write Hold count: " + m_readWriteLock.getWriteHoldCount() + " Queue Length: "
-            + m_readWriteLock.getQueueLength() + " Current Thread Has Lock: "
-            + m_readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: "
-            + m_readWriteLock.hasQueuedThreads() + " Is Write Locked: " + m_readWriteLock.isWriteLocked()
-            + " toString: " + m_readWriteLock.toString());
+      if (logger.isLoggable(Level.FINE)) {
+        logger.fine("Could not block delegate execution. Read Lock count: " + readWriteLock.getReadLockCount()
+            + " Write Hold count: " + readWriteLock.getWriteHoldCount() + " Queue Length: "
+            + readWriteLock.getQueueLength() + " Current Thread Has Lock: "
+            + readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: "
+            + readWriteLock.hasQueuedThreads() + " Is Write Locked: " + readWriteLock.isWriteLocked()
+            + " toString: " + readWriteLock.toString());
       } else {
         HeadlessGameServer.log("Could not block delegate execution. Read Lock count: "
-            + m_readWriteLock.getReadLockCount() + " Write Hold count: " + m_readWriteLock.getWriteHoldCount()
-            + " Queue Length: " + m_readWriteLock.getQueueLength() + " Current Thread Has Lock: "
-            + m_readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: "
-            + m_readWriteLock.hasQueuedThreads() + " Is Write Locked: " + m_readWriteLock.isWriteLocked()
-            + " toString: " + m_readWriteLock.toString());
+            + readWriteLock.getReadLockCount() + " Write Hold count: " + readWriteLock.getWriteHoldCount()
+            + " Queue Length: " + readWriteLock.getQueueLength() + " Current Thread Has Lock: "
+            + readWriteLock.isWriteLockedByCurrentThread() + " Has Queued Threads: "
+            + readWriteLock.hasQueuedThreads() + " Is Write Locked: " + readWriteLock.isWriteLocked()
+            + " toString: " + readWriteLock.toString());
       }
     } else {
-      if (sm_logger.isLoggable(Level.FINE)) {
-        sm_logger.fine(Thread.currentThread().getName() + " block delegate execution.");
+      if (logger.isLoggable(Level.FINE)) {
+        logger.fine(Thread.currentThread().getName() + " block delegate execution.");
       }
     }
     return lockAcquired;
@@ -86,14 +86,14 @@ public class DelegateExecutionManager {
    * Allow delegate execution to resume.
    */
   public void resumeDelegateExecution() {
-    if (sm_logger.isLoggable(Level.FINE)) {
-      sm_logger.fine(Thread.currentThread().getName() + " resumes delegate execution.");
+    if (logger.isLoggable(Level.FINE)) {
+      logger.fine(Thread.currentThread().getName() + " resumes delegate execution.");
     }
-    m_readWriteLock.writeLock().unlock();
+    readWriteLock.writeLock().unlock();
   }
 
   private boolean currentThreadHasReadLock() {
-    return m_currentThreadHasReadLock.get() == Boolean.TRUE;
+    return currentThreadHasReadLock.get() == Boolean.TRUE;
   }
 
   /**
@@ -129,7 +129,7 @@ public class DelegateExecutionManager {
   }
 
   private void assertGameNotOver() {
-    if (m_isGameOver) {
+    if (isGameOver) {
       throw new GameOverException("Game Over");
     }
   }
@@ -169,21 +169,21 @@ public class DelegateExecutionManager {
   }
 
   public void leaveDelegateExecution() {
-    if (sm_logger.isLoggable(Level.FINE)) {
-      sm_logger.fine(Thread.currentThread().getName() + " leaves delegate execution.");
+    if (logger.isLoggable(Level.FINE)) {
+      logger.fine(Thread.currentThread().getName() + " leaves delegate execution.");
     }
-    m_readWriteLock.readLock().unlock();
-    m_currentThreadHasReadLock.set(null);
+    readWriteLock.readLock().unlock();
+    currentThreadHasReadLock.set(null);
   }
 
   public void enterDelegateExecution() {
-    if (sm_logger.isLoggable(Level.FINE)) {
-      sm_logger.fine(Thread.currentThread().getName() + " enters delegate execution.");
+    if (logger.isLoggable(Level.FINE)) {
+      logger.fine(Thread.currentThread().getName() + " enters delegate execution.");
     }
     if (currentThreadHasReadLock()) {
       throw new IllegalStateException("Already locked?");
     }
-    m_readWriteLock.readLock().lock();
-    m_currentThreadHasReadLock.set(Boolean.TRUE);
+    readWriteLock.readLock().lock();
+    currentThreadHasReadLock.set(Boolean.TRUE);
   }
 }

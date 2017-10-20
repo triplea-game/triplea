@@ -10,7 +10,7 @@ import games.strategy.engine.framework.GameObjectStreamFactory;
  * Please refer to the comments on GameObjectOutputStream.
  */
 public class GameObjectInputStream extends ObjectInputStream {
-  private final GameObjectStreamFactory m_dataSource;
+  private final GameObjectStreamFactory dataSource;
 
   /**
    * Creates new GameObjectReader.
@@ -22,12 +22,12 @@ public class GameObjectInputStream extends ObjectInputStream {
    */
   public GameObjectInputStream(final GameObjectStreamFactory dataSource, final InputStream input) throws IOException {
     super(input);
-    m_dataSource = dataSource;
+    this.dataSource = dataSource;
     enableResolveObject(true);
   }
 
   public GameData getData() {
-    return m_dataSource.getData();
+    return dataSource.getData();
   }
 
   @Override
@@ -39,7 +39,7 @@ public class GameObjectInputStream extends ObjectInputStream {
     // thus, in one vm you can add some units to a territory, and when you serialize the change
     // and look at the Territory object in another vm, the units have not been added
     if (obj instanceof GameData) {
-      return m_dataSource.getData();
+      return dataSource.getData();
     } else if ((obj instanceof GameObjectStreamData)) {
       return ((GameObjectStreamData) obj).getReference(getData());
     } else if (obj instanceof Unit) {
@@ -50,16 +50,16 @@ public class GameObjectInputStream extends ObjectInputStream {
   }
 
   private Object resolveUnit(final Unit unit) {
-    m_dataSource.getData().acquireReadLock();
+    dataSource.getData().acquireReadLock();
     try {
-      final Unit local = m_dataSource.getData().getUnits().get(unit.getId());
+      final Unit local = dataSource.getData().getUnits().get(unit.getId());
       if (local != null) {
         return local;
       }
       getData().getUnits().put(unit);
       return unit;
     } finally {
-      m_dataSource.getData().releaseReadLock();
+      dataSource.getData().releaseReadLock();
     }
   }
 }
