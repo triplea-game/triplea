@@ -131,7 +131,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
     final Version clientVersion = new Version(clientVersionString);
     if (!clientVersion.equals(LobbyServer.LOBBY_VERSION)) {
-      return "Wrong version, we require" + LobbyServer.LOBBY_VERSION.toString() + " but trying to log in with "
+      return "Wrong version, we require " + LobbyServer.LOBBY_VERSION.toString() + " but trying to log in with "
           + clientVersionString;
     }
     for (final String s : getBadWords()) {
