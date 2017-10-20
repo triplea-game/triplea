@@ -2,6 +2,11 @@
   host: 45.79.144.53
   port: 3304
   message: |
+    Bug in v7062 warning!  
+    The TripleA team is working on a next latest version of TripleA!
+    If you downloaded and installed TripleA between Oct 10th and Oct 19th,
+    please re-install to the latest to get a bug fix: github.com/triplea-game/triplea/releases/latest
+    
     Welcome to TripleA 1.9 - For help: http://www.triplea-game.org/help/
     No talking politics in the lobby! Take your political comments to a private game!
     Lobby Rules: https://forums.triplea-game.org/topic/4
