@@ -1,6 +1,5 @@
 package games.strategy.triplea.xml;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,9 +41,7 @@ public enum TestMapGameData {
   }
 
   private InputStream getInputStream() throws IOException {
-    final File f = new File(TEST_MAP_XML_PATH + value);
-    System.out.println("f .... => " + f.getAbsolutePath());
-    return new FileInputStream(f);
+    return new FileInputStream(TEST_MAP_XML_PATH + value);
   }
 
   public GameData getGameData() throws Exception {
