@@ -55,9 +55,9 @@ public class OddsCalculatorDialog extends JDialog {
     taFrame.getUiContext().addShutdownWindow(dialog);
   }
 
-  OddsCalculatorDialog(final GameData data, final UiContext context, final JFrame parent, final Territory location) {
+  OddsCalculatorDialog(final GameData data, final UiContext uiContext, final JFrame parent, final Territory location) {
     super(parent, "Odds Calculator");
-    panel = new OddsCalculatorPanel(data, context, location, this);
+    panel = new OddsCalculatorPanel(data, uiContext, location, this);
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(panel, BorderLayout.CENTER);
     pack();

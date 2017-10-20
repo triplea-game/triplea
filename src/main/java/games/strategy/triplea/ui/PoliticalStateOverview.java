@@ -34,7 +34,7 @@ import games.strategy.util.Triple;
 public class PoliticalStateOverview extends JPanel {
   private static final long serialVersionUID = -8445782272897831080L;
   public static final String LABEL_SELF = "----";
-  private final UiContext uic;
+  private final UiContext uiContext;
   private final GameData data;
   private final boolean editable;
   private final Set<Triple<PlayerID, PlayerID, RelationshipType>> editChanges = new HashSet<>();
@@ -48,7 +48,7 @@ public class PoliticalStateOverview extends JPanel {
    *        uicontext to use to show this panel.
    */
   public PoliticalStateOverview(final GameData data, final UiContext uiContext, final boolean editable) {
-    this.uic = uiContext;
+    this.uiContext = uiContext;
     this.data = data;
     this.editable = editable;
     drawPoliticsUi();
@@ -201,7 +201,7 @@ public class PoliticalStateOverview extends JPanel {
    * @return the label representing this player
    */
   protected JLabel getPlayerLabel(final PlayerID player) {
-    return new JLabel(player.getName(), new ImageIcon(uic.getFlagImageFactory().getFlag(player)), JLabel.LEFT);
+    return new JLabel(player.getName(), new ImageIcon(uiContext.getFlagImageFactory().getFlag(player)), JLabel.LEFT);
   }
 
   /**

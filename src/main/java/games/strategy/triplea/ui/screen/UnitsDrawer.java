@@ -53,7 +53,7 @@ public class UnitsDrawer implements IDrawable {
 
   public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint,
       final int damaged, final int bombingUnitDamage, final boolean disabled, final boolean overflow,
-      final String territoryName, final UiContext uiContext2) {
+      final String territoryName, final UiContext uiContext) {
     this.count = count;
     this.unitType = unitType;
     this.playerName = playerName;
@@ -63,7 +63,7 @@ public class UnitsDrawer implements IDrawable {
     this.disabled = disabled;
     this.overflow = overflow;
     this.territoryName = territoryName;
-    this.uiContext = uiContext2;
+    this.uiContext = uiContext;
   }
 
   public Point getPlacementPoint() {

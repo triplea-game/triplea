@@ -57,8 +57,8 @@ public class ProductionPanel extends JPanel {
 
 
   public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
-      final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext context) {
-    return new ProductionPanel(context).show(id, parent, data, bid, initialPurchase);
+      final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext uiContext) {
+    return new ProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
   }
 
   private IntegerMap<ProductionRule> getProduction() {

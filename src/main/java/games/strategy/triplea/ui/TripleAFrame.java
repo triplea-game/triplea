@@ -1386,8 +1386,7 @@ public class TripleAFrame extends MainGameFrame {
   GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
 
   private void updateStep() {
-    final UiContext context = uiContext;
-    if (context == null || context.isShutDown()) {
+    if (uiContext == null || uiContext.isShutDown()) {
       return;
     }
     data.acquireReadLock();

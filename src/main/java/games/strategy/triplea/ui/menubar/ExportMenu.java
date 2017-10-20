@@ -57,13 +57,13 @@ class ExportMenu {
 
   private final TripleAFrame frame;
   private final GameData gameData;
-  private final UiContext iuiContext;
+  private final UiContext uiContext;
   private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
   ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
     gameData = frame.getGame().getData();
-    iuiContext = frame.getUiContext();
+    uiContext = frame.getUiContext();
 
     final JMenu menuGame = new JMenu("Export");
     menuGame.setMnemonic(KeyEvent.VK_E);
@@ -140,7 +140,7 @@ class ExportMenu {
   }
 
   private void createAndSaveStats(final boolean showPhaseStats) {
-    final ExtendedStats statPanel = new ExtendedStats(gameData, iuiContext);
+    final ExtendedStats statPanel = new ExtendedStats(gameData, uiContext);
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     final File rootDir = new File(System.getProperties().getProperty("user.dir"));
@@ -398,7 +398,7 @@ class ExportMenu {
       }
       try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
         writer.write(
-            HelpMenu.getUnitStatsTable(gameData, iuiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
+            HelpMenu.getUnitStatsTable(gameData, uiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
                 .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
         ClientLogger.logQuietly(e1);
@@ -429,7 +429,7 @@ class ExportMenu {
       frame.pack();
       frame.setLocationRelativeTo(frame);
       frame.setVisible(true);
-      iuiContext.addShutdownWindow(frame);
+      uiContext.addShutdownWindow(frame);
 
     }));
     menuFileExport.setMnemonic(KeyEvent.VK_C);

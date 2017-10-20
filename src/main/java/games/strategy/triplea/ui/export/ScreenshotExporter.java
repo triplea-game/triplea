@@ -79,8 +79,8 @@ public final class ScreenshotExporter {
         round = ((Round) curNode).getRoundNo();
       }
     }
-    final UiContext iuiContext = frame.getUiContext();
-    final double scale = iuiContext.getScale();
+    final UiContext uiContext = frame.getUiContext();
+    final double scale = uiContext.getScale();
     // print map panel to image
     final MapPanel mapPanel = frame.getMapPanel();
     final BufferedImage mapImage =
@@ -95,13 +95,13 @@ public final class ScreenshotExporter {
       mapPanel.drawMapImage(mapGraphics);
       mapPanel.setTopLeft(offsetX, offsetY);
       // overlay title
-      Color titleColor = iuiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
+      Color titleColor = uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
       if (titleColor == null) {
         titleColor = Color.BLACK;
       }
-      final String encodedTitleX = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
-      final String encodedTitleY = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
-      final String encodedTitleSize = iuiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
+      final String encodedTitleX = uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
+      final String encodedTitleY = uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
+      final String encodedTitleSize = uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
       int titleX;
       int titleY;
       int titleSize;
@@ -121,7 +121,7 @@ public final class ScreenshotExporter {
       mapGraphics.setTransform(transform);
       mapGraphics.setFont(new Font("Ariel", Font.BOLD, titleSize));
       mapGraphics.setColor(titleColor);
-      if (iuiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
+      if (uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
         mapGraphics.drawString(gameData.getGameName() + " Round " + round, titleX, titleY);
       }
 

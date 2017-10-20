@@ -6,8 +6,8 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.UiContext;
 
 public class ReliefMapDrawable extends MapTileDrawable {
-  public ReliefMapDrawable(final int x, final int y, final UiContext context) {
-    super(x, y, context);
+  public ReliefMapDrawable(final int x, final int y, final UiContext uiContext) {
+    super(x, y, uiContext);
   }
 
   @Override

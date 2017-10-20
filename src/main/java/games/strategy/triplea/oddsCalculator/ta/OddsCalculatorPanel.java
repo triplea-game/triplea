@@ -107,7 +107,7 @@ class OddsCalculatorPanel extends JPanel {
   private final JCheckBox amphibiousCheckBox = new JCheckBox("Battle is Amphibious");
   private final JCheckBox landBattleCheckBox = new JCheckBox("Land Battle");
   private final JCheckBox retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
-  private final UiContext context;
+  private final UiContext uiContext;
   private final GameData data;
   private final IOddsCalculator calculator;
   private PlayerUnitsPanel attackingUnitsPanel;
@@ -129,10 +129,10 @@ class OddsCalculatorPanel extends JPanel {
   private JList<String> territoryEffectsJList;
   private final WidgetChangedListener listenerPlayerUnitsPanel = () -> setWidgetActivation();
 
-  OddsCalculatorPanel(final GameData data, final UiContext context, final Territory location,
+  OddsCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location,
       final Window parent) {
     this.data = data;
-    this.context = context;
+    this.uiContext = uiContext;
     this.location = location;
     this.parent = parent;
     calculateButton.setEnabled(false);
@@ -303,7 +303,7 @@ class OddsCalculatorPanel extends JPanel {
     orderOfLossesButton.addActionListener(e -> {
       final OrderOfLossesInputPanel oolPanel = new OrderOfLossesInputPanel(attackerOrderOfLosses,
           defenderOrderOfLosses, attackingUnitsPanel.getCategories(), defendingUnitsPanel.getCategories(),
-          landBattleCheckBox.isSelected(), context, data);
+          landBattleCheckBox.isSelected(), uiContext, data);
       if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(OddsCalculatorPanel.this, oolPanel,
           "Create Order Of Losses for each side", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
         if (OddsCalculator.isValidOrderOfLoss(oolPanel.getAttackerOrder(), data)) {
@@ -690,8 +690,8 @@ class OddsCalculatorPanel extends JPanel {
     defenderCombo.setRenderer(new PlayerRenderer());
     attackerCombo.setRenderer(new PlayerRenderer());
     swapSidesCombo.setRenderer(new PlayerRenderer());
-    defendingUnitsPanel = new PlayerUnitsPanel(data, context, true);
-    attackingUnitsPanel = new PlayerUnitsPanel(data, context, false);
+    defendingUnitsPanel = new PlayerUnitsPanel(data, uiContext, true);
+    attackingUnitsPanel = new PlayerUnitsPanel(data, uiContext, false);
     numRuns.setColumns(4);
     numRuns.setMin(1);
     numRuns.setMax(20000);
@@ -797,7 +797,7 @@ class OddsCalculatorPanel extends JPanel {
       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
       final PlayerID id = (PlayerID) value;
       setText(id.getName());
-      setIcon(new ImageIcon(context.getFlagImageFactory().getSmallFlag(id)));
+      setIcon(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(id)));
       return this;
     }
   }
@@ -820,16 +820,16 @@ class OddsCalculatorPanel extends JPanel {
   private static final class PlayerUnitsPanel extends JPanel {
     private static final long serialVersionUID = -1206338960403314681L;
     private final GameData data;
-    private final UiContext context;
+    private final UiContext uiContext;
     private final boolean defender;
     private boolean isLand = true;
     private List<UnitCategory> categories = null;
     private final List<WidgetChangedListener> listeners = new ArrayList<>();
     private final WidgetChangedListener listenerUnitPanel = () -> notifyListeners();
 
-    PlayerUnitsPanel(final GameData data, final UiContext context, final boolean defender) {
+    PlayerUnitsPanel(final GameData data, final UiContext uiContext, final boolean defender) {
       this.data = data;
-      this.context = context;
+      this.uiContext = uiContext;
       this.defender = defender;
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
@@ -900,7 +900,7 @@ class OddsCalculatorPanel extends JPanel {
       }
       for (final UnitCategory category : categories) {
         if (predicate.match(category.getType())) {
-          final UnitPanel upanel = new UnitPanel(context, category, costs);
+          final UnitPanel upanel = new UnitPanel(uiContext, category, costs);
           upanel.addChangeListener(listenerUnitPanel);
           add(upanel);
         }
@@ -965,15 +965,15 @@ class OddsCalculatorPanel extends JPanel {
 
   private static final class UnitPanel extends JPanel {
     private static final long serialVersionUID = 1509643150038705671L;
-    private final UiContext context;
+    private final UiContext uiContext;
     private final UnitCategory category;
     private final ScrollableTextField textField;
     private final List<WidgetChangedListener> listeners = new CopyOnWriteArrayList<>();
     private final ScrollableTextFieldListener listenerTextField = field -> notifyListeners();
 
-    UnitPanel(final UiContext context, final UnitCategory category, final IntegerMap<UnitType> costs) {
+    UnitPanel(final UiContext uiContext, final UnitCategory category, final IntegerMap<UnitType> costs) {
       this.category = category;
-      this.context = context;
+      this.uiContext = uiContext;
       textField = new ScrollableTextField(0, 512);
       textField.setShowMaxAndMin(false);
       textField.addChangeListener(listenerTextField);
@@ -986,7 +986,7 @@ class OddsCalculatorPanel extends JPanel {
 
 
       final Optional<Image> img =
-          this.context.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
+          this.uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
               category.hasDamageOrBombingUnitDamage(), category.getDisabled());
 
       final JLabel label = img.isPresent() ? new JLabel(new ImageIcon(img.get())) : new JLabel();
@@ -1038,7 +1038,7 @@ class OddsCalculatorPanel extends JPanel {
   private static final class OrderOfLossesInputPanel extends JPanel {
     private static final long serialVersionUID = 8815617685388156219L;
     private final GameData data;
-    private final UiContext context;
+    private final UiContext uiContext;
     private final List<UnitCategory> attackerCategories;
     private final List<UnitCategory> defenderCategories;
     private final JTextField attackerTextField;
@@ -1050,9 +1050,9 @@ class OddsCalculatorPanel extends JPanel {
 
     OrderOfLossesInputPanel(final String attackerOrder, final String defenderOrder,
         final List<UnitCategory> attackerCategories, final List<UnitCategory> defenderCategories, final boolean land,
-        final UiContext context, final GameData data) {
+        final UiContext uiContext, final GameData data) {
       this.data = data;
-      this.context = context;
+      this.uiContext = uiContext;
       this.land = land;
       this.attackerCategories = attackerCategories;
       this.defenderCategories = defenderCategories;
@@ -1186,7 +1186,7 @@ class OddsCalculatorPanel extends JPanel {
           final String toolTipText = "<html>" + category.getType().getName() + ":  "
               + category.getType().getTooltip(category.getOwner()) + "</html>";
           final Optional<Image> img =
-              context.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
+              uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
                   category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if (img.isPresent()) {
             final JButton button = new JButton(new ImageIcon(img.get()));
