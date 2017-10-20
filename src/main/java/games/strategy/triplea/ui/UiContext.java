@@ -21,7 +21,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.util.CountDownLatchHandler;
 
-public interface IUIContext {
+public interface UiContext {
   Cursor getCursor();
 
   double getScale();

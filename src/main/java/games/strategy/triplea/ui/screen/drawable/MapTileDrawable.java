@@ -7,7 +7,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.TileManager;
 
@@ -15,10 +15,10 @@ public abstract class MapTileDrawable implements IDrawable {
   protected boolean noImage = false;
   protected final int x;
   protected final int y;
-  protected final IUIContext uiContext;
+  protected final UiContext uiContext;
   protected boolean unscaled;
 
-  protected MapTileDrawable(final int x, final int y, final IUIContext uiContext) {
+  protected MapTileDrawable(final int x, final int y, final UiContext uiContext) {
     this.x = x;
     this.y = y;
     this.uiContext = uiContext;

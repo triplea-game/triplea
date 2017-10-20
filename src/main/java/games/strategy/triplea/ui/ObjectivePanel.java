@@ -580,7 +580,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     private final Properties properties = new Properties();
 
     protected ObjectiveProperties() {
-      final ResourceLoader loader = AbstractUIContext.getResourceLoader();
+      final ResourceLoader loader = AbstractUiContext.getResourceLoader();
       final URL url = loader.getResource(PROPERTY_FILE);
       if (url != null) {
         final Optional<InputStream> inputStream = UrlStreams.openStream(url);

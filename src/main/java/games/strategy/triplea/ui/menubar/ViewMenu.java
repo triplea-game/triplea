@@ -45,10 +45,10 @@ import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.ui.AbstractUIContext;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.AbstractUiContext;
 import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.ui.SwingAction;
@@ -59,7 +59,7 @@ class ViewMenu {
 
   private final GameData gameData;
   private final TripleAFrame frame;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
 
   ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
     this.frame = frame;
@@ -247,13 +247,13 @@ class ViewMenu {
     mapSubMenu.setMnemonic(KeyEvent.VK_K);
     menuGame.add(mapSubMenu);
     final ButtonGroup mapButtonGroup = new ButtonGroup();
-    final Map<String, String> skins = AbstractUIContext.getSkins(frame.getGame().getData());
+    final Map<String, String> skins = AbstractUiContext.getSkins(frame.getGame().getData());
     mapSubMenu.setEnabled(skins.size() > 1);
     for (final String key : skins.keySet()) {
       final JMenuItem mapMenuItem = new JRadioButtonMenuItem(key);
       mapButtonGroup.add(mapMenuItem);
       mapSubMenu.add(mapMenuItem);
-      if (skins.get(key).equals(AbstractUIContext.getMapDir())) {
+      if (skins.get(key).equals(AbstractUiContext.getMapDir())) {
         mapMenuItem.setSelected(true);
       }
       mapMenuItem.addActionListener(e -> {

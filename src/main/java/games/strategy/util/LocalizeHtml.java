@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ui.AbstractUIContext;
+import games.strategy.triplea.ui.AbstractUiContext;
 
 public class LocalizeHtml {
   public static final String ASSET_IMAGE_FOLDER = "doc/images/";
@@ -58,7 +58,7 @@ public class LocalizeHtml {
    * resource loader.
    */
   public static String localizeImgLinksInHtml(final String htmlText) {
-    return localizeImgLinksInHtml(htmlText, AbstractUIContext.getResourceLoader(), null);
+    return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader(), null);
   }
 
   public static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader resourceLoader,

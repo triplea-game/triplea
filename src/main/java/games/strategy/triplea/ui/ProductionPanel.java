@@ -45,7 +45,7 @@ import swinglib.JDialogBuilder;
 public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
 
-  protected final IUIContext uiContext;
+  protected final UiContext uiContext;
   protected List<Rule> rules = new ArrayList<>();
   protected JLabel left = new JLabel();
   protected JButton done;
@@ -57,7 +57,7 @@ public class ProductionPanel extends JPanel {
 
 
   public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
-      final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final IUIContext context) {
+      final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext context) {
     return new ProductionPanel(context).show(id, parent, data, bid, initialPurchase);
   }
 
@@ -72,7 +72,7 @@ public class ProductionPanel extends JPanel {
     return prod;
   }
 
-  protected ProductionPanel(final IUIContext uiContext) {
+  protected ProductionPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
   }
 

@@ -89,7 +89,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final BackgroundDrawer backgroundDrawer;
   private BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private final LinkedBlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
@@ -97,7 +97,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
 
   /** Creates new MapPanel. */
-  public MapPanel(final GameData data, final MapPanelSmallView smallView, final IUIContext uiContext,
+  public MapPanel(final GameData data, final MapPanelSmallView smallView, final UiContext uiContext,
       final ImageScrollModel model, final Supplier<Integer> computeScrollSpeed) {
     super(uiContext.getMapData().getMapDimensions(), model);
     this.uiContext = uiContext;
@@ -226,7 +226,7 @@ public class MapPanel extends ImageScrollerLargeView {
     return undrawnTiles;
   }
 
-  private void recreateTiles(final GameData data, final IUIContext uiContext) {
+  private void recreateTiles(final GameData data, final UiContext uiContext) {
     this.tileManager.createTiles(new Rectangle(this.uiContext.getMapData().getMapDimensions()));
     this.tileManager.resetTiles(data, uiContext.getMapData());
   }
@@ -798,7 +798,7 @@ public class MapPanel extends ImageScrollerLargeView {
     tileManager.clearTerritoryOverlay(territory, gameData, uiContext.getMapData());
   }
 
-  public IUIContext getUiContext() {
+  public UiContext getUiContext() {
     return uiContext;
   }
 

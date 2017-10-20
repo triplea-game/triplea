@@ -11,15 +11,15 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 // Class to use 'Faded' country markers for Kamikaze Zones.
 public class KamikazeZoneDrawable implements IDrawable {
   private final String location;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
 
-  public KamikazeZoneDrawable(final Territory location, final IUIContext uiContext) {
+  public KamikazeZoneDrawable(final Territory location, final UiContext uiContext) {
     super();
     this.location = location.getName();
     this.uiContext = uiContext;

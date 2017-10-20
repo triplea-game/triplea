@@ -31,9 +31,9 @@ import games.strategy.util.IntegerMap;
  */
 public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
 
-  public SimpleUnitPanel(final IUIContext uiContext) {
+  public SimpleUnitPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }

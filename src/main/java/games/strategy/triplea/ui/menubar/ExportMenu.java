@@ -44,8 +44,8 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.triplea.ui.ExtendedStats;
-import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
@@ -57,7 +57,7 @@ class ExportMenu {
 
   private final TripleAFrame frame;
   private final GameData gameData;
-  private final IUIContext iuiContext;
+  private final UiContext iuiContext;
   private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
   ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {

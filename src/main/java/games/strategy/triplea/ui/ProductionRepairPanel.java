@@ -44,7 +44,7 @@ public class ProductionRepairPanel extends JPanel {
   private static final long serialVersionUID = -6344711064699083729L;
   private final JFrame owner = null;
   private JDialog dialog;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private final List<Rule> rules = new ArrayList<>();
   private final JLabel left = new JLabel();
   private JButton done;
@@ -55,7 +55,7 @@ public class ProductionRepairPanel extends JPanel {
 
   public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
-      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final IUIContext uiContext) {
+      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final UiContext uiContext) {
     return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
   }
 
@@ -111,7 +111,7 @@ public class ProductionRepairPanel extends JPanel {
 
   /** Creates new ProductionRepairPanel. */
   // the constructor can be accessed by subclasses
-  public ProductionRepairPanel(final IUIContext uiContext) {
+  public ProductionRepairPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
   }
 

@@ -31,7 +31,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.Operation;
 import games.strategy.triplea.ui.screen.drawable.BaseMapDrawable;
@@ -67,9 +67,9 @@ public class TileManager {
   private final Map<String, Set<IDrawable>> territoryDrawables = new HashMap<>();
   private final Map<String, Set<Tile>> territoryTiles = new HashMap<>();
   private final Collection<UnitsDrawer> allUnitDrawables = new ArrayList<>();
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
 
-  public TileManager(final IUIContext uiContext) {
+  public TileManager(final UiContext uiContext) {
     this.uiContext = uiContext;
   }
 

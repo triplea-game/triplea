@@ -135,7 +135,7 @@ public class NewGameChooser extends JDialog {
       notes.append("<p></p>");
       final String notesProperty = data.getProperties().get("notes", "");
       if (notesProperty != null && notesProperty.trim().length() != 0) {
-        // UIContext resource loader should be null (or potentially is still the last game we played's loader),
+        // AbstractUiContext resource loader should be null (or potentially is still the last game we played's loader),
         // so we send the map dir name so that our localizing of image links can get a new resource loader if needed
         notes.append(LocalizeHtml.localizeImgLinksInHtml(notesProperty.trim(), null, mapNameDir));
       }

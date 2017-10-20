@@ -41,7 +41,7 @@ public class IndividualUnitPanel extends JPanel {
   private int max = -1;
   private final JLabel leftToSelect = new JLabel();
   private final GameData gameData;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private ScrollableTextField textFieldPurelyForListening;
   private final ScrollableTextFieldListener countOptionalTextFieldListener;
   private final boolean showSelectAll;
@@ -56,7 +56,7 @@ public class IndividualUnitPanel extends JPanel {
    * unit.
    */
   IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data,
-      final IUIContext uiContext, final int max, final boolean showMinAndMax, final boolean showSelectAll,
+      final UiContext uiContext, final int max, final boolean showMinAndMax, final boolean showSelectAll,
       final ScrollableTextFieldListener optionalListener) {
     gameData = data;
     this.uiContext = uiContext;
@@ -83,7 +83,7 @@ public class IndividualUnitPanel extends JPanel {
    *        mapped to their individual max, then min, then current values
    */
   public IndividualUnitPanel(final HashMap<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent,
-      final String title, final GameData data, final IUIContext context, final int max, final boolean showMinAndMax,
+      final String title, final GameData data, final UiContext context, final int max, final boolean showMinAndMax,
       final boolean showSelectAll, final ScrollableTextFieldListener optionalListener) {
     gameData = data;
     uiContext = context;
@@ -228,13 +228,13 @@ public class IndividualUnitPanel extends JPanel {
     private static final Insets nullInsets = new Insets(0, 0, 0, 0);
     private final ScrollableTextFieldListener countTextFieldListener;
 
-    SingleUnitPanel(final Unit unit, final GameData data, final IUIContext uiContext,
+    SingleUnitPanel(final Unit unit, final GameData data, final UiContext uiContext,
         final ScrollableTextFieldListener textFieldListener, final int max, final int min,
         final boolean showMaxAndMin) {
       this(unit, data, uiContext, textFieldListener, max, min, 0, showMaxAndMin);
     }
 
-    SingleUnitPanel(final Unit unit, final GameData data, final IUIContext context,
+    SingleUnitPanel(final Unit unit, final GameData data, final UiContext context,
         final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
         final boolean showMaxAndMin) {
       this.unit = unit;
@@ -253,8 +253,8 @@ public class IndividualUnitPanel extends JPanel {
 
       final boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
       final JLabel label = context.createUnitImageJLabel(this.unit.getType(), this.unit.getOwner(), data,
-          isDamaged ? IUIContext.UnitDamage.DAMAGED : IUIContext.UnitDamage.NOT_DAMAGED,
-          taUnit.getDisabled() ? IUIContext.UnitEnable.DISABLED : IUIContext.UnitEnable.ENABLED);
+          isDamaged ? UiContext.UnitDamage.DAMAGED : UiContext.UnitDamage.NOT_DAMAGED,
+          taUnit.getDisabled() ? UiContext.UnitEnable.DISABLED : UiContext.UnitEnable.ENABLED);
 
       add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
           new Insets(0, 0, 0, 10), 0, 0));

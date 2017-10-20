@@ -18,10 +18,10 @@ import games.strategy.triplea.delegate.Die;
 
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private final GameData data;
 
-  public DicePanel(final IUIContext uiContext, final GameData data) {
+  public DicePanel(final UiContext uiContext, final GameData data) {
     this.uiContext = uiContext;
     this.data = data;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

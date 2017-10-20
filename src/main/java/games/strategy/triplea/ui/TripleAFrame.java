@@ -189,7 +189,7 @@ public class TripleAFrame extends MainGameFrame {
   private boolean inHistory = false;
   private boolean inGame = true;
   private HistorySynchronizer historySyncher;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private final JPanel mapAndChatPanel;
   private ChatPanel chatPanel;
   private final CommentPanel commentPanel;
@@ -224,7 +224,7 @@ public class TripleAFrame extends MainGameFrame {
       }
     };
     this.addWindowListener(windowListener);
-    uiContext = new UIContext();
+    uiContext = new HeadedUiContext();
     uiContext.setDefaultMapDir(game.getData());
     uiContext.getMapData().verify(data);
     uiContext.setLocalPlayers(players);
@@ -1386,7 +1386,7 @@ public class TripleAFrame extends MainGameFrame {
   GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
 
   private void updateStep() {
-    final IUIContext context = uiContext;
+    final UiContext context = uiContext;
     if (context == null || context.isShutDown()) {
       return;
     }
@@ -2019,7 +2019,7 @@ public class TripleAFrame extends MainGameFrame {
     return showMapOnlyAction;
   }
 
-  public IUIContext getUiContext() {
+  public UiContext getUiContext() {
     return uiContext;
   }
 

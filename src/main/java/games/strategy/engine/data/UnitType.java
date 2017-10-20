@@ -14,8 +14,8 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.TooltipProperties;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.util.LocalizeHtml;
 
 /**
@@ -91,7 +91,7 @@ public class UnitType extends NamedAttachable {
    * Will return a key of NULL for any units which we do not have art for.
    */
   public static Map<PlayerID, List<UnitType>> getAllPlayerUnitsWithImages(final GameData data,
-      final IUIContext uiContext, final boolean forceIncludeNeutralPlayer) {
+      final UiContext uiContext, final boolean forceIncludeNeutralPlayer) {
     final LinkedHashMap<PlayerID, List<UnitType>> unitTypes = new LinkedHashMap<>();
     data.acquireReadLock();
     try {
@@ -119,7 +119,7 @@ public class UnitType extends NamedAttachable {
   }
 
   private static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data,
-      final IUIContext uiContext) {
+      final UiContext uiContext) {
     final ArrayList<UnitType> unitTypes = new ArrayList<>();
     data.acquireReadLock();
     try {

@@ -18,9 +18,9 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
-import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
@@ -79,7 +79,7 @@ public final class ScreenshotExporter {
         round = ((Round) curNode).getRoundNo();
       }
     }
-    final IUIContext iuiContext = frame.getUiContext();
+    final UiContext iuiContext = frame.getUiContext();
     final double scale = iuiContext.getScale();
     // print map panel to image
     final MapPanel mapPanel = frame.getMapPanel();

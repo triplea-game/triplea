@@ -32,7 +32,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 
 /**
  * Shows the history as a tree.
@@ -45,11 +45,9 @@ public class HistoryPanel extends JPanel {
   private HistoryNode currentPopupNode;
   private final JPopupMenu popup;
 
-  // private final UIContext m_uiContext;
   // private boolean m_lockBefore;
   public HistoryPanel(final GameData data, final IHistoryDetailsPanel details, final JPopupMenu popup,
-      final IUIContext uiContext) {
-    // m_uiContext = uiContext;
+      final UiContext uiContext) {
     mouseOverPanel = false;
     mouseWasOverPanel = false;
     final MouseListener mouseFocusListener = new MouseListener() {
@@ -400,9 +398,9 @@ public class HistoryPanel extends JPanel {
   private static final class HistoryTreeCellRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = -72258573320689596L;
     private final ImageIcon icon = new ImageIcon();
-    private final IUIContext uiContext;
+    private final UiContext uiContext;
 
-    HistoryTreeCellRenderer(final IUIContext uiContext) {
+    HistoryTreeCellRenderer(final UiContext uiContext) {
       this.uiContext = uiContext;
     }
 

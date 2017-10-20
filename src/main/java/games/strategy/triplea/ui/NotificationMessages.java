@@ -21,7 +21,7 @@ public class NotificationMessages {
   private final Properties properties = new Properties();
 
   protected NotificationMessages() {
-    final ResourceLoader loader = AbstractUIContext.getResourceLoader();
+    final ResourceLoader loader = AbstractUiContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url != null) {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);

@@ -23,12 +23,12 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.CountDownLatchHandler;
 
 
-public abstract class AbstractUIContext implements IUIContext {
+public abstract class AbstractUiContext implements UiContext {
 
   protected static final String UNIT_SCALE_PREF = "UnitScale";
   protected static final String MAP_SKIN_PREF = "MapSkin";
   protected static final String MAP_SCALE_PREF = "MapScale";
-  protected static final Logger logger = Logger.getLogger(AbstractUIContext.class.getName());
+  protected static final Logger logger = Logger.getLogger(AbstractUiContext.class.getName());
   protected static String mapDir;
   protected static final String LOCK_MAP = "LockMap";
   protected static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
@@ -70,14 +70,14 @@ public abstract class AbstractUIContext implements IUIContext {
    * Get the preferences for the map.
    */
   protected static Preferences getPreferencesForMap(final String mapName) {
-    return Preferences.userNodeForPackage(AbstractUIContext.class).node(mapName);
+    return Preferences.userNodeForPackage(AbstractUiContext.class).node(mapName);
   }
 
   /**
    * Get the preferences for the map or map skin.
    */
   protected static Preferences getPreferencesMapOrSkin(final String mapDir) {
-    return Preferences.userNodeForPackage(AbstractUIContext.class).node(mapDir);
+    return Preferences.userNodeForPackage(AbstractUiContext.class).node(mapDir);
   }
 
   protected static String getDefaultMapDir(final GameData data) {
@@ -193,8 +193,8 @@ public abstract class AbstractUIContext implements IUIContext {
     // If you are calling this method while holding a lock on an object, while the EDT is separately
     // waiting for that lock, then you have a deadlock.
     // A real life example: player disconnects while you have the battle calc open.
-    // Non-EDT thread does shutdown on IGame and UIContext, causing btl calc to shutdown, which calls the
-    // window closed event on the EDT, and waits for the lock on UIContext to removeShutdownWindow, meanwhile
+    // Non-EDT thread does shutdown on IGame and HeadedUiContext, causing btl calc to shutdown, which calls the
+    // window closed event on the EDT, and waits for the lock on HeadedUiContext to removeShutdownWindow, meanwhile
     // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a
     // deadlock.
     SwingUtilities.invokeLater(window::dispose);
@@ -276,13 +276,13 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public boolean getLockMap() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     return prefs.getBoolean(LOCK_MAP, false);
   }
 
   @Override
   public void setLockMap(final boolean lockMap) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     prefs.putBoolean(LOCK_MAP, lockMap);
     try {
       prefs.flush();
@@ -293,13 +293,13 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public boolean getShowEndOfTurnReport() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     return prefs.getBoolean(SHOW_END_OF_TURN_REPORT, true);
   }
 
   @Override
   public void setShowEndOfTurnReport(final boolean value) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     prefs.putBoolean(SHOW_END_OF_TURN_REPORT, value);
     try {
       prefs.flush();
@@ -310,13 +310,13 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public boolean getShowTriggeredNotifications() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     return prefs.getBoolean(SHOW_TRIGGERED_NOTIFICATIONS, true);
   }
 
   @Override
   public void setShowTriggeredNotifications(final boolean value) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     prefs.putBoolean(SHOW_TRIGGERED_NOTIFICATIONS, value);
     try {
       prefs.flush();
@@ -327,13 +327,13 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public boolean getShowTriggerChanceSuccessful() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     return prefs.getBoolean(SHOW_TRIGGERED_CHANCE_SUCCESSFUL, true);
   }
 
   @Override
   public void setShowTriggerChanceSuccessful(final boolean value) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     prefs.putBoolean(SHOW_TRIGGERED_CHANCE_SUCCESSFUL, value);
     try {
       prefs.flush();
@@ -344,13 +344,13 @@ public abstract class AbstractUIContext implements IUIContext {
 
   @Override
   public boolean getShowTriggerChanceFailure() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     return prefs.getBoolean(SHOW_TRIGGERED_CHANCE_FAILURE, true);
   }
 
   @Override
   public void setShowTriggerChanceFailure(final boolean value) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUIContext.class);
+    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     prefs.putBoolean(SHOW_TRIGGERED_CHANCE_FAILURE, value);
     try {
       prefs.flush();

@@ -9,16 +9,16 @@ import java.awt.geom.AffineTransform;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 // Rewritten class to use country markers rather than shading for Convoy Centers/Routes.
 public class ConvoyZoneDrawable implements IDrawable {
   private final String player;
   private final String location;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
 
-  public ConvoyZoneDrawable(final PlayerID player, final Territory location, final IUIContext uiContext) {
+  public ConvoyZoneDrawable(final PlayerID player, final Territory location, final UiContext uiContext) {
     super();
     this.player = player.getName();
     this.location = location.getName();

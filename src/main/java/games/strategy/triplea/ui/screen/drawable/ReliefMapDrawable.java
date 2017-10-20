@@ -3,10 +3,10 @@ package games.strategy.triplea.ui.screen.drawable;
 import java.awt.Image;
 
 import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 
 public class ReliefMapDrawable extends MapTileDrawable {
-  public ReliefMapDrawable(final int x, final int y, final IUIContext context) {
+  public ReliefMapDrawable(final int x, final int y, final UiContext context) {
     super(x, y, context);
   }
 

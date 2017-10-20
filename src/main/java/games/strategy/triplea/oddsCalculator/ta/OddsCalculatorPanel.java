@@ -68,7 +68,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -107,7 +107,7 @@ class OddsCalculatorPanel extends JPanel {
   private final JCheckBox amphibiousCheckBox = new JCheckBox("Battle is Amphibious");
   private final JCheckBox landBattleCheckBox = new JCheckBox("Land Battle");
   private final JCheckBox retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
-  private final IUIContext context;
+  private final UiContext context;
   private final GameData data;
   private final IOddsCalculator calculator;
   private PlayerUnitsPanel attackingUnitsPanel;
@@ -129,7 +129,7 @@ class OddsCalculatorPanel extends JPanel {
   private JList<String> territoryEffectsJList;
   private final WidgetChangedListener listenerPlayerUnitsPanel = () -> setWidgetActivation();
 
-  OddsCalculatorPanel(final GameData data, final IUIContext context, final Territory location,
+  OddsCalculatorPanel(final GameData data, final UiContext context, final Territory location,
       final Window parent) {
     this.data = data;
     this.context = context;
@@ -820,14 +820,14 @@ class OddsCalculatorPanel extends JPanel {
   private static final class PlayerUnitsPanel extends JPanel {
     private static final long serialVersionUID = -1206338960403314681L;
     private final GameData data;
-    private final IUIContext context;
+    private final UiContext context;
     private final boolean defender;
     private boolean isLand = true;
     private List<UnitCategory> categories = null;
     private final List<WidgetChangedListener> listeners = new ArrayList<>();
     private final WidgetChangedListener listenerUnitPanel = () -> notifyListeners();
 
-    PlayerUnitsPanel(final GameData data, final IUIContext context, final boolean defender) {
+    PlayerUnitsPanel(final GameData data, final UiContext context, final boolean defender) {
       this.data = data;
       this.context = context;
       this.defender = defender;
@@ -965,13 +965,13 @@ class OddsCalculatorPanel extends JPanel {
 
   private static final class UnitPanel extends JPanel {
     private static final long serialVersionUID = 1509643150038705671L;
-    private final IUIContext context;
+    private final UiContext context;
     private final UnitCategory category;
     private final ScrollableTextField textField;
     private final List<WidgetChangedListener> listeners = new CopyOnWriteArrayList<>();
     private final ScrollableTextFieldListener listenerTextField = field -> notifyListeners();
 
-    UnitPanel(final IUIContext context, final UnitCategory category, final IntegerMap<UnitType> costs) {
+    UnitPanel(final UiContext context, final UnitCategory category, final IntegerMap<UnitType> costs) {
       this.category = category;
       this.context = context;
       textField = new ScrollableTextField(0, 512);
@@ -1038,7 +1038,7 @@ class OddsCalculatorPanel extends JPanel {
   private static final class OrderOfLossesInputPanel extends JPanel {
     private static final long serialVersionUID = 8815617685388156219L;
     private final GameData data;
-    private final IUIContext context;
+    private final UiContext context;
     private final List<UnitCategory> attackerCategories;
     private final List<UnitCategory> defenderCategories;
     private final JTextField attackerTextField;
@@ -1050,7 +1050,7 @@ class OddsCalculatorPanel extends JPanel {
 
     OrderOfLossesInputPanel(final String attackerOrder, final String defenderOrder,
         final List<UnitCategory> attackerCategories, final List<UnitCategory> defenderCategories, final boolean land,
-        final IUIContext context, final GameData data) {
+        final UiContext context, final GameData data) {
       this.data = data;
       this.context = context;
       this.land = land;

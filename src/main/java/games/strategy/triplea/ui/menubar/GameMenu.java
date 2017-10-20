@@ -32,9 +32,9 @@ import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
@@ -43,7 +43,7 @@ import games.strategy.ui.SwingComponents;
 class GameMenu {
 
   private final TripleAFrame frame;
-  private final IUIContext iuiContext;
+  private final UiContext iuiContext;
   private final GameData gameData;
   private final IGame game;
 

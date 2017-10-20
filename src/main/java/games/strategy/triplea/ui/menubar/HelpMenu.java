@@ -34,7 +34,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -42,10 +42,10 @@ import games.strategy.util.LocalizeHtml;
 
 public class HelpMenu {
 
-  private final IUIContext iuiContext;
+  private final UiContext iuiContext;
   private final GameData gameData;
 
-  HelpMenu(final JMenuBar menuBar, final IUIContext iuiContext, final GameData gameData, final Color backgroundColor) {
+  HelpMenu(final JMenuBar menuBar, final UiContext iuiContext, final GameData gameData, final Color backgroundColor) {
     this.iuiContext = iuiContext;
     this.gameData = gameData;
 
@@ -115,7 +115,7 @@ public class HelpMenu {
     })).setMnemonic(KeyEvent.VK_M);
   }
 
-  static String getUnitStatsTable(final GameData gameData, final IUIContext iuiContext) {
+  static String getUnitStatsTable(final GameData gameData, final UiContext iuiContext) {
     // html formatted string
     int i = 0;
     final String color1 = "ABABAB";
@@ -154,7 +154,7 @@ public class HelpMenu {
     return hints.toString();
   }
 
-  private static String getUnitImageUrl(final UnitType unitType, final PlayerID player, final IUIContext iuiContext) {
+  private static String getUnitImageUrl(final UnitType unitType, final PlayerID player, final UiContext iuiContext) {
     final UnitImageFactory unitImageFactory = iuiContext.getUnitImageFactory();
     if (player == null || unitImageFactory == null) {
       return "no image";
