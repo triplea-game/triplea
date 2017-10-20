@@ -908,7 +908,7 @@ public class UnitAttachment extends DefaultAttachment {
         || m_canInvadeOnlyFrom[0].equals("all")) {
       return true;
     }
-    return Arrays.asList(m_canInvadeOnlyFrom).contains(transport);
+    return Arrays.asList(m_canInvadeOnlyFrom).contains(transport.getType().getName());
   }
 
   public void resetCanInvadeOnlyFrom() {
