@@ -13,18 +13,31 @@ import games.strategy.engine.data.GameParser;
  */
 public enum TestMapGameData {
   BIG_WORLD_1942("big_world_1942_test.xml"),
+
   IRON_BLITZ("iron_blitz_test.xml"),
+
   LHTR("lhtr_test.xml"),
+
   PACIFIC_INCOMPLETE("pacific_incomplete_test.xml"),
+
   PACT_OF_STEEL_2("pact_of_steel_2_test.xml"),
+
   REVISED("revised_test.xml"),
+
   VICTORY_TEST("victory_test.xml"),
+
   WW2V3_1941("ww2v3_1941_test.xml"),
+
   WW2V3_1942("ww2v3_1942_test.xml"),
+
   GLOBAL1940("ww2_g40_balanced.xml"),
+
   TEST("Test.xml"),
+
   DELEGATE_TEST("DelegateTest.xml"),
+
   GAME_EXAMPLE("GameExample.xml"),
+
   TWW("Total_World_War_Dec1941.xml");
 
   private final String fileName;
