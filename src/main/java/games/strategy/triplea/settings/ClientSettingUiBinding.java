@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -73,7 +74,8 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
       SettingType.LOOK_AND_FEEL,
       SelectionComponentFactory.selectionBox(
           ClientSetting.LOOK_AND_FEEL_PREF,
-          LookAndFeel.getLookAndFeelAvailableList()),
+          LookAndFeel.getLookAndFeelAvailableList(),
+          s -> new JLabel(s.substring(s.lastIndexOf(".") + 1, s.length() - "LookAndFeel".length()))),
       "Adjust the UI theme for the game, requires a restart to take effect"),
 
   MAP_EDGE_SCROLL_SPEED_BINDING(
