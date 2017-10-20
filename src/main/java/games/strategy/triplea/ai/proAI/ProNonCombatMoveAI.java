@@ -1176,9 +1176,8 @@ class ProNonCombatMoveAI {
         for (final Territory t : moveMap.keySet()) {
 
           // Check if land with adjacent sea that can be reached and that I'm not already adjacent to
-          final boolean territoryHasTransportableUnits =
-              Matches.territoryHasUnitsThatMatch(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, false))
-                  .match(t);
+          final boolean territoryHasTransportableUnits = Matches.territoryHasUnitsThatMatch(
+              ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, false)).match(t);
           final int distance = data.getMap().getDistance_IgnoreEndForCondition(currentTerritory, t,
               ProMatches.territoryCanMoveSeaUnits(player, data, true));
           final boolean hasSeaNeighbor =

@@ -48,8 +48,8 @@ public class ProTransportUtils {
       // Get all units that can be transported
       final List<Unit> units = new ArrayList<>();
       for (final Territory loadFrom : territoriesToLoadFrom) {
-        units.addAll(
-            loadFrom.getUnits().getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true)));
+        units.addAll(loadFrom.getUnits()
+            .getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true)));
       }
       units.removeAll(unitsToIgnore);
 
@@ -72,7 +72,7 @@ public class ProTransportUtils {
   public static List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore) {
     return getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom, unitsToIgnore,
-        ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, true));
+        ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true));
   }
 
   // TODO: this needs fixed to consider whether a valid route exists to load all units
