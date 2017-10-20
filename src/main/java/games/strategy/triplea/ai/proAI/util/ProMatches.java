@@ -501,10 +501,12 @@ public class ProMatches {
         Matches.unitCanNotMoveDuringCombatMove().invert(), Matches.unitCanMove());
   }
 
-  public static Match<Unit> unitIsOwnedTransportableUnitAndCanBeLoaded(final PlayerID player,
+  public static Match<Unit> unitIsOwnedTransportableUnitAndCanBeLoaded(final PlayerID player, final Unit transport,
       final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
+      final UnitAttachment ua = UnitAttachment.get(u.getType());
+      if (isCombatMove
+          && (Matches.unitCanNotMoveDuringCombatMove().match(u) || !ua.canInvadeFrom(transport))) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitIsOwnedTransportableUnit(player), Matches.unitHasNotMoved(),

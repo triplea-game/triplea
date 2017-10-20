@@ -2032,7 +2032,7 @@ public final class Matches {
         return true;
       }
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.canInvadeFrom(transport.getType().getName());
+      return ua.canInvadeFrom(transport);
     });
   }
 

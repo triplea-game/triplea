@@ -909,8 +909,8 @@ public class ProTerritoryManager {
             } else if (Matches.territoryHasEnemySeaUnits(player, data).invert().match(currentTerritory)) {
               final Set<Territory> possibleLoadTerritories = data.getMap().getNeighbors(currentTerritory);
               for (final Territory possibleLoadTerritory : possibleLoadTerritories) {
-                List<Unit> possibleUnits = possibleLoadTerritory.getUnits()
-                    .getMatches(ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, isCombatMove));
+                List<Unit> possibleUnits = possibleLoadTerritory.getUnits().getMatches(
+                    ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, myTransportUnit, isCombatMove));
                 if (isCheckingEnemyAttacks) {
                   possibleUnits = possibleLoadTerritory.getUnits()
                       .getMatches(ProMatches.unitIsOwnedCombatTransportableUnit(player));
