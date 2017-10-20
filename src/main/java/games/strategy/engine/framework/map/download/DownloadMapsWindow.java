@@ -371,6 +371,7 @@ public class DownloadMapsWindow extends JFrame {
 
     final List<DownloadFileDescription> maps = MapDownloadListSort.sortByMapName(unsortedMaps);
     final JPanel main = JPanelBuilder.builder()
+        .borderLayout()
         .borderEmpty(30)
         .build();
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();

@@ -84,6 +84,7 @@ public class SetupFrame extends JPanel {
 
 
     final JPanel textButtonRadioPanel = JPanelBuilder.builder()
+        .borderLayout()
         .addWest(outField)
         .addEast(outDirButton)
         .addSouth(JPanelBuilder.builder()

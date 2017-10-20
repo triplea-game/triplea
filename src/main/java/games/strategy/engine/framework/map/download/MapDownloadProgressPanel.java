@@ -94,6 +94,7 @@ final class MapDownloadProgressPanel extends JPanel implements DownloadListener 
     final int itemCount = downloadList.size();
     this.removeAll();
     add(JPanelBuilder.builder()
+        .borderLayout()
         .addWest(labelGrid)
         .addEast(progressGrid)
         .build());

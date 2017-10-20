@@ -79,6 +79,7 @@ enum SettingsWindow {
 
   private static JComponent buildTab(final List<ClientSettingUiBinding> settings, final Runnable closeListener) {
     return JPanelBuilder.builder()
+        .borderLayout()
         .addCenter(tabMainContents(settings))
         .addSouth(buttonPanel(settings, closeListener))
         .build();
