@@ -28,15 +28,15 @@ public enum TestMapGameData {
 
   private static final String TEST_MAP_XML_PATH = "src/test/resources/";
 
-  private final String value;
+  private final String fileName;
 
   TestMapGameData(final String value) {
-    this.value = value;
+    this.fileName = value;
   }
 
   @Override
   public String toString() {
-    return value;
+    return fileName;
   }
 
   /**
@@ -47,7 +47,7 @@ public enum TestMapGameData {
    * @throws Exception If an error occurs while loading the map.
    */
   public GameData getGameData() throws Exception {
-    try (InputStream is = new FileInputStream(TEST_MAP_XML_PATH + value)) {
+    try (InputStream is = new FileInputStream(TEST_MAP_XML_PATH + fileName)) {
       return new GameParser("game name").parse(is, new AtomicReference<>(), false);
     }
   }
