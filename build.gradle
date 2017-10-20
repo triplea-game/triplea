@@ -59,8 +59,8 @@ sourceSets {
         java.srcDir 'src/integ_test/java'
         resources.srcDir 'src/integ_test/resources'
 
-        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testRuntime + configurations.junitPlatform
-        runtimeClasspath = output + compileClasspath
+        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testRuntime
+        runtimeClasspath = output + compileClasspath + configurations.junitPlatform
     }
 }
 
@@ -111,7 +111,7 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
 }
 
-task integTest(type: JavaExec) {
+task integTest(type: JavaExec, dependsOn: [compileIntegTestJava]) {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = 'Runs the integration tests.'
 
@@ -121,8 +121,6 @@ task integTest(type: JavaExec) {
     args "--reports-dir=$project.buildDir/integ-test-results/junit-platform"
     args '--scan-classpath'
     args '--include-classname', '^.*IntegrationTests?$'
-
-    mustRunAfter tasks.test
 }
 
 task jacocoRootReport(type: JacocoReport) {
@@ -281,14 +279,8 @@ gradle.taskGraph.whenReady { graph ->
     })
 }
 
-tasks.withType(Test) {
-    testLogging {
-        exceptionFormat = 'full'
-    }
-}
-
 check {
-    dependsOn 'integTest', 'validateYamls'
+    dependsOn 'junitPlatformTest', 'integTest', 'validateYamls'
 }
 
 checkstyle {
