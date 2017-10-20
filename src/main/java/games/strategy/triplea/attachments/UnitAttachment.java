@@ -903,16 +903,7 @@ public class UnitAttachment extends DefaultAttachment {
     return m_canInvadeOnlyFrom;
   }
 
-  public boolean canInvadeFrom(final String transport) {
-    final UnitType ut = getData().getUnitTypeList().getUnitType(transport);
-    if (ut == null) {
-      throw new IllegalStateException("No unit called:" + transport + thisErrorMsg());
-    }
-    // (UnitAttachment) ut.getAttachments().values().iterator().next();
-    // UnitAttachment ua = UnitAttachment.get(ut);
-    // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech
-    // infantry. The
-    // "transporter" may not be an actual transport, so we should not check for that here.
+  public boolean canInvadeFrom(final Unit transport) {
     if (m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0].equals("")
         || m_canInvadeOnlyFrom[0].equals("all")) {
       return true;

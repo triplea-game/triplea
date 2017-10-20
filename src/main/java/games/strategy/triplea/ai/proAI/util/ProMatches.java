@@ -506,7 +506,7 @@ public class ProMatches {
     return Match.of(u -> {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       if (isCombatMove
-          && (Matches.unitCanNotMoveDuringCombatMove().match(u) || !ua.canInvadeFrom(transport.getType().getName()))) {
+          && (Matches.unitCanNotMoveDuringCombatMove().match(u) || !ua.canInvadeFrom(transport))) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitIsOwnedTransportableUnit(player), Matches.unitHasNotMoved(),
