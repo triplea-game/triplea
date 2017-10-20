@@ -2,6 +2,7 @@ package games.strategy.triplea.xml;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicReference;
 
 import games.strategy.engine.data.GameData;
@@ -26,8 +27,6 @@ public enum TestMapGameData {
   GAME_EXAMPLE("GameExample.xml"),
   TWW("Total_World_War_Dec1941.xml");
 
-  private static final String TEST_MAP_XML_PATH = "src/test/resources/";
-
   private final String fileName;
 
   TestMapGameData(final String value) {
@@ -47,7 +46,7 @@ public enum TestMapGameData {
    * @throws Exception If an error occurs while loading the map.
    */
   public GameData getGameData() throws Exception {
-    try (InputStream is = new FileInputStream(TEST_MAP_XML_PATH + fileName)) {
+    try (InputStream is = new FileInputStream(Paths.get("src", "test", "resources", fileName).toFile())) {
       return new GameParser("game name").parse(is, new AtomicReference<>(), false);
     }
   }
