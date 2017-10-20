@@ -1,7 +1,6 @@
 package games.strategy.triplea.xml;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -9,7 +8,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 
 /**
- * Enum providing all the constants to be used by other tests.
+ * The available maps for use during testing.
  */
 public enum TestMapGameData {
   BIG_WORLD_1942("big_world_1942_test.xml"),
@@ -40,11 +39,16 @@ public enum TestMapGameData {
     return value;
   }
 
-  private InputStream getInputStream() throws IOException {
-    return new FileInputStream(TEST_MAP_XML_PATH + value);
-  }
-
+  /**
+   * Gets the game data for the associated map.
+   *
+   * @return The game data for the associated map.
+   *
+   * @throws Exception If an error occurs while loading the map.
+   */
   public GameData getGameData() throws Exception {
-    return (new GameParser("game name")).parse(getInputStream(), new AtomicReference<>(), false);
+    try (InputStream is = new FileInputStream(TEST_MAP_XML_PATH + value)) {
+      return new GameParser("game name").parse(is, new AtomicReference<>(), false);
+    }
   }
 }
