@@ -83,6 +83,7 @@ public class TimespanDialog {
     final JComboBox<TimeUnit> comboBox = new JComboBox<>(TimeUnit.values());
     comboBox.addActionListener(e -> spinner.setEnabled(!comboBox.getSelectedItem().equals(TimeUnit.FOREVER)));
     final int returnValue = JOptionPane.showConfirmDialog(parent, JPanelBuilder.builder()
+        .borderLayout()
         .addNorth(JLabelBuilder.builder()
             .text(infoMessage)
             .border(new EmptyBorder(0, 0, 5, 0))

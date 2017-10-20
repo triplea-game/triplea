@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -63,6 +64,11 @@ public class JPanelBuilderTest {
   }
 
   @Test
+  public void defaultLayoutIsFlowLayout() {
+    assertThat(JPanelBuilder.builder().build().getLayout(), instanceOf(FlowLayout.class));
+  }
+
+  @Test
   public void testLayouts() {
     final GridLayout result = (GridLayout) JPanelBuilder.builder()
         .gridLayout(1, 2)
@@ -71,7 +77,6 @@ public class JPanelBuilderTest {
     assertThat(result.getRows(), is(1));
     assertThat(result.getColumns(), is(2));
 
-
     assertThat(JPanelBuilder.builder()
         .gridBagLayout(2)
         .build()
@@ -79,9 +84,16 @@ public class JPanelBuilderTest {
         instanceOf(GridBagLayout.class));
 
     assertThat(JPanelBuilder.builder()
+        .flowLayout()
         .build()
         .getLayout(),
         instanceOf(FlowLayout.class));
+
+    assertThat(JPanelBuilder.builder()
+        .borderLayout()
+        .build()
+        .getLayout(),
+        instanceOf(BorderLayout.class));
   }
 
   @Test
