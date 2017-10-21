@@ -1,18 +1,22 @@
 package games.strategy.triplea.settings;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -340,11 +344,29 @@ final class SelectionComponentFactory {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
   }
 
-  static Supplier<SelectionComponent> selectionBox(
+  static <T> Supplier<SelectionComponent> selectionBox(
       final ClientSetting clientSetting,
-      final List<String> availableOptions) {
+      final List<T> availableOptions,
+      final Function<T, ?> renderFunction) {
     return () -> new AlwaysValidInputSelectionComponent() {
-      final JComboBox<String> comboBox = new JComboBox<>(availableOptions.toArray(new String[availableOptions.size()]));
+      final JComboBox<T> comboBox = getCombobox();
+
+      private JComboBox<T> getCombobox() {
+        final JComboBox<T> comboBox = new JComboBox<>();
+        availableOptions.forEach(comboBox::addItem);
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+          private static final long serialVersionUID = -3094995494539073655L;
+
+          @Override
+          @SuppressWarnings("unchecked")
+          public Component getListCellRendererComponent(
+              JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            return super.getListCellRendererComponent(list, renderFunction.apply((T) value), index, isSelected,
+                cellHasFocus);
+          }
+        });
+        return comboBox;
+      }
 
       @Override
       public JComponent getJComponent() {

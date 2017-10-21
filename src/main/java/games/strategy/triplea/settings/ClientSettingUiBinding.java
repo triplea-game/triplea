@@ -73,7 +73,8 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
       SettingType.LOOK_AND_FEEL,
       SelectionComponentFactory.selectionBox(
           ClientSetting.LOOK_AND_FEEL_PREF,
-          LookAndFeel.getLookAndFeelAvailableList()),
+          LookAndFeel.getLookAndFeelAvailableList(),
+          s -> s.replaceFirst(".*\\.", "").replaceFirst("LookAndFeel$", "")),
       "Adjust the UI theme for the game, requires a restart to take effect"),
 
   MAP_EDGE_SCROLL_SPEED_BINDING(
