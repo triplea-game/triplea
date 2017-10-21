@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -19,7 +20,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 
 import com.google.common.base.Strings;
 
@@ -347,19 +347,22 @@ final class SelectionComponentFactory {
   static <T> Supplier<SelectionComponent> selectionBox(
       final ClientSetting clientSetting,
       final List<T> availableOptions,
-      final Function<T, ? extends Component> renderFunction) {
+      final Function<T, ?> renderFunction) {
     return () -> new AlwaysValidInputSelectionComponent() {
       final JComboBox<T> comboBox = getCombobox();
 
       private JComboBox<T> getCombobox() {
         final JComboBox<T> comboBox = new JComboBox<>();
         availableOptions.forEach(comboBox::addItem);
-        comboBox.setRenderer(new ListCellRenderer<T>() {
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+          private static final long serialVersionUID = -3094995494539073655L;
 
           @Override
+          @SuppressWarnings("unchecked")
           public Component getListCellRendererComponent(
-              JList<? extends T> list, T value, int index, boolean isSelected, boolean cellHasFocus) {
-            return renderFunction.apply(value);
+              JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            return super.getListCellRendererComponent(list, renderFunction.apply((T) value), index, isSelected,
+                cellHasFocus);
           }
         });
         return comboBox;
