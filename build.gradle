@@ -118,9 +118,8 @@ task integTest(type: JavaExec, dependsOn: [compileIntegTestJava]) {
     classpath = sourceSets.integTest.runtimeClasspath
     main = 'org.junit.platform.console.ConsoleLauncher'
     args '--details', 'none'
-    args "--reports-dir=$buildDir/integ-test-results/junit-platform"
-    args '--scan-classpath'
-    args '--include-classname', '^.*IntegrationTests?$'
+    args '--reports-dir', "$buildDir/integ-test-results/junit-platform"
+    args '--scan-classpath', sourceSets.integTest.output.classesDirs[0]
 }
 
 task jacocoRootReport(type: JacocoReport) {
