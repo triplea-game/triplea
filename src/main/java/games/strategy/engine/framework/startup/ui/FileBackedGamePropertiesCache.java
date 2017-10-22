@@ -75,7 +75,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
           }
         }
       }
-    } catch (IOException | ClassNotFoundException e) {
+    } catch (final IOException | ClassNotFoundException e) {
       ClientLogger.logQuietly(e);
     }
   }

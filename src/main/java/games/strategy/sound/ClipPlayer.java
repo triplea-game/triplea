@@ -279,7 +279,7 @@ public class ClipPlayer {
             final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
             new AdvancedPlayer(inputStream.get(), audioDevice).play();
           }
-        } catch (Exception e) {
+        } catch (final Exception e) {
           ClientLogger.logError("Failed to play: " + clip, e);
         }
       }).start();

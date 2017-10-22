@@ -35,7 +35,7 @@ public class TemporaryFolderExtension implements TestInstancePostProcessor, Para
     field.setAccessible(true);
     try {
       field.set(instance, createTempFolder());
-    } catch (IllegalAccessException iae) {
+    } catch (final IllegalAccessException iae) {
       throw new RuntimeException(iae);
     }
   }
