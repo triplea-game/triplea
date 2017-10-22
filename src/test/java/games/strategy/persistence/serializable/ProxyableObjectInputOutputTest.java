@@ -22,7 +22,7 @@ import games.strategy.io.IoUtils;
  * A fixture for testing the integration between the {@link ObjectInputStream} and {@link ProxyableObjectOutputStream}
  * classes.
  */
-public final class ProxyableObjectInputOutputStreamIntegrationTest {
+public final class ProxyableObjectInputOutputTest {
   private byte[] bytes;
 
   private Object readObject() throws Exception {

@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
 
-public final class PropertyBagMementoImportExportIntegrationTest {
+public final class PropertyBagMementoImportExportTest {
   private static final String SCHEMA_ID = "schema-id";
 
   private final FakeOriginator originator = new FakeOriginator(42, "2112");
