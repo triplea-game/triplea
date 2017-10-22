@@ -1,11 +1,9 @@
 package games.strategy.util;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
@@ -32,8 +30,7 @@ public class UtilTest {
             + "aee05890f97f73e4274742c69adf51406c0535452c9ec2e2adbf98048526b30c",
         Util.sha512("WWII"));
 
-    catchException(() -> Util.sha512(null));
-    assertThat(caughtException(), is(instanceOf(NullPointerException.class)));
+    assertThrows(NullPointerException.class, () -> Util.sha512(null));
   }
 
   @Test

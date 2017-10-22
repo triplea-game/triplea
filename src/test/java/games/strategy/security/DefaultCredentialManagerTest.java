@@ -1,13 +1,9 @@
 package games.strategy.security;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
-import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalAnswers.returnsSecondArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -87,19 +83,17 @@ public final class DefaultCredentialManagerTest {
 
   @Test
   public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() throws Exception {
-    catchException(() -> credentialManager.unprotect("AAAABBBB"));
+    final CredentialManagerException e =
+        assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
 
-    assertThat(caughtException(), allOf(
-        is(instanceOf(CredentialManagerException.class)),
-        hasMessageThat(containsString("malformed protected credential"))));
+    assertThat(e.getMessage(), containsString("malformed protected credential"));
   }
 
   @Test
   public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() throws Exception {
-    catchException(() -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
+    final CredentialManagerException e =
+        assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
 
-    assertThat(caughtException(), allOf(
-        is(instanceOf(CredentialManagerException.class)),
-        hasMessageThat(containsString("malformed protected credential"))));
+    assertThat(e.getMessage(), containsString("malformed protected credential"));
   }
 }

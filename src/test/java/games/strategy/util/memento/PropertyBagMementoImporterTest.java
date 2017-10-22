@@ -1,13 +1,9 @@
 package games.strategy.util.memento;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
-import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
@@ -24,11 +20,10 @@ public final class PropertyBagMementoImporterTest {
     final Memento memento = mock(Memento.class);
     final PropertyBagMementoImporter<?> mementoImporter = newMementoImporter();
 
-    catchException(() -> mementoImporter.importMemento(memento));
+    final MementoImportException e =
+        assertThrows(MementoImportException.class, () -> mementoImporter.importMemento(memento));
 
-    assertThat(caughtException(), allOf(
-        is(instanceOf(MementoImportException.class)),
-        hasMessageThat(containsString("wrong type"))));
+    assertThat(e.getMessage(), containsString("wrong type"));
   }
 
   private static PropertyBagMementoImporter<FakeOriginator> newMementoImporter() {
@@ -61,10 +56,9 @@ public final class PropertyBagMementoImporterTest {
     final PropertyBagMemento memento = newMemento(schemaId);
     final PropertyBagMementoImporter<?> mementoImporter = newMementoImporter();
 
-    catchException(() -> mementoImporter.importMemento(memento));
+    final MementoImportException e =
+        assertThrows(MementoImportException.class, () -> mementoImporter.importMemento(memento));
 
-    assertThat(caughtException(), allOf(
-        is(instanceOf(MementoImportException.class)),
-        hasMessageThat(containsString(String.format("schema ID '%s' is unsupported", schemaId)))));
+    assertThat(e.getMessage(), containsString(String.format("schema ID '%s' is unsupported", schemaId)));
   }
 }

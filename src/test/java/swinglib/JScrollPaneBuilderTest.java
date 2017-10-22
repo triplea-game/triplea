@@ -1,14 +1,10 @@
 package swinglib;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
-import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Component;
 
@@ -22,20 +18,12 @@ public final class JScrollPaneBuilderTest {
 
   @Test
   public void view_ShouldThrowExceptionWhenViewIsNull() {
-    catchException(() -> builder.view(null));
-
-    assertThat(caughtException(), allOf(
-        is(instanceOf(NullPointerException.class)),
-        hasMessageThat(containsString("view"))));
+    assertThat(assertThrows(NullPointerException.class, () -> builder.view(null)).getMessage(), containsString("view"));
   }
 
   @Test
   public void build_ShouldThrowExceptionWhenViewUnspecified() {
-    catchException(() -> builder.build());
-
-    assertThat(caughtException(), allOf(
-        is(instanceOf(IllegalStateException.class)),
-        hasMessageThat(containsString("view"))));
+    assertThat(assertThrows(IllegalStateException.class, () -> builder.build()).getMessage(), containsString("view"));
   }
 
   @Test

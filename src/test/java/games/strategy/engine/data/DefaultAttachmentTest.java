@@ -1,11 +1,9 @@
 package games.strategy.engine.data;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -36,17 +34,15 @@ public final class DefaultAttachmentTest {
   public void getAttachment_ShouldThrowExceptionWhenAttachmentIsAbsent() {
     when(namedAttachable.getAttachment(any())).thenReturn(null);
 
-    catchException(() -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
-
-    assertThat(caughtException(), is(instanceOf(IllegalStateException.class)));
+    assertThrows(IllegalStateException.class,
+        () -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
   }
 
   @Test
   public void getAttachment_ShouldThrowExceptionWhenAttachmentHasWrongType() {
     when(namedAttachable.getAttachment(any())).thenReturn(mock(IAttachment.class));
 
-    catchException(() -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
-
-    assertThat(caughtException(), is(instanceOf(ClassCastException.class)));
+    assertThrows(ClassCastException.class,
+        () -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
   }
 }
