@@ -17,6 +17,7 @@ public class TemporaryFolder {
   public File newFile(String name) throws IOException {
     File result = new File(rootFolder, name);
     result.createNewFile();
+    result.deleteOnExit();
     return result;
   }
 
