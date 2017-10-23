@@ -94,8 +94,9 @@ public final class Md5CryptAuthenticatorTest {
   public void newResponse_ShouldThrowExceptionWhenChallengeDoesNotContainSalt() throws Exception {
     final Map<String, String> challenge = ImmutableMap.of();
 
-    assertThat(assertThrows(AuthenticationException.class, () -> Md5CryptAuthenticator.newResponse(PASSWORD, challenge))
-        .getMessage(), containsString("missing"));
+    final Exception e =
+        assertThrows(AuthenticationException.class, () -> Md5CryptAuthenticator.newResponse(PASSWORD, challenge));
+    assertThat(e.getMessage(), containsString("missing"));
   }
 
   @Test
@@ -114,10 +115,12 @@ public final class Md5CryptAuthenticatorTest {
     final String name = "name";
     final Map<String, String> properties = ImmutableMap.of("other name", "value");
 
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> Md5CryptAuthenticator.getRequiredProperty(properties, name)).getMessage(), allOf(
-            containsString("missing"),
-            containsString(name)));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> Md5CryptAuthenticator.getRequiredProperty(properties, name));
+
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(name)));
   }
 
   @Test
@@ -125,13 +128,11 @@ public final class Md5CryptAuthenticatorTest {
     final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
     final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 
-
     try {
       Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response);
     } catch (final Exception e) {
       throw new AssertionError(e);
     }
-
   }
 
   @Test
@@ -139,11 +140,10 @@ public final class Md5CryptAuthenticatorTest {
     final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
     final Map<String, String> response = Md5CryptAuthenticator.newResponse("otherPassword", challenge);
 
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
 
-
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response)).getMessage(),
-        containsString("authentication failed"));
+    assertThat(e.getMessage(), containsString("authentication failed"));
   }
 
   @Test
@@ -153,10 +153,12 @@ public final class Md5CryptAuthenticatorTest {
 
     challenge.remove(ChallengePropertyNames.SALT);
 
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response)).getMessage(), allOf(
-            containsString("missing"),
-            containsString(ChallengePropertyNames.SALT)));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(ChallengePropertyNames.SALT)));
   }
 
   @Test
@@ -166,9 +168,10 @@ public final class Md5CryptAuthenticatorTest {
 
     response.remove(ResponsePropertyNames.DIGEST);
 
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response)).getMessage(), allOf(
-            containsString("missing"),
-            containsString(ResponsePropertyNames.DIGEST)));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(ResponsePropertyNames.DIGEST)));
   }
 }

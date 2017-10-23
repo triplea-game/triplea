@@ -152,12 +152,11 @@ public final class HmacSha512AuthenticatorTest {
     final String name = "name";
     final Map<String, String> properties = ImmutableMap.of(name, "NOT_A_BASE64_VALUE");
 
-
-
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> HmacSha512Authenticator.decodeOptionalProperty(properties, name)).getMessage(), allOf(
-            containsString("malformed"),
-            containsString(name)));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> HmacSha512Authenticator.decodeOptionalProperty(properties, name));
+    assertThat(e.getMessage(), allOf(
+        containsString("malformed"),
+        containsString(name)));
   }
 
   @Test
@@ -177,9 +176,10 @@ public final class HmacSha512AuthenticatorTest {
     final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
     final Map<String, String> response = HmacSha512Authenticator.newResponse("otherPassword", challenge);
 
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response)).getMessage(),
-        containsString("authentication failed"));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(e.getMessage(), containsString("authentication failed"));
   }
 
   @Test
@@ -189,10 +189,12 @@ public final class HmacSha512AuthenticatorTest {
 
     challenge.remove(ChallengePropertyNames.NONCE);
 
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response)).getMessage(), allOf(
-            containsString("missing"),
-            containsString(ChallengePropertyNames.NONCE)));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(ChallengePropertyNames.NONCE)));
   }
 
   @Test
@@ -201,10 +203,13 @@ public final class HmacSha512AuthenticatorTest {
     final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
     challenge.remove(ChallengePropertyNames.SALT);
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response)).getMessage(), allOf(
-            containsString("missing"),
-            containsString(ChallengePropertyNames.SALT)));
+
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(ChallengePropertyNames.SALT)));
   }
 
   @Test
@@ -213,10 +218,13 @@ public final class HmacSha512AuthenticatorTest {
     final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
     response.remove(ResponsePropertyNames.DIGEST);
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response)).getMessage(), allOf(
-            containsString("missing"),
-            containsString(ResponsePropertyNames.DIGEST)));
+
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(ResponsePropertyNames.DIGEST)));
   }
 
   @Test
@@ -224,9 +232,10 @@ public final class HmacSha512AuthenticatorTest {
     final String name = "name";
     final Map<String, String> properties = ImmutableMap.of("other name", newBase64String());
 
-    assertThat(assertThrows(AuthenticationException.class,
-        () -> HmacSha512Authenticator.decodeRequiredProperty(properties, name)).getMessage(), allOf(
-            containsString("missing"),
-            containsString(name)));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> HmacSha512Authenticator.decodeRequiredProperty(properties, name));
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(name)));
   }
 }

@@ -18,12 +18,14 @@ public final class JScrollPaneBuilderTest {
 
   @Test
   public void view_ShouldThrowExceptionWhenViewIsNull() {
-    assertThat(assertThrows(NullPointerException.class, () -> builder.view(null)).getMessage(), containsString("view"));
+    final Exception e = assertThrows(NullPointerException.class, () -> builder.view(null));
+    assertThat(e.getMessage(), containsString("view"));
   }
 
   @Test
   public void build_ShouldThrowExceptionWhenViewUnspecified() {
-    assertThat(assertThrows(IllegalStateException.class, () -> builder.build()).getMessage(), containsString("view"));
+    final Exception e = assertThrows(IllegalStateException.class, () -> builder.build());
+    assertThat(e.getMessage(), containsString("view"));
   }
 
   @Test
