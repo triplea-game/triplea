@@ -174,8 +174,7 @@ public class SelectAndViewEditor extends EditorPanel {
    * If an editor of the same class is found, it is selected an modified to match
    * If no bean of this type is found, it is added to the list
    *
-   * @param bean
-   *        the bean
+   * @param bean the bean
    */
   public void setSelectedBean(final IBean bean) {
     final MutableComboBoxModel<IBean> model = (MutableComboBoxModel<IBean>) selector.getModel();
@@ -183,9 +182,7 @@ public class SelectAndViewEditor extends EditorPanel {
     boolean found = false;
     for (int i = 0; i < model.getSize(); i++) {
       final IBean candidate = model.getElementAt(i);
-      System.out.println("searching");
       if (candidate.getClass().equals(bean.getClass())) {
-        System.out.println("found");
         found = true;
         newModel.addElement(bean);
       } else {
