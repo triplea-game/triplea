@@ -723,7 +723,7 @@
     <br>Enjoy custom map sounds and nation specific music.
     <br>
     <br>
-- mapName: "Iron War: Europe"
+- mapName: Iron War Europe
   mapCategory: GOOD
   url: https://github.com/triplea-maps/iron_war_europe/archive/master.zip
   version: 1
@@ -757,7 +757,7 @@
         and it is also based on an established board game, that I trust it in terms of balance and mechanics."
     <br>
     <br>if you play it, help it be perfected by giving feedback!
-- mapName: "Star Trek: Dilithium War"
+- mapName: Star Trek Dilithium War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_trek_dilithium_war/archive/master.zip
   version: 2
@@ -775,7 +775,7 @@
     <br>Advance in commander rank and get more government support.
     <br>
     <br>
-- mapName: "Star Wars: Galactic War"
+- mapName: Star Wars Galactic War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_galactic_war/archive/master.zip
   version: 3
@@ -793,7 +793,7 @@
     <br>This map shares factions and units with Star Wars Tatooine War.
     <br>
     <br>
-- mapName: "Star Wars: Tatooine War"
+- mapName: Star Wars Tatooine War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_tatooine_war/archive/master.zip
   version: 3
