@@ -420,7 +420,7 @@
 - mapName: Age of Tribes
   mapCategory: GOOD
   url: https://github.com/triplea-maps/age_of_tribes/archive/master.zip
-  version: 3
+  version: 4
   img: https://raw.githubusercontent.com/triplea-maps/age_of_tribes/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -655,7 +655,7 @@
 - mapName: Caribbean Trade War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/caribbean_trade_war/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/caribbean_trade_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -688,7 +688,7 @@
 - mapName: Dragon War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/dragon_war/archive/master.zip
-  version: 3
+  version: 4
   img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -703,6 +703,42 @@
     <br>Tackle pestering murlocs, kobolds, gnolls, ogres, pirates and more.
     <br>Battle on map terrain like mountain, desert, swamp, forest and snow.
     <br>Use forts, castles, siege weapons and the mighty dragons of war.
+    <br>
+    <br>
+- mapName: Iron War
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/iron_war/archive/master.zip
+  version: 12
+  img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/description/MapThumbnail.png
+  description: |
+    <br><b><em>by Frostion</em></b>
+    <br>
+    <br>This map features 8 Axis and 12 Allied players.
+    <br>
+    <br>Play through WW2 as one or more Axis or Allied powers.
+    <br>Be free of restricting politics and non-aggression pacts.
+    <br>Purchase special units like SS, Colonial troops, Kamikaze plans etc.
+    <br>Keep track of Steel and Fuel income and availability on the map.
+    <br>Make use of the 25 different units this map has to offer.
+    <br>Enjoy custom map sounds and nation specific music.
+    <br>
+    <br>
+- mapName: Iron War: Europe
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/iron_war_europe/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/iron_war_europe/master/description/MapThumbnail.png
+  description: |
+    <br><b><em>by Frostion</em></b>
+    <br>
+    <br>This map features 3 Axis and 4 Allied players.
+    <br>
+    <br>Play through WW2 as one or more Axis or Allied powers.
+    <br>Be free of restricting politics and non-aggression pacts.
+    <br>Purchase special units like SS, Colonial troops, Commissars etc.
+    <br>Keep track of Steel and Fuel income and availability on the map.
+    <br>Make use of the 25 different units this map has to offer.
+    <br>Enjoy custom map sounds and nation specific music.
     <br>
     <br>
 - mapName: Twilight Imperium
@@ -724,7 +760,7 @@
 - mapName: Star Trek Dilithium War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_trek_dilithium_war/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/star_trek_dilithium_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -742,7 +778,7 @@
 - mapName: Star Wars Galactic War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_galactic_war/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/star_wars_galactic_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -760,7 +796,7 @@
 - mapName: Star Wars Tatooine War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/star_wars_tatooine_war/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/star_wars_tatooine_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -1505,27 +1541,6 @@
     <br>	Helicopter       5/5/4/8  (9)
     <br>	Bomber			 7/7/6/12 (6)
     <br>	Strike			 7/0/99/-/-		Americans only.
-- mapName: Iron War
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/iron_war/archive/master.zip
-  version: 11
-  img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/description/MapThumbnail.png
-  description: |
-    <br><b><em>by Frostion</em></b>
-    <br>
-    <br>This map features 8 Axis and 12 Allied players.
-    <br>
-    <br>Play through WW2 as one or more Axis or Allied powers.
-    <br>Be free of restricting politics and non-aggression pacts.
-    <br>Purchase special units like SS, Colonial troops, Kamikaze plans etc.
-    <br>Keep track of Steel and Fuel income and availability on the map.
-    <br>Make use of the 25 different units this map has to offer.
-    <br>Enjoy custom map sounds and nation specific music.
-    <br>
-    <br>Don’t forget to give your feedback on this BETA-stage map.
-    <br>Visit the TripleA forum and find the Iron War thread.
-    <br>
-    <br>
 - mapName: Feudal Japan Warlords
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/feudal_japan_warlords/archive/master.zip
