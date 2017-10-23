@@ -2,7 +2,6 @@ package games.strategy.engine.pbem;
 
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.triplea.help.HelpSupport;
 
 public class GmailEmailSender extends GenericEmailSender {
@@ -28,12 +27,7 @@ public class GmailEmailSender extends GenericEmailSender {
   }
 
   @Override
-  public boolean sameType(final IBean other) {
-    return other.getClass() == GmailEmailSender.class;
-  }
-
-  @Override
-  public IEmailSender doClone() {
+  public IEmailSender clone() {
     final GenericEmailSender sender = new GmailEmailSender();
     sender.setSubjectPrefix(getSubjectPrefix());
     sender.setPassword(getPassword());

@@ -1,10 +1,8 @@
 package games.strategy.engine.pbem;
 
 import java.io.File;
-import java.io.IOException;
 
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * A dummy Email sender, to use when Email sending is disabled.
@@ -14,12 +12,11 @@ public class NullEmailSender implements IEmailSender {
 
   @Override
   public String getDisplayName() {
-    return "disabled";
+    return "Disabled";
   }
 
   @Override
-  public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String fileName)
-      throws IOException {}
+  public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String fileName) {}
 
   @Override
   public String getToAddress() {
@@ -30,18 +27,13 @@ public class NullEmailSender implements IEmailSender {
   public void clearSensitiveInfo() {}
 
   @Override
-  public IEmailSender doClone() {
+  public IEmailSender clone() {
     return new NullEmailSender();
   }
 
   @Override
   public EditorPanel getEditor() {
     return null;
-  }
-
-  @Override
-  public boolean sameType(final IBean other) {
-    return other.getClass() == NullEmailSender.class;
   }
 
   @Override

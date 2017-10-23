@@ -28,7 +28,6 @@ import javax.mail.util.ByteArrayDataSource;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 import games.strategy.triplea.help.HelpSupport;
@@ -328,7 +327,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   @Override
-  public IEmailSender doClone() {
+  public IEmailSender clone() {
     final GenericEmailSender sender = new GenericEmailSender();
     sender.setSubjectPrefix(getSubjectPrefix());
     sender.setEncryption(getEncryption());
@@ -370,12 +369,7 @@ public class GenericEmailSender implements IEmailSender {
   public EditorPanel getEditor() {
     return new EmailSenderEditor(this, new EmailSenderEditor.EditorConfiguration(true, true, true));
   }
-
-  @Override
-  public boolean sameType(final IBean other) {
-    return other.getClass() == GenericEmailSender.class;
-  }
-
+  
   @Override
   public String getHelpText() {
     return HelpSupport.loadHelp("genericEmailSender.html");

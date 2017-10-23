@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 
@@ -176,11 +175,6 @@ public abstract class AbstractForumPoster implements IForumPoster {
   public void clearSensitiveInfo() {
     credentialsSaved = false;
     m_username = m_password = USE_TRANSIENT_CREDENTIAL;
-  }
-
-  @Override
-  public boolean sameType(final IBean other) {
-    return getClass() == other.getClass();
   }
 
   @Override

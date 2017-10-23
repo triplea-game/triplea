@@ -6,7 +6,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * This is not actually a dice server, it just uses the normal TripleA PlainRandomSource for dice roll
@@ -25,11 +24,6 @@ public class InternalDiceServer implements IRemoteDiceServer {
   @Override
   public EditorPanel getEditor() {
     return new DiceServerEditor(this);
-  }
-
-  @Override
-  public boolean sameType(final IBean other) {
-    return other.getClass() == InternalDiceServer.class;
   }
 
   @Override

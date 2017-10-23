@@ -39,7 +39,6 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.system.HttpProxy;
 
 /**
@@ -103,11 +102,6 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   @Override
   public EditorPanel getEditor() {
     return new DiceServerEditor(this);
-  }
-
-  @Override
-  public boolean sameType(final IBean other) {
-    return other instanceof PropertiesDiceRoller && getDisplayName().equals(other.getDisplayName());
   }
 
   @Override

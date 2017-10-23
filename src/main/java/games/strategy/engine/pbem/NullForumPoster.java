@@ -3,15 +3,12 @@ package games.strategy.engine.pbem;
 import java.io.File;
 
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * A dummy forum poster, for when Forum posting is disabled.
  */
 public class NullForumPoster implements IForumPoster {
   private static final long serialVersionUID = 6465230505089142268L;
-
-  public NullForumPoster() {}
 
   @Override
   public String getDisplayName() {
@@ -113,10 +110,5 @@ public class NullForumPoster implements IForumPoster {
   @Override
   public EditorPanel getEditor() {
     return null;
-  }
-
-  @Override
-  public boolean sameType(final IBean other) {
-    return other.getClass() == NullForumPoster.class;
   }
 }
