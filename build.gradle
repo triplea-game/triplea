@@ -106,9 +106,9 @@ dependencies {
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.mockito:mockito-core:2.11.0'
-    testRuntime 'org.junit.platform:junit-platform-launcher:1.0.1'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.1'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
+    testRuntime 'org.junit.platform:junit-platform-launcher:1.0.1'
 }
 
 task integTest(type: JavaExec, dependsOn: [compileIntegTestJava]) {
@@ -118,9 +118,8 @@ task integTest(type: JavaExec, dependsOn: [compileIntegTestJava]) {
     classpath = sourceSets.integTest.runtimeClasspath
     main = 'org.junit.platform.console.ConsoleLauncher'
     args '--details', 'none'
-    args "--reports-dir=$project.buildDir/integ-test-results/junit-platform"
-    args '--scan-classpath'
-    args '--include-classname', '^.*IntegrationTests?$'
+    args '--reports-dir', "$buildDir/integ-test-results/junit-platform"
+    args '--scan-classpath', sourceSets.integTest.output.classesDirs[0]
 }
 
 task jacocoRootReport(type: JacocoReport) {
