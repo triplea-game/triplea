@@ -23,7 +23,7 @@ public class TemporaryFolder {
   void prepare() {
     try {
       rootFolder = File.createTempFile("junit5-", ".tmp");
-    } catch (IOException ioe) {
+    } catch (final IOException ioe) {
       throw new RuntimeException(ioe);
     }
     rootFolder.delete();
