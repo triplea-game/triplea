@@ -34,7 +34,7 @@ import games.strategy.triplea.util.Stopwatch;
 /**
  * A place to find images and map data for a ui.
  */
-public class UIContext extends AbstractUIContext {
+public class HeadedUiContext extends AbstractUiContext {
   protected MapData mapData;
   protected final TileImageFactory tileImageFactory = new TileImageFactory();
   protected final UnitImageFactory unitImageFactory = new UnitImageFactory();
@@ -49,7 +49,7 @@ public class UIContext extends AbstractUIContext {
   protected OptionalExtraBorderLevel extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
   protected Cursor cursor = Cursor.getDefaultCursor();
 
-  UIContext() {
+  HeadedUiContext() {
     super();
     mapImage = new MapImage();
   }

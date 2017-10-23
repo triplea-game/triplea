@@ -30,7 +30,7 @@ import games.strategy.ui.SwingComponents;
 
 public class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private final JButton showOdds = new JButton("Battle Calculator (Ctrl-B)");
   private Territory currentTerritory;
   private final TripleAFrame frame;
@@ -39,7 +39,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     return "Hover over or drag and drop from a territory to list those units in this panel";
   }
 
-  TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final IUIContext uiContext,
+  TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final UiContext uiContext,
       final TripleAFrame frame) {
     super(data);
     this.frame = frame;
@@ -99,7 +99,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     refresh();
   }
 
-  private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final IUIContext uiContext) {
+  private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final UiContext uiContext) {
     final JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

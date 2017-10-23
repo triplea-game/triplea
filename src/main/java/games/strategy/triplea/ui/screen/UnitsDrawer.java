@@ -22,7 +22,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.util.Match;
@@ -38,7 +38,7 @@ public class UnitsDrawer implements IDrawable {
   private final boolean disabled;
   private final boolean overflow;
   private final String territoryName;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
 
   public enum PreferenceKeys {
@@ -53,7 +53,7 @@ public class UnitsDrawer implements IDrawable {
 
   public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint,
       final int damaged, final int bombingUnitDamage, final boolean disabled, final boolean overflow,
-      final String territoryName, final IUIContext uiContext2) {
+      final String territoryName, final UiContext uiContext) {
     this.count = count;
     this.unitType = unitType;
     this.playerName = playerName;
@@ -63,7 +63,7 @@ public class UnitsDrawer implements IDrawable {
     this.disabled = disabled;
     this.overflow = overflow;
     this.territoryName = territoryName;
-    this.uiContext = uiContext2;
+    this.uiContext = uiContext;
   }
 
   public Point getPlacementPoint() {

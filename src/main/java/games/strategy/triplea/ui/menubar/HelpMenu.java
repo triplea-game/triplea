@@ -34,7 +34,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -42,11 +42,11 @@ import games.strategy.util.LocalizeHtml;
 
 public class HelpMenu {
 
-  private final IUIContext iuiContext;
+  private final UiContext uiContext;
   private final GameData gameData;
 
-  HelpMenu(final JMenuBar menuBar, final IUIContext iuiContext, final GameData gameData, final Color backgroundColor) {
-    this.iuiContext = iuiContext;
+  HelpMenu(final JMenuBar menuBar, final UiContext uiContext, final GameData gameData, final Color backgroundColor) {
+    this.uiContext = uiContext;
     this.gameData = gameData;
 
     final JMenu helpMenu = new JMenu("Help");
@@ -115,7 +115,7 @@ public class HelpMenu {
     })).setMnemonic(KeyEvent.VK_M);
   }
 
-  static String getUnitStatsTable(final GameData gameData, final IUIContext iuiContext) {
+  static String getUnitStatsTable(final GameData gameData, final UiContext uiContext) {
     // html formatted string
     int i = 0;
     final String color1 = "ABABAB";
@@ -128,7 +128,7 @@ public class HelpMenu {
       final Map<PlayerID, Map<UnitType, ResourceCollection>> costs =
           TuvUtils.getResourceCostsForTuv(gameData, true);
       final Map<PlayerID, List<UnitType>> playerUnitTypes =
-          UnitType.getAllPlayerUnitsWithImages(gameData, iuiContext, true);
+          UnitType.getAllPlayerUnitsWithImages(gameData, uiContext, true);
       for (final Map.Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {
         final PlayerID player = entry.getKey();
         hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
@@ -139,7 +139,7 @@ public class HelpMenu {
         for (final UnitType ut : entry.getValue()) {
           i++;
           hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-              .append(">").append("<td>").append(getUnitImageUrl(ut, player, iuiContext)).append("</td>").append("<td>")
+              .append(">").append("<td>").append(getUnitImageUrl(ut, player, uiContext)).append("</td>").append("<td>")
               .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHtml())
               .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
         }
@@ -154,8 +154,8 @@ public class HelpMenu {
     return hints.toString();
   }
 
-  private static String getUnitImageUrl(final UnitType unitType, final PlayerID player, final IUIContext iuiContext) {
-    final UnitImageFactory unitImageFactory = iuiContext.getUnitImageFactory();
+  private static String getUnitImageUrl(final UnitType unitType, final PlayerID player, final UiContext uiContext) {
+    final UnitImageFactory unitImageFactory = uiContext.getUnitImageFactory();
     if (player == null || unitImageFactory == null) {
       return "no image";
     }
@@ -173,7 +173,7 @@ public class HelpMenu {
       final JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
       editorPane.setContentType("text/html");
-      editorPane.setText(getUnitStatsTable(gameData, iuiContext));
+      editorPane.setText(getUnitStatsTable(gameData, uiContext));
       editorPane.setCaretPosition(0);
       final JScrollPane scroll = new JScrollPane(editorPane);
       scroll.setBorder(BorderFactory.createEmptyBorder());

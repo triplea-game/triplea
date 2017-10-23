@@ -41,7 +41,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
   private final boolean showMinAndMax;
   private final JTextArea title;
   private final GameData gameData;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private final Map<String, Collection<Unit>> unitsToChooseFrom;
   private final Collection<Tuple<String, IndividualUnitPanel>> entries =
       new ArrayList<>();
@@ -57,7 +57,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
    * unit.
    */
   public IndividualUnitPanelGrouped(final Map<String, Collection<Unit>> unitsToChooseFrom, final GameData data,
-      final IUIContext uiContext, final String title, final int maxTotal, final boolean showMinAndMax,
+      final UiContext uiContext, final String title, final int maxTotal, final boolean showMinAndMax,
       final boolean showSelectAll) {
     gameData = data;
     this.uiContext = uiContext;

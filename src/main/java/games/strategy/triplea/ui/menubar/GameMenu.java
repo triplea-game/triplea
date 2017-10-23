@@ -32,9 +32,9 @@ import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.IUIContext;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
@@ -43,7 +43,7 @@ import games.strategy.ui.SwingComponents;
 class GameMenu {
 
   private final TripleAFrame frame;
-  private final IUIContext iuiContext;
+  private final UiContext uiContext;
   private final GameData gameData;
   private final IGame game;
 
@@ -51,7 +51,7 @@ class GameMenu {
     this.frame = frame;
     game = frame.getGame();
     gameData = frame.getGame().getData();
-    iuiContext = frame.getUiContext();
+    uiContext = frame.getUiContext();
 
     menuBar.add(createGameMenu());
   }
@@ -112,7 +112,7 @@ class GameMenu {
    */
   private void addPoliticsMenu(final JMenu menuGame) {
     final AbstractAction politicsAction = SwingAction.of("Show Politics Panel", e -> {
-      final PoliticalStateOverview ui = new PoliticalStateOverview(gameData, iuiContext, false);
+      final PoliticalStateOverview ui = new PoliticalStateOverview(gameData, uiContext, false);
       final JScrollPane scroll = new JScrollPane(ui);
       scroll.setBorder(BorderFactory.createEmptyBorder());
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
@@ -148,10 +148,10 @@ class GameMenu {
     notificationMenu.addMenuListener(new MenuListener() {
       @Override
       public void menuSelected(final MenuEvent e) {
-        showEndOfTurnReport.setSelected(iuiContext.getShowEndOfTurnReport());
-        showTriggeredNotifications.setSelected(iuiContext.getShowTriggeredNotifications());
-        showTriggerChanceSuccessful.setSelected(iuiContext.getShowTriggerChanceSuccessful());
-        showTriggerChanceFailure.setSelected(iuiContext.getShowTriggerChanceFailure());
+        showEndOfTurnReport.setSelected(uiContext.getShowEndOfTurnReport());
+        showTriggeredNotifications.setSelected(uiContext.getShowTriggeredNotifications());
+        showTriggerChanceSuccessful.setSelected(uiContext.getShowTriggerChanceSuccessful());
+        showTriggerChanceFailure.setSelected(uiContext.getShowTriggerChanceFailure());
       }
 
       @Override
@@ -160,13 +160,13 @@ class GameMenu {
       @Override
       public void menuCanceled(final MenuEvent e) {}
     });
-    showEndOfTurnReport.addActionListener(e -> iuiContext.setShowEndOfTurnReport(showEndOfTurnReport.isSelected()));
+    showEndOfTurnReport.addActionListener(e -> uiContext.setShowEndOfTurnReport(showEndOfTurnReport.isSelected()));
     showTriggeredNotifications.addActionListener(
-        e -> iuiContext.setShowTriggeredNotifications(showTriggeredNotifications.isSelected()));
+        e -> uiContext.setShowTriggeredNotifications(showTriggeredNotifications.isSelected()));
     showTriggerChanceSuccessful.addActionListener(
-        e -> iuiContext.setShowTriggerChanceSuccessful(showTriggerChanceSuccessful.isSelected()));
+        e -> uiContext.setShowTriggerChanceSuccessful(showTriggerChanceSuccessful.isSelected()));
     showTriggerChanceFailure.addActionListener(
-        e -> iuiContext.setShowTriggerChanceFailure(showTriggerChanceFailure.isSelected()));
+        e -> uiContext.setShowTriggerChanceFailure(showTriggerChanceFailure.isSelected()));
     notificationMenu.add(showEndOfTurnReport);
     notificationMenu.add(showTriggeredNotifications);
     notificationMenu.add(showTriggerChanceSuccessful);

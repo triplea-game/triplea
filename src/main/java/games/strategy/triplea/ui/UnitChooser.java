@@ -40,21 +40,21 @@ final class UnitChooser extends JPanel {
   private boolean allowMultipleHits = false;
   private JButton autoSelectButton;
   private JButton selectNoneButton;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private final Match<Collection<Unit>> match;
 
   UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
-      final boolean allowTwoHit, final IUIContext uiContext) {
+      final boolean allowTwoHit, final UiContext uiContext) {
     this(units, Collections.emptyList(), dependent, allowTwoHit, uiContext);
   }
 
   private UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent, final boolean allowTwoHit, final IUIContext uiContext) {
+      final Map<Unit, Collection<Unit>> dependent, final boolean allowTwoHit, final UiContext uiContext) {
     this(units, defaultSelections, dependent, false, false, allowTwoHit, uiContext);
   }
 
   private UnitChooser(final Map<Unit, Collection<Unit>> dependent, final boolean allowMultipleHits,
-      final IUIContext uiContext, final Match<Collection<Unit>> match) {
+      final UiContext uiContext, final Match<Collection<Unit>> match) {
     dependents = dependent;
     this.allowMultipleHits = allowMultipleHits;
     this.uiContext = uiContext;
@@ -62,7 +62,7 @@ final class UnitChooser extends JPanel {
   }
 
   UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections,
-      final Map<Unit, Collection<Unit>> dependent, final boolean allowMultipleHits, final IUIContext uiContext) {
+      final Map<Unit, Collection<Unit>> dependent, final boolean allowMultipleHits, final UiContext uiContext) {
     this(dependent, allowMultipleHits, uiContext, null);
     final List<Unit> combinedList = defaultSelections.getDamaged();
     // TODO: this adds it to the default selections list, is this intended?
@@ -73,7 +73,7 @@ final class UnitChooser extends JPanel {
 
   UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
-      final boolean categorizeTransportCost, final boolean allowMultipleHits, final IUIContext uiContext) {
+      final boolean categorizeTransportCost, final boolean allowMultipleHits, final UiContext uiContext) {
     this(dependent, allowMultipleHits, uiContext, null);
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();
@@ -82,7 +82,7 @@ final class UnitChooser extends JPanel {
   UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
       final boolean categorizeTransportCost, final boolean allowMultipleHits,
-      final IUIContext uiContext, final Match<Collection<Unit>> match) {
+      final UiContext uiContext, final Match<Collection<Unit>> match) {
     this(dependent, allowMultipleHits, uiContext, match);
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();
@@ -327,10 +327,10 @@ final class UnitChooser extends JPanel {
     private final List<JLabel> hitLabel = new ArrayList<>();
     private int leftToSelect = 0;
     private static final Insets nullInsets = new Insets(0, 0, 0, 0);
-    private final IUIContext uiContext;
+    private final UiContext uiContext;
 
     ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener,
-        final boolean allowTwoHit, final int defaultValue, final IUIContext uiContext) {
+        final boolean allowTwoHit, final int defaultValue, final UiContext uiContext) {
       hitTextFieldListener = listener;
       this.category = category;
       this.leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
@@ -458,9 +458,9 @@ final class UnitChooser extends JPanel {
     private class UnitChooserEntryIcon extends JComponent {
       private static final long serialVersionUID = 591598594559651745L;
       private final boolean forceDamaged;
-      private final IUIContext uiContext;
+      private final UiContext uiContext;
 
-      UnitChooserEntryIcon(final boolean forceDamaged, final IUIContext uiContext) {
+      UnitChooserEntryIcon(final boolean forceDamaged, final UiContext uiContext) {
         this.forceDamaged = forceDamaged;
         this.uiContext = uiContext;
       }

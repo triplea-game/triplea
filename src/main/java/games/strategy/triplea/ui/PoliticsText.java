@@ -29,7 +29,7 @@ public class PoliticsText {
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
   protected PoliticsText() {
-    final ResourceLoader loader = AbstractUIContext.getResourceLoader();
+    final ResourceLoader loader = AbstractUiContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
 
     if (url != null) {

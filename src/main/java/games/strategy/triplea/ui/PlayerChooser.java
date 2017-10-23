@@ -23,17 +23,17 @@ public class PlayerChooser extends JOptionPane {
   private JList<PlayerID> list;
   private final PlayerList players;
   private final PlayerID defaultPlayer;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private final boolean allowNeutral;
 
   // private JOptionPane m_pane;
   /** Creates new PlayerChooser. */
-  public PlayerChooser(final PlayerList players, final IUIContext uiContext, final boolean allowNeutral) {
+  public PlayerChooser(final PlayerList players, final UiContext uiContext, final boolean allowNeutral) {
     this(players, null, uiContext, allowNeutral);
   }
 
   /** Creates new PlayerChooser. */
-  public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final IUIContext uiContext,
+  public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final UiContext uiContext,
       final boolean allowNeutral) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
@@ -87,9 +87,9 @@ public class PlayerChooser extends JOptionPane {
 
   private static final class PlayerChooserRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = -2185921124436293304L;
-    private final IUIContext uiContext;
+    private final UiContext uiContext;
 
-    PlayerChooserRenderer(final IUIContext uiContext) {
+    PlayerChooserRenderer(final UiContext uiContext) {
       this.uiContext = uiContext;
     }
 

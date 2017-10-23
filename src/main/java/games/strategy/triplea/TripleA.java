@@ -32,9 +32,9 @@ import games.strategy.triplea.ai.weakAI.DoesNothingAI;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.HeadlessUIContext;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.HeadlessUiContext;
 import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
@@ -107,7 +107,7 @@ public class TripleA implements IGameLoader {
     }
     final LocalPlayers localPlayers = new LocalPlayers(players);
     if (headless) {
-      final IUIContext uiContext = new HeadlessUIContext();
+      final UiContext uiContext = new HeadlessUiContext();
       uiContext.setDefaultMapDir(game.getData());
       uiContext.setLocalPlayers(localPlayers);
       display = new HeadlessDisplay();

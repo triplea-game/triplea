@@ -16,14 +16,14 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class TerritoryNameDrawable implements IDrawable {
   private final String territoryName;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
 
-  public TerritoryNameDrawable(final String territoryName, final IUIContext uiContext) {
+  public TerritoryNameDrawable(final String territoryName, final UiContext uiContext) {
     this.territoryName = territoryName;
     this.uiContext = uiContext;
   }

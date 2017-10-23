@@ -24,7 +24,7 @@ public class ExtendedStats extends StatPanel {
   private static final long serialVersionUID = 2502397606419491543L;
   private IStat[] statsExtended = new IStat[] {};
 
-  public ExtendedStats(final GameData data, final IUIContext uiContext) {
+  public ExtendedStats(final GameData data, final UiContext uiContext) {
     super(data, uiContext);
   }
 

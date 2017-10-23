@@ -51,10 +51,10 @@ public class StatPanel extends AbstractStatPanel {
   private JTable statsTable;
   private Image statsImage = null;
   protected final Map<PlayerID, ImageIcon> mapPlayerImage = new HashMap<>();
-  protected IUIContext uiContext;
+  protected UiContext uiContext;
 
   /** Creates a new instance of StatPanel. */
-  public StatPanel(final GameData data, final IUIContext uiContext) {
+  public StatPanel(final GameData data, final UiContext uiContext) {
     super(data);
     this.uiContext = uiContext;
     dataModel = new StatTableModel();

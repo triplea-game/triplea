@@ -9,15 +9,15 @@ import java.awt.geom.AffineTransform;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class CapitolMarkerDrawable implements IDrawable {
   private final String player;
   private final String location;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
 
-  public CapitolMarkerDrawable(final PlayerID player, final Territory location, final IUIContext uiContext) {
+  public CapitolMarkerDrawable(final PlayerID player, final Territory location, final UiContext uiContext) {
     super();
     if (player == null) {
       throw new IllegalStateException("no player for capitol:" + location);

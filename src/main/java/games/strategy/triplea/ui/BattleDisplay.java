@@ -104,7 +104,7 @@ public class BattleDisplay extends JPanel {
   private final JPanel casualtiesInstantPanelAttacker = new JPanel();
   private final JLabel labelNoneAttacker = new JLabel("None");
   private final JLabel labelNoneDefender = new JLabel("None");
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private final JLabel messageLabel = new JLabel();
   private final Action nullAction = SwingAction.of(" ", e -> {
   });
@@ -717,7 +717,7 @@ public class BattleDisplay extends JPanel {
 
   private static final class BattleModel extends DefaultTableModel {
     private static final long serialVersionUID = 6913324191512043963L;
-    private final IUIContext uiContext;
+    private final UiContext uiContext;
     private final GameData gameData;
     // is the player the aggressor?
     private final boolean attack;
@@ -746,7 +746,7 @@ public class BattleDisplay extends JPanel {
 
     BattleModel(final Collection<Unit> units, final boolean attack, final BattleType battleType,
         final GameData data, final Territory battleLocation, final Collection<TerritoryEffect> territoryEffects,
-        final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final IUIContext uiContext) {
+        final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final UiContext uiContext) {
       super(new Object[0][0], varDiceArray(data));
       this.uiContext = uiContext;
       gameData = data;
@@ -881,7 +881,7 @@ public class BattleDisplay extends JPanel {
     private TableData() {}
 
     TableData(final PlayerID player, final int count, final UnitType type, final boolean damaged,
-        final boolean disabled, final IUIContext uiContext) {
+        final boolean disabled, final UiContext uiContext) {
       this.count = count;
       icon = uiContext.getUnitImageFactory().getIcon(type, player, damaged, disabled);
     }
@@ -905,9 +905,9 @@ public class BattleDisplay extends JPanel {
     private final JPanel killed = new JPanel();
     private final JPanel damaged = new JPanel();
     private final GameData data;
-    private final IUIContext uiContext;
+    private final UiContext uiContext;
 
-    CasualtyNotificationPanel(final GameData data, final IUIContext uiContext) {
+    CasualtyNotificationPanel(final GameData data, final UiContext uiContext) {
       this.data = data;
       this.uiContext = uiContext;
       dice = new DicePanel(uiContext, data);

@@ -19,17 +19,17 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.IGame;
 import games.strategy.net.INode;
-import games.strategy.triplea.ui.IUIContext;
+import games.strategy.triplea.ui.UiContext;
 
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
   private final IGame game;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   int maxIconCounter = 0;
   HashMap<String, List<Icon>> iconMap = new HashMap<>();
   HashMap<String, Set<String>> playerMap = new HashMap<>();
 
-  public PlayerChatRenderer(final IGame game, final IUIContext uiContext) {
+  public PlayerChatRenderer(final IGame game, final UiContext uiContext) {
     this.game = game;
     this.uiContext = uiContext;
     setIconMap();

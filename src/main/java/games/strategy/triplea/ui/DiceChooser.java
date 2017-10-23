@@ -20,7 +20,7 @@ import games.strategy.ui.SwingAction;
 
 class DiceChooser extends JPanel {
   private static final long serialVersionUID = -3658408802544268998L;
-  private final IUIContext uiContext;
+  private final UiContext uiContext;
   private JPanel dicePanel;
   private final int[] random;
   private int diceCount = 0;
@@ -33,7 +33,7 @@ class DiceChooser extends JPanel {
   // private final GameData m_data;
   private int diceSides = 6;
 
-  DiceChooser(final IUIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals,
+  DiceChooser(final UiContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals,
       final int diceSides) {
     this.uiContext = uiContext;
     this.numRolls = numRolls;

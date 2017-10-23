@@ -28,7 +28,7 @@ public class UserActionText {
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
   protected UserActionText() {
-    final ResourceLoader loader = AbstractUIContext.getResourceLoader();
+    final ResourceLoader loader = AbstractUiContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url != null) {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);
