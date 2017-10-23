@@ -1,12 +1,10 @@
 package games.strategy.persistence.serializable;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -121,8 +119,7 @@ public final class ProxyableObjectInputOutputTest {
   public void shouldThrowExceptionWhenWritingNonSerializableObjectWithNoRegisteredProxyFactory() throws Exception {
     final ProxyRegistry proxyRegistry = ProxyRegistry.newInstance();
 
-    catchException(() -> writeObject(proxyRegistry, new FakeNonSerializableClass(2112, "42")));
-
-    assertThat(caughtException(), is(instanceOf(NotSerializableException.class)));
+    assertThrows(NotSerializableException.class,
+        () -> writeObject(proxyRegistry, new FakeNonSerializableClass(2112, "42")));
   }
 }

@@ -1,13 +1,8 @@
 package games.strategy.engine.lobby.server.db;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
@@ -56,9 +51,10 @@ public class UserControllerIntegrationTest {
 
   @Test
   public void testCreateDupe() {
-    catchException(() -> controller.createUser(createUserWithMd5CryptHash(),
-        new HashedPassword(MD5Crypt.crypt(Util.createUniqueTimeStamp()))));
-    assertThat("Should not be allowed to create a dupe user", caughtException(), is(not(equalTo(null))));
+    assertThrows(Exception.class,
+        () -> controller.createUser(createUserWithMd5CryptHash(),
+            new HashedPassword(MD5Crypt.crypt(Util.createUniqueTimeStamp()))),
+        "Should not be allowed to create a dupe user");
   }
 
   @Test

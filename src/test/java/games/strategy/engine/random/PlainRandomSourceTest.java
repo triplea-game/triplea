@@ -1,15 +1,12 @@
 package games.strategy.engine.random;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
-import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
@@ -34,11 +31,8 @@ public final class PlainRandomSourceTest {
 
   @Test
   public void getRandomSingle_ShouldThrowExceptionWhenMaxIsNotPositive() {
-    catchException(() -> plainRandomSource.getRandom(0, ANNOTATION));
-
-    assertThat(caughtException(), allOf(
-        is(instanceOf(IllegalArgumentException.class)),
-        hasMessageThat(containsString("max"))));
+    final Exception e = assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, ANNOTATION));
+    assertThat(e.getMessage(), containsString("max"));
   }
 
   @Test
@@ -55,19 +49,18 @@ public final class PlainRandomSourceTest {
 
   @Test
   public void getRandomMany_ShouldThrowExceptionWhenMaxIsNotPositive() {
-    catchException(() -> plainRandomSource.getRandom(0, 1, ANNOTATION));
 
-    assertThat(caughtException(), allOf(
-        is(instanceOf(IllegalArgumentException.class)),
-        hasMessageThat(containsString("max"))));
+    final Exception e =
+        assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, 1, ANNOTATION));
+
+    assertThat(e.getMessage(),
+        containsString("max"));
   }
 
   @Test
   public void getRandomMany_ShouldThrowExceptionWhenCountIsNotPositive() {
-    catchException(() -> plainRandomSource.getRandom(MAX, 0, ANNOTATION));
-
-    assertThat(caughtException(), allOf(
-        is(instanceOf(IllegalArgumentException.class)),
-        hasMessageThat(containsString("count"))));
+    final Exception e =
+        assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(MAX, 0, ANNOTATION));
+    assertThat(e.getMessage(), containsString("count"));
   }
 }

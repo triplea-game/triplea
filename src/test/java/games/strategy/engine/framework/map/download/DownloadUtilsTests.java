@@ -1,14 +1,11 @@
 package games.strategy.engine.framework.map.download;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
-import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -105,22 +102,18 @@ public final class DownloadUtilsTests {
     public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
 
-      catchException(() -> downloadToFile());
+      final IOException e = assertThrows(IOException.class, () -> downloadToFile());
 
-      assertThat(caughtException(), allOf(
-          is(instanceOf(IOException.class)),
-          hasMessageThat(containsString("status code"))));
+      assertThat(e.getMessage(), containsString("status code"));
     }
 
     @Test
     public void shouldThrowExceptionWhenEntityIsAbsent() {
       when(response.getEntity()).thenReturn(null);
 
-      catchException(() -> downloadToFile());
+      final IOException e = assertThrows(IOException.class, () -> downloadToFile());
 
-      assertThat(caughtException(), allOf(
-          is(instanceOf(IOException.class)),
-          hasMessageThat(containsString("entity is missing"))));
+      assertThat(e.getMessage(), containsString("entity is missing"));
     }
   }
 
@@ -218,11 +211,9 @@ public final class DownloadUtilsTests {
     public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
 
-      catchException(() -> getDownloadLengthFromHost());
+      final IOException e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
 
-      assertThat(caughtException(), allOf(
-          is(instanceOf(IOException.class)),
-          hasMessageThat(containsString("status code"))));
+      assertThat(e.getMessage(), containsString("status code"));
     }
 
     @Test
@@ -238,21 +229,18 @@ public final class DownloadUtilsTests {
     public void shouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() throws Exception {
       when(contentLengthHeader.getValue()).thenReturn(null);
 
-      catchException(() -> getDownloadLengthFromHost());
+      final IOException e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
 
-      assertThat(caughtException(), allOf(
-          is(instanceOf(IOException.class)),
-          hasMessageThat(containsString("content length header value is absent"))));
+      assertThat(e.getMessage(), containsString("content length header value is absent"));
     }
 
     @Test
     public void shouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() throws Exception {
       when(contentLengthHeader.getValue()).thenReturn("value");
 
-      catchException(() -> getDownloadLengthFromHost());
+      final IOException e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
 
-      assertThat(caughtException(), is(instanceOf(IOException.class)));
-      assertThat(caughtException().getCause(), is(instanceOf(NumberFormatException.class)));
+      assertThat(e.getCause(), is(instanceOf(NumberFormatException.class)));
     }
   }
 }

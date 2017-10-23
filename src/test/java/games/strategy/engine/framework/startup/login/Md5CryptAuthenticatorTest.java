@@ -1,17 +1,13 @@
 package games.strategy.engine.framework.startup.login;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
-import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
@@ -98,11 +94,9 @@ public final class Md5CryptAuthenticatorTest {
   public void newResponse_ShouldThrowExceptionWhenChallengeDoesNotContainSalt() throws Exception {
     final Map<String, String> challenge = ImmutableMap.of();
 
-    catchException(() -> Md5CryptAuthenticator.newResponse(PASSWORD, challenge));
-
-    assertThat(caughtException(), allOf(
-        is(instanceOf(AuthenticationException.class)),
-        hasMessageThat(containsString("missing"))));
+    final Exception e =
+        assertThrows(AuthenticationException.class, () -> Md5CryptAuthenticator.newResponse(PASSWORD, challenge));
+    assertThat(e.getMessage(), containsString("missing"));
   }
 
   @Test
@@ -121,12 +115,12 @@ public final class Md5CryptAuthenticatorTest {
     final String name = "name";
     final Map<String, String> properties = ImmutableMap.of("other name", "value");
 
-    catchException(() -> Md5CryptAuthenticator.getRequiredProperty(properties, name));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> Md5CryptAuthenticator.getRequiredProperty(properties, name));
 
-    assertThat(caughtException(), allOf(
-        is(instanceOf(AuthenticationException.class)),
-        hasMessageThat(containsString("missing")),
-        hasMessageThat(containsString(name))));
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(name)));
   }
 
   @Test
@@ -134,9 +128,11 @@ public final class Md5CryptAuthenticatorTest {
     final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
     final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 
-    catchException(() -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
-
-    assertThat(caughtException(), is(nullValue()));
+    try {
+      Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response);
+    } catch (final Exception e) {
+      throw new AssertionError(e);
+    }
   }
 
   @Test
@@ -144,11 +140,10 @@ public final class Md5CryptAuthenticatorTest {
     final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
     final Map<String, String> response = Md5CryptAuthenticator.newResponse("otherPassword", challenge);
 
-    catchException(() -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
 
-    assertThat(caughtException(), allOf(
-        is(instanceOf(AuthenticationException.class)),
-        hasMessageThat(containsString("authentication failed"))));
+    assertThat(e.getMessage(), containsString("authentication failed"));
   }
 
   @Test
@@ -157,12 +152,13 @@ public final class Md5CryptAuthenticatorTest {
     final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 
     challenge.remove(ChallengePropertyNames.SALT);
-    catchException(() -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
 
-    assertThat(caughtException(), allOf(
-        is(instanceOf(AuthenticationException.class)),
-        hasMessageThat(containsString("missing")),
-        hasMessageThat(containsString(ChallengePropertyNames.SALT))));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(ChallengePropertyNames.SALT)));
   }
 
   @Test
@@ -171,11 +167,11 @@ public final class Md5CryptAuthenticatorTest {
     final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 
     response.remove(ResponsePropertyNames.DIGEST);
-    catchException(() -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
 
-    assertThat(caughtException(), allOf(
-        is(instanceOf(AuthenticationException.class)),
-        hasMessageThat(containsString("missing")),
-        hasMessageThat(containsString(ResponsePropertyNames.DIGEST))));
+    final Exception e = assertThrows(AuthenticationException.class,
+        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+    assertThat(e.getMessage(), allOf(
+        containsString("missing"),
+        containsString(ResponsePropertyNames.DIGEST)));
   }
 }

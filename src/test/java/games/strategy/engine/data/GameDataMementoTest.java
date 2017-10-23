@@ -1,14 +1,10 @@
 package games.strategy.engine.data;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
-import static com.googlecode.catchexception.apis.CatchExceptionHamcrestMatchers.hasMessageThat;
 import static games.strategy.engine.data.Matchers.equalToGameData;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,13 +32,10 @@ public final class GameDataMementoTest {
   public void mementoImporter_ShouldThrowExceptionWhenRequiredPropertyIsAbsent() throws Exception {
     final Memento memento = TestGameDataMementoFactory.newMementoWithoutProperty(GameDataMemento.PropertyNames.VERSION);
 
-    catchException(() -> mementoImporter.importMemento(memento));
-
-    assertThat(caughtException(), allOf(
-        is(instanceOf(MementoImportException.class)),
-        hasMessageThat(containsString(String.format(
-            "missing required property '%s'",
-            GameDataMemento.PropertyNames.VERSION)))));
+    final Exception e = assertThrows(MementoImportException.class, () -> mementoImporter.importMemento(memento));
+    assertThat(e.getMessage(), containsString(String.format(
+        "missing required property '%s'",
+        GameDataMemento.PropertyNames.VERSION)));
   }
 
   @Test
@@ -50,12 +43,9 @@ public final class GameDataMementoTest {
     final Memento memento =
         TestGameDataMementoFactory.newMementoWithProperty(GameDataMemento.PropertyNames.VERSION, "1.2.3.4");
 
-    catchException(() -> mementoImporter.importMemento(memento));
-
-    assertThat(caughtException(), allOf(
-        is(instanceOf(MementoImportException.class)),
-        hasMessageThat(containsString(String.format(
-            "property '%s' has wrong type",
-            GameDataMemento.PropertyNames.VERSION)))));
+    final Exception e = assertThrows(MementoImportException.class, () -> mementoImporter.importMemento(memento));
+    assertThat(e.getMessage(), containsString(String.format(
+        "property '%s' has wrong type",
+        GameDataMemento.PropertyNames.VERSION)));
   }
 }

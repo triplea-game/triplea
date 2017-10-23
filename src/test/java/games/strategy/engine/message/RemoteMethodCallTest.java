@@ -1,10 +1,9 @@
 package games.strategy.engine.message;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -56,9 +55,8 @@ public final class RemoteMethodCallTest {
 
   @Test
   public void stringToClass_ShouldThrowExceptionWhenStringIsUnknownClassName() {
-    catchException(() -> RemoteMethodCall.stringToClass("some.unknown.Type", null));
-
-    assertThat(caughtException(), is(instanceOf(IllegalStateException.class)));
-    assertThat(caughtException().getCause(), is(instanceOf(ClassNotFoundException.class)));
+    final IllegalStateException e =
+        assertThrows(IllegalStateException.class, () -> RemoteMethodCall.stringToClass("some.unknown.Type", null));
+    assertThat(e.getCause(), is(instanceOf(ClassNotFoundException.class)));
   }
 }

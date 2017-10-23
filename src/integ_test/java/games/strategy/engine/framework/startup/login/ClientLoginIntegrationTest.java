@@ -1,11 +1,6 @@
 package games.strategy.engine.framework.startup.login;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
@@ -63,9 +58,11 @@ public final class ClientLoginIntegrationTest {
       }
     };
 
-    catchException(() -> newClientMessenger(connectionLogin).shutDown());
-
-    assertThat(caughtException(), is(nullValue()));
+    try {
+      newClientMessenger(connectionLogin).shutDown();
+    } catch (final Exception e) {
+      throw new AssertionError(e);
+    }
   }
 
   private static class TestConnectionLogin extends ClientLogin {
@@ -114,26 +111,24 @@ public final class ClientLoginIntegrationTest {
       }
     };
 
-    catchException(() -> newClientMessenger(connectionLogin).shutDown());
-
-    assertThat(caughtException(), is(instanceOf(CouldNotLogInException.class)));
+    assertThrows(CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
   }
 
   @Test
   public void login_ShouldSucceedUsingHmacSha512AuthenticatorWhenPasswordMatches() {
     final IConnectionLogin connectionLogin = new TestConnectionLogin();
 
-    catchException(() -> newClientMessenger(connectionLogin).shutDown());
-
-    assertThat(caughtException(), is(nullValue()));
+    try {
+      newClientMessenger(connectionLogin).shutDown();
+    } catch (final Exception e) {
+      throw new AssertionError(e);
+    }
   }
 
   @Test
   public void login_ShouldFailUsingHmacSha512AuthenticatorWhenPasswordDoesNotMatch() {
     final IConnectionLogin connectionLogin = new TestConnectionLogin(OTHER_PASSWORD);
 
-    catchException(() -> newClientMessenger(connectionLogin).shutDown());
-
-    assertThat(caughtException(), is(instanceOf(CouldNotLogInException.class)));
+    assertThrows(CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
   }
 }
