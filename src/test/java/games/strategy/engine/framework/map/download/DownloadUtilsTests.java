@@ -102,7 +102,7 @@ public final class DownloadUtilsTests {
     public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
 
-      final IOException e = assertThrows(IOException.class, () -> downloadToFile());
+      final Exception e = assertThrows(IOException.class, () -> downloadToFile());
 
       assertThat(e.getMessage(), containsString("status code"));
     }
@@ -111,7 +111,7 @@ public final class DownloadUtilsTests {
     public void shouldThrowExceptionWhenEntityIsAbsent() {
       when(response.getEntity()).thenReturn(null);
 
-      final IOException e = assertThrows(IOException.class, () -> downloadToFile());
+      final Exception e = assertThrows(IOException.class, () -> downloadToFile());
 
       assertThat(e.getMessage(), containsString("entity is missing"));
     }
@@ -211,7 +211,7 @@ public final class DownloadUtilsTests {
     public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
 
-      final IOException e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
+      final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
 
       assertThat(e.getMessage(), containsString("status code"));
     }
@@ -229,7 +229,7 @@ public final class DownloadUtilsTests {
     public void shouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() throws Exception {
       when(contentLengthHeader.getValue()).thenReturn(null);
 
-      final IOException e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
+      final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
 
       assertThat(e.getMessage(), containsString("content length header value is absent"));
     }
@@ -238,7 +238,7 @@ public final class DownloadUtilsTests {
     public void shouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() throws Exception {
       when(contentLengthHeader.getValue()).thenReturn("value");
 
-      final IOException e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
+      final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
 
       assertThat(e.getCause(), is(instanceOf(NumberFormatException.class)));
     }
