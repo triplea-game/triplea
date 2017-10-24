@@ -115,7 +115,7 @@ public class DownloadFileDescriptionTest {
   }
 
   private static void mapInstallLocationTest(final String inputUrl, final String mapName, final File expected) {
-    final DownloadFileDescription testObj =     new DownloadFileDescription(inputUrl, "", mapName, new Version(0, 0),
+    final DownloadFileDescription testObj = new DownloadFileDescription(inputUrl, "", mapName, new Version(0, 0),
         DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
 
     assertThat(testObj.getInstallLocation().getAbsolutePath(), is(expected.getAbsolutePath()));

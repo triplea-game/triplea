@@ -14,8 +14,8 @@ public class TemporaryFolder {
   /**
    * Creates and returns a new temporary file which gets deleted when the Virtual Machine Terminates.
    */
-  public File newFile(String name) throws IOException {
-    File result = new File(rootFolder, name);
+  public File newFile(final String name) throws IOException {
+    final File result = new File(rootFolder, name);
     result.createNewFile();
     result.deleteOnExit();
     return result;

@@ -25,13 +25,13 @@ public class TemporaryFolderExtension implements TestInstancePostProcessor, Para
   }
 
   @Override
-  public void postProcessTestInstance(Object testInstance, ExtensionContext context) {
+  public void postProcessTestInstance(final Object testInstance, final ExtensionContext context) {
     stream(testInstance.getClass().getDeclaredFields())
         .filter(field -> field.getType() == TemporaryFolder.class)
         .forEach(field -> injectTemporaryFolder(testInstance, field));
   }
 
-  private void injectTemporaryFolder(Object instance, Field field) {
+  private void injectTemporaryFolder(final Object instance, final Field field) {
     field.setAccessible(true);
     try {
       field.set(instance, createTempFolder());
@@ -41,17 +41,17 @@ public class TemporaryFolderExtension implements TestInstancePostProcessor, Para
   }
 
   @Override
-  public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
+  public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) {
     return parameterContext.getParameter().getType() == TemporaryFolder.class;
   }
 
   @Override
-  public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
+  public Object resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) {
     return createTempFolder();
   }
 
   private TemporaryFolder createTempFolder() {
-    TemporaryFolder result = new TemporaryFolder();
+    final TemporaryFolder result = new TemporaryFolder();
     result.prepare();
     tempFolders.add(result);
     return result;
