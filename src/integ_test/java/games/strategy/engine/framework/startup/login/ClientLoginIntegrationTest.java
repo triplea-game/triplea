@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.login;
 
+import static games.strategy.test.Assertions.assertNotThrows;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
@@ -58,11 +59,7 @@ public final class ClientLoginIntegrationTest {
       }
     };
 
-    try {
-      newClientMessenger(connectionLogin).shutDown();
-    } catch (final Exception e) {
-      throw new AssertionError(e);
-    }
+    assertNotThrows(() -> newClientMessenger(connectionLogin).shutDown());
   }
 
   private static class TestConnectionLogin extends ClientLogin {
@@ -118,11 +115,7 @@ public final class ClientLoginIntegrationTest {
   public void login_ShouldSucceedUsingHmacSha512AuthenticatorWhenPasswordMatches() {
     final IConnectionLogin connectionLogin = new TestConnectionLogin();
 
-    try {
-      newClientMessenger(connectionLogin).shutDown();
-    } catch (final Exception e) {
-      throw new AssertionError(e);
-    }
+    assertNotThrows(() -> newClientMessenger(connectionLogin).shutDown());
   }
 
   @Test
