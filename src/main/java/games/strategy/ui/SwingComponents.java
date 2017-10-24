@@ -66,6 +66,7 @@ public class SwingComponents {
    */
   public enum KeyDownMask {
     META_DOWN(InputEvent.META_DOWN_MASK),
+
     CTRL_DOWN(InputEvent.CTRL_DOWN_MASK);
 
     private final int code;
@@ -328,6 +329,7 @@ public class SwingComponents {
 
   /**
    * Shows a dialog the user can use to select a folder or file.
+   *
    * @param folderSelectionMode Flag controlling whether files or folders are available for selection.
    * @return Empty if the user selects nothing, otherwise the users selection.
    */

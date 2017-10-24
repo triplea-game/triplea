@@ -41,7 +41,8 @@ public class FileOpen {
       chooser.setSelectedFile(selectedFile);
     }
     chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists())
-        ? new File(System.getProperties().getProperty("user.dir")) : currentDirectory));
+        ? new File(System.getProperties().getProperty("user.dir"))
+        : currentDirectory));
     /*
      * Show only text and gif files
      */

@@ -29,8 +29,11 @@ public class DownloadFileDescription {
 
   enum MapCategory {
     BEST("High Quality"),
+
     GOOD("Good Quality"),
+
     DEVELOPMENT("In Development"),
+
     EXPERIMENTAL("Experimental");
 
     String outputLabel;
@@ -49,7 +52,7 @@ public class DownloadFileDescription {
 
   DownloadFileDescription(final String url, final String description, final String mapName,
       final Version version, final DownloadType downloadType, final MapCategory mapCategory) {
-    this(url,description, mapName, version, downloadType, mapCategory, "");
+    this(url, description, mapName, version, downloadType, mapCategory, "");
   }
 
   DownloadFileDescription(final String url, final String description, final String mapName,

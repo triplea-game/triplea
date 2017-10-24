@@ -444,9 +444,9 @@ public class HistoryLog extends JFrame {
       // see if there's a flag
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       final boolean hasFlag = ta != null
-              && t.getOwner() != null
-              && players.contains(t.getOwner())
-              && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
+          && t.getOwner() != null
+          && players.contains(t.getOwner())
+          && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
       if (hasFlag || !ownedUnits.isEmpty()) {
         logWriter.print("    " + t.getName() + " : ");
         if (hasFlag && ownedUnits.isEmpty()) {

@@ -125,7 +125,7 @@ enum SettingsWindow {
         .add(JButtonBuilder.builder()
             .title("Save")
             .actionListener(() -> {
-              SaveFunction.SaveResult saveResult = SaveFunction.saveSettings(settings, ClientSetting::flush);
+              final SaveFunction.SaveResult saveResult = SaveFunction.saveSettings(settings, ClientSetting::flush);
               JOptionPane.showMessageDialog(null, saveResult.message, "Results", saveResult.dialogType);
             })
             .build())

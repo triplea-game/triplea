@@ -78,7 +78,7 @@ public class JButtonBuilder {
 
   /**
    * Increases button text size.
-   * 
+   *
    * @param plusAmount Text increase amount, typically somewhere around +2 to +4
    */
   public JButtonBuilder biggerFont(final int plusAmount) {

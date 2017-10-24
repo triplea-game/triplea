@@ -127,8 +127,8 @@ public class ProOddsCalculator {
       calc.setRetreatWhenOnlyAirLeft(true);
     }
     final AggregateResults results = calc.setCalculateDataAndCalculate(attacker, defender,
-            t, attackingUnits, defendingUnits, new ArrayList<>(bombardingUnits),
-            TerritoryEffectHelper.getEffects(t), runCount);
+        t, attackingUnits, defendingUnits, new ArrayList<>(bombardingUnits),
+        TerritoryEffectHelper.getEffects(t), runCount);
     if (retreatWhenOnlyAirLeft) {
       calc.setRetreatWhenOnlyAirLeft(false);
     }

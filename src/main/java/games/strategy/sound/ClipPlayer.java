@@ -274,7 +274,7 @@ public class ClipPlayer {
     if (clip != null) {
       new Thread(() -> {
         try {
-          Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
+          final Optional<InputStream> inputStream = UrlStreams.openStream(clip.toURL());
           if (inputStream.isPresent()) {
             final AudioDevice audioDevice = FactoryRegistry.systemRegistry().createAudioDevice();
             new AdvancedPlayer(inputStream.get(), audioDevice).play();

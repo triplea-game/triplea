@@ -204,7 +204,7 @@ public class Version implements Serializable, Comparable<Version> {
     return m_micro != 0 ? toStringFull() : m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
   }
 
-  public boolean isCompatible(Version other) {
+  public boolean isCompatible(final Version other) {
     return other != null && other.m_major == m_major && other.m_minor == m_minor && other.m_point == m_point;
   }
 }

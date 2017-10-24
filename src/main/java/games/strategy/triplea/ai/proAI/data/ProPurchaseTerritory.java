@@ -23,7 +23,7 @@ public class ProPurchaseTerritory {
 
   /**
    * Create data structure for tracking unit purchase and list of place territories.
-   * 
+   *
    * @param territory - production territory
    * @param data - current game data
    * @param player - AI player who is purchasing

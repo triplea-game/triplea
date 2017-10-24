@@ -49,7 +49,7 @@ public final class GridBagHelper {
 
   /**
    * Adds a component spanning multiple columns.
-   * 
+   *
    * @param child The component to be added.
    * @param columnSpan The number of columns to span.
    */

@@ -17,7 +17,7 @@ public final class ArgParser {
 
   /**
    * Move command line arguments to system properties or client settings.
-   * 
+   *
    * @return Return true if all args were valid and accepted, false otherwise.
    */
   public static boolean handleCommandLineArgs(

@@ -11,7 +11,7 @@ import com.google.common.base.Preconditions;
  * Relatively simple type-safe builder API for constructring a JTabbedPane.
  * <br />
  * Example usage:
- * 
+ *
  * <pre>
  * <code>
  *   JSplitPane splitPane = JSplitPaneBuilder.builder()
@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
  *      .build();
  * </code>
  * </pre>
- * 
+ *
  * <br />
  * Note the builder sets the 'horizontal' or 'vertical' configuration of the
  * split panel automatically. To do the top/bottom version, eg:
@@ -33,7 +33,7 @@ import com.google.common.base.Preconditions;
  *      .build();
  * </code>
  * </pre>
- * 
+ *
  */
 public final class JSplitPaneBuilder {
 

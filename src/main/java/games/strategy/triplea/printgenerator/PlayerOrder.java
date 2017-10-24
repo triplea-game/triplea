@@ -32,13 +32,13 @@ class PlayerOrder {
       if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {
         final String delegateClassName = currentStep.getDelegate().getClass().getName();
         if (delegateClassName.equals(InitializationDelegate.class.getName())
-                || delegateClassName.equals(BidPurchaseDelegate.class.getName())
-                || delegateClassName.equals(BidPlaceDelegate.class.getName())
-                || delegateClassName.equals(EndRoundDelegate.class.getName())) {
+            || delegateClassName.equals(BidPurchaseDelegate.class.getName())
+            || delegateClassName.equals(BidPlaceDelegate.class.getName())
+            || delegateClassName.equals(EndRoundDelegate.class.getName())) {
           continue;
         }
       } else if (currentStep.getName() != null
-              && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
+          && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
         continue;
       }
       final PlayerID currentPlayerId = currentStep.getPlayerId();

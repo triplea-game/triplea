@@ -18,7 +18,7 @@ import games.strategy.ui.SwingComponents;
  * further as needed.
  * <br />
  * Example usage:
- * 
+ *
  * <pre>
  * <code>
  * JTabbedPaneBuilder JTabbedPaneBuilder.builder()

@@ -8,6 +8,7 @@ import javafx.application.Platform;
 
 /**
  * A utility class for executing synchronous Tasks using the JavaFX-UI.
+ *
  * @param <T> The Object type which is being returned by this task. May be null.
  */
 public final class LoadingTask<T> {

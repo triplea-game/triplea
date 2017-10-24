@@ -360,7 +360,8 @@ final class SelectionComponentFactory {
           @Override
           @SuppressWarnings("unchecked")
           public Component getListCellRendererComponent(
-              JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+              final JList<?> list, final Object value, final int index, final boolean isSelected,
+              final boolean cellHasFocus) {
             return super.getListCellRendererComponent(list, renderFunction.apply((T) value), index, isSelected,
                 cellHasFocus);
           }

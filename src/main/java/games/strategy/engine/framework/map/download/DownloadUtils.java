@@ -109,7 +109,7 @@ public final class DownloadUtils {
 
   /**
    * Creaetes a temp file, downloads the contents of a target uri to that file, returns the file.
-   * 
+   *
    * @param uri The URI whose contents will be downloaded
    */
   public static FileDownloadResult downloadToFile(final String uri) {

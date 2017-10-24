@@ -21,7 +21,7 @@ public class TimeManager {
   /**
    * Returns a String representing the current {@link LocalDateTime}.
    * Based on where you live this might be either for example 13:45 or 1:45pm.
-   * 
+   *
    * @return The formatted String
    */
   public static String getLocalizedTime() {
@@ -32,7 +32,7 @@ public class TimeManager {
   /**
    * Returns a String representing this {@link LocalDateTime}.
    * Based on where you live this might be either for example 13:45 or 1:45pm.
-   * 
+   *
    * @param dateTime The LocalDateTime representing the desired time
    * @return The formatted String
    */
@@ -43,7 +43,7 @@ public class TimeManager {
 
   /**
    * Replacement for {@code Date.toString}.
-   * 
+   *
    * @param dateTime The DateTime which should be formatted
    * @return a Formatted String of the given DateTime
    */

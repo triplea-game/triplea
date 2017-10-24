@@ -19,7 +19,7 @@ public class ProDummyGameModifiedChannel implements IGameModifiedChannel {
 
   @Override
   public void startHistoryEvent(final String event, final Object renderingData) {}
-  
+
   @Override
   public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
       final String displayName, final boolean loadedFromSavedGame) {}

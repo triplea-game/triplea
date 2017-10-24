@@ -102,7 +102,7 @@ public class Chat {
       }
     }
   }
-  
+
   private void addToNotesMap(final INode node, final Tag tag) {
     if (tag == Tag.NONE) {
       return;
@@ -367,8 +367,7 @@ public class Chat {
     }
 
     @Override
-    public void ping() {
-    }
+    public void ping() {}
   };
 
   /**

@@ -58,9 +58,9 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
 
-    showOdds.addActionListener(e ->  OddsCalculatorDialog.show(frame, currentTerritory));
+    showOdds.addActionListener(e -> OddsCalculatorDialog.show(frame, currentTerritory));
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
-        frame, 'B', () ->  OddsCalculatorDialog.show(frame, currentTerritory));
+        frame, 'B', () -> OddsCalculatorDialog.show(frame, currentTerritory));
   }
 
   @Override

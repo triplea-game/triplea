@@ -19,7 +19,7 @@ public class PropertyFileReader {
   /**
    * Convenience constructor to create a property file reader
    * centered around a given property file specified by file path.
-   * 
+   *
    * @param propertyFile Path to properties file that will be parsed.
    */
   public PropertyFileReader(final String propertyFile) {
@@ -28,7 +28,7 @@ public class PropertyFileReader {
 
   /**
    * Creates a property file reader centered around a given property file.
-   * 
+   *
    * @param propertyFile Property file that will be parsed.
    */
   public PropertyFileReader(final File propertyFile) {
@@ -40,6 +40,7 @@ public class PropertyFileReader {
   /**
    * Returns the value corresponding to a given property key, returns empty if the key is not found.
    * Usage example:
+   *
    * <pre>
    * <code>
    * String myValue = readProperty("keyValue");

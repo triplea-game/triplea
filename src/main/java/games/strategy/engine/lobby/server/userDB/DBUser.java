@@ -117,7 +117,7 @@ public final class DBUser implements Serializable {
 
   /**
    * Example usage:
-   * 
+   *
    * <pre>
    * <code>
    *   String proposedUserName = getUserInput();
@@ -127,7 +127,7 @@ public final class DBUser implements Serializable {
    *   }
    * </code>
    * </pre>
-   * 
+   *
    * @return Assuming an invalid user name - returns an error message String.
    * @throws IllegalStateException if the username is valid. Only call this method if 'isValidUserName()' return false
    */

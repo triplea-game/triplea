@@ -27,7 +27,7 @@ public class MutedUsernameController extends TimedController {
 
       try (Connection con = Database.getPostgresConnection();
           PreparedStatement ps = con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)"
-                  + " on conflict (username) do update set mute_till=excluded.mute_till")) {
+              + " on conflict (username) do update set mute_till=excluded.mute_till")) {
         ps.setString(1, username);
         ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
         ps.execute();

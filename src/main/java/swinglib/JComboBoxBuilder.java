@@ -17,7 +17,7 @@ import games.strategy.triplea.settings.ClientSetting;
  * box with menu options that can be selected.
  * <br />
  * Example usage:
- * 
+ *
  * <pre>
  * <code>
  *   JComboBox combBox = JComboBoxBuilder.builder()

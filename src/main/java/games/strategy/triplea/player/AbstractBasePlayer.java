@@ -71,7 +71,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   @Override
   public String toString() {
     return (playerID == null || playerID.getName() == null || !playerID.getName().equals(name))
-        ? (type + ":" + name + ":" + (playerID == null ? "NullID" : playerID.getName())) : (type + ":" + name);
+        ? (type + ":" + name + ":" + (playerID == null ? "NullID" : playerID.getName()))
+        : (type + ":" + name);
   }
 
   /**

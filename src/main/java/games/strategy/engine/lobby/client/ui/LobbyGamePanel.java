@@ -462,7 +462,8 @@ class LobbyGamePanel extends JPanel {
     final String response =
         controller.mutePlayerHeadlessHostBot(lobbyWatcherNode, playerToBeMuted, min, hashedPassword, salt);
     JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully attempted to mute player (" + playerToBeMuted + ") on host" : "Failed: " + response));
+        ? "Successfully attempted to mute player (" + playerToBeMuted + ") on host"
+        : "Failed: " + response));
   }
 
   private void bootPlayerInHeadlessHostBot() {
@@ -501,7 +502,8 @@ class LobbyGamePanel extends JPanel {
     final String response =
         controller.bootPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBooted, hashedPassword, salt);
     JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully attempted to boot player (" + playerToBeBooted + ") on host" : "Failed: " + response));
+        ? "Successfully attempted to boot player (" + playerToBeBooted + ") on host"
+        : "Failed: " + response));
   }
 
   private void banPlayerInHeadlessHostBot() {
@@ -552,7 +554,8 @@ class LobbyGamePanel extends JPanel {
     final String response =
         controller.banPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBanned, hrs, hashedPassword, salt);
     JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully attempted banned player (" + playerToBeBanned + ") on host" : "Failed: " + response));
+        ? "Successfully attempted banned player (" + playerToBeBanned + ") on host"
+        : "Failed: " + response));
   }
 
   private void stopGameHeadlessHostBot() {

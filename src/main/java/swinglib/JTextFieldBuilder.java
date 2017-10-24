@@ -13,7 +13,7 @@ import games.strategy.ui.SwingAction;
 
 /**
  * Builder class for building swing text fields. Example usage:
- * 
+ *
  * <pre>
  * <code>
  *   JTextField field = JTextFieldBuilder.builder()
@@ -108,7 +108,7 @@ public class JTextFieldBuilder {
   /**
    * Adds an action listener that is fired when the user presses enter after entering text
    * into the text field.
-   * 
+   *
    * @param textEnteredAction Action to fire on 'enter', input value is the current value of the
    *        text field.
    */
@@ -126,8 +126,7 @@ public class JTextFieldBuilder {
     Preconditions.checkArgument(fields.length > 0);
     Preconditions.checkNotNull(fields[0]);
 
-    Arrays.asList(fields).forEach(field ->
-        field.addKeyListener(SwingAction.keyReleaseListener(listener)));
+    Arrays.asList(fields).forEach(field -> field.addKeyListener(SwingAction.keyReleaseListener(listener)));
   }
 
   /**
