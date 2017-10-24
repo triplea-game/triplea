@@ -36,7 +36,7 @@ public class NonFightingBattle extends DependentBattle {
   private final Map<Territory, Collection<Unit>> m_attackingFromMap;
 
   /**
-   *  Constructor. Suppress checkstyle warning.
+   * Constructor. Suppress checkstyle warning.
    */
   public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final GameData data) {
@@ -167,7 +167,7 @@ public class NonFightingBattle extends DependentBattle {
   }
 
   /**
-   *  Add dependent Units. Uninformative comment to suppress checkstyle warning.
+   * Add dependent Units. Uninformative comment to suppress checkstyle warning.
    */
   public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
     for (final Unit holder : dependencies.keySet()) {

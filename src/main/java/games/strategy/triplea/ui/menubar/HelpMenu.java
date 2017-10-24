@@ -186,7 +186,8 @@ public class HelpMenu {
           .setPreferredSize(new Dimension(
               (scroll.getPreferredSize().width > availWidth ? availWidth
                   : (scroll.getPreferredSize().height > availHeight
-                      ? Math.min(availWidth, scroll.getPreferredSize().width + 22) : scroll.getPreferredSize().width)),
+                      ? Math.min(availWidth, scroll.getPreferredSize().width + 22)
+                      : scroll.getPreferredSize().width)),
               (scroll.getPreferredSize().height > availHeight ? availHeight
                   : (scroll.getPreferredSize().width > availWidth
                       ? Math.min(availHeight, scroll.getPreferredSize().height + 22)

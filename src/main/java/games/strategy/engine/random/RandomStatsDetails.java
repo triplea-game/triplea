@@ -94,7 +94,7 @@ public class RandomStatsDetails implements Serializable {
       }
     }
     throw new AssertionError(String.format("Unexpected sum (%s) was never greater than center point (%s)",
-                    sum, centerPoint));
+        sum, centerPoint));
   }
 
   private static String getStatsString(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,

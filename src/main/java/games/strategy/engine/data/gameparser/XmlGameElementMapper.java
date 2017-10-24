@@ -124,8 +124,9 @@ public class XmlGameElementMapper {
           .put("games.strategy.triplea.attachments.TechAbilityAttachment",
               attachmentData -> new TechAbilityAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.TechAttachment", attachmentData ->
-              new TechAttachment(attachmentData.name, attachmentData.attachable, attachmentData.gameData))
+          .put("games.strategy.triplea.attachments.TechAttachment",
+              attachmentData -> new TechAttachment(attachmentData.name, attachmentData.attachable,
+                  attachmentData.gameData))
           .put("games.strategy.triplea.attachments.TerritoryAttachment",
               attachmentData -> new TerritoryAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))

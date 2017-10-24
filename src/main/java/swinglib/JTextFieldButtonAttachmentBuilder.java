@@ -10,7 +10,7 @@ import javax.swing.JTextField;
  * For example, useful for input fields that have 'submit' button next to it.
  * <br />
  * Example usage:
- * 
+ *
  * <pre>
  * <code>
  *   JComponent textFieldButtonComposite = JTextFieldBuilder.builder()

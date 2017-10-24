@@ -8,14 +8,23 @@ package games.strategy.triplea.settings;
  */
 enum SettingType {
   AI("AI"),
+
   BATTLE_SIMULATOR("Battle Simulator"),
+
   COMBAT("Combat"),
+
   GAME("Game"),
+
   MAP_SCROLLING("Map Scrolling"),
+
   NETWORK_PROXY("Network Proxy"),
+
   NETWORK_TIMEOUTS("Network Timeouts"),
+
   LOOK_AND_FEEL("UI Theme"),
+
   FOLDER_LOCATIONS("Folders"),
+
   TESTING("Testing");
 
   final String tabTitle;

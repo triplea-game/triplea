@@ -259,7 +259,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Let the player know he is being charged for money or that he hasn't got
    * enough money.
-   * 
+   *
    * @param uaa
    *        the UserActionAttachment the player is notified about
    *

@@ -23,7 +23,7 @@ public class RouteCalculator {
 
   /**
    * Algorithm for finding the shortest path for the given Route.
-   * 
+   *
    * @param route The joints on the Map
    * @return A Point array which goes through Map Borders if necessary
    */
@@ -55,7 +55,7 @@ public class RouteCalculator {
 
   /**
    * Returns the Closest Point out of the given Pool.
-   * 
+   *
    * @param source the reference Point
    * @param pool Point List with all possible options
    * @return the closest point in the Pool to the source
@@ -81,7 +81,7 @@ public class RouteCalculator {
   /**
    * Method for getting Points, which are a mapHeight/Width away from the actual Point
    * Used to display routes with higher offsets than the map width/height.
-   * 
+   *
    * @param point The Point to "clone"
    * @return A List of all possible Points depending in map Properties
    *         size may vary
@@ -117,7 +117,7 @@ public class RouteCalculator {
 
   /**
    * Matrix Transpose method to transpose the 2dimensional point list.
-   * 
+   *
    * @param points A Point array
    * @return Offset Point Arrays including points
    */
@@ -137,7 +137,7 @@ public class RouteCalculator {
 
   /**
    * Generates a List of Lines which represent "normalized forms" of the given arrays.
-   * 
+   *
    * @param xcoords an array of xCoordinates
    * @param ycoords an array of yCoordinates
    * @return a List of corresponding Lines
@@ -157,7 +157,7 @@ public class RouteCalculator {
 
   /**
    * A List of Lines which represent all possible lines on multiple screens size may vary.
-   * 
+   *
    * @param xcoords an array of xCoordinates
    * @param ycoords an array of yCoordinates
    * @return a List of corresponding Lines on every possible screen

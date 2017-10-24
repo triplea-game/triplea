@@ -195,7 +195,7 @@ public class ProPurchaseUtils {
 
   /**
    * Find all territories that bid units can be placed in and initialize data holders for them.
-   * 
+   *
    * @param player - current AI player
    * @return - map of all available purchase and place territories
    */

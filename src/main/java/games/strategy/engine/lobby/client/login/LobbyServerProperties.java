@@ -28,6 +28,7 @@ public class LobbyServerProperties {
 
   /**
    * Inits a bare-bones object without server message.
+   *
    * @param host The host address of the lobby, typically an IP address
    * @param port The port the lobby is listening on
    */
@@ -42,8 +43,9 @@ public class LobbyServerProperties {
    * Typical constructor for lobby properties based on a yaml object. Parses lobby
    * host, port, message, and an error message used to indicate potential down times
    * to the user.
+   *
    * @param yamlProps Yaml object with lobby properties from the point of view of the game
-   *                  client.
+   *        client.
    */
   public LobbyServerProperties(final Map<String, Object> yamlProps) {
     this.host = (String) yamlProps.get("host");

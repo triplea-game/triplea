@@ -33,11 +33,17 @@ public class TimespanDialog {
   @VisibleForTesting
   enum TimeUnit {
     MINUTES("Minutes", i -> Instant.now().plus(i, ChronoUnit.MINUTES)),
+
     HOURS("Hours", i -> Instant.now().plus(i, ChronoUnit.HOURS)),
+
     DAYS("Days", i -> Instant.now().plus(i, ChronoUnit.DAYS)),
+
     WEEKS("Weeks", i -> LocalDateTime.now(ZoneOffset.UTC).plus(i, ChronoUnit.WEEKS).toInstant(ZoneOffset.UTC)),
+
     MONTHS("Months", i -> LocalDateTime.now(ZoneOffset.UTC).plus(i, ChronoUnit.MONTHS).toInstant(ZoneOffset.UTC)),
+
     YEARS("Years", i -> LocalDateTime.now(ZoneOffset.UTC).plus(i, ChronoUnit.YEARS).toInstant(ZoneOffset.UTC)),
+
     FOREVER("Forever", i -> null);
 
     private final String displayName;

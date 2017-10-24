@@ -1,7 +1,6 @@
 package games.strategy.triplea.settings;
 
 import java.io.File;
-
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 

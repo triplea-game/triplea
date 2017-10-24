@@ -704,7 +704,7 @@ class ProPurchaseAI {
       }
 
       // Check remaining production
-      int remainingUnitProduction = purchaseTerritories.get(t).getRemainingUnitProduction();
+      final int remainingUnitProduction = purchaseTerritories.get(t).getRemainingUnitProduction();
       ProLogger.debug(t + ", remainingUnitProduction=" + remainingUnitProduction);
       if (remainingUnitProduction <= 0) {
         continue;

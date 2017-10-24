@@ -53,7 +53,8 @@ public class FileSave {
       chooser.setSelectedFile(selectedFile);
     }
     chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists())
-        ? new File(System.getProperties().getProperty("user.dir")) : currentDirectory));
+        ? new File(System.getProperties().getProperty("user.dir"))
+        : currentDirectory));
     if (fileFilter != null) {
       chooser.setFileFilter(fileFilter);
     }

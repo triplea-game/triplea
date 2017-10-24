@@ -56,7 +56,7 @@ public class LobbyServerPropertiesFetcher {
     final Version currentVersion = ClientContext.engineVersion();
 
     try {
-      final LobbyServerProperties downloadedProps =  downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
+      final LobbyServerProperties downloadedProps = downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
           LobbyPropertyFileParser::parse);
       ClientSetting.LOBBY_LAST_USED_HOST.save(downloadedProps.host);
       ClientSetting.LOBBY_LAST_USED_PORT.save(downloadedProps.port);
@@ -67,7 +67,7 @@ public class LobbyServerPropertiesFetcher {
       if (!ClientSetting.LOBBY_LAST_USED_HOST.isSet()) {
         ClientLogger.logError(
             String.format("Failed to download lobby server property file from %s; "
-                    + "Please verify your internet connection and try again.",
+                + "Please verify your internet connection and try again.",
                 lobbyPropsUrl),
             e);
         throw new RuntimeException(e);

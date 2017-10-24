@@ -138,6 +138,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 
   /**
    * Wait for the messenger to know about the given endpoint.
+   *
    * @deprecated testing code smell, should not be dependent upon wall clock timing, try to remove this method.
    */
   @VisibleForTesting

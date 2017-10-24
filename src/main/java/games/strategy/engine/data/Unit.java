@@ -126,9 +126,11 @@ public class Unit extends GameDataComponent {
       final String text =
           "Unit.toString() -> Possible java de-serialization error: "
               + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName()) + " owned by " + (m_owner == null
-                  ? "UNKNOWN OWNER" : m_owner.getName())
+                  ? "UNKNOWN OWNER"
+                  : m_owner.getName())
               + " in territory: " + ((this.getData() != null && this.getData().getMap() != null)
-                  ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY")
+                  ? getTerritoryUnitIsIn()
+                  : "UNKNOWN TERRITORY")
               + " with id: " + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return 0;
@@ -143,9 +145,11 @@ public class Unit extends GameDataComponent {
       final String text =
           "Unit.toString() -> Possible java de-serialization error: "
               + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName()) + " owned by " + (m_owner == null
-                  ? "UNKNOWN OWNER" : m_owner.getName())
+                  ? "UNKNOWN OWNER"
+                  : m_owner.getName())
               + " in territory: " + ((this.getData() != null && this.getData().getMap() != null)
-                  ? getTerritoryUnitIsIn() : "UNKNOWN TERRITORY")
+                  ? getTerritoryUnitIsIn()
+                  : "UNKNOWN TERRITORY")
               + " with id: " + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return text;

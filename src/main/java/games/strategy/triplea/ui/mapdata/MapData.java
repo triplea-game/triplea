@@ -144,7 +144,7 @@ public class MapData implements Closeable {
                 + " sure the map zip or dir was added. Failing that, the path in this error message should be available"
                 + " relative to the map folder, or relative to the root of the map zip");
       }
-      
+
       polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
       centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
       vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));

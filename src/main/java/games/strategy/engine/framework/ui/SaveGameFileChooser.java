@@ -19,8 +19,11 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public enum AUTOSAVE_TYPE {
     AUTOSAVE(getAutoSaveFileName()),
+
     AUTOSAVE2(""),
+
     AUTOSAVE_ODD(getAutoSaveOddFileName()),
+
     AUTOSAVE_EVEN(getAutoSaveEvenFileName());
 
     private final String fileName;
