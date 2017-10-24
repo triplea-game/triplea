@@ -1,6 +1,8 @@
 package games.strategy.engine.lobby.server.login;
 
 import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -13,6 +15,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
@@ -137,15 +141,8 @@ public class LobbyLoginValidatorIntegrationTest {
     assertError(generateChallenge(null).apply(challenge -> response), "user");
   }
 
-  private static void assertError(final String errorMessage, final String... strings) {
-    assertNotNull(errorMessage);
-    final String simpleError = errorMessage.trim().toLowerCase();
-    try {
-      assertTrue(Arrays.stream(strings).map(String::toLowerCase).allMatch(simpleError::contains));
-    } catch (final AssertionError e) {
-      throw new AssertionError(String.format("Error message '%s' did not contain all of those keywords: %s",
-          errorMessage, Arrays.toString(strings)), e);
-    }
+  private static void assertError(final @Nullable String errorMessage, final String... strings) {
+    Arrays.stream(strings).forEach(string -> assertThat(errorMessage, containsStringIgnoringCase(string)));
   }
 
   private interface ChallengeResultFunction
