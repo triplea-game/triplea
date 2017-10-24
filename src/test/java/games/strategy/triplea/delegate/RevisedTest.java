@@ -203,7 +203,7 @@ public class RevisedTest {
     battle.setDelegateBridgeAndPlayer(bridge);
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
     bridge.setRemote(dummyPlayer);
-    battle.start();                             // fights battle
+    battle.start(); // fights battle
     battle.end();
     assertEquals(sinkiang.getOwner(), americans);
     assertTrue(battle.getBattleTracker().wasConquered(sinkiang));

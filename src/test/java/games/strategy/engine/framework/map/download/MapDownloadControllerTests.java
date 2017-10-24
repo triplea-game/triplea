@@ -28,7 +28,7 @@ import games.strategy.engine.framework.map.download.MapDownloadController.UserMa
 import games.strategy.util.Version;
 
 public final class MapDownloadControllerTests {
-  
+
   @Nested
   @ExtendWith(MockitoExtension.class)
   public final class GetOutOfDateMapNamesTest {

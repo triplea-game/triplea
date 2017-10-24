@@ -97,20 +97,19 @@ public class DbUserTest {
         "a,b",
         "ab?",
         "   ", // no spaces
-        "a b"
-    ).forEach(invalidName -> {
-      assertThat("Expected name to be marked as invalid: " + invalidName,
-          DBUser.isValidUserName(invalidName), is(false));
-      assertThat("Expected name to have validation error messages: " + invalidName,
-          DBUser.getUserNameValidationErrorMessage(invalidName), not(emptyString()));
-    });
+        "a b").forEach(invalidName -> {
+          assertThat("Expected name to be marked as invalid: " + invalidName,
+              DBUser.isValidUserName(invalidName), is(false));
+          assertThat("Expected name to have validation error messages: " + invalidName,
+              DBUser.getUserNameValidationErrorMessage(invalidName), not(emptyString()));
+        });
 
     DBUser.forbiddenNameParts.forEach(
         invalidNamePart -> {
           assertThat("user names cannot contain anything from the forbidden name list",
               DBUser.isValidUserName(invalidNamePart), is(false));
           assertThat("verify we are doing a contains match to make sure "
-                  + "user name does not contain anything forbidden.",
+              + "user name does not contain anything forbidden.",
               DBUser.isValidUserName("xyz" + invalidNamePart + "abc"), is(false));
 
           assertThat("case insensitive on our matches.",
@@ -127,17 +126,17 @@ public class DbUserTest {
         "123",
         "---",
         // TODO: should we add a max length rule to user name validation?
-        "test_case_with_something_that_is_a_bit_longer_and_perhaps_even_should_be_considered_invalid"
-    ).forEach(validName -> {
-      assertThat(
-          "Expected name to be marked as valid: " + validName,
-          DBUser.isValidUserName(validName), is(true));
+        "test_case_with_something_that_is_a_bit_longer_and_perhaps_even_should_be_considered_invalid")
+        .forEach(validName -> {
+          assertThat(
+              "Expected name to be marked as valid: " + validName,
+              DBUser.isValidUserName(validName), is(true));
 
-      assertThat(
-          String.format("Expected name: %s, to have no validation error messages, but had %s",
-              validName, DBUser.getUserNameValidationErrorMessage(validName)),
-          DBUser.getUserNameValidationErrorMessage(validName), nullValue());
-    });
+          assertThat(
+              String.format("Expected name: %s, to have no validation error messages, but had %s",
+                  validName, DBUser.getUserNameValidationErrorMessage(validName)),
+              DBUser.getUserNameValidationErrorMessage(validName), nullValue());
+        });
   }
 
   private interface TestData {

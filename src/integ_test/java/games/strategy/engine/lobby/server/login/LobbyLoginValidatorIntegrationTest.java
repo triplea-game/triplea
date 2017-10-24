@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.server.login;
 
 import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -16,7 +15,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
-
 import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.LobbyServer;

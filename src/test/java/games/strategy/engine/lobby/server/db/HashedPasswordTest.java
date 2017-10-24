@@ -22,11 +22,10 @@ public class HashedPasswordTest {
         MD5Crypt.MAGIC,
         MD5Crypt.MAGIC + " ",
         MD5Crypt.MAGIC + "_",
-        MD5Crypt.MAGIC + "abc"
-    ).forEach(valid ->
-        assertThat(
-            "Expecting this to look valid, starts with magic: " + valid,
-            new HashedPassword(valid).isHashedWithSalt(), is(true)));
+        MD5Crypt.MAGIC + "abc").forEach(
+            valid -> assertThat(
+                "Expecting this to look valid, starts with magic: " + valid,
+                new HashedPassword(valid).isHashedWithSalt(), is(true)));
   }
 
   @Test
@@ -36,10 +35,9 @@ public class HashedPasswordTest {
         "abc",
         "  ",
         "\n",
-        "#00000"
-    ).forEach(invalid ->
-        assertThat(
-            "Expecting this to look invalid, does not start with magic: " + invalid,
-            new HashedPassword(invalid).isHashedWithSalt(), is(false)));
+        "#00000").forEach(
+            invalid -> assertThat(
+                "Expecting this to look invalid, does not start with magic: " + invalid,
+                new HashedPassword(invalid).isHashedWithSalt(), is(false)));
   }
 }

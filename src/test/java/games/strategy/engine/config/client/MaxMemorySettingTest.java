@@ -27,14 +27,13 @@ public class MaxMemorySettingTest {
         "NaN",
         "-",
         "-0.1",
-        "-1"
-    ).forEach(invalidValue -> {
-      try {
-        MaxMemorySetting.of(invalidValue);
-        fail(invalidValue + ", was expected to trigger an illegal arg exception");
-      } catch (final IllegalArgumentException expected) {
-        // expected
-      }
-    });
+        "-1").forEach(invalidValue -> {
+          try {
+            MaxMemorySetting.of(invalidValue);
+            fail(invalidValue + ", was expected to trigger an illegal arg exception");
+          } catch (final IllegalArgumentException expected) {
+            // expected
+          }
+        });
   }
 }
