@@ -3,7 +3,7 @@ package games.strategy.engine.framework;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
@@ -51,12 +51,10 @@ public class ArgParserTest {
         new String[] {"a=b", "a"},
         new String[] {"a=b", " "})
         .forEach(invalidInput -> {
-          try {
-            ArgParser.handleCommandLineArgs(invalidInput, new String[] {"a"});
-            fail("Did not throw an exception as expected on input: " + Arrays.asList(invalidInput));
-          } catch (final IllegalArgumentException expected) {
-            // expected
-          }
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> ArgParser.handleCommandLineArgs(invalidInput, new String[] {"a"}),
+              Arrays.toString(invalidInput));
         });
   }
 
