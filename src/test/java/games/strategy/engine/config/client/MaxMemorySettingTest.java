@@ -2,7 +2,7 @@ package games.strategy.engine.config.client;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
@@ -28,12 +28,7 @@ public class MaxMemorySettingTest {
         "-",
         "-0.1",
         "-1").forEach(invalidValue -> {
-          try {
-            MaxMemorySetting.of(invalidValue);
-            fail(invalidValue + ", was expected to trigger an illegal arg exception");
-          } catch (final IllegalArgumentException expected) {
-            // expected
-          }
+          assertThrows(IllegalArgumentException.class, () -> MaxMemorySetting.of(invalidValue), invalidValue);
         });
   }
 }
