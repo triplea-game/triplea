@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.login;
 
+import static games.strategy.test.Assertions.assertNotThrows;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
@@ -164,11 +165,7 @@ public final class HmacSha512AuthenticatorTest {
     final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
     final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
-    try {
-      HmacSha512Authenticator.authenticate(PASSWORD, challenge, response);
-    } catch (final Exception e) {
-      throw new AssertionError(e);
-    }
+    assertNotThrows(() -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
   }
 
   @Test
