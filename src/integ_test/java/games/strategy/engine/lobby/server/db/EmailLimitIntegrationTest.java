@@ -29,12 +29,12 @@ public class EmailLimitIntegrationTest {
   }
 
   @Test
-  public void testAllowsMaximumLentgh() {
+  public void testAllowsMaximumLentgh() throws Exception {
     createAccountWithEmail(getStringWithLength(60) + "@" + getStringWithLength(193));
   }
 
   @Test
-  public void testAllowsMaximumLocalLength() {
+  public void testAllowsMaximumLocalLength() throws Exception {
     createAccountWithEmail(getStringWithLength(64) + "@" + getStringWithLength(189));
   }
 
@@ -42,15 +42,13 @@ public class EmailLimitIntegrationTest {
     return Strings.padStart(Util.createUniqueTimeStamp(), length, 'a');
   }
 
-  private static void createAccountWithEmail(final String email) {
+  private static void createAccountWithEmail(final String email) throws SQLException {
     try (PreparedStatement ps =
         connection.prepareStatement("insert into ta_users (username, email, password) values (?, ?, ?)")) {
       ps.setString(1, Util.createUniqueTimeStamp());
       ps.setString(2, email);
       ps.setString(3, MD5Crypt.crypt("password"));
       ps.execute();
-    } catch (final SQLException e) {
-      throw new AssertionError(e);
     }
   }
 
