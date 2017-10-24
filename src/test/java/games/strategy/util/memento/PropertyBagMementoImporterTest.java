@@ -20,8 +20,7 @@ public final class PropertyBagMementoImporterTest {
     final Memento memento = mock(Memento.class);
     final PropertyBagMementoImporter<?> mementoImporter = newMementoImporter();
 
-    final MementoImportException e =
-        assertThrows(MementoImportException.class, () -> mementoImporter.importMemento(memento));
+    final Exception e = assertThrows(MementoImportException.class, () -> mementoImporter.importMemento(memento));
 
     assertThat(e.getMessage(), containsString("wrong type"));
   }
@@ -56,8 +55,7 @@ public final class PropertyBagMementoImporterTest {
     final PropertyBagMemento memento = newMemento(schemaId);
     final PropertyBagMementoImporter<?> mementoImporter = newMementoImporter();
 
-    final MementoImportException e =
-        assertThrows(MementoImportException.class, () -> mementoImporter.importMemento(memento));
+    final Exception e = assertThrows(MementoImportException.class, () -> mementoImporter.importMemento(memento));
 
     assertThat(e.getMessage(), containsString(String.format("schema ID '%s' is unsupported", schemaId)));
   }

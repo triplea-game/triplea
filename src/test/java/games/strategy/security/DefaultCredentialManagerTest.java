@@ -83,15 +83,14 @@ public final class DefaultCredentialManagerTest {
 
   @Test
   public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() throws Exception {
-    final CredentialManagerException e =
-        assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
+    final Exception e = assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
 
     assertThat(e.getMessage(), containsString("malformed protected credential"));
   }
 
   @Test
   public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() throws Exception {
-    final CredentialManagerException e =
+    final Exception e =
         assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
 
     assertThat(e.getMessage(), containsString("malformed protected credential"));
