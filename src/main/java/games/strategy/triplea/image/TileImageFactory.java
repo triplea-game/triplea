@@ -45,7 +45,7 @@ public final class TileImageFactory {
   private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
   private double scale = 1.0;
   // maps image name to ImageRef
-  private Map<String, ImageRef> imageCache = new HashMap<>();
+  private final Map<String, ImageRef> imageCache = new HashMap<>();
   private ResourceLoader resourceLoader;
 
   static {
