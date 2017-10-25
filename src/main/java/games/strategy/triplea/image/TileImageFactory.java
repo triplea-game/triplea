@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -44,7 +45,7 @@ public final class TileImageFactory {
   private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
   private double scale = 1.0;
   // maps image name to ImageRef
-  private HashMap<String, ImageRef> imageCache = new HashMap<>();
+  private Map<String, ImageRef> imageCache = new HashMap<>();
   private ResourceLoader resourceLoader;
 
   static {
@@ -77,7 +78,7 @@ public final class TileImageFactory {
     }
     synchronized (mutex) {
       scale = newScale;
-      getM_imageCache().clear();
+      imageCache.clear();
     }
   }
 
@@ -130,22 +131,22 @@ public final class TileImageFactory {
     synchronized (mutex) {
       // we manually want to clear each ref to allow the soft reference to
       // be removed
-      final Iterator<ImageRef> values = getM_imageCache().values().iterator();
+      final Iterator<ImageRef> values = imageCache.values().iterator();
       while (values.hasNext()) {
         final ImageRef imageRef = values.next();
         imageRef.clear();
       }
-      getM_imageCache().clear();
+      imageCache.clear();
     }
   }
 
   public TileImageFactory() {}
 
   private Image isImageLoaded(final String fileName) {
-    if (getM_imageCache().get(fileName) == null) {
+    if (imageCache.get(fileName) == null) {
       return null;
     }
-    return getM_imageCache().get(fileName).getImage();
+    return imageCache.get(fileName).getImage();
   }
 
   public Image getBaseTile(final int x, final int y) {
@@ -288,13 +289,13 @@ public final class TileImageFactory {
       g2.drawImage(baseFile, 0, 0, null);
       final ImageRef ref = new ImageRef(blendedImage);
       if (cache) {
-        getM_imageCache().put(fileName, ref);
+        imageCache.put(fileName, ref);
       }
       return blendedImage;
     } else {
       final ImageRef ref = new ImageRef(baseFile);
       if (cache) {
-        getM_imageCache().put(fileName, ref);
+        imageCache.put(fileName, ref);
       }
       return baseFile;
     }
@@ -331,7 +332,7 @@ public final class TileImageFactory {
     }
     final ImageRef ref = new ImageRef(image);
     if (cache) {
-      getM_imageCache().put(fileName, ref);
+      imageCache.put(fileName, ref);
     }
     return image;
   }
@@ -356,13 +357,5 @@ public final class TileImageFactory {
 
   public static BufferedImage createCompatibleImage(final int width, final int height) {
     return configuration.createCompatibleImage(width, height);
-  }
-
-  public void setM_imageCache(final HashMap<String, ImageRef> imageCache) {
-    this.imageCache = imageCache;
-  }
-
-  public HashMap<String, ImageRef> getM_imageCache() {
-    return imageCache;
   }
 }
