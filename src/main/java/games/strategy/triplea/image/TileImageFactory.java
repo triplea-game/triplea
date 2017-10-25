@@ -140,8 +140,6 @@ public final class TileImageFactory {
     }
   }
 
-  public TileImageFactory() {}
-
   private Image isImageLoaded(final String fileName) {
     if (imageCache.get(fileName) == null) {
       return null;
