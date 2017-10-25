@@ -285,7 +285,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     final Object buttonPressed = pane.getValue();
     if (buttonPressed == null || buttonPressed.equals(cancel)) {
       // restore properties, if cancel was pressed, or window was closed
-      for (IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
+      for (final IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
         property.setValue(currentPropertiesMap.get(property.getName()));
       }
     } else if (buttonPressed.equals(reset)) {
@@ -372,8 +372,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
       final NewGameChooserEntry entry =
           NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
       if (entry != null) {
-        if (!entry.isGameDataLoaded()) {
-          entry.fullyParseGameData();
+        if (!entry.isGameDataLoaded() && !entry.fullyParseGameData(entry.getGameName())) {
+          NewGameChooser.getNewGameChooserModel().removeEntry(entry);
+          return;
         }
         model.load(entry);
         setOriginalPropertiesMap(model.getGameData());

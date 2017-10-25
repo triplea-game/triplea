@@ -263,14 +263,19 @@ public class GameSelectorModel extends Observable {
       try {
         final URI defaultUri = new URI(userPreferredDefaultGameUri);
         selectedGame = new NewGameChooserEntry(defaultUri);
+        if (!selectedGame.isGameDataLoaded() && !selectedGame.fullyParseGameData(defaultUri.toString())) {
+          loadDefaultGame(true);
+          return;
+        }
       } catch (final Exception e) {
         selectedGame = selectByName(false);
         if (selectedGame == null) {
           return;
         }
-      }
-      if (!selectedGame.isGameDataLoaded()) {
-        selectedGame.fullyParseGameData();
+        if (!selectedGame.isGameDataLoaded() && !selectedGame.fullyParseGameData(selectedGame.getGameName())) {
+          loadDefaultGame(true);
+          return;
+        }
       }
     } else {
       selectedGame = selectByName(forceFactoryDefault);
@@ -299,8 +304,11 @@ public class GameSelectorModel extends Observable {
     if (selectedGame == null) {
       return null;
     }
-    if (!selectedGame.isGameDataLoaded()) {
-      selectedGame.fullyParseGameData();
+
+    if (!selectedGame.isGameDataLoaded() && !selectedGame.fullyParseGameData(selectedGame.getGameName())) {
+      model.removeEntry(selectedGame);
+      loadDefaultGame(true);
+      return null;
     }
     return selectedGame;
   }

@@ -60,6 +60,14 @@ public final class JDialogBuilder {
     return dialog;
   }
 
+  public void buildAndShowDialog() {
+    final JDialog dialog = build();
+    dialog.pack();
+    dialog.setVisible(true);
+    // making the dialog visible will block until it is closed
+    dialog.dispose();
+  }
+
   public JDialogBuilder parentFrame(final JFrame parentFrame) {
     this.parentFrame = checkNotNull(parentFrame);
     return this;

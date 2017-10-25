@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.swing.JLabel;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -19,6 +21,7 @@ import games.strategy.engine.data.GameParser;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.UrlStreams;
+import swinglib.JDialogBuilder;
 
 public class NewGameChooserEntry {
   private final URI url;
@@ -80,11 +83,16 @@ public class NewGameChooserEntry {
    * 'Fully' parses the currently loaded game data XML.
    * This must be done before the game is launched.
    */
-  public GameData fullyParseGameData() {
+  public boolean fullyParseGameData(final String gameName) {
     try {
-      return fullyParseGameDataThrowing();
+      fullyParseGameDataThrowing();
+      return true;
     } catch (final GameParseException e) {
-      throw new RuntimeException(e);
+      JDialogBuilder.builder()
+          .title("Failed to Read Map")
+          .contents(new JLabel(String.format("Failed to load map: %s", gameName)))
+          .buildAndShowDialog();
+      return false;
     }
   }
 
