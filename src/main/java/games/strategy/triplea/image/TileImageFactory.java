@@ -28,7 +28,7 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 public final class TileImageFactory {
-  private final Object m_mutex = new Object();
+  private final Object mutex = new Object();
   // one instance in the application
   private static final String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
   private static boolean showReliefImages = true;
@@ -42,9 +42,10 @@ public final class TileImageFactory {
   private static final GraphicsConfiguration configuration =
       GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
   private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
-  private double m_scale = 1;
+  private double scale = 1.0;
   // maps image name to ImageRef
-  private HashMap<String, ImageRef> m_imageCache = new HashMap<>();
+  private HashMap<String, ImageRef> imageCache = new HashMap<>();
+  private ResourceLoader resourceLoader;
 
   static {
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
@@ -74,8 +75,8 @@ public final class TileImageFactory {
     if (newScale > 1) {
       throw new IllegalArgumentException("Wrong scale");
     }
-    synchronized (m_mutex) {
-      m_scale = newScale;
+    synchronized (mutex) {
+      scale = newScale;
       getM_imageCache().clear();
     }
   }
@@ -124,11 +125,9 @@ public final class TileImageFactory {
     }
   }
 
-  private ResourceLoader m_resourceLoader;
-
   public void setMapDir(final ResourceLoader loader) {
-    m_resourceLoader = loader;
-    synchronized (m_mutex) {
+    resourceLoader = loader;
+    synchronized (mutex) {
       // we manually want to clear each ref to allow the soft reference to
       // be removed
       final Iterator<ImageRef> values = getM_imageCache().values().iterator();
@@ -151,7 +150,7 @@ public final class TileImageFactory {
 
   public Image getBaseTile(final int x, final int y) {
     final String fileName = getBaseTileImageName(x, y);
-    if (m_resourceLoader.getResource(fileName) == null) {
+    if (resourceLoader.getResource(fileName) == null) {
       return null;
     }
     return getImage(fileName, false);
@@ -159,7 +158,7 @@ public final class TileImageFactory {
 
   public Image getUnscaledUncachedBaseTile(final int x, final int y) {
     final String fileName = getBaseTileImageName(x, y);
-    final URL url = m_resourceLoader.getResource(fileName);
+    final URL url = resourceLoader.getResource(fileName);
     if (url == null) {
       return null;
     }
@@ -173,13 +172,13 @@ public final class TileImageFactory {
   }
 
   private Image getImage(final String fileName, final boolean transparent) {
-    synchronized (m_mutex) {
+    synchronized (mutex) {
       final Image image = isImageLoaded(fileName);
       if (image != null) {
         return image;
       }
       // This is null if there is no image
-      final URL url = m_resourceLoader.getResource(fileName);
+      final URL url = resourceLoader.getResource(fileName);
 
       if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
         return null;
@@ -196,7 +195,7 @@ public final class TileImageFactory {
 
   public Image getUnscaledUncachedReliefTile(final int x, final int y) {
     final String fileName = getReliefTileImageName(x, y);
-    final URL url = m_resourceLoader.getResource(fileName);
+    final URL url = resourceLoader.getResource(fileName);
     if (url == null) {
       return null;
     }
@@ -231,18 +230,18 @@ public final class TileImageFactory {
     }
   }
 
-  private Image loadBlendedImage(final String fileName, final boolean cache, final boolean scale) {
+  private Image loadBlendedImage(final String fileName, final boolean cache, final boolean scaled) {
     BufferedImage reliefFile = null;
     BufferedImage baseFile = null;
     // The relief tile
     final String reliefFileName = fileName.replace("baseTiles", "reliefTiles");
-    final URL urlrelief = m_resourceLoader.getResource(reliefFileName);
+    final URL urlrelief = resourceLoader.getResource(reliefFileName);
     // The base tile
     final String baseFileName = fileName.replace("reliefTiles", "baseTiles");
-    final URL urlBase = m_resourceLoader.getResource(baseFileName);
+    final URL urlBase = resourceLoader.getResource(baseFileName);
     // blank relief tile
     final String blankReliefFileName = "reliefTiles/blank_relief.png";
-    final URL urlBlankRelief = m_resourceLoader.getResource(blankReliefFileName);
+    final URL urlBlankRelief = resourceLoader.getResource(blankReliefFileName);
 
     // Get buffered images
     try {
@@ -277,9 +276,9 @@ public final class TileImageFactory {
       final BufferedImage blendedImage =
           new BufferedImage(reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics2D g2 = blendedImage.createGraphics();
-      if (scale && m_scale != 1.0) {
+      if (scaled && scale != 1.0) {
         final AffineTransform transform = new AffineTransform();
-        transform.scale(m_scale, m_scale);
+        transform.scale(scale, scale);
         g2.setTransform(transform);
       }
       g2.drawImage(reliefFile, 0, 0, null);
@@ -302,7 +301,7 @@ public final class TileImageFactory {
   }
 
   private Image loadUnblendedImage(final URL imageLocation, final String fileName, final boolean transparent,
-      final boolean cache, final boolean scale) {
+      final boolean cache, final boolean scaled) {
     Image image;
     try {
       final Stopwatch loadingImages = new Stopwatch(logger, Level.FINE, "Loading image:" + imageLocation);
@@ -317,9 +316,9 @@ public final class TileImageFactory {
       // png directly as the right type
       image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
       final Graphics2D g = (Graphics2D) image.getGraphics();
-      if (scale && m_scale != 1.0) {
+      if (scaled && scale != 1.0) {
         final AffineTransform transform = new AffineTransform();
-        transform.scale(m_scale, m_scale);
+        transform.scale(scale, scale);
         g.setTransform(transform);
       }
       g.drawImage(fromFile, 0, 0, null);
@@ -360,10 +359,10 @@ public final class TileImageFactory {
   }
 
   public void setM_imageCache(final HashMap<String, ImageRef> imageCache) {
-    this.m_imageCache = imageCache;
+    this.imageCache = imageCache;
   }
 
   public HashMap<String, ImageRef> getM_imageCache() {
-    return m_imageCache;
+    return imageCache;
   }
 }
