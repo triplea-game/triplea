@@ -222,7 +222,6 @@ public final class TileImageFactory {
     return compatibleImage;
   }
 
-
   private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent,
       final boolean cache, final boolean scale) {
     if (showMapBlends && showReliefImages && transparent) {
@@ -262,8 +261,6 @@ public final class TileImageFactory {
 
     // This does the blend
     final float alpha = getShowMapBlendAlpha();
-    final int overX = 0;
-    final int overY = 0;
     if (reliefFile == null) {
       try {
         reliefFile = loadCompatibleImage(urlBlankRelief);
@@ -285,11 +282,11 @@ public final class TileImageFactory {
         transform.scale(m_scale, m_scale);
         g2.setTransform(transform);
       }
-      g2.drawImage(reliefFile, overX, overY, null);
+      g2.drawImage(reliefFile, 0, 0, null);
       final BlendingMode blendMode = BlendComposite.BlendingMode.valueOf(getShowMapBlendMode());
       final BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
       g2.setComposite(blendComposite);
-      g2.drawImage(baseFile, overX, overY, null);
+      g2.drawImage(baseFile, 0, 0, null);
       final ImageRef ref = new ImageRef(blendedImage);
       if (cache) {
         getM_imageCache().put(fileName, ref);
@@ -370,5 +367,3 @@ public final class TileImageFactory {
     return m_imageCache;
   }
 }
-
-
