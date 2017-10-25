@@ -277,24 +277,24 @@ public final class TileImageFactory {
     }
     /* reversing the to/from files leaves white underlays visible */
     if (reliefFile != null) {
-      final Graphics2D g2 = reliefFile.createGraphics();
+      final BufferedImage blendedImage =
+          new BufferedImage(reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+      final Graphics2D g2 = blendedImage.createGraphics();
       if (scale && m_scale != 1.0) {
         final AffineTransform transform = new AffineTransform();
         transform.scale(m_scale, m_scale);
         g2.setTransform(transform);
       }
       g2.drawImage(reliefFile, overX, overY, null);
-      // gets the blending mode from the map.properties file (sometimes)
       final BlendingMode blendMode = BlendComposite.BlendingMode.valueOf(getShowMapBlendMode());
       final BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
-      // g2.setComposite(BlendComposite.Overlay.derive(alpha));
       g2.setComposite(blendComposite);
       g2.drawImage(baseFile, overX, overY, null);
-      final ImageRef ref = new ImageRef(reliefFile);
+      final ImageRef ref = new ImageRef(blendedImage);
       if (cache) {
         getM_imageCache().put(fileName, ref);
       }
-      return reliefFile;
+      return blendedImage;
     } else {
       final ImageRef ref = new ImageRef(baseFile);
       if (cache) {
