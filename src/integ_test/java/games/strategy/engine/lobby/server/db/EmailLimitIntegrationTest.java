@@ -1,5 +1,7 @@
 package games.strategy.engine.lobby.server.db;
 
+import static games.strategy.test.Assertions.assertNotThrows;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -29,13 +31,13 @@ public class EmailLimitIntegrationTest {
   }
 
   @Test
-  public void testAllowsMaximumLentgh() throws Exception {
-    createAccountWithEmail(getStringWithLength(60) + "@" + getStringWithLength(193));
+  public void testAllowsMaximumLength() {
+    assertNotThrows(() -> createAccountWithEmail(getStringWithLength(60) + "@" + getStringWithLength(193)));
   }
 
   @Test
-  public void testAllowsMaximumLocalLength() throws Exception {
-    createAccountWithEmail(getStringWithLength(64) + "@" + getStringWithLength(189));
+  public void testAllowsMaximumLocalLength() {
+    assertNotThrows(() -> createAccountWithEmail(getStringWithLength(64) + "@" + getStringWithLength(189)));
   }
 
   private static String getStringWithLength(final int length) {
