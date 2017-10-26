@@ -13,6 +13,9 @@ import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
+/**
+ * Results from odds calculator over multiple runs.
+ */
 public class AggregateResults implements Serializable {
   private static final long serialVersionUID = -556699626060414738L;
   // can be empty!
@@ -65,7 +68,7 @@ public class AggregateResults implements Serializable {
     return results == null ? new ArrayList<>() : results.getRemainingDefendingUnits();
   }
 
-  double getAverageAttackingUnitsLeft() {
+  public double getAverageAttackingUnitsLeft() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -109,7 +112,7 @@ public class AggregateResults implements Serializable {
     return defenderLost - attackerLost;
   }
 
-  double getAverageAttackingUnitsLeftWhenAttackerWon() {
+  public double getAverageAttackingUnitsLeftWhenAttackerWon() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -127,7 +130,7 @@ public class AggregateResults implements Serializable {
     return count / total;
   }
 
-  double getAverageDefendingUnitsLeft() {
+  public double getAverageDefendingUnitsLeft() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -138,7 +141,7 @@ public class AggregateResults implements Serializable {
     return count / m_results.size();
   }
 
-  double getAverageDefendingUnitsLeftWhenDefenderWon() {
+  public double getAverageDefendingUnitsLeftWhenDefenderWon() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -169,7 +172,7 @@ public class AggregateResults implements Serializable {
     return count / m_results.size();
   }
 
-  double getDefenderWinPercent() {
+  public double getDefenderWinPercent() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }
@@ -197,7 +200,7 @@ public class AggregateResults implements Serializable {
     return count / m_results.size();
   }
 
-  double getDrawPercent() {
+  public double getDrawPercent() {
     if (m_results.isEmpty()) { // can be empty!
       return 0.0;
     }

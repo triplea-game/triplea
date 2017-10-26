@@ -61,7 +61,7 @@ public class ProAI extends AbstractAI {
   private static final Logger logger = Logger.getLogger(ProAI.class.getName());
 
   // Odds calculator
-  private static final IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator("ProAI");
+  private static final IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator();
   protected ProOddsCalculator calc;
 
   // Phases
@@ -119,7 +119,6 @@ public class ProAI extends AbstractAI {
 
   public static void gameOverClearCache() {
     // Are static, clear so that we don't keep the data around after a game is exited
-    concurrentCalc.setGameData(null);
     ProLogUI.clearCachedInstances();
   }
 
@@ -144,7 +143,6 @@ public class ProAI extends AbstractAI {
     BattleCalculator.clearOolCache();
     ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
-    calc.setData(data);
     if (nonCombat) {
       nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel);
       storedFactoryMoveMap = null;
@@ -171,7 +169,6 @@ public class ProAI extends AbstractAI {
       return;
     }
     if (purchaseForBid) {
-      calc.setData(data);
       storedPurchaseTerritories = purchaseAI.bid(pusToSpend, purchaseDelegate, data);
     } else {
 
@@ -199,7 +196,6 @@ public class ProAI extends AbstractAI {
       } finally {
         data.releaseReadLock();
       }
-      calc.setData(dataCopy);
       final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
@@ -301,7 +297,6 @@ public class ProAI extends AbstractAI {
         && (battleTerritory.isWater() || Match.anyMatch(attackers, Matches.unitIsLand()))) {
       return null;
     }
-    calc.setData(getGameData());
     return retreatAI.retreatQuery(battleId, battleTerritory, possibleTerritories);
   }
 
@@ -413,7 +408,6 @@ public class ProAI extends AbstractAI {
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     ProLogger.info(player.getName() + " checking scramble to " + scrambleTo + ", attackers=" + attackers.size()
         + ", defenders=" + defenders.size() + ", possibleScramblers=" + possibleScramblers);
-    calc.setData(getGameData());
     return scrambleAI.scrambleUnitsQuery(scrambleTo, possibleScramblers);
   }
 
@@ -435,7 +429,6 @@ public class ProAI extends AbstractAI {
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
     ProLogger.info(player.getName() + " checking sub attack in " + unitTerritory + ", attackers=" + attackers
         + ", defenders=" + defenders);
-    calc.setData(getGameData());
 
     // Calculate battle results
     final ProBattleResult result = calc.calculateBattleResults(unitTerritory, attackers, defenders, new HashSet<>());

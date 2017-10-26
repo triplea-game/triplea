@@ -6,8 +6,13 @@ import java.util.prefs.Preferences;
 /**
  * Provides a high level API to the game engine for performance measurements.
  * This class handles the library details and sends output to 'PerformanceConsole.java'
+ * <br />
+ * Example usage with auto-close try block:
+ * try(PerfTimer timer = PerfTimer.startTime()) {
+ *   // code to be timed
+ * }
  */
-class PerfTimer implements Closeable {
+public class PerfTimer implements Closeable {
 
   private static final String LOG_PERFORMANCE_KEY = "logPerformance";
   private static final PerfTimer DISABLED_TIMER = new PerfTimer("disabled");
@@ -56,7 +61,8 @@ class PerfTimer implements Closeable {
     return prefs.getBoolean(LOG_PERFORMANCE_KEY, false);
   }
 
-  static PerfTimer startTimer(final String title) {
+  @SuppressWarnings("unused")
+  public static PerfTimer startTimer(final String title) {
     return enabled ? new PerfTimer(title) : DISABLED_TIMER;
   }
 
