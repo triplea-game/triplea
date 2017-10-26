@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -39,6 +40,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
+import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.system.HttpProxy;
 
 /**
@@ -247,6 +249,16 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   @Override
   public String getHelpText() {
     return getInfoText();
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof PropertiesDiceRoller && getDisplayName().equals(((IBean) other).getDisplayName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(getDisplayName());
   }
 
   private static class AdvancedRedirectStrategy extends LaxRedirectStrategy {

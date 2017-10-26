@@ -369,7 +369,7 @@ public class GenericEmailSender implements IEmailSender {
   public EditorPanel getEditor() {
     return new EmailSenderEditor(this, new EmailSenderEditor.EditorConfiguration(true, true, true));
   }
-  
+
   @Override
   public String getHelpText() {
     return HelpSupport.loadHelp("genericEmailSender.html");
@@ -379,5 +379,15 @@ public class GenericEmailSender implements IEmailSender {
   public String toString() {
     return "GenericEmailSender{" + "m_toAddress='" + m_toAddress + '\'' + ", m_userName='" + m_userName + '\''
         + ", m_host='" + m_host + '\'' + ", m_port=" + m_port + ", m_encryption=" + m_encryption + '}';
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other != null && getClass().equals(other.getClass());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
   }
 }

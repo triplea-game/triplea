@@ -111,4 +111,14 @@ public class NullForumPoster implements IForumPoster {
   public EditorPanel getEditor() {
     return null;
   }
+
+  @Override
+  public boolean equals(Object other) {
+    return other != null && getClass().equals(other.getClass());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

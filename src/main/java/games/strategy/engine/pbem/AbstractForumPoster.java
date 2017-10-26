@@ -181,4 +181,14 @@ public abstract class AbstractForumPoster implements IForumPoster {
   public EditorPanel getEditor() {
     return new ForumPosterEditor(this);
   }
+
+  @Override
+  public boolean equals(Object other) {
+    return other != null && getClass().equals(other.getClass());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

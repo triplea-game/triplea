@@ -182,7 +182,7 @@ public class SelectAndViewEditor extends EditorPanel {
     boolean found = false;
     for (int i = 0; i < model.getSize(); i++) {
       final IBean candidate = model.getElementAt(i);
-      if (candidate.getClass().equals(bean.getClass())) {
+      if (candidate.equals(bean)) {
         found = true;
         newModel.addElement(bean);
       } else {
