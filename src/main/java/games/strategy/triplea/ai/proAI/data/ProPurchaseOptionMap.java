@@ -15,6 +15,9 @@ import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 
+/**
+ * Takes all available purchase options, filters out those which the AI can't handle, and sorts them into categories.
+ */
 public class ProPurchaseOptionMap {
 
   private final List<ProPurchaseOption> landFodderOptions;
