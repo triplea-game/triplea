@@ -75,13 +75,13 @@ public class OddsCalculatorTest {
         .defending(GameDataTestUtil.fighter(gameData).create(1, british, false))
         .bombarding(Collections.emptyList())
         .territoryEffects(TerritoryEffectHelper.getEffects(eastCanada))
-        .runCount(10)
+        .runCount(100)
         .keepOneAttackingLandUnit(true)
         .gameData(gameData)
         .build());
 
     assertEquals(0.8, results.getAttackerWinPercent(), 0.20);
-    assertEquals(0.16, results.getDefenderWinPercent(), 0.10);
+    assertEquals(0.28, results.getDefenderWinPercent(), 0.20);
   }
 
   @Test
