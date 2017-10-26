@@ -41,9 +41,9 @@ public class GameDataTestUtil {
   }
 
   /**
-   * Get the german PlayerID for the given GameData object.
+   * Get the germany PlayerID for the given GameData object.
    *
-   * @return A german PlayerID.
+   * @return A germany PlayerID.
    */
   public static PlayerID germany(final GameData data) {
     return data.getPlayerList().getPlayerId("Germany");
@@ -74,6 +74,15 @@ public class GameDataTestUtil {
    */
   public static PlayerID americans(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_AMERICANS);
+  }
+
+  /**
+   * Get the USA PlayerID for the given GameData object.
+   *
+   * @return A USA PlayerID.
+   */
+  public static PlayerID usa(final GameData data) {
+    return data.getPlayerList().getPlayerId("Usa");
   }
 
   /**
@@ -242,6 +251,20 @@ public class GameDataTestUtil {
    */
   public static UnitType germanRail(final GameData data) {
     return unitType("germanRail", data);
+  }
+
+  /**
+   * Returns a germanMine UnitType object for the specified GameData object.
+   */
+  public static UnitType germanMine(final GameData data) {
+    return unitType("germanMine", data);
+  }
+
+  /**
+   * Returns a americanCruiser UnitType object for the specified GameData object.
+   */
+  public static UnitType americanCruiser(final GameData data) {
+    return unitType("americanCruiser", data);
   }
 
   /**
