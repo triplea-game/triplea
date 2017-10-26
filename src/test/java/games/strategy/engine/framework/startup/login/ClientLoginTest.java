@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-public final class ClientLoginTests {
+public final class ClientLoginTest {
   private static final String PASSWORD = "password";
 
   @Nested

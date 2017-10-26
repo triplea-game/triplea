@@ -29,7 +29,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.Match;
 
-public final class MatchesTests {
+public final class MatchesTest {
 
   private static final Match<Integer> IS_ZERO_MATCH = Match.of(it -> it == 0);
   private static final Object VALUE = new Object();

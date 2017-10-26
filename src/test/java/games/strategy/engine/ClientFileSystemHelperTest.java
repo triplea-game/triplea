@@ -12,7 +12,7 @@ import org.mockito.Mock;
 
 import games.strategy.triplea.settings.GameSetting;
 
-public final class ClientFileSystemHelperTests {
+public final class ClientFileSystemHelperTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   public final class GetUserMapsFolderPathTest {
