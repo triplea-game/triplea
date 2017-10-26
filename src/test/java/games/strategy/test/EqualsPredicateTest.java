@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public final class EqualsPredicateTests {
+public final class EqualsPredicateTest {
   private static EqualsPredicate newEqualsPredicate(final EqualityComparator... equalityComparators) {
     return new EqualsPredicate(EqualityComparatorRegistry.newInstance(equalityComparators));
   }

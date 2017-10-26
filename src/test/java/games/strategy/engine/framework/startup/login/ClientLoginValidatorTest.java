@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorMessages;
 
-public final class ClientLoginValidatorTests {
+public final class ClientLoginValidatorTest {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
@@ -47,10 +47,8 @@ public final class ClientLoginValidatorTests {
     }
   }
 
-
   @Nested
-  public final class GetChallengePropertiesTests {
-    @Nested
+  public final class GetChallengePropertiesTest {
     public abstract class AbstractTestCase {
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
 

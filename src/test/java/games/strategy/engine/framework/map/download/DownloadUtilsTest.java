@@ -37,7 +37,7 @@ import org.mockito.Mock;
 
 import games.strategy.engine.framework.map.download.DownloadUtils.DownloadLengthSupplier;
 
-public final class DownloadUtilsTests {
+public final class DownloadUtilsTest {
   private static final String URI = "some://uri";
 
   @ExtendWith(MockitoExtension.class)

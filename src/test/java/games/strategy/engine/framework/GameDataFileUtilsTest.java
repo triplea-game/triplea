@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.framework.GameDataFileUtils.SaveGameFormat;
 
-public final class GameDataFileUtilsTests {
+public final class GameDataFileUtilsTest {
   @Nested
-  public final class AddExtensionTests {
+  public final class AddExtensionTest {
     @Nested
     public final class WhenSaveGameFormatIsSerializationTest {
       private String addExtension(final String fileName) {
@@ -48,9 +48,9 @@ public final class GameDataFileUtilsTests {
   }
 
   @Nested
-  public final class AddExtensionIfAbsentTests {
+  public final class AddExtensionIfAbsentTest {
     @Nested
-    public final class WhenSaveGameFormatIsSerializationTests {
+    public final class WhenSaveGameFormatIsSerializationTest {
       @Nested
       public final class WhenFileSystemIsCaseSensitiveTest {
         private String addExtensionIfAbsent(final String fileName) {
@@ -97,7 +97,7 @@ public final class GameDataFileUtilsTests {
     }
 
     @Nested
-    public final class WhenSaveGameFormatIsProxySerializationTests {
+    public final class WhenSaveGameFormatIsProxySerializationTest {
       @Nested
       public final class WhenFileSystemIsCaseSensitiveTest {
         private String addExtensionIfAbsent(final String fileName) {
@@ -148,9 +148,9 @@ public final class GameDataFileUtilsTests {
   }
 
   @Nested
-  public final class IsCandidateFileNameTests {
+  public final class IsCandidateFileNameTest {
     @Nested
-    public final class WhenSaveGameFormatIsSerializationTests {
+    public final class WhenSaveGameFormatIsSerializationTest {
       @Nested
       public final class WhenFileSystemIsCaseSensitiveTest {
         private boolean isCandidateFileName(final String fileName) {
@@ -237,7 +237,7 @@ public final class GameDataFileUtilsTests {
     }
 
     @Nested
-    public final class WhenSaveGameFormatIsProxySerializationTests {
+    public final class WhenSaveGameFormatIsProxySerializationTest {
       @Nested
       public final class WhenFileSystemIsCaseSensitiveTest {
         private boolean isCandidateFileName(final String fileName) {

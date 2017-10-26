@@ -27,7 +27,7 @@ import games.strategy.engine.framework.map.download.MapDownloadController.Tutori
 import games.strategy.engine.framework.map.download.MapDownloadController.UserMaps;
 import games.strategy.util.Version;
 
-public final class MapDownloadControllerTests {
+public final class MapDownloadControllerTest {
 
   @Nested
   @ExtendWith(MockitoExtension.class)

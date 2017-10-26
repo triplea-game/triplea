@@ -16,7 +16,7 @@ import games.strategy.test.EqualityComparator;
 import games.strategy.test.EqualityComparatorRegistry;
 import games.strategy.test.TestUtil;
 
-public final class CoreEqualityComparatorsTests {
+public final class CoreEqualityComparatorsTest {
   private static EqualityComparatorRegistry newEqualityComparatorRegistryOf(
       final EqualityComparator primaryEqualityComparator,
       final EqualityComparator... secondaryEqualityComparators) {

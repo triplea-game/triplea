@@ -40,13 +40,11 @@ import games.strategy.security.TestSecurityUtils;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
 
-public final class LobbyLoginValidatorTests {
+public final class LobbyLoginValidatorTest {
 
   interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {
   }
 
-  @Nested
-  @ExtendWith(MockitoExtension.class)
   abstract class AbstractTestCase {
     static final String EMAIL = "n@n.com";
     static final String PASSWORD = "password";
@@ -217,7 +215,7 @@ public final class LobbyLoginValidatorTests {
   }
 
   @Nested
-  public final class WhenUserDoesNotExistTests {
+  public final class WhenUserDoesNotExistTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUsingLegacyClientTest extends AbstractTestCase {
@@ -268,7 +266,7 @@ public final class LobbyLoginValidatorTests {
   }
 
   @Nested
-  public final class WhenUserExistsTests {
+  public final class WhenUserExistsTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUsingLegacyClientTest extends AbstractTestCase {
