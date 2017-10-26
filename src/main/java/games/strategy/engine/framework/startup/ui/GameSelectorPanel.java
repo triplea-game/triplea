@@ -25,7 +25,6 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameDataFileUtils;
@@ -199,7 +198,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private static GridBagConstraints buildGrid(final int x, final int y, final Insets insets, final int width) {
-    final int gridWidth = width;
     final int gridHeight = 1;
     final double weigthX = 0;
     final double weigthY = 0;
@@ -208,7 +206,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     final int ipadx = 0;
     final int ipady = 0;
 
-    return new GridBagConstraints(x, y, gridWidth, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
+    return new GridBagConstraints(x, y, width, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
   }
 
 
@@ -287,9 +285,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     final Object buttonPressed = pane.getValue();
     if (buttonPressed == null || buttonPressed.equals(cancel)) {
       // restore properties, if cancel was pressed, or window was closed
-      final Iterator<IEditableProperty> itr = model.getGameData().getProperties().getEditableProperties().iterator();
-      while (itr.hasNext()) {
-        final IEditableProperty property = itr.next();
+      for (final IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
         property.setValue(currentPropertiesMap.get(property.getName()));
       }
     } else if (buttonPressed.equals(reset)) {
@@ -376,19 +372,14 @@ public class GameSelectorPanel extends JPanel implements Observer {
       final NewGameChooserEntry entry =
           NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
       if (entry != null) {
-        if (!entry.isGameDataLoaded()) {
-          try {
-            entry.fullyParseGameData();
-          } catch (final GameParseException e) {
-            entry.delayParseGameData();
-            NewGameChooser.getNewGameChooserModel().removeEntry(entry);
-            return;
-          }
+        if (!entry.isGameDataLoaded() && !entry.fullyParseGameData(entry.getGameName())) {
+          NewGameChooser.getNewGameChooserModel().removeEntry(entry);
+          return;
         }
         model.load(entry);
         setOriginalPropertiesMap(model.getGameData());
-        // only for new games, not saved games, we set the default options, and set them only once (the first time it is
-        // loaded)
+        // only for new games, not saved games, we set the default options, and set them
+        // only once (the first time it is loaded)
         gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
       }
     }

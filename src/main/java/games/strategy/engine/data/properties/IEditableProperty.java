@@ -20,9 +20,6 @@ public interface IEditableProperty {
    */
   Object getValue();
 
-  /**
-   * @return is the object a valid object for setting as our value.
-   */
   boolean validate(Object value);
 
   /**
@@ -36,9 +33,21 @@ public interface IEditableProperty {
   void setValue(Object value) throws ClassCastException;
 
   /**
-   * @return component used to edit this property.
+   * Returns a component used to edit this property.
    */
   JComponent getEditorComponent();
+
+
+  /**
+   * Convenience method to get the editor component in a 'disabled' state,
+   * meaning user interaction with the component is not allowed.
+   */
+  default JComponent getEditorComponentDisabled() {
+    final JComponent component = getEditorComponent();
+    component.setEnabled(false);
+    return component;
+  }
+
 
   /**
    * Get the view (read only) component for this property.

@@ -24,15 +24,12 @@ import javax.swing.border.EtchedBorder;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.GameLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 
 /**
- * When the game launches, the MainFrame is loaded which will contain
- * the MainPanel. The contents of the MainPanel are swapped out
- * until a new game has been started (TODO: check if the lobby
- * uses mainpanel at all)
+ * Container for the window contents shown at game launch.
  */
 public class MainPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -5548760379892913464L;
@@ -192,7 +189,7 @@ public class MainPanel extends JPanel implements Observer {
   private static void play(final ISetupPanel gameSetupPanel, final SetupPanelModel gameTypePanelModel,
       final MainPanel mainPanel) {
     gameSetupPanel.preStartGame();
-    final ILauncher launcher = gameTypePanelModel.getPanel().getLauncher();
+    final GameLauncher launcher = gameTypePanelModel.getPanel().getLauncher();
     if (launcher != null) {
       launcher.launch(mainPanel);
     }

@@ -121,7 +121,7 @@ public class JTextFieldBuilder {
   /**
    * Adds a listener action to the text field that is fired whenever a key is typed.
    */
-  public static void keyTypedListener(final Consumer<KeyEvent> listener, final JTextField... fields) {
+  public static void attachKeyTypedListener(final Consumer<KeyEvent> listener, final JTextField... fields) {
     Preconditions.checkNotNull(listener);
     Preconditions.checkArgument(fields.length > 0);
     Preconditions.checkNotNull(fields[0]);

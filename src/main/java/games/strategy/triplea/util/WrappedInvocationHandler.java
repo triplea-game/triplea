@@ -3,6 +3,7 @@ package games.strategy.triplea.util;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 
 /**
  * Implementation of {@link InvocationHandler} that delegates the {@link Object#equals(Object)},
@@ -57,6 +58,7 @@ public class WrappedInvocationHandler implements InvocationHandler {
     if (shouldHandle(method, args)) {
       return handle(method, args);
     }
-    throw new IllegalStateException("not configured");
+    throw new IllegalStateException(String.format("not configured for method %s, args: %s",
+        method.toString(), Arrays.asList(args).toString()));
   }
 }

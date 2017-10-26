@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.launcher;
 
 import java.awt.Component;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,12 +16,12 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataFileUtils;
-import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -40,16 +39,14 @@ import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.random.CryptoRandomSource;
-import games.strategy.io.IoUtils;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ThreadUtil;
 
-public class ServerLauncher extends AbstractLauncher {
+public class ServerLauncher extends GameLauncher {
   private static final Logger logger = Logger.getLogger(ServerLauncher.class.getName());
-  public static final String SERVER_ROOT_DIR_PROPERTY = "triplea.server.root.dir";
   private final int m_clientCount;
   private final IRemoteMessenger m_remoteMessenger;
   private final IChannelMessenger m_channelMessenger;
@@ -77,12 +74,12 @@ public class ServerLauncher extends AbstractLauncher {
       final boolean headless) {
     super(gameSelectorModel, headless);
     m_clientCount = clientCount;
-    m_remoteMessenger = remoteMessenger;
-    m_channelMessenger = channelMessenger;
-    m_messenger = messenger;
-    m_playerListing = playerListing;
-    m_remotelPlayers = remotelPlayers;
-    m_serverModel = serverModel;
+    m_remoteMessenger = Preconditions.checkNotNull(remoteMessenger);
+    m_channelMessenger = Preconditions.checkNotNull(channelMessenger);
+    m_messenger = Preconditions.checkNotNull(messenger);
+    m_playerListing = Preconditions.checkNotNull(playerListing);
+    m_remotelPlayers = Preconditions.checkNotNull(remotelPlayers);
+    m_serverModel = Preconditions.checkNotNull(serverModel);
   }
 
   public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper watcher) {
@@ -115,6 +112,11 @@ public class ServerLauncher extends AbstractLauncher {
     return false;
   }
 
+  public void signalGameStart(final byte[] bytes) {
+    ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME))
+        .doneSelectingPlayers(bytes, m_serverGame.getPlayerManager().getPlayerMapping());
+  }
+
   @Override
   protected void launchInNewThread(final Component parent) {
     try {
@@ -131,15 +133,8 @@ public class ServerLauncher extends AbstractLauncher {
       }
       m_remoteMessenger.registerRemote(m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
       m_gameData.doPreGameStartDataModifications(m_playerListing);
-      logger.fine("Starting server");
+      logger.info("Starting server");
       m_abortLaunch = testShouldWeAbort();
-      final byte[] gameDataAsBytes;
-      try {
-        gameDataAsBytes = gameDataToBytes(m_gameData);
-      } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
-        throw new IllegalStateException(e.getMessage());
-      }
       final Set<IGamePlayer> localPlayerSet =
           m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
       final Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
@@ -152,7 +147,7 @@ public class ServerLauncher extends AbstractLauncher {
       // later we will wait for them to all
       // signal that they are ready.
       ((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME))
-          .doneSelectingPlayers(gameDataAsBytes, m_serverGame.getPlayerManager().getPlayerMapping());
+          .doneSelectingPlayers(m_gameData.toBytes(), m_serverGame.getPlayerManager().getPlayerMapping());
 
       final boolean useSecureRandomSource = !m_remotelPlayers.isEmpty();
       if (useSecureRandomSource) {
@@ -311,10 +306,6 @@ public class ServerLauncher extends AbstractLauncher {
     m_serverGame.addObserver(blockingObserver, nonBlockingObserver, newNode);
   }
 
-  private static byte[] gameDataToBytes(final GameData data) throws IOException {
-    return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
-  }
-
   public void connectionLost(final INode node) {
     // System.out.println("Connection lost to: " + node);
     if (m_isLaunching) {
@@ -389,28 +380,28 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   static class ServerReady implements IServerReady {
-    private final CountDownLatch m_latch;
-    private final int m_clients;
+    private final CountDownLatch latch;
+    private final int clients;
 
     ServerReady(final int waitCount) {
-      m_clients = waitCount;
-      m_latch = new CountDownLatch(m_clients);
+      clients = waitCount;
+      latch = new CountDownLatch(clients);
     }
 
     @Override
     public void clientReady() {
-      m_latch.countDown();
+      latch.countDown();
     }
 
     public void countDownAll() {
-      for (int i = 0; i < m_clients; i++) {
-        m_latch.countDown();
+      for (int i = 0; i < clients; i++) {
+        latch.countDown();
       }
     }
 
     public void await() {
       try {
-        m_latch.await();
+        latch.await();
       } catch (final InterruptedException e) {
         ClientLogger.logQuietly(e);
       }
@@ -419,7 +410,7 @@ public class ServerLauncher extends AbstractLauncher {
     public boolean await(final long timeout, final TimeUnit timeUnit) {
       boolean didNotTimeOut = false;
       try {
-        didNotTimeOut = m_latch.await(timeout, timeUnit);
+        didNotTimeOut = latch.await(timeout, timeUnit);
       } catch (final InterruptedException e) {
         ClientLogger.logQuietly(e);
       }

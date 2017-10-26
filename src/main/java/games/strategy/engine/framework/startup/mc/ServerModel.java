@@ -37,7 +37,7 @@ import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.GameLauncher;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
@@ -62,6 +62,14 @@ import games.strategy.util.Version;
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
+
+  public IServerMessenger getServerMessenger() {
+    return serverMessenger;
+  }
+
+  void createServerLauncher() {
+    setServerLauncher((ServerLauncher) getLauncher());
+  }
 
   public enum InteractionMode {
     HEADLESS, SWING_CLIENT_UI
@@ -100,6 +108,14 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     this(gameSelectorModel, typePanelModel, InteractionMode.SWING_CLIENT_UI);
+  }
+
+
+  public ServerModel(final ServerConnectionProps props) {
+    this(GameRunner.getGameSelectorModel(),
+        GameRunner.getSetupPanelModel(),
+        ServerModel.InteractionMode.SWING_CLIENT_UI);
+    GameRunner.getSetupPanelModel().setServerMode(this, props);
   }
 
   public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel,
@@ -175,14 +191,14 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       objectStreamFactory.setData(data);
       localPlayerTypes.clear();
     }
-    notifyChanellPlayersChanged();
+    notifyChanelPlayersChanged();
     remoteModelListener.playerListChanged();
   }
 
-  private ServerProps getServerProps(final Component ui) {
+  private ServerHostingProps getServerProps(final Component ui) {
     if (System.getProperties().getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")
         && System.getProperties().getProperty(GameRunner.TRIPLEA_STARTED, "").equals("")) {
-      final ServerProps props = new ServerProps();
+      final ServerHostingProps props = new ServerHostingProps();
       props.setName(System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY));
       props.setPort(Integer.parseInt(System.getProperty(GameRunner.TRIPLEA_PORT_PROPERTY)));
       if (System.getProperty(GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY) != null) {
@@ -213,24 +229,27 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       return null;
     }
-    final ServerProps props = new ServerProps();
+    final ServerHostingProps props = new ServerHostingProps();
     props.setName(options.getName());
     props.setPort(options.getPort());
     props.setPassword(options.getPassword());
     return props;
   }
 
+
+  public boolean createServerMessenger(final Component ui) {
+    final ServerHostingProps props = getServerProps(ui);
+    return props != null && createServerMessenger(ui, props);
+  }
+
   /**
    * UI can be null. We use it as the parent for message dialogs we show.
    * If you have a component displayed, use it.
    */
-  public boolean createServerMessenger(Component ui) {
+  boolean createServerMessenger(Component ui, final ServerConnectionProps props) {
     ui = ui == null ? null : JOptionPane.getFrameForComponent(ui);
     this.ui = ui;
-    final ServerProps props = getServerProps(ui);
-    if (props == null) {
-      return false;
-    }
+
     try {
       serverMessenger = new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
@@ -240,7 +259,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       serverMessenger.addConnectionChangeListener(this);
       final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
       remoteMessenger = new RemoteMessenger(unifiedMessenger);
-      remoteMessenger.registerRemote(m_serverStartupRemote, SERVER_REMOTE_NAME);
+      remoteMessenger.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
       channelMessenger = new ChannelMessenger(unifiedMessenger);
       final NullModeratorController moderatorController = new NullModeratorController(serverMessenger, null);
       moderatorController.register(remoteMessenger);
@@ -270,7 +289,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
   }
 
-  private final IServerStartupRemote m_serverStartupRemote = new IServerStartupRemote() {
+  private final IServerStartupRemote serverStartupRemote = new IServerStartupRemote() {
     @Override
     public PlayerListing getPlayerListing() {
       return getPlayerListingInternal();
@@ -349,9 +368,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       try {
         return GameProperties.writeEditableProperties(currentEditableProperties);
       } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logError(e);
+        return null;
       }
-      return null;
     }
 
     @Override
@@ -449,7 +468,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         playersToNodeListing.put(playerName, null);
       }
     }
-    notifyChanellPlayersChanged();
+    notifyChanelPlayersChanged();
     remoteModelListener.playersTakenChanged();
   }
 
@@ -473,7 +492,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         }
       }
     }
-    notifyChanellPlayersChanged();
+    notifyChanelPlayersChanged();
     remoteModelListener.playersTakenChanged();
   }
 
@@ -485,7 +504,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
   }
 
-  private void notifyChanellPlayersChanged() {
+  private void notifyChanelPlayersChanged() {
     final IClientChannel channel =
         (IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
     channel.playerListingChanged(getPlayerListingInternal());
@@ -623,7 +642,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     return localPlayerMappings;
   }
 
-  public ILauncher getLauncher() {
+  public GameLauncher getLauncher() {
     synchronized (this) {
       disallowRemoveConnections();
       // -1 since we dont count outselves
@@ -644,9 +663,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           }
         }
       }
-      final ServerLauncher launcher = new ServerLauncher(clientCount, remoteMessenger, channelMessenger,
+      return new ServerLauncher(clientCount, remoteMessenger, channelMessenger,
           serverMessenger, gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, headless);
-      return launcher;
     }
   }
 
@@ -654,7 +672,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     serverMessenger.setAcceptNewConnections(true);
     final IClientChannel channel =
         (IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
-    notifyChanellPlayersChanged();
+    notifyChanelPlayersChanged();
     channel.gameReset();
   }
 
@@ -673,35 +691,5 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     sb.append("\n");
     sb.append(channelMessenger);
     return sb.toString();
-  }
-
-  private static final class ServerProps {
-    private String name;
-    private int port;
-    private String password;
-
-    String getPassword() {
-      return password;
-    }
-
-    void setPassword(final String password) {
-      this.password = password;
-    }
-
-    String getName() {
-      return name;
-    }
-
-    void setName(final String name) {
-      this.name = name;
-    }
-
-    int getPort() {
-      return port;
-    }
-
-    void setPort(final int port) {
-      this.port = port;
-    }
   }
 }

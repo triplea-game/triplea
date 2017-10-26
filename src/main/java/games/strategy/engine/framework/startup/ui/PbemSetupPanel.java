@@ -36,7 +36,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.GameLauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
@@ -62,7 +62,7 @@ import games.strategy.triplea.pbem.AxisAndAlliesForumPoster;
  * This panel listens to the GameSelectionModel so it can refresh when a new game is selected or save game loaded
  * The MainPanel also listens to this panel, and we notify it through the notifyObservers()
  */
-public class PBEMSetupPanel extends SetupPanel implements Observer {
+public class PbemSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 9006941131918034674L;
   private static final String DICE_ROLLER = "games.strategy.engine.random.IRemoteDiceServer";
   private final GameSelectorModel gameSelectorModel;
@@ -79,7 +79,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    * @param model
    *        the GameSelectionModel, though which changes are obtained when new games are chosen, or save games loaded
    */
-  public PBEMSetupPanel(final GameSelectorModel model) {
+  public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
     diceServerEditor = new SelectAndViewEditor("Dice Server", "");
     forumPosterEditor = new SelectAndViewEditor("Post to Forum", "forumPosters.html");
@@ -109,7 +109,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       }
     });
     localPlayerSelection.addActionListener(
-        e -> JOptionPane.showMessageDialog(PBEMSetupPanel.this, scrollPane, "Select Local Players and AI's",
+        e -> JOptionPane.showMessageDialog(PbemSetupPanel.this, scrollPane, "Select Local Players and AI's",
             JOptionPane.PLAIN_MESSAGE));
   }
 
@@ -365,7 +365,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    * Called when the user hits play.
    */
   @Override
-  public ILauncher getLauncher() {
+  public GameLauncher getLauncher() {
     // update local cache and write to disk before game starts
     final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
     if (poster != null) {
@@ -425,7 +425,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       Runtime.getRuntime().addShutdownHook(new Thread(this::writeToDisk));
     }
 
-    @SuppressWarnings("unchecked")
     private Map<String, IBean> loadMap() {
       if (file.exists()) {
         try (FileInputStream fin = new FileInputStream(file);
@@ -453,7 +452,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     }
 
     /**
-     * adds a new Serializable to the cache
+     * Adds a new Serializable IBean to the cache.
      *
      * @param key
      *        the key the serializable should be stored under. Take care not to override a serializable stored by other

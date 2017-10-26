@@ -14,17 +14,17 @@ import games.strategy.engine.framework.ui.background.WaitWindow;
 /**
  * Abstract class for launching a game.
  */
-public abstract class AbstractLauncher implements ILauncher {
+public abstract class GameLauncher {
   protected final GameData m_gameData;
   protected final GameSelectorModel m_gameSelectorModel;
   protected final WaitWindow m_gameLoadingWindow;
   protected final boolean m_headless;
 
-  protected AbstractLauncher(final GameSelectorModel gameSelectorModel) {
+  protected GameLauncher(final GameSelectorModel gameSelectorModel) {
     this(gameSelectorModel, false);
   }
 
-  protected AbstractLauncher(final GameSelectorModel gameSelectorModel, final boolean headless) {
+  protected GameLauncher(final GameSelectorModel gameSelectorModel, final boolean headless) {
     m_headless = headless;
     if (m_headless) {
       m_gameLoadingWindow = null;
@@ -35,7 +35,6 @@ public abstract class AbstractLauncher implements ILauncher {
     m_gameData = gameSelectorModel.getGameData();
   }
 
-  @Override
   public void launch(final Component parent) {
     if (!m_headless && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");

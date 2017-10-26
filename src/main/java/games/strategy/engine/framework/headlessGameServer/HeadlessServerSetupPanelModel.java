@@ -11,26 +11,21 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
  * Setup panel model for headless server.
  */
 public class HeadlessServerSetupPanelModel extends SetupPanelModel {
-  protected final Component m_ui;
+  protected final Component uiComponent;
 
-  public HeadlessServerSetupPanelModel(final GameSelectorModel gameSelectorModel, final Component ui) {
+  HeadlessServerSetupPanelModel(final GameSelectorModel gameSelectorModel, final Component uiComponent) {
     super(gameSelectorModel);
-    m_ui = ui;
+    this.uiComponent = uiComponent;
   }
 
   @Override
   public void showSelectType() {
-    final ServerModel model = new ServerModel(m_gameSelectorModel, this, ServerModel.InteractionMode.HEADLESS);
-    if (!model.createServerMessenger(m_ui)) {
+    final ServerModel model = new ServerModel(gameSelectorModel, this, ServerModel.InteractionMode.HEADLESS);
+    if (!model.createServerMessenger(uiComponent)) {
       model.cancel();
       return;
     }
-    if (m_ui == null) {
-      final HeadlessServerSetup serverSetup = new HeadlessServerSetup(model, m_gameSelectorModel);
-      setGameTypePanel(serverSetup);
-    } else {
-      final ServerSetupPanel serverSetupPanel = new ServerSetupPanel(model, m_gameSelectorModel);
-      setGameTypePanel(serverSetupPanel);
-    }
+    setGameTypePanel((uiComponent == null) ? new HeadlessServerSetup(model, gameSelectorModel)
+        : new ServerSetupPanel(model, gameSelectorModel));
   }
 }

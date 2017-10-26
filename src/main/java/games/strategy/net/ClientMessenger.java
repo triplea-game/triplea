@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.HubInvoke;
@@ -49,6 +50,10 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     this(host, port, name, mac, new DefaultObjectStreamFactory(), login);
   }
 
+  public ClientMessenger(final ServerConnectionProps props, final String name, final String mac,
+      final IConnectionLogin login) throws IOException {
+    this(props.getHost(), props.getPort(), name, mac, login);
+  }
 
   /**
    * Note, the name parameter passed in here may not match the name of the

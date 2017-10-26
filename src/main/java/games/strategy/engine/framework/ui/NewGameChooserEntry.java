@@ -3,9 +3,12 @@ package games.strategy.engine.framework.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.swing.JLabel;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -16,13 +19,15 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.UrlStreams;
+import swinglib.JDialogBuilder;
 
 public class NewGameChooserEntry {
   private final URI url;
   private GameData gameData;
   private boolean gameDataFullyLoaded = false;
-  private final String gameNameAndMapNameProperty;
+  private String gameNameAndMapNameProperty;
 
   static Comparator<NewGameChooserEntry> getComparator() {
     return new Comparator<NewGameChooserEntry>() {
@@ -37,9 +42,21 @@ public class NewGameChooserEntry {
     };
   }
 
+  public NewGameChooserEntry() {
+    this(defaultGameUri());
+  }
 
-  public NewGameChooserEntry(final URI uri)
-      throws IOException, GameParseException, SAXException, EngineVersionException {
+
+  private static URI defaultGameUri() {
+    final String defaultLocation = ClientSetting.SELECTED_GAME_LOCATION.value();
+    try {
+      return new URI(defaultLocation);
+    } catch (final URISyntaxException e) {
+      throw new IllegalStateException("Illegal default game location: " + defaultLocation, e);
+    }
+  }
+
+  public NewGameChooserEntry(final URI uri) {
     url = uri;
     final AtomicReference<String> gameName = new AtomicReference<>();
 
@@ -50,15 +67,36 @@ public class NewGameChooserEntry {
       return;
     }
 
-    try (InputStream input = inputStream.get()) {
-      final boolean delayParsing = true;
-      gameData = new GameParser(uri.toString()).parse(input, gameName, delayParsing);
-      gameDataFullyLoaded = false;
-      gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
+    try {
+      try (InputStream input = inputStream.get()) {
+        final boolean delayParsing = true;
+        gameData = new GameParser(uri.toString()).parse(input, gameName, delayParsing);
+        gameDataFullyLoaded = false;
+        gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
+      }
+    } catch (final IOException | GameParseException | SAXException | EngineVersionException e) {
+      ClientLogger.logError("Error reading: " + uri + ", game name: " + gameName, e);
     }
   }
 
-  public void fullyParseGameData() throws GameParseException {
+  /**
+   * 'Fully' parses the currently loaded game data XML.
+   * This must be done before the game is launched.
+   */
+  public boolean fullyParseGameData(final String gameName) {
+    try {
+      fullyParseGameDataThrowing();
+      return true;
+    } catch (final GameParseException e) {
+      JDialogBuilder.builder()
+          .title("Failed to Read Map")
+          .contents(new JLabel(String.format("Failed to load map: %s", gameName)))
+          .buildAndShowDialog();
+      return false;
+    }
+  }
+
+  private GameData fullyParseGameDataThrowing() throws GameParseException {
     // TODO: We should be setting this in the the constructor. At this point, you have to call methods in the
     // correct order for things to work, and that is bads.
     gameData = null;
@@ -67,13 +105,13 @@ public class NewGameChooserEntry {
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (!inputStream.isPresent()) {
-      return;
+      return gameData;
     }
 
     try (InputStream input = inputStream.get()) {
       gameData = new GameParser(url.toString()).parse(input, gameName, false);
       gameDataFullyLoaded = true;
-
+      return gameData;
     } catch (final EngineVersionException e) {
       ClientLogger.logQuietly(e);
       throw new GameParseException(e.getMessage());
@@ -86,33 +124,6 @@ public class NewGameChooserEntry {
       final String msg = "Could not parse:" + url;
       ClientLogger.logError(msg, e);
       throw new GameParseException(e.getMessage());
-    }
-  }
-
-  /**
-   * Do not use this if possible. Instead try to remove the bad map from the GameChooserModel.
-   * If that fails, then do a short parse so the user doesn't get a null pointer error.
-   */
-  public void delayParseGameData() {
-    gameData = null;
-
-    final AtomicReference<String> gameName = new AtomicReference<>();
-    final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-    if (!inputStream.isPresent()) {
-      return;
-    }
-    try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(url.toString()).parse(input, gameName, true);
-      gameDataFullyLoaded = false;
-    } catch (final EngineVersionException e) {
-      System.out.println(e.getMessage());
-    } catch (final SAXParseException e) {
-      System.err.println(
-          "Could not parse:" + url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
-      ClientLogger.logQuietly(e);
-    } catch (final Exception e) {
-      System.err.println("Could not parse:" + url);
-      ClientLogger.logQuietly(e);
     }
   }
 

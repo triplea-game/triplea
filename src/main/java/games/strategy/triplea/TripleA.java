@@ -65,11 +65,8 @@ public class TripleA implements IGameLoader {
         players.add(new ProAI(name, type));
       } else if (type.equals(DOESNOTHINGAI_COMPUTER_PLAYER_TYPE)) {
         players.add(new DoesNothingAI(name, type));
-      } else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE)) {
-        final TripleAPlayer player = new TripleAPlayer(name, type);
-        players.add(player);
       } else {
-        throw new IllegalStateException("Player type not recognized:" + type);
+        players.add(new TripleAPlayer(name, type));
       }
     }
     return players;
