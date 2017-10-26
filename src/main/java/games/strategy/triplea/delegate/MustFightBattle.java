@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -1620,8 +1621,42 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (firingUnits.isEmpty()) {
       return;
     }
-    m_stack.push(new Fire(attackableUnits, returnFire, firing, defending, firingUnits, stepName, text, this, defender,
-        m_dependentUnits, m_headless, m_battleSite, m_territoryEffects, allEnemyUnitsAliveOrWaitingToDie));
+
+    // Fire each type of suicide on hit unit separately and then remaining units
+    final List<Collection<Unit>> firingGroups = createFiringUnitGroups(firingUnits);
+    for (final Collection<Unit> units : firingGroups) {
+      m_stack.push(new Fire(attackableUnits, returnFire, firing, defending, units, stepName, text, this, defender,
+          m_dependentUnits, m_headless, m_battleSite, m_territoryEffects, allEnemyUnitsAliveOrWaitingToDie));
+    }
+  }
+
+  /**
+   * Breaks list of units into groups of non suicide on hit units and each type of suicide on hit units
+   * since each type of suicide on hit units need to roll separately to know which ones get hits.
+   */
+  private static List<Collection<Unit>> createFiringUnitGroups(final Collection<Unit> units) {
+
+    // Sort suicide on hit units by type
+    final Map<UnitType, Collection<Unit>> map = new HashMap<>();
+    for (final Unit unit : Matches.getMatches(units, Matches.unitIsSuicideOnHit())) {
+      final UnitType type = unit.getType();
+      if (map.containsKey(type)) {
+        map.get(type).add(unit);
+      } else {
+        final Collection<Unit> unitList = new ArrayList<>();
+        unitList.add(unit);
+        map.put(type, unitList);
+      }
+    }
+
+    // Add all suicide on hit groups and the remaining units
+    final List<Collection<Unit>> result = new ArrayList<>();
+    result.addAll(map.values());
+    final Collection<Unit> remainingUnits = Matches.getMatches(units, Matches.unitIsSuicideOnHit().invert());
+    if (!remainingUnits.isEmpty()) {
+      result.add(remainingUnits);
+    }
+    return result;
   }
 
   /**
@@ -1889,6 +1924,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         returnFire, "Subs defend, ");
   }
 
+  void removeSuicideOnHitCasualties(final Collection<Unit> killed, final int hits, final boolean defender,
+      final IDelegateBridge bridge) {
+    if (Match.anyMatch(killed, Matches.unitIsSuicideOnHit()) && hits > 0) {
+      final List<Unit> units = killed.stream().limit(hits).collect(Collectors.toList());
+      removeCasualties(units, ReturnFire.NONE, defender, bridge);
+    }
+  }
+
   void removeCasualties(final Collection<Unit> killed, final ReturnFire returnFire, final boolean defender,
       final IDelegateBridge bridge) {
     if (killed.isEmpty()) {
@@ -2077,79 +2120,84 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         return;
       }
       for (final String currentTypeAa : (m_defending ? m_defendingAAtypes : m_offensiveAAtypes)) {
-        final Collection<Unit> currentPossibleAa =
+        final Collection<Unit> currentAaUnits =
             Matches.getMatches((m_defending ? m_defendingAA : m_offensiveAA), Matches.unitIsAaOfTypeAa(currentTypeAa));
-        final Set<UnitType> targetUnitTypesForThisTypeAa =
-            UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(m_data);
-        final Set<UnitType> airborneTypesTargettedToo =
-            m_defending ? TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAa)
-                : new HashSet<>();
-        final Collection<Unit> validAttackingUnitsForThisRoll =
-            Matches.getMatches((m_defending ? m_attackingUnits : m_defendingUnits),
-                Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-                    Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
-        final IExecutable rollDice = new IExecutable() {
-          private static final long serialVersionUID = 6435935558879109347L;
+        final List<Collection<Unit>> firingGroups = createFiringUnitGroups(currentAaUnits);
+        for (final Collection<Unit> currentPossibleAa : firingGroups) {
+          final Set<UnitType> targetUnitTypesForThisTypeAa =
+              UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(m_data);
+          final Set<UnitType> airborneTypesTargettedToo =
+              m_defending ? TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAa)
+                  : new HashSet<>();
+          final Collection<Unit> validAttackingUnitsForThisRoll =
+              Matches.getMatches((m_defending ? m_attackingUnits : m_defendingUnits),
+                  Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
+                      Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+          final IExecutable rollDice = new IExecutable() {
+            private static final long serialVersionUID = 6435935558879109347L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
-            if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              m_dice =
-                  DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_battleSite, m_defending);
-              if (!m_headless) {
-                if (currentTypeAa.equals("AA")) {
-                  if (m_dice.getHits() > 0) {
-                    bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                        (m_defending ? m_defender : m_attacker));
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
+              if (!validAttackingUnitsForThisRoll.isEmpty()) {
+                m_dice =
+                    DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_battleSite,
+                        m_defending);
+                if (!m_headless) {
+                  if (currentTypeAa.equals("AA")) {
+                    if (m_dice.getHits() > 0) {
+                      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
+                          (m_defending ? m_defender : m_attacker));
+                    } else {
+                      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
+                          (m_defending ? m_defender : m_attacker));
+                    }
                   } else {
-                    bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                        (m_defending ? m_defender : m_attacker));
-                  }
-                } else {
-                  if (m_dice.getHits() > 0) {
-                    bridge.getSoundChannelBroadcaster().playSoundForAll(
-                        SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                        (m_defending ? m_defender : m_attacker));
-                  } else {
-                    bridge.getSoundChannelBroadcaster().playSoundForAll(
-                        SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                        (m_defending ? m_defender : m_attacker));
+                    if (m_dice.getHits() > 0) {
+                      bridge.getSoundChannelBroadcaster().playSoundForAll(
+                          SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+                          (m_defending ? m_defender : m_attacker));
+                    } else {
+                      bridge.getSoundChannelBroadcaster().playSoundForAll(
+                          SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+                          (m_defending ? m_defender : m_attacker));
+                    }
                   }
                 }
               }
             }
-          }
-        };
-        final IExecutable selectCasualties = new IExecutable() {
-          private static final long serialVersionUID = 7943295620796835166L;
+          };
+          final IExecutable selectCasualties = new IExecutable() {
+            private static final long serialVersionUID = 7943295620796835166L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              final CasualtyDetails details =
-                  selectCasualties(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, currentTypeAa);
-              markDamaged(details.getDamaged(), bridge);
-              m_casualties = details;
-              m_casualtiesSoFar.addAll(details.getKilled());
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              if (!validAttackingUnitsForThisRoll.isEmpty()) {
+                final CasualtyDetails details =
+                    selectCasualties(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, currentTypeAa);
+                markDamaged(details.getDamaged(), bridge);
+                m_casualties = details;
+                m_casualtiesSoFar.addAll(details.getKilled());
+              }
             }
-          }
-        };
-        final IExecutable notifyCasualties = new IExecutable() {
-          private static final long serialVersionUID = -6759782085212899725L;
+          };
+          final IExecutable notifyCasualties = new IExecutable() {
+            private static final long serialVersionUID = -6759782085212899725L;
 
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              notifyCasualtiesAa(bridge, currentTypeAa);
-              removeCasualties(m_casualties.getKilled(), ReturnFire.ALL, !m_defending, bridge);
+            @Override
+            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+              if (!validAttackingUnitsForThisRoll.isEmpty()) {
+                notifyCasualtiesAa(bridge, currentTypeAa);
+                removeCasualties(m_casualties.getKilled(), ReturnFire.ALL, !m_defending, bridge);
+                removeSuicideOnHitCasualties(currentPossibleAa, m_dice.getHits(), m_defending, bridge);
+              }
             }
-          }
-        };
-        // push in reverse order of execution
-        stack.push(notifyCasualties);
-        stack.push(selectCasualties);
-        stack.push(rollDice);
+          };
+          // push in reverse order of execution
+          stack.push(notifyCasualties);
+          stack.push(selectCasualties);
+          stack.push(rollDice);
+        }
       }
     }
 
