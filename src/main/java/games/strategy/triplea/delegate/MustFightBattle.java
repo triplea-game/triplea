@@ -1924,11 +1924,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         returnFire, "Subs defend, ");
   }
 
-  void removeSuicideOnHitCasualties(final Collection<Unit> killed, final int hits, final boolean defender,
+  void removeSuicideOnHitCasualties(final Collection<Unit> firingUnits, final int hits, final boolean defender,
       final IDelegateBridge bridge) {
-    if (Match.anyMatch(killed, Matches.unitIsSuicideOnHit()) && hits > 0) {
-      final List<Unit> units = killed.stream().limit(hits).collect(Collectors.toList());
-      removeCasualties(units, ReturnFire.NONE, defender, bridge);
+    if (Match.anyMatch(firingUnits, Matches.unitIsSuicideOnHit()) && hits > 0) {
+      final List<Unit> units = firingUnits.stream().limit(hits).collect(Collectors.toList());
+      getDisplay(bridge).deadUnitNotification(m_battleID, defender ? m_defender : m_attacker, units, m_dependentUnits);
+      remove(units, bridge, m_battleSite, defender);
     }
   }
 
