@@ -4,13 +4,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
-import games.strategy.debug.ClientLogger;
+import com.google.common.base.Throwables;
+
 import games.strategy.engine.framework.GameRunner;
 
 /**
@@ -20,36 +22,71 @@ public final class BackgroundTaskRunner {
   private BackgroundTaskRunner() {}
 
   /**
-   * Runs the specified action in the background without blocking the UI.
+   * Runs the specified action in the background without blocking the UI and returns the result of that action.
    *
    * <p>
    * {@code backgroundAction} is run on a background (non-UI) thread. While the background action is running, a dialog
    * is displayed with the specified message. When the background action is complete, the dialog is removed and
-   * {@code completionAction} is run on the UI thread. {@code completionAction} will consume the value supplied by
-   * {@code backgroundAction}.
+   * the value supplied by {@code backgroundAction} is returned.
    * </p>
    *
    * @param <T> The type of value supplied by the background action.
    *
-   * @param message The message displayed to the user while the background action is running; may be {@code null}.
-   * @param backgroundAction The action to run in the background; must not be {@code null}.
-   * @param completionAction The action to run in the foreground upon completion of {@code backgroundAction}; must not
-   *        be {@code null}.
+   * @param message The message displayed to the user while the background action is running.
+   * @param backgroundAction The action to run in the background.
+   *
+   * @return The value returned by {@code backgroundAction}.
    *
    * @throws IllegalStateException If this method is not called from the EDT.
+   * @throws InterruptedException If the UI thread is interrupted while waiting for the background action to complete.
    */
-  public static <T> void runInBackground(
+  public static <T> T runInBackgroundAndReturn(
       final String message,
-      final Supplier<T> backgroundAction,
-      final Consumer<T> completionAction) {
-    checkState(SwingUtilities.isEventDispatchThread());
-    checkNotNull(backgroundAction);
-    checkNotNull(completionAction);
+      final Supplier<T> backgroundAction)
+      throws InterruptedException {
+    return runInBackgroundAndReturnOrThrow(message, () -> backgroundAction.get(), RuntimeException.class);
+  }
 
+  /**
+   * Runs the specified action in the background without blocking the UI and returns the result of that action or throws
+   * an exception if the background action fails.
+   *
+   * <p>
+   * {@code backgroundAction} is run on a background (non-UI) thread. While the background action is running, a dialog
+   * is displayed with the specified message. When the background action is complete, the dialog is removed and
+   * the value supplied by {@code backgroundAction} is returned. If {@code backgroundAction} throws an exception, it
+   * will be re-thrown on the UI thread.
+   * </p>
+   *
+   * @param <T> The type of value supplied by the background action.
+   * @param <E> The type of exception thrown by the background action.
+   *
+   * @param message The message displayed to the user while the background action is running.
+   * @param backgroundAction The action to run in the background.
+   * @param exceptionType The type of exception thrown by the background action.
+   *
+   * @return The value returned by {@code backgroundAction}.
+   *
+   * @throws IllegalStateException If this method is not called from the EDT.
+   * @throws E If the background action fails.
+   * @throws InterruptedException If the UI thread is interrupted while waiting for the background action to complete.
+   */
+  public static <T, E extends Exception> T runInBackgroundAndReturnOrThrow(
+      final String message,
+      final ThrowingSupplier<T, E> backgroundAction,
+      final Class<E> exceptionType)
+      throws E, InterruptedException {
+    checkState(SwingUtilities.isEventDispatchThread());
+    checkNotNull(message);
+    checkNotNull(backgroundAction);
+    checkNotNull(exceptionType);
+
+    final AtomicReference<T> resultRef = new AtomicReference<>();
+    final AtomicReference<Throwable> exceptionRef = new AtomicReference<>();
     final WaitDialog waitDialog = GameRunner.newWaitDialog(message);
     final SwingWorker<T, Void> worker = new SwingWorker<T, Void>() {
       @Override
-      protected T doInBackground() {
+      protected T doInBackground() throws Exception {
         return backgroundAction.get();
       }
 
@@ -59,16 +96,43 @@ public final class BackgroundTaskRunner {
         waitDialog.dispose();
 
         try {
-          completionAction.accept(get());
+          resultRef.set(get());
         } catch (final ExecutionException e) {
-          ClientLogger.logError(e.getCause());
+          exceptionRef.set(e.getCause());
         } catch (final InterruptedException e) {
-          Thread.currentThread().interrupt();
+          exceptionRef.set(e);
         }
       }
     };
     worker.execute();
-
     waitDialog.setVisible(true);
+
+    final @Nullable Throwable exception = exceptionRef.get();
+    if (exception != null) {
+      Throwables.throwIfInstanceOf(exception, exceptionType);
+      Throwables.throwIfInstanceOf(exception, InterruptedException.class);
+      Throwables.throwIfUnchecked(exception);
+      throw new AssertionError("unexpected checked exception", exception);
+    }
+
+    return resultRef.get();
+  }
+
+  /**
+   * A supplier of results that may throw an exception.
+   *
+   * @param <T> The type of the supplied result.
+   * @param <E> The type of exception that may be thrown by the supplier.
+   */
+  @FunctionalInterface
+  public interface ThrowingSupplier<T, E extends Exception> {
+    /**
+     * Gets the result.
+     *
+     * @return The result.
+     *
+     * @throws E If an error occurs while getting the result.
+     */
+    T get() throws E;
   }
 }
