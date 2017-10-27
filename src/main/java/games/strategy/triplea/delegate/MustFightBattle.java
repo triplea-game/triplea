@@ -195,7 +195,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       m_amphibiousLandAttackers.addAll(Matches.getMatches(attackingUnits, Matches.unitIsLand()));
       m_isAmphibious = true;
     }
-    final Map<Unit, Collection<Unit>> dependencies = transporting(units);
+    final Map<Unit, Collection<Unit>> dependencies = TransportTracker.transporting(units);
     if (!isAlliedAirIndependent()) {
       dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
       for (final Unit carrier : dependencies.keySet()) {
@@ -283,9 +283,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     canFire.addAll(m_defendingWaitingToDie);
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-    m_defendingAA =
-        Matches.getMatches(canFire, Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed,
-            m_attacker, Matches.unitIsAaForCombatOnly(), m_round, true, m_data));
+    m_defendingAA = Matches.getMatches(canFire, Matches.unitIsAaThatCanFire(m_attackingUnits,
+        airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForCombatOnly(), m_round, true, m_data));
     // comes ordered alphabetically
     m_defendingAAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
     // stacks are backwards
@@ -314,9 +313,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final ITripleADisplay display = getDisplay(bridge);
       display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
           removeNonCombatants(m_attackingUnits, true, false, false, false),
-          removeNonCombatants(m_defendingUnits, false, false, false, false), m_killed,
-          m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, isAmphibious(),
-          getBattleType(), m_amphibiousLandAttackers);
+          removeNonCombatants(m_defendingUnits, false, false, false, false),
+          m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
+          isAmphibious(), getBattleType(), m_amphibiousLandAttackers);
       display.listBattleSteps(m_battleID, m_stepStrings);
       m_stack.execute(bridge);
       return;
@@ -338,8 +337,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       attackerWins(bridge);
       return;
     }
-    addDependentUnits(transporting(m_defendingUnits));
-    addDependentUnits(transporting(m_attackingUnits));
+    addDependentUnits(TransportTracker.transporting(m_defendingUnits));
+    addDependentUnits(TransportTracker.transporting(m_attackingUnits));
     // determine any AA
     updateOffensiveAaUnits();
     updateDefendingAaUnits();
@@ -347,9 +346,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final ITripleADisplay display = getDisplay(bridge);
     display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
         removeNonCombatants(m_attackingUnits, true, false, false, false),
-        removeNonCombatants(m_defendingUnits, false, false, false, false), m_killed,
-        m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, isAmphibious(),
-        getBattleType(), m_amphibiousLandAttackers);
+        removeNonCombatants(m_defendingUnits, false, false, false, false),
+        m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
+        isAmphibious(), getBattleType(), m_amphibiousLandAttackers);
     display.listBattleSteps(m_battleID, m_stepStrings);
     if (!m_headless) {
       // take the casualties with least movement first
@@ -515,7 +514,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         steps.add(m_defender.getName() + SUBS_SUBMERGE);
       }
     }
-    // See if there any unescorted trns
+    // See if there any unescorted transports
     if (m_battleSite.isWater() && isTransportCasualtiesRestricted()) {
       if (Match.anyMatch(m_attackingUnits, Matches.unitIsTransport())
           || Match.anyMatch(m_defendingUnits, Matches.unitIsTransport())) {
@@ -557,21 +556,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         && (returnFireAgainstDefendingSubs() != ReturnFire.ALL || returnFireAgainstAttackingSubs() != ReturnFire.ALL)) {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
-    // Air only Units can't attack subs without Destroyers present
-    if (isAirAttackSubRestricted()) {
-      final Collection<Unit> units = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
-      units.addAll(m_attackingUnits);
-      if (Match.anyMatch(m_attackingUnits, Matches.unitIsAir()) && !canAirAttackSubs(m_defendingUnits, units)) {
-        steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
-      }
-    }
-    // Air Units can't attack subs without Destroyers present
-    if (m_battleSite.isWater() && isAirAttackSubRestricted()) {
-      final Collection<Unit> units = new ArrayList<>(m_attackingUnits.size() + m_attackingWaitingToDie.size());
-      units.addAll(m_attackingUnits);
-      if (Match.anyMatch(m_attackingUnits, Matches.unitIsAir()) && !canAirAttackSubs(m_defendingUnits, units)) {
-        steps.add(AIR_ATTACK_NON_SUBS);
-      }
+    // Air units can't attack subs without Destroyers present
+    if (isAirAttackSubRestricted() && Match.anyMatch(m_attackingUnits, Matches.unitIsAir())
+        && !canAirAttackSubs(m_defendingUnits, m_attackingUnits)) {
+      steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
+      steps.add(AIR_ATTACK_NON_SUBS);
     }
     if (Match.anyMatch(m_attackingUnits, Matches.unitIsNotSub())) {
       steps.add(m_attacker.getName() + FIRE);
@@ -924,7 +913,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void addFightStepsNonEditMode(final List<IExecutable> steps) {
-    /** Ask to retreat defending subs before battle */
+    // Ask to retreat defending subs before battle
     if (isSubRetreatBeforeBattle()) {
       steps.add(new IExecutable() {
         private static final long serialVersionUID = 6775880082912594489L;
@@ -947,7 +936,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
       });
     }
-    /** Remove Suicide Units */
+    // Remove Suicide Units
     steps.add(new IExecutable() {
       private static final long serialVersionUID = 99988L;
 
@@ -956,7 +945,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         checkSuicideUnits(bridge);
       }
     });
-    /** Remove undefended trns */
+    // Remove undefended transports
     if (isTransportCasualtiesRestricted()) {
       steps.add(new IExecutable() {
         private static final long serialVersionUID = 99989L;
@@ -970,7 +959,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
       });
     }
-    /** Submerge subs if -vs air only & air restricted from attacking subs */
+    // Submerge subs if -vs air only & air restricted from attacking subs
     if (isAirAttackSubRestricted()) {
       steps.add(new IExecutable() {
         private static final long serialVersionUID = 99990L;
@@ -1013,7 +1002,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
       });
     }
-    /** Attacker air fire on NON subs */
+    // Attacker air fire on non-subs
     if (isAirAttackSubRestricted()) {
       steps.add(new IExecutable() {
         private static final long serialVersionUID = 99993L;
@@ -1024,7 +1013,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
       });
     }
-    /** Attacker fire remaining units */
+    // Attacker fire remaining units
     steps.add(new IExecutable() {
       private static final long serialVersionUID = 99994L;
 
@@ -1043,7 +1032,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
       });
     }
-    /** Defender air fire on NON subs */
+    // Defender air fire on non-subs
     if (isAirAttackSubRestricted()) {
       steps.add(new IExecutable() {
         private static final long serialVersionUID = 1560702114917865123L;
@@ -1127,7 +1116,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // If attacker is all planes, just return collection of current territory
     if (m_headless || (!m_attackingUnits.isEmpty() && Match.allMatch(m_attackingUnits, Matches.unitIsAir()))
         || Properties.getRetreatingUnitsRemainInPlace(m_data)) {
-
       final Collection<Territory> oneTerritory = new ArrayList<>(2);
       oneTerritory.add(m_battleSite);
       return oneTerritory;
@@ -1671,7 +1659,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   * Check for unescorted TRNS and kill them immediately.
+   * Check for unescorted transports and kill them immediately.
    */
   private void checkUndefendedTransports(final IDelegateBridge bridge, final PlayerID player) {
     // if we are the attacker, we can retreat instead of dying
@@ -1759,7 +1747,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
-   * Submerge attacking/defending SUBS if they're alone OR with TRNS against only AIRCRAFT.
+   * Submerge attacking/defending subs if they're alone OR with transports against only air.
    */
   private void submergeSubsVsOnlyAir(final IDelegateBridge bridge) {
     // if All attackers are AIR, submerge any defending subs
@@ -2422,11 +2410,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         final List<Unit> allyOfAttackerUnits = m_battleSite.getUnits().getMatches(Matches.unitIsNotInfrastructure());
         if (!allyOfAttackerUnits.isEmpty()) {
           final PlayerID abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(allyOfAttackerUnits);
-          bridge.getHistoryWriter()
-              .addChildToEvent(
-                  abandonedToPlayer.getName() + " takes over " + m_battleSite.getName()
-                      + " as there are no defenders left",
-                  allyOfAttackerUnits);
+          bridge.getHistoryWriter().addChildToEvent(
+              abandonedToPlayer.getName() + " takes over " + m_battleSite.getName() + " as there are no defenders left",
+              allyOfAttackerUnits);
           // should we create a new battle records to show the ally capturing the territory (in the case where they
           // didn't already own/allied it)?
           m_battleTracker.takeOver(m_battleSite, abandonedToPlayer, bridge, null, allyOfAttackerUnits);
@@ -2711,13 +2697,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
       m_battleTracker.removeBattle(this);
     }
-  }
-
-  /**
-   * Returns a map of transport -> collection of transported units.
-   */
-  private static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
-    return TransportTracker.transporting(units);
   }
 
   @Override
