@@ -151,10 +151,14 @@ public class DownloadMapsWindow extends JFrame {
       assert state == State.UNINITIALIZED;
 
       state = State.INITIALIZING;
-      BackgroundTaskRunner.runInBackground(
-          "Downloading list of available maps...",
-          ClientContext::getMapDownloadList,
-          downloads -> createAndShow(mapNames, downloads));
+      try {
+        final List<DownloadFileDescription> downloads = BackgroundTaskRunner.runInBackgroundAndReturn(
+            "Downloading list of available maps...",
+            ClientContext::getMapDownloadList);
+        createAndShow(mapNames, downloads);
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
     }
 
     private void createAndShow(final Collection<String> mapNames, final List<DownloadFileDescription> downloads) {

@@ -120,7 +120,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
           msg += ", " + m_connectionRefusedError;
         }
         login.notifyFailedLogin(msg);
-        throw new CouldNotLogInException();
+        throw new CouldNotLogInException(msg);
       } else if (m_connectionRefusedError instanceof CouldNotLogInException) {
         throw (CouldNotLogInException) m_connectionRefusedError;
       } else if (m_connectionRefusedError != null) {
