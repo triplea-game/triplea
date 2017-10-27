@@ -1893,6 +1893,7 @@
   <unitList>
     <unit name="germanTrain"/>
     <unit name="germanRail"/>
+    <unit name="germanMine"/>
     <unit name="germanInfantry"/>
     <unit name="germanAlpineInfantry"/>
     <unit name="germanCombatEngineer"/>
@@ -7678,6 +7679,23 @@
       <option name="whenCapturedChangesInto" value="any:India:true:Material:1"/>
     </attachment>
     <!-- German Units -->
+    <attachment name="unitAttachment" attachTo="germanMine" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="attack" value="0"/>
+      <option name="defense" value="0"/>
+      <option name="isSea" value="true"/>
+      <option name="isSub" value="true"/>
+      <option name="isAAforCombatOnly" value="true"/>
+      <option name="mayOverStackAA" value="true"/>
+      <option name="typeAA" value="navalmine"/>
+      <option name="targetsAA" value="americanCruiser"/>
+      <option name="maxAAattacks" value="1"/>
+      <option name="maxRoundsAA" value="1"/>
+      <option name="movement" value="0"/>
+      <option name="attackAA" value="2"/>
+      <option name="damageableAA" value="true"/>
+      <option name="canInvadeOnlyFrom" value="none"/>
+      <option name="isSuicideOnHit" value="true"/>
+    </attachment>        
     <attachment name="unitAttachment" attachTo="germanTrain" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="5"/>
       <option name="attack" value="0"/>

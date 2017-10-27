@@ -231,6 +231,7 @@ public class Fire implements IExecutable {
           m_battle.markDamaged(m_damaged, bridge);
         }
         m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
+        m_battle.removeSuicideOnHitCasualties(m_firingUnits, m_dice.getHits(), m_defending, bridge);
       }
     };
     stack.push(notifyCasualties);

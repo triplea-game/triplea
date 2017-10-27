@@ -531,6 +531,10 @@ public final class Matches {
     return Match.of(unit -> UnitAttachment.get(unit.getType()).getIsSuicide());
   }
 
+  static Match<Unit> unitIsSuicideOnHit() {
+    return Match.of(unit -> UnitAttachment.get(unit.getType()).getIsSuicideOnHit());
+  }
+
   static Match<Unit> unitIsKamikaze() {
     return Match.of(unit -> UnitAttachment.get(unit.getType()).getIsKamikaze());
   }

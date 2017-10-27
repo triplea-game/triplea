@@ -92,6 +92,7 @@ public class UnitAttachment extends DefaultAttachment {
   private int m_unitSupportCount = -1;
   private int m_isMarine = 0;
   private boolean m_isSuicide = false;
+  private boolean m_isSuicideOnHit = false;
   private Tuple<Integer, String> m_attackingLimit = null;
   private int m_attackRolls = 1;
   private int m_defenseRolls = 1;
@@ -1735,6 +1736,24 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setIsSuicideOnHit(final String s) {
+    m_isSuicideOnHit = getBool(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setIsSuicideOnHit(final boolean s) {
+    m_isSuicideOnHit = s;
+  }
+
+  public boolean getIsSuicideOnHit() {
+    return m_isSuicideOnHit;
+  }
+
+  public void resetIsSuicideOnHit() {
+    m_isSuicideOnHit = false;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIsKamikaze(final String s) {
     m_isKamikaze = getBool(s);
   }
@@ -2891,8 +2910,10 @@ public class UnitAttachment extends DefaultAttachment {
             : "null")
         + "  canOnlyBePlacedInTerritoryValuedAtX:" + m_canOnlyBePlacedInTerritoryValuedAtX + "  maxBuiltPerPlayer:"
         + m_maxBuiltPerPlayer + "  special:"
-        + (m_special != null ? (m_special.size() == 0 ? "empty" : m_special.toString()) : "null") + "  isSuicide:"
-        + m_isSuicide + "  isSuicide:" + m_isSuicide + "  isCombatTransport:" + m_isCombatTransport
+        + (m_special != null ? (m_special.size() == 0 ? "empty" : m_special.toString()) : "null")
+        + "  isSuicide:" + m_isSuicide
+        + "  isSuicideOnHit:" + m_isSuicideOnHit
+        + "  isCombatTransport:" + m_isCombatTransport
         + "  canInvadeOnlyFrom:"
         + (m_canInvadeOnlyFrom != null
             ? (m_canInvadeOnlyFrom.length == 0 ? "empty" : Arrays.toString(m_canInvadeOnlyFrom))
@@ -3159,6 +3180,9 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (getIsSuicide()) {
       stats.append("Suicide/Munition Unit, ");
+    }
+    if (getIsSuicideOnHit()) {
+      stats.append("SuicideOnHit Unit, ");
     }
     if (getIsAir() && (getIsKamikaze() || Properties.getKamikaze_Airplanes(getData()))) {
       stats.append("can use All Movement To Attack Target, ");
