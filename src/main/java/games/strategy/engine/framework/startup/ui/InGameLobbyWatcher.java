@@ -94,9 +94,6 @@ public class InGameLobbyWatcher {
     System.getProperties().setProperty(GameRunner.LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
     final IConnectionLogin login = new IConnectionLogin() {
       @Override
-      public void notifyFailedLogin(final String message) {}
-
-      @Override
       public Map<String, String> getProperties(final Map<String, String> challengeProperties) {
         final Map<String, String> properties = new HashMap<>();
         properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());

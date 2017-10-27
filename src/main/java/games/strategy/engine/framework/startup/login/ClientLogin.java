@@ -11,7 +11,6 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.net.IConnectionLogin;
-import games.strategy.util.EventThreadJOptionPane;
 
 /**
  * The client side of the peer-to-peer network game authentication protocol.
@@ -69,10 +68,5 @@ public class ClientLogin implements IConnectionLogin {
         "Enter a password to join the game",
         JOptionPane.QUESTION_MESSAGE);
     return new String(passwordField.getPassword());
-  }
-
-  @Override
-  public void notifyFailedLogin(final String message) {
-    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parentComponent), message);
   }
 }

@@ -76,9 +76,6 @@ public final class ClientLoginIntegrationTest {
     }
 
     @Override
-    public void notifyFailedLogin(final String message) {}
-
-    @Override
     protected String promptForPassword() {
       return password;
     }
