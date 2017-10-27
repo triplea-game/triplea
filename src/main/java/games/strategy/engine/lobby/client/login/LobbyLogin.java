@@ -81,9 +81,6 @@ public class LobbyLogin {
         MacFinder.getHashedMacAddress(),
         new IConnectionLogin() {
           @Override
-          public void notifyFailedLogin(final String message) {}
-
-          @Override
           public Map<String, String> getProperties(final Map<String, String> challenge) {
             final Map<String, String> response = new HashMap<>();
             if (anonymousLogin) {
@@ -161,9 +158,6 @@ public class LobbyLogin {
         userName,
         MacFinder.getHashedMacAddress(),
         new IConnectionLogin() {
-          @Override
-          public void notifyFailedLogin(final String message) {}
-
           @Override
           public Map<String, String> getProperties(final Map<String, String> challenge) {
             final Map<String, String> response = new HashMap<>();

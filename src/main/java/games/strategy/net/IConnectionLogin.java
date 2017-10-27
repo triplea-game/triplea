@@ -7,9 +7,8 @@ import java.util.Map;
  *
  * <p>
  * An IConnectionLogin is generally paired with an ILoginValidator. The validator will send a challenge string, to which
- * the
- * IConnectionLogin will respond with a key/value map of credentials. The validator will then allow the login, or return
- * an error message.
+ * the IConnectionLogin will respond with a key/value map of credentials. The validator will then allow the login or
+ * return an error message.
  * </p>
  */
 public interface IConnectionLogin {
@@ -17,9 +16,4 @@ public interface IConnectionLogin {
    * Get the properties to log in given the challenge Properties.
    */
   Map<String, String> getProperties(Map<String, String> challengeProperties);
-
-  /**
-   * A notification that the login failed. The error message supplied should be shown to the user.
-   */
-  void notifyFailedLogin(String message);
 }

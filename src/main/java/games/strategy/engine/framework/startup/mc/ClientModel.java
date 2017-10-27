@@ -150,8 +150,8 @@ public class ClientModel implements IMessengerErrorListener {
     try {
       final String mac = MacFinder.getHashedMacAddress();
       m_messenger = new ClientMessenger(address, port, name, mac, m_objectStreamFactory, new ClientLogin(m_ui));
-    } catch (final CouldNotLogInException ioe) {
-      // an error message should have already been reported
+    } catch (final CouldNotLogInException e) {
+      EventThreadJOptionPane.showMessageDialog(ui, e.getMessage());
       return false;
     } catch (final Exception ioe) {
       ioe.printStackTrace(System.out);
