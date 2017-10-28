@@ -281,7 +281,7 @@ public class RocketsFireHelper {
           final int[] rolls = bridge.getRandom(highestMaxDice, numberOfAttacks, player, DiceType.BOMBING,
               "Rocket fired by " + player.getName() + " at " + attacked.getName());
           for (int i = 0; i < rolls.length; i++) {
-            final int r = rolls[i] + highestBonus;
+            final int r = Math.max(-1, rolls[i] + highestBonus);
             rolls[i] = r;
             // we are zero based
             cost += r + 1;
@@ -343,7 +343,7 @@ public class RocketsFireHelper {
           final int[] rolls = bridge.getRandom(highestMaxDice, numberOfAttacks, player, DiceType.BOMBING,
               "Rocket fired by " + player.getName() + " at " + attacked.getName());
           for (int i = 0; i < rolls.length; i++) {
-            final int r = rolls[i] + highestBonus;
+            final int r = Math.max(-1, rolls[i] + highestBonus);
             rolls[i] = r;
             // we are zero based
             cost += r + 1;
