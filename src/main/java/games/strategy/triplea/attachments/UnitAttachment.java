@@ -139,7 +139,7 @@ public class UnitAttachment extends DefaultAttachment {
   // strategic bombing related
   private boolean m_isStrategicBomber = false;
   private int m_bombingMaxDieSides = -1;
-  private int m_bombingBonus = -1;
+  private int m_bombingBonus = 0;
   private boolean m_canIntercept = false;
   private boolean m_canEscort = false;
   private boolean m_canAirBattle = false;
@@ -2695,9 +2695,8 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           "transportCost and transportCapacity cannot be set at same time, " + thisErrorMsg());
     }
-    if (((m_bombingBonus >= 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isRocket))
-        || (m_bombingBonus < -1 || m_bombingMaxDieSides < -1)
-        || (m_bombingBonus > 10000 || m_bombingMaxDieSides > 200)) {
+    if (((m_bombingBonus != 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isRocket))
+        || (m_bombingMaxDieSides < -1)) {
       throw new GameParseException("something wrong with bombingBonus or bombingMaxDieSides, " + thisErrorMsg());
     }
     if (m_maxBuiltPerPlayer < -1) {
@@ -3051,11 +3050,11 @@ public class UnitAttachment extends DefaultAttachment {
     if (getIsRocket() && playerHasRockets(player)) {
       stats.append("can Rocket Attack, ");
       final int bombingBonus = getBombingBonus();
-      if ((getBombingMaxDieSides() != -1 || bombingBonus != -1)
+      if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
           && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
-            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
-                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
+        stats.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
+            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != 0 ? bombingBonus : 0)
+                : getData().getDiceSides() + (bombingBonus != 0 ? bombingBonus : 0))
             .append(" Rocket Damage, ");
       } else {
         stats.append("1-").append(getData().getDiceSides()).append(" Rocket Damage, ");
@@ -3148,11 +3147,11 @@ public class UnitAttachment extends DefaultAttachment {
     if (getIsStrategicBomber()) {
       stats.append("can Perform Raids, ");
       final int bombingBonus = getBombingBonus();
-      if ((getBombingMaxDieSides() != -1 || bombingBonus != -1)
+      if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
           && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        stats.append(bombingBonus != -1 ? bombingBonus + 1 : 1).append("-")
-            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != -1 ? bombingBonus : 0)
-                : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
+        stats.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
+            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus != 0 ? bombingBonus : 0)
+                : getData().getDiceSides() + (bombingBonus != 0 ? bombingBonus : 0))
             .append(" Raid Damage, ");
       } else {
         stats.append("1-").append(getData().getDiceSides()).append(" Raid Damage, ");
