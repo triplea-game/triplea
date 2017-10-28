@@ -22,16 +22,6 @@ public interface IBean extends Serializable {
   EditorPanel getEditor();
 
   /**
-   * Method to check of two beans are of the same type,
-   * this is used in the select and view to find an an bean in the list.
-   *
-   * @param other
-   *        the bean to check against
-   * @return true if they are the same type
-   */
-  boolean sameType(IBean other);
-
-  /**
    * Get the help text which the editor will display, the text should be HTML.
    *
    * @return the help text

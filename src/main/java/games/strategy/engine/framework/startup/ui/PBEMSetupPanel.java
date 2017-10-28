@@ -8,8 +8,6 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -154,9 +152,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     // another game)
     gameSelectorModel.addObserver(this);
     // subscribe to editor changes, so we cannotify the MainPanel
-    diceServerEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
-    forumPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
-    emailSenderEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
+    diceServerEditor.addPropertyChangeListener(e -> notifyObservers());
+    forumPosterEditor.addPropertyChangeListener(e -> notifyObservers());
+    emailSenderEditor.addPropertyChangeListener(e -> notifyObservers());
   }
 
   private void loadAll() {
@@ -203,10 +201,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private void loadForumPosters(final GameData data) {
     // get the forum posters,
     final List<IForumPoster> forumPosters = new ArrayList<>();
-    forumPosters.add(findCachedOrCreateNew(NullForumPoster.class));
-    forumPosters.add(findCachedOrCreateNew(AxisAndAlliesForumPoster.class));
-    forumPosters.add(findCachedOrCreateNew(TripleAWarClubForumPoster.class));
-    forumPosters.add(findCachedOrCreateNew(TripleAForumPoster.class));
+    forumPosters.add(useCacheIfAvailable(new NullForumPoster()));
+    forumPosters.add(useCacheIfAvailable(new AxisAndAlliesForumPoster()));
+    forumPosters.add(useCacheIfAvailable(new TripleAWarClubForumPoster()));
+    forumPosters.add(useCacheIfAvailable(new TripleAForumPoster()));
     forumPosterEditor.setBeans(forumPosters);
     // now get the poster stored in the save game
     final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PBEMMessagePoster.FORUM_POSTER_PROP_NAME);
@@ -233,10 +231,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private void loadEmailSender(final GameData data) {
     // The list of email, either loaded from cache or created
     final List<IEmailSender> emailSenders = new ArrayList<>();
-    emailSenders.add(findCachedOrCreateNew(NullEmailSender.class));
-    emailSenders.add(findCachedOrCreateNew(GmailEmailSender.class));
-    emailSenders.add(findCachedOrCreateNew(HotmailEmailSender.class));
-    emailSenders.add(findCachedOrCreateNew(GenericEmailSender.class));
+    emailSenders.add(useCacheIfAvailable(new NullEmailSender()));
+    emailSenders.add(useCacheIfAvailable(new GmailEmailSender()));
+    emailSenders.add(useCacheIfAvailable(new HotmailEmailSender()));
+    emailSenders.add(useCacheIfAvailable(new GenericEmailSender()));
     emailSenderEditor.setBeans(emailSenders);
     // now get the sender from the save game, update it with credentials from the cache, and set it
     final IEmailSender sender = (IEmailSender) data.getProperties().get(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME);
@@ -259,17 +257,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    *        the type of class
    * @return a IBean either loaded from the cache or created
    */
-  private static <T extends IBean> T findCachedOrCreateNew(final Class<T> theClassType) {
-    T cached = theClassType.cast(LocalBeanCache.INSTANCE.getSerializable(theClassType.getCanonicalName()));
-    if (cached == null) {
-      try {
-        cached = theClassType.getDeclaredConstructor().newInstance();
-      } catch (final Exception e) {
-        throw new RuntimeException(
-            "Bean of type " + theClassType + " doesn't have public default constructor, error: " + e.getMessage());
-      }
-    }
-    return cached;
+  private static <T extends IBean> T useCacheIfAvailable(final T instance) {
+    @SuppressWarnings("unchecked")
+    final T cached = (T) LocalBeanCache.INSTANCE.getSerializable(instance.getClass().getCanonicalName());
+    return cached == null ? instance : cached;
   }
 
   @Override
@@ -329,7 +320,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     if (sender != null) {
       // create a clone, delete the sensitive information in the clone, and use it in the game
       // the locally cached version still has the password so the user doesn't have to enter it every time
-      sender = sender.doClone();
+      sender = sender.clone();
       sender.clearSensitiveInfo();
       data.getProperties().set(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
     }
@@ -342,10 +333,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   /**
    * Is called in response to the GameSelectionModel being updated. It means the we have to reload the form
    *
-   * @param o
-   *        always null
-   * @param arg
-   *        always null
+   * @param o always null
+   * @param arg always null
    */
   @Override
   public void update(final Observable o, final Object arg) {
@@ -394,16 +383,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
         new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
     return new LocalLauncher(gameSelectorModel, randomSource, pl);
-  }
-
-  /**
-   * A property change listener that notify our observers.
-   */
-  private class NotifyingPropertyChangeListener implements PropertyChangeListener {
-    @Override
-    public void propertyChange(final PropertyChangeEvent evt) {
-      notifyObservers();
-    }
   }
 
   /**

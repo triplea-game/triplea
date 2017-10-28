@@ -7,7 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
+import java.util.Collection;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -16,6 +16,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.MutableComboBoxModel;
 
 import games.strategy.triplea.help.HelpSupport;
 import games.strategy.triplea.ui.JButtonDialog;
@@ -143,10 +144,9 @@ public class SelectAndViewEditor extends EditorPanel {
   /**
    * Sets the list of possible beans to choose from.
    *
-   * @param beans
-   *        the list of beans
+   * @param beans the list of beans
    */
-  public void setBeans(final List<? extends IBean> beans) {
+  public void setBeans(final Collection<? extends IBean> beans) {
     selector.setModel(new DefaultComboBoxModel<>(beans.toArray(new IBean[beans.size()])));
     updateView();
   }
@@ -174,17 +174,15 @@ public class SelectAndViewEditor extends EditorPanel {
    * If an editor of the same class is found, it is selected an modified to match
    * If no bean of this type is found, it is added to the list
    *
-   * @param bean
-   *        the bean
+   * @param bean the bean
    */
   public void setSelectedBean(final IBean bean) {
-    final DefaultComboBoxModel<IBean> model = (DefaultComboBoxModel<IBean>) selector.getModel();
+    final MutableComboBoxModel<IBean> model = (MutableComboBoxModel<IBean>) selector.getModel();
     final DefaultComboBoxModel<IBean> newModel = new DefaultComboBoxModel<>();
     boolean found = false;
-    int i;
-    for (i = 0; i < model.getSize(); i++) {
+    for (int i = 0; i < model.getSize(); i++) {
       final IBean candidate = model.getElementAt(i);
-      if (candidate.sameType(bean)) {
+      if (candidate.equals(bean)) {
         found = true;
         newModel.addElement(bean);
       } else {

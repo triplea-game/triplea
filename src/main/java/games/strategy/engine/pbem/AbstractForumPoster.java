@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 
@@ -179,12 +178,17 @@ public abstract class AbstractForumPoster implements IForumPoster {
   }
 
   @Override
-  public boolean sameType(final IBean other) {
-    return getClass() == other.getClass();
+  public EditorPanel getEditor() {
+    return new ForumPosterEditor(this);
   }
 
   @Override
-  public EditorPanel getEditor() {
-    return new ForumPosterEditor(this);
+  public boolean equals(final Object other) {
+    return other != null && getClass().equals(other.getClass());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
   }
 }

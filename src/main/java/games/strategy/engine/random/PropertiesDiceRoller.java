@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -103,11 +104,6 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   @Override
   public EditorPanel getEditor() {
     return new DiceServerEditor(this);
-  }
-
-  @Override
-  public boolean sameType(final IBean other) {
-    return other instanceof PropertiesDiceRoller && getDisplayName().equals(other.getDisplayName());
   }
 
   @Override
@@ -253,6 +249,16 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   @Override
   public String getHelpText() {
     return getInfoText();
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), ((IBean) other).getDisplayName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(getDisplayName());
   }
 
   private static class AdvancedRedirectStrategy extends LaxRedirectStrategy {

@@ -28,7 +28,6 @@ import javax.mail.util.ByteArrayDataSource;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 import games.strategy.triplea.help.HelpSupport;
@@ -328,7 +327,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   @Override
-  public IEmailSender doClone() {
+  public IEmailSender clone() {
     final GenericEmailSender sender = new GenericEmailSender();
     sender.setSubjectPrefix(getSubjectPrefix());
     sender.setEncryption(getEncryption());
@@ -372,11 +371,6 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   @Override
-  public boolean sameType(final IBean other) {
-    return other.getClass() == GenericEmailSender.class;
-  }
-
-  @Override
   public String getHelpText() {
     return HelpSupport.loadHelp("genericEmailSender.html");
   }
@@ -385,5 +379,15 @@ public class GenericEmailSender implements IEmailSender {
   public String toString() {
     return "GenericEmailSender{" + "m_toAddress='" + m_toAddress + '\'' + ", m_userName='" + m_userName + '\''
         + ", m_host='" + m_host + '\'' + ", m_port=" + m_port + ", m_encryption=" + m_encryption + '}';
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    return other != null && getClass().equals(other.getClass());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
   }
 }
