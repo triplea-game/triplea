@@ -253,7 +253,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
 
   @Override
   public boolean equals(Object other) {
-    return other instanceof PropertiesDiceRoller && getDisplayName().equals(((IBean) other).getDisplayName());
+    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), ((IBean) other).getDisplayName());
   }
 
   @Override
