@@ -616,12 +616,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               if (maxDice > 0) {
                 final int[] dicerolls = bridge.getRandom(maxDice, rolls, m_attacker, DiceType.BOMBING, annotation);
                 for (final int die : dicerolls) {
-                  m_dice[i] = Math.max(0, die + bonus);
+                  // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1 based
+                  m_dice[i] = Math.max(-1, die + bonus);
                   i++;
                 }
               } else {
                 for (int j = 0; j < rolls; j++) {
-                  m_dice[i] = Math.max(0, bonus);
+                  // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1 based
+                  m_dice[i] = Math.max(-1, bonus);
                   i++;
                 }
               }
@@ -658,12 +660,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             if (maxDice > 0) {
               final int[] dicerolls = bridge.getRandom(maxDice, rolls, m_attacker, DiceType.BOMBING, annotation);
               for (final int die : dicerolls) {
-                m_dice[i] = Math.max(0, die + bonus);
+                // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1 based
+                m_dice[i] = Math.max(-1, die + bonus);
                 i++;
               }
             } else {
               for (int j = 0; j < rolls; j++) {
-                m_dice[i] = Math.max(0, bonus);
+                // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1 based
+                m_dice[i] = Math.max(-1, bonus);
                 i++;
               }
             }
