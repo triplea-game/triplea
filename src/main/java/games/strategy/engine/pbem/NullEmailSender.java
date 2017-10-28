@@ -74,7 +74,7 @@ public class NullEmailSender implements IEmailSender {
   public void setAlsoPostAfterCombatMove(final boolean postAlso) {}
 
   @Override
-  public boolean equals(Object other) {
+  public boolean equals(final Object other) {
     return other != null && getClass().equals(other.getClass());
   }
 

@@ -113,7 +113,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public boolean equals(final Object other) {
     return other != null && getClass().equals(other.getClass());
   }
 

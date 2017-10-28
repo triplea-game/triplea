@@ -113,7 +113,7 @@ public class NullForumPoster implements IForumPoster {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public boolean equals(final Object other) {
     return other != null && getClass().equals(other.getClass());
   }
 
