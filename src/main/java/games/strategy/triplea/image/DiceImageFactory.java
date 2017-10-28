@@ -103,8 +103,8 @@ public class DiceImageFactory {
   }
 
   private Image getDieImage(final int i, final Die.DieType type) {
-    if (i <= 0) {
-      throw new IllegalArgumentException("die must be greater than 0, not:" + i);
+    if (i < 0) {
+      throw new IllegalArgumentException("Die can't be less than 0, value: " + i);
     }
     if (i > m_diceSides) {
       final Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
