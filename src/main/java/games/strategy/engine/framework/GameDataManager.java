@@ -26,6 +26,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.GameEngineUtils;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataMemento;
 import games.strategy.engine.delegate.IDelegate;
@@ -116,7 +117,7 @@ public final class GameDataManager {
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
-      if (!readVersion.isCompatible(ClientContext.engineVersion())) {
+      if (!GameEngineUtils.isEngineCompatibleWithEngine(ClientContext.engineVersion(), readVersion)) {
         // a hack for now, but a headless server should not try to open any savegame that is not its version
         if (headless) {
           final String message = "Incompatible game save, we are: " + ClientContext.engineVersion()
@@ -130,8 +131,8 @@ public final class GameDataManager {
             + "\nTo download the latest version of TripleA, Please visit "
             + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE;
         throw new IOException(error);
-      } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion())) {
-        // we can still load it because first 3 numbers of the version are the same, however this save was made by a
+      } else if (!headless && readVersion.compareTo(ClientContext.engineVersion()) > 0) {
+        // we can still load it because our engine is compatible, however this save was made by a
         // newer engine, so prompt the user to upgrade
         final String messageString =
             "Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."

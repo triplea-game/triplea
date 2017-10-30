@@ -31,6 +31,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.debug.LoggingConfiguration;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.GameEngineUtils;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -391,8 +392,7 @@ public class GameRunner {
       if (latestEngineOut == null) {
         return false;
       }
-      if (ClientContext.engineVersion()
-          .isLessThan(latestEngineOut.getLatestVersionOut())) {
+      if (ClientContext.engineVersion().compareTo(latestEngineOut.getLatestVersionOut()) < 0) {
         SwingUtilities
             .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
                 "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE));
@@ -476,7 +476,7 @@ public class GameRunner {
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     final String newClassPath = null;
-    if (!ClientContext.engineVersion().isCompatible(engineVersionOfGameToJoin)) {
+    if (!GameEngineUtils.isEngineCompatibleWithEngine(ClientContext.engineVersion(), engineVersionOfGameToJoin)) {
       JOptionPane.showMessageDialog(parent,
           "Host is using version " + engineVersionOfGameToJoin.toStringFull()
               + ". You need to have a compatible engine version in order to join this game.",

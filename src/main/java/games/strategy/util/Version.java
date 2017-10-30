@@ -3,21 +3,24 @@ package games.strategy.util;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Sets;
 
 /**
  * Represents a version string.
  * versions are of the form major.minor.point.micro
- * note that when doing comparisons, if the micro for two
- * versions is the same, then the two versions are considered
- * equal
  */
 public final class Version implements Serializable, Comparable<Version> {
-  static final long serialVersionUID = -4770210855326775333L;
+  private static final long serialVersionUID = -4770210855326775333L;
+  private static final CompareOption[] NO_COMPARE_OPTIONS = new CompareOption[0];
+
   private final int m_major;
   private final int m_minor;
   private final int m_point;
@@ -138,58 +141,31 @@ public final class Version implements Serializable, Comparable<Version> {
   public int compareTo(final Version other) {
     checkNotNull(other);
 
-    return compareTo(other, false);
-  }
-
-  private int compareTo(final Version other, final boolean ignoreMicro) {
-    if (m_major > other.m_major) {
-      return 1;
-    } else if (m_major < other.m_major) {
-      return -1;
-    } else if (m_minor > other.m_minor) {
-      return 1;
-    } else if (m_minor < other.m_minor) {
-      return -1;
-    } else if (m_point > other.m_point) {
-      return 1;
-    } else if (m_point < other.m_point) {
-      return -1;
-    } else if (!ignoreMicro) {
-      if (m_micro > other.m_micro) {
-        return 1;
-      } else if (m_micro < other.m_micro) {
-        return -1;
-      }
-    }
-    return 0;
+    return compareTo(other, NO_COMPARE_OPTIONS);
   }
 
   /**
-   * Returns true, if this object is greater than the provided Version object.
+   * Compares this version with the specified version for order while considering the specified options.
+   *
+   * @param other The version to be compared.
+   * @param options The comparison options.
+   *
+   * @return A negative integer, zero, or a positive integer if this version is less than, equal, or greater than the
+   *         specified version.
    */
-  public boolean isGreaterThan(final Version other) {
+  public int compareTo(final Version other, final CompareOption... options) {
     checkNotNull(other);
+    checkNotNull(options);
 
-    return isGreaterThan(other, false);
+    return compareTo(other, Sets.newEnumSet(Arrays.asList(options), CompareOption.class));
   }
 
-  /**
-   * Returns true, if this object is greater than the provided Version object.
-   * If ignoreMicro is set to true, the micro version number is ignored.
-   */
-  public boolean isGreaterThan(final Version other, final boolean ignoreMicro) {
-    checkNotNull(other);
-
-    return compareTo(other, ignoreMicro) > 0;
-  }
-
-  /**
-   * Returns true, if this object is less than the provided Version object.
-   */
-  public boolean isLessThan(final Version other) {
-    checkNotNull(other);
-
-    return compareTo(other) < 0;
+  private int compareTo(final Version other, final Set<CompareOption> options) {
+    return Comparator.comparingInt(Version::getMajor)
+        .thenComparingInt(Version::getMinor)
+        .thenComparingInt(Version::getPoint)
+        .thenComparingInt(options.contains(CompareOption.IGNORE_MICRO) ? it -> 0 : Version::getMicro)
+        .compare(this, other);
   }
 
   /**
@@ -212,15 +188,10 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
-   * Indicates the specified version is compatible with this version.
-   *
-   * @param other The version to compare to this version for compatibility.
-   *
-   * @return {@code true} if the specified version is compatible with this version; otherwise {@code false}.
+   * The possible options when comparing versions.
    */
-  public boolean isCompatible(final Version other) {
-    checkNotNull(other);
-
-    return other.m_major == m_major && other.m_minor == m_minor && other.m_point == m_point;
+  public enum CompareOption {
+    /** Indicates the micro version will be ignored during comparison. */
+    IGNORE_MICRO;
   }
 }
