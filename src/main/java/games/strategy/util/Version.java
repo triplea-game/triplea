@@ -1,7 +1,11 @@
 package games.strategy.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Serializable;
 import java.util.StringTokenizer;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Joiner;
 
@@ -12,7 +16,7 @@ import com.google.common.base.Joiner;
  * versions is the same, then the two versions are considered
  * equal
  */
-public class Version implements Serializable, Comparable<Version> {
+public final class Version implements Serializable, Comparable<Version> {
   static final long serialVersionUID = -4770210855326775333L;
   private final int m_major;
   private final int m_minor;
@@ -121,7 +125,7 @@ public class Version implements Serializable, Comparable<Version> {
   }
 
   @Override
-  public boolean equals(final Object o) {
+  public boolean equals(final @Nullable Object o) {
     return o instanceof Version ? compareTo((Version) o) == 0 : false;
   }
 
@@ -131,35 +135,32 @@ public class Version implements Serializable, Comparable<Version> {
   }
 
   @Override
-  public int compareTo(final Version o) {
-    return o == null ? -1 : compareTo(o, false);
+  public int compareTo(final Version other) {
+    checkNotNull(other);
+
+    return compareTo(other, false);
   }
 
   private int compareTo(final Version other, final boolean ignoreMicro) {
-    if (other == null) {
-      return -1;
-    }
-    if (other.m_major > m_major) {
+    if (m_major > other.m_major) {
       return 1;
-    }
-    if (other.m_major < m_major) {
+    } else if (m_major < other.m_major) {
       return -1;
-    } else if (other.m_minor > m_minor) {
+    } else if (m_minor > other.m_minor) {
       return 1;
-    } else if (other.m_minor < m_minor) {
+    } else if (m_minor < other.m_minor) {
       return -1;
-    } else if (other.m_point > m_point) {
+    } else if (m_point > other.m_point) {
       return 1;
-    } else if (other.m_point < m_point) {
+    } else if (m_point < other.m_point) {
       return -1;
     } else if (!ignoreMicro) {
-      if (other.m_micro > m_micro) {
+      if (m_micro > other.m_micro) {
         return 1;
-      } else if (other.m_micro < m_micro) {
+      } else if (m_micro < other.m_micro) {
         return -1;
       }
     }
-    // if the only difference is m_micro, then ignore
     return 0;
   }
 
@@ -167,6 +168,8 @@ public class Version implements Serializable, Comparable<Version> {
    * Returns true, if this object is greater than the provided Version object.
    */
   public boolean isGreaterThan(final Version other) {
+    checkNotNull(other);
+
     return isGreaterThan(other, false);
   }
 
@@ -175,14 +178,18 @@ public class Version implements Serializable, Comparable<Version> {
    * If ignoreMicro is set to true, the micro version number is ignored.
    */
   public boolean isGreaterThan(final Version other, final boolean ignoreMicro) {
-    return other != null ? compareTo(other, ignoreMicro) < 0 : false;
+    checkNotNull(other);
+
+    return compareTo(other, ignoreMicro) > 0;
   }
 
   /**
    * Returns true, if this object is less than the provided Version object.
    */
   public boolean isLessThan(final Version other) {
-    return other != null ? compareTo(other) > 0 : false;
+    checkNotNull(other);
+
+    return compareTo(other) < 0;
   }
 
   /**
@@ -204,7 +211,16 @@ public class Version implements Serializable, Comparable<Version> {
     return m_micro != 0 ? toStringFull() : m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
   }
 
+  /**
+   * Indicates the specified version is compatible with this version.
+   *
+   * @param other The version to compare to this version for compatibility.
+   *
+   * @return {@code true} if the specified version is compatible with this version; otherwise {@code false}.
+   */
   public boolean isCompatible(final Version other) {
-    return other != null && other.m_major == m_major && other.m_minor == m_minor && other.m_point == m_point;
+    checkNotNull(other);
+
+    return other.m_major == m_major && other.m_minor == m_minor && other.m_point == m_point;
   }
 }

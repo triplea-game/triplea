@@ -27,7 +27,6 @@ import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.util.Version;
 
-
 @ExtendWith(MockitoExtension.class)
 public class GameSelectorModelTest {
 
@@ -48,7 +47,7 @@ public class GameSelectorModelTest {
     assertThat(objectToCheck.getGameVersion(), is(fakeGameVersion));
   }
 
-  private static final String fakeGameVersion = "fakeGameVersion";
+  private static final String fakeGameVersion = "12.34.56.78";
   private static final String fakeGameRound = "3";
   private static final String fakeGameName = "_fakeGameName_";
   private static final String fakeFileName = "/hack/and/slash";
@@ -60,9 +59,6 @@ public class GameSelectorModelTest {
 
   @Mock
   private GameData mockGameData;
-
-  @Mock
-  private Version mockVersion;
 
   @Mock
   private GameSequence mockSequence;
@@ -105,8 +101,7 @@ public class GameSelectorModelTest {
   }
 
   private void prepareMockGameDataExpectations() {
-    when(mockGameData.getGameVersion()).thenReturn(mockVersion);
-    when(mockVersion.toString()).thenReturn(fakeGameVersion);
+    when(mockGameData.getGameVersion()).thenReturn(new Version(fakeGameVersion));
     when(mockGameData.getSequence()).thenReturn(mockSequence);
     when(mockSequence.getRound()).thenReturn(Integer.valueOf(fakeGameRound));
     when(mockGameData.getGameName()).thenReturn(fakeGameName);
