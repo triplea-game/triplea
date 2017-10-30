@@ -10,6 +10,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.GameEngineUtils;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.util.MD5Crypt;
@@ -98,7 +99,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (!ClientContext.engineVersion().isCompatible(clientVersion)) {
+    if (!GameEngineUtils.isEngineCompatibleWithEngine(ClientContext.engineVersion(), clientVersion)) {
       return String.format("Client is using %s but the server requires a version compatible with version %s",
           clientVersion, ClientContext.engineVersion());
     }
