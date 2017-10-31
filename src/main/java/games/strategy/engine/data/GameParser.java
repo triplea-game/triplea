@@ -31,7 +31,7 @@ import org.xml.sax.SAXParseException;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.GameEngineUtils;
+import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -189,7 +189,8 @@ public class GameParser {
       return;
     }
     final Version mapMinimumEngineVersion = new Version(((Element) minimumVersion).getAttribute("minimumVersion"));
-    if (!GameEngineUtils.isEngineCompatibleWithMap(ClientContext.engineVersion(), mapMinimumEngineVersion)) {
+    if (!GameEngineVersion.of(ClientContext.engineVersion())
+        .isCompatibleWithMapMinimumEngineVersion(mapMinimumEngineVersion)) {
       throw new EngineVersionException(
           String.format("Current engine version: %s, is not compatible with version: %s, required by map: %s",
               ClientContext.engineVersion(),
