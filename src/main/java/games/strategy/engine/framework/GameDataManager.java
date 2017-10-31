@@ -26,7 +26,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.GameEngineUtils;
+import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataMemento;
 import games.strategy.engine.delegate.IDelegate;
@@ -117,7 +117,7 @@ public final class GameDataManager {
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
-      if (!GameEngineUtils.isEngineCompatibleWithEngine(ClientContext.engineVersion(), readVersion)) {
+      if (!GameEngineVersion.of(ClientContext.engineVersion()).isCompatibleWithEngineVersion(readVersion)) {
         // a hack for now, but a headless server should not try to open any savegame that is not its version
         if (headless) {
           final String message = "Incompatible game save, we are: " + ClientContext.engineVersion()
