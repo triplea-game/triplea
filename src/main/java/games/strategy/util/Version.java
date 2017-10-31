@@ -145,6 +145,45 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
+   * Indicates this version is greater than the specified version.
+   *
+   * @param other The version to compare.
+   *
+   * @return {@code true} if this version is greater than the specified version; otherwise {@code false}.
+   */
+  public boolean isGreaterThan(final Version other) {
+    checkNotNull(other);
+
+    return compareTo(other) > 0;
+  }
+
+  /**
+   * Indicates this version is greater than or equal to the specified version.
+   *
+   * @param other The version to compare.
+   *
+   * @return {@code true} if this version is greater than or equal to the specified version; otherwise {@code false}.
+   */
+  public boolean isGreaterThanOrEqualTo(final Version other) {
+    checkNotNull(other);
+
+    return compareTo(other) >= 0;
+  }
+
+  /**
+   * Indicates this version is less than the specified version.
+   *
+   * @param other The version to compare.
+   *
+   * @return {@code true} if this version is less than the specified version; otherwise {@code false}.
+   */
+  public boolean isLessThan(final Version other) {
+    checkNotNull(other);
+
+    return compareTo(other) < 0;
+  }
+
+  /**
    * Creates a complete version string with '.' as separator, even if some version numbers are 0.
    */
   public String toStringFull() {

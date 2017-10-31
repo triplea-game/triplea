@@ -392,7 +392,7 @@ public class GameRunner {
       if (latestEngineOut == null) {
         return false;
       }
-      if (ClientContext.engineVersion().compareTo(latestEngineOut.getLatestVersionOut()) < 0) {
+      if (ClientContext.engineVersion().isLessThan(latestEngineOut.getLatestVersionOut())) {
         SwingUtilities
             .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
                 "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE));

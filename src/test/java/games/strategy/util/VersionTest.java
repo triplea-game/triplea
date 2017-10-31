@@ -5,7 +5,9 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +40,27 @@ public class VersionTest {
     assertThat(new Version(0, 0, 2, 0).compareTo(new Version(0, 0, 1, 0)), is(greaterThan(0)));
     assertThat(new Version(0, 0, 0, 2).compareTo(new Version(0, 0, 0, 1)), is(greaterThan(0)));
     assertThat(new Version("0.0.0.dev").compareTo(new Version(0, 0, 0, 0)), is(greaterThan(0)));
+  }
+
+  @Test
+  public void testIsGreaterThan() {
+    assertFalse(new Version(1, 0).isGreaterThan(new Version(2, 0)));
+    assertFalse(new Version(1, 0).isGreaterThan(new Version(1, 0)));
+    assertTrue(new Version(2, 0).isGreaterThan(new Version(1, 0)));
+  }
+
+  @Test
+  public void testIsGreaterThanOrEqualTo() {
+    assertFalse(new Version(1, 0).isGreaterThanOrEqualTo(new Version(2, 0)));
+    assertTrue(new Version(1, 0).isGreaterThanOrEqualTo(new Version(1, 0)));
+    assertTrue(new Version(2, 0).isGreaterThanOrEqualTo(new Version(1, 0)));
+  }
+
+  @Test
+  public void testIsLessThan() {
+    assertTrue(new Version(1, 0).isLessThan(new Version(2, 0)));
+    assertFalse(new Version(1, 0).isLessThan(new Version(1, 0)));
+    assertFalse(new Version(2, 0).isLessThan(new Version(1, 0)));
   }
 
   @Test
