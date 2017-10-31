@@ -1,5 +1,7 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +13,7 @@ import games.strategy.triplea.oddscalc.OddsCalculatorParameters;
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
  */
 public class ConcurrentOddsCalculator extends OddsCalculator {
-  private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
+  private final Collection<OddsCalculator> workers = new HashSet<>();
 
   private boolean cancelled = false;
 
@@ -21,14 +23,20 @@ public class ConcurrentOddsCalculator extends OddsCalculator {
    */
   @Override
   public AggregateResults calculate(final OddsCalculatorParameters parameters) {
-    final ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
+    final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     final long start = System.currentTimeMillis();
     final AggregateResults aggregateResults = new AggregateResults(parameters.runCount);
 
     final int totalRunCount = parameters.runCount;
-    for (int i = 0; i < totalRunCount && !cancelled; i++) {
-      parameters.setRunCount(1);
-      executor.submit(() -> aggregateResults.addResult(new OddsCalculator().doSimulation(parameters)));
+    parameters.setRunCount(1);
+    for (int i = 0; i < totalRunCount; i++) {
+      final OddsCalculator worker = new OddsCalculator();
+      workers.add(worker);
+      executor.submit(() -> {
+        if (!cancelled) {
+          aggregateResults.addResult(worker.doSimulation(parameters));
+        }
+      });
     }
     parameters.setRunCount(totalRunCount);
 
@@ -42,8 +50,12 @@ public class ConcurrentOddsCalculator extends OddsCalculator {
     return aggregateResults;
   }
 
+  /*
+   * Implementation note: Set flag to abort any new operations, then cancel any ongoing workers.
+   */
   @Override
   public void cancel() {
     cancelled = true;
+    workers.forEach(OddsCalculator::cancel);
   }
 }

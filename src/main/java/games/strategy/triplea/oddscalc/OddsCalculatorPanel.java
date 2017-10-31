@@ -108,7 +108,7 @@ class OddsCalculatorPanel extends JPanel {
   private final JCheckBox retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
-  private final ConcurrentOddsCalculator calculator;
+  private ConcurrentOddsCalculator calculator;
   private PlayerUnitsPanel attackingUnitsPanel;
   private PlayerUnitsPanel defendingUnitsPanel;
   private JComboBox<PlayerID> attackerCombo;
@@ -174,7 +174,6 @@ class OddsCalculatorPanel extends JPanel {
       System.runFinalization();
       System.gc();
     }
-    calculator = new ConcurrentOddsCalculator();
 
     setWidgetActivation();
     revalidate();
@@ -351,6 +350,7 @@ class OddsCalculatorPanel extends JPanel {
           attacking.removeAll(bombarding);
         }
 
+        calculator = new ConcurrentOddsCalculator();
         results.set(calculator.calculate(
             OddsCalculatorParameters.builder()
                 .gameData(data)
