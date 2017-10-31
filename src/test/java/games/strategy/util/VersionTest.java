@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import games.strategy.util.Version.CompareOption;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class VersionTest {
@@ -39,12 +38,6 @@ public class VersionTest {
     assertThat(new Version(0, 0, 2, 0).compareTo(new Version(0, 0, 1, 0)), is(greaterThan(0)));
     assertThat(new Version(0, 0, 0, 2).compareTo(new Version(0, 0, 0, 1)), is(greaterThan(0)));
     assertThat(new Version("0.0.0.dev").compareTo(new Version(0, 0, 0, 0)), is(greaterThan(0)));
-  }
-
-  @Test
-  public void testCompareToWithCompareOptions() {
-    assertThat(new Version(1, 0, 0, 0).compareTo(new Version(1, 0, 0, 1), CompareOption.IGNORE_MICRO), is(0));
-    assertThat(new Version(1, 0, 0, 1).compareTo(new Version(1, 0, 0, 0), CompareOption.IGNORE_MICRO), is(0));
   }
 
   @Test

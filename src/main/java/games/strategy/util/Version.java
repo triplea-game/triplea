@@ -3,15 +3,12 @@ package games.strategy.util;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
 
 /**
  * Represents a version string.
@@ -19,7 +16,6 @@ import com.google.common.collect.Sets;
  */
 public final class Version implements Serializable, Comparable<Version> {
   private static final long serialVersionUID = -4770210855326775333L;
-  private static final CompareOption[] NO_COMPARE_OPTIONS = new CompareOption[0];
 
   private final int m_major;
   private final int m_minor;
@@ -141,30 +137,10 @@ public final class Version implements Serializable, Comparable<Version> {
   public int compareTo(final Version other) {
     checkNotNull(other);
 
-    return compareTo(other, NO_COMPARE_OPTIONS);
-  }
-
-  /**
-   * Compares this version with the specified version for order while considering the specified options.
-   *
-   * @param other The version to be compared.
-   * @param options The comparison options.
-   *
-   * @return A negative integer, zero, or a positive integer if this version is less than, equal, or greater than the
-   *         specified version.
-   */
-  public int compareTo(final Version other, final CompareOption... options) {
-    checkNotNull(other);
-    checkNotNull(options);
-
-    return compareTo(other, Sets.newEnumSet(Arrays.asList(options), CompareOption.class));
-  }
-
-  private int compareTo(final Version other, final Set<CompareOption> options) {
     return Comparator.comparingInt(Version::getMajor)
         .thenComparingInt(Version::getMinor)
         .thenComparingInt(Version::getPoint)
-        .thenComparingInt(options.contains(CompareOption.IGNORE_MICRO) ? it -> 0 : Version::getMicro)
+        .thenComparingInt(Version::getMicro)
         .compare(this, other);
   }
 
@@ -185,13 +161,5 @@ public final class Version implements Serializable, Comparable<Version> {
   @Override
   public String toString() {
     return m_micro != 0 ? toStringFull() : m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
-  }
-
-  /**
-   * The possible options when comparing versions.
-   */
-  public enum CompareOption {
-    /** Indicates the micro version will be ignored during comparison. */
-    IGNORE_MICRO;
   }
 }
