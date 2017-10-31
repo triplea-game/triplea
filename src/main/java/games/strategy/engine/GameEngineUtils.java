@@ -2,8 +2,6 @@ package games.strategy.engine;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Comparator;
-
 import games.strategy.util.Version;
 
 /**
@@ -24,14 +22,7 @@ public final class GameEngineUtils {
     checkNotNull(engineVersion);
     checkNotNull(otherEngineVersion);
 
-    return compareVersionsExcludingMicro(engineVersion, otherEngineVersion) == 0;
-  }
-
-  private static int compareVersionsExcludingMicro(final Version version, final Version otherVersion) {
-    return Comparator.comparingInt(Version::getMajor)
-        .thenComparingInt(Version::getMinor)
-        .thenComparingInt(Version::getPoint)
-        .compare(version, otherVersion);
+    return engineVersion.withMicro(0).equals(otherEngineVersion.withMicro(0));
   }
 
   /**
@@ -47,6 +38,6 @@ public final class GameEngineUtils {
     checkNotNull(engineVersion);
     checkNotNull(mapMinimumEngineVersion);
 
-    return compareVersionsExcludingMicro(engineVersion, mapMinimumEngineVersion) >= 0;
+    return engineVersion.withMicro(0).isGreaterThanOrEqualTo(mapMinimumEngineVersion.withMicro(0));
   }
 }
