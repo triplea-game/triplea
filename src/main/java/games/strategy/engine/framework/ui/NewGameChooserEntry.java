@@ -67,13 +67,11 @@ public class NewGameChooserEntry {
       return;
     }
 
-    try {
-      try (InputStream input = inputStream.get()) {
+    try (InputStream input = inputStream.get()) {
         final boolean delayParsing = true;
         gameData = new GameParser(uri.toString()).parse(input, gameName, delayParsing);
         gameDataFullyLoaded = false;
         gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
-      }
     } catch (final IOException | GameParseException | SAXException | EngineVersionException e) {
       ClientLogger.logError("Error reading: " + uri + ", game name: " + gameName, e);
     }
