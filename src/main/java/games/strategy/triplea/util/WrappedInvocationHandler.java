@@ -59,6 +59,6 @@ public class WrappedInvocationHandler implements InvocationHandler {
       return handle(method, args);
     }
     throw new IllegalStateException(String.format("not configured for method %s, args: %s",
-        method.toString(), Arrays.asList(args).toString()));
+        method, Arrays.toString(args)));
   }
 }
