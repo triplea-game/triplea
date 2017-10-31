@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
@@ -31,9 +31,6 @@ public class OddsCalculator implements IOddsCalculator {
   private static final String OOL_AMOUNT_DESCRIPTOR_REGEX = "\\^";
   private boolean cancelled = false;
 
-  public OddsCalculator() {
-
-  }
 
   @Override
   public AggregateResults calculate(final OddsCalculatorParameters parameters) {
@@ -48,7 +45,7 @@ public class OddsCalculator implements IOddsCalculator {
     return aggregateResults;
   }
 
-  BattleResults doSimulation(final OddsCalculatorParameters parameters) {
+  static BattleResults doSimulation(final OddsCalculatorParameters parameters) {
     final List<Unit> attackerOrderOfLosses = OddsCalculator.getUnitListByOrderOfLoss(
         parameters.attackerOrderOfLosses,
         parameters.attacking,
@@ -71,7 +68,7 @@ public class OddsCalculator implements IOddsCalculator {
             parameters.retreatAfterRound,
             parameters.retreatAfterXUnitsLeft,
             parameters.retreatWhenOnlyAirLeft);
-    final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
+    final IDelegateBridge bridge = new GameDelegateBridge(bridge1);
     final MustFightBattle battle = new MustFightBattle(
         parameters.location,
         parameters.attacker,
@@ -166,7 +163,7 @@ public class OddsCalculator implements IOddsCalculator {
       map.add(Tuple.of(amount, type));
     }
     Collections.reverse(map);
-    final Set<Unit> unitsLeft = new HashSet<>(units);
+    final Collection<Unit> unitsLeft = new HashSet<>(units);
     final List<Unit> order = new ArrayList<>();
     for (final Tuple<Integer, UnitType> section : map) {
       final List<Unit> unitsOfType =

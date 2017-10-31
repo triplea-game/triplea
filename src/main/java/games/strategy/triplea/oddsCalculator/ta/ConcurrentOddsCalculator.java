@@ -30,11 +30,9 @@ public class ConcurrentOddsCalculator extends OddsCalculator {
     final int totalRunCount = parameters.runCount;
     parameters.setRunCount(1);
     for (int i = 0; i < totalRunCount; i++) {
-      final OddsCalculator worker = new OddsCalculator();
-      workers.add(worker);
       executor.submit(() -> {
         if (!cancelled) {
-          aggregateResults.addResult(worker.doSimulation(parameters));
+          aggregateResults.addResult(OddsCalculator.doSimulation(parameters));
         }
       });
     }
@@ -56,6 +54,5 @@ public class ConcurrentOddsCalculator extends OddsCalculator {
   @Override
   public void cancel() {
     cancelled = true;
-    workers.forEach(OddsCalculator::cancel);
   }
 }
