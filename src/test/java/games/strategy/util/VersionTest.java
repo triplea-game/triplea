@@ -81,6 +81,11 @@ public class VersionTest {
   }
 
   @Test
+  public void testWithMicro() {
+    assertEquals(new Version(1, 2, 3, 999), new Version(1, 2, 3, 4).withMicro(999));
+  }
+
+  @Test
   public void testToString() {
     assertEquals("1.2.3", new Version("1.2.3").toString());
     assertEquals("1.2", new Version("1.2").toString());

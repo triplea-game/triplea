@@ -184,6 +184,13 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
+   * Returns a new version with the major, minor, and point versions from this instance and the specified micro version.
+   */
+  public Version withMicro(final int micro) {
+    return new Version(m_major, m_minor, m_point, micro);
+  }
+
+  /**
    * Creates a complete version string with '.' as separator, even if some version numbers are 0.
    */
   public String toStringFull() {
