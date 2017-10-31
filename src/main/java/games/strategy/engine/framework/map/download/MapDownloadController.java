@@ -90,7 +90,7 @@ public class MapDownloadController {
     final AtomicBoolean mapOutOfDate = new AtomicBoolean(false);
     latestVersion.ifPresent(latest -> {
       downloadedVersion.ifPresent(downloaded -> {
-        mapOutOfDate.set(latest.compareTo(downloaded) > 0);
+        mapOutOfDate.set(latest.isGreaterThan(downloaded));
       });
     });
     return mapOutOfDate.get();

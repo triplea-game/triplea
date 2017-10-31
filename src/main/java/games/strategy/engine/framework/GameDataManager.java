@@ -131,7 +131,7 @@ public final class GameDataManager {
             + "\nTo download the latest version of TripleA, Please visit "
             + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE;
         throw new IOException(error);
-      } else if (!headless && readVersion.compareTo(ClientContext.engineVersion()) > 0) {
+      } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion())) {
         // we can still load it because our engine is compatible, however this save was made by a
         // newer engine, so prompt the user to upgrade
         final String messageString =
