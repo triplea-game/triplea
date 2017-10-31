@@ -339,7 +339,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       rn = new RemoteName(ChatController.getChatChannelName("_LOBBY_CHAT"), IChatChannel.class);
     } else {
       rn = new RemoteName(
-          ChatController.getChatChannelName("games.strategy.engine.framework.uiComponent.ServerStartup.CHAT_NAME"),
+          ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"),
           IChatChannel.class);
     }
     final RemoteMethodCall call =
