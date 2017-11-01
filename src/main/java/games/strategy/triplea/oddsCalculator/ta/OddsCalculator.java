@@ -35,14 +35,13 @@ public class OddsCalculator implements IOddsCalculator {
   @Override
   public AggregateResults calculate(final OddsCalculatorParameters parameters) {
     final long start = System.currentTimeMillis();
-    final AggregateResults aggregateResults = new AggregateResults(parameters.runCount);
+    final Collection<BattleResults> battleResults = new ArrayList<>(parameters.runCount);
 
     for (int i = 0; i < parameters.runCount && !cancelled; i++) {
       doSimulation(parameters);
-      aggregateResults.addResult(doSimulation(parameters));
+      battleResults.add(doSimulation(parameters));
     }
-    aggregateResults.setTime(System.currentTimeMillis() - start);
-    return aggregateResults;
+    return new AggregateResults(System.currentTimeMillis() - start, battleResults);
   }
 
   static BattleResults doSimulation(final OddsCalculatorParameters parameters) {

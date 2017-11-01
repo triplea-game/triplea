@@ -1,5 +1,7 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -21,14 +23,14 @@ public class ConcurrentOddsCalculator extends OddsCalculator {
   public AggregateResults calculate(final OddsCalculatorParameters parameters) {
     final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     final long start = System.currentTimeMillis();
-    final AggregateResults aggregateResults = new AggregateResults(parameters.runCount);
+    final Collection<BattleResults> battleResults = new ConcurrentLinkedQueue<>();
 
     final int totalRunCount = parameters.runCount;
     parameters.setRunCount(1);
     for (int i = 0; i < totalRunCount; i++) {
       executor.submit(() -> {
         if (!cancelled) {
-          aggregateResults.addResult(OddsCalculator.doSimulation(parameters));
+          battleResults.add(OddsCalculator.doSimulation(parameters));
         }
       });
     }
@@ -40,8 +42,7 @@ public class ConcurrentOddsCalculator extends OddsCalculator {
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
     }
-    aggregateResults.setTime(System.currentTimeMillis() - start);
-    return aggregateResults;
+    return new AggregateResults(System.currentTimeMillis() - start, battleResults);
   }
 
   /*
