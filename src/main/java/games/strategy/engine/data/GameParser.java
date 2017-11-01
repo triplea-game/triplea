@@ -1194,8 +1194,10 @@ public class GameParser {
 
   private void parseAttachments(final Element root) throws GameParseException {
     final ExecutorService service = Executors.newCachedThreadPool();
-    final ExecutorCompletionService<Object> executor = new ExecutorCompletionService<>(service);
-    for (final Element current : getChildren("attachment", root)) {
+    final ExecutorCompletionService<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> executor =
+        new ExecutorCompletionService<>(service);
+    final List<Element> children = getChildren("attachment", root);
+    for (final Element current : children) {
       final String className = current.getAttribute("javaClass");
       final Attachable attachable = findAttachment(current, current.getAttribute("type"));
       final String name = current.getAttribute("name");
@@ -1206,14 +1208,12 @@ public class GameParser {
       attachable.addAttachment(name, attachment);
 
       // keep a list of attachment references in the order they were added
-      data.addToAttachmentOrderAndValues(Tuple.of(attachment, setValues(attachment, options, executor)));
+      executor.submit(() -> Tuple.of(attachment, setValues(attachment, options)));
     }
     service.shutdown();
-    while (!service.isTerminated()) {
+    for (int i = 0; i < children.size(); i++) {
       try {
-        if (executor.take().get() == null) {
-          return;
-        }
+        data.addToAttachmentOrderAndValues(executor.take().get());
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (ExecutionException e) {
@@ -1251,8 +1251,8 @@ public class GameParser {
     return first + input.substring(1);
   }
 
-  private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values,
-      final ExecutorCompletionService<Object> executor) throws GameParseException {
+  private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
+      throws GameParseException {
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // find the setter
@@ -1277,16 +1277,14 @@ public class GameParser {
       } else {
         itemValues = value;
       }
-      executor.submit(() -> {
-        try {
-          return setter.invoke(attachment, itemValues);
-        } catch (final IllegalAccessException iae) {
-          throw new GameParseException(mapName,
-              "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName(), iae);
-        } catch (final InvocationTargetException ite) {
-          throw new GameParseException(mapName, "Error setting property:" + name, ite);
-        }
-      });
+      try {
+        setter.invoke(attachment, itemValues);
+      } catch (final IllegalAccessException iae) {
+        throw new GameParseException(mapName,
+            "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName(), iae);
+      } catch (final InvocationTargetException ite) {
+        throw new GameParseException(mapName, "Error setting property:" + name, ite);
+      }
       options.add(Tuple.of(name, itemValues));
     }
     return options;
