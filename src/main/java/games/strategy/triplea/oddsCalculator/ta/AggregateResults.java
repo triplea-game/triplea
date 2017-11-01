@@ -3,6 +3,7 @@ package games.strategy.triplea.oddsCalculator.ta;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
@@ -23,7 +24,7 @@ public class AggregateResults implements Serializable {
   private long m_time;
 
   public AggregateResults(final int expectedCount) {
-    m_results = new ArrayList<>(expectedCount);
+    m_results = Collections.synchronizedList(new ArrayList<>(expectedCount));
   }
 
   public void addResult(final BattleResults result) {
