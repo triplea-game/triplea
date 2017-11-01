@@ -3,8 +3,9 @@ package games.strategy.triplea.oddsCalculator.ta;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+
+import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -21,22 +22,13 @@ public class AggregateResults implements Serializable {
   private static final long serialVersionUID = -556699626060414738L;
   // can be empty!
   private final List<BattleResults> m_results;
-  private long m_time;
+  private final long m_time;
 
-  public AggregateResults(final int expectedCount) {
-    m_results = Collections.synchronizedList(new ArrayList<>(expectedCount));
-  }
+  public AggregateResults(final long time, final Collection<BattleResults> results) {
+    Preconditions.checkNotNull(results);
 
-  public void addResult(final BattleResults result) {
-    m_results.add(result);
-  }
-
-  public void addResults(final Collection<BattleResults> results) {
-    m_results.addAll(results);
-  }
-
-  public List<BattleResults> getResults() {
-    return m_results;
+    m_results = new ArrayList<>(results);
+    m_time = time;
   }
 
   /**
@@ -220,9 +212,5 @@ public class AggregateResults implements Serializable {
 
   public long getTime() {
     return m_time;
-  }
-
-  public void setTime(final long time) {
-    m_time = time;
   }
 }
