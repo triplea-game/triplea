@@ -11,7 +11,7 @@ import games.strategy.triplea.oddscalc.OddsCalculatorParameters;
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
  */
 public class ConcurrentOddsCalculator extends OddsCalculator {
-  private boolean cancelled = false;
+  private volatile boolean cancelled = false;
 
   /**
    * Concurrently calculates odds using the OddsCalculatorWorker. It uses Executor to process the results. Then waits
