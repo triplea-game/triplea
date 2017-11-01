@@ -180,7 +180,9 @@ class OddsCalculatorPanel extends JPanel {
   }
 
   void shutdown() {
-    calculator.cancel();
+    if (calculator != null) {
+      calculator.cancel();
+    }
   }
 
   private static double percentageOfFreeMemoryAvailable() {
