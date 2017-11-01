@@ -1,7 +1,5 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -13,8 +11,6 @@ import games.strategy.triplea.oddscalc.OddsCalculatorParameters;
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
  */
 public class ConcurrentOddsCalculator extends OddsCalculator {
-  private final Collection<OddsCalculator> workers = new HashSet<>();
-
   private boolean cancelled = false;
 
   /**
