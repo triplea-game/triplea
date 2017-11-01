@@ -306,8 +306,7 @@ public class GameParser {
    *
    * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been
    *         declared
-   * @throws GameParseException
-   *         when
+   * @throws GameParseException when
    */
   private RelationshipType getRelationshipType(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
@@ -1212,7 +1211,7 @@ public class GameParser {
     service.shutdown();
     while (!service.isTerminated()) {
       try {
-        if(executor.take().get() == null) {
+        if (executor.take().get() == null) {
           return;
         }
       } catch (InterruptedException e) {
