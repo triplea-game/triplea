@@ -189,13 +189,7 @@ class OddsCalculatorPanel extends JPanel {
     final Runtime runtime = Runtime.getRuntime();
     final long maxMemory = runtime.maxMemory();
     final long memoryAvailable = Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
-    return (((double) memoryAvailable) / ((double) maxMemory));
-  }
-
-  private static long freeMemoryAvailable() {
-    final Runtime runtime = Runtime.getRuntime();
-    final long maxMemory = runtime.maxMemory();
-    return Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
+    return memoryAvailable / maxMemory;
   }
 
   private PlayerID getDefender() {
