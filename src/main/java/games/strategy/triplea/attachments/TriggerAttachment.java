@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import games.strategy.debug.ClientLogger;
@@ -70,7 +69,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   // List of relationshipChanges that should be executed when this trigger hits.
   private ArrayList<String> m_relationshipChange = new ArrayList<>();
   private String m_victory = null;
-  private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
+  private List<Tuple<String, String>> m_activateTrigger = Collections.synchronizedList(new ArrayList<>());
   private ArrayList<String> m_changeOwnership = new ArrayList<>();
   // raw property changes below:
   //
@@ -137,10 +136,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    */
   static Set<TriggerAttachment> getTriggers(final PlayerID player, final Match<TriggerAttachment> cond) {
     final Set<TriggerAttachment> trigs = new HashSet<>();
-    final Map<String, IAttachment> map = player.getAttachments();
-    final Iterator<String> iter = map.keySet().iterator();
-    while (iter.hasNext()) {
-      final IAttachment a = map.get(iter.next());
+    for (final IAttachment a : player.getAttachments().values()) {
       if (a instanceof TriggerAttachment) {
         if (cond == null || cond.match((TriggerAttachment) a)) {
           trigs.add((TriggerAttachment) a);
@@ -328,7 +324,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_activateTrigger = value;
   }
 
-  public ArrayList<Tuple<String, String>> getActivateTrigger() {
+  public List<Tuple<String, String>> getActivateTrigger() {
     return m_activateTrigger;
   }
 
@@ -1365,10 +1361,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     for (final Territory t : territories) {
-      if (m_removeUnits.containsKey(t)) {
-        map.add(m_removeUnits.get(t));
+      synchronized (m_removeUnits) {
+        if (m_removeUnits.containsKey(t)) {
+          map.add(m_removeUnits.get(t));
+        }
+        m_removeUnits.put(t, map);
       }
-      m_removeUnits.put(t, map);
     }
   }
 

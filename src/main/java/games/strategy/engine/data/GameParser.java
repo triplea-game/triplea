@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
@@ -1190,6 +1194,8 @@ public class GameParser {
   }
 
   private void parseAttachments(final Element root) throws GameParseException {
+    final ExecutorService service = Executors.newCachedThreadPool();
+    final ExecutorCompletionService<Object> executor = new ExecutorCompletionService<>(service);
     for (final Element current : getChildren("attachment", root)) {
       final String className = current.getAttribute("javaClass");
       final Attachable attachable = findAttachment(current, current.getAttribute("type"));
@@ -1200,9 +1206,20 @@ public class GameParser {
               () -> new GameParseException(mapName, "Attachment of type " + className + " could not be instantiated"));
       attachable.addAttachment(name, attachment);
 
-      final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
       // keep a list of attachment references in the order they were added
-      data.addToAttachmentOrderAndValues(Tuple.of(attachment, attachmentOptionValues));
+      data.addToAttachmentOrderAndValues(Tuple.of(attachment, setValues(attachment, options, executor)));
+    }
+    service.shutdown();
+    while (!service.isTerminated()) {
+      try {
+        if(executor.take().get() == null) {
+          return;
+        }
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } catch (ExecutionException e) {
+        throw new GameParseException("Error while parsing map xml", e);
+      }
     }
   }
 
@@ -1235,18 +1252,17 @@ public class GameParser {
     return first + input.substring(1);
   }
 
-  private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
-      throws GameParseException {
+  private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values,
+      final ExecutorCompletionService<Object> executor) throws GameParseException {
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // find the setter
-      String name = null;
+      final String name = current.getAttribute("name");
+      if (name.length() == 0) {
+        throw new GameParseException(mapName, "Option name with 0 length");
+      }
       final Method setter;
       try {
-        name = current.getAttribute("name");
-        if (name.length() == 0) {
-          throw new GameParseException(mapName, "Option name with 0 length");
-        }
         setter = attachment.getClass().getMethod("set" + capitalizeFirstLetter(name), SETTER_ARGS);
       } catch (final NoSuchMethodException nsme) {
         throw new GameParseException(mapName, "The following option name of " + attachment.getName() + " of class "
@@ -1262,18 +1278,16 @@ public class GameParser {
       } else {
         itemValues = value;
       }
-      // invoke
-      try {
-        final Object[] args = {itemValues};
-        setter.invoke(attachment, args);
-      } catch (final IllegalAccessException iae) {
-        throw new GameParseException(mapName,
-            "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName(), iae);
-      } catch (final InvocationTargetException ite) {
-        ite.getCause().printStackTrace(System.out);
-        throw new GameParseException(mapName,
-            "Error setting property:" + name, ite);
-      }
+      executor.submit(() -> {
+        try {
+          return setter.invoke(attachment, itemValues);
+        } catch (final IllegalAccessException iae) {
+          throw new GameParseException(mapName,
+              "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName(), iae);
+        } catch (final InvocationTargetException ite) {
+          throw new GameParseException(mapName, "Error setting property:" + name, ite);
+        }
+      });
       options.add(Tuple.of(name, itemValues));
     }
     return options;

@@ -387,8 +387,8 @@ public class GameSelectorPanel extends JPanel implements Observer {
         }
         model.load(entry);
         setOriginalPropertiesMap(model.getGameData());
-        // only for new games, not saved games, we set the default options, and set them only once (the first time it is
-        // loaded)
+        // only for new games, not saved games, we set the default options, and set them only once
+        // (the first time it is loaded)
         gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
       }
     }
