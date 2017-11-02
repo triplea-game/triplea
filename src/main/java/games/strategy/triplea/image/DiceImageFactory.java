@@ -42,7 +42,7 @@ public class DiceImageFactory {
   private void generateDice(final int pipSize, final Color color, final Map<Integer, Image> images) {
     final ImageFactory imageFactory = new ImageFactory();
     imageFactory.setResourceLoader(m_resourceLoader);
-    for (int i = 1; i <= m_diceSides; i++) {
+    for (int i = 0; i <= m_diceSides; i++) {
       Image img = null;
       if (m_resourceLoader != null) {
         if (color == Color.black) {
