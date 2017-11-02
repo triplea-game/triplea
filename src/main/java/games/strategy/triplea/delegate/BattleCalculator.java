@@ -22,8 +22,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleA;
-import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
@@ -463,18 +461,9 @@ public class BattleCalculator {
     }
     final GameData data = bridge.getData();
     final boolean isEditMode = BaseEditDelegate.getEditMode(data);
-    final ITripleAPlayer tripleaPlayer;
-    if (player.isNull()) {
-      tripleaPlayer = new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
-    } else {
-      tripleaPlayer = (ITripleAPlayer) bridge.getRemotePlayer(player);
-    }
-    final Map<Unit, Collection<Unit>> dependents;
-    if (headLess) {
-      dependents = Collections.emptyMap();
-    } else {
-      dependents = getDependents(targetsToPickFrom);
-    }
+    final ITripleAPlayer tripleaPlayer = (ITripleAPlayer) bridge.getRemotePlayer(player);
+
+    final Map<Unit, Collection<Unit>> dependents = headLess ? Collections.emptyMap() : getDependents(targetsToPickFrom);
     if (isEditMode && !headLess) {
       final CasualtyDetails editSelection = tripleaPlayer.selectCasualties(targetsToPickFrom, dependents, 0, text, dice,
           player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, new CasualtyList(),
