@@ -67,7 +67,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
    *         if login fails
    */
   private HttpContext login(final CloseableHttpClient client) throws Exception {
-    final HttpPost httpPost = new HttpPost("http://www.axisandallies.org/forums/index.php?action=login2");
+    final HttpPost httpPost = new HttpPost("https://www.axisandallies.org/forums/index.php?action=login2");
     final CookieStore cookieStore = new BasicCookieStore();
     final HttpContext httpContext = new BasicHttpContext();
     httpContext.setAttribute(HttpClientContext.COOKIE_STORE, cookieStore);
@@ -123,7 +123,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
       final HttpContext httpContext = login(client);
       // Now we load the post page, and find the hidden fields needed to post
       final HttpGet httpGet =
-          new HttpGet("http://www.axisandallies.org/forums/index.php?action=post;topic=" + m_topicId + ".0");
+          new HttpGet("https://www.axisandallies.org/forums/index.php?action=post;topic=" + m_topicId + ".0");
       HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
         int status = response.getStatusLine().getStatusCode();
@@ -152,7 +152,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           }
           // now we have the required hidden fields to reply to
           final HttpPost httpPost =
-              new HttpPost("http://www.axisandallies.org/forums/index.php?action=post2;start=0;board=40");
+              new HttpPost("https://www.axisandallies.org/forums/index.php?action=post2;start=0;board=40");
           // Construct the multi part post
           final MultipartEntityBuilder builder = MultipartEntityBuilder.create()
               .addTextBody("topic", m_topicId)
@@ -173,7 +173,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
               .addTextBody("seqnum", seqNum);
           httpPost.setEntity(builder.build());
           // add headers
-          httpPost.addHeader("Referer", "http://www.axisandallies.org/forums/index.php?action=post;topic="
+          httpPost.addHeader("Referer", "https://www.axisandallies.org/forums/index.php?action=post;topic="
               + m_topicId + ".0;num_replies=" + numReplies);
           httpPost.addHeader("Accept", "*/*");
           // the site has spam prevention which means you can't post until 15 seconds after login
@@ -190,7 +190,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
               // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
               // given thread
               // since the site is lenient we can just give a high post_number to go to the last post in the thread
-              m_turnSummaryRef = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
+              m_turnSummaryRef = "https://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
             } else {
               // these two patterns find general errors, where the first pattern checks if the error text appears,
               // the second pattern extracts the error message. This could be the "The last posting from your IP was
@@ -261,7 +261,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
 
   @Override
   public void viewPosted() {
-    final String url = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
+    final String url = "https://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
     OpenFileUtility.openUrl(url);
   }
 
