@@ -16,6 +16,12 @@ public class ConcurrentOddsCalculator extends OddsCalculator {
   private volatile boolean cancelled = false;
 
   /**
+   * Most calc's are completed under 5s. 10s or longer is a pretty extreme
+   * amount of time to wait for a calc, so we add 50% to that and timeout there.
+   */
+  private static final long CALCULATOR_TIMEOUT_SECONDS = 15;
+
+  /**
    * Concurrently calculates odds using the OddsCalculatorWorker. It uses Executor to process the results. Then waits
    * for all the future results and combines them together.
    */
@@ -38,7 +44,7 @@ public class ConcurrentOddsCalculator extends OddsCalculator {
 
     executor.shutdown();
     try {
-      executor.awaitTermination(15, TimeUnit.SECONDS);
+      executor.awaitTermination(CALCULATOR_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
     }
