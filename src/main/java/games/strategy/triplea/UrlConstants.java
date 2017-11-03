@@ -25,6 +25,8 @@ public enum UrlConstants {
 
   TRIPLEA_FORUM("https://forums.triplea-game.org/"),
 
+  AXIS_AND_ALLIES_FORUM("https://www.axisandallies.org/forums/index.php"),
+
   TRIPLEA_LOBBY_RULES("https://forums.triplea-game.org/topic/4"),
 
   LATEST_GAME_DOWNLOAD_WEBSITE("http://www.triplea-game.org/download/"),
