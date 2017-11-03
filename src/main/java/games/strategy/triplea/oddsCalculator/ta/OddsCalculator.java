@@ -92,7 +92,7 @@ public class OddsCalculator implements IOddsCalculator {
 
   /**
    * Validates if an order of loss string is good or not.
-   * TODO: refactor this method... consider a better javaodc that tell us what a valid OOL string would be.
+   * TODO: refactor this method... consider a better javadoc that tell us what a valid OOL string would be.
    * @return true if orderOfLoss string looks good.
    */
   public static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
