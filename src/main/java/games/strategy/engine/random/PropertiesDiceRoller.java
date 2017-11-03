@@ -145,7 +145,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       httpPost.addHeader("X-Triplea-Game-UUID", gameUuid);
       final String host = m_props.getProperty("host");
       final int port = Integer.parseInt(m_props.getProperty("port", "80"));
-      final HttpHost hostConfig = new HttpHost(host, port);
+      final HttpHost hostConfig = new HttpHost(host, port, "https");
       HttpProxy.addProxy(httpPost);
       try (CloseableHttpResponse response = httpClient.execute(hostConfig, httpPost)) {
         return EntityUtils.toString(response.getEntity());
