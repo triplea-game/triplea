@@ -31,7 +31,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -261,7 +260,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
 
     if (!unitsLeftToPlace.isEmpty()) {
-      SwingComponents.showDialog("Unit Placement Canceled", "Not enough unit production territories available");
+      getDisplay().reportMessageToPlayers(
+          Collections.singletonList(m_player),
+          Collections.emptyList(),
+          "Not enough unit production territories available",
+          "Unit Placement Canceled");
     }
 
     // play a sound
