@@ -267,7 +267,7 @@ public class GameRunner {
           dialogReference.set(new WaitDialog(mainFrame, "Loading game..."));
           dialogReference.get().setVisible(true);
         });
-        
+
         try {
           gameSelectorModel.loadDefaultGame(false);
           final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
