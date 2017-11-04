@@ -13,6 +13,9 @@ import javax.swing.JPasswordField;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 
+/**
+ * An action for setting the network game password.
+ */
 public class SetPasswordAction extends AbstractAction {
   private static final long serialVersionUID = -7767288210554177480L;
   private final ClientLoginValidator validator;
