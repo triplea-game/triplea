@@ -8,10 +8,10 @@ import javax.swing.Action;
 import javax.swing.JMenu;
 
 import games.strategy.engine.framework.IGame;
-import games.strategy.engine.framework.networkMaintenance.BanPlayerAction;
-import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
-import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
-import games.strategy.engine.framework.networkMaintenance.SetPasswordAction;
+import games.strategy.engine.framework.network.ui.BanPlayerAction;
+import games.strategy.engine.framework.network.ui.BootPlayerAction;
+import games.strategy.engine.framework.network.ui.MutePlayerAction;
+import games.strategy.engine.framework.network.ui.SetPasswordAction;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.net.IServerMessenger;
