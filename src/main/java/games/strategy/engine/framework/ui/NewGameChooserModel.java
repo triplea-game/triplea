@@ -30,6 +30,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingAction;
 
 public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
@@ -46,20 +47,24 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
    * 
    * @param onFinishedLoading a callback being executed after all maps have been loaded.
    */
-  NewGameChooserModel(final Runnable onFinishedLoading) {
-    new Thread(() -> {
-      synchronized (lock) {
-        final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+  NewGameChooserModel() {
+    try {
+      BackgroundTaskRunner.runInBackgroundAndReturn("Loading all available Games...", () -> {
+        synchronized (lock) {
+          final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
 
-        final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
-        Collections.sort(entries, NewGameChooserEntry.getComparator());
+          final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
+          Collections.sort(entries, NewGameChooserEntry.getComparator());
 
-        for (final NewGameChooserEntry entry : entries) {
-          SwingUtilities.invokeLater(() -> addElement(entry));
+          for (final NewGameChooserEntry entry : entries) {
+            SwingUtilities.invokeLater(() -> addElement(entry));
+          }
         }
-        onFinishedLoading.run();
-      }
-    }).start();
+        return null;
+      });
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   @Override

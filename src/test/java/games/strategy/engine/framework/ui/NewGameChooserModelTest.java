@@ -9,7 +9,6 @@ public class NewGameChooserModelTest {
    */
   @Test
   public void testCreate() {
-    new NewGameChooserModel(() -> {
-    });
+    new NewGameChooserModel();
   }
 }

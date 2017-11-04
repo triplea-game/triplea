@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -38,7 +37,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.framework.ui.background.WaitDialog;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.settings.ClientSetting;
 import swinglib.JButtonBuilder;
 
@@ -372,38 +371,28 @@ public class GameSelectorPanel extends JPanel implements Observer {
       if (file == null || !file.exists()) {
         return;
       }
-      final AtomicReference<WaitDialog> dialogReference = new AtomicReference<>();
-      SwingUtilities.invokeLater(() -> {
-        dialogReference.set(new WaitDialog(JOptionPane.getFrameForComponent(this), "Loading savegame..."));
-        dialogReference.get().setVisible(true);
-      });
       try {
-        model.load(file, this);
-        setOriginalPropertiesMap(model.getGameData());
-      } finally {
-        SwingUtilities.invokeLater(() -> {
-          dialogReference.get().setVisible(false);
-          dialogReference.get().dispose();
+        BackgroundTaskRunner.runInBackgroundAndReturn("Loading savegame...", () -> {
+          model.load(file, this);
+          setOriginalPropertiesMap(model.getGameData());
+          return null;
         });
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
     } else {
-      new Thread(() -> {
-        final NewGameChooserEntry entry =
-            NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
-        if (entry != null) {
-          final AtomicReference<WaitDialog> dialogReference = new AtomicReference<>();
-          SwingUtilities.invokeLater(() -> {
-            dialogReference.set(new WaitDialog(JOptionPane.getFrameForComponent(this), "Loading map..."));
-            dialogReference.get().setVisible(true);
-          });
-          try {
+      final NewGameChooserEntry entry =
+          NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
+      if (entry != null) {
+        try {
+          BackgroundTaskRunner.runInBackgroundAndReturn("Loading map...", () -> {
             if (!entry.isGameDataLoaded()) {
               try {
                 entry.fullyParseGameData();
               } catch (final GameParseException e) {
                 entry.delayParseGameData();
                 NewGameChooser.getNewGameChooserModel().removeEntry(entry);
-                return;
+                return null;
               }
             }
             model.load(entry);
@@ -411,14 +400,12 @@ public class GameSelectorPanel extends JPanel implements Observer {
             // only for new games, not saved games, we set the default options, and set them only once
             // (the first time it is loaded)
             gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
-          } finally {
-            SwingUtilities.invokeLater(() -> {
-              dialogReference.get().setVisible(false);
-              dialogReference.get().dispose();
-            });
-          }
+            return null;
+          });
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
         }
-      }).start();
+      }
     }
   }
 }

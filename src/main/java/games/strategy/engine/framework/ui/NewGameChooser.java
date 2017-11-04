@@ -10,9 +10,6 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,7 +24,6 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.util.LocalizeHtml;
 
 public class NewGameChooser extends JDialog {
@@ -42,19 +38,19 @@ public class NewGameChooser extends JDialog {
   private NewGameChooserModel gameListModel;
   private NewGameChooserEntry chosen;
 
-  private NewGameChooser(final Frame owner, final Consumer<NewGameChooser> onLoad) {
+  private NewGameChooser(final Frame owner) {
     super(owner, "Select a Game", true);
-    createComponents(() -> onLoad.accept(this));
+    createComponents();
     layoutCoponents();
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
   }
 
-  private void createComponents(final Runnable onLoad) {
+  private void createComponents() {
     okButton = new JButton("OK");
     cancelButton = new JButton("Cancel");
-    gameListModel = getNewGameChooserModel(onLoad);
+    gameListModel = getNewGameChooserModel();
     gameList = new JList<>(gameListModel);
     infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -102,40 +98,16 @@ public class NewGameChooser extends JDialog {
   }
 
   public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName) {
-    final AtomicReference<Optional<NewGameChooserEntry>> chosenReference = new AtomicReference<>();
-    final Object mutex = new Object();
-    SwingUtilities.invokeLater(() -> {
-      final WaitDialog dialog = new WaitDialog(parent, "Loading all available Games...");
-      new NewGameChooser(parent, chooser -> {
-        SwingUtilities.invokeLater(() -> {
-          chooser.setSize(800, 600);
-          chooser.setLocationRelativeTo(parent);
-          chooser.selectGame(defaultGameName);
-          chooser.setVisible(true);// Blocking
-          // chooser is now visible and waits for user action
-          chosenReference.set(Optional.ofNullable(chooser.chosen));
-          chooser.setVisible(false);
-          chooser.removeAll();
-          chooser.dispose();
-          synchronized (mutex) {
-            mutex.notify();
-          }
-          dialog.setVisible(false);
-          dialog.dispose();
-        });
-      });
-      dialog.setVisible(true);
-    });
-    try {
-      while (chosenReference.get() == null) {
-        synchronized (mutex) {
-          mutex.wait();
-        }
-      }
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
-    return chosenReference.get().orElseGet(() -> null);
+    final NewGameChooser chooser = new NewGameChooser(parent);
+    chooser.setSize(800, 600);
+    chooser.setLocationRelativeTo(parent);
+    chooser.selectGame(defaultGameName);
+    chooser.setVisible(true);// Blocking
+    // chooser is now visible and waits for user action
+    chooser.setVisible(false);
+    chooser.removeAll();
+    chooser.dispose();
+    return chooser.chosen;
   }
 
   private void selectGame(final String gameName) {
@@ -225,16 +197,8 @@ public class NewGameChooser extends JDialog {
    * 
    * @param onFinishedLoading A callback being executed after all games have been loaded.
    */
-  public static synchronized NewGameChooserModel getNewGameChooserModel(final Runnable onFinishedLoading) {
-    return new NewGameChooserModel(onFinishedLoading);
-  }
-
-  /**
-   * Populates the NewGameChooserModel cache if empty, then returns the cached instance.
-   */
   public static synchronized NewGameChooserModel getNewGameChooserModel() {
-    return getNewGameChooserModel(() -> {
-    });
+    return new NewGameChooserModel();
   }
 
   private void selectAndReturn() {
