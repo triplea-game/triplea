@@ -229,6 +229,14 @@ public class NewGameChooser extends JDialog {
     return new NewGameChooserModel(onFinishedLoading);
   }
 
+  /**
+   * Populates the NewGameChooserModel cache if empty, then returns the cached instance.
+   */
+  public static synchronized NewGameChooserModel getNewGameChooserModel() {
+    return getNewGameChooserModel(() -> {
+    });
+  }
+
   private void selectAndReturn() {
     chosen = getSelected();
     setVisible(false);

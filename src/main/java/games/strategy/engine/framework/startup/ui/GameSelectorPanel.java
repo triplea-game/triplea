@@ -382,8 +382,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
               entry.fullyParseGameData();
             } catch (final GameParseException e) {
               entry.delayParseGameData();
-              NewGameChooser.getNewGameChooserModel(() -> {
-              }).removeEntry(entry);
+              NewGameChooser.getNewGameChooserModel().removeEntry(entry);
               return;
             }
           }
