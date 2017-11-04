@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.networkMaintenance;
+package games.strategy.engine.framework.network.ui;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -13,15 +13,15 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
 /**
- * An action for booting a player from a network game.
+ * An action for muting a player in a network game.
  */
-public class BootPlayerAction extends AbstractAction {
-  private static final long serialVersionUID = 2799566047887167058L;
+public class MutePlayerAction extends AbstractAction {
+  private static final long serialVersionUID = -6578758359870435844L;
   private final Component parent;
   private final IServerMessenger messenger;
 
-  public BootPlayerAction(final Component parent, final IServerMessenger messenger) {
-    super("Remove Player");
+  public MutePlayerAction(final Component parent, final IServerMessenger messenger) {
+    super("Mute Player's Chatting");
     this.parent = JOptionPane.getFrameForComponent(parent);
     this.messenger = messenger;
   }
@@ -41,14 +41,20 @@ public class BootPlayerAction extends AbstractAction {
       return;
     }
     final int selectedOption =
-        JOptionPane.showConfirmDialog(parent, combo, "Select player to remove", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(parent, combo, "Select player to mute", JOptionPane.OK_CANCEL_OPTION);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
     final String name = (String) combo.getSelectedItem();
     for (final INode node : messenger.getNodes()) {
       if (node.getName().equals(name)) {
-        messenger.removeConnection(node);
+        final String realName = node.getName().split(" ")[0];
+        final String ip = node.getAddress().getHostAddress();
+        final String mac = messenger.getPlayerMac(node.getName());
+        messenger.notifyUsernameMutingOfPlayer(realName, null);
+        messenger.notifyIpMutingOfPlayer(ip, null);
+        messenger.notifyMacMutingOfPlayer(mac, null);
+        return;
       }
     }
   }
