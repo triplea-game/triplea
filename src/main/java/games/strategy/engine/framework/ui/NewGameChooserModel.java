@@ -226,6 +226,12 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     return entries;
   }
 
+  /**
+   * Removes the given entry from this model.
+   * 
+   * @param entryToBeRemoved The element to be removed.
+   * @return Returns true, if the given element could successfully be removed.
+   */
   public boolean removeEntry(final NewGameChooserEntry entryToBeRemoved) {
     synchronized (lock) {
       return this.removeElement(entryToBeRemoved);
