@@ -10,6 +10,9 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,6 +27,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.util.LocalizeHtml;
 
 public class NewGameChooser extends JDialog {
@@ -38,19 +42,19 @@ public class NewGameChooser extends JDialog {
   private NewGameChooserModel gameListModel;
   private NewGameChooserEntry chosen;
 
-  private NewGameChooser(final Frame owner) {
+  private NewGameChooser(final Frame owner, final Consumer<NewGameChooser> onLoad) {
     super(owner, "Select a Game", true);
-    createComponents();
+    createComponents(() -> onLoad.accept(this));
     layoutCoponents();
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
   }
 
-  private void createComponents() {
+  private void createComponents(final Runnable onLoad) {
     okButton = new JButton("OK");
     cancelButton = new JButton("Cancel");
-    gameListModel = getNewGameChooserModel();
+    gameListModel = getNewGameChooserModel(onLoad);
     gameList = new JList<>(gameListModel);
     infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -98,17 +102,40 @@ public class NewGameChooser extends JDialog {
   }
 
   public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName) {
-    final NewGameChooser chooser = new NewGameChooser(parent);
-    chooser.setSize(800, 600);
-    chooser.setLocationRelativeTo(parent);
-    chooser.selectGame(defaultGameName);
-    chooser.setVisible(true);
-    // chooser is now visible and waits for user action
-    final NewGameChooserEntry chosen = chooser.chosen;
-    chooser.setVisible(false);
-    chooser.removeAll();
-    chooser.dispose();
-    return chosen;
+    final AtomicReference<Optional<NewGameChooserEntry>> chosenReference = new AtomicReference<>();
+    final Object mutex = new Object();
+    SwingUtilities.invokeLater(() -> {
+      final WaitDialog dialog = new WaitDialog(parent, "Loading all available Games...");
+      new NewGameChooser(parent, chooser -> {
+        SwingUtilities.invokeLater(() -> {
+          chooser.setSize(800, 600);
+          chooser.setLocationRelativeTo(parent);
+          chooser.selectGame(defaultGameName);
+          chooser.setVisible(true);// Blocking
+          // chooser is now visible and waits for user action
+          chosenReference.set(Optional.ofNullable(chooser.chosen));
+          chooser.setVisible(false);
+          chooser.removeAll();
+          chooser.dispose();
+          synchronized (mutex) {
+            mutex.notify();
+          }
+          dialog.setVisible(false);
+          dialog.dispose();
+        });
+      });
+      dialog.setVisible(true);
+    });
+    try {
+      while (chosenReference.get() == null) {
+        synchronized (mutex) {
+          mutex.wait();
+        }
+      }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+    return chosenReference.get().orElseGet(() -> null);
   }
 
   private void selectGame(final String gameName) {
@@ -193,9 +220,13 @@ public class NewGameChooser extends JDialog {
     });
   }
 
-  /** Populates the NewGameChooserModel cache if empty, then returns the cached instance. */
-  public static synchronized NewGameChooserModel getNewGameChooserModel() {
-    return new NewGameChooserModel();
+  /**
+   * Populates the NewGameChooserModel cache if empty, then returns the cached instance.
+   * 
+   * @param onFinishedLoading A callback being executed after all games have been loaded.
+   */
+  public static synchronized NewGameChooserModel getNewGameChooserModel(final Runnable onFinishedLoading) {
+    return new NewGameChooserModel(onFinishedLoading);
   }
 
   private void selectAndReturn() {

@@ -18,6 +18,7 @@ import java.util.zip.ZipFile;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -34,24 +35,38 @@ import games.strategy.ui.SwingAction;
 public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
+  private static final Object lock = new Object();
+
   private enum ZipProcessingResult {
     SUCCESS, ERROR
   }
 
-  NewGameChooserModel() {
-    final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+  /**
+   * Searches for and parses Map Files.
+   * 
+   * @param onFinishedLoading a callback being executed after all maps have been loaded.
+   */
+  NewGameChooserModel(final Runnable onFinishedLoading) {
+    new Thread(() -> {
+      synchronized (lock) {
+        final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
 
-    final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
-    Collections.sort(entries, NewGameChooserEntry.getComparator());
+        final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
+        Collections.sort(entries, NewGameChooserEntry.getComparator());
 
-    for (final NewGameChooserEntry entry : entries) {
-      addElement(entry);
-    }
+        for (final NewGameChooserEntry entry : entries) {
+          SwingUtilities.invokeLater(() -> addElement(entry));
+        }
+        onFinishedLoading.run();
+      }
+    }).start();
   }
 
   @Override
   public NewGameChooserEntry get(final int i) {
-    return super.get(i);
+    synchronized (lock) {
+      return super.get(i);
+    }
   }
 
   private static List<File> allMapFiles() {
@@ -212,6 +227,8 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   }
 
   public boolean removeEntry(final NewGameChooserEntry entryToBeRemoved) {
-    return this.removeElement(entryToBeRemoved);
+    synchronized (lock) {
+      return this.removeElement(entryToBeRemoved);
+    }
   }
 }

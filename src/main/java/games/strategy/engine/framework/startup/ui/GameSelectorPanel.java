@@ -365,32 +365,37 @@ public class GameSelectorPanel extends JPanel implements Observer {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
-    if (saved) {
-      final File file = selectGameFile();
-      if (file == null || !file.exists()) {
-        return;
-      }
-      model.load(file, this);
-      setOriginalPropertiesMap(model.getGameData());
-    } else {
-      final NewGameChooserEntry entry =
-          NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
-      if (entry != null) {
-        if (!entry.isGameDataLoaded()) {
-          try {
-            entry.fullyParseGameData();
-          } catch (final GameParseException e) {
-            entry.delayParseGameData();
-            NewGameChooser.getNewGameChooserModel().removeEntry(entry);
-            return;
-          }
+    new Thread(() -> {
+      if (saved) {
+        final File file = selectGameFile();
+        if (file == null || !file.exists()) {
+          return;
         }
-        model.load(entry);
+        model.load(file, this);
         setOriginalPropertiesMap(model.getGameData());
-        // only for new games, not saved games, we set the default options, and set them only once (the first time it is
-        // loaded)
-        gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
+      } else {
+        final NewGameChooserEntry entry =
+            NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
+        if (entry != null) {
+          if (!entry.isGameDataLoaded()) {
+            try {
+              entry.fullyParseGameData();
+            } catch (final GameParseException e) {
+              entry.delayParseGameData();
+              NewGameChooser.getNewGameChooserModel(() -> {
+
+              }).removeEntry(entry);
+              return;
+            }
+          }
+          model.load(entry);
+          setOriginalPropertiesMap(model.getGameData());
+          // only for new games, not saved games, we set the default options, and set them only once (the first time it
+          // is
+          // loaded)
+          gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
+        }
       }
-    }
+    }).start();
   }
 }
