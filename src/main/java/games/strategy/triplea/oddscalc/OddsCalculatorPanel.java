@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddsCalculator.ta;
+package games.strategy.triplea.oddscalc;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -11,11 +11,8 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,7 +45,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -67,6 +63,9 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
+import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
+import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
+import games.strategy.triplea.oddsCalculator.ta.OddsCalculator;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
@@ -98,7 +97,7 @@ class OddsCalculatorPanel extends JPanel {
   private final IntTextField retreatAfterXRounds = new IntTextField();
   private final IntTextField retreatAfterXUnitsLeft = new IntTextField();
   private final JPanel resultsPanel = new JPanel();
-  private final JButton calculateButton = new JButton("Pls Wait, Copying Data...");
+  private final JButton calculateButton = new JButton("Calculate Odds");
   private final JButton clearButton = new JButton("Clear");
   private final JButton closeButton = new JButton("Close");
   private final JButton swapSidesButton = new JButton("Swap Sides");
@@ -109,7 +108,7 @@ class OddsCalculatorPanel extends JPanel {
   private final JCheckBox retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
-  private final IOddsCalculator calculator;
+  private ConcurrentOddsCalculator calculator;
   private PlayerUnitsPanel attackingUnitsPanel;
   private PlayerUnitsPanel defendingUnitsPanel;
   private JComboBox<PlayerID> attackerCombo;
@@ -135,7 +134,6 @@ class OddsCalculatorPanel extends JPanel {
     this.uiContext = uiContext;
     this.location = location;
     this.parent = parent;
-    calculateButton.setEnabled(false);
     createComponents();
     layoutComponents();
     setupListeners();
@@ -176,25 +174,14 @@ class OddsCalculatorPanel extends JPanel {
       System.runFinalization();
       System.gc();
     }
-    calculator = new ConcurrentOddsCalculator("BtlCalc Panel");
 
-    calculator.addOddsCalculatorListener(() -> {
-      calculateButton.setText("Calculate Odds");
-      calculateButton.setEnabled(true);
-    });
-
-    calculator.setGameData(data);
     setWidgetActivation();
     revalidate();
   }
 
   void shutdown() {
-    try {
-      // use this if not using a static calc, so that we gc the calc and shutdown all threads.
-      // must be shutdown, as it has a thread pool per each instance.
-      calculator.shutdown();
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+    if (calculator != null) {
+      calculator.cancel();
     }
   }
 
@@ -202,13 +189,7 @@ class OddsCalculatorPanel extends JPanel {
     final Runtime runtime = Runtime.getRuntime();
     final long maxMemory = runtime.maxMemory();
     final long memoryAvailable = Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
-    return (((double) memoryAvailable) / ((double) maxMemory));
-  }
-
-  private static long freeMemoryAvailable() {
-    final Runtime runtime = Runtime.getRuntime();
-    final long maxMemory = runtime.maxMemory();
-    return Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
+    return memoryAvailable / maxMemory;
   }
 
   private PlayerID getDefender() {
@@ -255,25 +236,6 @@ class OddsCalculatorPanel extends JPanel {
       updateDefender(null);
       updateAttacker(null);
       setWidgetActivation();
-    });
-    calculateButton.addMouseMotionListener(new MouseMotionListener() {
-      @Override
-      public void mouseDragged(final MouseEvent e) {}
-
-      @Override
-      public void mouseMoved(final MouseEvent e) {
-        final String memoryAvailable = "<br/>Percentage of memory available: "
-            + String.format("%.2f", (percentageOfFreeMemoryAvailable() * 100)) + "% <br/>Free memory available: "
-            + (freeMemoryAvailable() / (1024 * 1024)) + "MB <br/>Maximum allowed memory: "
-            + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB </html>";
-        if (calculateButton.isEnabled()) {
-          calculateButton.setToolTipText("<html>Data copying finished. " + memoryAvailable);
-        } else {
-          calculateButton.setToolTipText("<html>If this is taking forever to enable, it means "
-              + "<br/>you do not have enough memory to copy the data quickly! "
-              + "<br/>Consider increasing the max memory for TripleA. " + memoryAvailable);
-        }
-      }
     });
     calculateButton.addActionListener(e -> updateStats());
     closeButton.addActionListener(e -> {
@@ -352,7 +314,7 @@ class OddsCalculatorPanel extends JPanel {
     }
     final AtomicReference<AggregateResults> results = new AtomicReference<>();
     final WaitDialog dialog =
-        new WaitDialog(this, "Calculating Odds (" + calculator.getThreadCount() + " threads)", new AbstractAction() {
+        new WaitDialog(this, "Calculating Odds", new AbstractAction() {
           private static final long serialVersionUID = -2148507015083214974L;
 
           @Override
@@ -360,8 +322,6 @@ class OddsCalculatorPanel extends JPanel {
             calculator.cancel();
           }
         });
-    final AtomicReference<Collection<Unit>> defenders = new AtomicReference<>();
-    final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
     new Thread(() -> {
       try {
         // find a territory to fight in
@@ -379,37 +339,33 @@ class OddsCalculatorPanel extends JPanel {
         if (location == null) {
           throw new IllegalStateException("No territory found that is land:" + isLand());
         }
-        final List<Unit> defending = defendingUnitsPanel.getUnits();
-        final List<Unit> attacking = attackingUnitsPanel.getUnits();
+        Collection<Unit> attacking = attackingUnitsPanel.getUnits();
         List<Unit> bombarding = new ArrayList<>();
         if (isLand()) {
-          bombarding = Matches.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
+          bombarding = Matches.getMatches(attackingUnitsPanel.getUnits(), Matches.unitCanBombard(getAttacker()));
           attacking.removeAll(bombarding);
         }
-        calculator.setRetreatAfterRound(retreatAfterXRounds.getValue());
-        calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft.getValue());
-        if (retreatWhenOnlyAirLeftCheckBox.isSelected()) {
-          calculator.setRetreatWhenOnlyAirLeft(true);
-        } else {
-          calculator.setRetreatWhenOnlyAirLeft(false);
-        }
-        if (landBattleCheckBox.isSelected() && keepOneAttackingLandUnitCheckBox.isSelected()) {
-          calculator.setKeepOneAttackingLandUnit(true);
-        } else {
-          calculator.setKeepOneAttackingLandUnit(false);
-        }
-        if (isAmphibiousBattle()) {
-          calculator.setAmphibious(true);
-        } else {
-          calculator.setAmphibious(false);
-        }
-        calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
-        calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
-        final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
-        defenders.set(defending);
-        attackers.set(attacking);
-        results.set(calculator.setCalculateDataAndCalculate(getAttacker(), getDefender(), location, attacking,
-            defending, bombarding, territoryEffects, numRuns.getValue()));
+
+        calculator = new ConcurrentOddsCalculator();
+        results.set(calculator.calculate(
+            OddsCalculatorParameters.builder()
+                .gameData(data)
+                .location(location)
+                .attacker(getAttacker())
+                .attacking(attackingUnitsPanel.getUnits())
+                .attackerOrderOfLosses(attackerOrderOfLosses)
+                .defender(getDefender())
+                .defending(defendingUnitsPanel.getUnits())
+                .defenderOrderOfLosses(defenderOrderOfLosses)
+                .bombarding(bombarding)
+                .runCount(numRuns.getValue())
+                .retreatAfterRound(retreatAfterXRounds.getValue())
+                .retreatAfterXUnitsLeft(retreatAfterXUnitsLeft.getValue())
+                .retreatWhenOnlyAirLeft(retreatWhenOnlyAirLeftCheckBox.isSelected())
+                .keepOneAttackingLandUnit(
+                    landBattleCheckBox.isSelected() && keepOneAttackingLandUnitCheckBox.isSelected())
+                .amphibious(isAmphibiousBattle())
+                .build()));
       } finally {
         SwingUtilities.invokeLater(() -> {
           dialog.setVisible(false);
@@ -429,9 +385,11 @@ class OddsCalculatorPanel extends JPanel {
       draw.setText(formatPercentage(results.get().getDrawPercent()));
       final boolean isLand = isLand();
       final List<Unit> mainCombatAttackers =
-          Matches.getMatches(attackers.get(), Matches.unitCanBeInBattle(true, isLand, 1, false, true, true));
+          Matches.getMatches(attackingUnitsPanel.getUnits(),
+              Matches.unitCanBeInBattle(true, isLand, 1, false, true, true));
       final List<Unit> mainCombatDefenders =
-          Matches.getMatches(defenders.get(), Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
+          Matches.getMatches(defendingUnitsPanel.getUnits(),
+              Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
       final int attackersTotal = mainCombatAttackers.size();
       final int defendersTotal = mainCombatDefenders.size();
       defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " /" + defendersTotal);
@@ -453,14 +411,12 @@ class OddsCalculatorPanel extends JPanel {
     }
   }
 
-  String formatPercentage(final double percentage) {
-    final NumberFormat format = new DecimalFormat("%");
-    return format.format(percentage);
+  private static String formatPercentage(final double percentage) {
+    return new DecimalFormat("%").format(percentage);
   }
 
-  String formatValue(final double value) {
-    final NumberFormat format = new DecimalFormat("#0.##");
-    return format.format(value);
+  private static String formatValue(final double value) {
+    return new DecimalFormat("#0.##").format(value);
   }
 
   private void updateDefender(List<Unit> units) {
