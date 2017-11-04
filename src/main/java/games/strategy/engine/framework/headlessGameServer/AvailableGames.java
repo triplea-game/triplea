@@ -17,6 +17,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -34,12 +38,11 @@ import games.strategy.util.UrlStreams;
 public class AvailableGames {
   private static final boolean delayedParsing = false;
   private static final String ZIP_EXTENSION = ".zip";
-  private final TreeMap<String, URI> availableGames = new TreeMap<>();
-  private final Set<String> availableMapFolderOrZipNames = new HashSet<>();
+  private final Map<String, URI> availableGames = Collections.synchronizedMap(new TreeMap<>());
+  private final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
 
   AvailableGames() {
-    final Set<String> mapNamePropertyList = new HashSet<>();
-    populateAvailableGames(availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
+    populateAvailableGames(availableGames, availableMapFolderOrZipNames, Collections.synchronizedSet(new HashSet<>()));
   }
 
   List<String> getGameNames() {
@@ -75,11 +78,26 @@ public class AvailableGames {
   private static void populateAvailableGames(final Map<String, URI> availableGames,
       final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList) {
     System.out.println("Parsing all available games (this could take a while). ");
-    for (final File map : allMapFiles()) {
+    final List<File> files = allMapFiles();
+    final ExecutorService service = Executors.newWorkStealingPool(files.size());
+    final List<Future<?>> tasks = new ArrayList<>(files.size());
+    for (final File map : files) {
       if (map.isDirectory()) {
-        populateFromDirectory(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
+        tasks.add(service.submit(
+            () -> populateFromDirectory(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList)));
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-        populateFromZip(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
+        tasks.add(service.submit(
+            () -> populateFromZip(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList)));
+      }
+    }
+    service.shutdown();
+    for (Future<?> future : tasks) {
+      try {
+        future.get();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } catch (ExecutionException e) {
+        throw new RuntimeException(e);
       }
     }
     System.out.println("Finished parsing all available game xmls. ");
