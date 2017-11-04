@@ -194,8 +194,6 @@ public class NewGameChooser extends JDialog {
 
   /**
    * Populates the NewGameChooserModel cache if empty, then returns the cached instance.
-   * 
-   * @param onFinishedLoading A callback being executed after all games have been loaded.
    */
   public static synchronized NewGameChooserModel getNewGameChooserModel() {
     return new NewGameChooserModel();

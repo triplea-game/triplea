@@ -42,8 +42,6 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   /**
    * Searches for and parses Map Files.
-   * 
-   * @param onFinishedLoading a callback being executed after all maps have been loaded.
    */
   NewGameChooserModel() {
     try {
