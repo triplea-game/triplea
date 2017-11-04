@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 
 import javax.swing.Action;
@@ -40,7 +39,7 @@ public class SwingActionTest {
   }
 
   @Test
-  public void testInvokeAndWait(@Mock final Runnable action) throws InvocationTargetException, InterruptedException {
+  public void testInvokeAndWait(@Mock final Runnable action) throws Exception {
     SwingAction.invokeAndWait(action);
     verify(action).run();
     SwingUtilities.invokeAndWait(() -> {

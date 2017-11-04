@@ -173,7 +173,7 @@ public class ClientSetupPanel extends SetupPanel {
 
   class PlayerRow {
     private final JCheckBox enabledCheckBox = new JCheckBox();
-    private final JLabel playerNameLabel;
+    private final JLabel playerNameLabel = new JLabel();
     private final JLabel playerLabel = new JLabel();
     private JComponent playerComponent = new JLabel();
     private final String localPlayerType;
@@ -181,9 +181,9 @@ public class ClientSetupPanel extends SetupPanel {
 
     PlayerRow(final String playerName, final Collection<String> playerAlliances, final String localPlayerType,
         final boolean enabled) {
-      playerNameLabel = new JLabel(playerName);
+      playerNameLabel.setText(playerName);
       this.localPlayerType = localPlayerType;
-      enabledCheckBox.addActionListener(m_disablePlayerActionListener);
+      enabledCheckBox.addActionListener(disablePlayerActionListener);
       enabledCheckBox.setSelected(enabled);
       alliance = new JLabel(playerAlliances.contains(playerName) ? "" : playerAlliances.toString());
     }
@@ -211,13 +211,13 @@ public class ClientSetupPanel extends SetupPanel {
     public void update(final String playerName, final boolean disableable) {
       if (playerName == null) {
         playerLabel.setText("-");
-        final JButton button = new JButton(m_takeAction);
+        final JButton button = new JButton(takeAction);
         button.setMargin(buttonInsets);
         playerComponent = button;
       } else {
         playerLabel.setText(playerName);
         if (playerName.equals(clientModel.getMessenger().getLocalNode().getName())) {
-          final JButton button = new JButton(m_dontTakeAction);
+          final JButton button = new JButton(dontTakeAction);
           button.setMargin(buttonInsets);
           playerComponent = button;
         } else {
@@ -247,15 +247,15 @@ public class ClientSetupPanel extends SetupPanel {
       return localPlayerType;
     }
 
-    private final Action m_takeAction =
-        SwingAction.of("Play", e -> clientModel.takePlayer(getName().getText()));
-    private final Action m_dontTakeAction =
-        SwingAction.of("Dont Play", e -> clientModel.releasePlayer(getName().getText()));
-    private final ActionListener m_disablePlayerActionListener = e -> {
+    private final Action takeAction =
+        SwingAction.of("Play", e -> clientModel.takePlayer(playerNameLabel.getText()));
+    private final Action dontTakeAction =
+        SwingAction.of("Dont Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
+    private final ActionListener disablePlayerActionListener = e -> {
       if (enabledCheckBox.isSelected()) {
-        clientModel.enablePlayer(getName().getText());
+        clientModel.enablePlayer(playerNameLabel.getText());
       } else {
-        clientModel.disablePlayer(getName().getText());
+        clientModel.disablePlayer(playerNameLabel.getText());
       }
       setWidgetActivation(true);
     };
