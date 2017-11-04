@@ -15,21 +15,21 @@ import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 
 public class GetGameSaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1118264715230932068L;
-  private final Component m_parent;
-  private final IServerStartupRemote m_serverRemote;
+  private final Component parent;
+  private final IServerStartupRemote serverRemote;
 
   public GetGameSaveClientAction(final Component parent, final IServerStartupRemote serverRemote) {
     super("Download Gamesave (Save Game)");
-    m_parent = JOptionPane.getFrameForComponent(parent);
-    m_serverRemote = serverRemote;
+    this.parent = JOptionPane.getFrameForComponent(parent);
+    this.serverRemote = serverRemote;
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final Frame frame = JOptionPane.getFrameForComponent(m_parent);
+    final Frame frame = JOptionPane.getFrameForComponent(parent);
     final File f = TripleAMenuBar.getSaveGameLocation(frame);
     if (f != null) {
-      final byte[] bytes = m_serverRemote.getSaveGame();
+      final byte[] bytes = serverRemote.getSaveGame();
       try (FileOutputStream fout = new FileOutputStream(f)) {
         fout.write(bytes);
       } catch (final IOException exception) {

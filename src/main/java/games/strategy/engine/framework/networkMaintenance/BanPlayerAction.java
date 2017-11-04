@@ -14,13 +14,13 @@ import games.strategy.net.IServerMessenger;
 
 public class BanPlayerAction extends AbstractAction {
   private static final long serialVersionUID = -2415917785233191860L;
-  private final Component m_parent;
-  private final IServerMessenger m_messenger;
+  private final Component parent;
+  private final IServerMessenger messenger;
 
   public BanPlayerAction(final Component parent, final IServerMessenger messenger) {
     super("Ban Player From Game");
-    m_parent = JOptionPane.getFrameForComponent(parent);
-    m_messenger = messenger;
+    this.parent = JOptionPane.getFrameForComponent(parent);
+    this.messenger = messenger;
   }
 
   @Override
@@ -28,30 +28,30 @@ public class BanPlayerAction extends AbstractAction {
     final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
     final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
-    for (final INode node : new TreeSet<>(m_messenger.getNodes())) {
-      if (!node.equals(m_messenger.getLocalNode())) {
+    for (final INode node : new TreeSet<>(messenger.getNodes())) {
+      if (!node.equals(messenger.getLocalNode())) {
         model.addElement(node.getName());
       }
     }
     if (model.getSize() == 1) {
-      JOptionPane.showMessageDialog(m_parent, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(parent, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
       return;
     }
     final int selectedOption =
-        JOptionPane.showConfirmDialog(m_parent, combo, "Select player to ban", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(parent, combo, "Select player to ban", JOptionPane.OK_CANCEL_OPTION);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
     final String name = (String) combo.getSelectedItem();
-    for (final INode node : m_messenger.getNodes()) {
+    for (final INode node : messenger.getNodes()) {
       if (node.getName().equals(name)) {
         final String realName = node.getName().split(" ")[0];
         final String ip = node.getAddress().getHostAddress();
-        final String mac = m_messenger.getPlayerMac(node.getName());
-        m_messenger.notifyUsernameMiniBanningOfPlayer(realName, null);
-        m_messenger.notifyIpMiniBanningOfPlayer(ip, null);
-        m_messenger.notifyMacMiniBanningOfPlayer(mac, null);
-        m_messenger.removeConnection(node);
+        final String mac = messenger.getPlayerMac(node.getName());
+        messenger.notifyUsernameMiniBanningOfPlayer(realName, null);
+        messenger.notifyIpMiniBanningOfPlayer(ip, null);
+        messenger.notifyMacMiniBanningOfPlayer(mac, null);
+        messenger.removeConnection(node);
         return;
       }
     }

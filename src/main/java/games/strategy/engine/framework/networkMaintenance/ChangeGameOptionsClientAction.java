@@ -18,18 +18,18 @@ import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 
 public class ChangeGameOptionsClientAction extends AbstractAction {
   private static final long serialVersionUID = -6419002646689952824L;
-  private final Component m_parent;
-  private final IServerStartupRemote m_serverRemote;
+  private final Component parent;
+  private final IServerStartupRemote serverRemote;
 
   public ChangeGameOptionsClientAction(final Component parent, final IServerStartupRemote serverRemote) {
     super("Edit Game Options");
-    m_parent = JOptionPane.getFrameForComponent(parent);
-    m_serverRemote = serverRemote;
+    this.parent = JOptionPane.getFrameForComponent(parent);
+    this.serverRemote = serverRemote;
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final byte[] oldBytes = m_serverRemote.getGameOptions();
+    final byte[] oldBytes = serverRemote.getGameOptions();
     if (oldBytes == null || oldBytes.length == 0) {
       return;
     }
@@ -43,14 +43,14 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       final String ok = "OK";
       final String cancel = "Cancel";
       pane.setOptions(new Object[] {ok, cancel});
-      final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(m_parent), "Map Options");
+      final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(parent), "Map Options");
       window.setVisible(true);
       final Object buttonPressed = pane.getValue();
       if (buttonPressed != null && !buttonPressed.equals(cancel)) {
         // ok was clicked. changing them in the ui changes the underlying properties,
         // but it doesn't change the hosts, so we need to send it back to the host.
         try {
-          m_serverRemote.changeToGameOptions(GameProperties.writeEditableProperties(properties));
+          serverRemote.changeToGameOptions(GameProperties.writeEditableProperties(properties));
         } catch (final IOException ex) {
           ClientLogger.logQuietly(ex);
         }
