@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -148,15 +149,15 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     });
     resourceModifiers.setAction(resourceModifiersAction);
 
-    final Action setAllTypesAction = SwingAction.of(e -> {
+    final ActionListener setAllTypesAction = e -> {
       final String selectedType = setAllTypes.getSelectedItem().toString();
       if (SET_ALL_DEFAULT_LABEL.equals(selectedType)) {
         playerRows.forEach(row -> row.setDefaultPlayerType());
       } else {
         playerRows.forEach(row -> row.setPlayerType(selectedType));
       }
-    });
-    setAllTypes.setAction(setAllTypesAction);
+    };
+    setAllTypes.addActionListener(setAllTypesAction);
 
     panel.validate();
     panel.repaint();

@@ -1,5 +1,6 @@
 package games.strategy.triplea;
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
@@ -54,7 +54,6 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.BattleDisplay;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -173,7 +172,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     });
   }
 
-  private final AbstractAction m_editModeAction = SwingAction.of(e -> {
+  private final ActionListener m_editModeAction = e -> {
     final boolean editMode = ((ButtonModel) e.getSource()).isSelected();
     try {
       // Set edit mode
@@ -186,7 +185,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ui.getEditModeButtonModel().setSelected(!ui.getEditModeButtonModel().isSelected());
     }
 
-  });
+  };
 
   private void politics(final boolean firstRun) {
     if (getPlayerBridge().isGameOver()) {

@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -29,6 +27,7 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.ui.SaveGameFileChooser.AUTOSAVE_TYPE;
+import games.strategy.ui.SwingAction;
 
 public class ClientSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 6942605803526295372L;
@@ -173,114 +172,92 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   class PlayerRow {
-    private final JCheckBox m_enabledCheckBox;
-    private final JLabel m_playerNameLabel;
-    private final JLabel m_playerLabel;
-    private JComponent m_playerComponent;
-    private final String m_localPlayerType;
-    private final JLabel m_alliance;
+    private final JCheckBox enabledCheckBox = new JCheckBox();
+    private final JLabel playerNameLabel;
+    private final JLabel playerLabel = new JLabel();
+    private JComponent playerComponent = new JLabel();
+    private final String localPlayerType;
+    private final JLabel alliance;
 
     PlayerRow(final String playerName, final Collection<String> playerAlliances, final String localPlayerType,
         final boolean enabled) {
-      m_playerNameLabel = new JLabel(playerName);
-      m_playerLabel = new JLabel("");
-      m_playerComponent = new JLabel("");
-      m_localPlayerType = localPlayerType;
-      m_enabledCheckBox = new JCheckBox();
-      m_enabledCheckBox.addActionListener(m_disablePlayerActionListener);
-      m_enabledCheckBox.setSelected(enabled);
-      if (playerAlliances.contains(playerName)) {
-        m_alliance = new JLabel();
-      } else {
-        m_alliance = new JLabel(playerAlliances.toString());
-      }
+      playerNameLabel = new JLabel(playerName);
+      this.localPlayerType = localPlayerType;
+      enabledCheckBox.addActionListener(m_disablePlayerActionListener);
+      enabledCheckBox.setSelected(enabled);
+      alliance = new JLabel(playerAlliances.contains(playerName) ? "" : playerAlliances.toString());
     }
 
     public JLabel getName() {
-      return m_playerNameLabel;
+      return playerNameLabel;
     }
 
     public JLabel getPlayer() {
-      return m_playerLabel;
+      return playerLabel;
     }
 
     public String getPlayerName() {
-      return m_playerNameLabel.getText();
+      return playerNameLabel.getText();
     }
 
     public JLabel getAlliance() {
-      return m_alliance;
+      return alliance;
     }
 
     public JCheckBox getEnabledPlayer() {
-      return m_enabledCheckBox;
+      return enabledCheckBox;
     }
 
     public void update(final String playerName, final boolean disableable) {
       if (playerName == null) {
-        m_playerLabel.setText("-");
+        playerLabel.setText("-");
         final JButton button = new JButton(m_takeAction);
         button.setMargin(buttonInsets);
-        m_playerComponent = button;
+        playerComponent = button;
       } else {
-        m_playerLabel.setText(playerName);
+        playerLabel.setText(playerName);
         if (playerName.equals(clientModel.getMessenger().getLocalNode().getName())) {
           final JButton button = new JButton(m_dontTakeAction);
           button.setMargin(buttonInsets);
-          m_playerComponent = button;
+          playerComponent = button;
         } else {
-          m_playerComponent = new JLabel("");
+          playerComponent = new JLabel("");
         }
       }
       setWidgetActivation(disableable);
     }
 
     private void setWidgetActivation(final boolean disableable) {
-      m_playerNameLabel.setEnabled(m_enabledCheckBox.isSelected());
-      m_playerLabel.setEnabled(m_enabledCheckBox.isSelected());
-      m_playerComponent.setEnabled(m_enabledCheckBox.isSelected());
-      m_alliance.setEnabled(m_enabledCheckBox.isSelected());
-      m_enabledCheckBox.setEnabled(disableable);
+      playerNameLabel.setEnabled(enabledCheckBox.isSelected());
+      playerLabel.setEnabled(enabledCheckBox.isSelected());
+      playerComponent.setEnabled(enabledCheckBox.isSelected());
+      alliance.setEnabled(enabledCheckBox.isSelected());
+      enabledCheckBox.setEnabled(disableable);
     }
 
     public boolean isPlaying() {
-      return m_playerLabel.getText().equals(clientModel.getMessenger().getLocalNode().getName());
+      return playerLabel.getText().equals(clientModel.getMessenger().getLocalNode().getName());
     }
 
     public JComponent getPlayerComponent() {
-      return m_playerComponent;
+      return playerComponent;
     }
 
     public String getLocalType() {
-      return m_localPlayerType;
+      return localPlayerType;
     }
 
-    private final Action m_takeAction = new AbstractAction("Play") {
-      private static final long serialVersionUID = 9086754428763609790L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        clientModel.takePlayer(m_playerNameLabel.getText());
+    private final Action m_takeAction =
+        SwingAction.of("Play", e -> clientModel.takePlayer(getName().getText()));
+    private final Action m_dontTakeAction =
+        SwingAction.of("Dont Play", e -> clientModel.releasePlayer(getName().getText()));
+    private final ActionListener m_disablePlayerActionListener = e -> {
+      if (enabledCheckBox.isSelected()) {
+        clientModel.enablePlayer(getName().getText());
+      } else {
+        clientModel.disablePlayer(getName().getText());
       }
-    };
-    private final Action m_dontTakeAction = new AbstractAction("Dont Play") {
-      private static final long serialVersionUID = 8735891444454338978L;
-
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        clientModel.releasePlayer(m_playerNameLabel.getText());
-      }
-    };
-    private final ActionListener m_disablePlayerActionListener = new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (m_enabledCheckBox.isSelected()) {
-          clientModel.enablePlayer(m_playerNameLabel.getText());
-        } else {
-          clientModel.disablePlayer(m_playerNameLabel.getText());
-        }
-        setWidgetActivation(true);
-      }
+      setWidgetActivation(true);
     };
   }
 

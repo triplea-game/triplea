@@ -215,23 +215,14 @@ public class UserActionPanel extends ActionPanel {
   /**
    * This will stop the user action Phase.
    */
-  private final Action dontBotherAction = new AbstractAction("Done") {
-    private static final long serialVersionUID = 2835948679299520899L;
-
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      if (!firstRun || youSureDoNothing()) {
-        choice = null;
-        release();
-      }
+  private final Action dontBotherAction = SwingAction.of("Done", e -> {
+    if (!firstRun || JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
+        "Are you sure you dont want to do anything?", "End Actions",
+        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+      choice = null;
+      release();
     }
-
-    private boolean youSureDoNothing() {
-      final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
-          "Are you sure you dont want to do anything?", "End Actions", JOptionPane.YES_NO_OPTION);
-      return selectedOption == JOptionPane.YES_OPTION;
-    }
-  };
+  });
 
   /**
    * Convenient method to get a JCompenent showing the flags involved in this

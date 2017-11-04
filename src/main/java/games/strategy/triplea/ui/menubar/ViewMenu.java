@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -102,8 +103,7 @@ class ViewMenu {
     final JCheckBoxMenuItem tabbedProduction = new JCheckBoxMenuItem("Show Production Tabs");
     tabbedProduction.setMnemonic(KeyEvent.VK_P);
     tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
-    tabbedProduction
-        .addActionListener(SwingAction.of(e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected())));
+    tabbedProduction.addActionListener(e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected()));
     parentMenu.add(tabbedProduction);
   }
 
@@ -179,8 +179,8 @@ class ViewMenu {
       private final double scaleFactor;
 
       public UnitSizeAction(final double scaleFactor) {
+        super(decimalFormat.format(scaleFactor * 100) + "%");
         this.scaleFactor = scaleFactor;
-        putValue(Action.NAME, decimalFormat.format(scaleFactor * 100) + "%");
       }
 
       @Override
@@ -486,14 +486,14 @@ class ViewMenu {
   private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(final String text, final ButtonGroup group,
       final UnitsDrawer.UnitFlagDrawMode drawMode, final UnitsDrawer.UnitFlagDrawMode setting,
       final Preferences prefs) {
-    return createRadioButtonItem(text, group, SwingAction.of(e -> {
+    return createRadioButtonItem(text, group, e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
       frame.getMapPanel().resetMap();
-    }), setting.equals(drawMode));
+    }, setting.equals(drawMode));
   }
 
   private static JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group,
-      final Action action, final boolean selected) {
+      final ActionListener action, final boolean selected) {
     final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
     buttonItem.addActionListener(action);
     buttonItem.setSelected(selected);

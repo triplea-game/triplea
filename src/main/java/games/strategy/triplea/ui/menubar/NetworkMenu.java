@@ -3,7 +3,6 @@ package games.strategy.triplea.ui.menubar;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 
@@ -76,7 +75,7 @@ class NetworkMenu {
 
   private void addShowPlayers(final JMenu menuGame) {
     if (!game.getData().getProperties().getEditableProperties().isEmpty()) {
-      final AbstractAction optionsAction =
+      final Action optionsAction =
           SwingAction.of("Show Who is Who", e -> PlayersPanel.showPlayers(game, frame));
       menuGame.add(optionsAction);
     }

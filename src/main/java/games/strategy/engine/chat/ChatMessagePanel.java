@@ -3,6 +3,7 @@ package games.strategy.engine.chat;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -192,8 +193,20 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private void setupKeyMap() {
     final InputMap nextMessageKeymap = nextMessage.getInputMap();
     nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), sendAction);
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), upAction);
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false), downAction);
+    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), (ActionListener) e -> {
+      if (chat == null) {
+        return;
+      }
+      chat.getSentMessagesHistory().prev();
+      nextMessage.setText(chat.getSentMessagesHistory().current());
+    });
+    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false), (ActionListener) e -> {
+      if (chat == null) {
+        return;
+      }
+      chat.getSentMessagesHistory().next();
+      nextMessage.setText(chat.getSentMessagesHistory().current());
+    });
   }
 
   private void cleanupKeyMap() {
@@ -343,20 +356,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       chat.sendMessage(nextMessage.getText(), false);
     }
     nextMessage.setText("");
-  });
-  private final Action downAction = SwingAction.of(e -> {
-    if (chat == null) {
-      return;
-    }
-    chat.getSentMessagesHistory().next();
-    nextMessage.setText(chat.getSentMessagesHistory().current());
-  });
-  private final Action upAction = SwingAction.of(e -> {
-    if (chat == null) {
-      return;
-    }
-    chat.getSentMessagesHistory().prev();
-    nextMessage.setText(chat.getSentMessagesHistory().current());
   });
 
   @Override

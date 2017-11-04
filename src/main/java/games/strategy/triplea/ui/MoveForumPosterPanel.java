@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui;
 
-import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
@@ -14,7 +14,7 @@ public class MoveForumPosterPanel extends AbstractForumPosterPanel {
 
   MoveForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    final AbstractAction doneAction = SwingAction.of("Done", e -> release());
+    final Action doneAction = SwingAction.of("Done", e -> release());
     forumPosterComponent = new ForumPosterComponent(getData(), doneAction, getTitle());
 
   }

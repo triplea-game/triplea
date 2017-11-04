@@ -364,9 +364,9 @@ class ProLogWindow extends JDialog {
     pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     pane.setViewportView(label);
     dialog.add(pane, BorderLayout.CENTER);
-    final JButton button = new JButton(SwingAction.of(e -> dialog.dispose()));
-    button.setText("Close");
+    final JButton button = new JButton("Close");
     button.setMinimumSize(new Dimension(100, 30));
+    button.addActionListener(e -> dialog.dispose());
     dialog.add(button, BorderLayout.SOUTH);
     dialog.setMinimumSize(new Dimension(500, 300));
     dialog.setSize(new Dimension(800, 600));

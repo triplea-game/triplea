@@ -90,7 +90,7 @@ public class BattleDisplay extends JPanel {
   private final PlayerID attacker;
   private final Territory location;
   private final GameData gameData;
-  private final JButton actionButton = new JButton("");
+  private final JButton actionButton = new JButton();
   private final BattleModel defenderModel;
   private final BattleModel attackerModel;
   private BattleStepsPanel steps;
@@ -293,7 +293,7 @@ public class BattleDisplay extends JPanel {
     }
 
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    final AbstractAction buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
+    final Action buttonAction = SwingAction.of(message, e -> continueLatch.countDown());
     SwingUtilities.invokeLater(() -> actionButton.setAction(buttonAction));
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
 

@@ -15,7 +15,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -115,7 +114,7 @@ class ExportMenu {
 
 
   private void addSaveScreenshot(final JMenu parentMenu) {
-    final AbstractAction abstractAction = SwingAction.of("Export Map Snapshot", e -> {
+    final Action abstractAction = SwingAction.of("Export Map Snapshot", e -> {
       // get current history node. if we are in history view, get the selected node.
       final HistoryPanel historyPanel = frame.getHistoryPanel();
       final HistoryNode curNode;

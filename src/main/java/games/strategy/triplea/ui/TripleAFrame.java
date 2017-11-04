@@ -231,49 +231,7 @@ public class TripleAFrame extends MainGameFrame {
     this.setCursor(uiContext.getCursor());
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
-    showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
-    final AbstractAction showCommentLogAction = new AbstractAction() {
-      private static final long serialVersionUID = 3964381772343872268L;
 
-      @Override
-      public void actionPerformed(final ActionEvent ae) {
-        if (showCommentLogButtonModel.isSelected()) {
-          showCommentLog();
-        } else {
-          hideCommentLog();
-        }
-      }
-
-      private void hideCommentLog() {
-        if (chatPanel != null) {
-          commentSplit.setBottomComponent(null);
-          chatSplit.setBottomComponent(chatPanel);
-          chatSplit.validate();
-        } else {
-          mapAndChatPanel.removeAll();
-          chatSplit.setTopComponent(null);
-          chatSplit.setBottomComponent(null);
-          mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
-          mapAndChatPanel.validate();
-        }
-      }
-
-      private void showCommentLog() {
-        if (chatPanel != null) {
-          commentSplit.setBottomComponent(chatPanel);
-          chatSplit.setBottomComponent(commentSplit);
-          chatSplit.validate();
-        } else {
-          mapAndChatPanel.removeAll();
-          chatSplit.setTopComponent(mapPanel);
-          chatSplit.setBottomComponent(commentPanel);
-          mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
-          mapAndChatPanel.validate();
-        }
-      }
-    };
-    showCommentLogButtonModel.addActionListener(showCommentLogAction);
-    showCommentLogButtonModel.setSelected(false);
     menu = new TripleAMenuBar(this);
     this.setJMenuBar(menu);
     final ImageScrollModel model = new ImageScrollModel();
@@ -315,6 +273,35 @@ public class TripleAFrame extends MainGameFrame {
     } else {
       mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
     }
+    showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
+    showCommentLogButtonModel.setSelected(false);
+    showCommentLogButtonModel.addActionListener(e -> {
+      if (showCommentLogButtonModel.isSelected()) {
+        if (chatPanel != null) {
+          commentSplit.setBottomComponent(chatPanel);
+          chatSplit.setBottomComponent(commentSplit);
+          chatSplit.validate();
+        } else {
+          mapAndChatPanel.removeAll();
+          chatSplit.setTopComponent(mapPanel);
+          chatSplit.setBottomComponent(commentPanel);
+          mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
+          mapAndChatPanel.validate();
+        }
+      } else {
+        if (chatPanel != null) {
+          commentSplit.setBottomComponent(null);
+          chatSplit.setBottomComponent(chatPanel);
+          chatSplit.validate();
+        } else {
+          mapAndChatPanel.removeAll();
+          chatSplit.setTopComponent(null);
+          chatSplit.setBottomComponent(null);
+          mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
+          mapAndChatPanel.validate();
+        }
+      }
+    });
     gameMainPanel.setLayout(new BorderLayout());
     this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(gameMainPanel, BorderLayout.CENTER);
@@ -1936,17 +1923,12 @@ public class TripleAFrame extends MainGameFrame {
     return isEditMode;
   }
 
-  private final AbstractAction showHistoryAction = new AbstractAction("Show history") {
-    private static final long serialVersionUID = -3960551522512897374L;
+  private final Action showHistoryAction = SwingAction.of("Show history", e -> {
+    showHistory();
+    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+  });
 
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      showHistory();
-      dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
-    }
-  };
-
-  private final AbstractAction showGameAction = new AbstractAction("Show current game") {
+  private final Action showGameAction = new AbstractAction("Show current game") {
     private static final long serialVersionUID = -7551760679570164254L;
 
     {
@@ -1960,15 +1942,10 @@ public class TripleAFrame extends MainGameFrame {
     }
   };
 
-  private final AbstractAction showMapOnlyAction = new AbstractAction("Show map only") {
-    private static final long serialVersionUID = -6621157075878333141L;
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      showMapOnly();
-      dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
-    }
-  };
+  private final Action showMapOnlyAction = SwingAction.of("Show map only", e -> {
+    showMapOnly();
+    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+  });
 
   public Collection<Unit> moveFightersToCarrier(final Collection<Unit> fighters, final Territory where) {
     if (messageAndDialogThreadPool == null) {

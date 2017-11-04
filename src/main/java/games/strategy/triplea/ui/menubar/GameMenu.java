@@ -7,7 +7,6 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -98,11 +97,10 @@ class GameMenu {
 
   protected void addGameOptionsMenu(final JMenu menuGame) {
     if (!gameData.getProperties().getEditableProperties().isEmpty()) {
-      final AbstractAction optionsAction = SwingAction.of("Map Options", e -> {
+      menuGame.add(SwingAction.of("Map Options", e -> {
         final PropertiesUI ui = new PropertiesUI(gameData.getProperties().getEditableProperties(), false);
         JOptionPane.showMessageDialog(frame, ui, "Map Options", JOptionPane.PLAIN_MESSAGE);
-      });
-      menuGame.add(optionsAction).setMnemonic(KeyEvent.VK_O);
+      })).setMnemonic(KeyEvent.VK_O);
     }
   }
 
@@ -111,7 +109,7 @@ class GameMenu {
    * current political landscape as a reference, no actions on this panel.
    */
   private void addPoliticsMenu(final JMenu menuGame) {
-    final AbstractAction politicsAction = SwingAction.of("Show Politics Panel", e -> {
+    menuGame.add(SwingAction.of("Show Politics Panel", e -> {
       final PoliticalStateOverview ui = new PoliticalStateOverview(gameData, uiContext, false);
       final JScrollPane scroll = new JScrollPane(ui);
       scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -127,8 +125,7 @@ class GameMenu {
 
       JOptionPane.showMessageDialog(frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
 
-    });
-    menuGame.add(politicsAction).setMnemonic(KeyEvent.VK_P);
+    })).setMnemonic(KeyEvent.VK_P);
   }
 
   private void addNotificationSettings(final JMenu parentMenu) {
@@ -175,14 +172,13 @@ class GameMenu {
   }
 
   private void addShowDiceStats(final JMenu parentMenu) {
-    final Action showDiceStats = SwingAction.of("Show Dice Stats", e -> {
+    parentMenu.add(SwingAction.of("Show Dice Stats", e -> {
       final IRandomStats randomStats =
           (IRandomStats) game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
       final RandomStatsDetails stats = randomStats.getRandomStats(gameData.getDiceSides());
       JOptionPane.showMessageDialog(frame, new JScrollPane(stats.getAllStats()), "Random Stats",
           JOptionPane.INFORMATION_MESSAGE);
-    });
-    parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_D);
+    })).setMnemonic(KeyEvent.VK_D);
   }
 
   private void addRollDice(final JMenu parentMenu) {

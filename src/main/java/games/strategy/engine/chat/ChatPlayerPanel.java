@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -176,14 +174,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
         chat.setIgnored(clickedOn, !isIgnored);
         repaint();
       });
-      final Action slap = new AbstractAction("Slap " + clickedOn.getName()) {
-        private static final long serialVersionUID = -5514772068903406263L;
-
-        @Override
-        public void actionPerformed(final ActionEvent event) {
-          chat.sendSlap(clickedOn.getName());
-        }
-      };
+      final Action slap = SwingAction.of("Slap " + clickedOn.getName(), e -> chat.sendSlap(clickedOn.getName()));
       return Arrays.asList(slap, ignore);
     });
   }

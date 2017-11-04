@@ -25,6 +25,7 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
 
 public class PurchasePanel extends ActionPanel {
@@ -141,60 +142,55 @@ public class PurchasePanel extends ActionPanel {
     return totalUnits;
   }
 
-  private final Action doneAction = new AbstractAction("Done") {
-    private static final long serialVersionUID = -209781523508962628L;
-
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      final boolean hasPurchased = purchase.totalValues() != 0;
-      if (!hasPurchased) {
+  private final Action doneAction = SwingAction.of("Done", e -> {
+    final boolean hasPurchased = purchase.totalValues() != 0;
+    if (!hasPurchased) {
+      final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this),
+          "Are you sure you dont want to buy anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
+      if (selectedOption != JOptionPane.YES_OPTION) {
+        return;
+      }
+    }
+    // give a warning if the
+    // player tries to produce too much
+    if (isWW2V2() || isRestrictedPurchase()) {
+      int totalProd = 0;
+      getData().acquireReadLock();
+      try {
+        for (final Territory t : Matches.getMatches(getData().getMap().getTerritories(),
+            Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getCurrentPlayer()))) {
+          totalProd += TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, getCurrentPlayer(),
+              getData(), true, true);
+        }
+      } finally {
+        getData().releaseReadLock();
+      }
+      // sum production for all units except factories
+      int totalProduced = 0;
+      for (final ProductionRule rule : purchase.keySet()) {
+        final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+        if (resourceOrUnit instanceof UnitType) {
+          final UnitType type = (UnitType) resourceOrUnit;
+          if (!Matches.unitTypeIsConstruction().match(type)) {
+            totalProduced += purchase.getInt(rule) * rule.getResults().totalValues();
+          }
+        }
+      }
+      final PlayerID player = getCurrentPlayer();
+      final Collection<Unit> unitsNeedingFactory =
+          Matches.getMatches(player.getUnits().getUnits(), Matches.unitIsNotConstruction());
+      if (!bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
+        final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size())
+            + " units, and can only place " + totalProd + " of them. Continue with purchase?";
         final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this),
-            "Are you sure you dont want to buy anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
+            text, "End Purchase", JOptionPane.YES_NO_OPTION);
         if (selectedOption != JOptionPane.YES_OPTION) {
           return;
         }
       }
-      // give a warning if the
-      // player tries to produce too much
-      if (isWW2V2() || isRestrictedPurchase()) {
-        int totalProd = 0;
-        getData().acquireReadLock();
-        try {
-          for (final Territory t : Matches.getMatches(getData().getMap().getTerritories(),
-              Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getCurrentPlayer()))) {
-            totalProd += TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, getCurrentPlayer(),
-                getData(), true, true);
-          }
-        } finally {
-          getData().releaseReadLock();
-        }
-        // sum production for all units except factories
-        int totalProduced = 0;
-        for (final ProductionRule rule : purchase.keySet()) {
-          final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
-          if (resourceOrUnit instanceof UnitType) {
-            final UnitType type = (UnitType) resourceOrUnit;
-            if (!Matches.unitTypeIsConstruction().match(type)) {
-              totalProduced += purchase.getInt(rule) * rule.getResults().totalValues();
-            }
-          }
-        }
-        final PlayerID player = getCurrentPlayer();
-        final Collection<Unit> unitsNeedingFactory =
-            Matches.getMatches(player.getUnits().getUnits(), Matches.unitIsNotConstruction());
-        if (!bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
-          final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size())
-              + " units, and can only place " + totalProd + " of them. Continue with purchase?";
-          final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this),
-              text, "End Purchase", JOptionPane.YES_NO_OPTION);
-          if (selectedOption != JOptionPane.YES_OPTION) {
-            return;
-          }
-        }
-      }
-      release();
     }
-  };
+    release();
+  });
 
   private static boolean isUnlimitedProduction(final PlayerID player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
