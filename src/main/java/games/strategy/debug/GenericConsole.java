@@ -5,7 +5,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.io.PrintStream;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -24,7 +23,7 @@ public abstract class GenericConsole extends JFrame {
   private static final long serialVersionUID = 5754914217052820386L;
 
   private final JTextArea textArea = new JTextArea(20, 50);
-  private final AbstractAction threadDiagnoseAction =
+  private final Action threadDiagnoseAction =
       SwingAction.of("Enumerate Threads", e -> System.out.println(DebugUtils.getThreadDumps()));
 
   protected GenericConsole(final String title) {
@@ -33,24 +32,19 @@ public abstract class GenericConsole extends JFrame {
     getContentPane().setLayout(new BorderLayout());
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
-    final JScrollPane scroll = new JScrollPane(textArea);
-    getContentPane().add(scroll, BorderLayout.CENTER);
+    getContentPane().add(new JScrollPane(textArea), BorderLayout.CENTER);
     final JToolBar actions = new JToolBar(SwingConstants.HORIZONTAL);
     getContentPane().add(actions, BorderLayout.SOUTH);
     actions.setFloatable(false);
     actions.add(threadDiagnoseAction);
-    final AbstractAction memoryAction = SwingAction.of("Memory", e -> append(DebugUtils.getMemory()));
-    actions.add(memoryAction);
-    final AbstractAction propertiesAction = SwingAction.of("Properties", e -> append(DebugUtils.getProperties()));
-    actions.add(propertiesAction);
-    final Action copyAction = SwingAction.of("Copy to clipboard", e -> {
+    actions.add(SwingAction.of("Memory", e -> append(DebugUtils.getMemory())));
+    actions.add(SwingAction.of("Properties", e -> append(DebugUtils.getProperties())));
+    actions.add(SwingAction.of("Copy to clipboard", e -> {
       final String text = textArea.getText();
       final StringSelection select = new StringSelection(text);
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
-    });
-    actions.add(copyAction);
-    final AbstractAction clearAction = SwingAction.of("Clear", e -> textArea.setText(""));
-    actions.add(clearAction);
+    }));
+    actions.add(SwingAction.of("Clear", e -> textArea.setText("")));
     SwingUtilities.invokeLater(() -> pack());
   }
 

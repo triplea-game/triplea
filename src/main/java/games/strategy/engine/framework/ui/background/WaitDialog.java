@@ -2,8 +2,8 @@ package games.strategy.engine.framework.ui.background;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.ActionListener;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -19,7 +19,7 @@ public final class WaitDialog extends JDialog {
     this(parent, waitMessage, null);
   }
 
-  public WaitDialog(final Component parent, final String waitMessage, final Action cancelAction) {
+  public WaitDialog(final Component parent, final String waitMessage, final ActionListener cancelAction) {
     super(JOptionPane.getFrameForComponent(parent), "Please Wait", true);
     final WaitPanel panel = new WaitPanel(waitMessage);
     getContentPane().setLayout(new BorderLayout());

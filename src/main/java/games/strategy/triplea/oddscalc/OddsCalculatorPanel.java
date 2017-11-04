@@ -10,7 +10,6 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -313,15 +311,7 @@ class OddsCalculatorPanel extends JPanel {
       throw new IllegalStateException("Wrong thread");
     }
     final AtomicReference<AggregateResults> results = new AtomicReference<>();
-    final WaitDialog dialog =
-        new WaitDialog(this, "Calculating Odds", new AbstractAction() {
-          private static final long serialVersionUID = -2148507015083214974L;
-
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            calculator.cancel();
-          }
-        });
+    final WaitDialog dialog = new WaitDialog(this, "Calculating Odds", e -> calculator.cancel());
     new Thread(() -> {
       try {
         // find a territory to fight in

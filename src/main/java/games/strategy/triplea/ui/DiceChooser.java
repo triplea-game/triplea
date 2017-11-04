@@ -1,11 +1,9 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -96,15 +94,8 @@ class DiceChooser extends JPanel {
       diceButtonPanel.add(Box.createHorizontalStrut(4));
       final int dieNum = roll;
       final DieType dieType = hit ? DieType.HIT : DieType.MISS;
-      final JButton button =
-          new JButton(new AbstractAction(null, uiContext.getDiceImageFactory().getDieIcon(roll, dieType)) {
-            private static final long serialVersionUID = 8900816143434068634L;
-
-            @Override
-            public void actionPerformed(final ActionEvent event) {
-              addDie(dieNum);
-            }
-          });
+      final JButton button = new JButton(uiContext.getDiceImageFactory().getDieIcon(roll, dieType));
+      button.addActionListener(e -> addDie(dieNum));
       buttons.add(button);
       button.setPreferredSize(new Dimension(uiContext.getDiceImageFactory().DIE_WIDTH + 4,
           uiContext.getDiceImageFactory().DIE_HEIGHT + 4));

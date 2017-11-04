@@ -123,8 +123,8 @@ public class LobbyMenu extends JMenuBar {
           pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
           pane.setViewportView(label);
           dialog.add(pane, BorderLayout.CENTER);
-          final JButton button = new JButton(SwingAction.of(e -> dialog.dispose()));
-          button.setText("Close");
+          final JButton button = new JButton("Close");
+          button.addActionListener(e -> dialog.dispose());
           button.setMinimumSize(new Dimension(100, 30));
           dialog.add(button, BorderLayout.SOUTH);
           dialog.setMinimumSize(new Dimension(500, 300));

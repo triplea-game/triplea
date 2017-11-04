@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui;
 
-import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JOptionPane;
 
 import games.strategy.engine.data.GameData;
@@ -12,7 +12,7 @@ import games.strategy.ui.SwingAction;
 
 public class EndTurnPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -6282316384529504341L;
-  protected AbstractAction doneAction = SwingAction.of("Done", e -> {
+  protected Action doneAction = SwingAction.of("Done", e -> {
     if (forumPosterComponent.getHasPostedTurnSummary()
         || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(EndTurnPanel.this),
             "Are you sure you don't want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {

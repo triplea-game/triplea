@@ -1,11 +1,11 @@
 package games.strategy.triplea.ui;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
 
 public class RepairPanel extends ActionPanel {
@@ -79,8 +80,7 @@ public class RepairPanel extends ActionPanel {
     return repair;
   }
 
-  private final AbstractAction purchaseAction = new AbstractAction("Buy") {
-    private static final long serialVersionUID = 5572043262815077402L;
+  private final ActionListener purchaseAction = new ActionListener() {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
@@ -112,22 +112,17 @@ public class RepairPanel extends ActionPanel {
     return totalValues;
   }
 
-  private final Action doneAction = new AbstractAction("Done") {
-    private static final long serialVersionUID = -2002286381161651398L;
-
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      final boolean hasPurchased = getTotalValues(repair) != 0;
-      if (!hasPurchased) {
-        final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(RepairPanel.this),
-            "Are you sure you dont want to repair anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
-        if (selectedOption != JOptionPane.YES_OPTION) {
-          return;
-        }
+  private final Action doneAction = SwingAction.of("Done", e -> {
+    final boolean hasPurchased = getTotalValues(repair) != 0;
+    if (!hasPurchased) {
+      final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(RepairPanel.this),
+          "Are you sure you dont want to repair anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
+      if (selectedOption != JOptionPane.YES_OPTION) {
+        return;
       }
-      release();
     }
-  };
+    release();
+  });
 
   @Override
   public String toString() {

@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,8 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -25,6 +22,7 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
+import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
 
@@ -37,19 +35,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
   private final JLabel actionLabel = new JLabel();
   private MoveDescription moveMessage;
   private List<UndoableMove> undoableMoves;
-  private final AbstractAction doneMove = new AbstractAction("Done") {
-    private static final long serialVersionUID = -6497408896615920650L;
 
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (doneMoveAction()) {
-        moveMessage = null;
-        release();
-      }
-    }
-  };
-
-  private final Action doneMoveAction = new WeakAction("Done", doneMove);
 
   private final JButton cancelMoveButton = JButtonBuilder.builder()
       .title("Cancel")
@@ -252,7 +238,12 @@ public abstract class AbstractMovePanel extends ActionPanel {
       if (setCancelButton()) {
         add(leftBox(cancelMoveButton));
       }
-      add(leftBox(new JButton(doneMoveAction)));
+      add(leftBox(new JButton(SwingAction.of("Done", e -> {
+        if (doneMoveAction()) {
+          moveMessage = null;
+          release();
+        }
+      }))));
       addAdditionalButtons();
       add(Box.createVerticalStrut(entryPadding));
       add(undoableMovesPanel);
