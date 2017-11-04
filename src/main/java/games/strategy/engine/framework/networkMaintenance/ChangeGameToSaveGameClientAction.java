@@ -10,11 +10,11 @@ import games.strategy.net.IClientMessenger;
 
 public class ChangeGameToSaveGameClientAction extends AbstractAction {
   private static final long serialVersionUID = -6986376382381381377L;
-  private final IClientMessenger m_clientMessenger;
+  private final IClientMessenger clientMessenger;
 
   public ChangeGameToSaveGameClientAction(final IClientMessenger clientMessenger) {
     super("Change To Gamesave (Load Game)");
-    m_clientMessenger = clientMessenger;
+    this.clientMessenger = clientMessenger;
   }
 
   @Override
@@ -23,6 +23,6 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
     if (file == null || !file.exists()) {
       return;
     }
-    m_clientMessenger.changeToGameSave(file, file.getName());
+    clientMessenger.changeToGameSave(file, file.getName());
   }
 }

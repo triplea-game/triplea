@@ -14,13 +14,13 @@ import games.strategy.net.IServerMessenger;
 
 public class BootPlayerAction extends AbstractAction {
   private static final long serialVersionUID = 2799566047887167058L;
-  private final Component m_parent;
-  private final IServerMessenger m_messenger;
+  private final Component parent;
+  private final IServerMessenger messenger;
 
   public BootPlayerAction(final Component parent, final IServerMessenger messenger) {
     super("Remove Player");
-    m_parent = JOptionPane.getFrameForComponent(parent);
-    m_messenger = messenger;
+    this.parent = JOptionPane.getFrameForComponent(parent);
+    this.messenger = messenger;
   }
 
   @Override
@@ -28,24 +28,24 @@ public class BootPlayerAction extends AbstractAction {
     final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
     final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
-    for (final INode node : new TreeSet<>(m_messenger.getNodes())) {
-      if (!node.equals(m_messenger.getLocalNode())) {
+    for (final INode node : new TreeSet<>(messenger.getNodes())) {
+      if (!node.equals(messenger.getLocalNode())) {
         model.addElement(node.getName());
       }
     }
     if (model.getSize() == 1) {
-      JOptionPane.showMessageDialog(m_parent, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(parent, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
       return;
     }
     final int selectedOption =
-        JOptionPane.showConfirmDialog(m_parent, combo, "Select player to remove", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(parent, combo, "Select player to remove", JOptionPane.OK_CANCEL_OPTION);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
     final String name = (String) combo.getSelectedItem();
-    for (final INode node : m_messenger.getNodes()) {
+    for (final INode node : messenger.getNodes()) {
       if (node.getName().equals(name)) {
-        m_messenger.removeConnection(node);
+        messenger.removeConnection(node);
       }
     }
   }

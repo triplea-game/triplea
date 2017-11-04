@@ -12,27 +12,27 @@ import games.strategy.net.IClientMessenger;
 
 public class ChangeToAutosaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1972868158345085949L;
-  private final Component m_parent;
-  private final IClientMessenger m_clientMessenger;
-  private final SaveGameFileChooser.AUTOSAVE_TYPE m_typeOfAutosave;
+  private final Component parent;
+  private final IClientMessenger clientMessenger;
+  private final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave;
 
   public ChangeToAutosaveClientAction(final Component parent, final IClientMessenger clientMessenger,
       final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave) {
     super("Change To " + typeOfAutosave.toString().toLowerCase());
-    m_parent = JOptionPane.getFrameForComponent(parent);
-    m_clientMessenger = clientMessenger;
-    m_typeOfAutosave = typeOfAutosave;
+    this.parent = JOptionPane.getFrameForComponent(parent);
+    this.clientMessenger = clientMessenger;
+    this.typeOfAutosave = typeOfAutosave;
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final int selectedOption = JOptionPane.showConfirmDialog(m_parent,
-        new JLabel("Change Game To: " + m_typeOfAutosave.toString().toLowerCase()),
-        "Change Game To: " + m_typeOfAutosave.toString().toLowerCase(), JOptionPane.OK_CANCEL_OPTION,
+    final int selectedOption = JOptionPane.showConfirmDialog(parent,
+        new JLabel("Change Game To: " + typeOfAutosave.toString().toLowerCase()),
+        "Change Game To: " + typeOfAutosave.toString().toLowerCase(), JOptionPane.OK_CANCEL_OPTION,
         JOptionPane.QUESTION_MESSAGE);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
-    m_clientMessenger.changeToLatestAutosave(m_typeOfAutosave);
+    clientMessenger.changeToLatestAutosave(typeOfAutosave);
   }
 }

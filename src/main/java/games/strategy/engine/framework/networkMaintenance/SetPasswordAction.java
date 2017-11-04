@@ -15,16 +15,16 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 
 public class SetPasswordAction extends AbstractAction {
   private static final long serialVersionUID = -7767288210554177480L;
-  private final ClientLoginValidator m_validator;
-  private final Component m_parent;
-  private final InGameLobbyWatcherWrapper m_lobbyWatcher;
+  private final ClientLoginValidator validator;
+  private final Component parent;
+  private final InGameLobbyWatcherWrapper lobbyWatcher;
 
   public SetPasswordAction(final Component parent, final InGameLobbyWatcherWrapper watcher,
       final ClientLoginValidator validator) {
     super("Set Game Password");
-    m_validator = validator;
-    m_parent = parent;
-    m_lobbyWatcher = watcher;
+    this.validator = validator;
+    this.parent = parent;
+    this.lobbyWatcher = watcher;
   }
 
   @Override
@@ -35,7 +35,7 @@ public class SetPasswordAction extends AbstractAction {
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int selectedOption = JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(m_parent), panel,
+    final int selectedOption = JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(parent), panel,
         "Enter Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
@@ -43,14 +43,14 @@ public class SetPasswordAction extends AbstractAction {
     final String password = new String(passwordField.getPassword());
     final boolean passworded;
     if (password.trim().length() > 0) {
-      m_validator.setGamePassword(password);
+      validator.setGamePassword(password);
       passworded = true;
     } else {
-      m_validator.setGamePassword(null);
+      validator.setGamePassword(null);
       passworded = false;
     }
-    if (m_lobbyWatcher != null && m_lobbyWatcher.isActive()) {
-      m_lobbyWatcher.setPassworded(passworded);
+    if (lobbyWatcher != null && lobbyWatcher.isActive()) {
+      lobbyWatcher.setPassworded(passworded);
     }
   }
 }

@@ -15,34 +15,34 @@ import games.strategy.net.INode;
 
 public class SetMapClientAction extends AbstractAction {
   private static final long serialVersionUID = -9156920997678163614L;
-  private final Component m_parent;
-  private final IClientMessenger m_clientMessenger;
-  final List<String> m_availableGames;
+  private final Component parent;
+  private final IClientMessenger clientMessenger;
+  final List<String> availableGames;
 
   public SetMapClientAction(final Component parent, final IClientMessenger clientMessenger,
       final List<String> availableGames) {
     super("Change Game To");
-    m_parent = JOptionPane.getFrameForComponent(parent);
-    m_clientMessenger = clientMessenger;
-    m_availableGames = availableGames;
-    Collections.sort(m_availableGames);
+    this.parent = JOptionPane.getFrameForComponent(parent);
+    this.clientMessenger = clientMessenger;
+    this.availableGames = availableGames;
+    Collections.sort(this.availableGames);
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final INode serverNode = m_clientMessenger.getServerNode();
+    final INode serverNode = clientMessenger.getServerNode();
     final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
     final JComboBox<String> combo = new JComboBox<>(model);
     model.addElement("");
-    for (final String game : m_availableGames) {
+    for (final String game : availableGames) {
       model.addElement(game);
     }
     if (serverNode == null || model.getSize() <= 1) {
-      JOptionPane.showMessageDialog(m_parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
       return;
     }
     final int selectedOption =
-        JOptionPane.showConfirmDialog(m_parent, combo, "Change Game To: ", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(parent, combo, "Change Game To: ", JOptionPane.OK_CANCEL_OPTION);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }
@@ -50,6 +50,6 @@ public class SetMapClientAction extends AbstractAction {
     if (name == null || name.length() <= 1) {
       return;
     }
-    m_clientMessenger.changeServerGameTo(name);
+    clientMessenger.changeServerGameTo(name);
   }
 }
