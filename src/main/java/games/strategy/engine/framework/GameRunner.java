@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nullable;
 import javax.swing.JFileChooser;
@@ -261,10 +262,23 @@ public class GameRunner {
 
       ProAI.gameOverClearCache();
       new Thread(() -> {
-        gameSelectorModel.loadDefaultGame(false);
-        final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
-        if (fileName.length() > 0) {
-          gameSelectorModel.load(new File(fileName), mainFrame);
+        final AtomicReference<WaitDialog> dialogReference = new AtomicReference<>();
+        SwingUtilities.invokeLater(() -> {
+          dialogReference.set(new WaitDialog(mainFrame, "Loading game..."));
+          dialogReference.get().setVisible(true);
+        });
+        
+        try {
+          gameSelectorModel.loadDefaultGame(false);
+          final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+          if (fileName.length() > 0) {
+            gameSelectorModel.load(new File(fileName), mainFrame);
+          }
+        } finally {
+          SwingUtilities.invokeLater(() -> {
+            dialogReference.get().setVisible(false);
+            dialogReference.get().dispose();
+          });
         }
         final String downloadableMap = System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
         if (!downloadableMap.isEmpty()) {
