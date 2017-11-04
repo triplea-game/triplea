@@ -277,29 +277,9 @@ public class TripleAFrame extends MainGameFrame {
     showCommentLogButtonModel.setSelected(false);
     showCommentLogButtonModel.addActionListener(e -> {
       if (showCommentLogButtonModel.isSelected()) {
-        if (chatPanel != null) {
-          commentSplit.setBottomComponent(chatPanel);
-          chatSplit.setBottomComponent(commentSplit);
-          chatSplit.validate();
-        } else {
-          mapAndChatPanel.removeAll();
-          chatSplit.setTopComponent(mapPanel);
-          chatSplit.setBottomComponent(commentPanel);
-          mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
-          mapAndChatPanel.validate();
-        }
+        showCommentLog();
       } else {
-        if (chatPanel != null) {
-          commentSplit.setBottomComponent(null);
-          chatSplit.setBottomComponent(chatPanel);
-          chatSplit.validate();
-        } else {
-          mapAndChatPanel.removeAll();
-          chatSplit.setTopComponent(null);
-          chatSplit.setBottomComponent(null);
-          mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
-          mapAndChatPanel.validate();
-        }
+        hideCommentLog();
       }
     });
     gameMainPanel.setLayout(new BorderLayout());
@@ -436,6 +416,35 @@ public class TripleAFrame extends MainGameFrame {
     game.addGameStepListener(stepListener);
     updateStep();
     uiContext.addShutdownWindow(this);
+  }
+
+  private void hideCommentLog() {
+    if (chatPanel != null) {
+      commentSplit.setBottomComponent(null);
+      chatSplit.setBottomComponent(chatPanel);
+      chatSplit.validate();
+    } else {
+      mapAndChatPanel.removeAll();
+      chatSplit.setTopComponent(null);
+      chatSplit.setBottomComponent(null);
+      mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
+      mapAndChatPanel.validate();
+    }
+  }
+
+
+  private void showCommentLog() {
+    if (chatPanel != null) {
+      commentSplit.setBottomComponent(chatPanel);
+      chatSplit.setBottomComponent(commentSplit);
+      chatSplit.validate();
+    } else {
+      mapAndChatPanel.removeAll();
+      chatSplit.setTopComponent(mapPanel);
+      chatSplit.setBottomComponent(commentPanel);
+      mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
+      mapAndChatPanel.validate();
+    }
   }
 
 
