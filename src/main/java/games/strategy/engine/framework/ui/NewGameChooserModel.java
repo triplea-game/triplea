@@ -36,8 +36,6 @@ import games.strategy.ui.SwingAction;
 public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
-  private static final Object lock = new Object();
-
   private enum ZipProcessingResult {
     SUCCESS, ERROR
   }
@@ -50,15 +48,13 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   NewGameChooserModel() {
     try {
       BackgroundTaskRunner.runInBackgroundAndReturn("Loading all available Games...", () -> {
-        synchronized (lock) {
-          final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+        final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
 
-          final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
-          Collections.sort(entries, NewGameChooserEntry.getComparator());
+        final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
+        Collections.sort(entries, NewGameChooserEntry.getComparator());
 
-          for (final NewGameChooserEntry entry : entries) {
-            SwingUtilities.invokeLater(() -> addElement(entry));
-          }
+        for (final NewGameChooserEntry entry : entries) {
+          SwingUtilities.invokeLater(() -> addElement(entry));
         }
         return null;
       });
@@ -69,9 +65,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
   @Override
   public NewGameChooserEntry get(final int i) {
-    synchronized (lock) {
-      return super.get(i);
-    }
+    return super.get(i);
   }
 
   private static List<File> allMapFiles() {
@@ -238,8 +232,6 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
    * @return Returns true, if the given element could successfully be removed.
    */
   public boolean removeEntry(final NewGameChooserEntry entryToBeRemoved) {
-    synchronized (lock) {
-      return this.removeElement(entryToBeRemoved);
-    }
+    return this.removeElement(entryToBeRemoved);
   }
 }
