@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nullable;
 import javax.swing.JFileChooser;
@@ -200,17 +199,13 @@ public class GameRunner {
 
 
   public static Optional<File> showSaveGameFileChooser() {
-    final AtomicReference<Optional<File>> reference = new AtomicReference<>();
-    SwingAction.invokeAndWait(() -> {
-      // Non-Mac platforms should use the normal Swing JFileChooser
-      final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-      final int selectedOption = fileChooser.showOpenDialog(mainFrame);
-      if (selectedOption == JFileChooser.APPROVE_OPTION) {
-        reference.set(Optional.of(fileChooser.getSelectedFile()));
-      }
-      reference.set(Optional.empty());
-    });
-    return reference.get();
+    // Non-Mac platforms should use the normal Swing JFileChooser
+    final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+    final int selectedOption = fileChooser.showOpenDialog(mainFrame);
+    if (selectedOption == JFileChooser.APPROVE_OPTION) {
+      return Optional.of(fileChooser.getSelectedFile());
+    }
+    return Optional.empty();
   }
 
   public static ProgressWindow newProgressWindow(final String title) {
