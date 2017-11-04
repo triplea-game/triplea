@@ -12,6 +12,9 @@ import javax.swing.JOptionPane;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
+/**
+ * An action for muting a player in a network game.
+ */
 public class MutePlayerAction extends AbstractAction {
   private static final long serialVersionUID = -6578758359870435844L;
   private final Component parent;

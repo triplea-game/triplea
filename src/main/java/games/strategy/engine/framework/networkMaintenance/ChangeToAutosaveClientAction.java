@@ -10,6 +10,9 @@ import javax.swing.JOptionPane;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.net.IClientMessenger;
 
+/**
+ * An action for loading an autosave across all network nodes from a client node.
+ */
 public class ChangeToAutosaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1972868158345085949L;
   private final Component parent;

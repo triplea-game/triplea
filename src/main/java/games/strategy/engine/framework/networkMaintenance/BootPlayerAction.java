@@ -12,6 +12,9 @@ import javax.swing.JOptionPane;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
+/**
+ * An action for booting a player from a network game.
+ */
 public class BootPlayerAction extends AbstractAction {
   private static final long serialVersionUID = 2799566047887167058L;
   private final Component parent;
