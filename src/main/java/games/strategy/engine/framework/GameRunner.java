@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nullable;
 import javax.swing.JFileChooser;
@@ -46,6 +45,7 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
@@ -261,30 +261,8 @@ public class GameRunner {
       SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
 
       ProAI.gameOverClearCache();
-      new Thread(() -> {
-        final AtomicReference<WaitDialog> dialogReference = new AtomicReference<>();
-        SwingUtilities.invokeLater(() -> {
-          dialogReference.set(new WaitDialog(mainFrame, "Loading game..."));
-          dialogReference.get().setVisible(true);
-        });
 
-        try {
-          gameSelectorModel.loadDefaultGame(false);
-          final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
-          if (fileName.length() > 0) {
-            gameSelectorModel.load(new File(fileName), mainFrame);
-          }
-        } finally {
-          SwingUtilities.invokeLater(() -> {
-            dialogReference.get().setVisible(false);
-            dialogReference.get().dispose();
-          });
-        }
-        final String downloadableMap = System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
-        if (!downloadableMap.isEmpty()) {
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
-        }
-      }).start();
+      loadGame();
 
       if (System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
         setupPanelModel.showServer(mainFrame);
@@ -292,6 +270,27 @@ public class GameRunner {
         setupPanelModel.showClient(mainFrame);
       }
     });
+  }
+
+  private static void loadGame() {
+    try {
+      BackgroundTaskRunner.runInBackgroundAndReturn("Loading game...", () -> {
+        gameSelectorModel.loadDefaultGame(false);
+        final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+        if (fileName.length() > 0) {
+          gameSelectorModel.load(new File(fileName), mainFrame);
+        }
+
+        final String downloadableMap = System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
+        if (!downloadableMap.isEmpty()) {
+          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
+        }
+
+        return null;
+      });
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   private static void checkLocalSystem() {
