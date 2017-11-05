@@ -15,6 +15,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -43,10 +44,14 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     SUCCESS, ERROR
   }
 
+  NewGameChooserModel(final Runnable doneAction) {
+    this(doneAction, NewGameChooserModel::parseMapFiles);
+  }
+
   /**
    * Searches for and parses Map Files.
    */
-  NewGameChooserModel(final Runnable doneAction) {
+  NewGameChooserModel(final Runnable doneAction, final Supplier<Set<NewGameChooserEntry>> mapSupplier) {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
 
     final SecondaryLoop loop = Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
@@ -54,24 +59,22 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     new SwingWorker<Void, Void>() {
       @Override
       protected Void doInBackground() {
-        try {
-          final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+        final List<NewGameChooserEntry> entries = new ArrayList<>(mapSupplier.get());
+        Collections.sort(entries);
 
-          final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
-          Collections.sort(entries, NewGameChooserEntry.getComparator());
-
-          for (final NewGameChooserEntry entry : entries) {
-            SwingUtilities.invokeLater(() -> addElement(entry));
-          }
-          return null;
-        } finally {
-          loop.exit();
+        for (final NewGameChooserEntry entry : entries) {
+          SwingUtilities.invokeLater(() -> addElement(entry));
         }
+        return null;
       }
 
       @Override
       protected void done() {
-        doneAction.run();
+        try {
+          doneAction.run();
+        } finally {
+          loop.exit();
+        }
       }
 
     }.execute();
