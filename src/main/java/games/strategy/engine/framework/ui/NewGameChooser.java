@@ -24,6 +24,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.util.LocalizeHtml;
 
 public class NewGameChooser extends JDialog {
@@ -38,19 +39,19 @@ public class NewGameChooser extends JDialog {
   private NewGameChooserModel gameListModel;
   private NewGameChooserEntry chosen;
 
-  private NewGameChooser(final Frame owner) {
+  private NewGameChooser(final Frame owner, final Runnable doneAction) {
     super(owner, "Select a Game", true);
-    createComponents();
+    createComponents(doneAction);
     layoutCoponents();
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
   }
 
-  private void createComponents() {
+  private void createComponents(final Runnable doneAction) {
     okButton = new JButton("OK");
     cancelButton = new JButton("Cancel");
-    gameListModel = getNewGameChooserModel();
+    gameListModel = getNewGameChooserModel(doneAction);
     gameList = new JList<>(gameListModel);
     infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -98,7 +99,12 @@ public class NewGameChooser extends JDialog {
   }
 
   public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName) {
-    final NewGameChooser chooser = new NewGameChooser(parent);
+    final WaitDialog dialog = new WaitDialog(parent, "Loading all available Games...");
+    SwingUtilities.invokeLater(() -> dialog.setVisible(true));
+    final NewGameChooser chooser = new NewGameChooser(parent, () -> {
+      dialog.setVisible(false);
+      dialog.dispose();
+    });
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
     chooser.selectGame(defaultGameName);
@@ -194,9 +200,20 @@ public class NewGameChooser extends JDialog {
 
   /**
    * Populates the NewGameChooserModel cache if empty, then returns the cached instance.
+   * 
+   * @param doneAction A Runnable being executed on the EDT after the NewGameChooserModel has
+   *        been instantiated.
+   */
+  public static synchronized NewGameChooserModel getNewGameChooserModel(final Runnable doneAction) {
+    return new NewGameChooserModel(doneAction);
+  }
+
+  /**
+   * Populates the NewGameChooserModel cache if empty, then returns the cached instance.
    */
   public static synchronized NewGameChooserModel getNewGameChooserModel() {
-    return new NewGameChooserModel();
+    return getNewGameChooserModel(() -> {
+    });
   }
 
   private void selectAndReturn() {

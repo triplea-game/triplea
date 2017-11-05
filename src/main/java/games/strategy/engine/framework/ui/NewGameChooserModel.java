@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.ui;
 
+import java.awt.SecondaryLoop;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -19,10 +21,12 @@ import java.util.zip.ZipFile;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
 import games.strategy.debug.ClientLogger;
@@ -30,7 +34,6 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingAction;
 
 public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
@@ -43,22 +46,36 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   /**
    * Searches for and parses Map Files.
    */
-  NewGameChooserModel() {
-    try {
-      BackgroundTaskRunner.runInBackgroundAndReturn("Loading all available Games...", () -> {
-        final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+  NewGameChooserModel(final Runnable doneAction) {
+    Preconditions.checkState(SwingUtilities.isEventDispatchThread());
 
-        final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
-        Collections.sort(entries, NewGameChooserEntry.getComparator());
+    final SecondaryLoop loop = Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
 
-        for (final NewGameChooserEntry entry : entries) {
-          SwingUtilities.invokeLater(() -> addElement(entry));
+    new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() {
+        try {
+          final Set<NewGameChooserEntry> parsedMapSet = parseMapFiles();
+
+          final List<NewGameChooserEntry> entries = new ArrayList<>(parsedMapSet);
+          Collections.sort(entries, NewGameChooserEntry.getComparator());
+
+          for (final NewGameChooserEntry entry : entries) {
+            SwingUtilities.invokeLater(() -> addElement(entry));
+          }
+          return null;
+        } finally {
+          loop.exit();
         }
-        return null;
-      });
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+      }
+
+      @Override
+      protected void done() {
+        doneAction.run();
+      }
+
+    }.execute();
+    loop.enter();
   }
 
   @Override
