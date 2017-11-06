@@ -38,11 +38,14 @@ import games.strategy.util.UrlStreams;
 public class AvailableGames {
   private static final boolean delayedParsing = false;
   private static final String ZIP_EXTENSION = ".zip";
-  private final Map<String, URI> availableGames = Collections.synchronizedMap(new TreeMap<>());
-  private final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
+  private final Map<String, URI> availableGames = new TreeMap<>();
+  private final Set<String> availableMapFolderOrZipNames = new HashSet<>();
 
   AvailableGames() {
-    populateAvailableGames(availableGames, availableMapFolderOrZipNames, Collections.synchronizedSet(new HashSet<>()));
+    populateAvailableGames(
+        Collections.synchronizedMap(availableGames),
+        Collections.synchronizedSet(availableMapFolderOrZipNames),
+        Collections.synchronizedSet(new HashSet<>()));
   }
 
   List<String> getGameNames() {
