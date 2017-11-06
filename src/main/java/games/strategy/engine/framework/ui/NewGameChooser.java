@@ -51,7 +51,7 @@ public class NewGameChooser extends JDialog {
   private void createComponents(final Runnable doneAction) {
     okButton = new JButton("OK");
     cancelButton = new JButton("Cancel");
-    gameListModel = getNewGameChooserModel(doneAction);
+    gameListModel = new NewGameChooserModel(doneAction);
     gameList = new JList<>(gameListModel);
     infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -195,24 +195,6 @@ public class NewGameChooser extends JDialog {
 
       @Override
       public void mouseExited(final MouseEvent e) {}
-    });
-  }
-
-  /**
-   * Populates the NewGameChooserModel cache if empty, then returns the cached instance.
-   * 
-   * @param doneAction A Runnable being executed on the EDT after the NewGameChooserModel has
-   *        been instantiated.
-   */
-  public static synchronized NewGameChooserModel getNewGameChooserModel(final Runnable doneAction) {
-    return new NewGameChooserModel(doneAction);
-  }
-
-  /**
-   * Populates the NewGameChooserModel cache if empty, then returns the cached instance.
-   */
-  public static synchronized NewGameChooserModel getNewGameChooserModel() {
-    return getNewGameChooserModel(() -> {
     });
   }
 

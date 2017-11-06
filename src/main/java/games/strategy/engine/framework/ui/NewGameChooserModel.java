@@ -46,13 +46,24 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     SUCCESS, ERROR
   }
 
-  NewGameChooserModel(final Runnable doneAction) {
+  /**
+   * Searches for and parses Map Files.
+   * 
+   * @param doneAction A Runnable being executed on the EDT after the NewGameChooserModel has
+   *        been instantiated.
+   */
+  public NewGameChooserModel(final Runnable doneAction) {
     this(doneAction, NewGameChooserModel::parseMapFiles);
   }
 
   /**
    * Searches for and parses Map Files.
    */
+  public NewGameChooserModel() {
+    this(() -> {
+    }, NewGameChooserModel::parseMapFiles);
+  }
+
   NewGameChooserModel(final Runnable doneAction, final Supplier<Set<NewGameChooserEntry>> mapSupplier) {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
 

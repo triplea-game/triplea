@@ -19,7 +19,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameDataManager;
-import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.triplea.ai.proAI.ProAI;
@@ -293,7 +292,7 @@ public class GameSelectorModel extends Observable {
     }
     final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();
 
-    final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
+    final NewGameChooserModel model = new NewGameChooserModel();
     NewGameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName);
     if (selectedGame == null) {
       selectedGame = model.findByName(userPreferredDefaultGameName);

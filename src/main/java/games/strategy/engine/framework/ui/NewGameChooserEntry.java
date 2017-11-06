@@ -175,10 +175,10 @@ public class NewGameChooserEntry implements Comparable<NewGameChooserEntry> {
 
   @Override
   public int compareTo(NewGameChooserEntry o) {
-    return getLowerCaseComparable(this).compareTo(getLowerCaseComparable(o));
+    return getLowerCaseComparable().compareTo(o.getLowerCaseComparable());
   }
 
-  private String getLowerCaseComparable(final NewGameChooserEntry newGameChooserEntry) {
-    return newGameChooserEntry.getGameData().getGameName().toLowerCase();
+  private String getLowerCaseComparable() {
+    return this.getGameData().getGameName().toLowerCase();
   }
 }
