@@ -10,11 +10,13 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -56,24 +58,28 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
 
     final SecondaryLoop loop = Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
 
-    new SwingWorker<Void, Void>() {
+    new SwingWorker<Collection<NewGameChooserEntry>, Void>() {
       @Override
-      protected Void doInBackground() {
+      protected Collection<NewGameChooserEntry> doInBackground() {
         final List<NewGameChooserEntry> entries = new ArrayList<>(mapSupplier.get());
         Collections.sort(entries);
-
-        for (final NewGameChooserEntry entry : entries) {
-          SwingUtilities.invokeLater(() -> addElement(entry));
-        }
-        return null;
+        return entries;
       }
 
       @Override
       protected void done() {
         try {
-          doneAction.run();
+          get().forEach(NewGameChooserModel.this::addElement);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+          throw new RuntimeException(e);
         } finally {
-          loop.exit();
+          try {
+            doneAction.run();
+          } finally {
+            loop.exit();
+          }
         }
       }
 
