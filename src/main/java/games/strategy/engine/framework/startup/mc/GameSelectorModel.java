@@ -96,7 +96,9 @@ public class GameSelectorModel extends Observable {
         newData = GameDataManager.loadGame(file);
       }
       if (newData != null) {
-        m_fileName = file.getName();
+        synchronized (this) {
+          m_fileName = file.getName();
+        }
         setGameData(newData);
       }
     } catch (final EngineVersionException e) {
@@ -131,7 +133,7 @@ public class GameSelectorModel extends Observable {
     return m_data;
   }
 
-  public boolean isSavedGame() {
+  public synchronized boolean isSavedGame() {
     return !m_fileName.endsWith(".xml");
   }
 
