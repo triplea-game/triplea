@@ -16,6 +16,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
@@ -72,9 +73,7 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     new SwingWorker<Collection<GameChooserEntry>, Void>() {
       @Override
       protected Collection<GameChooserEntry> doInBackground() {
-        final List<GameChooserEntry> entries = new ArrayList<>(mapSupplier.get());
-        Collections.sort(entries);
-        return entries;
+        return new TreeSet<>(mapSupplier.get());
       }
 
       @Override
