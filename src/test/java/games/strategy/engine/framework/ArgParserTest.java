@@ -84,6 +84,11 @@ public class ArgParserTest {
   }
 
   @Test
+  public void commandLineSwitchesAreIgnored() {
+    assertThat(ArgParser.handleCommandLineArgs(new String[] {"-console"}, new String[] {}), is(true));
+  }
+
+  @Test
   public void returnFalseIfWeCannotMapKeysToAvailableSet() {
     final String[] validKeys = {"a", "b"};
     Arrays.asList(

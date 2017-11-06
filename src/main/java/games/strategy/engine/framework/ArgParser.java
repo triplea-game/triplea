@@ -20,9 +20,8 @@ public final class ArgParser {
    *
    * @return Return true if all args were valid and accepted, false otherwise.
    */
-  public static boolean handleCommandLineArgs(
-      final String[] args, final String[] availableProperties) {
-    if (args.length == 1 && !args[0].contains("=")) {
+  public static boolean handleCommandLineArgs(final String[] args, final String[] availableProperties) {
+    if (args.length == 1 && !args[0].contains("=") && !isSwitch(args[0])) {
       // assume a default single arg, convert the format so we can process as normally.
       if (args[0].startsWith(TRIPLEA_PROTOCOL)) {
         final String encoding = StandardCharsets.UTF_8.displayName();
@@ -40,6 +39,11 @@ public final class ArgParser {
     resetTransientClientSettings();
 
     for (final String arg : args) {
+      // ignore command-line switches forwarded by launchers
+      if (isSwitch(arg)) {
+        continue;
+      }
+
       final String key;
       final int indexOf = arg.indexOf('=');
       if (indexOf > 0) {
@@ -57,6 +61,10 @@ public final class ArgParser {
     ClientSetting.flush();
 
     return true;
+  }
+
+  private static boolean isSwitch(final String arg) {
+    return arg.startsWith("-");
   }
 
   /**
