@@ -179,6 +179,6 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
   }
 
   private String getLowerCaseComparable() {
-    return this.getGameData().getGameName().toLowerCase();
+    return getGameData().getGameName().toLowerCase();
   }
 }
