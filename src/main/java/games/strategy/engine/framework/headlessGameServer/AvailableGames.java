@@ -83,7 +83,7 @@ public class AvailableGames {
     final List<File> files = allMapFiles();
     if (files.size() > 0) {
       final ExecutorService service = Executors.newWorkStealingPool(files.size());
-      final List<Callable<Object>> tasks = new ArrayList<>(files.size());
+      final List<Callable<Void>> tasks = new ArrayList<>(files.size());
       for (final File map : files) {
         if (map.isDirectory()) {
           tasks.add(
