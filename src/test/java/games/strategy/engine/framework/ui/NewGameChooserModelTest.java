@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 
 import javax.swing.SwingUtilities;
@@ -21,20 +20,15 @@ public class NewGameChooserModelTest {
    * Simply create the object to see that we can do that without exception.
    */
   @Test
-  public void testCreate() throws Throwable {
+  public void testCreate() throws Exception {
     assertThrows(IllegalStateException.class, () -> new NewGameChooserModel(() -> {
     }));
-
-    try {
-      SwingUtilities.invokeAndWait(() -> {
-        final Runnable doneAction = mock(Runnable.class);
-        final NewGameChooserEntry entry = mock(NewGameChooserEntry.class);
-        final NewGameChooserModel model = new NewGameChooserModel(doneAction, () -> Collections.singleton(entry));
-        assertEquals(entry, model.get(0));
-        verify(doneAction).run();
-      });
-    } catch (InvocationTargetException e) {
-      throw e.getCause();
-    }
+    SwingUtilities.invokeAndWait(() -> {
+      final Runnable doneAction = mock(Runnable.class);
+      final NewGameChooserEntry entry = mock(NewGameChooserEntry.class);
+      final NewGameChooserModel model = new NewGameChooserModel(doneAction, () -> Collections.singleton(entry));
+      assertEquals(entry, model.get(0));
+      verify(doneAction).run();
+    });
   }
 }
