@@ -27,19 +27,19 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.util.LocalizeHtml;
 
-public class NewGameChooser extends JDialog {
+public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
 
   private JButton okButton;
   private JButton cancelButton;
-  private JList<NewGameChooserEntry> gameList;
+  private JList<GameChooserEntry> gameList;
   private JPanel infoPanel;
   private JEditorPane notesPanel;
-  private NewGameChooserModel gameListModel;
-  private NewGameChooserEntry chosen;
+  private GameChooserModel gameListModel;
+  private GameChooserEntry chosen;
 
-  private NewGameChooser(final Frame owner, final Runnable doneAction) {
+  private GameChooser(final Frame owner, final Runnable doneAction) {
     super(owner, "Select a Game", true);
     createComponents(doneAction);
     layoutCoponents();
@@ -51,7 +51,7 @@ public class NewGameChooser extends JDialog {
   private void createComponents(final Runnable doneAction) {
     okButton = new JButton("OK");
     cancelButton = new JButton("Cancel");
-    gameListModel = new NewGameChooserModel(doneAction);
+    gameListModel = new GameChooserModel(doneAction);
     gameList = new JList<>(gameListModel);
     infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -98,10 +98,10 @@ public class NewGameChooser extends JDialog {
     infoPanel.add(notesScroll, BorderLayout.CENTER);
   }
 
-  public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName) {
+  public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName) {
     final WaitDialog dialog = new WaitDialog(parent, "Loading all available Games...");
     SwingUtilities.invokeLater(() -> dialog.setVisible(true));
-    final NewGameChooser chooser = new NewGameChooser(parent, () -> {
+    final GameChooser chooser = new GameChooser(parent, () -> {
       dialog.setVisible(false);
       dialog.dispose();
     });
@@ -121,7 +121,7 @@ public class NewGameChooser extends JDialog {
       gameList.setSelectedIndex(0);
       return;
     }
-    final NewGameChooserEntry entry = gameListModel.findByName(gameName);
+    final GameChooserEntry entry = gameListModel.findByName(gameName);
     if (entry != null) {
       gameList.setSelectedValue(entry, true);
     }
@@ -162,7 +162,7 @@ public class NewGameChooser extends JDialog {
     builder.append("<b>").append(title).append("</b>").append(": ").append(value).append("<br>");
   }
 
-  private NewGameChooserEntry getSelected() {
+  private GameChooserEntry getSelected() {
     final int selected = gameList.getSelectedIndex();
     if (selected == -1) {
       return null;

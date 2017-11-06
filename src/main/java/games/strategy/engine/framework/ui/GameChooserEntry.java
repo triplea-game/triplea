@@ -17,13 +17,13 @@ import games.strategy.engine.data.GameParser;
 import games.strategy.triplea.Constants;
 import games.strategy.util.UrlStreams;
 
-public class NewGameChooserEntry implements Comparable<NewGameChooserEntry> {
+public class GameChooserEntry implements Comparable<GameChooserEntry> {
   private final URI url;
   private GameData gameData;
   private boolean gameDataFullyLoaded = false;
   private final String gameNameAndMapNameProperty;
 
-  public NewGameChooserEntry(final URI uri)
+  public GameChooserEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
     url = uri;
     final AtomicReference<String> gameName = new AtomicReference<>();
@@ -161,7 +161,7 @@ public class NewGameChooserEntry implements Comparable<NewGameChooserEntry> {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final NewGameChooserEntry other = (NewGameChooserEntry) obj;
+    final GameChooserEntry other = (GameChooserEntry) obj;
     if (gameData == null && other.gameData != null) {
       return false;
     } else {
@@ -174,7 +174,7 @@ public class NewGameChooserEntry implements Comparable<NewGameChooserEntry> {
 
 
   @Override
-  public int compareTo(NewGameChooserEntry o) {
+  public int compareTo(GameChooserEntry o) {
     return getLowerCaseComparable().compareTo(o.getLowerCaseComparable());
   }
 

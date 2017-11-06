@@ -34,8 +34,8 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.engine.framework.ui.NewGameChooser;
-import games.strategy.engine.framework.ui.NewGameChooserEntry;
+import games.strategy.engine.framework.ui.GameChooser;
+import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.settings.ClientSetting;
@@ -381,8 +381,8 @@ public class GameSelectorPanel extends JPanel implements Observer {
         Thread.currentThread().interrupt();
       }
     } else {
-      final NewGameChooserEntry entry =
-          NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
+      final GameChooserEntry entry =
+          GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
       if (entry != null) {
         try {
           BackgroundTaskRunner.runInBackgroundAndReturn("Loading map...", () -> {

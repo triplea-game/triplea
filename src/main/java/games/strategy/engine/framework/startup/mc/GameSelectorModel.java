@@ -19,8 +19,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameDataManager;
-import games.strategy.engine.framework.ui.NewGameChooserEntry;
-import games.strategy.engine.framework.ui.NewGameChooserModel;
+import games.strategy.engine.framework.ui.GameChooserEntry;
+import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.settings.ClientSetting;
 
@@ -56,7 +56,7 @@ public class GameSelectorModel extends Observable {
     m_fileName = fileName;
   }
 
-  public void load(final NewGameChooserEntry entry) {
+  public void load(final GameChooserEntry entry) {
     m_fileName = entry.getLocation();
     setGameData(entry.getGameData());
     if (entry.getGameData() != null) {
@@ -253,7 +253,7 @@ public class GameSelectorModel extends Observable {
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
     // version of triplea
     // was using running a game within its root folder, we shouldn't open it)
-    NewGameChooserEntry selectedGame;
+    GameChooserEntry selectedGame;
     final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
     if (!forceFactoryDefault && userPreferredDefaultGameUri != null && userPreferredDefaultGameUri.length() > 0
         && userPreferredDefaultGameUri.contains(user)) {
@@ -261,7 +261,7 @@ public class GameSelectorModel extends Observable {
       // game model list
       try {
         final URI defaultUri = new URI(userPreferredDefaultGameUri);
-        selectedGame = new NewGameChooserEntry(defaultUri);
+        selectedGame = new GameChooserEntry(defaultUri);
       } catch (final Exception e) {
         selectedGame = selectByName(forceFactoryDefault);
         if (selectedGame == null) {
@@ -285,15 +285,15 @@ public class GameSelectorModel extends Observable {
     load(selectedGame);
   }
 
-  private NewGameChooserEntry selectByName(final boolean forceFactoryDefault) {
+  private GameChooserEntry selectByName(final boolean forceFactoryDefault) {
     if (forceFactoryDefault) {
       ClientSetting.DEFAULT_GAME_NAME_PREF.save(ClientSetting.DEFAULT_GAME_NAME_PREF.defaultValue);
       ClientSetting.flush();
     }
     final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();
 
-    final NewGameChooserModel model = new NewGameChooserModel();
-    NewGameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName);
+    final GameChooserModel model = new GameChooserModel();
+    GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName);
     if (selectedGame == null) {
       selectedGame = model.findByName(userPreferredDefaultGameName);
     }

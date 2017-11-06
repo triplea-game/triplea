@@ -14,19 +14,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(MockitoExtension.class)
-public class NewGameChooserModelTest {
+public class GameChooserModelTest {
 
   /**
    * Simply create the object to see that we can do that without exception.
    */
   @Test
   public void testCreate() throws Exception {
-    assertThrows(IllegalStateException.class, () -> new NewGameChooserModel(() -> {
+    assertThrows(IllegalStateException.class, () -> new GameChooserModel(() -> {
     }));
     SwingUtilities.invokeAndWait(() -> {
       final Runnable doneAction = mock(Runnable.class);
-      final NewGameChooserEntry entry = mock(NewGameChooserEntry.class);
-      final NewGameChooserModel model = new NewGameChooserModel(doneAction, () -> Collections.singleton(entry));
+      final GameChooserEntry entry = mock(GameChooserEntry.class);
+      final GameChooserModel model = new GameChooserModel(doneAction, () -> Collections.singleton(entry));
       assertEquals(entry, model.get(0));
       verify(doneAction).run();
     });

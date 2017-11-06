@@ -39,7 +39,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.SwingAction;
 
-public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
+public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
   private enum ZipProcessingResult {
@@ -52,27 +52,27 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
    * @param doneAction A Runnable being executed on the EDT after the NewGameChooserModel has
    *        been instantiated.
    */
-  public NewGameChooserModel(final Runnable doneAction) {
-    this(doneAction, NewGameChooserModel::parseMapFiles);
+  public GameChooserModel(final Runnable doneAction) {
+    this(doneAction, GameChooserModel::parseMapFiles);
   }
 
   /**
    * Searches for and parses Map Files.
    */
-  public NewGameChooserModel() {
+  public GameChooserModel() {
     this(() -> {
-    }, NewGameChooserModel::parseMapFiles);
+    }, GameChooserModel::parseMapFiles);
   }
 
-  NewGameChooserModel(final Runnable doneAction, final Supplier<Set<NewGameChooserEntry>> mapSupplier) {
+  GameChooserModel(final Runnable doneAction, final Supplier<Set<GameChooserEntry>> mapSupplier) {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
 
     final SecondaryLoop loop = Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
 
-    new SwingWorker<Collection<NewGameChooserEntry>, Void>() {
+    new SwingWorker<Collection<GameChooserEntry>, Void>() {
       @Override
-      protected Collection<NewGameChooserEntry> doInBackground() {
-        final List<NewGameChooserEntry> entries = new ArrayList<>(mapSupplier.get());
+      protected Collection<GameChooserEntry> doInBackground() {
+        final List<GameChooserEntry> entries = new ArrayList<>(mapSupplier.get());
         Collections.sort(entries);
         return entries;
       }
@@ -80,7 +80,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
       @Override
       protected void done() {
         try {
-          get().forEach(NewGameChooserModel.this::addElement);
+          get().forEach(GameChooserModel.this::addElement);
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
@@ -99,7 +99,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   }
 
   @Override
-  public NewGameChooserEntry get(final int i) {
+  public GameChooserEntry get(final int i) {
     return super.get(i);
   }
 
@@ -115,8 +115,8 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     return Arrays.asList(files);
   }
 
-  private static Set<NewGameChooserEntry> parseMapFiles() {
-    final Set<NewGameChooserEntry> parsedMapSet = Sets.newHashSet();
+  private static Set<GameChooserEntry> parseMapFiles() {
+    final Set<GameChooserEntry> parsedMapSet = Sets.newHashSet();
     for (final File map : allMapFiles()) {
       if (map.isDirectory()) {
         parsedMapSet.addAll(populateFromDirectory(map));
@@ -127,9 +127,9 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     return parsedMapSet;
   }
 
-  private static List<NewGameChooserEntry> populateFromZip(final File map) {
+  private static List<GameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;
-    final List<NewGameChooserEntry> entries = new ArrayList<>();
+    final List<GameChooserEntry> entries = new ArrayList<>();
 
     try (ZipFile zipFile = new ZipFile(map);
         final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
@@ -155,7 +155,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
   }
 
   private static ZipProcessingResult processZipEntry(final URLClassLoader loader, final ZipEntry entry,
-      final List<NewGameChooserEntry> entries) {
+      final List<GameChooserEntry> entries) {
     final URL url = loader.getResource(entry.getName());
     if (url == null) {
       // not loading the URL means the XML is truncated or otherwise in bad shape
@@ -206,9 +206,9 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
    * @param uri
    *        URI of the new entry
    */
-  private static void addNewGameChooserEntry(final List<NewGameChooserEntry> entries, final URI uri) {
+  private static void addNewGameChooserEntry(final List<GameChooserEntry> entries, final URI uri) {
     try {
-      final NewGameChooserEntry newEntry = createEntry(uri);
+      final GameChooserEntry newEntry = createEntry(uri);
       if (newEntry != null && !entries.contains(newEntry)) {
         entries.add(newEntry);
       }
@@ -225,7 +225,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     }
   }
 
-  public NewGameChooserEntry findByName(final String name) {
+  public GameChooserEntry findByName(final String name) {
     for (int i = 0; i < size(); i++) {
       if (get(i).getGameData().getGameName().equals(name)) {
         return get(i);
@@ -234,13 +234,13 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
     return null;
   }
 
-  private static NewGameChooserEntry createEntry(final URI uri)
+  private static GameChooserEntry createEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
-    return new NewGameChooserEntry(uri);
+    return new GameChooserEntry(uri);
   }
 
-  private static List<NewGameChooserEntry> populateFromDirectory(final File mapDir) {
-    final List<NewGameChooserEntry> entries = new ArrayList<>();
+  private static List<GameChooserEntry> populateFromDirectory(final File mapDir) {
+    final List<GameChooserEntry> entries = new ArrayList<>();
 
     // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents directly
     final File mapFolder = new File(mapDir, "map");
@@ -266,7 +266,7 @@ public class NewGameChooserModel extends DefaultListModel<NewGameChooserEntry> {
    * @param entryToBeRemoved The element to be removed.
    * @return Returns true, if the given element could successfully be removed.
    */
-  public boolean removeEntry(final NewGameChooserEntry entryToBeRemoved) {
+  public boolean removeEntry(final GameChooserEntry entryToBeRemoved) {
     return this.removeElement(entryToBeRemoved);
   }
 }
