@@ -47,12 +47,12 @@ public class AvailableGames {
         Collections.synchronizedSet(new HashSet<>()));
   }
 
-  List<String> getGameNames() {
-    return new ArrayList<>(availableGames.keySet());
+  Set<String> getGameNames() {
+    return Collections.unmodifiableSet(availableGames.keySet());
   }
 
   Set<String> getAvailableMapFolderOrZipNames() {
-    return new HashSet<>(availableMapFolderOrZipNames);
+    return Collections.unmodifiableSet(availableMapFolderOrZipNames);
   }
 
   /**
