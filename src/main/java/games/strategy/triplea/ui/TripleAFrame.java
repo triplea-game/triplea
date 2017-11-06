@@ -231,7 +231,15 @@ public class TripleAFrame extends MainGameFrame {
     this.setCursor(uiContext.getCursor());
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
-
+    showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
+    showCommentLogButtonModel.setSelected(false);
+    showCommentLogButtonModel.addActionListener(e -> {
+      if (showCommentLogButtonModel.isSelected()) {
+        showCommentLog();
+      } else {
+        hideCommentLog();
+      }
+    });
     menu = new TripleAMenuBar(this);
     this.setJMenuBar(menu);
     final ImageScrollModel model = new ImageScrollModel();
@@ -273,15 +281,6 @@ public class TripleAFrame extends MainGameFrame {
     } else {
       mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
     }
-    showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
-    showCommentLogButtonModel.setSelected(false);
-    showCommentLogButtonModel.addActionListener(e -> {
-      if (showCommentLogButtonModel.isSelected()) {
-        showCommentLog();
-      } else {
-        hideCommentLog();
-      }
-    });
     gameMainPanel.setLayout(new BorderLayout());
     this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(gameMainPanel, BorderLayout.CENTER);
