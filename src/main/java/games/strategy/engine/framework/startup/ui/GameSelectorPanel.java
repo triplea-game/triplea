@@ -391,6 +391,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
                 entry.fullyParseGameData();
               } catch (final GameParseException e) {
                 entry.delayParseGameData();
+                // TODO remove bad entries from the underlying model
                 return null;
               }
             }
