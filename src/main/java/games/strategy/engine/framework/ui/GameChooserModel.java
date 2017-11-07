@@ -49,6 +49,19 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     gameChooserEntries.stream().sorted().forEach(this::addElement);
   }
 
+  /**
+   * Creates a new Instance of a GameChooserModel.
+   * Must be called on the EDT, will not return until all
+   * map files have been scanned, but is not going to
+   * effectively block the EDT.
+   * 
+   * @return The newly created instance.
+   * 
+   * @throws InterruptedException If this Thread is being interrupted
+   *         while waiting for the SwingWorker to complete.
+   * @throws IllegalStateException If this method is called on any other
+   *         Thread than the Swing Event Dispatch Thread.
+   */
   public static GameChooserModel newInstance() throws InterruptedException {
     return new GameChooserModel(BackgroundTaskRunner.runInBackgroundAndReturn(
         "Loading all available games...",

@@ -24,7 +24,6 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.util.LocalizeHtml;
 
 public class GameChooser extends JDialog {
