@@ -392,7 +392,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     if (m_unitType == null) {
       m_unitType = new HashSet<>();
     }
-    m_unitType.addAll(types);
+    synchronized (m_unitType) {
+      synchronized (types) {
+        m_unitType.addAll(types);
+      }
+    }
   }
 
   @InternalDoNotExport

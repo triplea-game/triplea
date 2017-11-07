@@ -62,16 +62,13 @@ public class PlayerAttachment extends DefaultAttachment {
   // what can be hit by suicide attacks
   private HashSet<UnitType> m_suicideAttackTargets = null;
   // placement limits on a flexible per player basis
-  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit =
-      new HashSet<>();
+  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit = new HashSet<>();
 
   // movement limits on a flexible per player basis
-  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit =
-      new HashSet<>();
+  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit = new HashSet<>();
 
   // attacking limits on a flexible per player basis
-  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit =
-      new HashSet<>();
+  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit = new HashSet<>();
 
   /** Creates new PlayerAttachment. */
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {

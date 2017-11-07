@@ -115,15 +115,15 @@ public class ParserTest {
   public void testAttachments() {
     TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold")
         .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
-    assertEquals(att.getValue(), "gold");
+    assertEquals("gold", att.getValue());
     att = (TestAttachment) gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF)
         .getAttachment(Constants.INF_ATTACHMENT_NAME);
-    assertEquals(att.getValue(), "inf");
+    assertEquals("inf", att.getValue());
     att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
-    assertEquals(att.getValue(), "us of a");
+    assertEquals("us of a", att.getValue());
     att = (TestAttachment) gameData.getPlayerList().getPlayerId("chretian")
         .getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
-    assertEquals(att.getValue(), "liberal");
+    assertEquals("liberal", att.getValue());
   }
 
   @Test

@@ -921,7 +921,9 @@ public class UnitAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRequiresUnits(final String value) {
-    m_requiresUnits.add(value.split(":"));
+    synchronized (m_requiresUnits) {
+      m_requiresUnits.add(value.split(":"));
+    }
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
