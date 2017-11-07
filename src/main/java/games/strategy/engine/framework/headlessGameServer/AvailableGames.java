@@ -81,30 +81,27 @@ public class AvailableGames {
       final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList) {
     System.out.println("Parsing all available games (this could take a while). ");
     final List<File> files = allMapFiles();
-    if (files.size() > 0) {
-      final ExecutorService service = Executors.newWorkStealingPool(files.size());
-      final List<Callable<Void>> tasks = new ArrayList<>(files.size());
-      for (final File map : files) {
-        if (map.isDirectory()) {
-          tasks.add(
-              () -> {
-                populateFromDirectory(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
-                return null;
-              });
-        } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-          tasks.add(() -> {
-            populateFromZip(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
-            return null;
-          });
-        }
+    final ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 2);
+    final List<Callable<Void>> tasks = new ArrayList<>(files.size());
+    for (final File map : files) {
+      if (map.isDirectory()) {
+        tasks.add(() -> {
+          populateFromDirectory(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
+          return null;
+        });
+      } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
+        tasks.add(() -> {
+          populateFromZip(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
+          return null;
+        });
       }
-      try {
-        service.invokeAll(tasks);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      } finally {
-        service.shutdown();
-      }
+    }
+    try {
+      service.invokeAll(tasks);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    } finally {
+      service.shutdown();
     }
     System.out.println("Finished parsing all available game xmls. ");
   }
