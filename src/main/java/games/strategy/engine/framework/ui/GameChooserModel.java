@@ -1,7 +1,5 @@
 package games.strategy.engine.framework.ui;
 
-import java.awt.SecondaryLoop;
-import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -10,27 +8,22 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import com.google.common.base.Preconditions;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 
 import games.strategy.debug.ClientLogger;
@@ -38,6 +31,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingAction;
 
 public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
@@ -47,54 +41,16 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     SUCCESS, ERROR
   }
 
-  /**
-   * Searches for and parses Map Files.
-   * 
-   * @param doneAction A Runnable being executed on the EDT after the NewGameChooserModel has
-   *        been instantiated.
-   */
-  public GameChooserModel(final Runnable doneAction) {
-    this(doneAction, GameChooserModel::parseMapFiles);
+  @VisibleForTesting
+  GameChooserModel(final Set<GameChooserEntry> gameChooserEntries) {
+    final Set<GameChooserEntry> sortedGameChooserEntries = new TreeSet<>(gameChooserEntries);
+    sortedGameChooserEntries.forEach(this::addElement);
   }
 
-  /**
-   * Searches for and parses Map Files.
-   */
-  public GameChooserModel() {
-    this(() -> {
-    }, GameChooserModel::parseMapFiles);
-  }
-
-  GameChooserModel(final Runnable doneAction, final Supplier<Set<GameChooserEntry>> mapSupplier) {
-    Preconditions.checkState(SwingUtilities.isEventDispatchThread());
-
-    final SecondaryLoop loop = Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
-
-    new SwingWorker<Collection<GameChooserEntry>, Void>() {
-      @Override
-      protected Collection<GameChooserEntry> doInBackground() {
-        return new TreeSet<>(mapSupplier.get());
-      }
-
-      @Override
-      protected void done() {
-        try {
-          get().forEach(GameChooserModel.this::addElement);
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-          throw new RuntimeException(e);
-        } finally {
-          try {
-            doneAction.run();
-          } finally {
-            loop.exit();
-          }
-        }
-      }
-
-    }.execute();
-    loop.enter();
+  public static GameChooserModel newInstance() throws InterruptedException {
+    return new GameChooserModel(BackgroundTaskRunner.runInBackgroundAndReturn(
+        "Loading all available games...",
+        GameChooserModel::parseMapFiles));
   }
 
   @Override

@@ -36,22 +36,22 @@ public class GameChooser extends JDialog {
   private JList<GameChooserEntry> gameList;
   private JPanel infoPanel;
   private JEditorPane notesPanel;
-  private GameChooserModel gameListModel;
+  private final GameChooserModel gameListModel;
   private GameChooserEntry chosen;
 
-  private GameChooser(final Frame owner, final Runnable doneAction) {
+  private GameChooser(final Frame owner, final GameChooserModel gameChooserModel) {
     super(owner, "Select a Game", true);
-    createComponents(doneAction);
+    gameListModel = gameChooserModel;
+    createComponents();
     layoutCoponents();
     setupListeners();
     setWidgetActivation();
     updateInfoPanel();
   }
 
-  private void createComponents(final Runnable doneAction) {
+  private void createComponents() {
     okButton = new JButton("OK");
     cancelButton = new JButton("Cancel");
-    gameListModel = new GameChooserModel(doneAction);
     gameList = new JList<>(gameListModel);
     infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -98,13 +98,9 @@ public class GameChooser extends JDialog {
     infoPanel.add(notesScroll, BorderLayout.CENTER);
   }
 
-  public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName) {
-    final WaitDialog dialog = new WaitDialog(parent, "Loading all available Games...");
-    SwingUtilities.invokeLater(() -> dialog.setVisible(true));
-    final GameChooser chooser = new GameChooser(parent, () -> {
-      dialog.setVisible(false);
-      dialog.dispose();
-    });
+  public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
+      throws InterruptedException {
+    final GameChooser chooser = new GameChooser(parent, GameChooserModel.newInstance());
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
     chooser.selectGame(defaultGameName);

@@ -381,10 +381,10 @@ public class GameSelectorPanel extends JPanel implements Observer {
         Thread.currentThread().interrupt();
       }
     } else {
-      final GameChooserEntry entry =
-          GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
-      if (entry != null) {
-        try {
+      try {
+        final GameChooserEntry entry =
+            GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
+        if (entry != null) {
           BackgroundTaskRunner.runInBackgroundAndReturn("Loading map...", () -> {
             synchronized (entry) {
               if (!entry.isGameDataLoaded()) {
@@ -400,13 +400,13 @@ public class GameSelectorPanel extends JPanel implements Observer {
               return null;
             }
           });
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
+          setOriginalPropertiesMap(model.getGameData());
+          // only for new games, not saved games, we set the default options, and set them only once
+          // (the first time it is loaded)
+          gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
         }
-        setOriginalPropertiesMap(model.getGameData());
-        // only for new games, not saved games, we set the default options, and set them only once
-        // (the first time it is loaded)
-        gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
     }
   }
