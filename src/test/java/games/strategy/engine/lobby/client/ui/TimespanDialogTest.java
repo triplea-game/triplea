@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
-
-import javax.swing.JOptionPane;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.lobby.client.ui.TimespanDialog.TimeUnit;
+import games.strategy.engine.lobby.client.ui.TimespanDialog.Timespan;
 
 public class TimespanDialogTest {
 
@@ -45,29 +46,29 @@ public class TimespanDialogTest {
 
   @Test
   public void testCancelDoesExecuteNothing() {
-    TimespanDialog.runAction(d -> fail("Operation was not cancelled!"), JOptionPane.CANCEL_OPTION, TimeUnit.FOREVER, 0);
+    TimespanDialog.runAction(d -> fail("Operation was not cancelled!"), Optional.empty());
   }
 
   @Test
   public void testNonNullDateInTheFuture() {
     // We can't use Integer#MAX_VALUE for years, because this will result in a long-overflow
     // So we just limit the amount for every time unit
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.MINUTES, 99999999);
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.HOURS, 99999999);
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.DAYS, 99999999);
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.WEEKS, 99999999);
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.MONTHS, 99999999);
-    TimespanDialog.runAction(d -> assertTrue(d.after(new Date())),
-        JOptionPane.OK_OPTION, TimeUnit.YEARS, 99999999);
+    Arrays.asList(
+        TimeUnit.MINUTES,
+        TimeUnit.HOURS,
+        TimeUnit.DAYS,
+        TimeUnit.WEEKS,
+        TimeUnit.MONTHS,
+        TimeUnit.YEARS)
+        .forEach(timeUnit -> {
+          TimespanDialog.runAction(
+              d -> assertTrue(d.after(new Date())),
+              Optional.of(new Timespan(TimespanDialog.MAX_DURATION, timeUnit)));
+        });
   }
 
   @Test
   public void testForeverPassesNull() {
-    TimespanDialog.runAction(d -> assertNull(d), JOptionPane.OK_OPTION, TimeUnit.FOREVER, 0);
+    TimespanDialog.runAction(d -> assertNull(d), Optional.of(new Timespan(0, TimeUnit.FOREVER)));
   }
 }
