@@ -10,9 +10,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -23,7 +28,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -69,12 +73,25 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   }
 
   private static Set<GameChooserEntry> parseMapFiles() {
-    final Set<GameChooserEntry> parsedMapSet = Sets.newHashSet();
-    for (final File map : allMapFiles()) {
+    final List<File> files = allMapFiles();
+    final Set<GameChooserEntry> parsedMapSet = new HashSet<>(files.size());
+    final ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 2);
+    final List<Future<List<GameChooserEntry>>> futures = new ArrayList<>(files.size());
+    for (final File map : files) {
       if (map.isDirectory()) {
-        parsedMapSet.addAll(populateFromDirectory(map));
+        futures.add(service.submit(() -> populateFromDirectory(map)));
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-        parsedMapSet.addAll(populateFromZip(map));
+        futures.add(service.submit(() -> populateFromZip(map)));
+      }
+    }
+    service.shutdown();
+    for (final Future<List<GameChooserEntry>> future : futures) {
+      try {
+        parsedMapSet.addAll(future.get());
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } catch (ExecutionException e) {
+        ClientLogger.logError(e);
       }
     }
     return parsedMapSet;
