@@ -13,7 +13,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -43,8 +42,7 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
 
   @VisibleForTesting
   GameChooserModel(final Set<GameChooserEntry> gameChooserEntries) {
-    final Set<GameChooserEntry> sortedGameChooserEntries = new TreeSet<>(gameChooserEntries);
-    sortedGameChooserEntries.forEach(this::addElement);
+    gameChooserEntries.stream().sorted().forEach(this::addElement);
   }
 
   public static GameChooserModel newInstance() throws InterruptedException {
