@@ -172,13 +172,8 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     return this.gameNameAndMapNameProperty.equals(other.gameNameAndMapNameProperty);
   }
 
-
   @Override
   public int compareTo(GameChooserEntry o) {
-    return getLowerCaseComparable().compareTo(o.getLowerCaseComparable());
-  }
-
-  private String getLowerCaseComparable() {
-    return getGameData().getGameName().toLowerCase();
+    return getGameName().compareToIgnoreCase(o.getGameName());
   }
 }

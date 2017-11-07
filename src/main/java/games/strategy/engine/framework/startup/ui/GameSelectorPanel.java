@@ -386,19 +386,17 @@ public class GameSelectorPanel extends JPanel implements Observer {
             GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
         if (entry != null) {
           BackgroundTaskRunner.runInBackgroundAndReturn("Loading map...", () -> {
-            synchronized (entry) {
-              if (!entry.isGameDataLoaded()) {
-                try {
-                  entry.fullyParseGameData();
-                } catch (final GameParseException e) {
-                  entry.delayParseGameData();
-                  // TODO remove bad entries from the underlying model
-                  return null;
-                }
+            if (!entry.isGameDataLoaded()) {
+              try {
+                entry.fullyParseGameData();
+              } catch (final GameParseException e) {
+                entry.delayParseGameData();
+                // TODO remove bad entries from the underlying model
+                return null;
               }
-              model.load(entry);
-              return null;
             }
+            model.load(entry);
+            return null;
           });
           setOriginalPropertiesMap(model.getGameData());
           // only for new games, not saved games, we set the default options, and set them only once
