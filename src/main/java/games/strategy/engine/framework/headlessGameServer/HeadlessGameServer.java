@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -65,7 +64,7 @@ public class HeadlessGameServer {
   }
 
   public Set<String> getAvailableGames() {
-    return new HashSet<>(m_availableGames.getGameNames());
+    return m_availableGames.getGameNames();
   }
 
   public synchronized void setGameMapTo(final String gameName) {
