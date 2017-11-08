@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.base.Joiner;
 
@@ -651,7 +652,7 @@ public class GameDataExporter {
 
     @Override
     public int hashCode() {
-      return territory1.hashCode() + territory2.hashCode();
+      return Objects.hash(territory1, territory2);
     }
 
     @Override

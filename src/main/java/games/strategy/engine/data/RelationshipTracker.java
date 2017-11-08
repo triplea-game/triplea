@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
@@ -119,7 +120,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
      */
     @Override
     public int hashCode() {
-      return m_p1.hashCode() + m_p2.hashCode();
+      return Objects.hash(m_p1, m_p2);
     }
 
     private final PlayerID m_p1;

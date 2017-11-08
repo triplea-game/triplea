@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 import javax.annotation.Nullable;
@@ -130,7 +131,7 @@ public final class Version implements Serializable, Comparable<Version> {
 
   @Override
   public int hashCode() {
-    return this.toString().hashCode();
+    return Objects.hash(m_major, m_minor, m_point, m_micro);
   }
 
   @Override

@@ -7,6 +7,7 @@ import java.io.ObjectOutput;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 // written very often over the network, so make externalizable to make faster and reduce traffic
 public class Node implements INode, Externalizable {
@@ -67,7 +68,7 @@ public class Node implements INode, Externalizable {
 
   @Override
   public int hashCode() {
-    return (37 * port) + m_address.hashCode();
+    return Objects.hash(port, m_address);
   }
 
   @Override

@@ -1,6 +1,7 @@
 package games.strategy.engine.data.properties;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.swing.JComponent;
 
@@ -38,13 +39,13 @@ public abstract class AEditableProperty implements IEditableProperty, Serializab
 
   @Override
   public int hashCode() {
-    return m_name.hashCode();
+    return Objects.hashCode(m_name);
   }
 
   @Override
   public boolean equals(final Object other) {
     if (other instanceof AEditableProperty) {
-      return ((AEditableProperty) other).m_name.equals(this.m_name);
+      return ((AEditableProperty) other).m_name.equals(m_name);
     }
     return false;
   }
@@ -52,7 +53,7 @@ public abstract class AEditableProperty implements IEditableProperty, Serializab
   @Override
   public int compareTo(final Object other) {
     if (other instanceof AEditableProperty) {
-      return this.m_name.compareTo(((AEditableProperty) other).getName());
+      return m_name.compareTo(((AEditableProperty) other).getName());
     }
     return -1;
   }

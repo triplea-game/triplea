@@ -2,6 +2,7 @@ package games.strategy.triplea.ai.proAI.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -40,7 +41,7 @@ public class ProPlaceTerritory {
 
   @Override
   public int hashCode() {
-    return territory.hashCode();
+    return Objects.hashCode(territory);
   }
 
   public Territory getTerritory() {

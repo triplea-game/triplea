@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A single roll of a die.
@@ -69,7 +70,7 @@ public class Die implements Serializable {
 
   @Override
   public int hashCode() {
-    return m_value + 37 * m_rolledAt;
+    return Objects.hash(m_value, m_rolledAt);
   }
 
   @Override

@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -69,12 +70,12 @@ public class UnitType extends NamedAttachable {
     if (!(o instanceof UnitType)) {
       return false;
     }
-    return ((UnitType) o).getName().equals(this.getName());
+    return ((UnitType) o).getName().equals(getName());
   }
 
   @Override
   public int hashCode() {
-    return getName().hashCode();
+    return Objects.hashCode(getName());
   }
 
   public String getTooltip(final PlayerID playerId) {

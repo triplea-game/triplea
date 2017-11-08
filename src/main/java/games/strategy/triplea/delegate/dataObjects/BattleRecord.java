@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.SerializationProxySupport;
@@ -183,7 +184,7 @@ public class BattleRecord implements Serializable {
 
   @Override
   public int hashCode() {
-    return battleSite.hashCode();
+    return Objects.hashCode(battleSite);
   }
 
   @Override

@@ -3,6 +3,7 @@ package games.strategy.engine.framework.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -147,7 +148,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
 
   @Override
   public int hashCode() {
-    return gameNameAndMapNameProperty.hashCode();
+    return Objects.hashCode(gameNameAndMapNameProperty);
   }
 
   @Override

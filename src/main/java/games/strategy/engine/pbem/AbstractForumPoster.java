@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Objects;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
@@ -189,6 +190,6 @@ public abstract class AbstractForumPoster implements IForumPoster {
 
   @Override
   public int hashCode() {
-    return getClass().hashCode();
+    return Objects.hashCode(getClass());
   }
 }

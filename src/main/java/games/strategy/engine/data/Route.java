@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import games.strategy.triplea.TripleAUnit;
@@ -113,7 +114,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   @Override
   public int hashCode() {
-    return toString().hashCode();
+    return Objects.hash(m_start, getSteps());
   }
 
   /**

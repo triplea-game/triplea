@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
@@ -388,6 +389,6 @@ public class GenericEmailSender implements IEmailSender {
 
   @Override
   public int hashCode() {
-    return getClass().hashCode();
+    return Objects.hashCode(getClass());
   }
 }

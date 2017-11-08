@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -128,7 +129,7 @@ public enum LockUtil {
 
     public WeakLockRef(final Lock referent) {
       super(referent);
-      hashCode = referent.hashCode();
+      hashCode = Objects.hashCode(referent);
     }
 
     @Override

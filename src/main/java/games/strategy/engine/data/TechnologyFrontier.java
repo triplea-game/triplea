@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import games.strategy.triplea.delegate.TechAdvance;
 
@@ -108,7 +109,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 
   @Override
   public int hashCode() {
-    return m_name.hashCode();
+    return Objects.hashCode(m_name);
   }
 
   @Override
@@ -120,6 +121,6 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
       return false;
     }
     final TechnologyFrontier other = (TechnologyFrontier) o;
-    return this.m_name.equals(other.getName());
+    return m_name.equals(other.getName());
   }
 }

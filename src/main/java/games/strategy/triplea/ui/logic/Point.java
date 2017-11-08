@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.logic;
 
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 /**
  * Framework independent point class.
@@ -48,14 +49,7 @@ public class Point {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    long temp;
-    temp = Double.doubleToLongBits(x);
-    result = prime * result + (int) (temp ^ (temp >>> 32));
-    temp = Double.doubleToLongBits(y);
-    result = prime * result + (int) (temp ^ (temp >>> 32));
-    return result;
+    return Objects.hash(x, y);
   }
 
   @Override

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -271,7 +272,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
 
   @Override
   public int hashCode() {
-    return mapValues.hashCode();
+    return Objects.hashCode(mapValues);
   }
 
   /**

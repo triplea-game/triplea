@@ -1,6 +1,7 @@
 package games.strategy.engine.pbem;
 
 import java.io.File;
+import java.util.Objects;
 
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 
@@ -119,6 +120,6 @@ public class NullForumPoster implements IForumPoster {
 
   @Override
   public int hashCode() {
-    return getClass().hashCode();
+    return Objects.hashCode(getClass());
   }
 }

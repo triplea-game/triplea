@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import java.awt.Image;
 import java.awt.Point;
+import java.util.Objects;
 
 import games.strategy.engine.data.Route;
 
@@ -22,7 +23,7 @@ public class RouteDescription {
 
   @Override
   public int hashCode() {
-    return route.hashCode() + cursorImage.hashCode();
+    return Objects.hash(route, cursorImage);
   }
 
   @Override

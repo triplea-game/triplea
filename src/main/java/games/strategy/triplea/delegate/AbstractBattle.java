@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -216,7 +217,7 @@ public abstract class AbstractBattle implements IBattle {
 
   @Override
   public int hashCode() {
-    return m_battleSite.hashCode();
+    return Objects.hashCode(m_battleSite);
   }
 
   /**

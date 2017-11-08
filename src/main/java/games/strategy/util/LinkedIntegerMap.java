@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -130,7 +131,7 @@ public final class LinkedIntegerMap<T> implements Cloneable, Serializable {
 
   @Override
   public int hashCode() {
-    return m_values.hashCode();
+    return Objects.hashCode(m_values);
   }
 
   /**

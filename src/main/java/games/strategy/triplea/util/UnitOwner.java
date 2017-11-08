@@ -1,5 +1,7 @@
 package games.strategy.triplea.util;
 
+import java.util.Objects;
+
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -32,7 +34,7 @@ public class UnitOwner {
 
   @Override
   public int hashCode() {
-    return type.hashCode() ^ owner.hashCode();
+    return Objects.hash(type, owner);
   }
 
   @Override

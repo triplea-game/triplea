@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -269,7 +270,7 @@ public abstract class TechAdvance extends NamedAttachable {
 
   @Override
   public int hashCode() {
-    return getName().hashCode();
+    return Objects.hashCode(getName());
   }
 
   @Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
@@ -109,7 +110,7 @@ public class UnitCategory implements Comparable<Object> {
 
   @Override
   public int hashCode() {
-    return type.hashCode() | owner.hashCode();
+    return Objects.hash(type, owner);
   }
 
   @Override

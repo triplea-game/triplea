@@ -2,6 +2,8 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Objects;
+
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.util.PropertyUtil;
@@ -148,11 +150,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 
   @Override
   public int hashCode() {
-    // System.out.println(toString() + "\n Right now its hash is: " + toString().hashCode() + "\n\n");
-    if (m_attachedTo == null && m_name == null) {
-      return 0;
-    }
-    return toString().hashCode();
+    return Objects.hash(m_attachedTo, m_name);
   }
 
   @Override
