@@ -54,7 +54,7 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient login(final LoginPanel panel) {
     try {
-      final IMessenger messenger = BackgroundTaskRunner.runInBackgroundAndReturnOrThrow(
+      final IMessenger messenger = BackgroundTaskRunner.runInBackgroundAndReturn(
           "Connecting to lobby...",
           () -> login(panel.getUserName(), panel.getPassword(), panel.isAnonymousLogin()),
           IOException.class);
@@ -132,7 +132,7 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient createAccount(final CreateUpdateAccountPanel panel) {
     try {
-      final IMessenger messenger = BackgroundTaskRunner.runInBackgroundAndReturnOrThrow(
+      final IMessenger messenger = BackgroundTaskRunner.runInBackgroundAndReturn(
           "Connecting to lobby...",
           () -> createAccount(panel.getUserName(), panel.getPassword(), panel.getEmail()),
           IOException.class);
