@@ -274,7 +274,7 @@ public class GameRunner {
 
   private static void loadGame() {
     try {
-      BackgroundTaskRunner.runInBackgroundAndReturn("Loading game...", () -> {
+      BackgroundTaskRunner.runInBackground("Loading game...", () -> {
         gameSelectorModel.loadDefaultGame(false);
         final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
         if (fileName.length() > 0) {
@@ -285,8 +285,6 @@ public class GameRunner {
         if (!downloadableMap.isEmpty()) {
           SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
         }
-
-        return null;
       });
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();

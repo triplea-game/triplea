@@ -372,10 +372,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
         return;
       }
       try {
-        BackgroundTaskRunner.runInBackgroundAndReturn("Loading savegame...", () -> {
+        BackgroundTaskRunner.runInBackground("Loading savegame...", () -> {
           model.load(file, this);
           setOriginalPropertiesMap(model.getGameData());
-          return null;
         });
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
@@ -385,18 +384,17 @@ public class GameSelectorPanel extends JPanel implements Observer {
         final GameChooserEntry entry =
             GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
         if (entry != null) {
-          BackgroundTaskRunner.runInBackgroundAndReturn("Loading map...", () -> {
+          BackgroundTaskRunner.runInBackground("Loading map...", () -> {
             if (!entry.isGameDataLoaded()) {
               try {
                 entry.fullyParseGameData();
               } catch (final GameParseException e) {
                 entry.delayParseGameData();
                 // TODO remove bad entries from the underlying model
-                return null;
+                return;
               }
             }
             model.load(entry);
-            return null;
           });
           setOriginalPropertiesMap(model.getGameData());
           // only for new games, not saved games, we set the default options, and set them only once
