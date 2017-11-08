@@ -54,9 +54,9 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
    * Must be called on the EDT, will not return until all
    * map files have been scanned, but is not going to
    * effectively block the EDT.
-   * 
+   *
    * @return The newly created instance.
-   * 
+   *
    * @throws InterruptedException If this Thread is being interrupted
    *         while waiting for the SwingWorker to complete.
    * @throws IllegalStateException If this method is called on any other
@@ -101,9 +101,9 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     for (final Future<List<GameChooserEntry>> future : futures) {
       try {
         parsedMapSet.addAll(future.get());
-      } catch (InterruptedException e) {
+      } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
-      } catch (ExecutionException e) {
+      } catch (final ExecutionException e) {
         ClientLogger.logError(e);
       }
     }
@@ -245,7 +245,7 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
 
   /**
    * Removes the given entry from this model.
-   * 
+   *
    * @param entryToBeRemoved The element to be removed.
    * @return Returns true, if the given element could successfully be removed.
    */

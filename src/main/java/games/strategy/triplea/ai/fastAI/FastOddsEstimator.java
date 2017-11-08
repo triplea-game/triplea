@@ -16,9 +16,9 @@ public class FastOddsEstimator implements IOddsCalculator {
   @Override
   public AggregateResults calculate(final OddsCalculatorParameters parameters) {
     final double winPercentage = ProBattleUtils.estimateStrengthDifference(
-            parameters.location,
-            new ArrayList<>(parameters.attacking),
-            new ArrayList<>(parameters.defending));
+        parameters.location,
+        new ArrayList<>(parameters.attacking),
+        new ArrayList<>(parameters.defending));
     final int battleRoundsFought = 3;
     List<Unit> remainingAttackingUnits = new ArrayList<>();
     List<Unit> remainingDefendingUnits = new ArrayList<>();
