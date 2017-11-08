@@ -311,7 +311,10 @@ class OddsCalculatorPanel extends JPanel {
       throw new IllegalStateException("Wrong thread");
     }
     final AtomicReference<AggregateResults> results = new AtomicReference<>();
-    final WaitDialog dialog = new WaitDialog(this, "Calculating Odds", e -> calculator.cancel());
+    // NB: Do not replace the lambda below with the method reference "calculator::cancel". "calculator" is null
+    // at this point and will be bound to the method reference as the call site, which will raise an NPE when the
+    // method reference is invoked. The form below defers evaluation of "calculator" until the lambda is invoked.
+    final WaitDialog dialog = new WaitDialog(this, "Calculating Odds", () -> calculator.cancel());
     new Thread(() -> {
       try {
         // find a territory to fight in
