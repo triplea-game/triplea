@@ -3,6 +3,8 @@ package games.strategy.triplea.attachments;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -46,12 +48,12 @@ public class PlayerAttachment extends DefaultAttachment {
   private int m_retainCapitalNumber = 1;
   // number of capitals needed before we lose ability to gain money and produce units
   private int m_retainCapitalProduceNumber = 1;
-  private ArrayList<PlayerID> m_giveUnitControl = new ArrayList<>();
-  private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<>();
+  private List<PlayerID> m_giveUnitControl = new ArrayList<>();
+  private List<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<>();
   // gives any technology researched to this player automatically
-  private ArrayList<PlayerID> m_shareTechnology = new ArrayList<>();
+  private List<PlayerID> m_shareTechnology = new ArrayList<>();
   // allows these players to help pay for technology
-  private ArrayList<PlayerID> m_helpPayTechCost = new ArrayList<>();
+  private List<PlayerID> m_helpPayTechCost = new ArrayList<>();
   // do we lose our money and have it disappear or is that money captured?
   private boolean m_destroysPUs = false;
   // are we immune to being blockaded?
@@ -60,18 +62,15 @@ public class PlayerAttachment extends DefaultAttachment {
   private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<>();
   // at what attack power
   // what can be hit by suicide attacks
-  private HashSet<UnitType> m_suicideAttackTargets = null;
+  private Set<UnitType> m_suicideAttackTargets = null;
   // placement limits on a flexible per player basis
-  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit =
-      new HashSet<>();
+  private Set<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit = new HashSet<>();
 
   // movement limits on a flexible per player basis
-  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit =
-      new HashSet<>();
+  private Set<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit = new HashSet<>();
 
   // attacking limits on a flexible per player basis
-  private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit =
-      new HashSet<>();
+  private Set<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit = new HashSet<>();
 
   /** Creates new PlayerAttachment. */
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -115,7 +114,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_placementLimit = value;
   }
 
-  public HashSet<Triple<Integer, String, HashSet<UnitType>>> getPlacementLimit() {
+  public Set<Triple<Integer, String, HashSet<UnitType>>> getPlacementLimit() {
     return m_placementLimit;
   }
 
@@ -164,7 +163,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_movementLimit = value;
   }
 
-  public HashSet<Triple<Integer, String, HashSet<UnitType>>> getMovementLimit() {
+  public Set<Triple<Integer, String, HashSet<UnitType>>> getMovementLimit() {
     return m_movementLimit;
   }
 
@@ -213,7 +212,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_attackingLimit = value;
   }
 
-  public HashSet<Triple<Integer, String, HashSet<UnitType>>> getAttackingLimit() {
+  public Set<Triple<Integer, String, HashSet<UnitType>>> getAttackingLimit() {
     return m_attackingLimit;
   }
 
@@ -231,7 +230,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (pa == null) {
       return true;
     }
-    final HashSet<Triple<Integer, String, HashSet<UnitType>>> stackingLimits;
+    final Set<Triple<Integer, String, HashSet<UnitType>>> stackingLimits;
     if (limitType.equals("movementLimit")) {
       stackingLimits = pa.getMovementLimit();
     } else if (limitType.equals("attackingLimit")) {
@@ -299,7 +298,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_suicideAttackTargets = value;
   }
 
-  public HashSet<UnitType> getSuicideAttackTargets() {
+  public Set<UnitType> getSuicideAttackTargets() {
     return m_suicideAttackTargets;
   }
 
@@ -441,7 +440,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_giveUnitControl = value;
   }
 
-  public ArrayList<PlayerID> getGiveUnitControl() {
+  public List<PlayerID> getGiveUnitControl() {
     return m_giveUnitControl;
   }
 
@@ -474,7 +473,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_captureUnitOnEnteringBy = value;
   }
 
-  public ArrayList<PlayerID> getCaptureUnitOnEnteringBy() {
+  public List<PlayerID> getCaptureUnitOnEnteringBy() {
     return m_captureUnitOnEnteringBy;
   }
 
@@ -507,7 +506,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_shareTechnology = value;
   }
 
-  public ArrayList<PlayerID> getShareTechnology() {
+  public List<PlayerID> getShareTechnology() {
     return m_shareTechnology;
   }
 
@@ -540,7 +539,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_helpPayTechCost = value;
   }
 
-  public ArrayList<PlayerID> getHelpPayTechCost() {
+  public List<PlayerID> getHelpPayTechCost() {
     return m_helpPayTechCost;
   }
 

@@ -1493,8 +1493,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           return constructionSort;
         }
       }
-      final ArrayList<String[]> ru1 = ua1.getRequiresUnits();
-      final ArrayList<String[]> ru2 = ua2.getRequiresUnits();
+      final List<String[]> ru1 = ua1.getRequiresUnits();
+      final List<String[]> ru2 = ua2.getRequiresUnits();
       final int rus1 = (ru1 == null ? Integer.MAX_VALUE : (ru1.isEmpty() ? Integer.MAX_VALUE : ru1.size()));
       final int rus2 = (ru2 == null ? Integer.MAX_VALUE : (ru2.isEmpty() ? Integer.MAX_VALUE : ru2.size()));
       if (rus1 == rus2) {

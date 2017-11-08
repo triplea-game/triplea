@@ -21,8 +21,8 @@ import games.strategy.triplea.delegate.Matches;
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
   private String m_canalName = null;
-  private HashSet<Territory> m_landTerritories = null;
-  private HashSet<UnitType> m_excludedUnits = null;
+  private Set<Territory> m_landTerritories = null;
+  private Set<UnitType> m_excludedUnits = null;
 
   public CanalAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -105,7 +105,7 @@ public class CanalAttachment extends DefaultAttachment {
     m_landTerritories = value;
   }
 
-  public HashSet<Territory> getLandTerritories() {
+  public Set<Territory> getLandTerritories() {
     return m_landTerritories;
   }
 
@@ -146,7 +146,7 @@ public class CanalAttachment extends DefaultAttachment {
     m_excludedUnits = value;
   }
 
-  public HashSet<UnitType> getExcludedUnits() {
+  public Set<UnitType> getExcludedUnits() {
     if (m_excludedUnits == null) {
       return new HashSet<>(
           Matches.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));

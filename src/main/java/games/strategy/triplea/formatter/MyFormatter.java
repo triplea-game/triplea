@@ -160,7 +160,7 @@ public class MyFormatter {
     return toText;
   }
 
-  public static String listOfArraysToString(final ArrayList<String[]> listOfArrays) {
+  public static String listOfArraysToString(final List<String[]> listOfArrays) {
     if (listOfArrays == null) {
       return "null";
     }

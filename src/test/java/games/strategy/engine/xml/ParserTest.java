@@ -1,7 +1,9 @@
 package games.strategy.engine.xml;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 
@@ -39,15 +41,15 @@ public class ParserTest {
   public void testTerritoriesCreated() {
     final GameMap map = gameData.getMap();
     final Collection<Territory> territories = map.getTerritories();
-    assertEquals(territories.size(), 3);
+    assertEquals(3, territories.size());
   }
 
   @Test
   public void testWater() {
     final Territory atl = gameData.getMap().getTerritory("atlantic");
-    assertEquals(atl.isWater(), true);
+    assertTrue(atl.isWater());
     final Territory can = gameData.getMap().getTerritory("canada");
-    assertEquals(can.isWater(), false);
+    assertFalse(can.isWater());
   }
 
   @Test
@@ -59,19 +61,19 @@ public class ParserTest {
   @Test
   public void testResourcesAdded() {
     final ResourceList resources = gameData.getResourceList();
-    assertEquals(resources.size(), 2);
+    assertEquals(2, resources.size());
   }
 
   @Test
   public void testUnitTypesAdded() {
     final UnitTypeList units = gameData.getUnitTypeList();
-    assertEquals(units.size(), 1);
+    assertEquals(1, units.size());
   }
 
   @Test
   public void testPlayersAdded() {
     final PlayerList players = gameData.getPlayerList();
-    assertEquals(players.size(), 3);
+    assertEquals(3, players.size());
   }
 
   @Test
@@ -80,13 +82,13 @@ public class ParserTest {
     final PlayerID castro = players.getPlayerId("castro");
     final PlayerID chretian = players.getPlayerId("chretian");
     final RelationshipTracker alliances = gameData.getRelationshipTracker();
-    assertEquals(true, alliances.isAllied(castro, chretian));
+    assertTrue(alliances.isAllied(castro, chretian));
   }
 
   @Test
   public void testDelegatesCreated() {
     final DelegateList delegates = gameData.getDelegateList();
-    assertEquals(delegates.size(), 2);
+    assertEquals(2, delegates.size());
   }
 
   @Test
@@ -96,34 +98,34 @@ public class ParserTest {
 
   @Test
   public void testProductionFrontiersCreated() {
-    assertEquals(gameData.getProductionFrontierList().size(), 2);
+    assertEquals(2, gameData.getProductionFrontierList().size());
   }
 
   @Test
   public void testProductionRulesCreated() {
-    assertEquals(gameData.getProductionRuleList().size(), 3);
+    assertEquals(3, gameData.getProductionRuleList().size());
   }
 
   @Test
   public void testPlayerProduction() {
     final ProductionFrontier cf = gameData.getProductionFrontierList().getProductionFrontier("canProd");
     final PlayerID can = gameData.getPlayerList().getPlayerId("chretian");
-    assertEquals(can.getProductionFrontier(), cf);
+    assertEquals(cf, can.getProductionFrontier());
   }
 
   @Test
   public void testAttachments() {
     TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold")
         .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
-    assertEquals(att.getValue(), "gold");
+    assertEquals("gold", att.getValue());
     att = (TestAttachment) gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF)
         .getAttachment(Constants.INF_ATTACHMENT_NAME);
-    assertEquals(att.getValue(), "inf");
+    assertEquals("inf", att.getValue());
     att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
-    assertEquals(att.getValue(), "us of a");
+    assertEquals("us of a", att.getValue());
     att = (TestAttachment) gameData.getPlayerList().getPlayerId("chretian")
         .getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
-    assertEquals(att.getValue(), "liberal");
+    assertEquals("liberal", att.getValue());
   }
 
   @Test
@@ -131,27 +133,27 @@ public class ParserTest {
     final Territory can = gameData.getMap().getTerritory("canada");
     assertNotNull(can, "couldnt find country");
     assertNotNull(can.getOwner(), "owner null");
-    assertEquals(can.getOwner().getName(), "chretian");
+    assertEquals("chretian", can.getOwner().getName());
     final Territory us = gameData.getMap().getTerritory("us");
-    assertEquals(us.getOwner().getName(), "bush");
+    assertEquals("bush", us.getOwner().getName());
   }
 
   @Test
   public void testUnitsHeldInitialized() {
     final PlayerID bush = gameData.getPlayerList().getPlayerId("bush");
-    assertEquals(bush.getUnits().getUnitCount(), 20);
+    assertEquals(20, bush.getUnits().getUnitCount());
   }
 
   @Test
   public void testUnitsPlacedInitialized() {
     final Territory terr = gameData.getMap().getTerritory("canada");
-    assertEquals(terr.getUnits().getUnitCount(), 5);
+    assertEquals(5, terr.getUnits().getUnitCount());
   }
 
   @Test
   public void testResourcesGiven() {
     final PlayerID chretian = gameData.getPlayerList().getPlayerId("chretian");
     final Resource resource = gameData.getResourceList().getResource("silver");
-    assertEquals(200, chretian.getResources().getQuantity(resource));
+    assertEquals(chretian.getResources().getQuantity(resource), 200);
   }
 }

@@ -68,10 +68,8 @@ public class GameParser {
   /**
    * Parses a file into a GameData object.
    *
-   * @param delayParsing
-   *        Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the
-   *        game chooser which
-   *        should use the user set preference.
+   * @param delayParsing Should we only parse the game name, notes, and playerlist? Normally this should be "false",
+   *        except for the game chooser which should use the user set preference.
    */
   public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName,
       final boolean delayParsing)
@@ -254,7 +252,7 @@ public class GameParser {
     final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
     final URL url = GameParser.class.getResource(dtdFile);
     if (url == null) {
-      throw new RuntimeException("Map: " + mapName + ", " + String.format("Could not find in classpath %s", dtdFile));
+      throw new RuntimeException(String.format("Map: %s, Could not find in classpath %s", mapName, dtdFile));
     }
     final String dtdSystem = url.toExternalForm();
     final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
@@ -302,8 +300,7 @@ public class GameParser {
    *
    * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been
    *         declared
-   * @throws GameParseException
-   *         when
+   * @throws GameParseException when
    */
   private RelationshipType getRelationshipType(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
@@ -1240,18 +1237,18 @@ public class GameParser {
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // find the setter
-      String name = null;
+      final String name = current.getAttribute("name");
+      if (name.length() == 0) {
+        throw new GameParseException(mapName, "Option name with 0 length");
+      }
       final Method setter;
       try {
-        name = current.getAttribute("name");
-        if (name.length() == 0) {
-          throw new GameParseException(mapName, "Option name with 0 length");
-        }
         setter = attachment.getClass().getMethod("set" + capitalizeFirstLetter(name), SETTER_ARGS);
       } catch (final NoSuchMethodException nsme) {
-        throw new GameParseException(mapName, "The following option name of " + attachment.getName() + " of class "
-            + attachment.getClass().getName().substring(attachment.getClass().getName().lastIndexOf('.') + 1)
-            + " are either misspelled or exist only in a future version of TripleA. Setter: " + name);
+        throw new GameParseException(mapName, String.format(
+            "The following option name of %s of class %s are either misspelled"
+                + " or exist only in a future version of TripleA. Setter: %s",
+            attachment.getName(), attachment.getClass().getSimpleName(), name));
       }
       // find the value
       final String value = current.getAttribute("value");
@@ -1264,15 +1261,12 @@ public class GameParser {
       }
       // invoke
       try {
-        final Object[] args = {itemValues};
-        setter.invoke(attachment, args);
+        setter.invoke(attachment, itemValues);
       } catch (final IllegalAccessException iae) {
         throw new GameParseException(mapName,
             "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName(), iae);
       } catch (final InvocationTargetException ite) {
-        ite.getCause().printStackTrace(System.out);
-        throw new GameParseException(mapName,
-            "Error setting property:" + name, ite);
+        throw new GameParseException(mapName, "Error setting property:" + name, ite);
       }
       options.add(Tuple.of(name, itemValues));
     }

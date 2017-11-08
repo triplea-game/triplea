@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -790,7 +789,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> toReplace =
           Matches.getMatches(nonCom, Matches.unitWhenCapturedChangesIntoDifferentUnitType());
       for (final Unit u : toReplace) {
-        final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> map =
+        final Map<String, Tuple<String, IntegerMap<UnitType>>> map =
             UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
         final PlayerID currentOwner = u.getOwner();
         for (final String value : map.keySet()) {

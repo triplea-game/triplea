@@ -32,7 +32,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
   // list of conditions that this condition can
-  protected ArrayList<RulesAttachment> m_conditions = new ArrayList<>();
+  protected List<RulesAttachment> m_conditions = new ArrayList<>();
   // contain
   // m_conditionType modifies the relationship of m_conditions
   protected String m_conditionType = AND;
@@ -81,7 +81,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @Override
-  public ArrayList<RulesAttachment> getConditions() {
+  public List<RulesAttachment> getConditions() {
     return m_conditions;
   }
 
