@@ -377,7 +377,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
           setOriginalPropertiesMap(model.getGameData());
           return null;
         });
-      } catch (InterruptedException e) {
+      } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       }
     } else {
@@ -403,7 +403,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
           // (the first time it is loaded)
           gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
         }
-      } catch (InterruptedException e) {
+      } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       }
     }

@@ -329,7 +329,7 @@ class OddsCalculatorPanel extends JPanel {
         if (location == null) {
           throw new IllegalStateException("No territory found that is land:" + isLand());
         }
-        Collection<Unit> attacking = attackingUnitsPanel.getUnits();
+        final Collection<Unit> attacking = attackingUnitsPanel.getUnits();
         List<Unit> bombarding = new ArrayList<>();
         if (isLand()) {
           bombarding = Matches.getMatches(attackingUnitsPanel.getUnits(), Matches.unitCanBombard(getAttacker()));

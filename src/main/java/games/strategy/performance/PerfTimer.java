@@ -8,9 +8,11 @@ import java.util.prefs.Preferences;
  * This class handles the library details and sends output to 'PerformanceConsole.java'
  * <br />
  * Example usage with auto-close try block:
+ * <code>
  * try(PerfTimer timer = PerfTimer.startTime()) {
  *   // code to be timed
  * }
+ * </code>
  */
 public class PerfTimer implements Closeable {
 

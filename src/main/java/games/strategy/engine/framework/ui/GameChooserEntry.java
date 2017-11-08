@@ -173,7 +173,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
   }
 
   @Override
-  public int compareTo(GameChooserEntry o) {
+  public int compareTo(final GameChooserEntry o) {
     return getGameName().compareToIgnoreCase(o.getGameName());
   }
 }

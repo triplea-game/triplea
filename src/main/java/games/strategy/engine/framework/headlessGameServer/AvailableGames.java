@@ -98,7 +98,7 @@ public class AvailableGames {
     }
     try {
       service.invokeAll(tasks);
-    } catch (InterruptedException e) {
+    } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
     } finally {
       service.shutdown();
