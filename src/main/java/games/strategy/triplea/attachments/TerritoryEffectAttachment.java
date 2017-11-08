@@ -147,7 +147,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_noBlitz = value;
   }
 
-  public ArrayList<UnitType> getNoBlitz() {
+  public List<UnitType> getNoBlitz() {
     return new ArrayList<>(m_noBlitz);
   }
 
@@ -182,7 +182,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_unitsNotAllowed = value;
   }
 
-  public ArrayList<UnitType> getUnitsNotAllowed() {
+  public List<UnitType> getUnitsNotAllowed() {
     return new ArrayList<>(m_unitsNotAllowed);
   }
 
