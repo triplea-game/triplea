@@ -3,7 +3,6 @@ package games.strategy.engine.framework.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -18,27 +17,13 @@ import games.strategy.engine.data.GameParser;
 import games.strategy.triplea.Constants;
 import games.strategy.util.UrlStreams;
 
-public class NewGameChooserEntry {
+public class GameChooserEntry implements Comparable<GameChooserEntry> {
   private final URI url;
   private GameData gameData;
   private boolean gameDataFullyLoaded = false;
   private final String gameNameAndMapNameProperty;
 
-  static Comparator<NewGameChooserEntry> getComparator() {
-    return new Comparator<NewGameChooserEntry>() {
-      @Override
-      public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2) {
-        return getLowerCaseComparable(o1).compareTo(getLowerCaseComparable(o2));
-      }
-
-      private String getLowerCaseComparable(final NewGameChooserEntry newGameChooserEntry) {
-        return newGameChooserEntry.getGameData().getGameName().toLowerCase();
-      }
-    };
-  }
-
-
-  public NewGameChooserEntry(final URI uri)
+  public GameChooserEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
     url = uri;
     final AtomicReference<String> gameName = new AtomicReference<>();
@@ -176,7 +161,7 @@ public class NewGameChooserEntry {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final NewGameChooserEntry other = (NewGameChooserEntry) obj;
+    final GameChooserEntry other = (GameChooserEntry) obj;
     if (gameData == null && other.gameData != null) {
       return false;
     } else {
@@ -185,5 +170,10 @@ public class NewGameChooserEntry {
       }
     }
     return this.gameNameAndMapNameProperty.equals(other.gameNameAndMapNameProperty);
+  }
+
+  @Override
+  public int compareTo(GameChooserEntry o) {
+    return getGameName().compareToIgnoreCase(o.getGameName());
   }
 }

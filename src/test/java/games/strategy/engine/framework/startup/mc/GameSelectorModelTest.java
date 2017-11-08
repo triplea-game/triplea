@@ -24,7 +24,7 @@ import org.mockito.Mockito;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.framework.GameDataFileUtils;
-import games.strategy.engine.framework.ui.NewGameChooserEntry;
+import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,7 +55,7 @@ public class GameSelectorModelTest {
   private GameSelectorModel testObj;
 
   @Mock
-  private NewGameChooserEntry mockEntry;
+  private GameChooserEntry mockEntry;
 
   @Mock
   private GameData mockGameData;

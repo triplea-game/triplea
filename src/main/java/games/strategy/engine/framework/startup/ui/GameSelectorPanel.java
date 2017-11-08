@@ -34,9 +34,10 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.engine.framework.ui.NewGameChooser;
-import games.strategy.engine.framework.ui.NewGameChooserEntry;
+import games.strategy.engine.framework.ui.GameChooser;
+import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.settings.ClientSetting;
 import swinglib.JButtonBuilder;
 
@@ -370,26 +371,40 @@ public class GameSelectorPanel extends JPanel implements Observer {
       if (file == null || !file.exists()) {
         return;
       }
-      model.load(file, this);
-      setOriginalPropertiesMap(model.getGameData());
+      try {
+        BackgroundTaskRunner.runInBackgroundAndReturn("Loading savegame...", () -> {
+          model.load(file, this);
+          setOriginalPropertiesMap(model.getGameData());
+          return null;
+        });
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
     } else {
-      final NewGameChooserEntry entry =
-          NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
-      if (entry != null) {
-        if (!entry.isGameDataLoaded()) {
-          try {
-            entry.fullyParseGameData();
-          } catch (final GameParseException e) {
-            entry.delayParseGameData();
-            NewGameChooser.getNewGameChooserModel().removeEntry(entry);
-            return;
-          }
+      try {
+        final GameChooserEntry entry =
+            GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
+        if (entry != null) {
+          BackgroundTaskRunner.runInBackgroundAndReturn("Loading map...", () -> {
+            if (!entry.isGameDataLoaded()) {
+              try {
+                entry.fullyParseGameData();
+              } catch (final GameParseException e) {
+                entry.delayParseGameData();
+                // TODO remove bad entries from the underlying model
+                return null;
+              }
+            }
+            model.load(entry);
+            return null;
+          });
+          setOriginalPropertiesMap(model.getGameData());
+          // only for new games, not saved games, we set the default options, and set them only once
+          // (the first time it is loaded)
+          gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
         }
-        model.load(entry);
-        setOriginalPropertiesMap(model.getGameData());
-        // only for new games, not saved games, we set the default options, and set them only once (the first time it is
-        // loaded)
-        gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
     }
   }

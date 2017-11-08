@@ -26,20 +26,21 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.data.GameData;
 import games.strategy.util.LocalizeHtml;
 
-public class NewGameChooser extends JDialog {
+public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
 
   private JButton okButton;
   private JButton cancelButton;
-  private JList<NewGameChooserEntry> gameList;
+  private JList<GameChooserEntry> gameList;
   private JPanel infoPanel;
   private JEditorPane notesPanel;
-  private NewGameChooserModel gameListModel;
-  private NewGameChooserEntry chosen;
+  private final GameChooserModel gameListModel;
+  private GameChooserEntry chosen;
 
-  private NewGameChooser(final Frame owner) {
+  private GameChooser(final Frame owner, final GameChooserModel gameChooserModel) {
     super(owner, "Select a Game", true);
+    gameListModel = gameChooserModel;
     createComponents();
     layoutCoponents();
     setupListeners();
@@ -50,7 +51,6 @@ public class NewGameChooser extends JDialog {
   private void createComponents() {
     okButton = new JButton("OK");
     cancelButton = new JButton("Cancel");
-    gameListModel = getNewGameChooserModel();
     gameList = new JList<>(gameListModel);
     infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
@@ -97,18 +97,18 @@ public class NewGameChooser extends JDialog {
     infoPanel.add(notesScroll, BorderLayout.CENTER);
   }
 
-  public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName) {
-    final NewGameChooser chooser = new NewGameChooser(parent);
+  public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
+      throws InterruptedException {
+    final GameChooser chooser = new GameChooser(parent, GameChooserModel.newInstance());
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
     chooser.selectGame(defaultGameName);
-    chooser.setVisible(true);
+    chooser.setVisible(true);// Blocking
     // chooser is now visible and waits for user action
-    final NewGameChooserEntry chosen = chooser.chosen;
     chooser.setVisible(false);
     chooser.removeAll();
     chooser.dispose();
-    return chosen;
+    return chooser.chosen;
   }
 
   private void selectGame(final String gameName) {
@@ -116,7 +116,7 @@ public class NewGameChooser extends JDialog {
       gameList.setSelectedIndex(0);
       return;
     }
-    final NewGameChooserEntry entry = gameListModel.findByName(gameName);
+    final GameChooserEntry entry = gameListModel.findByName(gameName);
     if (entry != null) {
       gameList.setSelectedValue(entry, true);
     }
@@ -157,7 +157,7 @@ public class NewGameChooser extends JDialog {
     builder.append("<b>").append(title).append("</b>").append(": ").append(value).append("<br>");
   }
 
-  private NewGameChooserEntry getSelected() {
+  private GameChooserEntry getSelected() {
     final int selected = gameList.getSelectedIndex();
     if (selected == -1) {
       return null;
@@ -191,11 +191,6 @@ public class NewGameChooser extends JDialog {
       @Override
       public void mouseExited(final MouseEvent e) {}
     });
-  }
-
-  /** Populates the NewGameChooserModel cache if empty, then returns the cached instance. */
-  public static synchronized NewGameChooserModel getNewGameChooserModel() {
-    return new NewGameChooserModel();
   }
 
   private void selectAndReturn() {
