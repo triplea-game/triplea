@@ -68,7 +68,7 @@ public final class BackgroundTaskRunner {
       final String message,
       final Supplier<T> backgroundAction)
       throws InterruptedException {
-    return runInBackgroundAndReturnOrThrow(message, () -> backgroundAction.get(), RuntimeException.class);
+    return runInBackgroundAndReturn(message, () -> backgroundAction.get(), RuntimeException.class);
   }
 
   /**
@@ -95,7 +95,7 @@ public final class BackgroundTaskRunner {
    * @throws E If the background action fails.
    * @throws InterruptedException If the UI thread is interrupted while waiting for the background action to complete.
    */
-  public static <T, E extends Exception> T runInBackgroundAndReturnOrThrow(
+  public static <T, E extends Exception> T runInBackgroundAndReturn(
       final String message,
       final ThrowingSupplier<T, E> backgroundAction,
       final Class<E> exceptionType)
