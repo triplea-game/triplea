@@ -14,9 +14,12 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.swing.JFileChooser;
@@ -105,11 +108,11 @@ public class GameRunner {
   private static final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel);
   private static JFrame mainFrame;
 
-  private static final String[] COMMAND_LINE_ARGS =
-      {TRIPLEA_GAME_PROPERTY, TRIPLEA_MAP_DOWNLOAD_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY,
-          TRIPLEA_HOST_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY,
-          TRIPLEA_STARTED, TRIPLEA_LOBBY_PORT_PROPERTY, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY,
-          TRIPLEA_ENGINE_VERSION_BIN, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER};
+  private static final Set<String> COMMAND_LINE_ARGS = new HashSet<>(Arrays.asList(
+      TRIPLEA_GAME_PROPERTY, TRIPLEA_MAP_DOWNLOAD_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY,
+      TRIPLEA_HOST_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY,
+      TRIPLEA_STARTED, TRIPLEA_LOBBY_PORT_PROPERTY, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY,
+      TRIPLEA_ENGINE_VERSION_BIN, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER));
 
 
   /**
@@ -124,7 +127,7 @@ public class GameRunner {
     if (!ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
       ErrorConsole.getConsole();
     }
-    if (!ArgParser.handleCommandLineArgs(args, COMMAND_LINE_ARGS)) {
+    if (!new ArgParser(COMMAND_LINE_ARGS).handleCommandLineArgs(args)) {
       usage();
       return;
     }

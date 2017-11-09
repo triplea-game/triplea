@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -469,14 +471,14 @@ public class HeadlessGameServer {
     }
   }
 
-  private static String[] getProperties() {
-    return new String[] {GameRunner.TRIPLEA_GAME_PROPERTY, GameRunner.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
+  private static Set<String> getProperties() {
+    return new HashSet<>(Arrays.asList(GameRunner.TRIPLEA_GAME_PROPERTY, GameRunner.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
         GameRunner.TRIPLEA_SERVER_PROPERTY, GameRunner.TRIPLEA_PORT_PROPERTY,
         GameRunner.TRIPLEA_NAME_PROPERTY, GameRunner.LOBBY_HOST, GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY,
         GameRunner.LOBBY_GAME_COMMENTS, GameRunner.LOBBY_GAME_HOSTED_BY, GameRunner.LOBBY_GAME_SUPPORT_EMAIL,
         GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner.LOBBY_GAME_RECONNECTION,
         GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
-        GameRunner.MAP_FOLDER};
+        GameRunner.MAP_FOLDER));
   }
 
   String getStatus() {
@@ -650,7 +652,7 @@ public class HeadlessGameServer {
     ClientSetting.initialize();
 
     System.getProperties().setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
-    if (!ArgParser.handleCommandLineArgs(args, getProperties())) {
+    if (!new ArgParser(getProperties()).handleCommandLineArgs(args)) {
       usage();
       return;
     }

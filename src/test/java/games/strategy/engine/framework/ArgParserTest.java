@@ -3,9 +3,11 @@ package games.strategy.engine.framework;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +28,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
     assertThat("check precondition, system property for our test key should not be set yet.",
         System.getProperty(TestData.propKey), nullValue());
 
-    final boolean result = ArgParser.handleCommandLineArgs(
-        TestData.sampleArgInput, TestData.samplePropertyNameSet);
+    final boolean result = new ArgParser(TestData.samplePropertyNameSet).handleCommandLineArgs(TestData.sampleArgInput);
 
     assertThat("prop key was supplied as an available value, "
         + " which was passed as a test value - everything should "
@@ -39,29 +40,15 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
   @Test
   public void emptySystemPropertiesCanBeSet() {
-    ArgParser.handleCommandLineArgs(new String[] {"a="}, new String[] {"a"});
+    new ArgParser(Collections.singleton("a")).handleCommandLineArgs(new String[] {"-Pa="});
     assertThat("expecting the system property to be empty string instead of null",
         System.getProperty("a"), is(""));
   }
 
   @Test
-  public void malformedInputThrowsException() {
-    Arrays.asList(
-        new String[] {"=a"}, // no key
-        new String[] {"="},
-        new String[] {"a=b", "a"},
-        new String[] {"a=b", " "})
-        .forEach(invalidInput -> {
-          assertThrows(
-              IllegalArgumentException.class,
-              () -> ArgParser.handleCommandLineArgs(invalidInput, new String[] {"a"}),
-              Arrays.toString(invalidInput));
-        });
-  }
-
-  @Test
   public void singleFileArgIsAssumedToBeGameProperty() {
-    ArgParser.handleCommandLineArgs(new String[] {TestData.propValue}, new String[] {GameRunner.TRIPLEA_GAME_PROPERTY});
+    new ArgParser(Collections.singleton(GameRunner.TRIPLEA_GAME_PROPERTY))
+        .handleCommandLineArgs(new String[] {TestData.propValue});
     assertThat("if we pass only one arg, it is assumed to mean we are specifying the 'game property'",
         System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY), is(TestData.propValue));
   }
@@ -69,7 +56,8 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
   @Test
   public void singleUrlArgIsAssumedToBeMapDownloadProperty() {
     final String testUrl = "triplea:" + TestData.propValue;
-    ArgParser.handleCommandLineArgs(new String[] {testUrl}, new String[] {GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY});
+    new ArgParser(Collections.singleton(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY))
+        .handleCommandLineArgs(new String[] {testUrl});
     assertThat("if we pass only one arg prefixed with 'triplea:',"
         + " it's assumed to mean we are specifying the 'map download property'",
         System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY), is(TestData.propValue));
@@ -78,7 +66,8 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
   @Test
   public void singleUrlArgIsUrlDecoded() {
     final String testUrl = "triplea:Something%20with+spaces%20and%20Special%20chars%20%F0%9F%A4%94";
-    ArgParser.handleCommandLineArgs(new String[] {testUrl}, new String[] {GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY});
+    new ArgParser(Collections.singleton(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY))
+        .handleCommandLineArgs(new String[] {testUrl});
     assertThat("if we pass only one arg prefixed with 'triplea:',"
         + " it should be properly URL-decoded as it's probably coming from a browser",
         System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY), is("Something with spaces and Special chars 🤔"));
@@ -86,22 +75,22 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
   @Test
   public void commandLineSwitchesAreIgnored() {
-    assertThat(ArgParser.handleCommandLineArgs(new String[] {"-console"}, new String[] {}), is(true));
+    assertThat(new ArgParser(Collections.emptySet()).handleCommandLineArgs(new String[] {"-console"}), is(true));
   }
 
   @Test
   public void returnFalseIfWeCannotMapKeysToAvailableSet() {
-    final String[] validKeys = {"a", "b"};
+    final Set<String> validKeys = new HashSet<>(Arrays.asList("a", "b"));
     Arrays.asList(
-        new String[] {"notMapped="},
-        new String[] {"notMapped=test"},
-        new String[] {"notMapped=test", "a=valid"},
-        new String[] {"a=valid", "notMapped=test"},
-        new String[] {"a=valid", "notMapped=test", "b=valid"},
-        new String[] {"a=valid", "b=valid", "notMapped=test"})
+        new String[] {"-PnotMapped="},
+        new String[] {"-PnotMapped=test"},
+        new String[] {"-PnotMapped=test", "-Pa=valid"},
+        new String[] {"-Pa=valid", "-PnotMapped=test"},
+        new String[] {"-Pa=valid", "-PnotMapped=test", "-Pb=valid"},
+        new String[] {"-Pa=valid", "-Pb=valid", "-PnotMapped=test"})
         .forEach(invalidInput -> assertThat("A key in the input is not in the valid key set, expecting this to be seen"
             + "as invalid: " + Arrays.asList(invalidInput),
-            ArgParser.handleCommandLineArgs(invalidInput, validKeys), is(false)));
+            new ArgParser(validKeys).handleCommandLineArgs(invalidInput), is(false)));
   }
 
   @Test
@@ -109,7 +98,8 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
     ClientSetting.MAP_FOLDER_OVERRIDE.save("some value");
     final String mapFolderPath = "/path/to/maps";
 
-    ArgParser.handleCommandLineArgs(new String[] {"mapFolder=" + mapFolderPath}, new String[] {GameRunner.MAP_FOLDER});
+    new ArgParser(Collections.singleton(GameRunner.MAP_FOLDER))
+        .handleCommandLineArgs(new String[] {"-PmapFolder=" + mapFolderPath});
 
     assertThat(ClientSetting.MAP_FOLDER_OVERRIDE.value(), is(mapFolderPath));
   }
@@ -118,7 +108,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
   public void mapFolderOverrideClientSettingIsResetWhenNotSpecified() {
     ClientSetting.MAP_FOLDER_OVERRIDE.save("some value");
 
-    ArgParser.handleCommandLineArgs(new String[0], new String[0]);
+    new ArgParser(Collections.emptySet()).handleCommandLineArgs(new String[0]);
 
     assertThat(ClientSetting.MAP_FOLDER_OVERRIDE.value(), is(ClientSetting.MAP_FOLDER_OVERRIDE.defaultValue));
   }
@@ -126,7 +116,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
   private interface TestData {
     String propKey = "key";
     String propValue = "value";
-    String[] sampleArgInput = new String[] {propKey + "=" + propValue};
-    String[] samplePropertyNameSet = new String[] {propKey};
+    String[] sampleArgInput = new String[] {"-P" + propKey + "=" + propValue};
+    Set<String> samplePropertyNameSet = Collections.singleton(propKey);
   }
 }
