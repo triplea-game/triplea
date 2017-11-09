@@ -120,7 +120,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
      */
     @Override
     public int hashCode() {
-      return Objects.hash(m_p1, m_p2);
+      return Objects.hashCode(m_p1) + Objects.hashCode(m_p2);
     }
 
     private final PlayerID m_p1;
