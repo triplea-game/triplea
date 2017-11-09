@@ -5,6 +5,14 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.settings.ClientSetting;
 
 /**
@@ -12,6 +20,7 @@ import games.strategy.triplea.settings.ClientSetting;
  */
 public final class ArgParser {
   private static final String TRIPLEA_PROTOCOL = "triplea:";
+  private static final String TRIPLEA_PROPERTY_PREFIX = "P";
 
   private ArgParser() {}
 
@@ -21,50 +30,54 @@ public final class ArgParser {
    * @return Return true if all args were valid and accepted, false otherwise.
    */
   public static boolean handleCommandLineArgs(final String[] args, final String[] availableProperties) {
-    if (args.length == 1 && !args[0].contains("=") && !isSwitch(args[0])) {
-      // assume a default single arg, convert the format so we can process as normally.
-      if (args[0].startsWith(TRIPLEA_PROTOCOL)) {
+    resetTransientClientSettings();
+    final Options options = getOptions();
+    final CommandLineParser parser = new DefaultParser();
+    try {
+      final CommandLine cli = parser.parse(options, args);
+      if (!cli.getOptionProperties(TRIPLEA_PROPERTY_PREFIX).entrySet().stream().allMatch(
+          entry -> setSystemPropertyOrClientSetting((String) entry.getKey(), (String) entry.getValue(),
+              availableProperties))) {
+      }
+
+      // Parse remaining options
+      parseRemaining(cli.getArgs(), availableProperties);
+
+    } catch (final ParseException e) {
+      ClientLogger.logError(e);
+    }
+    ClientSetting.flush();
+    return true;
+  }
+
+  private static void parseRemaining(final String[] remainingArgs, final String[] availableProperties) {
+    if (remainingArgs.length >= 1) {
+      if (remainingArgs[0].startsWith(TRIPLEA_PROTOCOL)) {
         final String encoding = StandardCharsets.UTF_8.displayName();
         try {
-          args[0] = GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY + "="
-              + URLDecoder.decode(args[0].substring(TRIPLEA_PROTOCOL.length()), encoding);
+          setSystemPropertyOrClientSetting(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY,
+              URLDecoder.decode(remainingArgs[0].substring(TRIPLEA_PROTOCOL.length()), encoding), availableProperties);
         } catch (final UnsupportedEncodingException e) {
           throw new AssertionError(encoding + " is not a supported encoding!", e);
         }
       } else {
-        args[0] = GameRunner.TRIPLEA_GAME_PROPERTY + "=" + args[0];
+        setSystemPropertyOrClientSetting(GameRunner.TRIPLEA_GAME_PROPERTY, remainingArgs[0], availableProperties);
       }
     }
-
-    resetTransientClientSettings();
-
-    for (final String arg : args) {
-      // ignore command-line switches forwarded by launchers
-      if (isSwitch(arg)) {
-        continue;
-      }
-
-      final String key;
-      final int indexOf = arg.indexOf('=');
-      if (indexOf > 0) {
-        key = arg.substring(0, indexOf);
-      } else {
-        throw new IllegalArgumentException("Argument " + arg + " doesn't match pattern 'key=value'");
-      }
-
-      if (!setSystemPropertyOrClientSetting(key, getValue(arg), availableProperties)) {
-        System.out.println("Unrecognized: " + arg + ", available: " + Arrays.asList(availableProperties));
-        return false;
-      }
-    }
-
-    ClientSetting.flush();
-
-    return true;
   }
 
-  private static boolean isSwitch(final String arg) {
-    return arg.startsWith("-");
+  private static Options getOptions() {
+    final Options options = new Options();
+    options.addOption(Option.builder(TRIPLEA_PROPERTY_PREFIX)
+        .argName("property=value")
+        .hasArgs()
+        .numberOfArgs(2)
+        .valueSeparator()
+        .desc("Assign the given value to the given property key.")
+        .build());
+    // See https://github.com/triplea-game/triplea/pull/2574 for more information
+    options.addOption(Option.builder("console").build());
+    return options;
   }
 
   /**
@@ -87,6 +100,7 @@ public final class ArgParser {
       final String value,
       final String[] availableProperties) {
     if (!Arrays.stream(availableProperties).anyMatch(key::equals)) {
+      System.out.println(String.format("Key %s is unknown", key));
       return false;
     }
 
@@ -105,13 +119,5 @@ public final class ArgParser {
     }
 
     return false;
-  }
-
-  private static String getValue(final String arg) {
-    final int index = arg.indexOf('=');
-    if (index == -1) {
-      return "";
-    }
-    return arg.substring(index + 1);
   }
 }
