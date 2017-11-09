@@ -23,6 +23,7 @@ import java.util.zip.ZipFile;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -51,21 +52,21 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
 
   /**
    * Creates a new Instance of a GameChooserModel.
-   * Must be called on the EDT, will not return until all
+   * If called on the EDT, will not return until all
    * map files have been scanned, but is not going to
    * effectively block the EDT.
    *
    * @return The newly created instance.
    *
-   * @throws InterruptedException If this Thread is being interrupted
+   * @throws InterruptedException If called on the EDT and this thread is interrupted
    *         while waiting for the SwingWorker to complete.
-   * @throws IllegalStateException If this method is called on any other
-   *         Thread than the Swing Event Dispatch Thread.
    */
   public static GameChooserModel newInstance() throws InterruptedException {
-    return new GameChooserModel(BackgroundTaskRunner.runInBackgroundAndReturn(
-        "Loading all available games...",
-        GameChooserModel::parseMapFiles));
+    return new GameChooserModel(SwingUtilities.isEventDispatchThread()
+        ? BackgroundTaskRunner.runInBackgroundAndReturn(
+            "Loading all available games...",
+            GameChooserModel::parseMapFiles)
+        : parseMapFiles());
   }
 
   @Override
