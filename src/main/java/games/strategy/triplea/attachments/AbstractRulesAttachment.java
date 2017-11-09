@@ -1,8 +1,8 @@
 package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -79,7 +79,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   public List<PlayerID> getPlayers() {
     if (m_players.isEmpty()) {
-      return Arrays.asList((PlayerID) getAttachedTo());
+      return new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo()));
     } else {
       return m_players;
     }
