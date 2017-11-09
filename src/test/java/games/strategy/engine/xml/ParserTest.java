@@ -154,6 +154,6 @@ public class ParserTest {
   public void testResourcesGiven() {
     final PlayerID chretian = gameData.getPlayerList().getPlayerId("chretian");
     final Resource resource = gameData.getResourceList().getResource("silver");
-    assertEquals(chretian.getResources().getQuantity(resource), 200);
+    assertEquals(200, chretian.getResources().getQuantity(resource));
   }
 }

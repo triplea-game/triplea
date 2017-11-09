@@ -64,13 +64,13 @@ public class PlayerAttachment extends DefaultAttachment {
   // what can be hit by suicide attacks
   private Set<UnitType> m_suicideAttackTargets = null;
   // placement limits on a flexible per player basis
-  private Set<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit = new HashSet<>();
+  private Set<Triple<Integer, String, Set<UnitType>>> m_placementLimit = new HashSet<>();
 
   // movement limits on a flexible per player basis
-  private Set<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit = new HashSet<>();
+  private Set<Triple<Integer, String, Set<UnitType>>> m_movementLimit = new HashSet<>();
 
   // attacking limits on a flexible per player basis
-  private Set<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit = new HashSet<>();
+  private Set<Triple<Integer, String, Set<UnitType>>> m_attackingLimit = new HashSet<>();
 
   /** Creates new PlayerAttachment. */
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -110,11 +110,11 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlacementLimit(final HashSet<Triple<Integer, String, HashSet<UnitType>>> value) {
+  public void setPlacementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
     m_placementLimit = value;
   }
 
-  public Set<Triple<Integer, String, HashSet<UnitType>>> getPlacementLimit() {
+  public Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit() {
     return m_placementLimit;
   }
 
@@ -159,11 +159,11 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMovementLimit(final HashSet<Triple<Integer, String, HashSet<UnitType>>> value) {
+  public void setMovementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
     m_movementLimit = value;
   }
 
-  public Set<Triple<Integer, String, HashSet<UnitType>>> getMovementLimit() {
+  public Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit() {
     return m_movementLimit;
   }
 
@@ -208,11 +208,11 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttackingLimit(final HashSet<Triple<Integer, String, HashSet<UnitType>>> value) {
+  public void setAttackingLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
     m_attackingLimit = value;
   }
 
-  public Set<Triple<Integer, String, HashSet<UnitType>>> getAttackingLimit() {
+  public Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit() {
     return m_attackingLimit;
   }
 
@@ -230,7 +230,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (pa == null) {
       return true;
     }
-    final Set<Triple<Integer, String, HashSet<UnitType>>> stackingLimits;
+    final Set<Triple<Integer, String, Set<UnitType>>> stackingLimits;
     if (limitType.equals("movementLimit")) {
       stackingLimits = pa.getMovementLimit();
     } else if (limitType.equals("attackingLimit")) {
@@ -244,12 +244,12 @@ public class PlayerAttachment extends DefaultAttachment {
     if (stackingLimits.isEmpty()) {
       return true;
     }
-    for (final Triple<Integer, String, HashSet<UnitType>> currentLimit : stackingLimits) {
+    for (final Triple<Integer, String, Set<UnitType>> currentLimit : stackingLimits) {
       // first make a copy of unitsMoving
       final Collection<Unit> copyUnitsMoving = new ArrayList<>(unitsMoving);
       final int max = currentLimit.getFirst();
       final String type = currentLimit.getSecond();
-      final HashSet<UnitType> unitsToTest = currentLimit.getThird();
+      final Set<UnitType> unitsToTest = currentLimit.getThird();
       final Collection<Unit> currentInTerritory = toMoveInto.getUnits().getUnits();
       // first remove units that do not apply to our current type
       if (type.equals("owned")) {

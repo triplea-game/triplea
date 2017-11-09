@@ -58,7 +58,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private ProductionFrontier m_frontier = null;
   private List<String> m_productionRule = null;
   private List<TechAdvance> m_tech = new ArrayList<>();
-  private Map<String, LinkedHashMap<TechAdvance, Boolean>> m_availableTech = null;
+  private Map<String, Map<TechAdvance, Boolean>> m_availableTech = null;
   private Map<Territory, IntegerMap<UnitType>> m_placement = null;
   private Map<Territory, IntegerMap<UnitType>> m_removeUnits = null;
   private IntegerMap<UnitType> m_purchase = null;
@@ -518,11 +518,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAvailableTech(final HashMap<String, LinkedHashMap<TechAdvance, Boolean>> value) {
+  public void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value) {
     m_availableTech = value;
   }
 
-  public Map<String, LinkedHashMap<TechAdvance, Boolean>> getAvailableTech() {
+  public Map<String, Map<TechAdvance, Boolean>> getAvailableTech() {
     return m_availableTech;
   }
 
@@ -2149,7 +2149,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       triggerAttachment.getProductionRule().stream().map(s -> s.split(":")).forEach(array -> {
         final ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(array[0]);
-        String rule = array[1];
+        final String rule = array[1];
         if (!rule.startsWith("-")) {
           final ProductionRule productionRule =
               data.getProductionRuleList().getProductionRule(rule);
