@@ -225,7 +225,7 @@ public class BattleTracker implements Serializable {
     // We must look at all territories,
     // because we could have conquered the end territory if there are no units there
     for (final Territory current : route.getAllTerritories()) {
-      if (!relationshipTracker.isAllied(player, current.getOwner()) && m_conquered.contains(current)) {
+      if (!relationshipTracker.isAllied(current.getOwner(), player) && m_conquered.contains(current)) {
         m_conquered.remove(current);
         m_blitzed.remove(current);
       }
