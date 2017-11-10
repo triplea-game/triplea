@@ -74,7 +74,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void commandLineSwitchesAreIgnored() {
+  public void install4jSwitchesAreIgnored() {
     assertThat(new ArgParser(Collections.emptySet()).handleCommandLineArgs(new String[] {"-console"}), is(true));
   }
 
