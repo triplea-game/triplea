@@ -1,6 +1,7 @@
 package games.strategy.engine.vault;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import games.strategy.net.INode;
 
@@ -46,7 +47,7 @@ public class VaultID implements Serializable {
 
   @Override
   public int hashCode() {
-    return ((int) m_uniqueID) ^ m_generatedOn.getName().hashCode();
+    return Objects.hash(m_uniqueID, m_generatedOn.getName());
   }
 
   @Override

@@ -1,9 +1,9 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
+import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.util.Version;
@@ -146,12 +146,11 @@ public class DownloadFileDescription {
       return false;
     }
     final DownloadFileDescription other = (DownloadFileDescription) rhs;
-    return Objects.equal(this.url, other.url);
+    return Objects.equals(this.url, other.url);
   }
 
   @Override
   public int hashCode() {
-    return url.hashCode();
+    return Objects.hashCode(url);
   }
-
 }

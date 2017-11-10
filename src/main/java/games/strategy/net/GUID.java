@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.rmi.dgc.VMID;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -67,7 +68,7 @@ public final class GUID implements Externalizable {
 
   @Override
   public int hashCode() {
-    return m_id ^ m_prefix.hashCode();
+    return Objects.hash(m_id, m_prefix);
   }
 
   @Override

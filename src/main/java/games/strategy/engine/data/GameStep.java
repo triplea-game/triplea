@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import java.util.Objects;
 import java.util.Properties;
 
 import games.strategy.engine.delegate.IDelegate;
@@ -18,7 +19,6 @@ public class GameStep extends GameDataComponent {
   private final String m_displayName;
   private final PlayerID m_player;
   private final String m_delegate;
-  private int m_hashCode = -1;
   private int m_runCount = 0;
   private int m_maxRunCount = -1;
   private final Properties m_properties;
@@ -110,11 +110,7 @@ public class GameStep extends GameDataComponent {
 
   @Override
   public int hashCode() {
-    if (m_hashCode == -1) {
-      final String s = m_name + m_delegate + m_player;
-      m_hashCode = s.hashCode();
-    }
-    return m_hashCode;
+    return Objects.hash(m_name, m_delegate, m_player);
   }
 
   public String getDisplayName() {

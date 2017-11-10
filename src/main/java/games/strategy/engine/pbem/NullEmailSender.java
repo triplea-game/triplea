@@ -1,6 +1,7 @@
 package games.strategy.engine.pbem;
 
 import java.io.File;
+import java.util.Objects;
 
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 
@@ -80,6 +81,6 @@ public class NullEmailSender implements IEmailSender {
 
   @Override
   public int hashCode() {
-    return getClass().hashCode();
+    return Objects.hashCode(getClass());
   }
 }

@@ -38,7 +38,7 @@ public class DefaultNamed extends GameDataComponent implements Named {
     if (m_name == null) {
       logSerializationWarning();
     }
-    return Objects.hash(m_name);
+    return Objects.hashCode(m_name);
   }
 
   private static void logSerializationWarning() {

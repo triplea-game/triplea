@@ -2,6 +2,8 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Objects;
+
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.net.GUID;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -135,7 +137,7 @@ public class Unit extends GameDataComponent {
       UnitDeserializationErrorLazyMessage.printError(text);
       return 0;
     }
-    return m_uid.hashCode();
+    return Objects.hashCode(m_uid);
   }
 
   @Override

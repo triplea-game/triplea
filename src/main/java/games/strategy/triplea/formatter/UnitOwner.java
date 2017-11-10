@@ -1,5 +1,7 @@
 package games.strategy.triplea.formatter;
 
+import java.util.Objects;
+
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 
@@ -23,6 +25,6 @@ class UnitOwner {
 
   @Override
   public int hashCode() {
-    return type.hashCode() ^ owner.hashCode();
+    return Objects.hash(type, owner);
   }
 }
