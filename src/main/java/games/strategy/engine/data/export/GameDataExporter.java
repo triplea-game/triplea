@@ -652,7 +652,7 @@ public class GameDataExporter {
 
     @Override
     public int hashCode() {
-      return Objects.hash(territory1, territory2);
+      return Objects.hashCode(territory1) + Objects.hashCode(territory2);
     }
 
     @Override
