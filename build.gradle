@@ -85,7 +85,6 @@ repositories {
 
 dependencies {
     errorprone 'com.google.errorprone:error_prone_core:2.0.5'
-    compile 'commons-io:commons-io:2.5'
     compile 'org.postgresql:postgresql:42.1.4'
     compile 'com.github.insubstantial:substance:7.3'
     compile 'com.google.code.findbugs:jsr305:3.0.2'
@@ -106,9 +105,11 @@ dependencies {
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.1'
     testCompile 'org.mockito:mockito-core:2.11.0'
+    testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
 
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
     testRuntime 'org.junit.platform:junit-platform-launcher:1.0.1'
+    testRuntime 'org.slf4j:slf4j-nop:1.7.25'
 }
 
 task integTest(type: JavaExec, dependsOn: [compileIntegTestJava]) {

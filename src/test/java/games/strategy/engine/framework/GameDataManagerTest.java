@@ -21,8 +21,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TestGameDataFactory;
 import games.strategy.io.IoUtils;
 import games.strategy.persistence.serializable.ProxyRegistry;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
-public class GameDataManagerTest {
+public class GameDataManagerTest extends AbstractClientSettingTestCase {
   @Test
   public void testLoadStoreKeepsGameUuid() throws IOException {
     final GameData data = new GameData();

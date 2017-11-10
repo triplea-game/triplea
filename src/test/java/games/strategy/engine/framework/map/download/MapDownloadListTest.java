@@ -16,10 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
-public class MapDownloadListTest {
+public class MapDownloadListTest extends AbstractClientSettingTestCase {
   private static final String MAP_NAME = "new_test_order";
   private static final Version MAP_VERSION = new Version(10, 10);
   private static final Version lowVersion = new Version(0, 0);

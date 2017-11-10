@@ -24,13 +24,14 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.ResourceCollection;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PropertyUtil;
 
 /**
  * A test that validates that all attachment classes have properties with valid setters and getters.
  */
-public class ValidateAttachmentsTest {
+public class ValidateAttachmentsTest extends AbstractClientSettingTestCase {
   /**
    * Test that the Example Attachment is valid.
    */

@@ -25,10 +25,11 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ui.GameChooserEntry;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
-public class GameSelectorModelTest {
+public class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
     assertThat(objectToCheck.getGameData(), nullValue());
