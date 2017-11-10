@@ -1,9 +1,13 @@
 package games.strategy.triplea.settings;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.annotation.Nullable;
 import javax.swing.UIManager;
 
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
@@ -116,8 +120,9 @@ public enum ClientSetting implements GameSetting {
   @VisibleForTesting
   TEST_SETTING;
 
-  public final String defaultValue;
+  private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
+  public final String defaultValue;
 
   ClientSetting() {
     this("");
@@ -139,6 +144,40 @@ public enum ClientSetting implements GameSetting {
     this(String.valueOf(defaultValue));
   }
 
+  /**
+   * Initializes the client settings framework.
+   *
+   * <p>
+   * This method must be called before using the client settings framework. Failure to do so may result in an
+   * {@code IllegalStateException} being thrown by methods of this class.
+   * </p>
+   */
+  public static void initialize() {
+    setPreferences(Preferences.userNodeForPackage(ClientSetting.class));
+  }
+
+  @VisibleForTesting
+  static void setPreferences(final Preferences preferences) {
+    checkNotNull(preferences);
+
+    preferencesRef.set(preferences);
+  }
+
+  @VisibleForTesting
+  static void resetPreferences() {
+    preferencesRef.set(null);
+  }
+
+  private static Preferences getPreferences() {
+    final @Nullable Preferences preferences = preferencesRef.get();
+    if (preferences == null) {
+      throw new IllegalStateException("ClientSetting framework has not been initialized. "
+          + "Did you forget to call ClientSetting#initialize() in production code "
+          + "or ClientSetting#setPreferences() in test code?");
+    }
+    return preferences;
+  }
+
   private static String getDefaultLookAndFeelClassName() {
     // stay consistent with mac look and feel if we are on a mac
     return SystemProperties.isMac()
@@ -156,7 +195,7 @@ public enum ClientSetting implements GameSetting {
    */
   public static void flush() {
     try {
-      Preferences.userNodeForPackage(ClientSetting.class).flush();
+      getPreferences().flush();
     } catch (final BackingStoreException e) {
       ClientLogger.logError("Failed to save settings", e);
     }
@@ -169,15 +208,15 @@ public enum ClientSetting implements GameSetting {
 
   @Override
   public void save(final String newValue) {
-    Preferences.userNodeForPackage(ClientSetting.class).put(name(), newValue);
+    getPreferences().put(name(), newValue);
   }
 
   public static void save(final String key, final String value) {
-    Preferences.userNodeForPackage(ClientSetting.class).put(key, value);
+    getPreferences().put(key, value);
   }
 
   public static String load(final String key) {
-    return Preferences.userNodeForPackage(ClientSetting.class).get(key, "");
+    return getPreferences().get(key, "");
   }
 
   public void saveAndFlush(final String newValue) {
@@ -185,10 +224,9 @@ public enum ClientSetting implements GameSetting {
     ClientSetting.flush();
   }
 
-
   @Override
   public String value() {
-    return Strings.nullToEmpty(Preferences.userNodeForPackage(ClientSetting.class).get(name(), defaultValue));
+    return Strings.nullToEmpty(getPreferences().get(name(), defaultValue));
   }
 
   @Override

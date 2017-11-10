@@ -10,9 +10,10 @@ import java.util.Arrays;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 
-public class ArgParserTest {
+public class ArgParserTest extends AbstractClientSettingTestCase {
 
 
   @AfterEach

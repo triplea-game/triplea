@@ -16,7 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Maps;
 
-public class ResourceLoaderTest {
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
+
+public class ResourceLoaderTest extends AbstractClientSettingTestCase {
   @Test
   public void testGetMapZipFileCandidates_ShouldIncludeDefaultZipFile() {
     final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");

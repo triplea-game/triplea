@@ -119,6 +119,7 @@ public class GameRunner {
    */
   public static void main(final String[] args) {
     LoggingConfiguration.initialize();
+    ClientSetting.initialize();
 
     if (!ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
       ErrorConsole.getConsole();

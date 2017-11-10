@@ -16,11 +16,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 
 
 @ExtendWith(MockitoExtension.class)
-public class JComboBoxBuilderTest {
+public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
   @Mock
   private ItemEvent mockItemEvent;
 

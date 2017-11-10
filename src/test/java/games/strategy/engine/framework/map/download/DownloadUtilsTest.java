@@ -36,8 +36,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 
 import games.strategy.engine.framework.map.download.DownloadUtils.DownloadLengthSupplier;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
-public final class DownloadUtilsTest {
+public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
   private static final String URI = "some://uri";
 
   @ExtendWith(MockitoExtension.class)

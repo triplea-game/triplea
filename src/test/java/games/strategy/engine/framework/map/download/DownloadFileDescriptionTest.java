@@ -8,9 +8,10 @@ import java.io.File;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.util.Version;
 
-public class DownloadFileDescriptionTest {
+public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
 
   @Test
   public void testIsMap() {
