@@ -665,6 +665,7 @@ public class HeadlessGameServer {
   }
 
   private static void usage() {
+    // TODO replace this method with the generated usage of commons-cli
     System.out.println("\nUsage and Valid Arguments:\n"
         + "   " + GameRunner.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
         + "   " + GameRunner.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
