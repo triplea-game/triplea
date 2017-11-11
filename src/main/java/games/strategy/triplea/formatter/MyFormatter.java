@@ -18,6 +18,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.util.UnitOwner;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -90,9 +91,9 @@ public class MyFormatter {
       final int quantity = map.getInt(owner);
       buf.append(quantity);
       buf.append(" ");
-      buf.append(quantity > 1 ? pluralize(owner.type.getName()) : owner.type.getName());
+      buf.append(quantity > 1 ? pluralize(owner.getType().getName()) : owner.getType().getName());
       buf.append(" owned by the ");
-      buf.append(owner.owner.getName());
+      buf.append(owner.getOwner().getName());
       count--;
       if (count > 1) {
         buf.append(", ");
