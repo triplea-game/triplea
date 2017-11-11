@@ -196,7 +196,7 @@ public final class Match<T> implements Predicate<T> {
    * Temporary, to be able to migrate to the Predicate interface.
    */
   @Override
-  public boolean test(T t) {
+  public boolean test(final T t) {
     return match(t);
   }
 }

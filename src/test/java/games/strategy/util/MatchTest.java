@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +19,13 @@ public class MatchTest {
     assertFalse(IS_ZERO_MATCH.match(-1));
     assertTrue(IS_ZERO_MATCH.match(0));
     assertFalse(IS_ZERO_MATCH.match(1));
+  }
+
+  @Test
+  public void testTest() {
+    assertFalse(IS_ZERO_MATCH.test(-1));
+    assertTrue(IS_ZERO_MATCH.test(0));
+    assertFalse(IS_ZERO_MATCH.test(1));
   }
 
   @Test
@@ -71,15 +77,6 @@ public class MatchTest {
     assertTrue(Match.anyMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH), "some match (multiple elements)");
     assertTrue(Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH), "all match (one element)");
     assertTrue(Match.anyMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH), "all match (multiple elements)");
-  }
-
-  @Test
-  public void testNoneMatch() {
-    assertTrue(Stream.<Integer>empty().noneMatch(IS_ZERO_MATCH), "empty collection");
-    assertTrue(Arrays.asList(-1).stream().noneMatch(IS_ZERO_MATCH), "none match (one element)");
-    assertTrue(Arrays.asList(-1, 1).stream().noneMatch(IS_ZERO_MATCH), "none match (multiple elements)");
-    assertFalse(Arrays.asList(-1, 0, 1).stream().noneMatch(IS_ZERO_MATCH), "some match");
-    assertFalse(Arrays.asList(0, 0, 0).stream().noneMatch(IS_ZERO_MATCH), "all match");
   }
 
   @Test
