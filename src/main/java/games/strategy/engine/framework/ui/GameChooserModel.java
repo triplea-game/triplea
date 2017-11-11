@@ -23,50 +23,37 @@ import java.util.zip.ZipFile;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingAction;
 
-public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
+/**
+ * The model for a {@link GameChooser} dialog.
+ */
+public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
   private enum ZipProcessingResult {
     SUCCESS, ERROR
   }
 
-  @VisibleForTesting
-  GameChooserModel(final Set<GameChooserEntry> gameChooserEntries) {
-    gameChooserEntries.stream().sorted().forEach(this::addElement);
+  /**
+   * Initializes a new {@code GameChooserModel} using all available maps installed in the user's maps folder. This
+   * method will block until all maps are parsed and should not be called from the EDT.
+   */
+  public GameChooserModel() {
+    this(parseMapFiles());
   }
 
-  /**
-   * Creates a new Instance of a GameChooserModel.
-   * If called on the EDT, will not return until all
-   * map files have been scanned, but is not going to
-   * effectively block the EDT.
-   *
-   * @return The newly created instance.
-   *
-   * @throws InterruptedException If called on the EDT and this thread is interrupted
-   *         while waiting for the SwingWorker to complete.
-   */
-  public static GameChooserModel newInstance() throws InterruptedException {
-    return new GameChooserModel(SwingUtilities.isEventDispatchThread()
-        ? BackgroundTaskRunner.runInBackgroundAndReturn(
-            "Loading all available games...",
-            GameChooserModel::parseMapFiles)
-        : parseMapFiles());
+  GameChooserModel(final Set<GameChooserEntry> gameChooserEntries) {
+    gameChooserEntries.stream().sorted().forEach(this::addElement);
   }
 
   @Override
@@ -86,7 +73,7 @@ public class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     return Arrays.asList(files);
   }
 
-  private static Set<GameChooserEntry> parseMapFiles() {
+  static Set<GameChooserEntry> parseMapFiles() {
     final List<File> files = allMapFiles();
     final Set<GameChooserEntry> parsedMapSet = new HashSet<>(files.size());
     final ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 2);

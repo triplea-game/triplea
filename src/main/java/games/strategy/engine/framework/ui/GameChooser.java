@@ -24,6 +24,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.util.LocalizeHtml;
 
 public class GameChooser extends JDialog {
@@ -99,7 +100,10 @@ public class GameChooser extends JDialog {
 
   public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
       throws InterruptedException {
-    final GameChooser chooser = new GameChooser(parent, GameChooserModel.newInstance());
+    final GameChooserModel gameChooserModel = new GameChooserModel(BackgroundTaskRunner.runInBackgroundAndReturn(
+        "Loading all available games...",
+        GameChooserModel::parseMapFiles));
+    final GameChooser chooser = new GameChooser(parent, gameChooserModel);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
     chooser.selectGame(defaultGameName);
