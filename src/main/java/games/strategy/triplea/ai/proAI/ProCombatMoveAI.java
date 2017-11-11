@@ -1019,7 +1019,7 @@ class ProCombatMoveAI {
         // Add destroyer if territory has subs and a destroyer has been already added
         final List<Unit> defendingUnits = attackMap.get(t).getMaxEnemyDefenders(player, data);
         if (Match.anyMatch(defendingUnits, Matches.unitIsSub())
-            && Match.noneMatch(attackMap.get(t).getUnits(), Matches.unitIsDestroyer())) {
+            && attackMap.get(t).getUnits().stream().noneMatch(Matches.unitIsDestroyer())) {
           attackMap.get(t).addUnit(unit);
           it.remove();
           break;
@@ -1128,7 +1128,7 @@ class ProCombatMoveAI {
               || (!result.isHasLandUnitRemaining() && minWinTerritory == null)) {
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean hasNoDefenders =
-                Match.noneMatch(defendingUnits, ProMatches.unitIsEnemyAndNotInfa(player, data));
+                defendingUnits.stream().noneMatch(ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = Match.anyMatch(defendingUnits, Matches.unitIsAaForAnything());
@@ -1186,7 +1186,7 @@ class ProCombatMoveAI {
               || (!result.isHasLandUnitRemaining() && minWinTerritory == null)) {
             final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
             final boolean hasNoDefenders =
-                Match.noneMatch(defendingUnits, ProMatches.unitIsEnemyAndNotInfa(player, data));
+                defendingUnits.stream().noneMatch(ProMatches.unitIsEnemyAndNotInfa(player, data));
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = Match.anyMatch(defendingUnits, Matches.unitIsAaForAnything());

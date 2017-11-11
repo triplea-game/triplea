@@ -1066,7 +1066,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(final Collection<Unit> units,
       final String filterForAbility, final GameData data) {
-    if (Match.noneMatch(units, Matches.unitCanReceiveAbilityWhenWith())) {
+    if (units.stream().noneMatch(Matches.unitCanReceiveAbilityWhenWith())) {
       return new ArrayList<>();
     }
     final Collection<Unit> unitsCopy = new ArrayList<>(units);

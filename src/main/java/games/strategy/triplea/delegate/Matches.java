@@ -1976,7 +1976,7 @@ public final class Matches {
       for (final String[] array : ua.getRequiresUnitsToMove()) {
         boolean haveAll = true;
         for (final UnitType ut : ua.getListedUnits(array)) {
-          if (Match.noneMatch(units, unitIsOfType(ut))) {
+          if (units.stream().noneMatch(unitIsOfType(ut))) {
             haveAll = false;
             break;
           }

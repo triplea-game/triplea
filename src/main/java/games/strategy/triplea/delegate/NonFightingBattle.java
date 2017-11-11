@@ -130,7 +130,7 @@ public class NonFightingBattle extends DependentBattle {
       }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
-      if (Match.noneMatch(attackingFromMapUnits, Matches.unitIsLand())) {
+      if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
         getAmphibiousAttackTerritories().remove(attackingFrom);
         // do we have any amphibious attacks left?
         m_isAmphibious = !getAmphibiousAttackTerritories().isEmpty();

@@ -114,7 +114,7 @@ public class FinishedBattle extends AbstractBattle {
       }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
-      if (Match.noneMatch(attackingFromMapUnits, Matches.unitIsLand())) {
+      if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
         m_amphibiousAttackFrom.remove(attackingFrom);
         // do we have any amphibious attacks left?
         m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();

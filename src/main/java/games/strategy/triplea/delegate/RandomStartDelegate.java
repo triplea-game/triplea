@@ -52,8 +52,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    return !(Match.noneMatch(getData().getMap().getTerritories(), getTerritoryPickableMatch())
-        && Match.noneMatch(getData().getPlayerList().getPlayers(), getPlayerCanPickMatch()));
+    return !(getData().getMap().getTerritories().stream().noneMatch(getTerritoryPickableMatch())
+        && getData().getPlayerList().getPlayers().stream().noneMatch(getPlayerCanPickMatch()));
   }
 
   @Override

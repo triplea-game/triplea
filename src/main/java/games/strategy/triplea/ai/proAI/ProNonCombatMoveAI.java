@@ -461,9 +461,9 @@ class ProNonCombatMoveAI {
       // Determine defending unit value
       final int cantMoveUnitValue = TuvUtils.getTuv(moveMap.get(t).getCantMoveUnits(), ProData.unitValueMap);
       double unitOwnerMultiplier = 1;
-      if (Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.unitIsOwnedBy(player))) {
+      if (moveMap.get(t).getCantMoveUnits().stream().noneMatch(Matches.unitIsOwnedBy(player))) {
         if (t.isWater()
-            && Match.noneMatch(moveMap.get(t).getCantMoveUnits(), Matches.unitIsTransportButNotCombatTransport())) {
+            && moveMap.get(t).getCantMoveUnits().stream().noneMatch(Matches.unitIsTransportButNotCombatTransport())) {
           unitOwnerMultiplier = 0;
         } else {
           unitOwnerMultiplier = 0.5;
@@ -504,7 +504,7 @@ class ProNonCombatMoveAI {
               .territoryHasNeighborOwnedByAndHasLandUnit(data, ProUtils.getPotentialEnemyPlayers(player))
               .match(t);
       final boolean isNotFactoryAndOnlyAmphib = !t.isWater() && !hasFactory
-          && Match.noneMatch(moveMap.get(t).getMaxUnits(), Matches.unitIsLand()) && cantMoveUnitValue < 5;
+          && moveMap.get(t).getMaxUnits().stream().noneMatch(Matches.unitIsLand()) && cantMoveUnitValue < 5;
       if (!patd.isCanHold() || patd.getValue() <= 0 || isLandAndCanOnlyBeAttackedByAir || isNotFactoryAndShouldHold
           || canAlreadyBeHeld || isNotFactoryAndHasNoEnemyNeighbors || isNotFactoryAndOnlyAmphib) {
         final double tuvSwing = minResult.getTuvSwing();
@@ -1887,7 +1887,7 @@ class ProNonCombatMoveAI {
             final int production = TerritoryAttachment.get(t).getProduction();
             double value = 0.1 * moveMap.get(t).getValue();
             if (ProMatches.territoryIsNotConqueredOwnedLand(player, data).match(t)
-                && Match.noneMatch(units, Matches.unitCanProduceUnitsAndIsInfrastructure())) {
+                && units.stream().noneMatch(Matches.unitCanProduceUnitsAndIsInfrastructure())) {
               value = moveMap.get(t).getValue() * production + 0.01 * production;
             }
             ProLogger.trace(t.getName() + " has value=" + value + ", strategicValue=" + moveMap.get(t).getValue()

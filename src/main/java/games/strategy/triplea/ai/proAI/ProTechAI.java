@@ -287,9 +287,9 @@ final class ProTechAI {
     if (units.isEmpty()) {
       return strength;
     }
-    if (attacking && Match.noneMatch(units, Matches.unitHasAttackValueOfAtLeast(1))) {
+    if (attacking && units.stream().noneMatch(Matches.unitHasAttackValueOfAtLeast(1))) {
       return strength;
-    } else if (!attacking && Match.noneMatch(units, Matches.unitHasDefendValueOfAtLeast(1))) {
+    } else if (!attacking && units.stream().noneMatch(Matches.unitHasDefendValueOfAtLeast(1))) {
       return strength;
     }
     for (final Unit u : units) {

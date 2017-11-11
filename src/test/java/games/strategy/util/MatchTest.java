@@ -22,6 +22,13 @@ public class MatchTest {
   }
 
   @Test
+  public void testTest() {
+    assertFalse(IS_ZERO_MATCH.test(-1));
+    assertTrue(IS_ZERO_MATCH.test(0));
+    assertFalse(IS_ZERO_MATCH.test(1));
+  }
+
+  @Test
   public void testInverse() {
     assertFalse(Matches.always().invert().match(VALUE));
     assertTrue(Matches.never().invert().match(VALUE));
@@ -70,15 +77,6 @@ public class MatchTest {
     assertTrue(Match.anyMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH), "some match (multiple elements)");
     assertTrue(Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH), "all match (one element)");
     assertTrue(Match.anyMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH), "all match (multiple elements)");
-  }
-
-  @Test
-  public void testNoneMatch() {
-    assertTrue(Match.noneMatch(Arrays.asList(), IS_ZERO_MATCH), "empty collection");
-    assertTrue(Match.noneMatch(Arrays.asList(-1), IS_ZERO_MATCH), "none match (one element)");
-    assertTrue(Match.noneMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH), "none match (multiple elements)");
-    assertFalse(Match.noneMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH), "some match");
-    assertFalse(Match.noneMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH), "all match");
   }
 
   @Test

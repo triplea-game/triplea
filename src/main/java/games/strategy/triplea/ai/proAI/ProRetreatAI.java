@@ -20,7 +20,6 @@ import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 /**
  * Pro retreat AI.
@@ -86,7 +85,7 @@ class ProRetreatAI {
 
     // Calculate current attack value
     double territoryValue = 0;
-    if (result.isHasLandUnitRemaining() || Match.noneMatch(attackers, Matches.unitIsAir())) {
+    if (result.isHasLandUnitRemaining() || attackers.stream().noneMatch(Matches.unitIsAir())) {
       territoryValue = result.getWinPercentage() / 100 * (2 * production * (1 + isFactory) * (1 + isCapital));
     }
     double battleValue = result.getTuvSwing() + territoryValue;
