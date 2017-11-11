@@ -48,8 +48,8 @@ public final class MyFormatterTest {
 
     assertThat(MyFormatter.unitsToText(units), is(""
         + "1 unitType1 owned by the playerId2, "
-        + "1 unitType1 owned by the playerId1, "
-        + "1 unitType2 owned by the playerId2 "
+        + "1 unitType2 owned by the playerId2, "
+        + "1 unitType1 owned by the playerId1 "
         + "and 1 unitType2 owned by the playerId1"));
   }
 

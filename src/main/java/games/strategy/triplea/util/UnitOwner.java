@@ -15,11 +15,6 @@ public class UnitOwner {
     owner = unit.getOwner();
   }
 
-  public UnitOwner(final UnitType type, final PlayerID owner) {
-    this.type = type;
-    this.owner = owner;
-  }
-
   @Override
   public boolean equals(final Object o) {
     if (o == null) {
