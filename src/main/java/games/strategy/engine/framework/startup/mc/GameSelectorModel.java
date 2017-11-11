@@ -294,33 +294,28 @@ public class GameSelectorModel extends Observable {
     }
     final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();
 
-    try {
-      final GameChooserModel model = GameChooserModel.newInstance();
-      GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName);
-      if (selectedGame == null) {
-        selectedGame = model.findByName(userPreferredDefaultGameName);
-      }
-      if (selectedGame == null && model.size() > 0) {
-        selectedGame = model.get(0);
-      }
-      if (selectedGame == null) {
-        return null;
-      }
-      if (!selectedGame.isGameDataLoaded()) {
-        try {
-          selectedGame.fullyParseGameData();
-        } catch (final GameParseException e) {
-          // Load real default game...
-          selectedGame.delayParseGameData();
-          model.removeEntry(selectedGame);
-          loadDefaultGame(true);
-          return null;
-        }
-      }
-      return selectedGame;
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
+    final GameChooserModel model = new GameChooserModel();
+    GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName);
+    if (selectedGame == null) {
+      selectedGame = model.findByName(userPreferredDefaultGameName);
+    }
+    if (selectedGame == null && model.size() > 0) {
+      selectedGame = model.get(0);
+    }
+    if (selectedGame == null) {
       return null;
     }
+    if (!selectedGame.isGameDataLoaded()) {
+      try {
+        selectedGame.fullyParseGameData();
+      } catch (final GameParseException e) {
+        // Load real default game...
+        selectedGame.delayParseGameData();
+        model.removeEntry(selectedGame);
+        loadDefaultGame(true);
+        return null;
+      }
+    }
+    return selectedGame;
   }
 }
