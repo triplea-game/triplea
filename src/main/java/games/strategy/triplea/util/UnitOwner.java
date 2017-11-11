@@ -1,30 +1,36 @@
 package games.strategy.triplea.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Objects;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 
-public class UnitOwner {
+/**
+ * The combination of a unit type and its owner.
+ */
+public final class UnitOwner {
   private final UnitType type;
   private final PlayerID owner;
 
   public UnitOwner(final Unit unit) {
+    checkNotNull(unit);
+
     type = unit.getType();
     owner = unit.getOwner();
   }
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null) {
-      return false;
-    }
-    if (!(o instanceof UnitOwner)) {
+    if (o == this) {
+      return true;
+    } else if (!(o instanceof UnitOwner)) {
       return false;
     }
     final UnitOwner other = (UnitOwner) o;
-    return other.type.equals(this.type) && other.owner.equals(this.owner);
+    return Objects.equals(type, other.type) && Objects.equals(owner, other.owner);
   }
 
   @Override
