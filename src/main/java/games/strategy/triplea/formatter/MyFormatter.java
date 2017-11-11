@@ -1,5 +1,7 @@
 package games.strategy.triplea.formatter;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,6 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.PlayerID;
@@ -75,33 +80,35 @@ public class MyFormatter {
     return buf.toString();
   }
 
+  /**
+   * Converts the specified unit collection to a textual representation that describes the quantity of each distinct
+   * unit type owned by each distinct player.
+   *
+   * @param units The collection of units.
+   *
+   * @return A textual representation of the specified unit collection.
+   */
   public static String unitsToText(final Collection<Unit> units) {
-    final Iterator<Unit> iter = units.iterator();
-    final IntegerMap<UnitOwner> map = new IntegerMap<>();
-    while (iter.hasNext()) {
-      final Unit unit = iter.next();
-      final UnitOwner owner = new UnitOwner(unit.getType(), unit.getOwner());
-      map.add(owner, 1);
-    }
+    checkNotNull(units);
+
+    final Map<UnitOwner, Long> quantitiesByOwner = units.stream()
+        .map(UnitOwner::new)
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     final StringBuilder buf = new StringBuilder();
-    final Iterator<UnitOwner> iter2 = map.keySet().iterator();
-    int count = map.keySet().size();
-    while (iter2.hasNext()) {
-      final UnitOwner owner = iter2.next();
-      final int quantity = map.getInt(owner);
+    final AtomicInteger countRef = new AtomicInteger(quantitiesByOwner.size());
+    quantitiesByOwner.forEach((owner, quantity) -> {
       buf.append(quantity);
       buf.append(" ");
       buf.append(quantity > 1 ? pluralize(owner.getType().getName()) : owner.getType().getName());
       buf.append(" owned by the ");
       buf.append(owner.getOwner().getName());
-      count--;
+      final int count = countRef.decrementAndGet();
       if (count > 1) {
         buf.append(", ");
-      }
-      if (count == 1) {
+      } else if (count == 1) {
         buf.append(" and ");
       }
-    }
+    });
     return buf.toString();
   }
 
