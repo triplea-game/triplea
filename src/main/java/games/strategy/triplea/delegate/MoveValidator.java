@@ -452,7 +452,7 @@ public class MoveValidator {
     // if there are enemy units on the path blocking us, that is validated elsewhere (validateNonEnemyUnitsOnPath)
     // now check if we can move over neutral or enemies territories in noncombat
     if ((!units.isEmpty() && Match.allMatch(units, Matches.unitIsAir()))
-        || (Match.noneMatch(units, Matches.unitIsSea()) && !nonParatroopersPresent(player, units))) {
+        || (units.stream().noneMatch(Matches.unitIsSea()) && !nonParatroopersPresent(player, units))) {
       // if there are non-paratroopers present, then we cannot fly over stuff
       // if there are neutral territories in the middle, we cannot fly over (unless allowed to)
       // otherwise we can generally fly over anything in noncombat
@@ -1227,8 +1227,8 @@ public class MoveValidator {
     if (!TechAttachment.isAirTransportable(player)) {
       return result;
     }
-    if (Match.noneMatch(units, Matches.unitIsAirTransportable())
-        || Match.noneMatch(units, Matches.unitIsAirTransport())) {
+    if (units.stream().noneMatch(Matches.unitIsAirTransportable())
+        || units.stream().noneMatch(Matches.unitIsAirTransport())) {
       return result;
     }
     if (nonCombat && !isAirTransportableCanMoveDuringNonCombat(data)) {

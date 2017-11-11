@@ -489,7 +489,7 @@ class ProPurchaseAI {
 
       // Determine defending unit value
       double defendingUnitValue = TuvUtils.getTuv(placeTerritory.getDefendingUnits(), ProData.unitValueMap);
-      if (t.isWater() && Match.noneMatch(placeTerritory.getDefendingUnits(), Matches.unitIsOwnedBy(player))) {
+      if (t.isWater() && placeTerritory.getDefendingUnits().stream().noneMatch(Matches.unitIsOwnedBy(player))) {
         defendingUnitValue = 0;
       }
 
@@ -548,7 +548,7 @@ class ProPurchaseAI {
       // Determine if need destroyer
       boolean needDestroyer = false;
       if (Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.unitIsSub())
-          && Match.noneMatch(ownedLocalUnits, Matches.unitIsDestroyer())) {
+          && ownedLocalUnits.stream().noneMatch(Matches.unitIsDestroyer())) {
         needDestroyer = true;
       }
 
@@ -1146,7 +1146,7 @@ class ProPurchaseAI {
 
         // Determine if need destroyer
         if (Match.anyMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.unitIsSub())
-            && Match.noneMatch(t.getUnits().getMatches(Matches.unitIsOwnedBy(player)), Matches.unitIsDestroyer())) {
+            && t.getUnits().getMatches(Matches.unitIsOwnedBy(player)).stream().noneMatch(Matches.unitIsDestroyer())) {
           needDestroyer = true;
         }
         ProLogger.trace(t + ", needDestroyer=" + needDestroyer + ", checking defense since has enemy attackers: "
@@ -1159,7 +1159,7 @@ class ProPurchaseAI {
         boolean hasOnlyRetreatingSubs =
             Properties.getSubRetreatBeforeBattle(data)
                 && !initialDefendingUnits.isEmpty() && Match.allMatch(initialDefendingUnits, Matches.unitIsSub())
-                && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.unitIsDestroyer());
+                && enemyAttackOptions.getMax(t).getMaxUnits().stream().noneMatch(Matches.unitIsDestroyer());
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
 
           // Check remaining production
@@ -1225,7 +1225,7 @@ class ProPurchaseAI {
             hasOnlyRetreatingSubs =
                 Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty()
                     && Match.allMatch(defendingUnits, Matches.unitIsSub())
-                    && Match.noneMatch(enemyAttackOptions.getMax(t).getMaxUnits(), Matches.unitIsDestroyer());
+                    && enemyAttackOptions.getMax(t).getMaxUnits().stream().noneMatch(Matches.unitIsDestroyer());
           }
         }
 

@@ -154,7 +154,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
-      if (Match.noneMatch(attackingFromMapUnits, Matches.unitIsLand())) {
+      if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
         getAmphibiousAttackTerritories().remove(attackingFrom);
         // do we have any amphibious attacks left?
         m_isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
@@ -1816,7 +1816,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
     return !(m_battleSite.isWater() && Match.anyMatch(firedAt, Matches.unitIsSub())
-        && Match.noneMatch(firing, Matches.unitIsDestroyer()));
+        && firing.stream().noneMatch(Matches.unitIsDestroyer()));
   }
 
   private void defendAirOnNonSubs() {

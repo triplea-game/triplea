@@ -25,7 +25,7 @@ import java.util.function.Predicate;
  *
  * @param <T> The type of object that is tested by the match condition.
  */
-public final class Match<T> {
+public final class Match<T> implements Predicate<T> {
   private final Predicate<T> condition;
 
   private Match(final Predicate<T> condition) {
@@ -44,13 +44,6 @@ public final class Match<T> {
    */
   public static <T> boolean anyMatch(final Collection<T> collection, final Match<T> match) {
     return collection.stream().anyMatch(match::match);
-  }
-
-  /**
-   * Returns true if no matches could be found.
-   */
-  public static <T> boolean noneMatch(final Collection<T> collection, final Match<T> match) {
-    return collection.stream().noneMatch(match::match);
   }
 
   /**
@@ -197,5 +190,13 @@ public final class Match<T> {
     public Match<T> any() {
       return Match.anyOf(matches);
     }
+  }
+
+  /**
+   * Temporary, to be able to migrate to the Predicate interface.
+   */
+  @Override
+  public boolean test(T t) {
+    return match(t);
   }
 }

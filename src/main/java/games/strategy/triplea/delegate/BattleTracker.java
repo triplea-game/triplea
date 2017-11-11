@@ -385,7 +385,7 @@ public class BattleTracker implements Serializable {
     final GameData data = bridge.getData();
     final Collection<Unit> canConquer = Matches.getMatches(units,
         Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).invert());
-    if (Match.noneMatch(canConquer, Matches.unitIsNotAir())) {
+    if (canConquer.stream().noneMatch(Matches.unitIsNotAir())) {
       return;
     }
     final Collection<Unit> presentFromStartTilEnd = new ArrayList<>(canConquer);

@@ -480,7 +480,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!canMoveExistingFightersToNewCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData())) {
       return null;
     }
-    if (Match.noneMatch(units, Matches.unitIsCarrier())) {
+    if (units.stream().noneMatch(Matches.unitIsCarrier())) {
       return null;
     }
     // do we have any spare carrier capacity
