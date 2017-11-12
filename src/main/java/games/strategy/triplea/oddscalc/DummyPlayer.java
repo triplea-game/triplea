@@ -120,8 +120,8 @@ public class DummyPlayer extends AbstractAI {
       if (ourUnits == null || enemyUnits == null) {
         return null;
       }
-      if (!enemyUnits.isEmpty() && Match.allMatch(enemyUnits, planeNotDestroyer) && !ourUnits.isEmpty()
-          && Match.allMatch(ourUnits, seaSub)) {
+      if (!enemyUnits.isEmpty() && enemyUnits.stream().allMatch(planeNotDestroyer) && !ourUnits.isEmpty()
+          && ourUnits.stream().allMatch(seaSub)) {
         return possibleTerritories.iterator().next();
       }
       return null;

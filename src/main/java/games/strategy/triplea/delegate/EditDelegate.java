@@ -84,17 +84,17 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     final GameData data = getData();
     Map<Unit, Unit> mapLoading = null;
     if (territory.isWater()) {
-      if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsSea())) {
+      if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea())) {
         if (Match.anyMatch(units, Matches.unitIsLand())) {
           // this should be exact same as the one in the EditValidator
-          if (units.isEmpty() || !Match.allMatch(units, Matches.alliedUnit(player, data))) {
+          if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
               Match.allOf(Matches.unitIsTransport(), Matches.unitIsSea(), Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Matches.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Matches.getMatches(units, Matches.unitIsLand());
-          if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.unitCanBeTransported())) {
+          if (landUnitsToAdd.isEmpty() || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));

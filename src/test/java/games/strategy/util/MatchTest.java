@@ -61,15 +61,6 @@ public class MatchTest {
   }
 
   @Test
-  public void testAllMatch() {
-    assertTrue(Match.allMatch(Arrays.asList(), IS_ZERO_MATCH), "empty collection");
-    assertFalse(Match.allMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH), "none match");
-    assertFalse(Match.allMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH), "some match");
-    assertTrue(Match.allMatch(Arrays.asList(0), IS_ZERO_MATCH), "all match (one element)");
-    assertTrue(Match.allMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH), "all match (multiple elements)");
-  }
-
-  @Test
   public void testAnyMatch() {
     assertFalse(Match.anyMatch(Arrays.asList(), IS_ZERO_MATCH), "empty collection");
     assertFalse(Match.anyMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH), "none match");

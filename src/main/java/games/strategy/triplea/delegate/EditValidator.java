@@ -64,16 +64,16 @@ class EditValidator {
     final PlayerID player = units.iterator().next().getOwner();
     // check land/water sanity
     if (territory.isWater()) {
-      if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsSea())) {
+      if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea())) {
         if (Match.anyMatch(units, Matches.unitIsLand())) {
-          if (units.isEmpty() || !Match.allMatch(units, Matches.alliedUnit(player, data))) {
+          if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
           final Match<Unit> friendlySeaTransports =
               Match.allOf(Matches.unitIsTransport(), Matches.unitIsSea(), Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Matches.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Matches.getMatches(units, Matches.unitIsLand());
-          if (landUnitsToAdd.isEmpty() || !Match.allMatch(landUnitsToAdd, Matches.unitCanBeTransported())) {
+          if (landUnitsToAdd.isEmpty() || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
@@ -216,10 +216,10 @@ class EditValidator {
     }
     final PlayerID player = units.iterator().next().getOwner();
     // all units should be same owner
-    if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
+    if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (units.isEmpty() || !Match.allMatch(units, Matches.unitHasMoreThanOneHitPointTotal())) {
+    if (units.isEmpty() || !units.stream().allMatch(Matches.unitHasMoreThanOneHitPointTotal())) {
       return "Not all units have more than one total hitpoints";
     }
     for (final Unit u : units) {
@@ -250,10 +250,10 @@ class EditValidator {
     }
     final PlayerID player = units.iterator().next().getOwner();
     // all units should be same owner
-    if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsOwnedBy(player))) {
+    if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
     }
-    if (units.isEmpty() || !Match.allMatch(units, Matches.unitCanBeDamaged())) {
+    if (units.isEmpty() || !units.stream().allMatch(Matches.unitCanBeDamaged())) {
       return "Not all units can take bombing damage";
     }
     for (final Unit u : units) {

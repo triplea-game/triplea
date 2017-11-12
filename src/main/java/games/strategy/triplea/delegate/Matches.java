@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
@@ -98,15 +99,15 @@ public final class Matches {
   /**
    * Returns the number of matches found.
    */
-  public static <T> int countMatches(final Collection<T> collection, final Match<T> match) {
-    return (int) collection.stream().filter(match::match).count();
+  public static <T> int countMatches(final Collection<T> collection, final Predicate<T> match) {
+    return (int) collection.stream().filter(match).count();
   }
 
   /**
    * Returns the elements of the collection that match.
    */
-  public static <T> List<T> getMatches(final Collection<T> collection, final Match<T> match) {
-    return collection.stream().filter(match::match).collect(Collectors.toList());
+  public static <T> List<T> getMatches(final Collection<T> collection, final Predicate<T> match) {
+    return collection.stream().filter(match).collect(Collectors.toList());
   }
 
   /**
@@ -114,8 +115,8 @@ public final class Matches {
    * If n matches cannot be found will return all matches that
    * can be found.
    */
-  public static <T> List<T> getNMatches(final Collection<T> collection, final int max, final Match<T> match) {
-    return collection.stream().filter(match::match).limit(max).collect(Collectors.toList());
+  public static <T> List<T> getNMatches(final Collection<T> collection, final int max, final Predicate<T> match) {
+    return collection.stream().filter(match).limit(max).collect(Collectors.toList());
   }
 
   public static Match<UnitType> unitTypeHasMoreThanOneHitPointTotal() {

@@ -24,10 +24,8 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   /**
    * Creates new UnitCollection.
    *
-   * @param holder
-   *        named unit holder
-   * @param data
-   *        game data
+   * @param holder named unit holder
+   * @param data game data
    */
   public UnitCollection(final NamedUnitHolder holder, final GameData data) {
     super(data);
@@ -195,7 +193,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   public boolean allMatch(final Match<Unit> matcher) {
-    return Match.allMatch(m_units, matcher);
+    return m_units.stream().allMatch(matcher);
   }
 
   public boolean anyMatch(final Match<Unit> matcher) {

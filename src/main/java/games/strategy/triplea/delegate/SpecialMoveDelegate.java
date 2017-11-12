@@ -238,10 +238,11 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final boolean onlyWhereUnderAttackAlready = Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final boolean onlyEnemyTerritories = Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
     final List<Territory> steps = route.getSteps();
-    if (steps.isEmpty() || !Match.allMatch(steps, Matches.territoryIsPassableAndNotRestricted(player, data))) {
+    if (steps.isEmpty() || !steps.stream().allMatch(Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
-    if (steps.isEmpty() || !Match.allMatch(steps, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
+    if (steps.isEmpty()
+        || !steps.stream().allMatch(Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
     final boolean someLand = Match.anyMatch(airborne, Matches.unitIsLand());

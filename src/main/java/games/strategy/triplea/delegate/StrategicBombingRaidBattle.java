@@ -469,7 +469,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
     final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
     final boolean allowMultipleHitsPerUnit =
-        !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.unitAaShotDamageableInsteadOfKillingInstantly());
+        !defendingAa.isEmpty()
+            && defendingAa.stream().allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isEditMode) {
       final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
       final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker,
