@@ -421,7 +421,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (!getStart().isWater()) {
       return true;
     }
-    return getAllTerritories().isEmpty() || !Match.allMatch(getAllTerritories(), Matches.territoryIsWater());
+    return getAllTerritories().isEmpty() || !getAllTerritories().stream().allMatch(Matches.territoryIsWater());
   }
 
   public int getLargestMovementCost(final Collection<Unit> units) {

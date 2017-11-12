@@ -611,7 +611,7 @@ public class AirMovementValidator {
    */
   public static boolean canLand(final Collection<Unit> airUnits, final Territory territory, final PlayerID player,
       final GameData data) {
-    if (airUnits.isEmpty() || !Match.allMatch(airUnits, Matches.unitIsAir())) {
+    if (airUnits.isEmpty() || !airUnits.stream().allMatch(Matches.unitIsAir())) {
       throw new IllegalArgumentException("can only test if air will land");
     }
     if (!territory.isWater() && AbstractMoveDelegate.getBattleTracker(data).wasConquered(territory)) {
@@ -619,7 +619,7 @@ public class AirMovementValidator {
     }
     if (territory.isWater()) {
       // if they cant all land on carriers
-      if (airUnits.isEmpty() || !Match.allMatch(airUnits, Matches.unitCanLandOnCarrier())) {
+      if (airUnits.isEmpty() || !airUnits.stream().allMatch(Matches.unitCanLandOnCarrier())) {
         return false;
       }
       // when doing the calculation, make sure to include the units

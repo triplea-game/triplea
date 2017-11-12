@@ -865,7 +865,8 @@ public class BattleTracker implements Serializable {
     }
     // if just an enemy factory &/or AA then no battle
     final Collection<Unit> enemyUnits = Matches.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
-    if (route.getEnd() != null && !enemyUnits.isEmpty() && Match.allMatch(enemyUnits, Matches.unitIsInfrastructure())) {
+    if (route.getEnd() != null && !enemyUnits.isEmpty()
+        && enemyUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
       return ChangeFactory.EMPTY_CHANGE;
     }
     IBattle battle = getPendingBattle(site, false, BattleType.NORMAL);

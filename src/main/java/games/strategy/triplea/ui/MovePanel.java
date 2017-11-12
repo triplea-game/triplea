@@ -1266,7 +1266,7 @@ public class MovePanel extends AbstractMovePanel {
             // which the route may actually change much)
             if (unitsThatCanMoveOnRoute.size() < selectedUnits.size() && (unitsThatCanMoveOnRoute.size() == 0
                 || (!unitsThatCanMoveOnRoute.isEmpty()
-                    && Match.allMatch(unitsThatCanMoveOnRoute, Matches.unitIsAir())))) {
+                    && unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir())))) {
               final Collection<Unit> airUnits = Matches.getMatches(selectedUnits, Matches.unitIsAir());
               if (airUnits.size() > 0) {
                 route = getRoute(getFirstSelectedTerritory(), territory, airUnits);

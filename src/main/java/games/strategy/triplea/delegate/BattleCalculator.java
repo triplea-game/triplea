@@ -102,7 +102,8 @@ public class BattleCalculator {
     }
     final GameData data = bridge.getData();
     final boolean allowMultipleHitsPerUnit =
-        !defendingAa.isEmpty() && Match.allMatch(defendingAa, Matches.unitAaShotDamageableInsteadOfKillingInstantly());
+        !defendingAa.isEmpty()
+            && defendingAa.stream().allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isChooseAa(data)) {
       final String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
       return selectCasualties(null, hitPlayer, planes, allFriendlyUnits, firingPlayer, allEnemyUnits, amphibious,

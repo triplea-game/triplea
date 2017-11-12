@@ -324,7 +324,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
         final Collection<Unit> neighbourUnits = attackingFromMap.get(neighbor);
         // If all units from a territory are air- no bombard
-        if (!neighbourUnits.isEmpty() && Match.allMatch(neighbourUnits, Matches.unitIsAir())) {
+        if (!neighbourUnits.isEmpty() && neighbourUnits.stream().allMatch(Matches.unitIsAir())) {
           continue;
         }
         Collection<IBattle> battles = possibleBombardingTerritories.get(neighbor);
@@ -446,7 +446,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // we need to remove any units which are participating in bombing raids
         attackingUnits.removeAll(bombingBattle.getAttackingUnits());
       }
-      if (Match.allMatch(attackingUnits, Matches.unitIsInfrastructure())) {
+      if (attackingUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
         continue;
       }
       IBattle battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
@@ -454,7 +454,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // we must land any paratroopers here, but only if there is not going to be a battle (cus battles land them
         // separately, after aa
         // fires)
-        if (Match.allMatch(enemyUnits, Matches.unitIsInfrastructure())) {
+        if (enemyUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
           landParatroopers(player, territory, bridge);
         }
         bridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
@@ -484,12 +484,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         }
       }
       // Reach stalemate if all attacking and defending units are transports
-      if ((ignoreTransports && !attackingUnits.isEmpty() && Match.allMatch(attackingUnits, seaTransports)
-          && !enemyUnits.isEmpty() && Match.allMatch(enemyUnits, seaTransports))
+      if ((ignoreTransports && !attackingUnits.isEmpty() && attackingUnits.stream().allMatch(seaTransports)
+          && !enemyUnits.isEmpty() && enemyUnits.stream().allMatch(seaTransports))
           || (!attackingUnits.isEmpty()
-              && Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())
+              && attackingUnits.stream().allMatch(Matches.unitHasAttackValueOfAtLeast(1).invert())
               && !enemyUnits.isEmpty()
-              && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
+              && enemyUnits.stream().allMatch(Matches.unitHasDefendValueOfAtLeast(1).invert()))) {
         final BattleResults results = new BattleResults(battle, WhoWon.DRAW, data);
         battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
             BattleRecord.BattleResultDescription.STALEMATE, results);
@@ -514,7 +514,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (ignoreTransports || ignoreSubs) {
           // TODO check if incoming units can attack before asking
           // if only enemy transports... attack them?
-          if (ignoreTransports && !enemyUnits.isEmpty() && Match.allMatch(enemyUnits, seaTransports)) {
+          if (ignoreTransports && !enemyUnits.isEmpty() && enemyUnits.stream().allMatch(seaTransports)) {
             if (!remotePlayer.selectAttackTransports(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
@@ -525,7 +525,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             continue;
           }
           // if only enemy subs... attack them?
-          if (ignoreSubs && !enemyUnits.isEmpty() && Match.allMatch(enemyUnits, Matches.unitIsSub())) {
+          if (ignoreSubs && !enemyUnits.isEmpty() && enemyUnits.stream().allMatch(Matches.unitIsSub())) {
             if (!remotePlayer.selectAttackSubs(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
@@ -537,7 +537,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
           // if only enemy transports and subs... attack them?
           if (ignoreSubs && ignoreTransports && !enemyUnits.isEmpty()
-              && Match.allMatch(enemyUnits, seaTranportsOrSubs)) {
+              && enemyUnits.stream().allMatch(seaTranportsOrSubs)) {
             if (!remotePlayer.selectAttackUnits(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
@@ -946,7 +946,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   public static int getMaxScrambleCount(final Collection<Unit> airbases) {
     if (airbases.isEmpty()
-        || !Match.allMatch(airbases, Match.allOf(Matches.unitIsAirBase(), Matches.unitIsNotDisabled()))) {
+        || !airbases.stream().allMatch(Match.allOf(Matches.unitIsAirBase(), Matches.unitIsNotDisabled()))) {
       throw new IllegalStateException("All units must be viable airbases");
     }
     // find how many is the max this territory can scramble
@@ -1506,7 +1506,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     availableLand.removeAll(canNotLand);
     whereCanLand.addAll(availableLand);
     // now for carrier-air-landing validation
-    if (!strandedAir.isEmpty() && Match.allMatch(strandedAir, Matches.unitCanLandOnCarrier())) {
+    if (!strandedAir.isEmpty() && strandedAir.stream().allMatch(Matches.unitCanLandOnCarrier())) {
       final HashSet<Territory> availableWater = new HashSet<>();
       availableWater.addAll(Matches.getMatches(possibleTerrs,
           Match.allOf(

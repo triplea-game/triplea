@@ -789,7 +789,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         }
       }
       // make sure all units are land
-      if (units.isEmpty() || !Match.allMatch(units, Matches.unitIsNotSea())) {
+      if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsNotSea())) {
         return "Cant place sea units on land";
       }
     }

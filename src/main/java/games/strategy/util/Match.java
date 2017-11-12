@@ -33,17 +33,10 @@ public final class Match<T> implements Predicate<T> {
   }
 
   /**
-   * returns true if all elements in the collection match.
-   */
-  public static <T> boolean allMatch(final Collection<T> collection, final Match<T> match) {
-    return collection.stream().allMatch(match::match);
-  }
-
-  /**
    * Returns true if any matches could be found.
    */
   public static <T> boolean anyMatch(final Collection<T> collection, final Match<T> match) {
-    return collection.stream().anyMatch(match::match);
+    return collection.stream().anyMatch(match);
   }
 
   /**
@@ -79,7 +72,7 @@ public final class Match<T> implements Predicate<T> {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <T> Match<T> allOf(final Match<T>... matches) {
+  public static <T> Match<T> allOf(final Predicate<T>... matches) {
     checkNotNull(matches);
 
     return allOf(Arrays.asList(matches));
@@ -92,10 +85,10 @@ public final class Match<T> implements Predicate<T> {
    *
    * @return A new match; never {@code null}.
    */
-  public static <T> Match<T> allOf(final Collection<Match<T>> matches) {
+  public static <T> Match<T> allOf(final Collection<Predicate<T>> matches) {
     checkNotNull(matches);
 
-    return Match.of(value -> matches.stream().allMatch(match -> match.match(value)));
+    return Match.of(value -> matches.stream().allMatch(match -> match.test(value)));
   }
 
   /**
@@ -107,7 +100,7 @@ public final class Match<T> implements Predicate<T> {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <T> Match<T> anyOf(final Match<T>... matches) {
+  public static <T> Match<T> anyOf(final Predicate<T>... matches) {
     checkNotNull(matches);
 
     return anyOf(Arrays.asList(matches));
@@ -120,10 +113,10 @@ public final class Match<T> implements Predicate<T> {
    *
    * @return A new match; never {@code null}.
    */
-  public static <T> Match<T> anyOf(final Collection<Match<T>> matches) {
+  public static <T> Match<T> anyOf(final Collection<? extends Predicate<T>> matches) {
     checkNotNull(matches);
 
-    return Match.of(value -> matches.stream().anyMatch(match -> match.match(value)));
+    return Match.of(value -> matches.stream().anyMatch(match -> match.test(value)));
   }
 
   /**
@@ -135,7 +128,7 @@ public final class Match<T> implements Predicate<T> {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <T> CompositeBuilder<T> newCompositeBuilder(final Match<T>... matches) {
+  public static <T> CompositeBuilder<T> newCompositeBuilder(final Predicate<T>... matches) {
     checkNotNull(matches);
 
     return new CompositeBuilder<>(Arrays.asList(matches));
@@ -151,9 +144,9 @@ public final class Match<T> implements Predicate<T> {
    * @param <T> The type of object that is tested by the match condition.
    */
   public static final class CompositeBuilder<T> {
-    private final Collection<Match<T>> matches;
+    private final Collection<Predicate<T>> matches;
 
-    private CompositeBuilder(final Collection<Match<T>> matches) {
+    private CompositeBuilder(final Collection<Predicate<T>> matches) {
       this.matches = new ArrayList<>(matches);
     }
 
@@ -164,7 +157,7 @@ public final class Match<T> implements Predicate<T> {
      *
      * @return This builder; never {@code null}.
      */
-    public CompositeBuilder<T> add(final Match<T> match) {
+    public CompositeBuilder<T> add(final Predicate<T> match) {
       checkNotNull(match);
 
       matches.add(match);

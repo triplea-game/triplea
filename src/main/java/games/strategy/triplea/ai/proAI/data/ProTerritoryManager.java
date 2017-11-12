@@ -370,7 +370,7 @@ public class ProTerritoryManager {
 
   private static int getMaxScrambleCount(final Collection<Unit> airbases) {
     if (airbases.isEmpty()
-        || !Match.allMatch(airbases, Match.allOf(Matches.unitIsAirBase(), Matches.unitIsNotDisabled()))) {
+        || !airbases.stream().allMatch(Match.allOf(Matches.unitIsAirBase(), Matches.unitIsNotDisabled()))) {
       throw new IllegalStateException("All units must be viable airbases");
     }
 
