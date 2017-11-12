@@ -2147,27 +2147,30 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (useUses) {
         triggerAttachment.use(bridge);
       }
-      triggerAttachment.getProductionRule().stream().map(s -> s.split(":")).forEach(array -> {
-        final ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(array[0]);
-        final String rule = array[1];
-        if (!rule.startsWith("-")) {
-          final ProductionRule productionRule =
-              data.getProductionRuleList().getProductionRule(rule);
-          if (!front.getRules().contains(productionRule)) {
-            change.add(ChangeFactory.addProductionRule(productionRule, front));
-            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(triggerAttachment.getName()) + ": "
-                + productionRule.getName() + " added to " + front.getName());
-          }
-        } else {
-          final ProductionRule productionRule =
-              data.getProductionRuleList().getProductionRule(rule.replaceFirst("-", ""));
-          if (front.getRules().contains(productionRule)) {
-            change.add(ChangeFactory.removeProductionRule(productionRule, front));
-            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(triggerAttachment.getName()) + ": "
-                + productionRule.getName() + " removed from " + front.getName());
-          }
-        }
-      });
+      triggerAttachment.getProductionRule().stream()
+          .map(s -> s.split(":"))
+          .forEach(array -> {
+            final ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(array[0]);
+            final String rule = array[1];
+            final String ruleName = rule.replaceFirst("^-", "");
+            final ProductionRule productionRule = data.getProductionRuleList().getProductionRule(ruleName);
+            final boolean ruleAdded = !rule.startsWith("-");
+            if (ruleAdded) {
+              if (!front.getRules().contains(productionRule)) {
+                change.add(ChangeFactory.addProductionRule(productionRule, front));
+                bridge.getHistoryWriter()
+                    .startEvent(MyFormatter.attachmentNameToText(triggerAttachment.getName()) + ": "
+                        + productionRule.getName() + " added to " + front.getName());
+              }
+            } else {
+              if (front.getRules().contains(productionRule)) {
+                change.add(ChangeFactory.removeProductionRule(productionRule, front));
+                bridge.getHistoryWriter()
+                    .startEvent(MyFormatter.attachmentNameToText(triggerAttachment.getName()) + ": "
+                        + productionRule.getName() + " removed from " + front.getName());
+              }
+            }
+          });
     }
     if (!change.isEmpty()) {
       bridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
