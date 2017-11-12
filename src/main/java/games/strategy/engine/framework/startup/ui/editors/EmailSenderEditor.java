@@ -16,6 +16,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
@@ -166,7 +167,8 @@ public class EmailSenderEditor extends EditorPanel {
         message = "Email sent, it should arrive shortly, otherwise check your spam folder";
         messageType = JOptionPane.INFORMATION_MESSAGE;
       } catch (final IOException ioe) {
-        message = "Unable to send email: " + ioe.getMessage();
+        message = "Unable to send email; see TripleA Console for details.";
+        ClientLogger.logError(ioe);
       } finally {
         // now that we have a result, marshall it back unto the swing thread
         final String finalMessage = message;
