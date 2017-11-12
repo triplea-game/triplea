@@ -142,7 +142,7 @@ public class GenericEmailSender implements IEmailSender {
     props.put("mail.smtp.connectiontimeout", m_timeout);
     props.put("mail.smtp.timeout", m_timeout);
     final String to = m_toAddress;
-    final String from = "noreply@triplea-game.org";
+    final String from = getUserName();
     // todo get the turn and player number from the game data
     try {
       final Session session = Session.getInstance(props, null);
@@ -191,7 +191,7 @@ public class GenericEmailSender implements IEmailSender {
         transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
       }
     } catch (final MessagingException e) {
-      throw new IOException(e.getMessage());
+      throw new IOException(e);
     }
   }
 
