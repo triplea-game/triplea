@@ -51,7 +51,7 @@ import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.AbstractHumanPlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.BattleDisplay;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.IntegerMap;
@@ -669,7 +669,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       return;
     }
     // we dont want to confirm enemy casualties
-    if (!BattleDisplay.getShowEnemyCasualtyNotification()) {
+    if (!ClientSetting.CONFIRM_ENEMY_CASUALTIES.booleanValue()) {
       return;
     }
     ui.getBattlePanel().confirmCasualties(battleId, message);
