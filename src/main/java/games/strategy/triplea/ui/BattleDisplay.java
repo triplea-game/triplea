@@ -27,7 +27,6 @@ import java.util.TimerTask;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -59,7 +58,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -70,6 +68,7 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
@@ -167,37 +166,6 @@ public class BattleDisplay extends JPanel {
     dicePanel.setDiceRollForBombing(dice, cost);
     actionLayout.show(actionPanel, DICE_KEY);
   }
-
-  public static boolean getShowEnemyCasualtyNotification() {
-    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    return prefs.getBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, true);
-  }
-
-  public static void setShowEnemyCasualtyNotification(final boolean showEnemyCasualtyNotification) {
-    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    prefs.putBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, showEnemyCasualtyNotification);
-  }
-
-  public static boolean getFocusOnOwnCasualtiesNotification() {
-    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    return prefs.getBoolean(Constants.FOCUS_ON_OWN_CASUALTIES_USER_PREF, false);
-  }
-
-  public static void setFocusOnOwnCasualtiesNotification(final boolean focusOnOwnCasualtiesNotification) {
-    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    prefs.putBoolean(Constants.FOCUS_ON_OWN_CASUALTIES_USER_PREF, focusOnOwnCasualtiesNotification);
-  }
-
-  public static void setConfirmDefensiveRolls(final boolean confirmDefensiveRolls) {
-    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    prefs.putBoolean(Constants.CONFIRM_DEFENSIVE_ROLLS, confirmDefensiveRolls);
-  }
-
-  public static boolean getConfirmDefensiveRolls() {
-    final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
-    return prefs.getBoolean(Constants.CONFIRM_DEFENSIVE_ROLLS, false);
-  }
-
 
   /**
    * updates the panel content according to killed units for the player.
@@ -298,7 +266,7 @@ public class BattleDisplay extends JPanel {
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
 
     // Set a auto-wait expiration if the option is set.
-    if (!getConfirmDefensiveRolls()) {
+    if (!ClientSetting.CONFIRM_DEFENSIVE_ROLLS.booleanValue()) {
       final int maxWaitTime = 1500;
       final Timer t = new Timer();
       t.schedule(new TimerTask() {
@@ -539,7 +507,7 @@ public class BattleDisplay extends JPanel {
             chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
           }
           final String[] options = {"Ok", "Cancel"};
-          final String focus = BattleDisplay.getFocusOnOwnCasualtiesNotification() ? options[0] : null;
+          final String focus = ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES.booleanValue() ? options[0] : null;
           final int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane,
               hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
               focus);

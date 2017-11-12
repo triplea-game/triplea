@@ -151,8 +151,6 @@ public interface Constants {
   String LARGE_MAP_FILENAME = "largeMap.gif";
   String SMALL_MAP_FILENAME = "smallMap.jpeg";
   String MAP_NAME = "mapName";
-  String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
-  String FOCUS_ON_OWN_CASUALTIES_USER_PREF = "FocusOnOwnCasualties";
   // new scramble property names
   String SCRAMBLE_RULES_IN_EFFECT = "Scramble Rules In Effect";
   String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
@@ -253,7 +251,6 @@ public interface Constants {
   String PROPERTY_FALSE = "false";
   String PROPERTY_DEFAULT = "default";
 
-  String CONFIRM_DEFENSIVE_ROLLS = "confirm_defensive_rolls";
   String CONSTRUCTION_TYPE_FACTORY = "factory";
 
   static String getIncomePercentageFor(final PlayerID playerId) {
