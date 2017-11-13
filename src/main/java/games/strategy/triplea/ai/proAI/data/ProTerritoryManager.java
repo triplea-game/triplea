@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -309,25 +310,24 @@ public class ProTerritoryManager {
     }
     final Match<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, player),
         Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().invert());
-    final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.newCompositeBuilder(
-        Match.anyOf(
-            Matches.territoryIsWater(),
-            Matches.isTerritoryEnemy(player, data)),
-        Matches.territoryHasUnitsThatMatch(Match.allOf(
+    final Predicate<Territory> canScramble = Match.anyOf(
+        Matches.territoryIsWater(),
+        Matches.isTerritoryEnemy(player, data))
+        .and(Matches.territoryHasUnitsThatMatch(Match.allOf(
             Matches.unitCanScramble(),
             Matches.unitIsEnemyOf(data, player),
-            Matches.unitIsNotDisabled())),
-        Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
-    if (fromIslandOnly) {
-      canScrambleBuilder.add(Matches.territoryIsIsland());
-    }
+            Matches.unitIsNotDisabled())))
+        .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
+        .and(fromIslandOnly
+            ? Matches.territoryIsIsland()
+            : Matches.always());
 
     // Find potential territories to scramble from
     final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();
     for (final Territory t : moveMap.keySet()) {
       if (t.isWater() || !toSeaOnly) {
         final HashSet<Territory> canScrambleFrom = new HashSet<>(
-            Matches.getMatches(data.getMap().getNeighbors(t, maxScrambleDistance), canScrambleBuilder.all()));
+            Matches.getMatches(data.getMap().getNeighbors(t, maxScrambleDistance), canScramble));
         if (!canScrambleFrom.isEmpty()) {
           scrambleTerrs.put(t, canScrambleFrom);
         }

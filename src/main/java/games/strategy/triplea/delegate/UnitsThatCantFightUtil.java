@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -25,17 +26,16 @@ public class UnitsThatCantFightUtil {
     final Collection<Territory> cantFight = new ArrayList<>();
     for (final Territory current : m_data.getMap()) {
       // get all owned non-combat units
-      final Match.CompositeBuilder<Unit> ownedUnitsMatchBuilder = Match.newCompositeBuilder(
-          Matches.unitIsInfrastructure().invert());
-      if (current.isWater()) {
-        ownedUnitsMatchBuilder.add(Matches.unitIsLand().invert());
-      }
-      ownedUnitsMatchBuilder.add(Matches.unitIsOwnedBy(player));
+      final Predicate<Unit> ownedUnitsMatch = Matches.unitIsInfrastructure().invert()
+          .and(current.isWater()
+              ? Matches.unitIsLand().invert()
+              : Matches.always())
+          .and(Matches.unitIsOwnedBy(player));
       // All owned units
-      final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatchBuilder.all());
+      final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
       // only noncombat units
-      ownedUnitsMatchBuilder.add(Matches.unitCanAttack(player).invert());
-      final Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatchBuilder.all());
+      final Collection<Unit> nonCombatUnits =
+          current.getUnits().getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).invert()));
       if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
         continue;
       }

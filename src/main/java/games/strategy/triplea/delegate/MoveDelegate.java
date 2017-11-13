@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -231,22 +232,19 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    final Match.CompositeBuilder<Unit> moveableUnitOwnedByMeBuilder = Match.newCompositeBuilder(
-        Matches.unitIsOwnedBy(m_player));
-
-    // right now, land units on transports have movement taken away when they their transport moves
-    moveableUnitOwnedByMeBuilder.add(Match.anyOf(
-        Matches.unitHasMovementLeft(),
-        Match.allOf(
-            Matches.unitIsLand(),
-            Matches.unitIsBeingTransported())));
-
-    // if not non combat, cannot move aa units
-    if (GameStepPropertiesHelper.isCombatMove(getData())) {
-      moveableUnitOwnedByMeBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());
-    }
+    final Predicate<Unit> moveableUnitOwnedByMe = Matches.unitIsOwnedBy(m_player)
+        // right now, land units on transports have movement taken away when they their transport moves
+        .and(Match.anyOf(
+            Matches.unitHasMovementLeft(),
+            Match.allOf(
+                Matches.unitIsLand(),
+                Matches.unitIsBeingTransported())))
+        // if not non combat, cannot move aa units
+        .and(GameStepPropertiesHelper.isCombatMove(getData())
+            ? Matches.unitCanNotMoveDuringCombatMove().invert()
+            : Matches.always());
     for (final Territory item : getData().getMap().getTerritories()) {
-      if (item.getUnits().anyMatch(moveableUnitOwnedByMeBuilder.all())) {
+      if (item.getUnits().anyMatch(moveableUnitOwnedByMe)) {
         return true;
       }
     }

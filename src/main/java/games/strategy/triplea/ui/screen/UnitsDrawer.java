@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
 import games.strategy.debug.ClientLogger;
@@ -25,7 +26,6 @@ import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 public class UnitsDrawer implements IDrawable {
@@ -213,20 +213,15 @@ public class UnitsDrawer implements IDrawable {
     // from the territory wont match the units in count
     final Territory t = data.getMap().getTerritory(territoryName);
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
-    final Match.CompositeBuilder<Unit> selectedUnitsBuilder = Match.newCompositeBuilder(
-        Matches.unitIsOfType(type),
-        Matches.unitIsOwnedBy(data.getPlayerList().getPlayerId(playerName)));
-    if (damaged > 0) {
-      selectedUnitsBuilder.add(Matches.unitHasTakenSomeDamage());
-    } else {
-      selectedUnitsBuilder.add(Matches.unitHasNotTakenAnyDamage());
-    }
-    if (bombingUnitDamage > 0) {
-      selectedUnitsBuilder.add(Matches.unitHasTakenSomeBombingUnitDamage());
-    } else {
-      selectedUnitsBuilder.add(Matches.unitHasNotTakenAnyBombingUnitDamage());
-    }
-    return Tuple.of(t, t.getUnits().getMatches(selectedUnitsBuilder.all()));
+    final Predicate<Unit> selectedUnits = Matches.unitIsOfType(type)
+        .and(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerId(playerName)))
+        .and(damaged > 0
+            ? Matches.unitHasTakenSomeDamage()
+            : Matches.unitHasNotTakenAnyDamage())
+        .and(bombingUnitDamage > 0
+            ? Matches.unitHasTakenSomeBombingUnitDamage()
+            : Matches.unitHasNotTakenAnyBombingUnitDamage());
+    return Tuple.of(t, t.getUnits().getMatches(selectedUnits));
   }
 
   @Override

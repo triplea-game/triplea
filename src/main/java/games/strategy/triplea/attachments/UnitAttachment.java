@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -29,7 +30,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
@@ -2645,16 +2645,17 @@ public class UnitAttachment extends DefaultAttachment {
         max = 1;
       }
     }
-    final Match.CompositeBuilder<Unit> stackingMatchBuilder = Match.newCompositeBuilder(
-        Matches.unitIsOfType(ut));
+    final Predicate<Unit> stackingMatch;
     final String stackingType = stackingLimit.getSecond();
     if (stackingType.equals("owned")) {
-      stackingMatchBuilder.add(Matches.unitIsOwnedBy(owner));
+      stackingMatch = Matches.unitIsOfType(ut).and(Matches.unitIsOwnedBy(owner));
     } else if (stackingType.equals("allied")) {
-      stackingMatchBuilder.add(Matches.isUnitAllied(owner, data));
+      stackingMatch = Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner, data));
+    } else {
+      stackingMatch = Matches.unitIsOfType(ut);
     }
     // else if (stackingType.equals("total"))
-    final int totalInTerritory = Matches.countMatches(t.getUnits().getUnits(), stackingMatchBuilder.all());
+    final int totalInTerritory = Matches.countMatches(t.getUnits().getUnits(), stackingMatch);
     return Math.max(0, max - totalInTerritory);
   }
 

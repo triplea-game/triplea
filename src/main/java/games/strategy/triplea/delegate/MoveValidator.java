@@ -1499,24 +1499,19 @@ public class MoveValidator {
     // no enemy units on the route predicate
     final Match<Territory> noEnemy = Matches.territoryHasEnemyUnits(player, data).invert();
     // no impassable or restricted territories
-    final Match.CompositeBuilder<Territory> noImpassableBuilder = Match.newCompositeBuilder(
-        Matches.territoryIsPassableAndNotRestricted(player, data));
-    // if we have air or land, we don't want to move over territories owned by players who's relationships will not let
-    // us move into them
-    if (hasAir) {
-      noImpassableBuilder.add(Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
-    }
-    if (hasLand) {
-      noImpassableBuilder.add(Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data));
-    }
-    final Match<Territory> noImpassable = noImpassableBuilder.all();
+    final Match<Territory> noImpassable = Match.of(
+        Matches.territoryIsPassableAndNotRestricted(player, data)
+            // if we have air or land, we don't want to move over territories owned by players who's relationships will
+            // not let us move into them
+            .and(hasAir
+                ? Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data)
+                : Matches.always())
+            .and(hasLand
+                ? Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data)
+                : Matches.always()));
     // now find the default route
-    Route defaultRoute;
-    if (isNeutralsImpassable) {
-      defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end, Match.allOf(noNeutral, noImpassable));
-    } else {
-      defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end, noImpassable);
-    }
+    Route defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end,
+        isNeutralsImpassable ? Match.allOf(noNeutral, noImpassable) : noImpassable);
     // since all routes require at least noImpassable, then if we cannot find a route without impassables, just return
     // any route
     if (defaultRoute == null) {

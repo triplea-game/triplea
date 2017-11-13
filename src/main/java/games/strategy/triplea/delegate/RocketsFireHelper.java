@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -159,15 +160,14 @@ public class RocketsFireHelper {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
     final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
     final Set<Territory> hasFactory = new HashSet<>();
-    final Match.CompositeBuilder<Territory> allowedBuilder = Match.newCompositeBuilder(
-        Matches.territoryAllowsRocketsCanFlyOver(player, data));
-    if (!isRocketsCanFlyOverImpassables(data)) {
-      allowedBuilder.add(Matches.territoryIsNotImpassable());
-    }
+    final Predicate<Territory> allowed = Matches.territoryAllowsRocketsCanFlyOver(player, data)
+        .and(!isRocketsCanFlyOverImpassables(data)
+            ? Matches.territoryIsNotImpassable()
+            : Matches.always());
     final Match<Unit> attackableUnits =
         Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
     for (final Territory current : possible) {
-      final Route route = data.getMap().getRoute(territory, current, allowedBuilder.all());
+      final Route route = data.getMap().getRoute(territory, current, Match.of(allowed));
       if (route != null && route.numberOfSteps() <= maxDistance) {
         if (current.getUnits().anyMatch(Match.allOf(attackableUnits,
             Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {

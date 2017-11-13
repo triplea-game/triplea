@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -643,19 +644,18 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final Match<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, m_player),
         Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().invert());
-    final Match.CompositeBuilder<Territory> canScrambleBuilder = Match.newCompositeBuilder(
-        Match.anyOf(
-            Matches.territoryIsWater(),
-            Matches.isTerritoryEnemy(m_player, data)),
-        Matches.territoryHasUnitsThatMatch(Match.allOf(
+    final Predicate<Territory> canScramble = Match.anyOf(
+        Matches.territoryIsWater(),
+        Matches.isTerritoryEnemy(m_player, data))
+        .and(Matches.territoryHasUnitsThatMatch(Match.allOf(
             Matches.unitCanScramble(),
             Matches.unitIsEnemyOf(data, m_player),
-            Matches.unitIsNotDisabled())),
-        Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
-    if (fromIslandOnly) {
-      canScrambleBuilder.add(Matches.territoryIsIsland());
-    }
-    final Match<Territory> canScramble = canScrambleBuilder.all();
+            Matches.unitIsNotDisabled())))
+        .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
+        .and(fromIslandOnly
+            ? Matches.territoryIsIsland()
+            : Matches.always());
+
     final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();
     final Set<Territory> territoriesWithBattles =
         m_battleTracker.getPendingBattleSites().getNormalBattlesIncludingAirBattles();
@@ -696,7 +696,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (toAnyAmphibious) {
             canScrambleFrom
                 .addAll(Matches.getMatches(data.getMap().getNeighbors(amphibFrom, maxScrambleDistance), canScramble));
-          } else if (canScramble.match(battleTerr)) {
+          } else if (canScramble.test(battleTerr)) {
             canScrambleFrom.add(battleTerr);
           }
           if (!canScrambleFrom.isEmpty()) {

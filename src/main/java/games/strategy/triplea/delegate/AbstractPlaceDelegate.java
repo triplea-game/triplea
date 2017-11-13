@@ -1078,15 +1078,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // if its an original factory then unlimited production
     // Can be null!
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);
-    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.newCompositeBuilder(
-        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
-        Matches.unitIsBeingTransported().invert());
-    if (producer.isWater()) {
-      factoryMatchBuilder.add(Matches.unitIsLand().invert());
-    } else {
-      factoryMatchBuilder.add(Matches.unitIsSea().invert());
-    }
-    final Collection<Unit> factoryUnits = producer.getUnits().getMatches(factoryMatchBuilder.all());
+    final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
+        .and(Matches.unitIsBeingTransported().invert())
+        .and(producer.isWater()
+            ? Matches.unitIsLand().invert()
+            : Matches.unitIsSea().invert());
+    final Collection<Unit> factoryUnits = producer.getUnits().getMatches(factoryMatch);
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
     final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());

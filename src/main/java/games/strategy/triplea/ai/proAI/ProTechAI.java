@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -525,17 +526,16 @@ final class ProTechAI {
     }
     final Match<Unit> sub = Match.allOf(Matches.unitIsSub().invert());
     final Match<Unit> transport = Match.allOf(Matches.unitIsTransport().invert(), Matches.unitIsLand().invert());
-    final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
-        Matches.unitIsInfrastructure().invert(),
-        Matches.alliedUnit(player, data).invert());
-    if (Properties.getIgnoreTransportInMovement(data)) {
-      unitCondBuilder.add(transport);
-    }
-    if (Properties.getIgnoreSubInMovement(data)) {
-      unitCondBuilder.add(sub);
-    }
+    final Predicate<Unit> unitCond = Matches.unitIsInfrastructure().invert()
+        .and(Matches.alliedUnit(player, data).invert())
+        .and(Properties.getIgnoreTransportInMovement(data)
+            ? transport
+            : Matches.always())
+        .and(Properties.getIgnoreSubInMovement(data)
+            ? sub
+            : Matches.always());
     final Match<Territory> routeCond = Match.allOf(
-        Matches.territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(),
+        Matches.territoryHasUnitsThatMatch(Match.of(unitCond)).invert(),
         Matches.territoryIsWater());
     final Match<Territory> routeCondition;
     routeCondition = Match.anyOf(Matches.territoryIs(destination), routeCond);
@@ -589,13 +589,12 @@ final class ProTechAI {
   private static List<Territory> getExactNeighbors(final Territory territory, final GameData data) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
-    final Match.CompositeBuilder<Territory> endCondBuilder = Match.newCompositeBuilder(
-        Matches.territoryIsImpassable().invert());
-    if (Properties.getNeutralsImpassable(data)) {
-      endCondBuilder.add(Matches.territoryIsNeutralButNotWater().invert());
-    }
+    final Predicate<Territory> endCond = Matches.territoryIsImpassable().invert()
+        .and(Properties.getNeutralsImpassable(data)
+            ? Matches.territoryIsNeutralButNotWater().invert()
+            : Matches.always());
     final int distance = 1;
-    return findFrontier(territory, endCondBuilder.all(), Matches.always(), distance, data);
+    return findFrontier(territory, Match.of(endCond), Matches.always(), distance, data);
   }
 
   /**

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -400,15 +401,12 @@ public class TripleAUnit extends Unit {
 
   public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player,
       final GameData data, final boolean accountForDamage) {
-    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.newCompositeBuilder(
-        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
-        Matches.unitIsBeingTransported().invert());
-    if (producer.isWater()) {
-      factoryMatchBuilder.add(Matches.unitIsLand().invert());
-    } else {
-      factoryMatchBuilder.add(Matches.unitIsSea().invert());
-    }
-    final Collection<Unit> factories = Matches.getMatches(units, factoryMatchBuilder.all());
+    final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
+        .and(Matches.unitIsBeingTransported().invert())
+        .and(producer.isWater()
+            ? Matches.unitIsLand().invert()
+            : Matches.unitIsSea().invert());
+    final Collection<Unit> factories = Matches.getMatches(units, factoryMatch);
     if (factories.isEmpty()) {
       return null;
     }
