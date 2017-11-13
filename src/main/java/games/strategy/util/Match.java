@@ -2,7 +2,6 @@ package games.strategy.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -117,62 +116,6 @@ public final class Match<T> implements Predicate<T> {
     checkNotNull(matches);
 
     return Match.of(value -> matches.stream().anyMatch(match -> match.test(value)));
-  }
-
-  /**
-   * Creates a new builder for incrementally constructing composite matches.
-   *
-   * @param matches An array of matches to initially add to the builder; must not be {@code null}.
-   *
-   * @return A new composite match builder; never {@code null}.
-   */
-  @SafeVarargs
-  @SuppressWarnings("varargs")
-  public static <T> CompositeBuilder<T> newCompositeBuilder(final Predicate<T>... matches) {
-    checkNotNull(matches);
-
-    return new CompositeBuilder<>(Arrays.asList(matches));
-  }
-
-  /**
-   * A builder for incrementally constructing composite matches.
-   *
-   * <p>
-   * Instances of this class are not thread safe.
-   * </p>
-   *
-   * @param <T> The type of object that is tested by the match condition.
-   */
-  public static final class CompositeBuilder<T> {
-    private final Collection<Predicate<T>> matches;
-
-    private CompositeBuilder(final Collection<Predicate<T>> matches) {
-      this.matches = new ArrayList<>(matches);
-    }
-
-    /**
-     * Adds a new condition to the composite match under construction.
-     *
-     * @param match A match; must not be {@code null}.
-     *
-     * @return This builder; never {@code null}.
-     */
-    public CompositeBuilder<T> add(final Predicate<T> match) {
-      checkNotNull(match);
-
-      matches.add(match);
-      return this;
-    }
-
-    /**
-     * Creates a new match whose condition is satisfied if the test object matches all of the conditions added to this
-     * builder.
-     *
-     * @return A new match; never {@code null}.
-     */
-    public Match<T> all() {
-      return Match.allOf(matches);
-    }
   }
 
   /**

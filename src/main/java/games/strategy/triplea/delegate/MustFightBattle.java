@@ -1123,19 +1123,18 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
-    final Match.CompositeBuilder<Unit> enemyUnitsThatPreventRetreatBuilder = Match.newCompositeBuilder(
-        Matches.enemyUnit(m_attacker, m_data),
-        Matches.unitIsNotInfrastructure(),
-        Matches.unitIsBeingTransported().invert(),
-        Matches.unitIsSubmerged().invert());
-    if (Properties.getIgnoreSubInMovement(m_data)) {
-      enemyUnitsThatPreventRetreatBuilder.add(Matches.unitIsNotSub());
-    }
-    if (Properties.getIgnoreTransportInMovement(m_data)) {
-      enemyUnitsThatPreventRetreatBuilder.add(Matches.unitIsNotTransportButCouldBeCombatTransport());
-    }
+    final Predicate<Unit> enemyUnitsThatPreventRetreat = Matches.enemyUnit(m_attacker, m_data)
+        .and(Matches.unitIsNotInfrastructure())
+        .and(Matches.unitIsBeingTransported().invert())
+        .and(Matches.unitIsSubmerged().invert())
+        .and(Properties.getIgnoreSubInMovement(m_data)
+            ? Matches.unitIsNotSub()
+            : Matches.always())
+        .and(Properties.getIgnoreTransportInMovement(m_data)
+            ? Matches.unitIsNotTransportButCouldBeCombatTransport()
+            : Matches.always());
     Collection<Territory> possible = Matches.getMatches(m_attackingFrom,
-        Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreatBuilder.all()).invert());
+        Matches.territoryHasUnitsThatMatch(Match.of(enemyUnitsThatPreventRetreat)).invert());
     // In WW2V2 and WW2V3 we need to filter out territories where only planes
     // came from since planes cannot define retreat paths
     if (isWW2V2() || isWW2V3()) {

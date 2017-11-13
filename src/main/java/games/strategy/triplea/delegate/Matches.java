@@ -1691,16 +1691,15 @@ public final class Matches {
   public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data) {
     final Match<Unit> sub = Match.allOf(unitIsSub().invert());
     final Match<Unit> transport = Match.allOf(unitIsTransportButNotCombatTransport().invert(), unitIsLand().invert());
-    final Match.CompositeBuilder<Unit> unitCondBuilder = Match.newCompositeBuilder(
-        unitIsInfrastructure().invert(),
-        alliedUnit(player, data).invert());
-    if (Properties.getIgnoreTransportInMovement(data)) {
-      unitCondBuilder.add(transport);
-    }
-    if (Properties.getIgnoreSubInMovement(data)) {
-      unitCondBuilder.add(sub);
-    }
-    return Match.allOf(territoryHasUnitsThatMatch(unitCondBuilder.all()).invert(), territoryIsWater());
+    final Match<Unit> unitCond = Match.of(unitIsInfrastructure().invert()
+        .and(alliedUnit(player, data).invert())
+        .and(Properties.getIgnoreTransportInMovement(data)
+            ? transport
+            : Matches.always())
+        .and(Properties.getIgnoreSubInMovement(data)
+            ? sub
+            : Matches.always()));
+    return Match.allOf(territoryHasUnitsThatMatch(unitCond).invert(), territoryIsWater());
   }
 
   static Match<Unit> unitCanRepairOthers() {
@@ -2408,36 +2407,32 @@ public final class Matches {
       final boolean doNotIncludeAa, final boolean doNotIncludeBombardingSeaUnits) {
 
     // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
-    final Match.CompositeBuilder<UnitType> canBeInBattle = Match.newCompositeBuilder();
 
     final Predicate<UnitType> supportOrNotInfrastructureOrAa = unitTypeIsInfrastructure().invert()
         .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
         .or(!doNotIncludeAa
             ? Match.allOf(unitTypeIsAaForCombatOnly(), unitTypeIsAaThatCanFireOnRound(battleRound))
             : never());
-    canBeInBattle.add(supportOrNotInfrastructureOrAa);
+    Predicate<UnitType> canBeInBattle = supportOrNotInfrastructureOrAa;
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {
-        canBeInBattle.add(unitTypeCanNotMoveDuringCombatMove().invert());
-        canBeInBattle.add(unitTypeCanMove(player));
+        canBeInBattle = canBeInBattle
+            .and(unitTypeCanNotMoveDuringCombatMove().invert())
+            .and(unitTypeCanMove(player));
       }
       if (isLandBattle) {
         if (doNotIncludeBombardingSeaUnits) {
-          canBeInBattle.add(unitTypeIsSea().invert());
+          canBeInBattle = canBeInBattle.and(unitTypeIsSea().invert());
         }
       } else { // is sea battle
-        canBeInBattle.add(unitTypeIsLand().invert());
+        canBeInBattle = canBeInBattle.and(unitTypeIsLand().invert());
       }
     } else { // defense
-      if (isLandBattle) {
-        canBeInBattle.add(unitTypeIsSea().invert());
-      } else { // is sea battle
-        canBeInBattle.add(unitTypeIsLand().invert());
-      }
+      canBeInBattle = canBeInBattle.and((isLandBattle ? unitTypeIsSea() : unitTypeIsLand()).invert());
     }
 
-    return Match.of(canBeInBattle.all());
+    return Match.of(canBeInBattle);
   }
 
   static Match<Unit> unitIsAirborne() {

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
@@ -165,12 +166,11 @@ public class AirBattle extends AbstractBattle {
           m_attackingWaitingToDie.clear();
           m_defendingWaitingToDie.clear();
           // kill any suicide attackers (veqryn)
-          final Match.CompositeBuilder<Unit> attackerSuicideBuilder = Match.newCompositeBuilder(
-              Matches.unitIsSuicide());
-          if (m_isBombingRun) {
-            attackerSuicideBuilder.add(Matches.unitIsNotStrategicBomber());
-          }
-          if (Match.anyMatch(m_attackingUnits, attackerSuicideBuilder.all())) {
+          final Predicate<Unit> attackerSuicide = Matches.unitIsSuicide()
+              .and(m_isBombingRun
+                  ? Matches.unitIsNotStrategicBomber()
+                  : Matches.always());
+          if (m_attackingUnits.stream().anyMatch(attackerSuicide)) {
             final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
             m_attackingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
@@ -642,25 +642,23 @@ public class AirBattle extends AbstractBattle {
   }
 
   private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
-    final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
-        Matches.unitCanAirBattle(),
-        Matches.unitIsEnemyOf(data, attacker),
-        Matches.unitWasInAirBattle().invert());
-    if (!Properties.getCanScrambleIntoAirBattles(data)) {
-      matchBuilder.add(Matches.unitWasScrambled().invert());
-    }
-    return matchBuilder.all();
+    final Predicate<Unit> match = Matches.unitCanAirBattle()
+        .and(Matches.unitIsEnemyOf(data, attacker))
+        .and(Matches.unitWasInAirBattle().invert())
+        .and(!Properties.getCanScrambleIntoAirBattles(data)
+            ? Matches.unitWasScrambled().invert()
+            : Matches.always());
+    return Match.of(match);
   }
 
   private static Match<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
-    final Match.CompositeBuilder<Unit> matchBuilder = Match.newCompositeBuilder(
-        Matches.unitCanIntercept(),
-        Matches.unitIsEnemyOf(data, attacker),
-        Matches.unitWasInAirBattle().invert());
-    if (!Properties.getCanScrambleIntoAirBattles(data)) {
-      matchBuilder.add(Matches.unitWasScrambled().invert());
-    }
-    return matchBuilder.all();
+    final Predicate<Unit> match = Matches.unitCanIntercept()
+        .and(Matches.unitIsEnemyOf(data, attacker))
+        .and(Matches.unitWasInAirBattle().invert())
+        .and(!Properties.getCanScrambleIntoAirBattles(data)
+            ? Matches.unitWasScrambled().invert()
+            : Matches.always());
+    return Match.of(match);
   }
 
   static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,

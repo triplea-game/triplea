@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -256,15 +257,12 @@ public class ProPurchaseUtils {
   }
 
   private static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
-    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.newCompositeBuilder(
-        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
-        Matches.unitIsBeingTransported().invert());
-    if (territory.isWater()) {
-      factoryMatchBuilder.add(Matches.unitIsLand().invert());
-    } else {
-      factoryMatchBuilder.add(Matches.unitIsSea().invert());
-    }
-    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatchBuilder.all());
+    final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
+        .and(Matches.unitIsBeingTransported().invert())
+        .and((territory.isWater()
+            ? Matches.unitIsLand()
+            : Matches.unitIsSea()).invert());
+    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatch);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
