@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,40 +56,40 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final String PREFIX_CLEAR = "-clear-";
   private static final String PREFIX_RESET = "-reset-";
   private ProductionFrontier m_frontier = null;
-  private ArrayList<String> m_productionRule = null;
-  private ArrayList<TechAdvance> m_tech = new ArrayList<>();
-  private HashMap<String, LinkedHashMap<TechAdvance, Boolean>> m_availableTech = null;
-  private HashMap<Territory, IntegerMap<UnitType>> m_placement = null;
-  private HashMap<Territory, IntegerMap<UnitType>> m_removeUnits = null;
+  private List<String> m_productionRule = null;
+  private List<TechAdvance> m_tech = new ArrayList<>();
+  private Map<String, Map<TechAdvance, Boolean>> m_availableTech = null;
+  private Map<Territory, IntegerMap<UnitType>> m_placement = null;
+  private Map<Territory, IntegerMap<UnitType>> m_removeUnits = null;
   private IntegerMap<UnitType> m_purchase = null;
   private String m_resource = null;
   private int m_resourceCount = 0;
   // never use a map of other attachments, inside of an attachment. java will not be able to deserialize it.
-  private LinkedHashMap<String, Boolean> m_support = null;
+  private Map<String, Boolean> m_support = null;
   // List of relationshipChanges that should be executed when this trigger hits.
-  private ArrayList<String> m_relationshipChange = new ArrayList<>();
+  private List<String> m_relationshipChange = new ArrayList<>();
   private String m_victory = null;
-  private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
-  private ArrayList<String> m_changeOwnership = new ArrayList<>();
+  private List<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
+  private List<String> m_changeOwnership = new ArrayList<>();
   // raw property changes below:
   //
   // really m_unitTypes, but we are not going to rename because it will break all existing maps
-  private ArrayList<UnitType> m_unitType = new ArrayList<>();
+  private List<UnitType> m_unitType = new ArrayList<>();
   private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
-  private ArrayList<Tuple<String, String>> m_unitProperty = null;
-  private ArrayList<Territory> m_territories = new ArrayList<>();
+  private List<Tuple<String, String>> m_unitProperty = null;
+  private List<Territory> m_territories = new ArrayList<>();
   private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
-  private ArrayList<Tuple<String, String>> m_territoryProperty = null;
-  private ArrayList<PlayerID> m_players = new ArrayList<>();
+  private List<Tuple<String, String>> m_territoryProperty = null;
+  private List<PlayerID> m_players = new ArrayList<>();
   // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, UserActionAttachment
   private Tuple<String, String> m_playerAttachmentName = null;
-  private ArrayList<Tuple<String, String>> m_playerProperty = null;
-  private ArrayList<RelationshipType> m_relationshipTypes = new ArrayList<>();
+  private List<Tuple<String, String>> m_playerProperty = null;
+  private List<RelationshipType> m_relationshipTypes = new ArrayList<>();
   private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
-  private ArrayList<Tuple<String, String>> m_relationshipTypeProperty = null;
-  private ArrayList<TerritoryEffect> m_territoryEffects = new ArrayList<>();
+  private List<Tuple<String, String>> m_relationshipTypeProperty = null;
+  private List<TerritoryEffect> m_territoryEffects = new ArrayList<>();
   private Tuple<String, String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
-  private ArrayList<Tuple<String, String>> m_territoryEffectProperty = null;
+  private List<Tuple<String, String>> m_territoryEffectProperty = null;
 
   public TriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -137,10 +136,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    */
   static Set<TriggerAttachment> getTriggers(final PlayerID player, final Match<TriggerAttachment> cond) {
     final Set<TriggerAttachment> trigs = new HashSet<>();
-    final Map<String, IAttachment> map = player.getAttachments();
-    final Iterator<String> iter = map.keySet().iterator();
-    while (iter.hasNext()) {
-      final IAttachment a = map.get(iter.next());
+    for (final IAttachment a : player.getAttachments().values()) {
       if (a instanceof TriggerAttachment) {
         if (cond == null || cond.match((TriggerAttachment) a)) {
           trigs.add((TriggerAttachment) a);
@@ -328,7 +324,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_activateTrigger = value;
   }
 
-  public ArrayList<Tuple<String, String>> getActivateTrigger() {
+  public List<Tuple<String, String>> getActivateTrigger() {
     return m_activateTrigger;
   }
 
@@ -400,7 +396,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_productionRule = value;
   }
 
-  public ArrayList<String> getProductionRule() {
+  public List<String> getProductionRule() {
     return m_productionRule;
   }
 
@@ -469,7 +465,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_tech = value;
   }
 
-  public ArrayList<TechAdvance> getTech() {
+  public List<TechAdvance> getTech() {
     return m_tech;
   }
 
@@ -522,11 +518,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAvailableTech(final HashMap<String, LinkedHashMap<TechAdvance, Boolean>> value) {
+  public void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value) {
     m_availableTech = value;
   }
 
-  public HashMap<String, LinkedHashMap<TechAdvance, Boolean>> getAvailableTech() {
+  public Map<String, Map<TechAdvance, Boolean>> getAvailableTech() {
     return m_availableTech;
   }
 
@@ -576,7 +572,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_support = value;
   }
 
-  public LinkedHashMap<String, Boolean> getSupport() {
+  public Map<String, Boolean> getSupport() {
     return m_support;
   }
 
@@ -647,7 +643,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_relationshipChange = value;
   }
 
-  public ArrayList<String> getRelationshipChange() {
+  public List<String> getRelationshipChange() {
     return m_relationshipChange;
   }
 
@@ -679,7 +675,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_unitType = value;
   }
 
-  public ArrayList<UnitType> getUnitType() {
+  public List<UnitType> getUnitType() {
     return m_unitType;
   }
 
@@ -760,7 +756,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_unitProperty = value;
   }
 
-  public ArrayList<Tuple<String, String>> getUnitProperty() {
+  public List<Tuple<String, String>> getUnitProperty() {
     return m_unitProperty;
   }
 
@@ -792,7 +788,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_territories = value;
   }
 
-  public ArrayList<Territory> getTerritories() {
+  public List<Territory> getTerritories() {
     return m_territories;
   }
 
@@ -873,7 +869,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_territoryProperty = value;
   }
 
-  public ArrayList<Tuple<String, String>> getTerritoryProperty() {
+  public List<Tuple<String, String>> getTerritoryProperty() {
     return m_territoryProperty;
   }
 
@@ -905,7 +901,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_players = value;
   }
 
-  public ArrayList<PlayerID> getPlayers() {
+  public List<PlayerID> getPlayers() {
     if (m_players.isEmpty()) {
       return new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo()));
     } else {
@@ -1006,7 +1002,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_playerProperty = value;
   }
 
-  public ArrayList<Tuple<String, String>> getPlayerProperty() {
+  public List<Tuple<String, String>> getPlayerProperty() {
     return m_playerProperty;
   }
 
@@ -1038,7 +1034,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_relationshipTypes = value;
   }
 
-  public ArrayList<RelationshipType> getRelationshipTypes() {
+  public List<RelationshipType> getRelationshipTypes() {
     return m_relationshipTypes;
   }
 
@@ -1118,7 +1114,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_relationshipTypeProperty = value;
   }
 
-  public ArrayList<Tuple<String, String>> getRelationshipTypeProperty() {
+  public List<Tuple<String, String>> getRelationshipTypeProperty() {
     return m_relationshipTypeProperty;
   }
 
@@ -1150,7 +1146,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_territoryEffects = value;
   }
 
-  public ArrayList<TerritoryEffect> getTerritoryEffects() {
+  public List<TerritoryEffect> getTerritoryEffects() {
     return m_territoryEffects;
   }
 
@@ -1230,7 +1226,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_territoryEffectProperty = value;
   }
 
-  public ArrayList<Tuple<String, String>> getTerritoryEffectProperty() {
+  public List<Tuple<String, String>> getTerritoryEffectProperty() {
     return m_territoryEffectProperty;
   }
 
@@ -1296,7 +1292,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_placement = value;
   }
 
-  public HashMap<Territory, IntegerMap<UnitType>> getPlacement() {
+  public Map<Territory, IntegerMap<UnitType>> getPlacement() {
     return m_placement;
   }
 
@@ -1377,7 +1373,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_removeUnits = value;
   }
 
-  public HashMap<Territory, IntegerMap<UnitType>> getRemoveUnits() {
+  public Map<Territory, IntegerMap<UnitType>> getRemoveUnits() {
     return m_removeUnits;
   }
 
@@ -1481,7 +1477,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_changeOwnership = value;
   }
 
-  public ArrayList<String> getChangeOwnership() {
+  public List<String> getChangeOwnership() {
     return m_changeOwnership;
   }
 
@@ -2144,38 +2140,37 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = Matches.getMatches(trigs, availableUses);
     }
     final CompositeChange change = new CompositeChange();
-    for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+    for (final TriggerAttachment triggerAttachment : trigs) {
+      if (testChance && !triggerAttachment.testChance(bridge)) {
         continue;
       }
       if (useUses) {
-        t.use(bridge);
+        triggerAttachment.use(bridge);
       }
-      final Iterator<String> iter = t.getProductionRule().iterator();
-      while (iter.hasNext()) {
-        boolean add = true;
-        final String[] s = iter.next().split(":");
-        final ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(s[0]);
-        String rule = s[1];
-        if (rule.startsWith("-")) {
-          rule = rule.replaceFirst("-", "");
-          add = false;
-        }
-        final ProductionRule productionRule = data.getProductionRuleList().getProductionRule(rule);
-        if (add) {
-          if (!front.getRules().contains(productionRule)) {
-            change.add(ChangeFactory.addProductionRule(productionRule, front));
-            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
-                + productionRule.getName() + " added to " + front.getName());
-          }
-        } else {
-          if (front.getRules().contains(productionRule)) {
-            change.add(ChangeFactory.removeProductionRule(productionRule, front));
-            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": "
-                + productionRule.getName() + " removed from " + front.getName());
-          }
-        }
-      }
+      triggerAttachment.getProductionRule().stream()
+          .map(s -> s.split(":"))
+          .forEach(array -> {
+            final ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(array[0]);
+            final String rule = array[1];
+            final String ruleName = rule.replaceFirst("^-", "");
+            final ProductionRule productionRule = data.getProductionRuleList().getProductionRule(ruleName);
+            final boolean ruleAdded = !rule.startsWith("-");
+            if (ruleAdded) {
+              if (!front.getRules().contains(productionRule)) {
+                change.add(ChangeFactory.addProductionRule(productionRule, front));
+                bridge.getHistoryWriter()
+                    .startEvent(MyFormatter.attachmentNameToText(triggerAttachment.getName()) + ": "
+                        + productionRule.getName() + " added to " + front.getName());
+              }
+            } else {
+              if (front.getRules().contains(productionRule)) {
+                change.add(ChangeFactory.removeProductionRule(productionRule, front));
+                bridge.getHistoryWriter()
+                    .startEvent(MyFormatter.attachmentNameToText(triggerAttachment.getName()) + ": "
+                        + productionRule.getName() + " removed from " + front.getName());
+              }
+            }
+          });
     }
     if (!change.isEmpty()) {
       bridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...

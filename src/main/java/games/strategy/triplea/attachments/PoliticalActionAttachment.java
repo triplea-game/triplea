@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,7 +76,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   // list of relationship changes to be performed if this action is performed sucessfully
-  private ArrayList<String> m_relationshipChange = new ArrayList<>();
+  private List<String> m_relationshipChange = new ArrayList<>();
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -107,7 +108,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     m_relationshipChange = value;
   }
 
-  public ArrayList<String> getRelationshipChange() {
+  public List<String> getRelationshipChange() {
     return m_relationshipChange;
   }
 

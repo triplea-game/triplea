@@ -46,14 +46,14 @@ import games.strategy.util.Tuple;
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
   // condition for having techs
-  private ArrayList<TechAdvance> m_techs = null;
+  private List<TechAdvance> m_techs = null;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
   private int m_techCount = -1;
   // condition for having specific relationships
-  private ArrayList<String> m_relationship = new ArrayList<>();
+  private List<String> m_relationship = new ArrayList<>();
   // condition for being at war
-  private HashSet<PlayerID> m_atWarPlayers = null;
+  private Set<PlayerID> m_atWarPlayers = null;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
   private int m_atWarCount = -1;
@@ -62,8 +62,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private String m_destroyedTUV = null;
   // condition for having had a battle in some territory, attacker or defender, win
   // or lost, etc. these next 9 variables use m_territoryCount for determining the number needed.
-  private ArrayList<Tuple<String, ArrayList<Territory>>> m_battle =
-      new ArrayList<>();
+  private List<Tuple<String, List<Territory>>> m_battle = new ArrayList<>();
   // ownership related
   private String[] m_alliedOwnershipTerritories = null;
   private String[] m_directOwnershipTerritories = null;
@@ -222,11 +221,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBattle(final ArrayList<Tuple<String, ArrayList<Territory>>> value) {
+  public void setBattle(final List<Tuple<String, List<Territory>>> value) {
     m_battle = value;
   }
 
-  public ArrayList<Tuple<String, ArrayList<Territory>>> getBattle() {
+  public List<Tuple<String, List<Territory>>> getBattle() {
     return m_battle;
   }
 
@@ -279,7 +278,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_relationship = value;
   }
 
-  public ArrayList<String> getRelationship() {
+  public List<String> getRelationship() {
     return m_relationship;
   }
 
@@ -587,7 +586,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_atWarPlayers = value;
   }
 
-  public HashSet<PlayerID> getAtWarPlayers() {
+  public Set<PlayerID> getAtWarPlayers() {
     return m_atWarPlayers;
   }
 
@@ -633,7 +632,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_techs = value;
   }
 
-  public ArrayList<TechAdvance> getTechs() {
+  public List<TechAdvance> getTechs() {
     return m_techs;
   }
 
@@ -830,7 +829,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && !m_battle.isEmpty()) {
       final BattleRecordsList brl = data.getBattleRecordsList();
       final int round = data.getSequence().getRound();
-      for (final Tuple<String, ArrayList<Territory>> entry : m_battle) {
+      for (final Tuple<String, List<Territory>> entry : m_battle) {
         final String[] type = entry.getFirst().split(":");
         // they could be "any", and if they are "any" then this would be null, which is good!
         final PlayerID attacker = data.getPlayerList().getPlayerId(type[0]);

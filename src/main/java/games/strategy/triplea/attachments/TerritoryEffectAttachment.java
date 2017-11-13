@@ -3,6 +3,7 @@ package games.strategy.triplea.attachments;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -21,8 +22,8 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
   private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<>();
   private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<>();
-  private ArrayList<UnitType> m_noBlitz = new ArrayList<>();
-  private ArrayList<UnitType> m_unitsNotAllowed = new ArrayList<>();
+  private List<UnitType> m_noBlitz = new ArrayList<>();
+  private List<UnitType> m_unitsNotAllowed = new ArrayList<>();
 
   /**
    * Creates new TerritoryEffectAttachment.
@@ -146,7 +147,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_noBlitz = value;
   }
 
-  public ArrayList<UnitType> getNoBlitz() {
+  public List<UnitType> getNoBlitz() {
     return new ArrayList<>(m_noBlitz);
   }
 
@@ -181,7 +182,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_unitsNotAllowed = value;
   }
 
-  public ArrayList<UnitType> getUnitsNotAllowed() {
+  public List<UnitType> getUnitsNotAllowed() {
     return new ArrayList<>(m_unitsNotAllowed);
   }
 

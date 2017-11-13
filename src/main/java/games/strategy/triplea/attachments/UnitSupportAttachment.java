@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ import games.strategy.triplea.MapSupport;
 @MapSupport
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
-  private HashSet<UnitType> m_unitType = null;
+  private Set<UnitType> m_unitType = null;
   @InternalDoNotExport
   // Do Not Export
   private boolean m_offence = false;
@@ -40,7 +41,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @InternalDoNotExport
   private boolean m_enemy = false;
   private String m_bonusType = null;
-  private ArrayList<PlayerID> m_players = new ArrayList<>();
+  private List<PlayerID> m_players = new ArrayList<>();
   private boolean m_impArtTech = false;
   // strings
   // roll or strength
@@ -265,7 +266,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_players = value;
   }
 
-  public ArrayList<PlayerID> getPlayers() {
+  public List<PlayerID> getPlayers() {
     return m_players;
   }
 
@@ -291,7 +292,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_impArtTech = false;
   }
 
-  public HashSet<UnitType> getUnitType() {
+  public Set<UnitType> getUnitType() {
     return m_unitType;
   }
 

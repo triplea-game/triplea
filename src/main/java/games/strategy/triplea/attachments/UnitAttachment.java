@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -129,13 +130,13 @@ public class UnitAttachment extends DefaultAttachment {
   // default value for when it is not set
   private String m_typeAA = "AA";
   // null means targeting air units only
-  private HashSet<UnitType> m_targetsAA = null;
+  private Set<UnitType> m_targetsAA = null;
   // if false, we cannot shoot more times than there are number of planes
   private boolean m_mayOverStackAA = false;
   // if false, we instantly kill anything our AA shot hits
   private boolean m_damageableAA = false;
   // if these enemy units are present, the gun does not fire at all
-  private HashSet<UnitType> m_willNotFireIfPresent = new HashSet<>();
+  private Set<UnitType> m_willNotFireIfPresent = new HashSet<>();
   // strategic bombing related
   private boolean m_isStrategicBomber = false;
   private int m_bombingMaxDieSides = -1;
@@ -146,7 +147,7 @@ public class UnitAttachment extends DefaultAttachment {
   private int m_airDefense = 0;
   private int m_airAttack = 0;
   // null means they can target any unit that can be damaged
-  private HashSet<UnitType> m_bombingTargets = null;
+  private Set<UnitType> m_bombingTargets = null;
   // production related
   // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
   // private boolean m_isFactory = false;
@@ -177,11 +178,11 @@ public class UnitAttachment extends DefaultAttachment {
   // multiple colon delimited lists of the unit combos required for
   // this unit to be built somewhere. (units must be in same
   // territory, owned by player, not be disabled)
-  private ArrayList<String[]> m_requiresUnits = new ArrayList<>();
+  private List<String[]> m_requiresUnits = new ArrayList<>();
   private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<>();
   // multiple colon delimited lists of the unit combos required for
   // this unit to move into a territory. (units must be owned by player, not be disabled)
-  private ArrayList<String[]> m_requiresUnitsToMove = new ArrayList<>();
+  private List<String[]> m_requiresUnitsToMove = new ArrayList<>();
   // a colon delimited list of territories where this unit may not be placed
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates m_unitPlacementRestrictions with an inverted list of territories
@@ -203,23 +204,21 @@ public class UnitAttachment extends DefaultAttachment {
   // and the repaired unit is sea)
   private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<>();
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<>();
-  private ArrayList<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<>();
+  private List<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<>();
   // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a
   // specific list
-  private LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto =
-      new LinkedHashMap<>();
-  private ArrayList<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<>();
-  private ArrayList<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<>();
+  private Map<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto = new LinkedHashMap<>();
+  private List<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<>();
+  private List<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<>();
   // a set of information for dealing with special abilities or
   // loss of abilities when a unit takes x-y amount of damage
-  private ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> m_whenCombatDamaged =
-      new ArrayList<>();
+  private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> m_whenCombatDamaged = new ArrayList<>();
   // a kind of support attachment for giving actual unit
   // attachment abilities or other to a unit, when in the
   // precense or on the same route with another unit
-  private ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<>();
+  private List<String> m_receivesAbilityWhenWith = new ArrayList<>();
   // currently used for: placement in original territories only
-  private HashSet<String> m_special = new HashSet<>();
+  private Set<String> m_special = new HashSet<>();
   // Manually set TUV
   private int m_tuv = -1;
 
@@ -387,7 +386,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_canBeGivenByTerritoryTo = value;
   }
 
-  public ArrayList<PlayerID> getCanBeGivenByTerritoryTo() {
+  public List<PlayerID> getCanBeGivenByTerritoryTo() {
     return m_canBeGivenByTerritoryTo;
   }
 
@@ -420,7 +419,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_canBeCapturedOnEnteringBy = value;
   }
 
-  public ArrayList<PlayerID> getCanBeCapturedOnEnteringBy() {
+  public List<PlayerID> getCanBeCapturedOnEnteringBy() {
     return m_canBeCapturedOnEnteringBy;
   }
 
@@ -470,7 +469,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_whenCapturedChangesInto = value;
   }
 
-  public LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> getWhenCapturedChangesInto() {
+  public Map<String, Tuple<String, IntegerMap<UnitType>>> getWhenCapturedChangesInto() {
     return m_whenCapturedChangesInto;
   }
 
@@ -522,7 +521,7 @@ public class UnitAttachment extends DefaultAttachment {
     setDestroyedWhenCapturedBy(value);
   }
 
-  public ArrayList<Tuple<String, PlayerID>> getDestroyedWhenCapturedBy() {
+  public List<Tuple<String, PlayerID>> getDestroyedWhenCapturedBy() {
     return m_destroyedWhenCapturedBy;
   }
 
@@ -865,7 +864,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_special = value;
   }
 
-  public HashSet<String> getSpecial() {
+  public Set<String> getSpecial() {
     return m_special;
   }
 
@@ -929,7 +928,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_requiresUnits = value;
   }
 
-  public ArrayList<String[]> getRequiresUnits() {
+  public List<String[]> getRequiresUnits() {
     return m_requiresUnits;
   }
 
@@ -964,7 +963,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_requiresUnitsToMove = value;
   }
 
-  public ArrayList<String[]> getRequiresUnitsToMove() {
+  public List<String[]> getRequiresUnitsToMove() {
     return m_requiresUnitsToMove;
   }
 
@@ -1008,7 +1007,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_whenCombatDamaged = value;
   }
 
-  public ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> getWhenCombatDamaged() {
+  public List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> getWhenCombatDamaged() {
     return m_whenCombatDamaged;
   }
 
@@ -1033,7 +1032,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_receivesAbilityWhenWith = value;
   }
 
-  public ArrayList<String> getReceivesAbilityWhenWith() {
+  public List<String> getReceivesAbilityWhenWith() {
     return m_receivesAbilityWhenWith;
   }
 
@@ -2048,11 +2047,11 @@ public class UnitAttachment extends DefaultAttachment {
     m_bombingTargets = value;
   }
 
-  public HashSet<UnitType> getBombingTargets() {
+  public Set<UnitType> getBombingTargets() {
     return m_bombingTargets;
   }
 
-  public HashSet<UnitType> getBombingTargets(final GameData data) {
+  public Set<UnitType> getBombingTargets(final GameData data) {
     if (m_bombingTargets != null) {
       return m_bombingTargets;
     }
@@ -2075,7 +2074,7 @@ public class UnitAttachment extends DefaultAttachment {
     Collection<UnitType> allowedTargets = data.getUnitTypeList().getAllUnitTypes();
     for (final Unit u : bombersOrRockets) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
-      final HashSet<UnitType> bombingTargets = ua.getBombingTargets(data);
+      final Set<UnitType> bombingTargets = ua.getBombingTargets(data);
       if (bombingTargets != null) {
         allowedTargets = Util.intersection(allowedTargets, bombingTargets);
       }
@@ -2396,11 +2395,11 @@ public class UnitAttachment extends DefaultAttachment {
     m_targetsAA = value;
   }
 
-  public HashSet<UnitType> getTargetsAA() {
+  public Set<UnitType> getTargetsAA() {
     return m_targetsAA;
   }
 
-  public HashSet<UnitType> getTargetsAA(final GameData data) {
+  public Set<UnitType> getTargetsAA(final GameData data) {
     if (m_targetsAA != null) {
       return m_targetsAA;
     }
@@ -2443,7 +2442,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_willNotFireIfPresent = value;
   }
 
-  public HashSet<UnitType> getWillNotFireIfPresent() {
+  public Set<UnitType> getWillNotFireIfPresent() {
     return m_willNotFireIfPresent;
   }
 

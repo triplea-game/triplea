@@ -2,6 +2,7 @@ package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
@@ -39,7 +40,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // especially for actions such as when france declares war on germany and it automatically causes UK to declare war as
   // well. it is good to
   // set "actionAccept" to "UK" so UK can accept this action to go through.
-  protected ArrayList<PlayerID> m_actionAccept = new ArrayList<>();
+  protected List<PlayerID> m_actionAccept = new ArrayList<>();
 
   /**
    * @return true if there is no condition to this action or if the condition is satisfied.
@@ -117,7 +118,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   /**
    * @return a list of players that must accept this action before it takes effect.
    */
-  public ArrayList<PlayerID> getActionAccept() {
+  public List<PlayerID> getActionAccept() {
     return m_actionAccept;
   }
 

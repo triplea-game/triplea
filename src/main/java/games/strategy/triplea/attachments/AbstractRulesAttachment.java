@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.Attachable;
@@ -40,12 +42,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   // directOwnershipTerritories, directExclusionTerritories,
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
-  protected ArrayList<PlayerID> m_players = new ArrayList<>();
+  protected List<PlayerID> m_players = new ArrayList<>();
   protected int m_objectiveValue = 0;
   // only matters for objectiveValue, does not affect the condition
   protected int m_uses = -1;
   // condition for what turn it is
-  protected HashMap<Integer, Integer> m_turns = null;
+  protected Map<Integer, Integer> m_turns = null;
   // for on/off conditions
   protected boolean m_switch = true;
   // allows custom GameProperties
@@ -75,7 +77,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     m_players = value;
   }
 
-  public ArrayList<PlayerID> getPlayers() {
+  public List<PlayerID> getPlayers() {
     if (m_players.isEmpty()) {
       return new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo()));
     } else {
@@ -253,7 +255,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     m_turns = value;
   }
 
-  public HashMap<Integer, Integer> getTurns() {
+  public Map<Integer, Integer> getTurns() {
     return m_turns;
   }
 

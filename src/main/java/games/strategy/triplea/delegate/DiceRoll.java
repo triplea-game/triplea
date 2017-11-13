@@ -698,7 +698,7 @@ public class DiceRoll implements Externalizable {
         if (!((strength && rule.getStrength()) || (rolls && rule.getRoll()))) {
           continue;
         }
-        final HashSet<UnitType> types = rule.getUnitType();
+        final Set<UnitType> types = rule.getUnitType();
         if (types != null && types.contains(unit.getType()) && supportLeft.getInt(rule) > 0) {
           givenSupport += rule.getBonus();
           supportLeft.add(rule, -1);
@@ -805,8 +805,8 @@ public class DiceRoll implements Externalizable {
       // TODO: this breaks down completely if we have Support1 having a higher bonus than Support2, because it will
       // come first. It should
       // come first, unless we would have support wasted otherwise. This ends up being a pretty tricky math puzzle.
-      final HashSet<UnitType> types1 = u1.getUnitType();
-      final HashSet<UnitType> types2 = u2.getUnitType();
+      final Set<UnitType> types1 = u1.getUnitType();
+      final Set<UnitType> types2 = u2.getUnitType();
       final Integer s1 = types1 == null ? 0 : types1.size();
       final int s2 = types2 == null ? 0 : types2.size();
       compareTo = s1.compareTo(s2);

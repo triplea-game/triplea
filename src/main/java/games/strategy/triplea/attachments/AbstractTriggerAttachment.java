@@ -33,7 +33,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   // Do Not Export (do not include in IAttachment).
   private boolean m_usedThisRound = false;
   private String m_notification = null;
-  private ArrayList<Tuple<String, String>> m_when = new ArrayList<>();
+  private List<Tuple<String, String>> m_when = new ArrayList<>();
 
   public AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -155,7 +155,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     m_when = value;
   }
 
-  public ArrayList<Tuple<String, String>> getWhen() {
+  public List<Tuple<String, String>> getWhen() {
     return m_when;
   }
 

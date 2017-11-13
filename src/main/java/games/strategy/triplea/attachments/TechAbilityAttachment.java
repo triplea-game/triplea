@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -83,13 +84,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> m_rocketDiceNumber = new IntegerMap<>();
   private int m_rocketDistance = 0;
   private int m_rocketNumberPerTerritory = 0;
-  private HashMap<UnitType, HashSet<String>> m_unitAbilitiesGained = new HashMap<>();
+  private Map<UnitType, Set<String>> m_unitAbilitiesGained = new HashMap<>();
   private boolean m_airborneForces = false;
   private IntegerMap<UnitType> m_airborneCapacity = new IntegerMap<>();
-  private HashSet<UnitType> m_airborneTypes = new HashSet<>();
+  private Set<UnitType> m_airborneTypes = new HashSet<>();
   private int m_airborneDistance = 0;
-  private HashSet<UnitType> m_airborneBases = new HashSet<>();
-  private HashMap<String, HashSet<UnitType>> m_airborneTargettedByAA = new HashMap<>();
+  private Set<UnitType> m_airborneBases = new HashSet<>();
+  private Map<String, Set<UnitType>> m_airborneTargettedByAA = new HashMap<>();
   private IntegerMap<UnitType> m_attackRollsBonus = new IntegerMap<>();
   private IntegerMap<UnitType> m_defenseRollsBonus = new IntegerMap<>();
   private IntegerMap<UnitType> m_bombingBonus = new IntegerMap<>();
@@ -739,7 +740,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (ut == null) {
       throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
     }
-    HashSet<String> abilities = m_unitAbilitiesGained.get(ut);
+    Set<String> abilities = m_unitAbilitiesGained.get(ut);
     if (abilities == null) {
       abilities = new HashSet<>();
     }
@@ -756,11 +757,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitAbilitiesGained(final HashMap<UnitType, HashSet<String>> value) {
+  public void setUnitAbilitiesGained(final Map<UnitType, Set<String>> value) {
     m_unitAbilitiesGained = value;
   }
 
-  public HashMap<UnitType, HashSet<String>> getUnitAbilitiesGained() {
+  public Map<UnitType, Set<String>> getUnitAbilitiesGained() {
     return m_unitAbilitiesGained;
   }
 
@@ -775,7 +776,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
-        final HashSet<String> abilities = taa.getUnitAbilitiesGained().get(ut);
+        final Set<String> abilities = taa.getUnitAbilitiesGained().get(ut);
         if (abilities != null) {
           unitAbilities.addAll(abilities);
         }
@@ -888,7 +889,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     m_airborneTypes = value;
   }
 
-  public HashSet<UnitType> getAirborneTypes() {
+  public Set<UnitType> getAirborneTypes() {
     return m_airborneTypes;
   }
 
@@ -960,11 +961,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAirborneBases(final HashSet<UnitType> value) {
+  public void setAirborneBases(final Set<UnitType> value) {
     m_airborneBases = value;
   }
 
-  public HashSet<UnitType> getAirborneBases() {
+  public Set<UnitType> getAirborneBases() {
     return m_airborneBases;
   }
 
@@ -1009,11 +1010,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAirborneTargettedByAA(final HashMap<String, HashSet<UnitType>> value) {
+  public void setAirborneTargettedByAA(final Map<String, Set<UnitType>> value) {
     m_airborneTargettedByAA = value;
   }
 
-  public HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA() {
+  public Map<String, Set<UnitType>> getAirborneTargettedByAA() {
     return m_airborneTargettedByAA;
   }
 
@@ -1023,9 +1024,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
-        final HashMap<String, HashSet<UnitType>> mapAa = taa.getAirborneTargettedByAA();
+        final Map<String, Set<UnitType>> mapAa = taa.getAirborneTargettedByAA();
         if (mapAa != null && !mapAa.isEmpty()) {
-          for (final Entry<String, HashSet<UnitType>> entry : mapAa.entrySet()) {
+          for (final Entry<String, Set<UnitType>> entry : mapAa.entrySet()) {
             HashSet<UnitType> current = airborneTargettedByAa.get(entry.getKey());
             if (current == null) {
               current = new HashSet<>();

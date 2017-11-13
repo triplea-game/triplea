@@ -402,7 +402,7 @@ public final class Matches {
   static Match<Unit> unitIsLegalBombingTargetBy(final Unit bomberOrRocket) {
     return Match.of(unit -> {
       final UnitAttachment ua = UnitAttachment.get(bomberOrRocket.getType());
-      final HashSet<UnitType> allowedTargets = ua.getBombingTargets(bomberOrRocket.getData());
+      final Set<UnitType> allowedTargets = ua.getBombingTargets(bomberOrRocket.getData());
       return allowedTargets == null || allowedTargets.contains(unit.getType());
     });
   }
@@ -1933,7 +1933,7 @@ public final class Matches {
       unitsInTerritoryAtStartOfTurn.retainAll(getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
       boolean canBuild = false;
       final UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
-      final ArrayList<String[]> unitComboPossibilities = ua.getRequiresUnits();
+      final List<String[]> unitComboPossibilities = ua.getRequiresUnits();
       for (final String[] combo : unitComboPossibilities) {
         if (combo != null) {
           boolean haveAll = true;
@@ -2178,7 +2178,7 @@ public final class Matches {
       }
       final TripleAUnit taUnit = (TripleAUnit) u;
       final int currentDamage = taUnit.getHits();
-      final ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList =
+      final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList =
           UnitAttachment.get(u.getType()).getWhenCombatDamaged();
       for (final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key : whenCombatDamagedList) {
         final String effect = key.getSecond().getFirst();
