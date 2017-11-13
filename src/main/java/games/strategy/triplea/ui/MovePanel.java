@@ -16,6 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.swing.JOptionPane;
 
@@ -371,13 +372,9 @@ public class MovePanel extends AbstractMovePanel {
       if (BaseEditDelegate.getEditMode(getData())) {
         movableBuilder.add(Matches.unitIsOwnedBy(owner));
       }
-      final Match.CompositeBuilder<Unit> rightUnitTypeMatchBuilder = Match.newCompositeBuilder();
-      for (final Unit unit : units) {
-        if (unit.getOwner().equals(owner)) {
-          rightUnitTypeMatchBuilder.add(Matches.unitIsOfType(unit.getType()));
-        }
-      }
-      movableBuilder.add(rightUnitTypeMatchBuilder.any());
+      movableBuilder.add(u -> units.stream()
+          .filter(unit -> unit.getOwner().equals(owner))
+          .anyMatch(unit -> Matches.unitIsOfType(unit.getType()).test(u)));
     }
     return movableBuilder.all();
   }
@@ -1444,13 +1441,10 @@ public class MovePanel extends AbstractMovePanel {
     } finally {
       getData().releaseReadLock();
     }
-    final Match.CompositeBuilder<Unit> moveableUnitOwnedByMeBuilder = Match.newCompositeBuilder(
-        Matches.unitIsOwnedBy(getCurrentPlayer()),
-        Matches.unitHasMovementLeft());
-    if (!nonCombat) {
-      // if not non combat, cannot move aa units
-      moveableUnitOwnedByMeBuilder.add(Matches.unitCanNotMoveDuringCombatMove().invert());
-    }
+    final Predicate<Unit> moveableUnitOwnedByMe = Matches.unitIsOwnedBy(getCurrentPlayer())
+        .and(Matches.unitHasMovementLeft())
+        // if not non combat, cannot move aa units
+        .and(!nonCombat ? Matches.unitCanNotMoveDuringCombatMove().invert() : Matches.always());
     final int size = allTerritories.size();
     // new focused index is 1 greater
     int newFocusedIndex = lastFocusedTerritory == null ? 0 : allTerritories.indexOf(lastFocusedTerritory) + 1;
@@ -1463,7 +1457,7 @@ public class MovePanel extends AbstractMovePanel {
     int i = 0;
     while (i < size) {
       final Territory t = allTerritories.get(newFocusedIndex);
-      final List<Unit> matchedUnits = t.getUnits().getMatches(moveableUnitOwnedByMeBuilder.all());
+      final List<Unit> matchedUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
       if (matchedUnits.size() > 0) {
         newFocusedTerritory = t;
         final Map<Territory, List<Unit>> highlight = new HashMap<>();

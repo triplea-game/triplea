@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -172,16 +173,13 @@ public class MovePerformer implements Serializable {
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
           final Collection<Unit> enemyTargetsTotal = Matches.getMatches(enemyUnits,
               Match.allOf(Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().invert()));
-          final Match.CompositeBuilder<Unit> allBombingRaidBuilder = Match.newCompositeBuilder(
-              Matches.unitIsStrategicBomber());
           final boolean canCreateAirBattle =
               !enemyTargetsTotal.isEmpty()
                   && Properties.getRaidsMayBePreceededByAirBattles(data)
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, true);
-          if (canCreateAirBattle) {
-            allBombingRaidBuilder.add(Matches.unitCanEscort());
-          }
-          final boolean allCanBomb = !arrived.isEmpty() && arrived.stream().allMatch(allBombingRaidBuilder.any());
+          final Predicate<Unit> allBombingRaidBuilder = Matches.unitIsStrategicBomber()
+              .or(canCreateAirBattle ? Matches.unitCanEscort() : Matches.never());
+          final boolean allCanBomb = !arrived.isEmpty() && arrived.stream().allMatch(allBombingRaidBuilder);
           final Collection<Unit> enemyTargets =
               Matches.getMatches(enemyTargetsTotal,
                   Matches.unitIsOfTypes(UnitAttachment

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -1540,27 +1541,21 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * @param to
-   *        referring territory.
-   * @param player
-   *        PlayerID
+   * @param to referring territory.
+   * @param player PlayerID
    * @return whether there was an owned unit capable of producing, in this territory at the start of this phase/step
    */
   public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(final Territory to,
       final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
-    final Match.CompositeBuilder<Unit> factoryMatchBuilder = Match.newCompositeBuilder(
-        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player),
-        Matches.unitIsBeingTransported().invert());
-    // land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in
-    // land, and like sea if
-    // in water.
-    if (to.isWater()) {
-      factoryMatchBuilder.add(Matches.unitIsLand().invert());
-    } else {
-      factoryMatchBuilder.add(Matches.unitIsSea().invert());
-    }
-    return Matches.countMatches(unitsAtStartOfTurnInTo, factoryMatchBuilder.all()) > 0;
+    final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
+        .and(Matches.unitIsBeingTransported().invert())
+        // land factories in water can't produce, and sea factories in land can't produce.
+        // air can produce like land if in land, and like sea if in water.
+        .and(to.isWater()
+            ? Matches.unitIsLand().invert()
+            : Matches.unitIsSea().invert());
+    return Matches.countMatches(unitsAtStartOfTurnInTo, factoryMatch) > 0;
   }
 
   /**
