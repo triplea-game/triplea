@@ -173,16 +173,6 @@ public final class Match<T> implements Predicate<T> {
     public Match<T> all() {
       return Match.allOf(matches);
     }
-
-    /**
-     * Creates a new match whose condition is satisfied if the test object matches any of the conditions added to this
-     * builder.
-     *
-     * @return A new match; never {@code null}.
-     */
-    public Match<T> any() {
-      return Match.anyOf(matches);
-    }
   }
 
   /**

@@ -69,30 +69,4 @@ public class MatchTest {
     assertTrue(Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH), "all match (one element)");
     assertTrue(Match.anyMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH), "all match (multiple elements)");
   }
-
-  @Test
-  public void testBuildAll() {
-    assertTrue(Match.newCompositeBuilder().all().match(VALUE));
-
-    assertTrue(Match.newCompositeBuilder().add(Matches.always()).all().match(VALUE));
-    assertFalse(Match.newCompositeBuilder().add(Matches.never()).all().match(VALUE));
-
-    assertTrue(Match.newCompositeBuilder().add(Matches.always()).add(Matches.always()).all().match(VALUE));
-    assertFalse(Match.newCompositeBuilder().add(Matches.always()).add(Matches.never()).all().match(VALUE));
-    assertFalse(Match.newCompositeBuilder().add(Matches.never()).add(Matches.always()).all().match(VALUE));
-    assertFalse(Match.newCompositeBuilder().add(Matches.never()).add(Matches.never()).all().match(VALUE));
-  }
-
-  @Test
-  public void testBuildAny() {
-    assertFalse(Match.newCompositeBuilder().any().match(VALUE));
-
-    assertTrue(Match.newCompositeBuilder().add(Matches.always()).any().match(VALUE));
-    assertFalse(Match.newCompositeBuilder().add(Matches.never()).any().match(VALUE));
-
-    assertTrue(Match.newCompositeBuilder().add(Matches.always()).add(Matches.always()).any().match(VALUE));
-    assertTrue(Match.newCompositeBuilder().add(Matches.always()).add(Matches.never()).any().match(VALUE));
-    assertTrue(Match.newCompositeBuilder().add(Matches.never()).add(Matches.always()).any().match(VALUE));
-    assertFalse(Match.newCompositeBuilder().add(Matches.never()).add(Matches.never()).any().match(VALUE));
-  }
 }

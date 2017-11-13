@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import games.strategy.engine.data.Change;
@@ -1711,14 +1712,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_attackingUnits.isEmpty() || m_defendingUnits.isEmpty()) {
       return;
     }
-    final Match.CompositeBuilder<Unit> notSubmergedAndTypeBuilder = Match.newCompositeBuilder(
-        Matches.unitIsSubmerged().invert());
-    if (Matches.territoryIsLand().match(m_battleSite)) {
-      notSubmergedAndTypeBuilder.add(Matches.unitIsSea().invert());
-    } else {
-      notSubmergedAndTypeBuilder.add(Matches.unitIsLand().invert());
-    }
-    final Match<Unit> notSubmergedAndType = notSubmergedAndTypeBuilder.all();
+    final Predicate<Unit> notSubmergedAndType = Matches.unitIsSubmerged().invert()
+        .and(Matches.territoryIsLand().match(m_battleSite)
+            ? Matches.unitIsSea().invert()
+            : Matches.unitIsLand().invert());
     final Collection<Unit> unitsToKill;
     final boolean hasUnitsThatCanRollLeft;
     if (attacker) {

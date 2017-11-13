@@ -7,11 +7,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 /**
  * A collection of units.
@@ -181,19 +181,19 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     return m_holder;
   }
 
-  public boolean allMatch(final Match<Unit> matcher) {
+  public boolean allMatch(final Predicate<Unit> matcher) {
     return m_units.stream().allMatch(matcher);
   }
 
-  public boolean anyMatch(final Match<Unit> matcher) {
-    return Match.anyMatch(m_units, matcher);
+  public boolean anyMatch(final Predicate<Unit> matcher) {
+    return m_units.stream().anyMatch(matcher);
   }
 
-  public int countMatches(final Match<Unit> predicate) {
+  public int countMatches(final Predicate<Unit> predicate) {
     return Matches.countMatches(m_units, predicate);
   }
 
-  public List<Unit> getMatches(final Match<Unit> predicate) {
+  public List<Unit> getMatches(final Predicate<Unit> predicate) {
     return Matches.getMatches(m_units, predicate);
   }
 
