@@ -177,9 +177,9 @@ public class MovePerformer implements Serializable {
               !enemyTargetsTotal.isEmpty()
                   && Properties.getRaidsMayBePreceededByAirBattles(data)
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, true);
-          final Predicate<Unit> allBombingRaidBuilder = Matches.unitIsStrategicBomber()
+          final Predicate<Unit> allBombingRaid = Matches.unitIsStrategicBomber()
               .or(canCreateAirBattle ? Matches.unitCanEscort() : Matches.never());
-          final boolean allCanBomb = !arrived.isEmpty() && arrived.stream().allMatch(allBombingRaidBuilder);
+          final boolean allCanBomb = !arrived.isEmpty() && arrived.stream().allMatch(allBombingRaid);
           final Collection<Unit> enemyTargets =
               Matches.getMatches(enemyTargetsTotal,
                   Matches.unitIsOfTypes(UnitAttachment
