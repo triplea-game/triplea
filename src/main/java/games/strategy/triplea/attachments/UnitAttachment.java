@@ -233,7 +233,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanIntercept(final boolean value) {
+  public void setCanIntercept(final Boolean value) {
     m_canIntercept = value;
   }
 
@@ -251,7 +251,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanEscort(final boolean value) {
+  public void setCanEscort(final Boolean value) {
     m_canEscort = value;
   }
 
@@ -1444,7 +1444,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttack(final int s) {
+  public void setAttack(final Integer s) {
     m_attack = s;
   }
 
@@ -1722,7 +1722,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsSuicide(final boolean s) {
+  public void setIsSuicide(final Boolean s) {
     m_isSuicide = s;
   }
 
@@ -1740,7 +1740,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsSuicideOnHit(final boolean s) {
+  public void setIsSuicideOnHit(final Boolean s) {
     m_isSuicideOnHit = s;
   }
 
@@ -1758,7 +1758,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsKamikaze(final boolean s) {
+  public void setIsKamikaze(final Boolean s) {
     m_isKamikaze = s;
   }
 
@@ -1776,7 +1776,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBlockade(final int s) {
+  public void setBlockade(final Integer s) {
     m_blockade = s;
   }
 
@@ -1990,7 +1990,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBombingBonus(final int s) {
+  public void setBombingBonus(final Integer s) {
     m_bombingBonus = s;
   }
 
@@ -2008,7 +2008,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBombingMaxDieSides(final int s) {
+  public void setBombingMaxDieSides(final Integer s) {
     m_bombingMaxDieSides = s;
   }
 
@@ -2105,7 +2105,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttackAA(final int s) {
+  public void setAttackAA(final Integer s) {
     m_attackAA = s;
   }
 
