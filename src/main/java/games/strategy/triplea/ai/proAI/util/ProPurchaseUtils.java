@@ -259,9 +259,7 @@ public class ProPurchaseUtils {
   private static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
     final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
         .and(Matches.unitIsBeingTransported().invert())
-        .and((territory.isWater()
-            ? Matches.unitIsLand()
-            : Matches.unitIsSea()).invert());
+        .and((territory.isWater() ? Matches.unitIsLand() : Matches.unitIsSea()).invert());
     final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatch);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
@@ -277,8 +275,8 @@ public class ProPurchaseUtils {
     if (ra != null && ra.getPlacementAnyTerritory()) {
       return Integer.MAX_VALUE;
     }
-    return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnits().getUnits(), territory, player, data, true,
-        true);
+    return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnits().getUnits(),
+        territory, player, data, true, true);
   }
 
   private static PlayerID getOriginalFactoryOwner(final Territory territory, final PlayerID player) {
