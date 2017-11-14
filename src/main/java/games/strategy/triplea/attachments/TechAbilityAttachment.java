@@ -697,7 +697,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRocketNumberPerTerritory(final int value) {
+  public void setRocketNumberPerTerritory(final Integer value) {
     m_rocketNumberPerTerritory = value;
   }
 
