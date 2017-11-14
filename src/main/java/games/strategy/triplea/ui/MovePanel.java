@@ -372,11 +372,15 @@ public class MovePanel extends AbstractMovePanel {
       if (BaseEditDelegate.getEditMode(getData())) {
         movable = movable.and(Matches.unitIsOwnedBy(owner));
       }
-      movable = movable.and(u -> units.stream()
-          .filter(unit -> unit.getOwner().equals(owner))
-          .anyMatch(unit -> Matches.unitIsOfType(unit.getType()).test(u)));
+      movable = movable.and(areOwnedUnitsOfType(units, owner));
     }
     return Match.of(movable);
+  }
+
+  private Predicate<Unit> areOwnedUnitsOfType(final Collection<Unit> units, final PlayerID owner) {
+    return mainUnit -> units.stream()
+        .filter(unit -> unit.getOwner().equals(owner))
+        .anyMatch(Matches.unitIsOfType(mainUnit.getType()));
   }
 
   private Route getRoute(final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
