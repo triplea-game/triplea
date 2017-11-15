@@ -48,7 +48,7 @@ public class AvailableGames {
   }
 
   Set<String> getGameNames() {
-    return Collections.unmodifiableSet(availableGames.keySet());
+    return new HashSet<>(availableGames.keySet());
   }
 
   Set<String> getAvailableMapFolderOrZipNames() {
