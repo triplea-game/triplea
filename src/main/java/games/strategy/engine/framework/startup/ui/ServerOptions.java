@@ -8,7 +8,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -142,8 +141,11 @@ public class ServerOptions extends JDialog {
     }
     content.add(fields, BorderLayout.CENTER);
     final JPanel buttons = new JPanel();
-    buttons.add(new JButton(m_okAction));
-    buttons.add(new JButton(m_cancelAction));
+    buttons.add(new JButton(SwingAction.of("OK", e -> {
+      setVisible(false);
+      okPressed = true;
+    })));
+    buttons.add(new JButton(SwingAction.of("Cancel", e -> setVisible(false))));
     content.add(buttons, BorderLayout.SOUTH);
   }
 
@@ -156,13 +158,6 @@ public class ServerOptions extends JDialog {
     final Color backGround = passwordField.isEnabled() ? portField.getBackground() : getBackground();
     passwordField.setBackground(backGround);
   }
-
-  private final Action m_okAction = SwingAction.of("OK", e -> {
-    setVisible(false);
-    okPressed = true;
-  });
-
-  private final Action m_cancelAction = SwingAction.of("Cancel", e -> setVisible(false));
 
   public String getComments() {
     return comment.getText();

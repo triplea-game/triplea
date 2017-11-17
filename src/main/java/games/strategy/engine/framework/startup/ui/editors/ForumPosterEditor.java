@@ -30,14 +30,14 @@ import games.strategy.util.TimeManager;
  */
 public class ForumPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;
-  private final JButton m_viewPosts = new JButton("View Forum");
-  private final JButton m_testForum = new JButton("Test Post");
-  private final JLabel m_loginLabel = new JLabel("Login:");
-  private final JLabel m_passwordLabel = new JLabel("Password:");
-  private final JTextField m_login = new JTextField();
-  private final JTextField m_password = new JPasswordField();
-  private final JTextField m_topicIdField = new JTextField();
-  private final JLabel m_topicIdLabel = new JLabel("Topic Id:");
+  private final JButton viewPosts = new JButton("View Forum");
+  private final JButton testForum = new JButton("Test Post");
+  private final JLabel loginLabel = new JLabel("Login:");
+  private final JLabel passwordLabel = new JLabel("Password:");
+  private final JTextField login = new JTextField();
+  private final JTextField password = new JPasswordField();
+  private final JTextField topicIdField = new JTextField();
+  private final JLabel topicIdLabel = new JLabel("Topic Id:");
   private final JCheckBox includeSaveGame = new JCheckBox("Attach save game to summary");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
@@ -49,26 +49,26 @@ public class ForumPosterEditor extends EditorPanel {
     final int labelSpace = 2;
     int row = 0;
     if (bean.getCanViewPosted()) {
-      add(m_topicIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+      add(topicIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
           new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(m_topicIdField, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,
+      add(topicIdField, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,
           GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
-      m_topicIdField.setText(bean.getTopicId());
-      add(m_viewPosts, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+      topicIdField.setText(bean.getTopicId());
+      add(viewPosts, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
           new Insets(0, 2, bottomSpace, 0), 0, 0));
       row++;
     }
-    add(m_loginLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    add(loginLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(m_login, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+    add(login, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
-    m_login.setText(bean.getUsername());
+    login.setText(bean.getUsername());
     row++;
-    add(m_passwordLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    add(passwordLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(m_password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+    add(password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
-    m_password.setText(bean.getPassword());
+    password.setText(bean.getPassword());
     row++;
     add(new JLabel(""), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
@@ -80,10 +80,10 @@ public class ForumPosterEditor extends EditorPanel {
       add(includeSaveGame, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
       includeSaveGame.setSelected(bean.getIncludeSaveGame());
-      add(m_testForum, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+      add(testForum, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
           new Insets(0, 0, 0, 0), 0, 0));
     } else {
-      add(m_testForum, new GridBagConstraints(3, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+      add(testForum, new GridBagConstraints(3, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
           new Insets(0, 0, 0, 0), 0, 0));
     }
     row++;
@@ -97,14 +97,14 @@ public class ForumPosterEditor extends EditorPanel {
    * Configures the listeners for the gui components.
    */
   private void setupListeners() {
-    m_viewPosts.addActionListener(e -> ((IForumPoster) getBean()).viewPosted());
+    viewPosts.addActionListener(e -> ((IForumPoster) getBean()).viewPosted());
     credentialsSaved.addActionListener(e -> fireEditorChanged());
-    m_testForum.addActionListener(e -> testForum());
+    testForum.addActionListener(e -> testForum());
     // add a document listener which will validate input when the content of any input field is changed
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
-    m_login.getDocument().addDocumentListener(docListener);
-    m_password.getDocument().addDocumentListener(docListener);
-    m_topicIdField.getDocument().addDocumentListener(docListener);
+    login.getDocument().addDocumentListener(docListener);
+    password.getDocument().addDocumentListener(docListener);
+    topicIdField.getDocument().addDocumentListener(docListener);
   }
 
   /**
@@ -165,26 +165,26 @@ public class ForumPosterEditor extends EditorPanel {
     if (bean instanceof NullForumPoster) {
       return true;
     }
-    final boolean loginValid = validateTextFieldNotEmpty(m_login, m_loginLabel);
-    final boolean passwordValid = validateTextFieldNotEmpty(m_password, m_passwordLabel);
+    final boolean loginValid = validateTextFieldNotEmpty(login, loginLabel);
+    final boolean passwordValid = validateTextFieldNotEmpty(password, passwordLabel);
     boolean idValid = true;
     if (bean.getCanViewPosted()) {
-      idValid = validateTextFieldNotEmpty(m_topicIdField, m_topicIdLabel);
-      m_viewPosts.setEnabled(idValid);
+      idValid = validateTextFieldNotEmpty(topicIdField, topicIdLabel);
+      viewPosts.setEnabled(idValid);
     } else {
-      m_topicIdLabel.setForeground(labelColor);
-      m_viewPosts.setEnabled(false);
+      topicIdLabel.setForeground(labelColor);
+      viewPosts.setEnabled(false);
     }
     final boolean allValid = loginValid && passwordValid && idValid;
-    m_testForum.setEnabled(allValid);
+    testForum.setEnabled(allValid);
     return allValid;
   }
 
   @Override
   public IBean getBean() {
-    bean.setTopicId(m_topicIdField.getText());
-    bean.setUsername(m_login.getText());
-    bean.setPassword(m_password.getText());
+    bean.setTopicId(topicIdField.getText());
+    bean.setUsername(login.getText());
+    bean.setPassword(password.getText());
     bean.setCredentialsSaved(credentialsSaved.isSelected());
     bean.setIncludeSaveGame(includeSaveGame.isSelected());
     bean.setAlsoPostAfterCombatMove(alsoPostAfterCombatMove.isSelected());
