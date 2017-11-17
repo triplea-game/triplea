@@ -7,7 +7,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -103,18 +102,15 @@ public class ClientOptions extends JDialog {
     fields.add(addressField);
     content.add(fields, BorderLayout.CENTER);
     final JPanel buttons = new JPanel();
-    buttons.add(new JButton(m_okAction));
-    buttons.add(new JButton(m_cancelAction));
+    buttons.add(new JButton(SwingAction.of("Connect", e -> {
+      setVisible(false);
+      okPressed = true;
+    })));
+    buttons.add(new JButton(SwingAction.of("Cancel", e -> setVisible(false))));
     content.add(buttons, BorderLayout.SOUTH);
   }
 
   public boolean getOkPressed() {
     return okPressed;
   }
-
-  private final Action m_okAction = SwingAction.of("Connect", e -> {
-    setVisible(false);
-    okPressed = true;
-  });
-  private final Action m_cancelAction = SwingAction.of("Cancel", e -> setVisible(false));
 }
