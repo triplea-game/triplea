@@ -120,11 +120,6 @@ public class GameData implements Serializable {
     lockUtil = LockUtil.INSTANCE;
   }
 
-  void resetComponents() {
-    playerList.setGameData(this);
-    // TODO: include other child components
-  }
-
   /**
    * Return the GameMap. The game map allows you to list the territories in the game, and
    * to see which territory is connected to which.
