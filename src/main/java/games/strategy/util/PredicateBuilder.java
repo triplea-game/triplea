@@ -25,6 +25,13 @@ public class PredicateBuilder<T> {
   }
 
   /**
+   * Creates a new PredicateBuilder with an underlying Predicate returning true.
+   */
+  public static <T> PredicateBuilder<T> trueBuilder() {
+    return new PredicateBuilder<>(o -> true);
+  }
+
+  /**
    * Modifies this PredicateBuilder to return the underlying predicate
    * combined with a logical AND with the given Predicate.
    */

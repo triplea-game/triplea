@@ -587,10 +587,10 @@ final class ProTechAI {
   private static List<Territory> getExactNeighbors(final Territory territory, final GameData data) {
     // old functionality retained, i.e. no route condition is imposed.
     // feel free to change, if you are confortable all calls to this function conform.
-    final Predicate<Territory> endCond = Matches.territoryIsImpassable().invert()
-        .and(Properties.getNeutralsImpassable(data)
-            ? Matches.territoryIsNeutralButNotWater().invert()
-            : Matches.always());
+    final Predicate<Territory> endCond = PredicateBuilder
+        .of(Matches.territoryIsImpassable().invert())
+        .andIf(Properties.getNeutralsImpassable(data), Matches.territoryIsNeutralButNotWater().invert())
+        .build();
     final int distance = 1;
     return findFrontier(territory, Match.of(endCond), Matches.always(), distance, data);
   }
@@ -598,10 +598,8 @@ final class ProTechAI {
   /**
    * Finds list of territories at exactly distance from the start.
    *
-   * @param endCondition
-   *        condition that all end points must satisfy
-   * @param routeCondition
-   *        condition that all traversed internal territories must satisy
+   * @param endCondition condition that all end points must satisfy
+   * @param routeCondition condition that all traversed internal territories must satisfied
    */
   private static List<Territory> findFrontier(
       final Territory start,

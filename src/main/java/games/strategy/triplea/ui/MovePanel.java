@@ -329,7 +329,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private Match<Unit> getMovableMatch(final Route route, final Collection<Unit> units) {
-    final PredicateBuilder<Unit> movableBuilder = PredicateBuilder.of(Matches.always());
+    final PredicateBuilder<Unit> movableBuilder = PredicateBuilder.trueBuilder();
     if (!BaseEditDelegate.getEditMode(getData())) {
       movableBuilder.and(Matches.unitIsOwnedBy(getCurrentPlayer()));
     }
@@ -805,19 +805,19 @@ public class MovePanel extends AbstractMovePanel {
       // add all
       if (me.isShiftDown()) {
         // prevent units of multiple owners from being chosen in edit mode
-        final PredicateBuilder<Unit> ownedNotFactory = PredicateBuilder.of(Matches.always());
+        final PredicateBuilder<Unit> ownedNotFactoryBuilder = PredicateBuilder.trueBuilder();
         if (!BaseEditDelegate.getEditMode(getData())) {
-          ownedNotFactory.and(unitsToMoveMatch);
+          ownedNotFactoryBuilder.and(unitsToMoveMatch);
         } else if (!selectedUnits.isEmpty()) {
-          ownedNotFactory
+          ownedNotFactoryBuilder
               .and(unitsToMoveMatch)
               .and(Matches.unitIsOwnedBy(getUnitOwner(selectedUnits)));
         } else {
-          ownedNotFactory
+          ownedNotFactoryBuilder
               .and(unitsToMoveMatch)
               .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits().getUnits())));
         }
-        selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactory.build()));
+        selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactoryBuilder.build()));
       } else if (me.isControlDown()) {
         selectedUnits.addAll(Matches.getMatches(units, unitsToMoveMatch));
       } else { // add one

@@ -2407,28 +2407,28 @@ public final class Matches {
       final boolean doNotIncludeAa, final boolean doNotIncludeBombardingSeaUnits) {
 
     // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
-    final PredicateBuilder<UnitType> canBeInBattle = PredicateBuilder.of(unitTypeIsInfrastructure().invert())
+    final PredicateBuilder<UnitType> canBeInBattleBuilder = PredicateBuilder.of(unitTypeIsInfrastructure().invert())
         .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
         .orIf(!doNotIncludeAa, Match.allOf(unitTypeIsAaForCombatOnly(), unitTypeIsAaThatCanFireOnRound(battleRound)));
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {
-        canBeInBattle
+        canBeInBattleBuilder
             .and(unitTypeCanNotMoveDuringCombatMove().invert())
             .and(unitTypeCanMove(player));
       }
       if (isLandBattle) {
         if (doNotIncludeBombardingSeaUnits) {
-          canBeInBattle.and(unitTypeIsSea().invert());
+          canBeInBattleBuilder.and(unitTypeIsSea().invert());
         }
       } else { // is sea battle
-        canBeInBattle.and(unitTypeIsLand().invert());
+        canBeInBattleBuilder.and(unitTypeIsLand().invert());
       }
     } else { // defense
-      canBeInBattle.and((isLandBattle ? unitTypeIsSea() : unitTypeIsLand()).invert());
+      canBeInBattleBuilder.and((isLandBattle ? unitTypeIsSea() : unitTypeIsLand()).invert());
     }
 
-    return Match.of(canBeInBattle.build());
+    return Match.of(canBeInBattleBuilder.build());
   }
 
   static Match<Unit> unitIsAirborne() {
