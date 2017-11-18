@@ -47,6 +47,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Util;
 
 public class MovePanel extends AbstractMovePanel {
@@ -328,19 +329,19 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private Match<Unit> getMovableMatch(final Route route, final Collection<Unit> units) {
-    Predicate<Unit> movable = Matches.always();
+    final PredicateBuilder<Unit> movableBuilder = PredicateBuilder.of(Matches.always());
     if (!BaseEditDelegate.getEditMode(getData())) {
-      movable = movable.and(Matches.unitIsOwnedBy(getCurrentPlayer()));
+      movableBuilder.and(Matches.unitIsOwnedBy(getCurrentPlayer()));
     }
     /*
      * if you do not have selection of zero-movement units enabled,
      * this will restrict selection to units with 1 or more movement
      */
     if (!Properties.getSelectableZeroMovementUnits(getData())) {
-      movable = movable.and(Matches.unitCanMove());
+      movableBuilder.and(Matches.unitCanMove());
     }
     if (!nonCombat) {
-      movable = movable.and(Matches.unitCanNotMoveDuringCombatMove().invert());
+      movableBuilder.and(Matches.unitCanNotMoveDuringCombatMove().invert());
     }
     if (route != null) {
       final Match<Unit> enoughMovement = Match.of(u -> {
@@ -352,32 +353,32 @@ public class MovePanel extends AbstractMovePanel {
       if (route.isUnload()) {
         final Match<Unit> notLandAndCanMove = Match.allOf(enoughMovement, Matches.unitIsNotLand());
         final Match<Unit> landOrCanMove = Match.anyOf(Matches.unitIsLand(), notLandAndCanMove);
-        movable = movable.and(landOrCanMove);
+        movableBuilder.and(landOrCanMove);
       } else {
-        movable = movable.and(enoughMovement);
+        movableBuilder.and(enoughMovement);
       }
     }
     if (route != null && route.getEnd() != null) {
       final boolean water = route.getEnd().isWater();
       if (water && !route.isLoad()) {
-        movable = movable.and(Matches.unitIsNotLand());
+        movableBuilder.and(Matches.unitIsNotLand());
       }
       if (!water) {
-        movable = movable.and(Matches.unitIsNotSea());
+        movableBuilder.and(Matches.unitIsNotSea());
       }
     }
     if (units != null && !units.isEmpty()) {
       // force all units to have the same owner in edit mode
       final PlayerID owner = getUnitOwner(units);
       if (BaseEditDelegate.getEditMode(getData())) {
-        movable = movable.and(Matches.unitIsOwnedBy(owner));
+        movableBuilder.and(Matches.unitIsOwnedBy(owner));
       }
-      movable = movable.and(areOwnedUnitsOfType(units, owner));
+      movableBuilder.and(areOwnedUnitsOfType(units, owner));
     }
-    return Match.of(movable);
+    return Match.of(movableBuilder.build());
   }
 
-  private Predicate<Unit> areOwnedUnitsOfType(final Collection<Unit> units, final PlayerID owner) {
+  private static Predicate<Unit> areOwnedUnitsOfType(final Collection<Unit> units, final PlayerID owner) {
     return mainUnit -> units.stream()
         .filter(unit -> unit.getOwner().equals(owner))
         .anyMatch(Matches.unitIsOfType(mainUnit.getType()));
@@ -804,19 +805,19 @@ public class MovePanel extends AbstractMovePanel {
       // add all
       if (me.isShiftDown()) {
         // prevent units of multiple owners from being chosen in edit mode
-        Predicate<Unit> ownedNotFactory = Matches.always();
+        final PredicateBuilder<Unit> ownedNotFactory = PredicateBuilder.of(Matches.always());
         if (!BaseEditDelegate.getEditMode(getData())) {
-          ownedNotFactory = ownedNotFactory.and(unitsToMoveMatch);
+          ownedNotFactory.and(unitsToMoveMatch);
         } else if (!selectedUnits.isEmpty()) {
-          ownedNotFactory = ownedNotFactory
+          ownedNotFactory
               .and(unitsToMoveMatch)
               .and(Matches.unitIsOwnedBy(getUnitOwner(selectedUnits)));
         } else {
-          ownedNotFactory = ownedNotFactory
+          ownedNotFactory
               .and(unitsToMoveMatch)
               .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits().getUnits())));
         }
-        selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactory));
+        selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactory.build()));
       } else if (me.isControlDown()) {
         selectedUnits.addAll(Matches.getMatches(units, unitsToMoveMatch));
       } else { // add one
@@ -1072,11 +1073,11 @@ public class MovePanel extends AbstractMovePanel {
 
     private Match<Unit> getUnloadableMatch() {
       // are we unloading everything? if we are then we dont need to select the transports
-      final Predicate<Unit> unloadable = Matches.unitIsOwnedBy(getCurrentPlayer())
+      final Predicate<Unit> unloadable = PredicateBuilder
+          .of(Matches.unitIsOwnedBy(getCurrentPlayer()))
           .and(Matches.unitIsLand())
-          .and(nonCombat
-              ? Matches.unitCanNotMoveDuringCombatMove().invert()
-              : Matches.always());
+          .andIf(nonCombat, Matches.unitCanNotMoveDuringCombatMove().invert())
+          .build();
       return Match.of(unloadable);
     }
 
@@ -1441,10 +1442,12 @@ public class MovePanel extends AbstractMovePanel {
     } finally {
       getData().releaseReadLock();
     }
-    final Predicate<Unit> moveableUnitOwnedByMe = Matches.unitIsOwnedBy(getCurrentPlayer())
+    final Predicate<Unit> moveableUnitOwnedByMe = PredicateBuilder
+        .of(Matches.unitIsOwnedBy(getCurrentPlayer()))
         .and(Matches.unitHasMovementLeft())
         // if not non combat, cannot move aa units
-        .and(!nonCombat ? Matches.unitCanNotMoveDuringCombatMove().invert() : Matches.always());
+        .andIf(!nonCombat, Matches.unitCanNotMoveDuringCombatMove().invert())
+        .build();
     final int size = allTerritories.size();
     // new focused index is 1 greater
     int newFocusedIndex = lastFocusedTerritory == null ? 0 : allTerritories.indexOf(lastFocusedTerritory) + 1;
@@ -1487,12 +1490,12 @@ public class MovePanel extends AbstractMovePanel {
     } finally {
       getData().releaseReadLock();
     }
-    final Predicate<Unit> moveableUnitOwnedByMe = Matches.unitIsOwnedBy(getCurrentPlayer())
+    final Predicate<Unit> moveableUnitOwnedByMe = PredicateBuilder
+        .of(Matches.unitIsOwnedBy(getCurrentPlayer()))
         .and(Matches.unitHasMovementLeft())
         // if not non combat, cannot move aa units
-        .and(!nonCombat
-            ? Matches.unitCanNotMoveDuringCombatMove().invert()
-            : Matches.always());
+        .andIf(!nonCombat, Matches.unitCanNotMoveDuringCombatMove().invert())
+        .build();
     final Map<Territory, List<Unit>> highlight = new HashMap<>();
     for (final Territory t : allTerritories) {
       final List<Unit> moveableUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);

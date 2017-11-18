@@ -33,6 +33,7 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 
 /**
  * Manages info about territories.
@@ -310,17 +311,16 @@ public class ProTerritoryManager {
     }
     final Match<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, player),
         Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().invert());
-    final Predicate<Territory> canScramble = Match.anyOf(
+    final Predicate<Territory> canScramble = PredicateBuilder.of(Match.anyOf(
         Matches.territoryIsWater(),
-        Matches.isTerritoryEnemy(player, data))
+        Matches.isTerritoryEnemy(player, data)))
         .and(Matches.territoryHasUnitsThatMatch(Match.allOf(
             Matches.unitCanScramble(),
             Matches.unitIsEnemyOf(data, player),
             Matches.unitIsNotDisabled())))
         .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
-        .and(fromIslandOnly
-            ? Matches.territoryIsIsland()
-            : Matches.always());
+        .andIf(fromIslandOnly, Matches.territoryIsIsland())
+        .build();
 
     // Find potential territories to scramble from
     final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();

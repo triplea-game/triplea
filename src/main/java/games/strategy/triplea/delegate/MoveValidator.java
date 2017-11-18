@@ -34,6 +34,7 @@ import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 
 /**
  * Provides some static methods for validating movement.
@@ -1499,19 +1500,16 @@ public class MoveValidator {
     // no enemy units on the route predicate
     final Match<Territory> noEnemy = Matches.territoryHasEnemyUnits(player, data).invert();
     // no impassable or restricted territories
-    final Match<Territory> noImpassable = Match.of(
-        Matches.territoryIsPassableAndNotRestricted(player, data)
-            // if we have air or land, we don't want to move over territories owned by players who's relationships will
-            // not let us move into them
-            .and(hasAir
-                ? Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data)
-                : Matches.always())
-            .and(hasLand
-                ? Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data)
-                : Matches.always()));
+    final Match<Territory> noImpassable = Match.of(PredicateBuilder
+        .of(Matches.territoryIsPassableAndNotRestricted(player, data))
+        // if we have air or land, we don't want to move over territories owned by players who's relationships will
+        // not let us move into them
+        .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))
+        .andIf(hasLand, Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data))
+        .build());
     // now find the default route
     Route defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end,
-        isNeutralsImpassable ? Match.allOf(noNeutral, noImpassable) : noImpassable);
+        Match.of(PredicateBuilder.of(noImpassable).andIf(isNeutralsImpassable, noNeutral).build()));
     // since all routes require at least noImpassable, then if we cannot find a route without impassables, just return
     // any route
     if (defaultRoute == null) {

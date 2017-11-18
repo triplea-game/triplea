@@ -30,6 +30,7 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 
 /**
  * Pro tech AI.
@@ -526,14 +527,11 @@ final class ProTechAI {
     }
     final Match<Unit> sub = Match.allOf(Matches.unitIsSub().invert());
     final Match<Unit> transport = Match.allOf(Matches.unitIsTransport().invert(), Matches.unitIsLand().invert());
-    final Predicate<Unit> unitCond = Matches.unitIsInfrastructure().invert()
+    final Predicate<Unit> unitCond = PredicateBuilder.of(Matches.unitIsInfrastructure().invert())
         .and(Matches.alliedUnit(player, data).invert())
-        .and(Properties.getIgnoreTransportInMovement(data)
-            ? transport
-            : Matches.always())
-        .and(Properties.getIgnoreSubInMovement(data)
-            ? sub
-            : Matches.always());
+        .andIf(Properties.getIgnoreTransportInMovement(data), transport)
+        .andIf(Properties.getIgnoreSubInMovement(data), sub)
+        .build();
     final Match<Territory> routeCond = Match.allOf(
         Matches.territoryHasUnitsThatMatch(Match.of(unitCond)).invert(),
         Matches.territoryIsWater());

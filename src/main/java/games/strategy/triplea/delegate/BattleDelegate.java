@@ -44,6 +44,7 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
 
 @MapSupport
@@ -644,17 +645,17 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final Match<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, m_player),
         Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().invert());
-    final Predicate<Territory> canScramble = Match.anyOf(
-        Matches.territoryIsWater(),
-        Matches.isTerritoryEnemy(m_player, data))
+    final Predicate<Territory> canScramble = PredicateBuilder
+        .of(Match.anyOf(
+            Matches.territoryIsWater(),
+            Matches.isTerritoryEnemy(m_player, data)))
         .and(Matches.territoryHasUnitsThatMatch(Match.allOf(
             Matches.unitCanScramble(),
             Matches.unitIsEnemyOf(data, m_player),
             Matches.unitIsNotDisabled())))
         .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
-        .and(fromIslandOnly
-            ? Matches.territoryIsIsland()
-            : Matches.always());
+        .andIf(fromIslandOnly, Matches.territoryIsIsland())
+        .build();
 
     final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();
     final Set<Territory> territoriesWithBattles =
