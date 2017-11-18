@@ -92,7 +92,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (final ExecutionException e) {
-        ClientLogger.logError(e);
+        ClientLogger.logError(e.getCause());
       }
     }
     return parsedMapSet;
