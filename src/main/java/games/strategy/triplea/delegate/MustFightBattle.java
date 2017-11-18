@@ -41,6 +41,7 @@ import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Util;
 
 /**
@@ -1123,16 +1124,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
-    final Predicate<Unit> enemyUnitsThatPreventRetreat = Matches.enemyUnit(m_attacker, m_data)
+    final Predicate<Unit> enemyUnitsThatPreventRetreat = PredicateBuilder
+        .of(Matches.enemyUnit(m_attacker, m_data))
         .and(Matches.unitIsNotInfrastructure())
         .and(Matches.unitIsBeingTransported().invert())
         .and(Matches.unitIsSubmerged().invert())
-        .and(Properties.getIgnoreSubInMovement(m_data)
-            ? Matches.unitIsNotSub()
-            : Matches.always())
-        .and(Properties.getIgnoreTransportInMovement(m_data)
-            ? Matches.unitIsNotTransportButCouldBeCombatTransport()
-            : Matches.always());
+        .andIf(Properties.getIgnoreSubInMovement(m_data), Matches.unitIsNotSub())
+        .andIf(Properties.getIgnoreTransportInMovement(m_data), Matches.unitIsNotTransportButCouldBeCombatTransport())
+        .build();
     Collection<Territory> possible = Matches.getMatches(m_attackingFrom,
         Matches.territoryHasUnitsThatMatch(Match.of(enemyUnitsThatPreventRetreat)).invert());
     // In WW2V2 and WW2V3 we need to filter out territories where only planes

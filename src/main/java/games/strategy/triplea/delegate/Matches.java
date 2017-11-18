@@ -40,6 +40,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
@@ -1431,12 +1432,13 @@ public final class Matches {
         return false;
       }
       // we ignore neutral units
-      final Predicate<Unit> blitzableUnits = enemyUnit(player, data).invert()
+      final Predicate<Unit> blitzableUnits = PredicateBuilder
+          .of(enemyUnit(player, data).invert())
           // WW2V2, cant blitz through factories and aa guns
           // WW2V1, you can
-          .or(!Properties.getWW2V2(data) && !Properties.getBlitzThroughFactoriesAndAARestricted(data)
-              ? unitIsInfrastructure()
-              : never());
+          .orIf(!Properties.getWW2V2(data) && !Properties.getBlitzThroughFactoriesAndAARestricted(data),
+              unitIsInfrastructure())
+          .build();
       return t.getUnits().allMatch(blitzableUnits);
     });
   }
@@ -1691,14 +1693,12 @@ public final class Matches {
   public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data) {
     final Match<Unit> sub = Match.allOf(unitIsSub().invert());
     final Match<Unit> transport = Match.allOf(unitIsTransportButNotCombatTransport().invert(), unitIsLand().invert());
-    final Match<Unit> unitCond = Match.of(unitIsInfrastructure().invert()
+    final Match<Unit> unitCond = Match.of(PredicateBuilder
+        .of(unitIsInfrastructure().invert())
         .and(alliedUnit(player, data).invert())
-        .and(Properties.getIgnoreTransportInMovement(data)
-            ? transport
-            : Matches.always())
-        .and(Properties.getIgnoreSubInMovement(data)
-            ? sub
-            : Matches.always()));
+        .andIf(Properties.getIgnoreTransportInMovement(data), transport)
+        .andIf(Properties.getIgnoreSubInMovement(data), sub)
+        .build());
     return Match.allOf(territoryHasUnitsThatMatch(unitCond).invert(), territoryIsWater());
   }
 
@@ -2407,32 +2407,28 @@ public final class Matches {
       final boolean doNotIncludeAa, final boolean doNotIncludeBombardingSeaUnits) {
 
     // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
-
-    final Predicate<UnitType> supportOrNotInfrastructureOrAa = unitTypeIsInfrastructure().invert()
+    final PredicateBuilder<UnitType> canBeInBattle = PredicateBuilder.of(unitTypeIsInfrastructure().invert())
         .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
-        .or(!doNotIncludeAa
-            ? Match.allOf(unitTypeIsAaForCombatOnly(), unitTypeIsAaThatCanFireOnRound(battleRound))
-            : never());
-    Predicate<UnitType> canBeInBattle = supportOrNotInfrastructureOrAa;
+        .orIf(!doNotIncludeAa, Match.allOf(unitTypeIsAaForCombatOnly(), unitTypeIsAaThatCanFireOnRound(battleRound)));
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {
-        canBeInBattle = canBeInBattle
+        canBeInBattle
             .and(unitTypeCanNotMoveDuringCombatMove().invert())
             .and(unitTypeCanMove(player));
       }
       if (isLandBattle) {
         if (doNotIncludeBombardingSeaUnits) {
-          canBeInBattle = canBeInBattle.and(unitTypeIsSea().invert());
+          canBeInBattle.and(unitTypeIsSea().invert());
         }
       } else { // is sea battle
-        canBeInBattle = canBeInBattle.and(unitTypeIsLand().invert());
+        canBeInBattle.and(unitTypeIsLand().invert());
       }
     } else { // defense
-      canBeInBattle = canBeInBattle.and((isLandBattle ? unitTypeIsSea() : unitTypeIsLand()).invert());
+      canBeInBattle.and((isLandBattle ? unitTypeIsSea() : unitTypeIsLand()).invert());
     }
 
-    return Match.of(canBeInBattle);
+    return Match.of(canBeInBattle.build());
   }
 
   static Match<Unit> unitIsAirborne() {

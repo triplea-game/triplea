@@ -32,6 +32,7 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Util;
 
 public class MovePerformer implements Serializable {
@@ -177,8 +178,10 @@ public class MovePerformer implements Serializable {
               !enemyTargetsTotal.isEmpty()
                   && Properties.getRaidsMayBePreceededByAirBattles(data)
                   && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(route.getEnd(), id, data, true);
-          final Predicate<Unit> allBombingRaid = Matches.unitIsStrategicBomber()
-              .or(canCreateAirBattle ? Matches.unitCanEscort() : Matches.never());
+          final Predicate<Unit> allBombingRaid = PredicateBuilder
+              .of(Matches.unitIsStrategicBomber())
+              .orIf(canCreateAirBattle, Matches.unitCanEscort())
+              .build();
           final boolean allCanBomb = !arrived.isEmpty() && arrived.stream().allMatch(allBombingRaid);
           final Collection<Unit> enemyTargets =
               Matches.getMatches(enemyTargetsTotal,

@@ -34,6 +34,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 
 public class AirBattle extends AbstractBattle {
   private static final long serialVersionUID = 4686241714027216395L;
@@ -166,10 +167,10 @@ public class AirBattle extends AbstractBattle {
           m_attackingWaitingToDie.clear();
           m_defendingWaitingToDie.clear();
           // kill any suicide attackers (veqryn)
-          final Predicate<Unit> attackerSuicide = Matches.unitIsSuicide()
-              .and(m_isBombingRun
-                  ? Matches.unitIsNotStrategicBomber()
-                  : Matches.always());
+          final Predicate<Unit> attackerSuicide = PredicateBuilder
+              .of(Matches.unitIsSuicide())
+              .andIf(m_isBombingRun, Matches.unitIsNotStrategicBomber())
+              .build();
           if (m_attackingUnits.stream().anyMatch(attackerSuicide)) {
             final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
             m_attackingUnits.removeAll(suicideUnits);
@@ -642,23 +643,21 @@ public class AirBattle extends AbstractBattle {
   }
 
   private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
-    final Predicate<Unit> match = Matches.unitCanAirBattle()
+    return Match.of(PredicateBuilder
+        .of(Matches.unitCanAirBattle())
         .and(Matches.unitIsEnemyOf(data, attacker))
         .and(Matches.unitWasInAirBattle().invert())
-        .and(!Properties.getCanScrambleIntoAirBattles(data)
-            ? Matches.unitWasScrambled().invert()
-            : Matches.always());
-    return Match.of(match);
+        .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().invert())
+        .build());
   }
 
   private static Match<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
-    final Predicate<Unit> match = Matches.unitCanIntercept()
+    return Match.of(PredicateBuilder
+        .of(Matches.unitCanIntercept())
         .and(Matches.unitIsEnemyOf(data, attacker))
         .and(Matches.unitWasInAirBattle().invert())
-        .and(!Properties.getCanScrambleIntoAirBattles(data)
-            ? Matches.unitWasScrambled().invert()
-            : Matches.always());
-    return Match.of(match);
+        .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().invert())
+        .build());
   }
 
   static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,

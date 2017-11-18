@@ -34,6 +34,7 @@ import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 
 /**
  * Responsible for moving units on the board.
@@ -190,8 +191,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // WW2V1, fires at end of non combat move
     if (GameStepPropertiesHelper.isFireRockets(data)) {
       if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerId())) {
-        final RocketsFireHelper helper = new RocketsFireHelper();
-        helper.fireRockets(m_bridge, m_bridge.getPlayerId());
+        RocketsFireHelper.fireRockets(m_bridge, m_bridge.getPlayerId());
         m_needToDoRockets = false;
       }
     }
@@ -232,7 +232,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    final Predicate<Unit> moveableUnitOwnedByMe = Matches.unitIsOwnedBy(m_player)
+    final Predicate<Unit> moveableUnitOwnedByMe = PredicateBuilder.of(Matches.unitIsOwnedBy(m_player))
         // right now, land units on transports have movement taken away when they their transport moves
         .and(Match.anyOf(
             Matches.unitHasMovementLeft(),
@@ -240,15 +240,12 @@ public class MoveDelegate extends AbstractMoveDelegate {
                 Matches.unitIsLand(),
                 Matches.unitIsBeingTransported())))
         // if not non combat, cannot move aa units
-        .and(GameStepPropertiesHelper.isCombatMove(getData())
-            ? Matches.unitCanNotMoveDuringCombatMove().invert()
-            : Matches.always());
-    for (final Territory item : getData().getMap().getTerritories()) {
-      if (item.getUnits().anyMatch(moveableUnitOwnedByMe)) {
-        return true;
-      }
-    }
-    return false;
+        .andIf(GameStepPropertiesHelper.isCombatMove(getData()), Matches.unitCanNotMoveDuringCombatMove().invert())
+        .build();
+    return !getData().getMap().getTerritories().isEmpty() &&
+        getData().getMap().getTerritories().stream()
+            .map(Territory::getUnits)
+            .anyMatch(units -> units.anyMatch(moveableUnitOwnedByMe));
   }
 
   private Change resetBonusMovement() {

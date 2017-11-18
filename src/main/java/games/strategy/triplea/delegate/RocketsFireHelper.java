@@ -32,6 +32,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.PredicateBuilder;
 
 /**
  * Logic to fire rockets.
@@ -69,9 +70,7 @@ public class RocketsFireHelper {
     return Properties.getLimitRocketAndSBRDamageToProduction(data);
   }
 
-  public RocketsFireHelper() {}
-
-  void fireRockets(final IDelegateBridge bridge, final PlayerID player) {
+  static void fireRockets(final IDelegateBridge bridge, final PlayerID player) {
     final GameData data = bridge.getData();
     final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
     if (rocketTerritories.isEmpty()) {
@@ -135,7 +134,7 @@ public class RocketsFireHelper {
     }
   }
 
-  Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player) {
+  static Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player) {
     final Set<Territory> territories = new HashSet<>();
     final Match<Unit> ownedRockets = rocketMatch(player);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
@@ -160,10 +159,10 @@ public class RocketsFireHelper {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
     final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
     final Set<Territory> hasFactory = new HashSet<>();
-    final Predicate<Territory> allowed = Matches.territoryAllowsRocketsCanFlyOver(player, data)
-        .and(!isRocketsCanFlyOverImpassables(data)
-            ? Matches.territoryIsNotImpassable()
-            : Matches.always());
+    final Predicate<Territory> allowed = PredicateBuilder
+        .of(Matches.territoryAllowsRocketsCanFlyOver(player, data))
+        .andIf(!isRocketsCanFlyOverImpassables(data), Matches.territoryIsNotImpassable())
+        .build();
     final Match<Unit> attackableUnits =
         Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
     for (final Territory current : possible) {
