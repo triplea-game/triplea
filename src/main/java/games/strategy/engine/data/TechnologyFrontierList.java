@@ -17,13 +17,6 @@ public class TechnologyFrontierList extends GameDataComponent {
     super(data);
   }
 
-  @Override
-  public void setGameData(final GameData gameData) {
-    super.setGameData(gameData);
-
-    m_technologyFrontiers.forEach(it -> it.setGameData(gameData));
-  }
-
   public void addTechnologyFrontier(final TechnologyFrontier tf) {
     m_technologyFrontiers.add(tf);
   }

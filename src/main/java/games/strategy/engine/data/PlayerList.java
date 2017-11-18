@@ -26,13 +26,6 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
     super(data);
   }
 
-  @Override
-  public void setGameData(final GameData gameData) {
-    super.setGameData(gameData);
-
-    m_players.values().forEach(it -> it.setGameData(gameData));
-  }
-
   void addPlayerId(final PlayerID player) {
     m_players.put(player.getName(), player);
   }

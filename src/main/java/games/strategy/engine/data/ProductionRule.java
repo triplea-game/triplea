@@ -23,14 +23,6 @@ public class ProductionRule extends DefaultNamed {
     m_cost = costs;
   }
 
-  @Override
-  public void setGameData(final GameData gameData) {
-    super.setGameData(gameData);
-
-    m_cost.keySet().forEach(it -> it.setGameData(gameData));
-    m_results.keySet().forEach(it -> it.setGameData(gameData));
-  }
-
   protected void addCost(final Resource resource, final int quantity) {
     m_cost.put(resource, quantity);
   }

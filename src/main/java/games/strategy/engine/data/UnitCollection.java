@@ -33,17 +33,6 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   @Override
-  public void setGameData(final GameData gameData) {
-    super.setGameData(gameData);
-
-    // NB: Do not set game data for the back-reference to NamedUnitHolder to avoid infinite recursion.
-    // This field will most likely point to the caller of this method anyway, and thus should already
-    // have its game data set to the correct reference.
-
-    m_units.forEach(it -> it.setGameData(gameData));
-  }
-
-  @Override
   public boolean add(final Unit unit) {
     final boolean result = m_units.add(unit);
     m_holder.notifyChanged();

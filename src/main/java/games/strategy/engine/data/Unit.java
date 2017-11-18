@@ -34,17 +34,6 @@ public class Unit extends GameDataComponent {
     setOwner(owner);
   }
 
-  @Override
-  public void setGameData(final GameData gameData) {
-    super.setGameData(gameData);
-
-    // NB: Do not set game data for the back-reference to PlayerID to avoid infinite recursion.
-    // This field will most likely point to the caller of this method anyway, and thus should already
-    // have its game data set to the correct reference.
-
-    m_type.setGameData(gameData);
-  }
-
   public GUID getId() {
     return m_uid;
   }
