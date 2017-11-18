@@ -2,8 +2,13 @@ package games.strategy.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.function.Predicate;;
+import java.util.function.Predicate;
 
+/**
+ * A Utility class to build complex Predicates.
+ * 
+ * @param <T> The Type of the Underlying Predicate.
+ */
 public class PredicateBuilder<T> {
 
   private Predicate<T> predicate;
