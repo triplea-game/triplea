@@ -1,5 +1,5 @@
 - version: 1.9.0.0
-  host: 45.79.144.53
+  host: lobby.triplea-game.org
   port: 3304
   message: |
     Welcome to TripleA 1.9 - For help: http://www.triplea-game.org/help/
