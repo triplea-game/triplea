@@ -242,8 +242,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
         // if not non combat, cannot move aa units
         .andIf(GameStepPropertiesHelper.isCombatMove(getData()), Matches.unitCanNotMoveDuringCombatMove().invert())
         .build();
-    return !getData().getMap().getTerritories().isEmpty() &&
-        getData().getMap().getTerritories().stream()
+    return !getData().getMap().getTerritories().isEmpty()
+        && getData().getMap().getTerritories().stream()
             .map(Territory::getUnits)
             .anyMatch(units -> units.anyMatch(moveableUnitOwnedByMe));
   }
