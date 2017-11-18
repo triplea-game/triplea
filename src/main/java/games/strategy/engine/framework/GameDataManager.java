@@ -11,37 +11,21 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.swing.JOptionPane;
 
-import org.apache.commons.io.input.CloseShieldInputStream;
-import org.apache.commons.io.output.CloseShieldOutputStream;
-
-import com.google.common.annotations.VisibleForTesting;
-
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataMemento;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.io.IoUtils;
-import games.strategy.persistence.serializable.ProxyRegistry;
-import games.strategy.persistence.serializable.ProxyableObjectOutputStream;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Version;
-import games.strategy.util.memento.Memento;
-import games.strategy.util.memento.MementoExportException;
-import games.strategy.util.memento.MementoExporter;
-import games.strategy.util.memento.MementoImportException;
-import games.strategy.util.memento.MementoImporter;
 
 /**
  * Responsible for loading saved games, new games from xml, and saving games.
@@ -84,36 +68,7 @@ public final class GameDataManager {
   public static GameData loadGame(final InputStream is) throws IOException {
     checkNotNull(is);
 
-    return ClientSetting.TEST_USE_PROXY_SERIALIZATION.booleanValue()
-        ? loadGameInProxySerializationFormat(is)
-        : loadGameInSerializationFormat(is);
-  }
-
-  @VisibleForTesting
-  static GameData loadGameInProxySerializationFormat(final InputStream is) throws IOException {
-    return fromMemento(loadMemento(new CloseShieldInputStream(is)));
-  }
-
-  private static Memento loadMemento(final InputStream is) throws IOException {
-    try (InputStream gzipis = new GZIPInputStream(is);
-        ObjectInputStream ois = new ObjectInputStream(gzipis)) {
-      return (Memento) ois.readObject();
-    } catch (final ClassNotFoundException e) {
-      throw new IOException(e);
-    }
-  }
-
-  private static GameData fromMemento(final Memento memento) throws IOException {
-    try {
-      final MementoImporter<GameData> mementoImporter = GameDataMemento.newImporter();
-      return mementoImporter.importMemento(memento);
-    } catch (final MementoImportException e) {
-      throw new IOException(e);
-    }
-  }
-
-  private static GameData loadGameInSerializationFormat(final InputStream inputStream) throws IOException {
-    final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(inputStream));
+    final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is));
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
@@ -161,7 +116,6 @@ public final class GameDataManager {
     }
   }
 
-
   private static void loadDelegates(final ObjectInputStream input, final GameData data)
       throws ClassNotFoundException, IOException {
     for (Object endMarker = input.readObject(); !endMarker.equals(DELEGATE_LIST_END); endMarker = input.readObject()) {
@@ -187,8 +141,8 @@ public final class GameDataManager {
   /**
    * Saves the specified game data to the specified stream.
    *
-   * @param os The stream to which the game data will be saved. The caller is responsible for closing this stream; it
-   *        will not be closed when this method returns.
+   * @param os The stream to which the game data will be saved. Note that this stream will be closed if this method
+   *        returns successfully.
    * @param gameData The game data to save.
    *
    * @throws IOException If an error occurs while saving the game.
@@ -201,62 +155,6 @@ public final class GameDataManager {
   }
 
   static void saveGame(
-      final OutputStream os,
-      final GameData gameData,
-      final boolean includeDelegates)
-      throws IOException {
-    if (ClientSetting.TEST_USE_PROXY_SERIALIZATION.booleanValue()) {
-      saveGameInProxySerializationFormat(
-          os,
-          gameData,
-          Collections.singletonMap(GameDataMemento.ExportOptionName.EXCLUDE_DELEGATES, !includeDelegates));
-    } else {
-      saveGameInSerializationFormat(os, gameData, includeDelegates);
-    }
-  }
-
-  private static void saveGameInProxySerializationFormat(
-      final OutputStream os,
-      final GameData gameData,
-      final Map<GameDataMemento.ExportOptionName, Object> optionsByName)
-      throws IOException {
-    saveMemento(new CloseShieldOutputStream(os), toMemento(gameData, optionsByName), ProxyRegistries.GAME_DATA_MEMENTO);
-  }
-
-  @VisibleForTesting
-  static void saveGameInProxySerializationFormat(
-      final OutputStream os,
-      final GameData gameData,
-      final Map<GameDataMemento.ExportOptionName, Object> optionsByName,
-      final ProxyRegistry proxyRegistry)
-      throws IOException {
-    saveMemento(new CloseShieldOutputStream(os), toMemento(gameData, optionsByName), proxyRegistry);
-  }
-
-  private static Memento toMemento(
-      final GameData gameData,
-      final Map<GameDataMemento.ExportOptionName, Object> optionsByName)
-      throws IOException {
-    try {
-      final MementoExporter<GameData> mementoExporter = GameDataMemento.newExporter(optionsByName);
-      return mementoExporter.exportMemento(gameData);
-    } catch (final MementoExportException e) {
-      throw new IOException(e);
-    }
-  }
-
-  private static void saveMemento(
-      final OutputStream os,
-      final Memento memento,
-      final ProxyRegistry proxyRegistry)
-      throws IOException {
-    try (OutputStream gzipos = new GZIPOutputStream(os);
-        ObjectOutputStream oos = new ProxyableObjectOutputStream(gzipos, proxyRegistry)) {
-      oos.writeObject(memento);
-    }
-  }
-
-  private static void saveGameInSerializationFormat(
       final OutputStream sink,
       final GameData data,
       final boolean saveDelegateInfo)
