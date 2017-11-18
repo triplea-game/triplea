@@ -7,142 +7,67 @@ import org.apache.commons.io.IOCase;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.framework.GameDataFileUtils.SaveGameFormat;
-
 public final class GameDataFileUtilsTest {
   @Nested
   public final class AddExtensionTest {
-    @Nested
-    public final class WhenSaveGameFormatIsSerializationTest {
-      private String addExtension(final String fileName) {
-        return GameDataFileUtils.addExtension(fileName, SaveGameFormat.SERIALIZATION);
-      }
-
-      @Test
-      public void shouldAddExtensionWhenExtensionAbsent() {
-        assertThat(addExtension("file"), is("file.tsvg"));
-      }
-
-      @Test
-      public void shouldAddExtensionWhenExtensionPresent() {
-        assertThat(addExtension("file.tsvg"), is("file.tsvg.tsvg"));
-      }
+    private String addExtension(final String fileName) {
+      return GameDataFileUtils.addExtension(fileName);
     }
 
-    @Nested
-    public final class WhenSaveGameFormatIsProxySerializationTest {
-      private String addExtension(final String fileName) {
-        return GameDataFileUtils.addExtension(fileName, SaveGameFormat.PROXY_SERIALIZATION);
-      }
+    @Test
+    public void shouldAddExtensionWhenExtensionAbsent() {
+      assertThat(addExtension("file"), is("file.tsvg"));
+    }
 
-      @Test
-      public void shouldAddExtensionWhenExtensionAbsent() {
-        assertThat(addExtension("file"), is("file.tsvgx"));
-      }
-
-      @Test
-      public void shouldAddExtensionWhenExtensionPresent() {
-        assertThat(addExtension("file.tsvgx"), is("file.tsvgx.tsvgx"));
-      }
+    @Test
+    public void shouldAddExtensionWhenExtensionPresent() {
+      assertThat(addExtension("file.tsvg"), is("file.tsvg.tsvg"));
     }
   }
 
   @Nested
   public final class AddExtensionIfAbsentTest {
     @Nested
-    public final class WhenSaveGameFormatIsSerializationTest {
-      @Nested
-      public final class WhenFileSystemIsCaseSensitiveTest {
-        private String addExtensionIfAbsent(final String fileName) {
-          return GameDataFileUtils.addExtensionIfAbsent(fileName, SaveGameFormat.SERIALIZATION, IOCase.SENSITIVE);
-        }
-
-        @Test
-        public void shouldAddExtensionWhenExtensionAbsent() {
-          assertThat(addExtensionIfAbsent("file"), is("file.tsvg"));
-        }
-
-        @Test
-        public void shouldNotAddExtensionWhenSameCasedExtensionPresent() {
-          assertThat(addExtensionIfAbsent("file.tsvg"), is("file.tsvg"));
-        }
-
-        @Test
-        public void shouldAddExtensionWhenDifferentCasedExtensionPresent() {
-          assertThat(addExtensionIfAbsent("file.TSVG"), is("file.TSVG.tsvg"));
-        }
+    public final class WhenFileSystemIsCaseSensitiveTest {
+      private String addExtensionIfAbsent(final String fileName) {
+        return GameDataFileUtils.addExtensionIfAbsent(fileName, IOCase.SENSITIVE);
       }
 
-      @Nested
-      public final class WhenFileSystemIsCaseInsensitiveTest {
-        private String addExtensionIfAbsent(final String fileName) {
-          return GameDataFileUtils.addExtensionIfAbsent(fileName, SaveGameFormat.SERIALIZATION, IOCase.INSENSITIVE);
-        }
+      @Test
+      public void shouldAddExtensionWhenExtensionAbsent() {
+        assertThat(addExtensionIfAbsent("file"), is("file.tsvg"));
+      }
 
-        @Test
-        public void shouldAddExtensionWhenExtensionAbsent() {
-          assertThat(addExtensionIfAbsent("file"), is("file.tsvg"));
-        }
+      @Test
+      public void shouldNotAddExtensionWhenSameCasedExtensionPresent() {
+        assertThat(addExtensionIfAbsent("file.tsvg"), is("file.tsvg"));
+      }
 
-        @Test
-        public void shouldNotAddExtensionWhenSameCasedExtensionPresent() {
-          assertThat(addExtensionIfAbsent("file.tsvg"), is("file.tsvg"));
-        }
-
-        @Test
-        public void shouldNotAddExtensionWhenDifferentCasedExtensionPresent() {
-          assertThat(addExtensionIfAbsent("file.TSVG"), is("file.TSVG"));
-        }
+      @Test
+      public void shouldAddExtensionWhenDifferentCasedExtensionPresent() {
+        assertThat(addExtensionIfAbsent("file.TSVG"), is("file.TSVG.tsvg"));
       }
     }
 
     @Nested
-    public final class WhenSaveGameFormatIsProxySerializationTest {
-      @Nested
-      public final class WhenFileSystemIsCaseSensitiveTest {
-        private String addExtensionIfAbsent(final String fileName) {
-          return GameDataFileUtils.addExtensionIfAbsent(fileName, SaveGameFormat.PROXY_SERIALIZATION, IOCase.SENSITIVE);
-        }
-
-        @Test
-        public void shouldAddExtensionWhenExtensionAbsent() {
-          assertThat(addExtensionIfAbsent("file"), is("file.tsvgx"));
-        }
-
-        @Test
-        public void shouldNotAddExtensionWhenSameCasedExtensionPresent() {
-          assertThat(addExtensionIfAbsent("file.tsvgx"), is("file.tsvgx"));
-        }
-
-        @Test
-        public void shouldAddExtensionWhenDifferentCasedExtensionPresent() {
-          assertThat(addExtensionIfAbsent("file.TSVGX"), is("file.TSVGX.tsvgx"));
-        }
+    public final class WhenFileSystemIsCaseInsensitiveTest {
+      private String addExtensionIfAbsent(final String fileName) {
+        return GameDataFileUtils.addExtensionIfAbsent(fileName, IOCase.INSENSITIVE);
       }
 
-      @Nested
-      public final class WhenFileSystemIsCaseInsensitiveTest {
-        private String addExtensionIfAbsent(final String fileName) {
-          return GameDataFileUtils.addExtensionIfAbsent(
-              fileName,
-              SaveGameFormat.PROXY_SERIALIZATION,
-              IOCase.INSENSITIVE);
-        }
+      @Test
+      public void shouldAddExtensionWhenExtensionAbsent() {
+        assertThat(addExtensionIfAbsent("file"), is("file.tsvg"));
+      }
 
-        @Test
-        public void shouldAddExtensionWhenExtensionAbsent() {
-          assertThat(addExtensionIfAbsent("file"), is("file.tsvgx"));
-        }
+      @Test
+      public void shouldNotAddExtensionWhenSameCasedExtensionPresent() {
+        assertThat(addExtensionIfAbsent("file.tsvg"), is("file.tsvg"));
+      }
 
-        @Test
-        public void shouldNotAddExtensionWhenSameCasedExtensionPresent() {
-          assertThat(addExtensionIfAbsent("file.tsvgx"), is("file.tsvgx"));
-        }
-
-        @Test
-        public void shouldNotAddExtensionWhenDifferentCasedExtensionPresent() {
-          assertThat(addExtensionIfAbsent("file.TSVGX"), is("file.TSVGX"));
-        }
+      @Test
+      public void shouldNotAddExtensionWhenDifferentCasedExtensionPresent() {
+        assertThat(addExtensionIfAbsent("file.TSVG"), is("file.TSVG"));
       }
     }
   }
@@ -150,139 +75,86 @@ public final class GameDataFileUtilsTest {
   @Nested
   public final class IsCandidateFileNameTest {
     @Nested
-    public final class WhenSaveGameFormatIsSerializationTest {
-      @Nested
-      public final class WhenFileSystemIsCaseSensitiveTest {
-        private boolean isCandidateFileName(final String fileName) {
-          return GameDataFileUtils.isCandidateFileName(fileName, SaveGameFormat.SERIALIZATION, IOCase.SENSITIVE);
-        }
-
-        @Test
-        public void shouldReturnFalseWhenExtensionAbsent() {
-          assertThat(isCandidateFileName("file"), is(false));
-        }
-
-        @Test
-        public void shouldReturnTrueWhenSameCasedPrimaryExtensionPresent() {
-          assertThat(isCandidateFileName("file.tsvg"), is(true));
-        }
-
-        @Test
-        public void shouldReturnFalseWhenDifferentCasedPrimaryExtensionPresent() {
-          assertThat(isCandidateFileName("file.TSVG"), is(false));
-        }
-
-        @Test
-        public void shouldReturnTrueWhenSameCasedLegacyExtensionPresent() {
-          assertThat(isCandidateFileName("file.svg"), is(true));
-        }
-
-        @Test
-        public void shouldReturnFalseWhenDifferentCasedLegacyExtensionPresent() {
-          assertThat(isCandidateFileName("file.SVG"), is(false));
-        }
-
-        @Test
-        public void shouldReturnTrueWhenSameCasedMacOsAlternativeExtensionPresent() {
-          assertThat(isCandidateFileName("filetsvg.gz"), is(true));
-        }
-
-        @Test
-        public void shouldReturnFalseWhenDifferentCasedMacOsAlternativeExtensionPresent() {
-          assertThat(isCandidateFileName("fileTSVG.GZ"), is(false));
-        }
+    public final class WhenFileSystemIsCaseSensitiveTest {
+      private boolean isCandidateFileName(final String fileName) {
+        return GameDataFileUtils.isCandidateFileName(fileName, IOCase.SENSITIVE);
       }
 
-      @Nested
-      public final class WhenFileSystemIsCaseInsensitiveTest {
-        private boolean isCandidateFileName(final String fileName) {
-          return GameDataFileUtils.isCandidateFileName(fileName, SaveGameFormat.SERIALIZATION, IOCase.INSENSITIVE);
-        }
+      @Test
+      public void shouldReturnFalseWhenExtensionAbsent() {
+        assertThat(isCandidateFileName("file"), is(false));
+      }
 
-        @Test
-        public void shouldReturnFalseWhenExtensionAbsent() {
-          assertThat(isCandidateFileName("file"), is(false));
-        }
+      @Test
+      public void shouldReturnTrueWhenSameCasedPrimaryExtensionPresent() {
+        assertThat(isCandidateFileName("file.tsvg"), is(true));
+      }
 
-        @Test
-        public void shouldReturnTrueWhenSameCasedPrimaryExtensionPresent() {
-          assertThat(isCandidateFileName("file.tsvg"), is(true));
-        }
+      @Test
+      public void shouldReturnFalseWhenDifferentCasedPrimaryExtensionPresent() {
+        assertThat(isCandidateFileName("file.TSVG"), is(false));
+      }
 
-        @Test
-        public void shouldReturnTrueWhenDifferentCasedPrimaryExtensionPresent() {
-          assertThat(isCandidateFileName("file.TSVG"), is(true));
-        }
+      @Test
+      public void shouldReturnTrueWhenSameCasedLegacyExtensionPresent() {
+        assertThat(isCandidateFileName("file.svg"), is(true));
+      }
 
-        @Test
-        public void shouldReturnTrueWhenSameCasedLegacyExtensionPresent() {
-          assertThat(isCandidateFileName("file.svg"), is(true));
-        }
+      @Test
+      public void shouldReturnFalseWhenDifferentCasedLegacyExtensionPresent() {
+        assertThat(isCandidateFileName("file.SVG"), is(false));
+      }
 
-        @Test
-        public void shouldReturnTrueWhenDifferentCasedLegacyExtensionPresent() {
-          assertThat(isCandidateFileName("file.SVG"), is(true));
-        }
+      @Test
+      public void shouldReturnTrueWhenSameCasedMacOsAlternativeExtensionPresent() {
+        assertThat(isCandidateFileName("filetsvg.gz"), is(true));
+      }
 
-        @Test
-        public void shouldReturnTrueWhenSameCasedMacOsAlternativeExtensionPresent() {
-          assertThat(isCandidateFileName("filetsvg.gz"), is(true));
-        }
-
-        @Test
-        public void shouldReturnTrueWhenDifferentCasedMacOsAlternativeExtensionPresent() {
-          assertThat(isCandidateFileName("fileTSVG.GZ"), is(true));
-        }
+      @Test
+      public void shouldReturnFalseWhenDifferentCasedMacOsAlternativeExtensionPresent() {
+        assertThat(isCandidateFileName("fileTSVG.GZ"), is(false));
       }
     }
 
     @Nested
-    public final class WhenSaveGameFormatIsProxySerializationTest {
-      @Nested
-      public final class WhenFileSystemIsCaseSensitiveTest {
-        private boolean isCandidateFileName(final String fileName) {
-          return GameDataFileUtils.isCandidateFileName(fileName, SaveGameFormat.PROXY_SERIALIZATION, IOCase.SENSITIVE);
-        }
-
-        @Test
-        public void shouldReturnFalseWhenExtensionAbsent() {
-          assertThat(isCandidateFileName("file"), is(false));
-        }
-
-        @Test
-        public void shouldReturnTrueWhenSameCasedExtensionPresent() {
-          assertThat(isCandidateFileName("file.tsvgx"), is(true));
-        }
-
-        @Test
-        public void shouldReturnFalseWhenDifferentCasedExtensionPresent() {
-          assertThat(isCandidateFileName("file.TSVGX"), is(false));
-        }
+    public final class WhenFileSystemIsCaseInsensitiveTest {
+      private boolean isCandidateFileName(final String fileName) {
+        return GameDataFileUtils.isCandidateFileName(fileName, IOCase.INSENSITIVE);
       }
 
-      @Nested
-      public final class WhenFileSystemIsCaseInsensitiveTest {
-        private boolean isCandidateFileName(final String fileName) {
-          return GameDataFileUtils.isCandidateFileName(
-              fileName,
-              SaveGameFormat.PROXY_SERIALIZATION,
-              IOCase.INSENSITIVE);
-        }
+      @Test
+      public void shouldReturnFalseWhenExtensionAbsent() {
+        assertThat(isCandidateFileName("file"), is(false));
+      }
 
-        @Test
-        public void shouldReturnFalseWhenExtensionAbsent() {
-          assertThat(isCandidateFileName("file"), is(false));
-        }
+      @Test
+      public void shouldReturnTrueWhenSameCasedPrimaryExtensionPresent() {
+        assertThat(isCandidateFileName("file.tsvg"), is(true));
+      }
 
-        @Test
-        public void shouldReturnTrueWhenSameCasedExtensionPresent() {
-          assertThat(isCandidateFileName("file.tsvgx"), is(true));
-        }
+      @Test
+      public void shouldReturnTrueWhenDifferentCasedPrimaryExtensionPresent() {
+        assertThat(isCandidateFileName("file.TSVG"), is(true));
+      }
 
-        @Test
-        public void shouldReturnTrueWhenDifferentCasedExtensionPresent() {
-          assertThat(isCandidateFileName("file.TSVGX"), is(true));
-        }
+      @Test
+      public void shouldReturnTrueWhenSameCasedLegacyExtensionPresent() {
+        assertThat(isCandidateFileName("file.svg"), is(true));
+      }
+
+      @Test
+      public void shouldReturnTrueWhenDifferentCasedLegacyExtensionPresent() {
+        assertThat(isCandidateFileName("file.SVG"), is(true));
+      }
+
+      @Test
+      public void shouldReturnTrueWhenSameCasedMacOsAlternativeExtensionPresent() {
+        assertThat(isCandidateFileName("filetsvg.gz"), is(true));
+      }
+
+      @Test
+      public void shouldReturnTrueWhenDifferentCasedMacOsAlternativeExtensionPresent() {
+        assertThat(isCandidateFileName("fileTSVG.GZ"), is(true));
       }
     }
   }
