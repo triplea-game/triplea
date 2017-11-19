@@ -137,7 +137,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Convenience method. Can return null.
    */
   public static TerritoryAttachment get(final Territory t) {
-    return t == null ? null : (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+    return (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
   }
 
   static TerritoryAttachment get(final Territory t, final String nameOfAttachment) {

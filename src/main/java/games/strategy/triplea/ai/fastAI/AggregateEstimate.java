@@ -1,7 +1,6 @@
 package games.strategy.triplea.ai.fastAI;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
@@ -24,7 +23,7 @@ public class AggregateEstimate extends AggregateResults {
 
   AggregateEstimate(final int battleRoundsFought, final double winPercentage,
       final List<Unit> remainingAttackingUnits, final List<Unit> remainingDefendingUnits) {
-    super(0L, Collections.emptyList());
+    super(1);
     this.battleRoundsFought = battleRoundsFought;
     this.winPercentage = winPercentage;
     this.remainingAttackingUnits = remainingAttackingUnits;

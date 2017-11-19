@@ -12,9 +12,9 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
-import games.strategy.triplea.oddscalc.OddsCalculatorParameters;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.Match;
 
@@ -28,6 +28,10 @@ public class ProOddsCalculator {
 
   public ProOddsCalculator(final IOddsCalculator calc) {
     this.calc = calc;
+  }
+
+  public void setData(final GameData data) {
+    calc.setGameData(data);
   }
 
   public void cancelCalcs() {
@@ -119,20 +123,15 @@ public class ProOddsCalculator {
     final int runCount = Math.max(16, 100 - minArmySize);
     final PlayerID attacker = attackingUnits.get(0).getOwner();
     final PlayerID defender = defendingUnits.get(0).getOwner();
-
-    final AggregateResults results = calc.calculate(OddsCalculatorParameters.builder()
-        .attacker(attacker)
-        .attacking(attackingUnits)
-        .defender(defender)
-        .defending(defendingUnits)
-        .location(t)
-        .bombarding(bombardingUnits)
-        .runCount(runCount)
-        .retreatWhenOnlyAirLeft(retreatWhenOnlyAirLeft)
-        .gameData(data)
-        .build());
-
-
+    if (retreatWhenOnlyAirLeft) {
+      calc.setRetreatWhenOnlyAirLeft(true);
+    }
+    final AggregateResults results = calc.setCalculateDataAndCalculate(attacker, defender,
+        t, attackingUnits, defendingUnits, new ArrayList<>(bombardingUnits),
+        TerritoryEffectHelper.getEffects(t), runCount);
+    if (retreatWhenOnlyAirLeft) {
+      calc.setRetreatWhenOnlyAirLeft(false);
+    }
 
     // Find battle result statistics
     final double winPercentage = results.getAttackerWinPercent() * 100;
