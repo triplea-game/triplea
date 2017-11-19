@@ -14,7 +14,6 @@ import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 public class ProOtherMoveOptions {
 
@@ -86,8 +85,8 @@ public class ProOtherMoveOptions {
           }
           final double currentStrength =
               ProBattleUtils.estimateStrength(t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
-          final boolean currentHasLandUnits = Match.anyMatch(currentUnits, Matches.unitIsLand());
-          final boolean maxHasLandUnits = Match.anyMatch(maxUnits, Matches.unitIsLand());
+          final boolean currentHasLandUnits = currentUnits.stream().anyMatch(Matches.unitIsLand());
+          final boolean maxHasLandUnits = maxUnits.stream().anyMatch(Matches.unitIsLand());
           if ((currentHasLandUnits && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
               || ((!maxHasLandUnits || t.isWater()) && currentStrength > maxStrength)) {
             result.put(t, moveMap.get(t));

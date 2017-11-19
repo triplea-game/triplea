@@ -16,7 +16,6 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.Match;
 
 /**
  * Pro AI odds calculator.
@@ -159,7 +158,7 @@ public class ProOddsCalculator {
     territoryList.add(t);
     if (!territoryList.isEmpty() && territoryList.stream().allMatch(Matches.territoryIsLand())) {
       return new ProBattleResult(winPercentage, tuvSwing,
-          Match.anyMatch(averageAttackersRemaining, Matches.unitIsLand()), averageAttackersRemaining,
+          averageAttackersRemaining.stream().anyMatch(Matches.unitIsLand()), averageAttackersRemaining,
           averageDefendersRemaining, results.getAverageBattleRoundsFought());
     } else {
       return new ProBattleResult(winPercentage, tuvSwing, !averageAttackersRemaining.isEmpty(),

@@ -85,7 +85,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     Map<Unit, Unit> mapLoading = null;
     if (territory.isWater()) {
       if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea())) {
-        if (Match.anyMatch(units, Matches.unitIsLand())) {
+        if (units.stream().anyMatch(Matches.unitIsLand())) {
           // this should be exact same as the one in the EditValidator
           if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";

@@ -36,7 +36,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       final PlayerID player) {
     // we can place if no enemy units and its water
     if (to.isWater()) {
-      if (Match.anyMatch(units, Matches.unitIsLand())) {
+      if (units.stream().anyMatch(Matches.unitIsLand())) {
         return "Cant place land units at sea";
       } else if (to.getUnits().anyMatch(Matches.enemyUnit(player, getData()))) {
         return "Cant place in sea zone containing enemy units";
@@ -47,7 +47,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
     } else {
       // we can place on territories we own
-      if (Match.anyMatch(units, Matches.unitIsSea())) {
+      if (units.stream().anyMatch(Matches.unitIsSea())) {
         return "Cant place sea units on land";
       } else if (to.getOwner() == null) {
         return "You dont own " + to.getName();
@@ -114,7 +114,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     final Match<Unit> airUnits = Match.allOf(Matches.unitIsAir(), Matches.unitIsNotConstruction());
     placeableUnits.addAll(Matches.getMatches(units, groundUnits));
     placeableUnits.addAll(Matches.getMatches(units, airUnits));
-    if (Match.anyMatch(units, Matches.unitIsConstruction())) {
+    if (units.stream().anyMatch(Matches.unitIsConstruction())) {
       final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
       final Collection<Unit> skipUnit = new ArrayList<>();
       for (final Unit currentUnit : Matches.getMatches(units, Matches.unitIsConstruction())) {
@@ -132,7 +132,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       }
     }
     // remove any units that require other units to be consumed on creation (veqryn)
-    if (Match.anyMatch(placeableUnits, Matches.unitConsumesUnitsOnCreation())) {
+    if (placeableUnits.stream().anyMatch(Matches.unitConsumesUnitsOnCreation())) {
       final Collection<Unit> unitsWhichConsume =
           Matches.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {

@@ -528,11 +528,11 @@ class EditPanel extends ActionPanel {
     data.acquireReadLock();
     try {
       final Set<UnitType> allUnitTypes = data.getUnitTypeList().getAllUnitTypes();
-      if (Match.anyMatch(allUnitTypes, Matches.unitTypeHasMoreThanOneHitPointTotal())) {
+      if (allUnitTypes.stream().anyMatch(Matches.unitTypeHasMoreThanOneHitPointTotal())) {
         add(new JButton(changeUnitHitDamageAction));
       }
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
-          && Match.anyMatch(allUnitTypes, Matches.unitTypeCanBeDamaged())) {
+          && allUnitTypes.stream().anyMatch(Matches.unitTypeCanBeDamaged())) {
         add(new JButton(changeUnitBombingDamageAction));
       }
     } finally {

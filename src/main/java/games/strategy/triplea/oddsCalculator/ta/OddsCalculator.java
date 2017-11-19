@@ -652,8 +652,8 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
         final List<Unit> notKilled = new ArrayList<>(selectFrom);
         notKilled.removeAll(killedUnits);
         // no land units left, but we have a non land unit to kill and land unit was killed
-        if (!Match.anyMatch(notKilled, Matches.unitIsLand()) && Match.anyMatch(notKilled, Matches.unitIsNotLand())
-            && Match.anyMatch(killedUnits, Matches.unitIsLand())) {
+        if (!notKilled.stream().anyMatch(Matches.unitIsLand()) && notKilled.stream().anyMatch(Matches.unitIsNotLand())
+            && killedUnits.stream().anyMatch(Matches.unitIsLand())) {
           final List<Unit> notKilledAndNotLand = Matches.getMatches(notKilled, Matches.unitIsNotLand());
           // sort according to cost
           Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());

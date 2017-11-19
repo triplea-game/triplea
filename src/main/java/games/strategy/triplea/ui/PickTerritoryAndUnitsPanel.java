@@ -20,7 +20,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**

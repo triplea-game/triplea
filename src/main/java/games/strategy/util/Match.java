@@ -32,13 +32,6 @@ public final class Match<T> implements Predicate<T> {
   }
 
   /**
-   * Returns true if any matches could be found.
-   */
-  public static <T> boolean anyMatch(final Collection<T> collection, final Match<T> match) {
-    return collection.stream().anyMatch(match);
-  }
-
-  /**
    * Returns true if the object matches some condition.
    */
   public boolean match(final T value) {

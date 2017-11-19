@@ -230,7 +230,7 @@ class AAInMoveUtil implements Serializable {
   }
 
   private PlayerID movingPlayer(final Collection<Unit> units) {
-    if (Match.anyMatch(units, Matches.unitIsOwnedBy(m_player))) {
+    if (units.stream().anyMatch(Matches.unitIsOwnedBy(m_player))) {
       return m_player;
     }
     if (units != null) {
@@ -250,7 +250,7 @@ class AAInMoveUtil implements Serializable {
       }
       return PlayerID.NULL_PLAYERID;
     } else if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()
-        && Match.anyMatch(defendingUnits, Matches.unitIsOwnedBy(territory.getOwner()))) {
+        && defendingUnits.stream().anyMatch(Matches.unitIsOwnedBy(territory.getOwner()))) {
       return territory.getOwner();
     }
     for (final Unit u : defendingUnits) {

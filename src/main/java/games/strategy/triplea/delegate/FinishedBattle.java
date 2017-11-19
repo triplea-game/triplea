@@ -22,7 +22,6 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDesc
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /**
@@ -82,7 +81,7 @@ public class FinishedBattle extends AbstractBattle {
     attackingFromMapUnits.addAll(units);
     // are we amphibious
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
-        && Match.anyMatch(units, Matches.unitIsLand())) {
+        && units.stream().anyMatch(Matches.unitIsLand())) {
       m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
       m_amphibiousLandAttackers.addAll(Matches.getMatches(units, Matches.unitIsLand()));
       m_isAmphibious = true;
@@ -109,7 +108,7 @@ public class FinishedBattle extends AbstractBattle {
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
-      if (route.getEnd() != null && !route.getEnd().isWater() && Match.anyMatch(units, Matches.unitIsLand())) {
+      if (route.getEnd() != null && !route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {
         m_amphibiousLandAttackers.removeAll(Matches.getMatches(units, Matches.unitIsLand()));
       }
       // if none of the units is a land unit, the attack from

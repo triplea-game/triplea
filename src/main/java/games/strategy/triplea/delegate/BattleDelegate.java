@@ -859,7 +859,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           // refactored.
           final MustFightBattle mfb = (MustFightBattle) battle;
           final Collection<Territory> neighborsLand = data.getMap().getNeighbors(to, Matches.territoryIsLand());
-          if (Match.anyMatch(attackingUnits, Matches.unitIsTransport())) {
+          if (attackingUnits.stream().anyMatch(Matches.unitIsTransport())) {
             // first, we have to reset the "transportedBy" setting for all the land units that were offloaded
             final CompositeChange change1 = new CompositeChange();
             mfb.reLoadTransports(attackingUnits, change1);
@@ -909,7 +909,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               }
             }
           }
-          if (Match.anyMatch(attackingUnits, Matches.unitIsAir().invert())) {
+          if (attackingUnits.stream().anyMatch(Matches.unitIsAir().invert())) {
             // TODO: for now, we will hack and say that the attackers came from Everywhere, and hope the user will
             // choose the correct place
             // to retreat to! (TODO: Fix this)
