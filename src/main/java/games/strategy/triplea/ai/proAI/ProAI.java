@@ -50,7 +50,6 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
@@ -298,7 +297,7 @@ public class ProAI extends AbstractAI {
         + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker
         + ", isStrafing=" + isStrafing);
     if ((isStrafing || (isAttacker && strengthDifference > 50))
-        && (battleTerritory.isWater() || Match.anyMatch(attackers, Matches.unitIsLand()))) {
+        && (battleTerritory.isWater() || attackers.stream().anyMatch(Matches.unitIsLand()))) {
       return null;
     }
     calc.setData(getGameData());

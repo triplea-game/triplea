@@ -21,7 +21,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
-import games.strategy.util.Match;
 
 /**
  * Pro AI move utilities.
@@ -75,7 +74,7 @@ public class ProMoveUtils {
 
         // Determine route and add to move list
         Route route = null;
-        if (Match.anyMatch(unitList, Matches.unitIsSea())) {
+        if (unitList.stream().anyMatch(Matches.unitIsSea())) {
 
           // Sea unit (including carriers with planes)
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,

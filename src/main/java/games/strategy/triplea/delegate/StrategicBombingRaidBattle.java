@@ -241,7 +241,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
         }
         // kill any suicide attackers (veqryn)
-        if (Match.anyMatch(m_attackingUnits, Matches.unitIsSuicide())) {
+        if (m_attackingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
           final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
           m_attackingUnits.removeAll(suicideUnits);
           final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
@@ -253,7 +253,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           bridge.addChange(removeSuicide);
         }
         // kill any units that can die if they have reached max damage (veqryn)
-        if (Match.anyMatch(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage())) {
+        if (m_targets.keySet().stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
           final List<Unit> unitsCanDie =
               Matches.getMatches(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
           unitsCanDie

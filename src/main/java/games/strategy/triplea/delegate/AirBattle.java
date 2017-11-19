@@ -117,11 +117,9 @@ public class AirBattle extends AbstractBattle {
   }
 
   private boolean shouldFightAirBattle() {
-    if (m_isBombingRun) {
-      return Match.anyMatch(m_attackingUnits, Matches.unitIsStrategicBomber()) && !m_defendingUnits.isEmpty();
-    } else {
-      return !m_attackingUnits.isEmpty() && !m_defendingUnits.isEmpty();
-    }
+    return !m_defendingUnits.isEmpty()
+        && (!m_attackingUnits.isEmpty()
+            || (m_isBombingRun && m_attackingUnits.stream().anyMatch(Matches.unitIsStrategicBomber())));
   }
 
   public boolean shouldEndBattleDueToMaxRounds() {
@@ -178,7 +176,7 @@ public class AirBattle extends AbstractBattle {
             tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, attackerCosts, m_data);
             m_attackerLostTUV += tuvLostAttacker;
           }
-          if (Match.anyMatch(m_defendingUnits, Matches.unitIsSuicide())) {
+          if (m_defendingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
             final List<Unit> suicideUnits = Matches.getMatches(m_defendingUnits, Matches.unitIsSuicide());
             m_defendingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
@@ -348,7 +346,7 @@ public class AirBattle extends AbstractBattle {
     final String text;
     if (!m_attackingUnits.isEmpty()) {
       if (m_isBombingRun) {
-        if (Match.anyMatch(m_attackingUnits, Matches.unitIsStrategicBomber())) {
+        if (m_attackingUnits.stream().anyMatch(Matches.unitIsStrategicBomber())) {
           m_whoWon = WhoWon.ATTACKER;
           if (m_defendingUnits.isEmpty()) {
             m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
@@ -679,8 +677,8 @@ public class AirBattle extends AbstractBattle {
     }
     // should we check if the territory also has an air base?
     return territory.getUnits().anyMatch(defendingAirMatch)
-        || Match.anyMatch(data.getMap().getNeighbors(territory, maxScrambleDistance),
-            Matches.territoryHasUnitsThatMatch(defendingAirMatch));
+        || data.getMap().getNeighbors(territory, maxScrambleDistance).stream()
+            .anyMatch(Matches.territoryHasUnitsThatMatch(defendingAirMatch));
   }
 
   static int getAirBattleRolls(final Collection<Unit> units, final boolean defending) {

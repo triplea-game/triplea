@@ -65,7 +65,7 @@ class EditValidator {
     // check land/water sanity
     if (territory.isWater()) {
       if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea())) {
-        if (Match.anyMatch(units, Matches.unitIsLand())) {
+        if (units.stream().anyMatch(Matches.unitIsLand())) {
           if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
@@ -85,8 +85,8 @@ class EditValidator {
             return "Can't add land units to water without enough transports";
           }
         }
-        if (Match.anyMatch(units, Matches.unitIsAir())) {
-          if (Match.anyMatch(units, Match.allOf(Matches.unitIsAir(), Matches.unitCanLandOnCarrier().invert()))) {
+        if (units.stream().anyMatch(Matches.unitIsAir())) {
+          if (units.stream().anyMatch(Match.allOf(Matches.unitIsAir(), Matches.unitCanLandOnCarrier().invert()))) {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
@@ -103,15 +103,8 @@ class EditValidator {
           }
         }
       }
-    } else {
-      /*
-       * // Can't add to enemy territory
-       * if (Matches.isTerritoryEnemy(player, data).match(territory) && !Matches.territoryIsWater().match(territory))
-       * return "Can't add units to enemy territory";
-       */
-      if (Match.anyMatch(units, Matches.unitIsSea())) {
-        return "Can't add sea units to land";
-      }
+    } else if (units.stream().anyMatch(Matches.unitIsSea())) {
+      return "Can't add sea units to land";
     }
 
     return validateTerritoryBasic(data, territory);

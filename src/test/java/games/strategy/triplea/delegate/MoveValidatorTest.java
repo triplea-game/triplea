@@ -23,7 +23,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.Match;
 
 public class MoveValidatorTest extends DelegateTest {
 
@@ -116,9 +115,9 @@ public class MoveValidatorTest extends DelegateTest {
   @Test
   public void testHasSomeLand() {
     final Collection<Unit> units = transport.create(3, british);
-    assertTrue(!Match.anyMatch(units, Matches.unitIsLand()));
+    assertTrue(!units.stream().anyMatch(Matches.unitIsLand()));
     units.addAll(infantry.create(2, british));
-    assertTrue(Match.anyMatch(units, Matches.unitIsLand()));
+    assertTrue(units.stream().anyMatch(Matches.unitIsLand()));
   }
 
   @Test

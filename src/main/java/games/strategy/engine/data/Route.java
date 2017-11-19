@@ -411,7 +411,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (getStart().isWater()) {
       return true;
     }
-    return Match.anyMatch(getSteps(), Matches.territoryIsWater());
+    return getSteps().stream().anyMatch(Matches.territoryIsWater());
   }
 
   /**

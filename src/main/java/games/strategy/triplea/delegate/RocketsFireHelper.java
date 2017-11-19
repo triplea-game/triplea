@@ -421,7 +421,7 @@ public class RocketsFireHelper {
       }
     }
     // kill any units that can die if they have reached max damage (veqryn)
-    if (Match.anyMatch(targets, Matches.unitCanDieFromReachingMaxDamage())) {
+    if (targets.stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
       final List<Unit> unitsCanDie = Matches.getMatches(targets, Matches.unitCanDieFromReachingMaxDamage());
       unitsCanDie
           .retainAll(Matches.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));

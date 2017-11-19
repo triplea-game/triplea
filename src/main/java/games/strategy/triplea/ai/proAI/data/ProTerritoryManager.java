@@ -694,7 +694,7 @@ public class ProTerritoryManager {
             continue;
           }
           if (myRoute.hasMoreThenOneStep()
-              && Match.anyMatch(myRoute.getMiddleSteps(), Matches.isTerritoryEnemy(player, data))
+              && myRoute.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player, data))
               && Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories()))
                   .match(myLandUnit)) {
             continue; // If blitzing then make sure none of the territories cause blitz ability to be lost

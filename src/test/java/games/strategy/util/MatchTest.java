@@ -3,8 +3,6 @@ package games.strategy.util;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 
 import games.strategy.triplea.delegate.Matches;
@@ -58,15 +56,5 @@ public class MatchTest {
     assertTrue(Match.anyOf(Matches.always(), Matches.never()).match(VALUE));
     assertTrue(Match.anyOf(Matches.never(), Matches.always()).match(VALUE));
     assertFalse(Match.anyOf(Matches.never(), Matches.never()).match(VALUE));
-  }
-
-  @Test
-  public void testAnyMatch() {
-    assertFalse(Match.anyMatch(Arrays.asList(), IS_ZERO_MATCH), "empty collection");
-    assertFalse(Match.anyMatch(Arrays.asList(-1, 1), IS_ZERO_MATCH), "none match");
-    assertTrue(Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH), "some match (one element)");
-    assertTrue(Match.anyMatch(Arrays.asList(-1, 0, 1), IS_ZERO_MATCH), "some match (multiple elements)");
-    assertTrue(Match.anyMatch(Arrays.asList(0), IS_ZERO_MATCH), "all match (one element)");
-    assertTrue(Match.anyMatch(Arrays.asList(0, 0, 0), IS_ZERO_MATCH), "all match (multiple elements)");
   }
 }

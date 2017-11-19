@@ -647,7 +647,7 @@ public final class Matches {
           return true;
         }
       }
-      return Match.anyMatch(targets, Match.allOf(unitIsAirborne(),
+      return targets.stream().anyMatch(Match.allOf(unitIsAirborne(),
           unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA()))));
     });
   }
@@ -1767,7 +1767,7 @@ public final class Matches {
       }
       final Match<Unit> repairUnit = Match.allOf(alliedUnit(player, data),
           unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit, territory));
-      if (Match.anyMatch(territory.getUnits().getUnits(), repairUnit)) {
+      if (territory.getUnits().anyMatch(repairUnit)) {
         return true;
       }
       if (unitIsSea().match(damagedUnit)) {
@@ -1776,7 +1776,7 @@ public final class Matches {
         for (final Territory current : neighbors) {
           final Match<Unit> repairUnitLand = Match.allOf(alliedUnit(player, data),
               unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit, current), unitIsLand());
-          if (Match.anyMatch(current.getUnits().getUnits(), repairUnitLand)) {
+          if (current.getUnits().anyMatch(repairUnitLand)) {
             return true;
           }
         }
@@ -1785,7 +1785,7 @@ public final class Matches {
         for (final Territory current : neighbors) {
           final Match<Unit> repairUnitSea = Match.allOf(alliedUnit(player, data),
               unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit, current), unitIsSea());
-          if (Match.anyMatch(current.getUnits().getUnits(), repairUnitSea)) {
+          if (current.getUnits().anyMatch(repairUnitSea)) {
             return true;
           }
         }
@@ -1831,14 +1831,14 @@ public final class Matches {
     return Match.of(unitWhichWillGetBonus -> {
       final Match<Unit> givesBonusUnit = Match.allOf(alliedUnit(player, data),
           unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
-      if (Match.anyMatch(territory.getUnits().getUnits(), givesBonusUnit)) {
+      if (territory.getUnits().anyMatch(givesBonusUnit)) {
         return true;
       }
       if (unitIsSea().match(unitWhichWillGetBonus)) {
         final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, unitIsLand());
         final List<Territory> neighbors = new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
         for (final Territory current : neighbors) {
-          if (Match.anyMatch(current.getUnits().getUnits(), givesBonusUnitLand)) {
+          if (current.getUnits().anyMatch(givesBonusUnitLand)) {
             return true;
           }
         }
