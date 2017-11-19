@@ -232,8 +232,8 @@ public class ProTransportUtils {
 
   public static List<Unit> interleaveUnitsCarriersAndPlanes(final List<Unit> units,
       final int planesThatDontNeedToLand) {
-    if (!(units.stream().anyMatch(Matches.unitIsCarrier())
-        && units.stream().anyMatch(Matches.unitCanLandOnCarrier()))) {
+    if (units.stream().noneMatch(Matches.unitIsCarrier())
+        || units.stream().noneMatch(Matches.unitCanLandOnCarrier())) {
       return units;
     }
 

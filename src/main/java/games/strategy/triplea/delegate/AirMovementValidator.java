@@ -42,8 +42,8 @@ public class AirMovementValidator {
       final Route route, final PlayerID player, final MoveValidationResult result) {
     // First check if we even need to check
     if (getEditMode(data) // Edit Mode, no need to check
-        || !units.stream().anyMatch(Matches.unitIsAir()) || // No Airunits, nothing to check
-        route.hasNoSteps() // if there are no steps, we didn't move, so it is always OK!
+        || !units.stream().anyMatch(Matches.unitIsAir()) // No Airunits, nothing to check
+        || route.hasNoSteps() // if there are no steps, we didn't move, so it is always OK!
         // we can land at the end, nothing left to check
         || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data).match(route.getEnd())
         || isKamikazeAircraft(data) // we do not do any validation at all, cus they can all die and we don't care
