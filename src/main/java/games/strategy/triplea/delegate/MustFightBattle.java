@@ -2327,9 +2327,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
     if (m_headless) {
       return Collections.emptyList();
+    } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {
+      return new ArrayList<>();
     }
     return targets.stream()
-        .filter(Matches.unitCanTransport())
         .map(TransportTracker::transportingAndUnloaded)
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
