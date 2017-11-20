@@ -169,7 +169,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           // count how many units are yet to be placed or are in the field
           int currentlyBuilt = m_player.getUnits().countMatches(Matches.unitIsOfType(type));
 
-          final Predicate<Unit> unitTypeOwnedBy = Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
+          final Predicate<Unit> unitTypeOwnedBy =
+              Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
           final Collection<Territory> allTerrs = getData().getMap().getTerritories();
           for (final Territory t : allTerrs) {
             currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);

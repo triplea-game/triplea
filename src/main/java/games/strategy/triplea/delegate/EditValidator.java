@@ -91,7 +91,8 @@ class EditValidator {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
-          final Predicate<Unit> friendlyCarriers = Match.allOf(Matches.unitIsCarrier(), Matches.alliedUnit(player, data));
+          final Predicate<Unit> friendlyCarriers =
+              Match.allOf(Matches.unitIsCarrier(), Matches.alliedUnit(player, data));
           final Predicate<Unit> friendlyAirUnits = Match.allOf(Matches.unitIsAir(), Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
