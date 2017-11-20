@@ -8,20 +8,20 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.util.IntegerMap;
 
 public class RandomStats implements IRandomStats {
-  private final IRemoteMessenger m_remoteMessenger;
-  private final Map<PlayerID, IntegerMap<Integer>> m_randomStats = new HashMap<>();
+  private final IRemoteMessenger remoteMessenger;
+  private final Map<PlayerID, IntegerMap<Integer>> randomStats = new HashMap<>();
 
   public RandomStats(final IRemoteMessenger remoteMessenger) {
-    m_remoteMessenger = remoteMessenger;
+    this.remoteMessenger = remoteMessenger;
     remoteMessenger.registerRemote(this, RANDOM_STATS_REMOTE_NAME);
   }
 
   public void shutDown() {
-    m_remoteMessenger.unregisterRemote(RANDOM_STATS_REMOTE_NAME);
+    remoteMessenger.unregisterRemote(RANDOM_STATS_REMOTE_NAME);
   }
 
   public synchronized void addRandom(final int[] random, final PlayerID player, final DiceType diceType) {
-    IntegerMap<Integer> map = m_randomStats.get(player);
+    IntegerMap<Integer> map = randomStats.get(player);
     if (map == null) {
       map = new IntegerMap<>();
     }
@@ -29,20 +29,20 @@ public class RandomStats implements IRandomStats {
       map.add(Integer.valueOf(element + 1), 1);
     }
     // for now, only record if it is combat, otherwise if not combat, throw it in the null pile
-    m_randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
+    randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
   }
 
   public synchronized void addRandom(final int random, final PlayerID player, final DiceType diceType) {
-    IntegerMap<Integer> map = m_randomStats.get(player);
+    IntegerMap<Integer> map = randomStats.get(player);
     if (map == null) {
       map = new IntegerMap<>();
     }
     map.add(Integer.valueOf(random + 1), 1);
-    m_randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
+    randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
   }
 
   @Override
   public synchronized RandomStatsDetails getRandomStats(final int diceSides) {
-    return new RandomStatsDetails(m_randomStats, diceSides);
+    return new RandomStatsDetails(randomStats, diceSides);
   }
 }

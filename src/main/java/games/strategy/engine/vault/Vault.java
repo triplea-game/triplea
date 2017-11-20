@@ -43,31 +43,31 @@ public class Vault {
   private static final RemoteName VAULT_CHANNEL =
       new RemoteName("games.strategy.engine.vault.IServerVault.VAULT_CHANNEL", IRemoteVault.class);
   private static final String ALGORITHM = "DES";
-  private final SecretKeyFactory mSecretKeyFactory;
+  private final SecretKeyFactory secretKeyFactory;
   // 0xCAFEBABE
   // we encrypt both this value and data when we encrypt data.
   // when decrypting we ensure that KNOWN_VAL is correct
   // and thus guarantee that we are being given the right key
   private static final byte[] KNOWN_VAL = new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE};
-  private final KeyGenerator m_keyGen;
-  private final IChannelMessenger m_channelMessenger;
+  private final KeyGenerator keyGen;
+  private final IChannelMessenger channelMessenger;
   // Maps VaultID -> SecretKey
-  private final ConcurrentMap<VaultID, SecretKey> m_secretKeys = new ConcurrentHashMap<>();
+  private final ConcurrentMap<VaultID, SecretKey> secretKeys = new ConcurrentHashMap<>();
   // maps ValutID -> encrypted byte[]
-  private final ConcurrentMap<VaultID, byte[]> m_unverifiedValues = new ConcurrentHashMap<>();
+  private final ConcurrentMap<VaultID, byte[]> unverifiedValues = new ConcurrentHashMap<>();
   // maps VaultID -> byte[]
-  private final ConcurrentMap<VaultID, byte[]> m_verifiedValues = new ConcurrentHashMap<>();
-  private final Object m_waitForLock = new Object();
+  private final ConcurrentMap<VaultID, byte[]> verifiedValues = new ConcurrentHashMap<>();
+  private final Object waitForLock = new Object();
 
   /**
    * Creates a new instance of Vault.
    */
   public Vault(final IChannelMessenger channelMessenger) {
-    m_channelMessenger = channelMessenger;
-    m_channelMessenger.registerChannelSubscriber(m_remoteVault, VAULT_CHANNEL);
+    this.channelMessenger = channelMessenger;
+    this.channelMessenger.registerChannelSubscriber(remoteVault, VAULT_CHANNEL);
     try {
-      mSecretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
-      m_keyGen = KeyGenerator.getInstance(ALGORITHM);
+      secretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
+      keyGen = KeyGenerator.getInstance(ALGORITHM);
     } catch (final NoSuchAlgorithmException e) {
       ClientLogger.logQuietly(e);
       throw new IllegalStateException("Nothing known about algorithm:" + ALGORITHM);
@@ -75,7 +75,7 @@ public class Vault {
   }
 
   public void shutDown() {
-    m_channelMessenger.unregisterChannelSubscriber(m_remoteVault, VAULT_CHANNEL);
+    channelMessenger.unregisterChannelSubscriber(remoteVault, VAULT_CHANNEL);
   }
 
   // serialize secret key as byte array to
@@ -85,7 +85,7 @@ public class Vault {
   private SecretKey bytesToKey(final byte[] bytes) {
     try {
       final DESKeySpec spec = new DESKeySpec(bytes);
-      return mSecretKeyFactory.generateSecret(spec);
+      return secretKeyFactory.generateSecret(spec);
     } catch (final GeneralSecurityException e) {
       throw new IllegalStateException(e.getMessage());
     }
@@ -94,7 +94,7 @@ public class Vault {
   private byte[] secretKeyToBytes(final SecretKey key) {
     final DESKeySpec ks;
     try {
-      ks = (DESKeySpec) mSecretKeyFactory.getKeySpec(key, DESKeySpec.class);
+      ks = (DESKeySpec) secretKeyFactory.getKeySpec(key, DESKeySpec.class);
       return ks.getKey();
     } catch (final GeneralSecurityException e) {
       throw new IllegalStateException(e.getMessage());
@@ -102,7 +102,7 @@ public class Vault {
   }
 
   private IRemoteVault getRemoteBroadcaster() {
-    return (IRemoteVault) m_channelMessenger.getChannelBroadcastor(VAULT_CHANNEL);
+    return (IRemoteVault) channelMessenger.getChannelBroadcastor(VAULT_CHANNEL);
   }
 
   /**
@@ -118,13 +118,13 @@ public class Vault {
    * @return the VaultId of the data
    */
   public VaultID lock(final byte[] data) {
-    final VaultID id = new VaultID(m_channelMessenger.getLocalNode());
-    final SecretKey key = m_keyGen.generateKey();
-    if (m_secretKeys.putIfAbsent(id, key) != null) {
+    final VaultID id = new VaultID(channelMessenger.getLocalNode());
+    final SecretKey key = keyGen.generateKey();
+    if (secretKeys.putIfAbsent(id, key) != null) {
       throw new IllegalStateException("dupliagte id:" + id);
     }
     // we already know it, so might as well keep it
-    m_verifiedValues.put(id, data);
+    verifiedValues.put(id, data);
     final Cipher cipher;
     try {
       cipher = Cipher.getInstance(ALGORITHM);
@@ -172,10 +172,10 @@ public class Vault {
    *        - the vault id to unlock
    */
   public void unlock(final VaultID id) {
-    if (!id.getGeneratedOn().equals(m_channelMessenger.getLocalNode())) {
+    if (!id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
       throw new IllegalArgumentException("Cant unlock data that wasnt locked on this node");
     }
-    final SecretKey key = m_secretKeys.remove(id);
+    final SecretKey key = secretKeys.remove(id);
     // let everyone unlock it
     getRemoteBroadcaster().unlock(id, secretKeyToBytes(key));
   }
@@ -188,16 +188,16 @@ public class Vault {
    * @return - has this id been unlocked
    */
   public boolean isUnlocked(final VaultID id) {
-    return m_verifiedValues.containsKey(id);
+    return verifiedValues.containsKey(id);
   }
 
   /**
    * Get the unlocked data.
    */
   public byte[] get(final VaultID id) throws NotUnlockedException {
-    if (m_verifiedValues.containsKey(id)) {
-      return m_verifiedValues.get(id);
-    } else if (m_unverifiedValues.containsKey(id)) {
+    if (verifiedValues.containsKey(id)) {
+      return verifiedValues.get(id);
+    } else if (unverifiedValues.containsKey(id)) {
       throw new NotUnlockedException();
     } else {
       throw new IllegalStateException("Nothing known about id:" + id);
@@ -208,12 +208,12 @@ public class Vault {
    * Do we know about the given vault id.
    */
   public boolean knowsAbout(final VaultID id) {
-    return m_verifiedValues.containsKey(id) || m_unverifiedValues.containsKey(id);
+    return verifiedValues.containsKey(id) || unverifiedValues.containsKey(id);
   }
 
   public List<VaultID> knownIds() {
-    final ArrayList<VaultID> knownIds = new ArrayList<>(m_verifiedValues.keySet());
-    knownIds.addAll(m_unverifiedValues.keySet());
+    final ArrayList<VaultID> knownIds = new ArrayList<>(verifiedValues.keySet());
+    knownIds.addAll(unverifiedValues.keySet());
     return knownIds;
   }
 
@@ -232,23 +232,23 @@ public class Vault {
     getRemoteBroadcaster().release(id);
   }
 
-  private final IRemoteVault m_remoteVault = new IRemoteVault() {
+  private final IRemoteVault remoteVault = new IRemoteVault() {
     @Override
     public void addLockedValue(final VaultID id, final byte[] data) {
-      if (id.getGeneratedOn().equals(m_channelMessenger.getLocalNode())) {
+      if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
         return;
       }
-      if (m_unverifiedValues.putIfAbsent(id, data) != null) {
+      if (unverifiedValues.putIfAbsent(id, data) != null) {
         throw new IllegalStateException("duplicate values for id:" + id);
       }
-      synchronized (m_waitForLock) {
-        m_waitForLock.notifyAll();
+      synchronized (waitForLock) {
+        waitForLock.notifyAll();
       }
     }
 
     @Override
     public void unlock(final VaultID id, final byte[] secretKeyBytes) {
-      if (id.getGeneratedOn().equals(m_channelMessenger.getLocalNode())) {
+      if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
         return;
       }
       final SecretKey key = bytesToKey(secretKeyBytes);
@@ -260,7 +260,7 @@ public class Vault {
         ClientLogger.logQuietly(e);
         throw new IllegalStateException(e.getMessage());
       }
-      final byte[] encrypted = m_unverifiedValues.remove(id);
+      final byte[] encrypted = unverifiedValues.remove(id);
       final byte[] decrypted;
       try {
         decrypted = cipher.doFinal(encrypted);
@@ -281,18 +281,18 @@ public class Vault {
       }
       final byte[] data = new byte[decrypted.length - KNOWN_VAL.length];
       System.arraycopy(decrypted, KNOWN_VAL.length, data, 0, data.length);
-      if (m_verifiedValues.putIfAbsent(id, data) != null) {
+      if (verifiedValues.putIfAbsent(id, data) != null) {
         throw new IllegalStateException("duplicate values for id:" + id);
       }
-      synchronized (m_waitForLock) {
-        m_waitForLock.notifyAll();
+      synchronized (waitForLock) {
+        waitForLock.notifyAll();
       }
     }
 
     @Override
     public void release(final VaultID id) {
-      m_unverifiedValues.remove(id);
-      m_verifiedValues.remove(id);
+      unverifiedValues.remove(id);
+      verifiedValues.remove(id);
     }
   };
 
@@ -306,14 +306,14 @@ public class Vault {
     }
     final long endTime = timeoutMs + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !knowsAbout(id)) {
-      synchronized (m_waitForLock) {
+      synchronized (waitForLock) {
         if (knowsAbout(id)) {
           return;
         }
         try {
           final long waitTime = endTime - System.currentTimeMillis();
           if (waitTime > 0) {
-            m_waitForLock.wait(waitTime);
+            waitForLock.wait(waitTime);
           }
         } catch (final InterruptedException e) {
           // not a big deal
@@ -332,12 +332,12 @@ public class Vault {
     final long startTime = System.currentTimeMillis();
     long leftToWait = timeout;
     while (leftToWait > 0 && !isUnlocked(id)) {
-      synchronized (m_waitForLock) {
+      synchronized (waitForLock) {
         if (isUnlocked(id)) {
           return;
         }
         try {
-          m_waitForLock.wait(leftToWait);
+          waitForLock.wait(leftToWait);
         } catch (final InterruptedException e) {
           // not a big deal
         }

@@ -25,7 +25,7 @@ public class ForumPosterComponent extends JPanel {
   protected GameData data;
   // protected JLabel m_actionLabel;
   protected IPlayerBridge bridge;
-  protected PBEMMessagePoster m_poster;
+  protected PBEMMessagePoster poster;
   protected MainGameFrame frame;
   protected HistoryLog historyLog;
   protected JButton postButton;
@@ -58,7 +58,7 @@ public class ForumPosterComponent extends JPanel {
     postAction = SwingAction.of("Post " + this.title, e -> {
       postButton.setEnabled(false);
       updateHistoryLog();
-      PBEMMessagePoster.postTurn(this.title, historyLog, includeSavegameCheckBox.isSelected(), m_poster,
+      PBEMMessagePoster.postTurn(this.title, historyLog, includeSavegameCheckBox.isSelected(), poster,
           forumPosterDelegate, frame, postButton);
       repostTurnSummaryCheckBox.setSelected(false);
     });
@@ -97,7 +97,7 @@ public class ForumPosterComponent extends JPanel {
     this.frame = frame;
     this.bridge = bridge;
     // Nothing to do if there are no PBEM messengers
-    this.m_poster = poster;
+    this.poster = poster;
     historyLog = new HistoryLog();
     updateHistoryLog();
     // only show widgets if there are PBEM messengers
@@ -120,8 +120,8 @@ public class ForumPosterComponent extends JPanel {
       add(showDiceStatisticsCheckbox);
     }
     // we always send savegame with emails i think?
-    includeSavegameCheckBox.setSelected(m_poster.getEmailSender() != null
-        || (m_poster.getForumPoster() != null && m_poster.getForumPoster().getIncludeSaveGame()));
+    includeSavegameCheckBox.setSelected(this.poster.getEmailSender() != null
+        || (this.poster.getForumPoster() != null && this.poster.getForumPoster().getIncludeSaveGame()));
     add(includeSavegameCheckBox);
     repostTurnSummaryCheckBox.setSelected(!hasPosted);
     add(repostTurnSummaryCheckBox);

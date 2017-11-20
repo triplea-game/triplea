@@ -18,7 +18,7 @@ import games.strategy.engine.vault.VaultID;
  * Code originally contributed by Ben Giddings.
  */
 public class CryptoRandomSource implements IRandomSource {
-  private final IRandomSource m_plainRandom = new PlainRandomSource();
+  private final IRandomSource plainRandom = new PlainRandomSource();
 
   /**
    * Converts an {@code int} array to a {@code byte} array. Each {@code int} will be encoded in little endian order in
@@ -72,12 +72,12 @@ public class CryptoRandomSource implements IRandomSource {
 
   // the remote players who involved in rolling the dice
   // dice are rolled securly between us and her
-  private final PlayerID m_remotePlayer;
-  private final IGame m_game;
+  private final PlayerID remotePlayer;
+  private final IGame game;
 
   public CryptoRandomSource(final PlayerID remotePlayer, final IGame game) {
-    m_remotePlayer = remotePlayer;
-    m_game = game;
+    this.remotePlayer = remotePlayer;
+    this.game = game;
   }
 
   /**
@@ -98,14 +98,14 @@ public class CryptoRandomSource implements IRandomSource {
     if (count <= 0) {
       throw new IllegalArgumentException("Invalid count:" + count);
     }
-    final Vault vault = m_game.getVault();
+    final Vault vault = game.getVault();
     // generate numbers locally, and put them in the vault
-    final int[] localRandom = m_plainRandom.getRandom(max, count, annotation);
+    final int[] localRandom = plainRandom.getRandom(max, count, annotation);
     // lock it so the client knows that its there, but cant read it
     final VaultID localId = vault.lock(intsToBytes(localRandom));
     // ask the remote to generate numbers
     final IRemoteRandom remote =
-        (IRemoteRandom) (m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(m_remotePlayer)));
+        (IRemoteRandom) (game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(remotePlayer)));
     final Object clientRandom = remote.generate(max, count, annotation, localId);
     if (!(clientRandom instanceof int[])) {
       // Let the error be thrown
