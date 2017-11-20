@@ -204,8 +204,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param i
-   *        step number
+   * @param i step number
    * @return territory we will be in after the i'th step for this route has
    *         been made.
    */
@@ -214,36 +213,27 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param match
-   *        referring match
+   * Checking if all of the steps match the given Predicate.
+   * 
+   * @param match referring match
    * @return whether all territories in this route match the given match (start territory is not tested).
    */
   public boolean allMatch(final Match<Territory> match) {
-    for (final Territory t : m_steps) {
-      if (!match.test(t)) {
-        return false;
-      }
-    }
-    return true;
+    return m_steps.stream().allMatch(match);
   }
 
   /**
-   * @param match
-   *        referring match
+   * Checking if any of the steps match the given Predicate.
+   * 
+   * @param match referring match
    * @return whether any territories in this route match the given match (start territory is not tested).
    */
   public boolean anyMatch(final Match<Territory> match) {
-    for (final Territory t : m_steps) {
-      if (match.test(t)) {
-        return true;
-      }
-    }
-    return false;
+    return m_steps.stream().anyMatch(match);
   }
 
   /**
-   * @param match
-   *        referring match
+   * @param match referring match
    * @return whether all territories in this route match the given match (start and end territories are not tested).
    */
   public boolean allMatchMiddleSteps(final Match<Territory> match, final boolean defaultWhenNoMiddleSteps) {
