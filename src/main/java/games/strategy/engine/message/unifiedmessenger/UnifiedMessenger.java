@@ -38,51 +38,51 @@ public class UnifiedMessenger {
 
   private static final ExecutorService threadPool = Executors.newFixedThreadPool(15);
   // the messenger we are based on
-  private final IMessenger m_messenger;
+  private final IMessenger messenger;
   // lock on this for modifications to create or remove local end points
-  private final Object m_endPointMutex = new Object();
+  private final Object endPointMutex = new Object();
   // maps String -> EndPoint
   // these are the end points that
   // have local implementors
-  private final Map<String, EndPoint> m_localEndPoints = new HashMap<>();
-  private final Object m_pendingLock = new Object();
+  private final Map<String, EndPoint> localEndPoints = new HashMap<>();
+  private final Object pendingLock = new Object();
   // threads wait on these latches for the hub to return invocations
   // the latch should be removed from the map when you countdown the last result
-  // access should be synchronized on m_pendingLock
+  // access should be synchronized on pendingLock
   // TODO: how do these get shutdown when we exit a game or close triplea?
-  private final Map<GUID, CountDownLatch> m_pendingInvocations = new HashMap<>();
+  private final Map<GUID, CountDownLatch> pendingInvocations = new HashMap<>();
   // after the remote has invoked, the results are placed here
-  // access should be synchronized on m_pendingLock
-  private final Map<GUID, RemoteMethodCallResults> m_results = new HashMap<>();
+  // access should be synchronized on pendingLock
+  private final Map<GUID, RemoteMethodCallResults> results = new HashMap<>();
   // only non null for the server
-  private UnifiedMessengerHub m_hub;
+  private UnifiedMessengerHub hub;
 
   /**
    * Creates a new instance of UnifiedMessanger.
    */
   public UnifiedMessenger(final IMessenger messenger) {
-    m_messenger = messenger;
+    this.messenger = messenger;
     final IMessageListener messageListener = (msg, from) -> UnifiedMessenger.this.messageReceived(msg, from);
-    m_messenger.addMessageListener(messageListener);
+    this.messenger.addMessageListener(messageListener);
     final IMessengerErrorListener messengerErrorListener =
         (messenger1, reason) -> UnifiedMessenger.this.messengerInvalid();
-    m_messenger.addErrorListener(messengerErrorListener);
-    if (m_messenger.isServer()) {
-      m_hub = new UnifiedMessengerHub(m_messenger, this);
+    this.messenger.addErrorListener(messengerErrorListener);
+    if (this.messenger.isServer()) {
+      hub = new UnifiedMessengerHub(this.messenger, this);
     }
   }
 
   @VisibleForTesting
   UnifiedMessengerHub getHub() {
-    return m_hub;
+    return hub;
   }
 
   private void messengerInvalid() {
-    synchronized (m_pendingLock) {
-      for (final GUID id : m_pendingInvocations.keySet()) {
-        final CountDownLatch latch = m_pendingInvocations.remove(id);
+    synchronized (pendingLock) {
+      for (final GUID id : pendingInvocations.keySet()) {
+        final CountDownLatch latch = pendingInvocations.remove(id);
         latch.countDown();
-        m_results.put(id, new RemoteMethodCallResults(new ConnectionLostException("Connection Lost")));
+        results.put(id, new RemoteMethodCallResults(new ConnectionLostException("Connection Lost")));
       }
     }
   }
@@ -92,8 +92,8 @@ public class UnifiedMessenger {
    */
   public RemoteMethodCallResults invokeAndWait(final String endPointName, final RemoteMethodCall remoteCall) {
     final EndPoint local;
-    synchronized (m_endPointMutex) {
-      local = m_localEndPoints.get(endPointName);
+    synchronized (endPointMutex) {
+      local = localEndPoints.get(endPointName);
     }
     if (local == null) {
       return invokeAndWaitRemote(remoteCall);
@@ -114,12 +114,12 @@ public class UnifiedMessenger {
   private RemoteMethodCallResults invokeAndWaitRemote(final RemoteMethodCall remoteCall) {
     final GUID methodCallId = new GUID();
     final CountDownLatch latch = new CountDownLatch(1);
-    synchronized (m_pendingLock) {
-      m_pendingInvocations.put(methodCallId, latch);
+    synchronized (pendingLock) {
+      pendingInvocations.put(methodCallId, latch);
     }
     // invoke remotely
     final Invoke invoke = new HubInvoke(methodCallId, true, remoteCall);
-    send(invoke, m_messenger.getServerNode());
+    send(invoke, messenger.getServerNode());
 
     try {
       latch.await();
@@ -127,14 +127,14 @@ public class UnifiedMessenger {
       logger.log(Level.WARNING, e.getMessage());
     }
 
-    synchronized (m_pendingLock) {
-      final RemoteMethodCallResults results = m_results.remove(methodCallId);
-      if (results == null) {
+    synchronized (pendingLock) {
+      final RemoteMethodCallResults methodCallResults = results.remove(methodCallId);
+      if (methodCallResults == null) {
         throw new IllegalStateException(
             "No results from remote call. Method returned:" + remoteCall.getMethodName() + " for remote name:"
                 + remoteCall.getRemoteName() + " with id:" + methodCallId);
       }
-      return results;
+      return methodCallResults;
     }
   }
 
@@ -144,11 +144,11 @@ public class UnifiedMessenger {
   public void invoke(final String endPointName, final RemoteMethodCall call) {
     // send the remote invocation
     final Invoke invoke = new HubInvoke(null, false, call);
-    send(invoke, m_messenger.getServerNode());
+    send(invoke, messenger.getServerNode());
     // invoke locally
     final EndPoint endPoint;
-    synchronized (m_endPointMutex) {
-      endPoint = m_localEndPoints.get(endPointName);
+    synchronized (endPointMutex) {
+      endPoint = localEndPoints.get(endPointName);
     }
     if (endPoint != null) {
       final long number = endPoint.takeANumber();
@@ -172,25 +172,25 @@ public class UnifiedMessenger {
   }
 
   public INode getLocalNode() {
-    return m_messenger.getLocalNode();
+    return messenger.getLocalNode();
   }
 
   /**
    * Get the 1 and only implementor for the endpoint. throws an exception if there are not exctly 1 implementors
    */
   public Object getImplementor(final String name) {
-    synchronized (m_endPointMutex) {
-      final EndPoint endPoint = m_localEndPoints.get(name);
+    synchronized (endPointMutex) {
+      final EndPoint endPoint = localEndPoints.get(name);
       Preconditions.checkNotNull(endPoint, "local endpoints: "
-          + m_localEndPoints + " did not contain: " + name + ", messenger addr: " + super.toString());
+          + localEndPoints + " did not contain: " + name + ", messenger addr: " + super.toString());
       return endPoint.getFirstImplementor();
     }
   }
 
   public void removeImplementor(final String name, final Object implementor) {
     final EndPoint endPoint;
-    synchronized (m_endPointMutex) {
-      endPoint = m_localEndPoints.get(name);
+    synchronized (endPointMutex) {
+      endPoint = localEndPoints.get(name);
       if (endPoint == null) {
         throw new IllegalStateException("No end point for:" + name);
       }
@@ -199,44 +199,44 @@ public class UnifiedMessenger {
       }
       final boolean noneLeft = endPoint.removeImplementor(implementor);
       if (noneLeft) {
-        m_localEndPoints.remove(name);
-        send(new NoLongerHasEndPointImplementor(name), m_messenger.getServerNode());
+        localEndPoints.remove(name);
+        send(new NoLongerHasEndPointImplementor(name), messenger.getServerNode());
       }
     }
   }
 
   private EndPoint getLocalEndPointOrCreate(final RemoteName endPointDescriptor, final boolean singleThreaded) {
     final EndPoint endPoint;
-    synchronized (m_endPointMutex) {
-      if (m_localEndPoints.containsKey(endPointDescriptor.getName())) {
-        return m_localEndPoints.get(endPointDescriptor.getName());
+    synchronized (endPointMutex) {
+      if (localEndPoints.containsKey(endPointDescriptor.getName())) {
+        return localEndPoints.get(endPointDescriptor.getName());
       }
       endPoint = new EndPoint(endPointDescriptor.getName(), endPointDescriptor.getClazz(), singleThreaded);
-      m_localEndPoints.put(endPointDescriptor.getName(), endPoint);
+      localEndPoints.put(endPointDescriptor.getName(), endPoint);
     }
     final HasEndPointImplementor msg = new HasEndPointImplementor(endPointDescriptor.getName());
-    send(msg, m_messenger.getServerNode());
+    send(msg, messenger.getServerNode());
     return endPoint;
   }
 
   private void send(final Serializable msg, final INode to) {
-    if (m_messenger.getLocalNode().equals(to)) {
-      m_hub.messageReceived(msg, getLocalNode());
+    if (messenger.getLocalNode().equals(to)) {
+      hub.messageReceived(msg, getLocalNode());
     } else {
-      m_messenger.send(msg, to);
+      messenger.send(msg, to);
     }
   }
 
   public boolean isServer() {
-    return m_messenger.isServer();
+    return messenger.isServer();
   }
 
   public int getLocalEndPointCount(final RemoteName descriptor) {
-    synchronized (m_endPointMutex) {
-      if (!m_localEndPoints.containsKey(descriptor.getName())) {
+    synchronized (endPointMutex) {
+      if (!localEndPoints.containsKey(descriptor.getName())) {
         return 0;
       }
-      return m_localEndPoints.get(descriptor.getName()).getLocalImplementorCount();
+      return localEndPoints.get(descriptor.getName()).getLocalImplementorCount();
     }
   }
 
@@ -248,8 +248,8 @@ public class UnifiedMessenger {
       assertIsServer(from);
       final SpokeInvoke invoke = (SpokeInvoke) msg;
       final EndPoint local;
-      synchronized (m_endPointMutex) {
-        local = m_localEndPoints.get(invoke.call.getRemoteName());
+      synchronized (endPointMutex) {
+        local = localEndPoints.get(invoke.call.getRemoteName());
       }
       // something a bit strange here, it may be the case
       // that the endpoint was deleted locally
@@ -292,17 +292,17 @@ public class UnifiedMessenger {
       // if this isn't the server, something is wrong
       // maybe an attempt to spoof a message
       assertIsServer(from);
-      final SpokeInvocationResults results = (SpokeInvocationResults) msg;
-      final GUID methodId = results.methodCallID;
+      final SpokeInvocationResults spokeInvocationResults = (SpokeInvocationResults) msg;
+      final GUID methodId = spokeInvocationResults.methodCallID;
       // both of these should already be populated
       // this list should be a synchronized list so we can do the add
       // all
-      synchronized (m_pendingLock) {
-        m_results.put(methodId, results.results);
-        final CountDownLatch latch = m_pendingInvocations.remove(methodId);
+      synchronized (pendingLock) {
+        results.put(methodId, spokeInvocationResults.results);
+        final CountDownLatch latch = pendingInvocations.remove(methodId);
         Preconditions.checkNotNull(latch, String.format(
             "method id: %s, was not present in pending invocations: %s, unified messenger addr: %s",
-            methodId, m_pendingInvocations, super.toString()));
+            methodId, pendingInvocations, super.toString()));
         latch.countDown();
       }
     }
@@ -310,12 +310,12 @@ public class UnifiedMessenger {
 
   private void assertIsServer(final INode from) {
     Preconditions.checkState(
-        from.equals(m_messenger.getServerNode()), "Not from server!  Instead from:" + from);
+        from.equals(messenger.getServerNode()), "Not from server!  Instead from:" + from);
   }
 
   @Override
   public String toString() {
-    return "Server:" + m_messenger.isServer() + " EndPoints:" + m_localEndPoints;
+    return "Server:" + messenger.isServer() + " EndPoints:" + localEndPoints;
   }
 }
 

@@ -14,19 +14,19 @@ import games.strategy.triplea.util.WrappedInvocationHandler;
  * </p>
  */
 class UnifiedInvocationHandler extends WrappedInvocationHandler {
-  private final UnifiedMessenger m_messenger;
-  private final String m_endPointName;
-  private final boolean m_ignoreResults;
-  private final Class<?> m_remoteType;
+  private final UnifiedMessenger messenger;
+  private final String endPointName;
+  private final boolean ignoreResults;
+  private final Class<?> remoteType;
 
   public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName,
       final boolean ignoreResults, final Class<?> remoteType) {
     // equality and hash code are bassed on end point name
     super(endPointName);
-    m_messenger = messenger;
-    m_endPointName = endPointName;
-    m_ignoreResults = ignoreResults;
-    m_remoteType = remoteType;
+    this.messenger = messenger;
+    this.endPointName = endPointName;
+    this.ignoreResults = ignoreResults;
+    this.remoteType = remoteType;
   }
 
   @Override
@@ -43,12 +43,12 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
       }
     }
     final RemoteMethodCall remoteMethodMsg =
-        new RemoteMethodCall(m_endPointName, method.getName(), args, method.getParameterTypes(), m_remoteType);
-    if (m_ignoreResults) {
-      m_messenger.invoke(m_endPointName, remoteMethodMsg);
+        new RemoteMethodCall(endPointName, method.getName(), args, method.getParameterTypes(), remoteType);
+    if (ignoreResults) {
+      messenger.invoke(endPointName, remoteMethodMsg);
       return null;
     } else {
-      final RemoteMethodCallResults response = m_messenger.invokeAndWait(m_endPointName, remoteMethodMsg);
+      final RemoteMethodCallResults response = messenger.invokeAndWait(endPointName, remoteMethodMsg);
       if (response.getException() != null) {
         if (response.getException() instanceof MessengerException) {
           final MessengerException cle = (MessengerException) response.getException();

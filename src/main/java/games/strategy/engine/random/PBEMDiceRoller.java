@@ -29,8 +29,8 @@ import games.strategy.ui.Util;
  * before returning.
  */
 public class PBEMDiceRoller implements IRandomSource {
-  private final String m_gameUUID;
-  private final IRemoteDiceServer m_remoteDiceServer;
+  private final String gameUuid;
+  private final IRemoteDiceServer remoteDiceServer;
   private static Frame focusWindow;
 
   /**
@@ -44,8 +44,8 @@ public class PBEMDiceRoller implements IRandomSource {
   }
 
   public PBEMDiceRoller(final IRemoteDiceServer diceServer, final String gameUuid) {
-    m_remoteDiceServer = diceServer;
-    m_gameUUID = gameUuid;
+    remoteDiceServer = diceServer;
+    this.gameUuid = gameUuid;
   }
 
   /**
@@ -54,7 +54,7 @@ public class PBEMDiceRoller implements IRandomSource {
   public void test() {
     // TODO: do a test based on data.getDiceSides()
     final HttpDiceRollerDialog dialog =
-        new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_remoteDiceServer, "test-roll");
+        new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", remoteDiceServer, "test-roll");
     dialog.setTest();
     dialog.roll();
   }
@@ -68,7 +68,7 @@ public class PBEMDiceRoller implements IRandomSource {
       return result.get();
     }
     final HttpDiceRollerDialog dialog =
-        new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_remoteDiceServer, m_gameUUID);
+        new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer, gameUuid);
     dialog.roll();
     return dialog.getDiceRoll();
   }
@@ -101,20 +101,20 @@ public class PBEMDiceRoller implements IRandomSource {
    */
   private static final class HttpDiceRollerDialog extends JDialog {
     private static final long serialVersionUID = -4802403913826489223L;
-    private final JButton m_exitButton = new JButton("Exit");
-    private final JButton m_reRollButton = new JButton("Roll Again");
-    private final JButton m_okButton = new JButton("OK");
-    private final JTextArea m_text = new JTextArea();
-    private int[] m_diceRoll;
-    private final int m_count;
-    private final int m_sides;
-    private final String m_subjectMessage;
-    private final String m_gameID;
-    private final IRemoteDiceServer m_diceServer;
-    private final String m_gameUUID;
-    boolean m_test = false;
-    private final JPanel m_buttons = new JPanel();
-    private Window m_owner;
+    private final JButton exitButton = new JButton("Exit");
+    private final JButton reRollButton = new JButton("Roll Again");
+    private final JButton okButton = new JButton("OK");
+    private final JTextArea textArea = new JTextArea();
+    private int[] diceRoll;
+    private final int count;
+    private final int sides;
+    private final String subjectMessage;
+    private final String gameId;
+    private final IRemoteDiceServer diceServer;
+    private final String gameUuid;
+    private boolean test = false;
+    private final JPanel buttons = new JPanel();
+    private Window owner;
 
     /**
      * @param owner
@@ -133,25 +133,25 @@ public class PBEMDiceRoller implements IRandomSource {
     HttpDiceRollerDialog(final Frame owner, final int sides, final int count, final String subjectMessage,
         final IRemoteDiceServer diceServer, final String gameUuid) {
       super(owner, "Dice roller", true);
-      m_owner = owner;
-      m_sides = sides;
-      m_count = count;
-      m_subjectMessage = subjectMessage;
-      m_gameID = diceServer.getGameId() == null ? "" : diceServer.getGameId();
-      m_diceServer = diceServer;
-      m_gameUUID = gameUuid;
+      this.owner = owner;
+      this.sides = sides;
+      this.count = count;
+      this.subjectMessage = subjectMessage;
+      gameId = diceServer.getGameId() == null ? "" : diceServer.getGameId();
+      this.diceServer = diceServer;
+      this.gameUuid = gameUuid;
       setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-      m_exitButton.addActionListener(e -> System.exit(-1));
-      m_exitButton.setEnabled(false);
-      m_reRollButton.addActionListener(e -> rollInternal());
-      m_okButton.addActionListener(e -> closeAndReturn());
-      m_reRollButton.setEnabled(false);
+      exitButton.addActionListener(e -> System.exit(-1));
+      exitButton.setEnabled(false);
+      reRollButton.addActionListener(e -> rollInternal());
+      okButton.addActionListener(e -> closeAndReturn());
+      reRollButton.setEnabled(false);
       getContentPane().setLayout(new BorderLayout());
-      m_buttons.add(m_exitButton);
-      m_buttons.add(m_reRollButton);
-      getContentPane().add(m_buttons, BorderLayout.SOUTH);
-      getContentPane().add(new JScrollPane(m_text));
-      m_text.setEditable(false);
+      buttons.add(exitButton);
+      buttons.add(reRollButton);
+      getContentPane().add(buttons, BorderLayout.SOUTH);
+      getContentPane().add(new JScrollPane(textArea));
+      textArea.setEditable(false);
       setSize(400, 300);
       Util.center(this);
     }
@@ -161,25 +161,25 @@ public class PBEMDiceRoller implements IRandomSource {
      * when we are done 2 remove the exit button 3 add a close button.
      */
     void setTest() {
-      m_test = true;
-      m_buttons.removeAll();
-      m_buttons.add(m_okButton);
-      m_buttons.add(m_reRollButton);
+      test = true;
+      buttons.removeAll();
+      buttons.add(okButton);
+      buttons.add(reRollButton);
     }
 
     void appendText(final String text) {
-      m_text.setText(m_text.getText() + text);
+      textArea.setText(textArea.getText() + text);
     }
 
     void notifyError() {
       SwingUtilities.invokeLater(() -> {
-        m_exitButton.setEnabled(true);
-        m_reRollButton.setEnabled(true);
+        exitButton.setEnabled(true);
+        reRollButton.setEnabled(true);
       });
     }
 
     int[] getDiceRoll() {
-      return m_diceRoll;
+      return diceRoll;
     }
 
     // should only be called if we are not visible
@@ -194,16 +194,16 @@ public class PBEMDiceRoller implements IRandomSource {
       if (!SwingUtilities.isEventDispatchThread()) {
         throw new IllegalStateException("Wrong thread");
       }
-      m_reRollButton.setEnabled(false);
-      m_exitButton.setEnabled(false);
+      reRollButton.setEnabled(false);
+      exitButton.setEnabled(false);
       new Thread(this::rollInSeperateThread, "Triplea, roll in seperate thread").start();
     }
 
     private void closeAndReturn() {
       SwingUtilities.invokeLater(() -> {
         setVisible(false);
-        m_owner.toFront();
-        m_owner = null;
+        owner.toFront();
+        owner = null;
         dispose();
       });
     }
@@ -222,22 +222,22 @@ public class PBEMDiceRoller implements IRandomSource {
       while (!isVisible()) {
         Thread.yield();
       }
-      appendText(m_subjectMessage + "\n");
-      appendText("Contacting  " + m_diceServer.getDisplayName() + "\n");
+      appendText(subjectMessage + "\n");
+      appendText("Contacting  " + diceServer.getDisplayName() + "\n");
       String text = null;
       try {
-        text = m_diceServer.postRequest(m_sides, m_count, m_subjectMessage, m_gameID, m_gameUUID);
+        text = diceServer.postRequest(sides, count, subjectMessage, gameId, gameUuid);
         if (text.length() == 0) {
           appendText("Nothing could be read from dice server\n");
           appendText("Please check your firewall settings");
           notifyError();
         }
-        if (!m_test) {
+        if (!test) {
           appendText("Contacted :" + text + "\n");
         }
-        m_diceRoll = m_diceServer.getDice(text, m_count);
+        diceRoll = diceServer.getDice(text, count);
         appendText("Success!");
-        if (!m_test) {
+        if (!test) {
           closeAndReturn();
         }
       } catch (final SocketException ex) { // an error in networking

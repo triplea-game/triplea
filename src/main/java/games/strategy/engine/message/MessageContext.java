@@ -7,11 +7,11 @@ import games.strategy.net.INode;
  */
 public class MessageContext {
   // the current caller of the remote or channel
-  private static final ThreadLocal<INode> m_sender = new ThreadLocal<>();
+  private static final ThreadLocal<INode> sender = new ThreadLocal<>();
 
   // should only be called by EndPoint
   public static void setSenderNodeForThread(final INode node) {
-    m_sender.set(node);
+    sender.set(node);
   }
 
   /**
@@ -31,6 +31,6 @@ public class MessageContext {
    * @return the node that originated the message being received
    */
   public static INode getSender() {
-    return m_sender.get();
+    return sender.get();
   }
 }

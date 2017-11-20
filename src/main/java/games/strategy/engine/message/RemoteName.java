@@ -4,8 +4,8 @@ package games.strategy.engine.message;
  * Description for a Channel or a Remote end point.
  */
 public class RemoteName {
-  private final String m_name;
-  private final Class<?> m_class;
+  private final String name;
+  private final Class<?> clazz;
 
   public RemoteName(final Class<?> class1, final String name) {
     this(name, class1);
@@ -18,20 +18,20 @@ public class RemoteName {
     if (!class1.isInterface()) {
       throw new IllegalArgumentException("Not an interface. Remote Name: " + name);
     }
-    m_name = name;
-    m_class = class1;
+    this.name = name;
+    clazz = class1;
   }
 
   public Class<?> getClazz() {
-    return m_class;
+    return clazz;
   }
 
   public String getName() {
-    return m_name;
+    return name;
   }
 
   @Override
   public String toString() {
-    return m_name + ":" + m_class.getSimpleName();
+    return name + ":" + clazz.getSimpleName();
   }
 }

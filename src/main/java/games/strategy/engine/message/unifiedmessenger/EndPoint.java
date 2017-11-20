@@ -20,40 +20,40 @@ import games.strategy.net.INode;
  */
 class EndPoint {
   // the next number we are going to give
-  private final AtomicLong m_nextGivenNumber = new AtomicLong();
+  private final AtomicLong nextGivenNumber = new AtomicLong();
   // the next number we can run
-  private long m_currentRunnableNumber = 0;
-  private final Object m_numberMutext = new Object();
-  private final Object m_implementorsMutext = new Object();
-  private final String m_name;
-  private final Class<?> m_remoteClass;
-  private final List<Object> m_implementors = new ArrayList<>();
-  private final boolean m_singleThreaded;
+  private long currentRunnableNumber = 0;
+  private final Object numberMutex = new Object();
+  private final Object implementorsMutex = new Object();
+  private final String name;
+  private final Class<?> remoteClass;
+  private final List<Object> implementors = new ArrayList<>();
+  private final boolean singleThreaded;
 
   public EndPoint(final String name, final Class<?> remoteClass, final boolean singleThreaded) {
-    m_name = name;
-    m_remoteClass = remoteClass;
-    m_singleThreaded = singleThreaded;
+    this.name = name;
+    this.remoteClass = remoteClass;
+    this.singleThreaded = singleThreaded;
   }
 
   public Object getFirstImplementor() {
-    synchronized (m_implementorsMutext) {
-      if (m_implementors.size() != 1) {
-        throw new IllegalStateException("Invalid implementor count, " + m_implementors);
+    synchronized (implementorsMutex) {
+      if (implementors.size() != 1) {
+        throw new IllegalStateException("Invalid implementor count, " + implementors);
       }
-      return m_implementors.get(0);
+      return implementors.get(0);
     }
   }
 
   public long takeANumber() {
-    return m_nextGivenNumber.getAndIncrement();
+    return nextGivenNumber.getAndIncrement();
   }
 
   private void waitTillCanBeRun(final long number) {
-    synchronized (m_numberMutext) {
-      while (number > m_currentRunnableNumber) {
+    synchronized (numberMutex) {
+      while (number > currentRunnableNumber) {
         try {
-          m_numberMutext.wait();
+          numberMutex.wait();
         } catch (final InterruptedException e) {
           ClientLogger.logQuietly(e);
         }
@@ -62,9 +62,9 @@ class EndPoint {
   }
 
   private void releaseNumber() {
-    synchronized (m_numberMutext) {
-      m_currentRunnableNumber++;
-      m_numberMutext.notifyAll();
+    synchronized (numberMutex) {
+      currentRunnableNumber++;
+      numberMutex.notifyAll();
     }
   }
 
@@ -72,29 +72,29 @@ class EndPoint {
    * @return is this the first implementor.
    */
   public boolean addImplementor(final Object implementor) {
-    if (!m_remoteClass.isAssignableFrom(implementor.getClass())) {
-      throw new IllegalArgumentException(m_remoteClass + " is not assignable from " + implementor.getClass());
+    if (!remoteClass.isAssignableFrom(implementor.getClass())) {
+      throw new IllegalArgumentException(remoteClass + " is not assignable from " + implementor.getClass());
     }
-    synchronized (m_implementorsMutext) {
-      final boolean isFirstImplementor = m_implementors.isEmpty();
-      m_implementors.add(implementor);
+    synchronized (implementorsMutex) {
+      final boolean isFirstImplementor = implementors.isEmpty();
+      implementors.add(implementor);
       return isFirstImplementor;
     }
   }
 
   public boolean isSingleThreaded() {
-    return m_singleThreaded;
+    return singleThreaded;
   }
 
   public boolean hasImplementors() {
-    synchronized (m_implementorsMutext) {
-      return !m_implementors.isEmpty();
+    synchronized (implementorsMutex) {
+      return !implementors.isEmpty();
     }
   }
 
   public int getLocalImplementorCount() {
-    synchronized (m_implementorsMutext) {
-      return m_implementors.size();
+    synchronized (implementorsMutex) {
+      return implementors.size();
     }
   }
 
@@ -102,20 +102,20 @@ class EndPoint {
    * @return we have no more implementors.
    */
   boolean removeImplementor(final Object implementor) {
-    synchronized (m_implementorsMutext) {
-      if (!m_implementors.remove(implementor)) {
-        throw new IllegalStateException("Not removed, impl:" + implementor + " have " + m_implementors);
+    synchronized (implementorsMutex) {
+      if (!implementors.remove(implementor)) {
+        throw new IllegalStateException("Not removed, impl:" + implementor + " have " + implementors);
       }
-      return m_implementors.isEmpty();
+      return implementors.isEmpty();
     }
   }
 
   public String getName() {
-    return m_name;
+    return name;
   }
 
   public Class<?> getRemoteClass() {
-    return m_remoteClass;
+    return remoteClass;
   }
 
   /*
@@ -126,7 +126,7 @@ class EndPoint {
   public List<RemoteMethodCallResults> invokeLocal(final RemoteMethodCall call, final long number,
       final INode messageOriginator) {
     try {
-      if (m_singleThreaded) {
+      if (singleThreaded) {
         waitTillCanBeRun(number);
       }
       return invokeMultiple(call, messageOriginator);
@@ -138,8 +138,8 @@ class EndPoint {
   private List<RemoteMethodCallResults> invokeMultiple(final RemoteMethodCall call, final INode messageOriginator) {
     // copy the implementors
     final List<Object> implementorsCopy;
-    synchronized (m_implementorsMutext) {
-      implementorsCopy = new ArrayList<>(m_implementors);
+    synchronized (implementorsMutex) {
+      implementorsCopy = new ArrayList<>(implementors);
     }
     final List<RemoteMethodCallResults> results = new ArrayList<>(implementorsCopy.size());
     for (final Object implementor : implementorsCopy) {
@@ -150,7 +150,7 @@ class EndPoint {
 
   private RemoteMethodCallResults invokeSingle(final RemoteMethodCall call, final Object implementor,
       final INode messageOriginator) {
-    call.resolve(m_remoteClass);
+    call.resolve(remoteClass);
     final Method method;
     try {
       method = implementor.getClass().getMethod(call.getMethodName(), call.getArgTypes());
@@ -177,17 +177,17 @@ class EndPoint {
   }
 
   public boolean equivalent(final EndPoint other) {
-    if (other.m_singleThreaded != this.m_singleThreaded) {
+    if (other.singleThreaded != this.singleThreaded) {
       return false;
     }
-    if (!other.m_name.equals(this.m_name)) {
+    if (!other.name.equals(this.name)) {
       return false;
     }
-    return other.m_remoteClass.equals(m_remoteClass);
+    return other.remoteClass.equals(remoteClass);
   }
 
   @Override
   public String toString() {
-    return "Name:" + m_name + " singleThreaded:" + m_singleThreaded + " implementors:" + m_implementors;
+    return "Name:" + name + " singleThreaded:" + singleThreaded + " implementors:" + implementors;
   }
 }

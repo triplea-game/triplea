@@ -10,20 +10,20 @@ import games.strategy.net.INode;
  * Implementation of IChannelMessenger built on top of an IMessenger.
  */
 public class ChannelMessenger implements IChannelMessenger {
-  private final UnifiedMessenger m_unifiedMessenger;
+  private final UnifiedMessenger unifiedMessenger;
 
   public ChannelMessenger(final UnifiedMessenger messenger) {
-    m_unifiedMessenger = messenger;
+    unifiedMessenger = messenger;
   }
 
   public UnifiedMessenger getUnifiedMessenger() {
-    return m_unifiedMessenger;
+    return unifiedMessenger;
   }
 
   @Override
   public IChannelSubscribor getChannelBroadcastor(final RemoteName channelName) {
     final InvocationHandler ih =
-        new UnifiedInvocationHandler(m_unifiedMessenger, channelName.getName(), true, channelName.getClazz());
+        new UnifiedInvocationHandler(unifiedMessenger, channelName.getName(), true, channelName.getClazz());
     return (IChannelSubscribor) Proxy
         .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[] {channelName.getClazz()}, ih);
   }
@@ -33,26 +33,26 @@ public class ChannelMessenger implements IChannelMessenger {
     if (!IChannelSubscribor.class.isAssignableFrom(channelName.getClazz())) {
       throw new IllegalStateException(channelName.getClazz() + " is not a channel subscribor");
     }
-    m_unifiedMessenger.addImplementor(channelName, implementor, true);
+    unifiedMessenger.addImplementor(channelName, implementor, true);
   }
 
   @Override
   public void unregisterChannelSubscriber(final Object implementor, final RemoteName channelName) {
-    m_unifiedMessenger.removeImplementor(channelName.getName(), implementor);
+    unifiedMessenger.removeImplementor(channelName.getName(), implementor);
   }
 
   @Override
   public INode getLocalNode() {
-    return m_unifiedMessenger.getLocalNode();
+    return unifiedMessenger.getLocalNode();
   }
 
   @Override
   public boolean isServer() {
-    return m_unifiedMessenger.isServer();
+    return unifiedMessenger.isServer();
   }
 
   @Override
   public String toString() {
-    return "ChannelMessenger: " + m_unifiedMessenger.toString();
+    return "ChannelMessenger: " + unifiedMessenger.toString();
   }
 }
