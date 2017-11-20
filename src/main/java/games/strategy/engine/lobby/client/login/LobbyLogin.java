@@ -19,7 +19,6 @@ import games.strategy.net.IConnectionLogin;
 import games.strategy.net.IMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.util.MD5Crypt;
 
 public class LobbyLogin {
   private final Window parentWindow;
@@ -86,11 +85,7 @@ public class LobbyLogin {
             if (anonymousLogin) {
               response.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
             } else {
-              final String salt = challenge.getOrDefault(LobbyLoginValidator.SALT_KEY, MD5Crypt.newSalt());
-              response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(password, salt));
-              if (RsaAuthenticator.canProcessChallenge(challenge)) {
-                response.putAll(RsaAuthenticator.newResponse(challenge, password));
-              }
+              response.putAll(RsaAuthenticator.newResponse(challenge, password));
             }
             response.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
             return response;
@@ -163,12 +158,7 @@ public class LobbyLogin {
             final Map<String, String> response = new HashMap<>();
             response.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
             response.put(LobbyLoginValidator.EMAIL_KEY, email);
-            // TODO: Don't send the md5-hashed password once the lobby removes the support, kept for
-            // backwards-compatibility
-            response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(password));
-            if (RsaAuthenticator.canProcessChallenge(challenge)) {
-              response.putAll(RsaAuthenticator.newResponse(challenge, password));
-            }
+            response.putAll(RsaAuthenticator.newResponse(challenge, password));
             response.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
             return response;
           }
