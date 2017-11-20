@@ -4,33 +4,33 @@ import games.strategy.engine.data.PlayerID;
 
 public class Step extends IndexedHistoryNode {
   private static final long serialVersionUID = 1015799886178275645L;
-  private final PlayerID m_player;
-  private final String m_stepName;
-  private final String m_delegateName;
+  private final PlayerID player;
+  private final String stepName;
+  private final String delegateName;
 
   /** Creates a new instance of Step. */
   Step(final String stepName, final String delegateName, final PlayerID player, final int changeStartIndex,
       final String displayName) {
     super(displayName, changeStartIndex);
-    m_stepName = stepName;
-    m_delegateName = delegateName;
-    m_player = player;
+    this.stepName = stepName;
+    this.delegateName = delegateName;
+    this.player = player;
   }
 
   public PlayerID getPlayerId() {
-    return m_player;
+    return player;
   }
 
   @Override
   public SerializationWriter getWriter() {
-    return new StepHistorySerializer(m_stepName, m_delegateName, m_player, super.getTitle());
+    return new StepHistorySerializer(stepName, delegateName, player, super.getTitle());
   }
 
   public String getDelegateName() {
-    return m_delegateName;
+    return delegateName;
   }
 
   public String getStepName() {
-    return m_stepName;
+    return stepName;
   }
 }

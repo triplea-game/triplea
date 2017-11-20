@@ -23,13 +23,13 @@ import games.strategy.engine.message.RemoteNotFoundException;
  * Default implementation of PlayerBridge.
  */
 public class DefaultPlayerBridge implements IPlayerBridge {
-  private final IGame m_game;
-  private String m_currentStep;
-  private String m_currentDelegate;
+  private final IGame game;
+  private String currentStep;
+  private String currentDelegate;
 
   /** Creates new DefaultPlayerBridge. */
   public DefaultPlayerBridge(final IGame game) {
-    m_game = game;
+    this.game = game;
     final GameStepListener gameStepListener = (stepName, delegateName, player, round, displayName) -> {
       if (stepName == null) {
         throw new IllegalArgumentException("Null step");
@@ -37,39 +37,39 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       if (delegateName == null) {
         throw new IllegalArgumentException("Null delegate");
       }
-      m_currentStep = stepName;
-      m_currentDelegate = delegateName;
+      currentStep = stepName;
+      currentDelegate = delegateName;
     };
-    m_game.addGameStepListener(gameStepListener);
+    this.game.addGameStepListener(gameStepListener);
   }
 
   @Override
   public String getStepName() {
-    return m_currentStep;
+    return currentStep;
   }
 
   @Override
   public boolean isGameOver() {
-    return m_game.isGameOver();
+    return game.isGameOver();
   }
 
   @Override
   public GameData getGameData() {
-    return m_game.getData();
+    return game.getData();
   }
 
   @Override
   public IRemote getRemoteDelegate() {
-    if (m_game.isGameOver()) {
+    if (game.isGameOver()) {
       throw new GameOverException("Game Over");
     }
     try {
-      m_game.getData().acquireReadLock();
+      game.getData().acquireReadLock();
       try {
-        final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
+        final IDelegate delegate = game.getData().getDelegateList().getDelegate(currentDelegate);
         if (delegate == null) {
           final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. CurrentStep: "
-              + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;
+              + currentStep + ", and CurrentDelegate: " + currentDelegate;
           // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
           // too
           System.err.println(errorMessage);
@@ -83,15 +83,15 @@ public class DefaultPlayerBridge implements IPlayerBridge {
           ClientLogger.logQuietly(e);
           final String errorMessage =
               "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: "
-                  + m_currentStep + ", and CurrentDelegate: " + m_currentDelegate;
+                  + currentStep + ", and CurrentDelegate: " + currentDelegate;
           // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
           // too
           System.err.println(errorMessage);
           throw new IllegalStateException(errorMessage, e);
         }
-        return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(remoteName));
+        return getRemoteThatChecksForGameOver(game.getRemoteMessenger().getRemote(remoteName));
       } finally {
-        m_game.getData().releaseReadLock();
+        game.getData().releaseReadLock();
       }
     } catch (final MessengerException me) {
       throw new GameOverException("Game Over!");
@@ -100,13 +100,13 @@ public class DefaultPlayerBridge implements IPlayerBridge {
 
   @Override
   public IRemote getRemotePersistentDelegate(final String name) {
-    if (m_game.isGameOver()) {
+    if (game.isGameOver()) {
       throw new GameOverException("Game Over");
     }
     try {
-      m_game.getData().acquireReadLock();
+      game.getData().acquireReadLock();
       try {
-        final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(name);
+        final IDelegate delegate = game.getData().getDelegateList().getDelegate(name);
         if (delegate == null) {
           final String errorMessage =
               "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. Looking for delegate named: " + name;
@@ -119,9 +119,9 @@ public class DefaultPlayerBridge implements IPlayerBridge {
           return null;
         }
         return getRemoteThatChecksForGameOver(
-            m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
+            game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
       } finally {
-        m_game.getData().releaseReadLock();
+        game.getData().releaseReadLock();
       }
     } catch (final MessengerException me) {
       throw new GameOverException("Game Over!");
@@ -130,30 +130,30 @@ public class DefaultPlayerBridge implements IPlayerBridge {
 
   @Override
   public Properties getStepProperties() {
-    return m_game.getData().getSequence().getStep().getProperties();
+    return game.getData().getSequence().getStep().getProperties();
   }
 
   private IRemote getRemoteThatChecksForGameOver(final IRemote implementor) {
     final Class<?>[] classes = implementor.getClass().getInterfaces();
-    final GameOverInvocationHandler goih = new GameOverInvocationHandler(implementor, m_game);
+    final GameOverInvocationHandler goih = new GameOverInvocationHandler(implementor, game);
     return (IRemote) Proxy.newProxyInstance(implementor.getClass().getClassLoader(), classes, goih);
   }
 
   static class GameOverInvocationHandler implements InvocationHandler {
-    private final Object m_delegate;
-    private final IGame m_game;
+    private final Object delegate;
+    private final IGame game;
 
     public GameOverInvocationHandler(final Object delegate, final IGame game) {
-      m_delegate = delegate;
-      m_game = game;
+      this.delegate = delegate;
+      this.game = game;
     }
 
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       try {
-        return method.invoke(m_delegate, args);
+        return method.invoke(delegate, args);
       } catch (final InvocationTargetException ite) {
-        if (!m_game.isGameOver()) {
+        if (!game.isGameOver()) {
           throw ite.getCause();
         } else {
           throw new GameOverException("Game Over Exception!");

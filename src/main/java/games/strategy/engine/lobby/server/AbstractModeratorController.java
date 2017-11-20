@@ -10,12 +10,12 @@ import games.strategy.net.Messengers;
 
 public abstract class AbstractModeratorController implements IModeratorController {
   protected static final Logger logger = Logger.getLogger(ModeratorController.class.getName());
-  protected final IServerMessenger m_serverMessenger;
-  protected final Messengers m_allMessengers;
+  protected final IServerMessenger serverMessenger;
+  protected final Messengers allMessengers;
 
   public AbstractModeratorController(final IServerMessenger serverMessenger, final Messengers messengers) {
-    m_serverMessenger = serverMessenger;
-    m_allMessengers = messengers;
+    this.serverMessenger = serverMessenger;
+    allMessengers = messengers;
   }
 
   public static RemoteName getModeratorControllerName() {
@@ -27,7 +27,7 @@ public abstract class AbstractModeratorController implements IModeratorControlle
   }
 
   protected String getNodeMacAddress(final INode node) {
-    return m_serverMessenger.getPlayerMac(node.getName());
+    return serverMessenger.getPlayerMac(node.getName());
   }
 
   protected String getRealName(final INode node) {
@@ -38,7 +38,7 @@ public abstract class AbstractModeratorController implements IModeratorControlle
   protected String getAliasesFor(final INode node) {
     final StringBuilder builder = new StringBuilder();
     final String nodeMac = getNodeMacAddress(node);
-    for (final INode cur : m_serverMessenger.getNodes()) {
+    for (final INode cur : serverMessenger.getNodes()) {
       if (cur.equals(node) || cur.getName().equals("Admin")) {
         continue;
       }

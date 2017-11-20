@@ -9,8 +9,8 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
 public class RemoteHostUtils implements IRemoteHostUtils {
-  private final INode m_serverNode;
-  private final IServerMessenger m_serverMessenger;
+  private final INode serverNode;
+  private final IServerMessenger serverMessenger;
 
   public static RemoteName getRemoteHostUtilsName(final INode node) {
     return new RemoteName(IRemoteHostUtils.class,
@@ -18,18 +18,18 @@ public class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   public RemoteHostUtils(final INode serverNode, final IServerMessenger gameServerMessenger) {
-    m_serverNode = serverNode;
-    m_serverMessenger = gameServerMessenger;
+    this.serverNode = serverNode;
+    serverMessenger = gameServerMessenger;
   }
 
   @Override
   public String getConnections() {
-    if (!MessageContext.getSender().equals(m_serverNode)) {
+    if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
-    if (m_serverMessenger != null) {
-      final StringBuilder sb = new StringBuilder("Connected: " + m_serverMessenger.isConnected() + "\n" + "Nodes: \n");
-      final Set<INode> nodes = m_serverMessenger.getNodes();
+    if (serverMessenger != null) {
+      final StringBuilder sb = new StringBuilder("Connected: " + serverMessenger.isConnected() + "\n" + "Nodes: \n");
+      final Set<INode> nodes = serverMessenger.getNodes();
       if (nodes == null) {
         sb.append("  null\n");
       } else {
@@ -44,7 +44,7 @@ public class RemoteHostUtils implements IRemoteHostUtils {
 
   @Override
   public String getChatLogHeadlessHostBot(final String hashedPassword, final String salt) {
-    if (!MessageContext.getSender().equals(m_serverNode)) {
+    if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
     final HeadlessGameServer instance = HeadlessGameServer.getInstance();
@@ -57,7 +57,7 @@ public class RemoteHostUtils implements IRemoteHostUtils {
   @Override
   public String mutePlayerHeadlessHostBot(final String playerNameToBeMuted, final int minutes,
       final String hashedPassword, final String salt) {
-    if (!MessageContext.getSender().equals(m_serverNode)) {
+    if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
     final HeadlessGameServer instance = HeadlessGameServer.getInstance();
@@ -70,7 +70,7 @@ public class RemoteHostUtils implements IRemoteHostUtils {
   @Override
   public String bootPlayerHeadlessHostBot(final String playerNameToBeBooted, final String hashedPassword,
       final String salt) {
-    if (!MessageContext.getSender().equals(m_serverNode)) {
+    if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
     final HeadlessGameServer instance = HeadlessGameServer.getInstance();
@@ -83,7 +83,7 @@ public class RemoteHostUtils implements IRemoteHostUtils {
   @Override
   public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final int hours,
       final String hashedPassword, final String salt) {
-    if (!MessageContext.getSender().equals(m_serverNode)) {
+    if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
     final HeadlessGameServer instance = HeadlessGameServer.getInstance();
@@ -95,7 +95,7 @@ public class RemoteHostUtils implements IRemoteHostUtils {
 
   @Override
   public String stopGameHeadlessHostBot(final String hashedPassword, final String salt) {
-    if (!MessageContext.getSender().equals(m_serverNode)) {
+    if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
     final HeadlessGameServer instance = HeadlessGameServer.getInstance();
@@ -107,7 +107,7 @@ public class RemoteHostUtils implements IRemoteHostUtils {
 
   @Override
   public String shutDownHeadlessHostBot(final String hashedPassword, final String salt) {
-    if (!MessageContext.getSender().equals(m_serverNode)) {
+    if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
     final HeadlessGameServer instance = HeadlessGameServer.getInstance();
@@ -119,7 +119,7 @@ public class RemoteHostUtils implements IRemoteHostUtils {
 
   @Override
   public String getSalt() {
-    if (!MessageContext.getSender().equals(m_serverNode)) {
+    if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
     final HeadlessGameServer instance = HeadlessGameServer.getInstance();

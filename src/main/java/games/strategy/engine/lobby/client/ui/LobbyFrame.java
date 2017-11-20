@@ -47,42 +47,42 @@ public class LobbyFrame extends JFrame {
       "Name and Mac",
       "Cancel");
 
-  private final LobbyClient m_client;
-  private final ChatMessagePanel m_chatMessagePanel;
+  private final LobbyClient client;
+  private final ChatMessagePanel chatMessagePanel;
 
   public LobbyFrame(final LobbyClient client, final LobbyServerProperties lobbyServerProperties) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(GameRunner.getGameIcon(this));
-    m_client = client;
+    this.client = client;
     setJMenuBar(new LobbyMenu(this));
-    final Chat chat = new Chat(m_client.getMessenger(), LobbyServer.LOBBY_CHAT, m_client.getChannelMessenger(),
-        m_client.getRemoteMessenger(), Chat.ChatSoundProfile.LOBBY_CHATROOM);
-    m_chatMessagePanel = new ChatMessagePanel(chat);
+    final Chat chat = new Chat(this.client.getMessenger(), LobbyServer.LOBBY_CHAT,
+        this.client.getChannelMessenger(), this.client.getRemoteMessenger(), Chat.ChatSoundProfile.LOBBY_CHATROOM);
+    chatMessagePanel = new ChatMessagePanel(chat);
     showServerMessage(lobbyServerProperties);
-    m_chatMessagePanel.setShowTime(true);
+    chatMessagePanel.setShowTime(true);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
     chatPlayers.addHiddenPlayerName(LobbyServer.ADMIN_USERNAME);
     chatPlayers.setChat(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(clickedOn -> createAdminActions(clickedOn));
-    final LobbyGamePanel gamePanel = new LobbyGamePanel(m_client.getMessengers());
+    final LobbyGamePanel gamePanel = new LobbyGamePanel(this.client.getMessengers());
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
     leftSplit.setTopComponent(gamePanel);
-    leftSplit.setBottomComponent(m_chatMessagePanel);
+    leftSplit.setBottomComponent(chatMessagePanel);
     leftSplit.setResizeWeight(0.8);
     gamePanel.setPreferredSize(new Dimension(700, 200));
-    m_chatMessagePanel.setPreferredSize(new Dimension(700, 400));
+    chatMessagePanel.setPreferredSize(new Dimension(700, 400));
     final JSplitPane mainSplit = new JSplitPane();
     mainSplit.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
     mainSplit.setLeftComponent(leftSplit);
     mainSplit.setRightComponent(chatPlayers);
     add(mainSplit, BorderLayout.CENTER);
     pack();
-    m_chatMessagePanel.requestFocusInWindow();
+    chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    m_client.getMessenger().addErrorListener((messenger, reason) -> connectionToServerLost());
+    this.client.getMessenger().addErrorListener((messenger, reason) -> connectionToServerLost());
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -92,23 +92,23 @@ public class LobbyFrame extends JFrame {
   }
 
   public ChatMessagePanel getChatMessagePanel() {
-    return m_chatMessagePanel;
+    return chatMessagePanel;
   }
 
   private void showServerMessage(final LobbyServerProperties props) {
     if (!props.serverMessage.isEmpty()) {
-      m_chatMessagePanel.addServerMessage(props.serverMessage);
+      chatMessagePanel.addServerMessage(props.serverMessage);
     }
   }
 
   private List<Action> createAdminActions(final INode clickedOn) {
-    if (!m_client.isAdmin()) {
+    if (!client.isAdmin()) {
       return Collections.emptyList();
     }
-    if (clickedOn.equals(m_client.getMessenger().getLocalNode())) {
+    if (clickedOn.equals(client.getMessenger().getLocalNode())) {
       return Collections.emptyList();
     }
-    final IModeratorController controller = (IModeratorController) m_client.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) client.getRemoteMessenger()
         .getRemote(ModeratorController.getModeratorControllerName());
     final List<Action> actions = new ArrayList<>();
     actions.add(SwingAction.of("Boot " + clickedOn.getName(), e -> {
@@ -208,12 +208,12 @@ public class LobbyFrame extends JFrame {
   }
 
   public LobbyClient getLobbyClient() {
-    return m_client;
+    return client;
   }
 
   public void setShowChatTime(final boolean showTime) {
-    if (m_chatMessagePanel != null) {
-      m_chatMessagePanel.setShowTime(showTime);
+    if (chatMessagePanel != null) {
+      chatMessagePanel.setShowTime(showTime);
     }
   }
 
@@ -221,7 +221,7 @@ public class LobbyFrame extends JFrame {
     setVisible(false);
     dispose();
     GameRunner.showMainFrame();
-    m_client.getMessenger().shutDown();
+    client.getMessenger().shutDown();
     GameRunner.exitGameIfFinished();
   }
 

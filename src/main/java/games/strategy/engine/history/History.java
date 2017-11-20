@@ -28,35 +28,34 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 public class History extends DefaultTreeModel {
   private static final long serialVersionUID = -1769876896869L;
 
-  private final HistoryWriter m_writer = new HistoryWriter(this);
-  private final List<Change> m_changes = new ArrayList<>();
-  private final GameData m_data;
-  private HistoryNode m_currentNode;
+  private final HistoryWriter writer = new HistoryWriter(this);
+  private final List<Change> changes = new ArrayList<>();
+  private final GameData gameData;
+  private HistoryNode currentNode;
+  private HistoryPanel panel = null;
 
   private void assertCorrectThread() {
-    if (m_data.areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
+    if (gameData.areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
   }
 
   public History(final GameData data) {
     super(new RootHistoryNode("Game History"));
-    m_data = data;
+    gameData = data;
   }
 
   public HistoryWriter getHistoryWriter() {
-    return m_writer;
+    return writer;
   }
 
-  HistoryPanel m_panel = null;
-
   public void setTreePanel(final HistoryPanel panel) {
-    m_panel = panel;
+    this.panel = panel;
   }
 
   public void goToEnd() {
-    if (m_panel != null) {
-      m_panel.goToEnd();
+    if (panel != null) {
+      panel.goToEnd();
     }
   }
 
@@ -86,7 +85,7 @@ public class History extends DefaultTreeModel {
       lastChangeIndex = 0;
     }
     if (lastChangeIndex == -1) {
-      return m_changes.size();
+      return changes.size();
     }
     return lastChangeIndex;
   }
@@ -98,9 +97,9 @@ public class History extends DefaultTreeModel {
     if (firstChange == lastChange) {
       return null;
     }
-    final List<Change> changes =
-        m_changes.subList(Math.min(firstChange, lastChange), Math.max(firstChange, lastChange));
-    final Change compositeChange = new CompositeChange(changes);
+    final List<Change> deltaChanges =
+        changes.subList(Math.min(firstChange, lastChange), Math.max(firstChange, lastChange));
+    final Change compositeChange = new CompositeChange(deltaChanges);
     if (lastChange >= firstChange) {
       return compositeChange;
     } else {
@@ -112,13 +111,13 @@ public class History extends DefaultTreeModel {
     assertCorrectThread();
     getGameData().acquireWriteLock();
     try {
-      if (m_currentNode == null) {
-        m_currentNode = getLastNode();
+      if (currentNode == null) {
+        currentNode = getLastNode();
       }
-      final Change dataChange = getDelta(m_currentNode, node);
-      m_currentNode = node;
+      final Change dataChange = getDelta(currentNode, node);
+      currentNode = node;
       if (dataChange != null) {
-        m_data.performChange(dataChange);
+        gameData.performChange(dataChange);
       }
     } finally {
       getGameData().releaseWriteLock();
@@ -131,8 +130,8 @@ public class History extends DefaultTreeModel {
     getGameData().acquireWriteLock();
     try {
       final int lastChange = getLastChange(removeAfterNode) + 1;
-      while (m_changes.size() > lastChange) {
-        m_changes.remove(lastChange);
+      while (changes.size() > lastChange) {
+        changes.remove(lastChange);
       }
       final List<HistoryNode> nodesToRemove = new ArrayList<>();
       final Enumeration<?> enumeration = ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
@@ -159,24 +158,24 @@ public class History extends DefaultTreeModel {
   }
 
   synchronized void changeAdded(final Change change) {
-    m_changes.add(change);
-    if (m_currentNode == null) {
+    changes.add(change);
+    if (currentNode == null) {
       return;
     }
-    if (m_currentNode == getLastNode()) {
-      m_data.performChange(change);
+    if (currentNode == getLastNode()) {
+      gameData.performChange(change);
     }
   }
 
   private Object writeReplace() {
-    return new SerializedHistory(this, m_data, m_changes);
+    return new SerializedHistory(this, gameData, changes);
   }
 
   List<Change> getChanges() {
-    return m_changes;
+    return changes;
   }
 
   GameData getGameData() {
-    return m_data;
+    return gameData;
   }
 }

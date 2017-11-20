@@ -21,12 +21,12 @@ import games.strategy.net.IServerMessenger;
 
 class LobbyGameController implements ILobbyGameController {
   private static final Logger logger = Logger.getLogger(LobbyGameController.class.getName());
-  private final Object m_mutex = new Object();
-  private final Map<GUID, GameDescription> m_allGames = new HashMap<>();
-  private final ILobbyGameBroadcaster m_broadcaster;
+  private final Object mutex = new Object();
+  private final Map<GUID, GameDescription> allGames = new HashMap<>();
+  private final ILobbyGameBroadcaster broadcaster;
 
   LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IMessenger messenger) {
-    m_broadcaster = broadcaster;
+    this.broadcaster = broadcaster;
     ((IServerMessenger) messenger).addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {
@@ -40,11 +40,11 @@ class LobbyGameController implements ILobbyGameController {
 
   private void connectionLost(final INode to) {
     final List<GUID> removed = new ArrayList<>();
-    synchronized (m_mutex) {
-      final Iterator<GUID> keys = m_allGames.keySet().iterator();
+    synchronized (mutex) {
+      final Iterator<GUID> keys = allGames.keySet().iterator();
       while (keys.hasNext()) {
         final GUID key = keys.next();
-        final GameDescription game = m_allGames.get(key);
+        final GameDescription game = allGames.get(key);
         if (game.getHostedBy().equals(to)) {
           keys.remove();
           removed.add(key);
@@ -52,7 +52,7 @@ class LobbyGameController implements ILobbyGameController {
       }
     }
     for (final GUID guid : removed) {
-      m_broadcaster.gameRemoved(guid);
+      broadcaster.gameRemoved(guid);
     }
   }
 
@@ -61,10 +61,10 @@ class LobbyGameController implements ILobbyGameController {
     final INode from = MessageContext.getSender();
     assertCorrectHost(description, from);
     logger.info("Game added:" + description);
-    synchronized (m_mutex) {
-      m_allGames.put(gameId, description);
+    synchronized (mutex) {
+      allGames.put(gameId, description);
     }
-    m_broadcaster.gameUpdated(gameId, description);
+    broadcaster.gameUpdated(gameId, description);
   }
 
   private static void assertCorrectHost(final GameDescription description, final INode from) {
@@ -81,8 +81,8 @@ class LobbyGameController implements ILobbyGameController {
     if (logger.isLoggable(Level.FINE)) {
       logger.fine("Game updated:" + description);
     }
-    synchronized (m_mutex) {
-      final GameDescription oldDescription = m_allGames.get(gameId);
+    synchronized (mutex) {
+      final GameDescription oldDescription = allGames.get(gameId);
       // out of order updates
       // ignore, we already have the latest
       if (oldDescription.getVersion() > description.getVersion()) {
@@ -91,15 +91,15 @@ class LobbyGameController implements ILobbyGameController {
       if (!oldDescription.getHostedBy().equals(description.getHostedBy())) {
         throw new IllegalStateException("Game modified by wrong host");
       }
-      m_allGames.put(gameId, description);
+      allGames.put(gameId, description);
     }
-    m_broadcaster.gameUpdated(gameId, description);
+    broadcaster.gameUpdated(gameId, description);
   }
 
   @Override
   public Map<GUID, GameDescription> listGames() {
-    synchronized (m_mutex) {
-      return new HashMap<>(m_allGames);
+    synchronized (mutex) {
+      return new HashMap<>(allGames);
     }
   }
 
@@ -110,8 +110,8 @@ class LobbyGameController implements ILobbyGameController {
   @Override
   public String testGame(final GUID gameId) {
     final GameDescription description;
-    synchronized (m_mutex) {
-      description = m_allGames.get(gameId);
+    synchronized (mutex) {
+      description = allGames.get(gameId);
     }
     if (description == null) {
       return "No such game found";
