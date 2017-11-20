@@ -138,7 +138,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final Set<TriggerAttachment> trigs = new HashSet<>();
     for (final IAttachment a : player.getAttachments().values()) {
       if (a instanceof TriggerAttachment) {
-        if (cond == null || cond.match((TriggerAttachment) a)) {
+        if (cond == null || cond.test((TriggerAttachment) a)) {
           trigs.add((TriggerAttachment) a);
         }
       }
@@ -627,11 +627,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-        || Matches.isValidRelationshipName(getData()).match(s[2]))) {
+        || Matches.isValidRelationshipName(getData()).test(s[2]))) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
           + s[2] + " unknown " + thisErrorMsg());
     }
-    if (Matches.isValidRelationshipName(getData()).invert().match(s[3])) {
+    if (Matches.isValidRelationshipName(getData()).invert().test(s[3])) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
           + s[3] + " unknown " + thisErrorMsg());
     }
@@ -1999,11 +1999,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         final RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
         if (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY)
             || (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
-                && Matches.relationshipTypeIsNeutral().match(currentRelation))
+                && Matches.relationshipTypeIsNeutral().test(currentRelation))
             || (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
-                && Matches.relationshipTypeIsAllied().match(currentRelation))
+                && Matches.relationshipTypeIsAllied().test(currentRelation))
             || (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-                && Matches.relationshipTypeIsAtWar().match(currentRelation))
+                && Matches.relationshipTypeIsAtWar().test(currentRelation))
             || currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[2]))) {
           final RelationshipType triggerNewRelation = data.getRelationshipTypeList().getRelationshipType(s[3]);
           change.add(ChangeFactory.relationshipChange(player1, player2, currentRelation, triggerNewRelation));
@@ -2016,7 +2016,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           /*
            * creation of new battles is handled at the beginning of the battle delegate, in
            * "setupUnitsInSameTerritoryBattles", not here.
-           * if (Matches.relationshipTypeIsAtWar().match(triggerNewRelation))
+           * if (Matches.relationshipTypeIsAtWar().test(triggerNewRelation))
            * triggerMustFightBattle(player1, player2, aBridge);
            */
         }
@@ -2469,7 +2469,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             collectTestsForAllTriggers(toFireSet, bridge, new HashSet<>(testedConditionsSoFar.keySet()),
                 testedConditionsSoFar);
           }
-          if (!isSatisfiedMatch(testedConditionsSoFar).match(toFire)) {
+          if (!isSatisfiedMatch(testedConditionsSoFar).test(toFire)) {
             continue;
           }
         }

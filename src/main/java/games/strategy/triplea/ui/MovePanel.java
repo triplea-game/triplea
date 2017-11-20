@@ -96,7 +96,7 @@ public class MovePanel extends AbstractMovePanel {
   // Same as above! Delete this crap after refactoring.
   public static void clearDependents(final Collection<Unit> units) {
     for (final Unit unit : units) {
-      if (Matches.unitIsAirTransport().match(unit)) {
+      if (Matches.unitIsAirTransport().test(unit)) {
         dependentUnits.remove(unit);
       }
     }
@@ -477,7 +477,7 @@ public class MovePanel extends AbstractMovePanel {
     if (!allResults.isMoveValid()) {
       // if the player is invading only consider units that can invade
       if (!nonCombat && route.isUnload()
-          && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).match(route.getEnd())) {
+          && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).test(route.getEnd())) {
         best = Matches.getMatches(best, Matches.unitCanInvade());
         bestWithDependents = addMustMoveWith(best);
         lastResults = AbstractMoveDelegate.validateMove(moveType, bestWithDependents, route, getCurrentPlayer(),

@@ -256,7 +256,7 @@ public class MovePerformer implements Serializable {
                         .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
                             id),
                     Matches.territoryIsBlitzable(id, data)))) {
-              if (Matches.isTerritoryEnemy(id, data).match(t) || Matches.territoryHasEnemyUnits(id, data).match(t)) {
+              if (Matches.isTerritoryEnemy(id, data).test(t) || Matches.territoryHasEnemyUnits(id, data).test(t)) {
                 continue;
               }
               if ((t.equals(route.getEnd()) && !arrivedCopyForBattles.isEmpty()
@@ -430,14 +430,14 @@ public class MovePerformer implements Serializable {
       final BattleTracker tracker = getBattleTracker();
       final boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false, BattleType.NORMAL) != null;
       for (final Unit unit : units) {
-        if (Matches.unitIsAir().match(unit)) {
+        if (Matches.unitIsAir().test(unit)) {
           continue;
         }
         final Unit transportedBy = ((TripleAUnit) unit).getTransportedBy();
         // we will unload our paratroopers after they land in battle (after aa guns fire)
-        if (paratroopsLanding && transportedBy != null && Matches.unitIsAirTransport().match(transportedBy)
+        if (paratroopsLanding && transportedBy != null && Matches.unitIsAirTransport().test(transportedBy)
             && GameStepPropertiesHelper.isCombatMove(data)
-            && Matches.territoryHasNonSubmergedEnemyUnits(m_player, data).match(route.getEnd())) {
+            && Matches.territoryHasNonSubmergedEnemyUnits(m_player, data).test(route.getEnd())) {
           continue;
         }
         // unload the transports

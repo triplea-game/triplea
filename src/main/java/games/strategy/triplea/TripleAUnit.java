@@ -342,7 +342,7 @@ public class TripleAUnit extends Unit {
    * Will return 0 if the unit cannot be damaged, or is at max damage.
    */
   public int getHowMuchMoreDamageCanThisUnitTake(final Unit u, final Territory t) {
-    if (!Matches.unitCanBeDamaged().match(u)) {
+    if (!Matches.unitCanBeDamaged().test(u)) {
       return 0;
     }
     final TripleAUnit taUnit = (TripleAUnit) u;
@@ -358,7 +358,7 @@ public class TripleAUnit extends Unit {
    * Will return -1 if the unit is of the type that cannot be damaged
    */
   public int getHowMuchDamageCanThisUnitTakeTotal(final Unit u, final Territory t) {
-    if (!Matches.unitCanBeDamaged().match(u)) {
+    if (!Matches.unitCanBeDamaged().test(u)) {
       return -1;
     }
     final UnitAttachment ua = UnitAttachment.get(u.getType());
@@ -370,7 +370,7 @@ public class TripleAUnit extends Unit {
         // can use "production" or "unitProduction"
         return territoryUnitProduction * 2;
       } else {
-        if (Matches.unitCanProduceUnits().match(u)) {
+        if (Matches.unitCanProduceUnits().test(u)) {
           if (ua.getCanProduceXUnits() < 0) {
             // can use "production" or "unitProduction"
             return territoryUnitProduction * ua.getMaxDamage();
@@ -429,7 +429,7 @@ public class TripleAUnit extends Unit {
     if (u == null) {
       return 0;
     }
-    if (!Matches.unitCanProduceUnits().match(u)) {
+    if (!Matches.unitCanProduceUnits().test(u)) {
       return 0;
     }
     int productionCapacity;

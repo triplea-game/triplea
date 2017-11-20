@@ -33,7 +33,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
     if (Properties.getBattleshipsRepairAtEndOfRound(data)
         || Properties.getBattleshipsRepairAtBeginningOfRound(data)) {
       for (final UnitType ut : data.getUnitTypeList()) {
-        if (Matches.unitTypeHasMoreThanOneHitPointTotal().match(ut)) {
+        if (Matches.unitTypeHasMoreThanOneHitPointTotal().test(ut)) {
           m_multiHitpointCanRepair.add(ut);
         }
       }
@@ -46,8 +46,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
     if (u1.equals(u2)) {
       return 0;
     }
-    final boolean transporting1 = Matches.transportIsTransporting().match(u1);
-    final boolean transporting2 = Matches.transportIsTransporting().match(u2);
+    final boolean transporting1 = Matches.transportIsTransporting().test(u1);
+    final boolean transporting2 = Matches.transportIsTransporting().test(u2);
     final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
     final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
     if (ua1 == ua2 && u1.getOwner().equals(u2.getOwner())) {
@@ -59,12 +59,12 @@ public class UnitBattleComparator implements Comparator<Unit> {
       }
       return 0;
     }
-    final boolean airOrCarrierOrTransport1 = Matches.unitIsAir().match(u1) || Matches.unitIsCarrier().match(u1)
-        || (!transporting1 && Matches.unitIsTransport().match(u1));
-    final boolean airOrCarrierOrTransport2 = Matches.unitIsAir().match(u2) || Matches.unitIsCarrier().match(u2)
-        || (!transporting2 && Matches.unitIsTransport().match(u2));
-    final boolean subDestroyer1 = Matches.unitIsSub().match(u1) || Matches.unitIsDestroyer().match(u1);
-    final boolean subDestroyer2 = Matches.unitIsSub().match(u2) || Matches.unitIsDestroyer().match(u2);
+    final boolean airOrCarrierOrTransport1 = Matches.unitIsAir().test(u1) || Matches.unitIsCarrier().test(u1)
+        || (!transporting1 && Matches.unitIsTransport().test(u1));
+    final boolean airOrCarrierOrTransport2 = Matches.unitIsAir().test(u2) || Matches.unitIsCarrier().test(u2)
+        || (!transporting2 && Matches.unitIsTransport().test(u2));
+    final boolean subDestroyer1 = Matches.unitIsSub().test(u1) || Matches.unitIsDestroyer().test(u1);
+    final boolean subDestroyer2 = Matches.unitIsSub().test(u2) || Matches.unitIsDestroyer().test(u2);
     final boolean multiHpCanRepair1 = m_multiHitpointCanRepair.contains(u1.getType());
     final boolean multiHpCanRepair2 = m_multiHitpointCanRepair.contains(u2.getType());
     if (!m_ignorePrimaryPower) {

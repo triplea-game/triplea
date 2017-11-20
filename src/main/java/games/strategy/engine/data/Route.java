@@ -220,7 +220,7 @@ public class Route implements Serializable, Iterable<Territory> {
    */
   public boolean allMatch(final Match<Territory> match) {
     for (final Territory t : m_steps) {
-      if (!match.match(t)) {
+      if (!match.test(t)) {
         return false;
       }
     }
@@ -234,7 +234,7 @@ public class Route implements Serializable, Iterable<Territory> {
    */
   public boolean anyMatch(final Match<Territory> match) {
     for (final Territory t : m_steps) {
-      if (match.match(t)) {
+      if (match.test(t)) {
         return true;
       }
     }
@@ -252,7 +252,7 @@ public class Route implements Serializable, Iterable<Territory> {
       return defaultWhenNoMiddleSteps;
     }
     for (final Territory t : middle) {
-      if (!match.match(t)) {
+      if (!match.test(t)) {
         return false;
       }
     }
@@ -439,7 +439,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   private ResourceCollection getMovementFuelCostCharge(final Unit unit, final GameData data) {
     final ResourceCollection col = new ResourceCollection(data);
-    if (Matches.unitIsBeingTransported().match(unit)) {
+    if (Matches.unitIsBeingTransported().test(unit)) {
       return col;
     }
     final UnitAttachment ua = UnitAttachment.get(unit.getType());

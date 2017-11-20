@@ -66,21 +66,21 @@ public class ProPurchaseOptionMap {
       // Add rule to appropriate purchase option list
       if ((UnitAttachment.get(unitType).getMovement(player) <= 0
           && !(UnitAttachment.get(unitType).getCanProduceUnits()))
-          || Matches.unitTypeConsumesUnitsOnCreation().match(unitType) || UnitAttachment.get(unitType).getIsSuicide()
+          || Matches.unitTypeConsumesUnitsOnCreation().test(unitType) || UnitAttachment.get(unitType).getIsSuicide()
           || UnitAttachment.get(unitType).getIsSuicideOnHit()) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);
         ProLogger.debug("Special: " + ppo);
-      } else if (Matches.unitTypeCanProduceUnits().match(unitType)
-          && Matches.unitTypeIsInfrastructure().match(unitType)) {
+      } else if (Matches.unitTypeCanProduceUnits().test(unitType)
+          && Matches.unitTypeIsInfrastructure().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         factoryOptions.add(ppo);
         ProLogger.debug("Factory: " + ppo);
-      } else if (Matches.unitTypeIsAaForBombingThisUnitOnly().match(unitType)) {
+      } else if (Matches.unitTypeIsAaForBombingThisUnitOnly().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         aaOptions.add(ppo);
         ProLogger.debug("AA: " + ppo);
-      } else if (Matches.unitTypeIsLand().match(unitType)) {
+      } else if (Matches.unitTypeIsLand().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         landFodderOptions.add(ppo);
         if (ppo.getAttack() >= ppo.getDefense() || ppo.isAttackSupport() || ppo.getMovement() > 1) {
@@ -90,11 +90,11 @@ public class ProPurchaseOptionMap {
           landDefenseOptions.add(ppo);
         }
         ProLogger.debug("Land: " + ppo);
-      } else if (Matches.unitTypeIsAir().match(unitType)) {
+      } else if (Matches.unitTypeIsAir().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         airOptions.add(ppo);
         ProLogger.debug("Air: " + ppo);
-      } else if (Matches.unitTypeIsSea().match(unitType)) {
+      } else if (Matches.unitTypeIsSea().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         if (!ppo.isSub()) {
           seaDefenseOptions.add(ppo);

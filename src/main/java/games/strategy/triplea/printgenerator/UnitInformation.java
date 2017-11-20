@@ -61,7 +61,7 @@ class UnitInformation {
             + (!currentAttachment.getCanProduceUnits() ? "-" : "true") + ","
             + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine()) + ","
             + (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
-            + (!Matches.unitTypeIsAaForAnything().match(currentType) ? "-" : "true") + ","
+            + (!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true") + ","
             + (!currentAttachment.getIsAir() ? "-" : "true") + ","
             + (!currentAttachment.getIsStrategicBomber() ? "-" : "true") + ","
             + (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + ","

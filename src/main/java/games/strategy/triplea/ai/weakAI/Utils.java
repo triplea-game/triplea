@@ -22,7 +22,7 @@ class Utils {
   static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
     final List<Territory> territories = new ArrayList<>();
     for (final Territory t : data.getMap()) {
-      if (Matches.isTerritoryEnemy(player, data).match(t) && !t.getOwner().isNull()) {
+      if (Matches.isTerritoryEnemy(player, data).test(t) && !t.getOwner().isNull()) {
         if (!data.getMap().getNeighbors(t, Matches.isTerritoryOwnedBy(player)).isEmpty()) {
           territories.add(t);
         }
@@ -60,7 +60,7 @@ class Utils {
       final Match<Territory> routeCondition, final GameData data) {
     Route shortestRoute = null;
     for (final Territory t : data.getMap().getTerritories()) {
-      if (endCondition.match(t)) {
+      if (endCondition.test(t)) {
         final Match<Territory> routeOrEnd = Match.anyOf(routeCondition, Matches.territoryIs(t));
         final Route r = data.getMap().getRoute(start, t, routeOrEnd);
         if (r != null) {
@@ -90,7 +90,7 @@ class Utils {
     final Iterator<Territory> waterFactIter = water.iterator();
     while (waterFactIter.hasNext()) {
       final Territory waterFact = waterFactIter.next();
-      if (!Matches.territoryIsWater().match(waterFact)) {
+      if (!Matches.territoryIsWater().test(waterFact)) {
         waterFactIter.remove();
       }
     }

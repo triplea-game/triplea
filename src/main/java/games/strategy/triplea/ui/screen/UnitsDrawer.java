@@ -173,7 +173,7 @@ public class UnitsDrawer implements IDrawable {
     }
     displayHitDamage(bounds, graphics);
     // Display Factory Damage
-    if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.unitTypeCanBeDamaged().match(type)) {
+    if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.unitTypeCanBeDamaged().test(type)) {
       displayFactoryDamage(bounds, graphics);
     }
   }

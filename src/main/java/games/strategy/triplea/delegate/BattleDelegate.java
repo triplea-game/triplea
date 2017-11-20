@@ -915,7 +915,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             // to retreat to! (TODO: Fix this)
             final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<>();
             final Collection<Territory> neighbors = data.getMap().getNeighbors(to,
-                (Matches.territoryIsLand().match(to) ? Matches.territoryIsLand() : Matches.territoryIsWater()));
+                (Matches.territoryIsLand().test(to) ? Matches.territoryIsLand() : Matches.territoryIsWater()));
             // neighbors.removeAll(territoriesWithBattles);
             // neighbors.removeAll(Matches.getMatches(neighbors, Matches.territoryHasEnemyUnits(m_player, data)));
             for (final Territory t : neighbors) {
@@ -977,7 +977,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final Territory originatedFrom = TripleAUnit.get(u).getOriginatedFrom();
         Territory landingTerr = null;
         final String historyText;
-        if (!mustReturnToBase || !Matches.isTerritoryAllied(u.getOwner(), data).match(originatedFrom)) {
+        if (!mustReturnToBase || !Matches.isTerritoryAllied(u.getOwner(), data).test(originatedFrom)) {
           final Collection<Territory> possible = whereCanAirLand(Collections.singletonList(u), t, u.getOwner(), data,
               m_battleTracker, carrierCostOfCurrentTerr, 1, !mustReturnToBase);
           if (possible.size() > 1) {
@@ -1240,7 +1240,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (onlyWhereThereAreBattlesOrAmphibious) {
           // if no battle or amphibious from here, ignore it
           if (!pendingBattles.contains(t)) {
-            if (!Matches.territoryIsWater().match(t)) {
+            if (!Matches.territoryIsWater().test(t)) {
               continue;
             }
             boolean amphib = false;

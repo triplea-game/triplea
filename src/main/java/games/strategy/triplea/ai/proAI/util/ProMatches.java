@@ -55,7 +55,7 @@ public class ProMatches {
               false, false));
       final Match<Unit> unitMatch =
           Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t)).invert();
-      return territoryMatch.match(t) && unitMatch.match(u);
+      return territoryMatch.test(t) && unitMatch.test(u);
     });
   }
 
@@ -66,7 +66,7 @@ public class ProMatches {
           Matches.territoryIsPassableAndNotRestricted(player, data));
       final Match<Unit> unitMatch =
           Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t)).invert();
-      return territoryMatch.match(t) && unitMatch.match(u);
+      return territoryMatch.test(t) && unitMatch.test(u);
     });
   }
 
@@ -95,7 +95,7 @@ public class ProMatches {
           Match.allOf(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u),
               Matches.isTerritoryAllied(player, data), Matches.territoryHasNoEnemyUnits(player, data),
               Matches.territoryIsInList(enemyTerritories).invert());
-      if (isCombatMove && Matches.unitCanBlitz().match(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
+      if (isCombatMove && Matches.unitCanBlitz().test(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
         final Match<Territory> alliedWithNoEnemiesMatch = Match.allOf(
             Matches.isTerritoryAllied(player, data), Matches.territoryHasNoEnemyUnits(player, data));
         final Match<Territory> alliedOrBlitzableMatch =
@@ -103,7 +103,7 @@ public class ProMatches {
         match = Match.allOf(ProMatches.territoryCanMoveSpecificLandUnit(player, data, isCombatMove, u),
             alliedOrBlitzableMatch, Matches.territoryIsInList(enemyTerritories).invert());
       }
-      return match.match(t);
+      return match.test(t);
     });
   }
 
@@ -112,7 +112,7 @@ public class ProMatches {
       final List<Territory> blockedTerritories, final List<Territory> clearedTerritories) {
     Match<Territory> alliedMatch = Match.anyOf(Matches.isTerritoryAllied(player, data),
         Matches.territoryIsInList(clearedTerritories));
-    if (isCombatMove && Matches.unitCanBlitz().match(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
+    if (isCombatMove && Matches.unitCanBlitz().test(u) && TerritoryEffectHelper.unitKeepsBlitz(u, startTerritory)) {
       alliedMatch = Match.anyOf(Matches.isTerritoryAllied(player, data),
           Matches.territoryIsInList(clearedTerritories), territoryIsBlitzable(player, data, u));
     }
@@ -121,7 +121,7 @@ public class ProMatches {
   }
 
   private static Match<Territory> territoryIsBlitzable(final PlayerID player, final GameData data, final Unit u) {
-    return Match.of(t -> Matches.territoryIsBlitzable(player, data).match(t)
+    return Match.of(t -> Matches.territoryIsBlitzable(player, data).test(t)
         && TerritoryEffectHelper.unitKeepsBlitz(u, t));
   }
 
@@ -131,13 +131,13 @@ public class ProMatches {
       final boolean navalMayNotNonComIntoControlled =
           Properties.getWW2V2(data) || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
       if (!isCombatMove && navalMayNotNonComIntoControlled
-          && Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(t)) {
+          && Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)) {
         return false;
       }
       final Match<Territory> match = Match.allOf(Matches.territoryDoesNotCostMoneyToEnter(data),
           Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false, true,
               false, false));
-      return match.match(t);
+      return match.test(t);
     });
   }
 
@@ -167,7 +167,7 @@ public class ProMatches {
       final Match<Unit> subOnly = Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsSub(),
           Matches.enemyUnit(player, data).invert());
       return (Properties.getIgnoreSubInMovement(data) && t.getUnits().allMatch(subOnly))
-          || Matches.territoryHasNoEnemyUnits(player, data).match(t);
+          || Matches.territoryHasNoEnemyUnits(player, data).test(t);
     });
   }
 
@@ -326,7 +326,7 @@ public class ProMatches {
         return false;
       }
       final Match<Territory> match = Match.allOf(Matches.isTerritoryAllied(player, data), Matches.territoryIsLand());
-      return match.match(t);
+      return match.test(t);
     });
   }
 
@@ -336,7 +336,7 @@ public class ProMatches {
         return false;
       }
       final Match<Territory> match = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.territoryIsLand());
-      return match.match(t);
+      return match.test(t);
     });
   }
 
@@ -352,52 +352,52 @@ public class ProMatches {
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedAir(final PlayerID player, final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
+      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().test(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitIsAir());
-      return match.match(u);
+      return match.test(u);
     });
   }
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedLand(final PlayerID player, final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
+      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().test(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitIsLand(),
           Matches.unitIsBeingTransported().invert());
-      return match.match(u);
+      return match.test(u);
     });
   }
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedSea(final PlayerID player, final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
+      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().test(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitIsSea());
-      return match.match(u);
+      return match.test(u);
     });
   }
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedTransport(final PlayerID player, final boolean isCombatMove) {
     return Match.of(u -> {
-      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().match(u)) {
+      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().test(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitIsTransport());
-      return match.match(u);
+      return match.test(u);
     });
   }
 
   public static Match<Unit> unitCanBeMovedAndIsOwnedBombard(final PlayerID player) {
     return Match.of(u -> {
-      if (Matches.unitCanNotMoveDuringCombatMove().match(u)) {
+      if (Matches.unitCanNotMoveDuringCombatMove().test(u)) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitCanBeMovedAndIsOwned(player), Matches.unitCanBombard(player));
-      return match.match(u);
+      return match.test(u);
     });
   }
 
@@ -481,7 +481,7 @@ public class ProMatches {
 
   public static Match<Unit> unitIsOwnedCarrier(final PlayerID player) {
     return Match.of(unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
-        && Matches.unitIsOwnedBy(player).match(unit));
+        && Matches.unitIsOwnedBy(player).test(unit));
   }
 
   public static Match<Unit> unitIsOwnedNotLand(final PlayerID player) {
@@ -506,12 +506,12 @@ public class ProMatches {
     return Match.of(u -> {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       if (isCombatMove
-          && (Matches.unitCanNotMoveDuringCombatMove().match(u) || !ua.canInvadeFrom(transport))) {
+          && (Matches.unitCanNotMoveDuringCombatMove().test(u) || !ua.canInvadeFrom(transport))) {
         return false;
       }
       final Match<Unit> match = Match.allOf(unitIsOwnedTransportableUnit(player), Matches.unitHasNotMoved(),
           Matches.unitHasMovementLeft(), Matches.unitIsBeingTransported().invert());
-      return match.match(u);
+      return match.test(u);
     });
   }
 
@@ -524,19 +524,19 @@ public class ProMatches {
    */
   public static Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory t) {
     return Match.of(unitWhichRequiresUnits -> {
-      if (!Matches.unitRequiresUnitsOnCreation().match(unitWhichRequiresUnits)) {
+      if (!Matches.unitRequiresUnitsOnCreation().test(unitWhichRequiresUnits)) {
         return true;
       }
       final Collection<Unit> unitsAtStartOfTurnInProducer = t.getUnits().getUnits();
       if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
-          .match(unitWhichRequiresUnits)) {
+          .test(unitWhichRequiresUnits)) {
         return true;
       }
-      if (t.isWater() && Matches.unitIsSea().match(unitWhichRequiresUnits)) {
+      if (t.isWater() && Matches.unitIsSea().test(unitWhichRequiresUnits)) {
         for (final Territory neighbor : t.getData().getMap().getNeighbors(t, Matches.territoryIsLand())) {
           final Collection<Unit> unitsAtStartOfTurnInCurrent = neighbor.getUnits().getUnits();
           if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
-              .match(unitWhichRequiresUnits)) {
+              .test(unitWhichRequiresUnits)) {
             return true;
           }
         }

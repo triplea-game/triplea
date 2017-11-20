@@ -217,15 +217,15 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     final Collection<Unit> airborne = new ArrayList<>();
     for (final Unit u : units) {
-      if (!Matches.unitIsOwnedBy(player).match(u)) {
+      if (!Matches.unitIsOwnedBy(player).test(u)) {
         result.addDisallowedUnit("Must Own All Airborne Forces", u);
-      } else if (!Matches.unitIsOfTypes(airborneTypes).match(u)) {
+      } else if (!Matches.unitIsOfTypes(airborneTypes).test(u)) {
         result.addDisallowedUnit("Can Only Launch Airborne Forces", u);
-      } else if (Matches.unitIsDisabled().match(u)) {
+      } else if (Matches.unitIsDisabled().test(u)) {
         result.addDisallowedUnit("Must Not Be Disabled", u);
-      } else if (!Matches.unitHasNotMoved().match(u)) {
+      } else if (!Matches.unitHasNotMoved().test(u)) {
         result.addDisallowedUnit("Must Not Have Previously Moved Airborne Forces", u);
-      } else if (Matches.unitIsAirborne().match(u)) {
+      } else if (Matches.unitIsAirborne().test(u)) {
         result.addDisallowedUnit("Cannot Move Units Already Airborne", u);
       } else {
         airborne.add(u);
@@ -247,8 +247,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     final boolean someLand = airborne.stream().anyMatch(Matches.unitIsLand());
     final boolean someSea = airborne.stream().anyMatch(Matches.unitIsSea());
-    final boolean land = Matches.territoryIsLand().match(end);
-    final boolean sea = Matches.territoryIsWater().match(end);
+    final boolean land = Matches.territoryIsLand().test(end);
+    final boolean sea = Matches.territoryIsWater().test(end);
     if (someLand && someSea) {
       return result.setErrorReturnResult("Cannot Mix Land and Sea Units");
     } else if (someLand) {
@@ -272,8 +272,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         }
       }
     } else if (onlyEnemyTerritories) {
-      if (!(Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(end)
-          || Matches.territoryHasEnemyUnits(player, data).match(end))) {
+      if (!(Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(end)
+          || Matches.territoryHasEnemyUnits(player, data).test(end))) {
         return result.setErrorReturnResult("Destination Must Be Enemy Or Contain Enemy Units");
       }
     }

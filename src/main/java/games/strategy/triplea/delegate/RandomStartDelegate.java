@@ -155,7 +155,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       allPickableTerritories.remove(picked);
       final PlayerID lastPlayer = m_currentPickingPlayer;
       m_currentPickingPlayer = getNextPlayer(playersCanPick, m_currentPickingPlayer);
-      if (!playerCanPickMatch.match(lastPlayer)) {
+      if (!playerCanPickMatch.test(lastPlayer)) {
         playersCanPick.remove(lastPlayer);
       }
       if (playersCanPick.isEmpty()) {
@@ -200,7 +200,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       m_bridge.addChange(change);
       final PlayerID lastPlayer = m_currentPickingPlayer;
       m_currentPickingPlayer = getNextPlayer(playersCanPick, m_currentPickingPlayer);
-      if (!playerCanPickMatch.match(lastPlayer)) {
+      if (!playerCanPickMatch.test(lastPlayer)) {
         playersCanPick.remove(lastPlayer);
       }
       if (playersCanPick.isEmpty()) {

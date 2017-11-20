@@ -136,7 +136,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       final Collection<Unit> unitsWhichConsume =
           Matches.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {
-        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
+        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().test(unit)) {
           placeableUnits.remove(unit);
         }
       }

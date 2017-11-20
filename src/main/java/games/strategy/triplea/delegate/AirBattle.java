@@ -691,11 +691,11 @@ public class AirBattle extends AbstractBattle {
 
   static int getAirBattleRolls(final Unit unit, final boolean defending) {
     if (defending) {
-      if (!unitHasAirDefenseGreaterThanZero().match(unit)) {
+      if (!unitHasAirDefenseGreaterThanZero().test(unit)) {
         return 0;
       }
     } else {
-      if (!unitHasAirAttackGreaterThanZero().match(unit)) {
+      if (!unitHasAirAttackGreaterThanZero().test(unit)) {
         return 0;
       }
     }

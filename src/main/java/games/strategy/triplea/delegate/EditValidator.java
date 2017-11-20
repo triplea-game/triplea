@@ -28,7 +28,7 @@ class EditValidator {
     final String result = null;
     /*
      * // territory cannot contain enemy units
-     * if (!Matches.territoryIsEmptyOfCombatUnits(data, player).match(territory))
+     * if (!Matches.territoryIsEmptyOfCombatUnits(data, player).test(territory))
      * return "Territory contains enemy units";
      */
     /*
@@ -50,7 +50,7 @@ class EditValidator {
   }
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory) {
-    if (Matches.territoryIsWater().match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
+    if (Matches.territoryIsWater().test(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }

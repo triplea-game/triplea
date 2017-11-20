@@ -116,7 +116,7 @@ public class CompositeRouteFinder {
     for (final Match<Territory> match : matches.keySet()) {
       final int score = matches.get(match);
       if (score < bestMatchingScore) { // If this is a 'better' match
-        if (match.match(ter)) {
+        if (match.test(ter)) {
           bestMatchingScore = score;
         }
       }

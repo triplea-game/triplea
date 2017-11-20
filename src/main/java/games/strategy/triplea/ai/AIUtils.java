@@ -123,7 +123,7 @@ public class AIUtils {
   public static int getIndexOfLastUnitMatching(final List<Unit> units, final Match<Unit> match, final int endIndex) {
     for (int i = endIndex; i >= 0; i--) {
       final Unit unit = units.get(i);
-      if (match.match(unit)) {
+      if (match.test(unit)) {
         return i;
       }
     }

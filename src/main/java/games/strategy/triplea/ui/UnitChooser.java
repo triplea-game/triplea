@@ -142,7 +142,7 @@ final class UnitChooser extends JPanel {
           newSelectedUnits.add(unit);
         }
         if (i >= totalHits) {
-          if (match.match(newSelectedUnits)) {
+          if (match.test(newSelectedUnits)) {
             leftToSelect = i - totalHits;
           } else {
             break;

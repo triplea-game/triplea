@@ -34,7 +34,8 @@ public final class Match<T> implements Predicate<T> {
   /**
    * Returns true if the object matches some condition.
    */
-  public boolean match(final T value) {
+  @Override
+  public boolean test(final T value) {
     return condition.test(value);
   }
 
@@ -109,13 +110,5 @@ public final class Match<T> implements Predicate<T> {
     checkNotNull(matches);
 
     return Match.of(value -> matches.stream().anyMatch(match -> match.test(value)));
-  }
-
-  /**
-   * Temporary, to be able to migrate to the Predicate interface.
-   */
-  @Override
-  public boolean test(final T t) {
-    return match(t);
   }
 }

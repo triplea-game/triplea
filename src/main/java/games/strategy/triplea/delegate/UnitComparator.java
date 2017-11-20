@@ -80,8 +80,8 @@ public class UnitComparator {
       final TripleAUnit t2 = TripleAUnit.get(u2);
 
       // Check if transport is incapable due to game state
-      final boolean isIncapable1 = incapableTransportMatch.match(t1);
-      final boolean isIncapable2 = incapableTransportMatch.match(t2);
+      final boolean isIncapable1 = incapableTransportMatch.test(t1);
+      final boolean isIncapable2 = incapableTransportMatch.test(t2);
       if (!isIncapable1 && isIncapable2) {
         return -1;
       }
@@ -126,8 +126,8 @@ public class UnitComparator {
     return (t1, t2) -> {
 
       // Check if transport is incapable due to game state
-      final boolean isIncapable1 = incapableTransportMatch.match(t1);
-      final boolean isIncapable2 = incapableTransportMatch.match(t2);
+      final boolean isIncapable1 = incapableTransportMatch.test(t1);
+      final boolean isIncapable2 = incapableTransportMatch.test(t2);
       if (!isIncapable1 && isIncapable2) {
         return -1;
       }

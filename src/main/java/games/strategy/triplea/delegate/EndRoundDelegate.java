@@ -217,7 +217,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
       int teamVCs = 0;
       for (final Territory t : territories) {
-        if (Matches.isTerritoryOwnedBy(teamMembers).match(t)) {
+        if (Matches.isTerritoryOwnedBy(teamMembers).test(t)) {
           final TerritoryAttachment ta = TerritoryAttachment.get(t);
           if (ta != null) {
             teamVCs += ta.getVictoryCity();

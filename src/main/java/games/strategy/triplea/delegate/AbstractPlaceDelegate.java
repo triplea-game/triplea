@@ -492,7 +492,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (capacity <= 0) {
       return null;
     }
-    if (!Matches.territoryIsLand().match(producer)) {
+    if (!Matches.territoryIsLand().test(producer)) {
       return null;
     }
     if (!producer.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
@@ -643,12 +643,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!canProduceInConquered && wasConquered(producer)) {
       return producer.getName() + " was conquered this turn and cannot produce till next turn";
     }
-    if (isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player) && Matches.territoryIsLand().match(to)
-        && Matches.isTerritoryOwnedBy(player).match(to)) {
+    if (isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player) && Matches.territoryIsLand().test(to)
+        && Matches.isTerritoryOwnedBy(player).test(to)) {
       return null;
     }
-    if (isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(player) && Matches.territoryIsWater().match(to)
-        && Matches.isTerritoryOwnedBy(player).match(producer)) {
+    if (isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(player) && Matches.territoryIsWater().test(to)
+        && Matches.isTerritoryOwnedBy(player).test(producer)) {
       return null;
     }
     if (simpleCheck) {
@@ -834,8 +834,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (listedTerrs.contains(to)) {
         return "Cannot place these units in " + to.getName() + " due to Unit Placement Restrictions";
       }
-      if (Matches.unitCanOnlyPlaceInOriginalTerritories().match(currentUnit)
-          && !Matches.territoryIsOriginallyOwnedBy(player).match(to)) {
+      if (Matches.unitCanOnlyPlaceInOriginalTerritories().test(currentUnit)
+          && !Matches.territoryIsOriginallyOwnedBy(player).test(to)) {
         return "Cannot place these units in " + to.getName() + " as territory is not originally owned";
       }
     }
@@ -918,7 +918,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Collection<Unit> unitsWhichConsume =
           Matches.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {
-        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
+        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().test(unit)) {
           placeableUnits.remove(unit);
         }
       }
@@ -948,11 +948,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > (ta == null ? 0 : ta.getProduction())) {
         continue;
       }
-      if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().match(currentUnit)) {
+      if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().test(currentUnit)) {
         continue;
       }
-      if (Matches.unitCanOnlyPlaceInOriginalTerritories().match(currentUnit)
-          && !Matches.territoryIsOriginallyOwnedBy(player).match(to)) {
+      if (Matches.unitCanOnlyPlaceInOriginalTerritories().test(currentUnit)
+          && !Matches.territoryIsOriginallyOwnedBy(player).test(to)) {
         continue;
       }
       // account for any unit placement restrictions by territory
@@ -972,7 +972,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> removedUnits = new ArrayList<>();
     final Collection<Unit> unitsWhichConsume = Matches.getMatches(units, Matches.unitConsumesUnitsOnCreation());
     for (final Unit unit : unitsWhichConsume) {
-      if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(unit)) {
+      if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().test(unit)) {
         weCanConsume = false;
       }
       if (!weCanConsume) {
@@ -1271,13 +1271,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
             && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > toProduction) {
           continue;
         }
-        if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().match(currentUnit)) {
+        if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().test(currentUnit)) {
           continue;
         }
       }
       // remove any units that require other units to be consumed on creation (veqryn)
-      if (Matches.unitConsumesUnitsOnCreation().match(currentUnit)
-          && Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().match(currentUnit)) {
+      if (Matches.unitConsumesUnitsOnCreation().test(currentUnit)
+          && Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().test(currentUnit)) {
         continue;
       }
       unitMapHeld.add(ua.getConstructionType(), 1);
@@ -1299,7 +1299,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       for (final Unit currentUnit : Matches.getMatches(unitsInTo, Matches.unitIsConstruction())) {
         final UnitAttachment ua = UnitAttachment.get(currentUnit.getType());
         /*
-         * if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
+         * if (Matches.UnitIsFactory.test(currentUnit) && !ua.getIsConstruction())
          * unitMapTO.add("factory", 1);
          * else
          */
@@ -1369,22 +1369,22 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
     return Match.of(unitWhichRequiresUnits -> {
-      if (!Matches.unitRequiresUnitsOnCreation().match(unitWhichRequiresUnits)) {
+      if (!Matches.unitRequiresUnitsOnCreation().test(unitWhichRequiresUnits)) {
         return true;
       }
       final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
       // do not need to remove unowned here, as this match will remove unowned units from consideration.
       if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
-          .match(unitWhichRequiresUnits)) {
+          .test(unitWhichRequiresUnits)) {
         return true;
       }
       if (!doNotCountNeighbors) {
-        if (Matches.unitIsSea().match(unitWhichRequiresUnits)) {
+        if (Matches.unitIsSea().test(unitWhichRequiresUnits)) {
           for (final Territory current : getAllProducers(to, m_player,
               Collections.singletonList(unitWhichRequiresUnits), true)) {
             final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
             if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
-                .match(unitWhichRequiresUnits)) {
+                .test(unitWhichRequiresUnits)) {
               return true;
             }
           }
@@ -1456,8 +1456,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   protected Comparator<Unit> getUnitConstructionComparator() {
     return (u1, u2) -> {
-      final boolean construction1 = Matches.unitIsConstruction().match(u1);
-      final boolean construction2 = Matches.unitIsConstruction().match(u2);
+      final boolean construction1 = Matches.unitIsConstruction().test(u1);
+      final boolean construction2 = Matches.unitIsConstruction().test(u2);
       if (construction1 == construction2) {
         return 0;
       } else if (construction1) {
@@ -1517,7 +1517,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     final Collection<Unit> unitsInTo = to.getUnits().getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-    if (Matches.territoryIsWater().match(to)) {
+    if (Matches.territoryIsWater().test(to)) {
       for (final Territory current : getAllProducers(to, m_player, null, true)) {
         unitsPlacedAlready.addAll(getAlreadyProduced(current));
       }

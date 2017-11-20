@@ -1434,7 +1434,7 @@ public class RevisedTest {
 
   @Test
   public void testTransportIsTransport() {
-    assertTrue(Matches.unitIsTransport().match(transport(gameData).create(british(gameData))));
-    assertFalse(Matches.unitIsTransport().match(infantry(gameData).create(british(gameData))));
+    assertTrue(Matches.unitIsTransport().test(transport(gameData).create(british(gameData))));
+    assertFalse(Matches.unitIsTransport().test(infantry(gameData).create(british(gameData))));
   }
 }
