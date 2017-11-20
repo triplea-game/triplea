@@ -121,7 +121,7 @@ public class ProUtils {
     for (final Iterator<PlayerID> it = otherPlayers.iterator(); it.hasNext();) {
       final PlayerID otherPlayer = it.next();
       final RelationshipType relation = data.getRelationshipTracker().getRelationshipType(player, otherPlayer);
-      if (Matches.relationshipTypeIsAllied().match(relation) || isNeutralPlayer(otherPlayer)) {
+      if (Matches.relationshipTypeIsAllied().test(relation) || isNeutralPlayer(otherPlayer)) {
         it.remove();
       }
     }
@@ -132,7 +132,7 @@ public class ProUtils {
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       // Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
-      if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place)) {
+      if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).test(place)) {
         production += TerritoryAttachment.getProduction(place);
       }
     }

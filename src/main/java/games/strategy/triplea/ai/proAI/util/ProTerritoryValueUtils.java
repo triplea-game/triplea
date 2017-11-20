@@ -27,7 +27,7 @@ public class ProTerritoryValueUtils {
 
   public static double findTerritoryAttackValue(final PlayerID player, final Territory t) {
     final GameData data = ProData.getData();
-    final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t) ? 1 : 0;
+    final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
     double value = 3 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (!t.isWater() && t.getOwner().isNull()) {
       final double strength =
@@ -176,7 +176,7 @@ public class ProTerritoryValueUtils {
 
       // Get factory production if factory
       int factoryProduction = 0;
-      if (ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
+      if (ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {
         factoryProduction = TerritoryAttachment.getProduction(t);
       }
 
@@ -239,7 +239,7 @@ public class ProTerritoryValueUtils {
         double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
         if (nearbyEnemyTerritory.getOwner().isNull()) {
           value = findTerritoryAttackValue(player, nearbyEnemyTerritory) / 3; // find neutral value
-        } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data).match(nearbyEnemyTerritory)) {
+        } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data).test(nearbyEnemyTerritory)) {
           value *= 0.1; // reduce value for can't hold amphib allied territories
         }
         if (value > 0) {
@@ -250,7 +250,7 @@ public class ProTerritoryValueUtils {
     final int landMassSize = 1
         + data.getMap().getNeighbors(t, 6, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data)).size();
     double value = nearbyEnemyValue * landMassSize / maxLandMassSize + capitalOrFactoryValue;
-    if (ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
+    if (ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {
       value *= 1.1; // prefer territories with factories
     }
 
@@ -302,7 +302,7 @@ public class ProTerritoryValueUtils {
       final int distance = route.numberOfSteps();
       if (distance > 0 && distance <= 3) {
         if (ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld)
-            .match(nearbyLandTerritory)) {
+            .test(nearbyLandTerritory)) {
           double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
           if (nearbyLandTerritory.getOwner().isNull()) {
             value = findTerritoryAttackValue(player, nearbyLandTerritory);

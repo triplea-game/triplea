@@ -181,7 +181,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
             Matches.politicalActionIsRelationshipChangeOf(null, Matches.relationshipTypeIsAtWar(),
                 Matches.relationshipTypeIsAtWar().invert(), data));
     if (!Properties.getAlliancesCanChainTogether(data)
-        || !intoAlliedChainOrIntoOrOutOfWar.match(paa)) {
+        || !intoAlliedChainOrIntoOrOutOfWar.test(paa)) {
       for (final PlayerID player : paa.getActionAccept()) {
         if (!(getRemotePlayer(player)).acceptAction(m_player,
             PoliticsText.getInstance().getAcceptanceQuestion(paa.getText()), true)) {
@@ -439,8 +439,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       }
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
       final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
-      if (Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().match(currentType)
-          && Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().invert().match(newType)) {
+      if (Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().test(currentType)
+          && Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().invert().test(newType)) {
         for (final PlayerID p3 : p1AlliedWith) {
           final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, player);
           if (!currentOther.equals(newType)) {
@@ -478,8 +478,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       final PlayerID otherPlayer = (p1.equals(player) ? p2 : p1);
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
       final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
-      if (Matches.relationshipTypeIsAtWar().match(currentType)
-          && Matches.relationshipTypeIsAtWar().invert().match(newType)) {
+      if (Matches.relationshipTypeIsAtWar().test(currentType)
+          && Matches.relationshipTypeIsAtWar().invert().test(newType)) {
         final Collection<PlayerID> otherPlayersAlliedWith =
             Matches.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(otherPlayer, data));
         if (!otherPlayersAlliedWith.contains(otherPlayer)) {
@@ -491,7 +491,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         for (final PlayerID p3 : p1AlliedWith) {
           for (final PlayerID p4 : otherPlayersAlliedWith) {
             final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, p4);
-            if (!currentOther.equals(newType) && Matches.relationshipTypeIsAtWar().match(currentOther)) {
+            if (!currentOther.equals(newType) && Matches.relationshipTypeIsAtWar().test(currentOther)) {
               change.add(ChangeFactory.relationshipChange(p3, p4, currentOther, newType));
               bridge.getHistoryWriter()
                   .addChildToEvent(p3.getName() + " and " + p4.getName() + " sign a " + newType.getName() + " treaty");

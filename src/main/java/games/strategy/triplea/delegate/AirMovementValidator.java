@@ -45,7 +45,7 @@ public class AirMovementValidator {
         || !units.stream().anyMatch(Matches.unitIsAir()) // No Airunits, nothing to check
         || route.hasNoSteps() // if there are no steps, we didn't move, so it is always OK!
         // we can land at the end, nothing left to check
-        || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data).match(route.getEnd())
+        || Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data).test(route.getEnd())
         || isKamikazeAircraft(data) // we do not do any validation at all, cus they can all die and we don't care
     ) {
       return result;
@@ -136,7 +136,7 @@ public class AirMovementValidator {
     for (final Unit unit : airBeingValidated) {
       // unit must be in either start or end.
       final int movementLeft;
-      if (Matches.unitIsOwnedBy(player).match(unit)) {
+      if (Matches.unitIsOwnedBy(player).test(unit)) {
         movementLeft = getMovementLeftForAirUnitNotMovedYet(unit, route);
       } else {
         movementLeft = 0;
@@ -170,8 +170,8 @@ public class AirMovementValidator {
     final List<Unit> carriersInProductionQueue = player.getUnits().getMatches(Matches.unitIsCarrier());
     for (final Territory t : landingSpots) {
       if (landAirOnNewCarriers && !carriersInProductionQueue.isEmpty()) {
-        if (Matches.territoryIsWater().match(t)
-            && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(data, player).match(t)) {
+        if (Matches.territoryIsWater().test(t)
+            && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(data, player).test(t)) {
           // TODO: Here we are assuming that this factory can produce all of the carriers. Actually it might not be able
           // to produce any
           // carriers (because of complex requires units coding) or because of unit damage or maximum production.
@@ -478,7 +478,7 @@ public class AirMovementValidator {
       final PlayerID player) {
     int max = 0;
     for (final Unit u : airUnits) {
-      if (Matches.unitIsOwnedBy(player).match(u)) {
+      if (Matches.unitIsOwnedBy(player).test(u)) {
         // unit must be in either start or end.
         final int movementLeft = getMovementLeftForAirUnitNotMovedYet(u, route);
         if (movementLeft > max) {
@@ -642,7 +642,7 @@ public class AirMovementValidator {
     final Match<Unit> canLandOnCarriers = Matches.unitCanLandOnCarrier();
     for (final Unit unit : ownedAir) {
       if (!canFindLand(data, unit, route)) {
-        if (canLandOnCarriers.match(unit)) {
+        if (canLandOnCarriers.test(unit)) {
           airThatMustLandOnCarriers.add(unit);
         } else {
           // not everything can land on a carrier (i.e. bombers)
@@ -674,11 +674,11 @@ public class AirMovementValidator {
    * restrictions.
    */
   public static int carrierCapacity(final Unit unit, final Territory territoryUnitsAreCurrentlyIn) {
-    if (Matches.unitIsCarrier().match(unit)) {
+    if (Matches.unitIsCarrier().test(unit)) {
       // here we check to see if the unit can no longer carry units
-      if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLANDONCARRIER).match(unit)) {
+      if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLANDONCARRIER).test(unit)) {
         // and we must check to make sure we let any allied air that are cargo stay here
-        if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).match(unit)) {
+        if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).test(unit)) {
           int cargo = 0;
           final Collection<Unit> airCargo = territoryUnitsAreCurrentlyIn.getUnits()
               .getMatches(Match.allOf(Matches.unitIsAir(), Matches.unitCanLandOnCarrier()));
@@ -711,7 +711,7 @@ public class AirMovementValidator {
   }
 
   private static int carrierCost(final Unit unit) {
-    if (Matches.unitCanLandOnCarrier().match(unit)) {
+    if (Matches.unitCanLandOnCarrier().test(unit)) {
       return UnitAttachment.get(unit.getType()).getCarrierCost();
     }
     return 0;

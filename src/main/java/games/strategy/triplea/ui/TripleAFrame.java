@@ -938,7 +938,7 @@ public class TripleAFrame extends MainGameFrame {
 
       setText(unit.toString() + ", damage=" + TripleAUnit.get(unit).getUnitDamage());
       final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(unit.getType(), unit.getOwner(),
-          Matches.unitHasTakenSomeBombingUnitDamage().match(unit), Matches.unitIsDisabled().match(unit));
+          Matches.unitHasTakenSomeBombingUnitDamage().test(unit), Matches.unitIsDisabled().test(unit));
       if (icon.isPresent()) {
         setIcon(icon.get());
       }

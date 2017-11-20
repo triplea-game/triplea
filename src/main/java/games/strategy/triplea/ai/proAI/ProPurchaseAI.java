@@ -83,12 +83,12 @@ class ProPurchaseAI {
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<>();
       for (final Territory fixTerr : rfactories) {
         if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
-            .match(fixTerr)) {
+            .test(fixTerr)) {
           continue;
         }
         final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(
             Matches.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
-        if (Matches.unitHasTakenSomeBombingUnitDamage().match(possibleFactoryNeedingRepair)) {
+        if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }
       }
@@ -100,7 +100,7 @@ class ProPurchaseAI {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
-              .match(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
+              .test(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
             continue;
           }
           final TripleAUnit taUnit = (TripleAUnit) fixUnit;
@@ -477,7 +477,7 @@ class ProPurchaseAI {
 
       // Determine if it has a factory
       int isFactory = 0;
-      if (ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player).match(t)) {
+      if (ProMatches.territoryHasInfraFactoryAndIsOwnedLand(player).test(t)) {
         isFactory = 1;
       }
 
@@ -735,9 +735,9 @@ class ProPurchaseAI {
       ProPurchaseOption bestAaOption = null;
       int minCost = Integer.MAX_VALUE;
       for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
-        final boolean isAaForBombing = Matches.unitTypeIsAaForBombingThisUnitOnly().match(ppo.getUnitType());
+        final boolean isAaForBombing = Matches.unitTypeIsAaForBombingThisUnitOnly().test(ppo.getUnitType());
         if (isAaForBombing && ppo.getCost() < minCost
-            && !Matches.unitTypeConsumesUnitsOnCreation().match(ppo.getUnitType())) {
+            && !Matches.unitTypeConsumesUnitsOnCreation().test(ppo.getUnitType())) {
           bestAaOption = ppo;
           minCost = ppo.getCost();
         }
@@ -961,7 +961,7 @@ class ProPurchaseAI {
     for (final Territory t : purchaseFactoryTerritories) {
       final int production = TerritoryAttachment.get(t).getProduction();
       final double value = territoryValueMap.get(t) * production + 0.1 * production;
-      final boolean isAdjacentToSea = Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).match(t);
+      final boolean isAdjacentToSea = Matches.territoryHasNeighborMatching(data, Matches.territoryIsWater()).test(t);
       final Set<Territory> nearbyLandTerritories =
           data.getMap().getNeighbors(t, 9, ProMatches.territoryCanMoveLandUnits(player, data, false));
       final int numNearbyEnemyTerritories =

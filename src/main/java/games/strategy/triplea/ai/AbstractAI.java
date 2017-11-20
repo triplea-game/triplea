@@ -217,7 +217,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       return true;
     }
     // politics from ally? accept
-    if (Matches.isAllied(getPlayerId(), getGameData()).match(playerSendingProposal)) {
+    if (Matches.isAllied(getPlayerId(), getGameData()).test(playerSendingProposal)) {
       return true;
     }
     // would we normally be allies?
@@ -613,7 +613,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         while (actionWarIter.hasNext() && maxWarActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionWarIter.next();
           if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
-              .match(action)) {
+              .test(action)) {
             continue;
           }
           i++;
@@ -637,7 +637,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
           if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
-              .match(action)) {
+              .test(action)) {
             continue;
           }
           if (action.getCostPU() > 0 && action.getCostPU() > id.getResources().getQuantity(Constants.PUS)) {

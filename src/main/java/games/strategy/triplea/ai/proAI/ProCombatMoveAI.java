@@ -201,8 +201,8 @@ class ProCombatMoveAI {
       final boolean isAdjacentToMyCapital =
           !data.getMap().getNeighbors(t, Matches.territoryIs(ProData.myCapital)).isEmpty();
       final int isNotNeutralAdjacentToMyCapital =
-          (isAdjacentToMyCapital && ProMatches.territoryIsEnemyNotNeutralLand(player, data).match(t)) ? 1 : 0;
-      final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().match(t) ? 1 : 0;
+          (isAdjacentToMyCapital && ProMatches.territoryIsEnemyNotNeutralLand(player, data).test(t)) ? 1 : 0;
+      final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
       final int isFfa = ProUtils.isFfa(data, player) ? 1 : 0;
 
       // Determine production value and if it is an enemy capital
@@ -401,7 +401,7 @@ class ProCombatMoveAI {
 
       // Add strategic value for factories
       int isFactory = 0;
-      if (ProMatches.territoryHasInfraFactoryAndIsLand().match(t)) {
+      if (ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {
         isFactory = 1;
       }
 
@@ -761,7 +761,7 @@ class ProCombatMoveAI {
           final ProTerritory patd = attackMap.get(t);
 
           // Check if air unit should avoid this territory due to no guaranteed safe landing location
-          final boolean isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).match(t);
+          final boolean isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t);
           if (!isEnemyFactory && !canAirSafelyLandAfterAttack(unit, t)) {
             continue;
           }
@@ -877,7 +877,7 @@ class ProCombatMoveAI {
         boolean canHold = true;
         double enemyCounterTuvSwing = 0;
         if (enemyAttackOptions.getMax(t) != null
-            && !ProMatches.territoryIsWaterAndAdjacentToOwnedFactory(player, data).match(t)) {
+            && !ProMatches.territoryIsWaterAndAdjacentToOwnedFactory(player, data).test(t)) {
           List<Unit> remainingUnitsToDefendWith =
               Matches.getMatches(result.getAverageAttackersRemaining(), Matches.unitIsAir().invert());
           ProBattleResult result2 = calc.calculateBattleResults(t, patd.getMaxEnemyUnits(),
@@ -910,7 +910,7 @@ class ProCombatMoveAI {
         final int isLand = !t.isWater() ? 1 : 0;
         final int isCanHold = canHold ? 1 : 0;
         final int isCantHoldAmphib = !canHold && !patd.getAmphibAttackMap().isEmpty() ? 1 : 0;
-        final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().match(t) ? 1 : 0;
+        final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
         final int isFfa = ProUtils.isFfa(data, player) ? 1 : 0;
         final int production = TerritoryAttachment.getProduction(t);
         double capitalValue = 0;
@@ -1108,7 +1108,7 @@ class ProCombatMoveAI {
           // Check if air unit should avoid this territory due to no guaranteed safe landing location
           final boolean isEnemyCapital = ProUtils.getLiveEnemyCapitals(data, player).contains(t);
           final boolean isAdjacentToAlliedCapital = Matches.territoryHasNeighborMatching(data,
-              Matches.territoryIsInList(ProUtils.getLiveAlliedCapitals(data, player))).match(t);
+              Matches.territoryIsInList(ProUtils.getLiveAlliedCapitals(data, player))).test(t);
           final int range = TripleAUnit.get(unit).getMovementLeft();
           final int distance = data.getMap().getDistance_IgnoreEndForCondition(ProData.unitTerritoryMap.get(unit), t,
               ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
@@ -1165,7 +1165,7 @@ class ProCombatMoveAI {
           // Check if air unit should avoid this territory due to no guaranteed safe landing location
           final boolean isAdjacentToAlliedFactory = Matches
               .territoryHasNeighborMatching(data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
-              .match(t);
+              .test(t);
           final int range = TripleAUnit.get(unit).getMovementLeft();
           final int distance = data.getMap().getDistance_IgnoreEndForCondition(ProData.unitTerritoryMap.get(unit), t,
               ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
@@ -1447,7 +1447,7 @@ class ProCombatMoveAI {
     // Add max purchase defenders to capital for non-mobile factories (don't consider mobile factories since they may
     // move elsewhere)
     final List<Unit> placeUnits = new ArrayList<>();
-    if (ProMatches.territoryHasNonMobileInfraFactoryAndIsNotConqueredOwnedLand(player, data).match(myCapital)) {
+    if (ProMatches.territoryHasNonMobileInfraFactoryAndIsNotConqueredOwnedLand(player, data).test(myCapital)) {
       placeUnits.addAll(ProPurchaseUtils.findMaxPurchaseDefenders(player, myCapital, landPurchaseOptions));
     }
 
@@ -1532,7 +1532,7 @@ class ProCombatMoveAI {
     final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
 
     for (final Territory t : ProData.myUnitTerritories) {
-      if (t.isWater() && Matches.territoryHasEnemyUnits(player, data).match(t)
+      if (t.isWater() && Matches.territoryHasEnemyUnits(player, data).test(t)
           && (attackMap.get(t) == null || attackMap.get(t).getUnits().isEmpty())) {
 
         // Move into random adjacent safe sea territory
@@ -1654,7 +1654,7 @@ class ProCombatMoveAI {
 
   private boolean canAirSafelyLandAfterAttack(final Unit unit, final Territory t) {
     final boolean isAdjacentToAlliedFactory = Matches
-        .territoryHasNeighborMatching(data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data)).match(t);
+        .territoryHasNeighborMatching(data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data)).test(t);
     final int range = TripleAUnit.get(unit).getMovementLeft();
     final int distance = data.getMap().getDistance_IgnoreEndForCondition(ProData.unitTerritoryMap.get(unit), t,
         ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));

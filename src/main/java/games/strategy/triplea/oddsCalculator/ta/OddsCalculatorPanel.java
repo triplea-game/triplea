@@ -860,8 +860,8 @@ class OddsCalculatorPanel extends JPanel {
           if (u1.getIsSea() != u2.getIsSea()) {
             return u1.getIsSea() ? 1 : -1;
           }
-          if (Matches.unitTypeIsAaForAnything().match(ut1) != Matches.unitTypeIsAaForAnything().match(ut2)) {
-            return Matches.unitTypeIsAaForAnything().match(ut1) ? 1 : -1;
+          if (Matches.unitTypeIsAaForAnything().test(ut1) != Matches.unitTypeIsAaForAnything().test(ut2)) {
+            return Matches.unitTypeIsAaForAnything().test(ut1) ? 1 : -1;
           }
           if (u1.getIsAir() != u2.getIsAir()) {
             return u1.getIsAir() ? 1 : -1;
@@ -892,7 +892,7 @@ class OddsCalculatorPanel extends JPanel {
         data.releaseReadLock();
       }
       for (final UnitCategory category : categories) {
-        if (predicate.match(category.getType())) {
+        if (predicate.test(category.getType())) {
           final UnitPanel upanel = new UnitPanel(uiContext, category, costs);
           upanel.addChangeListener(listenerUnitPanel);
           add(upanel);
@@ -1002,7 +1002,7 @@ class OddsCalculatorPanel extends JPanel {
             u.setHits(category.getDamaged());
           }
         }
-        if (category.getDisabled() && Matches.unitTypeCanBeDamaged().match(category.getType())) {
+        if (category.getDisabled() && Matches.unitTypeCanBeDamaged().test(category.getType())) {
           // add 1 because it is the max operational damage and we want to disable it
           final int unitDamage = Math.max(0, 1 + UnitAttachment.get(category.getType()).getMaxOperationalDamage());
           for (final Unit u : units) {
@@ -1169,9 +1169,9 @@ class OddsCalculatorPanel extends JPanel {
         final Set<UnitType> typesUsed = new HashSet<>();
         for (final UnitCategory category : categories) {
           // no duplicates or infrastructure allowed. no sea if land, no land if sea.
-          if (typesUsed.contains(category.getType()) || Matches.unitTypeIsInfrastructure().match(category.getType())
-              || (land && Matches.unitTypeIsSea().match(category.getType()))
-              || (!land && Matches.unitTypeIsLand().match(category.getType()))) {
+          if (typesUsed.contains(category.getType()) || Matches.unitTypeIsInfrastructure().test(category.getType())
+              || (land && Matches.unitTypeIsSea().test(category.getType()))
+              || (!land && Matches.unitTypeIsLand().test(category.getType()))) {
             continue;
           }
           final String unitName =

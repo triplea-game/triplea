@@ -87,10 +87,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           final IntegerMap<UnitType> createsUnitsMap = ua.getCreatesUnitsList();
           final Collection<UnitType> willBeCreated = createsUnitsMap.keySet();
           for (final UnitType ut : willBeCreated) {
-            if (UnitAttachment.get(ut).getIsSea() && Matches.territoryIsLand().match(t)) {
+            if (UnitAttachment.get(ut).getIsSea() && Matches.territoryIsLand().test(t)) {
               toAddSea.addAll(ut.create(createsUnitsMap.getInt(ut), player));
             } else if (!UnitAttachment.get(ut).getIsSea() && !UnitAttachment.get(ut).getIsAir()
-                && Matches.territoryIsWater().match(t)) {
+                && Matches.territoryIsWater().test(t)) {
               toAddLand.addAll(ut.create(createsUnitsMap.getInt(ut), player));
             } else {
               toAdd.addAll(ut.create(createsUnitsMap.getInt(ut), player));
@@ -331,7 +331,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         continue;
       }
       // Match will Check if territory is originally owned convoy center, or if contested
-      if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).match(current)) {
+      if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).test(current)) {
         resources.add(toAdd);
       }
     }

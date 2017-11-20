@@ -1712,7 +1712,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     final Predicate<Unit> notSubmergedAndType = Matches.unitIsSubmerged().invert()
-        .and(Matches.territoryIsLand().match(m_battleSite)
+        .and(Matches.territoryIsLand().test(m_battleSite)
             ? Matches.unitIsSea().invert()
             : Matches.unitIsLand().invert());
     final Collection<Unit> unitsToKill;
@@ -2454,7 +2454,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // do we need to change ownership
     if (m_attackingUnits.stream().anyMatch(Matches.unitIsNotAir())) {
-      if (Matches.isTerritoryEnemyAndNotUnownedWater(m_attacker, m_data).match(m_battleSite)) {
+      if (Matches.isTerritoryEnemyAndNotUnownedWater(m_attacker, m_data).test(m_battleSite)) {
         m_battleTracker.addToConquered(m_battleSite);
       }
       m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, m_attackingUnits);
@@ -2470,7 +2470,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if (!dependents.isEmpty()) {
         for (final Unit unit : dependents) {
           // clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
-          if (Matches.unitWasUnloadedThisTurn().match(unit)) {
+          if (Matches.unitWasUnloadedThisTurn().test(unit)) {
             change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
           }
         }
@@ -2484,7 +2484,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
     if (!m_headless) {
-      if (Matches.territoryIsWater().match(m_battleSite)) {
+      if (Matches.territoryIsWater().test(m_battleSite)) {
         if (!m_attackingUnits.isEmpty() && m_attackingUnits.stream().allMatch(Matches.unitIsAir())) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
               m_attacker);
@@ -2536,7 +2536,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     carrierCost +=
         AirMovementValidator.carrierCost(Matches.getMatches(getDependentUnits(m_defendingUnits), alliedDefendingAir));
     for (final Unit currentUnit : new ArrayList<>(defendingAir)) {
-      if (!Matches.unitCanLandOnCarrier().match(currentUnit)) {
+      if (!Matches.unitCanLandOnCarrier().test(currentUnit)) {
         defendingAir.remove(currentUnit);
         continue;
       }
@@ -2564,7 +2564,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         if (taUnit.getTransportedBy() != null) {
           final Unit carrierTransportingThisUnit = taUnit.getTransportedBy();
           if (!Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER)
-              .match(carrierTransportingThisUnit)) {
+              .test(carrierTransportingThisUnit)) {
             change.add(ChangeFactory.unitPropertyChange(fighter, null, TripleAUnit.TRANSPORTED_BY));
           }
         }

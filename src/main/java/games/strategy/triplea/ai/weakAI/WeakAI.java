@@ -401,7 +401,7 @@ public class WeakAI extends AbstractAI {
     Route altRoute = null;
     final int length = Integer.MAX_VALUE;
     for (final Territory t : data.getMap()) {
-      if (!transportOnSea.match(t)) {
+      if (!transportOnSea.test(t)) {
         continue;
       }
       final Match<Unit> ownedTransports =
@@ -608,7 +608,7 @@ public class WeakAI extends AbstractAI {
             final Match<Unit> match = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsLand(),
                 Matches.unitIsNotInfrastructure(), Matches.unitCanMove(), Matches.unitIsNotAa(),
                 Matches.unitCanNotMoveDuringCombatMove().invert());
-            if (!unitsAlreadyMoved.contains(unit) && match.match(unit)) {
+            if (!unitsAlreadyMoved.contains(unit) && match.test(unit)) {
               moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
               // if unloading units, unload all of them,
               // otherwise we wont be able to unload them
@@ -741,11 +741,11 @@ public class WeakAI extends AbstractAI {
             continue;
           }
           final UnitType results = (UnitType) resourceOrUnit;
-          if (Matches.unitTypeIsSea().match(results) || Matches.unitTypeIsAir().match(results)
-              || Matches.unitTypeIsInfrastructure().match(results) || Matches.unitTypeIsAaForAnything().match(results)
-              || Matches.unitTypeHasMaxBuildRestrictions().match(results)
-              || Matches.unitTypeConsumesUnitsOnCreation().match(results)
-              || Matches.unitTypeIsStatic(player).match(results)) {
+          if (Matches.unitTypeIsSea().test(results) || Matches.unitTypeIsAir().test(results)
+              || Matches.unitTypeIsInfrastructure().test(results) || Matches.unitTypeIsAaForAnything().test(results)
+              || Matches.unitTypeHasMaxBuildRestrictions().test(results)
+              || Matches.unitTypeConsumesUnitsOnCreation().test(results)
+              || Matches.unitTypeIsStatic(player).test(results)) {
             continue;
           }
           final int cost = rule.getCosts().getInt(pus);
@@ -806,12 +806,12 @@ public class WeakAI extends AbstractAI {
       Collections.shuffle(repairFactories);
       for (final Territory fixTerr : repairFactories) {
         if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
-            .match(fixTerr)) {
+            .test(fixTerr)) {
           continue;
         }
         final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(
             Matches.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
-        if (Matches.unitHasTakenSomeBombingUnitDamage().match(possibleFactoryNeedingRepair)) {
+        if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }
         if (fixTerr == capitol) {
@@ -838,7 +838,7 @@ public class WeakAI extends AbstractAI {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
-              .match(capitol)) {
+              .test(capitol)) {
             continue;
           }
           final TripleAUnit taUnit = (TripleAUnit) capUnit;
@@ -877,7 +877,7 @@ public class WeakAI extends AbstractAI {
               continue;
             }
             if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
-                .match(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
+                .test(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
               continue;
             }
             // we will repair the first territories in the list as much as we can, until we fulfill the condition, then
@@ -933,17 +933,17 @@ public class WeakAI extends AbstractAI {
           continue;
         }
         final UnitType results = (UnitType) resourceOrUnit;
-        if (Matches.unitTypeIsAir().match(results)
-            || Matches.unitTypeIsInfrastructure().match(results)
-            || Matches.unitTypeIsAaForAnything().match(results)
-            || Matches.unitTypeHasMaxBuildRestrictions().match(results)
-            || Matches.unitTypeConsumesUnitsOnCreation().match(results)
-            || Matches.unitTypeIsStatic(player).match(results)) {
+        if (Matches.unitTypeIsAir().test(results)
+            || Matches.unitTypeIsInfrastructure().test(results)
+            || Matches.unitTypeIsAaForAnything().test(results)
+            || Matches.unitTypeHasMaxBuildRestrictions().test(results)
+            || Matches.unitTypeConsumesUnitsOnCreation().test(results)
+            || Matches.unitTypeIsStatic(player).test(results)) {
           continue;
         }
         final int transportCapacity = UnitAttachment.get(results).getTransportCapacity();
         // buy transports if we can be amphibious
-        if (Matches.unitTypeIsSea().match(results)) {
+        if (Matches.unitTypeIsSea().test(results)) {
           if (!isAmphib || transportCapacity <= 0) {
             continue;
           }

@@ -178,8 +178,8 @@ public class BattleTracker implements Serializable {
         continue;
       }
       final Tuple<RelationshipType, RelationshipType> relations = t.getSecond();
-      if (!Matches.relationshipTypeIsAtWar().match(relations.getFirst())) {
-        if (Matches.relationshipTypeIsAtWar().match(relations.getSecond())) {
+      if (!Matches.relationshipTypeIsAtWar().test(relations.getFirst())) {
+        if (Matches.relationshipTypeIsAtWar().test(relations.getSecond())) {
           return true;
         }
       }
@@ -402,7 +402,7 @@ public class BattleTracker implements Serializable {
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));
       // in case we begin in enemy territory, and blitz out of it, check the first territory
-      if (route.getStart() != route.getEnd() && conquerable.match(route.getStart())) {
+      if (route.getStart() != route.getEnd() && conquerable.test(route.getStart())) {
         conquered.add(route.getStart());
       }
     }
@@ -429,7 +429,7 @@ public class BattleTracker implements Serializable {
       // }
     }
     // check the last territory
-    if (conquerable.match(route.getEnd())) {
+    if (conquerable.test(route.getEnd())) {
       IBattle precede = getDependentAmphibiousAssault(route);
       if (precede == null) {
         precede = getPendingBattle(route.getEnd(), true, null);
@@ -453,8 +453,8 @@ public class BattleTracker implements Serializable {
           addDependency(nonFight, precede);
         }
       } else {
-        if (Matches.isTerritoryEnemy(id, data).match(route.getEnd())) {
-          if (Matches.territoryIsBlitzable(id, data).match(route.getEnd())) {
+        if (Matches.isTerritoryEnemy(id, data).test(route.getEnd())) {
+          if (Matches.territoryIsBlitzable(id, data).test(route.getEnd())) {
             m_blitzed.add(route.getEnd());
           }
           m_conquered.add(route.getEnd());
@@ -647,7 +647,7 @@ public class BattleTracker implements Serializable {
     }
     // if we have specially set this territory to have whenCapturedByGoesTo,
     // then we set that here (except we don't set it if we are liberating allied owned territory)
-    if (isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.territoryHasWhenCapturedByGoesTo().match(territory)) {
+    if (isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.territoryHasWhenCapturedByGoesTo().test(territory)) {
       for (final String value : ta.getWhenCapturedByGoesTo()) {
         final String[] s = value.split(":");
         final PlayerID capturingPlayer = data.getPlayerList().getPlayerId(s[0]);
@@ -729,7 +729,7 @@ public class BattleTracker implements Serializable {
     // say they were in combat
     // if the territory being taken over is water, then do not say any land units were in combat
     // (they may want to unload from the transport and attack)
-    if (Matches.territoryIsWater().match(territory) && arrivedUnits != null) {
+    if (Matches.territoryIsWater().test(territory) && arrivedUnits != null) {
       arrivedUnits.removeAll(Matches.getMatches(arrivedUnits, Matches.unitIsLand()));
     }
     markWasInCombat(arrivedUnits, bridge, changeTracker);
@@ -858,7 +858,7 @@ public class BattleTracker implements Serializable {
       site = route.getStart();
     }
     // this will be taken care of by the non fighting battle
-    if (!Matches.territoryHasEnemyUnits(id, data).match(site)) {
+    if (!Matches.territoryHasEnemyUnits(id, data).test(site)) {
       return ChangeFactory.EMPTY_CHANGE;
     }
     // if just an enemy factory &/or AA then no battle

@@ -231,7 +231,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return passed;
     }
     for (final Territory current : possible) {
-      if (cond.match(current)) {
+      if (cond.test(current)) {
         passed.add(current);
       }
     }
@@ -481,7 +481,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Iterator<Territory> connectionIterator = connections.iterator();
       while (connectionIterator.hasNext()) {
         final Territory nextFrontier = connectionIterator.next();
-        if (cond == null || cond.match(nextFrontier)) {
+        if (cond == null || cond.test(nextFrontier)) {
           newFrontier.add(nextFrontier);
         }
       }

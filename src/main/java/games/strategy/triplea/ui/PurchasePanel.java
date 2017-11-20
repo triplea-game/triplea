@@ -171,7 +171,7 @@ public class PurchasePanel extends ActionPanel {
         final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
         if (resourceOrUnit instanceof UnitType) {
           final UnitType type = (UnitType) resourceOrUnit;
-          if (!Matches.unitTypeIsConstruction().match(type)) {
+          if (!Matches.unitTypeIsConstruction().test(type)) {
             totalProduced += purchase.getInt(rule) * rule.getResults().totalValues();
           }
         }

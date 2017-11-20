@@ -143,7 +143,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
           TriggerAttachment.collectTestsForAllTriggers(toFireSet, bridge,
               new HashSet<>(testedConditionsSoFar.keySet()), testedConditionsSoFar);
         }
-        if (!AbstractTriggerAttachment.isSatisfiedMatch(testedConditionsSoFar).match(toFire)) {
+        if (!AbstractTriggerAttachment.isSatisfiedMatch(testedConditionsSoFar).test(toFire)) {
           continue;
         }
       }

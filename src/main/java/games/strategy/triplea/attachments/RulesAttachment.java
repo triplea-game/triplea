@@ -262,7 +262,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-        || Matches.isValidRelationshipName(getData()).match(s[2]))) {
+        || Matches.isValidRelationshipName(getData()).test(s[2]))) {
       throw new GameParseException(
           "relationship: " + s[2] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
@@ -903,11 +903,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         return false;
       }
       if (!(relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
-          && Matches.relationshipTypeIsAllied().match(currentRelationshipType)
+          && Matches.relationshipTypeIsAllied().test(currentRelationshipType)
           || relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
-              && Matches.relationshipTypeIsNeutral().match(currentRelationshipType)
+              && Matches.relationshipTypeIsNeutral().test(currentRelationshipType)
           || relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-              && Matches.relationshipTypeIsAtWar().match(currentRelationshipType)
+              && Matches.relationshipTypeIsAtWar().test(currentRelationshipType)
           || currentRelationshipType
               .equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2])))) {
         return false;
@@ -1073,7 +1073,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         Matches.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedWithAnyOfThesePlayers(players, data));
     for (final Territory listedTerr : listedTerrs) {
       // if the territory owner is an ally
-      if (Matches.isTerritoryOwnedBy(allies).match(listedTerr)) {
+      if (Matches.isTerritoryOwnedBy(allies).test(listedTerr)) {
         numberMet += 1;
         if (numberMet >= numberNeeded) {
           satisfied = true;
@@ -1098,7 +1098,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     int numberMet = 0;
     boolean satisfied = false;
     for (final Territory listedTerr : listedTerrs) {
-      if (Matches.isTerritoryOwnedBy(players).match(listedTerr)) {
+      if (Matches.isTerritoryOwnedBy(players).test(listedTerr)) {
         numberMet += 1;
         if (numberMet >= numberNeeded) {
           satisfied = true;

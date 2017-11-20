@@ -68,7 +68,7 @@ class ProRetreatAI {
 
     // Determine if it has a factory
     int isFactory = 0;
-    if (ProMatches.territoryHasInfraFactoryAndIsLand().match(battleTerritory)) {
+    if (ProMatches.territoryHasInfraFactoryAndIsLand().test(battleTerritory)) {
       isFactory = 1;
     }
 

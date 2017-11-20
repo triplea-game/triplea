@@ -65,7 +65,7 @@ class ProPoliticsAI {
         final PlayerID player2 = data.getPlayerList().getPlayerId(s[1]);
         final RelationshipType oldRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
         final RelationshipType newRelation = data.getRelationshipTypeList().getRelationshipType(s[2]);
-        if (!oldRelation.equals(newRelation) && Matches.relationshipTypeIsAtWar().match(newRelation)
+        if (!oldRelation.equals(newRelation) && Matches.relationshipTypeIsAtWar().test(newRelation)
             && (player1.equals(player) || player2.equals(player))) {
           PlayerID warPlayer = player2;
           if (warPlayer.equals(player)) {
@@ -97,8 +97,8 @@ class ProPoliticsAI {
         int count = 0;
         final List<PlayerID> enemyPlayers = enemyMap.get(action);
         for (final ProTerritory patd : attackOptions) {
-          if (Matches.isTerritoryOwnedBy(enemyPlayers).match(patd.getTerritory())
-              || Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(enemyPlayers)).match(patd.getTerritory())) {
+          if (Matches.isTerritoryOwnedBy(enemyPlayers).test(patd.getTerritory())
+              || Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(enemyPlayers)).test(patd.getTerritory())) {
             count++;
           }
         }
@@ -149,7 +149,7 @@ class ProPoliticsAI {
         while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
           if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
-              .match(action)) {
+              .test(action)) {
             continue;
           }
           if (action.getCostPU() > 0 && action.getCostPU() > player.getResources().getQuantity(Constants.PUS)) {

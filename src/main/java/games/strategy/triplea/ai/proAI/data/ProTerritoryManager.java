@@ -140,7 +140,7 @@ public class ProTerritoryManager {
       boolean isEnemyCapitalOrFactory = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (!t.getOwner().isNull()
-          && ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand().match(t))) {
+          && ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand().test(t))) {
         isEnemyCapitalOrFactory = true;
       }
       if (patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage && isEnemyCapitalOrFactory
@@ -415,7 +415,7 @@ public class ProTerritoryManager {
 
   private void findBombingOptions() {
     for (final Unit unit : attackOptions.getUnitMoveMap().keySet()) {
-      if (Matches.unitIsStrategicBomber().match(unit)) {
+      if (Matches.unitIsStrategicBomber().test(unit)) {
         attackOptions.getBomberMoveMap().put(unit, new HashSet<>(attackOptions.getUnitMoveMap().get(unit)));
       }
     }
@@ -569,7 +569,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           range = UnitAttachment.get(mySeaUnit.getType()).getMovement(player);
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
-              .match(mySeaUnit)) {
+              .test(mySeaUnit)) {
             range++; // assumes bonus of +1 for now
           }
         }
@@ -628,7 +628,7 @@ public class ProTerritoryManager {
           }
 
           // Populate appropriate unit move options map
-          if (Matches.unitIsTransport().match(mySeaUnit)) {
+          if (Matches.unitIsTransport().test(mySeaUnit)) {
             if (transportMoveMap.containsKey(mySeaUnit)) {
               transportMoveMap.get(mySeaUnit).add(potentialTerritory);
             } else {
@@ -696,7 +696,7 @@ public class ProTerritoryManager {
           if (myRoute.hasMoreThenOneStep()
               && myRoute.getMiddleSteps().stream().anyMatch(Matches.isTerritoryEnemy(player, data))
               && Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesThatLostBlitz(myRoute.getAllTerritories()))
-                  .match(myLandUnit)) {
+                  .test(myLandUnit)) {
             continue; // If blitzing then make sure none of the territories cause blitz ability to be lost
           }
           final int myRouteLength = myRoute.numberOfSteps();
@@ -750,7 +750,7 @@ public class ProTerritoryManager {
       findNavalMoveOptions(player, myUnitTerritories, new HashMap<>(), unitMoveMap2, new HashMap<>(),
           Matches.territoryIsWater(), enemyTerritories, false, true);
       for (final Unit u : unitMoveMap2.keySet()) {
-        if (Matches.unitIsCarrier().match(u)) {
+        if (Matches.unitIsCarrier().test(u)) {
           possibleCarrierTerritories.addAll(unitMoveMap2.get(u));
         }
       }
@@ -775,7 +775,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           range = UnitAttachment.get(myAirUnit.getType()).getMovement(player);
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
-              .match(myAirUnit)) {
+              .test(myAirUnit)) {
             range++; // assumes bonus of +1 for now
           }
         }
@@ -790,7 +790,7 @@ public class ProTerritoryManager {
         possibleMoveTerritories.add(myUnitTerritory);
         final Set<Territory> potentialTerritories =
             new HashSet<>(Matches.getMatches(possibleMoveTerritories, moveToTerritoryMatch));
-        if (!isCombatMove && Matches.unitCanLandOnCarrier().match(myAirUnit)) {
+        if (!isCombatMove && Matches.unitCanLandOnCarrier().test(myAirUnit)) {
           potentialTerritories.addAll(
               Matches.getMatches(possibleMoveTerritories, Matches.territoryIsInList(possibleCarrierTerritories)));
         }
@@ -820,7 +820,7 @@ public class ProTerritoryManager {
             final List<Territory> landingTerritories = Matches.getMatches(possibleLandingTerritories,
                 ProMatches.territoryCanLandAirUnits(player, data, isCombatMove, enemyTerritories, alliedTerritories));
             List<Territory> carrierTerritories = new ArrayList<>();
-            if (Matches.unitCanLandOnCarrier().match(myAirUnit)) {
+            if (Matches.unitCanLandOnCarrier().test(myAirUnit)) {
               carrierTerritories =
                   Matches.getMatches(possibleLandingTerritories, Matches.territoryIsInList(possibleCarrierTerritories));
             }
@@ -877,7 +877,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           movesLeft = UnitAttachment.get(myTransportUnit.getType()).getMovement(player);
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
-              .match(myTransportUnit)) {
+              .test(myTransportUnit)) {
             movesLeft++; // assumes bonus of +1 for now
           }
         }
@@ -906,7 +906,7 @@ public class ProTerritoryManager {
             final Set<Territory> myUnitsToLoadTerritories = new HashSet<>();
             if (TransportTracker.isTransporting(myTransportUnit)) {
               units.addAll(TransportTracker.transporting(myTransportUnit));
-            } else if (Matches.territoryHasEnemySeaUnits(player, data).invert().match(currentTerritory)) {
+            } else if (Matches.territoryHasEnemySeaUnits(player, data).invert().test(currentTerritory)) {
               final Set<Territory> possibleLoadTerritories = data.getMap().getNeighbors(currentTerritory);
               for (final Territory possibleLoadTerritory : possibleLoadTerritories) {
                 List<Unit> possibleUnits = possibleLoadTerritory.getUnits().getMatches(
@@ -1048,7 +1048,7 @@ public class ProTerritoryManager {
         if (isCheckingEnemyAttacks) {
           range = UnitAttachment.get(mySeaUnit.getType()).getMovement(player);
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(myUnitTerritory, player, data)
-              .match(mySeaUnit)) {
+              .test(mySeaUnit)) {
             range++; // assumes bonus of +1 for now
           }
         }

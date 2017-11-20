@@ -58,7 +58,7 @@ public class UnitSeperator {
     }
     for (final Unit current : units) {
       int unitMovement = -1;
-      if (categorizeMovement || (categorizeTrnMovement && Matches.unitIsTransport().match(current))) {
+      if (categorizeMovement || (categorizeTrnMovement && Matches.unitIsTransport().test(current))) {
         unitMovement = TripleAUnit.get(current).getMovementLeft();
       }
       int unitTransportCost = -1;
@@ -69,7 +69,7 @@ public class UnitSeperator {
       if (dependent != null) {
         currentDependents = dependent.get(current);
       }
-      final boolean disabled = Matches.unitIsDisabled().match(current);
+      final boolean disabled = Matches.unitIsDisabled().test(current);
       final UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, current.getHits(),
           TripleAUnit.get(current).getUnitDamage(), disabled, unitTransportCost);
       // we test to see if we have the key using equals, then since

@@ -150,7 +150,7 @@ final class ProTechAI {
         firstStrength += strength(enemies, true, onWater, transportsFirst);
         checked.add(t);
       }
-      if (Matches.territoryIsLand().match(location)) {
+      if (Matches.territoryIsLand().test(location)) {
         blitzStrength = determineEnemyBlitzStrength(location, blitzTerrRoutes, data, enemyPlayer);
       } else { // get ships attack strength
         // old assumed fleets won't split up, new lets them. no biggie.
@@ -170,7 +170,7 @@ final class ProTechAI {
       final List<Unit> attackPlanes =
           findPlaneAttackersThatCanLand(location, maxFighterDistance, enemyPlayer, data, checked);
       final float airStrength = allAirStrength(attackPlanes);
-      if (Matches.territoryHasWaterNeighbor(data).match(location) && Matches.territoryIsLand().match(location)) {
+      if (Matches.territoryHasWaterNeighbor(data).test(location) && Matches.territoryIsLand().test(location)) {
         for (final Territory t4 : data.getMap().getNeighbors(location, maxTransportDistance)) {
           if (!t4.isWater()) {
             continue;
@@ -205,10 +205,10 @@ final class ProTechAI {
                 int inf = 2;
                 int other = 1;
                 for (final Unit checkUnit : thisTransUnits) {
-                  if (Matches.unitIsInfantry().match(checkUnit)) {
+                  if (Matches.unitIsInfantry().test(checkUnit)) {
                     inf--;
                   }
-                  if (Matches.unitIsNotInfantry().match(checkUnit)) {
+                  if (Matches.unitIsNotInfantry().test(checkUnit)) {
                     inf--;
                     other--;
                   }
@@ -225,12 +225,12 @@ final class ProTechAI {
               transUnits.removeAll(alreadyLoaded);
               final List<Unit> availTransUnits = sortTransportUnits(transUnits);
               for (final Unit transUnit : availTransUnits) {
-                if (availInf > 0 && Matches.unitIsInfantry().match(transUnit)) {
+                if (availInf > 0 && Matches.unitIsInfantry().test(transUnit)) {
                   availInf--;
                   loadedUnits.add(transUnit);
                   alreadyLoaded.add(transUnit);
                 }
-                if (availInf > 0 && availOther > 0 && Matches.unitIsNotInfantry().match(transUnit)) {
+                if (availInf > 0 && availOther > 0 && Matches.unitIsNotInfantry().test(transUnit)) {
                   availInf--;
                   availOther--;
                   loadedUnits.add(transUnit);
@@ -250,7 +250,7 @@ final class ProTechAI {
       if (onWater) {
         final Iterator<Unit> enemyWaterUnitsIter = enemyWaterUnits.iterator();
         while (enemyWaterUnitsIter.hasNext() && !nonTransportsInAttack) {
-          if (Matches.unitIsNotTransport().match(enemyWaterUnitsIter.next())) {
+          if (Matches.unitIsNotTransport().test(enemyWaterUnitsIter.next())) {
             nonTransportsInAttack = true;
           }
         }
@@ -395,7 +395,7 @@ final class ProTechAI {
       for (final Territory neighbor : data.getMap().getNeighbors(current)) {
         if (!distance.keySet().contains(neighbor)) {
           if (!neighbor.getUnits().anyMatch(unitCondition)) {
-            if (!routeCondition.match(neighbor)) {
+            if (!routeCondition.test(neighbor)) {
               continue;
             }
           }
@@ -415,7 +415,7 @@ final class ProTechAI {
             continue;
           }
           for (final Unit u : neighbor.getUnits()) {
-            if (unitCondition.match(u) && Matches.unitHasEnoughMovementForRoutes(routes).match(u)) {
+            if (unitCondition.test(u) && Matches.unitHasEnoughMovementForRoutes(routes).test(u)) {
               units.add(u);
             }
           }
@@ -471,21 +471,21 @@ final class ProTechAI {
         if (!distance.keySet().contains(neighbor)) {
           q.add(neighbor);
           distance.put(neighbor, distance.getInt(current) + 1);
-          if (lz == null && Matches.isTerritoryAllied(player, data).match(neighbor) && !neighbor.isWater()) {
+          if (lz == null && Matches.isTerritoryAllied(player, data).test(neighbor) && !neighbor.isWater()) {
             lz = neighbor;
           }
           if (checked.contains(neighbor)) {
             for (final Unit u : neighbor.getUnits()) {
-              if (ac == null && enemyCarrier.match(u)) {
+              if (ac == null && enemyCarrier.test(u)) {
                 ac = neighbor;
               }
             }
           } else {
             for (final Unit u : neighbor.getUnits()) {
-              if (ac == null && enemyCarrier.match(u)) {
+              if (ac == null && enemyCarrier.test(u)) {
                 ac = neighbor;
               }
-              if (enemyPlane.match(u)) {
+              if (enemyPlane.test(u)) {
                 unitDistance.put(u, distance.getInt(neighbor));
               }
             }
@@ -494,10 +494,10 @@ final class ProTechAI {
       }
     }
     for (final Unit u : unitDistance.keySet()) {
-      if (lz != null && Matches.unitHasEnoughMovementForRoute(checked).match(u)) {
+      if (lz != null && Matches.unitHasEnoughMovementForRoute(checked).test(u)) {
         units.add(u);
-      } else if (ac != null && Matches.unitCanLandOnCarrier().match(u)
-          && Matches.unitHasEnoughMovementForRoute(checked).match(u)) {
+      } else if (ac != null && Matches.unitCanLandOnCarrier().test(u)
+          && Matches.unitHasEnoughMovementForRoute(checked).test(u)) {
         units.add(u);
       }
     }
@@ -573,8 +573,8 @@ final class ProTechAI {
     final List<Territory> territories = new ArrayList<>();
     final List<Territory> checkList = getExactNeighbors(check, data);
     for (final Territory t : checkList) {
-      if (Matches.isTerritoryAllied(player, data).match(t)
-          && Matches.territoryIsNotImpassableToLandUnits(player, data).match(t)) {
+      if (Matches.isTerritoryAllied(player, data).test(t)
+          && Matches.territoryIsNotImpassableToLandUnits(player, data).test(t)) {
         territories.add(t);
       }
     }
@@ -616,7 +616,7 @@ final class ProTechAI {
     visited.put(start, 0);
     for (final Territory t : q) {
       visited.put(t, 1);
-      if (1 == distance && endCondition.match(t)) {
+      if (1 == distance && endCondition.test(t)) {
         frontier.add(t);
       }
     }
@@ -630,7 +630,7 @@ final class ProTechAI {
             q.add(neighbor);
             final int dist = visited.getInt(current) + 1;
             visited.put(neighbor, dist);
-            if (dist == distance && endCondition.match(neighbor)) {
+            if (dist == distance && endCondition.test(neighbor)) {
               frontier.add(neighbor);
             }
           }
@@ -667,11 +667,11 @@ final class ProTechAI {
     final List<Unit> armor = new ArrayList<>();
     final List<Unit> others = new ArrayList<>();
     for (final Unit x : transUnits) {
-      if (Matches.unitIsArtillerySupportable().match(x)) {
+      if (Matches.unitIsArtillerySupportable().test(x)) {
         infantry.add(x);
-      } else if (Matches.unitIsArtillery().match(x)) {
+      } else if (Matches.unitIsArtillery().test(x)) {
         artillery.add(x);
-      } else if (Matches.unitCanBlitz().match(x)) {
+      } else if (Matches.unitCanBlitz().test(x)) {
         armor.add(x);
       } else {
         others.add(x);

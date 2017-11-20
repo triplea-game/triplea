@@ -268,7 +268,7 @@ public class MoveValidator {
       return result;
     }
     for (final Territory t : route.getSteps()) {
-      if (!Matches.territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(player).match(t)) {
+      if (!Matches.territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(player).test(t)) {
         return result.setErrorReturnResult("Cannot move into territories owned by " + t.getOwner().getName()
             + " during Combat Movement Phase");
       }
@@ -277,10 +277,10 @@ public class MoveValidator {
     // allow unless each
     // unit can blitz the current territory.
     if (!route.getStart().isWater()
-        && Matches.isAtWar(route.getStart().getOwner(), data).match(player)
+        && Matches.isAtWar(route.getStart().getOwner(), data).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches
             .isTerritoryEnemy(player, data).invert(), false))) {
-      if (!Matches.territoryIsBlitzable(player, data).match(route.getStart())
+      if (!Matches.territoryIsBlitzable(player, data).test(route.getStart())
           && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
         return result.setErrorReturnResult("Cannot blitz out of a battle further into enemy territory");
       }
@@ -294,10 +294,10 @@ public class MoveValidator {
     // the territory is
     // blitzable.
     if (!route.getStart().isWater()
-        && !Matches.isAtWar(route.getStart().getOwner(), data).match(player)
+        && !Matches.isAtWar(route.getStart().getOwner(), data).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player, data)) && !route.allMatchMiddleSteps(Matches
             .isTerritoryEnemy(player, data).invert(), false))) {
-      if (!Matches.territoryIsBlitzable(player, data).match(route.getStart())
+      if (!Matches.territoryIsBlitzable(player, data).test(route.getStart())
           && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
         return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
       }
@@ -327,7 +327,7 @@ public class MoveValidator {
         if (data.getRelationshipTracker().isAtWar(current.getOwner(), player)
             || AbstractMoveDelegate.getBattleTracker(data).wasConquered(current)) {
           enemyCount++;
-          allEnemyBlitzable &= Matches.territoryIsBlitzable(player, data).match(current);
+          allEnemyBlitzable &= Matches.territoryIsBlitzable(player, data).test(current);
         }
       }
       if (enemyCount > 0 && !allEnemyBlitzable) {
@@ -352,10 +352,10 @@ public class MoveValidator {
             .getUnitTypesThatLostBlitz((wasStartFoughtOver ? route.getAllTerritories() : route.getSteps())))));
         for (final Unit unit : nonBlitzingUnits) {
           // TODO: we need to actually test if the units is being air transported, or mech-land-transported.
-          if (Matches.unitIsAirTransportable().match(unit)) {
+          if (Matches.unitIsAirTransportable().test(unit)) {
             continue;
           }
-          if (Matches.unitIsInfantry().match(unit)) {
+          if (Matches.unitIsInfantry().test(unit)) {
             continue;
           }
           final TripleAUnit taUnit = (TripleAUnit) unit;
@@ -393,7 +393,7 @@ public class MoveValidator {
       }
     }
     // See if we are doing invasions in combat phase, with units or transports that can't do invasion.
-    if (route.isUnload() && Matches.isTerritoryEnemy(player, data).match(route.getEnd())) {
+    if (route.isUnload() && Matches.isTerritoryEnemy(player, data).test(route.getEnd())) {
       for (final Unit unit : Matches.getMatches(units, Matches.unitCanInvade().invert())) {
         result.addDisallowedUnit(unit.getType().getName() + " can't invade from "
             + TripleAUnit.get(unit).getTransportedBy().getType().getName(), unit);
@@ -423,7 +423,7 @@ public class MoveValidator {
         isWW2V2(data) || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
     // TODO need to account for subs AND transports that are ignored, not just OR
     final Territory end = route.getEnd();
-    if (neutralOrEnemy.match(end)) {
+    if (neutralOrEnemy.test(end)) {
       // a convoy zone is controlled, so we must make sure we can still move there if there are actual battle there
       if (!end.isWater() || navalMayNotNonComIntoControlled) {
         return result.setErrorReturnResult("Cannot advance units to battle in non combat");
@@ -602,11 +602,11 @@ public class MoveValidator {
         data.releaseReadLock();
       }
       for (final Unit unit : moveTest) {
-        if (!hasEnoughMovementForRoute.match(unit)) {
+        if (!hasEnoughMovementForRoute.test(unit)) {
           boolean unitOk = false;
-          if ((Matches.unitIsAirTransportable().match(unit) && Matches.unitHasNotMoved().match(unit))
-              && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().match(unit) && Matches.unitIsInfantry()
-                  .match(unit))) {
+          if ((Matches.unitIsAirTransportable().test(unit) && Matches.unitHasNotMoved().test(unit))
+              && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().test(unit) && Matches.unitIsInfantry()
+                  .test(unit))) {
             // we have paratroopers and mechanized infantry, so we must check for both
             // simple: if it movement group contains an air-transport, then assume we are doing paratroopers. else,
             // assume we are doing
@@ -624,7 +624,7 @@ public class MoveValidator {
             } else {
               mechanizedSupportAvailable--;
             }
-          } else if (Matches.unitIsAirTransportable().match(unit) && Matches.unitHasNotMoved().match(unit)) {
+          } else if (Matches.unitIsAirTransportable().test(unit) && Matches.unitHasNotMoved().test(unit)) {
             for (final Unit airTransport : dependencies.keySet()) {
               if (dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit)) {
                 unitOk = true;
@@ -634,11 +634,11 @@ public class MoveValidator {
             if (!unitOk) {
               result.addDisallowedUnit("Not all units have enough movement", unit);
             }
-          } else if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().match(unit)
-              && Matches.unitIsInfantry().match(unit)) {
+          } else if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().test(unit)
+              && Matches.unitIsInfantry().test(unit)) {
             mechanizedSupportAvailable--;
-          } else if (Matches.unitIsOwnedBy(player).invert().match(unit) && Matches.alliedUnit(player, data).match(unit)
-              && Matches.unitTypeCanLandOnCarrier().match(unit.getType())
+          } else if (Matches.unitIsOwnedBy(player).invert().test(unit) && Matches.alliedUnit(player, data).test(unit)
+              && Matches.unitTypeCanLandOnCarrier().test(unit.getType())
               && moveTest.stream().anyMatch(Matches.unitIsAlliedCarrier(unit.getOwner(), data))) {
             // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
             // (shouldn't it be a dependant in this case??)
@@ -688,7 +688,7 @@ public class MoveValidator {
           Matches.getMatches(units, Match.anyOf(Matches.unitHasMovementLimit(), Matches.unitHasAttackingLimit()));
       for (final Territory t : route.getSteps()) {
         final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
-        if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(t)
+        if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)
             || t.getUnits().anyMatch(Matches.unitIsEnemyOf(data, player))) {
           for (final Unit unit : unitsWithStackingLimits) {
             final UnitType ut = unit.getType();
@@ -842,7 +842,7 @@ public class MoveValidator {
 
   private static boolean hasConqueredNonBlitzedNonWaterOnRoute(final Route route, final GameData data) {
     for (final Territory current : route.getMiddleSteps()) {
-      if (!Matches.territoryIsWater().match(current)
+      if (!Matches.territoryIsWater().test(current)
           && AbstractMoveDelegate.getBattleTracker(data).wasConquered(current)
           && !AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(current)) {
         return true;
@@ -1000,12 +1000,12 @@ public class MoveValidator {
               Matches.unitIsNotTransportButCouldBeCombatTransport());
       for (final Unit transport : transports) {
         if (!isNonCombat && route.numberOfStepsIncludingStart() == 2) {
-          if (Matches.territoryHasEnemyUnits(player, data).match(routeEnd)
-              || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(routeEnd)) {
+          if (Matches.territoryHasEnemyUnits(player, data).test(routeEnd)
+              || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(routeEnd)) {
             // this is an amphibious assault
             if (submarinesPreventUnescortedAmphibAssaults
-                && !Matches.territoryHasUnitsThatMatch(ownedSeaNonTransportMatch).match(routeStart)
-                && Matches.territoryHasUnitsThatMatch(enemySubmarineMatch).match(routeStart)) {
+                && !Matches.territoryHasUnitsThatMatch(ownedSeaNonTransportMatch).test(routeStart)
+                && Matches.territoryHasUnitsThatMatch(enemySubmarineMatch).test(routeStart)) {
               // we must have at least one warship (non-transport) unit, otherwise the enemy sub stops our unloading for
               // amphibious assault
               for (final Unit unit : TransportTracker.transporting(transport)) {
@@ -1015,7 +1015,7 @@ public class MoveValidator {
           } else if (!AbstractMoveDelegate.getBattleTracker(data).wasConquered(routeEnd)) {
             // this is an unload to a friendly territory
             if (isScramblingOrKamikazeAttacksEnabled
-                || !Matches.territoryIsEmptyOfCombatUnits(data, player).match(routeStart)) {
+                || !Matches.territoryIsEmptyOfCombatUnits(data, player).test(routeStart)) {
               // Unloading a transport from a sea zone with a battle, to a friendly land territory, during combat move
               // phase, is illegal
               // and in addition to being illegal, it is also causing problems if the sea transports get killed (the
@@ -1118,7 +1118,7 @@ public class MoveValidator {
       // Matches.unitCanBeTransported());
       while (!isEditMode && iter.hasNext()) {
         final TripleAUnit unit = (TripleAUnit) iter.next();
-        if (Matches.unitHasMoved().match(unit)) {
+        if (Matches.unitHasMoved().test(unit)) {
           result.addDisallowedUnit("Units cannot move before loading onto transports", unit);
         }
         final Unit transport = unitsToTransports.get(unit);
@@ -1210,7 +1210,7 @@ public class MoveValidator {
       return true;
     }
     for (final Unit unit : Matches.getMatches(units, Matches.unitIsNotAirTransportable())) {
-      if (Matches.unitIsLand().match(unit)) {
+      if (Matches.unitIsLand().test(unit)) {
         return true;
       }
     }
@@ -1251,31 +1251,31 @@ public class MoveValidator {
       final Map<Unit, Unit> airTransportsAndParatroops =
           TransportUtils.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
       for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
-        if (Matches.unitHasMoved().match(paratroop)) {
+        if (Matches.unitHasMoved().test(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
         final Unit transport = airTransportsAndParatroops.get(paratroop);
-        if (Matches.unitHasMoved().match(transport)) {
+        if (Matches.unitHasMoved().test(transport)) {
           result.addDisallowedUnit("Cannot move then transport paratroops", transport);
         }
       }
       final Territory routeEnd = route.getEnd();
       for (final Unit paratroop : paratroopsRequiringTransport) {
-        if (Matches.unitHasMoved().match(paratroop)) {
+        if (Matches.unitHasMoved().test(paratroop)) {
           result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
         }
-        if (Matches.isTerritoryFriendly(player, data).match(routeEnd)
+        if (Matches.isTerritoryFriendly(player, data).test(routeEnd)
             && !isAirTransportableCanMoveDuringNonCombat(data)) {
           result.addDisallowedUnit("Paratroops must advance to battle", paratroop);
         }
-        if (!nonCombat && Matches.isTerritoryFriendly(player, data).match(routeEnd)
+        if (!nonCombat && Matches.isTerritoryFriendly(player, data).test(routeEnd)
             && isAirTransportableCanMoveDuringNonCombat(data)) {
           result.addDisallowedUnit("Paratroops may only airlift during Non-Combat Movement Phase", paratroop);
         }
       }
       if (!Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data)) {
         for (final Territory current : Matches.getMatches(route.getMiddleSteps(), Matches.territoryIsLand())) {
-          if (Matches.isTerritoryEnemy(player, data).match(current)) {
+          if (Matches.isTerritoryEnemy(player, data).test(current)) {
             return result.setErrorReturnResult("Must stop paratroops in first enemy territory");
           }
         }
@@ -1468,9 +1468,9 @@ public class MoveValidator {
       if (available >= cost) {
         // this is to test if they started in the same sea zone or not, and its not a very good way of testing it.
         if ((taCarrier.getAlreadyMoved() == taPlane.getAlreadyMoved())
-            || (Matches.unitHasNotMoved().match(plane) && Matches.unitHasNotMoved().match(carrier))
-            || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).invert().match(plane) && Matches.alliedUnit(
-                playerWhoIsDoingTheMovement, data).match(plane))) {
+            || (Matches.unitHasNotMoved().test(plane) && Matches.unitHasNotMoved().test(carrier))
+            || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).invert().test(plane) && Matches.alliedUnit(
+                playerWhoIsDoingTheMovement, data).test(plane))) {
           available -= cost;
           canCarry.add(plane);
         }

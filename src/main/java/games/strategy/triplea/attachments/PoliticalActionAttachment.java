@@ -96,7 +96,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1]
           + " unknown in: " + getName() + thisErrorMsg());
     }
-    if (!Matches.isValidRelationshipName(getData()).match(s[2])) {
+    if (!Matches.isValidRelationshipName(getData()).test(s[2])) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
           + s[2] + " unknown in: " + getName() + thisErrorMsg());
     }

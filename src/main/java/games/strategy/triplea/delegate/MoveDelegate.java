@@ -356,8 +356,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
   static Change giveBonusMovementToUnits(final PlayerID player, final GameData data, final Territory t) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits().getUnits()) {
-      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).match(u)) {
-        if (!Matches.isUnitAllied(player, data).match(u)) {
+      if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).test(u)) {
+        if (!Matches.isUnitAllied(player, data).test(u)) {
           continue;
         }
         int bonusMovement = Integer.MIN_VALUE;
@@ -365,14 +365,14 @@ public class MoveDelegate extends AbstractMoveDelegate {
         final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
             Matches.unitCanGiveBonusMovementToThisUnit(u));
         givesBonusUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), givesBonusUnit));
-        if (Matches.unitIsSea().match(u)) {
+        if (Matches.unitIsSea().test(u)) {
           final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
           final List<Territory> neighbors =
               new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
           for (final Territory current : neighbors) {
             givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
           }
-        } else if (Matches.unitIsLand().match(u)) {
+        } else if (Matches.unitIsLand().test(u)) {
           final Match<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.unitIsSea());
           final List<Territory> neighbors =
               new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
@@ -478,7 +478,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Match<Unit> repairUnit = Match.allOf(Matches.alliedUnit(owner, data),
         Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
     repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
-    if (Matches.unitIsSea().match(unitToBeRepaired)) {
+    if (Matches.unitIsSea().test(unitToBeRepaired)) {
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
       for (final Territory current : neighbors) {
@@ -487,7 +487,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             Matches.unitIsLand());
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
       }
-    } else if (Matches.unitIsLand().match(unitToBeRepaired)) {
+    } else if (Matches.unitIsLand().test(unitToBeRepaired)) {
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater()));
       for (final Territory current : neighbors) {
@@ -535,7 +535,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
       if (kamikazeUnits.size() > 0 && getRemotePlayer().confirmMoveKamikaze()) {
         for (final Unit unit : kamikazeUnits) {
-          if (getKamikazeAir || Matches.unitIsKamikaze().match(unit)) {
+          if (getKamikazeAir || Matches.unitIsKamikaze().test(unit)) {
             result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
             isKamikaze = true;
           }

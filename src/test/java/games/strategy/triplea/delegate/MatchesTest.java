@@ -43,7 +43,7 @@ public final class MatchesTest {
 
       @Override
       public boolean matchesSafely(final Match<T> match, final Description description) {
-        if (!match.match(value)) {
+        if (!match.test(value)) {
           description.appendText("it does not match");
           return false;
         }
@@ -61,7 +61,7 @@ public final class MatchesTest {
 
       @Override
       public boolean matchesSafely(final Match<T> match, final Description description) {
-        if (match.match(value)) {
+        if (match.test(value)) {
           description.appendText("it matches");
           return false;
         }
@@ -72,12 +72,12 @@ public final class MatchesTest {
 
   @Test
   public void testAlways() {
-    assertTrue(Matches.always().match(VALUE));
+    assertTrue(Matches.always().test(VALUE));
   }
 
   @Test
   public void testNever() {
-    assertFalse(Matches.never().match(VALUE));
+    assertFalse(Matches.never().test(VALUE));
   }
 
   @Test
