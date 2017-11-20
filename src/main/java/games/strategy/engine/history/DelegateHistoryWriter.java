@@ -11,18 +11,18 @@ import games.strategy.engine.message.IChannelMessenger;
  * be used by the GameData
  */
 public class DelegateHistoryWriter implements IDelegateHistoryWriter {
-  private final IGameModifiedChannel m_channel;
+  private final IGameModifiedChannel channel;
 
   public DelegateHistoryWriter(final IChannelMessenger messenger) {
-    m_channel = (IGameModifiedChannel) messenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
+    channel = (IGameModifiedChannel) messenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
   }
 
   public DelegateHistoryWriter(final IGameModifiedChannel channel) {
-    m_channel = channel;
+    this.channel = channel;
   }
 
   private IGameModifiedChannel getGameModifiedChannel() {
-    return m_channel;
+    return channel;
   }
 
   @Override

@@ -25,7 +25,7 @@ class LobbyGameTableModel extends AbstractTableModel {
     Host, Name, GV, Round, Players, P, B, EV, Started, Status, Comments, GUID
   }
 
-  private final IMessenger m_messenger;
+  private final IMessenger messenger;
 
   // these must only be accessed in the swing event thread
   private final List<Tuple<GUID, GameDescription>> gameList;
@@ -36,7 +36,7 @@ class LobbyGameTableModel extends AbstractTableModel {
 
     gameList = new ArrayList<>();
 
-    m_messenger = messenger;
+    this.messenger = messenger;
     lobbyGameBroadcaster = new ILobbyGameBroadcaster() {
       @Override
       public void gameUpdated(final GUID gameId, final GameDescription description) {
@@ -101,7 +101,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private void assertSentFromServer() {
-    if (!MessageContext.getSender().equals(m_messenger.getServerNode())) {
+    if (!MessageContext.getSender().equals(messenger.getServerNode())) {
       throw new IllegalStateException("Invalid sender");
     }
   }

@@ -2,19 +2,19 @@ package games.strategy.engine.history;
 
 public class Round extends IndexedHistoryNode {
   private static final long serialVersionUID = 7645058269791039043L;
-  private final int m_RoundNo;
+  private final int roundNo;
 
   Round(final int round, final int changeStartIndex) {
     super("Round: " + round, changeStartIndex);
-    m_RoundNo = round;
+    roundNo = round;
   }
 
   public int getRoundNo() {
-    return m_RoundNo;
+    return roundNo;
   }
 
   @Override
   public SerializationWriter getWriter() {
-    return new RoundHistorySerializer(m_RoundNo);
+    return new RoundHistorySerializer(roundNo);
   }
 }

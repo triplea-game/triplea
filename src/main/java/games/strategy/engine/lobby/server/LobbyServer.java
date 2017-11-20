@@ -19,7 +19,7 @@ public class LobbyServer {
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
   private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
-  private final Messengers m_messengers;
+  private final Messengers messengers;
 
   private LobbyServer(final int port) {
     final IServerMessenger server;
@@ -29,20 +29,20 @@ public class LobbyServer {
       logger.log(Level.SEVERE, ex.toString());
       throw new IllegalStateException(ex.getMessage());
     }
-    m_messengers = new Messengers(server);
+    messengers = new Messengers(server);
     server.setLoginValidator(new LobbyLoginValidator());
     // setup common objects
-    new UserManager().register(m_messengers.getRemoteMessenger());
-    final ModeratorController moderatorController = new ModeratorController(server, m_messengers);
-    moderatorController.register(m_messengers.getRemoteMessenger());
-    new ChatController(LOBBY_CHAT, m_messengers, moderatorController);
+    new UserManager().register(messengers.getRemoteMessenger());
+    final ModeratorController moderatorController = new ModeratorController(server, messengers);
+    moderatorController.register(messengers.getRemoteMessenger());
+    new ChatController(LOBBY_CHAT, messengers, moderatorController);
 
     // register the status controller
-    new StatusManager(m_messengers).shutDown();
+    new StatusManager(messengers).shutDown();
 
-    final LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_messengers
+    final LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) messengers
         .getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
-    controller.register(m_messengers.getRemoteMessenger());
+    controller.register(messengers.getRemoteMessenger());
 
     // now we are open for business
     server.setAcceptNewConnections(true);
@@ -69,10 +69,10 @@ public class LobbyServer {
   }
 
   public IServerMessenger getMessenger() {
-    return (IServerMessenger) m_messengers.getMessenger();
+    return (IServerMessenger) messengers.getMessenger();
   }
 
   public Messengers getMessengers() {
-    return m_messengers;
+    return messengers;
   }
 }
