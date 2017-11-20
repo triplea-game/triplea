@@ -305,7 +305,7 @@ public class AirBattle extends AbstractBattle {
         HashMap<Unit, HashSet<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits()
             .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerId(), m_data),
-                Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().invert()));
+                Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().negate()));
         for (final Unit unit : bombers) {
           final Collection<Unit> enemyTargets =
               Matches.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
@@ -628,40 +628,40 @@ public class AirBattle extends AbstractBattle {
     }
   }
 
-  private static Match<Unit> unitHasAirDefenseGreaterThanZero() {
+  private static Predicate<Unit> unitHasAirDefenseGreaterThanZero() {
     return Match.of(u -> UnitAttachment.get(u.getType()).getAirDefense(u.getOwner()) > 0);
   }
 
-  private static Match<Unit> unitHasAirAttackGreaterThanZero() {
+  private static Predicate<Unit> unitHasAirAttackGreaterThanZero() {
     return Match.of(u -> UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0);
   }
 
-  static Match<Unit> attackingGroundSeaBattleEscorts() {
+  static Predicate<Unit> attackingGroundSeaBattleEscorts() {
     return Matches.unitCanAirBattle();
   }
 
-  private static Match<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
+  private static Predicate<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
     return Match.of(PredicateBuilder
         .of(Matches.unitCanAirBattle())
         .and(Matches.unitIsEnemyOf(data, attacker))
-        .and(Matches.unitWasInAirBattle().invert())
-        .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().invert())
+        .and(Matches.unitWasInAirBattle().negate())
+        .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
         .build());
   }
 
-  private static Match<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
+  private static Predicate<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
     return Match.of(PredicateBuilder
         .of(Matches.unitCanIntercept())
         .and(Matches.unitIsEnemyOf(data, attacker))
-        .and(Matches.unitWasInAirBattle().invert())
-        .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().invert())
+        .and(Matches.unitWasInAirBattle().negate())
+        .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
         .build());
   }
 
   static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,
       final GameData data, final boolean bombing) {
     final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
-    final Match<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(attacker, data)
+    final Predicate<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(attacker, data)
         : defendingGroundSeaBattleInterceptors(attacker, data);
     int maxScrambleDistance = 0;
     if (canScrambleToAirBattle) {

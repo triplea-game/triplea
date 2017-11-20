@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -360,7 +361,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (blockable.isEmpty()) {
       return 0;
     }
-    final Match<Unit> enemyUnits = Match.allOf(Matches.enemyUnit(player, data));
+    final Predicate<Unit> enemyUnits = Match.allOf(Matches.enemyUnit(player, data));
     int totalLoss = 0;
     final boolean rollDiceForBlockadeDamage = Properties.getConvoyBlockadesRollDiceForCost(data);
     final Collection<String> transcripts = new ArrayList<>();

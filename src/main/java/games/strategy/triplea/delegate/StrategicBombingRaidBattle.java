@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -92,7 +93,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // fill in defenders
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-    final Match<Unit> defenders = Match.allOf(Matches.enemyUnit(m_attacker, m_data),
+    final Predicate<Unit> defenders = Match.allOf(Matches.enemyUnit(m_attacker, m_data),
         Match.anyOf(Matches.unitCanBeDamaged(),
             Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
                 Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data)));

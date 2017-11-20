@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Predicate;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -135,7 +136,7 @@ public class PlacePanel extends AbstractMovePanel {
             || isLhtrCarrierProductionRules() || GameStepPropertiesHelper.isBid(getData()))) {
           units = Matches.getMatches(units, Matches.unitIsSea());
         } else {
-          final Match<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(
+          final Predicate<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(
               Matches.unitIsSea(),
               Matches.unitCanLandOnCarrier());
           units = Matches.getMatches(units, unitIsSeaOrCanLandOnCarrier);

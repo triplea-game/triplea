@@ -73,18 +73,18 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR. use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       HashMap<ICondition, Boolean> testedConditions = null;
-      final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch =
+      final Predicate<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch =
           Match.allOf(AbstractTriggerAttachment.availableUses,
               AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
               Match.anyOf(AbstractTriggerAttachment.notificationMatch(),
                   TriggerAttachment.playerPropertyMatch(), TriggerAttachment.relationshipTypePropertyMatch(),
                   TriggerAttachment.territoryPropertyMatch(), TriggerAttachment.territoryEffectPropertyMatch(),
                   TriggerAttachment.removeUnitsMatch(), TriggerAttachment.changeOwnershipMatch()));
-      final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch =
+      final Predicate<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch =
           Match.allOf(AbstractTriggerAttachment.availableUses,
               AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
               Match.anyOf(TriggerAttachment.placeMatch()));
-      final Match<TriggerAttachment> moveCombatDelegateAllTriggerMatch = Match.anyOf(
+      final Predicate<TriggerAttachment> moveCombatDelegateAllTriggerMatch = Match.anyOf(
           moveCombatDelegateBeforeBonusTriggerMatch, moveCombatDelegateAfterBonusTriggerMatch);
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
@@ -240,7 +240,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
                 Matches.unitIsLand(),
                 Matches.unitIsBeingTransported())))
         // if not non combat, cannot move aa units
-        .andIf(GameStepPropertiesHelper.isCombatMove(getData()), Matches.unitCanNotMoveDuringCombatMove().invert())
+        .andIf(GameStepPropertiesHelper.isCombatMove(getData()), Matches.unitCanNotMoveDuringCombatMove().negate())
         .build();
     return !getData().getMap().getTerritories().isEmpty()
         && getData().getMap().getTerritories().stream()
@@ -313,10 +313,10 @@ public class MoveDelegate extends AbstractMoveDelegate {
   private static void removeMovementFromAirOnDamagedAlliedCarriers(final IDelegateBridge bridge,
       final PlayerID player) {
     final GameData data = bridge.getData();
-    final Match<Unit> crippledAlliedCarriersMatch = Match.allOf(Matches.isUnitAllied(player, data),
-        Matches.unitIsOwnedBy(player).invert(), Matches.unitIsCarrier(),
+    final Predicate<Unit> crippledAlliedCarriersMatch = Match.allOf(Matches.isUnitAllied(player, data),
+        Matches.unitIsOwnedBy(player).negate(), Matches.unitIsCarrier(),
         Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
-    final Match<Unit> ownedFightersMatch =
+    final Predicate<Unit> ownedFightersMatch =
         Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsAir(),
             Matches.unitCanLandOnCarrier(), Matches.unitHasMovementLeft());
     final CompositeChange change = new CompositeChange();
@@ -362,18 +362,18 @@ public class MoveDelegate extends AbstractMoveDelegate {
         }
         int bonusMovement = Integer.MIN_VALUE;
         final Collection<Unit> givesBonusUnits = new ArrayList<>();
-        final Match<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
+        final Predicate<Unit> givesBonusUnit = Match.allOf(Matches.alliedUnit(player, data),
             Matches.unitCanGiveBonusMovementToThisUnit(u));
         givesBonusUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), givesBonusUnit));
         if (Matches.unitIsSea().test(u)) {
-          final Match<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
+          final Predicate<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, Matches.unitIsLand());
           final List<Territory> neighbors =
               new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
           for (final Territory current : neighbors) {
             givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
           }
         } else if (Matches.unitIsLand().test(u)) {
-          final Match<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.unitIsSea());
+          final Predicate<Unit> givesBonusUnitSea = Match.allOf(givesBonusUnit, Matches.unitIsSea());
           final List<Territory> neighbors =
               new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
           for (final Territory current : neighbors) {
@@ -399,9 +399,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final GameData data = bridge.getData();
     final boolean repairOnlyOwn =
         Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData());
-    final Match<Unit> damagedUnits =
+    final Predicate<Unit> damagedUnits =
         Match.allOf(Matches.unitHasMoreThanOneHitPointTotal(), Matches.unitHasTakenSomeDamage());
-    final Match<Unit> damagedUnitsOwned = Match.allOf(damagedUnits, Matches.unitIsOwnedBy(player));
+    final Predicate<Unit> damagedUnitsOwned = Match.allOf(damagedUnits, Matches.unitIsOwnedBy(player));
     final Map<Territory, Set<Unit>> damagedMap = new HashMap<>();
     final Iterator<Territory> iterTerritories = data.getMap().getTerritories().iterator();
     while (iterTerritories.hasNext()) {
@@ -475,14 +475,14 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
     final Set<Unit> repairUnitsForThisUnit = new HashSet<>();
     final PlayerID owner = unitToBeRepaired.getOwner();
-    final Match<Unit> repairUnit = Match.allOf(Matches.alliedUnit(owner, data),
+    final Predicate<Unit> repairUnit = Match.allOf(Matches.alliedUnit(owner, data),
         Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
     repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
     if (Matches.unitIsSea().test(unitToBeRepaired)) {
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
       for (final Territory current : neighbors) {
-        final Match<Unit> repairUnitLand = Match.allOf(Matches.alliedUnit(owner, data),
+        final Predicate<Unit> repairUnitLand = Match.allOf(Matches.alliedUnit(owner, data),
             Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, current),
             Matches.unitIsLand());
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
@@ -491,7 +491,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsWater()));
       for (final Territory current : neighbors) {
-        final Match<Unit> repairUnitSea = Match.allOf(Matches.alliedUnit(owner, data),
+        final Predicate<Unit> repairUnitSea = Match.allOf(Matches.alliedUnit(owner, data),
             Matches.unitCanRepairOthers(), Matches.unitCanRepairThisUnit(unitToBeRepaired, current),
             Matches.unitIsSea());
         repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitSea));
@@ -573,7 +573,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   static Collection<Territory> getEmptyNeutral(final Route route) {
-    final Match<Territory> emptyNeutral = Match.allOf(
+    final Predicate<Territory> emptyNeutral = Match.allOf(
         Matches.territoryIsEmpty(),
         Matches.territoryIsNeutralButNotWater());
     final Collection<Territory> neutral = route.getMatches(emptyNeutral);

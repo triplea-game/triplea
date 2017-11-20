@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
@@ -221,7 +222,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return All adjacent neighbors of the starting territory that match the condition.
    *         Does NOT include the original/starting territory in the returned Set.
    */
-  public Set<Territory> getNeighbors(final Territory t, final Match<Territory> cond) {
+  public Set<Territory> getNeighbors(final Territory t, final Predicate<Territory> cond) {
     if (cond == null) {
       return getNeighbors(t);
     }
@@ -268,7 +269,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         Does NOT include the original/starting territory in the returned Set.
    */
   @SuppressWarnings("unchecked")
-  public Set<Territory> getNeighbors(final Territory territory, int distance, final Match<Territory> cond) {
+  public Set<Territory> getNeighbors(final Territory territory, int distance, final Predicate<Territory> cond) {
     if (distance < 0) {
       throw new IllegalArgumentException("Distance must be positive not:" + distance);
     }
@@ -289,7 +290,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
    *         other.
    */
-  public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance, final Match<Territory> cond) {
+  public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance, final Predicate<Territory> cond) {
     final Set<Territory> neighbors = getNeighbors(frontier, new HashSet<>(frontier), distance, cond);
     neighbors.removeAll(frontier);
     return neighbors;
@@ -307,7 +308,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, int distance,
-      final Match<Territory> cond) {
+      final Predicate<Territory> cond) {
     if (distance == 0) {
       return searched;
     }
@@ -358,7 +359,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return the shortest route between two territories so that covered territories match the condition
    *         or null if no route exists.
    */
-  public Route getRoute(final Territory t1, final Territory t2, final Match<Territory> cond) {
+  public Route getRoute(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
     if (t1 == t2) {
       return new Route(t1);
     }
@@ -391,7 +392,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return getRoute(t1, t2, Matches.territoryIsWater());
   }
 
-  public Route getRoute_IgnoreEnd(final Territory t1, final Territory t2, final Match<Territory> match) {
+  public Route getRoute_IgnoreEnd(final Territory t1, final Territory t2, final Predicate<Territory> match) {
     return getRoute(t1, t2, Match.anyOf(Matches.territoryIs(t2), match));
   }
 
@@ -415,11 +416,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return a composite route between two territories
    */
   public Route getCompositeRoute(final Territory t1, final Territory t2,
-      final HashMap<Match<Territory>, Integer> matches) {
+      final HashMap<Predicate<Territory>, Integer> matches) {
     if (t1 == t2) {
       return new Route(t1);
     }
-    final Match<Territory> allCond = Match.anyOf(matches.keySet());
+    final Predicate<Territory> allCond = Match.anyOf(matches.keySet());
     if (getNeighbors(t1, allCond).contains(t2)) {
       return new Route(t1, t2);
     }
@@ -428,7 +429,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   public Route getCompositeRoute_IgnoreEnd(final Territory t1, final Territory t2,
-      final HashMap<Match<Territory>, Integer> matches) {
+      final HashMap<Predicate<Territory>, Integer> matches) {
     matches.put(Matches.territoryIs(t2), 0);
     return getCompositeRoute(t1, t2, matches);
   }
@@ -454,7 +455,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return the distance between two territories where the covered territories of the route satisfy the condition
    *         or -1 if they are not connected.
    */
-  public int getDistance(final Territory t1, final Territory t2, final Match<Territory> cond) {
+  public int getDistance(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
     if (t1.equals(t2)) {
       return 0;
     }
@@ -469,7 +470,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * Territories in searched have already been on the frontier.
    */
   private int getDistance(final int distance, final Set<Territory> searched, final Set<Territory> frontier,
-      final Territory target, final Match<Territory> cond) {
+      final Territory target, final Predicate<Territory> cond) {
     // add the frontier to the searched
     searched.addAll(frontier);
     // find the new frontier
@@ -497,7 +498,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   public IntegerMap<Territory> getDistance(final Territory target, final Collection<Territory> territories,
-      final Match<Territory> condition) {
+      final Predicate<Territory> condition) {
     final IntegerMap<Territory> distances = new IntegerMap<>();
     if (target == null || territories == null || territories.isEmpty()) {
       return distances;
@@ -541,7 +542,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         the condition
    *         or -1 if they are not connected. (Distance includes to the end)
    */
-  public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2, final Match<Territory> cond) {
+  public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
     return getDistance(t1, t2, Match.anyOf(Matches.territoryIs(t2), cond));
   }
 

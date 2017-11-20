@@ -39,10 +39,6 @@ public final class Match<T> implements Predicate<T> {
     return condition.test(value);
   }
 
-  public Match<T> invert() {
-    return Match.of(condition.negate());
-  }
-
   /**
    * Creates a new match for the specified condition.
    *
@@ -65,7 +61,7 @@ public final class Match<T> implements Predicate<T> {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <T> Match<T> allOf(final Predicate<T>... matches) {
+  public static <T> Predicate<T> allOf(final Predicate<T>... matches) {
     checkNotNull(matches);
 
     return allOf(Arrays.asList(matches));
@@ -78,7 +74,7 @@ public final class Match<T> implements Predicate<T> {
    *
    * @return A new match; never {@code null}.
    */
-  public static <T> Match<T> allOf(final Collection<Predicate<T>> matches) {
+  public static <T> Predicate<T> allOf(final Collection<Predicate<T>> matches) {
     checkNotNull(matches);
 
     return Match.of(value -> matches.stream().allMatch(match -> match.test(value)));
@@ -93,7 +89,7 @@ public final class Match<T> implements Predicate<T> {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <T> Match<T> anyOf(final Predicate<T>... matches) {
+  public static <T> Predicate<T> anyOf(final Predicate<T>... matches) {
     checkNotNull(matches);
 
     return anyOf(Arrays.asList(matches));
@@ -106,7 +102,7 @@ public final class Match<T> implements Predicate<T> {
    *
    * @return A new match; never {@code null}.
    */
-  public static <T> Match<T> anyOf(final Collection<? extends Predicate<T>> matches) {
+  public static <T> Predicate<T> anyOf(final Collection<? extends Predicate<T>> matches) {
     checkNotNull(matches);
 
     return Match.of(value -> matches.stream().anyMatch(match -> match.test(value)));

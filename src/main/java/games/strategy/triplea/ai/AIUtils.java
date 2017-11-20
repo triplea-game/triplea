@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -112,7 +113,7 @@ public class AIUtils {
     return strength;
   }
 
-  public static Unit getLastUnitMatching(final List<Unit> units, final Match<Unit> match, final int endIndex) {
+  public static Unit getLastUnitMatching(final List<Unit> units, final Predicate<Unit> match, final int endIndex) {
     final int index = getIndexOfLastUnitMatching(units, match, endIndex);
     if (index == -1) {
       return null;
@@ -120,7 +121,7 @@ public class AIUtils {
     return units.get(index);
   }
 
-  public static int getIndexOfLastUnitMatching(final List<Unit> units, final Match<Unit> match, final int endIndex) {
+  public static int getIndexOfLastUnitMatching(final List<Unit> units, final Predicate<Unit> match, final int endIndex) {
     for (int i = endIndex; i >= 0; i--) {
       final Unit unit = units.get(i);
       if (match.test(unit)) {

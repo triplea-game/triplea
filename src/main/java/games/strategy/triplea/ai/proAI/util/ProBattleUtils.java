@@ -55,7 +55,7 @@ public class ProBattleUtils {
     final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,
         defendingUnits, false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
     final List<Unit> defendersWithHitPoints =
-        Matches.getMatches(defendingUnits, Matches.unitIsInfrastructure().invert());
+        Matches.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
     final int totalDefenderHitPoints = BattleCalculator.getTotalHitpointsLeft(defendersWithHitPoints);
     return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
   }
@@ -66,7 +66,7 @@ public class ProBattleUtils {
     if (attackingUnits.size() == 0) {
       return 0;
     }
-    final List<Unit> actualDefenders = Matches.getMatches(defendingUnits, Matches.unitIsInfrastructure().invert());
+    final List<Unit> actualDefenders = Matches.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
     if (actualDefenders.size() == 0) {
       return 100;
     }
@@ -83,7 +83,7 @@ public class ProBattleUtils {
         Matches.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
     if (Properties.getTransportCasualtiesRestricted(data)) {
       unitsThatCanFight =
-          Matches.getMatches(unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().invert());
+          Matches.getMatches(unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());
     }
     final int myHitPoints = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
     final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);

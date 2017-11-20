@@ -9,11 +9,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /**
@@ -218,7 +218,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @param match referring match
    * @return whether all territories in this route match the given match (start territory is not tested).
    */
-  public boolean allMatch(final Match<Territory> match) {
+  public boolean allMatch(final Predicate<Territory> match) {
     return m_steps.stream().allMatch(match);
   }
 
@@ -228,7 +228,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @param match referring match
    * @return whether any territories in this route match the given match (start territory is not tested).
    */
-  public boolean anyMatch(final Match<Territory> match) {
+  public boolean anyMatch(final Predicate<Territory> match) {
     return m_steps.stream().anyMatch(match);
   }
 
@@ -236,7 +236,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @param match referring match
    * @return whether all territories in this route match the given match (start and end territories are not tested).
    */
-  public boolean allMatchMiddleSteps(final Match<Territory> match, final boolean defaultWhenNoMiddleSteps) {
+  public boolean allMatchMiddleSteps(final Predicate<Territory> match, final boolean defaultWhenNoMiddleSteps) {
     final List<Territory> middle = getMiddleSteps();
     if (middle.isEmpty()) {
       return defaultWhenNoMiddleSteps;
@@ -254,7 +254,7 @@ public class Route implements Serializable, Iterable<Territory> {
    *        referring match
    * @return all territories in this route match the given match (start territory is not tested).
    */
-  public Collection<Territory> getMatches(final Match<Territory> match) {
+  public Collection<Territory> getMatches(final Predicate<Territory> match) {
     return Matches.getMatches(m_steps, match);
   }
 

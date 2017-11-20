@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -26,7 +27,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 /**
  * This delegate is only supposed to be run once, per game, at the start of the game.
@@ -191,7 +191,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
       if (!heldUnits.isEmpty()) {
         change.add(ChangeFactory.removeUnits(player, heldUnits));
       }
-      final Match<Unit> owned = Matches.unitIsOwnedBy(player);
+      final Predicate<Unit> owned = Matches.unitIsOwnedBy(player);
       for (final Territory t : data.getMap().getTerritories()) {
         final Collection<Unit> terrUnits = t.getUnits().getMatches(owned);
         if (!terrUnits.isEmpty()) {

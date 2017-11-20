@@ -936,7 +936,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     for (final Territory terr : territories) {
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("direct")) {
-        allUnits.removeAll(Matches.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
+        allUnits.removeAll(Matches.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
       } else if (exclType.equals("allied")) {
         allUnits.retainAll(Matches.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy")) {
@@ -1009,7 +1009,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         allUnits.removeAll(Matches.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
         allUnits.retainAll(Matches.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("direct")) {
-        allUnits.removeAll(Matches.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
+        allUnits.removeAll(Matches.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
       } else if (exclType.equals("enemy")) { // any enemy units in the territory
         allUnits.retainAll(Matches.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
       } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.swing.JOptionPane;
 
@@ -99,7 +100,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> endRoundDelegateTriggerMatch =
+      final Predicate<TriggerAttachment> endRoundDelegateTriggerMatch =
           Match.allOf(AbstractTriggerAttachment.availableUses,
               AbstractTriggerAttachment.whenOrDefaultMatch(null, null), Match.anyOf(
                   TriggerAttachment.activateTriggerMatch(), TriggerAttachment.victoryMatch()));

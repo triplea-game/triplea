@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -31,18 +32,18 @@ import games.strategy.util.Match;
 
 public final class MatchesTest {
 
-  private static final Match<Integer> IS_ZERO_MATCH = Match.of(it -> it == 0);
+  private static final Predicate<Integer> IS_ZERO_MATCH = Match.of(it -> it == 0);
   private static final Object VALUE = new Object();
 
-  private static <T> Matcher<Match<T>> matches(final @Nullable T value) {
-    return new TypeSafeDiagnosingMatcher<Match<T>>() {
+  private static <T> Matcher<Predicate<T>> matches(final @Nullable T value) {
+    return new TypeSafeDiagnosingMatcher<Predicate<T>>() {
       @Override
       public void describeTo(final Description description) {
         description.appendText("matcher matches using ").appendValue(value);
       }
 
       @Override
-      public boolean matchesSafely(final Match<T> match, final Description description) {
+      public boolean matchesSafely(final Predicate<T> match, final Description description) {
         if (!match.test(value)) {
           description.appendText("it does not match");
           return false;
@@ -52,15 +53,15 @@ public final class MatchesTest {
     };
   }
 
-  private static <T> Matcher<Match<T>> notMatches(final @Nullable T value) {
-    return new TypeSafeDiagnosingMatcher<Match<T>>() {
+  private static <T> Matcher<Predicate<T>> notMatches(final @Nullable T value) {
+    return new TypeSafeDiagnosingMatcher<Predicate<T>>() {
       @Override
       public void describeTo(final Description description) {
         description.appendText("matcher does not match using ").appendValue(value);
       }
 
       @Override
-      public boolean matchesSafely(final Match<T> match, final Description description) {
+      public boolean matchesSafely(final Predicate<T> match, final Description description) {
         if (match.test(value)) {
           description.appendText("it matches");
           return false;
@@ -97,7 +98,7 @@ public final class MatchesTest {
 
     assertEquals(Arrays.asList(), Matches.getMatches(Arrays.asList(), Matches.always()), "empty collection");
     assertEquals(Arrays.asList(), Matches.getMatches(input, Matches.never()), "none match");
-    assertEquals(Arrays.asList(-1, 1), Matches.getMatches(input, IS_ZERO_MATCH.invert()), "some match");
+    assertEquals(Arrays.asList(-1, 1), Matches.getMatches(input, IS_ZERO_MATCH.negate()), "some match");
     assertEquals(Arrays.asList(-1, 0, 1), Matches.getMatches(input, Matches.always()), "all match");
   }
 
@@ -136,7 +137,7 @@ public final class MatchesTest {
     private PlayerID enemyPlayer;
     private Territory territory;
 
-    private Match<Territory> newMatch() {
+    private Predicate<Territory> newMatch() {
       return Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player, gameData);
     }
 
@@ -222,7 +223,7 @@ public final class MatchesTest {
     private Territory landTerritory;
     private Territory seaTerritory;
 
-    private Match<Territory> newMatch() {
+    private Predicate<Territory> newMatch() {
       return Matches.territoryIsNotUnownedWater();
     }
 

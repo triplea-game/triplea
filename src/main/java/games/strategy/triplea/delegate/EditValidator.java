@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -69,7 +70,7 @@ class EditValidator {
           if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
-          final Match<Unit> friendlySeaTransports =
+          final Predicate<Unit> friendlySeaTransports =
               Match.allOf(Matches.unitIsTransport(), Matches.unitIsSea(), Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Matches.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Matches.getMatches(units, Matches.unitIsLand());
@@ -86,12 +87,12 @@ class EditValidator {
           }
         }
         if (units.stream().anyMatch(Matches.unitIsAir())) {
-          if (units.stream().anyMatch(Match.allOf(Matches.unitIsAir(), Matches.unitCanLandOnCarrier().invert()))) {
+          if (units.stream().anyMatch(Match.allOf(Matches.unitIsAir(), Matches.unitCanLandOnCarrier().negate()))) {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
-          final Match<Unit> friendlyCarriers = Match.allOf(Matches.unitIsCarrier(), Matches.alliedUnit(player, data));
-          final Match<Unit> friendlyAirUnits = Match.allOf(Matches.unitIsAir(), Matches.alliedUnit(player, data));
+          final Predicate<Unit> friendlyCarriers = Match.allOf(Matches.unitIsCarrier(), Matches.alliedUnit(player, data));
+          final Predicate<Unit> friendlyAirUnits = Match.allOf(Matches.unitIsAir(), Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
               AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)

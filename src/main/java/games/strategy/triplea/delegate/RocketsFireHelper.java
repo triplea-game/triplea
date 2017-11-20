@@ -136,7 +136,7 @@ public class RocketsFireHelper {
 
   static Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player) {
     final Set<Territory> territories = new HashSet<>();
-    final Match<Unit> ownedRockets = rocketMatch(player);
+    final Predicate<Unit> ownedRockets = rocketMatch(player);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
     for (final Territory current : data.getMap()) {
       if (tracker.wasConquered(current)) {
@@ -149,9 +149,9 @@ public class RocketsFireHelper {
     return territories;
   }
 
-  private static Match<Unit> rocketMatch(final PlayerID player) {
+  private static Predicate<Unit> rocketMatch(final PlayerID player) {
     return Match.allOf(Matches.unitIsRocket(), Matches.unitIsOwnedBy(player), Matches.unitIsNotDisabled(),
-        Matches.unitIsBeingTransported().invert(), Matches.unitIsSubmerged().invert(), Matches.unitHasNotMoved());
+        Matches.unitIsBeingTransported().negate(), Matches.unitIsSubmerged().negate(), Matches.unitHasNotMoved());
   }
 
   private static Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data,
@@ -163,13 +163,13 @@ public class RocketsFireHelper {
         .of(Matches.territoryAllowsRocketsCanFlyOver(player, data))
         .andIf(!isRocketsCanFlyOverImpassables(data), Matches.territoryIsNotImpassable())
         .build();
-    final Match<Unit> attackableUnits =
-        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
+    final Predicate<Unit> attackableUnits =
+        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().negate());
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, Match.of(allowed));
       if (route != null && route.numberOfSteps() <= maxDistance) {
         if (current.getUnits().anyMatch(Match.allOf(attackableUnits,
-            Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).invert()))) {
+            Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
           hasFactory.add(current);
         }
       }
@@ -191,9 +191,9 @@ public class RocketsFireHelper {
     final boolean damageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
-        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
+        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().negate()));
     final Collection<Unit> enemyTargetsTotal =
-        Matches.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
+        Matches.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).negate());
     final Collection<Unit> targets = new ArrayList<>();
     final Collection<Unit> rockets;
     // attackFrom could be null if WW2V1

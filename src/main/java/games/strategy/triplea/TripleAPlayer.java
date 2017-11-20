@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
@@ -385,7 +386,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         && !id.getRepairFrontier().getRules().isEmpty()) {
       final GameData data = getGameData();
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        final Match<Unit> myDamaged = Match.allOf(
+        final Predicate<Unit> myDamaged = Match.allOf(
             Matches.unitIsOwnedBy(id),
             Matches.unitHasTakenSomeBombingUnitDamage());
         final Collection<Unit> damagedUnits = new ArrayList<>();

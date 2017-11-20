@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -85,7 +86,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     if (Properties.getTriggers(data)) {
       final String stepName = data.getSequence().getStep().getName();
       // we use AND in order to make sure there are uses and when is set correctly.
-      final Match<TriggerAttachment> baseDelegateWhenTriggerMatch = Match.allOf(
+      final Predicate<TriggerAttachment> baseDelegateWhenTriggerMatch = Match.allOf(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(beforeOrAfter, stepName));
       TriggerAttachment.collectAndFireTriggers(new HashSet<>(data.getPlayerList().getPlayers()),
           baseDelegateWhenTriggerMatch, m_bridge, beforeOrAfter, stepName);

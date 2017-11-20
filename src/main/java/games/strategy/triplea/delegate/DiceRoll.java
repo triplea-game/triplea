@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -646,7 +647,7 @@ public class DiceRoll implements Externalizable {
       if (!((allies && rule.getAllied()) || (!allies && rule.getEnemy()))) {
         continue;
       }
-      final Match<Unit> canSupport = Match.allOf(
+      final Predicate<Unit> canSupport = Match.allOf(
           Matches.unitIsOfType((UnitType) rule.getAttachedTo()), Matches.unitOwnedBy(rule.getPlayers()));
       final List<Unit> supporters = Matches.getMatches(unitsGivingTheSupport, canSupport);
       int numSupport = supporters.size();

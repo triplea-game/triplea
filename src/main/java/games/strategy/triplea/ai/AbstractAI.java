@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import games.strategy.engine.data.GameData;
@@ -310,18 +311,18 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       picked = territoryChoices.get(0);
     } else {
       Collections.shuffle(territoryChoices);
-      final List<Territory> notOwned = Matches.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).invert());
+      final List<Territory> notOwned = Matches.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).negate());
       if (notOwned.isEmpty()) {
         // only owned territories left
-        final boolean nonFactoryUnitsLeft = unitChoices.stream().anyMatch(Matches.unitCanProduceUnits().invert());
-        final Match<Unit> ownedFactories = Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsOwnedBy(me));
+        final boolean nonFactoryUnitsLeft = unitChoices.stream().anyMatch(Matches.unitCanProduceUnits().negate());
+        final Predicate<Unit> ownedFactories = Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsOwnedBy(me));
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
         final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(territoryChoices);
         final List<Territory> territoriesWithFactories =
             Matches.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories));
         if (!nonFactoryUnitsLeft) {
-          test.retainAll(Matches.getMatches(test, Matches.territoryHasUnitsThatMatch(ownedFactories).invert()));
+          test.retainAll(Matches.getMatches(test, Matches.territoryHasUnitsThatMatch(ownedFactories).negate()));
           if (!test.isEmpty()) {
             picked = test.get(0);
           } else {
@@ -330,7 +331,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
                   Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.territoryIsLand())));
             }
             final List<Territory> doesNotHaveFactoryYet =
-                Matches.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories).invert());
+                Matches.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories).negate());
             if (capitals.isEmpty() || doesNotHaveFactoryYet.isEmpty()) {
               picked = territoryChoices.get(0);
             } else {
@@ -404,7 +405,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     final Set<Unit> unitsToPlace = new HashSet<>();
     if (unitChoices != null && !unitChoices.isEmpty() && unitsPerPick > 0) {
       Collections.shuffle(unitChoices);
-      final List<Unit> nonFactory = Matches.getMatches(unitChoices, Matches.unitCanProduceUnits().invert());
+      final List<Unit> nonFactory = Matches.getMatches(unitChoices, Matches.unitCanProduceUnits().negate());
       if (nonFactory.isEmpty()) {
         for (int i = 0; i < unitsPerPick && !unitChoices.isEmpty(); i++) {
           unitsToPlace.add(unitChoices.get(0));

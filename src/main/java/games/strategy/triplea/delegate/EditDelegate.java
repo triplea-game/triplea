@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -90,7 +91,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
           if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
-          final Match<Unit> friendlySeaTransports =
+          final Predicate<Unit> friendlySeaTransports =
               Match.allOf(Matches.unitIsTransport(), Matches.unitIsSea(), Matches.alliedUnit(player, data));
           final Collection<Unit> seaTransports = Matches.getMatches(units, friendlySeaTransports);
           final Collection<Unit> landUnitsToAdd = Matches.getMatches(units, Matches.unitIsLand());
@@ -155,7 +156,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
         m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
       }
     } else {
-      final Match<Unit> enemyNonCom = Match.allOf(Matches.unitIsInfrastructure(), Matches.enemyUnit(player, data));
+      final Predicate<Unit> enemyNonCom = Match.allOf(Matches.unitIsInfrastructure(), Matches.enemyUnit(player, data));
       final Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
       // mark no movement for enemy units
       m_bridge.addChange(ChangeFactory.markNoMovementChange(units));

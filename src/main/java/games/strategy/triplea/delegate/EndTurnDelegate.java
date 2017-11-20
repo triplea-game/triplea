@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -74,7 +75,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final StringBuilder endTurnReport = new StringBuilder();
     final GameData data = getData();
     final PlayerID player = data.getSequence().getStep().getPlayerId();
-    final Match<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCreatesUnits());
+    final Predicate<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCreatesUnits());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> myCreators = Matches.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
@@ -106,7 +107,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           change.add(place);
         }
         if (!toAddSea.isEmpty()) {
-          final Match<Territory> myTerrs = Match.allOf(Matches.territoryIsWater());
+          final Predicate<Territory> myTerrs = Match.allOf(Matches.territoryIsWater());
           final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (waterNeighbors != null && !waterNeighbors.isEmpty()) {
             final Territory tw = getRandomTerritory(waterNeighbors, bridge);
@@ -119,7 +120,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           }
         }
         if (!toAddLand.isEmpty()) {
-          final Match<Territory> myTerrs = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.territoryIsLand());
+          final Predicate<Territory> myTerrs = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.territoryIsLand());
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (landNeighbors != null && !landNeighbors.isEmpty()) {
             final Territory tl = getRandomTerritory(landNeighbors, bridge);
@@ -165,7 +166,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // Find total unit generated resources for all owned units
     final GameData data = getData();
     final PlayerID player = data.getSequence().getStep().getPlayerId();
-    final Match<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCreatesResources());
+    final Predicate<Unit> myCreatorsMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitCreatesResources());
     final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> myCreators = Matches.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
@@ -217,7 +218,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final boolean useTriggers = Properties.getTriggers(data);
     if (useTriggers) {
       // add conditions required for triggers
-      final Match<TriggerAttachment> endTurnDelegateTriggerMatch = Match.allOf(
+      final Predicate<TriggerAttachment> endTurnDelegateTriggerMatch = Match.allOf(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
           Match.anyOf(TriggerAttachment.resourceMatch()));
       toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(
@@ -283,7 +284,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return Properties.getNationalObjectives(getData());
   }
 
-  private static final Match<RulesAttachment> availableUses = Match.of(ra -> ra.getUses() != 0);
+  private static final Predicate<RulesAttachment> availableUses = Match.of(ra -> ra.getUses() != 0);
 
   @Override
   protected String addOtherResources(final IDelegateBridge bridge) {

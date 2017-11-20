@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -208,7 +209,7 @@ public class ExtendedStats extends StatPanel {
     @Override
     public double getValue(final PlayerID player, final GameData data) {
       int matchCount = 0;
-      final Match<Unit> ownedBy = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut));
+      final Predicate<Unit> ownedBy = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut));
       for (final Territory place : data.getMap().getTerritories()) {
         matchCount += place.getUnits().countMatches(ownedBy);
       }

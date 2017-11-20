@@ -3,6 +3,7 @@ package games.strategy.triplea.attachments;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.CompositeChange;
@@ -224,7 +225,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return testChance;
   }
 
-  public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions) {
+  public static Predicate<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions) {
     return Match.of(t -> t.isSatisfied(testedConditions));
   }
 
@@ -239,7 +240,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * @return true if when and both args are null, and true if all are not null and when matches the args, otherwise
    *         false
    */
-  public static Match<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
+  public static Predicate<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
     return Match.of(t -> {
       if (beforeOrAfter == null && stepName == null && t.getWhen().isEmpty()) {
         return true;
@@ -254,9 +255,9 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     });
   }
 
-  public static final Match<TriggerAttachment> availableUses = Match.of(t -> t.getUses() != 0);
+  public static final Predicate<TriggerAttachment> availableUses = Match.of(t -> t.getUses() != 0);
 
-  public static Match<TriggerAttachment> notificationMatch() {
+  public static Predicate<TriggerAttachment> notificationMatch() {
     return Match.of(t -> t.getNotification() != null);
   }
 

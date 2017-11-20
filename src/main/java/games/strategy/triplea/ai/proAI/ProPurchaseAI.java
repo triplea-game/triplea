@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -73,7 +74,7 @@ class ProPurchaseAI {
     // Current data at the start of combat move
     this.data = data;
     this.player = player;
-    final Match<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player),
+    final Predicate<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player),
         Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
     final List<Territory> rfactories = Matches.getMatches(data.getMap().getTerritories(),
         ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
@@ -1875,7 +1876,7 @@ class ProPurchaseAI {
 
     ProLogger.info("Place land with isConstruction=" + isConstruction + ", units=" + player.getUnits().getUnits());
 
-    Match<Unit> unitMatch = Matches.unitIsNotConstruction();
+    Predicate<Unit> unitMatch = Matches.unitIsNotConstruction();
     if (isConstruction) {
       unitMatch = Matches.unitIsConstruction();
     }

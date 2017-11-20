@@ -101,7 +101,7 @@ public class ProPurchaseUtils {
 
         // Find number of unit type that are already built and about to be placed
         int currentlyBuilt = 0;
-        final Match<Unit> unitTypeOwnedBy = Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
+        final Predicate<Unit> unitTypeOwnedBy = Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
         final List<Territory> allTerritories = data.getMap().getTerritories();
         for (final Territory t : allTerritories) {
           currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
@@ -258,8 +258,8 @@ public class ProPurchaseUtils {
 
   private static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
     final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
-        .and(Matches.unitIsBeingTransported().invert())
-        .and((territory.isWater() ? Matches.unitIsLand() : Matches.unitIsSea()).invert());
+        .and(Matches.unitIsBeingTransported().negate())
+        .and((territory.isWater() ? Matches.unitIsLand() : Matches.unitIsSea()).negate());
     final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatch);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());

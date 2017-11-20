@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -108,10 +109,10 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<>();
-    final Match<Unit> groundUnits =
+    final Predicate<Unit> groundUnits =
         // we add factories and constructions later
         Match.allOf(Matches.unitIsLand(), Matches.unitIsNotConstruction());
-    final Match<Unit> airUnits = Match.allOf(Matches.unitIsAir(), Matches.unitIsNotConstruction());
+    final Predicate<Unit> airUnits = Match.allOf(Matches.unitIsAir(), Matches.unitIsNotConstruction());
     placeableUnits.addAll(Matches.getMatches(units, groundUnits));
     placeableUnits.addAll(Matches.getMatches(units, airUnits));
     if (units.stream().anyMatch(Matches.unitIsConstruction())) {
@@ -136,7 +137,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       final Collection<Unit> unitsWhichConsume =
           Matches.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {
-        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().test(unit)) {
+        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).negate().test(unit)) {
           placeableUnits.remove(unit);
         }
       }

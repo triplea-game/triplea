@@ -65,7 +65,7 @@ public class ProSimulateTurnUtils {
         // Make updates to data
         final List<Unit> attackersToRemove = new ArrayList<>(attackers);
         attackersToRemove.removeAll(remainingUnits);
-        final List<Unit> defendersToRemove = Matches.getMatches(defenders, Matches.unitIsInfrastructure().invert());
+        final List<Unit> defendersToRemove = Matches.getMatches(defenders, Matches.unitIsInfrastructure().negate());
         final List<Unit> infrastructureToChangeOwner = Matches.getMatches(defenders, Matches.unitIsInfrastructure());
         ProLogger.debug("attackersToRemove=" + attackersToRemove);
         ProLogger.debug("defendersToRemove=" + defendersToRemove);

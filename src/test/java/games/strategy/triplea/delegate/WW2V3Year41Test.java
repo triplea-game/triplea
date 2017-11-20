@@ -153,7 +153,7 @@ public class WW2V3Year41Test {
     assertEquals(casualties.size(), 2);
     // should be 1 fighter and 1 bomber
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
   }
 
   @Test
@@ -186,7 +186,7 @@ public class WW2V3Year41Test {
     assertEquals(casualties.size(), 3);
     // should be 1 fighter and 2 bombers
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 2);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
   }
 
   @Test
@@ -222,7 +222,7 @@ public class WW2V3Year41Test {
     assertEquals(4, randomSource.getTotalRolled());
     // should be 1 fighter and 2 bombers
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
   }
 
   @Test

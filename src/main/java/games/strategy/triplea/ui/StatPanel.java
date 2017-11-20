@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -41,7 +42,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 public class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
@@ -478,7 +478,7 @@ public class StatPanel extends AbstractStatPanel {
     @Override
     public double getValue(final PlayerID player, final GameData data) {
       int matchCount = 0;
-      final Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
+      final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player);
       for (final Territory place : data.getMap().getTerritories()) {
         matchCount += place.getUnits().countMatches(ownedBy);
       }
@@ -495,7 +495,7 @@ public class StatPanel extends AbstractStatPanel {
     @Override
     public double getValue(final PlayerID player, final GameData data) {
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
-      final Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
+      final Predicate<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
       int tuv = 0;
       for (final Territory place : data.getMap().getTerritories()) {
         final Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);

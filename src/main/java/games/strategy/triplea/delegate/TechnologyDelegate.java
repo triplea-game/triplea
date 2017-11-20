@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -72,7 +73,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> technologyDelegateTriggerMatch = Match.allOf(
+      final Predicate<TriggerAttachment> technologyDelegateTriggerMatch = Match.allOf(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
           Match.anyOf(TriggerAttachment.techAvailableMatch()));
       // get all possible triggers based on this match.

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -383,7 +384,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     final GameData data = bridge.getData();
     final Collection<Unit> canConquer = Matches.getMatches(units,
-        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).invert());
+        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).negate());
     if (canConquer.stream().noneMatch(Matches.unitIsNotAir())) {
       return;
     }
@@ -393,7 +394,7 @@ public class BattleTracker implements Serializable {
     }
     final boolean canConquerMiddleSteps = presentFromStartTilEnd.stream().anyMatch(Matches.unitIsNotAir());
     final boolean scramblingEnabled = Properties.getScramble_Rules_In_Effect(data);
-    final Match<Territory> conquerable = Match.allOf(
+    final Predicate<Territory> conquerable = Match.allOf(
         Matches.territoryIsEmptyOfCombatUnits(data, id),
         Match.anyOf(
             Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
@@ -498,7 +499,7 @@ public class BattleTracker implements Serializable {
           - Matches.countMatches(arrivedUnits, Matches.unitIsAir())
           - Matches.countMatches(arrivedUnits, Matches.unitIsSubmerged());
       // If transports are restricted from controlling sea zones, subtract them
-      final Match<Unit> transportsCanNotControl = Match.allOf(
+      final Predicate<Unit> transportsCanNotControl = Match.allOf(
           Matches.unitIsTransportAndNotDestroyer(),
           Matches.unitIsTransportButNotCombatTransport());
       if (!Properties.getTransportControlSeaZone(data)) {
@@ -740,7 +741,7 @@ public class BattleTracker implements Serializable {
     final GameData data = bridge.getData();
     // destroy any units that should be destroyed on capture
     if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
-      final Match<Unit> enemyToBeDestroyed =
+      final Predicate<Unit> enemyToBeDestroyed =
           Match.allOf(Matches.enemyUnit(id, data), Matches.unitDestroyedWhenCapturedByOrFrom(id));
       final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
       if (!destroyed.isEmpty()) {
@@ -767,8 +768,8 @@ public class BattleTracker implements Serializable {
       }
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
-    final Match<Unit> enemyToBeDestroyed = Match.allOf(Matches.enemyUnit(id, data),
-        Matches.unitIsDisabled(), Matches.unitIsInfrastructure().invert());
+    final Predicate<Unit> enemyToBeDestroyed = Match.allOf(Matches.enemyUnit(id, data),
+        Matches.unitIsDisabled(), Matches.unitIsInfrastructure().negate());
     final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
     if (!destroyed.isEmpty()) {
       final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
@@ -779,8 +780,8 @@ public class BattleTracker implements Serializable {
       }
     }
     // take over non combatants
-    final Match<Unit> enemyNonCom = Match.allOf(Matches.enemyUnit(id, data), Matches.unitIsInfrastructure());
-    final Match<Unit> willBeCaptured = Match.anyOf(enemyNonCom,
+    final Predicate<Unit> enemyNonCom = Match.allOf(Matches.enemyUnit(id, data), Matches.unitIsInfrastructure());
+    final Predicate<Unit> willBeCaptured = Match.anyOf(enemyNonCom,
         Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
     // change any units that change unit types on capture
@@ -977,7 +978,7 @@ public class BattleTracker implements Serializable {
     if (dependent == null) {
       return Collections.emptyList();
     }
-    return Matches.getMatches(dependent, Matches.battleIsEmpty().invert());
+    return Matches.getMatches(dependent, Matches.battleIsEmpty().negate());
   }
 
   /**
