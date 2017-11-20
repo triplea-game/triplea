@@ -121,7 +121,8 @@ public class AIUtils {
     return units.get(index);
   }
 
-  public static int getIndexOfLastUnitMatching(final List<Unit> units, final Predicate<Unit> match, final int endIndex) {
+  public static int getIndexOfLastUnitMatching(final List<Unit> units, final Predicate<Unit> match,
+      final int endIndex) {
     for (int i = endIndex; i >= 0; i--) {
       final Unit unit = units.get(i);
       if (match.test(unit)) {

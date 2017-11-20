@@ -290,7 +290,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
    *         other.
    */
-  public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance, final Predicate<Territory> cond) {
+  public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance,
+      final Predicate<Territory> cond) {
     final Set<Territory> neighbors = getNeighbors(frontier, new HashSet<>(frontier), distance, cond);
     neighbors.removeAll(frontier);
     return neighbors;
@@ -542,7 +543,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         the condition
    *         or -1 if they are not connected. (Distance includes to the end)
    */
-  public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
+  public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2,
+      final Predicate<Territory> cond) {
     return getDistance(t1, t2, Match.anyOf(Matches.territoryIs(t2), cond));
   }
 

@@ -118,7 +118,8 @@ final class ProTechAI {
           Matches.unitCanMove());
       final Predicate<Unit> enemyTransportable = Match.allOf(Matches.unitIsOwnedBy(enemyPlayer),
           Matches.unitCanBeTransported(), Matches.unitIsNotAa(), Matches.unitCanMove());
-      final Predicate<Unit> transport = Match.allOf(Matches.unitIsSea(), Matches.unitIsTransport(), Matches.unitCanMove());
+      final Predicate<Unit> transport =
+          Match.allOf(Matches.unitIsSea(), Matches.unitIsTransport(), Matches.unitCanMove());
       final List<Territory> enemyFighterTerritories = findUnitTerr(data, enemyPlane);
       int maxFighterDistance = 0;
       // should change this to read production frontier and tech

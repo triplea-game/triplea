@@ -120,7 +120,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           }
         }
         if (!toAddLand.isEmpty()) {
-          final Predicate<Territory> myTerrs = Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.territoryIsLand());
+          final Predicate<Territory> myTerrs =
+              Match.allOf(Matches.isTerritoryOwnedBy(player), Matches.territoryIsLand());
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (landNeighbors != null && !landNeighbors.isEmpty()) {
             final Territory tl = getRandomTerritory(landNeighbors, bridge);
