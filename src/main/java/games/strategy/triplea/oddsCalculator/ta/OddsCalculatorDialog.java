@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddscalc;
+package games.strategy.triplea.oddsCalculator.ta;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

@@ -14,7 +14,7 @@ import java.util.prefs.Preferences;
  * }
  * </code>
  */
-public class PerfTimer implements Closeable {
+class PerfTimer implements Closeable {
 
   private static final String LOG_PERFORMANCE_KEY = "logPerformance";
   private static final PerfTimer DISABLED_TIMER = new PerfTimer("disabled");
@@ -63,8 +63,7 @@ public class PerfTimer implements Closeable {
     return prefs.getBoolean(LOG_PERFORMANCE_KEY, false);
   }
 
-  @SuppressWarnings("unused")
-  public static PerfTimer startTimer(final String title) {
+  static PerfTimer startTimer(final String title) {
     return enabled ? new PerfTimer(title) : DISABLED_TIMER;
   }
 

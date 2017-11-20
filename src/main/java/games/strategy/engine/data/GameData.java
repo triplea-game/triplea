@@ -161,10 +161,6 @@ public class GameData implements Serializable {
     return playerList;
   }
 
-  public PlayerID getPlayer(final int playerNumber) {
-    return getPlayerList().getPlayers().get(playerNumber);
-  }
-
   /**
    * @return list of resources available in the game.
    */
