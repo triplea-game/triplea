@@ -141,7 +141,7 @@ public class MovePerformer implements Serializable {
         // battles on (note water could have enemy but its
         // not owned)
         final GameData data = bridge.getData();
-        final Match<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
+        final Predicate<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
         final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits));
         // Reset Optional
         arrivingUnits = new ArrayList<>();
@@ -173,7 +173,7 @@ public class MovePerformer implements Serializable {
           // could it be a bombing raid
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
           final Collection<Unit> enemyTargetsTotal = Matches.getMatches(enemyUnits,
-              Match.allOf(Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().invert()));
+              Match.allOf(Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().negate()));
           final boolean canCreateAirBattle =
               !enemyTargetsTotal.isEmpty()
                   && Properties.getRaidsMayBePreceededByAirBattles(data)
@@ -293,7 +293,7 @@ public class MovePerformer implements Serializable {
     m_executionStack.execute(m_bridge);
   }
 
-  private static Match<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
+  private static Predicate<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
     return Match.anyOf(
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data),
         Matches.territoryHasNonSubmergedEnemyUnits(id, data),
@@ -350,7 +350,7 @@ public class MovePerformer implements Serializable {
       // can't keep moving them
       // if there is an enemy destroyer there
       for (final Unit unit : Matches.getMatches(units,
-          Match.allOf(Matches.unitIsSub(), Matches.unitIsAir().invert()))) {
+          Match.allOf(Matches.unitIsSub(), Matches.unitIsAir().negate()))) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }
@@ -366,7 +366,7 @@ public class MovePerformer implements Serializable {
       return;
     }
     final GameData data = m_bridge.getData();
-    final Match<Unit> paratroopNAirTransports = Match.anyOf(
+    final Predicate<Unit> paratroopNAirTransports = Match.anyOf(
         Matches.unitIsAirTransport(),
         Matches.unitIsAirTransportable());
     final boolean paratroopsLanding = arrived.stream().anyMatch(paratroopNAirTransports)

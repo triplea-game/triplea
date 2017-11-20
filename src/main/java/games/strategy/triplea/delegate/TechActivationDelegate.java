@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -58,7 +59,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> techActivationDelegateTriggerMatch = Match.allOf(
+      final Predicate<TriggerAttachment> techActivationDelegateTriggerMatch = Match.allOf(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
           Match.anyOf(TriggerAttachment.unitPropertyMatch(), TriggerAttachment.techMatch(),
               TriggerAttachment.supportMatch()));

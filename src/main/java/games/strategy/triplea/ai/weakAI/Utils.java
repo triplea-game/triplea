@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -56,12 +57,12 @@ class Utils {
     return strength;
   }
 
-  static Route findNearest(final Territory start, final Match<Territory> endCondition,
-      final Match<Territory> routeCondition, final GameData data) {
+  static Route findNearest(final Territory start, final Predicate<Territory> endCondition,
+      final Predicate<Territory> routeCondition, final GameData data) {
     Route shortestRoute = null;
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.test(t)) {
-        final Match<Territory> routeOrEnd = Match.anyOf(routeCondition, Matches.territoryIs(t));
+        final Predicate<Territory> routeOrEnd = Match.anyOf(routeCondition, Matches.territoryIs(t));
         final Route r = data.getMap().getRoute(start, t, routeOrEnd);
         if (r != null) {
           if (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps()) {
@@ -101,9 +102,9 @@ class Utils {
    * Return Territories containing any unit depending on unitCondition
    * Differs from findCertainShips because it doesn't require the units be owned.
    */
-  static List<Territory> findUnitTerr(final GameData data, final Match<Unit> unitCondition) {
+  static List<Territory> findUnitTerr(final GameData data, final Predicate<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units
-    final Match<Unit> limitShips = Match.allOf(unitCondition);
+    final Predicate<Unit> limitShips = Match.allOf(unitCondition);
     final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> neighbors = data.getMap().getTerritories();
     for (final Territory t2 : neighbors) {

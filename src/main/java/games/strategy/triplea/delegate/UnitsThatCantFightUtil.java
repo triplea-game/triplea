@@ -23,20 +23,20 @@ public class UnitsThatCantFightUtil {
 
   // TODO Used to notify of kamikazi attacks
   Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerID player) {
-    final Match<Unit> enemyAttackUnits = Match.allOf(Matches.enemyUnit(player, m_data), Matches.unitCanAttack(player));
+    final Predicate<Unit> enemyAttackUnits = Match.allOf(Matches.enemyUnit(player, m_data), Matches.unitCanAttack(player));
     final Collection<Territory> cantFight = new ArrayList<>();
     for (final Territory current : m_data.getMap()) {
       // get all owned non-combat units
       final Predicate<Unit> ownedUnitsMatch = PredicateBuilder
-          .of(Matches.unitIsInfrastructure().invert())
-          .andIf(current.isWater(), Matches.unitIsLand().invert())
+          .of(Matches.unitIsInfrastructure().negate())
+          .andIf(current.isWater(), Matches.unitIsLand().negate())
           .and(Matches.unitIsOwnedBy(player))
           .build();
       // All owned units
       final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
       // only noncombat units
       final Collection<Unit> nonCombatUnits =
-          current.getUnits().getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).invert()));
+          current.getUnits().getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).negate()));
       if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
         continue;
       }

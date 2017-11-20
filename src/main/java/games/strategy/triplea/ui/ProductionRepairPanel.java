@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -124,7 +125,7 @@ public class ProductionRepairPanel extends JPanel {
     try {
       this.id = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
-      final Match<Unit> myDamagedUnits =
+      final Predicate<Unit> myDamagedUnits =
           Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
               Matches.unitHasTakenSomeBombingUnitDamage());
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =

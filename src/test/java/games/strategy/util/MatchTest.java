@@ -3,12 +3,14 @@ package games.strategy.util;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.function.Predicate;
+
 import org.junit.jupiter.api.Test;
 
 import games.strategy.triplea.delegate.Matches;
 
 public class MatchTest {
-  private static final Match<Integer> IS_ZERO_MATCH = Match.of(it -> it == 0);
+  private static final Predicate<Integer> IS_ZERO_MATCH = Match.of(it -> it == 0);
 
   private static final Object VALUE = new Object();
 
@@ -28,8 +30,8 @@ public class MatchTest {
 
   @Test
   public void testInverse() {
-    assertFalse(Matches.always().invert().test(VALUE));
-    assertTrue(Matches.never().invert().test(VALUE));
+    assertFalse(Matches.always().negate().test(VALUE));
+    assertTrue(Matches.never().negate().test(VALUE));
   }
 
   @Test

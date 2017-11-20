@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -173,7 +174,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final boolean isEditMode = getEditMode(data);
     if (!isEditMode) {
       // make sure all units are at least friendly
-      for (final Unit unit : Matches.getMatches(units, Matches.unitIsOwnedBy(player).invert())) {
+      for (final Unit unit : Matches.getMatches(units, Matches.unitIsOwnedBy(player).negate())) {
         result.addDisallowedUnit("Can only move owned units", unit);
       }
     }
@@ -198,7 +199,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result.setErrorReturnResult("Destination Is Out Of Range");
     }
     final Collection<PlayerID> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
-    final Match<Unit> airborneBaseMatch = getAirborneMatch(airborneBases, alliesForBases);
+    final Predicate<Unit> airborneBaseMatch = getAirborneMatch(airborneBases, alliesForBases);
     final Territory start = route.getStart();
     final Territory end = route.getEnd();
     final Collection<Unit> basesAtStart = start.getUnits().getMatches(airborneBaseMatch);
@@ -280,15 +281,15 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     return result;
   }
 
-  private static Match<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data) {
+  private static Predicate<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data) {
     return getAirborneMatch(TechAbilityAttachment.getAirborneBases(player, data),
         data.getRelationshipTracker().getAllies(player, true));
   }
 
-  private static Match<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
+  private static Predicate<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
     return Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
         Matches.unitIsOfTypes(types), Matches.unitIsNotDisabled(), Matches.unitHasNotMoved(),
-        Matches.unitIsAirborne().invert());
+        Matches.unitIsAirborne().negate());
   }
 
   private static Change getNewAssignmentOfNumberLaunchedChange(int newNumberLaunched, final Collection<Unit> bases,

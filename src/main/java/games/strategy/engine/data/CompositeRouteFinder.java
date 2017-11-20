@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import games.strategy.triplea.delegate.Matches;
@@ -16,7 +17,7 @@ public class CompositeRouteFinder {
   private static final Logger logger = Logger.getLogger(CompositeRouteFinder.class.getName());
 
   private final GameMap map;
-  private final Map<Match<Territory>, Integer> matches;
+  private final Map<Predicate<Territory>, Integer> matches;
 
   /**
    * This class can find composite routes between two territories.
@@ -32,7 +33,7 @@ public class CompositeRouteFinder {
    * @param matches
    *        - Set of matches and scores. The lower a match is scored, the more favorable it is.
    */
-  public CompositeRouteFinder(final GameMap map, final Map<Match<Territory>, Integer> matches) {
+  public CompositeRouteFinder(final GameMap map, final Map<Predicate<Territory>, Integer> matches) {
     this.map = map;
     this.matches = matches;
     logger.finer("Initializing CompositeRouteFinderClass...");
@@ -113,7 +114,7 @@ public class CompositeRouteFinder {
    */
   private int getTerScore(final Territory ter) {
     int bestMatchingScore = Integer.MAX_VALUE;
-    for (final Match<Territory> match : matches.keySet()) {
+    for (final Predicate<Territory> match : matches.keySet()) {
       final int score = matches.get(match);
       if (score < bestMatchingScore) { // If this is a 'better' match
         if (match.test(ter)) {

@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -28,7 +29,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 final class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;
@@ -41,7 +41,7 @@ final class UnitChooser extends JPanel {
   private JButton autoSelectButton;
   private JButton selectNoneButton;
   private final UiContext uiContext;
-  private final Match<Collection<Unit>> match;
+  private final Predicate<Collection<Unit>> match;
 
   UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
       final boolean allowTwoHit, final UiContext uiContext) {
@@ -54,7 +54,7 @@ final class UnitChooser extends JPanel {
   }
 
   private UnitChooser(final Map<Unit, Collection<Unit>> dependent, final boolean allowMultipleHits,
-      final UiContext uiContext, final Match<Collection<Unit>> match) {
+      final UiContext uiContext, final Predicate<Collection<Unit>> match) {
     dependents = dependent;
     this.allowMultipleHits = allowMultipleHits;
     this.uiContext = uiContext;
@@ -82,7 +82,7 @@ final class UnitChooser extends JPanel {
   UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections,
       final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
       final boolean categorizeTransportCost, final boolean allowMultipleHits,
-      final UiContext uiContext, final Match<Collection<Unit>> match) {
+      final UiContext uiContext, final Predicate<Collection<Unit>> match) {
     this(dependent, allowMultipleHits, uiContext, match);
     createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
     layoutEntries();

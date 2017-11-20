@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -41,7 +42,7 @@ public class AirThatCantLandUtil {
     final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
     while (territories.hasNext()) {
       final Territory current = territories.next();
-      final Match<Unit> ownedAir = Match.allOf(Matches.unitIsAir(), Matches.unitIsOwnedBy(player));
+      final Predicate<Unit> ownedAir = Match.allOf(Matches.unitIsAir(), Matches.unitIsOwnedBy(player));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
       if (air.size() != 0 && !AirMovementValidator.canLand(air, current, player, data)) {
         cantLand.add(current);
@@ -56,7 +57,7 @@ public class AirThatCantLandUtil {
     final Iterator<Territory> territories = getTerritoriesWhereAirCantLand(player).iterator();
     while (territories.hasNext()) {
       final Territory current = territories.next();
-      final Match<Unit> ownedAir = Match.allOf(Matches.unitIsAir(), Matches.alliedUnit(player, data));
+      final Predicate<Unit> ownedAir = Match.allOf(Matches.unitIsAir(), Matches.alliedUnit(player, data));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
       final boolean hasNeighboringFriendlyFactory =
           map.getNeighbors(current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(data, player)).size() > 0;

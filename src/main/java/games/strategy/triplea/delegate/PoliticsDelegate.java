@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -55,7 +56,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Match<TriggerAttachment> politicsDelegateTriggerMatch = Match.allOf(
+      final Predicate<TriggerAttachment> politicsDelegateTriggerMatch = Match.allOf(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
           Match.anyOf(TriggerAttachment.relationshipChangeMatch()));
       // get all possible triggers based on this match.
@@ -171,15 +172,15 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private boolean actionIsAccepted(final PoliticalActionAttachment paa) {
     final GameData data = getData();
-    final Match<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar =
+    final Predicate<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar =
         Match.anyOf(
             Matches.politicalActionIsRelationshipChangeOf(null,
-                Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().invert(),
+                Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().negate(),
                 Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether(), data),
-            Matches.politicalActionIsRelationshipChangeOf(null, Matches.relationshipTypeIsAtWar().invert(),
+            Matches.politicalActionIsRelationshipChangeOf(null, Matches.relationshipTypeIsAtWar().negate(),
                 Matches.relationshipTypeIsAtWar(), data),
             Matches.politicalActionIsRelationshipChangeOf(null, Matches.relationshipTypeIsAtWar(),
-                Matches.relationshipTypeIsAtWar().invert(), data));
+                Matches.relationshipTypeIsAtWar().negate(), data));
     if (!Properties.getAlliancesCanChainTogether(data)
         || !intoAlliedChainOrIntoOrOutOfWar.test(paa)) {
       for (final PlayerID player : paa.getActionAccept()) {
@@ -440,7 +441,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
       final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
       if (Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().test(currentType)
-          && Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().invert().test(newType)) {
+          && Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().negate().test(newType)) {
         for (final PlayerID p3 : p1AlliedWith) {
           final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, player);
           if (!currentOther.equals(newType)) {
@@ -479,7 +480,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
       final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
       if (Matches.relationshipTypeIsAtWar().test(currentType)
-          && Matches.relationshipTypeIsAtWar().invert().test(newType)) {
+          && Matches.relationshipTypeIsAtWar().negate().test(newType)) {
         final Collection<PlayerID> otherPlayersAlliedWith =
             Matches.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(otherPlayer, data));
         if (!otherPlayersAlliedWith.contains(otherPlayer)) {

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -102,7 +103,7 @@ public class NonFightingBattle extends DependentBattle {
   }
 
   boolean hasAttackingUnits() {
-    final Match<Unit> attackingLand = Match.allOf(Matches.alliedUnit(m_attacker, m_data), Matches.unitIsLand());
+    final Predicate<Unit> attackingLand = Match.allOf(Matches.alliedUnit(m_attacker, m_data), Matches.unitIsLand());
     return m_battleSite.getUnits().anyMatch(attackingLand);
   }
 

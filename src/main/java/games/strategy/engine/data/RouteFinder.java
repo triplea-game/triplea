@@ -7,17 +7,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import games.strategy.util.Match;
+import java.util.function.Predicate;
 
 // TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not
 // always...
 class RouteFinder {
   private final GameMap map;
-  private final Match<Territory> condition;
+  private final Predicate<Territory> condition;
   private final Map<Territory, Territory> previous;
 
-  RouteFinder(final GameMap map, final Match<Territory> condition) {
+  RouteFinder(final GameMap map, final Predicate<Territory> condition) {
     this.map = map;
     this.condition = condition;
     previous = new HashMap<>();

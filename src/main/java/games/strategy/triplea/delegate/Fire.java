@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -116,7 +117,7 @@ public class Fire implements IExecutable {
         // Leave enough transports for each defender for overflows so they can select who loses them.
         while (playerIter.hasNext()) {
           final PlayerID player = playerIter.next();
-          final Match<Unit> match = Match.allOf(
+          final Predicate<Unit> match = Match.allOf(
               Matches.unitIsTransportButNotCombatTransport(),
               Matches.unitIsOwnedBy(player));
           final Collection<Unit> playerTransports = Matches.getMatches(transportsOnly, match);

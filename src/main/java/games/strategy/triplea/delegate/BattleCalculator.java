@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -576,7 +577,7 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Match<Unit> match = Match.allOf(Matches.unitIsLand(), Matches.unitWasNotAmphibious());
+    final Predicate<Unit> match = Match.allOf(Matches.unitIsLand(), Matches.unitWasNotAmphibious());
     killedNonAmphibUnits.addAll(Matches.getMatches(killed, match));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {

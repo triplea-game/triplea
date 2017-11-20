@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -196,7 +197,7 @@ class AAInMoveUtil implements Serializable {
     // don't iterate over the end
     // that will be a battle
     // and handled else where in this tangled mess
-    final Match<Unit> hasAa = Matches.unitIsAaThatCanFire(units, airborneTechTargetsAllowed, movingPlayer,
+    final Predicate<Unit> hasAa = Matches.unitIsAaThatCanFire(units, airborneTechTargetsAllowed, movingPlayer,
         Matches.unitIsAaForFlyOverOnly(), 1, true, data);
     // AA guns in transports shouldn't be able to fire
     final List<Territory> territoriesWhereAaWillFire = new ArrayList<>();

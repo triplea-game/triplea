@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Attachable;
@@ -134,7 +135,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * @return set of trigger attachments (If you use null for the match condition, you will get all triggers for this
    *         player)
    */
-  static Set<TriggerAttachment> getTriggers(final PlayerID player, final Match<TriggerAttachment> cond) {
+  static Set<TriggerAttachment> getTriggers(final PlayerID player, final Predicate<TriggerAttachment> cond) {
     final Set<TriggerAttachment> trigs = new HashSet<>();
     for (final IAttachment a : player.getAttachments().values()) {
       if (a instanceof TriggerAttachment) {
@@ -152,7 +153,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * and then it will fire all the conditions which are satisfied.
    */
   public static void collectAndFireTriggers(final HashSet<PlayerID> players,
-      final Match<TriggerAttachment> triggerMatch, final IDelegateBridge bridge, final String beforeOrAfter,
+      final Predicate<TriggerAttachment> triggerMatch, final IDelegateBridge bridge, final String beforeOrAfter,
       final String stepName) {
     final HashSet<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch);
     if (toFirePossible.isEmpty()) {
@@ -169,7 +170,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static HashSet<TriggerAttachment> collectForAllTriggersMatching(final HashSet<PlayerID> players,
-      final Match<TriggerAttachment> triggerMatch) {
+      final Predicate<TriggerAttachment> triggerMatch) {
     final HashSet<TriggerAttachment> toFirePossible = new HashSet<>();
     for (final PlayerID player : players) {
       toFirePossible.addAll(TriggerAttachment.getTriggers(player, triggerMatch));
@@ -631,7 +632,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
           + s[2] + " unknown " + thisErrorMsg());
     }
-    if (Matches.isValidRelationshipName(getData()).invert().test(s[3])) {
+    if (Matches.isValidRelationshipName(getData()).negate().test(s[3])) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
           + s[3] + " unknown " + thisErrorMsg());
     }
@@ -2533,75 +2534,75 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
-  public static Match<TriggerAttachment> prodMatch() {
+  public static Predicate<TriggerAttachment> prodMatch() {
     return Match.of(t -> t.getFrontier() != null);
   }
 
-  public static Match<TriggerAttachment> prodFrontierEditMatch() {
+  public static Predicate<TriggerAttachment> prodFrontierEditMatch() {
     return Match.of(t -> t.getProductionRule() != null && t.getProductionRule().size() > 0);
   }
 
-  public static Match<TriggerAttachment> techMatch() {
+  public static Predicate<TriggerAttachment> techMatch() {
     return Match.of(t -> !t.getTech().isEmpty());
   }
 
-  public static Match<TriggerAttachment> techAvailableMatch() {
+  public static Predicate<TriggerAttachment> techAvailableMatch() {
     return Match.of(t -> t.getAvailableTech() != null);
   }
 
-  public static Match<TriggerAttachment> removeUnitsMatch() {
+  public static Predicate<TriggerAttachment> removeUnitsMatch() {
     return Match.of(t -> t.getRemoveUnits() != null);
   }
 
-  public static Match<TriggerAttachment> placeMatch() {
+  public static Predicate<TriggerAttachment> placeMatch() {
     return Match.of(t -> t.getPlacement() != null);
   }
 
-  public static Match<TriggerAttachment> purchaseMatch() {
+  public static Predicate<TriggerAttachment> purchaseMatch() {
     return Match.of(t -> t.getPurchase() != null);
   }
 
-  public static Match<TriggerAttachment> resourceMatch() {
+  public static Predicate<TriggerAttachment> resourceMatch() {
     return Match.of(t -> t.getResource() != null && t.getResourceCount() != 0);
   }
 
-  public static Match<TriggerAttachment> supportMatch() {
+  public static Predicate<TriggerAttachment> supportMatch() {
     return Match.of(t -> t.getSupport() != null);
   }
 
-  public static Match<TriggerAttachment> changeOwnershipMatch() {
+  public static Predicate<TriggerAttachment> changeOwnershipMatch() {
     return Match.of(t -> !t.getChangeOwnership().isEmpty());
   }
 
-  public static Match<TriggerAttachment> unitPropertyMatch() {
+  public static Predicate<TriggerAttachment> unitPropertyMatch() {
     return Match.of(t -> !t.getUnitType().isEmpty() && t.getUnitProperty() != null);
   }
 
-  public static Match<TriggerAttachment> territoryPropertyMatch() {
+  public static Predicate<TriggerAttachment> territoryPropertyMatch() {
     return Match.of(t -> !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null);
   }
 
-  public static Match<TriggerAttachment> playerPropertyMatch() {
+  public static Predicate<TriggerAttachment> playerPropertyMatch() {
     return Match.of(t -> t.getPlayerProperty() != null);
   }
 
-  public static Match<TriggerAttachment> relationshipTypePropertyMatch() {
+  public static Predicate<TriggerAttachment> relationshipTypePropertyMatch() {
     return Match.of(t -> !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null);
   }
 
-  public static Match<TriggerAttachment> territoryEffectPropertyMatch() {
+  public static Predicate<TriggerAttachment> territoryEffectPropertyMatch() {
     return Match.of(t -> !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null);
   }
 
-  public static Match<TriggerAttachment> relationshipChangeMatch() {
+  public static Predicate<TriggerAttachment> relationshipChangeMatch() {
     return Match.of(t -> !t.getRelationshipChange().isEmpty());
   }
 
-  public static Match<TriggerAttachment> victoryMatch() {
+  public static Predicate<TriggerAttachment> victoryMatch() {
     return Match.of(t -> t.getVictory() != null && t.getVictory().length() > 0);
   }
 
-  public static Match<TriggerAttachment> activateTriggerMatch() {
+  public static Predicate<TriggerAttachment> activateTriggerMatch() {
     return Match.of(t -> !t.getActivateTrigger().isEmpty());
   }
 

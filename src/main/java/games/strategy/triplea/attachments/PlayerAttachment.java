@@ -253,11 +253,11 @@ public class PlayerAttachment extends DefaultAttachment {
       final Collection<Unit> currentInTerritory = toMoveInto.getUnits().getUnits();
       // first remove units that do not apply to our current type
       if (type.equals("owned")) {
-        currentInTerritory.removeAll(Matches.getMatches(currentInTerritory, Matches.unitIsOwnedBy(owner).invert()));
-        copyUnitsMoving.removeAll(Matches.getMatches(copyUnitsMoving, Matches.unitIsOwnedBy(owner).invert()));
+        currentInTerritory.removeAll(Matches.getMatches(currentInTerritory, Matches.unitIsOwnedBy(owner).negate()));
+        copyUnitsMoving.removeAll(Matches.getMatches(copyUnitsMoving, Matches.unitIsOwnedBy(owner).negate()));
       } else if (type.equals("allied")) {
-        currentInTerritory.removeAll(Matches.getMatches(currentInTerritory, Matches.alliedUnit(owner, data).invert()));
-        copyUnitsMoving.removeAll(Matches.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).invert()));
+        currentInTerritory.removeAll(Matches.getMatches(currentInTerritory, Matches.alliedUnit(owner, data).negate()));
+        copyUnitsMoving.removeAll(Matches.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).negate()));
       }
       // else if (type.equals("total"))
       // now remove units that are not part of our list

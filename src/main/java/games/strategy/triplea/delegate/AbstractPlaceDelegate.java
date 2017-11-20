@@ -498,7 +498,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
       return null;
     }
-    final Match<Unit> ownedFighters = Match.allOf(Matches.unitCanLandOnCarrier(), Matches.unitIsOwnedBy(player));
+    final Predicate<Unit> ownedFighters = Match.allOf(Matches.unitCanLandOnCarrier(), Matches.unitIsOwnedBy(player));
     if (!producer.getUnits().anyMatch(ownedFighters)) {
       return null;
     }
@@ -881,7 +881,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
-      final Match<Unit> seaOrLandMatch = water ? Matches.unitIsSea() : Matches.unitIsLand();
+      final Predicate<Unit> seaOrLandMatch = water ? Matches.unitIsSea() : Matches.unitIsLand();
       placeableUnits.addAll(Matches.getMatches(units, Match.allOf(seaOrLandMatch, Matches.unitIsNotConstruction())));
       if (!water) {
         placeableUnits.addAll(Matches.getMatches(units, Match.allOf(
@@ -918,7 +918,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Collection<Unit> unitsWhichConsume =
           Matches.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {
-        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().test(unit)) {
+        if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).negate().test(unit)) {
           placeableUnits.remove(unit);
         }
       }
@@ -948,7 +948,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > (ta == null ? 0 : ta.getProduction())) {
         continue;
       }
-      if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().test(currentUnit)) {
+      if (unitWhichRequiresUnitsHasRequiredUnits(to, false).negate().test(currentUnit)) {
         continue;
       }
       if (Matches.unitCanOnlyPlaceInOriginalTerritories().test(currentUnit)
@@ -972,7 +972,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> removedUnits = new ArrayList<>();
     final Collection<Unit> unitsWhichConsume = Matches.getMatches(units, Matches.unitConsumesUnitsOnCreation());
     for (final Unit unit : unitsWhichConsume) {
-      if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().test(unit)) {
+      if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).negate().test(unit)) {
         weCanConsume = false;
       }
       if (!weCanConsume) {
@@ -986,7 +986,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
       for (final UnitType ut : requiredUnits) {
         final int requiredNumber = requiredUnitsMap.getInt(ut);
-        final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = Match.allOf(
+        final Predicate<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = Match.allOf(
             Matches.unitIsOwnedBy(unit.getOwner()),
             Matches.unitIsOfType(ut),
             Matches.unitHasNotTakenAnyBombingUnitDamage(),
@@ -1079,10 +1079,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // Can be null!
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);
     final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
-        .and(Matches.unitIsBeingTransported().invert())
+        .and(Matches.unitIsBeingTransported().negate())
         .and(producer.isWater()
-            ? Matches.unitIsLand().invert()
-            : Matches.unitIsSea().invert());
+            ? Matches.unitIsLand().negate()
+            : Matches.unitIsSea().negate());
     final Collection<Unit> factoryUnits = producer.getUnits().getMatches(factoryMatch);
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
     final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
@@ -1271,13 +1271,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
             && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > toProduction) {
           continue;
         }
-        if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().test(currentUnit)) {
+        if (unitWhichRequiresUnitsHasRequiredUnits(to, false).negate().test(currentUnit)) {
           continue;
         }
       }
       // remove any units that require other units to be consumed on creation (veqryn)
       if (Matches.unitConsumesUnitsOnCreation().test(currentUnit)
-          && Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).invert().test(currentUnit)) {
+          && Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).negate().test(currentUnit)) {
         continue;
       }
       unitMapHeld.add(ua.getConstructionType(), 1);
@@ -1367,7 +1367,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    *         territory has one of the
    *         required combos as well).
    */
-  public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
+  public Predicate<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
     return Match.of(unitWhichRequiresUnits -> {
       if (!Matches.unitRequiresUnitsOnCreation().test(unitWhichRequiresUnits)) {
         return true;
@@ -1546,12 +1546,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
-        .and(Matches.unitIsBeingTransported().invert())
+        .and(Matches.unitIsBeingTransported().negate())
         // land factories in water can't produce, and sea factories in land can't produce.
         // air can produce like land if in land, and like sea if in water.
         .and(to.isWater()
-            ? Matches.unitIsLand().invert()
-            : Matches.unitIsSea().invert());
+            ? Matches.unitIsLand().negate()
+            : Matches.unitIsSea().negate());
     return Matches.countMatches(unitsAtStartOfTurnInTo, factoryMatch) > 0;
   }
 

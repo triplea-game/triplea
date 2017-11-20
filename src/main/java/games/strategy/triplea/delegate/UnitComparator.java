@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -11,7 +12,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 public class UnitComparator {
   static Comparator<Unit> getLowestToHighestMovementComparator() {
@@ -74,7 +74,7 @@ public class UnitComparator {
   public static Comparator<Unit> getLoadableTransportsComparator(final List<Unit> transports, final Route route,
       final PlayerID player) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
-    final Match<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
+    final Predicate<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
     return (u1, u2) -> {
       final TripleAUnit t1 = TripleAUnit.get(u1);
       final TripleAUnit t2 = TripleAUnit.get(u2);
@@ -122,7 +122,7 @@ public class UnitComparator {
   public static Comparator<Unit> getUnloadableTransportsComparator(final List<Unit> transports, final Route route,
       final PlayerID player, final boolean noTies) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
-    final Match<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
+    final Predicate<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
     return (t1, t2) -> {
 
       // Check if transport is incapable due to game state

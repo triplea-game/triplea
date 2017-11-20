@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -874,7 +875,7 @@ class OddsCalculatorPanel extends JPanel {
         return u1.getName().compareTo(u2.getName());
       });
       removeAll();
-      final Match<UnitType> predicate;
+      final Predicate<UnitType> predicate;
       if (land) {
         if (defender) {
           predicate = Matches.unitTypeIsNotSea();

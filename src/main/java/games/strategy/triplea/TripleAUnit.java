@@ -402,10 +402,10 @@ public class TripleAUnit extends Unit {
   public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player,
       final GameData data, final boolean accountForDamage) {
     final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
-        .and(Matches.unitIsBeingTransported().invert())
+        .and(Matches.unitIsBeingTransported().negate())
         .and(producer.isWater()
-            ? Matches.unitIsLand().invert()
-            : Matches.unitIsSea().invert());
+            ? Matches.unitIsLand().negate()
+            : Matches.unitIsSea().negate());
     final Collection<Unit> factories = Matches.getMatches(units, factoryMatch);
     if (factories.isEmpty()) {
       return null;

@@ -102,7 +102,7 @@ public class BattleCalculatorTest {
     assertEquals(casualties.size(), 2);
     // should be 1 fighter and 1 bomber
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
   }
 
   @Test
@@ -133,7 +133,7 @@ public class BattleCalculatorTest {
     assertEquals(3, randomSource.getTotalRolled());
     // should be 1 fighter and 1 bomber
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 0);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 2);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 2);
   }
 
   @Test
@@ -174,7 +174,7 @@ public class BattleCalculatorTest {
     assertEquals(casualties.size(), 2);
     // we selected all bombers
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 2);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 0);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 0);
   }
 
   @Test
@@ -213,7 +213,7 @@ public class BattleCalculatorTest {
     assertEquals(casualties.size(), 3);
     // we selected all bombers
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 3);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 0);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 0);
   }
 
   @Test
@@ -246,7 +246,7 @@ public class BattleCalculatorTest {
     assertEquals(2, randomSource.getTotalRolled());
     // should be 2 fighters and 1 bombers
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 2);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 2);
   }
 
   @Test
@@ -279,7 +279,7 @@ public class BattleCalculatorTest {
     assertEquals(4, randomSource.getTotalRolled());
     // should be 1 fighter and 1 bomber
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 1);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
   }
 
   @Test
@@ -309,7 +309,7 @@ public class BattleCalculatorTest {
     assertEquals(casualties.size(), 3);
     // should be 2 fighters and 1 bombers
     assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().invert()), 2);
+    assertEquals(Matches.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 2);
   }
   // Radar AA tests removed, because "revised" does not have radar tech.
 }

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -61,7 +62,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
         // First set up a match for what we want to have fire as a default in this delegate. List out as a composite
         // match OR.
         // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-        final Match<TriggerAttachment> purchaseDelegateTriggerMatch = Match.allOf(
+        final Predicate<TriggerAttachment> purchaseDelegateTriggerMatch = Match.allOf(
             AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
             Match.anyOf(TriggerAttachment.prodMatch(),
                 TriggerAttachment.prodFrontierEditMatch(), TriggerAttachment.purchaseMatch()));
@@ -168,7 +169,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           // count how many units are yet to be placed or are in the field
           int currentlyBuilt = m_player.getUnits().countMatches(Matches.unitIsOfType(type));
 
-          final Match<Unit> unitTypeOwnedBy = Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
+          final Predicate<Unit> unitTypeOwnedBy = Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
           final Collection<Territory> allTerrs = getData().getMap().getTerritories();
           for (final Territory t : allTerrs) {
             currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);

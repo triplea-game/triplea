@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -74,8 +75,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   protected void setupBoard() {
     final GameData data = getData();
     final boolean randomTerritories = Properties.getTerritoriesAreAssignedRandomly(data);
-    final Match<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
-    final Match<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
+    final Predicate<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
+    final Predicate<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
     final List<Territory> allPickableTerritories =
         Matches.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
     final List<PlayerID> playersCanPick = new ArrayList<>();
@@ -221,12 +222,12 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     return playersCanPick.get(index);
   }
 
-  public Match<Territory> getTerritoryPickableMatch() {
+  public Predicate<Territory> getTerritoryPickableMatch() {
     return Match.allOf(Matches.territoryIsLand(), Matches.territoryIsNotImpassable(),
         Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.territoryIsEmpty());
   }
 
-  private static Match<PlayerID> getPlayerCanPickMatch() {
+  private static Predicate<PlayerID> getPlayerCanPickMatch() {
     return Match.of(player -> {
       if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
         return false;

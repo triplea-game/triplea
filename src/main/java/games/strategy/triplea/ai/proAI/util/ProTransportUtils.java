@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -77,7 +78,8 @@ public class ProTransportUtils {
 
   // TODO: this needs fixed to consider whether a valid route exists to load all units
   public static List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport,
-      final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore, final Match<Unit> validUnitMatch) {
+      final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
+      final Predicate<Unit> validUnitMatch) {
     final List<Unit> selectedUnits = new ArrayList<>();
 
     // Get units if transport already loaded
