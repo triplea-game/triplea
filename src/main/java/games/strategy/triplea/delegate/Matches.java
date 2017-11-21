@@ -2372,8 +2372,9 @@ public final class Matches {
     return Match.of(u -> UnitAttachment.get(u.getType()).getCanAirBattle());
   }
 
-  static Predicate<Territory>
-  territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(final PlayerID attacker) {
+  static Predicate<Territory> //
+      territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
+          final PlayerID attacker) {
     return Match.of(t -> {
       if (t.getOwner().equals(attacker)) {
         return false;

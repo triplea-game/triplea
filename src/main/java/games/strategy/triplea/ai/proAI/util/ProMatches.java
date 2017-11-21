@@ -198,9 +198,8 @@ public class ProMatches {
   }
 
   public static Predicate<Territory> territoryHasInfraFactoryAndIsLand() {
-    final Predicate<Unit> infraFactoryMatch =
-        Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
-    return Match.allOf(Matches.territoryIsLand(), Matches.territoryHasUnitsThatMatch(infraFactoryMatch));
+    final Predicate<Unit> infraFactory = Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
+    return Match.allOf(Matches.territoryIsLand(), Matches.territoryHasUnitsThatMatch(infraFactory));
   }
 
   public static Predicate<Territory> territoryHasInfraFactoryAndIsEnemyLand(final PlayerID player,
@@ -296,9 +295,8 @@ public class ProMatches {
   }
 
   public static Predicate<Territory> territoryIsEnemyNotNeutralOrAllied(final PlayerID player, final GameData data) {
-    final Predicate<Territory> alliedLand =
-        Match.allOf(Matches.territoryIsLand(), Matches.isTerritoryAllied(player, data));
-    return Match.anyOf(territoryIsEnemyNotNeutralLand(player, data), alliedLand);
+    return Match.anyOf(territoryIsEnemyNotNeutralLand(player, data),
+        Match.allOf(Matches.territoryIsLand(), Matches.isTerritoryAllied(player, data)));
   }
 
   public static Predicate<Territory> territoryIsEnemyOrCantBeHeld(final PlayerID player, final GameData data,
