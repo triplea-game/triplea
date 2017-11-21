@@ -86,7 +86,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
     SwingUtilities.invokeLater(() -> {
       removeAll();
       add(actionLabel);
-      add(forumPosterComponent.layoutComponents(pbemMessagePoster, getForumPosterDelegate(), playerBridge,
+      add(forumPosterComponent.layoutComponents(pbemMessagePoster, getForumPosterDelegate(),
           tripleAFrame, hasPosted,
           allowIncludeTerritorySummary(), allowIncludeTerritoryAllPlayersSummary(), allowIncludeProductionSummary(),
           allowDiceBattleDetails(), allowDiceStatistics()));
