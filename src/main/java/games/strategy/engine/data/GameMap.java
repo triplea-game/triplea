@@ -14,7 +14,6 @@ import java.util.function.Predicate;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 /**
  * Holds a collection of territories, and the links between them.
@@ -417,11 +416,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return a composite route between two territories
    */
   public Route getCompositeRoute(final Territory t1, final Territory t2,
-      final HashMap<Predicate<Territory>, Integer> matches) {
+      final Map<Predicate<Territory>, Integer> matches) {
     if (t1 == t2) {
       return new Route(t1);
     }
-    final Predicate<Territory> allCond = Match.anyOf(matches.keySet());
+    final Predicate<Territory> allCond = t -> matches.keySet().stream().anyMatch(p -> p.test(t));
     if (getNeighbors(t1, allCond).contains(t2)) {
       return new Route(t1, t2);
     }

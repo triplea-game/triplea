@@ -79,17 +79,4 @@ public final class Match<T> implements Predicate<T> {
 
     return Match.of(value -> matches.stream().allMatch(match -> match.test(value)));
   }
-
-  /**
-   * Creates a new match whose condition is satisfied if the test object matches any of the specified conditions.
-   *
-   * @param matches A collection of matches; must not be {@code null}.
-   *
-   * @return A new match; never {@code null}.
-   */
-  public static <T> Predicate<T> anyOf(final Collection<? extends Predicate<T>> matches) {
-    checkNotNull(matches);
-
-    return Match.of(value -> matches.stream().anyMatch(match -> match.test(value)));
-  }
 }
