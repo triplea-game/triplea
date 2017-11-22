@@ -396,9 +396,8 @@ public class BattleTracker implements Serializable {
     final boolean scramblingEnabled = Properties.getScramble_Rules_In_Effect(data);
     final Predicate<Territory> conquerable = Match.allOf(
         Matches.territoryIsEmptyOfCombatUnits(data, id),
-        Match.anyOf(
-            Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
-            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)));
+        Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id)
+            .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)));
     final Collection<Territory> conquered = new ArrayList<>();
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));
@@ -781,8 +780,8 @@ public class BattleTracker implements Serializable {
     }
     // take over non combatants
     final Predicate<Unit> enemyNonCom = Match.allOf(Matches.enemyUnit(id, data), Matches.unitIsInfrastructure());
-    final Predicate<Unit> willBeCaptured = Match.anyOf(enemyNonCom,
-        Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
+    final Predicate<Unit> willBeCaptured =
+        enemyNonCom.or(Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
     // change any units that change unit types on capture
     if (Properties.getUnitsCanBeChangedOnCapture(data)) {

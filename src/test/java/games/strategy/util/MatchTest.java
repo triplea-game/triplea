@@ -46,17 +46,4 @@ public class MatchTest {
     assertFalse(Match.allOf(Matches.never(), Matches.always()).test(VALUE));
     assertFalse(Match.allOf(Matches.never(), Matches.never()).test(VALUE));
   }
-
-  @Test
-  public void testAnyOf() {
-    assertFalse(Match.anyOf().test(VALUE));
-
-    assertTrue(Match.anyOf(Matches.always()).test(VALUE));
-    assertFalse(Match.anyOf(Matches.never()).test(VALUE));
-
-    assertTrue(Match.anyOf(Matches.always(), Matches.always()).test(VALUE));
-    assertTrue(Match.anyOf(Matches.always(), Matches.never()).test(VALUE));
-    assertTrue(Match.anyOf(Matches.never(), Matches.always()).test(VALUE));
-    assertFalse(Match.anyOf(Matches.never(), Matches.never()).test(VALUE));
-  }
 }

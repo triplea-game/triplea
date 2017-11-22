@@ -64,8 +64,9 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
         // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
         final Predicate<TriggerAttachment> purchaseDelegateTriggerMatch = Match.allOf(
             AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-            Match.anyOf(TriggerAttachment.prodMatch(),
-                TriggerAttachment.prodFrontierEditMatch(), TriggerAttachment.purchaseMatch()));
+            TriggerAttachment.prodMatch()
+                .or(TriggerAttachment.prodFrontierEditMatch())
+                .or(TriggerAttachment.purchaseMatch()));
         // get all possible triggers based on this match.
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(m_player)), purchaseDelegateTriggerMatch);

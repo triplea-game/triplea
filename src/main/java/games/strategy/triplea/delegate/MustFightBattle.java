@@ -1145,9 +1145,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
 
     // the air unit may have come from a conquered or enemy territory, don't allow retreating
-    final Predicate<Territory> conqueuredOrEnemy = Match.anyOf(
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(m_attacker, m_data),
-        Match.allOf(Matches.territoryIsWater(), Matches.territoryWasFoughOver(m_battleTracker)));
+    final Predicate<Territory> conqueuredOrEnemy =
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(m_attacker, m_data)
+            .or(Match.allOf(Matches.territoryIsWater(), Matches.territoryWasFoughOver(m_battleTracker)));
     possible.removeAll(Matches.getMatches(possible, conqueuredOrEnemy));
 
     // the battle site is in the attacking from if sea units are fighting a submerged sub
@@ -1515,7 +1515,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final IDelegateBridge bridge) {
     retreating.addAll(getDependentUnits(retreating));
     // our own air units don't retreat with land units
-    final Predicate<Unit> notMyAir = Match.anyOf(Matches.unitIsNotAir(), Matches.unitIsOwnedBy(m_attacker).negate());
+    final Predicate<Unit> notMyAir = Matches.unitIsNotAir().or(Matches.unitIsOwnedBy(m_attacker).negate());
     retreating = Matches.getMatches(retreating, notMyAir);
     final String transcriptText;
     // in WW2V1, defending subs can retreat so show owner
@@ -1563,7 +1563,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // add all land units' dependents
     retreating.addAll(getDependentUnits(units));
     // our own air units don't retreat with land units
-    final Predicate<Unit> notMyAir = Match.anyOf(Matches.unitIsNotAir(), Matches.unitIsOwnedBy(m_attacker).negate());
+    final Predicate<Unit> notMyAir = Matches.unitIsNotAir().or(Matches.unitIsOwnedBy(m_attacker).negate());
     final Collection<Unit> nonAirRetreating = Matches.getMatches(retreating, notMyAir);
     final String transcriptText = MyFormatter.unitsToTextNoOwner(nonAirRetreating) + " retreated to " + to.getName();
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(nonAirRetreating));
@@ -2109,8 +2109,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                   : new HashSet<>();
           final Collection<Unit> validAttackingUnitsForThisRoll =
               Matches.getMatches((m_defending ? m_attackingUnits : m_defendingUnits),
-                  Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-                      Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+                  Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
+                      .or(Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
           final IExecutable rollDice = new IExecutable() {
             private static final long serialVersionUID = 6435935558879109347L;
 

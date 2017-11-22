@@ -102,8 +102,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Predicate<TriggerAttachment> endRoundDelegateTriggerMatch =
           Match.allOf(AbstractTriggerAttachment.availableUses,
-              AbstractTriggerAttachment.whenOrDefaultMatch(null, null), Match.anyOf(
-                  TriggerAttachment.activateTriggerMatch(), TriggerAttachment.victoryMatch()));
+              AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
+              TriggerAttachment.activateTriggerMatch().or(TriggerAttachment.victoryMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch);

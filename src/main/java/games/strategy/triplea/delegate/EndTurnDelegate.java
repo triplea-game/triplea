@@ -221,7 +221,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       // add conditions required for triggers
       final Predicate<TriggerAttachment> endTurnDelegateTriggerMatch = Match.allOf(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-          Match.anyOf(TriggerAttachment.resourceMatch()));
+          TriggerAttachment.resourceMatch());
       toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(player)), endTurnDelegateTriggerMatch));
       allConditionsNeeded.addAll(

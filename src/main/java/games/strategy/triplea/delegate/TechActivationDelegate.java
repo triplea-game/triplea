@@ -61,8 +61,9 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Predicate<TriggerAttachment> techActivationDelegateTriggerMatch = Match.allOf(
           TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
-          Match.anyOf(TriggerAttachment.unitPropertyMatch(), TriggerAttachment.techMatch(),
-              TriggerAttachment.supportMatch()));
+          TriggerAttachment.unitPropertyMatch()
+              .or(TriggerAttachment.techMatch())
+              .or(TriggerAttachment.supportMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(m_player)), techActivationDelegateTriggerMatch);

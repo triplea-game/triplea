@@ -57,8 +57,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Predicate<TriggerAttachment> politicsDelegateTriggerMatch = Match.allOf(
-          TriggerAttachment.availableUses, TriggerAttachment.whenOrDefaultMatch(null, null),
-          Match.anyOf(TriggerAttachment.relationshipChangeMatch()));
+          TriggerAttachment.availableUses,
+          TriggerAttachment.whenOrDefaultMatch(null, null),
+          TriggerAttachment.relationshipChangeMatch());
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(m_player)), politicsDelegateTriggerMatch);
@@ -173,13 +174,12 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private boolean actionIsAccepted(final PoliticalActionAttachment paa) {
     final GameData data = getData();
     final Predicate<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar =
-        Match.anyOf(
-            Matches.politicalActionIsRelationshipChangeOf(null,
-                Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().negate(),
-                Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether(), data),
-            Matches.politicalActionIsRelationshipChangeOf(null, Matches.relationshipTypeIsAtWar().negate(),
-                Matches.relationshipTypeIsAtWar(), data),
-            Matches.politicalActionIsRelationshipChangeOf(null, Matches.relationshipTypeIsAtWar(),
+        Matches.politicalActionIsRelationshipChangeOf(null,
+            Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().negate(),
+            Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether(), data)
+            .or(Matches.politicalActionIsRelationshipChangeOf(null, Matches.relationshipTypeIsAtWar().negate(),
+                Matches.relationshipTypeIsAtWar(), data))
+            .or(Matches.politicalActionIsRelationshipChangeOf(null, Matches.relationshipTypeIsAtWar(),
                 Matches.relationshipTypeIsAtWar().negate(), data));
     if (!Properties.getAlliancesCanChainTogether(data)
         || !intoAlliedChainOrIntoOrOutOfWar.test(paa)) {

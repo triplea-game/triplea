@@ -341,7 +341,7 @@ public final class Matches {
   }
 
   static Predicate<Unit> unitDestroyedWhenCapturedByOrFrom(final PlayerID playerBy) {
-    return Match.anyOf(unitDestroyedWhenCapturedBy(playerBy), unitDestroyedWhenCapturedFrom());
+    return unitDestroyedWhenCapturedBy(playerBy).or(unitDestroyedWhenCapturedFrom());
   }
 
   private static Predicate<Unit> unitDestroyedWhenCapturedBy(final PlayerID playerBy) {
@@ -1051,10 +1051,7 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryIsEmptyOfCombatUnits(final GameData data, final PlayerID player) {
-    return Match.of(t -> {
-      final Predicate<Unit> nonCom = Match.anyOf(unitIsInfrastructure(), enemyUnit(player, data).negate());
-      return t.getUnits().allMatch(nonCom);
-    });
+    return t -> t.getUnits().allMatch(unitIsInfrastructure().or(enemyUnit(player, data).negate()));
   }
 
   /**

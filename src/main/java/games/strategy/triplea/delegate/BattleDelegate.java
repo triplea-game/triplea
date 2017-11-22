@@ -416,14 +416,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final boolean ignoreSubs = isIgnoreSubInMovement(data);
     final Predicate<Unit> seaTransports =
         Match.allOf(Matches.unitIsTransportButNotCombatTransport(), Matches.unitIsSea());
-    final Predicate<Unit> seaTranportsOrSubs = Match.anyOf(seaTransports, Matches.unitIsSub());
+    final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitIsSub());
     // we want to match all sea zones with our units and enemy units
     final Predicate<Territory> anyTerritoryWithOwnAndEnemy = Match.allOf(
         Matches.territoryHasUnitsOwnedBy(player), Matches.territoryHasEnemyUnits(player, data));
     final Predicate<Territory> enemyTerritoryAndOwnUnits = Match.allOf(
         Matches.isTerritoryEnemyAndNotUnownedWater(player, data), Matches.territoryHasUnitsOwnedBy(player));
-    final Predicate<Territory> enemyUnitsOrEnemyTerritory =
-        Match.anyOf(anyTerritoryWithOwnAndEnemy, enemyTerritoryAndOwnUnits);
+    final Predicate<Territory> enemyUnitsOrEnemyTerritory = anyTerritoryWithOwnAndEnemy.or(enemyTerritoryAndOwnUnits);
     final Iterator<Territory> battleTerritories =
         Matches.getMatches(data.getMap().getTerritories(), enemyUnitsOrEnemyTerritory).iterator();
     while (battleTerritories.hasNext()) {
@@ -647,9 +646,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Predicate<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, m_player),
         Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().negate());
     final Predicate<Territory> canScramble = PredicateBuilder
-        .of(Match.anyOf(
-            Matches.territoryIsWater(),
-            Matches.isTerritoryEnemy(m_player, data)))
+        .of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(m_player, data)))
         .and(Matches.territoryHasUnitsThatMatch(Match.allOf(
             Matches.unitCanScramble(),
             Matches.unitIsEnemyOf(data, m_player),
@@ -658,7 +655,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         .andIf(fromIslandOnly, Matches.territoryIsIsland())
         .build();
 
-    final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();
+    final Map<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
     final Set<Territory> territoriesWithBattles =
         m_battleTracker.getPendingBattleSites().getNormalBattlesIncludingAirBattles();
     if (toSbr) {
@@ -691,7 +688,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final Collection<Territory> amphibFromTerrs = ((DependentBattle) battle).getAmphibiousAttackTerritories();
         amphibFromTerrs.removeAll(territoriesWithBattlesWater);
         for (final Territory amphibFrom : amphibFromTerrs) {
-          HashSet<Territory> canScrambleFrom = scrambleTerrs.get(amphibFrom);
+          Set<Territory> canScrambleFrom = scrambleTerrs.get(amphibFrom);
           if (canScrambleFrom == null) {
             canScrambleFrom = new HashSet<>();
           }
@@ -711,10 +708,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (scrambleTerrs.isEmpty()) {
       return;
     }
-    final HashMap<Tuple<Territory, PlayerID>, Collection<HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> scramblersByTerritoryPlayer =
+    final Map<Tuple<Territory, PlayerID>, Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> scramblersByTerritoryPlayer =
         new HashMap<>();
     for (final Territory to : scrambleTerrs.keySet()) {
-      final HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers =
+      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers =
           new HashMap<>();
       // find who we should ask
       PlayerID defender = null;
@@ -741,7 +738,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         continue;
       }
       final Tuple<Territory, PlayerID> terrPlayer = Tuple.of(to, defender);
-      Collection<HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>>> tempScrambleList =
+      Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>> tempScrambleList =
           scramblersByTerritoryPlayer.get(terrPlayer);
       if (tempScrambleList == null) {
         tempScrambleList = new ArrayList<>();
@@ -757,7 +754,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         continue;
       }
       boolean scrambledHere = false;
-      for (final HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer
+      for (final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer
           .get(terrPlayer)) {
         // verify that we didn't already scramble any of these units
         final Iterator<Territory> territoryIter = scramblers.keySet().iterator();

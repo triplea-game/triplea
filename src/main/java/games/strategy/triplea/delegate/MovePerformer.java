@@ -294,10 +294,9 @@ public class MovePerformer implements Serializable {
   }
 
   private static Predicate<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
-    return Match.anyOf(
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data),
-        Matches.territoryHasNonSubmergedEnemyUnits(id, data),
-        Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
+    return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)
+        .or(Matches.territoryHasNonSubmergedEnemyUnits(id, data))
+        .or(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
   }
 
   private static Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id,
@@ -366,9 +365,7 @@ public class MovePerformer implements Serializable {
       return;
     }
     final GameData data = m_bridge.getData();
-    final Predicate<Unit> paratroopNAirTransports = Match.anyOf(
-        Matches.unitIsAirTransport(),
-        Matches.unitIsAirTransportable());
+    final Predicate<Unit> paratroopNAirTransports = Matches.unitIsAirTransport().or(Matches.unitIsAirTransportable());
     final boolean paratroopsLanding = arrived.stream().anyMatch(paratroopNAirTransports)
         && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
     final Map<Unit, Collection<Unit>> dependentAirTransportableUnits =

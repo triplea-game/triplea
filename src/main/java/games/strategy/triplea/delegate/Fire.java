@@ -99,7 +99,7 @@ public class Fire implements IExecutable {
     if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData())) {
       final CasualtyDetails message;
       final Collection<Unit> nonTransports = Matches.getMatches(m_attackableUnits,
-          Match.anyOf(Matches.unitIsNotTransportButCouldBeCombatTransport(), Matches.unitIsNotSea()));
+          Matches.unitIsNotTransportButCouldBeCombatTransport().or(Matches.unitIsNotSea()));
       final Collection<Unit> transportsOnly = Matches.getMatches(m_attackableUnits,
           Match.allOf(Matches.unitIsTransportButNotCombatTransport(), Matches.unitIsSea()));
       final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);

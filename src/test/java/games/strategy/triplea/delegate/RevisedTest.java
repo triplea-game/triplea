@@ -1382,7 +1382,7 @@ public class RevisedTest {
     load(germany.getUnits().getMatches(Matches.unitCanBlitz()).subList(0, 1), new Route(germany, sz5));
     load(germany.getUnits().getMatches(Matches.unitCanBlitz()).subList(0, 1), new Route(germany, sz5));
     // attack sz 6
-    move(sz5.getUnits().getMatches(Match.anyOf(Matches.unitCanBlitz(), Matches.unitIsTransport())),
+    move(sz5.getUnits().getMatches(Matches.unitCanBlitz().or(Matches.unitIsTransport())),
         new Route(sz5, sz6));
     // unload transports, 1 each to a different country
     // this move is illegal now

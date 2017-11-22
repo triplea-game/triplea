@@ -352,7 +352,7 @@ public class MovePanel extends AbstractMovePanel {
       });
       if (route.isUnload()) {
         final Predicate<Unit> notLandAndCanMove = Match.allOf(enoughMovement, Matches.unitIsNotLand());
-        final Predicate<Unit> landOrCanMove = Match.anyOf(Matches.unitIsLand(), notLandAndCanMove);
+        final Predicate<Unit> landOrCanMove = Matches.unitIsLand().or(notLandAndCanMove);
         movableBuilder.and(landOrCanMove);
       } else {
         movableBuilder.and(enoughMovement);
