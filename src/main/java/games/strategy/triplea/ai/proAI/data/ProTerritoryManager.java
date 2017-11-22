@@ -311,9 +311,8 @@ public class ProTerritoryManager {
     }
     final Predicate<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, player),
         Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().negate());
-    final Predicate<Territory> canScramble = PredicateBuilder.of(Match.anyOf(
-        Matches.territoryIsWater(),
-        Matches.isTerritoryEnemy(player, data)))
+    final Predicate<Territory> canScramble = PredicateBuilder
+        .of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(player, data)))
         .and(Matches.territoryHasUnitsThatMatch(Match.allOf(
             Matches.unitCanScramble(),
             Matches.unitIsEnemyOf(data, player),

@@ -76,16 +76,18 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final Predicate<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch =
           Match.allOf(AbstractTriggerAttachment.availableUses,
               AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-              Match.anyOf(AbstractTriggerAttachment.notificationMatch(),
-                  TriggerAttachment.playerPropertyMatch(), TriggerAttachment.relationshipTypePropertyMatch(),
-                  TriggerAttachment.territoryPropertyMatch(), TriggerAttachment.territoryEffectPropertyMatch(),
-                  TriggerAttachment.removeUnitsMatch(), TriggerAttachment.changeOwnershipMatch()));
-      final Predicate<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch =
-          Match.allOf(AbstractTriggerAttachment.availableUses,
-              AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-              Match.anyOf(TriggerAttachment.placeMatch()));
-      final Predicate<TriggerAttachment> moveCombatDelegateAllTriggerMatch = Match.anyOf(
-          moveCombatDelegateBeforeBonusTriggerMatch, moveCombatDelegateAfterBonusTriggerMatch);
+              AbstractTriggerAttachment.notificationMatch()
+                  .or(TriggerAttachment.playerPropertyMatch())
+                  .or(TriggerAttachment.relationshipTypePropertyMatch())
+                  .or(TriggerAttachment.territoryPropertyMatch())
+                  .or(TriggerAttachment.territoryEffectPropertyMatch())
+                  .or(TriggerAttachment.removeUnitsMatch())
+                  .or(TriggerAttachment.changeOwnershipMatch()));
+      final Predicate<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch = Match.allOf(
+          AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
+          TriggerAttachment.placeMatch());
+      final Predicate<TriggerAttachment> moveCombatDelegateAllTriggerMatch = moveCombatDelegateBeforeBonusTriggerMatch
+          .or(moveCombatDelegateAfterBonusTriggerMatch);
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAllTriggerMatch);
@@ -234,9 +236,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
   public boolean delegateCurrentlyRequiresUserInput() {
     final Predicate<Unit> moveableUnitOwnedByMe = PredicateBuilder.of(Matches.unitIsOwnedBy(m_player))
         // right now, land units on transports have movement taken away when they their transport moves
-        .and(Match.anyOf(
-            Matches.unitHasMovementLeft(),
-            Match.allOf(
+        .and(Matches.unitHasMovementLeft()
+            .or(Match.allOf(
                 Matches.unitIsLand(),
                 Matches.unitIsBeingTransported())))
         // if not non combat, cannot move aa units

@@ -533,8 +533,8 @@ public class WeakAI extends AbstractAI {
     final Collection<Unit> unitsAlreadyMoved = new HashSet<>();
     // find the territories we can just walk into
     final Predicate<Territory> walkInto =
-        Match.anyOf(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data),
-            Matches.isTerritoryFreeNeutral(data));
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data)
+            .or(Matches.isTerritoryFreeNeutral(data));
     final List<Territory> enemyOwned = Matches.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);
     Collections.sort(enemyOwned, (o1, o2) -> {

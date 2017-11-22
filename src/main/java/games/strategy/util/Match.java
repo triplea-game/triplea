@@ -83,21 +83,6 @@ public final class Match<T> implements Predicate<T> {
   /**
    * Creates a new match whose condition is satisfied if the test object matches any of the specified conditions.
    *
-   * @param matches An array of matches; must not be {@code null}.
-   *
-   * @return A new match; never {@code null}.
-   */
-  @SafeVarargs
-  @SuppressWarnings("varargs")
-  public static <T> Predicate<T> anyOf(final Predicate<T>... matches) {
-    checkNotNull(matches);
-
-    return anyOf(Arrays.asList(matches));
-  }
-
-  /**
-   * Creates a new match whose condition is satisfied if the test object matches any of the specified conditions.
-   *
    * @param matches A collection of matches; must not be {@code null}.
    *
    * @return A new match; never {@code null}.

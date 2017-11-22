@@ -394,7 +394,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   public Route getRoute_IgnoreEnd(final Territory t1, final Territory t2, final Predicate<Territory> match) {
-    return getRoute(t1, t2, Match.anyOf(Matches.territoryIs(t2), match));
+    return getRoute(t1, t2, Matches.territoryIs(t2).or(match));
   }
 
   /**
@@ -545,7 +545,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2,
       final Predicate<Territory> cond) {
-    return getDistance(t1, t2, Match.anyOf(Matches.territoryIs(t2), cond));
+    return getDistance(t1, t2, Matches.territoryIs(t2).or(cond));
   }
 
   public List<Territory> getTerritories() {

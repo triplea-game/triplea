@@ -336,7 +336,7 @@ public class MoveValidator {
           return result.setErrorReturnResult("Cannot blitz on that route");
         }
       } else if (allEnemyBlitzable && !(route.getStart().isWater() || route.getEnd().isWater())) {
-        final Predicate<Unit> blitzingUnit = Match.anyOf(Matches.unitCanBlitz(), Matches.unitIsAir());
+        final Predicate<Unit> blitzingUnit = Matches.unitCanBlitz().or(Matches.unitIsAir());
         final Predicate<Unit> nonBlitzing = blitzingUnit.negate();
         final Collection<Unit> nonBlitzingUnits = Matches.getMatches(units, nonBlitzing);
         // remove any units that gain blitz due to certain abilities
@@ -415,12 +415,8 @@ public class MoveValidator {
     if (!route.anyMatch(Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
     }
-    final Predicate<Territory> neutralOrEnemy =
-        Match.anyOf(Matches.territoryIsNeutralButNotWater(),
-            Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
-    // final CompositePredicate<Unit> transportsCanNotControl = new
-    // CompositeMatchAnd<Unit>(Matches.unitIsTransportAndNotDestroyer(),
-    // Matches.unitIsTransportButNotCombatTransport());
+    final Predicate<Territory> neutralOrEnemy = Matches.territoryIsNeutralButNotWater()
+        .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data));
     final boolean navalMayNotNonComIntoControlled =
         isWW2V2(data) || Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
     // TODO need to account for subs AND transports that are ignored, not just OR
@@ -440,9 +436,8 @@ public class MoveValidator {
     }
     if (end.getUnits().anyMatch(Matches.enemyUnit(player, data))) {
       if (!onlyIgnoredUnitsOnPath(route, player, data, false)) {
-        final Predicate<Unit> friendlyOrSubmerged = Match.anyOf(
-            Matches.enemyUnit(player, data).negate(),
-            Matches.unitIsSubmerged());
+        final Predicate<Unit> friendlyOrSubmerged = Matches.enemyUnit(player, data).negate()
+            .or(Matches.unitIsSubmerged());
         if (!end.getUnits().allMatch(friendlyOrSubmerged)
             && !(!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir()) && end.isWater())) {
           if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSub())
@@ -687,7 +682,7 @@ public class MoveValidator {
     // test for stack limits per unit
     if (route.getEnd() != null) {
       final Collection<Unit> unitsWithStackingLimits =
-          Matches.getMatches(units, Match.anyOf(Matches.unitHasMovementLimit(), Matches.unitHasAttackingLimit()));
+          Matches.getMatches(units, Matches.unitHasMovementLimit().or(Matches.unitHasAttackingLimit()));
       for (final Territory t : route.getSteps()) {
         final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
         if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)
@@ -766,10 +761,9 @@ public class MoveValidator {
    * AA and factory dont count as enemy.
    */
   static boolean noEnemyUnitsOnPathMiddleSteps(final Route route, final PlayerID player, final GameData data) {
-    final Predicate<Unit> alliedOrNonCombat = Match.anyOf(
-        Matches.unitIsInfrastructure(),
-        Matches.enemyUnit(player, data).negate(),
-        Matches.unitIsSubmerged());
+    final Predicate<Unit> alliedOrNonCombat = Matches.unitIsInfrastructure()
+        .or(Matches.enemyUnit(player, data).negate())
+        .or(Matches.unitIsSubmerged());
     // Submerged units do not interfere with movement
     for (final Territory current : route.getMiddleSteps()) {
       if (!current.getUnits().allMatch(alliedOrNonCombat)) {
@@ -785,14 +779,17 @@ public class MoveValidator {
    */
   static boolean onlyIgnoredUnitsOnPath(final Route route, final PlayerID player, final GameData data,
       final boolean ignoreRouteEnd) {
-    final Predicate<Unit> subOnly =
-        Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsSub(), Matches.enemyUnit(player, data).negate());
-    final Predicate<Unit> transportOnly =
-        Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsTransportButNotCombatTransport(),
-            Matches.unitIsLand(), Matches.enemyUnit(player, data).negate());
-    final Predicate<Unit> transportOrSubOnly =
-        Match.anyOf(Matches.unitIsInfrastructure(), Matches.unitIsTransportButNotCombatTransport(),
-            Matches.unitIsLand(), Matches.unitIsSub(), Matches.enemyUnit(player, data).negate());
+    final Predicate<Unit> subOnly = Matches.unitIsInfrastructure()
+        .or(Matches.unitIsSub())
+        .or(Matches.enemyUnit(player, data).negate());
+    final Predicate<Unit> transportOnly = Matches.unitIsInfrastructure()
+        .or(Matches.unitIsTransportButNotCombatTransport())
+        .or(Matches.unitIsLand())
+        .or(Matches.enemyUnit(player, data).negate());
+    final Predicate<Unit> transportOrSubOnly = Matches.unitIsInfrastructure()
+        .or(Matches.unitIsTransportButNotCombatTransport())
+        .or(Matches.unitIsLand()).or(Matches.unitIsSub())
+        .or(Matches.enemyUnit(player, data).negate());
     final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
     boolean validMove = false;
@@ -866,9 +863,9 @@ public class MoveValidator {
     if (checkForAlreadyTransported) {
       // TODO Leaving unitIsTransport() for potential use with amphib transports (hovercraft, ducks, etc...)
       final List<Unit> transports =
-          Matches.getMatches(units, Match.anyOf(Matches.unitIsTransport(), Matches.unitIsAirTransport()));
+          Matches.getMatches(units, Matches.unitIsTransport().or(Matches.unitIsAirTransport()));
       final List<Unit> transportable =
-          Matches.getMatches(units, Match.anyOf(Matches.unitCanBeTransported(), Matches.unitIsAirTransportable()));
+          Matches.getMatches(units, Matches.unitCanBeTransported().or(Matches.unitIsAirTransportable()));
       // Check if there are transports in the group to be checked
       if (alreadyLoaded.keySet().containsAll(transports)) {
         // Check each transportable unit -vs those already loaded.
@@ -908,7 +905,7 @@ public class MoveValidator {
   }
 
   private static Collection<Unit> getNonLand(final Collection<Unit> units) {
-    return Matches.getMatches(units, Match.anyOf(Matches.unitIsAir(), Matches.unitIsSea()));
+    return Matches.getMatches(units, Matches.unitIsAir().or(Matches.unitIsSea()));
   }
 
   public static int getMaxMovement(final Collection<Unit> units) {
@@ -1056,7 +1053,7 @@ public class MoveValidator {
     // situations
     final Collection<Unit> land = Matches.getMatches(units, Matches.unitIsLand());
     final Collection<Unit> landAndAir =
-        Matches.getMatches(units, Match.anyOf(Matches.unitIsLand(), Matches.unitIsAir()));
+        Matches.getMatches(units, Matches.unitIsLand().or(Matches.unitIsAir()));
     // make sure we can be transported
     final Predicate<Unit> cantBeTransported = Matches.unitCanBeTransported().negate();
     for (final Unit unit : Matches.getMatches(land, cantBeTransported)) {
@@ -1181,9 +1178,10 @@ public class MoveValidator {
 
   static boolean allLandUnitsAreBeingParatroopered(final Collection<Unit> units) {
     // some units that can't be paratrooped
-    if (units.isEmpty()
-        || !units.stream().allMatch(Match.anyOf(Matches.unitIsAirTransportable(), Matches.unitIsAirTransport(),
-            Matches.unitIsAir()))) {
+    if (units.isEmpty() || !units.stream().allMatch(
+        Matches.unitIsAirTransportable()
+            .or(Matches.unitIsAirTransport())
+            .or(Matches.unitIsAir()))) {
       return false;
     }
     // final List<Unit> paratroopsRequiringTransport = getParatroopsRequiringTransport(units, route);
@@ -1208,7 +1206,7 @@ public class MoveValidator {
     if (!TechAttachment.isAirTransportable(player)) {
       return true;
     }
-    if (units.isEmpty() || !units.stream().allMatch(Match.anyOf(Matches.unitIsAir(), Matches.unitIsLand()))) {
+    if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir().or(Matches.unitIsLand()))) {
       return true;
     }
     for (final Unit unit : Matches.getMatches(units, Matches.unitIsNotAirTransportable())) {

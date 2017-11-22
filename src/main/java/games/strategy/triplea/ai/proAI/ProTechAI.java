@@ -536,8 +536,7 @@ final class ProTechAI {
     final Predicate<Territory> routeCond = Match.allOf(
         Matches.territoryHasUnitsThatMatch(Match.of(unitCond)).negate(),
         Matches.territoryIsWater());
-    final Predicate<Territory> routeCondition;
-    routeCondition = Match.anyOf(Matches.territoryIs(destination), routeCond);
+    final Predicate<Territory> routeCondition = Matches.territoryIs(destination).or(routeCond);
     Route r = data.getMap().getRoute(start, destination, routeCondition);
     if (r == null || r.getEnd() == null) {
       return null;
@@ -608,7 +607,7 @@ final class ProTechAI {
       final Predicate<Territory> routeCondition,
       final int distance,
       final GameData data) {
-    final Predicate<Territory> canGo = Match.anyOf(endCondition, routeCondition);
+    final Predicate<Territory> canGo = endCondition.or(routeCondition);
     final IntegerMap<Territory> visited = new IntegerMap<>();
     final Queue<Territory> q = new LinkedList<>();
     final List<Territory> frontier = new ArrayList<>();

@@ -76,7 +76,6 @@ import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.WidgetChangedListener;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 class OddsCalculatorPanel extends JPanel {
   private static final long serialVersionUID = -3559687618320469183L;
@@ -880,7 +879,7 @@ class OddsCalculatorPanel extends JPanel {
         if (defender) {
           predicate = Matches.unitTypeIsNotSea();
         } else {
-          predicate = Match.anyOf(Matches.unitTypeIsNotSea(), Matches.unitTypeCanBombard(id));
+          predicate = Matches.unitTypeIsNotSea().or(Matches.unitTypeCanBombard(id));
         }
       } else {
         predicate = Matches.unitTypeIsSeaOrAir();

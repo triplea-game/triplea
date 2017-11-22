@@ -100,8 +100,8 @@ class AAInMoveUtil implements Serializable {
           UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
-          Matches.getMatches(units, Match.anyOf(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa),
-              Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+          Matches.getMatches(units, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
+              .or(Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing
       // until you got the roll you wanted

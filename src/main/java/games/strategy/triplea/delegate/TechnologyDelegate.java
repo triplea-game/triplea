@@ -75,7 +75,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
       final Predicate<TriggerAttachment> technologyDelegateTriggerMatch = Match.allOf(
           AbstractTriggerAttachment.availableUses, AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-          Match.anyOf(TriggerAttachment.techAvailableMatch()));
+          TriggerAttachment.techAvailableMatch());
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(m_player)), technologyDelegateTriggerMatch);

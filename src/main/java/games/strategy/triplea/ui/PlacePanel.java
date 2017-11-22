@@ -26,7 +26,6 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
-import games.strategy.util.Match;
 
 public class PlacePanel extends AbstractMovePanel {
   private static final long serialVersionUID = -4411301492537704785L;
@@ -136,9 +135,7 @@ public class PlacePanel extends AbstractMovePanel {
             || isLhtrCarrierProductionRules() || GameStepPropertiesHelper.isBid(getData()))) {
           units = Matches.getMatches(units, Matches.unitIsSea());
         } else {
-          final Predicate<Unit> unitIsSeaOrCanLandOnCarrier = Match.anyOf(
-              Matches.unitIsSea(),
-              Matches.unitCanLandOnCarrier());
+          final Predicate<Unit> unitIsSeaOrCanLandOnCarrier = Matches.unitIsSea().or(Matches.unitCanLandOnCarrier());
           units = Matches.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {
