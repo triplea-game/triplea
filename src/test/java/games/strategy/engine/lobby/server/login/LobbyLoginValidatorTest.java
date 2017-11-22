@@ -29,6 +29,8 @@ import org.mockito.Mock;
 
 import com.google.common.collect.ImmutableMap;
 
+import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.db.BadWordDao;
 import games.strategy.engine.lobby.server.db.BannedMacDao;
@@ -61,6 +63,9 @@ public final class LobbyLoginValidatorTest {
     private BannedUsernameDao bannedUsernameDao;
 
     @Mock
+    private PropertyReader propertyReader;
+
+    @Mock
     private UserDao userDao;
 
     private LobbyLoginValidator lobbyLoginValidator;
@@ -76,6 +81,7 @@ public final class LobbyLoginValidatorTest {
     @BeforeEach
     public void setUp() throws IOException, GeneralSecurityException {
       lobbyLoginValidator = new LobbyLoginValidator(
+          new LobbyPropertyReader(propertyReader),
           badWordDao,
           bannedMacDao,
           bannedUsernameDao,
@@ -109,6 +115,11 @@ public final class LobbyLoginValidatorTest {
 
     final void givenAuthenticationWillUseObfuscatedPasswordAndSucceed() {
       when(userDao.login(USERNAME, new HashedPassword(obfuscate(PASSWORD)))).thenReturn(true);
+    }
+
+    final void givenMaintenanceModeIsEnabled() {
+      when(propertyReader.readProperty(LobbyPropertyReader.PropertyKeys.MAINTENANCE_MODE))
+          .thenReturn(Boolean.TRUE.toString());
     }
 
     private void givenNoMacIsBanned() {
@@ -189,8 +200,6 @@ public final class LobbyLoginValidatorTest {
     final void thenUserShouldNotBeUpdated() {
       verify(userDao, never()).updateUser(any(DBUser.class), any(HashedPassword.class));
     }
-
-
   }
 
   @ExtendWith(MockitoExtension.class)
@@ -301,7 +310,7 @@ public final class LobbyLoginValidatorTest {
 
         whenAuthenticating(givenAuthenticationResponse());
 
-        thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.AUTHENTICATION_FAILED);
+        thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.AUTHENTICATION_FAILED);
         thenUserShouldNotBeCreated();
         thenUserShouldNotBeUpdated();
       }
@@ -367,6 +376,23 @@ public final class LobbyLoginValidatorTest {
             .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
             .build();
       }
+    }
+  }
+
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  public final class WhenMaintenanceModeIsEnabledTest extends AbstractTestCase {
+    @Test
+    public void shouldFailAuthentication() {
+      givenMaintenanceModeIsEnabled();
+
+      whenAuthenticating(givenAuthenticationResponse());
+
+      thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.MAINTENANCE_MODE_ENABLED);
+    }
+
+    private ResponseGenerator givenAuthenticationResponse() {
+      return challenge -> ImmutableMap.of();
     }
   }
 }

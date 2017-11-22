@@ -1,63 +1,60 @@
 package games.strategy.engine.config.lobby;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.Matchers.is;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 
-import org.junit.experimental.extensions.TemporaryFolder;
-import org.junit.experimental.extensions.TemporaryFolderExtension;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(TemporaryFolderExtension.class)
+import games.strategy.engine.config.MemoryPropertyReader;
+import games.strategy.engine.config.lobby.LobbyPropertyReader.PropertyKeys;
+
 public class LobbyPropertyReaderTest {
-  private LobbyPropertyReader testObj;
-  private TemporaryFolder tempFolderRule;
-
-  /**
-   * Sets up an example lobby property file with some fake values, then sets up a property reader test object
-   * pointed at this file.
-   */
-  @BeforeEach
-  public void setup() throws IOException {
-    final File testFile = tempFolderRule.newFile(getClass().getName());
-
-    try (FileWriter writer = new FileWriter(testFile)) {
-      writer.write(keyValuePair(LobbyPropertyReader.PropertyKeys.port, String.valueOf(TestData.fakePort)));
-      writer.write(keyValuePair(LobbyPropertyReader.PropertyKeys.postgresUser, TestData.fakeUser));
-      writer.write(keyValuePair(LobbyPropertyReader.PropertyKeys.postgresPassword, TestData.fakePassword));
-    }
-
-    testObj = new LobbyPropertyReader(testFile);
-  }
-
-  private static String keyValuePair(final String key, final String value) {
-    return key + "=" + value + "\n";
+  private static LobbyPropertyReader newLobbyPropertyReader(final String key, final String value) {
+    return new LobbyPropertyReader(new MemoryPropertyReader(Collections.singletonMap(key, value)));
   }
 
   @Test
-  public void getPort() throws Exception {
-    assertThat(testObj.getPort(), is(TestData.fakePort));
+  public void getPort() {
+    final int value = 100;
+    final LobbyPropertyReader lobbyPropertyReader = newLobbyPropertyReader(PropertyKeys.PORT, String.valueOf(value));
 
+    assertThat(lobbyPropertyReader.getPort(), is(value));
   }
 
   @Test
-  public void postgresUser() throws Exception {
-    assertThat(testObj.getPostgresUser(), is(TestData.fakeUser));
+  public void postgresUser() {
+    final String value = "funnyName";
+    final LobbyPropertyReader lobbyPropertyReader = newLobbyPropertyReader(PropertyKeys.POSTGRES_USER, value);
+
+    assertThat(lobbyPropertyReader.getPostgresUser(), is(value));
   }
 
   @Test
-  public void postgresPassword() throws Exception {
-    assertThat(testObj.getPostgresPassword(), is(TestData.fakePassword));
+  public void postgresPassword() {
+    final String value = "funnyPasssword";
+    final LobbyPropertyReader lobbyPropertyReader = newLobbyPropertyReader(PropertyKeys.POSTGRES_PASSWORD, value);
+
+    assertThat(lobbyPropertyReader.getPostgresPassword(), is(value));
   }
 
-  private interface TestData {
-    int fakePort = 100;
-    String fakeUser = "funnyName";
-    String fakePassword = "funnyPasssword";
+  @Test
+  public void isMaintenanceMode_ShouldReturnTrueWhenMaintenanceModeEnabled() {
+    Arrays.asList("true", "TRUE")
+        .forEach(value -> {
+          final LobbyPropertyReader lobbyPropertyReader = newLobbyPropertyReader(PropertyKeys.MAINTENANCE_MODE, value);
+          assertThat(lobbyPropertyReader.isMaintenanceMode(), is(true));
+        });
+  }
+
+  @Test
+  public void isMaintenanceMode_ShouldReturnFalseWhenMaintenanceModeDisabled() {
+    Arrays.asList("", "false", "FALSE", "other")
+        .forEach(value -> {
+          final LobbyPropertyReader lobbyPropertyReader = newLobbyPropertyReader(PropertyKeys.MAINTENANCE_MODE, value);
+          assertThat(lobbyPropertyReader.isMaintenanceMode(), is(false));
+        });
   }
 }

@@ -1,45 +1,55 @@
 package games.strategy.engine.config.lobby;
 
-import java.io.File;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.config.PropertyFileReader;
+import games.strategy.engine.config.FilePropertyReader;
+import games.strategy.engine.config.PropertyReader;
 
 /**
  * Reads property values from the lobby configuration file.
  */
-public class LobbyPropertyReader {
+public final class LobbyPropertyReader {
   private static final String LOBBY_PROPERTIES_FILE = "config/lobby/lobby.properties";
 
-  private final PropertyFileReader propertyFileReader;
+  private final PropertyReader propertyReader;
 
   public LobbyPropertyReader() {
-    propertyFileReader = new PropertyFileReader(LOBBY_PROPERTIES_FILE);
+    this(new FilePropertyReader(LOBBY_PROPERTIES_FILE));
   }
 
   @VisibleForTesting
-  LobbyPropertyReader(final File propertyFileOverride) {
-    propertyFileReader = new PropertyFileReader(propertyFileOverride);
+  public LobbyPropertyReader(final PropertyReader propertyReader) {
+    checkNotNull(propertyReader);
+
+    this.propertyReader = propertyReader;
   }
 
-
   public int getPort() {
-    return Integer.parseInt(propertyFileReader.readProperty("port"));
+    return Integer.parseInt(propertyReader.readProperty(PropertyKeys.PORT));
   }
 
   public String getPostgresUser() {
-    return propertyFileReader.readProperty(LobbyPropertyReader.PropertyKeys.postgresUser);
+    return propertyReader.readProperty(PropertyKeys.POSTGRES_USER);
   }
 
   public String getPostgresPassword() {
-    return propertyFileReader.readProperty("postgres_password");
+    return propertyReader.readProperty(PropertyKeys.POSTGRES_PASSWORD);
   }
 
+  public boolean isMaintenanceMode() {
+    return Boolean.parseBoolean(propertyReader.readProperty(PropertyKeys.MAINTENANCE_MODE));
+  }
+
+  /**
+   * The valid lobby property keys.
+   */
   @VisibleForTesting
-  interface PropertyKeys {
-    String port = "port";
-    String postgresUser = "postgres_user";
-    String postgresPassword = "postgres_password";
+  public interface PropertyKeys {
+    String MAINTENANCE_MODE = "maintenance_mode";
+    String PORT = "port";
+    String POSTGRES_USER = "postgres_user";
+    String POSTGRES_PASSWORD = "postgres_password";
   }
 }
