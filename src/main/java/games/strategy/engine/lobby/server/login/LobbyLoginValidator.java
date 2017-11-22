@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.server.login;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,9 @@ import org.mindrot.jbcrypt.BCrypt;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
+import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
+import games.strategy.engine.lobby.server.LobbyContext;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.BadWordDao;
@@ -48,25 +51,31 @@ public final class LobbyLoginValidator implements ILoginValidator {
   public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
   public static final String EMAIL_KEY = "EMAIL";
   public static final String SALT_KEY = "SALT";
+
   @VisibleForTesting
-  static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
-  @VisibleForTesting
-  static final String AUTHENTICATION_FAILED = "Incorrect username or password";
-  private static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
-  private static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
-  private static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
-  private static final String INVALID_MAC = "Invalid mac address.";
+  interface ErrorMessages {
+    String AUTHENTICATION_FAILED = "Incorrect username or password";
+    String INVALID_MAC = "Invalid mac address";
+    String MAINTENANCE_MODE_ENABLED = "The lobby is in maintenance mode; please try again later";
+    String THATS_NOT_A_NICE_NAME = "That's not a nice name";
+    String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
+    String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
+    String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
+  }
+
   private static final Logger logger = Logger.getLogger(LobbyLoginValidator.class.getName());
 
   private final BadWordDao badWordDao;
   private final BannedMacDao bannedMacDao;
   private final BannedUsernameDao bannedUsernameDao;
   private final BcryptSaltGenerator bcryptSaltGenerator;
+  private final LobbyPropertyReader lobbyPropertyReader;
   private final RsaAuthenticator rsaAuthenticator;
   private final UserDao userDao;
 
   public LobbyLoginValidator() {
     this(
+        LobbyContext.lobbyPropertyReader(),
         new BadWordController(),
         new BannedMacController(),
         new BannedUsernameController(),
@@ -77,6 +86,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   @VisibleForTesting
   LobbyLoginValidator(
+      final LobbyPropertyReader lobbyPropertyReader,
       final BadWordDao badWordDao,
       final BannedMacDao bannedMacDao,
       final BannedUsernameDao bannedUsernameDao,
@@ -87,13 +97,17 @@ public final class LobbyLoginValidator implements ILoginValidator {
     this.bannedMacDao = bannedMacDao;
     this.bannedUsernameDao = bannedUsernameDao;
     this.bcryptSaltGenerator = bcryptSaltGenerator;
+    this.lobbyPropertyReader = lobbyPropertyReader;
     this.rsaAuthenticator = rsaAuthenticator;
     this.userDao = userDao;
   }
 
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
-    // we need to give the user the salt key for the username
+    if (lobbyPropertyReader.isMaintenanceMode()) {
+      return Collections.emptyMap();
+    }
+
     final Map<String, String> challenge = new HashMap<>();
     final HashedPassword password = userDao.getLegacyPassword(userName);
     if (password != null && Strings.emptyToNull(password.value) != null) {
@@ -107,6 +121,10 @@ public final class LobbyLoginValidator implements ILoginValidator {
   public String verifyConnection(final Map<String, String> propertiesSentToClient,
       final Map<String, String> propertiesReadFromClient, final String clientName, final String clientMac,
       final SocketAddress remoteAddress) {
+    if (lobbyPropertyReader.isMaintenanceMode()) {
+      return ErrorMessages.MAINTENANCE_MODE_ENABLED;
+    }
+
     final String error = verifyConnectionInternal(propertiesReadFromClient, clientName, clientMac);
     if (error != null) {
       logger.info("Bad login attempt from " + remoteAddress + " for user " + clientName + " error:" + error);
@@ -136,27 +154,27 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
     for (final String s : getBadWords()) {
       if (clientName.toLowerCase().contains(s.toLowerCase())) {
-        return THATS_NOT_A_NICE_NAME;
+        return ErrorMessages.THATS_NOT_A_NICE_NAME;
       }
     }
     if (hashedMac == null) {
-      return UNABLE_TO_OBTAIN_MAC;
+      return ErrorMessages.UNABLE_TO_OBTAIN_MAC;
     }
     if (hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")
         || !hashedMac.matches("[0-9a-zA-Z$./]+")) {
       // Must have been tampered with
-      return INVALID_MAC;
+      return ErrorMessages.INVALID_MAC;
     }
     final Tuple<Boolean, Timestamp> macBanned = bannedMacDao.isMacBanned(hashedMac);
     if (macBanned.getFirst()) {
-      return YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(macBanned.getSecond());
+      return ErrorMessages.YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(macBanned.getSecond());
     }
     // test for username ban after testing normal bans, because if it is only a username ban then the user should know
     // they can change their
     // name
     final Tuple<Boolean, Timestamp> usernameBanned = bannedUsernameDao.isUsernameBanned(clientName);
     if (usernameBanned.getFirst()) {
-      return USERNAME_HAS_BEEN_BANNED + " " + getBanDurationBreakdown(usernameBanned.getSecond());
+      return ErrorMessages.USERNAME_HAS_BEEN_BANNED + " " + getBanDurationBreakdown(usernameBanned.getSecond());
     }
     if (propertiesReadFromClient.containsKey(REGISTER_NEW_USER_KEY)) {
       return createUser(propertiesReadFromClient, clientName);
@@ -208,7 +226,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
   }
 
   private String validatePassword(final Map<String, String> propertiesReadFromClient, final String clientName) {
-    final String errorMessage = AUTHENTICATION_FAILED;
+    final String errorMessage = ErrorMessages.AUTHENTICATION_FAILED;
     final HashedPassword hashedPassword = userDao.getPassword(clientName);
     if (hashedPassword == null) {
       return errorMessage;

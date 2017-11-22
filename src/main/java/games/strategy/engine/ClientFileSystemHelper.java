@@ -107,7 +107,7 @@ public final class ClientFileSystemHelper {
 
     final List<String> fileNames = (files == null) ? Collections.emptyList()
         : Arrays.stream(files).map(File::getName).collect(Collectors.toList());
-    return fileNames.contains(GameEnginePropertyReader.GAME_ENGINE_PROPERTY_FILE);
+    return fileNames.contains(GameEnginePropertyReader.GAME_ENGINE_PROPERTIES_FILE);
   }
 
   /**

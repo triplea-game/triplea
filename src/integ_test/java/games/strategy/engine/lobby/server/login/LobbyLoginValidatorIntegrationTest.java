@@ -118,7 +118,7 @@ public class LobbyLoginValidatorIntegrationTest {
       // this is probably a duplicate insertion error, we can ignore that as it only means we already added the bad
       // word previously
     }
-    assertEquals(LobbyLoginValidator.THATS_NOT_A_NICE_NAME,
+    assertEquals(LobbyLoginValidator.ErrorMessages.THATS_NOT_A_NICE_NAME,
         generateChallenge(name, new HashedPassword(MD5Crypt.crypt("foo"))).apply(challenge -> new HashMap<>(
             Collections.singletonMap(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
   }
