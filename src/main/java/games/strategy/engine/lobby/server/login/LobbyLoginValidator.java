@@ -3,7 +3,6 @@ package games.strategy.engine.lobby.server.login;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,16 +103,22 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   @Override
   public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
-    if (lobbyPropertyReader.isMaintenanceMode()) {
-      return Collections.emptyMap();
-    }
-
     final Map<String, String> challenge = new HashMap<>();
-    final HashedPassword password = userDao.getLegacyPassword(userName);
-    if (password != null && Strings.emptyToNull(password.value) != null) {
-      challenge.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
-    }
+    challenge.putAll(newMd5CryptAuthenticatorChallenge(userName));
     challenge.putAll(rsaAuthenticator.newChallenge());
+    return challenge;
+  }
+
+  private Map<String, String> newMd5CryptAuthenticatorChallenge(final String userName) {
+    final Map<String, String> challenge = new HashMap<>();
+    if (lobbyPropertyReader.isMaintenanceMode()) {
+      challenge.put(SALT_KEY, MD5Crypt.newSalt());
+    } else {
+      final HashedPassword password = userDao.getLegacyPassword(userName);
+      if (password != null && Strings.emptyToNull(password.value) != null) {
+        challenge.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
+      }
+    }
     return challenge;
   }
 
