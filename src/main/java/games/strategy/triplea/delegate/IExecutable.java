@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 
+@FunctionalInterface
 public interface IExecutable extends Serializable {
   /**
    * See the documentation to IExecutionStack.

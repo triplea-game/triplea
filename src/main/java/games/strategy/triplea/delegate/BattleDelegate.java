@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -570,28 +571,24 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final Territory territory = battleTerritories.next();
       final List<Unit> abandonedToUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
       final PlayerID abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(abandonedToUnits);
-      {
-        // now make sure to add any units that must move with these units, so that they get included as dependencies
-        final Map<Unit, Collection<Unit>> transportMap = TransportTracker.transporting(territory.getUnits().getUnits());
-        final HashSet<Unit> dependants = new HashSet<>();
-        for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet()) {
-          // only consider those transports that are part of our group
-          if (abandonedToUnits.contains(entry.getKey())) {
-            dependants.addAll(entry.getValue());
-          }
-        }
-        // no duplicates
-        dependants.removeAll(abandonedToUnits);
-        // add the dependants to the attacking list
-        abandonedToUnits.addAll(dependants);
-      }
+
+      // now make sure to add any units that must move with these units, so that they get included as dependencies
+      final Map<Unit, Collection<Unit>> transportMap = TransportTracker.transporting(territory.getUnits().getUnits());
+      // add the dependants to the attacking list
+      abandonedToUnits.addAll(transportMap.entrySet().stream()
+          .filter(e -> abandonedToUnits.contains(e.getKey()))
+          .map(Entry::getValue)
+          .flatMap(Collection::stream)
+          // no duplicates
+          .filter(u -> !abandonedToUnits.contains(u))
+          .collect(Collectors.toSet()));
+
       // either we have abandoned the territory (so there are no more units that are enemy units of our enemy units)
       // or we are possibly bombing the territory (so we may have units there still)
       final Set<Unit> enemyUnitsOfAbandonedToUnits = new HashSet<>();
-      final Set<PlayerID> enemyPlayers = new HashSet<>();
-      for (final Unit u : abandonedToUnits) {
-        enemyPlayers.add(u.getOwner());
-      }
+      final Set<PlayerID> enemyPlayers = abandonedToUnits.stream()
+          .map(Unit::getOwner)
+          .collect(Collectors.toSet());
       for (final PlayerID p : enemyPlayers) {
         final Predicate<Unit> canPreventCapture = Matches.unitIsEnemyOf(data, p)
             .and(Matches.unitIsNotAir())
@@ -631,9 +628,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final boolean toAnyAmphibious = Properties.getScrambleToAnyAmphibiousAssault(data);
     final boolean toSbr = Properties.getCanScrambleIntoAirBattles(data);
     int maxScrambleDistance = 0;
-    final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
-    while (utIter.hasNext()) {
-      final UnitAttachment ua = UnitAttachment.get(utIter.next());
+    for (final UnitType unitType : data.getUnitTypeList()) {
+      final UnitAttachment ua = UnitAttachment.get(unitType);
       if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }
@@ -663,7 +659,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     territoriesWithBattlesWater.addAll(Matches.getMatches(territoriesWithBattles, Matches.territoryIsWater()));
     territoriesWithBattlesLand.addAll(Matches.getMatches(territoriesWithBattles, Matches.territoryIsLand()));
     for (final Territory battleTerr : territoriesWithBattlesWater) {
-      final HashSet<Territory> canScrambleFrom = new HashSet<>(
+      final Set<Territory> canScrambleFrom = new HashSet<>(
           Matches.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
       if (!canScrambleFrom.isEmpty()) {
         scrambleTerrs.put(battleTerr, canScrambleFrom);
@@ -671,7 +667,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     for (final Territory battleTerr : territoriesWithBattlesLand) {
       if (!toSeaOnly) {
-        final HashSet<Territory> canScrambleFrom = new HashSet<>(
+        final Set<Territory> canScrambleFrom = new HashSet<>(
             Matches.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
         if (!canScrambleFrom.isEmpty()) {
           scrambleTerrs.put(battleTerr, canScrambleFrom);
@@ -684,10 +680,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final Collection<Territory> amphibFromTerrs = ((DependentBattle) battle).getAmphibiousAttackTerritories();
         amphibFromTerrs.removeAll(territoriesWithBattlesWater);
         for (final Territory amphibFrom : amphibFromTerrs) {
-          Set<Territory> canScrambleFrom = scrambleTerrs.get(amphibFrom);
-          if (canScrambleFrom == null) {
-            canScrambleFrom = new HashSet<>();
-          }
+          final Set<Territory> canScrambleFrom = scrambleTerrs.getOrDefault(amphibFrom, new HashSet<>());
           if (toAnyAmphibious) {
             canScrambleFrom
                 .addAll(Matches.getMatches(data.getMap().getNeighbors(amphibFrom, maxScrambleDistance), canScramble));
@@ -707,8 +700,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Map<Tuple<Territory, PlayerID>, Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> scramblersByTerritoryPlayer =
         new HashMap<>();
     for (final Territory to : scrambleTerrs.keySet()) {
-      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers =
-          new HashMap<>();
+      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers = new HashMap<>();
       // find who we should ask
       PlayerID defender = null;
       if (m_battleTracker.hasPendingBattle(to, false)) {
@@ -735,11 +727,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         continue;
       }
       final Tuple<Territory, PlayerID> terrPlayer = Tuple.of(to, defender);
-      Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>> tempScrambleList =
-          scramblersByTerritoryPlayer.get(terrPlayer);
-      if (tempScrambleList == null) {
-        tempScrambleList = new ArrayList<>();
-      }
+      final Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>> tempScrambleList =
+          scramblersByTerritoryPlayer.getOrDefault(terrPlayer, new ArrayList<>());
       tempScrambleList.add(scramblers);
       scramblersByTerritoryPlayer.put(terrPlayer, tempScrambleList);
     }
@@ -757,7 +746,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final Iterator<Territory> territoryIter = scramblers.keySet().iterator();
         while (territoryIter.hasNext()) {
           final Territory t = territoryIter.next();
-          scramblers.get(t).getSecond().retainAll(t.getUnits().getUnits());
+          scramblers.get(t).getSecond().retainAll(t.getUnits());
           if (scramblers.get(t).getSecond().isEmpty()) {
             territoryIter.remove();
           }
@@ -765,7 +754,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (scramblers.isEmpty()) {
           continue;
         }
-        final HashMap<Territory, Collection<Unit>> toScramble =
+        final Map<Territory, Collection<Unit>> toScramble =
             getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
         if (toScramble == null) {
           continue;
@@ -1208,8 +1197,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         Properties.getKamikazeSuicideAttacksOnlyWhereBattlesAre(data);
     final Collection<Territory> pendingBattles = m_battleTracker.getPendingBattleSites(false);
     // create a list of all kamikaze zones, listed by enemy
-    final HashMap<PlayerID, Collection<Territory>> kamikazeZonesByEnemy =
-        new HashMap<>();
+    final Map<PlayerID, Collection<Territory>> kamikazeZonesByEnemy = new HashMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (ta == null) {
@@ -1313,7 +1301,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           possibleUnitsToAttack.put(t, validTargets);
         }
       }
-      final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks =
+      final Map<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks =
           getRemotePlayer(currentEnemy).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
       if (attacks == null || attacks.isEmpty()) {
         continue;
