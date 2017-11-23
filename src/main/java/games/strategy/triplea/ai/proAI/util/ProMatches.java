@@ -191,9 +191,13 @@ public class ProMatches {
     return Matches.territoryHasNoEnemyUnits(player, data).or(Matches.territoryIsInList(clearedTerritories));
   }
 
+  /**
+   * Returns a Predicate returning true for all territories
+   * either belong to the enemy, have enemy units
+   * in them or can't be held at all.
+   */
   public static Predicate<Territory> territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(final PlayerID player,
-      final GameData data,
-      final List<Territory> territoriesThatCantBeHeld) {
+      final GameData data, final List<Territory> territoriesThatCantBeHeld) {
     return Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
         .or(Matches.territoryHasEnemyUnits(player, data))
         .or(Matches.territoryIsInList(territoriesThatCantBeHeld));
