@@ -788,7 +788,8 @@ public class MoveValidator {
         .or(Matches.enemyUnit(player, data).negate());
     final Predicate<Unit> transportOrSubOnly = Matches.unitIsInfrastructure()
         .or(Matches.unitIsTransportButNotCombatTransport())
-        .or(Matches.unitIsLand()).or(Matches.unitIsSub())
+        .or(Matches.unitIsLand())
+        .or(Matches.unitIsSub())
         .or(Matches.enemyUnit(player, data).negate());
     final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
