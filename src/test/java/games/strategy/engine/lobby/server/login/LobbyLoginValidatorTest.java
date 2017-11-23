@@ -379,20 +379,60 @@ public final class LobbyLoginValidatorTest {
     }
   }
 
-  @ExtendWith(MockitoExtension.class)
   @Nested
-  public final class WhenMaintenanceModeIsEnabledTest extends AbstractTestCase {
-    @Test
-    public void shouldFailAuthentication() {
-      givenMaintenanceModeIsEnabled();
+  public final class WhenMaintenanceModeIsEnabledTest {
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenUsingLegacyClientTest extends AbstractTestCase {
+      @Test
+      public void shouldFailAuthentication() {
+        givenMaintenanceModeIsEnabled();
 
-      whenAuthenticating(givenAuthenticationResponse());
+        whenAuthenticating(givenAuthenticationResponse());
 
-      thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.MAINTENANCE_MODE_ENABLED);
+        thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.MAINTENANCE_MODE_ENABLED);
+      }
+
+      private ResponseGenerator givenAuthenticationResponse() {
+        return challenge -> {
+          thenChallengeShouldBeProcessableByMd5CryptAuthenticator(challenge);
+          return ImmutableMap.of(
+              LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD),
+              LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+        };
+      }
+
+      private void thenChallengeShouldBeProcessableByMd5CryptAuthenticator(final Map<String, String> challenge) {
+        assertThat(challenge.containsKey(LobbyLoginValidator.SALT_KEY), is(true));
+      }
     }
 
-    private ResponseGenerator givenAuthenticationResponse() {
-      return challenge -> ImmutableMap.of();
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenUsingCurrentClientTest extends AbstractTestCase {
+      @Test
+      public void shouldFailAuthentication() {
+        givenMaintenanceModeIsEnabled();
+
+        whenAuthenticating(givenAuthenticationResponse());
+
+        thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.MAINTENANCE_MODE_ENABLED);
+      }
+
+      private ResponseGenerator givenAuthenticationResponse() {
+        return challenge -> {
+          thenChallengeShouldBeProcessableByRsaAuthenticator(challenge);
+          return ImmutableMap.<String, String>builder()
+              .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
+              .put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString())
+              .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+              .build();
+        };
+      }
+
+      private void thenChallengeShouldBeProcessableByRsaAuthenticator(final Map<String, String> challenge) {
+        assertThat(RsaAuthenticator.canProcessChallenge(challenge), is(true));
+      }
     }
   }
 }
