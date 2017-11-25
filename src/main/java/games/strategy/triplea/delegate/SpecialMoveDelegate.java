@@ -27,7 +27,6 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 /**
  * SpecialMoveDelegate is a move delegate made for special movements like the new paratrooper/airborne movement.
@@ -287,9 +286,11 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static Predicate<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
-    return Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners),
-        Matches.unitIsOfTypes(types), Matches.unitIsNotDisabled(), Matches.unitHasNotMoved(),
-        Matches.unitIsAirborne().negate());
+    return Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners)
+        .and(Matches.unitIsOfTypes(types))
+        .and(Matches.unitIsNotDisabled())
+        .and(Matches.unitHasNotMoved())
+        .and(Matches.unitIsAirborne().negate());
   }
 
   private static Change getNewAssignmentOfNumberLaunchedChange(int newNumberLaunched, final Collection<Unit> bases,

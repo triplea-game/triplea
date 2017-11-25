@@ -46,7 +46,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
@@ -394,9 +393,8 @@ public class BattleTracker implements Serializable {
     }
     final boolean canConquerMiddleSteps = presentFromStartTilEnd.stream().anyMatch(Matches.unitIsNotAir());
     final boolean scramblingEnabled = Properties.getScramble_Rules_In_Effect(data);
-    final Predicate<Territory> conquerable = Match.allOf(
-        Matches.territoryIsEmptyOfCombatUnits(data, id),
-        Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id)
+    final Predicate<Territory> conquerable = Matches.territoryIsEmptyOfCombatUnits(data, id)
+        .and(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id)
             .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)));
     final Collection<Territory> conquered = new ArrayList<>();
     if (canConquerMiddleSteps) {
@@ -498,9 +496,8 @@ public class BattleTracker implements Serializable {
           - Matches.countMatches(arrivedUnits, Matches.unitIsAir())
           - Matches.countMatches(arrivedUnits, Matches.unitIsSubmerged());
       // If transports are restricted from controlling sea zones, subtract them
-      final Predicate<Unit> transportsCanNotControl = Match.allOf(
-          Matches.unitIsTransportAndNotDestroyer(),
-          Matches.unitIsTransportButNotCombatTransport());
+      final Predicate<Unit> transportsCanNotControl = Matches.unitIsTransportAndNotDestroyer()
+          .and(Matches.unitIsTransportButNotCombatTransport());
       if (!Properties.getTransportControlSeaZone(data)) {
         totalMatches -= Matches.countMatches(arrivedUnits, transportsCanNotControl);
       }
@@ -683,7 +680,7 @@ public class BattleTracker implements Serializable {
     }
     // Remove any bombing raids against captured territory
     // TODO: see if necessary
-    if (territory.getUnits().anyMatch(Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.unitCanBeDamaged()))) {
+    if (territory.getUnits().anyMatch(Matches.unitIsEnemyOf(data, id).and(Matches.unitCanBeDamaged()))) {
       final IBattle bombingBattle = getPendingBattle(territory, true, null);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -740,8 +737,8 @@ public class BattleTracker implements Serializable {
     final GameData data = bridge.getData();
     // destroy any units that should be destroyed on capture
     if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
-      final Predicate<Unit> enemyToBeDestroyed =
-          Match.allOf(Matches.enemyUnit(id, data), Matches.unitDestroyedWhenCapturedByOrFrom(id));
+      final Predicate<Unit> enemyToBeDestroyed = Matches.enemyUnit(id, data)
+          .and(Matches.unitDestroyedWhenCapturedByOrFrom(id));
       final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
@@ -767,8 +764,9 @@ public class BattleTracker implements Serializable {
       }
     }
     // destroy any disabled units owned by the enemy that are NOT infrastructure or factories
-    final Predicate<Unit> enemyToBeDestroyed = Match.allOf(Matches.enemyUnit(id, data),
-        Matches.unitIsDisabled(), Matches.unitIsInfrastructure().negate());
+    final Predicate<Unit> enemyToBeDestroyed = Matches.enemyUnit(id, data)
+        .and(Matches.unitIsDisabled())
+        .and(Matches.unitIsInfrastructure().negate());
     final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
     if (!destroyed.isEmpty()) {
       final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
@@ -779,9 +777,9 @@ public class BattleTracker implements Serializable {
       }
     }
     // take over non combatants
-    final Predicate<Unit> enemyNonCom = Match.allOf(Matches.enemyUnit(id, data), Matches.unitIsInfrastructure());
-    final Predicate<Unit> willBeCaptured =
-        enemyNonCom.or(Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
+    final Predicate<Unit> enemyNonCom = Matches.enemyUnit(id, data).and(Matches.unitIsInfrastructure());
+    final Predicate<Unit> willBeCaptured = enemyNonCom
+        .or(Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
     final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
     // change any units that change unit types on capture
     if (Properties.getUnitsCanBeChangedOnCapture(data)) {

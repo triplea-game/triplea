@@ -19,7 +19,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.util.Match;
 
 public class ExtendedStats extends StatPanel {
   private static final long serialVersionUID = 2502397606419491543L;
@@ -209,7 +208,7 @@ public class ExtendedStats extends StatPanel {
     @Override
     public double getValue(final PlayerID player, final GameData data) {
       int matchCount = 0;
-      final Predicate<Unit> ownedBy = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut));
+      final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player).and(Matches.unitIsOfType(ut));
       for (final Territory place : data.getMap().getTerritories()) {
         matchCount += place.getUnits().countMatches(ownedBy);
       }

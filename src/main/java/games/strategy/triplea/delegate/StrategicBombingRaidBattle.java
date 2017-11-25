@@ -38,7 +38,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 public class StrategicBombingRaidBattle extends AbstractBattle implements BattleStepStrings {
   private static final long serialVersionUID = 8490171037606078890L;
@@ -93,8 +92,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // fill in defenders
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-    final Predicate<Unit> defenders = Match.allOf(Matches.enemyUnit(m_attacker, m_data),
-        Matches.unitCanBeDamaged()
+    final Predicate<Unit> defenders = Matches.enemyUnit(m_attacker, m_data)
+        .and(Matches.unitCanBeDamaged()
             .or(Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
                 Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data)));
     if (m_targets.isEmpty()) {
@@ -360,7 +359,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         if (determineAttackers) {
           validAttackingUnitsForThisRoll = Matches.getMatches(m_attackingUnits,
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
-                  .or(Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+                  .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
 
         final IExecutable roll = new IExecutable() {

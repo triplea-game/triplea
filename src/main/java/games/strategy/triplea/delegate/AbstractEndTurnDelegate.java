@@ -36,7 +36,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
@@ -299,9 +298,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         for (final PlayerID terrNewOwner : terrNewOwners) {
           if (possibleNewOwners.contains(terrNewOwner)) {
             // PlayerOwnerChange
-            final Collection<Unit> units =
-                currTerritory.getUnits().getMatches(Match.allOf(Matches.unitOwnedBy(player),
-                    Matches.unitCanBeGivenByTerritoryTo(terrNewOwner)));
+            final Collection<Unit> units = currTerritory.getUnits()
+                .getMatches(Matches.unitOwnedBy(player).and(Matches.unitCanBeGivenByTerritoryTo(terrNewOwner)));
             if (!units.isEmpty()) {
               change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
               changeList.add(Tuple.of(currTerritory, units));
@@ -361,7 +359,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (blockable.isEmpty()) {
       return 0;
     }
-    final Predicate<Unit> enemyUnits = Match.allOf(Matches.enemyUnit(player, data));
+    final Predicate<Unit> enemyUnits = Matches.enemyUnit(player, data);
     int totalLoss = 0;
     final boolean rollDiceForBlockadeDamage = Properties.getConvoyBlockadesRollDiceForCost(data);
     final Collection<String> transcripts = new ArrayList<>();
@@ -371,8 +369,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     for (final Territory b : blockable) {
       // match will check for land, convoy zones, and also contested territories
       final List<Territory> viableNeighbors =
-          Matches.getMatches(map.getNeighbors(b), Match.allOf(Matches.isTerritoryOwnedBy(player),
-              Matches.territoryCanCollectIncomeFrom(player, data)));
+          Matches.getMatches(map.getNeighbors(b),
+              Matches.isTerritoryOwnedBy(player).and(Matches.territoryCanCollectIncomeFrom(player, data)));
       final int maxLoss = getProduction(viableNeighbors);
       if (maxLoss <= 0) {
         continue;

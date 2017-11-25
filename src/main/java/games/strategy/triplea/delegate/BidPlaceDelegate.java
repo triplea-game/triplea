@@ -14,7 +14,6 @@ import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 @MapSupport
 public class BidPlaceDelegate extends AbstractPlaceDelegate {
@@ -109,10 +108,9 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       final PlayerID player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<>();
-    final Predicate<Unit> groundUnits =
-        // we add factories and constructions later
-        Match.allOf(Matches.unitIsLand(), Matches.unitIsNotConstruction());
-    final Predicate<Unit> airUnits = Match.allOf(Matches.unitIsAir(), Matches.unitIsNotConstruction());
+    // we add factories and constructions later
+    final Predicate<Unit> groundUnits = Matches.unitIsLand().and(Matches.unitIsNotConstruction());
+    final Predicate<Unit> airUnits = Matches.unitIsAir().and(Matches.unitIsNotConstruction());
     placeableUnits.addAll(Matches.getMatches(units, groundUnits));
     placeableUnits.addAll(Matches.getMatches(units, airUnits));
     if (units.stream().anyMatch(Matches.unitIsConstruction())) {

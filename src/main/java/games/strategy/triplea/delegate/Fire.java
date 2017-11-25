@@ -17,7 +17,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.util.Match;
 
 public class Fire implements IExecutable {
 
@@ -95,13 +94,13 @@ public class Fire implements IExecutable {
     final int hitCount = m_dice.getHits();
     AbstractBattle.getDisplay(bridge).notifyDice(m_dice, m_stepName);
     final int countTransports =
-        Matches.countMatches(m_attackableUnits, Match.allOf(Matches.unitIsTransport(), Matches.unitIsSea()));
+        Matches.countMatches(m_attackableUnits, Matches.unitIsTransport().and(Matches.unitIsSea()));
     if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData())) {
       final CasualtyDetails message;
       final Collection<Unit> nonTransports = Matches.getMatches(m_attackableUnits,
           Matches.unitIsNotTransportButCouldBeCombatTransport().or(Matches.unitIsNotSea()));
       final Collection<Unit> transportsOnly = Matches.getMatches(m_attackableUnits,
-          Match.allOf(Matches.unitIsTransportButNotCombatTransport(), Matches.unitIsSea()));
+          Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea()));
       final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);
       // more hits than combat units
       if (hitCount > numPossibleHits) {
@@ -117,9 +116,8 @@ public class Fire implements IExecutable {
         // Leave enough transports for each defender for overflows so they can select who loses them.
         while (playerIter.hasNext()) {
           final PlayerID player = playerIter.next();
-          final Predicate<Unit> match = Match.allOf(
-              Matches.unitIsTransportButNotCombatTransport(),
-              Matches.unitIsOwnedBy(player));
+          final Predicate<Unit> match = Matches.unitIsTransportButNotCombatTransport()
+              .and(Matches.unitIsOwnedBy(player));
           final Collection<Unit> playerTransports = Matches.getMatches(transportsOnly, match);
           final int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
           transportsOnly.removeAll(

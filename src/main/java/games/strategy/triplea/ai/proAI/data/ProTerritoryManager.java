@@ -32,7 +32,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.Match;
 import games.strategy.util.PredicateBuilder;
 
 /**
@@ -309,14 +308,15 @@ public class ProTerritoryManager {
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }
     }
-    final Predicate<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, player),
-        Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().negate());
+    final Predicate<Unit> airbasesCanScramble = Matches.unitIsEnemyOf(data, player)
+        .and(Matches.unitIsAirBase())
+        .and(Matches.unitIsNotDisabled())
+        .and(Matches.unitIsBeingTransported().negate());
     final Predicate<Territory> canScramble = PredicateBuilder
         .of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(player, data)))
-        .and(Matches.territoryHasUnitsThatMatch(Match.allOf(
-            Matches.unitCanScramble(),
-            Matches.unitIsEnemyOf(data, player),
-            Matches.unitIsNotDisabled())))
+        .and(Matches.territoryHasUnitsThatMatch(Matches.unitCanScramble()
+            .and(Matches.unitIsEnemyOf(data, player))
+            .and(Matches.unitIsNotDisabled())))
         .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
         .andIf(fromIslandOnly, Matches.territoryIsIsland())
         .build();
@@ -344,10 +344,11 @@ public class ProTerritoryManager {
         final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
         final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
-        List<Unit> canScrambleAir = from.getUnits()
-            .getMatches(Match.allOf(Matches.unitIsEnemyOf(data, player), Matches.unitCanScramble(),
-                Matches.unitIsNotDisabled(), Matches.unitWasScrambled().negate(),
-                Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
+        List<Unit> canScrambleAir = from.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)
+            .and(Matches.unitCanScramble())
+            .and(Matches.unitIsNotDisabled())
+            .and(Matches.unitWasScrambled().negate())
+            .and(Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
 
         // Add max scramble units
         if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
@@ -368,8 +369,7 @@ public class ProTerritoryManager {
   }
 
   private static int getMaxScrambleCount(final Collection<Unit> airbases) {
-    if (airbases.isEmpty()
-        || !airbases.stream().allMatch(Match.allOf(Matches.unitIsAirBase(), Matches.unitIsNotDisabled()))) {
+    if (airbases.isEmpty() || !airbases.stream().allMatch(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
       throw new IllegalStateException("All units must be viable airbases");
     }
 
@@ -861,11 +861,11 @@ public class ProTerritoryManager {
       // Find my transports and amphibious units that have movement left
       final List<Unit> myTransportUnits =
           myUnitTerritory.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedTransport(player, isCombatMove));
-      Predicate<Territory> unloadAmphibTerritoryMatch = Match.allOf(
-          ProMatches.territoryCanMoveLandUnits(player, data, isCombatMove), moveAmphibToTerritoryMatch);
+      Predicate<Territory> unloadAmphibTerritoryMatch = ProMatches.territoryCanMoveLandUnits(player, data, isCombatMove)
+          .and(moveAmphibToTerritoryMatch);
       if (isIgnoringRelationships) {
-        unloadAmphibTerritoryMatch = Match.allOf(
-            ProMatches.territoryCanPotentiallyMoveLandUnits(player, data), moveAmphibToTerritoryMatch);
+        unloadAmphibTerritoryMatch = ProMatches.territoryCanPotentiallyMoveLandUnits(player, data)
+            .and(moveAmphibToTerritoryMatch);
       }
 
       // Check each transport unit individually since they can have different ranges

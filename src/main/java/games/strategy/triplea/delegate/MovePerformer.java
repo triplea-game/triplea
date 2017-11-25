@@ -31,7 +31,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
-import games.strategy.util.Match;
 import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Util;
 
@@ -173,7 +172,7 @@ public class MovePerformer implements Serializable {
           // could it be a bombing raid
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
           final Collection<Unit> enemyTargetsTotal = Matches.getMatches(enemyUnits,
-              Match.allOf(Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().negate()));
+              Matches.unitCanBeDamaged().and(Matches.unitIsBeingTransported().negate()));
           final boolean canCreateAirBattle =
               !enemyTargetsTotal.isEmpty()
                   && Properties.getRaidsMayBePreceededByAirBattles(data)
@@ -251,11 +250,9 @@ public class MovePerformer implements Serializable {
             // could get really
             // difficult if we want these recorded in battle records).
             for (final Territory t : route
-                .getMatches(Match.allOf(
-                    Matches
-                        .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
-                            id),
-                    Matches.territoryIsBlitzable(id, data)))) {
+                .getMatches(Matches
+                    .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id)
+                    .and(Matches.territoryIsBlitzable(id, data)))) {
               if (Matches.isTerritoryEnemy(id, data).test(t) || Matches.territoryHasEnemyUnits(id, data).test(t)) {
                 continue;
               }
@@ -344,12 +341,12 @@ public class MovePerformer implements Serializable {
     }
     if (routeEnd != null && Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
         && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
-            .anyMatch(Match.allOf(Matches.unitIsEnemyOf(data, id), Matches.unitIsDestroyer()))) {
+            .anyMatch(Matches.unitIsEnemyOf(data, id).and(Matches.unitIsDestroyer()))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
       for (final Unit unit : Matches.getMatches(units,
-          Match.allOf(Matches.unitIsSub(), Matches.unitIsAir().negate()))) {
+          Matches.unitIsSub().and(Matches.unitIsAir().negate()))) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }

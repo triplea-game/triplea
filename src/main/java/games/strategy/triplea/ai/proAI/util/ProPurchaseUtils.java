@@ -37,7 +37,6 @@ import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.Match;
 
 /**
  * Pro AI purchase utilities.
@@ -101,7 +100,7 @@ public class ProPurchaseUtils {
 
         // Find number of unit type that are already built and about to be placed
         int currentlyBuilt = 0;
-        final Predicate<Unit> unitTypeOwnedBy = Match.allOf(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(player));
+        final Predicate<Unit> unitTypeOwnedBy = Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
         final List<Territory> allTerritories = data.getMap().getTerritories();
         for (final Territory t : allTerritories) {
           currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);

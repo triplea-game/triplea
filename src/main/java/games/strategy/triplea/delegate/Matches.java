@@ -559,7 +559,7 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryHasOwnedCarrier(final PlayerID player) {
-    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(unitIsOwnedBy(player), unitIsCarrier())));
+    return Match.of(t -> t.getUnits().anyMatch(unitIsOwnedBy(player).and(unitIsCarrier())));
   }
 
   public static Predicate<Unit> unitIsAlliedCarrier(final PlayerID player, final GameData data) {
@@ -648,8 +648,8 @@ public final class Matches {
           return true;
         }
       }
-      return targets.stream().anyMatch(Match.allOf(unitIsAirborne(),
-          unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA()))));
+      return targets.stream()
+          .anyMatch(unitIsAirborne().and(unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA()))));
     });
   }
 
@@ -687,13 +687,14 @@ public final class Matches {
   static Predicate<Unit> unitIsAaThatCanFire(final Collection<Unit> unitsMovingOrAttacking,
       final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed, final PlayerID playerMovingOrAttacking,
       final Predicate<Unit> typeOfAa, final int battleRoundNumber, final boolean defending, final GameData data) {
-    return Match.allOf(enemyUnit(playerMovingOrAttacking, data),
-        unitIsBeingTransported().negate(),
-        unitIsAaThatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAa, airborneTechTargetsAllowed),
-        unitIsAaThatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).negate(),
-        unitIsAaThatCanFireOnRound(battleRoundNumber),
-        (defending ? unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
-            : unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
+    return enemyUnit(playerMovingOrAttacking, data)
+        .and(unitIsBeingTransported().negate())
+        .and(unitIsAaThatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAa, airborneTechTargetsAllowed))
+        .and(unitIsAaThatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).negate())
+        .and(unitIsAaThatCanFireOnRound(battleRoundNumber))
+        .and(defending
+            ? unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
+            : unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero());
   }
 
   private static Predicate<UnitType> unitTypeIsAaForCombatOnly() {
@@ -991,7 +992,7 @@ public final class Matches {
       if (!data.getRelationshipTracker().isAllied(t.getOwner(), player)) {
         return false;
       }
-      return t.getUnits().anyMatch(Match.allOf(alliedUnit(player, data), unitMatch));
+      return t.getUnits().anyMatch(alliedUnit(player, data).and(unitMatch));
     });
   }
 
@@ -1001,7 +1002,7 @@ public final class Matches {
       if (!t.getOwner().equals(player)) {
         return false;
       }
-      return t.getUnits().anyMatch(Match.allOf(unitIsOwnedBy(player), unitMatch));
+      return t.getUnits().anyMatch(unitIsOwnedBy(player).and(unitMatch));
     });
   }
 
@@ -1046,7 +1047,7 @@ public final class Matches {
       if (t.getOwner().isNull()) {
         return false;
       }
-      return t.getUnits().anyMatch(Match.allOf(enemyUnit(player, data), unitMatch));
+      return t.getUnits().anyMatch(enemyUnit(player, data).and(unitMatch));
     });
   }
 
@@ -1357,11 +1358,11 @@ public final class Matches {
   }
 
   private static Predicate<Unit> unitIsEnemyAaForAnything(final PlayerID player, final GameData data) {
-    return Match.allOf(unitIsAaForAnything(), enemyUnit(player, data));
+    return unitIsAaForAnything().and(enemyUnit(player, data));
   }
 
   private static Predicate<Unit> unitIsEnemyAaForCombat(final PlayerID player, final GameData data) {
-    return Match.allOf(unitIsAaForCombatOnly(), enemyUnit(player, data));
+    return unitIsAaForCombatOnly().and(enemyUnit(player, data));
   }
 
   static Predicate<Unit> unitIsInTerritory(final Territory territory) {
@@ -1498,7 +1499,7 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryHasLandUnitsOwnedBy(final PlayerID player) {
-    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(unitIsOwnedBy(player), unitIsLand())));
+    return Match.of(t -> t.getUnits().anyMatch(unitIsOwnedBy(player).and(unitIsLand())));
   }
 
   public static Predicate<Territory> territoryHasUnitsOwnedBy(final PlayerID player) {
@@ -1527,16 +1528,16 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data) {
-    final Predicate<Unit> match = Match.allOf(enemyUnit(player, data), unitIsSubmerged().negate());
+    final Predicate<Unit> match = enemyUnit(player, data).and(unitIsSubmerged().negate());
     return Match.of(t -> t.getUnits().anyMatch(match));
   }
 
   public static Predicate<Territory> territoryHasEnemyLandUnits(final PlayerID player, final GameData data) {
-    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(enemyUnit(player, data), unitIsLand())));
+    return Match.of(t -> t.getUnits().anyMatch(enemyUnit(player, data).and(unitIsLand())));
   }
 
   public static Predicate<Territory> territoryHasEnemySeaUnits(final PlayerID player, final GameData data) {
-    return Match.of(t -> t.getUnits().anyMatch(Match.allOf(enemyUnit(player, data), unitIsSea())));
+    return Match.of(t -> t.getUnits().anyMatch(enemyUnit(player, data).and(unitIsSea())));
   }
 
   public static Predicate<Territory> territoryHasEnemyUnits(final PlayerID player, final GameData data) {
@@ -1554,10 +1555,9 @@ public final class Matches {
   static Predicate<Territory> territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(
       final PlayerID player, final GameData gameData) {
     return Match.of(t -> {
-      final List<Unit> enemyUnits = t.getUnits().getMatches(Match.allOf(
-          enemyUnit(player, gameData),
-          unitIsNotAir(),
-          unitIsNotInfrastructure()));
+      final List<Unit> enemyUnits = t.getUnits().getMatches(enemyUnit(player, gameData)
+          .and(unitIsNotAir())
+          .and(unitIsNotInfrastructure()));
       final Collection<PlayerID> enemyPlayers = enemyUnits.stream()
           .map(Unit::getOwner)
           .collect(Collectors.toSet());
@@ -1645,11 +1645,11 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsLand() {
-    return Match.allOf(unitIsNotSea(), unitIsNotAir());
+    return unitIsNotSea().and(unitIsNotAir());
   }
 
   public static Predicate<UnitType> unitTypeIsLand() {
-    return Match.allOf(unitTypeIsNotSea(), unitTypeIsNotAir());
+    return unitTypeIsNotSea().and(unitTypeIsNotAir());
   }
 
   public static Predicate<Unit> unitIsNotLand() {
@@ -1692,16 +1692,14 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data) {
-    final Predicate<Unit> sub = Match.allOf(unitIsSub().negate());
-    final Predicate<Unit> transport =
-        Match.allOf(unitIsTransportButNotCombatTransport().negate(), unitIsLand().negate());
+    final Predicate<Unit> transport = unitIsTransportButNotCombatTransport().negate().and(unitIsLand().negate());
     final Predicate<Unit> unitCond = Match.of(PredicateBuilder
         .of(unitIsInfrastructure().negate())
         .and(alliedUnit(player, data).negate())
         .andIf(Properties.getIgnoreTransportInMovement(data), transport)
-        .andIf(Properties.getIgnoreSubInMovement(data), sub)
+        .andIf(Properties.getIgnoreSubInMovement(data), unitIsSub().negate())
         .build());
-    return Match.allOf(territoryHasUnitsThatMatch(unitCond).negate(), territoryIsWater());
+    return territoryHasUnitsThatMatch(unitCond).negate().and(territoryIsWater());
   }
 
   static Predicate<Unit> unitCanRepairOthers() {
@@ -1763,12 +1761,13 @@ public final class Matches {
   public static Predicate<Unit> unitCanBeRepairedByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {
     return Match.of(damagedUnit -> {
-      final Predicate<Unit> damaged = Match.allOf(unitHasMoreThanOneHitPointTotal(), unitHasTakenSomeDamage());
+      final Predicate<Unit> damaged = unitHasMoreThanOneHitPointTotal().and(unitHasTakenSomeDamage());
       if (!damaged.test(damagedUnit)) {
         return false;
       }
-      final Predicate<Unit> repairUnit = Match.allOf(alliedUnit(player, data),
-          unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit, territory));
+      final Predicate<Unit> repairUnit = alliedUnit(player, data)
+          .and(unitCanRepairOthers())
+          .and(unitCanRepairThisUnit(damagedUnit, territory));
       if (territory.getUnits().anyMatch(repairUnit)) {
         return true;
       }
@@ -1776,8 +1775,10 @@ public final class Matches {
         final List<Territory> neighbors =
             new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
         for (final Territory current : neighbors) {
-          final Predicate<Unit> repairUnitLand = Match.allOf(alliedUnit(player, data),
-              unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit, current), unitIsLand());
+          final Predicate<Unit> repairUnitLand = alliedUnit(player, data)
+              .and(unitCanRepairOthers())
+              .and(unitCanRepairThisUnit(damagedUnit, current))
+              .and(unitIsLand());
           if (current.getUnits().anyMatch(repairUnitLand)) {
             return true;
           }
@@ -1785,8 +1786,10 @@ public final class Matches {
       } else if (unitIsLand().test(damagedUnit)) {
         final List<Territory> neighbors = new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsWater()));
         for (final Territory current : neighbors) {
-          final Predicate<Unit> repairUnitSea = Match.allOf(alliedUnit(player, data),
-              unitCanRepairOthers(), unitCanRepairThisUnit(damagedUnit, current), unitIsSea());
+          final Predicate<Unit> repairUnitSea = alliedUnit(player, data)
+              .and(unitCanRepairOthers())
+              .and(unitCanRepairThisUnit(damagedUnit, current))
+              .and(unitIsSea());
           if (current.getUnits().anyMatch(repairUnitSea)) {
             return true;
           }
@@ -1831,13 +1834,13 @@ public final class Matches {
   public static Predicate<Unit> unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {
     return Match.of(unitWhichWillGetBonus -> {
-      final Predicate<Unit> givesBonusUnit = Match.allOf(alliedUnit(player, data),
-          unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
+      final Predicate<Unit> givesBonusUnit = alliedUnit(player, data)
+          .and(unitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
       if (territory.getUnits().anyMatch(givesBonusUnit)) {
         return true;
       }
       if (unitIsSea().test(unitWhichWillGetBonus)) {
-        final Predicate<Unit> givesBonusUnitLand = Match.allOf(givesBonusUnit, unitIsLand());
+        final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(unitIsLand());
         final List<Territory> neighbors = new ArrayList<>(data.getMap().getNeighbors(territory, territoryIsLand()));
         for (final Territory current : neighbors) {
           if (current.getUnits().anyMatch(givesBonusUnitLand)) {
@@ -1890,12 +1893,11 @@ public final class Matches {
       final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
       boolean canBuild = true;
       for (final UnitType ut : requiredUnits) {
-        final Predicate<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = Match.allOf(
-            unitIsOwnedBy(unitWhichRequiresUnits.getOwner()),
-            unitIsOfType(ut),
-            unitHasNotTakenAnyBombingUnitDamage(),
-            unitHasNotTakenAnyDamage(),
-            unitIsNotDisabled());
+        final Predicate<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = unitIsOwnedBy(unitWhichRequiresUnits.getOwner())
+            .and(unitIsOfType(ut))
+            .and(unitHasNotTakenAnyBombingUnitDamage())
+            .and(unitHasNotTakenAnyDamage())
+            .and(unitIsNotDisabled());
         final int requiredNumber = requiredUnitsMap.getInt(ut);
         final int numberInTerritory = countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
         if (numberInTerritory < requiredNumber) {
@@ -1928,8 +1930,8 @@ public final class Matches {
       if (!unitRequiresUnitsOnCreation().test(unitWhichRequiresUnits)) {
         return true;
       }
-      final Predicate<Unit> unitIsOwnedByAndNotDisabled = Match.allOf(
-          unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), unitIsNotDisabled());
+      final Predicate<Unit> unitIsOwnedByAndNotDisabled = unitIsOwnedBy(unitWhichRequiresUnits.getOwner())
+          .and(unitIsNotDisabled());
       unitsInTerritoryAtStartOfTurn.retainAll(getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
       boolean canBuild = false;
       final UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
@@ -1969,10 +1971,8 @@ public final class Matches {
         return true;
       }
 
-      final Predicate<Unit> unitIsOwnedByAndNotDisabled = Match.allOf(
-          isUnitAllied(unit.getOwner(), data), unitIsNotDisabled());
+      final Predicate<Unit> unitIsOwnedByAndNotDisabled = isUnitAllied(unit.getOwner(), data).and(unitIsNotDisabled());
       final List<Unit> units = getMatches(t.getUnits().getUnits(), unitIsOwnedByAndNotDisabled);
-
       for (final String[] array : ua.getRequiresUnitsToMove()) {
         boolean haveAll = true;
         for (final UnitType ut : ua.getListedUnits(array)) {
@@ -2016,11 +2016,11 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitCanProduceUnitsAndIsInfrastructure() {
-    return Match.allOf(unitCanProduceUnits(), unitIsInfrastructure());
+    return unitCanProduceUnits().and(unitIsInfrastructure());
   }
 
   public static Predicate<Unit> unitCanProduceUnitsAndCanBeDamaged() {
-    return Match.allOf(unitCanProduceUnits(), unitCanBeDamaged());
+    return unitCanProduceUnits().and(unitCanBeDamaged());
   }
 
   /**
@@ -2413,7 +2413,7 @@ public final class Matches {
     // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
     final PredicateBuilder<UnitType> canBeInBattleBuilder = PredicateBuilder.of(unitTypeIsInfrastructure().negate())
         .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
-        .orIf(!doNotIncludeAa, Match.allOf(unitTypeIsAaForCombatOnly(), unitTypeIsAaThatCanFireOnRound(battleRound)));
+        .orIf(!doNotIncludeAa, unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)));
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {

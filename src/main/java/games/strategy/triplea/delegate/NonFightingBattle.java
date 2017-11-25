@@ -21,7 +21,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
-import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /**
@@ -103,7 +102,7 @@ public class NonFightingBattle extends DependentBattle {
   }
 
   boolean hasAttackingUnits() {
-    final Predicate<Unit> attackingLand = Match.allOf(Matches.alliedUnit(m_attacker, m_data), Matches.unitIsLand());
+    final Predicate<Unit> attackingLand = Matches.alliedUnit(m_attacker, m_data).and(Matches.unitIsLand());
     return m_battleSite.getUnits().anyMatch(attackingLand);
   }
 
