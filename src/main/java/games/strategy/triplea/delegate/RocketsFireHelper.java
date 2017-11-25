@@ -31,7 +31,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.PredicateBuilder;
 
 /**
@@ -170,7 +169,7 @@ public class RocketsFireHelper {
     final Predicate<Unit> attackableUnits = Matches.enemyUnit(player, data)
         .and(Matches.unitIsBeingTransported().negate());
     for (final Territory current : possible) {
-      final Route route = data.getMap().getRoute(territory, current, Match.of(allowed));
+      final Route route = data.getMap().getRoute(territory, current, allowed);
       if (route != null && route.numberOfSteps() <= maxDistance) {
         if (current.getUnits().anyMatch(attackableUnits
             .and(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {

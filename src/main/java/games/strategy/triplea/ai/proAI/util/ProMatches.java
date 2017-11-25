@@ -14,7 +14,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.util.Match;
 
 /**
  * Pro AI matches.
@@ -50,26 +49,26 @@ public class ProMatches {
 
   public static Predicate<Territory> territoryCanMoveSpecificLandUnit(final PlayerID player, final GameData data,
       final boolean isCombatMove, final Unit u) {
-    return Match.of(t -> {
+    return t -> {
       final Predicate<Territory> territoryMatch = Matches.territoryDoesNotCostMoneyToEnter(data)
           .and(Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, true, false,
               false, false));
       final Predicate<Unit> unitMatch =
           Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t)).negate();
       return territoryMatch.test(t) && unitMatch.test(u);
-    });
+    };
   }
 
   public static Predicate<Territory> territoryCanPotentiallyMoveSpecificLandUnit(final PlayerID player,
       final GameData data,
       final Unit u) {
-    return Match.of(t -> {
+    return t -> {
       final Predicate<Territory> territoryMatch = Matches.territoryDoesNotCostMoneyToEnter(data)
           .and(Matches.territoryIsPassableAndNotRestricted(player, data));
       final Predicate<Unit> unitMatch =
           Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t)).negate();
       return territoryMatch.test(t) && unitMatch.test(u);
-    });
+    };
   }
 
   public static Predicate<Territory> territoryCanMoveLandUnits(final PlayerID player, final GameData data,
@@ -130,8 +129,7 @@ public class ProMatches {
   }
 
   private static Predicate<Territory> territoryIsBlitzable(final PlayerID player, final GameData data, final Unit u) {
-    return Match.of(t -> Matches.territoryIsBlitzable(player, data).test(t)
-        && TerritoryEffectHelper.unitKeepsBlitz(u, t));
+    return t -> Matches.territoryIsBlitzable(player, data).test(t) && TerritoryEffectHelper.unitKeepsBlitz(u, t);
   }
 
   public static Predicate<Territory> territoryCanMoveSeaUnits(final PlayerID player, final GameData data,
@@ -171,13 +169,13 @@ public class ProMatches {
   }
 
   private static Predicate<Territory> territoryHasOnlyIgnoredUnits(final PlayerID player, final GameData data) {
-    return Match.of(t -> {
+    return t -> {
       final Predicate<Unit> subOnly = Matches.unitIsInfrastructure()
           .or(Matches.unitIsSub())
           .or(Matches.enemyUnit(player, data).negate());
       return (Properties.getIgnoreSubInMovement(data) && t.getUnits().allMatch(subOnly))
           || Matches.territoryHasNoEnemyUnits(player, data).test(t);
-    });
+    };
   }
 
   public static Predicate<Territory> territoryHasEnemyUnitsOrCantBeHeld(final PlayerID player, final GameData data,
@@ -481,7 +479,7 @@ public class ProMatches {
   }
 
   private static Predicate<Unit> unitIsNeutral() {
-    return Match.of(u -> u.getOwner().isNull());
+    return u -> u.getOwner().isNull();
   }
 
   static Predicate<Unit> unitIsOwnedAir(final PlayerID player) {
@@ -511,8 +509,8 @@ public class ProMatches {
   }
 
   public static Predicate<Unit> unitIsOwnedCarrier(final PlayerID player) {
-    return Match.of(unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
-        && Matches.unitIsOwnedBy(player).test(unit));
+    return unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
+        && Matches.unitIsOwnedBy(player).test(unit);
   }
 
   public static Predicate<Unit> unitIsOwnedNotLand(final PlayerID player) {
@@ -559,7 +557,7 @@ public class ProMatches {
    * @return whether the territory contains one of the required combinations of units
    */
   public static Predicate<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory t) {
-    return Match.of(unitWhichRequiresUnits -> {
+    return unitWhichRequiresUnits -> {
       if (!Matches.unitRequiresUnitsOnCreation().test(unitWhichRequiresUnits)) {
         return true;
       }
@@ -578,6 +576,6 @@ public class ProMatches {
         }
       }
       return false;
-    });
+    };
   }
 }

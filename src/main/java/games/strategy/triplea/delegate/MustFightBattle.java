@@ -42,7 +42,6 @@ import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Util;
 
@@ -1135,14 +1134,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         .andIf(Properties.getIgnoreTransportInMovement(m_data), Matches.unitIsNotTransportButCouldBeCombatTransport())
         .build();
     Collection<Territory> possible = Matches.getMatches(m_attackingFrom,
-        Matches.territoryHasUnitsThatMatch(Match.of(enemyUnitsThatPreventRetreat)).negate());
+        Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
     // In WW2V2 and WW2V3 we need to filter out territories where only planes
     // came from since planes cannot define retreat paths
     if (isWW2V2() || isWW2V3()) {
-      possible = Matches.getMatches(possible, Match.of(t -> {
+      possible = Matches.getMatches(possible, t -> {
         final Collection<Unit> units = m_attackingFromMap.get(t);
         return units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir());
-      }));
+      });
     }
 
     // the air unit may have come from a conquered or enemy territory, don't allow retreating
@@ -1264,12 +1263,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return possible;
     }
     // make sure we can move through the any canals
-    final Predicate<Territory> canalMatch = Match.of(t -> {
+    final Predicate<Territory> canalMatch = t -> {
       final Route r = new Route();
       r.setStart(m_battleSite);
       r.add(t);
       return MoveValidator.validateCanal(r, unitsToRetreat, m_defender, m_data) == null;
-    });
+    };
     final Predicate<Territory> match = Matches.territoryIsWater()
         .and(Matches.territoryHasNoEnemyUnits(player, m_data))
         .and(canalMatch);

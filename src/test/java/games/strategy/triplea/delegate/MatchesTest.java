@@ -28,11 +28,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.Match;
 
 public final class MatchesTest {
 
-  private static final Predicate<Integer> IS_ZERO_MATCH = Match.of(it -> it == 0);
+  private static final Predicate<Integer> IS_ZERO_MATCH = it -> it == 0;
   private static final Object VALUE = new Object();
 
   private static <T> Matcher<Predicate<T>> matches(final @Nullable T value) {

@@ -24,7 +24,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
@@ -233,7 +232,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   private static Predicate<PlayerID> getPlayerCanPickMatch() {
-    return Match.of(player -> {
+    return player -> {
       if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
         return false;
       }
@@ -241,7 +240,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         return false;
       }
       return !player.getIsDisabled();
-    });
+    };
   }
 
   @Override

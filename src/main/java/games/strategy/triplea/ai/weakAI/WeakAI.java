@@ -41,7 +41,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /*
@@ -63,10 +62,10 @@ public class WeakAI extends AbstractAI {
       return null;
     }
     final Territory ourCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    final Predicate<Territory> endMatch = Match.of(o -> {
+    final Predicate<Territory> endMatch = o -> {
       final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassable();
       return !impassable && !o.isWater() && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
-    });
+    };
     final Predicate<Territory> routeCond =
         Matches.territoryIsWater().and(Matches.territoryHasNoEnemyUnits(player, data));
     final Route withNoEnemy = Utils.findNearest(ourCapitol, endMatch, routeCond, data);
@@ -1065,5 +1064,5 @@ public class WeakAI extends AbstractAI {
     return true;
   }
 
-  public static final Predicate<Unit> Transporting = Match.of(o -> TripleAUnit.get(o).getTransporting().size() > 0);
+  public static final Predicate<Unit> Transporting = o -> TripleAUnit.get(o).getTransporting().size() > 0;
 }

@@ -48,7 +48,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 @MapSupport
@@ -2535,75 +2534,75 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> prodMatch() {
-    return Match.of(t -> t.getFrontier() != null);
+    return t -> t.getFrontier() != null;
   }
 
   public static Predicate<TriggerAttachment> prodFrontierEditMatch() {
-    return Match.of(t -> t.getProductionRule() != null && t.getProductionRule().size() > 0);
+    return t -> t.getProductionRule() != null && t.getProductionRule().size() > 0;
   }
 
   public static Predicate<TriggerAttachment> techMatch() {
-    return Match.of(t -> !t.getTech().isEmpty());
+    return t -> !t.getTech().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> techAvailableMatch() {
-    return Match.of(t -> t.getAvailableTech() != null);
+    return t -> t.getAvailableTech() != null;
   }
 
   public static Predicate<TriggerAttachment> removeUnitsMatch() {
-    return Match.of(t -> t.getRemoveUnits() != null);
+    return t -> t.getRemoveUnits() != null;
   }
 
   public static Predicate<TriggerAttachment> placeMatch() {
-    return Match.of(t -> t.getPlacement() != null);
+    return t -> t.getPlacement() != null;
   }
 
   public static Predicate<TriggerAttachment> purchaseMatch() {
-    return Match.of(t -> t.getPurchase() != null);
+    return t -> t.getPurchase() != null;
   }
 
   public static Predicate<TriggerAttachment> resourceMatch() {
-    return Match.of(t -> t.getResource() != null && t.getResourceCount() != 0);
+    return t -> t.getResource() != null && t.getResourceCount() != 0;
   }
 
   public static Predicate<TriggerAttachment> supportMatch() {
-    return Match.of(t -> t.getSupport() != null);
+    return t -> t.getSupport() != null;
   }
 
   public static Predicate<TriggerAttachment> changeOwnershipMatch() {
-    return Match.of(t -> !t.getChangeOwnership().isEmpty());
+    return t -> !t.getChangeOwnership().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> unitPropertyMatch() {
-    return Match.of(t -> !t.getUnitType().isEmpty() && t.getUnitProperty() != null);
+    return t -> !t.getUnitType().isEmpty() && t.getUnitProperty() != null;
   }
 
   public static Predicate<TriggerAttachment> territoryPropertyMatch() {
-    return Match.of(t -> !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null);
+    return t -> !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null;
   }
 
   public static Predicate<TriggerAttachment> playerPropertyMatch() {
-    return Match.of(t -> t.getPlayerProperty() != null);
+    return t -> t.getPlayerProperty() != null;
   }
 
   public static Predicate<TriggerAttachment> relationshipTypePropertyMatch() {
-    return Match.of(t -> !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null);
+    return t -> !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null;
   }
 
   public static Predicate<TriggerAttachment> territoryEffectPropertyMatch() {
-    return Match.of(t -> !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null);
+    return t -> !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null;
   }
 
   public static Predicate<TriggerAttachment> relationshipChangeMatch() {
-    return Match.of(t -> !t.getRelationshipChange().isEmpty());
+    return t -> !t.getRelationshipChange().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> victoryMatch() {
-    return Match.of(t -> t.getVictory() != null && t.getVictory().length() > 0);
+    return t -> t.getVictory() != null && t.getVictory().length() > 0;
   }
 
   public static Predicate<TriggerAttachment> activateTriggerMatch() {
-    return Match.of(t -> !t.getActivateTrigger().isEmpty());
+    return t -> !t.getActivateTrigger().isEmpty();
   }
 
   @Override
