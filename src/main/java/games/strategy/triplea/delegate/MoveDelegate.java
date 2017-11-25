@@ -368,14 +368,13 @@ public class MoveDelegate extends AbstractMoveDelegate {
         givesBonusUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), givesBonusUnit));
         if (Matches.unitIsSea().test(u)) {
           final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(Matches.unitIsLand());
-          final List<Territory> neighbors =
-              new ArrayList<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
+          final Set<Territory> neighbors = new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
           for (final Territory current : neighbors) {
             givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
           }
         } else if (Matches.unitIsLand().test(u)) {
           final Predicate<Unit> givesBonusUnitSea = givesBonusUnit.and(Matches.unitIsSea());
-          final Set<Territory> neighbors = data.getMap().getNeighbors(t, Matches.territoryIsWater());
+          final Set<Territory> neighbors = new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
           for (final Territory current : neighbors) {
             givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
           }
