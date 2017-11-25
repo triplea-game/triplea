@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -2550,7 +2552,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
-      final PlayerID attacker, final GameData data) {
+      final Territory battleSite, final PlayerID attacker, final GameData data) {
     final CompositeChange change = new CompositeChange();
     // Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an
     // carrier unit
@@ -2558,7 +2560,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data)) {
       final Predicate<Unit> alliedFighters = Match.allOf(Matches.isUnitAllied(attacker, data),
           Matches.unitIsOwnedBy(attacker).negate(), Matches.unitIsAir(), Matches.unitCanLandOnCarrier());
-      final Collection<Unit> alliedAirInTerr = Matches.getMatches(attackingUnits, alliedFighters);
+      final Collection<Unit> alliedAirInTerr = Matches.getMatches(
+          CollectionUtils.union(attackingUnits, battleSite.getUnits()),
+          alliedFighters);
       for (final Unit fighter : alliedAirInTerr) {
         final TripleAUnit taUnit = (TripleAUnit) fighter;
         if (taUnit.getTransportedBy() != null) {
@@ -2597,12 +2601,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
     // Must clear transportedby for allied air on carriers for both attacking units and retreating units
     final CompositeChange clearAlliedAir =
-        clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_attacker, m_data);
+        clearTransportedByForAlliedAirOnCarrier(m_attackingUnits, m_battleSite, m_attacker, m_data);
     if (!clearAlliedAir.isEmpty()) {
       bridge.addChange(clearAlliedAir);
     }
     final CompositeChange clearAlliedAirRetreated =
-        clearTransportedByForAlliedAirOnCarrier(m_attackingUnitsRetreated, m_attacker, m_data);
+        clearTransportedByForAlliedAirOnCarrier(m_attackingUnitsRetreated, m_battleSite, m_attacker, m_data);
     if (!clearAlliedAirRetreated.isEmpty()) {
       bridge.addChange(clearAlliedAirRetreated);
     }
