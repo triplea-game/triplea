@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
+import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -2561,7 +2561,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Predicate<Unit> alliedFighters = Match.allOf(Matches.isUnitAllied(attacker, data),
           Matches.unitIsOwnedBy(attacker).negate(), Matches.unitIsAir(), Matches.unitCanLandOnCarrier());
       final Collection<Unit> alliedAirInTerr = Matches.getMatches(
-          CollectionUtils.union(attackingUnits, battleSite.getUnits()),
+          Sets.union(Sets.newHashSet(attackingUnits), Sets.newHashSet(battleSite.getUnits())),
           alliedFighters);
       for (final Unit fighter : alliedAirInTerr) {
         final TripleAUnit taUnit = (TripleAUnit) fighter;
