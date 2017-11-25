@@ -30,15 +30,15 @@ import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.util.ThreadUtil;
 
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
-  private INode m_node;
-  private final List<IMessageListener> m_listeners = new CopyOnWriteArrayList<>();
-  private final List<IMessengerErrorListener> m_errorListeners = new CopyOnWriteArrayList<>();
-  private final CountDownLatch m_initLatch = new CountDownLatch(1);
-  private Exception m_connectionRefusedError;
-  private final NioSocket m_socket;
-  private final SocketChannel m_socketChannel;
-  private INode m_serverNode;
-  private volatile boolean m_shutDown = false;
+  private INode node;
+  private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
+  private final List<IMessengerErrorListener> errorListeners = new CopyOnWriteArrayList<>();
+  private final CountDownLatch initLatch = new CountDownLatch(1);
+  private Exception connectionRefusedError;
+  private final NioSocket nioSocket;
+  private final SocketChannel socketChannel;
+  private INode serverNode;
+  private volatile boolean shutDown = false;
 
   /**
    * Note, the name parameter passed in here may not match the name of the
@@ -70,60 +70,60 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     Preconditions.checkNotNull(mac);
     Preconditions.checkArgument(ClientLoginValidator.isValidMac(mac),
         "Not a valid mac: " + mac + ", length: " + mac.length());
-    m_socketChannel = SocketChannel.open();
-    m_socketChannel.configureBlocking(false);
+    socketChannel = SocketChannel.open();
+    socketChannel.configureBlocking(false);
     final InetSocketAddress remote = new InetSocketAddress(host, port);
-    if (!m_socketChannel.connect(remote)) {
+    if (!socketChannel.connect(remote)) {
       // give up after 10 seconds
       int waitTimeMilliseconds = 0;
       while (true) {
         if (waitTimeMilliseconds > 10000) {
-          m_socketChannel.close();
+          socketChannel.close();
           throw new IOException("Connection refused");
         }
-        if (m_socketChannel.finishConnect()) {
+        if (socketChannel.finishConnect()) {
           break;
         }
         if (!ThreadUtil.sleep(50)) {
           shutDown();
-          m_socket = null;
+          nioSocket = null;
           return;
         }
         waitTimeMilliseconds += 50;
       }
     }
-    final Socket socket = m_socketChannel.socket();
+    final Socket socket = socketChannel.socket();
     socket.setKeepAlive(true);
-    m_socket = new NioSocket(streamFact, this, name);
+    nioSocket = new NioSocket(streamFact, this, name);
     final ClientQuarantineConversation conversation =
-        new ClientQuarantineConversation(login, m_socketChannel, m_socket, name, mac);
-    m_socket.add(m_socketChannel, conversation);
+        new ClientQuarantineConversation(login, socketChannel, nioSocket, name, mac);
+    nioSocket.add(socketChannel, conversation);
     // allow the credentials to be shown in this thread
     conversation.showCredentials();
     // wait for the quarantine to end
     try {
-      m_initLatch.await();
+      initLatch.await();
     } catch (final InterruptedException e) {
-      m_connectionRefusedError = e;
+      connectionRefusedError = e;
       try {
-        m_socketChannel.close();
+        socketChannel.close();
       } catch (final IOException e2) {
         // ignore
       }
     }
-    if (conversation.getErrorMessage() != null || m_connectionRefusedError != null) {
+    if (conversation.getErrorMessage() != null || connectionRefusedError != null) {
       // our socket channel should already be closed
-      m_socket.shutDown();
+      nioSocket.shutDown();
       if (conversation.getErrorMessage() != null) {
         String msg = conversation.getErrorMessage();
-        if (m_connectionRefusedError != null) {
-          msg += ", " + m_connectionRefusedError;
+        if (connectionRefusedError != null) {
+          msg += ", " + connectionRefusedError;
         }
         throw new CouldNotLogInException(msg);
-      } else if (m_connectionRefusedError instanceof CouldNotLogInException) {
-        throw (CouldNotLogInException) m_connectionRefusedError;
-      } else if (m_connectionRefusedError != null) {
-        throw new IOException(m_connectionRefusedError);
+      } else if (connectionRefusedError instanceof CouldNotLogInException) {
+        throw (CouldNotLogInException) connectionRefusedError;
+      } else if (connectionRefusedError != null) {
+        throw new IOException(connectionRefusedError);
       }
     }
   }
@@ -131,76 +131,76 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public synchronized void send(final Serializable msg, final INode to) {
     // use our nodes address, this is our network visible address
-    final MessageHeader header = new MessageHeader(to, m_node, msg);
-    m_socket.send(m_socketChannel, header);
+    final MessageHeader header = new MessageHeader(to, node, msg);
+    nioSocket.send(socketChannel, header);
   }
 
   @Override
   public synchronized void broadcast(final Serializable msg) {
-    final MessageHeader header = new MessageHeader(m_node, msg);
-    m_socket.send(m_socketChannel, header);
+    final MessageHeader header = new MessageHeader(node, msg);
+    nioSocket.send(socketChannel, header);
   }
 
   @Override
   public void addMessageListener(final IMessageListener listener) {
-    m_listeners.add(listener);
+    listeners.add(listener);
   }
 
   @Override
   public void removeMessageListener(final IMessageListener listener) {
-    m_listeners.remove(listener);
+    listeners.remove(listener);
   }
 
   @Override
   public void addErrorListener(final IMessengerErrorListener listener) {
-    m_errorListeners.add(listener);
+    errorListeners.add(listener);
   }
 
   @Override
   public void removeErrorListener(final IMessengerErrorListener listener) {
-    m_errorListeners.remove(listener);
+    errorListeners.remove(listener);
   }
 
   @Override
   public boolean isConnected() {
-    return m_socketChannel.isConnected();
+    return socketChannel.isConnected();
   }
 
   @Override
   public void shutDown() {
-    m_shutDown = true;
-    if (m_socket != null) {
-      m_socket.shutDown();
+    shutDown = true;
+    if (nioSocket != null) {
+      nioSocket.shutDown();
     }
     try {
-      m_socketChannel.close();
+      socketChannel.close();
     } catch (final IOException e) {
       // ignore
     }
   }
 
   public boolean isShutDown() {
-    return m_shutDown;
+    return shutDown;
   }
 
   @Override
   public void messageReceived(final MessageHeader msg, final SocketChannel channel) {
-    if (msg.getFor() != null && !msg.getFor().equals(m_node)) {
+    if (msg.getFor() != null && !msg.getFor().equals(node)) {
       throw new IllegalStateException("msg not for me:" + msg);
     }
-    for (final IMessageListener listener : m_listeners) {
+    for (final IMessageListener listener : listeners) {
       listener.messageReceived(msg.getMessage(), msg.getFrom());
     }
   }
 
   @Override
   public INode getLocalNode() {
-    return m_node;
+    return node;
   }
 
   @Override
   public INode getServerNode() {
-    return m_serverNode;
+    return serverNode;
   }
 
   @Override
@@ -218,36 +218,36 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     // so all node ids are defined as what the server sees the adress as
     // we are still in the decode thread at this point, set our nodes now
     // before the socket is unquarantined
-    m_node = new Node(conversation.getLocalName(), conversation.getNetworkVisibleSocketAdress());
-    m_serverNode = new Node(conversation.getServerName(), conversation.getServerLocalAddress());
-    m_initLatch.countDown();
+    node = new Node(conversation.getLocalName(), conversation.getNetworkVisibleSocketAdress());
+    serverNode = new Node(conversation.getServerName(), conversation.getServerLocalAddress());
+    initLatch.countDown();
   }
 
   @Override
   public void socketError(final SocketChannel channel, final Exception error) {
-    if (m_shutDown) {
+    if (shutDown) {
       return;
     }
     // if an error occurs during set up
     // we need to return in the constructor
     // otherwise this is harmless
-    m_connectionRefusedError = error;
-    for (final IMessengerErrorListener errorListener : m_errorListeners) {
+    connectionRefusedError = error;
+    for (final IMessengerErrorListener errorListener : errorListeners) {
       errorListener.messengerInvalid(ClientMessenger.this, error);
     }
     shutDown();
-    m_initLatch.countDown();
+    initLatch.countDown();
   }
 
   @Override
   public INode getRemoteNode(final SocketChannel channel) {
     // we only have one channel
-    return m_serverNode;
+    return serverNode;
   }
 
   @Override
   public InetSocketAddress getRemoteServerSocketAddress() {
-    return (InetSocketAddress) m_socketChannel.socket().getRemoteSocketAddress();
+    return (InetSocketAddress) socketChannel.socket().getRemoteSocketAddress();
   }
 
   private void bareBonesSendMessageToServer(final String methodName, final Object... messages) {
@@ -310,6 +310,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
 
   @Override
   public String toString() {
-    return "ClientMessenger LocalNode:" + m_node + " ServerNodes:" + m_serverNode;
+    return "ClientMessenger LocalNode:" + node + " ServerNodes:" + serverNode;
   }
 }

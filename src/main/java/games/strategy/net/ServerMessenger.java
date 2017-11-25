@@ -168,15 +168,15 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     return !isLobby();
   }
 
-  private final Object m_cachedListLock = new Object();
-  private final HashMap<String, String> m_cachedMacAddresses = new HashMap<>();
+  private final Object cachedListLock = new Object();
+  private final HashMap<String, String> cachedMacAddresses = new HashMap<>();
 
   @Override
   public String getPlayerMac(final String name) {
-    synchronized (m_cachedListLock) {
-      String mac = m_cachedMacAddresses.get(name);
+    synchronized (cachedListLock) {
+      String mac = cachedMacAddresses.get(name);
       if (mac == null) {
-        mac = m_playersThatLeftMacs_Last10.get(name);
+        mac = playersThatLeftMacsLast10.get(name);
       }
       return mac;
     }
@@ -185,19 +185,19 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
   // message was sent,
   // which can be very slow
-  private final List<String> m_liveMutedUsernames = new ArrayList<>();
+  private final List<String> liveMutedUsernames = new ArrayList<>();
 
   private boolean isUsernameMuted(final String username) {
-    synchronized (m_cachedListLock) {
-      return m_liveMutedUsernames.contains(username);
+    synchronized (cachedListLock) {
+      return liveMutedUsernames.contains(username);
     }
   }
 
   @Override
   public void notifyUsernameMutingOfPlayer(final String username, final Instant muteExpires) {
-    synchronized (m_cachedListLock) {
-      if (!m_liveMutedUsernames.contains(username)) {
-        m_liveMutedUsernames.add(username);
+    synchronized (cachedListLock) {
+      if (!liveMutedUsernames.contains(username)) {
+        liveMutedUsernames.add(username);
       }
       if (muteExpires != null) {
         scheduleUsernameUnmuteAt(username, muteExpires);
@@ -210,19 +210,19 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     // TODO: remove if no backwards compat issues
   }
 
-  private final List<String> m_liveMutedMacAddresses = new ArrayList<>();
+  private final List<String> liveMutedMacAddresses = new ArrayList<>();
 
   private boolean isMacMuted(final String mac) {
-    synchronized (m_cachedListLock) {
-      return m_liveMutedMacAddresses.contains(mac);
+    synchronized (cachedListLock) {
+      return liveMutedMacAddresses.contains(mac);
     }
   }
 
   @Override
   public void notifyMacMutingOfPlayer(final String mac, final Instant muteExpires) {
-    synchronized (m_cachedListLock) {
-      if (!m_liveMutedMacAddresses.contains(mac)) {
-        m_liveMutedMacAddresses.add(mac);
+    synchronized (cachedListLock) {
+      if (!liveMutedMacAddresses.contains(mac)) {
+        liveMutedMacAddresses.add(mac);
       }
       if (muteExpires != null) {
         scheduleMacUnmuteAt(mac, muteExpires);
@@ -243,23 +243,23 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   // TODO: remove 'ip' parameter if can confirm no backwards compat issues
   public void notifyPlayerLogin(final String uniquePlayerName, final String ip, final String mac) {
-    synchronized (m_cachedListLock) {
-      m_cachedMacAddresses.put(uniquePlayerName, mac);
+    synchronized (cachedListLock) {
+      cachedMacAddresses.put(uniquePlayerName, mac);
       if (isLobby()) {
         final String realName = uniquePlayerName.split(" ")[0];
-        if (!m_liveMutedUsernames.contains(realName)) {
+        if (!liveMutedUsernames.contains(realName)) {
           final long muteTill = new MutedUsernameController().getUsernameUnmuteTime(realName);
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
             // Signal the player as muted
-            m_liveMutedUsernames.add(realName);
+            liveMutedUsernames.add(realName);
             scheduleUsernameUnmuteAt(realName, Instant.ofEpochMilli(muteTill));
           }
         }
-        if (!m_liveMutedMacAddresses.contains(mac)) {
+        if (!liveMutedMacAddresses.contains(mac)) {
           final long muteTill = new MutedMacController().getMacUnmuteTime(mac);
           if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
             // Signal the player as muted
-            m_liveMutedMacAddresses.add(mac);
+            liveMutedMacAddresses.add(mac);
             scheduleMacUnmuteAt(mac, Instant.ofEpochMilli(muteTill));
           }
         }
@@ -267,19 +267,19 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
   }
 
-  private final HashMap<String, String> m_playersThatLeftMacs_Last10 = new HashMap<>();
+  private final HashMap<String, String> playersThatLeftMacsLast10 = new HashMap<>();
 
   public HashMap<String, String> getPlayersThatLeftMacs_Last10() {
-    return m_playersThatLeftMacs_Last10;
+    return playersThatLeftMacsLast10;
   }
 
   private void notifyPlayerRemoval(final INode node) {
-    synchronized (m_cachedListLock) {
-      m_playersThatLeftMacs_Last10.put(node.getName(), m_cachedMacAddresses.get(node.getName()));
-      if (m_playersThatLeftMacs_Last10.size() > 10) {
-        m_playersThatLeftMacs_Last10.remove(m_playersThatLeftMacs_Last10.entrySet().iterator().next().toString());
+    synchronized (cachedListLock) {
+      playersThatLeftMacsLast10.put(node.getName(), cachedMacAddresses.get(node.getName()));
+      if (playersThatLeftMacsLast10.size() > 10) {
+        playersThatLeftMacsLast10.remove(playersThatLeftMacsLast10.entrySet().iterator().next().toString());
       }
-      m_cachedMacAddresses.remove(node.getName());
+      cachedMacAddresses.remove(node.getName());
     }
   }
 
@@ -349,28 +349,28 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   // The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
-  private final List<String> m_miniBannedUsernames = new ArrayList<>();
+  private final List<String> miniBannedUsernames = new ArrayList<>();
 
   @Override
   public boolean isUsernameMiniBanned(final String username) {
-    synchronized (m_cachedListLock) {
-      return m_miniBannedUsernames.contains(username);
+    synchronized (cachedListLock) {
+      return miniBannedUsernames.contains(username);
     }
   }
 
   @Override
   public void notifyUsernameMiniBanningOfPlayer(final String username, final Instant expires) {
-    synchronized (m_cachedListLock) {
-      if (!m_miniBannedUsernames.contains(username)) {
-        m_miniBannedUsernames.add(username);
+    synchronized (cachedListLock) {
+      if (!miniBannedUsernames.contains(username)) {
+        miniBannedUsernames.add(username);
       }
       if (expires != null) {
         final Timer unbanUsernameTimer = new Timer("Username unban timer");
         unbanUsernameTimer.schedule(new TimerTask() {
           @Override
           public void run() {
-            synchronized (m_cachedListLock) {
-              m_miniBannedUsernames.remove(username);
+            synchronized (cachedListLock) {
+              miniBannedUsernames.remove(username);
             }
           }
         }, expires.toEpochMilli() - System.currentTimeMillis());
@@ -378,28 +378,28 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
   }
 
-  private final List<String> m_miniBannedIpAddresses = new ArrayList<>();
+  private final List<String> miniBannedIpAddresses = new ArrayList<>();
 
   @Override
   public boolean isIpMiniBanned(final String ip) {
-    synchronized (m_cachedListLock) {
-      return m_miniBannedIpAddresses.contains(ip);
+    synchronized (cachedListLock) {
+      return miniBannedIpAddresses.contains(ip);
     }
   }
 
   @Override
   public void notifyIpMiniBanningOfPlayer(final String ip, final Instant expires) {
-    synchronized (m_cachedListLock) {
-      if (!m_miniBannedIpAddresses.contains(ip)) {
-        m_miniBannedIpAddresses.add(ip);
+    synchronized (cachedListLock) {
+      if (!miniBannedIpAddresses.contains(ip)) {
+        miniBannedIpAddresses.add(ip);
       }
       if (expires != null) {
         final Timer unbanIpTimer = new Timer("IP unban timer");
         unbanIpTimer.schedule(new TimerTask() {
           @Override
           public void run() {
-            synchronized (m_cachedListLock) {
-              m_miniBannedIpAddresses.remove(ip);
+            synchronized (cachedListLock) {
+              miniBannedIpAddresses.remove(ip);
             }
           }
         }, expires.toEpochMilli() - System.currentTimeMillis());
@@ -407,28 +407,28 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
   }
 
-  private final List<String> m_miniBannedMacAddresses = new ArrayList<>();
+  private final List<String> miniBannedMacAddresses = new ArrayList<>();
 
   @Override
   public boolean isMacMiniBanned(final String mac) {
-    synchronized (m_cachedListLock) {
-      return m_miniBannedMacAddresses.contains(mac);
+    synchronized (cachedListLock) {
+      return miniBannedMacAddresses.contains(mac);
     }
   }
 
   @Override
   public void notifyMacMiniBanningOfPlayer(final String mac, final Instant expires) {
-    synchronized (m_cachedListLock) {
-      if (!m_miniBannedMacAddresses.contains(mac)) {
-        m_miniBannedMacAddresses.add(mac);
+    synchronized (cachedListLock) {
+      if (!miniBannedMacAddresses.contains(mac)) {
+        miniBannedMacAddresses.add(mac);
       }
       if (expires != null) {
         final Timer unbanMacTimer = new Timer("Mac unban timer");
         unbanMacTimer.schedule(new TimerTask() {
           @Override
           public void run() {
-            synchronized (m_cachedListLock) {
-              m_miniBannedMacAddresses.remove(mac);
+            synchronized (cachedListLock) {
+              miniBannedMacAddresses.remove(mac);
             }
           }
         }, expires.toEpochMilli() - System.currentTimeMillis());
@@ -618,7 +618,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private TimerTask getUsernameUnmuteTask(final String username) {
     return createUnmuteTimerTask(
         () -> (isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame()),
-        () -> m_liveMutedUsernames.remove(username));
+        () -> liveMutedUsernames.remove(username));
   }
 
   private TimerTask createUnmuteTimerTask(final Supplier<Boolean> runCondition, final Runnable action) {
@@ -626,7 +626,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       @Override
       public void run() {
         if (runCondition.get()) {
-          synchronized (m_cachedListLock) {
+          synchronized (cachedListLock) {
             action.run();
           }
         }
@@ -637,7 +637,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private TimerTask getMacUnmuteTask(final String mac) {
     return createUnmuteTimerTask(
         () -> (isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame()),
-        () -> m_liveMutedMacAddresses.remove(mac));
+        () -> liveMutedMacAddresses.remove(mac));
   }
 
   @Override
