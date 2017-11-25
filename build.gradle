@@ -94,7 +94,6 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.httpcomponents:httpclient:4.5.3'
     compile 'org.apache.httpcomponents:httpmime:4.5.3'
-    compile 'org.apache.commons:commons-collections4:4.1'
     compile 'org.apache.commons:commons-math3:3.6.1'
     compile 'org.mindrot:jbcrypt:0.4'
     compile 'org.yaml:snakeyaml:1.18'
