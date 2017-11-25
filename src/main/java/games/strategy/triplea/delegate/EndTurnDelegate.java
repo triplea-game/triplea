@@ -35,7 +35,6 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 
 /**
@@ -284,7 +283,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return Properties.getNationalObjectives(getData());
   }
 
-  private static final Predicate<RulesAttachment> availableUses = Match.of(ra -> ra.getUses() != 0);
+  private static final Predicate<RulesAttachment> availableUses = ra -> ra.getUses() != 0;
 
   @Override
   protected String addOtherResources(final IDelegateBridge bridge) {

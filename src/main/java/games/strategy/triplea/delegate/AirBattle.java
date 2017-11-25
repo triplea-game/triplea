@@ -33,7 +33,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.PredicateBuilder;
 
 public class AirBattle extends AbstractBattle {
@@ -630,11 +629,11 @@ public class AirBattle extends AbstractBattle {
   }
 
   private static Predicate<Unit> unitHasAirDefenseGreaterThanZero() {
-    return Match.of(u -> UnitAttachment.get(u.getType()).getAirDefense(u.getOwner()) > 0);
+    return u -> UnitAttachment.get(u.getType()).getAirDefense(u.getOwner()) > 0;
   }
 
   private static Predicate<Unit> unitHasAirAttackGreaterThanZero() {
-    return Match.of(u -> UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0);
+    return u -> UnitAttachment.get(u.getType()).getAirAttack(u.getOwner()) > 0;
   }
 
   static Predicate<Unit> attackingGroundSeaBattleEscorts() {
@@ -642,21 +641,21 @@ public class AirBattle extends AbstractBattle {
   }
 
   private static Predicate<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
-    return Match.of(PredicateBuilder
-        .of(Matches.unitCanAirBattle())
+    return PredicateBuilder.of(
+        Matches.unitCanAirBattle())
         .and(Matches.unitIsEnemyOf(data, attacker))
         .and(Matches.unitWasInAirBattle().negate())
         .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
-        .build());
+        .build();
   }
 
   private static Predicate<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
-    return Match.of(PredicateBuilder
-        .of(Matches.unitCanIntercept())
+    return PredicateBuilder.of(
+        Matches.unitCanIntercept())
         .and(Matches.unitIsEnemyOf(data, attacker))
         .and(Matches.unitWasInAirBattle().negate())
         .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
-        .build());
+        .build();
   }
 
   static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,

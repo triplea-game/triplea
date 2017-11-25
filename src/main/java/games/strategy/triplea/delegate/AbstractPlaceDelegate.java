@@ -33,7 +33,6 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
@@ -1363,7 +1362,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    *         required combos as well).
    */
   public Predicate<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
-    return Match.of(unitWhichRequiresUnits -> {
+    return unitWhichRequiresUnits -> {
       if (!Matches.unitRequiresUnitsOnCreation().test(unitWhichRequiresUnits)) {
         return true;
       }
@@ -1386,7 +1385,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         }
       }
       return false;
-    });
+    };
   }
 
   private boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to) {

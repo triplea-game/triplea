@@ -17,7 +17,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
@@ -226,7 +225,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   public static Predicate<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions) {
-    return Match.of(t -> t.isSatisfied(testedConditions));
+    return t -> t.isSatisfied(testedConditions);
   }
 
   /**
@@ -241,7 +240,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    *         false
    */
   public static Predicate<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
-    return Match.of(t -> {
+    return t -> {
       if (beforeOrAfter == null && stepName == null && t.getWhen().isEmpty()) {
         return true;
       } else if (beforeOrAfter != null && stepName != null && !t.getWhen().isEmpty()) {
@@ -252,13 +251,13 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
         }
       }
       return false;
-    });
+    };
   }
 
-  public static final Predicate<TriggerAttachment> availableUses = Match.of(t -> t.getUses() != 0);
+  public static final Predicate<TriggerAttachment> availableUses = t -> t.getUses() != 0;
 
   public static Predicate<TriggerAttachment> notificationMatch() {
-    return Match.of(t -> t.getNotification() != null);
+    return t -> t.getNotification() != null;
   }
 
   protected static String getValueFromStringArrayForAllSubStrings(final String[] s) {

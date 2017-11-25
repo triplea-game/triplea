@@ -20,7 +20,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
@@ -116,7 +115,7 @@ public class TripleAUnit extends Unit {
     for (final Territory t : getData().getMap()) {
       // find the territory this transport is in
       if (t.getUnits().getUnits().contains(this)) {
-        return t.getUnits().getMatches(Match.of(o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this));
+        return t.getUnits().getMatches(o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this);
       }
     }
     return Collections.emptyList();
@@ -125,8 +124,7 @@ public class TripleAUnit extends Unit {
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
-    return Matches.getMatches(transportedUnitsPossible,
-        Match.of(o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this));
+    return Matches.getMatches(transportedUnitsPossible, o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this);
   }
 
   public List<Unit> getUnloaded() {

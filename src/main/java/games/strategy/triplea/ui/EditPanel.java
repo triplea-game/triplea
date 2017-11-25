@@ -64,7 +64,6 @@ import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Triple;
 
 class EditPanel extends ActionPanel {
@@ -143,7 +142,7 @@ class EditPanel extends ActionPanel {
             selectedUnitTypes.add(u.getType());
           }
           final List<Unit> allOfCorrectType = Matches.getMatches(allUnits,
-              Match.of(o -> selectedUnitTypes.contains(o.getType())));
+              o -> selectedUnitTypes.contains(o.getType()));
           final int allCategories =
               UnitSeperator.categorize(allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true, true).size();
           final int selectedCategories =

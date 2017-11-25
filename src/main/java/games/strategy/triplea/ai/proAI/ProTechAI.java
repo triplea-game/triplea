@@ -29,7 +29,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.PredicateBuilder;
 
 /**
@@ -594,7 +593,7 @@ final class ProTechAI {
         .andIf(Properties.getNeutralsImpassable(data), Matches.territoryIsNeutralButNotWater().negate())
         .build();
     final int distance = 1;
-    return findFrontier(territory, Match.of(endCond), Matches.always(), distance, data);
+    return findFrontier(territory, endCond, Matches.always(), distance, data);
   }
 
   /**

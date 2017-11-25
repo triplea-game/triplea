@@ -26,7 +26,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 /**
  * Provides static methods for evaluating movement of air units.
@@ -610,7 +609,7 @@ public class AirMovementValidator {
   }
 
   private static Predicate<Unit> unitCanFindLand(final GameData data, final Territory current) {
-    return Match.of(u -> canFindLand(data, u, current));
+    return u -> canFindLand(data, u, current);
   }
 
   /**
