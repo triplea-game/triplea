@@ -17,7 +17,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 /**
  * Handy utility methods for the writers of an AI.
@@ -160,7 +159,7 @@ public class AIUtils {
         // If this is the first carrier seek
         if (seekedCarrier == null) {
           final int seekedCarrierIndex = getIndexOfLastUnitMatching(result,
-              Match.allOf(Matches.unitIsCarrier(), Matches.isNotInList(filledCarriers)), result.size() - 1);
+              Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
             // No carriers left
             break;
@@ -189,7 +188,7 @@ public class AIUtils {
             filledCarriers.add(seekedCarrier);
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                Match.allOf(Matches.unitIsCarrier(), Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;
@@ -227,7 +226,7 @@ public class AIUtils {
             }
             // Find the next carrier
             seekedCarrier = getLastUnitMatching(result,
-                Match.allOf(Matches.unitIsCarrier(), Matches.isNotInList(filledCarriers)), result.size() - 1);
+                Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;

@@ -43,7 +43,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
 
@@ -250,8 +249,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   void addBombardmentSources() {
     final PlayerID attacker = m_bridge.getPlayerId();
     final ITripleAPlayer remotePlayer = getRemotePlayer();
-    final Predicate<Unit> ownedAndCanBombard =
-        Match.allOf(Matches.unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
+    final Predicate<Unit> ownedAndCanBombard = Matches.unitCanBombard(attacker).and(Matches.unitIsOwnedBy(attacker));
     final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
     final Iterator<Territory> territories = adjBombardment.keySet().iterator();
     final boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(getData());
@@ -414,14 +412,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final GameData data = bridge.getData();
     final boolean ignoreTransports = isIgnoreTransportInMovement(data);
     final boolean ignoreSubs = isIgnoreSubInMovement(data);
-    final Predicate<Unit> seaTransports =
-        Match.allOf(Matches.unitIsTransportButNotCombatTransport(), Matches.unitIsSea());
+    final Predicate<Unit> seaTransports = Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea());
     final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitIsSub());
     // we want to match all sea zones with our units and enemy units
-    final Predicate<Territory> anyTerritoryWithOwnAndEnemy = Match.allOf(
-        Matches.territoryHasUnitsOwnedBy(player), Matches.territoryHasEnemyUnits(player, data));
-    final Predicate<Territory> enemyTerritoryAndOwnUnits = Match.allOf(
-        Matches.isTerritoryEnemyAndNotUnownedWater(player, data), Matches.territoryHasUnitsOwnedBy(player));
+    final Predicate<Territory> anyTerritoryWithOwnAndEnemy = Matches.territoryHasUnitsOwnedBy(player)
+        .and(Matches.territoryHasEnemyUnits(player, data));
+    final Predicate<Territory> enemyTerritoryAndOwnUnits = Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
+        .and(Matches.territoryHasUnitsOwnedBy(player));
     final Predicate<Territory> enemyUnitsOrEnemyTerritory = anyTerritoryWithOwnAndEnemy.or(enemyTerritoryAndOwnUnits);
     final Iterator<Territory> battleTerritories =
         Matches.getMatches(data.getMap().getTerritories(), enemyUnitsOrEnemyTerritory).iterator();
@@ -564,12 +561,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       return;
     }
     final PlayerID player = bridge.getPlayerId();
-    final Iterator<Territory> battleTerritories = Matches
-        .getMatches(
-            data.getMap().getTerritories(),
-            Match.allOf(
-                Matches.territoryIsNotUnownedWater(),
-                Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player, data)))
+    final Iterator<Territory> battleTerritories = Matches.getMatches(data.getMap().getTerritories(),
+        Matches.territoryIsNotUnownedWater()
+            .and(Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player, data)))
         .iterator();
     // all territories that contain enemy units, where the territory is owned by an enemy of these units
     while (battleTerritories.hasNext()) {
@@ -599,8 +593,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         enemyPlayers.add(u.getOwner());
       }
       for (final PlayerID p : enemyPlayers) {
-        final Predicate<Unit> canPreventCapture = Match.allOf(Matches.unitIsEnemyOf(data, p),
-            Matches.unitIsNotAir(), Matches.unitIsNotInfrastructure());
+        final Predicate<Unit> canPreventCapture = Matches.unitIsEnemyOf(data, p)
+            .and(Matches.unitIsNotAir())
+            .and(Matches.unitIsNotInfrastructure());
         enemyUnitsOfAbandonedToUnits.addAll(territory.getUnits().getMatches(canPreventCapture));
       }
       // only look at bombing battles, because otherwise the normal attack will determine the ownership of the territory
@@ -643,14 +638,15 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }
     }
-    final Predicate<Unit> airbasesCanScramble = Match.allOf(Matches.unitIsEnemyOf(data, m_player),
-        Matches.unitIsAirBase(), Matches.unitIsNotDisabled(), Matches.unitIsBeingTransported().negate());
+    final Predicate<Unit> airbasesCanScramble = Matches.unitIsEnemyOf(data, m_player)
+        .and(Matches.unitIsAirBase())
+        .and(Matches.unitIsNotDisabled())
+        .and(Matches.unitIsBeingTransported().negate());
     final Predicate<Territory> canScramble = PredicateBuilder
         .of(Matches.territoryIsWater().or(Matches.isTerritoryEnemy(m_player, data)))
-        .and(Matches.territoryHasUnitsThatMatch(Match.allOf(
-            Matches.unitCanScramble(),
-            Matches.unitIsEnemyOf(data, m_player),
-            Matches.unitIsNotDisabled())))
+        .and(Matches.territoryHasUnitsThatMatch(Matches.unitCanScramble()
+            .and(Matches.unitIsEnemyOf(data, m_player))
+            .and(Matches.unitIsNotDisabled())))
         .and(Matches.territoryHasUnitsThatMatch(airbasesCanScramble))
         .andIf(fromIslandOnly, Matches.territoryIsIsland())
         .build();
@@ -726,10 +722,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
         final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
-        final Collection<Unit> canScrambleAir = from.getUnits()
-            .getMatches(Match.allOf(Matches.unitIsEnemyOf(data, m_player), Matches.unitCanScramble(),
-                Matches.unitIsNotDisabled(), Matches.unitWasScrambled().negate(),
-                Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
+        final Collection<Unit> canScrambleAir = from.getUnits().getMatches(Matches.unitIsEnemyOf(data, m_player)
+            .and(Matches.unitCanScramble())
+            .and(Matches.unitIsNotDisabled())
+            .and(Matches.unitWasScrambled().negate())
+            .and(Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
         if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
           scramblers.put(from, Tuple.of(airbases, canScrambleAir));
         }
@@ -945,7 +942,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   public static int getMaxScrambleCount(final Collection<Unit> airbases) {
     if (airbases.isEmpty()
-        || !airbases.stream().allMatch(Match.allOf(Matches.unitIsAirBase(), Matches.unitIsNotDisabled()))) {
+        || !airbases.stream().allMatch(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
       throw new IllegalStateException("All units must be viable airbases");
     }
     // find how many is the max this territory can scramble
@@ -1056,7 +1053,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Map<Territory, Collection<Unit>> defendingAirThatCanNotLand = m_battleTracker.getDefendingAirThatCanNotLand();
     final boolean isWW2v2orIsSurvivingAirMoveToLand = Properties.getWW2V2(data)
         || Properties.getSurvivingAirMoveToLand(data);
-    final Predicate<Unit> alliedDefendingAir = Match.allOf(Matches.unitIsAir(), Matches.unitWasScrambled().negate());
+    final Predicate<Unit> alliedDefendingAir = Matches.unitIsAir().and(Matches.unitWasScrambled().negate());
     for (final Entry<Territory, Collection<Unit>> entry : defendingAirThatCanNotLand.entrySet()) {
       final Territory battleSite = entry.getKey();
       final Collection<Unit> defendingAir = entry.getValue();
@@ -1071,18 +1068,18 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // Get all land territories where we can land
       final Set<Territory> neighbors = data.getMap().getNeighbors(battleSite);
       final Predicate<Territory> alliedLandTerritories =
-          Match.allOf(Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(defender, data));
+          Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(defender, data);
       // Get those that are neighbors
       final Collection<Territory> canLandHere = Matches.getMatches(neighbors, alliedLandTerritories);
       // Get all sea territories where there are allies
-      final Predicate<Territory> neighboringSeaZonesWithAlliedUnits =
-          Match.allOf(Matches.territoryIsWater(), Matches.territoryHasAlliedUnits(defender, data));
+      final Predicate<Territory> neighboringSeaZonesWithAlliedUnits = Matches.territoryIsWater()
+          .and(Matches.territoryHasAlliedUnits(defender, data));
       // Get those that are neighbors
       final Collection<Territory> areSeaNeighbors = Matches.getMatches(neighbors, neighboringSeaZonesWithAlliedUnits);
       // Set up match criteria for allied carriers
-      final Predicate<Unit> alliedCarrier = Match.allOf(Matches.unitIsCarrier(), Matches.alliedUnit(defender, data));
+      final Predicate<Unit> alliedCarrier = Matches.unitIsCarrier().and(Matches.alliedUnit(defender, data));
       // Set up match criteria for allied planes
-      final Predicate<Unit> alliedPlane = Match.allOf(Matches.unitIsAir(), Matches.alliedUnit(defender, data));
+      final Predicate<Unit> alliedPlane = Matches.unitIsAir().and(Matches.alliedUnit(defender, data));
       // See if neighboring carriers have any capacity available
       for (final Territory currentTerritory : areSeaNeighbors) {
         // get the capacity of the carriers and cost of fighters
@@ -1203,8 +1200,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (enemies.isEmpty()) {
       return;
     }
-    final Predicate<Unit> canBeAttackedDefault = Match.allOf(Matches.unitIsOwnedBy(m_player),
-        Matches.unitIsSea(), Matches.unitIsNotTransportButCouldBeCombatTransport(), Matches.unitIsNotSub());
+    final Predicate<Unit> canBeAttackedDefault = Matches.unitIsOwnedBy(m_player)
+        .and(Matches.unitIsSea())
+        .and(Matches.unitIsNotTransportButCouldBeCombatTransport())
+        .and(Matches.unitIsNotSub());
     final boolean onlyWhereThereAreBattlesOrAmphibious =
         Properties.getKamikazeSuicideAttacksOnlyWhereBattlesAre(data);
     final Collection<Territory> pendingBattles = m_battleTracker.getPendingBattleSites(false);
@@ -1287,7 +1286,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       Predicate<Unit> canBeAttacked = canBeAttackedDefault;
       final Set<UnitType> suicideAttackTargets = pa.getSuicideAttackTargets();
       if (suicideAttackTargets != null) {
-        canBeAttacked = Match.allOf(Matches.unitIsOwnedBy(m_player), Matches.unitIsOfTypes(suicideAttackTargets));
+        canBeAttacked = Matches.unitIsOwnedBy(m_player).and(Matches.unitIsOfTypes(suicideAttackTargets));
       }
       // See if the player has any attack tokens
       final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
@@ -1501,16 +1500,15 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     possibleTerrs.add(currentTerr);
     final HashSet<Territory> availableLand = new HashSet<>();
     availableLand.addAll(Matches.getMatches(possibleTerrs,
-        Match.allOf(Matches.isTerritoryAllied(alliedPlayer, data), Matches.territoryIsLand())));
+        Matches.isTerritoryAllied(alliedPlayer, data).and(Matches.territoryIsLand())));
     availableLand.removeAll(canNotLand);
     whereCanLand.addAll(availableLand);
     // now for carrier-air-landing validation
     if (!strandedAir.isEmpty() && strandedAir.stream().allMatch(Matches.unitCanLandOnCarrier())) {
       final HashSet<Territory> availableWater = new HashSet<>();
       availableWater.addAll(Matches.getMatches(possibleTerrs,
-          Match.allOf(
-              Matches.territoryHasUnitsThatMatch(Matches.unitIsAlliedCarrier(alliedPlayer, data)),
-              Matches.territoryIsWater())));
+          Matches.territoryHasUnitsThatMatch(Matches.unitIsAlliedCarrier(alliedPlayer, data))
+              .and(Matches.territoryIsWater())));
       availableWater.removeAll(battleTracker.getPendingBattleSites(false));
       // a rather simple calculation, either we can take all the air, or we can't, nothing in the middle
       final int carrierCost = AirMovementValidator.carrierCost(strandedAir);
@@ -1521,7 +1519,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .carrierCapacity(t.getUnits().getMatches(Matches.unitIsAlliedCarrier(alliedPlayer, data)), t);
         if (!t.equals(currentTerr)) {
           carrierCapacity -= AirMovementValidator.carrierCost(t.getUnits().getMatches(
-              Match.allOf(Matches.unitCanLandOnCarrier(), Matches.alliedUnit(alliedPlayer, data))));
+              Matches.unitCanLandOnCarrier().and(Matches.alliedUnit(alliedPlayer, data))));
         } else {
           carrierCapacity -= carrierCostForCurrentTerr;
         }

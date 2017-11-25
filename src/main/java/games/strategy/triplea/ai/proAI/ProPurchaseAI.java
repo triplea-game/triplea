@@ -47,7 +47,6 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 /**
  * Pro purchase AI.
@@ -74,8 +73,9 @@ class ProPurchaseAI {
     // Current data at the start of combat move
     this.data = data;
     this.player = player;
-    final Predicate<Unit> ourFactories = Match.allOf(Matches.unitIsOwnedBy(player),
-        Matches.unitCanProduceUnits(), Matches.unitIsInfrastructure());
+    final Predicate<Unit> ourFactories = Matches.unitIsOwnedBy(player)
+        .and(Matches.unitCanProduceUnits())
+        .and(Matches.unitIsInfrastructure());
     final List<Territory> rfactories = Matches.getMatches(data.getMap().getTerritories(),
         ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
     if (player.getRepairFrontier() != null

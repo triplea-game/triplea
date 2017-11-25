@@ -39,7 +39,6 @@ import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 public class ProductionRepairPanel extends JPanel {
   private static final long serialVersionUID = -6344711064699083729L;
@@ -125,9 +124,8 @@ public class ProductionRepairPanel extends JPanel {
     try {
       this.id = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
-      final Predicate<Unit> myDamagedUnits =
-          Match.allOf(Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair),
-              Matches.unitHasTakenSomeBombingUnitDamage());
+      final Predicate<Unit> myDamagedUnits = Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair)
+          .and(Matches.unitHasTakenSomeBombingUnitDamage());
       final Collection<Territory> terrsWithPotentiallyDamagedUnits =
           Matches.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
       for (final RepairRule repairRule : player.getRepairFrontier()) {

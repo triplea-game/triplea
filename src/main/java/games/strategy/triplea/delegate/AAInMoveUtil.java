@@ -25,7 +25,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.Match;
 
 /**
  * Code to fire AA guns while in combat and non combat move.
@@ -101,7 +100,7 @@ class AAInMoveUtil implements Serializable {
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
           Matches.getMatches(units, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
-              .or(Match.allOf(Matches.unitIsAirborne(), Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+              .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargettedToo))));
       // once we fire the AA guns, we can't undo
       // otherwise you could keep undoing and redoing
       // until you got the roll you wanted

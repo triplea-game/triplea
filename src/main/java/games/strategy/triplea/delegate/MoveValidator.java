@@ -285,9 +285,7 @@ public class MoveValidator {
           && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
         return result.setErrorReturnResult("Cannot blitz out of a battle further into enemy territory");
       }
-      for (final Unit u : Matches.getMatches(units, Match.allOf(
-          Matches.unitCanBlitz().negate(),
-          Matches.unitIsNotAir()))) {
+      for (final Unit u : Matches.getMatches(units, Matches.unitCanBlitz().negate().and(Matches.unitIsNotAir()))) {
         result.addDisallowedUnit("Not all units can blitz out of empty enemy territory", u);
       }
     }
@@ -343,10 +341,10 @@ public class MoveValidator {
         nonBlitzingUnits.removeAll(UnitAttachment.getUnitsWhichReceivesAbilityWhenWith(units, "canBlitz", data));
         final Predicate<Territory> territoryIsNotEnd = Matches.territoryIs(route.getEnd()).negate();
         final Predicate<Territory> nonFriendlyTerritories = Matches.isTerritoryFriendly(player, data).negate();
-        final Predicate<Territory> notEndOrFriendlyTerrs = Match.allOf(nonFriendlyTerritories, territoryIsNotEnd);
+        final Predicate<Territory> notEndOrFriendlyTerrs = nonFriendlyTerritories.and(territoryIsNotEnd);
         final Predicate<Territory> foughtOver =
             Matches.territoryWasFoughOver(AbstractMoveDelegate.getBattleTracker(data));
-        final Predicate<Territory> notEndWasFought = Match.allOf(territoryIsNotEnd, foughtOver);
+        final Predicate<Territory> notEndWasFought = territoryIsNotEnd.and(foughtOver);
         final boolean wasStartFoughtOver =
             AbstractMoveDelegate.getBattleTracker(data).wasConquered(route.getStart())
                 || AbstractMoveDelegate.getBattleTracker(data).wasBlitzed(route.getStart());
@@ -455,7 +453,7 @@ public class MoveValidator {
       // if there are non-paratroopers present, then we cannot fly over stuff
       // if there are neutral territories in the middle, we cannot fly over (unless allowed to)
       // otherwise we can generally fly over anything in noncombat
-      if (route.anyMatch(Match.allOf(Matches.territoryIsNeutralButNotWater(), Matches.territoryIsWater().negate()))
+      if (route.anyMatch(Matches.territoryIsNeutralButNotWater().and(Matches.territoryIsWater().negate()))
           && (!Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data))) {
         return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
       }
@@ -739,7 +737,7 @@ public class MoveValidator {
   private static int getMechanizedSupportAvail(final Collection<Unit> units, final PlayerID player) {
     int mechanizedSupportAvailable = 0;
     if (TechAttachment.isMechanizedInfantry(player)) {
-      final Predicate<Unit> transportLand = Match.allOf(Matches.unitIsLandTransport(), Matches.unitIsOwnedBy(player));
+      final Predicate<Unit> transportLand = Matches.unitIsLandTransport().and(Matches.unitIsOwnedBy(player));
       mechanizedSupportAvailable = Matches.countMatches(units, transportLand);
     }
     return mechanizedSupportAvailable;
@@ -827,7 +825,7 @@ public class MoveValidator {
   }
 
   private static boolean enemyDestroyerOnPath(final Route route, final PlayerID player, final GameData data) {
-    final Predicate<Unit> enemyDestroyer = Match.allOf(Matches.unitIsDestroyer(), Matches.enemyUnit(player, data));
+    final Predicate<Unit> enemyDestroyer = Matches.unitIsDestroyer().and(Matches.enemyUnit(player, data));
     for (final Territory current : route.getMiddleSteps()) {
       if (current.getUnits().anyMatch(enemyDestroyer)) {
         return true;
@@ -968,9 +966,8 @@ public class MoveValidator {
       return result;
     }
     // If there are non-sea transports return
-    final boolean seaOrNoTransportsPresent =
-        transportsToLoad.isEmpty()
-            || transportsToLoad.stream().anyMatch(Match.allOf(Matches.unitIsSea(), Matches.unitCanTransport()));
+    final boolean seaOrNoTransportsPresent = transportsToLoad.isEmpty()
+        || transportsToLoad.stream().anyMatch(Matches.unitIsSea().and(Matches.unitCanTransport()));
     if (!seaOrNoTransportsPresent) {
       return result;
     }
@@ -994,10 +991,10 @@ public class MoveValidator {
               || Properties.getUseKamikazeSuicideAttacks(data);
       final boolean submarinesPreventUnescortedAmphibAssaults =
           Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data);
-      final Predicate<Unit> enemySubmarineMatch = Match.allOf(Matches.unitIsEnemyOf(data, player), Matches.unitIsSub());
-      final Predicate<Unit> ownedSeaNonTransportMatch =
-          Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsSea(),
-              Matches.unitIsNotTransportButCouldBeCombatTransport());
+      final Predicate<Unit> enemySubmarineMatch = Matches.unitIsEnemyOf(data, player).and(Matches.unitIsSub());
+      final Predicate<Unit> ownedSeaNonTransportMatch = Matches.unitIsOwnedBy(player)
+          .and(Matches.unitIsSea())
+          .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
       for (final Unit transport : transports) {
         if (!isNonCombat && route.numberOfStepsIncludingStart() == 2) {
           if (Matches.territoryHasEnemyUnits(player, data).test(routeEnd)
@@ -1102,8 +1099,7 @@ public class MoveValidator {
       if (!isEditMode && !route.hasExactlyOneStep() && nonParatroopersPresent(player, landAndAir)) {
         return result.setErrorReturnResult("Units cannot move before loading onto transports");
       }
-      final Predicate<Unit> enemyNonSubmerged =
-          Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsSubmerged().negate());
+      final Predicate<Unit> enemyNonSubmerged = Matches.enemyUnit(player, data).and(Matches.unitIsSubmerged().negate());
       if (route.getEnd().getUnits().anyMatch(enemyNonSubmerged) && nonParatroopersPresent(player, landAndAir)) {
         if (!onlyIgnoredUnitsOnPath(route, player, data, false)) {
           if (!AbstractMoveDelegate.getBattleTracker(data).didAllThesePlayersJustGoToWarThisTurn(player,
@@ -1219,10 +1215,9 @@ public class MoveValidator {
   }
 
   private static List<Unit> getParatroopsRequiringTransport(final Collection<Unit> units, final Route route) {
-    return Matches.getMatches(units, Match.allOf(Matches.unitIsAirTransportable(), Match.of(u -> {
-      return TripleAUnit.get(u).getMovementLeft() < route.getMovementCost(u) || route.crossesWater()
-          || route.getEnd().isWater();
-    })));
+    return Matches.getMatches(units, Matches.unitIsAirTransportable()
+        .and(u -> TripleAUnit.get(u).getMovementLeft() < route.getMovementCost(u)
+            || route.crossesWater() || route.getEnd().isWater()));
   }
 
   private static MoveValidationResult validateParatroops(final boolean nonCombat, final GameData data,
@@ -1417,19 +1412,17 @@ public class MoveValidator {
       final Collection<Unit> startUnits, final GameData data, final PlayerID player) {
     // we want to get all air units that are owned by our allies
     // but not us that can land on a carrier
-    final Predicate<Unit> friendlyNotOwnedAir = Match.allOf(
-        Matches.alliedUnit(player, data),
-        Matches.unitIsOwnedBy(player).negate(),
-        Matches.unitCanLandOnCarrier());
+    final Predicate<Unit> friendlyNotOwnedAir = Matches.alliedUnit(player, data)
+        .and(Matches.unitIsOwnedBy(player).negate())
+        .and(Matches.unitCanLandOnCarrier());
     final Collection<Unit> alliedAir = Matches.getMatches(startUnits, friendlyNotOwnedAir);
     if (alliedAir.isEmpty()) {
       return Collections.emptyMap();
     }
     // remove air that can be carried by allied
-    final Predicate<Unit> friendlyNotOwnedCarrier = Match.allOf(
-        Matches.unitIsCarrier(),
-        Matches.alliedUnit(player, data),
-        Matches.unitIsOwnedBy(player).negate());
+    final Predicate<Unit> friendlyNotOwnedCarrier = Matches.unitIsCarrier()
+        .and(Matches.alliedUnit(player, data))
+        .and(Matches.unitIsOwnedBy(player).negate());
     final Collection<Unit> alliedCarrier = Matches.getMatches(startUnits, friendlyNotOwnedCarrier);
     final Iterator<Unit> alliedCarrierIter = alliedCarrier.iterator();
     while (alliedCarrierIter.hasNext()) {
@@ -1443,7 +1436,7 @@ public class MoveValidator {
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>();
     // get air that must be carried by our carriers
     final Collection<Unit> ownedCarrier =
-        Matches.getMatches(units, Match.allOf(Matches.unitIsCarrier(), Matches.unitIsOwnedBy(player)));
+        Matches.getMatches(units, Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player)));
     final Iterator<Unit> ownedCarrierIter = ownedCarrier.iterator();
     while (ownedCarrierIter.hasNext()) {
       final Unit carrier = ownedCarrierIter.next();
@@ -1517,8 +1510,7 @@ public class MoveValidator {
       // at least try for a route without impassable territories, but allowing restricted territories, since there is a
       // chance politics may change in the future.
       defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end,
-          (isNeutralsImpassable ? Match.allOf(noNeutral, Matches.territoryIsImpassable())
-              : Matches.territoryIsImpassable()));
+          (isNeutralsImpassable ? noNeutral.and(Matches.territoryIsImpassable()) : Matches.territoryIsImpassable()));
       // ok, so there really is nothing, so just return any route, without conditions
       if (defaultRoute == null) {
         return data.getMap().getRoute(start, end);
@@ -1538,10 +1530,11 @@ public class MoveValidator {
       final Route landRoute;
       if (isNeutralsImpassable) {
         landRoute = data.getMap().getRoute_IgnoreEnd(start, end,
-            Match.allOf(Matches.territoryIsLand(), noNeutral, noImpassable));
+            Matches.territoryIsLand()
+                .and(noNeutral)
+                .and(noImpassable));
       } else {
-        landRoute = data.getMap().getRoute_IgnoreEnd(start, end,
-            Match.allOf(Matches.territoryIsLand(), noImpassable));
+        landRoute = data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsLand().and(noImpassable));
       }
       if (landRoute != null
           && ((landRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
@@ -1556,7 +1549,7 @@ public class MoveValidator {
     // dont force a water route, since planes may be moving
     if (start.isWater() && end.isWater()) {
       final Route waterRoute =
-          data.getMap().getRoute_IgnoreEnd(start, end, Match.allOf(Matches.territoryIsWater(), noImpassable));
+          data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsWater().and(noImpassable));
       if (waterRoute != null
           && ((waterRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
               .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent)) || (forceLandOrSeaRoute
@@ -1571,26 +1564,26 @@ public class MoveValidator {
     if (isNeutralsImpassable) {
       tests = new ArrayList<>(Arrays.asList(
           // best if no enemy and no neutral
-          Match.allOf(noEnemy, noNeutral),
+          noEnemy.and(noNeutral),
           // we will be satisfied if no aa and no neutral
-          Match.allOf(noAa, noNeutral)));
+          noAa.and(noNeutral)));
     } else {
       tests = new ArrayList<>(Arrays.asList(
           // best if no enemy and no neutral
-          Match.allOf(noEnemy, noNeutral),
+          noEnemy.and(noNeutral),
           // we will be satisfied if no aa and no neutral
-          Match.allOf(noAa, noNeutral),
+          noAa.and(noNeutral),
           // single matches
           noEnemy, noAa, noNeutral));
     }
     for (final Predicate<Territory> t : tests) {
       final Predicate<Territory> testMatch;
       if (mustGoLand) {
-        testMatch = Match.allOf(t, Matches.territoryIsLand(), noImpassable);
+        testMatch = t.and(Matches.territoryIsLand()).and(noImpassable);
       } else if (mustGoSea) {
-        testMatch = Match.allOf(t, Matches.territoryIsWater(), noImpassable);
+        testMatch = t.and(Matches.territoryIsWater()).and(noImpassable);
       } else {
-        testMatch = Match.allOf(t, noImpassable);
+        testMatch = t.and(noImpassable);
       }
       final Route testRoute = data.getMap().getRoute_IgnoreEnd(start, end, testMatch);
       if (testRoute != null

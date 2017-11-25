@@ -2,8 +2,6 @@ package games.strategy.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.function.Predicate;
 
 /**
@@ -50,33 +48,5 @@ public final class Match<T> implements Predicate<T> {
     checkNotNull(condition);
 
     return new Match<>(condition);
-  }
-
-  /**
-   * Creates a new match whose condition is satisfied if the test object matches all of the specified conditions.
-   *
-   * @param matches An array of matches; must not be {@code null}.
-   *
-   * @return A new match; never {@code null}.
-   */
-  @SafeVarargs
-  @SuppressWarnings("varargs")
-  public static <T> Predicate<T> allOf(final Predicate<T>... matches) {
-    checkNotNull(matches);
-
-    return allOf(Arrays.asList(matches));
-  }
-
-  /**
-   * Creates a new match whose condition is satisfied if the test object matches all of the specified conditions.
-   *
-   * @param matches A collection of matches; must not be {@code null}.
-   *
-   * @return A new match; never {@code null}.
-   */
-  public static <T> Predicate<T> allOf(final Collection<Predicate<T>> matches) {
-    checkNotNull(matches);
-
-    return Match.of(value -> matches.stream().allMatch(match -> match.test(value)));
   }
 }

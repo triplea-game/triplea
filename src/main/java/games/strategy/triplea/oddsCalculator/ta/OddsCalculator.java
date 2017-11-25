@@ -49,7 +49,6 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
@@ -593,8 +592,8 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       }
       if (submerge) {
         // submerge if all air vs subs
-        final Predicate<Unit> seaSub = Match.allOf(Matches.unitIsSea(), Matches.unitIsSub());
-        final Predicate<Unit> planeNotDestroyer = Match.allOf(Matches.unitIsAir(), Matches.unitIsDestroyer().negate());
+        final Predicate<Unit> seaSub = Matches.unitIsSea().and(Matches.unitIsSub());
+        final Predicate<Unit> planeNotDestroyer = Matches.unitIsAir().and(Matches.unitIsDestroyer().negate());
         final List<Unit> ourUnits = getOurUnits();
         final List<Unit> enemyUnits = getEnemyUnits();
         if (ourUnits == null || enemyUnits == null) {

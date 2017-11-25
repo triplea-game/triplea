@@ -7,7 +7,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
@@ -151,20 +150,15 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
    * then I am basically dead, and therefore should not participate in things like politics.
    */
   public boolean amNotDeadYet(final GameData data) {
-    boolean hasFactory = false;
-    boolean ownsLand = false;
     for (final Territory t : data.getMap().getTerritories()) {
-      if (t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(this),
-          Matches.unitHasAttackValueOfAtLeast(1), Matches.unitCanMove(), Matches.unitIsLand()))) {
+      if (t.getUnits().anyMatch(Matches.unitIsOwnedBy(this)
+          .and(Matches.unitHasAttackValueOfAtLeast(1))
+          .and(Matches.unitCanMove())
+          .and(Matches.unitIsLand()))) {
         return true;
       }
-      if (t.getOwner().equals(this)) {
-        ownsLand = true;
-      }
-      if (t.getUnits().anyMatch(Match.allOf(Matches.unitIsOwnedBy(this), Matches.unitCanProduceUnits()))) {
-        hasFactory = true;
-      }
-      if (ownsLand && hasFactory) {
+      if (t.getOwner().equals(this)
+          && t.getUnits().anyMatch(Matches.unitIsOwnedBy(this).and(Matches.unitCanProduceUnits()))) {
         return true;
       }
     }

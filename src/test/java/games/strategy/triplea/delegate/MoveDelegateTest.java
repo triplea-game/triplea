@@ -23,7 +23,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 
 public class MoveDelegateTest extends DelegateTest {
   MoveDelegate delegate;
@@ -552,7 +551,7 @@ public class MoveDelegateTest extends DelegateTest {
     route3.setStart(japanSeaZone);
     route3.add(sfeSeaZone);
     final Collection<Unit> remainingTrns = Matches.getMatches(japanSeaZone.getUnits().getUnits(),
-        Match.allOf(Matches.unitHasNotMoved(), Matches.unitWasNotLoadedThisTurn()));
+        Matches.unitHasNotMoved().and(Matches.unitWasNotLoadedThisTurn()));
     results = delegate.move(remainingTrns, route3);
     assertNull(results);
   }

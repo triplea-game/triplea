@@ -47,7 +47,6 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.Match;
 
 /**
  * Pro non-combat move AI.
@@ -1219,9 +1218,8 @@ class ProNonCombatMoveAI {
           boolean movedTransport = false;
           final Set<Territory> cantHoldTerritories = new HashSet<>();
           while (true) {
-            final Predicate<Territory> match =
-                Match.allOf(ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false),
-                    Matches.territoryIsInList(cantHoldTerritories).negate());
+            final Predicate<Territory> match = ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false)
+                .and(Matches.territoryIsInList(cantHoldTerritories).negate());
             final Route route = data.getMap().getRoute_IgnoreEnd(currentTerritory, patd.getTerritory(), match);
             if (route == null
                 || MoveValidator.validateCanal(route, Collections.singletonList(transport), player, data) != null) {

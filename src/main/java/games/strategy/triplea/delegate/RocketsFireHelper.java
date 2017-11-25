@@ -150,8 +150,12 @@ public class RocketsFireHelper {
   }
 
   private static Predicate<Unit> rocketMatch(final PlayerID player) {
-    return Match.allOf(Matches.unitIsRocket(), Matches.unitIsOwnedBy(player), Matches.unitIsNotDisabled(),
-        Matches.unitIsBeingTransported().negate(), Matches.unitIsSubmerged().negate(), Matches.unitHasNotMoved());
+    return Matches.unitIsRocket()
+        .and(Matches.unitIsOwnedBy(player))
+        .and(Matches.unitIsNotDisabled())
+        .and(Matches.unitIsBeingTransported().negate())
+        .and(Matches.unitIsSubmerged().negate())
+        .and(Matches.unitHasNotMoved());
   }
 
   private static Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data,
@@ -163,13 +167,13 @@ public class RocketsFireHelper {
         .of(Matches.territoryAllowsRocketsCanFlyOver(player, data))
         .andIf(!isRocketsCanFlyOverImpassables(data), Matches.territoryIsNotImpassable())
         .build();
-    final Predicate<Unit> attackableUnits =
-        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().negate());
+    final Predicate<Unit> attackableUnits = Matches.enemyUnit(player, data)
+        .and(Matches.unitIsBeingTransported().negate());
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, Match.of(allowed));
       if (route != null && route.numberOfSteps() <= maxDistance) {
-        if (current.getUnits().anyMatch(Match.allOf(attackableUnits,
-            Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
+        if (current.getUnits().anyMatch(attackableUnits
+            .and(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
           hasFactory.add(current);
         }
       }
@@ -191,7 +195,7 @@ public class RocketsFireHelper {
     final boolean damageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
-        Match.allOf(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().negate()));
+        Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate()));
     final Collection<Unit> enemyTargetsTotal =
         Matches.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).negate());
     final Collection<Unit> targets = new ArrayList<>();

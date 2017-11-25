@@ -61,8 +61,10 @@ public class AirMovementValidator {
     final Territory routeEnd = route.getEnd();
     final Territory routeStart = route.getStart();
     // we cannot forget to account for allied air at our location already
-    final Predicate<Unit> airAlliedNotOwned = Match.allOf(Matches.unitIsOwnedBy(player).negate(),
-        Matches.isUnitAllied(player, data), Matches.unitIsAir(), Matches.unitCanLandOnCarrier());
+    final Predicate<Unit> airAlliedNotOwned = Matches.unitIsOwnedBy(player).negate()
+        .and(Matches.isUnitAllied(player, data))
+        .and(Matches.unitIsAir())
+        .and(Matches.unitCanLandOnCarrier());
     final HashSet<Unit> airThatMustLandOnCarriersHash = new HashSet<>();
     airThatMustLandOnCarriersHash.addAll(Matches.getMatches(routeEnd.getUnits().getUnits(), airAlliedNotOwned));
     airThatMustLandOnCarriersHash.addAll(Matches.getMatches(units, airAlliedNotOwned));
@@ -161,8 +163,9 @@ public class AirMovementValidator {
       final List<Territory> landingSpots, final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters,
       final PlayerID player, final GameData data) {
     final IntegerMap<Territory> startingSpace = new IntegerMap<>();
-    final Predicate<Unit> carrierAlliedNotOwned = Match.allOf(Matches.unitIsOwnedBy(player).negate(),
-        Matches.isUnitAllied(player, data), Matches.unitIsCarrier());
+    final Predicate<Unit> carrierAlliedNotOwned = Matches.unitIsOwnedBy(player).negate()
+        .and(Matches.isUnitAllied(player, data))
+        .and(Matches.unitIsCarrier());
     // final Predicate<Unit> airAlliedNotOwned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).negate(),
     // Matches.isUnitAllied(player, data), Matches.unitIsAir(), Matches.unitCanLandOnCarrier());
     final boolean landAirOnNewCarriers = AirThatCantLandUtil.isLhtrCarrierProduction(data)
@@ -199,13 +202,17 @@ public class AirMovementValidator {
       final List<Territory> landingSpots, final Collection<Territory> potentialCarrierOrigins,
       final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters, final Collection<Unit> airThatMustLandOnCarriers,
       final Collection<Unit> airNotToConsider, final PlayerID player, final Route route, final GameData data) {
-    final Predicate<Unit> ownedCarrierMatch = Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsCarrier());
-    final Predicate<Unit> ownedAirMatch =
-        Match.allOf(Matches.unitIsOwnedBy(player), Matches.unitIsAir(), Matches.unitCanLandOnCarrier());
-    final Predicate<Unit> alliedNotOwnedAirMatch = Match.allOf(Matches.unitIsOwnedBy(player).negate(),
-        Matches.isUnitAllied(player, data), Matches.unitIsAir(), Matches.unitCanLandOnCarrier());
-    final Predicate<Unit> alliedNotOwnedCarrierMatch = Match.allOf(Matches.unitIsOwnedBy(player).negate(),
-        Matches.isUnitAllied(player, data), Matches.unitIsCarrier());
+    final Predicate<Unit> ownedCarrierMatch = Matches.unitIsOwnedBy(player).and(Matches.unitIsCarrier());
+    final Predicate<Unit> ownedAirMatch = Matches.unitIsOwnedBy(player)
+        .and(Matches.unitIsAir())
+        .and(Matches.unitCanLandOnCarrier());
+    final Predicate<Unit> alliedNotOwnedAirMatch = Matches.unitIsOwnedBy(player).negate()
+        .and(Matches.isUnitAllied(player, data))
+        .and(Matches.unitIsAir())
+        .and(Matches.unitCanLandOnCarrier());
+    final Predicate<Unit> alliedNotOwnedCarrierMatch = Matches.unitIsOwnedBy(player).negate()
+        .and(Matches.isUnitAllied(player, data))
+        .and(Matches.unitIsCarrier());
     final Territory routeEnd = route.getEnd();
     final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
     final IntegerMap<Territory> landingSpotsWithCarrierCapacity =
@@ -466,7 +473,7 @@ public class AirMovementValidator {
 
   private static int maxMovementLeftForAllOwnedCarriers(final PlayerID player, final GameData data) {
     int max = 0;
-    final Predicate<Unit> ownedCarrier = Match.allOf(Matches.unitIsCarrier(), Matches.unitIsOwnedBy(player));
+    final Predicate<Unit> ownedCarrier = Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
       for (final Unit carrier : t.getUnits().getMatches(ownedCarrier)) {
         max = Math.max(max, ((TripleAUnit) carrier).getMovementLeft());
@@ -521,8 +528,9 @@ public class AirMovementValidator {
    */
   private static List<Unit> getAirUnitsToValidate(final Collection<Unit> units, final Route route,
       final PlayerID player) {
-    final Predicate<Unit> ownedAirMatch =
-        Match.allOf(Matches.unitIsAir(), Matches.unitOwnedBy(player), Matches.unitIsKamikaze().negate());
+    final Predicate<Unit> ownedAirMatch = Matches.unitIsAir()
+        .and(Matches.unitOwnedBy(player))
+        .and(Matches.unitIsKamikaze().negate());
     final List<Unit> ownedAir = new ArrayList<>();
     ownedAir.addAll(Matches.getMatches(route.getEnd().getUnits().getUnits(), ownedAirMatch));
     ownedAir.addAll(Matches.getMatches(units, ownedAirMatch));
@@ -682,7 +690,7 @@ public class AirMovementValidator {
         if (Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).test(unit)) {
           int cargo = 0;
           final Collection<Unit> airCargo = territoryUnitsAreCurrentlyIn.getUnits()
-              .getMatches(Match.allOf(Matches.unitIsAir(), Matches.unitCanLandOnCarrier()));
+              .getMatches(Matches.unitIsAir().and(Matches.unitCanLandOnCarrier()));
           for (final Unit airUnit : airCargo) {
             final TripleAUnit taUnit = (TripleAUnit) airUnit;
             if (taUnit.getTransportedBy() != null && taUnit.getTransportedBy().equals(unit)) {

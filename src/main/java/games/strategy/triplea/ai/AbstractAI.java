@@ -44,7 +44,6 @@ import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
@@ -315,7 +314,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       if (notOwned.isEmpty()) {
         // only owned territories left
         final boolean nonFactoryUnitsLeft = unitChoices.stream().anyMatch(Matches.unitCanProduceUnits().negate());
-        final Predicate<Unit> ownedFactories = Match.allOf(Matches.unitCanProduceUnits(), Matches.unitIsOwnedBy(me));
+        final Predicate<Unit> ownedFactories = Matches.unitCanProduceUnits().and(Matches.unitIsOwnedBy(me));
         final List<Territory> capitals = TerritoryAttachment.getAllCapitals(me, data);
         final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(territoryChoices);
@@ -327,8 +326,10 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Matches.getMatches(data.getMap().getTerritories(), Match.allOf(
-                  Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.territoryIsLand())));
+              capitals.addAll(Matches.getMatches(data.getMap().getTerritories(),
+                  Matches.isTerritoryOwnedBy(me)
+                      .and(Matches.territoryHasUnitsOwnedBy(me))
+                      .and(Matches.territoryIsLand())));
             }
             final List<Territory> doesNotHaveFactoryYet =
                 Matches.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories).negate());
@@ -358,8 +359,10 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Matches.getMatches(data.getMap().getTerritories(), Match.allOf(
-                  Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.territoryIsLand())));
+              capitals.addAll(Matches.getMatches(data.getMap().getTerritories(),
+                  Matches.isTerritoryOwnedBy(me)
+                      .and(Matches.territoryHasUnitsOwnedBy(me))
+                      .and(Matches.territoryIsLand())));
             }
             if (capitals.isEmpty()) {
               picked = territoryChoices.get(0);
@@ -389,8 +392,10 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           picked = test.get(0);
         } else {
           if (capitals.isEmpty()) {
-            capitals.addAll(Matches.getMatches(data.getMap().getTerritories(), Match.allOf(
-                Matches.isTerritoryOwnedBy(me), Matches.territoryHasUnitsOwnedBy(me), Matches.territoryIsLand())));
+            capitals.addAll(Matches.getMatches(data.getMap().getTerritories(),
+                Matches.isTerritoryOwnedBy(me)
+                    .and(Matches.territoryHasUnitsOwnedBy(me))
+                    .and(Matches.territoryIsLand())));
           }
           if (capitals.isEmpty()) {
             picked = territoryChoices.get(0);

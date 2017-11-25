@@ -20,7 +20,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
-import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 /**
@@ -126,9 +125,10 @@ public class UndoableMove extends AbstractUndoableMove {
           Unit target = null;
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
-            final Collection<Unit> enemyTargetsTotal = end.getUnits()
-                .getMatches(Match.allOf(Matches.enemyUnit(bridge.getPlayerId(), data),
-                    Matches.unitCanBeDamaged(), Matches.unitIsBeingTransported().negate()));
+            final Collection<Unit> enemyTargetsTotal = end.getUnits().getMatches(
+                Matches.enemyUnit(bridge.getPlayerId(), data)
+                    .and(Matches.unitCanBeDamaged())
+                    .and(Matches.unitIsBeingTransported().negate()));
             final Collection<Unit> enemyTargets = Matches.getMatches(enemyTargetsTotal,
                 Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(
                     Matches.getMatches(Collections.singleton(unit), Matches.unitIsStrategicBomber()), data)));

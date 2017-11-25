@@ -6,7 +6,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.Match;
 
 /**
  * RelationshipChange this creates a change in relationshipType between two players, for example from Neutral to War.
@@ -46,9 +45,8 @@ class RelationshipChange extends Change {
     // now redraw territories in case of new hostility
     if (Matches.relationshipTypeIsAtWar().test(data.getRelationshipTypeList().getRelationshipType(m_NewRelation))) {
       for (final Territory t : Matches.getMatches(data.getMap().getTerritories(),
-          Match.allOf(
-              Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerId(m_player1)),
-              Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerId(m_player2))))) {
+          Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerId(m_player1))
+              .and(Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerId(m_player2))))) {
         t.notifyChanged();
       }
     }

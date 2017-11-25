@@ -19,7 +19,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 /**
@@ -168,8 +167,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
    */
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions) {
-    return Matches.getMatches(getUserActionAttachments(player), Match.allOf(
-        Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions)));
+    return Matches.getMatches(getUserActionAttachments(player),
+        Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions));
   }
 
   @Override

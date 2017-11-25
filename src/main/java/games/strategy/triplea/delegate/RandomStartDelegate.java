@@ -222,9 +222,14 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     return playersCanPick.get(index);
   }
 
+  /**
+   * Returns a new Predicate returning true for all pickable territories.
+   */
   public Predicate<Territory> getTerritoryPickableMatch() {
-    return Match.allOf(Matches.territoryIsLand(), Matches.territoryIsNotImpassable(),
-        Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID), Matches.territoryIsEmpty());
+    return Matches.territoryIsLand()
+        .and(Matches.territoryIsNotImpassable())
+        .and(Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID))
+        .and(Matches.territoryIsEmpty());
   }
 
   private static Predicate<PlayerID> getPlayerCanPickMatch() {

@@ -31,7 +31,6 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.LocalizeHtml;
-import games.strategy.util.Match;
 
 /**
  * A delegate used to check for end of game conditions.
@@ -100,10 +99,9 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
       // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Predicate<TriggerAttachment> endRoundDelegateTriggerMatch =
-          Match.allOf(AbstractTriggerAttachment.availableUses,
-              AbstractTriggerAttachment.whenOrDefaultMatch(null, null),
-              TriggerAttachment.activateTriggerMatch().or(TriggerAttachment.victoryMatch()));
+      final Predicate<TriggerAttachment> endRoundDelegateTriggerMatch = AbstractTriggerAttachment.availableUses
+          .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
+          .and(TriggerAttachment.activateTriggerMatch().or(TriggerAttachment.victoryMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch);

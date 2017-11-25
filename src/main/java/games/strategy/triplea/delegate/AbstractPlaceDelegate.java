@@ -498,7 +498,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
       return null;
     }
-    final Predicate<Unit> ownedFighters = Match.allOf(Matches.unitCanLandOnCarrier(), Matches.unitIsOwnedBy(player));
+    final Predicate<Unit> ownedFighters = Matches.unitCanLandOnCarrier().and(Matches.unitIsOwnedBy(player));
     if (!producer.getUnits().anyMatch(ownedFighters)) {
       return null;
     }
@@ -624,7 +624,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!producer.getOwner().equals(player)) {
       // sea constructions require either owning the sea zone or owning a surrounding land territory
       if (producer.isWater()
-          && testUnits.stream().anyMatch(Match.allOf(Matches.unitIsSea(), Matches.unitIsConstruction()))) {
+          && testUnits.stream().anyMatch(Matches.unitIsSea().and(Matches.unitIsConstruction()))) {
         boolean ownedNeighbor = false;
         for (final Territory current : getData().getMap().getNeighbors(to, Matches.territoryIsLand())) {
           if (current.getOwner().equals(player) && (canProduceInConquered || !wasConquered(current))) {
@@ -882,18 +882,14 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // we add factories and constructions later
     if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
       final Predicate<Unit> seaOrLandMatch = water ? Matches.unitIsSea() : Matches.unitIsLand();
-      placeableUnits.addAll(Matches.getMatches(units, Match.allOf(seaOrLandMatch, Matches.unitIsNotConstruction())));
+      placeableUnits.addAll(Matches.getMatches(units, seaOrLandMatch.and(Matches.unitIsNotConstruction())));
       if (!water) {
-        placeableUnits.addAll(Matches.getMatches(units, Match.allOf(
-            Matches.unitIsAir(),
-            Matches.unitIsNotConstruction())));
+        placeableUnits.addAll(Matches.getMatches(units, Matches.unitIsAir().and(Matches.unitIsNotConstruction())));
       } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
           && allProducedUnits.stream().anyMatch(Matches.unitIsCarrier()))
           || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
               && to.getUnits().anyMatch(Matches.unitIsCarrier()))) {
-        placeableUnits.addAll(Matches.getMatches(units, Match.allOf(
-            Matches.unitIsAir(),
-            Matches.unitCanLandOnCarrier())));
+        placeableUnits.addAll(Matches.getMatches(units, Matches.unitIsAir().and(Matches.unitCanLandOnCarrier())));
       }
     }
     if (units.stream().anyMatch(Matches.unitIsConstruction())) {
@@ -986,12 +982,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
       for (final UnitType ut : requiredUnits) {
         final int requiredNumber = requiredUnitsMap.getInt(ut);
-        final Predicate<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = Match.allOf(
-            Matches.unitIsOwnedBy(unit.getOwner()),
-            Matches.unitIsOfType(ut),
-            Matches.unitHasNotTakenAnyBombingUnitDamage(),
-            Matches.unitHasNotTakenAnyDamage(),
-            Matches.unitIsNotDisabled());
+        final Predicate<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = Matches.unitIsOwnedBy(unit.getOwner())
+            .and(Matches.unitIsOfType(ut))
+            .and(Matches.unitHasNotTakenAnyBombingUnitDamage())
+            .and(Matches.unitHasNotTakenAnyDamage())
+            .and(Matches.unitIsNotDisabled());
         final Collection<Unit> unitsBeingRemoved =
             Matches.getNMatches(unitsAtStartOfTurnInTo, requiredNumber, unitIsOwnedByAndOfTypeAndNotDamaged);
         unitsAtStartOfTurnInTo.removeAll(unitsBeingRemoved);

@@ -37,7 +37,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LinkedIntegerMap;
-import games.strategy.util.Match;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
 
@@ -577,7 +576,7 @@ public class BattleCalculator {
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
-    final Predicate<Unit> match = Match.allOf(Matches.unitIsLand(), Matches.unitWasNotAmphibious());
+    final Predicate<Unit> match = Matches.unitIsLand().and(Matches.unitWasNotAmphibious());
     killedNonAmphibUnits.addAll(Matches.getMatches(killed, match));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
