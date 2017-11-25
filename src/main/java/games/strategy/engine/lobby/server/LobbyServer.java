@@ -1,13 +1,11 @@
 package games.strategy.engine.lobby.server;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
-import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
@@ -55,7 +53,6 @@ public class LobbyServer {
    */
   public static void main(final String[] args) {
     try {
-      initializeDatabase();
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
       final int port = LobbyContext.lobbyPropertyReader().getPort();
       logger.info("Trying to listen on port:" + port);
@@ -63,16 +60,6 @@ public class LobbyServer {
       logger.info("Lobby started");
     } catch (final Exception ex) {
       logger.log(Level.SEVERE, ex.toString(), ex);
-    }
-  }
-
-  private static void initializeDatabase() throws SQLException {
-    if (LobbyContext.lobbyPropertyReader().isMaintenanceMode()) {
-      logger.info("Maintenance mode enabled; database may not be available");
-    } else {
-      logger.info("Starting database");
-      // TODO: this open/close may not be necessary, 'initialize the database' may be just legacy left over from derby
-      Database.getPostgresConnection().close();
     }
   }
 
