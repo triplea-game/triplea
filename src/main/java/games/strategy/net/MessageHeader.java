@@ -6,9 +6,9 @@ import java.io.Serializable;
 // increase performance
 public class MessageHeader {
   // if null, then a broadcast
-  private final INode m_for;
-  private final Serializable m_message;
-  private final INode m_from;
+  private final INode to;
+  private final Serializable message;
+  private final INode from;
 
   /**
    * Creates a broadcast message.
@@ -19,33 +19,33 @@ public class MessageHeader {
 
   public MessageHeader(final INode to, final INode from, final Serializable message) {
     // for can be null if we are a broadcast
-    m_for = to;
+    this.to = to;
     // from can be null if the sending node doesnt know its own address
-    m_from = from;
-    m_message = message;
+    this.from = from;
+    this.message = message;
   }
 
   /**
    * null if a broadcast.
    */
   public INode getFor() {
-    return m_for;
+    return to;
   }
 
   public INode getFrom() {
-    return m_from;
+    return from;
   }
 
   public boolean isBroadcast() {
-    return m_for == null;
+    return to == null;
   }
 
   public Serializable getMessage() {
-    return m_message;
+    return message;
   }
 
   @Override
   public String toString() {
-    return "Message header. msg:" + m_message + " to:" + m_for + " from:" + m_from;
+    return "Message header. msg:" + message + " to:" + to + " from:" + from;
   }
 }

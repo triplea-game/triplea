@@ -21,7 +21,7 @@ class SoundProperties {
   static final String GENERIC_FOLDER = "generic";
   private static SoundProperties instance = null;
   private static Instant timestamp = Instant.EPOCH;
-  private final Properties m_properties = new Properties();
+  private final Properties properties = new Properties();
 
   SoundProperties(final ResourceLoader loader) {
     final URL url = loader.getResource(PROPERTY_FILE);
@@ -29,7 +29,7 @@ class SoundProperties {
       final Optional<InputStream> inputStream = UrlStreams.openStream(url);
       if (inputStream.isPresent()) {
         try {
-          m_properties.load(inputStream.get());
+          properties.load(inputStream.get());
         } catch (final IOException e) {
           System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
         }
@@ -54,10 +54,10 @@ class SoundProperties {
    * @return The string property, or null if not found.
    */
   String getProperty(final String key) {
-    return m_properties.getProperty(key);
+    return properties.getProperty(key);
   }
 
   private String getProperty(final String key, final String defaultValue) {
-    return m_properties.getProperty(key, defaultValue);
+    return properties.getProperty(key, defaultValue);
   }
 }
