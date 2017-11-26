@@ -23,9 +23,11 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.GameMapListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
+import games.strategy.io.IoUtils;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.Tuple;
@@ -118,6 +120,18 @@ public class GameData implements Serializable {
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
     lockUtil = LockUtil.INSTANCE;
+  }
+
+  /**
+   * Converts the current GameData object to a byte array, useful for serialization or for
+   * copying the game data.
+   */
+  public byte[] toBytes() {
+    try {
+      return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, this));
+    } catch (final IOException e) {
+      throw new RuntimeException("Failed to write game data to bytes", e);
+    }
   }
 
   /**
