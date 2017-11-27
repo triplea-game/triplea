@@ -1,7 +1,9 @@
 package games.strategy.triplea;
 
 /**
- * The annoation indicates a class is used in Map XMLs
+ * This annotation indicates a class is used by name in Map XMLs.
+ * <br />
+ * TODO: we should instead map these names in code, this way we can update the code without breaking XMLs
  *
  * <p>
  * As a tough example:
