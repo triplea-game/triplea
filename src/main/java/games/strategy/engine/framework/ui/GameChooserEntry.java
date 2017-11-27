@@ -37,8 +37,8 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(uri.toString()).parseMapProperties(input, gameName);
-      gameDataFullyLoaded = false;
+      final GameParser parser = new GameParser(uri.toString());
+      gameData = parser.parseMapProperties(parser.parseDom(input), gameName);
       gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
   }
@@ -63,13 +63,11 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
       ClientLogger.logQuietly(e);
       throw new GameParseException(e.getMessage());
     } catch (final SAXParseException e) {
-      final String msg =
-          "Could not parse:" + url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
-      ClientLogger.logError(msg, e);
+      ClientLogger.logError(String.format("Could not parse: %s error at line: %s column: %s",
+          url, e.getLineNumber(), e.getColumnNumber()), e);
       throw new GameParseException(e.getMessage());
     } catch (final Exception e) {
-      final String msg = "Could not parse:" + url;
-      ClientLogger.logError(msg, e);
+      ClientLogger.logError("Could not parse:" + url, e);
       throw new GameParseException(e.getMessage());
     }
   }

@@ -58,7 +58,7 @@ import games.strategy.util.Version;
 
 public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
-  private GameData data;
+  private final GameData data = new GameData();
   private final Collection<SAXParseException> errorsSAX = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapName;
@@ -67,11 +67,15 @@ public class GameParser {
     this.mapName = mapName;
   }
 
-  private synchronized Element parseDom(final InputStream stream, final AtomicReference<String> gameName)
+  /**
+   * Parses the XML Document provided by the given InputStream into a DOM.
+   * 
+   * @return The root Element of the DOM
+   */
+  public synchronized Element parseDom(final InputStream stream)
       throws SAXException {
     Preconditions.checkNotNull(stream, "InputStream must be non-null!");
-    final Document doc = getDocument(stream);
-    return doc.getDocumentElement();
+    return getDocument(stream).getDocumentElement();
   }
 
   /**
@@ -79,8 +83,7 @@ public class GameParser {
    */
   public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName)
       throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException {
-    final Element root = parseDom(stream, gameName);
-    data = new GameData();
+    final Element root = parseDom(stream);
     parseMapProperties(root, gameName);
     // everything until here is needed to select a game
     parseMapDetails(root, gameName);
@@ -88,18 +91,10 @@ public class GameParser {
   }
 
   /**
-   * Just parses the essential Information about a map.
-   * Used to list all available maps.
+   * Parses just the essential parts of the maps.
+   * Used to display all available maps.
    */
-  public synchronized GameData parseMapProperties(final InputStream stream, final AtomicReference<String> gameName)
-      throws GameParseException, EngineVersionException, SAXException {
-    Preconditions.checkNotNull(stream, "InputStream must be non-null!");
-    data = new GameData();
-    parseMapProperties(parseDom(stream, gameName), gameName);
-    return data;
-  }
-
-  private synchronized void parseMapProperties(final Element root, final AtomicReference<String> gameName)
+  public synchronized GameData parseMapProperties(final Element root, final AtomicReference<String> gameName)
       throws GameParseException, EngineVersionException {
     // mandatory fields
     // get the name of the map
@@ -128,6 +123,7 @@ public class GameParser {
     if (properties != null) {
       parseProperties(properties);
     }
+    return data;
   }
 
   private synchronized void parseMapDetails(final Element root, final AtomicReference<String> gameName)
@@ -260,7 +256,7 @@ public class GameParser {
     }
   }
 
-  public Document getDocument(final InputStream input) throws SAXException {
+  private Document getDocument(final InputStream input) throws SAXException {
     try {
       final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setValidating(true);
