@@ -60,7 +60,7 @@ public enum TestMapGameData {
    */
   public GameData getGameData() throws Exception {
     try (InputStream is = new FileInputStream(Paths.get("src", "test", "resources", fileName).toFile())) {
-      return new GameParser("game name").parse(is, new AtomicReference<>(), false);
+      return new GameParser("game name").parse(is, new AtomicReference<>());
     }
   }
 }

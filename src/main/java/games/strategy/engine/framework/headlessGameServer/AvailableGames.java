@@ -35,7 +35,6 @@ import games.strategy.util.UrlStreams;
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
  */
 public class AvailableGames {
-  private static final boolean delayedParsing = false;
   private static final String ZIP_EXTENSION = ".zip";
   private final Map<String, URI> availableGames = new TreeMap<>();
   private final Set<String> availableMapFolderOrZipNames = new HashSet<>();
@@ -186,7 +185,7 @@ public class AvailableGames {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        final GameData data = new GameParser(uri.toString()).parse(input, gameName, delayedParsing);
+        final GameData data = new GameParser(uri.toString()).parse(input, gameName);
         final String name = data.getGameName();
         final String mapName = data.getProperties().get(Constants.MAP_NAME, "");
         if (!availableGames.containsKey(name)) {
@@ -213,7 +212,7 @@ public class AvailableGames {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        return new GameParser(uri.toString()).parse(input, gameName, false);
+        return new GameParser(uri.toString()).parse(input, gameName);
       } catch (final Exception e) {
         ClientLogger.logError("Exception while parsing: " + uri.toString() + " : "
             + (gameName.get() != null ? gameName.get() + " : " : ""), e);
