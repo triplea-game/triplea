@@ -29,7 +29,6 @@ public class PlayerListing implements Serializable {
   private final Map<String, String> m_playerToNodeListing;
   private final Map<String, Boolean> m_playersEnabledListing;
   private final Map<String, String> m_localPlayerTypes;
-  // private final Map<String, String> m_remotePlayerTypes = new HashMap<String, String>();
   private final Collection<String> m_playersAllowedToBeDisabled;
   private final Version m_gameVersion;
   private final String m_gameName;
@@ -42,7 +41,7 @@ public class PlayerListing implements Serializable {
   public PlayerListing(final Map<String, String> playerToNodeListing, final Map<String, Boolean> playersEnabledListing,
       final Map<String, String> localPlayerTypes, final Version gameVersion, final String gameName,
       final String gameRound, final Collection<String> playersAllowedToBeDisabled,
-      final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrderLinkedHashMap) {
+      final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder) {
     m_playerToNodeListing =
         playerToNodeListing == null ? new HashMap<>() : new HashMap<>(playerToNodeListing);
     m_playersEnabledListing = playersEnabledListing == null ? new HashMap<>()
@@ -55,8 +54,8 @@ public class PlayerListing implements Serializable {
     m_gameName = gameName;
     m_gameRound = gameRound;
     m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
-    if (playerNamesAndAlliancesInTurnOrderLinkedHashMap != null) {
-      for (final Entry<String, Collection<String>> entry : playerNamesAndAlliancesInTurnOrderLinkedHashMap.entrySet()) {
+    if (playerNamesAndAlliancesInTurnOrder != null) {
+      for (final Entry<String, Collection<String>> entry : playerNamesAndAlliancesInTurnOrder.entrySet()) {
         m_playerNamesAndAlliancesInTurnOrder.put(entry.getKey(), new HashSet<>(entry.getValue()));
       }
     }
