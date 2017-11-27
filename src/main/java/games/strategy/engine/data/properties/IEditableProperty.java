@@ -41,6 +41,16 @@ public interface IEditableProperty {
   JComponent getEditorComponent();
 
   /**
+   * Convenience method to get the editor component in a 'disabled' state,
+   * meaning user interaction with the component is not allowed.
+   */
+  default JComponent getEditorComponentDisabled() {
+    final JComponent component = getEditorComponent();
+    component.setEnabled(false);
+    return component;
+  }
+
+  /**
    * Get the view (read only) component for this property.
    */
   JComponent getViewComponent();

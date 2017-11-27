@@ -220,6 +220,14 @@ public class GameRunner {
     return new WaitDialog(mainFrame, message);
   }
 
+  public static GameSelectorModel getGameSelectorModel() {
+    return gameSelectorModel;
+  }
+
+  public static SetupPanelModel getSetupPanelModel() {
+    return setupPanelModel;
+  }
+
   /**
    * Strong type for dialog titles. Keeps clear which data is for message body and title, avoids parameter swapping
    * problem and makes refactoring easier.

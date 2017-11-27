@@ -63,6 +63,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
+  void createServerLauncher() {
+    setServerLauncher((ServerLauncher) getLauncher());
+  }
+
   public enum InteractionMode {
     HEADLESS, SWING_CLIENT_UI
   }
@@ -97,6 +101,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private volatile ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
+
+  public ServerModel(final ServerConnectionProps props) {
+    this(GameRunner.getGameSelectorModel(),
+        GameRunner.getSetupPanelModel(),
+        ServerModel.InteractionMode.SWING_CLIENT_UI);
+    GameRunner.getSetupPanelModel().setServerMode(this, props);
+  }
 
   ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     this(gameSelectorModel, typePanelModel, InteractionMode.SWING_CLIENT_UI);
@@ -179,10 +190,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     remoteModelListener.playerListChanged();
   }
 
-  private ServerProps getServerProps(final Component ui) {
+  private ServerConnectionProps getServerProps(final Component ui) {
     if (System.getProperties().getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")
         && System.getProperties().getProperty(GameRunner.TRIPLEA_STARTED, "").equals("")) {
-      final ServerProps props = new ServerProps();
+      final ServerConnectionProps props = new ServerConnectionProps();
       props.setName(System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY));
       props.setPort(Integer.parseInt(System.getProperty(GameRunner.TRIPLEA_PORT_PROPERTY)));
       if (System.getProperty(GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY) != null) {
@@ -213,21 +224,26 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       return null;
     }
-    final ServerProps props = new ServerProps();
+    final ServerConnectionProps props = new ServerConnectionProps();
     props.setName(options.getName());
     props.setPort(options.getPort());
     props.setPassword(options.getPassword());
     return props;
   }
 
+
+  public boolean createServerMessenger(final Component ui) {
+    final ServerConnectionProps props = getServerProps(ui);
+    return props != null && createServerMessenger(ui, props);
+  }
+
   /**
    * UI can be null. We use it as the parent for message dialogs we show.
    * If you have a component displayed, use it.
    */
-  public boolean createServerMessenger(Component ui) {
+  boolean createServerMessenger(Component ui, final ServerConnectionProps props) {
     ui = ui == null ? null : JOptionPane.getFrameForComponent(ui);
     this.ui = ui;
-    final ServerProps props = getServerProps(ui);
     if (props == null) {
       return false;
     }
@@ -673,35 +689,5 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     sb.append("\n");
     sb.append(channelMessenger);
     return sb.toString();
-  }
-
-  private static final class ServerProps {
-    private String name;
-    private int port;
-    private String password;
-
-    String getPassword() {
-      return password;
-    }
-
-    void setPassword(final String password) {
-      this.password = password;
-    }
-
-    String getName() {
-      return name;
-    }
-
-    void setName(final String name) {
-      this.name = name;
-    }
-
-    int getPort() {
-      return port;
-    }
-
-    void setPort(final int port) {
-      this.port = port;
-    }
   }
 }

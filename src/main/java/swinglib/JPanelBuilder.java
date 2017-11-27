@@ -284,6 +284,10 @@ public class JPanelBuilder {
     return this;
   }
 
+  public JPanelBuilder addIf(final boolean condition, final Component component) {
+    return condition ? add(component) : this;
+  }
+
   public JPanelBuilder add(final Component component) {
     components.add(new Pair<>(component, new PanelProperties(BorderLayoutPosition.DEFAULT)));
     return this;

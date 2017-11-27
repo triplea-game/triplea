@@ -20,16 +20,16 @@ public class HeadlessServerSetupPanelModel extends SetupPanelModel {
 
   @Override
   public void showSelectType() {
-    final ServerModel model = new ServerModel(m_gameSelectorModel, this, ServerModel.InteractionMode.HEADLESS);
+    final ServerModel model = new ServerModel(gameSelectorModel, this, ServerModel.InteractionMode.HEADLESS);
     if (!model.createServerMessenger(m_ui)) {
       model.cancel();
       return;
     }
     if (m_ui == null) {
-      final HeadlessServerSetup serverSetup = new HeadlessServerSetup(model, m_gameSelectorModel);
+      final HeadlessServerSetup serverSetup = new HeadlessServerSetup(model, gameSelectorModel);
       setGameTypePanel(serverSetup);
     } else {
-      final ServerSetupPanel serverSetupPanel = new ServerSetupPanel(model, m_gameSelectorModel);
+      final ServerSetupPanel serverSetupPanel = new ServerSetupPanel(model, gameSelectorModel);
       setGameTypePanel(serverSetupPanel);
     }
   }

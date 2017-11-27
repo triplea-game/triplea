@@ -16,6 +16,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.UrlStreams;
 
 public class GameChooserEntry implements Comparable<GameChooserEntry> {
@@ -23,6 +24,18 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
   private GameData gameData;
   private boolean gameDataFullyLoaded = false;
   private final String gameNameAndMapNameProperty;
+
+  /**
+   * Factory method, if there are any map parsing errors an exception is thrown.
+   */
+  public static GameChooserEntry newGameChooserEntry() {
+    final URI uri = URI.create(ClientSetting.SELECTED_GAME_LOCATION.value());
+    try {
+      return new GameChooserEntry(uri);
+    } catch (final IOException | GameParseException | SAXException | EngineVersionException e) {
+      throw new IllegalStateException(e);
+    }
+  }
 
   public GameChooserEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
@@ -44,7 +57,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
   }
 
-  public void fullyParseGameData() throws GameParseException {
+  public GameData fullyParseGameData() throws GameParseException {
     // TODO: We should be setting this in the the constructor. At this point, you have to call methods in the
     // correct order for things to work, and that is bads.
     gameData = null;
@@ -53,7 +66,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (!inputStream.isPresent()) {
-      return;
+      return gameData;
     }
 
     try (InputStream input = inputStream.get()) {
@@ -73,6 +86,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
       ClientLogger.logError(msg, e);
       throw new GameParseException(e.getMessage());
     }
+    return gameData;
   }
 
   /**

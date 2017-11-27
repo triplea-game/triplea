@@ -15,9 +15,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import com.google.common.base.Preconditions;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
@@ -60,41 +63,86 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
 
+/**
+ * Represents a network aware game client connecting to another game that is acting as a server.
+ */
 public class ClientModel implements IMessengerErrorListener {
 
   public static final RemoteName CLIENT_READY_CHANNEL =
       new RemoteName("games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL", IServerReady.class);
   private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
+  private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
+  private final GameSelectorModel gameSelectorModel;
+  private final SetupPanelModel typePanelModel;
+  private final WaitWindow gameLoadingWindow = new WaitWindow();
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
   private IChannelMessenger channelMessenger;
   private IRemoteMessenger remoteMessenger;
   private IClientMessenger messenger;
-  private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
-  private final GameSelectorModel gameSelectorModel;
-  private final SetupPanelModel typePanelModel;
   private Component ui;
   private IChatPanel chatPanel;
   private ClientGame game;
   private boolean hostIsHeadlessBot = false;
-  private final WaitWindow gameLoadingWindow = new WaitWindow();
   // we set the game data to be null, since we
   // are a client game, and the game data lives on the server
   // however, if we cancel, we want to restore the old game data.
   private GameData gameDataOnStartup;
   private Map<String, String> playersToNodes = new HashMap<>();
+  private final IObserverWaitingToJoin observerWaitingToJoin = new IObserverWaitingToJoin() {
+    @Override
+    public void joinGame(final byte[] gameData, final Map<String, INode> players) {
+      remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
+      final CountDownLatch latch = new CountDownLatch(1);
+      startGame(gameData, players, latch, true);
+      try {
+        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly(e);
+      }
+    }
+
+    @Override
+    public void cannotJoinGame(final String reason) {
+      SwingUtilities.invokeLater(() -> {
+        typePanelModel.showSelectType();
+        EventThreadJOptionPane.showMessageDialog(ui, "Could not join game: " + reason);
+      });
+    }
+  };
   private Map<String, Boolean> playersEnabledListing = new HashMap<>();
   private Collection<String> playersAllowedToBeDisabled = new HashSet<>();
   private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
+  private final IClientChannel channelListener = new IClientChannel() {
+    @Override
+    public void playerListingChanged(final PlayerListing listing) {
+      internalPlayerListingChanged(listing);
+    }
 
-  ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
+    @Override
+    public void gameReset() {
+      objectStreamFactory.setData(null);
+      SwingAction.invokeAndWait(GameRunner::showMainFrame);
+    }
+
+    @Override
+    public void doneSelectingPlayers(final byte[] gameData, final Map<String, INode> players) {
+      final CountDownLatch latch = new CountDownLatch(1);
+      startGame(gameData, players, latch, false);
+      try {
+        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
+      } catch (final InterruptedException e) {
+        ClientLogger.logQuietly(e);
+      }
+    }
+  };
+
+  public ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     this.typePanelModel = typePanelModel;
     this.gameSelectorModel = gameSelectorModel;
   }
 
-  public void setRemoteModelListener(IRemoteModelListener listener) {
-    if (listener == null) {
-      listener = IRemoteModelListener.NULL_LISTENER;
-    }
+  public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
+    Preconditions.checkNotNull(listener);
     this.listener = listener;
   }
 
@@ -190,7 +238,7 @@ public class ClientModel implements IMessengerErrorListener {
     return (IServerStartupRemote) remoteMessenger.getRemote(ServerModel.SERVER_REMOTE_NAME);
   }
 
-  List<String> getAvailableServerGames() {
+  private List<String> getAvailableServerGames() {
     final Set<String> games = getServerStartup().getAvailableGames();
     if (games == null) {
       return new ArrayList<>();
@@ -198,6 +246,10 @@ public class ClientModel implements IMessengerErrorListener {
     return new ArrayList<>(games);
   }
 
+  /**
+   * Nulls everything out and flags everything for shutdown.
+   */
+  // TODO: do we really have to null everything out?? can we just null out the gameSelectorModel?
   public void shutDown() {
     if (messenger == null) {
       return;
@@ -213,6 +265,9 @@ public class ClientModel implements IMessengerErrorListener {
     messenger.removeErrorListener(this);
   }
 
+  /**
+   * Same as @{code shutdown()} but keeps chat alive.
+   */
   public void cancel() {
     if (messenger == null) {
       return;
@@ -227,52 +282,6 @@ public class ClientModel implements IMessengerErrorListener {
     gameSelectorModel.setClientModelForHostBots(null);
     messenger.removeErrorListener(this);
   }
-
-  private final IClientChannel channelListener = new IClientChannel() {
-    @Override
-    public void playerListingChanged(final PlayerListing listing) {
-      internalPlayerListingChanged(listing);
-    }
-
-    @Override
-    public void gameReset() {
-      objectStreamFactory.setData(null);
-      SwingAction.invokeAndWait(GameRunner::showMainFrame);
-    }
-
-    @Override
-    public void doneSelectingPlayers(final byte[] gameData, final Map<String, INode> players) {
-      final CountDownLatch latch = new CountDownLatch(1);
-      startGame(gameData, players, latch, false);
-      try {
-        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
-      } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-  };
-
-  private final IObserverWaitingToJoin observerWaitingToJoin = new IObserverWaitingToJoin() {
-    @Override
-    public void joinGame(final byte[] gameData, final Map<String, INode> players) {
-      remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
-      final CountDownLatch latch = new CountDownLatch(1);
-      startGame(gameData, players, latch, true);
-      try {
-        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
-      } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
-      }
-    }
-
-    @Override
-    public void cannotJoinGame(final String reason) {
-      SwingUtilities.invokeLater(() -> {
-        typePanelModel.showSelectType();
-        EventThreadJOptionPane.showMessageDialog(ui, "Could not join game: " + reason);
-      });
-    }
-  };
 
   private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone,
       final boolean gameRunning) {
@@ -371,18 +380,27 @@ public class ClientModel implements IMessengerErrorListener {
     SwingUtilities.invokeLater(() -> listener.playerListChanged());
   }
 
+  /**
+   * Local player name, eg: US, to remote node (player physical name, eg: "bob) mapping.
+   */
   public Map<String, String> getPlayerToNodesMapping() {
     synchronized (this) {
       return new HashMap<>(playersToNodes);
     }
   }
 
+  /**
+   * Returns a map of player node name -> enabled.
+   */
   public Map<String, Boolean> getPlayersEnabledListing() {
     synchronized (this) {
       return new HashMap<>(playersEnabledListing);
     }
   }
 
+  /**
+   * Returns the set of players that can be disabled.
+   */
   public Collection<String> getPlayersAllowedToBeDisabled() {
     synchronized (this) {
       return new HashSet<>(playersAllowedToBeDisabled);
