@@ -327,7 +327,7 @@ public class DownloadMapsWindow extends JFrame {
   private static List<DownloadFileDescription> filterMaps(final List<DownloadFileDescription> maps,
       final Function<DownloadFileDescription, Boolean> filter) {
 
-    maps.forEach(map -> checkNotNull("Maps list contained null element: " + maps, map));
+    maps.forEach(map -> checkNotNull(map, "Maps list contained null element: " + maps));
     return maps.stream().filter(map -> filter.apply(map)).collect(Collectors.toList());
   }
 
