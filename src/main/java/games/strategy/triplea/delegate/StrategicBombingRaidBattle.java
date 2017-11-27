@@ -211,74 +211,63 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
     }
     steps.add(new ConductBombing());
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 4299575008166316488L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
-        if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
-          bridge.getHistoryWriter()
-              .addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidTotal
-                  + " damage total. " + (m_bombingRaidDamage.size() > 1 ? (" Damaged units is as follows: "
-                      + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false)) : ""));
-        } else {
-          bridge.getHistoryWriter().addChildToEvent(
-              "Bombing raid costs " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
-        }
-        // TODO remove the reference to the constant.japanese- replace with a rule
-        if (isPacificTheater() || isSbrVictoryPoints()) {
-          if (m_defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
-            final Change changeVp;
-            final PlayerAttachment pa = PlayerAttachment.get(m_defender);
-            if (pa != null) {
-              changeVp =
-                  ChangeFactory.attachmentPropertyChange(pa, ((-(m_bombingRaidTotal / 10)) + pa.getVps()), "vps");
-              bridge.addChange(changeVp);
-              bridge.getHistoryWriter().addChildToEvent("Bombing raid costs " + (m_bombingRaidTotal / 10) + " "
-                  + MyFormatter.pluralize("vp", (m_bombingRaidTotal / 10)));
-            }
-          }
-        }
-        // kill any suicide attackers (veqryn)
-        if (m_attackingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
-          final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
-          m_attackingUnits.removeAll(suicideUnits);
-          final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
-          final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
-          final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
-          final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, costs, m_data);
-          m_attackerLostTUV += tuvLostAttacker;
-          bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
-          bridge.addChange(removeSuicide);
-        }
-        // kill any units that can die if they have reached max damage (veqryn)
-        if (m_targets.keySet().stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
-          final List<Unit> unitsCanDie =
-              Matches.getMatches(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
-          unitsCanDie
-              .retainAll(Matches.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
-          if (!unitsCanDie.isEmpty()) {
-            // m_targets.removeAll(unitsCanDie);
-            final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
-            final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + m_battleSite.getName();
-            final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_defender, m_data);
-            final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, m_defender, costs, m_data);
-            m_defenderLostTUV += tuvLostDefender;
-            bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
-            bridge.addChange(removeDead);
+    steps.add((stack, bridge2) -> {
+      getDisplay(bridge2).gotoBattleStep(m_battleID, RAID);
+      if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
+        bridge2.getHistoryWriter()
+            .addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidTotal
+                + " damage total. " + (m_bombingRaidDamage.size() > 1 ? (" Damaged units is as follows: "
+                    + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false)) : ""));
+      } else {
+        bridge2.getHistoryWriter().addChildToEvent(
+            "Bombing raid costs " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
+      }
+      // TODO remove the reference to the constant.japanese- replace with a rule
+      if (isPacificTheater() || isSbrVictoryPoints()) {
+        if (m_defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
+          final Change changeVp;
+          final PlayerAttachment pa = PlayerAttachment.get(m_defender);
+          if (pa != null) {
+            changeVp =
+                ChangeFactory.attachmentPropertyChange(pa, ((-(m_bombingRaidTotal / 10)) + pa.getVps()), "vps");
+            bridge2.addChange(changeVp);
+            bridge2.getHistoryWriter().addChildToEvent("Bombing raid costs " + (m_bombingRaidTotal / 10) + " "
+                + MyFormatter.pluralize("vp", (m_bombingRaidTotal / 10)));
           }
         }
       }
-    });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = -7649516174883172328L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        end(bridge);
+      // kill any suicide attackers (veqryn)
+      if (m_attackingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
+        final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
+        m_attackingUnits.removeAll(suicideUnits);
+        final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
+        final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
+        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
+        final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, costs, m_data);
+        m_attackerLostTUV += tuvLostAttacker;
+        bridge2.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
+        bridge2.addChange(removeSuicide);
       }
+      // kill any units that can die if they have reached max damage (veqryn)
+      if (m_targets.keySet().stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
+        final List<Unit> unitsCanDie =
+            Matches.getMatches(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
+        unitsCanDie
+            .retainAll(Matches.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
+        if (!unitsCanDie.isEmpty()) {
+          // m_targets.removeAll(unitsCanDie);
+          final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
+          final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + m_battleSite.getName();
+          final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_defender, m_data);
+          final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, m_defender, costs, m_data);
+          m_defenderLostTUV += tuvLostDefender;
+          bridge2.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
+          bridge2.addChange(removeDead);
+        }
+      }
+
     });
+    steps.add((ss, bridge2) -> end(bridge2));
     Collections.reverse(steps);
     for (final IExecutable executable : steps) {
       m_stack.push(executable);
@@ -362,66 +351,46 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
 
-        final IExecutable roll = new IExecutable() {
-          private static final long serialVersionUID = 379538344036513009L;
-
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
-            if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              m_dice = DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_battleSite, true);
-              if (currentTypeAa.equals("AA")) {
-                if (m_dice.getHits() > 0) {
-                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, m_defender);
-                } else {
-                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, m_defender);
-                }
+        final IExecutable roll = (s, bridge2) -> {
+          validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
+          if (!validAttackingUnitsForThisRoll.isEmpty()) {
+            m_dice = DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge2, m_battleSite, true);
+            if (currentTypeAa.equals("AA")) {
+              if (m_dice.getHits() > 0) {
+                bridge2.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, m_defender);
               } else {
-                if (m_dice.getHits() > 0) {
-                  bridge.getSoundChannelBroadcaster().playSoundForAll(
-                      SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                      m_defender);
-                } else {
-                  bridge.getSoundChannelBroadcaster().playSoundForAll(
-                      SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                      m_defender);
-                }
+                bridge2.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, m_defender);
+              }
+            } else {
+              if (m_dice.getHits() > 0) {
+                bridge2.getSoundChannelBroadcaster().playSoundForAll(
+                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+                    m_defender);
+              } else {
+                bridge2.getSoundChannelBroadcaster().playSoundForAll(
+                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+                    m_defender);
               }
             }
           }
         };
-        final IExecutable calculateCasualties = new IExecutable() {
-          private static final long serialVersionUID = -4658133491636765763L;
-
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              final CasualtyDetails details =
-                  calculateCasualties(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_dice, currentTypeAa);
-              markDamaged(details.getDamaged(), bridge);
-              m_casualties = details;
-              m_casualtiesSoFar.addAll(details.getKilled());
-            }
+        final IExecutable calculateCasualties = (s, bridge2) -> {
+          if (!validAttackingUnitsForThisRoll.isEmpty()) {
+            final CasualtyDetails details =
+                calculateCasualties(validAttackingUnitsForThisRoll, currentPossibleAa, bridge2, m_dice, currentTypeAa);
+            markDamaged(details.getDamaged(), bridge2);
+            m_casualties = details;
+            m_casualtiesSoFar.addAll(details.getKilled());
           }
         };
-        final IExecutable notifyCasualties = new IExecutable() {
-          private static final long serialVersionUID = -4989154196975570919L;
-
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              notifyAaHits(bridge, m_dice, m_casualties, currentTypeAa);
-            }
+        final IExecutable notifyCasualties = (s, bridge2) -> {
+          if (!validAttackingUnitsForThisRoll.isEmpty()) {
+            notifyAaHits(bridge2, m_dice, m_casualties, currentTypeAa);
           }
         };
-        final IExecutable removeHits = new IExecutable() {
-          private static final long serialVersionUID = -3673833177336068509L;
-
-          @Override
-          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              removeAaHits(bridge, m_casualties, currentTypeAa);
-            }
+        final IExecutable removeHits = (s, bridge2) -> {
+          if (!validAttackingUnitsForThisRoll.isEmpty()) {
+            removeAaHits(bridge2, m_casualties, currentTypeAa);
           }
         };
         // push in reverse order of execution
@@ -543,37 +512,20 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      final IExecutable rollDice = new IExecutable() {
-        private static final long serialVersionUID = -4097858758514452368L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          rollDice(bridge);
-        }
-      };
-      final IExecutable findCost = new IExecutable() {
-        private static final long serialVersionUID = 8573539936364094095L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          findCost(bridge);
-        }
-      };
+      final IExecutable rollDice = (s, bridge2) -> rollDice(bridge2);
+      final IExecutable findCost = (s, bridge2) -> findCost(bridge2);
       // push in reverse order of execution
       m_stack.push(findCost);
       m_stack.push(rollDice);
     }
 
     private void rollDice(final IDelegateBridge bridge) {
-      {
-        final Set<Unit> duplicatesCheckSet1 = new HashSet<>(m_attackingUnits);
-        if (m_attackingUnits.size() != duplicatesCheckSet1.size()) {
-          throw new IllegalStateException(
-              "Duplicate Units Detected: Original List:" + m_attackingUnits + "  HashSet:" + duplicatesCheckSet1);
-        }
+      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(m_attackingUnits);
+      if (m_attackingUnits.size() != duplicatesCheckSet1.size()) {
+        throw new IllegalStateException(
+            "Duplicate Units Detected: Original List:" + m_attackingUnits + "  HashSet:" + duplicatesCheckSet1);
       }
-      final int rollCount =
-          BattleCalculator.getRolls(m_attackingUnits, m_attacker, false, true, m_territoryEffects);
+      final int rollCount = BattleCalculator.getRolls(m_attackingUnits, m_attacker, false, true, m_territoryEffects);
       if (rollCount == 0) {
         m_dice = null;
         return;

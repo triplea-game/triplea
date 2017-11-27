@@ -709,8 +709,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     for (final Entry<Resource, Integer> entry : attackTokens.entrySet()) {
       final Resource r = entry.getKey();
       final int max = entry.getValue();
-      final HashMap<Territory, IntegerMap<Unit>> selection =
-          ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, r, max);
+      final Map<Territory, IntegerMap<Unit>> selection = ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, r, max);
       for (final Entry<Territory, IntegerMap<Unit>> selectionEntry : selection.entrySet()) {
         final Territory t = selectionEntry.getKey();
         HashMap<Unit, IntegerMap<Resource>> currentTerr = kamikazeSuicideAttacks.get(t);

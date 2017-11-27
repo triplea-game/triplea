@@ -106,48 +106,39 @@ class AAInMoveUtil implements Serializable {
       // until you got the roll you wanted
       currentMove.setCantUndo("Move cannot be undone after " + currentTypeAa + " has fired.");
       final DiceRoll[] dice = new DiceRoll[1];
-      final IExecutable rollDice = new IExecutable() {
-        private static final long serialVersionUID = 4714364489659654758L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          // get rid of units already killed, so we don't target them twice
-          validTargetedUnitsForThisRoll.removeAll(m_casualties);
-          if (!validTargetedUnitsForThisRoll.isEmpty()) {
-            dice[0] = DiceRoll.rollAa(validTargetedUnitsForThisRoll, currentPossibleAa, m_bridge, territory, true);
-          }
+      final IExecutable rollDice = (stack, bridge) -> {
+        // get rid of units already killed, so we don't target them twice
+        validTargetedUnitsForThisRoll.removeAll(m_casualties);
+        if (!validTargetedUnitsForThisRoll.isEmpty()) {
+          dice[0] = DiceRoll.rollAa(validTargetedUnitsForThisRoll, currentPossibleAa, m_bridge, territory, true);
         }
-      };
-      final IExecutable selectCasualties = new IExecutable() {
-        private static final long serialVersionUID = -8633263235214834617L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          if (!validTargetedUnitsForThisRoll.isEmpty()) {
-            final int hitCount = dice[0].getHits();
-            if (hitCount == 0) {
-              if (currentTypeAa.equals("AA")) {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                    findDefender(currentPossibleAa, territory));
-              } else {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(
-                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                    findDefender(currentPossibleAa, territory));
-              }
-              getRemotePlayer().reportMessage("No " + currentTypeAa + " hits in " + territory.getName(),
-                  "No " + currentTypeAa + " hits in " + territory.getName());
+      };
+      final IExecutable selectCasualties = (stack, bridge) -> {
+        if (!validTargetedUnitsForThisRoll.isEmpty()) {
+          final int hitCount = dice[0].getHits();
+          if (hitCount == 0) {
+            if (currentTypeAa.equals("AA")) {
+              m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
+                  findDefender(currentPossibleAa, territory));
             } else {
-              if (currentTypeAa.equals("AA")) {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                    findDefender(currentPossibleAa, territory));
-              } else {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(
-                    SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                    findDefender(currentPossibleAa, territory));
-              }
-              selectCasualties(dice[0], units, validTargetedUnitsForThisRoll, currentPossibleAa, defendingAa, territory,
-                  currentTypeAa);
+              m_bridge.getSoundChannelBroadcaster().playSoundForAll(
+                  SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+                  findDefender(currentPossibleAa, territory));
             }
+            getRemotePlayer().reportMessage("No " + currentTypeAa + " hits in " + territory.getName(),
+                "No " + currentTypeAa + " hits in " + territory.getName());
+          } else {
+            if (currentTypeAa.equals("AA")) {
+              m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
+                  findDefender(currentPossibleAa, territory));
+            } else {
+              m_bridge.getSoundChannelBroadcaster().playSoundForAll(
+                  SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+                  findDefender(currentPossibleAa, territory));
+            }
+            selectCasualties(dice[0], units, validTargetedUnitsForThisRoll, currentPossibleAa, defendingAa, territory,
+                currentTypeAa);
           }
         }
       };
@@ -164,14 +155,7 @@ class AAInMoveUtil implements Serializable {
     targets.sort(decreasingMovement);
     final List<IExecutable> executables = new ArrayList<>();
     for (final Territory location : getTerritoriesWhereAaWillFire(route, units)) {
-      executables.add(new IExecutable() {
-        private static final long serialVersionUID = -1545771595683434276L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireAa(location, targets, currentMove);
-        }
-      });
+      executables.add((stack, bridge) -> fireAa(location, targets, currentMove));
     }
     Collections.reverse(executables);
     m_executionStack.push(executables);

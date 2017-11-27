@@ -59,13 +59,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   // this class exists for testing
-  public abstract static class AttackSubs implements IExecutable {
-    private static final long serialVersionUID = 4872551667582174716L;
+  public interface AttackSubs extends IExecutable {
   }
 
   // this class exists for testing
-  public abstract static class DefendSubs implements IExecutable {
-    private static final long serialVersionUID = 3768066729336520095L;
+  public interface DefendSubs extends IExecutable {
   }
 
   private static final long serialVersionUID = 5879502298361231540L;
@@ -643,94 +641,24 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final boolean offensiveAa = canFireOffensiveAa();
     final boolean defendingAa = canFireDefendingAa();
     if (offensiveAa) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 3802352588499530533L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireOffensiveAaGuns();
-        }
-      });
+      steps.add((stack, bridge) -> fireOffensiveAaGuns());
     }
     if (defendingAa) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = -1370090785540214199L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireDefensiveAaGuns();
-        }
-      });
+      steps.add((stack, bridge) -> fireDefensiveAaGuns());
     }
     if (offensiveAa || defendingAa) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 8762796262264296436L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          clearWaitingToDie(bridge);
-        }
-      });
+      steps.add((stack, bridge) -> clearWaitingToDie(bridge));
     }
     if (m_round > 1) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 2781652892457063082L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          removeNonCombatants(bridge, false, false, true);
-        }
-      });
+      steps.add((stack, bridge) -> removeNonCombatants(bridge, false, false, true));
     }
     if (firstRun) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = -2255284529092427441L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireNavalBombardment(bridge);
-        }
-      });
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 6578267830066963474L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireSuicideUnitsAttack();
-        }
-      });
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 2731652892447063082L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          fireSuicideUnitsDefend();
-        }
-      });
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 3389635558184415797L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          removeNonCombatants(bridge, false, false, true);
-        }
-      });
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 7193353768857658286L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          landParatroops(bridge);
-        }
-      });
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = -6676316363537467594L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          markNoMovementLeft(bridge);
-        }
-      });
+      steps.add((stack, bridge) -> fireNavalBombardment(bridge));
+      steps.add((stack, bridge) -> fireSuicideUnitsAttack());
+      steps.add((stack, bridge) -> fireSuicideUnitsDefend());
+      steps.add((stack, bridge) -> removeNonCombatants(bridge, false, false, true));
+      steps.add((stack, bridge) -> landParatroops(bridge));
+      steps.add((stack, bridge) -> markNoMovementLeft(bridge));
     }
   }
 
@@ -762,154 +690,98 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     addFightStartToStack(firstRun, steps);
     addFightStepsNonEditMode(steps);
 
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 8611067962952500496L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        clearWaitingToDie(bridge);
-      }
-    });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 6387198382888361848L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        checkSuicideUnits(bridge);
-      }
-    });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 5259103822937067667L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (Matches.getMatches(m_attackingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
-          if (!isTransportCasualtiesRestricted()) {
+    steps.add((stack, bridge) -> clearWaitingToDie(bridge));
+    steps.add((stack, bridge) -> checkSuicideUnits(bridge));
+    steps.add((stack, bridge) -> {
+      if (Matches.getMatches(m_attackingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
+        if (!isTransportCasualtiesRestricted()) {
+          endBattle(bridge);
+          defenderWins(bridge);
+        } else {
+          // Get all allied transports in the territory
+          final Predicate<Unit> matchAllied = Matches.unitIsTransport()
+              .and(Matches.unitIsNotCombatTransport())
+              .and(Matches.isUnitAllied(m_attacker, m_data));
+          final List<Unit> alliedTransports = Matches.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);
+          // If no transports, just end the battle
+          if (alliedTransports.isEmpty()) {
             endBattle(bridge);
             defenderWins(bridge);
+          } else if (m_round <= 1) {
+            m_attackingUnits =
+                Matches.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsOwnedBy(m_attacker));
           } else {
-            // Get all allied transports in the territory
-            final Predicate<Unit> matchAllied = Matches.unitIsTransport()
-                .and(Matches.unitIsNotCombatTransport())
-                .and(Matches.isUnitAllied(m_attacker, m_data));
-            final List<Unit> alliedTransports = Matches.getMatches(m_battleSite.getUnits().getUnits(), matchAllied);
-            // If no transports, just end the battle
-            if (alliedTransports.isEmpty()) {
-              endBattle(bridge);
-              defenderWins(bridge);
-            } else if (m_round <= 1) {
-              m_attackingUnits =
-                  Matches.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsOwnedBy(m_attacker));
-            } else {
-              endBattle(bridge);
-              defenderWins(bridge);
-            }
+            endBattle(bridge);
+            defenderWins(bridge);
           }
-        } else if (Matches.getMatches(m_defendingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
-          if (isTransportCasualtiesRestricted()) {
-            // If there are undefended attacking transports, determine if they automatically die
-            checkUndefendedTransports(bridge, m_defender);
-          }
-          checkForUnitsThatCanRollLeft(bridge, false);
+        }
+      } else if (Matches.getMatches(m_defendingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
+        if (isTransportCasualtiesRestricted()) {
+          // If there are undefended attacking transports, determine if they automatically die
+          checkUndefendedTransports(bridge, m_defender);
+        }
+        checkForUnitsThatCanRollLeft(bridge, false);
+        endBattle(bridge);
+        attackerWins(bridge);
+      } else if (shouldEndBattleDueToMaxRounds()
+          || (!m_attackingUnits.isEmpty()
+              && m_attackingUnits.stream().allMatch(Matches.unitHasAttackValueOfAtLeast(1).negate())
+              && !m_defendingUnits.isEmpty()
+              && m_defendingUnits.stream().allMatch(Matches.unitHasDefendValueOfAtLeast(1).negate()))) {
+        endBattle(bridge);
+        nobodyWins(bridge);
+      }
+    });
+    steps.add((stack, bridge) -> {
+      if (!m_isOver && canAttackerRetreatSubs() && !isSubRetreatBeforeBattle()) {
+        attackerRetreatSubs(bridge);
+      }
+    });
+    steps.add((stack, bridge) -> {
+      if (!m_isOver) {
+        if (canDefenderRetreatSubs() && !isSubRetreatBeforeBattle()) {
+          defenderRetreatSubs(bridge);
+        }
+        // If no defenders left, then battle is over. The reason we test a "second" time here, is because otherwise
+        // the attackers can retreat even though the battle is over (illegal).
+        if (m_defendingUnits.isEmpty()) {
           endBattle(bridge);
           attackerWins(bridge);
-        } else if (shouldEndBattleDueToMaxRounds()
-            || (!m_attackingUnits.isEmpty()
-                && m_attackingUnits.stream().allMatch(Matches.unitHasAttackValueOfAtLeast(1).negate())
-                && !m_defendingUnits.isEmpty()
-                && m_defendingUnits.stream().allMatch(Matches.unitHasDefendValueOfAtLeast(1).negate()))) {
-          endBattle(bridge);
-          nobodyWins(bridge);
         }
       }
     });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 6775880082912594489L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!m_isOver && canAttackerRetreatSubs() && !isSubRetreatBeforeBattle()) {
-          attackerRetreatSubs(bridge);
-        }
+    steps.add((stack, bridge) -> {
+      if (!m_isOver && canAttackerRetreatPlanes() && !canAttackerRetreatPartialAmphib()) {
+        attackerRetreatPlanes(bridge);
       }
     });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = -1544916305666912480L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!m_isOver) {
-          if (canDefenderRetreatSubs() && !isSubRetreatBeforeBattle()) {
-            defenderRetreatSubs(bridge);
-          }
-          // If no defenders left, then battle is over. The reason we test a "second" time here, is because otherwise
-          // the attackers can retreat even though the battle is over (illegal).
-          if (m_defendingUnits.isEmpty()) {
-            endBattle(bridge);
-            attackerWins(bridge);
-          }
-        }
+    steps.add((stack, bridge) -> {
+      if (!m_isOver && canAttackerRetreatPartialAmphib()) {
+        attackerRetreatNonAmphibUnits(bridge);
       }
     });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = -1150863964807721395L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!m_isOver && canAttackerRetreatPlanes() && !canAttackerRetreatPartialAmphib()) {
-          attackerRetreatPlanes(bridge);
-        }
+    steps.add((stack, bridge) -> {
+      if (!m_isOver) {
+        attackerRetreat(bridge);
       }
     });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = -1150863964807721395L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!m_isOver && canAttackerRetreatPartialAmphib()) {
-          attackerRetreatNonAmphibUnits(bridge);
+    final IExecutable loop = (stack, bridge) -> pushFightLoopOnStack(false);
+    steps.add((stack, bridge) -> {
+      if (!m_isOver) {
+        m_round++;
+        // determine any AA
+        updateOffensiveAaUnits();
+        updateDefendingAaUnits();
+        m_stepStrings = determineStepStrings(false);
+        final ITripleADisplay display = getDisplay(bridge);
+        display.listBattleSteps(m_battleID, m_stepStrings);
+        // continue fighting the recursive steps
+        // this should always be the base of the stack
+        // when we execute the loop, it will populate the stack with the battle steps
+        if (!m_stack.isEmpty()) {
+          throw new IllegalStateException("Stack not empty:" + m_stack);
         }
-      }
-    });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 669349383898975048L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!m_isOver) {
-          attackerRetreat(bridge);
-        }
-      }
-    });
-    final IExecutable loop = new IExecutable() {
-      private static final long serialVersionUID = 3118458517320468680L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        pushFightLoopOnStack(false);
-      }
-    };
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = -3993599528368570254L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!m_isOver) {
-          m_round++;
-          // determine any AA
-          updateOffensiveAaUnits();
-          updateDefendingAaUnits();
-          m_stepStrings = determineStepStrings(false);
-          final ITripleADisplay display = getDisplay(bridge);
-          display.listBattleSteps(m_battleID, m_stepStrings);
-          // continue fighting the recursive steps
-          // this should always be the base of the stack
-          // when we execute the loop, it will populate the stack with the battle steps
-          if (!m_stack.isEmpty()) {
-            throw new IllegalStateException("Stack not empty:" + m_stack);
-          }
-          m_stack.push(loop);
-        }
+        m_stack.push(loop);
       }
     });
     return steps;
@@ -918,142 +790,57 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void addFightStepsNonEditMode(final List<IExecutable> steps) {
     // Ask to retreat defending subs before battle
     if (isSubRetreatBeforeBattle()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 6775880082912594489L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          if (!m_isOver) {
-            attackerRetreatSubs(bridge);
-          }
+      steps.add((stack, bridge) -> {
+        if (!m_isOver) {
+          attackerRetreatSubs(bridge);
         }
       });
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 7056448091800764539L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          if (!m_isOver) {
-            defenderRetreatSubs(bridge);
-          }
+      steps.add((stack, bridge) -> {
+        if (!m_isOver) {
+          defenderRetreatSubs(bridge);
         }
       });
     }
     // Remove Suicide Units
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 99988L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        checkSuicideUnits(bridge);
-      }
-    });
+    steps.add((stack, bridge) -> checkSuicideUnits(bridge));
     // Remove undefended transports
     if (isTransportCasualtiesRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99989L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          checkUndefendedTransports(bridge, m_defender);
-          checkUndefendedTransports(bridge, m_attacker);
-          checkForUnitsThatCanRollLeft(bridge, true);
-          checkForUnitsThatCanRollLeft(bridge, false);
-        }
+      steps.add((stack, bridge) -> {
+        checkUndefendedTransports(bridge, m_defender);
+        checkUndefendedTransports(bridge, m_attacker);
+        checkForUnitsThatCanRollLeft(bridge, true);
+        checkForUnitsThatCanRollLeft(bridge, false);
       });
     }
     // Submerge subs if -vs air only & air restricted from attacking subs
     if (isAirAttackSubRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99990L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          submergeSubsVsOnlyAir(bridge);
-        }
-      });
+      steps.add((stack, bridge) -> submergeSubsVsOnlyAir(bridge));
     }
     final ReturnFire returnFireAgainstAttackingSubs = returnFireAgainstAttackingSubs();
     final ReturnFire returnFireAgainstDefendingSubs = returnFireAgainstDefendingSubs();
     if (defenderSubsFireFirst()) {
-      steps.add(new DefendSubs() {
-        private static final long serialVersionUID = 99992L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendSubs(returnFireAgainstDefendingSubs);
-        }
-      });
+      steps.add((DefendSubs) (stack, bridge) -> defendSubs(returnFireAgainstDefendingSubs));
     }
-    steps.add(new AttackSubs() {
-      private static final long serialVersionUID = 99991L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        attackSubs(returnFireAgainstAttackingSubs);
-      }
-    });
+    steps.add((AttackSubs) (stack, bridge) -> attackSubs(returnFireAgainstAttackingSubs));
     final boolean defendingSubsFireWithAllDefenders = !defenderSubsFireFirst()
         && !Properties.getWW2V2(m_data) && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
     if (defendingSubsSneakAttack3() && !defenderSubsFireFirst() && !defendingSubsFireWithAllDefenders) {
-      steps.add(new DefendSubs() {
-        private static final long serialVersionUID = 99992L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendSubs(returnFireAgainstDefendingSubs);
-        }
-      });
+      steps.add((DefendSubs) (stack, bridge) -> defendSubs(returnFireAgainstDefendingSubs));
     }
     // Attacker air fire on non-subs
     if (isAirAttackSubRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99993L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          attackAirOnNonSubs();
-        }
-      });
+      steps.add((stack, bridge) -> attackAirOnNonSubs());
     }
     // Attacker fire remaining units
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 99994L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        attackNonSubs();
-      }
-    });
+    steps.add((stack, bridge) -> attackNonSubs());
     if (!defenderSubsFireFirst() && (!defendingSubsSneakAttack3() || defendingSubsFireWithAllDefenders)) {
-      steps.add(new DefendSubs() {
-        private static final long serialVersionUID = 999921L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendSubs(returnFireAgainstDefendingSubs);
-        }
-      });
+      steps.add((DefendSubs) (stack, bridge) -> defendSubs(returnFireAgainstDefendingSubs));
     }
     // Defender air fire on non-subs
     if (isAirAttackSubRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 1560702114917865123L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendAirOnNonSubs();
-        }
-      });
+      steps.add((stack, bridge) -> defendAirOnNonSubs());
     }
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 1560702114917865290L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        defendNonSubs();
-      }
-    });
+    steps.add((stack, bridge) -> defendNonSubs());
   }
 
   private ReturnFire returnFireAgainstAttackingSubs() {
@@ -2106,64 +1893,49 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           final Collection<Unit> validAttackingUnitsForThisRoll = Matches.getMatches(
               (m_defending ? m_attackingUnits : m_defendingUnits), Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
                   .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargettedToo))));
-          final IExecutable rollDice = new IExecutable() {
-            private static final long serialVersionUID = 6435935558879109347L;
-
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
-              if (!validAttackingUnitsForThisRoll.isEmpty()) {
-                m_dice =
-                    DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_battleSite,
-                        m_defending);
-                if (!m_headless) {
-                  if (currentTypeAa.equals("AA")) {
-                    if (m_dice.getHits() > 0) {
-                      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                          (m_defending ? m_defender : m_attacker));
-                    } else {
-                      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                          (m_defending ? m_defender : m_attacker));
-                    }
+          final IExecutable rollDice = (s, bridge2) -> {
+            validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
+            if (!validAttackingUnitsForThisRoll.isEmpty()) {
+              m_dice =
+                  DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge2, m_battleSite,
+                      m_defending);
+              if (!m_headless) {
+                if (currentTypeAa.equals("AA")) {
+                  if (m_dice.getHits() > 0) {
+                    bridge2.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
+                        (m_defending ? m_defender : m_attacker));
                   } else {
-                    if (m_dice.getHits() > 0) {
-                      bridge.getSoundChannelBroadcaster().playSoundForAll(
-                          SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                          (m_defending ? m_defender : m_attacker));
-                    } else {
-                      bridge.getSoundChannelBroadcaster().playSoundForAll(
-                          SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                          (m_defending ? m_defender : m_attacker));
-                    }
+                    bridge2.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
+                        (m_defending ? m_defender : m_attacker));
+                  }
+                } else {
+                  if (m_dice.getHits() > 0) {
+                    bridge2.getSoundChannelBroadcaster().playSoundForAll(
+                        SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+                        (m_defending ? m_defender : m_attacker));
+                  } else {
+                    bridge2.getSoundChannelBroadcaster().playSoundForAll(
+                        SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+                        (m_defending ? m_defender : m_attacker));
                   }
                 }
               }
             }
           };
-          final IExecutable selectCasualties = new IExecutable() {
-            private static final long serialVersionUID = 7943295620796835166L;
-
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              if (!validAttackingUnitsForThisRoll.isEmpty()) {
-                final CasualtyDetails details =
-                    selectCasualties(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, currentTypeAa);
-                markDamaged(details.getDamaged(), bridge);
-                m_casualties = details;
-                m_casualtiesSoFar.addAll(details.getKilled());
-              }
+          final IExecutable selectCasualties = (s, bridge2) -> {
+            if (!validAttackingUnitsForThisRoll.isEmpty()) {
+              final CasualtyDetails details =
+                  selectCasualties(validAttackingUnitsForThisRoll, currentPossibleAa, bridge2, currentTypeAa);
+              markDamaged(details.getDamaged(), bridge2);
+              m_casualties = details;
+              m_casualtiesSoFar.addAll(details.getKilled());
             }
           };
-          final IExecutable notifyCasualties = new IExecutable() {
-            private static final long serialVersionUID = -6759782085212899725L;
-
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              if (!validAttackingUnitsForThisRoll.isEmpty()) {
-                notifyCasualtiesAa(bridge, currentTypeAa);
-                removeCasualties(m_casualties.getKilled(), ReturnFire.ALL, !m_defending, bridge);
-                removeSuicideOnHitCasualties(currentPossibleAa, m_dice.getHits(), m_defending, bridge);
-              }
+          final IExecutable notifyCasualties = (s, bridge2) -> {
+            if (!validAttackingUnitsForThisRoll.isEmpty()) {
+              notifyCasualtiesAa(bridge2, currentTypeAa);
+              removeCasualties(m_casualties.getKilled(), ReturnFire.ALL, !m_defending, bridge2);
+              removeSuicideOnHitCasualties(currentPossibleAa, m_dice.getHits(), m_defending, bridge2);
             }
           };
           // push in reverse order of execution

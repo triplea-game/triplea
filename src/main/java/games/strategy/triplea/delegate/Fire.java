@@ -204,34 +204,15 @@ public class Fire implements IExecutable {
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
     // add to the stack so we will execute, we want to roll dice, select casualties, then notify in that order, so push
     // onto the stack in reverse order
-    final IExecutable rollDice = new IExecutable() {
-      private static final long serialVersionUID = 7578210876028725797L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        rollDice(bridge);
+    final IExecutable rollDice = (s, bridge2) -> rollDice(bridge2);
+    final IExecutable selectCasualties = (s, bridge2) -> selectCasualties(bridge2);
+    final IExecutable notifyCasualties = (s, bridge2) -> {
+      notifyCasualties(bridge2);
+      if (m_damaged != null) {
+        m_battle.markDamaged(m_damaged, bridge2);
       }
-    };
-    final IExecutable selectCasualties = new IExecutable() {
-      private static final long serialVersionUID = -7687053541570519623L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        selectCasualties(bridge);
-      }
-    };
-    final IExecutable notifyCasualties = new IExecutable() {
-      private static final long serialVersionUID = -9173385989239225660L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        notifyCasualties(bridge);
-        if (m_damaged != null) {
-          m_battle.markDamaged(m_damaged, bridge);
-        }
-        m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge);
-        m_battle.removeSuicideOnHitCasualties(m_firingUnits, m_dice.getHits(), m_defending, bridge);
-      }
+      m_battle.removeCasualties(m_killed, m_canReturnFire, !m_defending, bridge2);
+      m_battle.removeSuicideOnHitCasualties(m_firingUnits, m_dice.getHits(), m_defending, bridge2);
     };
     stack.push(notifyCasualties);
     stack.push(selectCasualties);
