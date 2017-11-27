@@ -75,33 +75,6 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
   }
 
-  /**
-   * Do not use this if possible. Instead try to remove the bad map from the GameChooserModel.
-   * If that fails, then do a short parse so the user doesn't get a null pointer error.
-   */
-  public void delayParseGameData() {
-    gameData = null;
-
-    final AtomicReference<String> gameName = new AtomicReference<>();
-    final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-    if (!inputStream.isPresent()) {
-      return;
-    }
-    try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(url.toString()).parse(input, gameName, true);
-      gameDataFullyLoaded = false;
-    } catch (final EngineVersionException e) {
-      System.out.println(e.getMessage());
-    } catch (final SAXParseException e) {
-      System.err.println(
-          "Could not parse:" + url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
-      ClientLogger.logQuietly(e);
-    } catch (final Exception e) {
-      System.err.println("Could not parse:" + url);
-      ClientLogger.logQuietly(e);
-    }
-  }
-
   public boolean isGameDataLoaded() {
     return gameDataFullyLoaded;
   }

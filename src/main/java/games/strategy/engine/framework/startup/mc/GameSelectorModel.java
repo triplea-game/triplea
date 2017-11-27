@@ -309,8 +309,6 @@ public class GameSelectorModel extends Observable {
       try {
         selectedGame.fullyParseGameData();
       } catch (final GameParseException e) {
-        // Load real default game...
-        selectedGame.delayParseGameData();
         model.removeEntry(selectedGame);
         loadDefaultGame(true);
         return null;
