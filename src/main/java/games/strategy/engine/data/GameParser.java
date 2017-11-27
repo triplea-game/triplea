@@ -29,6 +29,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
@@ -65,26 +67,40 @@ public class GameParser {
     this.mapName = mapName;
   }
 
+  private synchronized Element parseDom(final InputStream stream, final AtomicReference<String> gameName)
+      throws SAXException {
+    Preconditions.checkNotNull(stream, "InputStream must be non-null!");
+    final Document doc = getDocument(stream);
+    return doc.getDocumentElement();
+  }
+
   /**
    * Parses a file into a GameData object.
-   *
-   * @param delayParsing Should we only parse the game name, notes, and playerlist? Normally this should be "false",
-   *        except for the game chooser which should use the user set preference.
    */
-  public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName,
-      final boolean delayParsing)
+  public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName)
       throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException {
-    if (stream == null) {
-      throw new IllegalArgumentException("Stream must be non null");
-    }
-    final Document doc;
-    try {
-      doc = getDocument(stream);
-    } catch (final IOException | ParserConfigurationException e) {
-      throw new IllegalStateException("Error parsing: " + mapName, e);
-    }
-    final Element root = doc.getDocumentElement();
+    final Element root = parseDom(stream, gameName);
     data = new GameData();
+    parseMapProperties(root, gameName);
+    // everything until here is needed to select a game
+    parseMapDetails(root, gameName);
+    return data;
+  }
+
+  /**
+   * Just parses the essential Information about a map.
+   * Used to list all available maps.
+   */
+  public synchronized GameData parseMapProperties(final InputStream stream, final AtomicReference<String> gameName)
+      throws GameParseException, EngineVersionException, SAXException {
+    Preconditions.checkNotNull(stream, "InputStream must be non-null!");
+    data = new GameData();
+    parseMapProperties(parseDom(stream, gameName), gameName);
+    return data;
+  }
+
+  private synchronized void parseMapProperties(final Element root, final AtomicReference<String> gameName)
+      throws GameParseException, EngineVersionException {
     // mandatory fields
     // get the name of the map
     parseInfo(getSingleChild("info", root));
@@ -112,10 +128,10 @@ public class GameParser {
     if (properties != null) {
       parseProperties(properties);
     }
-    // everything until here is needed to select a game, the rest can be parsed when a game is selected
-    if (delayParsing) {
-      return data;
-    }
+  }
+
+  private synchronized void parseMapDetails(final Element root, final AtomicReference<String> gameName)
+      throws GameParseException {
     parseMap(getSingleChild("map", root));
     final Element resourceList = getSingleChild("resourceList", root, true);
     if (resourceList != null) {
@@ -171,7 +187,6 @@ public class GameParser {
       ClientLogger.logQuietly("Error parsing: " + mapName, e);
       throw new GameParseException(mapName, e);
     }
-    return data;
   }
 
   private void parseDiceSides(final Node diceSides) {
@@ -245,35 +260,39 @@ public class GameParser {
     }
   }
 
-  public Document getDocument(final InputStream input) throws SAXException, IOException, ParserConfigurationException {
-    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    factory.setValidating(true);
-    // get the dtd location
-    final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
-    final URL url = GameParser.class.getResource(dtdFile);
-    if (url == null) {
-      throw new RuntimeException(String.format("Map: %s, Could not find in classpath %s", mapName, dtdFile));
+  public Document getDocument(final InputStream input) throws SAXException {
+    try {
+      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setValidating(true);
+      // get the dtd location
+      final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
+      final URL url = GameParser.class.getResource(dtdFile);
+      if (url == null) {
+        throw new RuntimeException(String.format("Map: %s, Could not find in classpath %s", mapName, dtdFile));
+      }
+      final String dtdSystem = url.toExternalForm();
+      final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
+      final DocumentBuilder builder = factory.newDocumentBuilder();
+      builder.setErrorHandler(new ErrorHandler() {
+        @Override
+        public void fatalError(final SAXParseException exception) {
+          errorsSAX.add(exception);
+        }
+
+        @Override
+        public void error(final SAXParseException exception) {
+          errorsSAX.add(exception);
+        }
+
+        @Override
+        public void warning(final SAXParseException exception) {
+          errorsSAX.add(exception);
+        }
+      });
+      return builder.parse(input, system);
+    } catch (final IOException | ParserConfigurationException e) {
+      throw new IllegalStateException("Error parsing: " + mapName, e);
     }
-    final String dtdSystem = url.toExternalForm();
-    final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
-    final DocumentBuilder builder = factory.newDocumentBuilder();
-    builder.setErrorHandler(new ErrorHandler() {
-      @Override
-      public void fatalError(final SAXParseException exception) {
-        errorsSAX.add(exception);
-      }
-
-      @Override
-      public void error(final SAXParseException exception) {
-        errorsSAX.add(exception);
-      }
-
-      @Override
-      public void warning(final SAXParseException exception) {
-        errorsSAX.add(exception);
-      }
-    });
-    return builder.parse(input, system);
   }
 
   private <T> T getValidatedObject(final Element element, final String attribute,
