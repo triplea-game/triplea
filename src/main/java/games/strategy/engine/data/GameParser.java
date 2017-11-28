@@ -101,7 +101,7 @@ public class GameParser {
     return data;
   }
 
-  private synchronized GameData parseMapProperties(final Element root, final AtomicReference<String> gameName)
+  private synchronized void parseMapProperties(final Element root, final AtomicReference<String> gameName)
       throws GameParseException, EngineVersionException {
     // mandatory fields
     // get the name of the map
@@ -130,7 +130,6 @@ public class GameParser {
     if (properties != null) {
       parseProperties(properties);
     }
-    return data;
   }
 
   private synchronized void parseMapDetails(final Element root, final AtomicReference<String> gameName)
