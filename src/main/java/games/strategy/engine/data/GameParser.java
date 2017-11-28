@@ -64,7 +64,7 @@ public class GameParser {
   private final String mapName;
 
   public GameParser(final String mapName) {
-    this.mapName = mapName;
+    this.mapName = Preconditions.checkNotNull(mapName);
   }
 
   /**
@@ -72,7 +72,7 @@ public class GameParser {
    * 
    * @return The root Element of the DOM
    */
-  public synchronized Element parseDom(final InputStream stream)
+  private synchronized Element parseDom(final InputStream stream)
       throws SAXException {
     Preconditions.checkNotNull(stream, "InputStream must be non-null!");
     return getDocument(stream).getDocumentElement();
@@ -82,7 +82,7 @@ public class GameParser {
    * Parses a file into a GameData object.
    */
   public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName)
-      throws GameParseException, SAXException, EngineVersionException, IllegalArgumentException {
+      throws GameParseException, SAXException, EngineVersionException {
     final Element root = parseDom(stream);
     parseMapProperties(root, gameName);
     // everything until here is needed to select a game
@@ -94,7 +94,14 @@ public class GameParser {
    * Parses just the essential parts of the maps.
    * Used to display all available maps.
    */
-  public synchronized GameData parseMapProperties(final Element root, final AtomicReference<String> gameName)
+  public synchronized GameData parseMapProperties(final InputStream stream, final AtomicReference<String> gameName)
+      throws GameParseException, SAXException, EngineVersionException {
+    final Element root = parseDom(stream);
+    parseMapProperties(root, gameName);
+    return data;
+  }
+
+  private synchronized GameData parseMapProperties(final Element root, final AtomicReference<String> gameName)
       throws GameParseException, EngineVersionException {
     // mandatory fields
     // get the name of the map
