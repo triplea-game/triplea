@@ -31,6 +31,7 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.PoliticsText;
+import games.strategy.util.CollectionUtils;
 
 /**
  * Responsible allowing players to perform politicalActions.
@@ -67,7 +68,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            Matches.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+            CollectionUtils.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerRelationshipChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
             true);
@@ -191,10 +192,10 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       // if alliances chain together, then our allies must have a say in anyone becoming a new ally/enemy
       final LinkedHashSet<PlayerID> playersWhoNeedToAccept = new LinkedHashSet<>();
       playersWhoNeedToAccept.addAll(paa.getActionAccept());
-      playersWhoNeedToAccept.addAll(Matches.getMatches(data.getPlayerList().getPlayers(),
+      playersWhoNeedToAccept.addAll(CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
           Matches.isAlliedAndAlliancesCanChainTogether(m_player, data)));
       for (final PlayerID player : paa.getActionAccept()) {
-        playersWhoNeedToAccept.addAll(Matches.getMatches(data.getPlayerList().getPlayers(),
+        playersWhoNeedToAccept.addAll(CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
             Matches.isAlliedAndAlliancesCanChainTogether(player, data)));
       }
       final HashSet<PlayerID> alliesWhoMustAccept = playersWhoNeedToAccept;
@@ -422,7 +423,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
     final Collection<PlayerID> p1AlliedWith =
-        Matches.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
+        CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
     p1AlliedWith.remove(player);
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChangeString : paa.getRelationshipChange()) {
@@ -465,7 +466,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
     final Collection<PlayerID> p1AlliedWith =
-        Matches.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
+        CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChangeString : paa.getRelationshipChange()) {
       final String[] relationshipChange = relationshipChangeString.split(":");
@@ -480,7 +481,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       if (Matches.relationshipTypeIsAtWar().test(currentType)
           && Matches.relationshipTypeIsAtWar().negate().test(newType)) {
         final Collection<PlayerID> otherPlayersAlliedWith =
-            Matches.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(otherPlayer, data));
+            CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(otherPlayer, data));
         if (!otherPlayersAlliedWith.contains(otherPlayer)) {
           otherPlayersAlliedWith.add(otherPlayer);
         }
@@ -528,9 +529,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     for (final PlayerID p1 : players) {
       final HashSet<PlayerID> p1NewAllies = new HashSet<>();
       final Collection<PlayerID> p1AlliedWith =
-          Matches.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
+          CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
       for (final PlayerID p2 : p1AlliedWith) {
-        p1NewAllies.addAll(Matches.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p2, data)));
+        p1NewAllies.addAll(CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p2, data)));
       }
       p1NewAllies.removeAll(p1AlliedWith);
       p1NewAllies.remove(p1);
@@ -550,11 +551,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
     for (final PlayerID p1 : players) {
       final HashSet<PlayerID> p1NewWar = new HashSet<>();
-      final Collection<PlayerID> p1WarWith = Matches.getMatches(players, Matches.isAtWar(p1, data));
+      final Collection<PlayerID> p1WarWith = CollectionUtils.getMatches(players, Matches.isAtWar(p1, data));
       final Collection<PlayerID> p1AlliedWith =
-          Matches.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
+          CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
       for (final PlayerID p2 : p1AlliedWith) {
-        p1NewWar.addAll(Matches.getMatches(players, Matches.isAtWar(p2, data)));
+        p1NewWar.addAll(CollectionUtils.getMatches(players, Matches.isAtWar(p2, data)));
       }
       p1NewWar.removeAll(p1WarWith);
       p1NewWar.remove(p1);

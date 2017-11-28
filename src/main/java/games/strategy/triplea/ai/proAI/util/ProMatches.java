@@ -78,9 +78,6 @@ public class ProMatches {
             false, false));
   }
 
-  /**
-   * Returns a new Predicate returning true for all territories that can potentially move land units.
-   */
   public static Predicate<Territory> territoryCanPotentiallyMoveLandUnits(final PlayerID player, final GameData data) {
     return Matches.territoryIsLand()
         .and(Matches.territoryDoesNotCostMoneyToEnter(data))
@@ -194,11 +191,6 @@ public class ProMatches {
     return Matches.territoryHasNoEnemyUnits(player, data).or(Matches.territoryIsInList(clearedTerritories));
   }
 
-  /**
-   * Returns a Predicate returning true for all territories
-   * either belong to the enemy, have enemy units
-   * in them or can't be held at all.
-   */
   public static Predicate<Territory> territoryIsEnemyOrHasEnemyUnitsOrCantBeHeld(final PlayerID player,
       final GameData data, final List<Territory> territoriesThatCantBeHeld) {
     return Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
@@ -409,10 +401,6 @@ public class ProMatches {
     };
   }
 
-  /**
-   * Returns a new Predicate returning true for all units owned by the given player
-   * if they are non-combat infrastrucutre and can be moved as well.
-   */
   public static Predicate<Unit> unitCanBeMovedAndIsOwnedNonCombatInfra(final PlayerID player) {
     return unitCanBeMovedAndIsOwned(player)
         .and(Matches.unitCanNotMoveDuringCombatMove())
@@ -436,10 +424,6 @@ public class ProMatches {
     return unitCantBeMovedAndIsAlliedDefender(player, data, t).and(Matches.unitIsNotInfrastructure());
   }
 
-  /**
-   * Returns a new Predicate returning true for all units in an allied land
-   * that are not infrastructure.
-   */
   public static Predicate<Unit> unitIsAlliedLandAndNotInfra(final PlayerID player, final GameData data) {
     return Matches.unitIsLand()
         .and(Matches.isUnitAllied(player, data))
@@ -486,10 +470,6 @@ public class ProMatches {
     return Matches.unitOwnedBy(player).and(Matches.unitIsAir());
   }
 
-  /**
-   * Returns a new Predicate returning true for all units that are owned by the given player,
-   * match the given unitType and are currently transporting.
-   */
   public static Predicate<Unit> unitIsOwnedAndMatchesTypeAndIsTransporting(final PlayerID player,
       final UnitType unitType) {
     return Matches.unitIsOwnedBy(player)
@@ -497,10 +477,6 @@ public class ProMatches {
         .and(Matches.unitIsTransporting());
   }
 
-  /**
-   * Returns a new Predicate returning true for all units that are owned by the given player,
-   * match the given unitType and are currently not transporting.
-   */
   public static Predicate<Unit> unitIsOwnedAndMatchesTypeAndNotTransporting(final PlayerID player,
       final UnitType unitType) {
     return Matches.unitIsOwnedBy(player)
@@ -521,10 +497,6 @@ public class ProMatches {
     return Matches.unitIsOwnedBy(player).and(Matches.unitIsTransport());
   }
 
-  /**
-   * Returns a new Predicate that returns true for all units being owned by
-   * the given player and are transportable.
-   */
   public static Predicate<Unit> unitIsOwnedTransportableUnit(final PlayerID player) {
     return Matches.unitIsOwnedBy(player)
         .and(Matches.unitCanBeTransported())

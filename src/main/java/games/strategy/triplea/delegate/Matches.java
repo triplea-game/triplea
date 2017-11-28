@@ -38,6 +38,7 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
@@ -78,45 +79,12 @@ import games.strategy.util.Util;
 public final class Matches {
   private Matches() {}
 
-  /**
-   * Returns a match whose condition is always satisfied.
-   *
-   * @return A match; never {@code null}.
-   */
   public static <T> Predicate<T> always() {
     return it -> true;
   }
 
-  /**
-   * Returns a match whose condition is never satisfied.
-   *
-   * @return A match; never {@code null}.
-   */
   public static <T> Predicate<T> never() {
     return it -> false;
-  }
-
-  /**
-   * Returns the number of matches found.
-   */
-  public static <T> int countMatches(final Collection<T> collection, final Predicate<T> match) {
-    return (int) collection.stream().filter(match).count();
-  }
-
-  /**
-   * Returns the elements of the collection that match.
-   */
-  public static <T> List<T> getMatches(final Collection<T> collection, final Predicate<T> match) {
-    return collection.stream().filter(match).collect(Collectors.toList());
-  }
-
-  /**
-   * Only returns the first n matches.
-   * If n matches cannot be found will return all matches that
-   * can be found.
-   */
-  public static <T> List<T> getNMatches(final Collection<T> collection, final int max, final Predicate<T> match) {
-    return collection.stream().filter(match).limit(max).collect(Collectors.toList());
   }
 
   public static Predicate<UnitType> unitTypeHasMoreThanOneHitPointTotal() {
@@ -158,9 +126,6 @@ public final class Matches {
     return unitIsCombatTransport().negate();
   }
 
-  /**
-   * Returns a match indicating the specified unit is a transport but not a combat transport.
-   */
   public static Predicate<Unit> unitIsTransportButNotCombatTransport() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -168,9 +133,6 @@ public final class Matches {
     };
   }
 
-  /**
-   * Returns a match indicating the specified unit is not a transport but may be a combat transport.
-   */
   public static Predicate<Unit> unitIsNotTransportButCouldBeCombatTransport() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -189,9 +151,6 @@ public final class Matches {
     return type -> UnitAttachment.get(type).getIsDestroyer();
   }
 
-  /**
-   * Returns a match indicating the specified unit can transport other units by sea.
-   */
   public static Predicate<Unit> unitIsTransport() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -210,9 +169,6 @@ public final class Matches {
     };
   }
 
-  /**
-   * Returns a match indicating the specified unit type is a strategic bomber.
-   */
   public static Predicate<UnitType> unitTypeIsStrategicBomber() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj);
@@ -283,9 +239,6 @@ public final class Matches {
     return type -> !UnitAttachment.get(type).getIsSea();
   }
 
-  /**
-   * Returns a match indicating the specified unit type is for sea or air units.
-   */
   public static Predicate<UnitType> unitTypeIsSeaOrAir() {
     return type -> {
       final UnitAttachment ua = UnitAttachment.get(type);
@@ -416,9 +369,6 @@ public final class Matches {
     return unitHasTakenSomeBombingUnitDamage().negate();
   }
 
-  /**
-   * Returns a match indicating the specified unit is disabled.
-   */
   public static Predicate<Unit> unitIsDisabled() {
     return unit -> {
       if (!unitCanBeDamaged().test(unit)) {
@@ -720,9 +670,6 @@ public final class Matches {
     return obj -> unitTypeIsAaForFlyOverOnly().test(obj.getType());
   }
 
-  /**
-   * Returns a match indicating the specified unit type is anti-aircraft for any condition.
-   */
   public static Predicate<UnitType> unitTypeIsAaForAnything() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj);
@@ -776,9 +723,6 @@ public final class Matches {
     return unitIsInfantry().negate();
   }
 
-  /**
-   * Returns a match indicating the specified unit can be transported by air.
-   */
   public static Predicate<Unit> unitIsAirTransportable() {
     return obj -> {
       final TechAttachment ta = TechAttachment.get(obj.getOwner());
@@ -795,9 +739,6 @@ public final class Matches {
     return unitIsAirTransportable().negate();
   }
 
-  /**
-   * Returns a match indicating the specified unit can transport other units by air.
-   */
   public static Predicate<Unit> unitIsAirTransport() {
     return obj -> {
       final TechAttachment ta = TechAttachment.get(obj.getOwner());
@@ -827,9 +768,6 @@ public final class Matches {
     return Territory::isWater;
   }
 
-  /**
-   * Returns a match indicating the specified territory is an island.
-   */
   public static Predicate<Territory> territoryIsIsland() {
     return t -> {
       final Collection<Territory> neighbors = t.getData().getMap().getNeighbors(t);
@@ -837,9 +775,6 @@ public final class Matches {
     };
   }
 
-  /**
-   * Returns a match indicating the specified territory is a victory city.
-   */
   public static Predicate<Territory> territoryIsVictoryCity() {
     return t -> {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
@@ -916,11 +851,6 @@ public final class Matches {
     return not(list::contains);
   }
 
-  /**
-   * @param data
-   *        game data
-   * @return Match&lt;Territory> that tests if there is a route to an enemy capital from the given territory.
-   */
   public static Predicate<Territory> territoryHasRouteToEnemyCapital(final GameData data, final PlayerID player) {
     return t -> {
       for (final PlayerID otherPlayer : data.getPlayerList().getPlayers()) {
@@ -939,11 +869,6 @@ public final class Matches {
     };
   }
 
-  /**
-   * @param data
-   *        game data.
-   * @return true only if the route is land
-   */
   public static Predicate<Territory> territoryHasLandRouteToEnemyCapital(final GameData data, final PlayerID player) {
     return t -> {
       for (final PlayerID otherPlayer : data.getPlayerList().getPlayers()) {
@@ -1054,9 +979,6 @@ public final class Matches {
     return t -> t.getUnits().allMatch(unitIsInfrastructure().or(enemyUnit(player, data).negate()));
   }
 
-  /**
-   * Returns a match indicating the specified territory is neutral and not water.
-   */
   public static Predicate<Territory> territoryIsNeutralButNotWater() {
     return t -> {
       if (t.isWater()) {
@@ -1066,9 +988,6 @@ public final class Matches {
     };
   }
 
-  /**
-   * Returns a match indicating the specified territory is impassable.
-   */
   public static Predicate<Territory> territoryIsImpassable() {
     return t -> {
       if (t.isWater()) {
@@ -1269,9 +1188,6 @@ public final class Matches {
     };
   }
 
-  /**
-   * Match units that have at least 1 movement left.
-   */
   public static Predicate<Unit> unitHasMovementLeft() {
     return o -> TripleAUnit.get(o).getMovementLeft() >= 1;
   }
@@ -1585,11 +1501,9 @@ public final class Matches {
   }
 
   /**
-   * @return Match that tests the TripleAUnit getTransportedBy value
-   *         which is normally set for sea transport movement of land units,
-   *         and sometimes set for other things like para-troopers and dependent allied fighters sitting as cargo on a
-   *         ship. (not sure if
-   *         set for mech inf or not)
+   * Tests the TripleAUnit getTransportedBy value which is normally set for sea transport movement of land units, and
+   * sometimes set for other things like para-troopers and dependent allied fighters sitting as cargo on a ship. (Not
+   * sure if set for mech inf or not.)
    */
   public static Predicate<Unit> unitIsBeingTransported() {
     return dependent -> ((TripleAUnit) dependent).getTransportedBy() != null;
@@ -1606,7 +1520,7 @@ public final class Matches {
    *        game data
    * @param forceLoadParatroopersIfPossible
    *        should we load paratroopers? (if not, we assume they are already loaded)
-   * @return Match that tests the TripleAUnit getTransportedBy value
+   * @return Predicate that tests the TripleAUnit getTransportedBy value
    *         (also tests for para-troopers, and for dependent allied fighters sitting as cargo on a ship)
    */
   public static Predicate<Unit> unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(final Collection<Unit> units,
@@ -1630,8 +1544,8 @@ public final class Matches {
       }
       // paratrooper on an air transport
       if (forceLoadParatroopersIfPossible) {
-        final Collection<Unit> airTransports = getMatches(units, unitIsAirTransport());
-        final Collection<Unit> paratroops = getMatches(units, unitIsAirTransportable());
+        final Collection<Unit> airTransports = CollectionUtils.getMatches(units, unitIsAirTransport());
+        final Collection<Unit> paratroops = CollectionUtils.getMatches(units, unitIsAirTransportable());
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
           if (TransportUtils.mapTransportsToLoad(paratroops, airTransports)
               .containsKey(dependent)) {
@@ -1753,7 +1667,7 @@ public final class Matches {
    *        referring player
    * @param data
    *        game data
-   * @return Match that will return true if the territory contains a unit that can repair this unit
+   * @return Predicate that will return true if the territory contains a unit that can repair this unit
    *         (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can
    *         repair this unit.)
    */
@@ -1825,10 +1739,9 @@ public final class Matches {
    *        referring player
    * @param data
    *        game data
-   * @return Match that will return true if the territory contains a unit that can give bonus movement to this unit
+   * @return Predicate that will return true if the territory contains a unit that can give bonus movement to this unit
    *         (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can give
-   *         bonus movement to
-   *         this unit.)
+   *         bonus movement to this unit.)
    */
   public static Predicate<Unit> unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {
@@ -1865,9 +1778,6 @@ public final class Matches {
     };
   }
 
-  /**
-   * Returns a match indicating the specified unit type consumes at least one type of unit upon creation.
-   */
   public static Predicate<UnitType> unitTypeConsumesUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit);
@@ -1898,7 +1808,8 @@ public final class Matches {
             .and(unitHasNotTakenAnyDamage())
             .and(unitIsNotDisabled());
         final int requiredNumber = requiredUnitsMap.getInt(ut);
-        final int numberInTerritory = countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
+        final int numberInTerritory =
+            CollectionUtils.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
         if (numberInTerritory < requiredNumber) {
           canBuild = false;
         }
@@ -1910,9 +1821,6 @@ public final class Matches {
     };
   }
 
-  /**
-   * Returns a match indicating the specified unit requires at least one type of unit upon creation.
-   */
   public static Predicate<Unit> unitRequiresUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -1931,7 +1839,8 @@ public final class Matches {
       }
       final Predicate<Unit> unitIsOwnedByAndNotDisabled = unitIsOwnedBy(unitWhichRequiresUnits.getOwner())
           .and(unitIsNotDisabled());
-      unitsInTerritoryAtStartOfTurn.retainAll(getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
+      unitsInTerritoryAtStartOfTurn
+          .retainAll(CollectionUtils.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
       boolean canBuild = false;
       final UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
       final List<String[]> unitComboPossibilities = ua.getRequiresUnits();
@@ -1940,7 +1849,7 @@ public final class Matches {
           boolean haveAll = true;
           final Collection<UnitType> requiredUnits = ua.getListedUnits(combo);
           for (final UnitType ut : requiredUnits) {
-            if (countMatches(unitsInTerritoryAtStartOfTurn, unitIsOfType(ut)) < 1) {
+            if (CollectionUtils.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOfType(ut)) < 1) {
               haveAll = false;
             }
             if (!haveAll) {
@@ -1971,7 +1880,7 @@ public final class Matches {
       }
 
       final Predicate<Unit> unitIsOwnedByAndNotDisabled = isUnitAllied(unit.getOwner(), data).and(unitIsNotDisabled());
-      final List<Unit> units = getMatches(t.getUnits().getUnits(), unitIsOwnedByAndNotDisabled);
+      final List<Unit> units = CollectionUtils.getMatches(t.getUnits().getUnits(), unitIsOwnedByAndNotDisabled);
       for (final String[] array : ua.getRequiresUnitsToMove()) {
         boolean haveAll = true;
         for (final UnitType ut : ua.getListedUnits(array)) {
@@ -1996,9 +1905,6 @@ public final class Matches {
     };
   }
 
-  /**
-   * Returns a match indicating the specified unit type is a construction unit type.
-   */
   public static Predicate<UnitType> unitTypeIsConstruction() {
     return type -> {
       final UnitAttachment ua = UnitAttachment.get(type);
@@ -2263,9 +2169,8 @@ public final class Matches {
   }
 
   /**
-   * If player is null, this match Will return true if ANY of the relationship changes match the conditions. (since
-   * paa's can have more than
-   * 1 change).
+   * If player is null, this predicate will return true if ANY of the relationship changes match the conditions. (since
+   * paa's can have more than 1 change).
    *
    * @param player
    *        CAN be null

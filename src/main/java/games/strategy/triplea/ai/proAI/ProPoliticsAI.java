@@ -21,6 +21,7 @@ import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.util.CollectionUtils;
 
 /**
  * Pro politics AI.
@@ -49,7 +50,7 @@ class ProPoliticsAI {
         AIPoliticalUtils.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
     ProLogger.trace("War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
-        Matches.getMatches(actionChoicesTowardsWar,
+        CollectionUtils.getMatches(actionChoicesTowardsWar,
             Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions()));
     ProLogger.trace("Valid War options: " + validWarActions);
 

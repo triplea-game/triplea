@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
 import games.strategy.triplea.util.TuvUtils;
+import games.strategy.util.CollectionUtils;
 
 /**
  * Pro AI odds calculator.
@@ -137,9 +138,9 @@ public class ProOddsCalculator {
     final List<Unit> averageAttackersRemaining = results.getAverageAttackingUnitsRemaining();
     final List<Unit> averageDefendersRemaining = results.getAverageDefendingUnitsRemaining();
     final List<Unit> mainCombatAttackers =
-        Matches.getMatches(attackingUnits, Matches.unitCanBeInBattle(true, !t.isWater(), 1, false, true, true));
-    final List<Unit> mainCombatDefenders =
-        Matches.getMatches(defendingUnits, Matches.unitCanBeInBattle(false, !t.isWater(), 1, false, true, true));
+        CollectionUtils.getMatches(attackingUnits, Matches.unitCanBeInBattle(true, !t.isWater(), 1, false, true, true));
+    final List<Unit> mainCombatDefenders = CollectionUtils.getMatches(defendingUnits,
+        Matches.unitCanBeInBattle(false, !t.isWater(), 1, false, true, true));
     double tuvSwing = results.getAverageTuvSwing(attacker, mainCombatAttackers, defender, mainCombatDefenders, data);
     if (Matches.territoryIsNeutralButNotWater().test(t)) { // Set TUV swing for neutrals
       final double attackingUnitValue = TuvUtils.getTuv(mainCombatAttackers, ProData.unitValueMap);
@@ -147,7 +148,8 @@ public class ProOddsCalculator {
           results.getAverageTuvOfUnitsLeftOver(ProData.unitValueMap, ProData.unitValueMap).getFirst();
       tuvSwing = remainingUnitValue - attackingUnitValue;
     }
-    final List<Unit> defendingTransportedUnits = Matches.getMatches(defendingUnits, Matches.unitIsBeingTransported());
+    final List<Unit> defendingTransportedUnits =
+        CollectionUtils.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) { // Add TUV swing for transported units
       final double transportedUnitValue = TuvUtils.getTuv(defendingTransportedUnits, ProData.unitValueMap);
       tuvSwing += transportedUnitValue * winPercentage / 100;

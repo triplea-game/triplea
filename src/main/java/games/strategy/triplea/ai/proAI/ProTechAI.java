@@ -28,6 +28,7 @@ import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
 
@@ -330,8 +331,8 @@ final class ProTechAI {
       }
     }
     if (attacking && !sea) {
-      final int art = Matches.countMatches(units, Matches.unitIsArtillery());
-      final int artSupport = Matches.countMatches(units, Matches.unitIsArtillerySupportable());
+      final int art = CollectionUtils.countMatches(units, Matches.unitIsArtillery());
+      final int artSupport = CollectionUtils.countMatches(units, Matches.unitIsArtillerySupportable());
       strength += Math.min(art, artSupport);
     }
     return strength;

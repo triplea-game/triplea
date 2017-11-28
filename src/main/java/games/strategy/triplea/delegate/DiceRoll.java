@@ -32,6 +32,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Triple;
@@ -127,7 +128,7 @@ public class DiceRoll implements Externalizable {
             "Duplicate Units Detected: Original List:" + defendingAaForThisRoll + "  HashSet:" + duplicatesCheckSet2);
       }
     }
-    final List<Unit> defendingAa = Matches.getMatches(defendingAaForThisRoll,
+    final List<Unit> defendingAa = CollectionUtils.getMatches(defendingAaForThisRoll,
         (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
             : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
     if (defendingAa.isEmpty()) {
@@ -186,7 +187,7 @@ public class DiceRoll implements Externalizable {
       final int[] dice, final List<Die> sortedDice, final boolean defending,
       final Collection<Unit> defendingAaForThisRoll, final Collection<Unit> validAttackingUnitsForThisRoll,
       final GameData data, final boolean fillInSortedDiceAndRecordHits) {
-    final List<Unit> defendingAa = Matches.getMatches(defendingAaForThisRoll,
+    final List<Unit> defendingAa = CollectionUtils.getMatches(defendingAaForThisRoll,
         (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
             : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
     if (defendingAa.size() <= 0) {
@@ -211,8 +212,8 @@ public class DiceRoll implements Externalizable {
     // any sense)
     // set up all 3 groups of aa guns
     final List<Unit> normalNonInfiniteAa = new ArrayList<>(defendingAa);
-    final List<Unit> infiniteAa = Matches.getMatches(defendingAa, Matches.unitMaxAaAttacksIsInfinite());
-    final List<Unit> overstackAa = Matches.getMatches(defendingAa, Matches.unitMayOverStackAa());
+    final List<Unit> infiniteAa = CollectionUtils.getMatches(defendingAa, Matches.unitMaxAaAttacksIsInfinite());
+    final List<Unit> overstackAa = CollectionUtils.getMatches(defendingAa, Matches.unitMayOverStackAa());
     overstackAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(overstackAa);
@@ -648,14 +649,15 @@ public class DiceRoll implements Externalizable {
       }
       final Predicate<Unit> canSupport = Matches.unitIsOfType((UnitType) rule.getAttachedTo())
           .and(Matches.unitOwnedBy(rule.getPlayers()));
-      final List<Unit> supporters = Matches.getMatches(unitsGivingTheSupport, canSupport);
+      final List<Unit> supporters = CollectionUtils.getMatches(unitsGivingTheSupport, canSupport);
       int numSupport = supporters.size();
       if (numSupport <= 0) {
         continue;
       }
       final List<Unit> impArtTechUnits = new ArrayList<>();
       if (rule.getImpArtTech()) {
-        impArtTechUnits.addAll(Matches.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()));
+        impArtTechUnits
+            .addAll(CollectionUtils.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()));
       }
       numSupport += impArtTechUnits.size();
       supportLeft.put(rule, numSupport * rule.getNumber());

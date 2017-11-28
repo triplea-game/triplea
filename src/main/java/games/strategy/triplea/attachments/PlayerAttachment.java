@@ -18,6 +18,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
@@ -253,16 +254,19 @@ public class PlayerAttachment extends DefaultAttachment {
       final Collection<Unit> currentInTerritory = toMoveInto.getUnits().getUnits();
       // first remove units that do not apply to our current type
       if (type.equals("owned")) {
-        currentInTerritory.removeAll(Matches.getMatches(currentInTerritory, Matches.unitIsOwnedBy(owner).negate()));
-        copyUnitsMoving.removeAll(Matches.getMatches(copyUnitsMoving, Matches.unitIsOwnedBy(owner).negate()));
+        currentInTerritory
+            .removeAll(CollectionUtils.getMatches(currentInTerritory, Matches.unitIsOwnedBy(owner).negate()));
+        copyUnitsMoving.removeAll(CollectionUtils.getMatches(copyUnitsMoving, Matches.unitIsOwnedBy(owner).negate()));
       } else if (type.equals("allied")) {
-        currentInTerritory.removeAll(Matches.getMatches(currentInTerritory, Matches.alliedUnit(owner, data).negate()));
-        copyUnitsMoving.removeAll(Matches.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).negate()));
+        currentInTerritory
+            .removeAll(CollectionUtils.getMatches(currentInTerritory, Matches.alliedUnit(owner, data).negate()));
+        copyUnitsMoving
+            .removeAll(CollectionUtils.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).negate()));
       }
       // else if (type.equals("total"))
       // now remove units that are not part of our list
-      currentInTerritory.retainAll(Matches.getMatches(currentInTerritory, Matches.unitIsOfTypes(unitsToTest)));
-      copyUnitsMoving.retainAll(Matches.getMatches(copyUnitsMoving, Matches.unitIsOfTypes(unitsToTest)));
+      currentInTerritory.retainAll(CollectionUtils.getMatches(currentInTerritory, Matches.unitIsOfTypes(unitsToTest)));
+      copyUnitsMoving.retainAll(CollectionUtils.getMatches(copyUnitsMoving, Matches.unitIsOfTypes(unitsToTest)));
       // now test
       if (max < (currentInTerritory.size() + copyUnitsMoving.size())) {
         return false;

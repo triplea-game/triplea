@@ -43,6 +43,7 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.AbstractBasePlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
@@ -151,7 +152,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
   public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
     final Collection<Unit> factories =
-        Matches.getMatches(potentialTargets, Matches.unitCanProduceUnitsAndCanBeDamaged());
+        CollectionUtils.getMatches(potentialTargets, Matches.unitCanProduceUnitsAndCanBeDamaged());
     if (factories.isEmpty()) {
       return potentialTargets.iterator().next();
     }
@@ -310,7 +311,8 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       picked = territoryChoices.get(0);
     } else {
       Collections.shuffle(territoryChoices);
-      final List<Territory> notOwned = Matches.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).negate());
+      final List<Territory> notOwned =
+          CollectionUtils.getMatches(territoryChoices, Matches.isTerritoryOwnedBy(me).negate());
       if (notOwned.isEmpty()) {
         // only owned territories left
         final boolean nonFactoryUnitsLeft = unitChoices.stream().anyMatch(Matches.unitCanProduceUnits().negate());
@@ -319,20 +321,20 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         final List<Territory> test = new ArrayList<>(capitals);
         test.retainAll(territoryChoices);
         final List<Territory> territoriesWithFactories =
-            Matches.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories));
+            CollectionUtils.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories));
         if (!nonFactoryUnitsLeft) {
-          test.retainAll(Matches.getMatches(test, Matches.territoryHasUnitsThatMatch(ownedFactories).negate()));
+          test.retainAll(CollectionUtils.getMatches(test, Matches.territoryHasUnitsThatMatch(ownedFactories).negate()));
           if (!test.isEmpty()) {
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Matches.getMatches(data.getMap().getTerritories(),
+              capitals.addAll(CollectionUtils.getMatches(data.getMap().getTerritories(),
                   Matches.isTerritoryOwnedBy(me)
                       .and(Matches.territoryHasUnitsOwnedBy(me))
                       .and(Matches.territoryIsLand())));
             }
-            final List<Territory> doesNotHaveFactoryYet =
-                Matches.getMatches(territoryChoices, Matches.territoryHasUnitsThatMatch(ownedFactories).negate());
+            final List<Territory> doesNotHaveFactoryYet = CollectionUtils.getMatches(territoryChoices,
+                Matches.territoryHasUnitsThatMatch(ownedFactories).negate());
             if (capitals.isEmpty() || doesNotHaveFactoryYet.isEmpty()) {
               picked = territoryChoices.get(0);
             } else {
@@ -343,7 +345,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           }
         } else {
           final int maxTerritoriesToPopulate = Math.min(territoryChoices.size(),
-              Math.max(4, Matches.countMatches(unitChoices, Matches.unitCanProduceUnits())));
+              Math.max(4, CollectionUtils.countMatches(unitChoices, Matches.unitCanProduceUnits())));
           test.addAll(territoriesWithFactories);
           if (!test.isEmpty()) {
             if (test.size() < maxTerritoriesToPopulate) {
@@ -359,7 +361,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
             picked = test.get(0);
           } else {
             if (capitals.isEmpty()) {
-              capitals.addAll(Matches.getMatches(data.getMap().getTerritories(),
+              capitals.addAll(CollectionUtils.getMatches(data.getMap().getTerritories(),
                   Matches.isTerritoryOwnedBy(me)
                       .and(Matches.territoryHasUnitsOwnedBy(me))
                       .and(Matches.territoryIsLand())));
@@ -392,7 +394,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
           picked = test.get(0);
         } else {
           if (capitals.isEmpty()) {
-            capitals.addAll(Matches.getMatches(data.getMap().getTerritories(),
+            capitals.addAll(CollectionUtils.getMatches(data.getMap().getTerritories(),
                 Matches.isTerritoryOwnedBy(me)
                     .and(Matches.territoryHasUnitsOwnedBy(me))
                     .and(Matches.territoryIsLand())));
@@ -410,7 +412,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     final Set<Unit> unitsToPlace = new HashSet<>();
     if (unitChoices != null && !unitChoices.isEmpty() && unitsPerPick > 0) {
       Collections.shuffle(unitChoices);
-      final List<Unit> nonFactory = Matches.getMatches(unitChoices, Matches.unitCanProduceUnits().negate());
+      final List<Unit> nonFactory = CollectionUtils.getMatches(unitChoices, Matches.unitCanProduceUnits().negate());
       if (nonFactory.isEmpty()) {
         for (int i = 0; i < unitsPerPick && !unitChoices.isEmpty(); i++) {
           unitsToPlace.add(unitChoices.get(0));
@@ -607,8 +609,8 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         final double random = Math.random();
         int maxWarActionsPerTurn = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
         if ((maxWarActionsPerTurn > 0)
-            && (Matches.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.relationshipIsAtWar()))
-                / numPlayers < 0.4) {
+            && (CollectionUtils.countMatches(data.getRelationshipTracker().getRelationships(id),
+                Matches.relationshipIsAtWar())) / numPlayers < 0.4) {
           if (Math.random() < .9) {
             maxWarActionsPerTurn = 0;
           } else {

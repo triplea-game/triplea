@@ -35,6 +35,7 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Triple;
@@ -577,14 +578,14 @@ public class BattleCalculator {
     final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
     final Predicate<Unit> match = Matches.unitIsLand().and(Matches.unitWasNotAmphibious());
-    killedNonAmphibUnits.addAll(Matches.getMatches(killed, match));
+    killedNonAmphibUnits.addAll(CollectionUtils.getMatches(killed, match));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
       return killed;
     }
     // Get a list of all units that are amphibious and remove those that are killed
-    allAmphibUnits.addAll(Matches.getMatches(targets, Matches.unitWasAmphibious()));
-    allAmphibUnits.removeAll(Matches.getMatches(killed, Matches.unitWasAmphibious()));
+    allAmphibUnits.addAll(CollectionUtils.getMatches(targets, Matches.unitWasAmphibious()));
+    allAmphibUnits.removeAll(CollectionUtils.getMatches(killed, Matches.unitWasAmphibious()));
     // Get a collection of the unit types of the amphib units
     for (final Unit unit : allAmphibUnits) {
       final UnitType ut = unit.getType();
@@ -595,7 +596,8 @@ public class BattleCalculator {
     // For each killed unit- see if there is an amphib unit that can be killed instead
     for (final Unit unit : killedNonAmphibUnits) {
       if (amphibTypes.contains(unit.getType())) { // add a unit from the collection
-        final List<Unit> oneAmphibUnit = Matches.getNMatches(allAmphibUnits, 1, Matches.unitIsOfType(unit.getType()));
+        final List<Unit> oneAmphibUnit =
+            CollectionUtils.getNMatches(allAmphibUnits, 1, Matches.unitIsOfType(unit.getType()));
         if (oneAmphibUnit.size() > 0) {
           final Unit amphibUnit = oneAmphibUnit.iterator().next();
           killed.remove(unit);

@@ -26,6 +26,7 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -173,7 +174,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final boolean isEditMode = getEditMode(data);
     if (!isEditMode) {
       // make sure all units are at least friendly
-      for (final Unit unit : Matches.getMatches(units, Matches.unitIsOwnedBy(player).negate())) {
+      for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(player).negate())) {
         result.addDisallowedUnit("Can only move owned units", unit);
       }
     }
@@ -210,7 +211,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result.setErrorReturnResult("Airborne Bases Must Have Launch Capacity");
     } else if (airborneCapacity < units.size()) {
       final Collection<Unit> overMax = new ArrayList<>(units);
-      overMax.removeAll(Matches.getNMatches(units, airborneCapacity, Matches.always()));
+      overMax.removeAll(CollectionUtils.getNMatches(units, airborneCapacity, Matches.always()));
       for (final Unit u : overMax) {
         result.addDisallowedUnit("Airborne Base Capacity Has Been Reached", u);
       }
@@ -328,7 +329,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     final GameMap map = data.getMap();
     final Collection<PlayerID> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
-    final Collection<Territory> territoriesWeCanLaunchFrom = Matches.getMatches(map.getTerritories(),
+    final Collection<Territory> territoriesWeCanLaunchFrom = CollectionUtils.getMatches(map.getTerritories(),
         Matches.territoryHasUnitsThatMatch(getAirborneMatch(airborneBases, alliesForBases)));
 
     return !territoriesWeCanLaunchFrom.isEmpty();

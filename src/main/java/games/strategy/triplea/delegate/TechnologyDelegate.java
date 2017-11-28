@@ -33,6 +33,7 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
 
@@ -84,7 +85,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final List<TriggerAttachment> toFireTestedAndSatisfied =
-            Matches.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
+            CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerAvailableTechChange(new HashSet<>(toFireTestedAndSatisfied), m_bridge,
             null, null, true, true, true, true);

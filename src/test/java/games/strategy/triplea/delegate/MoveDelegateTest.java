@@ -22,6 +22,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 public class MoveDelegateTest extends DelegateTest {
@@ -529,28 +530,29 @@ public class MoveDelegateTest extends DelegateTest {
     final Route load = new Route();
     load.setStart(japan);
     load.add(japanSeaZone);
-    String results = delegate.move(Matches.getNMatches(japan.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)),
-        load, Matches.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitIsOfType(transport)));
+    String results =
+        delegate.move(CollectionUtils.getNMatches(japan.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)), load,
+            CollectionUtils.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitIsOfType(transport)));
     assertNull(results);
     // Perform the first unload
     final Route unload = new Route();
     unload.setStart(japanSeaZone);
     unload.add(manchuria);
-    results = delegate.move(Matches.getNMatches(japanSeaZone.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)),
-        unload);
+    results = delegate.move(
+        CollectionUtils.getNMatches(japanSeaZone.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)), unload);
     assertNull(results);
     // Load another trn
     final Route route2 = new Route();
     route2.setStart(japan);
     route2.add(japanSeaZone);
-    results = delegate.move(Matches.getNMatches(japan.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)), route2,
-        Matches.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitIsOfType(transport)));
+    results = delegate.move(CollectionUtils.getNMatches(japan.getUnits().getUnits(), 1, Matches.unitIsOfType(infantry)),
+        route2, CollectionUtils.getMatches(japanSeaZone.getUnits().getUnits(), Matches.unitIsOfType(transport)));
     assertNull(results);
     // Move remaining units
     final Route route3 = new Route();
     route3.setStart(japanSeaZone);
     route3.add(sfeSeaZone);
-    final Collection<Unit> remainingTrns = Matches.getMatches(japanSeaZone.getUnits().getUnits(),
+    final Collection<Unit> remainingTrns = CollectionUtils.getMatches(japanSeaZone.getUnits().getUnits(),
         Matches.unitHasNotMoved().and(Matches.unitWasNotLoadedThisTurn()));
     results = delegate.move(remainingTrns, route3);
     assertNull(results);
@@ -808,8 +810,8 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(westAfricaSea);
     route.add(northAtlantic);
     Collection<Unit> units = new ArrayList<>();
-    units.addAll(Matches.getMatches(gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits().getUnits(),
-        Matches.unitIsCarrier()));
+    units.addAll(CollectionUtils.getMatches(
+        gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits().getUnits(), Matches.unitIsCarrier()));
     results = delegate.move(units, route);
     assertValid(results);
     // move carriers to ensure they can't go anywhere
@@ -818,7 +820,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(eastMediteranean);
     route.add(blackSea);
     units = new ArrayList<>();
-    units.addAll(Matches.getMatches(
+    units.addAll(CollectionUtils.getMatches(
         gameData.getMap().getTerritory(redSea.toString()).getUnits().getUnits(), Matches.unitIsCarrier()));
     results = delegate.move(units, route);
     assertValid(results);

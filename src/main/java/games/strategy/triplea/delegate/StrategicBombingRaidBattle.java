@@ -37,6 +37,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.TuvUtils;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 public class StrategicBombingRaidBattle extends AbstractBattle implements BattleStepStrings {
@@ -97,10 +98,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             .or(Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
                 Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data)));
     if (m_targets.isEmpty()) {
-      m_defendingUnits = Matches.getMatches(m_battleSite.getUnits().getUnits(), defenders);
+      m_defendingUnits = CollectionUtils.getMatches(m_battleSite.getUnits().getUnits(), defenders);
     } else {
       final List<Unit> targets =
-          Matches.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(m_attackingUnits,
+          CollectionUtils.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(m_attackingUnits,
               airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
       targets.addAll(m_targets.keySet());
       m_defendingUnits = targets;
@@ -242,7 +243,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
         // kill any suicide attackers (veqryn)
         if (m_attackingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
-          final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
+          final List<Unit> suicideUnits = CollectionUtils.getMatches(m_attackingUnits, Matches.unitIsSuicide());
           m_attackingUnits.removeAll(suicideUnits);
           final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
           final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
@@ -255,9 +256,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // kill any units that can die if they have reached max damage (veqryn)
         if (m_targets.keySet().stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
           final List<Unit> unitsCanDie =
-              Matches.getMatches(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
-          unitsCanDie
-              .retainAll(Matches.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
+              CollectionUtils.getMatches(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
+          unitsCanDie.retainAll(
+              CollectionUtils.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
           if (!unitsCanDie.isEmpty()) {
             // m_targets.removeAll(unitsCanDie);
             final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
@@ -351,13 +352,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final boolean isEditMode = BaseEditDelegate.getEditMode(bridge.getData());
       for (final String currentTypeAa : m_AAtypes) {
         final Collection<Unit> currentPossibleAa =
-            Matches.getMatches(m_defendingAA, Matches.unitIsAaOfTypeAa(currentTypeAa));
+            CollectionUtils.getMatches(m_defendingAA, Matches.unitIsAaOfTypeAa(currentTypeAa));
         final Set<UnitType> targetUnitTypesForThisTypeAa =
             UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(m_data);
         final Set<UnitType> airborneTypesTargettedToo =
             TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAa);
         if (determineAttackers) {
-          validAttackingUnitsForThisRoll = Matches.getMatches(m_attackingUnits,
+          validAttackingUnitsForThisRoll = CollectionUtils.getMatches(m_attackingUnits,
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
                   .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }

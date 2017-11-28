@@ -40,6 +40,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
 
@@ -171,7 +172,7 @@ public class WeakAI extends AbstractAI {
       return;
     }
     List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.unitIsInfrastructure().negate());
-    unitsToLoad = Matches.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getPlayerId()));
+    unitsToLoad = CollectionUtils.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getPlayerId()));
     for (final Territory neighbor : data.getMap().getNeighbors(capitol)) {
       if (!neighbor.isWater()) {
         continue;
@@ -536,7 +537,7 @@ public class WeakAI extends AbstractAI {
     final Predicate<Territory> walkInto =
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data)
             .or(Matches.isTerritoryFreeNeutral(data));
-    final List<Territory> enemyOwned = Matches.getMatches(data.getMap().getTerritories(), walkInto);
+    final List<Territory> enemyOwned = CollectionUtils.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);
     Collections.sort(enemyOwned, (o1, o2) -> {
       // -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
@@ -790,7 +791,7 @@ public class WeakAI extends AbstractAI {
     final List<RepairRule> repairRules;
     final Predicate<Unit> ourFactories = Matches.unitIsOwnedBy(player).and(Matches.unitCanProduceUnits());
     final List<Territory> repairFactories =
-        Matches.getMatches(Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));
+        CollectionUtils.getMatches(Utils.findUnitTerr(data, ourFactories), Matches.isTerritoryOwnedBy(player));
     // figure out if anything needs to be repaired
     if (player.getRepairFrontier() != null
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
@@ -812,7 +813,7 @@ public class WeakAI extends AbstractAI {
           continue;
         }
         final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(
-            Matches.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
+            CollectionUtils.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
         if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }

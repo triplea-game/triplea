@@ -17,6 +17,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.util.CollectionUtils;
 
 public class Fire implements IExecutable {
 
@@ -52,7 +53,7 @@ public class Fire implements IExecutable {
       final Map<Unit, Collection<Unit>> dependentUnits, final boolean headless,
       final Territory battleSite, final Collection<TerritoryEffect> territoryEffects,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
-    m_attackableUnits = Matches.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
+    m_attackableUnits = CollectionUtils.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
     m_canReturnFire = canReturnFire;
     m_firingUnits = firingUnits;
     m_stepName = stepName;
@@ -94,12 +95,12 @@ public class Fire implements IExecutable {
     final int hitCount = m_dice.getHits();
     AbstractBattle.getDisplay(bridge).notifyDice(m_dice, m_stepName);
     final int countTransports =
-        Matches.countMatches(m_attackableUnits, Matches.unitIsTransport().and(Matches.unitIsSea()));
+        CollectionUtils.countMatches(m_attackableUnits, Matches.unitIsTransport().and(Matches.unitIsSea()));
     if (countTransports > 0 && isTransportCasualtiesRestricted(bridge.getData())) {
       final CasualtyDetails message;
-      final Collection<Unit> nonTransports = Matches.getMatches(m_attackableUnits,
+      final Collection<Unit> nonTransports = CollectionUtils.getMatches(m_attackableUnits,
           Matches.unitIsNotTransportButCouldBeCombatTransport().or(Matches.unitIsNotSea()));
-      final Collection<Unit> transportsOnly = Matches.getMatches(m_attackableUnits,
+      final Collection<Unit> transportsOnly = CollectionUtils.getMatches(m_attackableUnits,
           Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea()));
       final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);
       // more hits than combat units
@@ -118,10 +119,10 @@ public class Fire implements IExecutable {
           final PlayerID player = playerIter.next();
           final Predicate<Unit> match = Matches.unitIsTransportButNotCombatTransport()
               .and(Matches.unitIsOwnedBy(player));
-          final Collection<Unit> playerTransports = Matches.getMatches(transportsOnly, match);
+          final Collection<Unit> playerTransports = CollectionUtils.getMatches(transportsOnly, match);
           final int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
           transportsOnly.removeAll(
-              Matches.getNMatches(playerTransports, transportsToRemove,
+              CollectionUtils.getNMatches(playerTransports, transportsToRemove,
                   Matches.unitIsTransportButNotCombatTransport()));
         }
         m_killed = nonTransports;
