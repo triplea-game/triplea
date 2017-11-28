@@ -37,8 +37,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
 
     try (InputStream input = inputStream.get()) {
-      final GameParser parser = new GameParser(uri.toString());
-      gameData = parser.parseMapProperties(parser.parseDom(input), gameName);
+      gameData = new GameParser(uri.toString()).parseMapProperties(input, gameName);
       gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
   }
