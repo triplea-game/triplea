@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -231,13 +231,13 @@ public class DownloadMapsWindow extends JFrame {
 
     final JTabbedPane outerTabs = new JTabbedPane();
 
-    final List<DownloadFileDescription> maps = filterMaps(allDownloads, download -> download.isMap());
+    final List<DownloadFileDescription> maps = filterMaps(allDownloads, DownloadFileDescription::isMap);
     outerTabs.add("Maps", createdTabbedPanelForMaps(maps, pendingDownloads));
 
-    final List<DownloadFileDescription> skins = filterMaps(allDownloads, download -> download.isMapSkin());
+    final List<DownloadFileDescription> skins = filterMaps(allDownloads, DownloadFileDescription::isMapSkin);
     outerTabs.add("Skins", createAvailableInstalledTabbedPanel(selectedMapName, skins, pendingDownloads));
 
-    final List<DownloadFileDescription> tools = filterMaps(allDownloads, download -> download.isMapTool());
+    final List<DownloadFileDescription> tools = filterMaps(allDownloads, DownloadFileDescription::isMapTool);
     outerTabs.add("Tools", createAvailableInstalledTabbedPanel(selectedMapName, tools, pendingDownloads));
 
     final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, outerTabs,
@@ -323,12 +323,10 @@ public class DownloadMapsWindow extends JFrame {
     return mapName.replace(' ', '_').toLowerCase();
   }
 
-
   private static List<DownloadFileDescription> filterMaps(final List<DownloadFileDescription> maps,
-      final Function<DownloadFileDescription, Boolean> filter) {
-
+      final Predicate<DownloadFileDescription> predicate) {
     maps.forEach(map -> checkNotNull(map, "Maps list contained null element: " + maps));
-    return maps.stream().filter(map -> filter.apply(map)).collect(Collectors.toList());
+    return maps.stream().filter(predicate).collect(Collectors.toList());
   }
 
   private JTabbedPane createAvailableInstalledTabbedPanel(
