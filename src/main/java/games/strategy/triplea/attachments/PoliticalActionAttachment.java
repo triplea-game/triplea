@@ -19,6 +19,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CollectionUtils;
 
 /**
  * An attachment, attached to a player that will describe which political
@@ -141,7 +142,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     if (!Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
       return new ArrayList<>();
     }
-    return Matches.getMatches(getPoliticalActionAttachments(player),
+    return CollectionUtils.getMatches(getPoliticalActionAttachments(player),
         Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)
             .and(Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }

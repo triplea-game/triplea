@@ -32,6 +32,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TuvUtils;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
 
@@ -169,14 +170,14 @@ public class AirBattle extends AbstractBattle {
               .andIf(m_isBombingRun, Matches.unitIsNotStrategicBomber())
               .build();
           if (m_attackingUnits.stream().anyMatch(attackerSuicide)) {
-            final List<Unit> suicideUnits = Matches.getMatches(m_attackingUnits, Matches.unitIsSuicide());
+            final List<Unit> suicideUnits = CollectionUtils.getMatches(m_attackingUnits, Matches.unitIsSuicide());
             m_attackingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
             tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, attackerCosts, m_data);
             m_attackerLostTUV += tuvLostAttacker;
           }
           if (m_defendingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
-            final List<Unit> suicideUnits = Matches.getMatches(m_defendingUnits, Matches.unitIsSuicide());
+            final List<Unit> suicideUnits = CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSuicide());
             m_defendingUnits.removeAll(suicideUnits);
             remove(suicideUnits, bridge, m_battleSite);
             tuvLostDefender = TuvUtils.getTuv(suicideUnits, m_defender, defenderCosts, m_data);
@@ -299,7 +300,7 @@ public class AirBattle extends AbstractBattle {
     // so we do not have to create normal battles, only bombing raids
     // setup new battle here
     if (m_isBombingRun) {
-      final Collection<Unit> bombers = Matches.getMatches(m_attackingUnits, Matches.unitIsStrategicBomber());
+      final Collection<Unit> bombers = CollectionUtils.getMatches(m_attackingUnits, Matches.unitIsStrategicBomber());
       if (!bombers.isEmpty()) {
         HashMap<Unit, HashSet<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits().getMatches(
@@ -308,7 +309,7 @@ public class AirBattle extends AbstractBattle {
                 .and(Matches.unitIsBeingTransported().negate()));
         for (final Unit unit : bombers) {
           final Collection<Unit> enemyTargets =
-              Matches.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
+              CollectionUtils.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
           if (!enemyTargets.isEmpty()) {
             Unit target = null;
             if (enemyTargets.size() > 1

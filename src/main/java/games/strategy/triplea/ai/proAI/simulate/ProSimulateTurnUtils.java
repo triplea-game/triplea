@@ -32,6 +32,7 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.util.CollectionUtils;
 
 /**
  * Pro AI simulate turn utilities.
@@ -65,8 +66,10 @@ public class ProSimulateTurnUtils {
         // Make updates to data
         final List<Unit> attackersToRemove = new ArrayList<>(attackers);
         attackersToRemove.removeAll(remainingUnits);
-        final List<Unit> defendersToRemove = Matches.getMatches(defenders, Matches.unitIsInfrastructure().negate());
-        final List<Unit> infrastructureToChangeOwner = Matches.getMatches(defenders, Matches.unitIsInfrastructure());
+        final List<Unit> defendersToRemove =
+            CollectionUtils.getMatches(defenders, Matches.unitIsInfrastructure().negate());
+        final List<Unit> infrastructureToChangeOwner =
+            CollectionUtils.getMatches(defenders, Matches.unitIsInfrastructure());
         ProLogger.debug("attackersToRemove=" + attackersToRemove);
         ProLogger.debug("defendersToRemove=" + defendersToRemove);
         ProLogger.debug("infrastructureToChangeOwner=" + infrastructureToChangeOwner);
@@ -166,7 +169,7 @@ public class ProSimulateTurnUtils {
       // Give capital and any allied territories back to original owner
       final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
       final List<Territory> friendlyTerritories =
-          Matches.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
+          CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       friendlyTerritories.add(t);
       for (final Territory item : friendlyTerritories) {
         if (item.getOwner() == terrOrigOwner) {
@@ -174,7 +177,8 @@ public class ProSimulateTurnUtils {
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
         delegateBridge.addChange(takeOverFriendlyTerritories);
-        final Collection<Unit> units = Matches.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
+        final Collection<Unit> units =
+            CollectionUtils.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, t);
           delegateBridge.addChange(takeOverNonComUnits);

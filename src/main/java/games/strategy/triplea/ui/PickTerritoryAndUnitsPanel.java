@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Tuple;
 
@@ -154,7 +155,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
             && unitChoices.stream().allMatch(Matches.unitIsOfType(unitChoices.get(0).getType()))) {
           // if we have only 1 unit type, set it to that
           pickedUnits.clear();
-          pickedUnits.addAll(Matches.getNMatches(unitChoices, unitsPerPick, Matches.always()));
+          pickedUnits.addAll(CollectionUtils.getNMatches(unitChoices, unitsPerPick, Matches.always()));
         } else {
           EventThreadJOptionPane.showMessageDialog(parent, "Must Choose Units For This Territory",
               "Must Choose Units For This Territory", JOptionPane.WARNING_MESSAGE);

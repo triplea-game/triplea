@@ -29,6 +29,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
@@ -1048,7 +1049,7 @@ public class UnitAttachment extends DefaultAttachment {
       final String filterForAbility, final GameData data) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
-        getUnitTypesFromUnitList(Matches.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
+        getUnitTypesFromUnitList(CollectionUtils.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
       final Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
       for (final String receive : receives) {
@@ -1057,7 +1058,7 @@ public class UnitAttachment extends DefaultAttachment {
           continue;
         }
         map.put(Tuple.of(s[0], s[1]),
-            Matches.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
+            CollectionUtils.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
       }
     }
     return map;
@@ -1073,7 +1074,7 @@ public class UnitAttachment extends DefaultAttachment {
     final IntegerMap<Tuple<String, String>> whichGive =
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
-      final Collection<Unit> receives = Matches.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
+      final Collection<Unit> receives = CollectionUtils.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
           Matches.unitCanReceiveAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
       whichReceiveNoDuplicates.addAll(receives);
       unitsCopy.removeAll(receives);
@@ -2655,7 +2656,7 @@ public class UnitAttachment extends DefaultAttachment {
       stackingMatch = Matches.unitIsOfType(ut);
     }
     // else if (stackingType.equals("total"))
-    final int totalInTerritory = Matches.countMatches(t.getUnits().getUnits(), stackingMatch);
+    final int totalInTerritory = CollectionUtils.countMatches(t.getUnits().getUnits(), stackingMatch);
     return Math.max(0, max - totalInTerritory);
   }
 
@@ -3099,7 +3100,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("can Give Attack Bonus To Other Units, ");
     } else {
       final List<UnitSupportAttachment> supports =
-          Matches.getMatches(UnitSupportAttachment.get(unitType),
+          CollectionUtils.getMatches(UnitSupportAttachment.get(unitType),
               Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
       if (supports.size() > 0) {
         if (supports.size() > 2) {

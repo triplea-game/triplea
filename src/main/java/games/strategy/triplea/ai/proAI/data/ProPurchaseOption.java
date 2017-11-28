@@ -20,6 +20,7 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 public class ProPurchaseOption {
@@ -332,7 +333,7 @@ public class ProPurchaseOption {
         final Set<Unit> supportableUnits = new HashSet<>();
         for (final UnitSupportAttachment usa2 : bonusType) {
           numSupportProvided += supportLeft.getInt(usa2);
-          supportableUnits.addAll(Matches.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));
+          supportableUnits.addAll(CollectionUtils.getMatches(units, Matches.unitIsOfTypes(usa2.getUnitType())));
         }
         final int numSupportableUnits = supportableUnits.size();
 

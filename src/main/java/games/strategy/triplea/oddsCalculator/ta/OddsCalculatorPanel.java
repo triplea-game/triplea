@@ -75,6 +75,7 @@ import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.WidgetChangedListener;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 class OddsCalculatorPanel extends JPanel {
@@ -376,7 +377,7 @@ class OddsCalculatorPanel extends JPanel {
         final List<Unit> attacking = attackingUnitsPanel.getUnits();
         List<Unit> bombarding = new ArrayList<>();
         if (isLand()) {
-          bombarding = Matches.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
+          bombarding = CollectionUtils.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
           attacking.removeAll(bombarding);
         }
         calculator.setRetreatAfterRound(retreatAfterXRounds.getValue());
@@ -422,9 +423,9 @@ class OddsCalculatorPanel extends JPanel {
       draw.setText(formatPercentage(results.get().getDrawPercent()));
       final boolean isLand = isLand();
       final List<Unit> mainCombatAttackers =
-          Matches.getMatches(attackers.get(), Matches.unitCanBeInBattle(true, isLand, 1, false, true, true));
+          CollectionUtils.getMatches(attackers.get(), Matches.unitCanBeInBattle(true, isLand, 1, false, true, true));
       final List<Unit> mainCombatDefenders =
-          Matches.getMatches(defenders.get(), Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
+          CollectionUtils.getMatches(defenders.get(), Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
       final int attackersTotal = mainCombatAttackers.size();
       final int defendersTotal = mainCombatDefenders.size();
       defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " /" + defendersTotal);
@@ -461,7 +462,7 @@ class OddsCalculatorPanel extends JPanel {
       units = Collections.emptyList();
     }
     final boolean isLand = isLand();
-    units = Matches.getMatches(units, Matches.unitCanBeInBattle(false, isLand, 1, false, false, false));
+    units = CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand, 1, false, false, false));
     defendingUnitsPanel.init(getDefender(), units, isLand);
   }
 
@@ -470,7 +471,7 @@ class OddsCalculatorPanel extends JPanel {
       units = Collections.emptyList();
     }
     final boolean isLand = isLand();
-    units = Matches.getMatches(units, Matches.unitCanBeInBattle(true, isLand, 1, false, false, false));
+    units = CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(true, isLand, 1, false, false, false));
     attackingUnitsPanel.init(getAttacker(), units, isLand);
   }
 
@@ -745,9 +746,9 @@ class OddsCalculatorPanel extends JPanel {
     try {
       data.acquireReadLock();
       // do not include bombardment and aa guns in our "total" labels
-      final List<Unit> attackers = Matches.getMatches(attackingUnitsPanel.getUnits(),
+      final List<Unit> attackers = CollectionUtils.getMatches(attackingUnitsPanel.getUnits(),
           Matches.unitCanBeInBattle(true, isLand, 1, false, true, true));
-      final List<Unit> defenders = Matches.getMatches(defendingUnitsPanel.getUnits(),
+      final List<Unit> defenders = CollectionUtils.getMatches(defendingUnitsPanel.getUnits(),
           Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
       attackerUnitsTotalNumber.setText("Units: " + attackers.size());
       defenderUnitsTotalNumber.setText("Units: " + defenders.size());
@@ -940,7 +941,7 @@ class OddsCalculatorPanel extends JPanel {
       }
 
       // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
-      unitTypes = Matches.getMatches(unitTypes,
+      unitTypes = CollectionUtils.getMatches(unitTypes,
           Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
       return unitTypes;
     }

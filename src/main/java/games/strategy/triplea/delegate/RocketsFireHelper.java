@@ -30,6 +30,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
 
@@ -196,14 +197,14 @@ public class RocketsFireHelper {
     final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
         Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate()));
     final Collection<Unit> enemyTargetsTotal =
-        Matches.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).negate());
+        CollectionUtils.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).negate());
     final Collection<Unit> targets = new ArrayList<>();
     final Collection<Unit> rockets;
     // attackFrom could be null if WW2V1
     if (attackFrom == null) {
       rockets = null;
     } else {
-      rockets = new ArrayList<>(Matches.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player)));
+      rockets = new ArrayList<>(CollectionUtils.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player)));
     }
     final int numberOfAttacks = (rockets == null ? 1
         : Math.min(TechAbilityAttachment.getRocketNumberPerTerritory(player, data),
@@ -225,7 +226,7 @@ public class RocketsFireHelper {
         }
       }
       final Collection<Unit> enemyTargets =
-          Matches.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
+          CollectionUtils.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
       if (enemyTargets.isEmpty()) {
         // TODO: this sucks
         return;
@@ -425,9 +426,9 @@ public class RocketsFireHelper {
     }
     // kill any units that can die if they have reached max damage (veqryn)
     if (targets.stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
-      final List<Unit> unitsCanDie = Matches.getMatches(targets, Matches.unitCanDieFromReachingMaxDamage());
-      unitsCanDie
-          .retainAll(Matches.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
+      final List<Unit> unitsCanDie = CollectionUtils.getMatches(targets, Matches.unitCanDieFromReachingMaxDamage());
+      unitsCanDie.retainAll(
+          CollectionUtils.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
       if (!unitsCanDie.isEmpty()) {
         final Change removeDead = ChangeFactory.removeUnits(attackedTerritory, unitsCanDie);
         final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + attackedTerritory.getName();

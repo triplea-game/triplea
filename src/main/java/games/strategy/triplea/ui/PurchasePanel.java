@@ -26,6 +26,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 public class PurchasePanel extends ActionPanel {
@@ -157,7 +158,7 @@ public class PurchasePanel extends ActionPanel {
       int totalProd = 0;
       getData().acquireReadLock();
       try {
-        for (final Territory t : Matches.getMatches(getData().getMap().getTerritories(),
+        for (final Territory t : CollectionUtils.getMatches(getData().getMap().getTerritories(),
             Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getCurrentPlayer()))) {
           totalProd += TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, getCurrentPlayer(),
               getData(), true, true);
@@ -178,7 +179,7 @@ public class PurchasePanel extends ActionPanel {
       }
       final PlayerID player = getCurrentPlayer();
       final Collection<Unit> unitsNeedingFactory =
-          Matches.getMatches(player.getUnits().getUnits(), Matches.unitIsNotConstruction());
+          CollectionUtils.getMatches(player.getUnits().getUnits(), Matches.unitIsNotConstruction());
       if (!bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
         final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size())
             + " units, and can only place " + totalProd + " of them. Continue with purchase?";

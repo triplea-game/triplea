@@ -22,6 +22,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -345,7 +346,7 @@ public class TuvUtils {
    */
   public static int getTuv(final Collection<Unit> units, final PlayerID player, final IntegerMap<UnitType> costs,
       final GameData data) {
-    final Collection<Unit> playerUnits = Matches.getMatches(units, Matches.alliedUnit(player, data));
+    final Collection<Unit> playerUnits = CollectionUtils.getMatches(units, Matches.alliedUnit(player, data));
     return getTuv(playerUnits, costs);
   }
 

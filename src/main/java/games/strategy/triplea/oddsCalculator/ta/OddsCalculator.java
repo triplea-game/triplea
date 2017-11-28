@@ -49,6 +49,7 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.Tuple;
 
 class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
@@ -341,7 +342,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     final List<Unit> order = new ArrayList<>();
     for (final Tuple<Integer, UnitType> section : map) {
       final List<Unit> unitsOfType =
-          Matches.getNMatches(unitsLeft, section.getFirst(), Matches.unitIsOfType(section.getSecond()));
+          CollectionUtils.getNMatches(unitsLeft, section.getFirst(), Matches.unitIsOfType(section.getSecond()));
       order.addAll(unitsOfType);
       unitsLeft.removeAll(unitsOfType);
     }
@@ -616,7 +617,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
           return null;
         }
         final Collection<Unit> unitsLeft = isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
-        final Collection<Unit> airLeft = Matches.getMatches(unitsLeft, Matches.unitIsAir());
+        final Collection<Unit> airLeft = CollectionUtils.getMatches(unitsLeft, Matches.unitIsAir());
         if (retreatWhenOnlyAirLeft) {
           // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
           // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken
@@ -654,7 +655,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
         // no land units left, but we have a non land unit to kill and land unit was killed
         if (!notKilled.stream().anyMatch(Matches.unitIsLand()) && notKilled.stream().anyMatch(Matches.unitIsNotLand())
             && killedUnits.stream().anyMatch(Matches.unitIsLand())) {
-          final List<Unit> notKilledAndNotLand = Matches.getMatches(notKilled, Matches.unitIsNotLand());
+          final List<Unit> notKilledAndNotLand = CollectionUtils.getMatches(notKilled, Matches.unitIsNotLand());
           // sort according to cost
           Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());
           // remove the last killed unit, this should be the strongest

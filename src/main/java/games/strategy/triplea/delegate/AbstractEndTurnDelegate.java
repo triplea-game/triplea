@@ -35,6 +35,7 @@ import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.BonusIncomeUtils;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
@@ -355,7 +356,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return 0;
     }
     final GameMap map = data.getMap();
-    final Collection<Territory> blockable = Matches.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone());
+    final Collection<Territory> blockable =
+        CollectionUtils.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone());
     if (blockable.isEmpty()) {
       return 0;
     }
@@ -369,14 +371,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     for (final Territory b : blockable) {
       // match will check for land, convoy zones, and also contested territories
       final List<Territory> viableNeighbors =
-          Matches.getMatches(map.getNeighbors(b),
+          CollectionUtils.getMatches(map.getNeighbors(b),
               Matches.isTerritoryOwnedBy(player).and(Matches.territoryCanCollectIncomeFrom(player, data)));
       final int maxLoss = getProduction(viableNeighbors);
       if (maxLoss <= 0) {
         continue;
       }
       int loss = 0;
-      final Collection<Unit> enemies = Matches.getMatches(b.getUnits().getUnits(), enemyUnits);
+      final Collection<Unit> enemies = CollectionUtils.getMatches(b.getUnits().getUnits(), enemyUnits);
       if (enemies.isEmpty()) {
         continue;
       }

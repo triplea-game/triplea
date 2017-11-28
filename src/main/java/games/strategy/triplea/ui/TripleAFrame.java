@@ -154,6 +154,7 @@ import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.LocalizeHtml;
@@ -1011,7 +1012,7 @@ public class TripleAFrame extends MainGameFrame {
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     if (messageAndDialogThreadPool == null) {
       return Tuple.of(territoryChoices.iterator().next(),
-          new HashSet<>(Matches.getNMatches(unitChoices, unitsPerPick, Matches.always())));
+          new HashSet<>(CollectionUtils.getNMatches(unitChoices, unitsPerPick, Matches.always())));
     }
     // total hacks
     messageAndDialogThreadPool.waitForAll();

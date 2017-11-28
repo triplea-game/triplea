@@ -32,6 +32,7 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
 
@@ -102,8 +103,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
           if (!toFireBeforeBonus.isEmpty()) {
 
             // get all triggers that are satisfied based on the tested conditions.
-            final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-                Matches.getMatches(toFireBeforeBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+            final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(CollectionUtils
+                .getMatches(toFireBeforeBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 
             // now list out individual types to fire, once for each of the matches above.
             TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
@@ -146,8 +147,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
         if (!toFireAfterBonus.isEmpty()) {
 
           // get all triggers that are satisfied based on the tested conditions.
-          final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-              Matches.getMatches(toFireAfterBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+          final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(CollectionUtils
+              .getMatches(toFireAfterBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 
           // now list out individual types to fire, once for each of the matches above.
           TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
@@ -206,7 +207,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
       // Only air units can move during both CM and NCM in the same turn so moved units are set to no moves left
       final List<Unit> alreadyMovedNonAirUnits =
-          Matches.getMatches(data.getUnits().getUnits(), Matches.unitHasMoved().and(Matches.unitIsNotAir()));
+          CollectionUtils.getMatches(data.getUnits().getUnits(), Matches.unitHasMoved().and(Matches.unitIsNotAir()));
       m_bridge.addChange(ChangeFactory.markNoMovementChange(alreadyMovedNonAirUnits));
     }
     m_needToInitialize = true;
@@ -327,7 +328,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         continue;
       }
       final Collection<Unit> crippledAlliedCarriers =
-          Matches.getMatches(t.getUnits().getUnits(), crippledAlliedCarriersMatch);
+          CollectionUtils.getMatches(t.getUnits().getUnits(), crippledAlliedCarriersMatch);
       if (crippledAlliedCarriers.isEmpty()) {
         continue;
       }
@@ -365,18 +366,18 @@ public class MoveDelegate extends AbstractMoveDelegate {
         final Collection<Unit> givesBonusUnits = new ArrayList<>();
         final Predicate<Unit> givesBonusUnit = Matches.alliedUnit(player, data)
             .and(Matches.unitCanGiveBonusMovementToThisUnit(u));
-        givesBonusUnits.addAll(Matches.getMatches(t.getUnits().getUnits(), givesBonusUnit));
+        givesBonusUnits.addAll(CollectionUtils.getMatches(t.getUnits().getUnits(), givesBonusUnit));
         if (Matches.unitIsSea().test(u)) {
           final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(Matches.unitIsLand());
           final Set<Territory> neighbors = new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
           for (final Territory current : neighbors) {
-            givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
+            givesBonusUnits.addAll(CollectionUtils.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
           }
         } else if (Matches.unitIsLand().test(u)) {
           final Predicate<Unit> givesBonusUnitSea = givesBonusUnit.and(Matches.unitIsSea());
           final Set<Territory> neighbors = new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
           for (final Territory current : neighbors) {
-            givesBonusUnits.addAll(Matches.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
+            givesBonusUnits.addAll(CollectionUtils.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
           }
         }
         for (final Unit bonusGiver : givesBonusUnits) {
@@ -447,7 +448,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
     // now if damaged includes any carriers that are repairing, and have damaged abilities set for not allowing air
     // units to leave while damaged, we need to remove those air units now
-    final Collection<Unit> damagedCarriers = Matches.getMatches(fullyRepaired.keySet(),
+    final Collection<Unit> damagedCarriers = CollectionUtils.getMatches(fullyRepaired.keySet(),
         Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER));
 
     // now cycle through those now-repaired carriers, and remove allied air from being dependent

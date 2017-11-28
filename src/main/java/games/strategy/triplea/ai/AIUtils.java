@@ -17,6 +17,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CollectionUtils;
 
 /**
  * Handy utility methods for the writers of an AI.
@@ -105,8 +106,8 @@ public class AIUtils {
       }
     }
     if (attacking) {
-      final int art = Matches.countMatches(units, Matches.unitIsArtillery());
-      final int artSupport = Matches.countMatches(units, Matches.unitIsArtillerySupportable());
+      final int art = CollectionUtils.countMatches(units, Matches.unitIsArtillery());
+      final int artSupport = CollectionUtils.countMatches(units, Matches.unitIsArtillerySupportable());
       strength += Math.min(art, artSupport);
     }
     return strength;
