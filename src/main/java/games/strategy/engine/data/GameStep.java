@@ -22,20 +22,28 @@ public class GameStep extends GameDataComponent {
   private int m_runCount = 0;
   private int m_maxRunCount = -1;
   private final Properties m_properties;
-  public static final String PROPERTY_skipPosting = "skipPosting";
-  public static final String PROPERTY_turnSummaryPlayers = "turnSummaryPlayers";
-  public static final String PROPERTY_airborneMove = "airborneMove";
-  public static final String PROPERTY_combatMove = "combatMove";
-  public static final String PROPERTY_nonCombatMove = "nonCombatMove";
-  public static final String PROPERTY_fireRockets = "fireRockets";
-  public static final String PROPERTY_repairUnits = "repairUnits";
-  public static final String PROPERTY_giveBonusMovement = "giveBonusMovement";
-  public static final String PROPERTY_removeAirThatCanNotLand = "removeAirThatCanNotLand";
-  public static final String PROPERTY_resetUnitStateAtStart = "resetUnitStateAtStart";
-  public static final String PROPERTY_resetUnitStateAtEnd = "resetUnitStateAtEnd";
-  public static final String PROPERTY_bid = "bid";
-  public static final String PROPERTY_combinedTurns = "combinedTurns";
-  public static final String PROPERTY_repairPlayers = "repairPlayers";
+
+  /**
+   * The keys for all supported game step properties.
+   *
+   * @see GameStep#getProperties()
+   */
+  public interface PropertyKeys {
+    String SKIP_POSTING = "skipPosting";
+    String TURN_SUMMARY_PLAYERS = "turnSummaryPlayers";
+    String AIRBORNE_MOVE = "airborneMove";
+    String COMBAT_MOVE = "combatMove";
+    String NON_COMBAT_MOVE = "nonCombatMove";
+    String FIRE_ROCKETS = "fireRockets";
+    String REPAIR_UNITS = "repairUnits";
+    String GIVE_BONUS_MOVEMENT = "giveBonusMovement";
+    String REMOVE_AIR_THAT_CAN_NOT_LAND = "removeAirThatCanNotLand";
+    String RESET_UNIT_STATE_AT_START = "resetUnitStateAtStart";
+    String RESET_UNIT_STATE_AT_END = "resetUnitStateAtEnd";
+    String BID = "bid";
+    String COMBINED_TURNS = "combinedTurns";
+    String REPAIR_PLAYERS = "repairPlayers";
+  }
 
   /**
    * Creates new GameStep.

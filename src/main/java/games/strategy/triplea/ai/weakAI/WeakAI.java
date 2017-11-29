@@ -274,7 +274,7 @@ public class WeakAI extends AbstractAI {
     final Territory lastSeaZoneOnAmphib = amphibRoute.getAllTerritories().get(amphibRoute.numberOfSteps() - 1);
     final Predicate<Unit> ownedAndNotMoved = Matches.unitIsOwnedBy(player)
         .and(Matches.unitHasNotMoved())
-        .and(Transporting);
+        .and(Matches.unitIsTransporting());
     final List<Unit> unitsToMove = new ArrayList<>();
     final List<Unit> transports = firstSeaZoneOnAmphib.getUnits().getMatches(ownedAndNotMoved);
     if (transports.size() <= maxTrans) {
@@ -1064,6 +1064,4 @@ public class WeakAI extends AbstractAI {
   public boolean shouldBomberBomb(final Territory territory) {
     return true;
   }
-
-  public static final Predicate<Unit> Transporting = o -> TripleAUnit.get(o).getTransporting().size() > 0;
 }

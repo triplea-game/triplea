@@ -46,12 +46,12 @@ public final class Util {
     return results.get();
   }
 
-  private static final Component c = new Component() {
+  private static final Component component = new Component() {
     private static final long serialVersionUID = 1800075529163275600L;
   };
 
   public static void ensureImageLoaded(final Image anImage) {
-    final MediaTracker tracker = new MediaTracker(c);
+    final MediaTracker tracker = new MediaTracker(component);
     tracker.addImage(anImage, 1);
     try {
       tracker.waitForAll();
