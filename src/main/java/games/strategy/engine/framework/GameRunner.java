@@ -13,15 +13,12 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -466,29 +463,25 @@ public class GameRunner {
     return img;
   }
 
-  public static void hostGame(final int port, final String playerName, final String comments, final String password,
+  public static void hostGame(
+      final int port,
+      final String playerName,
+      final String comments,
+      final String password,
       final Messengers messengers) {
-    final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands);
-    commands.add("-D" + TRIPLEA_SERVER_PROPERTY + "=true");
-    commands.add("-D" + TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add("-D" + TRIPLEA_NAME_PROPERTY + "=" + playerName);
-    commands.add("-D" + LOBBY_HOST + "="
-        + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
-    commands.add("-D" + GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + "="
-        + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
-    commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
-    commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
+    System.setProperty(TRIPLEA_SERVER_PROPERTY, String.valueOf(true));
+    System.setProperty(TRIPLEA_PORT_PROPERTY, String.valueOf(port));
+    System.setProperty(TRIPLEA_NAME_PROPERTY, playerName);
+    System.setProperty(LOBBY_HOST,
+        messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
+    System.setProperty(TRIPLEA_LOBBY_PORT_PROPERTY,
+        String.valueOf(messengers.getMessenger().getRemoteServerSocketAddress().getPort()));
+    System.setProperty(LOBBY_GAME_COMMENTS, comments);
+    System.setProperty(LOBBY_GAME_HOSTED_BY, messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
-      commands.add("-D" + TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + password);
+      System.setProperty(TRIPLEA_SERVER_PASSWORD_PROPERTY, password);
     }
-    final String fileName = System.getProperty(TRIPLEA_GAME_PROPERTY, "");
-    if (fileName.length() > 0) {
-      commands.add("-D" + TRIPLEA_GAME_PROPERTY + "=" + fileName);
-    }
-    final String javaClass = GameRunner.class.getName();
-    commands.add(javaClass);
-    ProcessRunnerUtil.exec(commands);
+    showMainFrame();
   }
 
   public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent) {
@@ -497,7 +490,6 @@ public class GameRunner {
       return;
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
-    final String newClassPath = null;
     if (!GameEngineVersion.of(ClientContext.engineVersion()).isCompatibleWithEngineVersion(engineVersionOfGameToJoin)) {
       JOptionPane.showMessageDialog(parent,
           "Host is using version " + engineVersionOfGameToJoin.toStringFull()
@@ -505,20 +497,15 @@ public class GameRunner {
           "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), newClassPath, messengers);
+    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), messengers);
   }
 
-  private static void joinGame(final int port, final String hostAddressIp, final @Nullable String newClassPath,
-      final Messengers messengers) {
-    final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
-    final String prefix = "-D";
-    commands.add(prefix + TRIPLEA_CLIENT_PROPERTY + "=true");
-    commands.add(prefix + TRIPLEA_PORT_PROPERTY + "=" + port);
-    commands.add(prefix + TRIPLEA_HOST_PROPERTY + "=" + hostAddressIp);
-    commands.add(prefix + TRIPLEA_NAME_PROPERTY + "=" + messengers.getMessenger().getLocalNode().getName());
-    commands.add(GameRunner.class.getName());
-    ProcessRunnerUtil.exec(commands);
+  private static void joinGame(final int port, final String hostAddressIp, final Messengers messengers) {
+    System.setProperty(TRIPLEA_CLIENT_PROPERTY, String.valueOf(true));
+    System.setProperty(TRIPLEA_PORT_PROPERTY, String.valueOf(port));
+    System.setProperty(TRIPLEA_HOST_PROPERTY, hostAddressIp);
+    System.setProperty(TRIPLEA_NAME_PROPERTY, messengers.getMessenger().getLocalNode().getName());
+    showMainFrame();
   }
 
 
