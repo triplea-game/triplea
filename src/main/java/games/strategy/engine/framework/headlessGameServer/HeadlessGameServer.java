@@ -1,5 +1,21 @@
 package games.strategy.engine.framework.headlessGameServer;
 
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_COMMENTS;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_HOSTED_BY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_RECONNECTION;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.ArgParser.CliProperties.MAP_FOLDER;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_LOBBY_PORT_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
+
 import java.io.File;
 import java.io.InputStream;
 import java.time.Duration;
@@ -165,17 +181,17 @@ public class HeadlessGameServer {
   }
 
   public String getSalt() {
-    final String encryptedPassword = MD5Crypt.crypt(System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, ""));
+    final String encryptedPassword = MD5Crypt.crypt(System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, ""));
     final String salt = MD5Crypt.getSalt(MD5Crypt.MAGIC, encryptedPassword);
     return salt;
   }
 
   public String remoteShutdown(final String hashedPassword, final String salt) {
-    final String password = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
       new Thread(() -> {
@@ -189,11 +205,11 @@ public class HeadlessGameServer {
   }
 
   public String remoteStopGame(final String hashedPassword, final String salt) {
-    final String password = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
       final ServerGame serverGame = m_iGame;
@@ -217,11 +233,11 @@ public class HeadlessGameServer {
   }
 
   public String remoteGetChatLog(final String hashedPassword, final String salt) {
-    final String password = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
       final IChatPanel chat = getServerModel().getChatPanel();
@@ -236,11 +252,11 @@ public class HeadlessGameServer {
 
   public String remoteMutePlayer(final String playerName, final int minutes, final String hashedPassword,
       final String salt) {
-    final String password = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     // (48 hours max)
     final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
@@ -281,11 +297,11 @@ public class HeadlessGameServer {
   }
 
   public String remoteBootPlayer(final String playerName, final String hashedPassword, final String salt) {
-    final String password = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
       new Thread(() -> {
@@ -320,11 +336,11 @@ public class HeadlessGameServer {
 
   public String remoteBanPlayer(final String playerName, final int hours, final String hashedPassword,
       final String salt) {
-    final String password = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
+    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
     // milliseconds (30 days max)
     final Instant expire = Instant.now().plus(Duration.ofHours(Math.min(24 * 30, hours)));
@@ -396,7 +412,7 @@ public class HeadlessGameServer {
     }));
     m_availableGames = new AvailableGames();
     m_gameSelectorModel = new GameSelectorModel();
-    final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+    final String fileName = System.getProperty(TRIPLEA_GAME_PROPERTY, "");
     if (fileName.length() > 0) {
       try {
         final File file = new File(fileName);
@@ -415,7 +431,7 @@ public class HeadlessGameServer {
 
     int reconnect;
     try {
-      final String reconnectionSeconds = System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION,
+      final String reconnectionSeconds = System.getProperty(LOBBY_GAME_RECONNECTION,
           "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
       reconnect =
           Math.max(Integer.parseInt(reconnectionSeconds), GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM);
@@ -459,9 +475,9 @@ public class HeadlessGameServer {
 
   public static void resetLobbyHostOldExtensionProperties() {
     for (final String property : getProperties()) {
-      if (GameRunner.LOBBY_HOST.equals(property)
-          || GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
-          || GameRunner.LOBBY_GAME_HOSTED_BY.equals(property)) {
+      if (LOBBY_HOST.equals(property)
+          || TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
+          || LOBBY_GAME_HOSTED_BY.equals(property)) {
         // for these 3 properties, we clear them after hosting, but back them up.
         final String oldValue = System.getProperty(property + GameRunner.OLD_EXTENSION);
         if (oldValue != null) {
@@ -472,13 +488,13 @@ public class HeadlessGameServer {
   }
 
   private static Set<String> getProperties() {
-    return new HashSet<>(Arrays.asList(GameRunner.TRIPLEA_GAME_PROPERTY, GameRunner.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
-        GameRunner.TRIPLEA_SERVER_PROPERTY, GameRunner.TRIPLEA_PORT_PROPERTY,
-        GameRunner.TRIPLEA_NAME_PROPERTY, GameRunner.LOBBY_HOST, GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY,
-        GameRunner.LOBBY_GAME_COMMENTS, GameRunner.LOBBY_GAME_HOSTED_BY, GameRunner.LOBBY_GAME_SUPPORT_EMAIL,
-        GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, GameRunner.LOBBY_GAME_RECONNECTION,
-        GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
-        GameRunner.MAP_FOLDER));
+    return new HashSet<>(Arrays.asList(TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
+        TRIPLEA_SERVER_PROPERTY, TRIPLEA_PORT_PROPERTY,
+        TRIPLEA_NAME_PROPERTY, LOBBY_HOST, TRIPLEA_LOBBY_PORT_PROPERTY,
+        LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, LOBBY_GAME_SUPPORT_EMAIL,
+        LOBBY_GAME_SUPPORT_PASSWORD, LOBBY_GAME_RECONNECTION,
+        TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
+        MAP_FOLDER));
   }
 
   String getStatus() {
@@ -669,24 +685,24 @@ public class HeadlessGameServer {
   private static void usage() {
     // TODO replace this method with the generated usage of commons-cli
     System.out.println("\nUsage and Valid Arguments:\n"
-        + "   " + GameRunner.TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
-        + "   " + GameRunner.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
-        + "   " + GameRunner.TRIPLEA_SERVER_PROPERTY + "=true\n"
-        + "   " + GameRunner.TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
-        + "   " + GameRunner.TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
-        + "   " + GameRunner.LOBBY_HOST + "=<LOBBY_HOST>\n"
-        + "   " + GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
-        + "   " + GameRunner.LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
-        + "   " + GameRunner.LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
-        + "   " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
-        + "   " + GameRunner.LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
-        + "   " + GameRunner.LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
+        + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
+        + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
+        + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
+        + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
+        + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
+        + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
+        + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+        + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
+        + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
+        + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
+        + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
+        + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
         + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
-        + "   " + GameRunner.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME
+        + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME
         + "=<seconds to wait for all clients to start the game>\n"
-        + "   " + GameRunner.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME
+        + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME
         + "=<seconds to wait for an observer joining the game>\n"
-        + "   " + GameRunner.MAP_FOLDER + "=mapFolder"
+        + "   " + MAP_FOLDER + "=mapFolder"
         + "\n"
         + "   You must start the Name and HostedBy with \"Bot\".\n"
         + "   Game Comments must have this string in it: \"automated_host\".\n"
@@ -701,43 +717,43 @@ public class HeadlessGameServer {
 
   private static void handleHeadlessGameServerArgs() {
     boolean printUsage = false;
-    final String playerName = System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY, "");
-    final String hostName = System.getProperty(GameRunner.LOBBY_GAME_HOSTED_BY, "");
+    final String playerName = System.getProperty(TRIPLEA_NAME_PROPERTY, "");
+    final String hostName = System.getProperty(LOBBY_GAME_HOSTED_BY, "");
     if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
         || !playerName.startsWith("Bot") || !hostName.startsWith("Bot")) {
       System.out.println(
-          "Invalid argument: " + GameRunner.TRIPLEA_NAME_PROPERTY + " and " + GameRunner.LOBBY_GAME_HOSTED_BY
+          "Invalid argument: " + TRIPLEA_NAME_PROPERTY + " and " + LOBBY_GAME_HOSTED_BY
               + " must start with \"Bot\" and be at least 7 characters long and be the same.");
       printUsage = true;
     }
 
-    final String comments = System.getProperty(GameRunner.LOBBY_GAME_COMMENTS, "");
+    final String comments = System.getProperty(LOBBY_GAME_COMMENTS, "");
     if (!comments.contains("automated_host")) {
       System.out.println(
-          "Invalid argument: " + GameRunner.LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
+          "Invalid argument: " + LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
       printUsage = true;
     }
 
-    final String email = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_EMAIL, "");
+    final String email = System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "");
     if (email.length() < 3 || !Util.isMailValid(email)) {
       System.out.println(
-          "Invalid argument: " + GameRunner.LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
+          "Invalid argument: " + LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
       printUsage = true;
     }
 
-    final String reconnection = System.getProperty(GameRunner.LOBBY_GAME_RECONNECTION,
+    final String reconnection = System.getProperty(LOBBY_GAME_RECONNECTION,
         "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
     try {
       final int reconnect = Integer.parseInt(reconnection);
       if (reconnect < GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
-        System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
+        System.out.println("Invalid argument: " + LOBBY_GAME_RECONNECTION
             + " must be an integer equal to or greater than " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
             + " seconds, and should normally be either " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT
             + " or " + (2 * GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
         printUsage = true;
       }
     } catch (final NumberFormatException e) {
-      System.out.println("Invalid argument: " + GameRunner.LOBBY_GAME_RECONNECTION
+      System.out.println("Invalid argument: " + LOBBY_GAME_RECONNECTION
           + " must be an integer equal to or greater than " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
           + " seconds, and should normally be either " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
           + (2 * GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");

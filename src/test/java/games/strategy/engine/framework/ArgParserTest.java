@@ -1,5 +1,8 @@
 package games.strategy.engine.framework;
 
+import static games.strategy.engine.framework.ArgParser.CliProperties.MAP_FOLDER;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_MAP_DOWNLOAD_PROPERTY;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -20,7 +23,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
   @AfterEach
   public void teardown() {
-    System.clearProperty(GameRunner.TRIPLEA_GAME_PROPERTY);
+    System.clearProperty(TRIPLEA_GAME_PROPERTY);
   }
 
   @Test
@@ -47,30 +50,30 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
   @Test
   public void singleFileArgIsAssumedToBeGameProperty() {
-    new ArgParser(Collections.singleton(GameRunner.TRIPLEA_GAME_PROPERTY))
+    new ArgParser(Collections.singleton(TRIPLEA_GAME_PROPERTY))
         .handleCommandLineArgs(new String[] {TestData.propValue});
     assertThat("if we pass only one arg, it is assumed to mean we are specifying the 'game property'",
-        System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY), is(TestData.propValue));
+        System.getProperty(TRIPLEA_GAME_PROPERTY), is(TestData.propValue));
   }
 
   @Test
   public void singleUrlArgIsAssumedToBeMapDownloadProperty() {
     final String testUrl = "triplea:" + TestData.propValue;
-    new ArgParser(Collections.singleton(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY))
+    new ArgParser(Collections.singleton(TRIPLEA_MAP_DOWNLOAD_PROPERTY))
         .handleCommandLineArgs(new String[] {testUrl});
     assertThat("if we pass only one arg prefixed with 'triplea:',"
         + " it's assumed to mean we are specifying the 'map download property'",
-        System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY), is(TestData.propValue));
+        System.getProperty(TRIPLEA_MAP_DOWNLOAD_PROPERTY), is(TestData.propValue));
   }
 
   @Test
   public void singleUrlArgIsUrlDecoded() {
     final String testUrl = "triplea:Something%20with+spaces%20and%20Special%20chars%20%F0%9F%A4%94";
-    new ArgParser(Collections.singleton(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY))
+    new ArgParser(Collections.singleton(TRIPLEA_MAP_DOWNLOAD_PROPERTY))
         .handleCommandLineArgs(new String[] {testUrl});
     assertThat("if we pass only one arg prefixed with 'triplea:',"
         + " it should be properly URL-decoded as it's probably coming from a browser",
-        System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY), is("Something with spaces and Special chars 🤔"));
+        System.getProperty(TRIPLEA_MAP_DOWNLOAD_PROPERTY), is("Something with spaces and Special chars 🤔"));
   }
 
   @Test
@@ -98,7 +101,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
     ClientSetting.MAP_FOLDER_OVERRIDE.save("some value");
     final String mapFolderPath = "/path/to/maps";
 
-    new ArgParser(Collections.singleton(GameRunner.MAP_FOLDER))
+    new ArgParser(Collections.singleton(MAP_FOLDER))
         .handleCommandLineArgs(new String[] {"-PmapFolder=" + mapFolderPath});
 
     assertThat(ClientSetting.MAP_FOLDER_OVERRIDE.value(), is(mapFolderPath));

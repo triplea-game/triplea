@@ -60,13 +60,13 @@ public final class ArgParser {
       if (remainingArgs[0].startsWith(TRIPLEA_PROTOCOL)) {
         final String encoding = StandardCharsets.UTF_8.displayName();
         try {
-          setSystemPropertyOrClientSetting(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY,
+          setSystemPropertyOrClientSetting(CliProperties.TRIPLEA_MAP_DOWNLOAD_PROPERTY,
               URLDecoder.decode(remainingArgs[0].substring(TRIPLEA_PROTOCOL.length()), encoding));
         } catch (final UnsupportedEncodingException e) {
           throw new AssertionError(encoding + " is not a supported encoding!", e);
         }
       } else {
-        setSystemPropertyOrClientSetting(GameRunner.TRIPLEA_GAME_PROPERTY, remainingArgs[0]);
+        setSystemPropertyOrClientSetting(CliProperties.TRIPLEA_GAME_PROPERTY, remainingArgs[0]);
       }
     } else if (remainingArgs.length > 1) {
       throw new IllegalArgumentException("Too much arguments: " + Arrays.toString(remainingArgs));
@@ -120,10 +120,39 @@ public final class ArgParser {
   }
 
   private static boolean handleGameSetting(final String key, final String value) {
-    if (GameRunner.MAP_FOLDER.equals(key)) {
+    if (CliProperties.MAP_FOLDER.equals(key)) {
       ClientSetting.MAP_FOLDER_OVERRIDE.save(value);
       return true;
     }
     return false;
+  }
+
+
+  public interface CliProperties {
+    // argument options below:
+    static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
+    static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
+    final String TRIPLEA_MAP_DOWNLOAD_PROPERTY = "triplea.map.download";
+    static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
+    static final String TRIPLEA_CLIENT_PROPERTY = "triplea.client";
+    static final String TRIPLEA_HOST_PROPERTY = "triplea.host";
+    static final String TRIPLEA_PORT_PROPERTY = "triplea.port";
+    static final String TRIPLEA_NAME_PROPERTY = "triplea.name";
+    static final String TRIPLEA_SERVER_PASSWORD_PROPERTY = "triplea.server.password";
+    static final String TRIPLEA_STARTED = "triplea.started";
+    static final String LOBBY_HOST = "triplea.lobby.host";
+    static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
+    static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
+    static final String LOBBY_GAME_SUPPORT_EMAIL = "triplea.lobby.game.supportEmail";
+    static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
+    static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
+    static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
+    static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
+    static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
+
+    static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
+    static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
+
+    static final String MAP_FOLDER = "mapFolder";
   }
 }
