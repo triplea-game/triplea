@@ -33,6 +33,7 @@ import javax.swing.border.TitledBorder;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
@@ -69,6 +70,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
   private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
   private final JPanel localPlayerPanel = new JPanel();
   private final JButton localPlayerSelection = new JButton("Select Local Players and AI's");
+  private final GameRunner gameRunner;
 
   /**
    * Creates a new instance.
@@ -76,8 +78,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    * @param model
    *        the GameSelectionModel, though which changes are obtained when new games are chosen, or save games loaded
    */
-  public PBEMSetupPanel(final GameSelectorModel model) {
+  public PBEMSetupPanel(final GameSelectorModel model, final GameRunner gameRunner) {
     gameSelectorModel = model;
+    this.gameRunner = gameRunner;
     diceServerEditor = new SelectAndViewEditor("Dice Server", "");
     forumPosterEditor = new SelectAndViewEditor("Post to Forum", "forumPosters.html");
     emailSenderEditor = new SelectAndViewEditor("Provider", "emailSenders.html");
@@ -201,8 +204,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     // get the forum posters,
     final List<IForumPoster> forumPosters = new ArrayList<>();
     forumPosters.add(useCacheIfAvailable(new NullForumPoster()));
-    forumPosters.add(useCacheIfAvailable(new AxisAndAlliesForumPoster()));
-    forumPosters.add(useCacheIfAvailable(new TripleAForumPoster()));
+    forumPosters.add(useCacheIfAvailable(new AxisAndAlliesForumPoster(gameRunner)));
+    forumPosters.add(useCacheIfAvailable(new TripleAForumPoster(gameRunner)));
     forumPosterEditor.setBeans(forumPosters);
     // now get the poster stored in the save game
     final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PBEMMessagePoster.FORUM_POSTER_PROP_NAME);
@@ -230,9 +233,9 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     // The list of email, either loaded from cache or created
     final List<IEmailSender> emailSenders = new ArrayList<>();
     emailSenders.add(useCacheIfAvailable(new NullEmailSender()));
-    emailSenders.add(useCacheIfAvailable(new GmailEmailSender()));
-    emailSenders.add(useCacheIfAvailable(new HotmailEmailSender()));
-    emailSenders.add(useCacheIfAvailable(new GenericEmailSender()));
+    emailSenders.add(useCacheIfAvailable(new GmailEmailSender(gameRunner)));
+    emailSenders.add(useCacheIfAvailable(new HotmailEmailSender(gameRunner)));
+    emailSenders.add(useCacheIfAvailable(new GenericEmailSender(gameRunner)));
     emailSenderEditor.setBeans(emailSenders);
     // now get the sender from the save game, update it with credentials from the cache, and set it
     final IEmailSender sender = (IEmailSender) data.getProperties().get(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME);

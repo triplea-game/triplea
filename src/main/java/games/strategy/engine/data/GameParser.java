@@ -932,7 +932,9 @@ public final class GameParser {
     if (childName.equals("boolean")) {
       editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue).booleanValue());
     } else if (childName.equals("file")) {
-      editableProperty = new FileProperty(name, null, defaultValue);
+      // Not sure if it's safe to create a FileProperty instance using null here.
+      // Needs further digging
+      editableProperty = new FileProperty(name, null, defaultValue, null);
     } else if (childName.equals("list") || childName.equals("combo")) {
       final StringTokenizer tokenizer = new StringTokenizer(child.getAttribute("values"), ",");
       final Collection<String> values = new ArrayList<>();

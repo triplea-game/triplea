@@ -98,15 +98,21 @@ public class GameRunner {
 
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
 
-  private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
-  private static final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel);
-  private static JFrame mainFrame;
+  private final GameSelectorModel gameSelectorModel = new GameSelectorModel(this);
+  private final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel, this);
+  private final JFrame mainFrame;
 
   private static final Set<String> COMMAND_LINE_ARGS = new HashSet<>(Arrays.asList(
       TRIPLEA_GAME_PROPERTY, TRIPLEA_MAP_DOWNLOAD_PROPERTY, TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY,
       TRIPLEA_HOST_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_NAME_PROPERTY, TRIPLEA_SERVER_PASSWORD_PROPERTY,
       TRIPLEA_STARTED, TRIPLEA_LOBBY_PORT_PROPERTY, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY,
       TRIPLEA_ENGINE_VERSION_BIN, TRIPLEA_DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER));
+
+
+  public GameRunner() {
+    setupPanelModel.showSelectType();
+    mainFrame = newMainFrame();
+  }
 
 
   /**
@@ -156,21 +162,19 @@ public class GameRunner {
       TripleA.launch(args);
     } else {
       SwingUtilities.invokeLater(() -> {
-        setupPanelModel.showSelectType();
-        mainFrame = newMainFrame();
+        final GameRunner gameRunner = new GameRunner();
+        gameRunner.showMainFrame();
+        new Thread(gameRunner::checkForUpdates).start();
       });
-
-      showMainFrame();
       new Thread(GameRunner::setupLogging).start();
       new Thread(GameRunner::checkLocalSystem).start();
-      new Thread(GameRunner::checkForUpdates).start();
     }
   }
 
-  private static JFrame newMainFrame() {
+  private JFrame newMainFrame() {
     final JFrame frame = new JFrame("TripleA");
 
-    frame.add(new MainPanel(setupPanelModel));
+    frame.add(new MainPanel(setupPanelModel, this));
     frame.pack();
 
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -180,11 +184,11 @@ public class GameRunner {
     return frame;
   }
 
-  public static FileDialog newFileDialog() {
+  public FileDialog newFileDialog() {
     return new FileDialog(mainFrame);
   }
 
-  public static Optional<File> showFileChooser(final FileFilter fileFilter) {
+  public Optional<File> showFileChooser(final FileFilter fileFilter) {
     final JFileChooser fileChooser = new JFileChooser();
     fileChooser.setFileFilter(fileFilter);
     final int returnCode = fileChooser.showOpenDialog(mainFrame);
@@ -196,7 +200,7 @@ public class GameRunner {
   }
 
 
-  public static Optional<File> showSaveGameFileChooser() {
+  public Optional<File> showSaveGameFileChooser() {
     // Non-Mac platforms should use the normal Swing JFileChooser
     final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
     final int selectedOption = fileChooser.showOpenDialog(mainFrame);
@@ -206,11 +210,11 @@ public class GameRunner {
     return Optional.empty();
   }
 
-  public static ProgressWindow newProgressWindow(final String title) {
+  public ProgressWindow newProgressWindow(final String title) {
     return new ProgressWindow(mainFrame, title);
   }
 
-  public static BackgroundTaskRunner newBackgroundTaskRunner() {
+  public BackgroundTaskRunner newBackgroundTaskRunner() {
     return new BackgroundTaskRunner(mainFrame);
   }
 
@@ -238,18 +242,18 @@ public class GameRunner {
     }
   }
 
-  public static int showConfirmDialog(final String message, final Title title, final int optionType,
+  public int showConfirmDialog(final String message, final Title title, final int optionType,
       final int messageType) {
     return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
   }
 
 
-  public static void showMessageDialog(final String message, final Title title, final int messageType) {
+  public void showMessageDialog(final String message, final Title title, final int messageType) {
     JOptionPane.showMessageDialog(mainFrame, message, title.value, messageType);
   }
 
 
-  public static void hideMainFrame() {
+  public void hideMainFrame() {
     SwingUtilities.invokeLater(() -> mainFrame.setVisible(false));
   }
 
@@ -258,27 +262,25 @@ public class GameRunner {
    * Sets the 'main frame' to visible. In this context the main frame is the initial
    * welcome (launch lobby/single player game etc..) screen presented to GUI enabled clients.
    */
-  public static void showMainFrame() {
-    SwingUtilities.invokeLater(() -> {
-      mainFrame.requestFocus();
-      mainFrame.toFront();
-      mainFrame.setVisible(true);
+  public void showMainFrame() {
+    mainFrame.requestFocus();
+    mainFrame.toFront();
+    mainFrame.setVisible(true);
 
-      SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
+    SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
 
-      ProAI.gameOverClearCache();
+    ProAI.gameOverClearCache();
 
-      loadGame();
+    loadGame();
 
-      if (System.getProperty(TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
-        setupPanelModel.showServer(mainFrame);
-      } else if (System.getProperty(TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
-        setupPanelModel.showClient(mainFrame);
-      }
-    });
+    if (System.getProperty(TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
+      setupPanelModel.showServer(mainFrame);
+    } else if (System.getProperty(TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
+      setupPanelModel.showClient(mainFrame);
+    }
   }
 
-  private static void loadGame() {
+  private void loadGame() {
     try {
       newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
         gameSelectorModel.loadDefaultGame(false);
@@ -289,7 +291,7 @@ public class GameRunner {
 
         final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
         if (!downloadableMap.isEmpty()) {
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
+          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap, this));
         }
       });
     } catch (final InterruptedException e) {
@@ -355,7 +357,7 @@ public class GameRunner {
     });
   }
 
-  private static void checkForUpdates() {
+  private void checkForUpdates() {
     new Thread(() -> {
       if (System.getProperty(TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true")) {
         return;
@@ -421,7 +423,7 @@ public class GameRunner {
     return false;
   }
 
-  private static boolean checkForTutorialMap() {
+  private boolean checkForTutorialMap() {
     final MapDownloadController mapDownloadController = ClientContext.mapDownloadController();
     final boolean promptToDownloadTutorialMap = mapDownloadController.shouldPromptToDownloadTutorialMap();
     mapDownloadController.preventPromptToDownloadTutorialMap();
@@ -433,7 +435,7 @@ public class GameRunner {
         + "(You can always download it later using the Download Maps<br>"
         + "command if you don't want to do it now.)</html>";
     SwingComponents.promptUser("Welcome to TripleA", message, () -> {
-      DownloadMapsWindow.showDownloadMapsWindowAndDownload("Tutorial");
+      DownloadMapsWindow.showDownloadMapsWindowAndDownload("Tutorial", this);
     });
     return true;
   }
@@ -479,7 +481,7 @@ public class GameRunner {
     if (password != null && password.length() > 0) {
       System.setProperty(TRIPLEA_SERVER_PASSWORD_PROPERTY, password);
     }
-    showMainFrame();
+    new GameRunner().showMainFrame();
   }
 
   public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent) {
@@ -503,7 +505,7 @@ public class GameRunner {
     System.setProperty(TRIPLEA_PORT_PROPERTY, String.valueOf(port));
     System.setProperty(TRIPLEA_HOST_PROPERTY, hostAddressIp);
     System.setProperty(TRIPLEA_NAME_PROPERTY, messengers.getMessenger().getLocalNode().getName());
-    showMainFrame();
+    new GameRunner().showMainFrame();
   }
 
 
@@ -526,7 +528,7 @@ public class GameRunner {
    * todo, replace with something better
    * Get the chat for the game, or null if there is no chat.
    */
-  public static Chat getChat() {
+  public Chat getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
     if (model instanceof ServerSetupPanel) {
       return model.getChatPanel().getChat();
@@ -537,16 +539,16 @@ public class GameRunner {
     }
   }
 
-  public static boolean hasChat() {
+  public boolean hasChat() {
     return getChat() != null;
   }
 
   /**
    * After the game has been left, call this.
    */
-  public static void clientLeftGame() {
+  public void clientLeftGame() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingAction.invokeAndWait(GameRunner::clientLeftGame);
+      SwingAction.invokeAndWait(this::clientLeftGame);
       return;
     }
     // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
@@ -556,7 +558,7 @@ public class GameRunner {
     showMainFrame();
   }
 
-  public static void quitGame() {
+  public void quitGame() {
     mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
   }
 

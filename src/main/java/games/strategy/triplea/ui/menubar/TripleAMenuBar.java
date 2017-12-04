@@ -12,6 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 
 import games.strategy.engine.framework.GameDataFileUtils;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -25,10 +26,10 @@ public class TripleAMenuBar extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
   protected final TripleAFrame frame;
 
-  public TripleAMenuBar(final TripleAFrame frame) {
+  public TripleAMenuBar(final TripleAFrame frame, final GameRunner gameRunner) {
     this.frame = frame;
     new FileMenu(this, frame);
-    new ViewMenu(this, frame);
+    new ViewMenu(this, frame, gameRunner);
     new GameMenu(this, frame);
     new ExportMenu(this, frame);
 

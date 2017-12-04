@@ -23,6 +23,7 @@ import com.github.openjson.JSONArray;
 import com.github.openjson.JSONObject;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
@@ -33,6 +34,11 @@ public class TripleAForumPoster extends AbstractForumPoster {
   private static final long serialVersionUID = -3380344469767981030L;
 
   private static final String tripleAForumURL = UrlConstants.TRIPLEA_FORUM.toString();
+
+
+  public TripleAForumPoster(GameRunner gameRunner) {
+    super(gameRunner);
+  }
 
   @Override
   public boolean postTurnSummary(final String summary, final String title) {
@@ -172,7 +178,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
 
   @Override
   public IForumPoster doClone() {
-    final TripleAForumPoster clone = new TripleAForumPoster();
+    final TripleAForumPoster clone = new TripleAForumPoster(gameRunner);
     clone.setTopicId(getTopicId());
     clone.setIncludeSaveGame(getIncludeSaveGame());
     clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());

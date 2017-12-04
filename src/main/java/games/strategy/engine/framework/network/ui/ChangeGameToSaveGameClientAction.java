@@ -5,6 +5,7 @@ import java.io.File;
 
 import javax.swing.AbstractAction;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.GameSelectorPanel;
 import games.strategy.net.IClientMessenger;
 
@@ -14,15 +15,17 @@ import games.strategy.net.IClientMessenger;
 public class ChangeGameToSaveGameClientAction extends AbstractAction {
   private static final long serialVersionUID = -6986376382381381377L;
   private final IClientMessenger clientMessenger;
+  private final GameRunner gameRunner;
 
-  public ChangeGameToSaveGameClientAction(final IClientMessenger clientMessenger) {
+  public ChangeGameToSaveGameClientAction(final IClientMessenger clientMessenger, final GameRunner gameRunner) {
     super("Change To Gamesave (Load Game)");
     this.clientMessenger = clientMessenger;
+    this.gameRunner = gameRunner;
   }
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final File file = GameSelectorPanel.selectGameFile();
+    final File file = GameSelectorPanel.selectGameFile(gameRunner);
     if (file == null || !file.exists()) {
       return;
     }

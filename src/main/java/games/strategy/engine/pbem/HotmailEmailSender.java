@@ -1,5 +1,6 @@
 package games.strategy.engine.pbem;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.triplea.help.HelpSupport;
@@ -13,7 +14,8 @@ public class HotmailEmailSender extends GenericEmailSender {
   /**
    * Initializes a new instance of the {@code HotmailEmailSender} class.
    */
-  public HotmailEmailSender() {
+  public HotmailEmailSender(final GameRunner gameRunner) {
+    super(gameRunner);
     setHost("smtp.live.com");
     setPort(587);
     setEncryption(Encryption.TLS);
@@ -21,7 +23,7 @@ public class HotmailEmailSender extends GenericEmailSender {
 
   @Override
   public EditorPanel getEditor() {
-    return new EmailSenderEditor(this, new EmailSenderEditor.EditorConfiguration());
+    return new EmailSenderEditor(this, new EmailSenderEditor.EditorConfiguration(), gameRunner);
   }
 
   @Override
@@ -31,7 +33,7 @@ public class HotmailEmailSender extends GenericEmailSender {
 
   @Override
   public IEmailSender clone() {
-    final GenericEmailSender sender = new HotmailEmailSender();
+    final GenericEmailSender sender = new HotmailEmailSender(gameRunner);
     sender.setSubjectPrefix(getSubjectPrefix());
     sender.setPassword(getPassword());
     sender.setToAddress(getToAddress());

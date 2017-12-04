@@ -59,7 +59,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
 
-  GameSelectorPanel(final GameSelectorModel model) {
+  GameSelectorPanel(final GameSelectorModel model, final GameRunner gameRunner) {
     this.model = model;
     this.model.addObserver(this);
     final GameData data = model.getGameData();
@@ -68,8 +68,8 @@ public class GameSelectorPanel extends JPanel implements Observer {
       gamePropertiesCache.loadCachedGamePropertiesInto(data);
     }
     createComponents();
-    layoutComponents();
-    setupListeners();
+    layoutComponents(gameRunner);
+    setupListeners(gameRunner);
     setWidgetActivation();
     updateGameData();
   }
@@ -152,7 +152,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
 
 
-  private void layoutComponents() {
+  private void layoutComponents(final GameRunner gameRunner) {
     setLayout(new GridBagLayout());
     add(engineVersionLabel, buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
     add(engineVersionText, buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
@@ -177,7 +177,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     final JButton downloadMapButton = JButtonBuilder.builder()
         .title("Download Maps")
         .toolTip("Click this button to install additional maps")
-        .actionListener(DownloadMapsWindow::showDownloadMapsWindow)
+        .actionListener(() -> DownloadMapsWindow.showDownloadMapsWindow(gameRunner))
         .build();
     add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
@@ -211,10 +211,10 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
 
-  private void setupListeners() {
+  private void setupListeners(final GameRunner gameRunner) {
     loadNewGame.addActionListener(e -> {
       if (canSelectLocalGameData()) {
-        selectGameFile(false);
+        selectGameFile(false, gameRunner);
       } else if (canChangeHostBotGameData()) {
         final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
         if (clientModelForHostBots != null) {
@@ -224,7 +224,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     });
     loadSavedGame.addActionListener(e -> {
       if (canSelectLocalGameData()) {
-        selectGameFile(true);
+        selectGameFile(true, gameRunner);
       } else if (canChangeHostBotGameData()) {
         final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
         if (clientModelForHostBots != null) {
@@ -336,9 +336,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
     setWidgetActivation();
   }
 
-  public static File selectGameFile() {
+  public static File selectGameFile(final GameRunner gameRunner) {
     if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = GameRunner.newFileDialog();
+      final FileDialog fileDialog = gameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
       fileDialog.setDirectory(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()).getPath());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
@@ -351,21 +351,21 @@ public class GameSelectorPanel extends JPanel implements Observer {
         return new File(dirName, fileName);
       }
     } else {
-      return GameRunner.showSaveGameFileChooser().orElse(null);
+      return gameRunner.showSaveGameFileChooser().orElse(null);
     }
   }
 
-  private void selectGameFile(final boolean saved) {
+  private void selectGameFile(final boolean saved, final GameRunner gameRunner) {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (saved) {
-      final File file = selectGameFile();
+      final File file = selectGameFile(gameRunner);
       if (file == null || !file.exists()) {
         return;
       }
       try {
-        GameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
+        gameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
           model.load(file, this);
           setOriginalPropertiesMap(model.getGameData());
         });
@@ -375,9 +375,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
     } else {
       try {
         final GameChooserEntry entry =
-            GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
+            GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName(), gameRunner);
         if (entry != null) {
-          GameRunner.newBackgroundTaskRunner().runInBackground("Loading map...", () -> {
+          gameRunner.newBackgroundTaskRunner().runInBackground("Loading map...", () -> {
             if (!entry.isGameDataLoaded()) {
               try {
                 entry.fullyParseGameData();

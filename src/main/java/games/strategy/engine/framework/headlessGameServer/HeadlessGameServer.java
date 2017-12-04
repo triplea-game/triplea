@@ -402,6 +402,8 @@ public class HeadlessGameServer {
 
   private HeadlessGameServer() {
     super();
+    final GameRunner gameRunner = new GameRunner();
+    // We should really avoid this dependency here!
     if (instance != null) {
       throw new IllegalStateException("Instance already exists");
     }
@@ -411,7 +413,7 @@ public class HeadlessGameServer {
       shutdown();
     }));
     m_availableGames = new AvailableGames();
-    m_gameSelectorModel = new GameSelectorModel();
+    m_gameSelectorModel = new GameSelectorModel(gameRunner);
     final String fileName = System.getProperty(TRIPLEA_GAME_PROPERTY, "");
     if (fileName.length() > 0) {
       try {
@@ -423,7 +425,7 @@ public class HeadlessGameServer {
     }
     new Thread(() -> {
       System.out.println("Headless Start");
-      m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null);
+      m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null, gameRunner);
       m_setupPanelModel.showSelectType();
       System.out.println("Waiting for users to connect.");
       waitForUsersHeadless();

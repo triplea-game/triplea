@@ -81,6 +81,7 @@ public class ClientModel implements IMessengerErrorListener {
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final GameSelectorModel gameSelectorModel;
   private final SetupPanelModel typePanelModel;
+  private final GameRunner gameRunner;
   private final WaitWindow gameLoadingWindow = new WaitWindow();
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
   private IChannelMessenger channelMessenger;
@@ -128,7 +129,7 @@ public class ClientModel implements IMessengerErrorListener {
     @Override
     public void gameReset() {
       objectStreamFactory.setData(null);
-      SwingAction.invokeAndWait(GameRunner::showMainFrame);
+      SwingAction.invokeAndWait(gameRunner::showMainFrame);
     }
 
     @Override
@@ -143,9 +144,11 @@ public class ClientModel implements IMessengerErrorListener {
     }
   };
 
-  public ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
+  public ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel,
+      final GameRunner gameRunner) {
     this.typePanelModel = typePanelModel;
     this.gameSelectorModel = gameSelectorModel;
+    this.gameRunner = gameRunner;
   }
 
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
@@ -345,7 +348,7 @@ public class ClientModel implements IMessengerErrorListener {
             gameLoadingWindow.doneWait();
             // an ugly hack, we need a better
             // way to get the main frame
-            GameRunner.clientLeftGame();
+            gameRunner.clientLeftGame();
           }
         }
         if (!gameRunning) {
@@ -395,13 +398,15 @@ public class ClientModel implements IMessengerErrorListener {
 
   /**
    * Returns a map of player node name -> enabled.
-   */  public synchronized Map<String, Boolean> getPlayersEnabledListing() {
+   */
+  public synchronized Map<String, Boolean> getPlayersEnabledListing() {
     return new HashMap<>(playersEnabledListing);
   }
 
   /**
    * Returns the set of players that can be disabled.
-   */  public synchronized Collection<String> getPlayersAllowedToBeDisabled() {
+   */
+  public synchronized Collection<String> getPlayersAllowedToBeDisabled() {
     return new HashSet<>(playersAllowedToBeDisabled);
   }
 
@@ -422,7 +427,7 @@ public class ClientModel implements IMessengerErrorListener {
   public void messengerInvalid(final IMessenger messenger, final Exception reason) {
     // The self chat disconnect notification is simply so we have an on-screen notification of the disconnect.
     // In case for example there are many game windows open, it may not be clear which game disconnected.
-    GameRunner.getChat().sendMessage("*** Was Disconnected ***", false);
+    gameRunner.getChat().sendMessage("*** Was Disconnected ***", false);
     EventThreadJOptionPane.showMessageDialog(ui, "Connection to game host lost.\nPlease save and restart.",
         "Connection Lost!", JOptionPane.ERROR_MESSAGE);
   }
@@ -454,7 +459,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotChangeGameToSaveGameClientAction() {
-    return new ChangeGameToSaveGameClientAction(getMessenger());
+    return new ChangeGameToSaveGameClientAction(getMessenger(), gameRunner);
   }
 
   public Action getHostBotChangeToAutosaveClientAction(final Component parent,

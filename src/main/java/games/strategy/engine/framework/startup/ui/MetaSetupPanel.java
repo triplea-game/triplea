@@ -43,9 +43,11 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton helpButton;
 
   private final SetupPanelModel model;
+  private final GameRunner gameRunner;
 
-  public MetaSetupPanel(final SetupPanelModel model) {
+  public MetaSetupPanel(final SetupPanelModel model, final GameRunner instance) {
     this.model = model;
+    this.gameRunner = instance;
 
     createComponents();
     layoutComponents();
@@ -153,13 +155,14 @@ public class MetaSetupPanel extends SetupPanel {
     final LobbyServerProperties lobbyServerProperties = new LobbyServerPropertiesFetcher().fetchLobbyServerProperties();
     final LobbyLogin login = new LobbyLogin(
         JOptionPane.getFrameForComponent(this),
-        lobbyServerProperties);
+        lobbyServerProperties,
+        gameRunner);
     final LobbyClient client = login.login();
     if (client == null) {
       return;
     }
-    final LobbyFrame lobbyFrame = new LobbyFrame(client, lobbyServerProperties);
-    GameRunner.hideMainFrame();
+    final LobbyFrame lobbyFrame = new LobbyFrame(client, lobbyServerProperties, gameRunner);
+    gameRunner.hideMainFrame();
     lobbyFrame.setVisible(true);
   }
 

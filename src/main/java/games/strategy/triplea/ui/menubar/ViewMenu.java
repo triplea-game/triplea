@@ -61,11 +61,13 @@ class ViewMenu {
   private final GameData gameData;
   private final TripleAFrame frame;
   private final UiContext uiContext;
+  private final GameRunner gameRunner;
 
-  ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
+  ViewMenu(final JMenuBar menuBar, final TripleAFrame frame, final GameRunner gameRunner) {
     this.frame = frame;
     this.uiContext = frame.getUiContext();
     gameData = frame.getGame().getData();
+    this.gameRunner = gameRunner;
 
 
     final JMenu menuView = new JMenu("View");
@@ -507,6 +509,6 @@ class ViewMenu {
     chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
     parentMenu.add(chatTimeBox);
-    chatTimeBox.setEnabled(GameRunner.hasChat());
+    chatTimeBox.setEnabled(gameRunner.hasChat());
   }
 }

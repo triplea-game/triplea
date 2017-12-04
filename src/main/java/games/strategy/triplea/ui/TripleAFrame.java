@@ -208,13 +208,15 @@ public class TripleAFrame extends MainGameFrame {
   private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool;
   private final TripleAMenuBar menu;
+  private final GameRunner gameRunner;
   private boolean isCtrlPressed = false;
 
   /** Creates new TripleAFrame. */
-  public TripleAFrame(final IGame game, final LocalPlayers players) {
+  public TripleAFrame(final IGame game, final LocalPlayers players, final GameRunner gameRunner) {
     super("TripleA - " + game.getData().getGameName(), players);
     this.game = game;
     data = game.getData();
+    this.gameRunner = gameRunner;
     messageAndDialogThreadPool = new ThreadPool(1);
     addZoomKeyboardShortcuts();
     this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -241,7 +243,7 @@ public class TripleAFrame extends MainGameFrame {
         hideCommentLog();
       }
     });
-    menu = new TripleAMenuBar(this);
+    menu = new TripleAMenuBar(this, gameRunner);
     this.setJMenuBar(menu);
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());
@@ -264,7 +266,7 @@ public class TripleAFrame extends MainGameFrame {
     chatSplit.setOneTouchExpandable(true);
     chatSplit.setDividerSize(8);
     chatSplit.setResizeWeight(0.95);
-    if (GameRunner.hasChat()) {
+    if (gameRunner.hasChat()) {
       commentSplit = new JSplitPane();
       commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
       commentSplit.setOneTouchExpandable(true);
@@ -272,7 +274,7 @@ public class TripleAFrame extends MainGameFrame {
       commentSplit.setResizeWeight(0.5);
       commentSplit.setTopComponent(commentPanel);
       commentSplit.setBottomComponent(null);
-      chatPanel = new ChatPanel(GameRunner.getChat());
+      chatPanel = new ChatPanel(gameRunner.getChat());
       chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
       final Dimension chatPrefSize = new Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);
       chatPanel.setPreferredSize(chatPrefSize);
@@ -580,7 +582,7 @@ public class TripleAFrame extends MainGameFrame {
       ((ClientGame) game).shutDown();
       // an ugly hack, we need a better
       // way to get the main frame
-      GameRunner.clientLeftGame();
+      gameRunner.clientLeftGame();
     }
   }
 

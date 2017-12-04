@@ -61,10 +61,10 @@ public class DownloadMapsWindow extends JFrame {
    *
    * @throws IllegalStateException If this method is not called from the EDT.
    */
-  public static void showDownloadMapsWindow() {
+  public static void showDownloadMapsWindow(final GameRunner gameRunner) {
     checkState(SwingUtilities.isEventDispatchThread());
 
-    showDownloadMapsWindowAndDownload(Collections.emptyList());
+    showDownloadMapsWindowAndDownload(Collections.emptyList(), gameRunner);
   }
 
   /**
@@ -78,11 +78,11 @@ public class DownloadMapsWindow extends JFrame {
    *
    * @throws IllegalStateException If this method is not called from the EDT.
    */
-  public static void showDownloadMapsWindowAndDownload(final String mapName) {
+  public static void showDownloadMapsWindowAndDownload(final String mapName, final GameRunner gameRunner) {
     checkState(SwingUtilities.isEventDispatchThread());
     checkNotNull(mapName);
 
-    showDownloadMapsWindowAndDownload(Collections.singletonList(mapName));
+    showDownloadMapsWindowAndDownload(Collections.singletonList(mapName), gameRunner);
   }
 
   /**
@@ -96,11 +96,11 @@ public class DownloadMapsWindow extends JFrame {
    *
    * @throws IllegalStateException If this method is not called from the EDT.
    */
-  public static void showDownloadMapsWindowAndDownload(final Collection<String> mapNames) {
+  public static void showDownloadMapsWindowAndDownload(final Collection<String> mapNames, final GameRunner gameRunner) {
     checkState(SwingUtilities.isEventDispatchThread());
     checkNotNull(mapNames);
 
-    SINGLETON_MANAGER.showAndDownload(mapNames);
+    SINGLETON_MANAGER.showAndDownload(mapNames, gameRunner);
   }
 
   private static final class SingletonManager {
@@ -122,12 +122,12 @@ public class DownloadMapsWindow extends JFrame {
       window = null;
     }
 
-    void showAndDownload(final Collection<String> mapNames) {
+    void showAndDownload(final Collection<String> mapNames, final GameRunner gameRunner) {
       assert SwingUtilities.isEventDispatchThread();
 
       switch (state) {
         case UNINITIALIZED:
-          initialize(mapNames);
+          initialize(mapNames, gameRunner);
           break;
 
         case INITIALIZING:
@@ -145,13 +145,13 @@ public class DownloadMapsWindow extends JFrame {
       }
     }
 
-    private void initialize(final Collection<String> mapNames) {
+    private void initialize(final Collection<String> mapNames, final GameRunner gameRunner) {
       assert SwingUtilities.isEventDispatchThread();
       assert state == State.UNINITIALIZED;
 
       state = State.INITIALIZING;
       try {
-        final List<DownloadFileDescription> downloads = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
+        final List<DownloadFileDescription> downloads = gameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
             "Downloading list of available maps...",
             ClientContext::getMapDownloadList);
         createAndShow(mapNames, downloads);

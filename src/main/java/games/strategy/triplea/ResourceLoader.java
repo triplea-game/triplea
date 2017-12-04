@@ -20,6 +20,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.ui.SwingComponents;
@@ -57,7 +58,7 @@ public class ResourceLoader implements Closeable {
       SwingComponents.promptUser("Download Map?",
           "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
               + "\nOnce the download completes, you may reconnect to this game.",
-          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName, new GameRunner()));
 
       throw new MapNotFoundException();
     }

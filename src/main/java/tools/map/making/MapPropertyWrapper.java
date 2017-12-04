@@ -28,6 +28,7 @@ import games.strategy.engine.data.properties.MapProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.data.properties.StringProperty;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.util.PropertyUtil;
 import games.strategy.util.Tuple;
 
@@ -49,7 +50,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
   @SuppressWarnings("unused")
   private final Method getter = null;
 
-  private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter) {
+  private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter,
+      final GameRunner gameRunner) {
     super(name, description);
     this.setter = setter;
 
@@ -59,13 +61,13 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     } else if (defaultValue instanceof Color) {
       property = new ColorProperty(name, description, ((Color) defaultValue));
     } else if (defaultValue instanceof File) {
-      property = new FileProperty(name, description, ((File) defaultValue));
+      property = new FileProperty(name, description, ((File) defaultValue), gameRunner);
     } else if (defaultValue instanceof String) {
       property = new StringProperty(name, description, ((String) defaultValue));
     } else if (defaultValue instanceof Collection || defaultValue instanceof List || defaultValue instanceof Set) {
       property = new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
     } else if (defaultValue instanceof Map || defaultValue instanceof HashMap) {
-      property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
+      property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue), gameRunner);
     } else if (defaultValue instanceof Integer) {
       property =
           new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
@@ -118,7 +120,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     }
   }
 
-  private static List<MapPropertyWrapper<?>> createProperties(final Object object) {
+  private static List<MapPropertyWrapper<?>> createProperties(final Object object, final GameRunner gameRunner) {
     final List<MapPropertyWrapper<?>> properties = new ArrayList<>();
     for (final Method setter : object.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");
@@ -142,7 +144,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       }
       try {
         final MapPropertyWrapper<?> wrapper =
-            new MapPropertyWrapper<>(propertyName, null, currentValue, setter);
+            new MapPropertyWrapper<>(propertyName, null, currentValue, setter, gameRunner);
         properties.add(wrapper);
       } catch (final Exception e) {
         ClientLogger.logQuietly(e);
@@ -165,7 +167,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
 
   static Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> createPropertiesUi(final Object object,
       final boolean editable) {
-    final List<MapPropertyWrapper<?>> properties = createProperties(object);
+    final List<MapPropertyWrapper<?>> properties = createProperties(object, new GameRunner());
     final PropertiesUI ui = new PropertiesUI(properties, editable);
     return Tuple.of(ui, properties);
   }
@@ -177,7 +179,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
 
   public static void main(final String[] args) {
     final MapProperties mapProperties = new MapProperties();
-    final List<MapPropertyWrapper<?>> properties = createProperties(mapProperties);
+    final List<MapPropertyWrapper<?>> properties = createProperties(mapProperties, new GameRunner());
     final PropertiesUI ui = createPropertiesUi(properties, true);
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

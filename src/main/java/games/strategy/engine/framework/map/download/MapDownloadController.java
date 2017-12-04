@@ -16,6 +16,7 @@ import com.google.common.base.Strings;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingComponents;
@@ -24,7 +25,11 @@ import games.strategy.util.Version;
 /** Controller for in-game map download actions. */
 public class MapDownloadController {
 
-  public MapDownloadController() {}
+  private final GameRunner gameRunner;
+
+  public MapDownloadController(final GameRunner gameRunner) {
+    this.gameRunner = gameRunner;
+  }
 
   /**
    * Return true if all locally downloaded maps are latest versions, false if any can are out of date or their version
@@ -59,7 +64,7 @@ public class MapDownloadController {
         }
         text.append("</ul></html>");
         SwingComponents.promptUser("Update Your Maps?", text.toString(),
-            () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames));
+            () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames, gameRunner));
         return true;
       }
     } catch (final Exception e) {

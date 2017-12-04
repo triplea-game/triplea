@@ -19,6 +19,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.triplea.ai.proAI.ProAI;
@@ -40,10 +41,12 @@ public class GameSelectorModel extends Observable {
   // just for host bots, so we can get the actions for loading/saving games on the bots
   // from this model
   private ClientModel m_clientModelForHostBots = null;
+  private GameRunner gameRunner;
 
-  public GameSelectorModel() {
+  public GameSelectorModel(final GameRunner gameRunner) {
     setGameData(null);
     m_fileName = "";
+    this.gameRunner = gameRunner;
   }
 
   public void resetGameDataToNull() {
@@ -294,7 +297,7 @@ public class GameSelectorModel extends Observable {
     }
     final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();
 
-    final GameChooserModel model = new GameChooserModel();
+    final GameChooserModel model = new GameChooserModel(gameRunner);
     GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName);
     if (selectedGame == null) {
       selectedGame = model.findByName(userPreferredDefaultGameName);
