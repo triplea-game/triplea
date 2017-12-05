@@ -37,7 +37,6 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.triplea.settings.ClientSetting;
 import swinglib.JButtonBuilder;
 
@@ -372,7 +371,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
         return;
       }
       try {
-        BackgroundTaskRunner.runInBackground("Loading savegame...", () -> {
+        GameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
           model.load(file, this);
           setOriginalPropertiesMap(model.getGameData());
         });
@@ -384,7 +383,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
         final GameChooserEntry entry =
             GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
         if (entry != null) {
-          BackgroundTaskRunner.runInBackground("Loading map...", () -> {
+          GameRunner.newBackgroundTaskRunner().runInBackground("Loading map...", () -> {
             if (!entry.isGameDataLoaded()) {
               try {
                 entry.fullyParseGameData();
