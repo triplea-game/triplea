@@ -36,7 +36,6 @@ import javax.swing.event.ListSelectionListener;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.OptionalUtils;
 import swinglib.JButtonBuilder;
@@ -152,7 +151,7 @@ public class DownloadMapsWindow extends JFrame {
 
       state = State.INITIALIZING;
       try {
-        final List<DownloadFileDescription> downloads = BackgroundTaskRunner.runInBackgroundAndReturn(
+        final List<DownloadFileDescription> downloads = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
             "Downloading list of available maps...",
             ClientContext::getMapDownloadList);
         createAndShow(mapNames, downloads);

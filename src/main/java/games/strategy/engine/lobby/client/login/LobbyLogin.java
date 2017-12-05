@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
@@ -54,7 +54,7 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient login(final LoginPanel panel) {
     try {
-      final IMessenger messenger = BackgroundTaskRunner.runInBackgroundAndReturn(
+      final IMessenger messenger = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
           "Connecting to lobby...",
           () -> login(panel.getUserName(), panel.getPassword(), panel.isAnonymousLogin()),
           IOException.class);
@@ -132,7 +132,7 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient createAccount(final CreateUpdateAccountPanel panel) {
     try {
-      final IMessenger messenger = BackgroundTaskRunner.runInBackgroundAndReturn(
+      final IMessenger messenger = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
           "Connecting to lobby...",
           () -> createAccount(panel.getUserName(), panel.getPassword(), panel.getEmail()),
           IOException.class);
