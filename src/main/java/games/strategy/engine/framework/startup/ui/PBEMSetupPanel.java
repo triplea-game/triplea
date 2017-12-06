@@ -48,7 +48,6 @@ import games.strategy.engine.pbem.NullEmailSender;
 import games.strategy.engine.pbem.NullForumPoster;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.engine.pbem.TripleAForumPoster;
-import games.strategy.engine.pbem.TripleAWarClubForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.InternalDiceServer;
 import games.strategy.engine.random.PBEMDiceRoller;
@@ -203,7 +202,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     final List<IForumPoster> forumPosters = new ArrayList<>();
     forumPosters.add(useCacheIfAvailable(new NullForumPoster()));
     forumPosters.add(useCacheIfAvailable(new AxisAndAlliesForumPoster()));
-    forumPosters.add(useCacheIfAvailable(new TripleAWarClubForumPoster()));
     forumPosters.add(useCacheIfAvailable(new TripleAForumPoster()));
     forumPosterEditor.setBeans(forumPosters);
     // now get the poster stored in the save game
