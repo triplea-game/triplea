@@ -59,7 +59,7 @@ import games.strategy.util.Version;
 public class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private final GameData data = new GameData();
-  private final Collection<SAXParseException> errorsSAX = new ArrayList<>();
+  private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapName;
 
@@ -114,8 +114,8 @@ public class GameParser {
     // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
     // see if we have any
     // SAX errors we need to show
-    if (!errorsSAX.isEmpty()) {
-      for (final SAXParseException error : errorsSAX) {
+    if (!errorsSax.isEmpty()) {
+      for (final SAXParseException error : errorsSax) {
         System.err.println("SAXParseException: game: "
             + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: "
             + error.getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
@@ -276,17 +276,17 @@ public class GameParser {
       builder.setErrorHandler(new ErrorHandler() {
         @Override
         public void fatalError(final SAXParseException exception) {
-          errorsSAX.add(exception);
+          errorsSax.add(exception);
         }
 
         @Override
         public void error(final SAXParseException exception) {
-          errorsSAX.add(exception);
+          errorsSax.add(exception);
         }
 
         @Override
         public void warning(final SAXParseException exception) {
-          errorsSAX.add(exception);
+          errorsSax.add(exception);
         }
       });
       return builder.parse(input, system);
