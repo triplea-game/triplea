@@ -56,7 +56,10 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
-public class GameParser {
+/**
+ * Parses a game XML file into a {@link GameData} domain object.
+ */
+public final class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
   private final GameData data = new GameData();
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
