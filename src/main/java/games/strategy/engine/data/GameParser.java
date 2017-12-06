@@ -72,8 +72,7 @@ public class GameParser {
    * 
    * @return The root Element of the DOM
    */
-  private synchronized Element parseDom(final InputStream stream)
-      throws SAXException {
+  private Element parseDom(final InputStream stream) throws SAXException {
     Preconditions.checkNotNull(stream, "InputStream must be non-null!");
     return getDocument(stream).getDocumentElement();
   }
@@ -81,7 +80,7 @@ public class GameParser {
   /**
    * Parses a file into a GameData object.
    */
-  public synchronized GameData parse(final InputStream stream, final AtomicReference<String> gameName)
+  public GameData parse(final InputStream stream, final AtomicReference<String> gameName)
       throws GameParseException, SAXException, EngineVersionException {
     final Element root = parseDom(stream);
     parseMapProperties(root, gameName);
@@ -94,14 +93,14 @@ public class GameParser {
    * Parses just the essential parts of the maps.
    * Used to display all available maps.
    */
-  public synchronized GameData parseMapProperties(final InputStream stream, final AtomicReference<String> gameName)
+  public GameData parseMapProperties(final InputStream stream, final AtomicReference<String> gameName)
       throws GameParseException, SAXException, EngineVersionException {
     final Element root = parseDom(stream);
     parseMapProperties(root, gameName);
     return data;
   }
 
-  private synchronized void parseMapProperties(final Element root, final AtomicReference<String> gameName)
+  private void parseMapProperties(final Element root, final AtomicReference<String> gameName)
       throws GameParseException, EngineVersionException {
     // mandatory fields
     // get the name of the map
@@ -132,8 +131,7 @@ public class GameParser {
     }
   }
 
-  private synchronized void parseMapDetails(final Element root, final AtomicReference<String> gameName)
-      throws GameParseException {
+  private void parseMapDetails(final Element root, final AtomicReference<String> gameName) throws GameParseException {
     parseMap(getSingleChild("map", root));
     final Element resourceList = getSingleChild("resourceList", root, true);
     if (resourceList != null) {
