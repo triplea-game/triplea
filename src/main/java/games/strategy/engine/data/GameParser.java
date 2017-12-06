@@ -88,7 +88,7 @@ public final class GameParser {
     final Element root = parseDom(stream);
     parseMapProperties(root, gameName);
     // everything until here is needed to select a game
-    parseMapDetails(root, gameName);
+    parseMapDetails(root);
     return data;
   }
 
@@ -134,7 +134,7 @@ public final class GameParser {
     }
   }
 
-  private void parseMapDetails(final Element root, final AtomicReference<String> gameName) throws GameParseException {
+  private void parseMapDetails(final Element root) throws GameParseException {
     parseMap(getSingleChild("map", root));
     final Element resourceList = getSingleChild("resourceList", root, true);
     if (resourceList != null) {
