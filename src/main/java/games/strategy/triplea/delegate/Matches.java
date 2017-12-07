@@ -715,12 +715,15 @@ public final class Matches {
     };
   }
 
-  public static Predicate<Unit> unitIsInfantry() {
-    return obj -> UnitAttachment.get(obj.getType()).getIsInfantry();
+  public static Predicate<Unit> unitIsLandTransportable() {
+    return obj -> {
+      UnitAttachment ua = UnitAttachment.get(obj.getType());
+      return ua.getIsLandTransportable() || ua.getIsInfantry();
+    };
   }
 
-  public static Predicate<Unit> unitIsNotInfantry() {
-    return unitIsInfantry().negate();
+  public static Predicate<Unit> unitIsNotLandTransportable() {
+    return unitIsLandTransportable().negate();
   }
 
   public static Predicate<Unit> unitIsAirTransportable() {

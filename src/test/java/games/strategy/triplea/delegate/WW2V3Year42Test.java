@@ -83,7 +83,7 @@ public class WW2V3Year42Test {
     // move the bomber to attack
     move(germany.getUnits().getMatches(Matches.unitIsStrategicBomber()), new Route(germany, sz5, karrelia));
     // move an infantry to invade
-    move(baltic.getUnits().getMatches(Matches.unitIsInfantry()), new Route(baltic, karrelia));
+    move(baltic.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(baltic, karrelia));
     final BattleTracker battleTracker = MoveDelegate.getBattleTracker(gameData);
     // we should have a pending land battle, and a pending bombing raid
     assertNotNull(battleTracker.getPendingBattle(karrelia, false, null));

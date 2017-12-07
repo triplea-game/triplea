@@ -352,11 +352,8 @@ public class MoveValidator {
         nonBlitzingUnits.addAll(CollectionUtils.getMatches(units, Matches.unitIsOfTypes(TerritoryEffectHelper
             .getUnitTypesThatLostBlitz((wasStartFoughtOver ? route.getAllTerritories() : route.getSteps())))));
         for (final Unit unit : nonBlitzingUnits) {
-          // TODO: we need to actually test if the units is being air transported, or mech-land-transported.
-          if (Matches.unitIsAirTransportable().test(unit)) {
-            continue;
-          }
-          if (Matches.unitIsInfantry().test(unit)) {
+          // TODO: Need to actually test if the unit is being air transported or land transported
+          if (Matches.unitIsAirTransportable().test(unit) || Matches.unitIsLandTransportable().test(unit)) {
             continue;
           }
           final TripleAUnit taUnit = (TripleAUnit) unit;
@@ -552,12 +549,13 @@ public class MoveValidator {
       return result.setErrorReturnResult("Transports not found in route end");
     }
     if (!isEditMode) {
+
       // make sure all units are at least friendly
       for (final Unit unit : CollectionUtils.getMatches(units, Matches.enemyUnit(player, data))) {
         result.addDisallowedUnit("Can only move friendly units", unit);
       }
-      // check we have enough movement
-      // exclude transported units
+
+      // check we have enough movement, exclude transported units
       final Collection<Unit> moveTest;
       if (route.getStart().isWater()) {
         moveTest = MoveValidator.getNonLand(units);
@@ -571,17 +569,11 @@ public class MoveValidator {
           result.addDisallowedUnit("Can only move own troops", unit);
         }
       }
-      // Initialize available Mechanized Inf support
+
+      // Check if units have enough movement accounting for air and land transports
       int mechanizedSupportAvailable = getMechanizedSupportAvail(units, player);
       final Map<Unit, Collection<Unit>> dependencies =
           getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
-      // add those just added
-      // TODO: do not EVER user something from the UI in a validation method. Only the local computer (ie: client) has a
-      // copy of this UI
-      // data. The server has a different copy!!!!
-      // TODO: re-write the entire fucking Paratroopers code. It is garbage! We need a single all encompassing UI and
-      // engine for all the
-      // different types of transportation that exist.
       if (!newDependents.isEmpty()) {
         for (final Unit transport : dependencies.keySet()) {
           if (dependencies.get(transport).isEmpty()) {
@@ -589,7 +581,6 @@ public class MoveValidator {
           }
         }
       }
-      // check units individually
       final Predicate<Unit> hasEnoughMovementForRoute;
       try {
         data.acquireReadLock();
@@ -601,12 +592,10 @@ public class MoveValidator {
         if (!hasEnoughMovementForRoute.test(unit)) {
           boolean unitOk = false;
           if ((Matches.unitIsAirTransportable().test(unit) && Matches.unitHasNotMoved().test(unit))
-              && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().test(unit) && Matches.unitIsInfantry()
-                  .test(unit))) {
-            // we have paratroopers and mechanized infantry, so we must check for both
-            // simple: if it movement group contains an air-transport, then assume we are doing paratroopers. else,
-            // assume we are doing
-            // mechanized
+              && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().test(unit)
+                  && Matches.unitIsLandTransportable().test(unit))) {
+            // Unit is air and land transportable, so we must check for both
+            // If the movement group contains an air transport then assume we are using it otherwise use land transport
             if (units.stream().anyMatch(Matches.unitIsAirTransport())) {
               for (final Unit airTransport : dependencies.keySet()) {
                 if (dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit)) {
@@ -631,7 +620,7 @@ public class MoveValidator {
               result.addDisallowedUnit("Not all units have enough movement", unit);
             }
           } else if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().test(unit)
-              && Matches.unitIsInfantry().test(unit)) {
+              && Matches.unitIsLandTransportable().test(unit)) {
             mechanizedSupportAvailable--;
           } else if (Matches.unitIsOwnedBy(player).negate().test(unit) && Matches.alliedUnit(player, data).test(unit)
               && Matches.unitTypeCanLandOnCarrier().test(unit.getType())
@@ -643,6 +632,7 @@ public class MoveValidator {
           }
         }
       }
+
       // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
       if (route.hasNeutralBeforeEnd()) {
         if ((units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir())) && !isNeutralsBlitzable(data)) {

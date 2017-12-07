@@ -111,8 +111,10 @@ public class UnitAttachment extends DefaultAttachment {
   private int m_carrierCost = -1;
   private boolean m_isAirTransport = false;
   private boolean m_isAirTransportable = false;
+  // isInfantry is DEPRECATED, use isLandTransportable
   private boolean m_isInfantry = false;
   private boolean m_isLandTransport = false;
+  private boolean m_isLandTransportable = false;
   // aa related
   // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa related setters. Must
   // keep.
@@ -1173,22 +1175,44 @@ public class UnitAttachment extends DefaultAttachment {
     m_isMarine = 0;
   }
 
+  @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIsInfantry(final String s) {
     m_isInfantry = getBool(s);
   }
 
+  @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIsInfantry(final Boolean s) {
     m_isInfantry = s;
   }
 
+  @Deprecated
   public boolean getIsInfantry() {
     return m_isInfantry;
   }
 
+  @Deprecated
   public void resetIsInfantry() {
     m_isInfantry = false;
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setIsLandTransportable(final String s) {
+    m_isLandTransportable = getBool(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setIsLandTransportable(final Boolean s) {
+    m_isLandTransportable = s;
+  }
+
+  public boolean getIsLandTransportable() {
+    return m_isLandTransportable;
+  }
+
+  public void resetIsLandTransportable() {
+    m_isLandTransportable = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2664,14 +2688,14 @@ public class UnitAttachment extends DefaultAttachment {
   public void validate(final GameData data) throws GameParseException {
     if (m_isAir) {
       if (m_isSea /* || m_isFactory */ || m_isSub || m_transportCost != -1 || m_carrierCapacity != -1 || m_canBlitz
-          || m_canBombard || m_isMarine != 0 || m_isInfantry || m_isLandTransport || m_isAirTransportable
-          || m_isCombatTransport) {
+          || m_canBombard || m_isMarine != 0 || m_isInfantry || m_isLandTransportable || m_isLandTransport
+          || m_isAirTransportable || m_isCombatTransport) {
         throw new GameParseException("air units cannot have certain properties, " + thisErrorMsg());
       }
     } else if (m_isSea) {
       if (m_canBlitz || m_isAir /* || m_isFactory */ || m_isStrategicBomber || m_carrierCost != -1
-          || m_transportCost != -1 || m_isMarine != 0 || m_isInfantry || m_isLandTransport || m_isAirTransportable
-          || m_isAirTransport || m_isKamikaze) {
+          || m_transportCost != -1 || m_isMarine != 0 || m_isInfantry || m_isLandTransportable || m_isLandTransport
+          || m_isAirTransportable || m_isAirTransport || m_isKamikaze) {
         throw new GameParseException("sea units cannot have certain properties, " + thisErrorMsg());
       }
     } else { // if land
@@ -2851,22 +2875,47 @@ public class UnitAttachment extends DefaultAttachment {
     // remember to test for null and fix arrays
     // the stats exporter relies on this toString having two spaces after each entry, so do not change this please,
     // except to add new abilities onto the end
-    return this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:" + "  isAir:"
-        + m_isAir + "  isSea:" + m_isSea + "  movement:" + m_movement + "  attack:" + m_attack + "  defense:"
-        + m_defense + "  hitPoints:" + m_hitPoints
-        + "  canBlitz:" + m_canBlitz + "  artillerySupportable:" + m_artillerySupportable + "  artillery:" + m_artillery
-        + "  unitSupportCount:" + m_unitSupportCount + "  attackRolls:" + m_attackRolls + "  defenseRolls:"
-        + m_defenseRolls + "  chooseBestRoll:" + m_chooseBestRoll + "  isMarine:" + m_isMarine + "  isInfantry:"
-        + m_isInfantry + "  isLandTransport:" + m_isLandTransport + "  isAirTransportable:" + m_isAirTransportable
-        + "  isAirTransport:" + m_isAirTransport + "  isStrategicBomber:" + m_isStrategicBomber + "  transportCapacity:"
-        + m_transportCapacity + "  transportCost:" + m_transportCost + "  carrierCapacity:" + m_carrierCapacity
-        + "  carrierCost:" + m_carrierCost + "  isSub:" + m_isSub + "  isDestroyer:" + m_isDestroyer + "  canBombard:"
-        + m_canBombard + "  bombard:" + m_bombard + "  isAAforCombatOnly:" + m_isAAforCombatOnly
-        + "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly + "  isAAforFlyOverOnly:"
-        + m_isAAforFlyOverOnly + "  attackAA:" + m_attackAA + "  offensiveAttackAA:" + m_offensiveAttackAA
-        + "  attackAAmaxDieSides:" + m_attackAAmaxDieSides + "  offensiveAttackAAmaxDieSides:"
-        + m_offensiveAttackAAmaxDieSides + "  maxAAattacks:" + m_maxAAattacks + "  maxRoundsAA:" + m_maxRoundsAA
-        + "  mayOverStackAA:" + m_mayOverStackAA + "  damageableAA:" + m_damageableAA + "  typeAA:" + m_typeAA
+    return this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:"
+        + "  isAir:" + m_isAir
+        + "  isSea:" + m_isSea
+        + "  movement:" + m_movement
+        + "  attack:" + m_attack
+        + "  defense:" + m_defense
+        + "  hitPoints:" + m_hitPoints
+        + "  canBlitz:" + m_canBlitz
+        + "  artillerySupportable:" + m_artillerySupportable
+        + "  artillery:" + m_artillery
+        + "  unitSupportCount:" + m_unitSupportCount
+        + "  attackRolls:" + m_attackRolls
+        + "  defenseRolls:" + m_defenseRolls
+        + "  chooseBestRoll:" + m_chooseBestRoll
+        + "  isMarine:" + m_isMarine
+        + "  isInfantry:" + m_isInfantry
+        + "  isLandTransportable:" + m_isLandTransportable
+        + "  isLandTransport:" + m_isLandTransport
+        + "  isAirTransportable:" + m_isAirTransportable
+        + "  isAirTransport:" + m_isAirTransport
+        + "  isStrategicBomber:" + m_isStrategicBomber
+        + "  transportCapacity:" + m_transportCapacity
+        + "  transportCost:" + m_transportCost
+        + "  carrierCapacity:" + m_carrierCapacity
+        + "  carrierCost:" + m_carrierCost
+        + "  isSub:" + m_isSub
+        + "  isDestroyer:" + m_isDestroyer
+        + "  canBombard:" + m_canBombard
+        + "  bombard:" + m_bombard
+        + "  isAAforCombatOnly:" + m_isAAforCombatOnly
+        + "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
+        + "  isAAforFlyOverOnly:" + m_isAAforFlyOverOnly
+        + "  attackAA:" + m_attackAA
+        + "  offensiveAttackAA:" + m_offensiveAttackAA
+        + "  attackAAmaxDieSides:" + m_attackAAmaxDieSides
+        + "  offensiveAttackAAmaxDieSides:" + m_offensiveAttackAAmaxDieSides
+        + "  maxAAattacks:" + m_maxAAattacks
+        + "  maxRoundsAA:" + m_maxRoundsAA
+        + "  mayOverStackAA:" + m_mayOverStackAA
+        + "  damageableAA:" + m_damageableAA
+        + "  typeAA:" + m_typeAA
         + "  targetsAA:"
         + (m_targetsAA != null ? (m_targetsAA.size() == 0 ? "empty" : m_targetsAA.toString()) : "all air units")
         + "  willNotFireIfPresent:"
@@ -3187,7 +3236,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (getIsAir() && (getIsKamikaze() || Properties.getKamikaze_Airplanes(getData()))) {
       stats.append("can use All Movement To Attack Target, ");
     }
-    if (getIsInfantry() && playerHasMechInf(player)) {
+    if ((getIsInfantry() || getIsLandTransportable()) && playerHasMechInf(player)) {
       stats.append("can be Transported By Land, ");
     }
     if (getIsLandTransport() && playerHasMechInf(player)) {
