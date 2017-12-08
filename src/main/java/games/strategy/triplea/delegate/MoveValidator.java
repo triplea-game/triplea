@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -550,37 +551,32 @@ public class MoveValidator {
     }
     if (!isEditMode) {
 
-      // make sure all units are at least friendly
+      // Make sure all units are at least friendly
       for (final Unit unit : CollectionUtils.getMatches(units, Matches.enemyUnit(player, data))) {
         result.addDisallowedUnit("Can only move friendly units", unit);
       }
 
-      // check we have enough movement, exclude transported units
-      final Collection<Unit> moveTest;
+      // Exclude transported units
+      Collection<Unit> moveTest = new ArrayList<>(units);
       if (route.getStart().isWater()) {
         moveTest = MoveValidator.getNonLand(units);
-      } else {
-        moveTest = units;
       }
+      final Map<Unit, Collection<Unit>> dependentsMap =
+          getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
+      Set<Unit> dependents = dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
+      dependents.addAll(newDependents.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()));
+      moveTest.removeAll(dependents);
+
+      // Can only move owned units except transported units or allied air on carriers
       for (final Unit unit : CollectionUtils.getMatches(moveTest, Matches.unitIsOwnedBy(player).negate())) {
-        // allow allied fighters to move with carriers
         if (!(UnitAttachment.get(unit.getType()).getCarrierCost() > 0 && data.getRelationshipTracker().isAllied(player,
             unit.getOwner()))) {
           result.addDisallowedUnit("Can only move own troops", unit);
         }
       }
 
-      // Check if units have enough movement accounting for air and land transports
+      // Check if units have enough movement accounting for land transports
       int mechanizedSupportAvailable = getMechanizedSupportAvail(units, player);
-      final Map<Unit, Collection<Unit>> dependencies =
-          getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
-      if (!newDependents.isEmpty()) {
-        for (final Unit transport : dependencies.keySet()) {
-          if (dependencies.get(transport).isEmpty()) {
-            dependencies.put(transport, newDependents.get(transport));
-          }
-        }
-      }
       final Predicate<Unit> hasEnoughMovementForRoute;
       try {
         data.acquireReadLock();
@@ -591,43 +587,18 @@ public class MoveValidator {
       for (final Unit unit : moveTest) {
         if (!hasEnoughMovementForRoute.test(unit)) {
           boolean unitOk = false;
-          if ((Matches.unitIsAirTransportable().test(unit) && Matches.unitHasNotMoved().test(unit))
-              && (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().test(unit)
-                  && Matches.unitIsLandTransportable().test(unit))) {
-            // Unit is air and land transportable, so we must check for both
-            // If the movement group contains an air transport then assume we are using it otherwise use land transport
-            if (units.stream().anyMatch(Matches.unitIsAirTransport())) {
-              for (final Unit airTransport : dependencies.keySet()) {
-                if (dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit)) {
-                  unitOk = true;
-                  break;
-                }
-              }
-              if (!unitOk) {
-                result.addDisallowedUnit("Not all units have enough movement", unit);
-              }
-            } else {
-              mechanizedSupportAvailable--;
-            }
-          } else if (Matches.unitIsAirTransportable().test(unit) && Matches.unitHasNotMoved().test(unit)) {
-            for (final Unit airTransport : dependencies.keySet()) {
-              if (dependencies.get(airTransport) == null || dependencies.get(airTransport).contains(unit)) {
-                unitOk = true;
-                break;
-              }
-            }
-            if (!unitOk) {
-              result.addDisallowedUnit("Not all units have enough movement", unit);
-            }
-          } else if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().test(unit)
+          if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().test(unit)
               && Matches.unitIsLandTransportable().test(unit)) {
             mechanizedSupportAvailable--;
+            unitOk = true;
           } else if (Matches.unitIsOwnedBy(player).negate().test(unit) && Matches.alliedUnit(player, data).test(unit)
               && Matches.unitTypeCanLandOnCarrier().test(unit.getType())
               && moveTest.stream().anyMatch(Matches.unitIsAlliedCarrier(unit.getOwner(), data))) {
             // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
-            // (shouldn't it be a dependant in this case??)
-          } else {
+            // (shouldn't it be a dependent in this case??)
+            unitOk = true;
+          }
+          if (!unitOk) {
             result.addDisallowedUnit("Not all units have enough movement", unit);
           }
         }
