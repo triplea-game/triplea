@@ -642,9 +642,7 @@ public class MoveValidator {
     } // !isEditMode
 
     // make sure that no non sea non transportable no carriable units end at sea
-    if (route.getEnd() != null && route.getEnd().isWater())
-
-    {
+    if (route.getEnd() != null && route.getEnd().isWater()) {
       for (final Unit unit : MoveValidator.getUnitsThatCantGoOnWater(units)) {
         result.addDisallowedUnit("Not all units can end at water", unit);
       }
