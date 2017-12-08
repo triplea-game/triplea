@@ -2700,7 +2700,7 @@ public class UnitAttachment extends DefaultAttachment {
       }
     } else { // if land
       if (m_canBombard || m_isStrategicBomber || m_isSub || m_carrierCapacity != -1 || m_bombard != -1
-          || m_transportCapacity != -1 || m_isAirTransport || m_isCombatTransport || m_isKamikaze) {
+          || m_isAirTransport || m_isCombatTransport || m_isKamikaze) {
         throw new GameParseException("land units cannot have certain properties, " + thisErrorMsg());
       }
     }
@@ -2715,10 +2715,6 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (m_carrierCapacity != -1 && m_carrierCost != -1) {
       throw new GameParseException("carrierCost and carrierCapacity cannot be set at same time, " + thisErrorMsg());
-    }
-    if (m_transportCost != -1 && m_transportCapacity != -1) {
-      throw new GameParseException(
-          "transportCost and transportCapacity cannot be set at same time, " + thisErrorMsg());
     }
     if (((m_bombingBonus != 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isRocket))
         || (m_bombingMaxDieSides < -1)) {
