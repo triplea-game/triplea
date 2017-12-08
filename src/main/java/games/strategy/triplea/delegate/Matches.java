@@ -473,6 +473,14 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getIsLandTransport();
   }
 
+  static Predicate<Unit> unitIsLandTransportWithCapacity() {
+    return unit -> unitIsLandTransport().and(unitCanTransport()).test(unit);
+  }
+
+  static Predicate<Unit> unitIsLandTransportWithoutCapacity() {
+    return unit -> unitIsLandTransport().and(unitCanTransport().negate()).test(unit);
+  }
+
   static Predicate<Unit> unitIsNotInfrastructureAndNotCapturedOnEntering(final PlayerID player,
       final Territory terr, final GameData data) {
     return unit -> !UnitAttachment.get(unit.getType()).getIsInfrastructure()
