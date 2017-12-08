@@ -45,8 +45,10 @@ public class TransportUtils {
   public static Map<Unit, Unit> mapTransportsToLoad(final Collection<Unit> units,
       final Collection<Unit> transports) {
 
-    final List<Unit> canBeTransported = sortByTransportCostDescending(units);
-    final List<Unit> canTransport = sortByTransportCapacityDescendingThenMovesDescending(transports);
+    List<Unit> canBeTransported = CollectionUtils.getMatches(units, Matches.unitCanBeTransported());
+    canBeTransported = sortByTransportCostDescending(canBeTransported);
+    List<Unit> canTransport = CollectionUtils.getMatches(transports, Matches.unitCanTransport());
+    canTransport = sortByTransportCapacityDescendingThenMovesDescending(canTransport);
 
     // Add units to transports evenly
     final Map<Unit, Unit> mapping = new HashMap<>();
@@ -69,8 +71,10 @@ public class TransportUtils {
   public static Map<Unit, Unit> mapTransportsToLoadUsingMinTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
 
-    final List<Unit> canBeTransported = sortByTransportCostDescending(units);
-    final List<Unit> canTransport = sortByTransportCapacityDescendingThenMovesDescending(transports);
+    List<Unit> canBeTransported = CollectionUtils.getMatches(units, Matches.unitCanBeTransported());
+    canBeTransported = sortByTransportCostDescending(canBeTransported);
+    List<Unit> canTransport = CollectionUtils.getMatches(transports, Matches.unitCanTransport());
+    canTransport = sortByTransportCapacityDescendingThenMovesDescending(canTransport);
 
     final Map<Unit, Unit> mapping = new HashMap<>();
     Optional<Unit> finalTransport = Optional.empty();
@@ -146,7 +150,8 @@ public class TransportUtils {
       final Collection<Unit> transports) {
 
     final Collection<Unit> airTransports = CollectionUtils.getMatches(transports, Matches.unitIsAirTransport());
-    final List<Unit> canBeTransported = sortByTransportCostDescending(units);
+    List<Unit> canBeTransported = CollectionUtils.getMatches(units, Matches.unitCanBeTransported());
+    canBeTransported = sortByTransportCostDescending(canBeTransported);
 
     // Define the max of all units that could be loaded
     final List<Unit> totalLoad = new ArrayList<>();
@@ -183,7 +188,7 @@ public class TransportUtils {
     return cost;
   }
 
-  private static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
+  public static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
     final Comparator<Unit> transportCapacityComparator = (o1, o2) -> {
       final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
       final int capacityLeft2 = TransportTracker.getAvailableCapacity(o2);
@@ -194,18 +199,18 @@ public class TransportUtils {
       final int movementLeft2 = TripleAUnit.get(o2).getMovementLeft();
       return Integer.compare(movementLeft2, movementLeft1);
     };
-    final List<Unit> canTransport = CollectionUtils.getMatches(transports, Matches.unitCanTransport());
+    final List<Unit> canTransport = new ArrayList<>(transports);
     Collections.sort(canTransport, transportCapacityComparator);
     return canTransport;
   }
 
-  private static List<Unit> sortByTransportCostDescending(final Collection<Unit> units) {
+  public static List<Unit> sortByTransportCostDescending(final Collection<Unit> units) {
     final Comparator<Unit> transportCostComparator = (o1, o2) -> {
       final int cost1 = UnitAttachment.get(o1.getType()).getTransportCost();
       final int cost2 = UnitAttachment.get(o2.getType()).getTransportCost();
       return Integer.compare(cost2, cost1);
     };
-    final List<Unit> canBeTransported = CollectionUtils.getMatches(units, Matches.unitCanBeTransported());
+    final List<Unit> canBeTransported = new ArrayList<>(units);
     Collections.sort(canBeTransported, transportCostComparator);
     return canBeTransported;
   }
