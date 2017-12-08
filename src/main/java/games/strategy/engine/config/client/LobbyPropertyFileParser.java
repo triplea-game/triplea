@@ -6,14 +6,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.stream.StreamSupport;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.yaml.snakeyaml.Yaml;
+
+import com.github.openjson.JSONArray;
+import com.github.openjson.JSONObject;
 
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.util.OpenJsonUtils;
 import games.strategy.util.Version;
 
 /**
@@ -25,7 +26,7 @@ class LobbyPropertyFileParser {
 
   public static LobbyServerProperties parse(final File file, final Version currentVersion) {
     try {
-      return new LobbyServerProperties(matchCurrentVersion(loadYaml(file), currentVersion).toMap());
+      return new LobbyServerProperties(OpenJsonUtils.toMap(matchCurrentVersion(loadYaml(file), currentVersion)));
     } catch (final IOException e) {
       throw new RuntimeException("Failed loading file: " + file.getAbsolutePath() + ", please try again, if the "
           + "problem does not go away please report a bug: " + UrlConstants.GITHUB_ISSUES);
@@ -35,7 +36,7 @@ class LobbyPropertyFileParser {
   private static JSONObject matchCurrentVersion(final JSONArray lobbyProps, final Version currentVersion) {
     checkNotNull(lobbyProps);
 
-    return StreamSupport.stream(lobbyProps.spliterator(), false)
+    return OpenJsonUtils.stream(lobbyProps)
         .map(JSONObject.class::cast)
         .filter(props -> currentVersion.equals(new Version(props.getString("version"))))
         .findFirst()
