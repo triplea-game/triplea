@@ -188,7 +188,7 @@ public class TransportUtils {
     return cost;
   }
 
-  public static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
+  private static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
     final Comparator<Unit> transportCapacityComparator = (o1, o2) -> {
       final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
       final int capacityLeft2 = TransportTracker.getAvailableCapacity(o2);
@@ -204,6 +204,9 @@ public class TransportUtils {
     return canTransport;
   }
 
+  /**
+   * Creates a new list with the units sorted descending by transport cost.
+   */
   public static List<Unit> sortByTransportCostDescending(final Collection<Unit> units) {
     final Comparator<Unit> transportCostComparator = (o1, o2) -> {
       final int cost1 = UnitAttachment.get(o1.getType()).getTransportCost();
