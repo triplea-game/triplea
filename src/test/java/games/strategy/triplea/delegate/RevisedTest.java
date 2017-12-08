@@ -370,15 +370,6 @@ public class RevisedTest {
     final Territory uk = territory("United Kingdom", gameData);
     final Territory we = territory("Western Europe", gameData);
     final Territory se = territory("Southern Europe", gameData);
-    final Territory sz14 = territory("14 Sea Zone", gameData);
-    final Territory sz15 = territory("15 Sea Zone", gameData);
-    final Territory egypt = territory("Anglo Egypt", gameData);
-    // start a battle in se
-    removeFrom(sz14, sz14.getUnits().getUnits());
-    addTo(sz15, transport(gameData).create(1, british));
-    load(egypt.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(egypt, sz15));
-    move(sz15.getUnits().getUnits(), new Route(sz15, sz14));
-    move(sz14.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(sz14, se));
     final Route route = new Route(uk, territory("7 Sea Zone", gameData), we, se);
     move(uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), route);
     // the aa gun should have fired and hit
