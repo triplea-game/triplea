@@ -36,6 +36,7 @@ import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CollectionUtils;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
 
 /**
@@ -576,7 +577,9 @@ public class MoveValidator {
       }
 
       // Check if units have enough movement accounting for land transports
-      int mechanizedSupportAvailable = getMechanizedSupportAvail(units, player);
+      // Land transports can either:
+      // 1. Transport units on a 1-to-1 basis (have no capacity set)
+      // 2. Transport like sea transports using capacity and cost
       final Predicate<Unit> hasEnoughMovementForRoute;
       try {
         data.acquireReadLock();
@@ -584,19 +587,32 @@ public class MoveValidator {
       } finally {
         data.releaseReadLock();
       }
+      int numLandTransportsWithoutCapacity = getNumLandTransportsWithoutCapacity(units, player);
+      IntegerMap<Unit> landTransportsWithCapacity = getLandTransportsWithCapacity(units, player);
+      moveTest = TransportUtils.sortByTransportCostDescending(moveTest);
       for (final Unit unit : moveTest) {
         if (!hasEnoughMovementForRoute.test(unit)) {
           boolean unitOk = false;
-          if (mechanizedSupportAvailable > 0 && Matches.unitHasNotMoved().test(unit)
-              && Matches.unitIsLandTransportable().test(unit)) {
-            mechanizedSupportAvailable--;
-            unitOk = true;
-          } else if (Matches.unitIsOwnedBy(player).negate().test(unit) && Matches.alliedUnit(player, data).test(unit)
+          if (Matches.unitIsOwnedBy(player).negate().test(unit) && Matches.alliedUnit(player, data).test(unit)
               && Matches.unitTypeCanLandOnCarrier().test(unit.getType())
               && moveTest.stream().anyMatch(Matches.unitIsAlliedCarrier(unit.getOwner(), data))) {
             // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
             // (shouldn't it be a dependent in this case??)
             unitOk = true;
+          } else if (Matches.unitHasNotMoved().test(unit) && Matches.unitIsLandTransportable().test(unit)) {
+            if (numLandTransportsWithoutCapacity > 0) {
+              numLandTransportsWithoutCapacity--;
+              unitOk = true;
+            } else {
+              for (Unit transport : landTransportsWithCapacity.keySet()) {
+                final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+                if (cost <= landTransportsWithCapacity.getInt(transport)) {
+                  landTransportsWithCapacity.add(transport, -cost);
+                  unitOk = true;
+                  break;
+                }
+              }
+            }
           }
           if (!unitOk) {
             result.addDisallowedUnit("Not all units have enough movement", unit);
@@ -696,13 +712,25 @@ public class MoveValidator {
     return result;
   }
 
-  private static int getMechanizedSupportAvail(final Collection<Unit> units, final PlayerID player) {
-    int mechanizedSupportAvailable = 0;
+  private static int getNumLandTransportsWithoutCapacity(final Collection<Unit> units, final PlayerID player) {
     if (TechAttachment.isMechanizedInfantry(player)) {
-      final Predicate<Unit> transportLand = Matches.unitIsLandTransport().and(Matches.unitIsOwnedBy(player));
-      mechanizedSupportAvailable = CollectionUtils.countMatches(units, transportLand);
+      final Predicate<Unit> transportLand =
+          Matches.unitIsLandTransportWithoutCapacity().and(Matches.unitIsOwnedBy(player));
+      return CollectionUtils.countMatches(units, transportLand);
     }
-    return mechanizedSupportAvailable;
+    return 0;
+  }
+
+  private static IntegerMap<Unit> getLandTransportsWithCapacity(final Collection<Unit> units, final PlayerID player) {
+    IntegerMap<Unit> map = new IntegerMap<>();
+    if (TechAttachment.isMechanizedInfantry(player)) {
+      final Predicate<Unit> transportLand =
+          Matches.unitIsLandTransportWithCapacity().and(Matches.unitIsOwnedBy(player));
+      for (Unit unit : CollectionUtils.getMatches(units, transportLand)) {
+        map.put(unit, UnitAttachment.get(unit.getType()).getTransportCapacity());
+      }
+    }
+    return map;
   }
 
   static Map<Unit, Collection<Unit>> getDependents(final Collection<Unit> units) {
