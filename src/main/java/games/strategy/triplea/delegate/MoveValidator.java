@@ -104,14 +104,13 @@ public class MoveValidator {
     if (validateFuel(data, units, route, player, result).getError() != null) {
       return result;
     }
-    // dont let the user move out of a battle zone
-    // the exception is air units and unloading units into a battle zone
+
+    // Don't let the user move out of a battle zone, the exception is air units and unloading units into a battle zone
     if (AbstractMoveDelegate.getBattleTracker(data).hasPendingBattle(route.getStart(), false)
         && units.stream().anyMatch(Matches.unitIsNotAir())) {
-      // if the units did not move into the territory, then they can move out
-      // this will happen if there is a submerged sub in the area, and
-      // a different unit moved into the sea zone setting up a battle
-      // but the original unit can still remain
+      // if the units did not move into the territory, then they can move out this will happen if there is a submerged
+      // sub in the area, and a different unit moved into the sea zone setting up a battle but the original unit can
+      // still remain
       boolean unitsStartedInTerritory = true;
       for (final Unit unit : units) {
         if (AbstractMoveDelegate.getRouteUsedToMoveInto(undoableMoves, unit, route.getEnd()) != null) {
@@ -159,10 +158,8 @@ public class MoveValidator {
     // cannot enter territories owned by a player to which we are neutral towards
     final Collection<Territory> landOnRoute = route.getMatches(Matches.territoryIsLand());
     if (!landOnRoute.isEmpty()) {
-      // TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is
-      // also checking to
-      // make sure we avoid land
-      // territories owned by nations with these 2 relationship type attachment options
+      // TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is also checking to
+      // make sure we avoid land territories owned by nations with these 2 relationship type attachment options
       for (final Territory t : landOnRoute) {
         if (units.stream().anyMatch(Matches.unitIsLand())) {
           if (!data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner())) {
@@ -221,8 +218,7 @@ public class MoveValidator {
   /**
    * Test a route's canals to see if you can move through it.
    *
-   * @param units
-   *        (Can be null. If null we will assume all units would be stopped by the canal.)
+   * @param units (Can be null. If null we will assume all units would be stopped by the canal.)
    */
   public static String validateCanal(final Route route, final Collection<Unit> units, final PlayerID player,
       final GameData data) {
@@ -236,18 +232,12 @@ public class MoveValidator {
   }
 
   /**
-   * Used for testing a single territory, either as part of a route, or just by itself. Returns
-   * Optional.empty if it
-   * can be passed through otherwise returns a failure message indicating why the canal can't be
-   * passed through.
+   * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if it can
+   * be passed through otherwise returns a failure message indicating why the canal can't be passed through.
    *
-   * @param route
-   *        (Can be null. If not null, we will check to see if the route includes both sea zones,
-   *        and if it doesn't we
-   *        will not test the
-   *        canal)
-   * @param units
-   *        (Can be null. If null we will assume all units would be stopped by the canal.)
+   * @param route (Can be null. If not null, we will check to see if the route includes both sea zones, and if it
+   *        doesn't we will not test the canal)
+   * @param units (Can be null. If null we will assume all units would be stopped by the canal.)
    */
   public static Optional<String> validateCanal(final Territory territory, final Route route,
       final Collection<Unit> units, final PlayerID player, final GameData data) {
@@ -279,7 +269,7 @@ public class MoveValidator {
       }
     }
 
-    // we are in a contested territory owned by the enemy, and we want to move to another enemy
+    // We are in a contested territory owned by the enemy, and we want to move to another enemy
     // owned territory. do not allow unless each unit can blitz the current territory.
     if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner(), data).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player, data))
@@ -294,8 +284,8 @@ public class MoveValidator {
       }
     }
 
-    // we are in a contested territory owned by us, and we want to move to an enemy owned territory.
-    // do not allow unless the territory is blitzable.
+    // We are in a contested territory owned by us, and we want to move to an enemy owned territory.
+    // Do not allow unless the territory is blitzable.
     if (!route.getStart().isWater() && !Matches.isAtWar(route.getStart().getOwner(), data).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player, data))
             && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).negate(), false))) {
@@ -313,14 +303,14 @@ public class MoveValidator {
       }
     }
 
-    // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
+    // If there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
     if (route.hasNeutralBeforeEnd()) {
       if ((units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir())) && !isNeutralsBlitzable(data)) {
         return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
       }
     }
     if (units.stream().anyMatch(Matches.unitIsLand()) && route.hasSteps()) {
-      // check all the territories but the end, if there are enemy territories, make sure they are blitzable
+      // Check all the territories but the end, if there are enemy territories, make sure they are blitzable
       // if they are not blitzable, or we aren't all blitz units fail
       int enemyCount = 0;
       boolean allEnemyBlitzable = true;
@@ -446,8 +436,7 @@ public class MoveValidator {
         }
       }
     }
-    // if there are enemy units on the path blocking us, that is validated elsewhere
-    // (validateNonEnemyUnitsOnPath)
+    // if there are enemy units on the path blocking us, that is validated elsewhere (validateNonEnemyUnitsOnPath)
     // now check if we can move over neutral or enemies territories in noncombat
     if ((!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir()))
         || (units.stream().noneMatch(Matches.unitIsSea()) && !nonParatroopersPresent(player, units))) {
@@ -710,7 +699,8 @@ public class MoveValidator {
         }
       }
     }
-    // don't allow move through impassable territories
+
+    // Don't allow move through impassable territories
     if (!isEditMode && route.anyMatch(Matches.territoryIsImpassable())) {
       return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSABLE);
     }
@@ -755,10 +745,8 @@ public class MoveValidator {
   }
 
   /**
-   * Checks that there are no enemy units on the route except possibly at the end.
-   * Submerged enemy units are not considered as they don't affect
-   * movement.
-   * AA and factory dont count as enemy.
+   * Checks that there are no enemy units on the route except possibly at the end. Submerged enemy units are not
+   * considered as they don't affect movement. AA and factory dont count as enemy.
    */
   static boolean noEnemyUnitsOnPathMiddleSteps(final Route route, final PlayerID player, final GameData data) {
     final Predicate<Unit> alliedOrNonCombat =
@@ -773,8 +761,8 @@ public class MoveValidator {
   }
 
   /**
-   * Checks that there only transports, subs and/or allies on the route except at the end.
-   * AA and factory dont count as enemy.
+   * Checks that there only transports, subs and/or allies on the route except at the end. AA and factory dont count as
+   * enemy.
    */
   static boolean onlyIgnoredUnitsOnPath(final Route route, final PlayerID player, final GameData data,
       final boolean ignoreRouteEnd) {
@@ -926,8 +914,8 @@ public class MoveValidator {
     return least;
   }
 
-  // Determines whether we can pay the neutral territory charge for a
-  // given route for air units. We can't cross neutral territories in WW2V2.
+  // Determines whether we can pay the neutral territory charge for a given route for air units. We can't cross neutral
+  // territories in WW2V2.
   private static MoveValidationResult canCrossNeutralTerritory(final GameData data, final Route route,
       final PlayerID player, final MoveValidationResult result) {
     // neutrals we will overfly in the first place
@@ -1002,9 +990,8 @@ public class MoveValidator {
             if (isScramblingOrKamikazeAttacksEnabled
                 || !Matches.territoryIsEmptyOfCombatUnits(data, player).test(routeStart)) {
               // Unloading a transport from a sea zone with a battle, to a friendly land territory,
-              // during combat move phase, is illegal
-              // and in addition to being illegal, it is also causing problems if the sea transports
-              // get killed (the land units are not dying)
+              // during combat move phase, is illegal and in addition to being illegal, it is also causing problems if
+              // the sea transports get killed (the land units are not dying)
               // TODO: should we use the battle tracker for this instead?
               for (final Unit unit : TransportTracker.transporting(transport)) {
                 result.addDisallowedUnit(
@@ -1013,9 +1000,8 @@ public class MoveValidator {
             }
           }
         }
-        // TODO This is very sensitive to the order of the transport collection. The users may
-        // need to modify the order in which they perform their actions.
-        // check whether transport has already unloaded
+        // TODO This is very sensitive to the order of the transport collection. The users may need to modify the order
+        // in which they perform their actions. check whether transport has already unloaded
         if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport)) {
           for (final Unit unit : TransportTracker.transporting(transport)) {
             result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
@@ -1050,8 +1036,7 @@ public class MoveValidator {
         return result.setErrorReturnResult("Invalid move, only start or end can be land when route has water.");
       }
     }
-    // simply because I dont want to handle it yet
-    // checks are done at the start and end, dont want to worry about just
+    // simply because I dont want to handle it yet checks are done at the start and end, dont want to worry about just
     // using a transport as a bridge yet
     // TODO handle this
     if (!isEditMode && !route.getEnd().isWater() && !route.getStart().isWater()
@@ -1277,8 +1262,7 @@ public class MoveValidator {
   }
 
   /*
-   * Checks if units can pass through canal and returns Optional.empty() if true or a failure
-   * message if false.
+   * Checks if units can pass through canal and returns Optional.empty() if true or a failure message if false.
    */
   private static Optional<String> canPassThroughCanal(final CanalAttachment canalAttachment,
       final Collection<Unit> units, final PlayerID player, final GameData data) {
@@ -1510,8 +1494,7 @@ public class MoveValidator {
         mustGoLand = true;
       }
     }
-    // if the start and end are in water, try and get a water route
-    // dont force a water route, since planes may be moving
+    // If the start and end are water, try and get a water route don't force a water route, since planes may be moving
     if (start.isWater() && end.isWater()) {
       final Route waterRoute =
           data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsWater().and(noImpassable));
