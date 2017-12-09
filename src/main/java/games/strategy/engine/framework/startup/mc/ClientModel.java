@@ -142,8 +142,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
-    Preconditions.checkNotNull(listener);
-    this.listener = listener;
+    this.listener = Preconditions.checkNotNull(listener);
   }
 
   private static ClientProps getProps(final Component ui) {
