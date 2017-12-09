@@ -3,7 +3,6 @@ package games.strategy.triplea.xml;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Paths;
-import java.util.concurrent.atomic.AtomicReference;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
@@ -60,7 +59,7 @@ public enum TestMapGameData {
    */
   public GameData getGameData() throws Exception {
     try (InputStream is = new FileInputStream(Paths.get("src", "test", "resources", fileName).toFile())) {
-      return GameParser.parse("game name", is, new AtomicReference<>());
+      return GameParser.parse("game name", is);
     }
   }
 }

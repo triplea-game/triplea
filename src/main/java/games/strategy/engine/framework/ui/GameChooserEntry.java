@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -46,15 +45,13 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     // correct order for things to work, and that is bads.
     gameData = null;
 
-    final AtomicReference<String> gameName = new AtomicReference<>();
-
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (!inputStream.isPresent()) {
       return;
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = GameParser.parse(url.toString(), input, gameName);
+      gameData = GameParser.parse(url.toString(), input);
       gameDataFullyLoaded = true;
 
     } catch (final EngineVersionException e) {
