@@ -2,10 +2,10 @@ package games.strategy.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
@@ -58,12 +58,11 @@ public final class OpenJsonUtils {
   public static Stream<Object> stream(final JSONArray jsonArray) {
     checkNotNull(jsonArray);
 
-    final int size = jsonArray.length();
-    final List<Object> list = new ArrayList<>(size);
-    for (int i = 0; i < size; ++i) {
-      list.add(jsonArray.get(i));
+    final Stream.Builder<Object> streamBuilder = Stream.builder();
+    for (int i = 0, size = jsonArray.length(); i < size; ++i) {
+      streamBuilder.add(jsonArray.get(i));
     }
-    return list.stream();
+    return streamBuilder.build();
   }
 
   /**
@@ -78,12 +77,9 @@ public final class OpenJsonUtils {
   public static List<Object> toList(final JSONArray jsonArray) {
     checkNotNull(jsonArray);
 
-    final int size = jsonArray.length();
-    final List<Object> list = new ArrayList<>(size);
-    for (int i = 0; i < size; ++i) {
-      list.add(unwrap(jsonArray.get(i)));
-    }
-    return list;
+    return stream(jsonArray)
+        .map(OpenJsonUtils::unwrap)
+        .collect(Collectors.toList());
   }
 
   private static @Nullable Object unwrap(final @Nullable Object value) {
