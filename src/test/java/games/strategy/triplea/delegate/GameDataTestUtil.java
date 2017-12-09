@@ -247,7 +247,7 @@ public class GameDataTestUtil {
   }
 
   /**
-   * Returns a truck UnitType object for the specified GameData object.
+   * Returns a large truck UnitType object for the specified GameData object.
    */
   public static UnitType largeTruck(final GameData data) {
     return unitType("LargeTruck", data);
