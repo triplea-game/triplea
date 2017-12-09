@@ -25,10 +25,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -220,9 +218,7 @@ public class PolygonGrabber extends JFrame {
           bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics g = imageCopy.getGraphics();
       g.drawImage(bufferedImage, 0, 0, null);
-      final Iterator<String> territoryNames = centers.keySet().iterator();
-      while (territoryNames.hasNext()) {
-        final String territoryName = territoryNames.next();
+      for (final String territoryName : centers.keySet()) {
         final Point center = centers.get(territoryName);
         System.out.println("Detecting Polygon for:" + territoryName);
         final Polygon p = findPolygon(center.x, center.y);
@@ -334,19 +330,14 @@ public class PolygonGrabber extends JFrame {
       public void paint(final Graphics g) {
         // super.paint(g);
         g.drawImage(bufferedImage, 0, 0, this);
-        final Iterator<Entry<String, List<Polygon>>> iter = polygons.entrySet().iterator();
         g.setColor(Color.red);
-        while (iter.hasNext()) {
-          final Collection<Polygon> polygons = iter.next().getValue();
-          final Iterator<Polygon> iter2 = polygons.iterator();
+        for (Entry<String, List<Polygon>> entry : polygons.entrySet()) {
           if (islandMode) {
-            while (iter2.hasNext()) {
-              final Polygon item = iter2.next();
+            for (final Polygon item : entry.getValue()) {
               g.drawPolygon(item.xpoints, item.ypoints, item.npoints);
             } // while
           } else {
-            while (iter2.hasNext()) {
-              final Polygon item = iter2.next();
+            for (final Polygon item : entry.getValue()) {
               g.setColor(Color.yellow);
               g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
               g.setColor(Color.black);
@@ -467,8 +458,7 @@ public class PolygonGrabber extends JFrame {
    */
   private void doneCurrentGroup() throws HeadlessException {
     final JTextField text = new JTextField();
-    final Iterator<Entry<String, Point>> centersiter = centers.entrySet().iterator();
-    guessCountryName(text, centersiter);
+    guessCountryName(text, centers.entrySet());
     final int option = JOptionPane.showConfirmDialog(this, text);
     // cancel = 2
     // no = 1
@@ -498,10 +488,9 @@ public class PolygonGrabber extends JFrame {
    * @param java
    *        .tools.Iterator centersiter center iterator
    */
-  private void guessCountryName(final JTextField text, final Iterator<Entry<String, Point>> centersiter) {
+  private void guessCountryName(final JTextField text, final Iterable<Entry<String, Point>> centersiter) {
     final List<String> options = new ArrayList<>();
-    while (centersiter.hasNext()) {
-      final Entry<String, Point> item = centersiter.next();
+    for (final Entry<String, Point> item : centersiter) {
       final Point p = new Point(item.getValue());
       for (final Polygon polygon : current) {
         if (polygon.contains(p)) {

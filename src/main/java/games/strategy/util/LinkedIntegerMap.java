@@ -2,7 +2,6 @@ package games.strategy.util;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Set;
@@ -62,10 +61,7 @@ public final class LinkedIntegerMap<T> implements Cloneable, Serializable {
   }
 
   public void addAll(final Collection<T> keys, final int value) {
-    final Iterator<T> iter = keys.iterator();
-    while (iter.hasNext()) {
-      add(iter.next(), value);
-    }
+    keys.forEach(key -> add(key, value));
   }
 
   /**
@@ -118,12 +114,10 @@ public final class LinkedIntegerMap<T> implements Cloneable, Serializable {
   public String toString() {
     final StringBuilder buf = new StringBuilder();
     buf.append("IntegerMap:\n");
-    final Iterator<T> iter = m_values.keySet().iterator();
-    if (!iter.hasNext()) {
+    if (m_values.isEmpty()) {
       buf.append("empty\n");
     }
-    while (iter.hasNext()) {
-      final T current = iter.next();
+    for (final T current : m_values.keySet()) {
       buf.append(current).append(" -> ").append(getInt(current)).append("\n");
     }
     return buf.toString();

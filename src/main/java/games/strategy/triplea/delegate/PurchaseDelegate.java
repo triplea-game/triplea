@@ -300,16 +300,9 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return repairMap;
   }
 
-  Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>() {
-    UnitTypeComparator utc = new UnitTypeComparator();
-
-    @Override
-    public int compare(final RepairRule o1, final RepairRule o2) {
-      final UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
-      final UnitType u2 = (UnitType) o2.getResults().keySet().iterator().next();
-      return utc.compare(u1, u2);
-    }
-  };
+  Comparator<RepairRule> repairRuleComparator = Comparator.comparing(
+      (final RepairRule o) -> (UnitType) o.getResults().keySet().iterator().next(),
+      new UnitTypeComparator());
 
   private static IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
@@ -324,13 +317,9 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   private IntegerMap<Resource> getRepairCosts(final Map<Unit, IntegerMap<RepairRule>> repairRules,
       final PlayerID player) {
     final Collection<Unit> units = repairRules.keySet();
-    final Iterator<Unit> iter = units.iterator();
     final IntegerMap<Resource> costs = new IntegerMap<>();
-    while (iter.hasNext()) {
-      final Unit u = iter.next();
-      final Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
-      while (rules.hasNext()) {
-        final RepairRule rule = rules.next();
+    for (final Unit u : units) {
+      for (final RepairRule rule : repairRules.get(u).keySet()) {
         costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
       }
     }

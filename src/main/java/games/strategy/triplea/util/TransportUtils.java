@@ -174,13 +174,11 @@ public class TransportUtils {
     if (units == null) {
       return 0;
     }
-    int cost = 0;
-    final Iterator<Unit> iter = units.iterator();
-    while (iter.hasNext()) {
-      final Unit item = iter.next();
-      cost += UnitAttachment.get(item.getType()).getTransportCost();
-    }
-    return cost;
+    return units.stream()
+        .map(Unit::getType)
+        .map(UnitAttachment::get)
+        .mapToInt(UnitAttachment::getTransportCost)
+        .sum();
   }
 
   private static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {

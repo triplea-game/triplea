@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
@@ -65,12 +65,10 @@ public class AllianceTracker implements Serializable {
    * @return a set of all the games alliances, this will return an empty set if you aren't using alliances.
    */
   public Set<String> getAlliances() {
-    final Iterator<PlayerID> keys = this.alliances.keySet().iterator();
-    final Set<String> alliances = new HashSet<>();
-    while (keys.hasNext()) {
-      alliances.addAll(this.alliances.get(keys.next()));
-    }
-    return alliances;
+    return alliances.keySet().stream()
+        .map(alliances::get)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -81,15 +79,9 @@ public class AllianceTracker implements Serializable {
    * @return all the players in the given alliance
    */
   public Set<PlayerID> getPlayersInAlliance(final String allianceName) {
-    final Iterator<PlayerID> keys = alliances.keySet().iterator();
-    final Set<PlayerID> playersInAlliance = new HashSet<>();
-    while (keys.hasNext()) {
-      final PlayerID player = keys.next();
-      if (alliances.get(player).contains(allianceName)) {
-        playersInAlliance.add(player);
-      }
-    }
-    return playersInAlliance;
+    return alliances.keySet().stream()
+        .filter(player -> alliances.get(player).contains(allianceName))
+        .collect(Collectors.toSet());
   }
 
   public Collection<String> getAlliancesPlayerIsIn(final PlayerID player) {

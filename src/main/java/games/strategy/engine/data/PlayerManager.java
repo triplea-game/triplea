@@ -2,9 +2,9 @@ package games.strategy.engine.data;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.net.INode;
 
@@ -31,17 +31,10 @@ public class PlayerManager {
     if (playerMapping == null || playerMapping.isEmpty()) {
       return "empty";
     }
-    final StringBuilder sb = new StringBuilder();
-    final Iterator<String> iter = playerMapping.keySet().iterator();
-    while (iter.hasNext()) {
-      final String key = iter.next();
-      final INode value = playerMapping.get(key);
-      sb.append(key).append("=").append(value.getName());
-      if (iter.hasNext()) {
-        sb.append(", ");
-      }
-    }
-    return sb.toString();
+    return playerMapping.keySet().stream()
+        .map(key -> String.format("%s=%s", key, playerMapping.get(key).getName()))
+        .collect(Collectors.joining(", "));
+
   }
 
   public Set<INode> getNodes() {

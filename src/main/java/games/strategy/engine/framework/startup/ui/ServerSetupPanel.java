@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -200,14 +199,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     allianceLabel.setForeground(Color.black);
     layout.setConstraints(allianceLabel, allianceConstraints);
     players.add(allianceLabel);
-    final Iterator<PlayerRow> iter = playerRows.iterator();
-    if (!iter.hasNext()) {
+    if (playerRows.isEmpty()) {
       final JLabel noPlayers = new JLabel("Load a game file first");
       layout.setConstraints(noPlayers, nameConstraints);
       players.add(noPlayers);
     }
-    while (iter.hasNext()) {
-      final PlayerRow row = iter.next();
+    for (final PlayerRow row : playerRows) {
       if (disableable) {
         layout.setConstraints(row.getEnabledPlayer(), enabledPlayerConstraints);
         players.add(row.getEnabledPlayer());

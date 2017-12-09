@@ -5,18 +5,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.proAI.ProData;
@@ -301,14 +300,12 @@ public class ProTerritoryManager {
     // Find scramble properties
     final boolean fromIslandOnly = Properties.getScramble_From_Island_Only(data);
     final boolean toSeaOnly = Properties.getScramble_To_Sea_Only(data);
-    int maxScrambleDistance = 0;
-    final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
-    while (utIter.hasNext()) {
-      final UnitAttachment ua = UnitAttachment.get(utIter.next());
-      if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
-        maxScrambleDistance = ua.getMaxScrambleDistance();
-      }
-    }
+    int maxScrambleDistance = StreamSupport.stream(data.getUnitTypeList().spliterator(), false)
+        .map(UnitAttachment::get)
+        .filter(UnitAttachment::getCanScramble)
+        .mapToInt(UnitAttachment::getMaxScrambleDistance)
+        .max()
+        .orElse(0);
     final Predicate<Unit> airbasesCanScramble = Matches.unitIsEnemyOf(data, player)
         .and(Matches.unitIsAirBase())
         .and(Matches.unitIsNotDisabled())

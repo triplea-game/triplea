@@ -147,21 +147,16 @@ public class Route implements Serializable, Iterable<Territory> {
    */
   public boolean crossesWater() {
     final boolean startLand = !m_start.isWater();
-    boolean overWater = false;
-    final Iterator<Territory> routeIter = m_steps.iterator();
-    Territory terr = null;
-    while (routeIter.hasNext()) {
-      terr = routeIter.next();
-      if (terr.isWater()) {
-        overWater = true;
-      }
-    }
-    if (terr == null) {
+    final boolean overWater = m_steps.stream().anyMatch(Territory::isWater);
+
+    final Territory lastTerritory = m_steps.get(m_steps.size() - 1);
+
+    if (!overWater || lastTerritory == null) {
       return false;
     }
     // If we started on land, went over water, and ended on land, we cross
     // water.
-    return (startLand && overWater && !terr.isWater());
+    return (startLand && overWater && !lastTerritory.isWater());
   }
 
   /**
