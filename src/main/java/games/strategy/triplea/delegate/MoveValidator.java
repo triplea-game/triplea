@@ -565,8 +565,12 @@ public class MoveValidator {
       }
       final Map<Unit, Collection<Unit>> dependentsMap =
           getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
-      final Set<Unit> dependents = dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
-      dependents.addAll(newDependents.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()));
+      final Set<Unit> dependents = dependentsMap.values().stream()
+          .flatMap(Collection::stream)
+          .collect(Collectors.toSet());
+      dependents.addAll(newDependents.values().stream()
+          .flatMap(Collection::stream)
+          .collect(Collectors.toSet()));
       moveTest.removeAll(dependents);
 
       // Can only move owned units except transported units or allied air on carriers
