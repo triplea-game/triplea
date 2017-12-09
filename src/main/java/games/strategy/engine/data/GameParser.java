@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +30,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import com.google.common.base.Preconditions;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -66,41 +66,59 @@ public final class GameParser {
   public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapName;
 
-  public GameParser(final String mapName) {
-    this.mapName = Preconditions.checkNotNull(mapName);
+  private GameParser(final String mapName) {
+    this.mapName = mapName;
   }
 
   /**
-   * Parses the XML Document provided by the given InputStream into a DOM.
-   * 
-   * @return The root Element of the DOM
+   * Performs a deep parse of the game definition contained in the specified stream.
+   *
+   * @return A complete {@link GameData} instance that can be used to play the game.
    */
-  private Element parseDom(final InputStream stream) throws SAXException {
-    Preconditions.checkNotNull(stream, "InputStream must be non-null!");
-    return getDocument(stream).getDocumentElement();
+  public static GameData parse(final String mapName, final InputStream stream, final AtomicReference<String> gameName)
+      throws GameParseException, SAXException, EngineVersionException {
+    checkNotNull(mapName);
+    checkNotNull(stream);
+    checkNotNull(gameName);
+
+    return new GameParser(mapName).parse(stream, gameName);
   }
 
-  /**
-   * Parses a file into a GameData object.
-   */
-  public GameData parse(final InputStream stream, final AtomicReference<String> gameName)
+  private GameData parse(final InputStream stream, final AtomicReference<String> gameName)
       throws GameParseException, SAXException, EngineVersionException {
     final Element root = parseDom(stream);
     parseMapProperties(root, gameName);
-    // everything until here is needed to select a game
     parseMapDetails(root);
     return data;
   }
 
   /**
-   * Parses just the essential parts of the maps.
-   * Used to display all available maps.
+   * Performs a shallow parse of the game definition contained in the specified stream.
+   *
+   * @return A partial {@link GameData} instance that can be used to display metadata about the game (e.g. when
+   *         displaying all available maps); it cannot be used to play the game.
    */
-  public GameData parseMapProperties(final InputStream stream, final AtomicReference<String> gameName)
+  public static GameData parseShallow(
+      final String mapName,
+      final InputStream stream,
+      final AtomicReference<String> gameName)
+      throws GameParseException, SAXException, EngineVersionException {
+    checkNotNull(mapName);
+    checkNotNull(stream);
+    checkNotNull(gameName);
+
+    return new GameParser(mapName).parseShallow(stream, gameName);
+  }
+
+  private GameData parseShallow(final InputStream stream, final AtomicReference<String> gameName)
       throws GameParseException, SAXException, EngineVersionException {
     final Element root = parseDom(stream);
     parseMapProperties(root, gameName);
     return data;
+  }
+
+  private Element parseDom(final InputStream stream) throws SAXException {
+    return getDocument(stream).getDocumentElement();
   }
 
   private void parseMapProperties(final Element root, final AtomicReference<String> gameName)

@@ -37,7 +37,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(uri.toString()).parseMapProperties(input, gameName);
+      gameData = GameParser.parseShallow(uri.toString(), input, gameName);
       gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
   }
@@ -55,7 +55,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(url.toString()).parse(input, gameName);
+      gameData = GameParser.parse(url.toString(), input, gameName);
       gameDataFullyLoaded = true;
 
     } catch (final EngineVersionException e) {
