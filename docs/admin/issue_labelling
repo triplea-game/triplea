@@ -1,0 +1,41 @@
+Description of how we use labels and what they mean. 
+
+Example labels:
+P0;  Category: Code;  
+
+
+== Priority Labels ==
+
+P0: Problem live in 'production' that is currently impacting players, needs immediate fix
+P1: Prioritized problem, not currently causing problems, but a fix here should be prioritized
+Regression: bug report for a non-released version would get this label. These indicate we messed up during PR, not enough
+  testing, or just missed something. If we release a 'regression', it is no longer a regression but probably a p1 or a p0 instead.
+  
+  
+== Categorization Labels ==
+
+
+category: dev & admin process  - anything that relates to the build scripts, deployment pipeline, any kind of process like how
+  we do code reviews or merges, also anything that relates to how we maintain lobby and bots.
+
+
+
+== Type Labels ==
+
+Indicates what kind of issues/topic we are looking at. Examples would be performance problems vs security issues. 
+
+
+== Tracking Labels ==
+
+ice box - revisit later: Used for non-critical items that are not actionable. Essentially this allows us to mark something
+  as incomplete and to stop active tracking. These items can still be viewed, and if someone were looking for ideas or
+  loose ends to pick up, they could look at these issues. At any time if we want to bring one of these issues back to life
+  we can re-open it and remove the 'ice box' label
+  
+  
+== Meta Labels ==
+Issues can be tagged with any number of 'meta' labels.
+
+* help needed: means we need volunteers, looking for people to jump in to help
+* discussion: indicates the issue is under discussion and action items are not necessarily yet known. "input needed" would
+ be a good alternative name
