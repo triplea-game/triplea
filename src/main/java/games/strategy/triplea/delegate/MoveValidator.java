@@ -547,9 +547,9 @@ public class MoveValidator {
       }
 
       // Ensure all air transports are included
-      for (Unit airTransport : newDependents.keySet()) {
+      for (final Unit airTransport : newDependents.keySet()) {
         if (!units.contains(airTransport)) {
-          for (Unit unit : newDependents.get(airTransport)) {
+          for (final Unit unit : newDependents.get(airTransport)) {
             if (units.contains(unit)) {
               result.addDisallowedUnit("Not all units have enough movement", unit);
             }
@@ -564,7 +564,8 @@ public class MoveValidator {
       }
       final Map<Unit, Collection<Unit>> dependentsMap =
           getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
-      Set<Unit> dependents = dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
+      final Set<Unit> dependents =
+          dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
       dependents.addAll(newDependents.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()));
       moveTest.removeAll(dependents);
 
@@ -588,7 +589,7 @@ public class MoveValidator {
         data.releaseReadLock();
       }
       int numLandTransportsWithoutCapacity = getNumLandTransportsWithoutCapacity(units, player);
-      IntegerMap<Unit> landTransportsWithCapacity = getLandTransportsWithCapacity(units, player);
+      final IntegerMap<Unit> landTransportsWithCapacity = getLandTransportsWithCapacity(units, player);
       moveTest = TransportUtils.sortByTransportCostDescending(moveTest);
       for (final Unit unit : moveTest) {
         if (!hasEnoughMovementForRoute.test(unit)) {
@@ -604,7 +605,7 @@ public class MoveValidator {
               numLandTransportsWithoutCapacity--;
               unitOk = true;
             } else {
-              for (Unit transport : landTransportsWithCapacity.keySet()) {
+              for (final Unit transport : landTransportsWithCapacity.keySet()) {
                 final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
                 if (cost <= landTransportsWithCapacity.getInt(transport)) {
                   landTransportsWithCapacity.add(transport, -cost);
@@ -722,11 +723,11 @@ public class MoveValidator {
   }
 
   private static IntegerMap<Unit> getLandTransportsWithCapacity(final Collection<Unit> units, final PlayerID player) {
-    IntegerMap<Unit> map = new IntegerMap<>();
+    final IntegerMap<Unit> map = new IntegerMap<>();
     if (TechAttachment.isMechanizedInfantry(player)) {
       final Predicate<Unit> transportLand =
           Matches.unitIsLandTransportWithCapacity().and(Matches.unitIsOwnedBy(player));
-      for (Unit unit : CollectionUtils.getMatches(units, transportLand)) {
+      for (final Unit unit : CollectionUtils.getMatches(units, transportLand)) {
         map.put(unit, UnitAttachment.get(unit.getType()).getTransportCapacity());
       }
     }
