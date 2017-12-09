@@ -371,28 +371,20 @@ public class ClientModel implements IMessengerErrorListener {
     SwingUtilities.invokeLater(() -> listener.playerListChanged());
   }
 
-  public Map<String, String> getPlayerToNodesMapping() {
-    synchronized (this) {
-      return new HashMap<>(playersToNodes);
-    }
+  public synchronized Map<String, String> getPlayerToNodesMapping() {
+    return new HashMap<>(playersToNodes);
   }
 
-  public Map<String, Boolean> getPlayersEnabledListing() {
-    synchronized (this) {
-      return new HashMap<>(playersEnabledListing);
-    }
+  public synchronized Map<String, Boolean> getPlayersEnabledListing() {
+    return new HashMap<>(playersEnabledListing);
   }
 
-  public Collection<String> getPlayersAllowedToBeDisabled() {
-    synchronized (this) {
-      return new HashSet<>(playersAllowedToBeDisabled);
-    }
+  public synchronized Collection<String> getPlayersAllowedToBeDisabled() {
+    return new HashSet<>(playersAllowedToBeDisabled);
   }
 
-  public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
-    synchronized (this) {
-      return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
-    }
+  public synchronized Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
+    return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
   }
 
   public IClientMessenger getMessenger() {
