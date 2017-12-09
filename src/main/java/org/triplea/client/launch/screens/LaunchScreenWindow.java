@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
@@ -115,7 +116,8 @@ public enum LaunchScreenWindow {
   }
 
   static void drawWithServerNetworking(
-      final StagingScreen stagingScreen, final ServerConnectionProps serverProps) {
+      @Nonnull final StagingScreen stagingScreen,
+      @Nonnull final ServerConnectionProps serverProps) {
     final GameData data = parseGameData();
 
     final ServerModel serverModel = new ServerModel(serverProps);

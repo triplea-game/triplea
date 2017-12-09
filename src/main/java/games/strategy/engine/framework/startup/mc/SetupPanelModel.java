@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Observable;
 
+import javax.annotation.Nonnull;
 import javax.swing.JPanel;
 
 import com.google.common.base.Preconditions;
@@ -83,7 +84,9 @@ public class SetupPanelModel extends Observable {
     return panel;
   }
 
-  public void setServerMode(final ServerModel serverModel, final ServerConnectionProps props) {
+  public void setServerMode(
+      @Nonnull final ServerModel serverModel,
+      @Nonnull final ServerConnectionProps props) {
     serverModel.createServerMessenger(new JPanel(), props);
     Preconditions.checkNotNull(serverModel.getChatPanel());
     serverModel.createServerLauncher();

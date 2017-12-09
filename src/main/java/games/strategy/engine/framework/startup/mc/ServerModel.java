@@ -20,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
 import games.strategy.debug.ClientLogger;
@@ -241,12 +243,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
    * UI can be null. We use it as the parent for message dialogs we show.
    * If you have a component displayed, use it.
    */
-  boolean createServerMessenger(Component ui, final ServerConnectionProps props) {
-    ui = ui == null ? null : JOptionPane.getFrameForComponent(ui);
-    this.ui = ui;
-    if (props == null) {
-      return false;
-    }
+  boolean createServerMessenger(
+      @Nullable final Component ui,
+      @Nonnull final ServerConnectionProps props) {
+    this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
+
     try {
       serverMessenger = new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
