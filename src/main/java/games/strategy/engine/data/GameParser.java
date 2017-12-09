@@ -75,6 +75,18 @@ public final class GameParser {
    *
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
+  public static GameData parse(final String mapName, final InputStream stream)
+      throws GameParseException, SAXException, EngineVersionException {
+    return parse(mapName, stream, new AtomicReference<>());
+  }
+
+  /**
+   * Performs a deep parse of the game definition contained in the specified stream.
+   *
+   * @param gameName Receives the game name parsed from the game definition.
+   *
+   * @return A complete {@link GameData} instance that can be used to play the game.
+   */
   public static GameData parse(final String mapName, final InputStream stream, final AtomicReference<String> gameName)
       throws GameParseException, SAXException, EngineVersionException {
     checkNotNull(mapName);
