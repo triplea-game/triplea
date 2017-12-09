@@ -27,7 +27,6 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
   public GameChooserEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
     url = uri;
-    final AtomicReference<String> gameName = new AtomicReference<>();
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (!inputStream.isPresent()) {
@@ -37,7 +36,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = GameParser.parseShallow(uri.toString(), input, gameName);
+      gameData = GameParser.parseShallow(uri.toString(), input);
       gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
   }

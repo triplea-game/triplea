@@ -98,22 +98,18 @@ public final class GameParser {
    * @return A partial {@link GameData} instance that can be used to display metadata about the game (e.g. when
    *         displaying all available maps); it cannot be used to play the game.
    */
-  public static GameData parseShallow(
-      final String mapName,
-      final InputStream stream,
-      final AtomicReference<String> gameName)
+  public static GameData parseShallow(final String mapName, final InputStream stream)
       throws GameParseException, SAXException, EngineVersionException {
     checkNotNull(mapName);
     checkNotNull(stream);
-    checkNotNull(gameName);
 
-    return new GameParser(mapName).parseShallow(stream, gameName);
+    return new GameParser(mapName).parseShallow(stream);
   }
 
-  private GameData parseShallow(final InputStream stream, final AtomicReference<String> gameName)
+  private GameData parseShallow(final InputStream stream)
       throws GameParseException, SAXException, EngineVersionException {
     final Element root = parseDom(stream);
-    parseMapProperties(root, gameName);
+    parseMapProperties(root, new AtomicReference<>());
     return data;
   }
 
