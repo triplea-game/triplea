@@ -59,10 +59,8 @@ public class Route implements Serializable, Iterable<Territory> {
    * Join the two routes. It must be the case that r1.end() equals r2.start()
    * or r1.end() == null and r1.start() equals r2
    *
-   * @param r1
-   *        route 1
-   * @param r2
-   *        route 2
+   * @param r1 route 1
+   * @param r2 route 2
    * @return a new Route starting at r1.start() going to r2.end() along r1,
    *         r2, or null if the routes can't be joined it the joining would
    *         form a loop
@@ -121,8 +119,7 @@ public class Route implements Serializable, Iterable<Territory> {
   /**
    * Set the start of this route.
    *
-   * @param t
-   *        new start territory
+   * @param t new start territory
    */
   public void setStart(final Territory t) {
     if (t == null) {
@@ -142,33 +139,23 @@ public class Route implements Serializable, Iterable<Territory> {
    * Determines if the route crosses water by checking if any of the
    * territories except the start and end are sea territories.
    *
-   * @return whether the route encounters water other than at the start of the
-   *         route.
+   * @return whether the route encounters water other than at the start of the route.
    */
   public boolean crossesWater() {
-    final boolean startLand = !m_start.isWater();
-    boolean overWater = false;
-    final Iterator<Territory> routeIter = m_steps.iterator();
-    Territory terr = null;
-    while (routeIter.hasNext()) {
-      terr = routeIter.next();
-      if (terr.isWater()) {
-        overWater = true;
-      }
-    }
-    if (terr == null) {
+    if (hasNoSteps()) {
       return false;
     }
-    // If we started on land, went over water, and ended on land, we cross
-    // water.
-    return (startLand && overWater && !terr.isWater());
+    final boolean startLand = !m_start.isWater();
+    final boolean overWater = anyMatch(Territory::isWater);
+
+    // If we started on land, went over water, and ended on land, we cross water.
+    return (startLand && overWater && !getEnd().isWater());
   }
 
   /**
    * Add the given territory to the end of the route.
    *
-   * @param t
-   *        referring territory
+   * @param t referring territory
    */
   public void add(final Territory t) {
     if (t == null) {
@@ -181,8 +168,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param u
-   *        unit that is moving on this route
+   * @param u unit that is moving on this route
    * @return the total cost of the route including modifications due to territoryEffects and territoryConnections.
    */
   public int getMovementCost(final Unit u) {
@@ -251,8 +237,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @param match
-   *        referring match
+   * @param match referring match
    * @return all territories in this route match the given match (start territory is not tested).
    */
   public Collection<Territory> getMatches(final Predicate<Territory> match) {
@@ -286,8 +271,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return collection of all territories in this route without the start or
-   *         the end.
+   * @return collection of all territories in this route without the start or the end.
    */
   public List<Territory> getMiddleSteps() {
     if (numberOfSteps() > 1) {
@@ -358,8 +342,7 @@ public class Route implements Serializable, Iterable<Territory> {
       return false;
     }
     // we should not check if there is only 1 step, because otherwise movement validation will let users move their
-    // tanks over water, so
-    // long as they end on land
+    // tanks over water, so long as they end on land
     return getStart().isWater() && !getEnd().isWater();
   }
 

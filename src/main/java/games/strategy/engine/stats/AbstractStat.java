@@ -2,10 +2,8 @@ package games.strategy.engine.stats;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Iterator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 
@@ -18,13 +16,9 @@ public abstract class AbstractStat implements IStat {
 
   @Override
   public double getValue(final String alliance, final GameData data) {
-    final Iterator<PlayerID> iter = data.getAllianceTracker().getPlayersInAlliance(alliance).iterator();
-    double value = 0;
-    while (iter.hasNext()) {
-      final PlayerID player = iter.next();
-      value += getValue(player, data);
-    }
-    return value;
+    return data.getAllianceTracker().getPlayersInAlliance(alliance).stream()
+        .mapToDouble(player -> getValue(player, data))
+        .sum();
   }
 
   @Override

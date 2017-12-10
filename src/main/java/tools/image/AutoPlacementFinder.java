@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -198,9 +197,7 @@ public class AutoPlacementFinder {
     textOptionPane.show();
     textOptionPane.appendNewLine("Place Dimensions in pixels, being used: " + placeWidth + "x" + placeHeight + "\r\n");
     textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
-    final Iterator<String> terrIter = mapData.getTerritories().iterator();
-    while (terrIter.hasNext()) {
-      final String name = terrIter.next();
+    for (final String name : mapData.getTerritories()) {
       final List<Point> points;
       if (mapData.hasContainedTerritory(name)) {
         final Set<Polygon> containedPolygons = new HashSet<>();

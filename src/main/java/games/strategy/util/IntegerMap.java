@@ -3,7 +3,6 @@ package games.strategy.util;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -16,7 +15,7 @@ import java.util.Set;
  */
 public final class IntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
-  private final HashMap<T, Integer> mapValues;
+  private final Map<T, Integer> mapValues;
 
   /** Creates new IntegerMap. */
   public IntegerMap() {
@@ -69,10 +68,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   private void addAll(final Collection<T> keys, final int value) {
-    final Iterator<T> iter = keys.iterator();
-    while (iter.hasNext()) {
-      add(iter.next(), value);
-    }
+    keys.forEach(key -> add(key, value));
   }
 
   /**
@@ -259,12 +255,10 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
   public String toString() {
     final StringBuilder buf = new StringBuilder();
     buf.append("IntegerMap:\n");
-    final Iterator<T> iter = mapValues.keySet().iterator();
-    if (!iter.hasNext()) {
+    if (mapValues.isEmpty()) {
       buf.append("empty\n");
     }
-    while (iter.hasNext()) {
-      final T current = iter.next();
+    for (final T current : mapValues.keySet()) {
       buf.append(current).append(" -> ").append(getInt(current)).append("\n");
     }
     return buf.toString();
