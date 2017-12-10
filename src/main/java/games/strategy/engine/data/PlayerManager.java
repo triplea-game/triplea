@@ -31,8 +31,8 @@ public class PlayerManager {
     if (playerMapping == null || playerMapping.isEmpty()) {
       return "empty";
     }
-    return playerMapping.keySet().stream()
-        .map(key -> String.format("%s=%s", key, playerMapping.get(key).getName()))
+    return playerMapping.entrySet().stream()
+        .map(e -> String.format("%s=%s", e.getKey(), e.getValue().getName()))
         .collect(Collectors.joining(", "));
 
   }

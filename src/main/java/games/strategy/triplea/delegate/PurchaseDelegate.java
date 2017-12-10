@@ -300,7 +300,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return repairMap;
   }
 
-  Comparator<RepairRule> repairRuleComparator = Comparator.comparing(
+  private static final Comparator<RepairRule> repairRuleComparator = Comparator.comparing(
       (final RepairRule o) -> (UnitType) o.getResults().keySet().iterator().next(),
       new UnitTypeComparator());
 

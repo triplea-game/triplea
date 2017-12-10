@@ -300,7 +300,7 @@ public class ProTerritoryManager {
     // Find scramble properties
     final boolean fromIslandOnly = Properties.getScramble_From_Island_Only(data);
     final boolean toSeaOnly = Properties.getScramble_To_Sea_Only(data);
-    int maxScrambleDistance = StreamSupport.stream(data.getUnitTypeList().spliterator(), false)
+    final int maxScrambleDistance = StreamSupport.stream(data.getUnitTypeList().spliterator(), false)
         .map(UnitAttachment::get)
         .filter(UnitAttachment::getCanScramble)
         .mapToInt(UnitAttachment::getMaxScrambleDistance)

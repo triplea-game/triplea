@@ -331,7 +331,7 @@ public class PolygonGrabber extends JFrame {
         // super.paint(g);
         g.drawImage(bufferedImage, 0, 0, this);
         g.setColor(Color.red);
-        for (Entry<String, List<Polygon>> entry : polygons.entrySet()) {
+        for (final Entry<String, List<Polygon>> entry : polygons.entrySet()) {
           if (islandMode) {
             for (final Polygon item : entry.getValue()) {
               g.drawPolygon(item.xpoints, item.ypoints, item.npoints);

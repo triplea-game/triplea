@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class AllianceTracker implements Serializable {
   private final Multimap<PlayerID, String> alliances;
 
   public AllianceTracker() {
-    alliances = HashMultimap.create();
+    this(HashMultimap.create());
   }
 
   public AllianceTracker(final Multimap<PlayerID, String> alliances) {
@@ -65,10 +66,7 @@ public class AllianceTracker implements Serializable {
    * @return a set of all the games alliances, this will return an empty set if you aren't using alliances.
    */
   public Set<String> getAlliances() {
-    return alliances.keySet().stream()
-        .map(alliances::get)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toSet());
+    return new HashSet<>(alliances.values());
   }
 
   /**
@@ -79,8 +77,9 @@ public class AllianceTracker implements Serializable {
    * @return all the players in the given alliance
    */
   public Set<PlayerID> getPlayersInAlliance(final String allianceName) {
-    return alliances.keySet().stream()
-        .filter(player -> alliances.get(player).contains(allianceName))
+    return alliances.entries().stream()
+        .filter(e -> e.getValue().contains(allianceName))
+        .map(Map.Entry::getKey)
         .collect(Collectors.toSet());
   }
 
