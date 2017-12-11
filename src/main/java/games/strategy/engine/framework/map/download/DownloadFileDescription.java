@@ -102,6 +102,9 @@ public class DownloadFileDescription {
    * @return Name of the zip file.
    */
   String getMapZipFileName() {
+    if (url.matches("^.*[0-9a-f]{40}\\.zip$")) {
+      return "master.zip";
+    }
     if (url != null && url.contains("/")) {
       return url.substring(url.lastIndexOf('/') + 1, url.length());
     } else {
@@ -120,7 +123,9 @@ public class DownloadFileDescription {
 
   /** File reference for where to install the file. */
   File getInstallLocation() {
-    final String masterSuffix = (getMapZipFileName().toLowerCase().endsWith("master.zip")) ? "-master" : "";
+    // TODO make TripleA check for the correct hash when updating instead of defaulting to master
+    // so the version yaml property can be dropped.
+    final String masterSuffix = getMapZipFileName().toLowerCase().endsWith("master.zip") ? "-master" : "";
     final String normalizedMapName = getMapName().toLowerCase().replace(' ', '_') + masterSuffix + ".zip";
     return new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + normalizedMapName);
   }
