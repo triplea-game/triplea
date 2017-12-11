@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -287,18 +286,13 @@ public class GameSelectorPanel extends JPanel implements Observer {
     final Object buttonPressed = pane.getValue();
     if (buttonPressed == null || buttonPressed.equals(cancel)) {
       // restore properties, if cancel was pressed, or window was closed
-      final Iterator<IEditableProperty> itr = model.getGameData().getProperties().getEditableProperties().iterator();
-      while (itr.hasNext()) {
-        final IEditableProperty property = itr.next();
+      for (final IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
         property.setValue(currentPropertiesMap.get(property.getName()));
       }
     } else if (buttonPressed.equals(reset)) {
       if (!originalPropertiesMap.isEmpty()) {
         // restore properties, if cancel was pressed, or window was closed
-        final Iterator<IEditableProperty> itr =
-            model.getGameData().getProperties().getEditableProperties().iterator();
-        while (itr.hasNext()) {
-          final IEditableProperty property = itr.next();
+        for (final IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
           property.setValue(originalPropertiesMap.get(property.getName()));
         }
         selectGameOptions();

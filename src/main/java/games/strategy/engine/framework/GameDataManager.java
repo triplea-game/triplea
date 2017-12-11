@@ -11,7 +11,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -184,10 +183,8 @@ public final class GameDataManager {
   }
 
   private static void writeDelegates(final GameData data, final ObjectOutputStream out) throws IOException {
-    final Iterator<IDelegate> iter = data.getDelegateList().iterator();
-    while (iter.hasNext()) {
+    for (final IDelegate delegate : data.getDelegateList()) {
       out.writeObject(DELEGATE_START);
-      final IDelegate delegate = iter.next();
       // write out the delegate info
       out.writeObject(delegate.getName());
       out.writeObject(delegate.getDisplayName());

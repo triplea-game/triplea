@@ -89,7 +89,7 @@ public class GameSelectorModel extends Observable {
       // if the file name is xml, load it as a new game
       if (file.getName().toLowerCase().endsWith("xml")) {
         try (FileInputStream fis = new FileInputStream(file)) {
-          newData = new GameParser(file.getAbsolutePath()).parse(fis, gameName);
+          newData = GameParser.parse(file.getAbsolutePath(), fis, gameName);
         }
       } else {
         // try to load it as a saved game whatever the extension

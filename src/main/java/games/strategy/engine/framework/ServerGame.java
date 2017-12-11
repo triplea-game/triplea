@@ -315,14 +315,10 @@ public class ServerGame extends AbstractGame {
       channelMessenger.unregisterChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
       remoteMessenger.unregisterRemote(SERVER_REMOTE);
       vault.shutDown();
-      final Iterator<IGamePlayer> localPlayersIter = gamePlayers.values().iterator();
-      while (localPlayersIter.hasNext()) {
-        final IGamePlayer gp = localPlayersIter.next();
+      for (final IGamePlayer gp : gamePlayers.values()) {
         remoteMessenger.unregisterRemote(getRemoteName(gp.getPlayerId(), gameData));
       }
-      final Iterator<IDelegate> delegateIter = gameData.getDelegateList().iterator();
-      while (delegateIter.hasNext()) {
-        final IDelegate delegate = delegateIter.next();
+      for (final IDelegate delegate : gameData.getDelegateList()) {
         final Class<? extends IRemote> remoteType = delegate.getRemoteType();
         // if its null then it shouldnt be added as an IRemote
         if (remoteType == null) {

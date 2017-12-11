@@ -496,9 +496,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   private void notifyListeners(final MessageHeader msg) {
-    final Iterator<IMessageListener> iter = listeners.iterator();
-    while (iter.hasNext()) {
-      final IMessageListener listener = iter.next();
+    for (final IMessageListener listener : listeners) {
       listener.messageReceived(msg.getMessage(), msg.getFrom());
     }
   }
@@ -524,12 +522,11 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   private void notifyConnectionsChanged(final boolean added, final INode node) {
-    final Iterator<IConnectionChangeListener> iter = connectionListeners.iterator();
-    while (iter.hasNext()) {
+    for (final IConnectionChangeListener listener : connectionListeners) {
       if (added) {
-        iter.next().connectionAdded(node);
+        listener.connectionAdded(node);
       } else {
-        iter.next().connectionRemoved(node);
+        listener.connectionRemoved(node);
       }
     }
   }

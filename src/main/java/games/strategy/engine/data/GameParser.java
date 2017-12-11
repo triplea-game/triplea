@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +30,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import com.google.common.base.Preconditions;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -66,41 +66,67 @@ public final class GameParser {
   public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapName;
 
-  public GameParser(final String mapName) {
-    this.mapName = Preconditions.checkNotNull(mapName);
+  private GameParser(final String mapName) {
+    this.mapName = mapName;
   }
 
   /**
-   * Parses the XML Document provided by the given InputStream into a DOM.
-   * 
-   * @return The root Element of the DOM
+   * Performs a deep parse of the game definition contained in the specified stream.
+   *
+   * @return A complete {@link GameData} instance that can be used to play the game.
    */
-  private Element parseDom(final InputStream stream) throws SAXException {
-    Preconditions.checkNotNull(stream, "InputStream must be non-null!");
-    return getDocument(stream).getDocumentElement();
+  public static GameData parse(final String mapName, final InputStream stream)
+      throws GameParseException, SAXException, EngineVersionException {
+    return parse(mapName, stream, new AtomicReference<>());
   }
 
   /**
-   * Parses a file into a GameData object.
+   * Performs a deep parse of the game definition contained in the specified stream.
+   *
+   * @param gameName Receives the game name parsed from the game definition.
+   *
+   * @return A complete {@link GameData} instance that can be used to play the game.
    */
-  public GameData parse(final InputStream stream, final AtomicReference<String> gameName)
+  public static GameData parse(final String mapName, final InputStream stream, final AtomicReference<String> gameName)
+      throws GameParseException, SAXException, EngineVersionException {
+    checkNotNull(mapName);
+    checkNotNull(stream);
+    checkNotNull(gameName);
+
+    return new GameParser(mapName).parse(stream, gameName);
+  }
+
+  private GameData parse(final InputStream stream, final AtomicReference<String> gameName)
       throws GameParseException, SAXException, EngineVersionException {
     final Element root = parseDom(stream);
     parseMapProperties(root, gameName);
-    // everything until here is needed to select a game
     parseMapDetails(root);
     return data;
   }
 
   /**
-   * Parses just the essential parts of the maps.
-   * Used to display all available maps.
+   * Performs a shallow parse of the game definition contained in the specified stream.
+   *
+   * @return A partial {@link GameData} instance that can be used to display metadata about the game (e.g. when
+   *         displaying all available maps); it cannot be used to play the game.
    */
-  public GameData parseMapProperties(final InputStream stream, final AtomicReference<String> gameName)
+  public static GameData parseShallow(final String mapName, final InputStream stream)
+      throws GameParseException, SAXException, EngineVersionException {
+    checkNotNull(mapName);
+    checkNotNull(stream);
+
+    return new GameParser(mapName).parseShallow(stream);
+  }
+
+  private GameData parseShallow(final InputStream stream)
       throws GameParseException, SAXException, EngineVersionException {
     final Element root = parseDom(stream);
-    parseMapProperties(root, gameName);
+    parseMapProperties(root, new AtomicReference<>());
     return data;
+  }
+
+  private Element parseDom(final InputStream stream) throws SAXException {
+    return getDocument(stream).getDocumentElement();
   }
 
   private void parseMapProperties(final Element root, final AtomicReference<String> gameName)
@@ -729,32 +755,30 @@ public final class GameParser {
   }
 
   private void parseResources(final Element root) {
-    final Iterator<Element> iter = getChildren("resource", root).iterator();
-    while (iter.hasNext()) {
-      data.getResourceList().addResource(new Resource(iter.next().getAttribute("name"), data));
-    }
+    getChildren("resource", root).stream()
+        .map(e -> e.getAttribute("name"))
+        .map(name -> new Resource(name, data))
+        .forEach(data.getResourceList()::addResource);
   }
 
   private void parseRelationshipTypes(final Element root) {
-    final Iterator<Element> iter = getChildren("relationshipType", root).iterator();
-    while (iter.hasNext()) {
-      data.getRelationshipTypeList().addRelationshipType(new RelationshipType(iter.next().getAttribute("name"), data));
-    }
+    getChildren("relationshipType", root).stream()
+        .map(e -> e.getAttribute("name"))
+        .map(name -> new RelationshipType(name, data))
+        .forEach(data.getRelationshipTypeList()::addRelationshipType);
   }
 
   private void parseTerritoryEffects(final Element root) {
-    final Iterator<Element> iter = getChildren("territoryEffect", root).iterator();
-    while (iter.hasNext()) {
-      final String name = iter.next().getAttribute("name");
-      data.getTerritoryEffectList().put(name, new TerritoryEffect(name, data));
-    }
+    getChildren("territoryEffect", root).stream()
+        .map(e -> e.getAttribute("name"))
+        .forEach(name -> data.getTerritoryEffectList().put(name, new TerritoryEffect(name, data)));
   }
 
   private void parseUnits(final Element root) {
-    final Iterator<Element> iter = getChildren("unit", root).iterator();
-    while (iter.hasNext()) {
-      data.getUnitTypeList().addUnitType(new UnitType(iter.next().getAttribute("name"), data));
-    }
+    getChildren("unit", root).stream()
+        .map(e -> e.getAttribute("name"))
+        .map(name -> new UnitType(name, data))
+        .forEach(data.getUnitTypeList()::addUnitType);
   }
 
   /**
@@ -835,9 +859,7 @@ public final class GameParser {
   private void parseProperties(final Node root) throws GameParseException {
     final Collection<String> runningList = new ArrayList<>();
     final GameProperties properties = data.getProperties();
-    final Iterator<Element> children = getChildren("property", root).iterator();
-    while (children.hasNext()) {
-      final Element current = children.next();
+    for (final Element current : getChildren("property", root)) {
       final String editable = current.getAttribute("editable");
       final String property = current.getAttribute("name");
       String value = current.getAttribute("value");
@@ -945,9 +967,7 @@ public final class GameParser {
 
   private void parseDelegates(final List<Element> delegateList) throws GameParseException {
     final DelegateList delegates = data.getDelegateList();
-    final Iterator<Element> iterator = delegateList.iterator();
-    while (iterator.hasNext()) {
-      final Element current = iterator.next();
+    for (final Element current : delegateList) {
       // load the class
       final String className = current.getAttribute("javaClass");
       final XmlGameElementMapper elementMapper = new XmlGameElementMapper();
@@ -969,9 +989,7 @@ public final class GameParser {
   }
 
   private void parseSteps(final List<Element> stepList) throws GameParseException {
-    final Iterator<Element> iterator = stepList.iterator();
-    while (iterator.hasNext()) {
-      final Element current = iterator.next();
+    for (final Element current : stepList) {
       final IDelegate delegate = getDelegate(current, "delegate", true);
       final PlayerID player = getPlayerId(current, "player", false);
       final String name = current.getAttribute("name");
@@ -1160,10 +1178,8 @@ public final class GameParser {
 
   private void parseFrontierRules(final List<Element> elements, final ProductionFrontier frontier)
       throws GameParseException {
-    final Iterator<Element> iter = elements.iterator();
-    while (iter.hasNext()) {
-      final ProductionRule rule = getProductionRule(iter.next(), "name", true);
-      frontier.addRule(rule);
+    for (final Element element : elements) {
+      frontier.addRule(getProductionRule(element, "name", true));
     }
   }
 
@@ -1201,10 +1217,8 @@ public final class GameParser {
 
   private void parseRepairFrontierRules(final List<Element> elements, final RepairFrontier frontier)
       throws GameParseException {
-    final Iterator<Element> iter = elements.iterator();
-    while (iter.hasNext()) {
-      final RepairRule rule = getRepairRule(iter.next(), "name", true);
-      frontier.addRule(rule);
+    for (final Element element : elements) {
+      frontier.addRule(getRepairRule(element, "name", true));
     }
   }
 

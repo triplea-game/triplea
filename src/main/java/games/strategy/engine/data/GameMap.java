@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
@@ -214,14 +217,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t
-   *        referring territory
-   * @param cond
-   *        condition the neighboring territories have to match
+   * @param t referring territory
+   * @param cond condition the neighboring territories have to match
    * @return All adjacent neighbors of the starting territory that match the condition.
    *         Does NOT include the original/starting territory in the returned Set.
    */
-  public Set<Territory> getNeighbors(final Territory t, final Predicate<Territory> cond) {
+  public Set<Territory> getNeighbors(final Territory t, @Nullable final Predicate<Territory> cond) {
     if (cond == null) {
       return getNeighbors(t);
     }
@@ -308,34 +309,21 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, int distance,
-      final Predicate<Territory> cond) {
+      @Nullable final Predicate<Territory> cond) {
     if (distance == 0) {
       return searched;
     }
-    final Iterator<Territory> iter = frontier.iterator();
-    final Set<Territory> newFrontier = new HashSet<>();
-    while (iter.hasNext()) {
-      final Territory t = iter.next();
-      newFrontier.addAll(getNeighbors(t, cond));
-    }
-    newFrontier.removeAll(searched);
+    final Set<Territory> newFrontier = frontier.stream()
+        .map(t -> getNeighbors(t, cond))
+        .flatMap(Collection::stream)
+        .filter(t -> !searched.contains(t))
+        .collect(Collectors.toSet());
     searched.addAll(newFrontier);
     return getNeighbors(newFrontier, searched, --distance, cond);
   }
 
   private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, int distance) {
-    if (distance == 0) {
-      return searched;
-    }
-    final Iterator<Territory> iter = frontier.iterator();
-    final Set<Territory> newFrontier = new HashSet<>();
-    while (iter.hasNext()) {
-      final Territory t = iter.next();
-      newFrontier.addAll(getNeighbors(t));
-    }
-    newFrontier.removeAll(searched);
-    searched.addAll(newFrontier);
-    return getNeighbors(newFrontier, searched, --distance);
+    return getNeighbors(frontier, searched, distance, null);
   }
 
   /**
@@ -470,23 +458,16 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * Territories in searched have already been on the frontier.
    */
   private int getDistance(final int distance, final Set<Territory> searched, final Set<Territory> frontier,
-      final Territory target, final Predicate<Territory> cond) {
+      final Territory target, @Nullable final Predicate<Territory> cond) {
     // add the frontier to the searched
     searched.addAll(frontier);
     // find the new frontier
-    final Set<Territory> newFrontier = new HashSet<>();
-    final Iterator<Territory> frontierIterator = frontier.iterator();
-    while (frontierIterator.hasNext()) {
-      final Territory onFrontier = frontierIterator.next();
-      final Set<Territory> connections = m_connections.get(onFrontier);
-      final Iterator<Territory> connectionIterator = connections.iterator();
-      while (connectionIterator.hasNext()) {
-        final Territory nextFrontier = connectionIterator.next();
-        if (cond == null || cond.test(nextFrontier)) {
-          newFrontier.add(nextFrontier);
-        }
-      }
-    }
+
+    final Set<Territory> newFrontier = frontier.stream()
+        .map(m_connections::get)
+        .flatMap(Collection::stream)
+        .filter(f -> cond == null || cond.test(f))
+        .collect(Collectors.toSet());
     if (newFrontier.contains(target)) {
       return distance + 1;
     }
@@ -557,20 +538,13 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   public List<Territory> getTerritoriesOwnedBy(final PlayerID player) {
-    final Iterator<Territory> iter = m_territories.iterator();
-    final List<Territory> owner = new ArrayList<>();
-    while (iter.hasNext()) {
-      final Territory territory = iter.next();
-      if (territory.getOwner().equals(player)) {
-        owner.add(territory);
-      }
-    }
-    return owner;
+    return m_territories.stream()
+        .filter(t -> t.getOwner().equals(player))
+        .collect(Collectors.toList());
   }
 
   /**
-   * @param route
-   *        route containing the territories in question
+   * @param route route containing the territories in question
    * @return whether each territory is connected to the preceding territory.
    */
   public boolean isValidRoute(final Route route) {

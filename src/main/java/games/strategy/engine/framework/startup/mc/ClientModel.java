@@ -382,34 +382,24 @@ public class ClientModel implements IMessengerErrorListener {
   /**
    * Local player name, eg: US, to remote node (player physical name, eg: "bob) mapping.
    */
-  public Map<String, String> getPlayerToNodesMapping() {
-    synchronized (this) {
-      return new HashMap<>(playersToNodes);
-    }
+  public synchronized Map<String, String> getPlayerToNodesMapping() {
+    return new HashMap<>(playersToNodes);
   }
 
   /**
    * Returns a map of player node name -> enabled.
-   */
-  public Map<String, Boolean> getPlayersEnabledListing() {
-    synchronized (this) {
-      return new HashMap<>(playersEnabledListing);
-    }
+   */  public synchronized Map<String, Boolean> getPlayersEnabledListing() {
+    return new HashMap<>(playersEnabledListing);
   }
 
   /**
    * Returns the set of players that can be disabled.
-   */
-  public Collection<String> getPlayersAllowedToBeDisabled() {
-    synchronized (this) {
-      return new HashSet<>(playersAllowedToBeDisabled);
-    }
+   */  public synchronized Collection<String> getPlayersAllowedToBeDisabled() {
+    return new HashSet<>(playersAllowedToBeDisabled);
   }
 
-  public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
-    synchronized (this) {
-      return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
-    }
+  public synchronized Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
+    return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
   }
 
   public IClientMessenger getMessenger() {

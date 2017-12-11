@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -40,7 +39,6 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
   public GameChooserEntry(final URI uri)
       throws IOException, GameParseException, SAXException, EngineVersionException {
     url = uri;
-    final AtomicReference<String> gameName = new AtomicReference<>();
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (!inputStream.isPresent()) {
@@ -50,7 +48,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(uri.toString()).parseMapProperties(input, gameName);
+      gameData = GameParser.parseShallow(uri.toString(), input);
       gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
   }
@@ -60,15 +58,13 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     // correct order for things to work, and that is bads.
     gameData = null;
 
-    final AtomicReference<String> gameName = new AtomicReference<>();
-
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (!inputStream.isPresent()) {
       return gameData;
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(url.toString()).parse(input, gameName);
+      gameData = GameParser.parse(url.toString(), input);
       gameDataFullyLoaded = true;
 
     } catch (final EngineVersionException e) {
