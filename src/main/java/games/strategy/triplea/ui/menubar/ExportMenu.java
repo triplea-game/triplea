@@ -8,9 +8,9 @@ import java.io.Writer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -198,14 +198,11 @@ class ExportMenu {
       playerOrderList.addAll(gameData.getPlayerList().getPlayers());
       Collections.sort(playerOrderList, new PlayerOrderComparator(gameData));
       final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<>(playerOrderList);
-      final Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
-      while (playerOrderIterator.hasNext()) {
-        final PlayerID currentPlayerId = playerOrderIterator.next();
+      for (final PlayerID currentPlayerId : playerOrderSetNoDuplicates) {
         text.append(currentPlayerId.getName()).append(",");
-        final Iterator<String> allianceName =
-            gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerId).iterator();
-        while (allianceName.hasNext()) {
-          text.append(allianceName.next()).append(",");
+        final Collection<String> allianceNames = gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerId);
+        for (final String allianceName : allianceNames) {
+          text.append(allianceName).append(",");
         }
         text.append("\n");
       }
@@ -223,9 +220,8 @@ class ExportMenu {
       text.append("\n");
       text.append("Resource Chart: ,");
       text.append("\n");
-      final Iterator<Resource> resourceIterator = gameData.getResourceList().getResources().iterator();
-      while (resourceIterator.hasNext()) {
-        text.append(resourceIterator.next().getName() + ",");
+      for (final Resource resource : gameData.getResourceList().getResources()) {
+        text.append(resource.getName() + ",");
         text.append("\n");
       }
       // if short, we won't both showing production and unit info
@@ -234,10 +230,8 @@ class ExportMenu {
         text.append("Production Rules: ,");
         text.append("\n");
         text.append("Name,Result,Quantity,Cost,Resource,\n");
-        final Iterator<ProductionRule> purchaseOptionsIterator =
-            gameData.getProductionRuleList().getProductionRules().iterator();
-        while (purchaseOptionsIterator.hasNext()) {
-          final ProductionRule pr = purchaseOptionsIterator.next();
+        final Collection<ProductionRule> purchaseOptions = gameData.getProductionRuleList().getProductionRules();
+        for (final ProductionRule pr : purchaseOptions) {
           String costString = pr.toStringCosts().replaceAll("; ", ",");
           costString = costString.replaceAll(" ", ",");
           text.append(pr.getName()).append(",").append(pr.getResults().keySet().iterator().next().getName()).append(",")
@@ -249,9 +243,8 @@ class ExportMenu {
         text.append("Unit Types: ,");
         text.append("\n");
         text.append("Name,Listed Abilities\n");
-        final Iterator<UnitType> allUnitsIterator = gameData.getUnitTypeList().iterator();
-        while (allUnitsIterator.hasNext()) {
-          final UnitAttachment ua = UnitAttachment.get(allUnitsIterator.next());
+        for (final UnitType unitType : gameData.getUnitTypeList()) {
+          final UnitAttachment ua = UnitAttachment.get(unitType);
           if (ua == null) {
             continue;
           }

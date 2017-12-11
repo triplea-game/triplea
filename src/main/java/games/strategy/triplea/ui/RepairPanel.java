@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -101,15 +101,8 @@ public class RepairPanel extends ActionPanel {
   };
 
   // Spin through the territories to get this.
-  private static int getTotalValues(final HashMap<Unit, IntegerMap<RepairRule>> repair) {
-    final Collection<Unit> units = repair.keySet();
-    final Iterator<Unit> iter = units.iterator();
-    int totalValues = 0;
-    while (iter.hasNext()) {
-      final Unit unit = iter.next();
-      totalValues += repair.get(unit).totalValues();
-    }
-    return totalValues;
+  private static int getTotalValues(final Map<Unit, IntegerMap<RepairRule>> repair) {
+    return repair.values().stream().mapToInt(IntegerMap::totalValues).sum();
   }
 
   private final Action doneAction = SwingAction.of("Done", e -> {

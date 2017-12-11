@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
-import java.util.Iterator;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
@@ -26,9 +25,7 @@ public class OptionalExtraTerritoryBordersDrawable implements IDrawable {
       final AffineTransform unscaled, final AffineTransform scaled) {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
-    final Iterator<Polygon> iter2 = polys.iterator();
-    while (iter2.hasNext()) {
-      Polygon polygon = iter2.next();
+    for (Polygon polygon : polys) {
       // if we dont have to draw, dont
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
         continue;

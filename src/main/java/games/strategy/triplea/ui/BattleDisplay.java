@@ -899,13 +899,13 @@ public class BattleDisplay extends JPanel {
       if (!killed.isEmpty()) {
         this.killed.add(new JLabel("Killed"));
       }
-      final Iterator<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
+      final Iterable<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false);
       categorizeUnits(killedIter, false, false);
       damaged.removeAll(killed);
       if (!damaged.isEmpty()) {
         this.damaged.add(new JLabel("Damaged"));
       }
-      final Iterator<UnitCategory> damagedIter = UnitSeperator.categorize(damaged, dependents, false, false).iterator();
+      final Iterable<UnitCategory> damagedIter = UnitSeperator.categorize(damaged, dependents, false, false);
       categorizeUnits(damagedIter, true, true);
       invalidate();
       validate();
@@ -916,16 +916,15 @@ public class BattleDisplay extends JPanel {
       if (!killed.isEmpty()) {
         this.killed.add(new JLabel("Killed"));
       }
-      final Iterator<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false).iterator();
+      final Iterable<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false);
       categorizeUnits(killedIter, false, false);
       invalidate();
       validate();
     }
 
-    private void categorizeUnits(final Iterator<UnitCategory> categoryIter, final boolean damaged,
+    private void categorizeUnits(final Iterable<UnitCategory> categoryIter, final boolean damaged,
         final boolean disabled) {
-      while (categoryIter.hasNext()) {
-        final UnitCategory category = categoryIter.next();
+      for (final UnitCategory category : categoryIter) {
         final JPanel panel = new JPanel();
         // TODO Kev determine if we need to identify if the unit is hit/disabled
         final Optional<ImageIcon> unitImage =
