@@ -4,5 +4,6 @@
     "http://checkstyle.sourceforge.net/dtds/suppressions_1_1.dtd">
 
 <suppressions>
+    <suppress checks="JavadocMethod" files="(Pro)?Matches\.java"/>
     <suppress checks="JavadocType" files=".*Tests?\.java"/>
 </suppressions>

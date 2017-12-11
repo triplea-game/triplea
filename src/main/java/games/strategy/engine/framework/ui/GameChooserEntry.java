@@ -50,9 +50,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
 
     try (InputStream input = inputStream.get()) {
-      final boolean delayParsing = true;
-      gameData = new GameParser(uri.toString()).parse(input, gameName, delayParsing);
-      gameDataFullyLoaded = false;
+      gameData = new GameParser(uri.toString()).parseMapProperties(input, gameName);
       gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
     }
   }
@@ -70,50 +68,21 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
 
     try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(url.toString()).parse(input, gameName, false);
+      gameData = new GameParser(url.toString()).parse(input, gameName);
       gameDataFullyLoaded = true;
 
     } catch (final EngineVersionException e) {
       ClientLogger.logQuietly(e);
       throw new GameParseException(e.getMessage());
     } catch (final SAXParseException e) {
-      final String msg =
-          "Could not parse:" + url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
-      ClientLogger.logError(msg, e);
+      ClientLogger.logError(String.format("Could not parse: %s error at line: %s column: %s",
+          url, e.getLineNumber(), e.getColumnNumber()), e);
       throw new GameParseException(e.getMessage());
     } catch (final Exception e) {
-      final String msg = "Could not parse:" + url;
-      ClientLogger.logError(msg, e);
+      ClientLogger.logError("Could not parse:" + url, e);
       throw new GameParseException(e.getMessage());
     }
     return gameData;
-  }
-
-  /**
-   * Do not use this if possible. Instead try to remove the bad map from the GameChooserModel.
-   * If that fails, then do a short parse so the user doesn't get a null pointer error.
-   */
-  public void delayParseGameData() {
-    gameData = null;
-
-    final AtomicReference<String> gameName = new AtomicReference<>();
-    final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-    if (!inputStream.isPresent()) {
-      return;
-    }
-    try (InputStream input = inputStream.get()) {
-      gameData = new GameParser(url.toString()).parse(input, gameName, true);
-      gameDataFullyLoaded = false;
-    } catch (final EngineVersionException e) {
-      System.out.println(e.getMessage());
-    } catch (final SAXParseException e) {
-      System.err.println(
-          "Could not parse:" + url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
-      ClientLogger.logQuietly(e);
-    } catch (final Exception e) {
-      System.err.println("Could not parse:" + url);
-      ClientLogger.logQuietly(e);
-    }
   }
 
   public boolean isGameDataLoaded() {

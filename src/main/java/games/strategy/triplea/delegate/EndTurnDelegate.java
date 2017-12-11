@@ -34,6 +34,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.ThreadUtil;
 
@@ -77,7 +78,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final Predicate<Unit> myCreatorsMatch = Matches.unitIsOwnedBy(player).and(Matches.unitCreatesUnits());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> myCreators = Matches.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
       if (myCreators != null && !myCreators.isEmpty()) {
         final Collection<Unit> toAdd = new ArrayList<>();
         final Collection<Unit> toAddSea = new ArrayList<>();
@@ -168,7 +169,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final Predicate<Unit> myCreatorsMatch = Matches.unitIsOwnedBy(player).and(Matches.unitCreatesResources());
     final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> myCreators = Matches.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
       for (final Unit unit : myCreators) {
         final IntegerMap<Resource> generatedResourcesMap = UnitAttachment.get(unit.getType()).getCreatesResourcesList();
         resourceTotalsMap.add(generatedResourcesMap);
@@ -227,7 +228,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     }
     // add conditions required for national objectives (nat objs that have uses left)
     final List<RulesAttachment> natObjs =
-        Matches.getMatches(RulesAttachment.getNationalObjectives(player), availableUses);
+        CollectionUtils.getMatches(RulesAttachment.getNationalObjectives(player), availableUses);
     allConditionsNeeded
         .addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(natObjs), null));
     if (allConditionsNeeded.isEmpty()) {
@@ -242,7 +243,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       if (!toFirePossible.isEmpty()) {
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            Matches.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+            CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true,
             true, true, true)).append("<br />");

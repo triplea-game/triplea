@@ -38,6 +38,7 @@ import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 public class ProductionRepairPanel extends JPanel {
@@ -126,11 +127,11 @@ public class ProductionRepairPanel extends JPanel {
       this.allowedPlayersToRepair = allowedPlayersToRepair;
       final Predicate<Unit> myDamagedUnits = Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair)
           .and(Matches.unitHasTakenSomeBombingUnitDamage());
-      final Collection<Territory> terrsWithPotentiallyDamagedUnits =
-          Matches.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
+      final Collection<Territory> terrsWithPotentiallyDamagedUnits = CollectionUtils
+          .getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
       for (final RepairRule repairRule : player.getRepairFrontier()) {
         for (final Territory terr : terrsWithPotentiallyDamagedUnits) {
-          for (final Unit unit : Matches.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
+          for (final Unit unit : CollectionUtils.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
             if (!repairRule.getResults().keySet().iterator().next().equals(unit.getType())) {
               continue;
             }

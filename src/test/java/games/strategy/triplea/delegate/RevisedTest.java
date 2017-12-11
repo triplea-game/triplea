@@ -81,6 +81,7 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
+import games.strategy.util.CollectionUtils;
 
 public class RevisedTest {
   private GameData gameData;
@@ -245,17 +246,18 @@ public class RevisedTest {
     gameData.performChange(ChangeFactory.addUnits(sz5, trnType.create(1, germans)));
     gameData.performChange(ChangeFactory.addUnits(sz5, subType.create(1, russians)));
     // submerge the russian sub
-    final TripleAUnit sub =
-        (TripleAUnit) Matches.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOwnedBy(russians)).iterator().next();
+    final TripleAUnit sub = (TripleAUnit) CollectionUtils
+        .getMatches(sz5.getUnits().getUnits(), Matches.unitIsOwnedBy(russians)).iterator().next();
     sub.setSubmerged(true);
     // now move an infantry through the sz
-    String results =
-        moveDelegate.move(Matches.getNMatches(germany.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
-            gameData.getMap().getRoute(germany, sz5),
-            Matches.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOfType(trnType)));
+    String results = moveDelegate.move(
+        CollectionUtils.getNMatches(germany.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
+        gameData.getMap().getRoute(germany, sz5),
+        CollectionUtils.getMatches(sz5.getUnits().getUnits(), Matches.unitIsOfType(trnType)));
     assertNull(results);
-    results = moveDelegate.move(Matches.getNMatches(sz5.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
-        gameData.getMap().getRoute(sz5, karelia));
+    results =
+        moveDelegate.move(CollectionUtils.getNMatches(sz5.getUnits().getUnits(), 1, Matches.unitIsOfType(infantryType)),
+            gameData.getMap().getRoute(sz5, karelia));
     assertNull(results);
     moveDelegate.end();
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");

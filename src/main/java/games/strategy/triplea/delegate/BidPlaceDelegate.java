@@ -13,6 +13,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 @MapSupport
@@ -111,12 +112,12 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
     // we add factories and constructions later
     final Predicate<Unit> groundUnits = Matches.unitIsLand().and(Matches.unitIsNotConstruction());
     final Predicate<Unit> airUnits = Matches.unitIsAir().and(Matches.unitIsNotConstruction());
-    placeableUnits.addAll(Matches.getMatches(units, groundUnits));
-    placeableUnits.addAll(Matches.getMatches(units, airUnits));
+    placeableUnits.addAll(CollectionUtils.getMatches(units, groundUnits));
+    placeableUnits.addAll(CollectionUtils.getMatches(units, airUnits));
     if (units.stream().anyMatch(Matches.unitIsConstruction())) {
       final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
       final Collection<Unit> skipUnit = new ArrayList<>();
-      for (final Unit currentUnit : Matches.getMatches(units, Matches.unitIsConstruction())) {
+      for (final Unit currentUnit : CollectionUtils.getMatches(units, Matches.unitIsConstruction())) {
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
           // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
@@ -125,15 +126,16 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
           if (skipUnit.contains(currentUnit)) {
             continue;
           }
-          placeableUnits.addAll(Matches.getNMatches(units, maxUnits, Matches.unitIsOfType(currentUnit.getType())));
-          skipUnit.addAll(Matches.getMatches(units, Matches.unitIsOfType(currentUnit.getType())));
+          placeableUnits
+              .addAll(CollectionUtils.getNMatches(units, maxUnits, Matches.unitIsOfType(currentUnit.getType())));
+          skipUnit.addAll(CollectionUtils.getMatches(units, Matches.unitIsOfType(currentUnit.getType())));
         }
       }
     }
     // remove any units that require other units to be consumed on creation (veqryn)
     if (placeableUnits.stream().anyMatch(Matches.unitConsumesUnitsOnCreation())) {
       final Collection<Unit> unitsWhichConsume =
-          Matches.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
+          CollectionUtils.getMatches(placeableUnits, Matches.unitConsumesUnitsOnCreation());
       for (final Unit unit : unitsWhichConsume) {
         if (Matches.unitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTo).negate().test(unit)) {
           placeableUnits.remove(unit);
@@ -149,8 +151,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
         continue;
       }
       typesAlreadyChecked.add(ut);
-      placeableUnits2
-          .addAll(Matches.getNMatches(placeableUnits, UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
+      placeableUnits2.addAll(
+          CollectionUtils.getNMatches(placeableUnits, UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(
               "placementLimit", ut, to, player, getData()), Matches.unitIsOfType(ut)));
     }
     return placeableUnits2;

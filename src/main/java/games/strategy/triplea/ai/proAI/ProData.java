@@ -17,6 +17,7 @@ import games.strategy.triplea.ai.proAI.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvUtils;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -61,7 +62,8 @@ public class ProData {
     }
     areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
-    myUnitTerritories = Matches.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+    myUnitTerritories =
+        CollectionUtils.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     unitTerritoryMap = ProUtils.createUnitTerritoryMap();
     unitValueMap = TuvUtils.getCostsForTuv(player, data);
     purchaseOptions = new ProPurchaseOptionMap(player, data);

@@ -63,6 +63,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
@@ -141,7 +142,7 @@ class EditPanel extends ActionPanel {
           for (final Unit u : selectedUnits) {
             selectedUnitTypes.add(u.getType());
           }
-          final List<Unit> allOfCorrectType = Matches.getMatches(allUnits,
+          final List<Unit> allOfCorrectType = CollectionUtils.getMatches(allUnits,
               o -> selectedUnitTypes.contains(o.getType()));
           final int allCategories =
               UnitSeperator.categorize(allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true, true).size();
@@ -357,14 +358,14 @@ class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         currentAction = this;
         setWidgetActivation();
-        final List<Unit> units = Matches.getMatches(selectedUnits, Matches.unitHasMoreThanOneHitPointTotal());
+        final List<Unit> units = CollectionUtils.getMatches(selectedUnits, Matches.unitHasMoreThanOneHitPointTotal());
         if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         // all owned by one player
         final PlayerID player = units.get(0).getOwner();
-        units.retainAll(Matches.getMatches(units, Matches.unitIsOwnedBy(player)));
+        units.retainAll(CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(player)));
         if (units.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;
@@ -405,14 +406,14 @@ class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         currentAction = this;
         setWidgetActivation();
-        final List<Unit> units = Matches.getMatches(selectedUnits, Matches.unitCanBeDamaged());
+        final List<Unit> units = CollectionUtils.getMatches(selectedUnits, Matches.unitCanBeDamaged());
         if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
         }
         // all owned by one player
         final PlayerID player = units.get(0).getOwner();
-        units.retainAll(Matches.getMatches(units, Matches.unitIsOwnedBy(player)));
+        units.retainAll(CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(player)));
         if (units.isEmpty()) {
           cancelEditAction.actionPerformed(null);
           return;

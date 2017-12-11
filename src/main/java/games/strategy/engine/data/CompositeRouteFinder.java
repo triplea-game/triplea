@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CollectionUtils;
 
 public class CompositeRouteFinder {
   private static final Logger logger = Logger.getLogger(CompositeRouteFinder.class.getName());
@@ -40,7 +41,7 @@ public class CompositeRouteFinder {
 
   Route findRoute(final Territory start, final Territory end) {
     final Set<Territory> allMatchingTers = new HashSet<>(
-        Matches.getMatches(map.getTerritories(), t -> matches.keySet().stream().anyMatch(p -> p.test(t))));
+        CollectionUtils.getMatches(map.getTerritories(), t -> matches.keySet().stream().anyMatch(p -> p.test(t))));
     final Map<Territory, Integer> terScoreMap = createScoreMap();
     final Map<Territory, Integer> routeScoreMap = new HashMap<>();
     int bestRouteToEndScore = Integer.MAX_VALUE;

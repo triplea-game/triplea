@@ -22,7 +22,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       skipPosting = Boolean.parseBoolean(
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_skipPosting, "false"));
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.SKIP_POSTING, "false"));
     } finally {
       data.releaseReadLock();
     }
@@ -41,14 +41,14 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String allowedPlayers =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_turnSummaryPlayers);
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS);
       if (allowedPlayers != null) {
         allowedIDs = new HashSet<>();
         for (final String p : allowedPlayers.split(":")) {
           final PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
             System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                + GameStep.PROPERTY_turnSummaryPlayers + " player: " + p + " DOES NOT EXIST");
+                + GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS + " player: " + p + " DOES NOT EXIST");
           } else {
             allowedIDs.add(id);
           }
@@ -69,7 +69,7 @@ public class GameStepPropertiesHelper {
     final boolean isAirborneMove;
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_airborneMove);
+      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.AIRBORNE_MOVE);
       if (prop != null) {
         isAirborneMove = Boolean.parseBoolean(prop);
       } else {
@@ -88,7 +88,7 @@ public class GameStepPropertiesHelper {
     final boolean isCombatMove;
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_combatMove);
+      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.COMBAT_MOVE);
       if (prop != null) {
         isCombatMove = Boolean.parseBoolean(prop);
       } else if (isCombatDelegate(data)) {
@@ -111,7 +111,8 @@ public class GameStepPropertiesHelper {
     final boolean isNonCombatMove;
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_nonCombatMove);
+      final String prop =
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.NON_COMBAT_MOVE);
       if (prop != null) {
         isNonCombatMove = Boolean.parseBoolean(prop);
       } else if (isNonCombatDelegate(data)) {
@@ -137,7 +138,7 @@ public class GameStepPropertiesHelper {
     final boolean isFireRockets;
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_fireRockets);
+      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.FIRE_ROCKETS);
       if (prop != null) {
         isFireRockets = Boolean.parseBoolean(prop);
       } else if (Properties.getWW2V2(data) || Properties.getWW2V3(data)) {
@@ -164,7 +165,8 @@ public class GameStepPropertiesHelper {
       if (!repairAtStartAndOnlyOwn && !repairAtEndAndAll) {
         isRepairUnits = false;
       } else {
-        final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairUnits);
+        final String prop =
+            data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REPAIR_UNITS);
         if (prop != null) {
           isRepairUnits = Boolean.parseBoolean(prop);
         } else {
@@ -185,7 +187,8 @@ public class GameStepPropertiesHelper {
     final boolean isBonus;
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_giveBonusMovement);
+      final String prop =
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.GIVE_BONUS_MOVEMENT);
       if (prop != null) {
         isBonus = Boolean.parseBoolean(prop);
       } else {
@@ -206,7 +209,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String prop =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_removeAirThatCanNotLand);
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REMOVE_AIR_THAT_CAN_NOT_LAND);
       if (prop != null) {
         isRemoveAir = Boolean.parseBoolean(prop);
       } else if (data.getSequence().getStep().getDelegate() != null
@@ -235,7 +238,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String allowedPlayers =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_combinedTurns);
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.COMBINED_TURNS);
       if (player != null) {
         allowedIDs.add(player);
       }
@@ -244,7 +247,7 @@ public class GameStepPropertiesHelper {
           final PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
             System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                + GameStep.PROPERTY_combinedTurns + " player: " + p + " DOES NOT EXIST");
+                + GameStep.PropertyKeys.COMBINED_TURNS + " player: " + p + " DOES NOT EXIST");
           } else {
             allowedIDs.add(id);
           }
@@ -264,7 +267,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String prop =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtStart);
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_START);
       isReset = (prop != null) && Boolean.parseBoolean(prop);
     } finally {
       data.releaseReadLock();
@@ -281,7 +284,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String prop =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_resetUnitStateAtEnd);
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_END);
       if (prop != null) {
         isReset = Boolean.parseBoolean(prop);
       } else {
@@ -297,7 +300,7 @@ public class GameStepPropertiesHelper {
     final boolean isBid;
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_bid);
+      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.BID);
       if (prop != null) {
         isBid = Boolean.parseBoolean(prop);
       } else {
@@ -319,7 +322,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String allowedPlayers =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PROPERTY_repairPlayers);
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REPAIR_PLAYERS);
       if (player != null) {
         allowedIDs.add(player);
       }
@@ -328,7 +331,7 @@ public class GameStepPropertiesHelper {
           final PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
             System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                + GameStep.PROPERTY_repairPlayers + " player: " + p + " DOES NOT EXIST");
+                + GameStep.PropertyKeys.REPAIR_PLAYERS + " player: " + p + " DOES NOT EXIST");
           } else {
             allowedIDs.add(id);
           }

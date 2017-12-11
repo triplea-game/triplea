@@ -26,6 +26,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.BonusIncomeUtils;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -124,8 +125,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
         continue;
       }
       // map transports, try to fill
-      final Collection<Unit> transports = Matches.getMatches(units, Matches.unitIsTransport());
-      final Collection<Unit> land = Matches.getMatches(units, Matches.unitIsLand());
+      final Collection<Unit> transports = CollectionUtils.getMatches(units, Matches.unitIsTransport());
+      final Collection<Unit> land = CollectionUtils.getMatches(units, Matches.unitIsLand());
       for (final Unit toLoad : land) {
         final UnitAttachment ua = UnitAttachment.get(toLoad.getType());
         final int cost = ua.getTransportCost();

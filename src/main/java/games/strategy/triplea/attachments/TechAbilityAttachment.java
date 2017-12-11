@@ -25,6 +25,7 @@ import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -1237,7 +1238,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allAir =
-              Matches.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir());
+              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir());
           for (final UnitType air : allAir) {
             taa.setMovementBonus("2:" + air.getName());
           }
@@ -1245,7 +1246,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allAa =
-              Matches.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAaForAnything());
+              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAaForAnything());
           for (final UnitType aa : allAa) {
             taa.setRadarBonus("1:" + aa.getName());
           }
@@ -1253,14 +1254,14 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allSubs =
-              Matches.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsSub());
+              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsSub());
           for (final UnitType sub : allSubs) {
             taa.setAttackBonus("1:" + sub.getName());
           }
         } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_JET_POWER)) {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allJets = Matches.getMatches(data.getUnitTypeList().getAllUnitTypes(),
+          final List<UnitType> allJets = CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(),
               Matches.unitTypeIsAir().and(Matches.unitTypeIsStrategicBomber().negate()));
           final boolean ww2v3TechModel = Properties.getWW2V3TechModel(data);
           for (final UnitType jet : allJets) {
@@ -1276,7 +1277,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allFactories =
-              Matches.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeCanProduceUnits());
+              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeCanProduceUnits());
           for (final UnitType factory : allFactories) {
             taa.setProductionBonus("2:" + factory.getName());
             taa.setMinimumTerritoryValueForProductionBonus("3");
@@ -1292,7 +1293,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allRockets =
-              Matches.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsRocket());
+              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsRocket());
           for (final UnitType rocket : allRockets) {
             taa.setRocketDiceNumber("1:" + rocket.getName());
           }
@@ -1302,7 +1303,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allDestroyers =
-              Matches.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsDestroyer());
+              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsDestroyer());
           for (final UnitType destroyer : allDestroyers) {
             taa.setUnitAbilitiesGained(destroyer.getName() + ":" + ABILITY_CAN_BOMBARD);
           }
@@ -1310,7 +1311,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
           ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
           final List<UnitType> allBombers =
-              Matches.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsStrategicBomber());
+              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsStrategicBomber());
           final int heavyBomberDiceRollsTotal = Properties.getHeavyBomberDiceRolls(data);
           final boolean heavyBombersLhtr = Properties.getLHTR_Heavy_Bombers(data);
           for (final UnitType bomber : allBombers) {

@@ -23,6 +23,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
@@ -57,7 +58,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       owners.add(u.getOwner());
     }
     for (final PlayerID p : owners) {
-      final List<Unit> unitsOwned = Matches.getMatches(units, Matches.unitIsOwnedBy(p));
+      final List<Unit> unitsOwned = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(p));
       logEvent("Removing units owned by " + p.getName() + " from " + territory.getName() + ": "
           + MyFormatter.unitsToTextNoOwner(unitsOwned), unitsOwned);
       m_bridge.addChange(ChangeFactory.removeUnits(territory, unitsOwned));
@@ -93,8 +94,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
           final Predicate<Unit> friendlySeaTransports = Matches.unitIsTransport()
               .and(Matches.unitIsSea())
               .and(Matches.alliedUnit(player, data));
-          final Collection<Unit> seaTransports = Matches.getMatches(units, friendlySeaTransports);
-          final Collection<Unit> landUnitsToAdd = Matches.getMatches(units, Matches.unitIsLand());
+          final Collection<Unit> seaTransports = CollectionUtils.getMatches(units, friendlySeaTransports);
+          final Collection<Unit> landUnitsToAdd = CollectionUtils.getMatches(units, Matches.unitIsLand());
           if (landUnitsToAdd.isEmpty() || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }

@@ -49,7 +49,6 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.systemcheck.LocalSystemChecker;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.proAI.ProAI;
@@ -216,8 +215,8 @@ public class GameRunner {
     return new ProgressWindow(mainFrame, title);
   }
 
-  public static WaitDialog newWaitDialog(final String message) {
-    return new WaitDialog(mainFrame, message);
+  public static BackgroundTaskRunner newBackgroundTaskRunner() {
+    return new BackgroundTaskRunner(mainFrame);
   }
 
   public static GameSelectorModel getGameSelectorModel() {
@@ -286,7 +285,7 @@ public class GameRunner {
 
   private static void loadGame() {
     try {
-      BackgroundTaskRunner.runInBackground("Loading game...", () -> {
+      newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
         gameSelectorModel.loadDefaultGame(false);
         final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
         if (fileName.length() > 0) {

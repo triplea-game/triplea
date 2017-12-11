@@ -3,7 +3,6 @@ package games.strategy.engine.chat;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -14,6 +13,7 @@ import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -185,28 +185,43 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     setStatus = new JButton(setStatusAction);
     setStatus.setFocusable(false);
     final Insets inset = new Insets(3, 3, 3, 3);
-    send = new JButton(sendAction);
+    send = new JButton(SwingAction.of("Send", e -> sendMessage()));
     send.setMargin(inset);
     send.setFocusable(false);
   }
 
   private void setupKeyMap() {
-    final InputMap nextMessageKeymap = nextMessage.getInputMap();
-    nextMessageKeymap.put(KeyStroke.getKeyStroke('\n'), sendAction);
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), (ActionListener) e -> {
-      if (chat == null) {
-        return;
-      }
-      chat.getSentMessagesHistory().prev();
-      nextMessage.setText(chat.getSentMessagesHistory().current());
-    });
-    nextMessageKeymap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false), (ActionListener) e -> {
-      if (chat == null) {
-        return;
-      }
-      chat.getSentMessagesHistory().next();
-      nextMessage.setText(chat.getSentMessagesHistory().current());
-    });
+    registerKeyPressAction(nextMessage, KeyEvent.VK_ENTER, this::sendMessage);
+    registerKeyPressAction(nextMessage, KeyEvent.VK_UP, () -> loadMessageFromHistory(MessageOffset.PREVIOUS));
+    registerKeyPressAction(nextMessage, KeyEvent.VK_DOWN, () -> loadMessageFromHistory(MessageOffset.NEXT));
+  }
+
+  private static void registerKeyPressAction(final JComponent component, final int keyCode, final Runnable action) {
+    component.getInputMap().put(KeyStroke.getKeyStroke(keyCode, 0, false), SwingAction.of("", e -> action.run()));
+  }
+
+  private void loadMessageFromHistory(final MessageOffset messageOffset) {
+    if (chat == null) {
+      return;
+    }
+
+    final SentMessagesHistory sentMessagesHistory = chat.getSentMessagesHistory();
+    switch (messageOffset) {
+      case PREVIOUS:
+        sentMessagesHistory.prev();
+        break;
+      case NEXT:
+        sentMessagesHistory.next();
+        break;
+      default:
+        throw new AssertionError("unknown message offset: " + messageOffset);
+    }
+
+    nextMessage.setText(sentMessagesHistory.current());
+  }
+
+  private enum MessageOffset {
+    PREVIOUS, NEXT;
   }
 
   private void cleanupKeyMap() {
@@ -346,7 +361,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       chat.getStatusManager().setStatus(status);
     }
   });
-  private final Action sendAction = SwingAction.of("Send", e -> {
+
+  private void sendMessage() {
     if (nextMessage.getText().trim().length() == 0) {
       return;
     }
@@ -356,7 +372,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       chat.sendMessage(nextMessage.getText(), false);
     }
     nextMessage.setText("");
-  });
+  }
 
   @Override
   public void updatePlayerList(final Collection<INode> players) {}

@@ -221,20 +221,20 @@ public class InGameLobbyWatcher {
             if (portString == null || portString.trim().length() <= 0) {
               portString = "3300";
             }
-            final String message = "Your computer is not reachable from the internet.\r\n"
-                + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\r\n"
-                + "(The firewall exception must be updated every time a new version of TripleA comes out.)\r\n"
+            final String message = "Your computer is not reachable from the internet.\n"
+                + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\n"
+                + "(The firewall exception must be updated every time a new version of TripleA comes out.)\n"
                 + "And that your Router is configured to send TCP traffic on port " + portString
                 + " to your local ip address.\r\n"
-                + "See 'How To Host...' in the help menu, at the top of the lobby screen.\r\n"
-                + "The server tried to connect to your external ip: " + addressUsed + "\r\n";
+                + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
+                + "The server tried to connect to your external ip: " + addressUsed;
             if (HeadlessGameServer.headless()) {
               System.out.println(message);
               System.exit(-1);
             }
             final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
             if (JOptionPane.showConfirmDialog(parentComponent,
-                "Do you want to view the tutorial on how to host?  This will open in your internet browser.",
+                message + "\nDo you want to view the tutorial on how to host? This will open in your internet browser.",
                 "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
               OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
             }

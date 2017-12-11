@@ -23,6 +23,7 @@ import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
@@ -77,9 +78,9 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     final Predicate<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
     final Predicate<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
     final List<Territory> allPickableTerritories =
-        Matches.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
+        CollectionUtils.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
     final List<PlayerID> playersCanPick = new ArrayList<>();
-    playersCanPick.addAll(Matches.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
+    playersCanPick.addAll(CollectionUtils.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
     // we need a main event
     if (!playersCanPick.isEmpty()) {
       m_bridge.getHistoryWriter().startEvent("Assigning Territories");
@@ -111,7 +112,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         final CompositeChange change = new CompositeChange();
         change.add(ChangeFactory.changeOwner(picked, m_currentPickingPlayer));
         final Collection<Unit> factoryAndInfrastructure =
-            Matches.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
+            CollectionUtils.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
         if (!factoryAndInfrastructure.isEmpty()) {
           change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, m_currentPickingPlayer));
         }
@@ -142,7 +143,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         final CompositeChange change = new CompositeChange();
         change.add(ChangeFactory.changeOwner(picked, m_currentPickingPlayer));
         final Collection<Unit> factoryAndInfrastructure =
-            Matches.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
+            CollectionUtils.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
         if (!factoryAndInfrastructure.isEmpty()) {
           change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, m_currentPickingPlayer));
         }
@@ -189,7 +190,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       }
       final CompositeChange change = new CompositeChange();
       final Collection<Unit> factoryAndInfrastructure =
-          Matches.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
+          CollectionUtils.getMatches(unitsToPlace, Matches.unitIsInfrastructure());
       if (!factoryAndInfrastructure.isEmpty()) {
         change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, m_currentPickingPlayer));
       }

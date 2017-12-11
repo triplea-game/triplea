@@ -26,6 +26,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.xml.TestMapGameData;
+import games.strategy.util.CollectionUtils;
 
 public class DiceRollTest {
   private GameData gameData;
@@ -255,7 +256,7 @@ public class DiceRollTest {
     final DiceRoll hit =
         DiceRoll
             .rollAa(
-                Matches.getMatches(fighterList,
+                CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -266,7 +267,7 @@ public class DiceRollTest {
     final DiceRoll miss =
         DiceRoll
             .rollAa(
-                Matches.getMatches(fighterList,
+                CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -278,7 +279,7 @@ public class DiceRollTest {
     final DiceRoll hitNoRoll =
         DiceRoll
             .rollAa(
-                Matches.getMatches(fighterList,
+                CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -304,7 +305,7 @@ public class DiceRollTest {
     final DiceRoll hit =
         DiceRoll
             .rollAa(
-                Matches.getMatches(fighterList,
+                CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -331,7 +332,7 @@ public class DiceRollTest {
     final DiceRoll hit =
         DiceRoll
             .rollAa(
-                Matches.getMatches(fighterList,
+                CollectionUtils.getMatches(fighterList,
                     Matches.unitIsOfTypes(
                         UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
                 aaGunList, bridge, finnland, true);
@@ -341,7 +342,7 @@ public class DiceRollTest {
     final DiceRoll miss =
         DiceRoll
             .rollAa(
-                Matches.getMatches(fighterList,
+                CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
@@ -353,7 +354,7 @@ public class DiceRollTest {
     final DiceRoll hitNoRoll =
         DiceRoll
             .rollAa(
-                Matches.getMatches(fighterList,
+                CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
                             UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),

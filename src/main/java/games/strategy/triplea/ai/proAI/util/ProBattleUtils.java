@@ -24,6 +24,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
+import games.strategy.util.CollectionUtils;
 
 /**
  * Pro AI battle utilities.
@@ -55,7 +56,7 @@ public class ProBattleUtils {
     final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,
         defendingUnits, false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
     final List<Unit> defendersWithHitPoints =
-        Matches.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
+        CollectionUtils.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
     final int totalDefenderHitPoints = BattleCalculator.getTotalHitpointsLeft(defendersWithHitPoints);
     return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
   }
@@ -66,7 +67,8 @@ public class ProBattleUtils {
     if (attackingUnits.size() == 0) {
       return 0;
     }
-    final List<Unit> actualDefenders = Matches.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
+    final List<Unit> actualDefenders =
+        CollectionUtils.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
     if (actualDefenders.size() == 0) {
       return 100;
     }
@@ -80,10 +82,10 @@ public class ProBattleUtils {
     final GameData data = ProData.getData();
 
     List<Unit> unitsThatCanFight =
-        Matches.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
+        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
     if (Properties.getTransportCasualtiesRestricted(data)) {
       unitsThatCanFight =
-          Matches.getMatches(unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());
+          CollectionUtils.getMatches(unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());
     }
     final int myHitPoints = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
     final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);
@@ -95,7 +97,7 @@ public class ProBattleUtils {
     final GameData data = ProData.getData();
 
     final List<Unit> unitsThatCanFight =
-        Matches.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
+        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
     final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
     Collections.sort(sortedUnitsList, new UnitBattleComparator(!attacking, ProData.unitValueMap,
         TerritoryEffectHelper.getEffects(t), data, false, false));
@@ -197,7 +199,8 @@ public class ProBattleUtils {
     final int enemyDistance = Math.max(3, (landDistance + 1));
     final int alliedDistance = (enemyDistance + 1) / 2;
     final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, enemyDistance);
-    final List<Territory> nearbyLandTerritories = Matches.getMatches(nearbyTerritories, Matches.territoryIsLand());
+    final List<Territory> nearbyLandTerritories =
+        CollectionUtils.getMatches(nearbyTerritories, Matches.territoryIsLand());
     final Set<Territory> nearbyEnemySeaTerritories =
         data.getMap().getNeighbors(t, enemyDistance, Matches.territoryIsWater());
     nearbyEnemySeaTerritories.add(t);

@@ -10,9 +10,9 @@ appreciate you reporting problems to the TripleA team
 
 ### My Operating System:
 
-### TripleA version:
+### Engine version:
 
-### Map:
+### Map name and version:
 
 ### Can you describe how to trigger the error? (eg: what sequence of actions will recreate it?)
 

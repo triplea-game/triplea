@@ -21,6 +21,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.Util;
 
 /**
@@ -67,7 +68,7 @@ public class NonFightingBattle extends DependentBattle {
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
         && units.stream().anyMatch(Matches.unitIsLand())) {
       getAmphibiousAttackTerritories().add(route.getTerritoryBeforeEnd());
-      m_amphibiousLandAttackers.addAll(Matches.getMatches(units, Matches.unitIsLand()));
+      m_amphibiousLandAttackers.addAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
       m_isAmphibious = true;
     }
     return ChangeFactory.EMPTY_CHANGE;
@@ -126,7 +127,7 @@ public class NonFightingBattle extends DependentBattle {
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
       if (route.getEnd() != null && !route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {
-        m_amphibiousLandAttackers.removeAll(Matches.getMatches(units, Matches.unitIsLand()));
+        m_amphibiousLandAttackers.removeAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
       }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
@@ -157,7 +158,7 @@ public class NonFightingBattle extends DependentBattle {
     }
     Collection<Unit> lost = getDependentUnits(units);
     lost.addAll(Util.intersection(units, m_attackingUnits));
-    lost = Matches.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
+    lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
     if (lost.size() != 0) {
       final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, lost);

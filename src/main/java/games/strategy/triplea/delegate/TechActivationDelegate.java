@@ -18,6 +18,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.Util;
 
 /**
@@ -72,7 +73,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            Matches.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+            CollectionUtils.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerUnitPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
             true);

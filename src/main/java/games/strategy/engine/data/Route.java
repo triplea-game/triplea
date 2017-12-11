@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.Util;
 
 /**
@@ -255,7 +256,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return all territories in this route match the given match (start territory is not tested).
    */
   public Collection<Territory> getMatches(final Predicate<Territory> match) {
-    return Matches.getMatches(m_steps, match);
+    return CollectionUtils.getMatches(m_steps, match);
   }
 
   @Override
@@ -442,7 +443,7 @@ public class Route implements Serializable, Iterable<Territory> {
       final PlayerID currentPlayer, final GameData data /* , final boolean mustFight */) {
     final Set<Unit> units = new HashSet<>(unitsAll);
 
-    units.removeAll(Matches.getMatches(unitsAll,
+    units.removeAll(CollectionUtils.getMatches(unitsAll,
         Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(unitsAll, route, currentPlayer, data, true)));
     final ResourceCollection movementCharge = new ResourceCollection(data);
     for (final Unit unit : units) {

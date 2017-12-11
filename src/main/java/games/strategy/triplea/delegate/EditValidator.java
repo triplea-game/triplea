@@ -17,6 +17,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
@@ -72,8 +73,8 @@ class EditValidator {
           final Predicate<Unit> friendlySeaTransports = Matches.unitIsTransport()
               .and(Matches.unitIsSea())
               .and(Matches.alliedUnit(player, data));
-          final Collection<Unit> seaTransports = Matches.getMatches(units, friendlySeaTransports);
-          final Collection<Unit> landUnitsToAdd = Matches.getMatches(units, Matches.unitIsLand());
+          final Collection<Unit> seaTransports = CollectionUtils.getMatches(units, friendlySeaTransports);
+          final Collection<Unit> landUnitsToAdd = CollectionUtils.getMatches(units, Matches.unitIsLand());
           if (landUnitsToAdd.isEmpty() || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
@@ -126,13 +127,13 @@ class EditValidator {
       return result;
     }
     // if transport selected, all transported units must be deleted too
-    for (final Unit unit : Matches.getMatches(units, Matches.unitCanTransport())) {
+    for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitCanTransport())) {
       if (!units.containsAll(TransportTracker.transporting(unit))) {
         return "Can't remove transport without removing transported units";
       }
     }
     // if transported units selected, transport must be deleted too
-    for (final Unit unit : Matches.getMatches(units, Matches.unitCanBeTransported())) {
+    for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitCanBeTransported())) {
       final Unit transport = TransportTracker.transportedBy(unit);
       if (transport != null && !units.contains(transport)) {
         return "Can't remove transported units without removing transport";

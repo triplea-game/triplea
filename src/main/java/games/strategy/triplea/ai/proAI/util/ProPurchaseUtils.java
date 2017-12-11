@@ -37,6 +37,7 @@ import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
+import games.strategy.util.CollectionUtils;
 
 /**
  * Pro AI purchase utilities.
@@ -105,10 +106,10 @@ public class ProPurchaseUtils {
         for (final Territory t : allTerritories) {
           currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
         }
-        currentlyBuilt += Matches.countMatches(unitsToPlace, unitTypeOwnedBy);
+        currentlyBuilt += CollectionUtils.countMatches(unitsToPlace, unitTypeOwnedBy);
         for (final Territory t : purchaseTerritories.keySet()) {
           for (final ProPlaceTerritory placeTerritory : purchaseTerritories.get(t).getCanPlaceTerritories()) {
-            currentlyBuilt += Matches.countMatches(placeTerritory.getPlaceUnits(), unitTypeOwnedBy);
+            currentlyBuilt += CollectionUtils.countMatches(placeTerritory.getPlaceUnits(), unitTypeOwnedBy);
           }
         }
         final int allowedBuild = maxBuilt - currentlyBuilt;
@@ -208,7 +209,7 @@ public class ProPurchaseUtils {
     final Set<Territory> ownedOrHasUnitTerritories =
         new HashSet<>(data.getMap().getTerritoriesOwnedBy(player));
     ownedOrHasUnitTerritories.addAll(ProData.myUnitTerritories);
-    final List<Territory> potentialTerritories = Matches.getMatches(ownedOrHasUnitTerritories,
+    final List<Territory> potentialTerritories = CollectionUtils.getMatches(ownedOrHasUnitTerritories,
         Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, false, false, false, false,
             false));
 
@@ -238,10 +239,10 @@ public class ProPurchaseUtils {
     if (ra != null && ra.getPlacementAnyTerritory()) {
       ownedAndNotConqueredFactoryTerritories = data.getMap().getTerritoriesOwnedBy(player);
     } else {
-      ownedAndNotConqueredFactoryTerritories = Matches.getMatches(data.getMap().getTerritories(),
+      ownedAndNotConqueredFactoryTerritories = CollectionUtils.getMatches(data.getMap().getTerritories(),
           ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
     }
-    ownedAndNotConqueredFactoryTerritories = Matches.getMatches(ownedAndNotConqueredFactoryTerritories,
+    ownedAndNotConqueredFactoryTerritories = CollectionUtils.getMatches(ownedAndNotConqueredFactoryTerritories,
         ProMatches.territoryCanMoveLandUnits(player, data, false));
 
     // Create purchase territory holder for each factory territory

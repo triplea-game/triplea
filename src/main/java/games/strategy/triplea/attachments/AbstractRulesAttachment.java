@@ -20,6 +20,7 @@ import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
+import games.strategy.util.CollectionUtils;
 
 /**
  * The Purpose of this class is to hold shared and simple methods used by RulesAttachment.
@@ -292,7 +293,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     } else if (name.equals("originalNoWater")) { // get all originally owned territories, but no water or impassables
       final Set<Territory> originalTerrs = new HashSet<>();
       for (final PlayerID player : players) {
-        originalTerrs.addAll(Matches.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
+        originalTerrs.addAll(CollectionUtils.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player),
             // TODO: does this account for occupiedTerrOf???
             Matches.territoryIsNotImpassableToLandUnits(player, data)));
       }
@@ -308,7 +309,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     } else if (name.equals("controlledNoWater")) {
       final Set<Territory> ownedTerrsNoWater = new HashSet<>();
       for (final PlayerID player : players) {
-        ownedTerrsNoWater.addAll(Matches.getMatches(gameMap.getTerritoriesOwnedBy(player),
+        ownedTerrsNoWater.addAll(CollectionUtils.getMatches(gameMap.getTerritoriesOwnedBy(player),
             Matches.territoryIsNotImpassableToLandUnits(player, data)));
       }
       setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));

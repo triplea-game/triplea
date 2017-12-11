@@ -8,18 +8,23 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import com.google.common.base.Throwables;
 
-import games.strategy.engine.framework.GameRunner;
-
 /**
  * Provides methods for running tasks in the background to avoid blocking the UI.
  */
 public final class BackgroundTaskRunner {
-  private BackgroundTaskRunner() {}
+  private final JFrame frame;
+
+  public BackgroundTaskRunner(final JFrame frame) {
+    checkNotNull(frame);
+
+    this.frame = frame;
+  }
 
   /**
    * Runs the specified action in the background without blocking the UI.
@@ -35,7 +40,7 @@ public final class BackgroundTaskRunner {
    * @throws IllegalStateException If this method is not called from the EDT.
    * @throws InterruptedException If the UI thread is interrupted while waiting for the background action to complete.
    */
-  public static void runInBackground(
+  public void runInBackground(
       final String message,
       final Runnable backgroundAction)
       throws InterruptedException {
@@ -64,7 +69,7 @@ public final class BackgroundTaskRunner {
    * @throws IllegalStateException If this method is not called from the EDT.
    * @throws InterruptedException If the UI thread is interrupted while waiting for the background action to complete.
    */
-  public static <T> T runInBackgroundAndReturn(
+  public <T> T runInBackgroundAndReturn(
       final String message,
       final Supplier<T> backgroundAction)
       throws InterruptedException {
@@ -95,7 +100,7 @@ public final class BackgroundTaskRunner {
    * @throws E If the background action fails.
    * @throws InterruptedException If the UI thread is interrupted while waiting for the background action to complete.
    */
-  public static <T, E extends Exception> T runInBackgroundAndReturn(
+  public <T, E extends Exception> T runInBackgroundAndReturn(
       final String message,
       final ThrowingSupplier<T, E> backgroundAction,
       final Class<E> exceptionType)
@@ -107,7 +112,7 @@ public final class BackgroundTaskRunner {
 
     final AtomicReference<T> resultRef = new AtomicReference<>();
     final AtomicReference<Throwable> exceptionRef = new AtomicReference<>();
-    final WaitDialog waitDialog = GameRunner.newWaitDialog(message);
+    final WaitDialog waitDialog = new WaitDialog(frame, message);
     final SwingWorker<T, Void> worker = new SwingWorker<T, Void>() {
       @Override
       protected T doInBackground() throws Exception {
