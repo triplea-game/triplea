@@ -29,6 +29,9 @@ import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.ui.SaveGameFileChooser.AUTOSAVE_TYPE;
 import games.strategy.ui.SwingAction;
 
+/**
+ * Network client game staging panel, can be used to select sides and chat.
+ */
 public class ClientSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 6942605803526295372L;
   private final Insets buttonInsets = new Insets(0, 0, 0, 0);
@@ -149,7 +152,8 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   private void setupListeners() {
-    clientModel.setRemoteModelListener(remoteModelListener);
+    clientModel.setRemoteModelListener(remoteModelListener == null
+        ? IRemoteModelListener.NULL_LISTENER : remoteModelListener);
   }
 
   @Override

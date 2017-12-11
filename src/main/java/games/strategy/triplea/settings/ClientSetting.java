@@ -116,7 +116,15 @@ public enum ClientSetting implements GameSetting {
 
   /* for testing purposes, to be used in unit tests only */
   @VisibleForTesting
-  TEST_SETTING;
+  TEST_SETTING,
+
+  SELECTED_GAME_LOCATION,
+
+  DICE_SERVER_FOR_FORUM_GAMES,
+
+  FORUM_COMBO_BOX_SELECTION,
+
+  DICE_SERVER_FOR_PBEM_GAMES;
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
