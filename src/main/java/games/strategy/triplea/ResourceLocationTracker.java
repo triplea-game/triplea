@@ -25,8 +25,9 @@ class ResourceLocationTracker {
    *        loaded from a zip or a directory, and if zip, if it matches any particular naming.
    */
   ResourceLocationTracker(final String mapName, final URL[] resourcePaths) {
-    final boolean isUsingMasterZip = Arrays.asList(resourcePaths)
-        .stream().filter(path -> path.toString().endsWith(MASTER_ZIP_IDENTIFYING_SUFFIX)).findAny().isPresent();
+    final boolean isUsingMasterZip = Arrays.stream(resourcePaths)
+        .map(Object::toString)
+        .anyMatch(path -> path.endsWith(MASTER_ZIP_IDENTIFYING_SUFFIX));
 
 
     // map skins will have the full path name as their map name.
