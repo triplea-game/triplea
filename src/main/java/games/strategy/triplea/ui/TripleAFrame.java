@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -41,6 +40,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -597,17 +597,15 @@ public class TripleAFrame extends MainGameFrame {
       if (territoryLastEntered != null) {
         final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
         if (ta != null) {
-          final Iterator<TerritoryEffect> iter = ta.getTerritoryEffect().iterator();
-          if (iter.hasNext()) {
+          final List<TerritoryEffect> territoryEffect = ta.getTerritoryEffect();
+          if (!territoryEffect.isEmpty()) {
             buf.append(" (");
           }
-          while (iter.hasNext()) {
-            buf.append(iter.next().getName());
-            if (iter.hasNext()) {
-              buf.append(", ");
-            } else {
-              buf.append(")");
-            }
+          buf.append(territoryEffect.stream()
+              .map(TerritoryEffect::getName)
+              .collect(Collectors.joining(", ")));
+          if (!territoryEffect.isEmpty()) {
+            buf.append(")");
           }
           final int production = ta.getProduction();
           final int unitProduction = ta.getUnitProduction();

@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,10 +47,8 @@ public class MyFormatter {
   }
 
   public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerID owner) {
-    final Iterator<Unit> iter = units.iterator();
     final IntegerMap<UnitType> map = new IntegerMap<>();
-    while (iter.hasNext()) {
-      final Unit unit = iter.next();
+    for (final Unit unit : units) {
       if (owner == null || owner.equals(unit.getOwner())) {
         map.add(unit.getType(), 1);
       }
@@ -61,10 +58,8 @@ public class MyFormatter {
     final List<UnitType> sortedList = new ArrayList<>(map.keySet());
     final Comparator<UnitType> comp = (u1, u2) -> u1.getName().compareTo(u2.getName());
     Collections.sort(sortedList, comp);
-    final Iterator<UnitType> typeIter = sortedList.iterator();
     int count = map.keySet().size();
-    while (typeIter.hasNext()) {
-      final UnitType type = typeIter.next();
+    for (final UnitType type : sortedList) {
       final int quantity = map.getInt(type);
       buf.append(quantity);
       buf.append(" ");
@@ -234,10 +229,8 @@ public class MyFormatter {
 
   public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String seperator,
       final boolean showQuantity) {
-    final Iterator<? extends DefaultNamed> iter = list.iterator();
     final IntegerMap<DefaultNamed> map = new IntegerMap<>();
-    while (iter.hasNext()) {
-      final DefaultNamed unit = iter.next();
+    for (final DefaultNamed unit : list) {
       if (unit == null || unit.getName() == null) {
         throw new IllegalStateException("Unit or Resource no longer exists?!?");
       }
@@ -248,10 +241,8 @@ public class MyFormatter {
     final List<DefaultNamed> sortedList = new ArrayList<>(map.keySet());
     final Comparator<DefaultNamed> comp = (u1, u2) -> u1.getName().compareTo(u2.getName());
     Collections.sort(sortedList, comp);
-    final Iterator<? extends DefaultNamed> typeIter = sortedList.iterator();
     int count = map.keySet().size();
-    while (typeIter.hasNext()) {
-      final DefaultNamed type = typeIter.next();
+    for (final DefaultNamed type : sortedList) {
       if (showQuantity) {
         final int quantity = map.getInt(type);
         buf.append(quantity);

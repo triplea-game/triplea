@@ -3,7 +3,6 @@ package games.strategy.triplea.ui;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JScrollPane;
@@ -88,9 +87,7 @@ public class EconomyPanel extends AbstractStatPanel {
           }
           row++;
         }
-        final Iterator<String> allianceIterator = alliances.iterator();
-        while (allianceIterator.hasNext()) {
-          final String alliance = allianceIterator.next();
+        for (final String alliance : alliances) {
           collectedData[row][0] = alliance;
           for (int i = 0; i < statsResource.length; i++) {
             collectedData[row][i + 1] =

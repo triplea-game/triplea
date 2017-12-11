@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -12,6 +11,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Constants;
@@ -82,9 +82,8 @@ public class ExtendedStats extends StatPanel {
       }
     }
     // now add actual number of each unit type (holy gumdrops batman, this is going to be long!)
-    final Iterator<UnitType> allUnitTypes = data.getUnitTypeList().iterator();
-    while (allUnitTypes.hasNext()) {
-      final UnitType ut = allUnitTypes.next();
+    final UnitTypeList allUnitTypes = data.getUnitTypeList();
+    for (final UnitType ut : allUnitTypes) {
       final GenericUnitNameStat unitNameStat = new GenericUnitNameStat();
       unitNameStat.init(ut);
       final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));

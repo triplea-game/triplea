@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
-import java.util.Iterator;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
@@ -40,9 +39,7 @@ class TerritoryOverLayDrawable implements IDrawable {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     graphics.setColor(color);
-    final Iterator<Polygon> polyIter = polys.iterator();
-    while (polyIter.hasNext()) {
-      Polygon polygon = polyIter.next();
+    for (Polygon polygon : polys) {
       // if we dont have to draw, dont
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
         continue;

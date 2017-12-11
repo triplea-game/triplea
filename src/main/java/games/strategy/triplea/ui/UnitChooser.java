@@ -113,12 +113,9 @@ final class UnitChooser extends JPanel {
     if (total == -1) {
       return;
     }
-    final Iterator<ChooserEntry> iter;
     final int selected = getSelectedCount();
     leftToSelect.setText("Left to select:" + (total - selected));
-    iter = entries.iterator();
-    while (iter.hasNext()) {
-      final ChooserEntry entry = iter.next();
+    for (final ChooserEntry entry : entries) {
       entry.setLeftToSelect(total - selected);
     }
     leftToSelect.setText("Left to select:" + (total - selected));
@@ -294,9 +291,7 @@ final class UnitChooser extends JPanel {
     if (possible.size() < quantity) {
       throw new IllegalStateException("Not enough units");
     }
-    final Iterator<Unit> iter = possible.iterator();
-    for (int i = 0; i < quantity; i++) {
-      final Unit current = iter.next();
+    possible.stream().limit(quantity).forEach(current -> {
       addTo.add(current);
       if (addDependents) {
         final Collection<Unit> dependents = this.dependents.get(current);
@@ -304,7 +299,7 @@ final class UnitChooser extends JPanel {
           addTo.addAll(dependents);
         }
       }
-    }
+    });
   }
 
   private final ScrollableTextFieldListener textFieldListener = new ScrollableTextFieldListener() {
@@ -475,10 +470,8 @@ final class UnitChooser extends JPanel {
           g.drawImage(image.get(), 0, 0, this);
         }
 
-        final Iterator<UnitOwner> iter = category.getDependents().iterator();
         int index = 1;
-        while (iter.hasNext()) {
-          final UnitOwner holder = iter.next();
+        for (final UnitOwner holder : category.getDependents()) {
           final int x = uiContext.getUnitImageFactory().getUnitImageWidth() * index;
           final Optional<Image> unitImg =
               uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), false, false);

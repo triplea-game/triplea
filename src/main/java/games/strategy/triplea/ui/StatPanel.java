@@ -209,9 +209,7 @@ public class StatPanel extends AbstractStatPanel {
           }
           row++;
         }
-        final Iterator<String> allianceIterator = alliances.iterator();
-        while (allianceIterator.hasNext()) {
-          final String alliance = allianceIterator.next();
+        for (final String alliance : alliances) {
           collectedData[row][0] = alliance;
           for (int i = 0; i < stats.length; i++) {
             collectedData[row][i + 1] = stats[i].getFormatter().format(stats[i].getValue(alliance, gameData));
@@ -326,15 +324,14 @@ public class StatPanel extends AbstractStatPanel {
       }
       /* Load the technology -> row mapping */
       rowMap = new HashMap<>();
-      final Iterator<TechAdvance> iter = TechAdvance.getTechAdvances(gameData, null).iterator();
       int row = 0;
       if (useTech) {
         rowMap.put("Tokens", Integer.valueOf(row));
         data[row][0] = "Tokens";
         row++;
       }
-      while (iter.hasNext()) {
-        final TechAdvance tech = iter.next();
+      final List<TechAdvance> techAdvances = TechAdvance.getTechAdvances(gameData, null);
+      for (final TechAdvance tech : techAdvances) {
         rowMap.put((tech).getName(), Integer.valueOf(row));
         data[row][0] = tech.getName();
         row++;
@@ -376,10 +373,9 @@ public class StatPanel extends AbstractStatPanel {
             final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }
-          final Iterator<TechAdvance> advancesAll = TechAdvance.getTechAdvances(StatPanel.this.gameData).iterator();
+          final List<TechAdvance> advancesAll = TechAdvance.getTechAdvances(StatPanel.this.gameData);
           final List<TechAdvance> has = TechAdvance.getTechAdvances(StatPanel.this.gameData, pid);
-          while (advancesAll.hasNext()) {
-            final TechAdvance advance = advancesAll.next();
+          for (final TechAdvance advance : advancesAll) {
             if (!has.contains(advance)) {
               row = rowMap.get(advance.getName());
               data[row][col] = "-";

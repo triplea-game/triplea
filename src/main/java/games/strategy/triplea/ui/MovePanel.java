@@ -405,13 +405,11 @@ public class MovePanel extends AbstractMovePanel {
     if (forced == null || forced.size() == 0) {
       throw new IllegalStateException("No forced territories:" + forced + " end:" + end + " start:" + start);
     }
-    final Iterator<Territory> iter = forced.iterator();
     Territory last = getFirstSelectedTerritory();
-    Territory current;
+
     Route total = new Route();
     total.setStart(last);
-    while (iter.hasNext()) {
-      current = iter.next();
+    for (final Territory current : forced) {
       final Route add = getData().getMap().getRoute(last, current);
       final Route newTotal = Route.join(total, add);
       if (newTotal == null) {

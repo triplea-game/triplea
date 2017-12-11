@@ -504,10 +504,8 @@ public class HistoryLog extends JFrame {
   // copied from StatPanel
   private static int getProduction(final PlayerID player, final GameData data) {
     int production = 0;
-    final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-    while (iter.hasNext()) {
+    for (final Territory place : data.getMap().getTerritories()) {
       boolean isConvoyOrLand = false;
-      final Territory place = iter.next();
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
       if (!place.isWater()) {
         isConvoyOrLand = true;

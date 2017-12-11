@@ -386,16 +386,12 @@ public class MapData implements Closeable {
 
   private void initializeContains() {
     contains = new HashMap<>();
-    final Iterator<String> seaIter = getTerritories().iterator();
-    while (seaIter.hasNext()) {
+    for (final String seaTerritory : getTerritories()) {
       final List<String> contained = new ArrayList<>();
-      final String seaTerritory = seaIter.next();
       if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
         continue;
       }
-      final Iterator<String> landIter = getTerritories().iterator();
-      while (landIter.hasNext()) {
-        final String landTerritory = landIter.next();
+      for (final String landTerritory : getTerritories()) {
         if (Util.isTerritoryNameIndicatingWater(landTerritory)) {
           continue;
         }
@@ -511,10 +507,8 @@ public class MapData implements Closeable {
         iter.remove();
       }
     }
-    final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
     final Set<String> keySet = map.keySet();
-    while (territories.hasNext()) {
-      final Territory terr = territories.next();
+    for (final Territory terr : data.getMap().getTerritories()) {
       if (!keySet.contains(terr.getName())) {
         errors.append("No data of type ").append(dataTypeForErrorMessage).append(" for territory:")
             .append(terr.getName()).append("\n");
@@ -602,13 +596,9 @@ public class MapData implements Closeable {
     String seaName = null;
     // try to find a land territory.
     // sea zones often surround a land territory
-    final Iterator<String> keyIter = polys.keySet().iterator();
-    while (keyIter.hasNext()) {
-      final String name = keyIter.next();
+    for (final String name : polys.keySet()) {
       final Collection<Polygon> polygons = polys.get(name);
-      final Iterator<Polygon> polyIter = polygons.iterator();
-      while (polyIter.hasNext()) {
-        final Polygon poly = polyIter.next();
+      for (final Polygon poly : polygons) {
         if (poly.contains(x, y)) {
           if (Util.isTerritoryNameIndicatingWater(name)) {
             seaName = name;

@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -131,11 +130,7 @@ public final class TileImageFactory {
     synchronized (mutex) {
       // we manually want to clear each ref to allow the soft reference to
       // be removed
-      final Iterator<ImageRef> values = imageCache.values().iterator();
-      while (values.hasNext()) {
-        final ImageRef imageRef = values.next();
-        imageRef.clear();
-      }
+      imageCache.values().forEach(ImageRef::clear);
       imageCache.clear();
     }
   }

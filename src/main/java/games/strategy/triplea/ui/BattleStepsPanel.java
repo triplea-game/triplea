@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
@@ -68,10 +67,7 @@ class BattleStepsPanel extends JPanel implements Active {
     }
     synchronized (mutex) {
       listModel.removeAllElements();
-      final Iterator<String> iter = steps.iterator();
-      while (iter.hasNext()) {
-        listModel.addElement(iter.next());
-      }
+      steps.forEach(listModel::addElement);
       listSelectionModel.hiddenSetSelectionInterval(0);
       if (!steps.contains(targetStep)) {
         targetStep = null;
