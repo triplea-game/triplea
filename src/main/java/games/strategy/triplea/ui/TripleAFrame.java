@@ -599,13 +599,9 @@ public class TripleAFrame extends MainGameFrame {
         if (ta != null) {
           final List<TerritoryEffect> territoryEffect = ta.getTerritoryEffect();
           if (!territoryEffect.isEmpty()) {
-            buf.append(" (");
-          }
-          buf.append(territoryEffect.stream()
-              .map(TerritoryEffect::getName)
-              .collect(Collectors.joining(", ")));
-          if (!territoryEffect.isEmpty()) {
-            buf.append(")");
+            buf.append(territoryEffect.stream()
+                .map(TerritoryEffect::getName)
+                .collect(Collectors.joining(", ", " (", ")")));
           }
           final int production = ta.getProduction();
           final int unitProduction = ta.getUnitProduction();
