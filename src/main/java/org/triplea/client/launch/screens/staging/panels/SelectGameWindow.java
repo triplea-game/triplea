@@ -7,6 +7,7 @@ import org.triplea.client.launch.screens.LaunchScreenWindow;
 import org.triplea.client.launch.screens.staging.StagingScreen;
 
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.triplea.settings.ClientSetting;
@@ -21,17 +22,20 @@ public class SelectGameWindow {
    * Returns a Runnable that can be attached to a Swing button,
    * the Runnable will open the select map window.
    */
-  public static Runnable openSelectGameWindow(final LaunchScreen previousScreen, final StagingScreen stagingScreen) {
+  public static Runnable openSelectGameWindow(final LaunchScreen previousScreen,
+      final StagingScreen stagingScreen,
+      final GameRunner gameRunner) {
     return () -> {
       try {
         final GameChooserEntry entry;
         entry = GameChooser.chooseGame(
             JOptionPane.getFrameForComponent(null),
-            ClientSetting.SELECTED_GAME_LOCATION.value());
+            ClientSetting.SELECTED_GAME_LOCATION.value(),
+            gameRunner);
         if (entry != null) {
           ClientSetting.SELECTED_GAME_LOCATION.save(entry.getLocation());
           try {
-            LaunchScreenWindow.draw(previousScreen, stagingScreen, entry.fullyParseGameData());
+            LaunchScreenWindow.draw(previousScreen, stagingScreen, entry.fullyParseGameData(), gameRunner);
           } catch (final GameParseException e) {
             throw new IllegalStateException(String.format("Could not parse: %s", entry.toString()), e);
           }

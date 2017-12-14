@@ -5,20 +5,22 @@ import java.util.function.Supplier;
 
 import javax.swing.JComponent;
 
+import games.strategy.engine.framework.GameRunner;
+
 /**
  * Enumeration of the various setup screen configurations leading up to the 'game staging screen'.
  */
 public enum LaunchScreen {
-  INITIAL(InitialLaunchScreen::build),
+  INITIAL(() -> InitialLaunchScreen.build(new GameRunner())),
 
   MORE_OPTIONS(INITIAL, MoreOptions::build),
 
 
-  NETWORK_GAME_TYPE_SELECT(INITIAL, NetworkGameTypeSelectionScreen::build),
+  NETWORK_GAME_TYPE_SELECT(INITIAL, () -> NetworkGameTypeSelectionScreen.build(new GameRunner())),
 
   JOIN_NETWORK_GAME_OPTIONS(NETWORK_GAME_TYPE_SELECT, JoinNetworkGameSetup::build),
 
-  HOST_NETWORK_GAME_OPTIONS(NETWORK_GAME_TYPE_SELECT, HostNetworkGameSetup::build),
+  HOST_NETWORK_GAME_OPTIONS(NETWORK_GAME_TYPE_SELECT, () -> HostNetworkGameSetup.build(new GameRunner())),
 
   PLAY_BY_FORUM_OPTIONS(NETWORK_GAME_TYPE_SELECT, PlayByForumSetup::build),
 

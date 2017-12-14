@@ -218,11 +218,11 @@ public class GameRunner {
     return new BackgroundTaskRunner(mainFrame);
   }
 
-  public static GameSelectorModel getGameSelectorModel() {
+  public GameSelectorModel getGameSelectorModel() {
     return gameSelectorModel;
   }
 
-  public static SetupPanelModel getSetupPanelModel() {
+  public SetupPanelModel getSetupPanelModel() {
     return setupPanelModel;
   }
 

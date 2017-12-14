@@ -56,7 +56,10 @@ public enum StagingScreen {
    * Builder for single player case.
    * TODO: implement fully.
    */
-  public JComponent buildScreen(final LaunchScreen previousScreen, final GameData gameData) {
+  public JComponent buildScreen(
+      final LaunchScreen previousScreen,
+      final GameData gameData,
+      final GameRunner gameRunner) {
     return buildScreen(
         previousScreen,
         gameData,
@@ -66,7 +69,8 @@ public enum StagingScreen {
           ClientLogger.logError("TODO: not yet completed, the multiplayer case should work though : )");
         },
         null,
-        null);
+        null,
+        gameRunner);
   }
 
   /**
@@ -80,7 +84,8 @@ public enum StagingScreen {
       @Nullable final ChatSupport chatSupport,
       @Nonnull final Consumer<GameData> launchAction,
       @Nullable final ServerModel serverModel,
-      @Nullable final ClientModel clientModel) {
+      @Nullable final ClientModel clientModel,
+      final GameRunner gameRunner) {
 
     Preconditions.checkNotNull(previousScreen);
     Preconditions.checkNotNull(gameData);
@@ -92,14 +97,14 @@ public enum StagingScreen {
     final GameStartedCallback gameStartedCallback = () -> {
     };
 
-    final GameSelectorModel model = new GameSelectorModel();
+    final GameSelectorModel model = new GameSelectorModel(gameRunner);
     model.load(gameData, "");
 
     final JPanel selectionPanel = JPanelBuilder.builder()
         .borderLayout()
         .addCenter(JPanelBuilder.builder()
             .borderLayout()
-            .addNorth(mapSelectionControls(previousScreen, this))
+            .addNorth(mapSelectionControls(previousScreen, this, gameRunner))
             .addCenter(JPanelBuilder.builder()
                 .borderLayout()
                 .addNorth(gameInfoPanel(gameData))
@@ -122,25 +127,28 @@ public enum StagingScreen {
         .build();
   }
 
-  private static JPanel mapSelectionControls(final LaunchScreen previousScreen, final StagingScreen currentScreen) {
+  private static JPanel mapSelectionControls(
+      final LaunchScreen previousScreen,
+      final StagingScreen currentScreen,
+      final GameRunner gameRunner) {
     return JPanelBuilder.builder()
         .flowLayout()
         .add(JButtonBuilder.builder()
             .title("Select Map")
-            .actionListener(SelectGameWindow.openSelectGameWindow(previousScreen, currentScreen))
+            .actionListener(SelectGameWindow.openSelectGameWindow(previousScreen, currentScreen, gameRunner))
             .build())
         .add(JButtonBuilder.builder()
             .title("Download Maps")
-            .actionListener(DownloadMapsWindow::showDownloadMapsWindow)
+            .actionListener(() -> DownloadMapsWindow.showDownloadMapsWindow(gameRunner))
             .build())
         .add(JButtonBuilder.builder()
             .title("Open Save Game")
             .actionListener(() -> {
-              GameRunner.showSaveGameFileChooser().ifPresent(file -> {
+              gameRunner.showSaveGameFileChooser().ifPresent(file -> {
                 ClientSetting.SELECTED_GAME_LOCATION.save(file.getAbsolutePath());
                 try {
                   GameData newData = GameDataManager.loadGame(file);
-                  LaunchScreenWindow.draw(previousScreen, currentScreen, newData);
+                  LaunchScreenWindow.draw(previousScreen, currentScreen, newData, gameRunner);
                 } catch (IOException e) {
                   ClientLogger.logError("Failed to load: " + file.getAbsolutePath(), e);
                 }

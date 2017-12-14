@@ -76,8 +76,9 @@ public enum LaunchScreenWindow {
   public static void draw(
       final LaunchScreen previousScreen,
       final StagingScreen stagingScreen,
-      final GameData gameData) {
-    replaceContents(stagingScreen.buildScreen(previousScreen, gameData));
+      final GameData gameData,
+      final GameRunner gameRunner) {
+    replaceContents(stagingScreen.buildScreen(previousScreen, gameData, gameRunner));
   }
 
   public static void draw(final LaunchScreen launchScreen) {
@@ -87,9 +88,9 @@ public enum LaunchScreenWindow {
   /**
    * Makes the launch screen window visible if it is not already.
    */
-  public static void draw(final StagingScreen stagingScreen) {
+  public static void draw(final StagingScreen stagingScreen, final GameRunner gameRunner) {
     final GameData data = parseGameData();
-    replaceContents(stagingScreen.buildScreen(stagingScreen.previousScreen, data));
+    replaceContents(stagingScreen.buildScreen(stagingScreen.previousScreen, data, gameRunner));
   }
 
   private static GameData parseGameData() {
@@ -117,14 +118,15 @@ public enum LaunchScreenWindow {
 
   static void drawWithServerNetworking(
       @Nonnull final StagingScreen stagingScreen,
-      @Nonnull final ServerConnectionProps serverProps) {
+      @Nonnull final ServerConnectionProps serverProps,
+      final GameRunner gameRunner) {
     final GameData data = parseGameData();
 
-    final ServerModel serverModel = new ServerModel(serverProps);
+    final ServerModel serverModel = new ServerModel(serverProps, gameRunner);
 
     final ChatSupport chatSupport = new ChatSupport((ChatPanel) serverModel.getChatPanel());
     final Consumer<GameData> launchAction = gameData -> {
-      GameRunner.getGameSelectorModel().load(gameData, "");
+      gameRunner.getGameSelectorModel().load(gameData, "");
       final ILauncher launcher = serverModel.getLauncher();
 
       launcher.launch(null);
@@ -134,7 +136,7 @@ public enum LaunchScreenWindow {
 
 
     replaceContents(stagingScreen.buildScreen(stagingScreen.previousScreen, data, chatSupport, launchAction,
-        serverModel, null));
+        serverModel, null, gameRunner));
   }
 
   /**
