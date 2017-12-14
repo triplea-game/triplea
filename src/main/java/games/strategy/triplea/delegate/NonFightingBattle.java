@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -137,10 +136,7 @@ public class NonFightingBattle extends DependentBattle {
         m_isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
       }
     }
-    final Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
-    while (dependents.hasNext()) {
-      final Unit dependence = dependents.next();
-      final Collection<Unit> dependent = m_dependentUnits.get(dependence);
+    for (final Collection<Unit> dependent : m_dependentUnits.values()) {
       dependent.removeAll(units);
     }
   }

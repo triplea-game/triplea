@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,11 +49,8 @@ class PlayerOrder {
     final File outFile = new File(printData.getOutDir(), "General Information.csv");
     try (Writer turnWriter = new FileWriter(outFile, true)) {
       turnWriter.write("Turn Order\r\n");
-      final Set<PlayerID> noDuplicates = removeDups(playerSet);
-      final Iterator<PlayerID> playerIterator = noDuplicates.iterator();
       int count = 1;
-      while (playerIterator.hasNext()) {
-        final PlayerID currentPlayerId = playerIterator.next();
+      for (final PlayerID currentPlayerId : removeDups(playerSet)) {
         turnWriter.write(count + ". " + currentPlayerId.getName() + "\r\n");
         count++;
       }

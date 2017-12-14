@@ -2,7 +2,6 @@ package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
@@ -113,9 +112,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final GameData data = bridge.getData();
     // check every territory
     boolean historyItemCreated = false;
-    final Iterator<Territory> allTerritories = data.getMap().getTerritories().iterator();
-    while (allTerritories.hasNext()) {
-      final Territory current = allTerritories.next();
+    for (final Territory current : data.getMap().getTerritories()) {
       // only care about water
       if (!current.isWater()) {
         continue;
@@ -134,10 +131,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
           throw new IllegalStateException("Non transportable unit in sea");
         }
         // find the next transport that can hold it
-        final Iterator<Unit> transportIter = transports.iterator();
         boolean found = false;
-        while (transportIter.hasNext()) {
-          final Unit transport = transportIter.next();
+        for (final Unit transport : transports) {
           final int capacity = TransportTracker.getAvailableCapacity(transport);
           if (capacity >= cost) {
             if (!historyItemCreated) {
@@ -222,14 +217,11 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initTech(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
-    while (players.hasNext()) {
-      final PlayerID player = players.next();
-      final Iterator<TechAdvance> advances = TechTracker.getCurrentTechAdvances(player, data).iterator();
-      if (advances.hasNext()) {
+    for (final PlayerID player : data.getPlayerList().getPlayers()) {
+      final Collection<TechAdvance> advances = TechTracker.getCurrentTechAdvances(player, data);
+      if (!advances.isEmpty()) {
         bridge.getHistoryWriter().startEvent("Initializing " + player.getName() + " with tech advances");
-        while (advances.hasNext()) {
-          final TechAdvance advance = advances.next();
+        for (final TechAdvance advance : advances) {
           advance.perform(player, bridge);
         }
       }

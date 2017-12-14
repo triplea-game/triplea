@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 
 import javax.swing.JOptionPane;
 
@@ -80,10 +80,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       for (final String allianceName : data.getAllianceTracker().getAlliances()) {
         final int victoryAmount = getEconomicVictoryAmount(data, allianceName);
         final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
-        final Iterator<PlayerID> teamIter = teamMembers.iterator();
         int teamProd = 0;
-        while (teamIter.hasNext()) {
-          final PlayerID player = teamIter.next();
+        for (final PlayerID player : teamMembers) {
           teamProd += getProduction(player);
           if (teamProd >= victoryAmount) {
             victoryMessage = allianceName + " achieve economic victory";
@@ -339,15 +337,10 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   }
 
   private int getProduction(final PlayerID id) {
-    int sum = 0;
-    final Iterator<Territory> territories = getData().getMap().iterator();
-    while (territories.hasNext()) {
-      final Territory current = territories.next();
-      if (current.getOwner().equals(id)) {
-        sum += TerritoryAttachment.getProduction(current);
-      }
-    }
-    return sum;
+    return StreamSupport.stream(getData().getMap().spliterator(), false)
+        .filter(current -> current.getOwner().equals(id))
+        .mapToInt(TerritoryAttachment::getProduction)
+        .sum();
   }
 
   @Override

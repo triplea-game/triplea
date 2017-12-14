@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
@@ -34,17 +32,11 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(final PlayerID player) {
-    final ArrayList<PoliticalActionAttachment> returnList = new ArrayList<>();
-    final Map<String, IAttachment> map = player.getAttachments();
-    final Iterator<String> iter = map.keySet().iterator();
-    while (iter.hasNext()) {
-      final IAttachment a = map.get(iter.next());
-      if (a.getName().startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX)
-          && a instanceof PoliticalActionAttachment) {
-        returnList.add((PoliticalActionAttachment) a);
-      }
-    }
-    return returnList;
+    return player.getAttachments().values().stream()
+        .filter(a -> a.getName().startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
+        .filter(PoliticalActionAttachment.class::isInstance)
+        .map(PoliticalActionAttachment.class::cast)
+        .collect(Collectors.toList());
   }
 
   public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment) {

@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -18,14 +19,12 @@ class PuInfo {
   void saveToFile(final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
     for (final PlayerID currentPlayer : gameData.getPlayerList()) {
-      final Iterator<Resource> resourceIterator = gameData.getResourceList().getResources().iterator();
-      final Map<Resource, Integer> resourceMap = new HashMap<>();
-      while (resourceIterator.hasNext()) {
-        final Resource currentResource = resourceIterator.next();
-        final int amountOfResource = currentPlayer.getResources().getQuantity(currentResource);
-        resourceMap.put(currentResource, amountOfResource);
-      }
-      infoMap.put(currentPlayer, resourceMap);
+      ;
+      infoMap.put(currentPlayer,
+          gameData.getResourceList().getResources().stream()
+              .collect(Collectors.toMap(
+                  Function.identity(),
+                  currentPlayer.getResources()::getQuantity)));
     }
     try {
       final File outFile = new File(printData.getOutDir(), "General Information.csv");
@@ -41,10 +40,8 @@ class PuInfo {
         }
         resourceWriter.write("\r\n");
         // Print Resources
-        final Iterator<Resource> resourceIterator = gameData.getResourceList().getResources().iterator();
         resourceWriter.write(",");
-        while (resourceIterator.hasNext()) {
-          final Resource currentResource = resourceIterator.next();
+        for (final Resource currentResource : gameData.getResourceList().getResources()) {
           resourceWriter.write(currentResource.getName() + ",");
         }
         resourceWriter.write("\r\n");

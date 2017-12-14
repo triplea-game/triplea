@@ -6,13 +6,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -232,9 +232,8 @@ public class BattleTracker implements Serializable {
     }
     // say they weren't in combat
     final CompositeChange change = new CompositeChange();
-    final Iterator<Unit> attackIter = units.iterator();
-    while (attackIter.hasNext()) {
-      change.add(ChangeFactory.unitPropertyChange(attackIter.next(), false, TripleAUnit.WAS_IN_COMBAT));
+    for (final Unit unit : units) {
+      change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.WAS_IN_COMBAT));
     }
     bridge.addChange(change);
   }
@@ -328,9 +327,8 @@ public class BattleTracker implements Serializable {
       return;
     }
     final CompositeChange change = new CompositeChange();
-    final Iterator<Unit> attackIter = units.iterator();
-    while (attackIter.hasNext()) {
-      change.add(ChangeFactory.unitPropertyChange(attackIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
+    for (final Unit unit : units) {
+      change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.WAS_IN_COMBAT));
     }
     bridge.addChange(change);
     if (changeTracker != null) {
@@ -990,16 +988,9 @@ public class BattleTracker implements Serializable {
    * @return the battles that cannot occur until the given battle occurs
    */
   public Collection<IBattle> getBlocked(final IBattle blocking) {
-    final Iterator<IBattle> iter = m_dependencies.keySet().iterator();
-    final Collection<IBattle> allBlocked = new ArrayList<>();
-    while (iter.hasNext()) {
-      final IBattle current = iter.next();
-      final Collection<IBattle> currentBlockedBy = getDependentOn(current);
-      if (currentBlockedBy.contains(blocking)) {
-        allBlocked.add(current);
-      }
-    }
-    return allBlocked;
+    return m_dependencies.keySet().stream()
+        .filter(current -> getDependentOn(current).contains(blocking))
+        .collect(Collectors.toList());
   }
 
   public void addDependency(final IBattle blocked, final IBattle blocking) {
@@ -1017,9 +1008,7 @@ public class BattleTracker implements Serializable {
 
   public void removeBattle(final IBattle battle) {
     if (battle != null) {
-      final Iterator<IBattle> blocked = getBlocked(battle).iterator();
-      while (blocked.hasNext()) {
-        final IBattle current = blocked.next();
+      for (final IBattle current : getBlocked(battle)) {
         removeDependency(current, battle);
       }
       m_pendingBattles.remove(battle);

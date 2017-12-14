@@ -2,7 +2,6 @@ package games.strategy.triplea.printgenerator;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import games.strategy.debug.ClientLogger;
@@ -15,7 +14,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 public class InitialSetup {
   private final Map<UnitType, UnitAttachment> unitInfoMap = new HashMap<>();
 
-  protected InitialSetup() {}
+  InitialSetup() {}
 
   /**
    * @param GameData
@@ -28,16 +27,12 @@ public class InitialSetup {
       final HistoryNode root = (HistoryNode) gameData.getHistory().getRoot();
       gameData.getHistory().gotoNode(root);
     }
-    final Iterator<UnitType> unitTypeIterator = gameData.getUnitTypeList().iterator();
-    while (unitTypeIterator.hasNext()) {
-      final UnitType currentType = unitTypeIterator.next();
+    for (final UnitType currentType : gameData.getUnitTypeList()) {
       final UnitAttachment currentTypeUnitAttachment = UnitAttachment.get(currentType);
       unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
     new UnitInformation().saveToFile(printData, unitInfoMap);
-    final Iterator<PlayerID> playerIterator = gameData.getPlayerList().iterator();
-    while (playerIterator.hasNext()) {
-      final PlayerID currentPlayer = playerIterator.next();
+    for (final PlayerID currentPlayer : gameData.getPlayerList()) {
       new CountryChart().saveToFile(currentPlayer, printData);
     }
     new PuInfo().saveToFile(printData);

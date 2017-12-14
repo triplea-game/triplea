@@ -424,7 +424,6 @@ public class AirMovementValidator {
           landingSpotCapacity -= carrierCost(carriersToMove.get(carrier));
         }
         // optional for debugging
-        // landingSpotsWithCarrierCapacity.put(landingSpot, landingSpotCapacity);
         final Iterator<Unit> reachIter = airCanReach.iterator();
         while (reachIter.hasNext()) {
           final Unit air = reachIter.next();

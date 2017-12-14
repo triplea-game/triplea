@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -156,9 +155,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       return NOT_ENOUGH_RESOURCES;
     }
     // check to see if player has too many of any building with a building limit
-    final Iterator<NamedAttachable> iter2 = results.keySet().iterator();
-    while (iter2.hasNext()) {
-      final Object next = iter2.next();
+    for (final NamedAttachable next : results.keySet()) {
       if (!(next instanceof Resource)) {
         final UnitType type = (UnitType) next;
         final int quantity = results.getInt(type);
@@ -185,7 +182,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       }
     }
     // remove first, since add logs PUs remaining
-    final Iterator<NamedAttachable> iter = results.keySet().iterator();
     final Collection<Unit> totalUnits = new ArrayList<>();
     final Collection<UnitType> totalUnitTypes = new ArrayList<>();
     final Collection<Resource> totalResources = new ArrayList<>();
@@ -193,8 +189,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     final CompositeChange changes = new CompositeChange();
     // add changes for added resources
     // and find all added units
-    while (iter.hasNext()) {
-      final Object next = iter.next();
+    for (final NamedAttachable next : results.keySet()) {
       if (next instanceof Resource) {
         final Resource resource = (Resource) next;
         final int quantity = results.getInt(resource);
@@ -306,9 +301,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
   private static IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
-    final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
-    while (rules.hasNext()) {
-      final ProductionRule rule = rules.next();
+    for (final ProductionRule rule : productionRules.keySet()) {
       costs.addMultiple(rule.getCosts(), productionRules.getInt(rule));
     }
     return costs;
@@ -332,9 +325,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
   private static IntegerMap<NamedAttachable> getResults(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<NamedAttachable> costs = new IntegerMap<>();
-    final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
-    while (rules.hasNext()) {
-      final ProductionRule rule = rules.next();
+    for (final ProductionRule rule : productionRules.keySet()) {
       costs.addMultiple(rule.getResults(), productionRules.getInt(rule));
     }
     return costs;

@@ -3,9 +3,9 @@ package games.strategy.triplea.printgenerator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -27,7 +27,6 @@ class UnitInformation {
 
   void saveToFile(final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
     data = printData.getData();
-    final Iterator<UnitType> unitTypeIterator = unitInfoMap.keySet().iterator();
     printData.getOutDir().mkdir();
     final File outFile = new File(printData.getOutDir(), "General Information.csv");
     try (FileWriter unitInformation = new FileWriter(outFile)) {
@@ -43,9 +42,9 @@ class UnitInformation {
           + ",Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,Carrier Cost,"
           + "Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,Submarine?,Destroyer?");
       unitInformation.write("\r\n");
-      while (unitTypeIterator.hasNext()) {
-        final UnitType currentType = unitTypeIterator.next();
-        final UnitAttachment currentAttachment = unitInfoMap.get(currentType);
+      for (final Entry<UnitType, UnitAttachment> entry : unitInfoMap.entrySet()) {
+        final UnitType currentType = entry.getKey();
+        final UnitAttachment currentAttachment = entry.getValue();
         if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
           unitInformation.write(currentType.getName() + ",");
         } else {

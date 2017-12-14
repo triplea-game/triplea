@@ -168,10 +168,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         m_isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
       }
     }
-    final Iterator<Unit> dependentHolders = m_dependentUnits.keySet().iterator();
-    while (dependentHolders.hasNext()) {
-      final Unit holder = dependentHolders.next();
-      final Collection<Unit> dependents = m_dependentUnits.get(holder);
+    for (final Collection<Unit> dependents : m_dependentUnits.values()) {
       dependents.removeAll(units);
     }
   }
@@ -393,11 +390,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     final Set<PlayerID> playerSet = m_battleSite.getUnits().getPlayersWithUnits();
-    String transcriptText;
+    String transcriptText = "";
     // find all attacking players (unsorted)
     final Collection<PlayerID> attackers = new ArrayList<>();
     final Collection<Unit> allAttackingUnits = new ArrayList<>();
-    transcriptText = "";
     for (final PlayerID current : playerSet) {
       if (m_data.getRelationshipTracker().isAllied(m_attacker, current) || current.equals(m_attacker)) {
         attackers.add(current);
@@ -422,9 +418,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if (current.equals(m_attacker)) {
         final CompositeChange change = new CompositeChange();
         final Collection<Unit> transports = CollectionUtils.getMatches(attackingUnits, Matches.unitCanTransport());
-        final Iterator<Unit> attackTranIter = transports.iterator();
-        while (attackTranIter.hasNext()) {
-          change.add(ChangeFactory.unitPropertyChange(attackTranIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
+        for (final Unit unit : transports) {
+          change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.WAS_IN_COMBAT));
         }
         bridge.addChange(change);
       }
@@ -2301,11 +2296,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if (!airTransports.isEmpty()) {
         final Collection<Unit> dependents = getDependentUnits(airTransports);
         if (!dependents.isEmpty()) {
-          final Iterator<Unit> dependentsIter = dependents.iterator();
           final CompositeChange change = new CompositeChange();
           // remove dependency from paratroopers by unloading the air transports
-          while (dependentsIter.hasNext()) {
-            final Unit unit = dependentsIter.next();
+          for (final Unit unit : dependents) {
             change.add(TransportTracker.unloadAirTransportChange((TripleAUnit) unit, m_battleSite, false));
           }
           bridge.addChange(change);

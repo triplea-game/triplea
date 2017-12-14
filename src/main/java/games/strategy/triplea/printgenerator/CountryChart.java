@@ -55,10 +55,8 @@ class CountryChart {
       }
       countryFileWriter.write("\r\n");
       // Print Unit Types
-      final Iterator<UnitType> unitIterator = gameData.getUnitTypeList().iterator();
       countryFileWriter.write(",");
-      while (unitIterator.hasNext()) {
-        final UnitType currentType = unitIterator.next();
+      for (final UnitType currentType : gameData.getUnitTypeList()) {
         countryFileWriter.write(currentType.getName() + ",");
       }
       countryFileWriter.write("\r\n");

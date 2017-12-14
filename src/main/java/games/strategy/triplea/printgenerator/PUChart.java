@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -22,7 +21,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 class PUChart {
-  private final Iterator<PlayerID> playerIterator;
+  private final Iterable<PlayerID> playerIterator;
   private final IntegerMap<PlayerID> moneyMap;
   private final int numPlayers;
   private final PlayerID[] playerArray;
@@ -35,7 +34,7 @@ class PUChart {
 
   PUChart(final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
-    playerIterator = gameData.getPlayerList().iterator();
+    playerIterator = gameData.getPlayerList();
     moneyMap = new IntegerMap<>();
     numPlayers = gameData.getPlayerList().size();
     playerArray = new PlayerID[numPlayers];
@@ -48,8 +47,7 @@ class PUChart {
 
   private void initializeMap() {
     int count = 0;
-    while (playerIterator.hasNext()) {
-      final PlayerID currentPlayer = playerIterator.next();
+    for (final PlayerID currentPlayer : playerIterator) {
       moneyMap.put(currentPlayer, currentPlayer.getResources().getQuantity(Constants.PUS));
       playerArray[count] = currentPlayer;
       moneyArray[count] = currentPlayer.getResources().getQuantity(Constants.PUS);

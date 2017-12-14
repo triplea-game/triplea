@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -262,11 +261,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     // Put in techs so they can be activated later.
     m_techs.put(m_player, advances);
     final List<String> advancesAsString = new ArrayList<>();
-    final Iterator<TechAdvance> iter = advances.iterator();
     int count = advances.size();
     final StringBuilder text = new StringBuilder();
-    while (iter.hasNext()) {
-      final TechAdvance advance = iter.next();
+    for (final TechAdvance advance : advances) {
       text.append(advance.getName());
       count--;
       advancesAsString.add(advance.getName());
