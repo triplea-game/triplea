@@ -19,7 +19,6 @@ class PuInfo {
   void saveToFile(final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
     for (final PlayerID currentPlayer : gameData.getPlayerList()) {
-      ;
       infoMap.put(currentPlayer,
           gameData.getResourceList().getResources().stream()
               .collect(Collectors.toMap(

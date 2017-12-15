@@ -21,7 +21,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 class PUChart {
-  private final Iterable<PlayerID> playerIterator;
+  private final Iterable<PlayerID> players;
   private final IntegerMap<PlayerID> moneyMap;
   private final int numPlayers;
   private final PlayerID[] playerArray;
@@ -34,7 +34,7 @@ class PUChart {
 
   PUChart(final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
-    playerIterator = gameData.getPlayerList();
+    players = gameData.getPlayerList();
     moneyMap = new IntegerMap<>();
     numPlayers = gameData.getPlayerList().size();
     playerArray = new PlayerID[numPlayers];
@@ -47,7 +47,7 @@ class PUChart {
 
   private void initializeMap() {
     int count = 0;
-    for (final PlayerID currentPlayer : playerIterator) {
+    for (final PlayerID currentPlayer : players) {
       moneyMap.put(currentPlayer, currentPlayer.getResources().getQuantity(Constants.PUS));
       playerArray[count] = currentPlayer;
       moneyArray[count] = currentPlayer.getResources().getQuantity(Constants.PUS);

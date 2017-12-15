@@ -3429,7 +3429,7 @@ public class UnitAttachment extends DefaultAttachment {
     return stats.toString();
   }
 
-  private String joinRequiredUnits(final List<String[]> units) {
+  private static String joinRequiredUnits(final List<String[]> units) {
     return units.stream()
         .map(required -> required.length == 1 ? required[0] : Arrays.toString(required))
         .collect(Collectors.joining(" Or "));
