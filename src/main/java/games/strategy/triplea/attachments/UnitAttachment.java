@@ -473,7 +473,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public void resetWhenHitPointsDamagedChangesInto() {
-    m_whenHitPointsDamagedChangesInto = new LinkedHashMap<>();
+    m_whenHitPointsDamagedChangesInto = new HashMap<>();
   }
 
   /**
