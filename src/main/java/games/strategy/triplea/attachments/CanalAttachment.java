@@ -1,15 +1,13 @@
 package games.strategy.triplea.attachments;
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -50,17 +48,10 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   public static Set<CanalAttachment> get(final Territory t) {
-    final Set<CanalAttachment> canalAttachments = new HashSet<>();
-    final Map<String, IAttachment> map = t.getAttachments();
-    final Iterator<String> iter = map.keySet().iterator();
-    while (iter.hasNext()) {
-      final IAttachment attachment = map.get(iter.next());
-      final String name = attachment.getName();
-      if (name.startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
-        canalAttachments.add((CanalAttachment) attachment);
-      }
-    }
-    return canalAttachments;
+    return t.getAttachments().values().stream()
+        .filter(attachment -> attachment.getName().startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
+        .map(CanalAttachment.class::cast)
+        .collect(Collectors.toSet());
   }
 
   static CanalAttachment get(final Territory t, final String nameOfAttachment) {

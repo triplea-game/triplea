@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -138,11 +137,9 @@ public class TechActivationDelegate extends BaseTripleADelegate {
 
   // Return string representing all advances in collection
   private static String advancesAsString(final Collection<TechAdvance> advances) {
-    final Iterator<TechAdvance> iter = advances.iterator();
     int count = advances.size();
     final StringBuilder text = new StringBuilder();
-    while (iter.hasNext()) {
-      final TechAdvance advance = iter.next();
+    for (final TechAdvance advance : advances) {
       text.append(advance.getName());
       count--;
       if (count > 1) {

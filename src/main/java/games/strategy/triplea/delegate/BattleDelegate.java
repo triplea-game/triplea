@@ -252,10 +252,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final ITripleAPlayer remotePlayer = getRemotePlayer();
     final Predicate<Unit> ownedAndCanBombard = Matches.unitCanBombard(attacker).and(Matches.unitIsOwnedBy(attacker));
     final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
-    final Iterator<Territory> territories = adjBombardment.keySet().iterator();
     final boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(getData());
-    while (territories.hasNext()) {
-      final Territory t = territories.next();
+    for (final Territory t : adjBombardment.keySet()) {
       if (!m_battleTracker.hasPendingBattle(t, false)) {
         Collection<IBattle> battles = adjBombardment.get(t);
         battles = CollectionUtils.getMatches(battles, Matches.battleIsAmphibious());
@@ -264,15 +262,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           final List<Unit> listedBombardUnits = new ArrayList<>();
           listedBombardUnits.addAll(bombardUnits);
           sortUnitsToBombard(listedBombardUnits, attacker);
-          final Iterator<Unit> bombarding = listedBombardUnits.iterator();
           if (!bombardUnits.isEmpty()) {
             // ask if they want to bombard
             if (!remotePlayer.selectShoreBombard(t)) {
               continue;
             }
           }
-          while (bombarding.hasNext()) {
-            final Unit u = bombarding.next();
+          for (final Unit u : listedBombardUnits) {
             final IBattle battle = selectBombardingBattle(u, t, battles);
             if (battle != null) {
               if (shoreBombardPerGroundUnitRestricted) {
@@ -303,11 +299,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * Return map of adjacent territories along attack routes in battles where fighting will occur.
    */
   private Map<Territory, Collection<IBattle>> getPossibleBombardingTerritories() {
-    final Map<Territory, Collection<IBattle>> possibleBombardingTerritories =
-        new HashMap<>();
-    final Iterator<Territory> battleTerritories = m_battleTracker.getPendingBattleSites(false).iterator();
-    while (battleTerritories.hasNext()) {
-      final Territory t = battleTerritories.next();
+    final Map<Territory, Collection<IBattle>> possibleBombardingTerritories = new HashMap<>();
+    for (final Territory t : m_battleTracker.getPendingBattleSites(false)) {
       final IBattle battle = m_battleTracker.getPendingBattle(t, false, BattleType.NORMAL);
       // we only care about battles where we must fight
       // this check is really to avoid implementing getAttackingFrom() in other battle subclasses
@@ -316,9 +309,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // bombarding can only occur in territories from which at least 1 land unit attacked
       final Map<Territory, Collection<Unit>> attackingFromMap = ((MustFightBattle) battle).getAttackingFromMap();
-      final Iterator<Territory> bombardingTerritories = ((MustFightBattle) battle).getAttackingFrom().iterator();
-      while (bombardingTerritories.hasNext()) {
-        final Territory neighbor = bombardingTerritories.next();
+      for (final Territory neighbor : ((MustFightBattle) battle).getAttackingFrom()) {
         // we do not allow bombarding from certain sea zones (like if there was a kamikaze suicide attack there, etc)
         if (m_battleTracker.noBombardAllowedFromHere(neighbor)) {
           continue;
@@ -351,9 +342,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final List<Territory> territories = new ArrayList<>();
     final Map<Territory, IBattle> battleTerritories = new HashMap<>();
-    final Iterator<IBattle> battlesIter = battles.iterator();
-    while (battlesIter.hasNext()) {
-      final IBattle battle = battlesIter.next();
+    for (final IBattle battle : battles) {
       // If Restricted & # of bombarding units => landing units, don't add territory to list to bombard
       if (bombardRestricted) {
         if (battle.getBombardingUnits().size() < battle.getAmphibiousLandAttackers().size()) {
@@ -421,10 +410,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Predicate<Territory> enemyTerritoryAndOwnUnits = Matches.isTerritoryEnemyAndNotUnownedWater(player, data)
         .and(Matches.territoryHasUnitsOwnedBy(player));
     final Predicate<Territory> enemyUnitsOrEnemyTerritory = anyTerritoryWithOwnAndEnemy.or(enemyTerritoryAndOwnUnits);
-    final Iterator<Territory> battleTerritories =
-        CollectionUtils.getMatches(data.getMap().getTerritories(), enemyUnitsOrEnemyTerritory).iterator();
-    while (battleTerritories.hasNext()) {
-      final Territory territory = battleTerritories.next();
+    final List<Territory> battleTerritories =
+        CollectionUtils.getMatches(data.getMap().getTerritories(), enemyUnitsOrEnemyTerritory);
+    for (final Territory territory : battleTerritories) {
       final List<Unit> attackingUnits = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
       // now make sure to add any units that must move with these attacking units, so that they get included as
       // dependencies
@@ -564,30 +552,28 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       return;
     }
     final PlayerID player = bridge.getPlayerId();
-    final Iterator<Territory> battleTerritories = CollectionUtils.getMatches(data.getMap().getTerritories(),
+    final List<Territory> battleTerritories = CollectionUtils.getMatches(data.getMap().getTerritories(),
         Matches.territoryIsNotUnownedWater()
-            .and(Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player, data)))
-        .iterator();
+            .and(Matches.territoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemy(player, data)));
     // all territories that contain enemy units, where the territory is owned by an enemy of these units
-    while (battleTerritories.hasNext()) {
-      final Territory territory = battleTerritories.next();
+    for (final Territory territory : battleTerritories) {
       final List<Unit> abandonedToUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
       final PlayerID abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(abandonedToUnits);
-      {
-        // now make sure to add any units that must move with these units, so that they get included as dependencies
-        final Map<Unit, Collection<Unit>> transportMap = TransportTracker.transporting(territory.getUnits().getUnits());
-        final HashSet<Unit> dependants = new HashSet<>();
-        for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet()) {
-          // only consider those transports that are part of our group
-          if (abandonedToUnits.contains(entry.getKey())) {
-            dependants.addAll(entry.getValue());
-          }
+
+      // now make sure to add any units that must move with these units, so that they get included as dependencies
+      final Map<Unit, Collection<Unit>> transportMap = TransportTracker.transporting(territory.getUnits().getUnits());
+      final HashSet<Unit> dependants = new HashSet<>();
+      for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet()) {
+        // only consider those transports that are part of our group
+        if (abandonedToUnits.contains(entry.getKey())) {
+          dependants.addAll(entry.getValue());
         }
-        // no duplicates
-        dependants.removeAll(abandonedToUnits);
-        // add the dependants to the attacking list
-        abandonedToUnits.addAll(dependants);
       }
+      // no duplicates
+      dependants.removeAll(abandonedToUnits);
+      // add the dependants to the attacking list
+      abandonedToUnits.addAll(dependants);
+
       // either we have abandoned the territory (so there are no more units that are enemy units of our enemy units)
       // or we are possibly bombing the territory (so we may have units there still)
       final Set<Unit> enemyUnitsOfAbandonedToUnits = new HashSet<>();
@@ -634,9 +620,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final boolean toAnyAmphibious = Properties.getScrambleToAnyAmphibiousAssault(data);
     final boolean toSbr = Properties.getCanScrambleIntoAirBattles(data);
     int maxScrambleDistance = 0;
-    final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
-    while (utIter.hasNext()) {
-      final UnitAttachment ua = UnitAttachment.get(utIter.next());
+    for (final UnitType unitType : data.getUnitTypeList()) {
+      final UnitAttachment ua = UnitAttachment.get(unitType);
       if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }

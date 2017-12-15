@@ -1,18 +1,18 @@
 package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -55,17 +55,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   public static Set<UnitSupportAttachment> get(final UnitType u) {
-    final Set<UnitSupportAttachment> supports = new HashSet<>();
-    final Map<String, IAttachment> map = u.getAttachments();
-    final Iterator<String> objsIter = map.keySet().iterator();
-    while (objsIter.hasNext()) {
-      final IAttachment attachment = map.get(objsIter.next());
-      final String name = attachment.getName();
-      if (name.startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX)) {
-        supports.add((UnitSupportAttachment) attachment);
-      }
-    }
-    return supports;
+    return u.getAttachments().values().stream()
+        .filter(attachment -> attachment.getName().startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX))
+        .map(UnitSupportAttachment.class::cast)
+        .collect(Collectors.toSet());
   }
 
   static UnitSupportAttachment get(final UnitType u, final String nameOfAttachment) {
@@ -73,17 +66,15 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   public static Set<UnitSupportAttachment> get(final GameData data) {
-    final Set<UnitSupportAttachment> supports = new HashSet<>();
     data.acquireReadLock();
     try {
-      final Iterator<UnitType> i = data.getUnitTypeList().iterator();
-      while (i.hasNext()) {
-        supports.addAll(get(i.next()));
-      }
+      return StreamSupport.stream(data.getUnitTypeList().spliterator(), false)
+          .map(UnitSupportAttachment::get)
+          .flatMap(Collection::stream)
+          .collect(Collectors.toSet());
     } finally {
       data.releaseReadLock();
     }
-    return supports;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -407,10 +398,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   @InternalDoNotExport
   static void addTarget(final UnitType type, final GameData data) throws GameParseException {
-    final Iterator<UnitSupportAttachment> iter = get(data).iterator();
     boolean first = true;
-    while (iter.hasNext()) {
-      final UnitSupportAttachment rule = iter.next();
+    for (final UnitSupportAttachment rule : get(data)) {
       if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME)) {
         rule.addUnitTypes(Collections.singleton(type));
         first = false;

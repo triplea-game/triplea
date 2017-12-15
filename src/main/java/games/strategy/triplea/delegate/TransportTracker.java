@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import games.strategy.engine.data.Change;
@@ -297,8 +296,7 @@ public class TransportTracker {
     if (unloaded.isEmpty()) {
       return null;
     }
-    final Iterator<Unit> iter = unloaded.iterator();
-    return ((TripleAUnit) iter.next()).getUnloadedTo();
+    return ((TripleAUnit) unloaded.iterator().next()).getUnloadedTo();
   }
 
   // If a transport has been in combat, it cannot load AND unload in non-combat

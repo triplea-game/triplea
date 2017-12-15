@@ -6,13 +6,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -2470,15 +2471,9 @@ public class UnitAttachment extends DefaultAttachment {
     if (m_targetsAA != null) {
       return m_targetsAA;
     }
-    final HashSet<UnitType> airTypes = new HashSet<>();
-    final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
-    while (utIter.hasNext()) {
-      final UnitType ut = utIter.next();
-      if (UnitAttachment.get(ut).getIsAir()) {
-        airTypes.add(ut);
-      }
-    }
-    return airTypes;
+    return StreamSupport.stream(data.getUnitTypeList().spliterator(), false)
+        .filter(ut -> UnitAttachment.get(ut).getIsAir())
+        .collect(Collectors.toSet());
   }
 
   public void clearTargetsAA() {
@@ -3363,18 +3358,7 @@ public class UnitAttachment extends DefaultAttachment {
         stats.append("unit Requires Other Units Present To Be Placed, ");
       } else {
         stats.append("unit can only be Placed Where There Is: ");
-        final Iterator<String[]> requiredIter = getRequiresUnits().iterator();
-        while (requiredIter.hasNext()) {
-          final String[] required = requiredIter.next();
-          if (required.length == 1) {
-            stats.append(required[0]);
-          } else {
-            stats.append(Arrays.toString(required));
-          }
-          if (requiredIter.hasNext()) {
-            stats.append(" Or ");
-          }
-        }
+        stats.append(joinRequiredUnits(getRequiresUnits()));
         stats.append(", ");
       }
     }
@@ -3387,18 +3371,7 @@ public class UnitAttachment extends DefaultAttachment {
         stats.append("unit Requires Other Units Present To Be Moved, ");
       } else {
         stats.append("unit can only be Moved Where There Is: ");
-        final Iterator<String[]> requiredIter = getRequiresUnitsToMove().iterator();
-        while (requiredIter.hasNext()) {
-          final String[] required = requiredIter.next();
-          if (required.length == 1) {
-            stats.append(required[0]);
-          } else {
-            stats.append(Arrays.toString(required));
-          }
-          if (requiredIter.hasNext()) {
-            stats.append(" Or ");
-          }
-        }
+        stats.append(joinRequiredUnits(getRequiresUnitsToMove()));
         stats.append(", ");
       }
     }
@@ -3454,6 +3427,12 @@ public class UnitAttachment extends DefaultAttachment {
       stats.delete(stats.lastIndexOf(", "), stats.length() - 1);
     }
     return stats.toString();
+  }
+
+  private static String joinRequiredUnits(final List<String[]> units) {
+    return units.stream()
+        .map(required -> required.length == 1 ? required[0] : Arrays.toString(required))
+        .collect(Collectors.joining(" Or "));
   }
 
   /**

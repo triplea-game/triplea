@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1076,32 +1075,33 @@ public class MoveValidator {
         }
       }
       final Map<Unit, Unit> unitsToTransports = TransportUtils.mapTransports(route, land, transportsToLoad);
-      final Iterator<Unit> iter = land.iterator();
-      while (!isEditMode && iter.hasNext()) {
-        final TripleAUnit unit = (TripleAUnit) iter.next();
-        if (Matches.unitHasMoved().test(unit)) {
-          result.addDisallowedUnit("Units cannot move before loading onto transports", unit);
-        }
-        final Unit transport = unitsToTransports.get(unit);
-        if (transport == null) {
-          continue;
-        }
-        if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport)) {
-          result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
-        } else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd())) {
-          Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
-          for (final Unit transportToLoad : transportsToLoad) {
-            final TripleAUnit trn = (TripleAUnit) transportToLoad;
-            if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(trn, route.getEnd())) {
-              final UnitAttachment ua = UnitAttachment.get(unit.getType());
-              if (TransportTracker.getAvailableCapacity(trn) >= ua.getTransportCost()) {
-                alreadyUnloadedTo = null;
-                break;
+      if (!isEditMode) {
+        for (final Unit baseUnit : land) {
+          final TripleAUnit unit = (TripleAUnit) baseUnit;
+          if (Matches.unitHasMoved().test(unit)) {
+            result.addDisallowedUnit("Units cannot move before loading onto transports", unit);
+          }
+          final Unit transport = unitsToTransports.get(unit);
+          if (transport == null) {
+            continue;
+          }
+          if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport)) {
+            result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
+          } else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd())) {
+            Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
+            for (final Unit transportToLoad : transportsToLoad) {
+              final TripleAUnit trn = (TripleAUnit) transportToLoad;
+              if (!TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(trn, route.getEnd())) {
+                final UnitAttachment ua = UnitAttachment.get(unit.getType());
+                if (TransportTracker.getAvailableCapacity(trn) >= ua.getTransportCost()) {
+                  alreadyUnloadedTo = null;
+                  break;
+                }
               }
             }
-          }
-          if (alreadyUnloadedTo != null) {
-            result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
+            if (alreadyUnloadedTo != null) {
+              result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
+            }
           }
         }
       }
@@ -1330,9 +1330,7 @@ public class MoveValidator {
   private static Map<Unit, Collection<Unit>> transportsMustMoveWith(final Collection<Unit> units) {
     final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<>();
     final Collection<Unit> transports = CollectionUtils.getMatches(units, Matches.unitIsTransport());
-    final Iterator<Unit> iter = transports.iterator();
-    while (iter.hasNext()) {
-      final Unit transport = iter.next();
+    for (final Unit transport : transports) {
       final Collection<Unit> transporting = TransportTracker.transporting(transport);
       mustMoveWith.put(transport, transporting);
     }
@@ -1376,9 +1374,7 @@ public class MoveValidator {
     final Predicate<Unit> friendlyNotOwnedCarrier =
         Matches.unitIsCarrier().and(Matches.alliedUnit(player, data)).and(Matches.unitIsOwnedBy(player).negate());
     final Collection<Unit> alliedCarrier = CollectionUtils.getMatches(startUnits, friendlyNotOwnedCarrier);
-    final Iterator<Unit> alliedCarrierIter = alliedCarrier.iterator();
-    while (alliedCarrierIter.hasNext()) {
-      final Unit carrier = alliedCarrierIter.next();
+    for (final Unit carrier : alliedCarrier) {
       final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player, data);
       alliedAir.removeAll(carrying);
     }
@@ -1389,9 +1385,7 @@ public class MoveValidator {
     // get air that must be carried by our carriers
     final Collection<Unit> ownedCarrier =
         CollectionUtils.getMatches(units, Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player)));
-    final Iterator<Unit> ownedCarrierIter = ownedCarrier.iterator();
-    while (ownedCarrierIter.hasNext()) {
-      final Unit carrier = ownedCarrierIter.next();
+    for (final Unit carrier : ownedCarrier) {
       final Collection<Unit> carrying = getCanCarry(carrier, alliedAir, player, data);
       alliedAir.removeAll(carrying);
       mapping.put(carrier, carrying);
@@ -1404,10 +1398,8 @@ public class MoveValidator {
     final UnitAttachment ua = UnitAttachment.get(carrier.getType());
     final Collection<Unit> canCarry = new ArrayList<>();
     int available = ua.getCarrierCapacity();
-    final Iterator<Unit> iter = selectFrom.iterator();
     final TripleAUnit taCarrier = (TripleAUnit) carrier;
-    while (iter.hasNext()) {
-      final Unit plane = iter.next();
+    for (final Unit plane : selectFrom) {
       final TripleAUnit taPlane = (TripleAUnit) plane;
       final UnitAttachment planeAttachment = UnitAttachment.get(plane.getType());
       final int cost = planeAttachment.getCarrierCost();

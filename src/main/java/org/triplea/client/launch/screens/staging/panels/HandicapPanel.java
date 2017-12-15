@@ -1,21 +1,16 @@
 package org.triplea.client.launch.screens.staging.panels;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.Box;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import swinglib.GridBagHelper;
 import swinglib.JPanelBuilder;
 
 /**

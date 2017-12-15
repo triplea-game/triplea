@@ -53,9 +53,7 @@ import games.strategy.util.Util;
  *
  * <pre>
  * boolean hasLand = false;
- * Iterator iter = someCollection.iterator();
- * while (iter.hasNext()) {
- *   Unit unit = (Unit) iter.next();
+ * for (final Unit unit : someCollection) {
  *   UnitAttachment ua = UnitAttachment.get(unit.getType());
  *   if (ua.isAir) {
  *     hasAir = true;

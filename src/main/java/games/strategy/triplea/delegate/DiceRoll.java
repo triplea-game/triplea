@@ -833,9 +833,8 @@ public class DiceRoll implements Externalizable {
       }
       return unitPower2.compareTo(unitPower1);
     };
-    final Iterator<List<UnitSupportAttachment>> iter = support.iterator();
-    while (iter.hasNext()) {
-      Collections.sort(iter.next(), compList);
+    for (final List<UnitSupportAttachment> attachments : support) {
+      Collections.sort(attachments, compList);
     }
   }
 
@@ -861,11 +860,9 @@ public class DiceRoll implements Externalizable {
     if (Properties.getLow_Luck(data)) {
       // bonus is normally 1 for most games
       final int extraRollBonus = Math.max(1, data.getDiceSides() / 6);
-      final Iterator<Unit> iter = units.iterator();
       int power = 0;
       // We iterate through the units to find the total strength of the units
-      while (iter.hasNext()) {
-        final Unit current = iter.next();
+      for (final Unit current : units) {
         final UnitAttachment ua = UnitAttachment.get(current.getType());
         final int rolls = AirBattle.getAirBattleRolls(current, defending);
         int totalStrength = 0;
@@ -898,10 +895,8 @@ public class DiceRoll implements Externalizable {
       }
     } else {
       random = bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
-      final Iterator<Unit> iter = units.iterator();
       int diceIndex = 0;
-      while (iter.hasNext()) {
-        final Unit current = iter.next();
+      for (final Unit current : units) {
         final UnitAttachment ua = UnitAttachment.get(current.getType());
         final int strength = Math.min(data.getDiceSides(),
             Math.max(0, (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()))));

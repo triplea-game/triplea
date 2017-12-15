@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1001,11 +1000,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
-    final Iterator<Territory> ownedTerrIter = territories.iterator();
     // Go through the owned territories and see if there are any units owned by allied/enemy based on exclType
-    while (ownedTerrIter.hasNext()) {
+    for (final Territory terr : territories) {
       // get all the units in the territory
-      final Territory terr = ownedTerrIter.next();
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("allied")) { // any allied units in the territory. (does not include owned units)
         allUnits.removeAll(CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));

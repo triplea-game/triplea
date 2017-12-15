@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -97,9 +96,7 @@ public class UndoableMove extends AbstractUndoableMove {
     final BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
     battleTracker.undoBattle(m_route, m_units, bridge.getPlayerId(), bridge);
     // clean up dependencies
-    final Iterator<UndoableMove> iter1 = m_iDependOn.iterator();
-    while (iter1.hasNext()) {
-      final UndoableMove other = iter1.next();
+    for (final UndoableMove other : m_iDependOn) {
       other.m_dependOnMe.remove(this);
     }
     // if we are moving out of a battle zone, mark it

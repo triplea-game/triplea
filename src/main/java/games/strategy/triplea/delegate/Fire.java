@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -113,10 +112,8 @@ public class Fire implements IExecutable {
             alliedHitPlayer.add(unit.getOwner());
           }
         }
-        final Iterator<PlayerID> playerIter = alliedHitPlayer.iterator();
         // Leave enough transports for each defender for overflows so they can select who loses them.
-        while (playerIter.hasNext()) {
-          final PlayerID player = playerIter.next();
+        for (final PlayerID player : alliedHitPlayer) {
           final Predicate<Unit> match = Matches.unitIsTransportButNotCombatTransport()
               .and(Matches.unitIsOwnedBy(player));
           final Collection<Unit> playerTransports = CollectionUtils.getMatches(transportsOnly, match);

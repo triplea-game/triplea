@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -403,18 +402,10 @@ public class MoveDelegate extends AbstractMoveDelegate {
         .and(Matches.unitHasTakenSomeDamage());
     final Predicate<Unit> damagedUnitsOwned = damagedUnits.and(Matches.unitIsOwnedBy(player));
     final Map<Territory, Set<Unit>> damagedMap = new HashMap<>();
-    final Iterator<Territory> iterTerritories = data.getMap().getTerritories().iterator();
-    while (iterTerritories.hasNext()) {
-      final Territory current = iterTerritories.next();
+    for (final Territory current : data.getMap().getTerritories()) {
       final Set<Unit> damaged;
       if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
-        if (repairOnlyOwn) {
-          // we only repair ours
-          damaged = new HashSet<>(current.getUnits().getMatches(damagedUnitsOwned));
-        } else {
-          // we repair everyone's
-          damaged = new HashSet<>(current.getUnits().getMatches(damagedUnits));
-        }
+        damaged = new HashSet<>(current.getUnits().getMatches(repairOnlyOwn ? damagedUnitsOwned : damagedUnits));
       } else {
         damaged = new HashSet<>(current.getUnits().getMatches(damagedUnitsOwned
             .and(Matches.unitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));

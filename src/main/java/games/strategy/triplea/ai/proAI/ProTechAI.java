@@ -179,10 +179,7 @@ final class ProTechAI {
           if (!t4.isWater()) {
             continue;
           }
-          boolean transportsCounted = false;
-          final Iterator<Territory> iterTerr = waterTerr.iterator();
-          while (!transportsCounted && iterTerr.hasNext()) {
-            final Territory waterCheck = iterTerr.next();
+          for (final Territory waterCheck : waterTerr) {
             if (enemyPlayer == null) {
               continue;
             }
@@ -243,7 +240,7 @@ final class ProTechAI {
               }
             }
             seaStrength += strength(loadedUnits, true, false, transportsFirst);
-            transportsCounted = true;
+            break;
           }
         }
       }

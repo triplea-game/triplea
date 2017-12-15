@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -314,10 +313,9 @@ public class MovePerformer implements Serializable {
       taRouteEnd = TerritoryAttachment.get(routeEnd);
     }
     // only units owned by us need to be marked
-    final Iterator<Unit> iter = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(id)).iterator();
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
-    while (iter.hasNext()) {
-      final TripleAUnit unit = (TripleAUnit) iter.next();
+    for (final Unit baseUnit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(id))) {
+      final TripleAUnit unit = (TripleAUnit) baseUnit;
       int moved = route.getMovementCost(unit);
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getIsAir()) {

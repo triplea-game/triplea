@@ -168,10 +168,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         m_isAmphibious = !getAmphibiousAttackTerritories().isEmpty();
       }
     }
-    final Iterator<Unit> dependentHolders = m_dependentUnits.keySet().iterator();
-    while (dependentHolders.hasNext()) {
-      final Unit holder = dependentHolders.next();
-      final Collection<Unit> dependents = m_dependentUnits.get(holder);
+    for (final Collection<Unit> dependents : m_dependentUnits.values()) {
       dependents.removeAll(units);
     }
   }
@@ -393,16 +390,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     final Set<PlayerID> playerSet = m_battleSite.getUnits().getPlayersWithUnits();
-    String transcriptText;
     // find all attacking players (unsorted)
     final Collection<PlayerID> attackers = new ArrayList<>();
     final Collection<Unit> allAttackingUnits = new ArrayList<>();
-    transcriptText = "";
     for (final PlayerID current : playerSet) {
       if (m_data.getRelationshipTracker().isAllied(m_attacker, current) || current.equals(m_attacker)) {
         attackers.add(current);
       }
     }
+    final StringBuilder transcriptText = new StringBuilder();
     // find all attacking units (unsorted)
     for (final Iterator<PlayerID> attackersIter = attackers.iterator(); attackersIter.hasNext();) {
       final PlayerID current = attackersIter.next();
@@ -415,33 +411,36 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Collection<Unit> attackingUnits =
           CollectionUtils.getMatches(m_attackingUnits, Matches.unitIsOwnedBy(current));
       final String verb = current.equals(m_attacker) ? "attack" : "loiter and taunt";
-      transcriptText += current.getName() + " " + verb
-          + (attackingUnits.isEmpty() ? "" : " with " + MyFormatter.unitsToTextNoOwner(attackingUnits)) + delim;
+      transcriptText
+          .append(current.getName())
+          .append(" ")
+          .append(verb)
+          .append(attackingUnits.isEmpty() ? "" : " with " + MyFormatter.unitsToTextNoOwner(attackingUnits))
+          .append(delim);
       allAttackingUnits.addAll(attackingUnits);
       // If any attacking transports are in the battle, set their status to later restrict load/unload
       if (current.equals(m_attacker)) {
         final CompositeChange change = new CompositeChange();
         final Collection<Unit> transports = CollectionUtils.getMatches(attackingUnits, Matches.unitCanTransport());
-        final Iterator<Unit> attackTranIter = transports.iterator();
-        while (attackTranIter.hasNext()) {
-          change.add(ChangeFactory.unitPropertyChange(attackTranIter.next(), true, TripleAUnit.WAS_IN_COMBAT));
+        for (final Unit unit : transports) {
+          change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.WAS_IN_COMBAT));
         }
         bridge.addChange(change);
       }
     }
     // write attacking units to history
     if (m_attackingUnits.size() > 0) {
-      bridge.getHistoryWriter().addChildToEvent(transcriptText, allAttackingUnits);
+      bridge.getHistoryWriter().addChildToEvent(transcriptText.toString(), allAttackingUnits);
     }
     // find all defending players (unsorted)
     final Collection<PlayerID> defenders = new ArrayList<>();
     final Collection<Unit> allDefendingUnits = new ArrayList<>();
-    transcriptText = "";
     for (final PlayerID current : playerSet) {
       if (m_data.getRelationshipTracker().isAllied(m_defender, current) || current.equals(m_defender)) {
         defenders.add(current);
       }
     }
+    final StringBuilder transcriptBuilder = new StringBuilder();
     // find all defending units (unsorted)
     for (final Iterator<PlayerID> defendersIter = defenders.iterator(); defendersIter.hasNext();) {
       final PlayerID current = defendersIter.next();
@@ -453,12 +452,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         delim = "";
       }
       defendingUnits = CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsOwnedBy(current));
-      transcriptText += current.getName() + " defend with " + MyFormatter.unitsToTextNoOwner(defendingUnits) + delim;
+      transcriptBuilder
+          .append(current.getName())
+          .append(" defend with ")
+          .append(MyFormatter.unitsToTextNoOwner(defendingUnits))
+          .append(delim);
       allDefendingUnits.addAll(defendingUnits);
     }
     // write defending units to history
     if (m_defendingUnits.size() > 0) {
-      bridge.getHistoryWriter().addChildToEvent(transcriptText, allDefendingUnits);
+      bridge.getHistoryWriter().addChildToEvent(transcriptBuilder.toString(), allDefendingUnits);
     }
   }
 
@@ -2301,11 +2304,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if (!airTransports.isEmpty()) {
         final Collection<Unit> dependents = getDependentUnits(airTransports);
         if (!dependents.isEmpty()) {
-          final Iterator<Unit> dependentsIter = dependents.iterator();
           final CompositeChange change = new CompositeChange();
           // remove dependency from paratroopers by unloading the air transports
-          while (dependentsIter.hasNext()) {
-            final Unit unit = dependentsIter.next();
+          for (final Unit unit : dependents) {
             change.add(TransportTracker.unloadAirTransportChange((TripleAUnit) unit, m_battleSite, false));
           }
           bridge.addChange(change);

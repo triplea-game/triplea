@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -788,15 +787,15 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append(br);
       }
     }
-    final Iterator<TerritoryEffect> iter = m_territoryEffect.iterator();
-    if (iter.hasNext()) {
+    if (!m_territoryEffect.isEmpty()) {
       sb.append("Territory Effects: ");
       sb.append(br);
     }
-    while (iter.hasNext()) {
-      sb.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(iter.next().getName());
-      sb.append(br);
-    }
+    m_territoryEffect.stream()
+        .map(TerritoryEffect::getName)
+        .map(name -> "&nbsp;&nbsp;&nbsp;&nbsp;" + name + br)
+        .forEach(sb::append);
+
     return sb.toString();
   }
 
