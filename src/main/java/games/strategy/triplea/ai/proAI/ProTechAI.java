@@ -209,10 +209,10 @@ final class ProTechAI {
                 int inf = 2;
                 int other = 1;
                 for (final Unit checkUnit : thisTransUnits) {
-                  if (Matches.unitIsInfantry().test(checkUnit)) {
+                  if (Matches.unitIsLandTransportable().test(checkUnit)) {
                     inf--;
                   }
-                  if (Matches.unitIsNotInfantry().test(checkUnit)) {
+                  if (Matches.unitIsNotLandTransportable().test(checkUnit)) {
                     inf--;
                     other--;
                   }
@@ -229,12 +229,12 @@ final class ProTechAI {
               transUnits.removeAll(alreadyLoaded);
               final List<Unit> availTransUnits = sortTransportUnits(transUnits);
               for (final Unit transUnit : availTransUnits) {
-                if (availInf > 0 && Matches.unitIsInfantry().test(transUnit)) {
+                if (availInf > 0 && Matches.unitIsLandTransportable().test(transUnit)) {
                   availInf--;
                   loadedUnits.add(transUnit);
                   alreadyLoaded.add(transUnit);
                 }
-                if (availInf > 0 && availOther > 0 && Matches.unitIsNotInfantry().test(transUnit)) {
+                if (availInf > 0 && availOther > 0 && Matches.unitIsNotLandTransportable().test(transUnit)) {
                   availInf--;
                   availOther--;
                   loadedUnits.add(transUnit);

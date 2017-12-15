@@ -473,6 +473,14 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getIsLandTransport();
   }
 
+  static Predicate<Unit> unitIsLandTransportWithCapacity() {
+    return unit -> unitIsLandTransport().and(unitCanTransport()).test(unit);
+  }
+
+  static Predicate<Unit> unitIsLandTransportWithoutCapacity() {
+    return unit -> unitIsLandTransport().and(unitCanTransport().negate()).test(unit);
+  }
+
   static Predicate<Unit> unitIsNotInfrastructureAndNotCapturedOnEntering(final PlayerID player,
       final Territory terr, final GameData data) {
     return unit -> !UnitAttachment.get(unit.getType()).getIsInfrastructure()
@@ -715,12 +723,15 @@ public final class Matches {
     };
   }
 
-  public static Predicate<Unit> unitIsInfantry() {
-    return obj -> UnitAttachment.get(obj.getType()).getIsInfantry();
+  public static Predicate<Unit> unitIsLandTransportable() {
+    return obj -> {
+      UnitAttachment ua = UnitAttachment.get(obj.getType());
+      return ua.getIsLandTransportable() || ua.getIsInfantry();
+    };
   }
 
-  public static Predicate<Unit> unitIsNotInfantry() {
-    return unitIsInfantry().negate();
+  public static Predicate<Unit> unitIsNotLandTransportable() {
+    return unitIsLandTransportable().negate();
   }
 
   public static Predicate<Unit> unitIsAirTransportable() {

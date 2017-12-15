@@ -349,7 +349,7 @@ public class WW2V3Year41Test {
     final List<Unit> transports = sz9.getUnits().getMatches(Matches.unitIsTransport());
     move(transports, sz9ToSz7);
     // load the transport
-    load(uk.getUnits().getMatches(Matches.unitIsInfantry()), new Route(uk, sz7));
+    load(uk.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(uk, sz7));
     moveDelegate(gameData).end();
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, 1});
     bridge.setRandomSource(randomSource);
@@ -781,7 +781,7 @@ public class WW2V3Year41Test {
     // move the transport where to the sub is
     assertValid(moveDelegate.move(sz8.getUnits().getUnits(), new Route(sz8, sz7)));
     // load the transport
-    load(uk.getUnits().getMatches(Matches.unitIsInfantry()), new Route(uk, sz7));
+    load(uk.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(uk, sz7));
     // move the transport out
     assertValid(
         moveDelegate.move(sz7.getUnits().getMatches(Matches.unitOwnedBy(british(gameData))), new Route(sz7, sz6)));
@@ -984,7 +984,7 @@ public class WW2V3Year41Test {
     final PlayerID british = GameDataTestUtil.british(gameData);
     addTo(eg, infantry(gameData).create(2, british));
     // load the transports
-    load(balkans.getUnits().getMatches(Matches.unitIsInfantry()), new Route(balkans, sz14));
+    load(balkans.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(balkans, sz14));
     // move the fleet
     move(sz14.getUnits().getUnits(), new Route(sz14, sz15));
     // move troops from Libya
@@ -1035,7 +1035,7 @@ public class WW2V3Year41Test {
     addTo(sz14, transport(gameData).create(1, italians));
     addTo(sz14, destroyer(gameData).create(2, italians));
     // load the transports
-    load(balkans.getUnits().getMatches(Matches.unitIsInfantry()), new Route(balkans, sz14));
+    load(balkans.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(balkans, sz14));
     // move the fleet
     move(sz14.getUnits().getUnits(), new Route(sz14, sz15));
     // unload the transports
@@ -1088,7 +1088,7 @@ public class WW2V3Year41Test {
     final Territory li = territory("Libya", gameData);
     final Territory balkans = territory("Balkans", gameData);
     // load the transports
-    load(balkans.getUnits().getMatches(Matches.unitIsInfantry()), new Route(balkans, sz14));
+    load(balkans.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(balkans, sz14));
     // move the fleet
     move(sz14.getUnits().getUnits(), new Route(sz14, sz15));
     // move troops from Libya
@@ -1167,7 +1167,7 @@ public class WW2V3Year41Test {
     final List<Unit> toMove = new ArrayList<>();
     // 1 armour and 1 infantry
     toMove.addAll(france.getUnits().getMatches(Matches.unitCanBlitz()));
-    toMove.add(france.getUnits().getMatches(Matches.unitIsInfantry()).get(0));
+    toMove.add(france.getUnits().getMatches(Matches.unitIsLandTransportable()).get(0));
     move(toMove, r);
   }
 
@@ -1182,9 +1182,9 @@ public class WW2V3Year41Test {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // get rid of the infantry in france
-    removeFrom(france, france.getUnits().getMatches(Matches.unitIsInfantry()));
+    removeFrom(france, france.getUnits().getMatches(Matches.unitIsLandTransportable()));
     // move an infantry from germany to france
-    move(germany.getUnits().getMatches(Matches.unitIsInfantry()).subList(0, 1), new Route(germany, france));
+    move(germany.getUnits().getMatches(Matches.unitIsLandTransportable()).subList(0, 1), new Route(germany, france));
     // try to move all the units in france, the infantry should not be able to move
     final Route r = new Route(france, germany);
     final String error = moveDelegate(gameData).move(france.getUnits().getUnits(), r);

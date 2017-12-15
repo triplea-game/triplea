@@ -240,6 +240,20 @@ public class GameDataTestUtil {
   }
 
   /**
+   * Returns a truck UnitType object for the specified GameData object.
+   */
+  public static UnitType truck(final GameData data) {
+    return unitType("Truck", data);
+  }
+
+  /**
+   * Returns a large truck UnitType object for the specified GameData object.
+   */
+  public static UnitType largeTruck(final GameData data) {
+    return unitType("LargeTruck", data);
+  }
+
+  /**
    * Returns a germanTrain UnitType object for the specified GameData object.
    */
   public static UnitType germanTrain(final GameData data) {

@@ -169,4 +169,53 @@ public class MoveValidatorTest extends DelegateTest {
     assertTrue(results.isMoveValid());
   }
 
+  @Test
+  public void testValidateMoveForLandTransports() throws Exception {
+
+    final GameData twwGameData = TestMapGameData.TWW.getGameData();
+
+    // Move truck 2 territories
+    final PlayerID germans = GameDataTestUtil.germany(twwGameData);
+    final Territory berlin = territory("Berlin", twwGameData);
+    final Territory easternGermany = territory("Eastern Germany", twwGameData);
+    final Territory poland = territory("Poland", twwGameData);
+    final Route r = new Route(berlin, easternGermany, poland);
+    berlin.getUnits().clear();
+    GameDataTestUtil.truck(twwGameData).create(1, germans);
+    addTo(berlin, GameDataTestUtil.truck(twwGameData).create(1, germans));
+    MoveValidationResult results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+        new HashMap<>(), true, null, twwGameData);
+    assertTrue(results.isMoveValid());
+
+    // Add an infantry for truck to transport
+    addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
+    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+        new HashMap<>(), true, null, twwGameData);
+    assertTrue(results.isMoveValid());
+
+    // Add an infantry and the truck can't transport both
+    addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
+    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+        new HashMap<>(), true, null, twwGameData);
+    assertFalse(results.isMoveValid());
+
+    // Add a large truck (has capacity for 2 infantry) to transport second infantry
+    addTo(berlin, GameDataTestUtil.largeTruck(twwGameData).create(1, germans));
+    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+        new HashMap<>(), true, null, twwGameData);
+    assertTrue(results.isMoveValid());
+
+    // Add an infantry that the large truck can also transport
+    addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
+    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+        new HashMap<>(), true, null, twwGameData);
+    assertTrue(results.isMoveValid());
+
+    // Add an infantry that can't be transported
+    addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
+    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+        new HashMap<>(), true, null, twwGameData);
+    assertFalse(results.isMoveValid());
+  }
+
 }
