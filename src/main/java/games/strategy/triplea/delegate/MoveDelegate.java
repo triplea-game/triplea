@@ -474,7 +474,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   private static void repairedChangeInto(final Set<Unit> units, final Territory territory,
       final IDelegateBridge bridge) {
-    final List<Unit> changesIntoUnits = CollectionUtils.getMatches(units, Matches.unitWhenHitPointsRepairedChangesInto());
+    final List<Unit> changesIntoUnits =
+        CollectionUtils.getMatches(units, Matches.unitWhenHitPointsRepairedChangesInto());
     final CompositeChange changes = new CompositeChange();
     final List<Unit> unitsToRemove = new ArrayList<>();
     final List<Unit> unitsToAdd = new ArrayList<>();

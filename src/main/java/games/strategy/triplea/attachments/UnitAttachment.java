@@ -2949,11 +2949,12 @@ public class UnitAttachment extends DefaultAttachment {
     return super.toString();
   }
 
+  /**
+   * Returns a list of all unit properties. Should cover ALL fields stored in UnitAttachment
+   * Remember to test for null and fix arrays. The stats exporter relies on this toString having
+   * two spaces after each entry, so do not change this please, except to add new abilities onto the end.
+   */
   public String allUnitStatsForExporter() {
-    // should cover ALL fields stored in UnitAttachment
-    // remember to test for null and fix arrays
-    // the stats exporter relies on this toString having two spaces after each entry, so do not change this please,
-    // except to add new abilities onto the end
     return this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:"
         + "  isAir:" + m_isAir
         + "  isSea:" + m_isSea
