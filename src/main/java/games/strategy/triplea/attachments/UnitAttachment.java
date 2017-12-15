@@ -212,6 +212,7 @@ public class UnitAttachment extends DefaultAttachment {
   // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a
   // specific list
   private Map<Integer, Tuple<Boolean, UnitType>> m_whenHitPointsDamagedChangesInto = new HashMap<>();
+  private Map<Integer, Tuple<Boolean, UnitType>> m_whenHitPointsRepairedChangesInto = new HashMap<>();
   private Map<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto = new LinkedHashMap<>();
   private List<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<>();
   private List<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<>();
@@ -444,7 +445,7 @@ public class UnitAttachment extends DefaultAttachment {
     final String[] s = value.split(":");
     if (s.length != 3) {
       throw new GameParseException(
-          "setWhenHitPointsDamagedChangesInto must have hitpoints:keepAttributes:unitType " + thisErrorMsg());
+          "setWhenHitPointsDamagedChangesInto must have damage:translateAttributes:unitType " + thisErrorMsg());
     }
     final UnitType unitType = getData().getUnitTypeList().getUnitType(s[2]);
     if (unitType == null) {
@@ -474,6 +475,46 @@ public class UnitAttachment extends DefaultAttachment {
 
   public void resetWhenHitPointsDamagedChangesInto() {
     m_whenHitPointsDamagedChangesInto = new HashMap<>();
+  }
+
+  /**
+   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+   */
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+  public void setWhenHitPointsRepairedChangesInto(final String value) throws GameParseException {
+    final String[] s = value.split(":");
+    if (s.length != 3) {
+      throw new GameParseException(
+          "setWhenHitPointsRepairedChangesInto must have damage:translateAttributes:unitType " + thisErrorMsg());
+    }
+    final UnitType unitType = getData().getUnitTypeList().getUnitType(s[2]);
+    if (unitType == null) {
+      throw new GameParseException("setWhenHitPointsRepairedChangesInto: No unit type: " + s[2] + thisErrorMsg());
+    }
+    m_whenHitPointsRepairedChangesInto.put(getInt(s[0]), Tuple.of(getBool(s[1]), unitType));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setWhenHitPointsRepairedChangesInto(final Map<Integer, Tuple<Boolean, UnitType>> value) {
+    m_whenHitPointsRepairedChangesInto = value;
+  }
+
+  /**
+   * Can remove null check and this comment for next incompatible release.
+   */
+  public Map<Integer, Tuple<Boolean, UnitType>> getWhenHitPointsRepairedChangesInto() {
+    if (m_whenHitPointsRepairedChangesInto == null) {
+      resetWhenHitPointsDamagedChangesInto(); // TODO: Can remove for incompatible release
+    }
+    return m_whenHitPointsRepairedChangesInto;
+  }
+
+  public void clearWhenHitPointsRepairedChangesInto() {
+    m_whenHitPointsRepairedChangesInto.clear();
+  }
+
+  public void resetWhenHitPointsRepairedChangesInto() {
+    m_whenHitPointsRepairedChangesInto = new HashMap<>();
   }
 
   /**
@@ -3030,6 +3071,10 @@ public class UnitAttachment extends DefaultAttachment {
         + "  whenHitPointsDamagedChangesInto:"
         + (m_whenHitPointsDamagedChangesInto != null
             ? (m_whenHitPointsDamagedChangesInto.size() == 0 ? "empty" : m_whenHitPointsDamagedChangesInto.toString())
+            : "null")
+        + "  whenHitPointsRepairedChangesInto:"
+        + (m_whenHitPointsRepairedChangesInto != null
+            ? (m_whenHitPointsRepairedChangesInto.size() == 0 ? "empty" : m_whenHitPointsRepairedChangesInto.toString())
             : "null")
         + "  canIntercept:" + m_canIntercept + "  canEscort:" + m_canEscort + "  canAirBattle:" + m_canAirBattle
         + "  airDefense:" + m_airDefense + "  airAttack:" + m_airAttack + "  canNotMoveDuringCombatMove:"
