@@ -458,6 +458,9 @@ public class UnitAttachment extends DefaultAttachment {
     m_whenHitPointsDamagedChangesInto = value;
   }
 
+  /**
+   * Can remove null check and this comment for next incompatible release.
+   */
   public Map<Integer, Tuple<Boolean, UnitType>> getWhenHitPointsDamagedChangesInto() {
     if (m_whenHitPointsDamagedChangesInto == null) {
       resetWhenHitPointsDamagedChangesInto(); // TODO: Can remove for incompatible release
