@@ -52,6 +52,9 @@ import games.strategy.util.Util;
  */
 public class MustFightBattle extends DependentBattle implements BattleStepStrings {
 
+  /**
+   * Determines whether casualties can return fire for various battle phases.
+   */
   public enum ReturnFire {
     ALL, SUBS, NONE
   }
