@@ -44,6 +44,7 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
+import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
 /**
@@ -51,6 +52,9 @@ import games.strategy.util.Util;
  */
 public class MustFightBattle extends DependentBattle implements BattleStepStrings {
 
+  /**
+   * Determines whether casualties can return fire for various battle phases.
+   */
   public enum ReturnFire {
     ALL, SUBS, NONE
   }
@@ -670,7 +674,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          clearWaitingToDie(bridge);
+          clearWaitingToDieAndDamagedChangesInto(bridge);
         }
       });
     }
@@ -769,7 +773,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        clearWaitingToDie(bridge);
+        clearWaitingToDieAndDamagedChangesInto(bridge);
       }
     });
     steps.add(new IExecutable() {
@@ -2391,13 +2395,48 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void clearWaitingToDie(final IDelegateBridge bridge) {
-    final Collection<Unit> units = new ArrayList<>();
-    units.addAll(m_attackingWaitingToDie);
-    units.addAll(m_defendingWaitingToDie);
-    remove(units, bridge, m_battleSite, null);
+  private void clearWaitingToDieAndDamagedChangesInto(final IDelegateBridge bridge) {
+    final Collection<Unit> unitsToRemove = new ArrayList<>();
+    unitsToRemove.addAll(m_attackingWaitingToDie);
+    unitsToRemove.addAll(m_defendingWaitingToDie);
+    remove(unitsToRemove, bridge, m_battleSite, null);
     m_defendingWaitingToDie.clear();
     m_attackingWaitingToDie.clear();
+    damagedChangeInto(m_attackingUnits, bridge);
+    damagedChangeInto(m_defendingUnits, bridge);
+  }
+
+  private void damagedChangeInto(final List<Unit> units, final IDelegateBridge bridge) {
+    final List<Unit> damagedUnits = CollectionUtils.getMatches(units,
+        Matches.unitWhenHitPointsDamagedChangesInto().and(Matches.unitHasTakenSomeDamage()));
+    final CompositeChange changes = new CompositeChange();
+    final List<Unit> unitsToRemove = new ArrayList<>();
+    final List<Unit> unitsToAdd = new ArrayList<>();
+    for (final Unit unit : damagedUnits) {
+      final Map<Integer, Tuple<Boolean, UnitType>> map =
+          UnitAttachment.get(unit.getType()).getWhenHitPointsDamagedChangesInto();
+      if (map.containsKey(unit.getHits())) {
+        final boolean translateAttributes = map.get(unit.getHits()).getFirst();
+        final UnitType unitType = map.get(unit.getHits()).getSecond();
+        final List<Unit> toAdd = unitType.create(1, unit.getOwner());
+        if (translateAttributes) {
+          final Change translate = TripleAUnit.translateAttributesToOtherUnits(unit, toAdd, m_battleSite);
+          changes.add(translate);
+        }
+        unitsToRemove.add(unit);
+        unitsToAdd.addAll(toAdd);
+      }
+    }
+    if (!unitsToRemove.isEmpty()) {
+      bridge.addChange(changes);
+      remove(unitsToRemove, bridge, m_battleSite, null);
+      final String transcriptText = MyFormatter.unitsToText(unitsToAdd) + " added in " + m_battleSite.getName();
+      bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
+      bridge.addChange(ChangeFactory.addUnits(m_battleSite, unitsToAdd));
+      units.addAll(unitsToAdd);
+      getDisplay(bridge).changedUnitsNotification(m_battleID, unitsToRemove.get(0).getOwner(), unitsToRemove,
+          unitsToAdd, null);
+    }
   }
 
   private void defenderWins(final IDelegateBridge bridge) {
@@ -2599,7 +2638,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void endBattle(final IDelegateBridge bridge) {
-    clearWaitingToDie(bridge);
+    clearWaitingToDieAndDamagedChangesInto(bridge);
     m_isOver = true;
     m_battleTracker.removeBattle(this);
 
