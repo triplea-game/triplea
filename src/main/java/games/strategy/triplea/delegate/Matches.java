@@ -725,7 +725,7 @@ public final class Matches {
 
   public static Predicate<Unit> unitIsLandTransportable() {
     return obj -> {
-      UnitAttachment ua = UnitAttachment.get(obj.getType());
+      final UnitAttachment ua = UnitAttachment.get(obj.getType());
       return ua.getIsLandTransportable() || ua.getIsInfantry();
     };
   }
@@ -2123,6 +2123,10 @@ public final class Matches {
 
   static Predicate<Unit> unitWhenHitPointsDamagedChangesInto() {
     return u -> !UnitAttachment.get(u.getType()).getWhenHitPointsDamagedChangesInto().isEmpty();
+  }
+
+  static Predicate<Unit> unitWhenHitPointsRepairedChangesInto() {
+    return u -> !UnitAttachment.get(u.getType()).getWhenHitPointsRepairedChangesInto().isEmpty();
   }
 
   static Predicate<Unit> unitWhenCapturedChangesIntoDifferentUnitType() {
