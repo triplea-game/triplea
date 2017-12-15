@@ -1098,9 +1098,9 @@ public class MoveValidator {
                   break;
                 }
               }
-              if (alreadyUnloadedTo != null) {
-                result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
-              }
+            }
+            if (alreadyUnloadedTo != null) {
+              result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO + alreadyUnloadedTo.getName(), unit);
             }
           }
         }
