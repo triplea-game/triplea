@@ -2110,6 +2110,10 @@ public final class Matches {
     };
   }
 
+  static Predicate<Unit> unitWhenHitPointsDamagedChangesInto() {
+    return u -> !UnitAttachment.get(u.getType()).getWhenHitPointsDamagedChangesInto().isEmpty();
+  }
+
   static Predicate<Unit> unitWhenCapturedChangesIntoDifferentUnitType() {
     return u -> !UnitAttachment.get(u.getType()).getWhenCapturedChangesInto().isEmpty();
   }
