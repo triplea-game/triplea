@@ -151,7 +151,7 @@ public class BattleCalculatorTest {
         any(),
         any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
           @Override
-          public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+          public CasualtyDetails answer(final InvocationOnMock invocation) {
             final Collection<Unit> selectFrom = invocation.getArgument(0);
             final int count = invocation.getArgument(2);
 
@@ -191,7 +191,7 @@ public class BattleCalculatorTest {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(), anyBoolean(),
         any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
           @Override
-          public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+          public CasualtyDetails answer(final InvocationOnMock invocation) {
             final Collection<Unit> selectFrom = invocation.getArgument(0);
             final int count = invocation.getArgument(2);
             final List<Unit> selected = CollectionUtils.getNMatches(selectFrom, count, Matches.unitIsStrategicBomber());

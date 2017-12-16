@@ -324,7 +324,7 @@ public class AirThatCantLandUtilTest {
   private static ITripleAPlayer getDummyPlayer() {
     final InvocationHandler handler = new InvocationHandler() {
       @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      public Object invoke(final Object proxy, final Method method, final Object[] args) {
         return null;
       }
     };

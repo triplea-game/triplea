@@ -153,7 +153,7 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testSerialize() throws Exception {
+  public void testSerialize() {
     for (int i = 0; i < 254; i++) {
       for (int j = 0; j < 254; j++) {
         final Die hit = new Die(i, j, DieType.MISS);

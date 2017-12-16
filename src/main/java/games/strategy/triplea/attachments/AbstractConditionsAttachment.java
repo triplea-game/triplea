@@ -377,5 +377,5 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {}
+  public abstract void validate(final GameData data) throws GameParseException;
 }

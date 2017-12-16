@@ -3,7 +3,6 @@ package games.strategy.engine.data.annotations;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 
 /**
  * Class with an invalid field that doesn't match the setter annotated with @GameProperty.
@@ -30,5 +29,5 @@ public class InvalidFieldNameExample extends DefaultAttachment {
   public void resetAttribute() {}
 
   @Override
-  public void validate(final GameData data) throws GameParseException {}
+  public void validate(final GameData data) {}
 }

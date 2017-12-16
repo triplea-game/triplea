@@ -47,7 +47,7 @@ public class JTextFieldBuilderTest {
   }
 
   @Test
-  public void columns() throws Exception {
+  public void columns() {
     MatcherAssert.assertThat(
         JTextFieldBuilder.builder()
             .columns(3)

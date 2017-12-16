@@ -29,7 +29,7 @@ public final class DefaultCredentialManagerTest {
   private DefaultCredentialManager credentialManager;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     credentialManager = DefaultCredentialManager.newInstance(MASTER_PASSWORD);
   }
 
@@ -82,14 +82,14 @@ public final class DefaultCredentialManagerTest {
   }
 
   @Test
-  public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() throws Exception {
+  public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() {
     final Exception e = assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
 
     assertThat(e.getMessage(), containsString("malformed protected credential"));
   }
 
   @Test
-  public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() throws Exception {
+  public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() {
     final Exception e =
         assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
 

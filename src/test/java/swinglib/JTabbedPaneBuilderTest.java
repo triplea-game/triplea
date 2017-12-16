@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 public class JTabbedPaneBuilderTest {
   @Test
-  public void addTab() throws Exception {
+  public void addTab() {
     final JLabel label = new JLabel("value");
     final JComponent component = new JTextField("sample component");
     final JTabbedPane pane = JTabbedPaneBuilder.builder()

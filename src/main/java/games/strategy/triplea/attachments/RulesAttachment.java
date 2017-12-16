@@ -1148,8 +1148,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {
-    super.validate(data);
+  public void validate(final GameData data) {
     validateNames(m_alliedOwnershipTerritories);
     validateNames(m_enemyExclusionTerritories);
     validateNames(m_enemySurfaceExclusionTerritories);

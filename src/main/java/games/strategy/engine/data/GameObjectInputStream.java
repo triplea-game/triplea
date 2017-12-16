@@ -31,7 +31,7 @@ public class GameObjectInputStream extends ObjectInputStream {
   }
 
   @Override
-  protected Object resolveObject(final Object obj) throws IOException {
+  protected Object resolveObject(final Object obj) {
     // when loading units, we want to maintain == relationships for many
     // of the game data objects.
     // this is to prevent the situation where we have 2 Territory objects for the

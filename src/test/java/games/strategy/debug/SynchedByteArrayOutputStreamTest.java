@@ -27,7 +27,7 @@ public final class SynchedByteArrayOutputStreamTest {
   private SynchedByteArrayOutputStream os;
 
   @Test
-  public void writeByte_ShouldTriggerReadFromDifferentThread() throws Exception {
+  public void writeByte_ShouldTriggerReadFromDifferentThread() {
     assertTimeoutPreemptively(timeout, () -> {
       final String expected = "X";
       final AtomicReference<String> actualRef = new AtomicReference<>();
@@ -51,7 +51,7 @@ public final class SynchedByteArrayOutputStreamTest {
   }
 
   @Test
-  public void writeBytes_ShouldTriggerReadFromDifferentThread() throws Exception {
+  public void writeBytes_ShouldTriggerReadFromDifferentThread() {
     assertTimeoutPreemptively(timeout, () -> {
       final String expected = "the quick brown fox";
       final AtomicReference<String> actualRef = new AtomicReference<>();

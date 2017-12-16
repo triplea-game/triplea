@@ -55,7 +55,7 @@ public class ModeratorControllerIntegrationTest {
 
     doAnswer(new Answer<Void>() {
       @Override
-      public Void answer(final InvocationOnMock invocation) throws Throwable {
+      public Void answer(final InvocationOnMock invocation) {
         connectionChangeListener.connectionRemoved(invocation.getArgument(0));
         return null;
       }

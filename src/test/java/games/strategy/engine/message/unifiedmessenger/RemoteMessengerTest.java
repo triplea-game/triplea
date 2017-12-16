@@ -54,14 +54,14 @@ public class RemoteMessengerTest {
     final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
     doAnswer(new Answer<Void>() {
       @Override
-      public Void answer(final InvocationOnMock invocation) throws Throwable {
+      public Void answer(final InvocationOnMock invocation) {
         connectionListeners.add(invocation.getArgument(0));
         return null;
       }
     }).when(serverMessenger).addConnectionChangeListener(any());
     doAnswer(new Answer<Void>() {
       @Override
-      public Void answer(final InvocationOnMock invocation) throws Throwable {
+      public Void answer(final InvocationOnMock invocation) {
         for (final IConnectionChangeListener listener : connectionListeners) {
           listener.connectionRemoved(invocation.getArgument(0));
         }
@@ -83,7 +83,7 @@ public class RemoteMessengerTest {
   }
 
   @AfterEach
-  public void tearDown() throws Exception {
+  public void tearDown() {
     serverMessenger = null;
     remoteMessenger = null;
   }

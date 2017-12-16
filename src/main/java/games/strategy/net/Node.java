@@ -87,7 +87,7 @@ public class Node implements INode, Externalizable {
   }
 
   @Override
-  public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+  public void readExternal(final ObjectInput in) throws IOException {
     name = in.readUTF();
     port = in.readInt();
     final int length = in.read();

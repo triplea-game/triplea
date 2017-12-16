@@ -6,7 +6,6 @@ import java.util.Map;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -401,7 +400,7 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {}
+  public void validate(final GameData data) {}
 
   public static boolean isMechanizedInfantry(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);

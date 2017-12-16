@@ -199,7 +199,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   @Override
   public void validate(final GameData data) throws GameParseException {
-    super.validate(data);
     if (m_text.trim().length() <= 0) {
       throw new GameParseException("value: text can't be empty" + thisErrorMsg());
     }

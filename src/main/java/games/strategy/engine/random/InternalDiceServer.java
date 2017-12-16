@@ -1,8 +1,6 @@
 package games.strategy.engine.random;
 
-import java.io.IOException;
 import java.io.ObjectStreamException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
@@ -29,7 +27,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
 
   @Override
   public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId,
-      final String gameUuid) throws IOException {
+      final String gameUuid) {
     // the interface is rather stupid, you have to return a string here, which is then passed back in getDice()
     final int[] ints = _randomSource.getRandom(max, numDice, "Internal Dice Server");
     final StringBuilder sb = new StringBuilder();
@@ -41,7 +39,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public int[] getDice(final String string, final int count) throws IOException, InvocationTargetException {
+  public int[] getDice(final String string, final int count) {
     final String[] strArray = string.split(",");
     final int[] intArray = new int[strArray.length];
     for (int i = 0; i < strArray.length; i++) {
@@ -91,7 +89,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
    * @throws ObjectStreamException
    *         should never occur (unless runtime exceptions is thrown from constructor)
    */
-  public Object readResolve() throws ObjectStreamException {
+  public Object readResolve() {
     return new InternalDiceServer();
   }
 

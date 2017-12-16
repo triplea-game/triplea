@@ -78,7 +78,7 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void useLastSelectionAsFutureDefaultWithStringKey() throws Exception {
+  public void useLastSelectionAsFutureDefaultWithStringKey() {
     final String settingKey = "settingKey";
     ClientSetting.save(settingKey, "");
     MatcherAssert.assertThat("establish a preconditions state to avoid pollution between runs",
@@ -102,7 +102,7 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void useLastSelectionAsFutureDefaultWithClientKey() throws Exception {
+  public void useLastSelectionAsFutureDefaultWithClientKey() {
     ClientSetting.TEST_SETTING.saveAndFlush("");
 
     final JComboBox<String> box = JComboBoxBuilder.builder()
