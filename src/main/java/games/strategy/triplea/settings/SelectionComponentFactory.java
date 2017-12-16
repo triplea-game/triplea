@@ -19,9 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 
 import com.google.common.base.Strings;
 
@@ -172,18 +170,38 @@ final class SelectionComponentFactory {
   static Supplier<SelectionComponent<JComponent>> intValueRange(final ClientSetting clientSetting, final int lo,
       final int hi) {
     return () -> new SelectionComponent<JComponent>() {
-      final int value = clientSetting.value().isEmpty() ? 0 : Integer.parseInt(clientSetting.value());
-      final JSpinner component = new JSpinner(new SpinnerNumberModel(value, lo, hi, 1));
+      String value = clientSetting.value();
+      final JTextField component = new JTextField(value, String.valueOf(hi).length());
 
       @Override
       public JComponent getJComponent() {
         component.setToolTipText(validValueDescription());
+
+        SwingComponents.addTextFieldFocusLostListener(component, () -> {
+          if (isValid()) {
+            clearError();
+          } else {
+            indicateError();
+          }
+        });
+
         return component;
       }
 
       @Override
       public boolean isValid() {
-        return true;
+        final String value = component.getText();
+
+        if (value.trim().isEmpty()) {
+          return true;
+        }
+
+        try {
+          final int intValue = Integer.parseInt(value);
+          return intValue >= lo && intValue <= hi;
+        } catch (final NumberFormatException e) {
+          return false;
+        }
       }
 
       @Override
@@ -204,19 +222,19 @@ final class SelectionComponentFactory {
       @Override
       public Map<GameSetting, String> readValues() {
         final Map<GameSetting, String> map = new HashMap<>();
-        map.put(clientSetting, String.valueOf(component.getValue()));
+        map.put(clientSetting, component.getText());
         return map;
       }
 
       @Override
       public void resetToDefault() {
-        component.setValue(clientSetting.defaultValue);
+        component.setText(clientSetting.defaultValue);
         clearError();
       }
 
       @Override
       public void reset() {
-        component.setValue(clientSetting.value());
+        component.setText(clientSetting.value());
         clearError();
       }
     };
