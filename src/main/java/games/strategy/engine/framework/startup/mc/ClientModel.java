@@ -388,13 +388,15 @@ public class ClientModel implements IMessengerErrorListener {
 
   /**
    * Returns a map of player node name -> enabled.
-   */  public synchronized Map<String, Boolean> getPlayersEnabledListing() {
+   */
+  public synchronized Map<String, Boolean> getPlayersEnabledListing() {
     return new HashMap<>(playersEnabledListing);
   }
 
   /**
    * Returns the set of players that can be disabled.
-   */  public synchronized Collection<String> getPlayersAllowedToBeDisabled() {
+   */
+  public synchronized Collection<String> getPlayersAllowedToBeDisabled() {
     return new HashSet<>(playersAllowedToBeDisabled);
   }
 
