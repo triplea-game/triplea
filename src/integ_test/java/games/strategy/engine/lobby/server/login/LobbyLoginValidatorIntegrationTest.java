@@ -28,7 +28,6 @@ import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 public class LobbyLoginValidatorIntegrationTest {
@@ -39,7 +38,7 @@ public class LobbyLoginValidatorIntegrationTest {
     final ChallengeResultFunction challengeFunction = generateChallenge(null);
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
-    response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt("123"));
+    response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt("123"));
     assertNull(challengeFunction.apply(challenge -> response));
     // try to create a duplicate user, should not work
     assertNotNull(challengeFunction.apply(challenge -> response));
@@ -67,6 +66,10 @@ public class LobbyLoginValidatorIntegrationTest {
 
   private static void createUser(final String name, final String email, final HashedPassword password) {
     new UserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
+  }
+
+  private static String md5Crypt(final String value) {
+    return games.strategy.util.MD5Crypt.crypt(value);
   }
 
   @Test
@@ -106,7 +109,7 @@ public class LobbyLoginValidatorIntegrationTest {
 
     // create a user, verify we can't login with a username that already exists
     // we should not be able to login now
-    assertNotNull(generateChallenge(new HashedPassword(MD5Crypt.crypt("foo"))).apply(challenge -> response));
+    assertNotNull(generateChallenge(new HashedPassword(md5Crypt("foo"))).apply(challenge -> response));
   }
 
   @Test
@@ -119,7 +122,7 @@ public class LobbyLoginValidatorIntegrationTest {
       // word previously
     }
     assertEquals(LobbyLoginValidator.ErrorMessages.THATS_NOT_A_NICE_NAME,
-        generateChallenge(name, new HashedPassword(MD5Crypt.crypt("foo"))).apply(challenge -> new HashMap<>(
+        generateChallenge(name, new HashedPassword(md5Crypt("foo"))).apply(challenge -> new HashMap<>(
             Collections.singletonMap(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
   }
 

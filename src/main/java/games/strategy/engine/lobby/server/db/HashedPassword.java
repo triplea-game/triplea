@@ -5,8 +5,6 @@ import java.util.Objects;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 
-import games.strategy.util.MD5Crypt;
-
 /**
  * A Wrapper class for salted password hashes.
  * If the given String is not matching the format
@@ -31,7 +29,7 @@ public final class HashedPassword {
   }
 
   public boolean isMd5Crypted() {
-    return value != null && value.startsWith(MD5Crypt.MAGIC);
+    return value != null && value.startsWith(games.strategy.util.MD5Crypt.MAGIC);
   }
 
   /**

@@ -39,10 +39,11 @@ import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.MD5Crypt;
 
 public class LobbyMenu extends JMenuBar {
   private static final long serialVersionUID = 4980621864542042057L;
+  private static final String HASHED_MAC_PREFIX = games.strategy.util.MD5Crypt.MAGIC + "MH$";
+
   private final LobbyFrame lobbyFrame;
 
   public LobbyMenu(final LobbyFrame frame) {
@@ -178,12 +179,11 @@ public class LobbyMenu extends JMenuBar {
       if (mac == null || mac.length() < 1) {
         return;
       }
-      final String prefix = MD5Crypt.MAGIC + "MH$";
       final String error;
       if (mac.length() != 28) {
         error = "Must be 28 characters long";
-      } else if (!mac.startsWith(prefix)) {
-        error = "Must start with: " + prefix;
+      } else if (!mac.startsWith(HASHED_MAC_PREFIX)) {
+        error = "Must start with: " + HASHED_MAC_PREFIX;
       } else if (!mac.matches("[0-9a-zA-Z$./]+")) {
         error = "Must use only these characters: 0-9a-zA-Z$./";
       } else {
@@ -244,12 +244,11 @@ public class LobbyMenu extends JMenuBar {
       if (mac == null || mac.length() < 1) {
         return;
       }
-      final String prefix = MD5Crypt.MAGIC + "MH$";
       final String error;
       if (mac.length() != 28) {
         error = "Must be 28 characters long";
-      } else if (!mac.startsWith(prefix)) {
-        error = "Must start with: " + prefix;
+      } else if (!mac.startsWith(HASHED_MAC_PREFIX)) {
+        error = "Must start with: " + HASHED_MAC_PREFIX;
       } else if (!mac.matches("[0-9a-zA-Z$./]+")) {
         error = "Must use only these characters: 0-9a-zA-Z$./";
       } else {
@@ -337,9 +336,14 @@ public class LobbyMenu extends JMenuBar {
     if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
-    final String error = Strings.emptyToNull(Strings
-        .nullToEmpty(manager.updateUser(panel.getUserName(), panel.getEmail(), MD5Crypt.crypt(panel.getPassword())))
-        + Strings.nullToEmpty(manager.updateUser(panel.getUserName(), panel.getEmail(),
+    final String error = Strings.emptyToNull(""
+        + Strings.nullToEmpty(manager.updateUser(
+            panel.getUserName(),
+            panel.getEmail(),
+            games.strategy.util.MD5Crypt.crypt(panel.getPassword())))
+        + Strings.nullToEmpty(manager.updateUser(
+            panel.getUserName(),
+            panel.getEmail(),
             RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()))));
     if (error != null) {
       JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);

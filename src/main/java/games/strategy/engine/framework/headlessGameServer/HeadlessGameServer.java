@@ -34,7 +34,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
@@ -165,9 +164,16 @@ public class HeadlessGameServer {
   }
 
   public String getSalt() {
-    final String encryptedPassword = MD5Crypt.crypt(System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, ""));
-    final String salt = MD5Crypt.getSalt(encryptedPassword);
-    return salt;
+    final String encryptedPassword = md5Crypt(System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, ""));
+    return games.strategy.util.MD5Crypt.getSalt(encryptedPassword);
+  }
+
+  private static String md5Crypt(final String value) {
+    return games.strategy.util.MD5Crypt.crypt(value);
+  }
+
+  private static String md5Crypt(final String value, final String salt) {
+    return games.strategy.util.MD5Crypt.crypt(value, salt);
   }
 
   public String remoteShutdown(final String hashedPassword, final String salt) {
@@ -176,7 +182,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+    final String encryptedPassword = md5Crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
       new Thread(() -> {
         System.out.println("Remote Shutdown Initiated.");
@@ -194,7 +200,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+    final String encryptedPassword = md5Crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
       final ServerGame serverGame = m_iGame;
       if (serverGame != null) {
@@ -222,7 +228,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+    final String encryptedPassword = md5Crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
       final IChatPanel chat = getServerModel().getChatPanel();
       if (chat == null || chat.getAllText() == null) {
@@ -241,7 +247,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+    final String encryptedPassword = md5Crypt(localPassword, salt);
     // (48 hours max)
     final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
     if (encryptedPassword.equals(hashedPassword)) {
@@ -286,7 +292,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+    final String encryptedPassword = md5Crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
@@ -325,7 +331,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = MD5Crypt.crypt(localPassword, salt);
+    final String encryptedPassword = md5Crypt(localPassword, salt);
     // milliseconds (30 days max)
     final Instant expire = Instant.now().plus(Duration.ofHours(Math.min(24 * 30, hours)));
     if (encryptedPassword.equals(hashedPassword)) {

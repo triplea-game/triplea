@@ -10,13 +10,12 @@ import java.time.Instant;
 
 import org.junit.jupiter.api.Test;
 
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 public class MutedMacControllerIntegrationTest {
 
   private final MutedMacController controller = spy(new MutedMacController());
-  final String hashedMac = MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
+  private final String hashedMac = games.strategy.util.MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
 
   @Test
   public void testMuteMacForever() {

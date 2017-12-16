@@ -39,7 +39,6 @@ import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserDao;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.security.TestSecurityUtils;
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
 
 public final class LobbyLoginValidatorTest {
@@ -76,7 +75,7 @@ public final class LobbyLoginValidatorTest {
 
     private final DBUser dbUser = new DBUser(new DBUser.UserName(USERNAME), new DBUser.UserEmail(EMAIL));
 
-    private final String md5CryptSalt = MD5Crypt.newSalt();
+    private final String md5CryptSalt = games.strategy.util.MD5Crypt.newSalt();
 
     @BeforeEach
     public void setUp() throws IOException, GeneralSecurityException {
@@ -102,7 +101,7 @@ public final class LobbyLoginValidatorTest {
     }
 
     final String md5Crypt(final String password) {
-      return MD5Crypt.crypt(password, md5CryptSalt);
+      return games.strategy.util.MD5Crypt.crypt(password, md5CryptSalt);
     }
 
     final void givenAuthenticationWillUseMd5CryptedPasswordAndSucceed() {

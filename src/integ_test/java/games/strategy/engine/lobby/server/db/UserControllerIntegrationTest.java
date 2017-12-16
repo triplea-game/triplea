@@ -18,7 +18,6 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 public class UserControllerIntegrationTest {
@@ -53,13 +52,13 @@ public class UserControllerIntegrationTest {
   public void testCreateDupe() {
     assertThrows(Exception.class,
         () -> controller.createUser(createUserWithMd5CryptHash(),
-            new HashedPassword(MD5Crypt.crypt(Util.createUniqueTimeStamp()))),
+            new HashedPassword(md5Crypt(Util.createUniqueTimeStamp()))),
         "Should not be allowed to create a dupe user");
   }
 
   @Test
   public void testLogin() {
-    final String password = MD5Crypt.crypt(Util.createUniqueTimeStamp());
+    final String password = md5Crypt(Util.createUniqueTimeStamp());
     final DBUser user = createUserWithHash(password, Function.identity());
     controller.updateUser(user, new HashedPassword(bcrypt(obfuscate(password))));
     assertTrue(controller.login(user.getName(), new HashedPassword(password)));
@@ -70,7 +69,7 @@ public class UserControllerIntegrationTest {
   public void testUpdate() throws Exception {
     final DBUser user = createUserWithMd5CryptHash();
     assertTrue(controller.doesUserExist(user.getName()));
-    final String password2 = MD5Crypt.crypt("foo");
+    final String password2 = md5Crypt("foo");
     final String email2 = "foo@foo.foo";
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
@@ -89,7 +88,7 @@ public class UserControllerIntegrationTest {
   }
 
   private DBUser createUserWithMd5CryptHash() {
-    return createUserWithHash(Util.createUniqueTimeStamp(), MD5Crypt::crypt);
+    return createUserWithHash(Util.createUniqueTimeStamp(), UserControllerIntegrationTest::md5Crypt);
   }
 
   private DBUser createUserWithBCryptHash() {
@@ -116,6 +115,10 @@ public class UserControllerIntegrationTest {
 
   private static String bcrypt(final String string) {
     return BCrypt.hashpw(string, BCrypt.gensalt());
+  }
+
+  private static String md5Crypt(final String value) {
+    return games.strategy.util.MD5Crypt.crypt(value);
   }
 
   private static String obfuscate(final String string) {

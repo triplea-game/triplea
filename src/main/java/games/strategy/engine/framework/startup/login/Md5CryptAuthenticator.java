@@ -6,8 +6,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-import games.strategy.util.MD5Crypt;
-
 /**
  * Implements the MD5-crypt authentication protocol for peer-to-peer network games.
  *
@@ -41,7 +39,7 @@ final class Md5CryptAuthenticator {
    */
   static Map<String, String> newChallenge() {
     return Maps.newHashMap(ImmutableMap.of(
-        ChallengePropertyNames.SALT, MD5Crypt.newSalt()));
+        ChallengePropertyNames.SALT, games.strategy.util.MD5Crypt.newSalt()));
   }
 
   /**
@@ -95,7 +93,7 @@ final class Md5CryptAuthenticator {
   }
 
   private static String digest(final String password, final String salt) {
-    return MD5Crypt.crypt(password, salt);
+    return games.strategy.util.MD5Crypt.crypt(password, salt);
   }
 
   /**

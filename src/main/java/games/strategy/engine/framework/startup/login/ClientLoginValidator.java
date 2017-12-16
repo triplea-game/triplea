@@ -13,7 +13,6 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 
@@ -31,7 +30,7 @@ public final class ClientLoginValidator implements ILoginValidator {
   @VisibleForTesting
   static final int MAC_ADDRESS_LENGTH = 28;
   @VisibleForTesting
-  static final String MAC_MAGIC_STRING_PREFIX = MD5Crypt.MAGIC + "MH$";
+  static final String MAC_MAGIC_STRING_PREFIX = games.strategy.util.MD5Crypt.MAGIC + "MH$";
 
 
   @VisibleForTesting
