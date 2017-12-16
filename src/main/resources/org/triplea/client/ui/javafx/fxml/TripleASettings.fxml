@@ -2735,14 +2735,6 @@
 					<children>
 						<HBox alignment="CENTER" style="-fx-border-style: solid hidden solid hidden; -fx-border-color: #CCC; -fx-border-width: 2px;">
 							<children>
-								<Button mnemonicParsing="false" onAction="#reset" text="%settings.button.reset">
-									<HBox.margin>
-										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-									</HBox.margin>
-									<font>
-										<Font name="1942 report" size="14.0" />
-									</font>
-								</Button>
 								<Button layoutX="558.0" layoutY="10.0" mnemonicParsing="false" onAction="#save" text="%settings.button.save">
 									<HBox.margin>
 										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -2751,6 +2743,19 @@
 										<Font name="1942 report" size="14.0" />
 									</font>
 								</Button>
+								<Button mnemonicParsing="false" onAction="#reset" text="%settings.button.reset">
+									<HBox.margin>
+										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+									</HBox.margin>
+									<font>
+										<Font name="1942 report" size="14.0" />
+									</font>
+								</Button>
+                        <Button layoutX="249.0" layoutY="17.0" mnemonicParsing="false" onAction="#resetToDefault" text="%settings.button.reset_to_default">
+                           <font>
+                              <Font name="1942 report" size="14.0" />
+                           </font>
+                        </Button>
 							</children>
 						</HBox>
 						<HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0">

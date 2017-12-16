@@ -6,7 +6,7 @@ package games.strategy.triplea.settings;
  * Each {@code SettingType} will have its own tab in the SettingsWindow, every ui binding with that type will
  * be shown on that tab.
  */
-enum SettingType {
+public enum SettingType {
   AI("AI"),
 
   BATTLE_SIMULATOR("Battle Simulator"),

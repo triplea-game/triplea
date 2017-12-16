@@ -19,7 +19,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import com.google.common.base.Strings;
 
@@ -37,8 +39,8 @@ import swinglib.JPanelBuilder;
 final class SelectionComponentFactory {
   private SelectionComponentFactory() {}
 
-  static Supplier<SelectionComponent> proxySettings() {
-    return () -> new SelectionComponent() {
+  static Supplier<SelectionComponent<JComponent>> proxySettings() {
+    return () -> new SelectionComponent<JComponent>() {
       final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
       final HttpProxy.ProxyChoice proxyChoice =
           HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
@@ -167,40 +169,21 @@ final class SelectionComponentFactory {
   /**
    * Text field that only accepts numbers between a certain range.
    */
-  static Supplier<SelectionComponent> intValueRange(final ClientSetting clientSetting, final int lo, final int hi) {
-    return () -> new SelectionComponent() {
-      String value = clientSetting.value();
-      final JTextField component = new JTextField(value, String.valueOf(hi).length());
+  static Supplier<SelectionComponent<JComponent>> intValueRange(final ClientSetting clientSetting, final int lo,
+      final int hi) {
+    return () -> new SelectionComponent<JComponent>() {
+      final int value = clientSetting.value().isEmpty() ? 0 : Integer.parseInt(clientSetting.value());
+      final JSpinner component = new JSpinner(new SpinnerNumberModel(value, lo, hi, 1));
 
       @Override
       public JComponent getJComponent() {
         component.setToolTipText(validValueDescription());
-
-        SwingComponents.addTextFieldFocusLostListener(component, () -> {
-          if (isValid()) {
-            clearError();
-          } else {
-            indicateError();
-          }
-        });
-
         return component;
       }
 
       @Override
       public boolean isValid() {
-        final String value = component.getText();
-
-        if (value.trim().isEmpty()) {
-          return true;
-        }
-
-        try {
-          final int intValue = Integer.parseInt(value);
-          return intValue >= lo && intValue <= hi;
-        } catch (final NumberFormatException e) {
-          return false;
-        }
+        return true;
       }
 
       @Override
@@ -221,19 +204,19 @@ final class SelectionComponentFactory {
       @Override
       public Map<GameSetting, String> readValues() {
         final Map<GameSetting, String> map = new HashMap<>();
-        map.put(clientSetting, component.getText());
+        map.put(clientSetting, String.valueOf(component.getValue()));
         return map;
       }
 
       @Override
       public void resetToDefault() {
-        component.setText(clientSetting.defaultValue);
+        component.setValue(clientSetting.defaultValue);
         clearError();
       }
 
       @Override
       public void reset() {
-        component.setText(clientSetting.value());
+        component.setValue(clientSetting.value());
         clearError();
       }
     };
@@ -242,7 +225,7 @@ final class SelectionComponentFactory {
   /**
    * yes/no radio buttons.
    */
-  static SelectionComponent booleanRadioButtons(final ClientSetting clientSetting) {
+  static SelectionComponent<JComponent> booleanRadioButtons(final ClientSetting clientSetting) {
     return new AlwaysValidInputSelectionComponent() {
       final boolean initialSelection = clientSetting.booleanValue();
       final JRadioButton yesButton = new JRadioButton("True");
@@ -286,11 +269,11 @@ final class SelectionComponentFactory {
   /**
    * File selection prompt.
    */
-  static Supplier<SelectionComponent> filePath(final ClientSetting clientSetting) {
+  static Supplier<SelectionComponent<JComponent>> filePath(final ClientSetting clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.FILES);
   }
 
-  private static Supplier<SelectionComponent> selectFile(
+  private static Supplier<SelectionComponent<JComponent>> selectFile(
       final ClientSetting clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
     return () -> new AlwaysValidInputSelectionComponent() {
@@ -340,11 +323,12 @@ final class SelectionComponentFactory {
   /**
    * Folder selection prompt.
    */
-  static Supplier<SelectionComponent> folderPath(final ClientSetting clientSetting) {
+  static Supplier<SelectionComponent<JComponent>> folderPath(final ClientSetting clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
   }
 
-  static <T> Supplier<SelectionComponent> selectionBox(
+
+  static <T> Supplier<SelectionComponent<JComponent>> selectionBox(
       final ClientSetting clientSetting,
       final List<T> availableOptions,
       final Function<T, ?> renderFunction) {
@@ -397,7 +381,7 @@ final class SelectionComponentFactory {
     };
   }
 
-  static Supplier<SelectionComponent> textField(final ClientSetting clientSetting) {
+  static Supplier<SelectionComponent<JComponent>> textField(final ClientSetting clientSetting) {
     return () -> new AlwaysValidInputSelectionComponent() {
       final JTextField textField = new JTextField(clientSetting.value(), 20);
 
@@ -427,7 +411,7 @@ final class SelectionComponentFactory {
     };
   }
 
-  private abstract static class AlwaysValidInputSelectionComponent implements SelectionComponent {
+  private abstract static class AlwaysValidInputSelectionComponent implements SelectionComponent<JComponent> {
     @Override
     public void indicateError() {
       // no-op, component only allows valid selections
