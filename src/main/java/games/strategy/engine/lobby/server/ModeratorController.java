@@ -14,7 +14,6 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
-import games.strategy.util.MD5Crypt;
 
 public class ModeratorController extends AbstractModeratorController {
   public ModeratorController(final IServerMessenger serverMessenger, final Messengers messengers) {
@@ -322,8 +321,9 @@ public class ModeratorController extends AbstractModeratorController {
     builder.append("\r\nHost Name: ").append(node.getAddress().getHostName());
     builder.append("\r\nIP Address: ").append(node.getAddress().getHostAddress());
     builder.append("\r\nPort: ").append(node.getPort());
-    builder.append("\r\nHashed Mac: ")
-        .append((mac != null && mac.startsWith(MD5Crypt.MAGIC + "MH$") ? mac.substring(6) : mac + " (Invalid)"));
+    builder.append("\r\nHashed Mac: ").append(mac != null && mac.startsWith(games.strategy.util.MD5Crypt.MAGIC + "MH$")
+        ? mac.substring(6)
+        : mac + " (Invalid)");
     builder.append("\r\nAliases: ").append(getAliasesFor(node));
     return builder.toString();
   }

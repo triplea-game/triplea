@@ -29,7 +29,6 @@ import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.db.UserDao;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
@@ -112,11 +111,11 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private Map<String, String> newMd5CryptAuthenticatorChallenge(final String userName) {
     final Map<String, String> challenge = new HashMap<>();
     if (lobbyPropertyReader.isMaintenanceMode()) {
-      challenge.put(SALT_KEY, MD5Crypt.newSalt());
+      challenge.put(SALT_KEY, games.strategy.util.MD5Crypt.newSalt());
     } else {
       final HashedPassword password = userDao.getLegacyPassword(userName);
       if (password != null && Strings.emptyToNull(password.value) != null) {
-        challenge.put(SALT_KEY, MD5Crypt.getSalt(password.value));
+        challenge.put(SALT_KEY, games.strategy.util.MD5Crypt.getSalt(password.value));
       }
     }
     return challenge;
@@ -165,7 +164,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     if (hashedMac == null) {
       return ErrorMessages.UNABLE_TO_OBTAIN_MAC;
     }
-    if (hashedMac.length() != 28 || !hashedMac.startsWith(MD5Crypt.MAGIC + "MH$")
+    if (hashedMac.length() != 28 || !hashedMac.startsWith(games.strategy.util.MD5Crypt.MAGIC + "MH$")
         || !hashedMac.matches("[0-9a-zA-Z$./]+")) {
       // Must have been tampered with
       return ErrorMessages.INVALID_MAC;

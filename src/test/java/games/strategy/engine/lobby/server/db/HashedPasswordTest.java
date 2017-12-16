@@ -7,7 +7,6 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import games.strategy.util.MD5Crypt;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class HashedPasswordTest {
@@ -18,11 +17,13 @@ public class HashedPasswordTest {
 
   @Test
   public void isValidSyntax() {
+    final String md5CryptMagic = games.strategy.util.MD5Crypt.MAGIC;
+
     Arrays.asList(
-        MD5Crypt.MAGIC,
-        MD5Crypt.MAGIC + " ",
-        MD5Crypt.MAGIC + "_",
-        MD5Crypt.MAGIC + "abc").forEach(
+        md5CryptMagic,
+        md5CryptMagic + " ",
+        md5CryptMagic + "_",
+        md5CryptMagic + "abc").forEach(
             valid -> assertThat(
                 "Expecting this to look valid, starts with magic: " + valid,
                 new HashedPassword(valid).isHashedWithSalt(), is(true)));

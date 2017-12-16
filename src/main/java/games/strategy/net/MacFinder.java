@@ -17,7 +17,6 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.primitives.Bytes;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.util.MD5Crypt;
 
 public class MacFinder {
 
@@ -30,7 +29,7 @@ public class MacFinder {
       throw new IllegalArgumentException(
           "You have an invalid MAC address or TripleA can't find your mac address");
     }
-    return MD5Crypt.crypt(mac, "MH");
+    return games.strategy.util.MD5Crypt.crypt(mac, "MH");
   }
 
   private static String getMacAddress() {

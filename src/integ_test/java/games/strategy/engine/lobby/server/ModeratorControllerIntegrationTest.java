@@ -24,7 +24,6 @@ import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.Util;
 
 public class ModeratorControllerIntegrationTest {
@@ -32,6 +31,10 @@ public class ModeratorControllerIntegrationTest {
   private ModeratorController moderatorController;
   private ConnectionChangeListener connectionChangeListener;
   private INode adminNode;
+
+  private static String md5Crypt(final String value) {
+    return games.strategy.util.MD5Crypt.crypt(value);
+  }
 
   @BeforeEach
   public void setUp() throws UnknownHostException {
@@ -41,7 +44,7 @@ public class ModeratorControllerIntegrationTest {
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 
     final UserController userController = new UserController();
-    userController.createUser(dbUser, new HashedPassword(MD5Crypt.crypt(adminName)));
+    userController.createUser(dbUser, new HashedPassword(md5Crypt(adminName)));
     userController.makeAdmin(dbUser);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
@@ -70,14 +73,14 @@ public class ModeratorControllerIntegrationTest {
   @Test
   public void testCantResetAdminPassword() {
     MessageContext.setSenderNodeForThread(adminNode);
-    final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
+    final String newPassword = md5Crypt("" + System.currentTimeMillis());
     assertNotNull(moderatorController.setPassword(adminNode, newPassword));
   }
 
   @Test
   public void testResetUserPasswordUnknownUser() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(adminNode);
-    final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
+    final String newPassword = md5Crypt("" + System.currentTimeMillis());
     final INode node = new Node(Util.createUniqueTimeStamp(), InetAddress.getLocalHost(), 0);
     assertNotNull(moderatorController.setPassword(node, newPassword));
   }

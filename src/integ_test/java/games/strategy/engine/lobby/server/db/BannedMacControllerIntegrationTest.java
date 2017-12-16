@@ -12,14 +12,13 @@ import java.time.Instant;
 
 import org.junit.jupiter.api.Test;
 
-import games.strategy.util.MD5Crypt;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
 public class BannedMacControllerIntegrationTest {
 
   private final BannedMacController controller = spy(new BannedMacController());
-  private final String hashedMac = MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
+  private final String hashedMac = games.strategy.util.MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
 
   @Test
   public void testBanMacForever() {
