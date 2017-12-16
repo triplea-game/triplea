@@ -26,6 +26,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.AbstractForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
@@ -41,6 +42,8 @@ import games.strategy.util.ThreadUtil;
  * The poster logs in, and out every time it posts, this way we don't nee to manage any state between posts
  */
 public class AxisAndAlliesForumPoster extends AbstractForumPoster {
+
+
   private static final long serialVersionUID = 8896923978584346664L;
   // the patterns used to extract values from hidden form fields posted to the server
   public static final Pattern NUM_REPLIES_PATTERN =
@@ -59,6 +62,11 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
       .compile(".*<tr\\s+class=\"windowbg\">\\s*<td[^>]*>([^<]*)</td>.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
   public static final Pattern ERROR_LIST_PATTERN =
       Pattern.compile(".*id=\"error_list[^>]*>\\s+([^<]*)\\s+<.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+
+
+  public AxisAndAlliesForumPoster(GameRunner gameRunner) {
+    super(gameRunner);
+  }
 
   /**
    * Logs into axisandallies.org
@@ -244,7 +252,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
 
   @Override
   public IForumPoster doClone() {
-    final AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster();
+    final AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster(gameRunner);
     clone.setTopicId(getTopicId());
     clone.setIncludeSaveGame(getIncludeSaveGame());
     clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());

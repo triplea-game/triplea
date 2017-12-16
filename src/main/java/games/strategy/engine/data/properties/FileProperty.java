@@ -29,6 +29,7 @@ public class FileProperty extends AEditableProperty {
 
   private final String[] m_acceptableSuffixes;
   private File m_file;
+  private final GameRunner gameRunner;
 
   /**
    * Construct a new file property.
@@ -36,8 +37,8 @@ public class FileProperty extends AEditableProperty {
    * @param name - The name of the property
    * @param fileName - The name of the file to be associated with this property
    */
-  public FileProperty(final String name, final String description, final String fileName) {
-    this(name, description, getFileIfExists(new File(fileName)));
+  public FileProperty(final String name, final String description, final String fileName, final GameRunner gameRunner) {
+    this(name, description, getFileIfExists(new File(fileName)), gameRunner);
   }
 
   private static File getFileIfExists(final File file) {
@@ -48,14 +49,16 @@ public class FileProperty extends AEditableProperty {
   }
 
 
-  public FileProperty(final String name, final String description, final File file) {
-    this(name, description, file, defaultImageSuffixes);
+  public FileProperty(final String name, final String description, final File file, final GameRunner gameRunner) {
+    this(name, description, file, defaultImageSuffixes, gameRunner);
   }
 
-  public FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes) {
+  public FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes,
+      final GameRunner gameRunner) {
     super(name, description);
     m_file = getFileIfExists(file);
     m_acceptableSuffixes = acceptableSuffixes;
+    this.gameRunner = gameRunner;
   }
 
   /**
@@ -90,7 +93,7 @@ public class FileProperty extends AEditableProperty {
     label.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        final File selection = getFileUsingDialog(m_acceptableSuffixes);
+        final File selection = getFileUsingDialog(gameRunner, m_acceptableSuffixes);
         if (selection != null) {
           m_file = selection;
           label.setText(m_file.getAbsolutePath());
@@ -117,12 +120,12 @@ public class FileProperty extends AEditableProperty {
   /**
    * Prompts the user to select a file.
    */
-  private static File getFileUsingDialog(final String... acceptableSuffixes) {
+  private static File getFileUsingDialog(final GameRunner gameRunner, final String... acceptableSuffixes) {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = GameRunner.newFileDialog();
+      final FileDialog fileDialog = gameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
       fileDialog.setFilenameFilter((dir, name) -> {
         if (acceptableSuffixes == null || acceptableSuffixes.length == 0) {
@@ -143,7 +146,7 @@ public class FileProperty extends AEditableProperty {
       }
       return new File(dirName, fileName);
     }
-    final Optional<File> selectedFile = GameRunner.showFileChooser(new FileFilter() {
+    final Optional<File> selectedFile = gameRunner.showFileChooser(new FileFilter() {
       @Override
       public boolean accept(final File file) {
         if (file == null) {

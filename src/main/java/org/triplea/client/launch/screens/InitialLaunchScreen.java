@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 
 import org.triplea.client.launch.screens.staging.StagingScreen;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
@@ -12,15 +13,15 @@ import swinglib.JPanelBuilder;
 
 class InitialLaunchScreen {
 
-  static JPanel build() {
+  static JPanel build(final GameRunner gameRunner) {
     return JPanelBuilder.builder()
         .borderLayout()
-        .addCenter(buildMain())
+        .addCenter(buildMain(gameRunner))
         .addSouth(NavigationPanelFactory.buildWithDisabledPlayButton(LaunchScreen.INITIAL))
         .build();
   }
 
-  private static JPanel buildMain() {
+  private static JPanel buildMain(final GameRunner gameRunner) {
     return JPanelBuilder.builder()
         .flowLayoutWrapper()
         .verticalBoxLayout()
@@ -34,7 +35,7 @@ class InitialLaunchScreen {
         .add(JButtonBuilder.builder()
             .title("Play Single Player")
             .biggerFont()
-            .actionListener(() -> LaunchScreenWindow.draw(StagingScreen.SINGLE_PLAYER))
+            .actionListener(() -> LaunchScreenWindow.draw(StagingScreen.SINGLE_PLAYER, gameRunner))
             .build())
         .add(Box.createVerticalStrut(40))
         .add(JButtonBuilder.builder()

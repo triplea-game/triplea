@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,6 +25,7 @@ import org.mockito.Mockito;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.framework.GameDataFileUtils;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.util.Version;
@@ -72,7 +74,7 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   @BeforeEach
   public void setup() {
-    testObj = new GameSelectorModel();
+    testObj = new GameSelectorModel(mock(GameRunner.class));
     assertHasEmptyData(testObj);
     testObj.addObserver(mockObserver);
   }

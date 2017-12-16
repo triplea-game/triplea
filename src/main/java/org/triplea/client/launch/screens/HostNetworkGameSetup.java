@@ -19,15 +19,15 @@ import swinglib.JTextFieldBuilder;
  */
 class HostNetworkGameSetup {
 
-  static JPanel build() {
+  static JPanel build(final GameRunner gameRunner) {
     return JPanelBuilder.builder()
         .borderLayout()
-        .addCenter(buildMain())
+        .addCenter(buildMain(gameRunner))
         .addSouth(NavigationPanelFactory.buildWithDisabledPlayButton(LaunchScreen.HOST_NETWORK_GAME_OPTIONS))
         .build();
   }
 
-  private static JPanel buildMain() {
+  private static JPanel buildMain(final GameRunner gameRunner) {
     final JTextField playerNameField = JTextFieldBuilder.builder()
         .text(ClientSetting.PLAYER_NAME.value())
         .columns(12)
@@ -72,7 +72,7 @@ class HostNetworkGameSetup {
                           props.setName(playerNameField.getText().trim());
                           props.setPassword(passwordField.getText().trim());
                           props.setPort(extractPortValue(portField));
-                          LaunchScreenWindow.drawWithServerNetworking(StagingScreen.NETWORK_HOST, props);
+                          LaunchScreenWindow.drawWithServerNetworking(StagingScreen.NETWORK_HOST, props, gameRunner);
                         })
                         .build())
                 .build())

@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import com.google.common.base.Preconditions;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
@@ -19,9 +20,11 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 public class SetupPanelModel extends Observable {
   protected final GameSelectorModel gameSelectorModel;
   protected ISetupPanel panel = null;
+  private final GameRunner gameRunner;
 
-  public SetupPanelModel(final GameSelectorModel gameSelectorModel) {
+  public SetupPanelModel(final GameSelectorModel gameSelectorModel, final GameRunner gameRunner) {
     this.gameSelectorModel = gameSelectorModel;
+    this.gameRunner = gameRunner;
   }
 
   public GameSelectorModel getGameSelectorModel() {
@@ -35,7 +38,7 @@ public class SetupPanelModel extends Observable {
   }
 
   public void showSelectType() {
-    setGameTypePanel(new MetaSetupPanel(this));
+    setGameTypePanel(new MetaSetupPanel(this, gameRunner));
   }
 
   public void showLocal() {
@@ -43,7 +46,7 @@ public class SetupPanelModel extends Observable {
   }
 
   public void showPbem() {
-    setGameTypePanel(new PBEMSetupPanel(gameSelectorModel));
+    setGameTypePanel(new PBEMSetupPanel(gameSelectorModel, gameRunner));
   }
 
   public void showServer(final Component ui) {
@@ -62,7 +65,7 @@ public class SetupPanelModel extends Observable {
   }
 
   public void showClient(final Component ui) {
-    final ClientModel model = new ClientModel(gameSelectorModel, this);
+    final ClientModel model = new ClientModel(gameSelectorModel, this, gameRunner);
     if (!model.createClientMessenger(ui)) {
       model.cancel();
       return;

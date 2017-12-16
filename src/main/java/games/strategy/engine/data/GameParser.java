@@ -44,6 +44,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
@@ -932,7 +933,7 @@ public final class GameParser {
     if (childName.equals("boolean")) {
       editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue).booleanValue());
     } else if (childName.equals("file")) {
-      editableProperty = new FileProperty(name, null, defaultValue);
+      editableProperty = new FileProperty(name, null, defaultValue, new GameRunner());
     } else if (childName.equals("list") || childName.equals("combo")) {
       final StringTokenizer tokenizer = new StringTokenizer(child.getAttribute("values"), ",");
       final Collection<String> values = new ArrayList<>();

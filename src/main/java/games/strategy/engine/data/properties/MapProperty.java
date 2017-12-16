@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javax.swing.JComponent;
 
+import games.strategy.engine.framework.GameRunner;
+
 /**
  * Basically creates a map of other properties.
  *
@@ -23,10 +25,12 @@ public class MapProperty<T, U> extends AEditableProperty {
   private static final long serialVersionUID = -8021039503574228146L;
   private Map<T, U> m_map;
   final List<IEditableProperty> m_properties = new ArrayList<>();
+  private final transient GameRunner gameRunner;
 
-  public MapProperty(final String name, final String description, final Map<T, U> map) {
+  public MapProperty(final String name, final String description, final Map<T, U> map, final GameRunner gameRunner) {
     super(name, description);
     m_map = map;
+    this.gameRunner = gameRunner;
     resetProperties(map, m_properties, name, description);
   }
 
@@ -42,7 +46,7 @@ public class MapProperty<T, U> extends AEditableProperty {
       } else if (value instanceof Color) {
         properties.add(new ColorProperty(key, description, ((Color) value)));
       } else if (value instanceof File) {
-        properties.add(new FileProperty(key, description, ((File) value)));
+        properties.add(new FileProperty(key, description, ((File) value), gameRunner));
       } else if (value instanceof String) {
         properties.add(new StringProperty(key, description, ((String) value)));
       } else if (value instanceof Collection || value instanceof List || value instanceof Set) {

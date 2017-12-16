@@ -21,9 +21,7 @@ public final class BackgroundTaskRunner {
   private final JFrame frame;
 
   public BackgroundTaskRunner(final JFrame frame) {
-    checkNotNull(frame);
-
-    this.frame = frame;
+    this.frame = checkNotNull(frame);
   }
 
   /**

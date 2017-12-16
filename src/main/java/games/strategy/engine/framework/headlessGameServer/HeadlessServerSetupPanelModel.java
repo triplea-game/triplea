@@ -2,6 +2,7 @@ package games.strategy.engine.framework.headlessGameServer;
 
 import java.awt.Component;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -13,8 +14,9 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 public class HeadlessServerSetupPanelModel extends SetupPanelModel {
   protected final Component m_ui;
 
-  public HeadlessServerSetupPanelModel(final GameSelectorModel gameSelectorModel, final Component ui) {
-    super(gameSelectorModel);
+  public HeadlessServerSetupPanelModel(final GameSelectorModel gameSelectorModel, final Component ui,
+      final GameRunner gameRunner) {
+    super(gameSelectorModel, gameRunner);
     m_ui = ui;
   }
 

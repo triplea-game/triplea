@@ -14,6 +14,7 @@ import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
@@ -48,9 +49,14 @@ public class TripleA implements IGameLoader {
   public static final String PRO_COMPUTER_PLAYER_TYPE = "Hard (AI)";
   public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
   protected transient ITripleADisplay display;
+  private final transient GameRunner gameRunner;
 
   protected transient ISound soundChannel;
   protected transient IGame game;
+
+  public TripleA(final GameRunner gameRunner) {
+    this.gameRunner = gameRunner;
+  }
 
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames) {
@@ -121,7 +127,7 @@ public class TripleA implements IGameLoader {
       try {
         SwingUtilities.invokeAndWait(() -> {
           final TripleAFrame frame;
-          frame = new TripleAFrame(game, localPlayers);
+          frame = new TripleAFrame(game, localPlayers, gameRunner);
           display = new TripleADisplay(frame);
           game.addDisplay(display);
           soundChannel = new DefaultSoundChannel(localPlayers);

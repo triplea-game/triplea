@@ -98,12 +98,13 @@ public class GameChooser extends JDialog {
     infoPanel.add(notesScroll, BorderLayout.CENTER);
   }
 
-  public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
+  public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName,
+      final GameRunner gameRunner)
       throws InterruptedException {
     final GameChooserModel gameChooserModel =
-        new GameChooserModel(GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
+        new GameChooserModel(gameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
             "Loading all available games...",
-            GameChooserModel::parseMapFiles));
+            () -> GameChooserModel.parseMapFiles(gameRunner)));
     final GameChooser chooser = new GameChooser(parent, gameChooserModel);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);

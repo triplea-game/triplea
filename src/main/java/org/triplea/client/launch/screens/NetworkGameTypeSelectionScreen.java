@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
@@ -14,15 +15,15 @@ import swinglib.JPanelBuilder;
 
 class NetworkGameTypeSelectionScreen {
 
-  static JPanel build() {
+  static JPanel build(final GameRunner gameRunner) {
     return JPanelBuilder.builder()
         .borderLayout()
-        .addCenter(buildMain())
+        .addCenter(buildMain(gameRunner))
         .addSouth(NavigationPanelFactory.buildWithDisabledPlayButton(LaunchScreen.NETWORK_GAME_TYPE_SELECT))
         .build();
   }
 
-  private static JPanel buildMain() {
+  private static JPanel buildMain(final GameRunner gameRunner) {
     return JPanelBuilder.builder()
         .flowLayoutWrapper()
         .verticalBoxLayout()
@@ -30,7 +31,7 @@ class NetworkGameTypeSelectionScreen {
         .add(JButtonBuilder.builder()
             .biggerFont()
             .title("Play Online")
-            .actionListener(openLobbyWindow())
+            .actionListener(openLobbyWindow(gameRunner))
             .build())
         .add(Box.createVerticalStrut(40))
         .add(JButtonBuilder.builder()
@@ -62,18 +63,19 @@ class NetworkGameTypeSelectionScreen {
   /**
    * Show a popup for lobby login, then do login and show the {@code LobbyFrame}.
    */
-  private static Runnable openLobbyWindow() {
+  private static Runnable openLobbyWindow(final GameRunner gameRunner) {
     return () -> {
       final LobbyServerProperties lobbyServerProperties =
           new LobbyServerPropertiesFetcher().fetchLobbyServerProperties();
       final LobbyLogin login = new LobbyLogin(
           JOptionPane.getFrameForComponent(null),
-          lobbyServerProperties);
+          lobbyServerProperties,
+          gameRunner);
       final LobbyClient client = login.login();
       if (client == null) {
         return;
       }
-      final LobbyFrame lobbyFrame = new LobbyFrame(client, lobbyServerProperties);
+      final LobbyFrame lobbyFrame = new LobbyFrame(client, lobbyServerProperties, gameRunner);
       lobbyFrame.setVisible(true);
       LaunchScreenWindow.dispose();
     };

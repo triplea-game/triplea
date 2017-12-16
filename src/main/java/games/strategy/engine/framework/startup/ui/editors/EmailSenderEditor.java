@@ -44,6 +44,7 @@ public class EmailSenderEditor extends EditorPanel {
   private final JButton testEmail = new JButton("Test Email");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
+  private final GameRunner gameRunner;
 
   /**
    * creates a new instance.
@@ -53,7 +54,8 @@ public class EmailSenderEditor extends EditorPanel {
    * @param editorConfiguration
    *        configures which editor fields should be visible
    */
-  public EmailSenderEditor(final GenericEmailSender bean, final EditorConfiguration editorConfiguration) {
+  public EmailSenderEditor(final GenericEmailSender bean, final EditorConfiguration editorConfiguration,
+      final GameRunner gameRunner) {
     super();
     genericEmailSender = bean;
     subject.setText(genericEmailSender.getSubjectPrefix());
@@ -64,6 +66,7 @@ public class EmailSenderEditor extends EditorPanel {
     password.setText(genericEmailSender.getPassword());
     credentialsSaved.setSelected(genericEmailSender.areCredentialsSaved());
     useTls.setSelected(genericEmailSender.getEncryption() == GenericEmailSender.Encryption.TLS);
+    this.gameRunner = gameRunner;
 
     final int bottomSpace = 1;
     final int labelSpace = 2;
@@ -148,7 +151,7 @@ public class EmailSenderEditor extends EditorPanel {
    * Tests the email sender. This must be called from the swing event thread
    */
   private void testEmail() {
-    final ProgressWindow progressWindow = GameRunner.newProgressWindow("Sending test email...");
+    final ProgressWindow progressWindow = gameRunner.newProgressWindow("Sending test email...");
     progressWindow.setVisible(true);
     // start a background thread
     new Thread(() -> {
@@ -175,7 +178,7 @@ public class EmailSenderEditor extends EditorPanel {
         final int finalMessageType = messageType;
         SwingUtilities.invokeLater(() -> {
           try {
-            GameRunner.showMessageDialog(
+            gameRunner.showMessageDialog(
                 finalMessage,
                 GameRunner.Title.of("Email Test"),
                 finalMessageType);

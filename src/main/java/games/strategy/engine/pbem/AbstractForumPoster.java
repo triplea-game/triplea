@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.util.Objects;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
 import games.strategy.security.CredentialManager;
@@ -45,6 +46,12 @@ public abstract class AbstractForumPoster implements IForumPoster {
   protected transient String m_saveGameFileName = null;
   private boolean credentialsSaved = false;
   private boolean credentialsProtected = false;
+  protected final transient GameRunner gameRunner;
+
+
+  protected AbstractForumPoster(final GameRunner gameRunner) {
+    this.gameRunner = gameRunner;
+  }
 
   private void writeObject(final ObjectOutputStream out) throws IOException {
     final String username = m_username;
@@ -180,7 +187,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
 
   @Override
   public EditorPanel getEditor() {
-    return new ForumPosterEditor(this);
+    return new ForumPosterEditor(this, gameRunner);
   }
 
   @Override

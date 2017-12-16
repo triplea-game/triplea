@@ -3,6 +3,7 @@ package games.strategy.engine;
 import java.util.List;
 
 import games.strategy.engine.config.client.GameEnginePropertyReader;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadRunnable;
@@ -46,7 +47,7 @@ public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
 
   private final GameEnginePropertyReader gameEnginePropertyReader = new GameEnginePropertyReader();
-  private final MapDownloadController mapDownloadController = new MapDownloadController();
+  private final MapDownloadController mapDownloadController = new MapDownloadController(new GameRunner());
   private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
 
   private ClientContext() {}

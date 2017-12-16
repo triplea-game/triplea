@@ -24,10 +24,13 @@ import games.strategy.util.MD5Crypt;
 public class LobbyLogin {
   private final Window parentWindow;
   private final LobbyServerProperties lobbyServerProperties;
+  private final GameRunner gameRunner;
 
-  public LobbyLogin(final Window parent, final LobbyServerProperties lobbyServerProperties) {
+  public LobbyLogin(final Window parent, final LobbyServerProperties lobbyServerProperties,
+      final GameRunner gameRunner) {
     parentWindow = parent;
     this.lobbyServerProperties = lobbyServerProperties;
+    this.gameRunner = gameRunner;
   }
 
   /**
@@ -54,7 +57,7 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient login(final LoginPanel panel) {
     try {
-      final IMessenger messenger = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
+      final IMessenger messenger = gameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
           "Connecting to lobby...",
           () -> login(panel.getUserName(), panel.getPassword(), panel.isAnonymousLogin()),
           IOException.class);
@@ -132,7 +135,7 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient createAccount(final CreateUpdateAccountPanel panel) {
     try {
-      final IMessenger messenger = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
+      final IMessenger messenger = gameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
           "Connecting to lobby...",
           () -> createAccount(panel.getUserName(), panel.getPassword(), panel.getEmail()),
           IOException.class);

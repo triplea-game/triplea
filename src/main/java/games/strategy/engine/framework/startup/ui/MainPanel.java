@@ -53,7 +53,7 @@ public class MainPanel extends JPanel implements Observer {
    * MainPanel is the full contents of the 'mainFrame'. This panel represents the
    * welcome screen and subsequent screens..
    */
-  public MainPanel(final SetupPanelModel typePanelModel) {
+  public MainPanel(final SetupPanelModel typePanelModel, final GameRunner gameRunner) {
     gameTypePanelModel = typePanelModel;
     final GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
 
@@ -65,7 +65,7 @@ public class MainPanel extends JPanel implements Observer {
     quitButton.setToolTipText("Close TripleA.");
     cancelButton = new JButton("Cancel");
     cancelButton.setToolTipText("Go back to main screen.");
-    final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
+    final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel, gameRunner);
     gameSelectorPanel.setBorder(new EtchedBorder());
     gameSetupPanelHolder = new JPanel();
     gameSetupPanelHolder.setLayout(new BorderLayout());
@@ -102,7 +102,7 @@ public class MainPanel extends JPanel implements Observer {
       try {
         gameSetupPanel.shutDown();
       } finally {
-        GameRunner.quitGame();
+        gameRunner.quitGame();
       }
     });
     cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());

@@ -42,9 +42,11 @@ public class ForumPosterEditor extends EditorPanel {
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
   private final IForumPoster bean;
+  private final GameRunner gameRunner;
 
-  public ForumPosterEditor(final IForumPoster bean) {
+  public ForumPosterEditor(final IForumPoster bean, final GameRunner gameRunner) {
     this.bean = bean;
+    this.gameRunner = gameRunner;
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
@@ -112,7 +114,7 @@ public class ForumPosterEditor extends EditorPanel {
    */
   void testForum() {
     final IForumPoster poster = (IForumPoster) getBean();
-    final ProgressWindow progressWindow = GameRunner.newProgressWindow(poster.getTestMessage());
+    final ProgressWindow progressWindow = gameRunner.newProgressWindow(poster.getTestMessage());
     progressWindow.setVisible(true);
     // start a background thread
     new Thread(() -> {
@@ -149,7 +151,7 @@ public class ForumPosterEditor extends EditorPanel {
       // now that we have a result, marshall it back unto the swing thread
       SwingUtilities.invokeLater(() -> {
         try {
-          GameRunner.showMessageDialog(
+          gameRunner.showMessageDialog(
               bean.getTurnSummaryRef(),
               GameRunner.Title.of("Test Turn Summary Post"),
               JOptionPane.INFORMATION_MESSAGE);

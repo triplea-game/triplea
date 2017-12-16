@@ -48,8 +48,8 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
    * Initializes a new {@code GameChooserModel} using all available maps installed in the user's maps folder. This
    * method will block until all maps are parsed and should not be called from the EDT.
    */
-  public GameChooserModel() {
-    this(parseMapFiles());
+  public GameChooserModel(final GameRunner gameRunner) {
+    this(parseMapFiles(gameRunner));
   }
 
   GameChooserModel(final Set<GameChooserEntry> gameChooserEntries) {
@@ -73,7 +73,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     return Arrays.asList(files);
   }
 
-  static Set<GameChooserEntry> parseMapFiles() {
+  static Set<GameChooserEntry> parseMapFiles(final GameRunner gameRunner) {
     final List<File> files = allMapFiles();
     final Set<GameChooserEntry> parsedMapSet = new HashSet<>(files.size());
     final ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 2);
@@ -82,7 +82,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
       if (map.isDirectory()) {
         futures.add(service.submit(() -> populateFromDirectory(map)));
       } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-        futures.add(service.submit(() -> populateFromZip(map)));
+        futures.add(service.submit(() -> populateFromZip(map, gameRunner)));
       }
     }
     service.shutdown();
@@ -98,7 +98,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     return parsedMapSet;
   }
 
-  private static List<GameChooserEntry> populateFromZip(final File map) {
+  private static List<GameChooserEntry> populateFromZip(final File map, final GameRunner gameRunner) {
     boolean badMapZip = false;
     final List<GameChooserEntry> entries = new ArrayList<>();
 
@@ -116,11 +116,11 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
         }
       }
     } catch (final IOException e) {
-      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.of(e.getMessage()));
+      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.of(e.getMessage()), gameRunner);
     }
 
     if (badMapZip) {
-      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.empty());
+      confirmWithUserAndThenDeleteCorruptZipFile(map, Optional.empty(), gameRunner);
     }
     return entries;
   }
@@ -144,14 +144,15 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
    * Open up a confirmation dialog, if user says yes, delete the map specified by
    * parameter, then show confirmation of deletion.
    */
-  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, final Optional<String> errorDetails) {
+  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, final Optional<String> errorDetails,
+      final GameRunner gameRunner) {
     SwingAction.invokeAndWait(() -> {
       String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
           + "\n(You may see this error message again if you keep the file)";
       String title = "Corrup Map File Found";
       final int optionType = JOptionPane.YES_NO_OPTION;
       int messageType = JOptionPane.WARNING_MESSAGE;
-      final int result = GameRunner.showConfirmDialog(
+      final int result = gameRunner.showConfirmDialog(
           message, GameRunner.Title.of(title), optionType, messageType);
       if (result == JOptionPane.YES_OPTION) {
         final boolean deleted = map.delete();

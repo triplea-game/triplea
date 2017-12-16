@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 
 import com.google.common.collect.ImmutableList;
 
@@ -49,9 +51,12 @@ public class LobbyFrame extends JFrame {
 
   private final LobbyClient client;
   private final ChatMessagePanel chatMessagePanel;
+  private final GameRunner gameRunner;
 
-  public LobbyFrame(final LobbyClient client, final LobbyServerProperties lobbyServerProperties) {
+  public LobbyFrame(final LobbyClient client, final LobbyServerProperties lobbyServerProperties,
+      final GameRunner gameRunner) {
     super("TripleA Lobby");
+    this.gameRunner = gameRunner;
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setIconImage(GameRunner.getGameIcon(this));
     this.client = client;
@@ -220,7 +225,13 @@ public class LobbyFrame extends JFrame {
   public void shutdown() {
     setVisible(false);
     dispose();
-    GameRunner.showMainFrame();
+    try {
+      SwingUtilities.invokeAndWait(gameRunner::showMainFrame);
+    } catch (InvocationTargetException e) {
+      throw new RuntimeException("Failed to show MainFrame", e);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
     client.getMessenger().shutDown();
     GameRunner.exitGameIfFinished();
   }

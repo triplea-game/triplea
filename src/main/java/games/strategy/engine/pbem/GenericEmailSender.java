@@ -27,6 +27,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.security.CredentialManager;
@@ -75,6 +76,11 @@ public class GenericEmailSender implements IEmailSender {
   private boolean m_alsoPostAfterCombatMove = false;
   private boolean credentialsSaved = false;
   private boolean credentialsProtected = false;
+  protected GameRunner gameRunner;
+
+  public GenericEmailSender(final GameRunner gameRunner) {
+    this.gameRunner = gameRunner;
+  }
 
   private void writeObject(final ObjectOutputStream out) throws IOException {
     final String userName = m_userName;
@@ -329,7 +335,7 @@ public class GenericEmailSender implements IEmailSender {
 
   @Override
   public IEmailSender clone() {
-    final GenericEmailSender sender = new GenericEmailSender();
+    final GenericEmailSender sender = new GenericEmailSender(gameRunner);
     sender.setSubjectPrefix(getSubjectPrefix());
     sender.setEncryption(getEncryption());
     sender.setHost(getHost());
@@ -368,7 +374,7 @@ public class GenericEmailSender implements IEmailSender {
 
   @Override
   public EditorPanel getEditor() {
-    return new EmailSenderEditor(this, new EmailSenderEditor.EditorConfiguration(true, true, true));
+    return new EmailSenderEditor(this, new EmailSenderEditor.EditorConfiguration(true, true, true), gameRunner);
   }
 
   @Override
