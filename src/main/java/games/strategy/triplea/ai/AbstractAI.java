@@ -585,7 +585,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
         for (final Territory current : entry.getValue()) {
           final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
           if (error != null) {
-            logger.fine(error);
+            logger.warning(error);
           }
         }
       }
