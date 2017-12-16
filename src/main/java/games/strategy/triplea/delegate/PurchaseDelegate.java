@@ -296,7 +296,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
   private static final Comparator<RepairRule> repairRuleComparator = Comparator.comparing(
-      (final RepairRule o) -> (UnitType) o.getResults().keySet().iterator().next(),
+      o -> (UnitType) o.getResults().keySet().iterator().next(),
       new UnitTypeComparator());
 
   private static IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
