@@ -70,7 +70,7 @@ public class MD5Crypt {
    * @return The encrypted password as an MD5 hash
    */
   public static String crypt(final String password) {
-    return crypt(password, newSalt(), MAGIC);
+    return crypt(password, newSalt());
   }
 
   /**
@@ -82,29 +82,11 @@ public class MD5Crypt {
    *        Password to be encrypted
    * @return The encrypted password as an MD5 hash
    */
-  public static String crypt(final String password, final String salt) {
-    return crypt(password, salt, MAGIC);
-  }
-
-  /**
-   * Linux/BSD MD5Crypt function.
-   *
-   * @param magic
-   *        $1$ for Linux/BSB, $apr1$ for Apache crypt
-   * @param salt
-   *        8 byte permutation string
-   * @param password
-   *        user password
-   * @return The encrypted password as an MD5 hash
-   */
-  public static String crypt(final String password, String salt, final String magic) {
+  public static String crypt(final String password, String salt) {
     if (password == null) {
       throw new IllegalArgumentException("Null password!");
     }
     if (salt == null) {
-      throw new IllegalArgumentException("Null salt!");
-    }
-    if (magic == null) {
       throw new IllegalArgumentException("Null salt!");
     }
     /*
@@ -121,8 +103,8 @@ public class MD5Crypt {
     }
     /* Refine the Salt first */
     /* If it starts with the magic string, then skip that */
-    if (salt.startsWith(magic)) {
-      salt = salt.substring(magic.length());
+    if (salt.startsWith(MAGIC)) {
+      salt = salt.substring(MAGIC.length());
     }
     /* It stops at the first '$', max 8 chars */
     if (salt.indexOf('$') != -1) {
@@ -138,7 +120,7 @@ public class MD5Crypt {
      * Raw salt
      */
     ctx.update(password.getBytes());
-    ctx.update(magic.getBytes());
+    ctx.update(MAGIC.getBytes());
     ctx.update(salt.getBytes());
     /* Then just as many characters of the MD5(pw,salt,pw) */
     ctx1.update(password.getBytes());
@@ -198,7 +180,7 @@ public class MD5Crypt {
     }
     /* Now make the output string */
     final StringBuilder result = new StringBuilder();
-    result.append(magic);
+    result.append(MAGIC);
     result.append(salt);
     result.append("$");
     /*
@@ -237,8 +219,8 @@ public class MD5Crypt {
     return salt.toString();
   }
 
-  public static String getSalt(final String magic, final String encrypted) {
-    final String valNoMagic = encrypted.substring(magic.length());
+  public static String getSalt(final String encrypted) {
+    final String valNoMagic = encrypted.substring(MAGIC.length());
     return valNoMagic.substring(0, valNoMagic.indexOf("$"));
   }
 }

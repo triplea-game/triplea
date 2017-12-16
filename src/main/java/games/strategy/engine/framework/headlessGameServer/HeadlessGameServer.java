@@ -166,7 +166,7 @@ public class HeadlessGameServer {
 
   public String getSalt() {
     final String encryptedPassword = MD5Crypt.crypt(System.getProperty(GameRunner.LOBBY_GAME_SUPPORT_PASSWORD, ""));
-    final String salt = MD5Crypt.getSalt(MD5Crypt.MAGIC, encryptedPassword);
+    final String salt = MD5Crypt.getSalt(encryptedPassword);
     return salt;
   }
 
