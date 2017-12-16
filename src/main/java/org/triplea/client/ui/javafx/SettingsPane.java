@@ -46,11 +46,15 @@ class SettingsPane extends StackPane {
 
   @FXML
   private void back() {
+    // TODO check if some changes haven't been saved
     triplea.returnToMainMenu(this);
   }
 
   @FXML
   private void reset() {}
+
+  @FXML
+  private void resetToDefault() {}
 
   @FXML
   private void save() {}

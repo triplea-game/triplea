@@ -2,14 +2,12 @@ package games.strategy.triplea.settings;
 
 import java.util.Map;
 
-import javax.swing.JComponent;
-
 /**
  * A SelectionComponent represents a UI component that a user can use to update the value of a ClientSetting.
  * Instances of this type are created in: {@code SelectionComponentFactory}
  */
-interface SelectionComponent {
-  JComponent getJComponent();
+public interface SelectionComponent<T> {
+  T getJComponent();
 
   boolean isValid();
 
@@ -34,4 +32,8 @@ interface SelectionComponent {
   void resetToDefault();
 
   void reset();
+  
+  default String getTitle() {
+    return "";
+  }
 }

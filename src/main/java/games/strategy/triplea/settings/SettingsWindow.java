@@ -38,8 +38,8 @@ enum SettingsWindow {
     if (dialog != null) {
       dialog.dispose();
       dialog = null;
-      Arrays.stream(ClientSettingUiBinding.values())
-          .forEach(ClientSettingUiBinding::dispose);
+      Arrays.stream(ClientSettingSwingUiBinding.values())
+          .forEach(ClientSettingSwingUiBinding::dispose);
     }
   }
 
@@ -63,7 +63,7 @@ enum SettingsWindow {
     final JTabbedPane tabbedPane = SwingComponents.newJTabbedPane(1000, 400);
 
     Arrays.stream(SettingType.values()).forEach(settingType -> {
-      final List<ClientSettingUiBinding> settings = getSettingsByType(settingType);
+      final List<ClientSettingSwingUiBinding> settings = getSettingsByType(settingType);
 
       final JComponent tab = buildTab(settings, closeListener);
       tabbedPane.add(settingType.tabTitle, tab);
@@ -71,13 +71,13 @@ enum SettingsWindow {
     return tabbedPane;
   }
 
-  private static List<ClientSettingUiBinding> getSettingsByType(final SettingType type) {
-    return Arrays.stream(ClientSettingUiBinding.values())
+  private static List<ClientSettingSwingUiBinding> getSettingsByType(final SettingType type) {
+    return Arrays.stream(ClientSettingSwingUiBinding.values())
         .filter(setting -> setting.type == type)
         .collect(Collectors.toList());
   }
 
-  private static JComponent buildTab(final List<ClientSettingUiBinding> settings, final Runnable closeListener) {
+  private static JComponent buildTab(final List<ClientSettingSwingUiBinding> settings, final Runnable closeListener) {
     return JPanelBuilder.builder()
         .borderLayout()
         .addCenter(tabMainContents(settings))
@@ -85,7 +85,7 @@ enum SettingsWindow {
         .build();
   }
 
-  private static JComponent tabMainContents(final Iterable<ClientSettingUiBinding> settings) {
+  private static JComponent tabMainContents(final Iterable<ClientSettingSwingUiBinding> settings) {
     final JPanelBuilder contents = JPanelBuilder.builder()
         .gridBagLayout(3);
 
@@ -117,7 +117,7 @@ enum SettingsWindow {
     return SwingComponents.newJScrollPane(contents.build());
   }
 
-  private static JPanel buttonPanel(final List<ClientSettingUiBinding> settings, final Runnable closeListener) {
+  private static JPanel buttonPanel(final List<ClientSettingSwingUiBinding> settings, final Runnable closeListener) {
     return JPanelBuilder.builder()
         .horizontalBoxLayout()
         .horizontalAlignmentCenter()
@@ -138,13 +138,13 @@ enum SettingsWindow {
         .add(JButtonBuilder.builder()
             .title("Reset")
             .actionListener(() -> settings.forEach(
-                ClientSettingUiBinding::reset))
+                ClientSettingSwingUiBinding::reset))
             .build())
         .add(Box.createHorizontalStrut(40))
         .add(JButtonBuilder.builder()
             .title("Reset To Default")
             .actionListener(() -> settings.forEach(
-                ClientSettingUiBinding::resetToDefault))
+                ClientSettingSwingUiBinding::resetToDefault))
             .build())
         .add(Box.createHorizontalGlue())
         .build();

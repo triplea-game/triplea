@@ -2,6 +2,7 @@ package games.strategy.triplea.settings;
 
 import java.util.Map;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,7 +19,7 @@ interface SaveFunction {
    * Returns a result message after persisting settings.
    */
   static SaveResult saveSettings(
-      final Iterable<? extends GameSettingUiBinding> settings,
+      final Iterable<? extends GameSettingUiBinding<JComponent>> settings,
       final Runnable settingsFlushToDisk) {
     final StringBuilder successMsg = new StringBuilder();
     final StringBuilder failMsg = new StringBuilder();

@@ -24,7 +24,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
  * typically it will be 1:1, and not all {@code ClientSettings} will be available in the UI.
  * </p>
  */
-enum ClientSettingUiBinding implements GameSettingUiBinding {
+enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   AI_PAUSE_DURATION_BINDING(
       "AI Pause Duration",
       SettingType.AI,
@@ -169,14 +169,14 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
   final SettingType type;
   final String title;
   final String description;
-  private final Supplier<SelectionComponent> selectionComponentBuilder;
+  private final Supplier<SelectionComponent<JComponent>> selectionComponentBuilder;
 
-  private SelectionComponent selectionComponent;
+  private SelectionComponent<JComponent> selectionComponent;
 
-  ClientSettingUiBinding(
+  ClientSettingSwingUiBinding(
       final String title,
       final SettingType type,
-      final Supplier<SelectionComponent> selectionComponentBuilder,
+      final Supplier<SelectionComponent<JComponent>> selectionComponentBuilder,
       final String description) {
     this.title = Preconditions.checkNotNull(Strings.emptyToNull(title));
     this.type = Preconditions.checkNotNull(type);
@@ -184,7 +184,7 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
     this.description = Preconditions.checkNotNull(Strings.emptyToNull(description));
   }
 
-  ClientSettingUiBinding(
+  ClientSettingSwingUiBinding(
       final String title,
       final SettingType type,
       final ClientSetting clientSetting,
@@ -197,7 +197,7 @@ enum ClientSettingUiBinding implements GameSettingUiBinding {
     return current().getJComponent();
   }
 
-  private SelectionComponent current() {
+  private SelectionComponent<JComponent> current() {
     if (selectionComponent == null) {
       selectionComponent = selectionComponentBuilder.get();
     }

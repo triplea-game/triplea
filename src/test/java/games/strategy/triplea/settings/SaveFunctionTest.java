@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import org.hamcrest.MatcherAssert;
@@ -21,10 +22,10 @@ import com.google.common.collect.ImmutableMap;
 public class SaveFunctionTest {
 
   @Mock
-  private GameSettingUiBinding mockBinding;
+  private GameSettingUiBinding<JComponent> mockBinding;
 
   @Mock
-  private GameSettingUiBinding mockBinding2;
+  private GameSettingUiBinding<JComponent> mockBinding2;
 
   @Mock
   private GameSetting mockSetting;
