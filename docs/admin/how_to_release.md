@@ -3,6 +3,7 @@
 - Testing group should have had at least 'okays' for any given game version.
 - Verify the release notes: https://github.com/triplea-game/triplea-game.github.io/blob/master/release_notes.md
    - Should have just about all significant changes and bug fixes
+   - Add link to full list of merged PRs included in release: https://github.com/triplea-game/triplea-game.github.io/blob/master/.github/generate_release_changes_url
 - Mark the target release version as latest: https://github.com/triplea-game/triplea/releases
 - Change the version number in the game_engine.properties file: https://github.com/triplea-game/triplea/blob/master/game_engine.properties
 - Update the lobby bots and the lobby server: https://github.com/triplea-game/lobby
