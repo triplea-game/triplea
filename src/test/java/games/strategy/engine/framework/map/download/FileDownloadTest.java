@@ -17,7 +17,7 @@ public class FileDownloadTest {
   private DownloadFileDescription mockDownload;
 
   @Test
-  public void testBasicStartCancel() throws Exception {
+  public void testBasicStartCancel() {
     final DownloadFile testObj = new DownloadFile(mockDownload, mock(DownloadListener.class));
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));
 

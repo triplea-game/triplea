@@ -89,7 +89,7 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testServerSendToClient2() throws Exception {
+  public void testServerSendToClient2() {
     final String message = "Hello";
     serverMessenger.send(message, client2Messenger.getLocalNode());
     assertEquals(client2MessageListener.getLastMessage(), message);

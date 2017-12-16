@@ -34,7 +34,7 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
   private final List<DownloadFileDescription> descriptions = new ArrayList<>();
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     descriptions.add(TEST_MAP);
   }
 

@@ -227,7 +227,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     }
 
     @Test
-    public void shouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() throws Exception {
+    public void shouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() {
       when(contentLengthHeader.getValue()).thenReturn(null);
 
       final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
@@ -236,7 +236,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     }
 
     @Test
-    public void shouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() throws Exception {
+    public void shouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() {
       when(contentLengthHeader.getValue()).thenReturn("value");
 
       final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());

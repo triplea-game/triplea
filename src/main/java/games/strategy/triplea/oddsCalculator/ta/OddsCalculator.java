@@ -204,7 +204,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   }
 
   @Override
-  public AggregateResults call() throws Exception {
+  public AggregateResults call() {
     return calculate();
   }
 

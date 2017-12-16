@@ -104,7 +104,7 @@ public class WW2V3Year41Test {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
         anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
           @Override
-          public CasualtyDetails answer(final InvocationOnMock invocation) throws Throwable {
+          public CasualtyDetails answer(final InvocationOnMock invocation) {
             final CasualtyList defaultCasualties = invocation.getArgument(11);
             if (defaultCasualties != null) {
               return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);

@@ -56,7 +56,7 @@ public class LobbyServerPropertiesFetcherTest {
   }
 
   @Test
-  public void throwsOnDownloadFailure() throws Exception {
+  public void throwsOnDownloadFailure() {
     assertThrows(IOException.class, () -> {
       final File temp = File.createTempFile("temp", "tmp");
       temp.deleteOnExit();

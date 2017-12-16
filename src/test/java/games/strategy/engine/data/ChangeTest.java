@@ -224,7 +224,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testPlayerOwnerChange() throws Exception {
+  public void testPlayerOwnerChange() {
     final PlayerID can = gameData.getPlayerList().getPlayerId("chretian");
     final PlayerID us = gameData.getPlayerList().getPlayerId("bush");
     final UnitType infantry = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);

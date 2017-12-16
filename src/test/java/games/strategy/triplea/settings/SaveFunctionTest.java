@@ -30,7 +30,7 @@ public class SaveFunctionTest {
   private GameSetting mockSetting;
 
   @Test
-  public void messageOnValidIsInformation() throws Exception {
+  public void messageOnValidIsInformation() {
     givenValidationResults(true, true);
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
         Arrays.asList(mockBinding, mockBinding2), () -> {
@@ -51,7 +51,7 @@ public class SaveFunctionTest {
   }
 
   @Test
-  public void messageOnNotValidResultIsWarning() throws Exception {
+  public void messageOnNotValidResultIsWarning() {
     givenValidationResults(false, false);
 
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
@@ -63,7 +63,7 @@ public class SaveFunctionTest {
   }
 
   @Test
-  public void messageOnMixedResultIsWarning() throws Exception {
+  public void messageOnMixedResultIsWarning() {
     givenValidationResults(true, false);
 
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
@@ -76,7 +76,7 @@ public class SaveFunctionTest {
   }
 
   @Test
-  public void valueSavedWhenValid() throws Exception {
+  public void valueSavedWhenValid() {
     final AtomicInteger callCount = new AtomicInteger(0);
 
     Mockito.when(mockBinding.isValid()).thenReturn(true);
@@ -95,7 +95,7 @@ public class SaveFunctionTest {
   }
 
   @Test
-  public void noSettingsSavedIfAllInvalid() throws Exception {
+  public void noSettingsSavedIfAllInvalid() {
     final AtomicInteger callCount = new AtomicInteger(0);
 
     Mockito.when(mockBinding.isValid()).thenReturn(false);

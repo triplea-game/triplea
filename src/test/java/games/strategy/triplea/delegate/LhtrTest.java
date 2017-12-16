@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.List;
@@ -107,17 +105,9 @@ public class LhtrTest {
     delegate.start();
     // if we try to move aa, then the game will ask us if we want to move
     // fail if we are called
-    final InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        fail("method called:" + method);
-        // never reached
-        return null;
-      }
-    };
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
+            TestUtil.getClassArrayFrom(ITripleAPlayer.class), (p, m, a) -> fail("method called:" + m));
     bridge.setRemote(player);
     // move 1 fighter over the aa gun in caucus
     final Route route = new Route();
@@ -167,15 +157,9 @@ public class LhtrTest {
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {2, 2, 3}));
     // if we try to move aa, then the game will ask us if we want to move
     // fail if we are called
-    final InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        return null;
-      }
-    };
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
+            TestUtil.getClassArrayFrom(ITripleAPlayer.class), (p, m, a) -> null);
     bridge.setRemote(player);
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
@@ -208,15 +192,9 @@ public class LhtrTest {
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 3, 2, 3, 0, 1}));
     // if we try to move aa, then the game will ask us if we want to move
     // fail if we are called
-    final InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        return null;
-      }
-    };
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
+            TestUtil.getClassArrayFrom(ITripleAPlayer.class), (p, m, a) -> null);
     bridge.setRemote(player);
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);

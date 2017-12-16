@@ -3,7 +3,6 @@ package games.strategy.engine.data.annotations;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.UnitType;
 import games.strategy.util.IntegerMap;
 
@@ -33,5 +32,5 @@ public class InvalidFieldTypeExample extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {}
+  public void validate(final GameData data) {}
 }

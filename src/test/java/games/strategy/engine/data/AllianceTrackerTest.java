@@ -18,7 +18,7 @@ public class AllianceTrackerTest {
   }
 
   @Test
-  public void testAddAlliance() throws Exception {
+  public void testAddAlliance() {
     final PlayerID bush = gameData.getPlayerList().getPlayerId("bush");
     final PlayerID castro = gameData.getPlayerList().getPlayerId("castro");
     final AllianceTracker allianceTracker = gameData.getAllianceTracker();

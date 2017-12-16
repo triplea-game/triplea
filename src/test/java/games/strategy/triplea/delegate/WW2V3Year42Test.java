@@ -93,7 +93,7 @@ public class WW2V3Year42Test {
   }
 
   @Test
-  public void testLingeringSeaUnitsJoinBattle() throws Exception {
+  public void testLingeringSeaUnitsJoinBattle() {
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory sz6 = territory("6 Sea Zone", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);
@@ -116,7 +116,7 @@ public class WW2V3Year42Test {
   }
 
   @Test
-  public void testLingeringFightersAndALliedUnitsJoinBattle() throws Exception {
+  public void testLingeringFightersAndALliedUnitsJoinBattle() {
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory sz6 = territory("6 Sea Zone", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);
@@ -143,7 +143,7 @@ public class WW2V3Year42Test {
   }
 
   @Test
-  public void testLingeringSeaUnitsCanMoveAwayFromBattle() throws Exception {
+  public void testLingeringSeaUnitsCanMoveAwayFromBattle() {
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory sz6 = territory("6 Sea Zone", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);

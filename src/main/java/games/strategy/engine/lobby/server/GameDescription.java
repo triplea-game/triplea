@@ -205,7 +205,7 @@ public class GameDescription implements Externalizable, Cloneable {
   }
 
   @Override
-  public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+  public void readExternal(final ObjectInput in) throws IOException {
     m_hostedBy = new Node();
     ((Node) m_hostedBy).readExternal(in);
     m_port = in.readInt();

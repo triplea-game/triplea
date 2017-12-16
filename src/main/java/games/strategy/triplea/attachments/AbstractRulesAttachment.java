@@ -428,9 +428,4 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
     return territories;
   }
-
-  @Override
-  public void validate(final GameData data) throws GameParseException {
-    super.validate(data);
-  }
 }

@@ -3,7 +3,6 @@ package games.strategy.engine.data.annotations;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameParseException;
 
 /**
  * Example that used @GameProperty and has a getter with an invalid return type.
@@ -30,5 +29,5 @@ public class InvalidReturnTypeExample extends DefaultAttachment {
   public void resetAttribute() {}
 
   @Override
-  public void validate(final GameData data) throws GameParseException {}
+  public void validate(final GameData data) {}
 }

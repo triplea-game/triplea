@@ -91,7 +91,7 @@ public final class Md5CryptAuthenticatorTest {
   }
 
   @Test
-  public void newResponse_ShouldThrowExceptionWhenChallengeDoesNotContainSalt() throws Exception {
+  public void newResponse_ShouldThrowExceptionWhenChallengeDoesNotContainSalt() {
     final Map<String, String> challenge = ImmutableMap.of();
 
     final Exception e =

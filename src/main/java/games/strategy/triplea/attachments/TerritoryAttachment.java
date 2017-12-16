@@ -800,7 +800,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {}
+  public void validate(final GameData data) {}
 
 
 }
