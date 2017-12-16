@@ -42,7 +42,10 @@ class JavaFxSelectionComponentFactory {
       final int minValue,
       final int maxValue) {
     return () -> {
-      final Spinner<Integer> spinner = new Spinner<>(minValue, maxValue, clientSetting.intValue());
+      final int value = clientSetting.value().isEmpty()
+          ? 0
+          : clientSetting.intValue();
+      final Spinner<Integer> spinner = new Spinner<>(minValue, maxValue, value);
       return new SelectionComponent<Node>() {
 
         @Override
@@ -479,9 +482,5 @@ class JavaFxSelectionComponentFactory {
         }
       };
     };
-  }
-
-  private static String getLocalizationKey(final Node rootNode, final ClientSetting clientSetting) {
-    return "settings." + rootNode.getClass().getSimpleName().toLowerCase() + "." + clientSetting.name().toLowerCase();
   }
 }
