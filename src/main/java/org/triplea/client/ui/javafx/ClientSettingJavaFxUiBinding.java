@@ -149,4 +149,8 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Node> {
   public void resetToDefault() {
     nodeSupplier.get().resetToDefault();
   }
+
+  public SettingType getCategory() {
+    return category;
+  }
 }

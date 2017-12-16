@@ -1,25 +1,25 @@
 package org.triplea.client.ui.javafx;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Arrays;
 
+import games.strategy.triplea.settings.SettingType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
 class SettingsPane extends StackPane {
   private final TripleA triplea;
 
   @FXML
-  private ComboBox<String> proxyCombobox;
-  @FXML
-  private TextField proxyHost;
-  @FXML
-  private Spinner<Integer> proxyPort;
+  private TabPane tabPane;
+
 
   /**
    * @param triplea The root pane.
@@ -31,16 +31,21 @@ class SettingsPane extends StackPane {
     loader.setController(this);
     loader.load();
     this.triplea = triplea;
-    final List<String> newItems =
-        proxyCombobox.getItems().stream().map(s -> s.substring(1)).map(loader.getResources()::getString)
-            .collect(Collectors.toList());
-    proxyCombobox.getItems().clear();
-    proxyCombobox.getItems().addAll(newItems);
-    proxyCombobox.getSelectionModel().selectFirst();
-    proxyCombobox.valueProperty().addListener((a, b, c) -> {
-      final boolean disabled = proxyCombobox.getSelectionModel().getSelectedIndex() != 2;
-      proxyHost.setDisable(disabled);
-      proxyPort.setDisable(disabled);
+    Arrays.stream(SettingType.values()).forEach(type -> {
+      final Tab tab = new Tab(type.toString());
+      final GridPane pane = new GridPane();
+      tab.setContent(new ScrollPane(pane));
+      Arrays.stream(ClientSettingJavaFxUiBinding.values())
+          .filter(b -> b.getCategory() == type)
+          .forEach(b -> {
+            final Label description = new Label();
+            final Node node = b.buildSelectionComponent();
+            description.setText(loader.getResources().getString(
+                getSettingLocalizationKey(node, b.name().toLowerCase())));
+            pane.addColumn(0, description);
+            pane.addColumn(1, node);
+          });
+      tabPane.getTabs().add(tab);
     });
   }
 
@@ -58,4 +63,9 @@ class SettingsPane extends StackPane {
 
   @FXML
   private void save() {}
+
+
+  private static String getSettingLocalizationKey(final Node rootNode, final String name) {
+    return "settings." + rootNode.getClass().getSimpleName().toLowerCase() + "." + name;
+  }
 }
