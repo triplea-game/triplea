@@ -3,8 +3,6 @@ package games.strategy.triplea.delegate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -322,13 +320,7 @@ public class AirThatCantLandUtilTest {
    */
   @Deprecated
   private static ITripleAPlayer getDummyPlayer() {
-    final InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) {
-        return null;
-      }
-    };
     return (ITripleAPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        TestUtil.getClassArrayFrom(ITripleAPlayer.class), handler);
+        TestUtil.getClassArrayFrom(ITripleAPlayer.class), (p, m, a) -> null);
   }
 }
