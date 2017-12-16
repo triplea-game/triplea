@@ -19,6 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -34,6 +35,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
+import games.strategy.util.Tuple;
 
 /**
  * Responsible for moving units on the board.
@@ -453,6 +455,44 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
     if (!clearAlliedAir.isEmpty()) {
       bridge.addChange(clearAlliedAir);
+    }
+
+    // Check if any repaired units change into different unit types
+    for (final Territory territory : damagedMap.keySet()) {
+      repairedChangeInto(damagedMap.get(territory), territory, bridge);
+    }
+  }
+
+  private static void repairedChangeInto(final Set<Unit> units, final Territory territory,
+      final IDelegateBridge bridge) {
+    final List<Unit> changesIntoUnits =
+        CollectionUtils.getMatches(units, Matches.unitWhenHitPointsRepairedChangesInto());
+    final CompositeChange changes = new CompositeChange();
+    final List<Unit> unitsToRemove = new ArrayList<>();
+    final List<Unit> unitsToAdd = new ArrayList<>();
+    for (final Unit unit : changesIntoUnits) {
+      final Map<Integer, Tuple<Boolean, UnitType>> map =
+          UnitAttachment.get(unit.getType()).getWhenHitPointsRepairedChangesInto();
+      if (map.containsKey(unit.getHits())) {
+        final boolean translateAttributes = map.get(unit.getHits()).getFirst();
+        final UnitType unitType = map.get(unit.getHits()).getSecond();
+        final List<Unit> toAdd = unitType.create(1, unit.getOwner());
+        if (translateAttributes) {
+          final Change translate = TripleAUnit.translateAttributesToOtherUnits(unit, toAdd, territory);
+          changes.add(translate);
+        }
+        unitsToRemove.add(unit);
+        unitsToAdd.addAll(toAdd);
+      }
+    }
+    if (!unitsToRemove.isEmpty()) {
+      bridge.addChange(changes);
+      final String removeText = MyFormatter.unitsToText(unitsToRemove) + " removed in " + territory.getName();
+      bridge.getHistoryWriter().addChildToEvent(removeText, new ArrayList<>(unitsToRemove));
+      bridge.addChange(ChangeFactory.removeUnits(territory, unitsToRemove));
+      final String addText = MyFormatter.unitsToText(unitsToAdd) + " added in " + territory.getName();
+      bridge.getHistoryWriter().addChildToEvent(addText, new ArrayList<>(unitsToAdd));
+      bridge.addChange(ChangeFactory.addUnits(territory, unitsToAdd));
     }
   }
 
