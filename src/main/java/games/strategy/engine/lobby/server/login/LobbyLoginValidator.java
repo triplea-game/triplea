@@ -116,7 +116,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     } else {
       final HashedPassword password = userDao.getLegacyPassword(userName);
       if (password != null && Strings.emptyToNull(password.value) != null) {
-        challenge.put(SALT_KEY, MD5Crypt.getSalt(MD5Crypt.MAGIC, password.value));
+        challenge.put(SALT_KEY, MD5Crypt.getSalt(password.value));
       }
     }
     return challenge;
