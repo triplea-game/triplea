@@ -281,7 +281,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return null;
   }
 
-  private IntegerMap<Unit> getUnitRepairs(final Map<Unit, IntegerMap<RepairRule>> repairRules) {
+  private static IntegerMap<Unit> getUnitRepairs(final Map<Unit, IntegerMap<RepairRule>> repairRules) {
     final IntegerMap<Unit> repairMap = new IntegerMap<>();
     for (final Unit u : repairRules.keySet()) {
       final IntegerMap<RepairRule> rules = repairRules.get(u);
