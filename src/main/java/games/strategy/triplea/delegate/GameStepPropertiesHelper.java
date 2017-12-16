@@ -262,6 +262,9 @@ public class GameStepPropertiesHelper {
     }
   }
 
+  /**
+   * Indicates bid purchase or placement is enabled for the specified game.
+   */
   public static boolean isBid(final GameData data) {
     data.acquireReadLock();
     try {
