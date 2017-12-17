@@ -47,7 +47,7 @@ class SettingsPane extends StackPane {
       Arrays.stream(ClientSettingJavaFxUiBinding.values())
           .filter(b -> b.getCategory() == type)
           .forEach(b -> {
-            final Tooltip tooltip = new Tooltip("Placeholder Tooltip");
+            final Tooltip tooltip = new Tooltip(bundle.getString("settings.tooltip." + b.name().toLowerCase()));
             final Region element = b.buildSelectionComponent();
             final Label description = new Label(bundle.getString(getSettingLocalizationKey(element, b)));
             description.setTooltip(tooltip);
