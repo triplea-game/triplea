@@ -77,7 +77,7 @@ final class SelectionComponentFactory {
       };
 
       @Override
-      public JComponent getJComponent() {
+      public JComponent getUiComponent() {
         SwingComponents.createButtonGroup(noneButton, systemButton, userButton);
         enableUserSettings.actionPerformed(null);
         userButton.addActionListener(enableUserSettings);
@@ -174,7 +174,7 @@ final class SelectionComponentFactory {
       final JTextField component = new JTextField(value, String.valueOf(hi).length());
 
       @Override
-      public JComponent getJComponent() {
+      public JComponent getUiComponent() {
         component.setToolTipText(validValueDescription());
 
         SwingComponents.addTextFieldFocusLostListener(component, () -> {
@@ -255,7 +255,7 @@ final class SelectionComponentFactory {
           .build();
 
       @Override
-      public JComponent getJComponent() {
+      public JComponent getUiComponent() {
         yesButton.setSelected(initialSelection);
         noButton.setSelected(!initialSelection);
         SwingComponents.createButtonGroup(yesButton, noButton);
@@ -305,7 +305,7 @@ final class SelectionComponentFactory {
           .build();
 
       @Override
-      public JComponent getJComponent() {
+      public JComponent getUiComponent() {
         field.setEditable(false);
 
         return JPanelBuilder.builder()
@@ -372,7 +372,7 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public JComponent getJComponent() {
+      public JComponent getUiComponent() {
         comboBox.setSelectedItem(clientSetting.value());
         return comboBox;
       }
@@ -404,7 +404,7 @@ final class SelectionComponentFactory {
       final JTextField textField = new JTextField(clientSetting.value(), 20);
 
       @Override
-      public JComponent getJComponent() {
+      public JComponent getUiComponent() {
         return textField;
       }
 

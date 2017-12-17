@@ -112,7 +112,7 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
 
   @Override
   public Region buildSelectionComponent() {
-    return current().getJComponent();
+    return current().getUiComponent();
   }
 
   private SelectionComponent<Region> current() {
