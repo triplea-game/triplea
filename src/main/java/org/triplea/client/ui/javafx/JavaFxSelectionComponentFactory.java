@@ -21,7 +21,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -147,8 +146,7 @@ class JavaFxSelectionComponentFactory {
 
   static Supplier<SelectionComponent<Node>> toggleButton(final ClientSetting clientSetting) {
     return () -> {
-      final CheckBox checkBox = new CheckBox();
-      checkBox.setSelected(Boolean.parseBoolean(clientSetting.value()));
+      final ToggleSwitch checkBox = new ToggleSwitch(Boolean.parseBoolean(clientSetting.value()));
       return new SelectionComponent<Node>() {
 
         @Override
@@ -168,7 +166,7 @@ class JavaFxSelectionComponentFactory {
 
         @Override
         public Map<GameSetting, String> readValues() {
-          return Collections.singletonMap(clientSetting, String.valueOf(checkBox.isSelected()));
+          return Collections.singletonMap(clientSetting, String.valueOf(checkBox.switchedOnProperty().get()));
         }
 
         @Override
@@ -179,12 +177,12 @@ class JavaFxSelectionComponentFactory {
 
         @Override
         public void resetToDefault() {
-          checkBox.setSelected(Boolean.parseBoolean(clientSetting.defaultValue));
+          checkBox.switchedOnProperty().set(Boolean.parseBoolean(clientSetting.defaultValue));
         }
 
         @Override
         public void reset() {
-          checkBox.setSelected(Boolean.parseBoolean(clientSetting.value()));
+          checkBox.switchedOnProperty().set(Boolean.parseBoolean(clientSetting.value()));
         }
       };
     };
