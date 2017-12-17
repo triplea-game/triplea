@@ -7,9 +7,10 @@
 }
 .tab-label, .spinner, .text-field, .combo-box, .exitButton, .label, .radio-button {
 	-fx-font-family: "1942 report";
+	-fx-font-size: 12px;
 }
 .tab-label, .text-field {
-	-fx-font-size: 14px;
+	-fx-font-size: 14px !important;
 }
 .toggle-button{
 	-fx-background-color: #CCC;

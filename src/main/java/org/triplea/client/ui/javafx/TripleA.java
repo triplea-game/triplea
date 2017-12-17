@@ -44,7 +44,10 @@ public class TripleA extends Application {
   public void start(final Stage stage) throws Exception {
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
     loader.setController(this);
-    final Scene scene = new Scene(loader.load(), 960, 540);// TODO make those values configurable
+    final double widthOffsetCompensateValue = 20;
+    final double heightOffsetCompensateValue = 30;
+    // TODO make those values configurable
+    final Scene scene = new Scene(loader.load(), 960 + widthOffsetCompensateValue, 540 + heightOffsetCompensateValue);
     Font.loadFont(TripleA.class.getResourceAsStream(FxmlManager.RELATIVE_FONT_PATH.toString()), 14);
     scene.getStylesheets().add(FxmlManager.STYLESHEET_MAIN.toString());
     mainMenu = addRootContent(new MainMenuPane(this));
