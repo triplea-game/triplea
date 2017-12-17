@@ -8,9 +8,9 @@ import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.GameSettingUiBinding;
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SettingType;
-import javafx.scene.Node;
+import javafx.scene.layout.Region;
 
-enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Node> {
+enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
   AI_PAUSE_DURATION_BINDING(
       SettingType.AI,
       JavaFxSelectionComponentFactory.intValueRange(ClientSetting.AI_PAUSE_DURATION, 0, 3000)),
@@ -96,12 +96,12 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Node> {
       JavaFxSelectionComponentFactory.proxySettings());
 
   private final SettingType category;
-  private final Supplier<SelectionComponent<Node>> nodeSupplier;
+  private final Supplier<SelectionComponent<Region>> nodeSupplier;
 
-  private SelectionComponent<Node> selectionComponent;
+  private SelectionComponent<Region> selectionComponent;
 
   private ClientSettingJavaFxUiBinding(final SettingType category,
-      final Supplier<SelectionComponent<Node>> nodeSupplier) {
+      final Supplier<SelectionComponent<Region>> nodeSupplier) {
     this.category = category;
     this.nodeSupplier = nodeSupplier;
   }
@@ -111,11 +111,11 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Node> {
   }
 
   @Override
-  public Node buildSelectionComponent() {
+  public Region buildSelectionComponent() {
     return current().getJComponent();
   }
 
-  private SelectionComponent<Node> current() {
+  private SelectionComponent<Region> current() {
     if (selectionComponent == null) {
       selectionComponent = nodeSupplier.get();
     }

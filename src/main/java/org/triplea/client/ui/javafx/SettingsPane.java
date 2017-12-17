@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import games.strategy.triplea.settings.SettingType;
 import javafx.fxml.FXML;
@@ -14,7 +15,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
 class SettingsPane extends StackPane {
@@ -34,8 +37,9 @@ class SettingsPane extends StackPane {
     loader.setController(this);
     loader.load();
     this.triplea = triplea;
+    final ResourceBundle bundle = loader.getResources();
     Arrays.stream(SettingType.values()).forEach(type -> {
-      final Tab tab = new Tab(loader.getResources().getString("settings.tab." + type.toString().toLowerCase()));
+      final Tab tab = new Tab(bundle.getString("settings.tab." + type.toString().toLowerCase()));
       final GridPane pane = new GridPane();
       pane.setPadding(new Insets(5, 0, 0, 0));
       pane.setVgap(5);
@@ -43,12 +47,12 @@ class SettingsPane extends StackPane {
       Arrays.stream(ClientSettingJavaFxUiBinding.values())
           .filter(b -> b.getCategory() == type)
           .forEach(b -> {
-            final Label description = new Label();
-            final Node node = b.buildSelectionComponent();
-            description.setText(loader.getResources().getString(
-                getSettingLocalizationKey(node, b.name().toLowerCase())));
+            final Tooltip tooltip = new Tooltip("Placeholder Tooltip");
+            final Region element = b.buildSelectionComponent();
+            final Label description = new Label(bundle.getString(getSettingLocalizationKey(element, b)));
+            description.setTooltip(tooltip);
             pane.addColumn(0, description);
-            pane.addColumn(1, node);
+            pane.addColumn(1, element);
           });
       if (!pane.getChildren().isEmpty()) {
         tabPane.getTabs().add(tab);
@@ -83,7 +87,7 @@ class SettingsPane extends StackPane {
   }
 
 
-  private static String getSettingLocalizationKey(final Node rootNode, final String name) {
-    return "settings." + rootNode.getClass().getSimpleName().toLowerCase() + "." + name;
+  private static String getSettingLocalizationKey(final Node rootNode, final Enum<?> name) {
+    return "settings." + rootNode.getClass().getSimpleName().toLowerCase() + "." + name.name().toLowerCase();
   }
 }

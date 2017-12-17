@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
@@ -17,7 +16,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import javafx.beans.binding.Bindings;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -34,303 +32,396 @@ class JavaFxSelectionComponentFactory {
 
   private JavaFxSelectionComponentFactory() {}
 
-  static Supplier<SelectionComponent<Node>> intValueRange(
+  static Supplier<SelectionComponent<Region>> intValueRange(
       final ClientSetting clientSetting,
       final int minValue,
       final int maxValue) {
-    return () -> {
+    return () -> new SelectionComponent<Region>() {
+
       final int value = clientSetting.value().isEmpty()
           ? 0
           : clientSetting.intValue();
       final Spinner<Integer> spinner = new Spinner<>(minValue, maxValue, value);
-      return new SelectionComponent<Node>() {
 
-        @Override
-        public Node getJComponent() {
-          return spinner;
-        }
+      @Override
+      public Region getJComponent() {
+        return spinner;
+      }
 
-        @Override
-        public boolean isValid() {
-          return true;
-        }
+      @Override
+      public boolean isValid() {
+        return true;
+      }
 
-        @Override
-        public String validValueDescription() {
-          return "";// TODO localize this as well
-        }
+      @Override
+      public String validValueDescription() {
+        return "";// TODO localize this as well
+      }
 
-        @Override
-        public Map<GameSetting, String> readValues() {
-          return Collections.singletonMap(clientSetting, spinner.getValue().toString());
-        }
+      @Override
+      public Map<GameSetting, String> readValues() {
+        return Collections.singletonMap(clientSetting, spinner.getValue().toString());
+      }
 
-        /**
-         * Does nothing.
-         * Using a Spinner should ensure no invalid values can be entered.
-         */
-        @Override
-        public void indicateError() {}
+      /**
+       * Does nothing.
+       * Using a Spinner should ensure no invalid values can be entered.
+       */
+      @Override
+      public void indicateError() {}
 
-        /**
-         * Does nothing.
-         * Using a Spinner should ensure no invalid values can be entered.
-         */
-        @Override
-        public void clearError() {}
+      /**
+       * Does nothing.
+       * Using a Spinner should ensure no invalid values can be entered.
+       */
+      @Override
+      public void clearError() {}
 
-        @Override
-        public void resetToDefault() {
-          spinner.getValueFactory().setValue(Integer.getInteger(clientSetting.defaultValue));
-        }
+      @Override
+      public void resetToDefault() {
+        spinner.getValueFactory().setValue(Integer.getInteger(clientSetting.defaultValue));
+      }
 
-        @Override
-        public void reset() {
-          spinner.getValueFactory().setValue(Integer.getInteger(clientSetting.value()));
-        }
+      @Override
+      public void reset() {
+        spinner.getValueFactory().setValue(Integer.getInteger(clientSetting.value()));
+      }
 
-        @Override
-        public String getTitle() {
-          return "";
-        }
-      };
+      @Override
+      public String getTitle() {
+        return "";
+      }
     };
   }
 
-  static Supplier<SelectionComponent<Node>> toggleButton(final ClientSetting clientSetting) {
-    return () -> {
+  static Supplier<SelectionComponent<Region>> toggleButton(final ClientSetting clientSetting) {
+    return () -> new SelectionComponent<Region>() {
       final ToggleSwitch checkBox = new ToggleSwitch(Boolean.parseBoolean(clientSetting.value()));
-      return new SelectionComponent<Node>() {
 
-        @Override
-        public Node getJComponent() {
-          return checkBox;
-        }
+      @Override
+      public Region getJComponent() {
+        return checkBox;
+      }
 
-        @Override
-        public boolean isValid() {
-          return true;
-        }
+      @Override
+      public boolean isValid() {
+        return true;
+      }
 
-        @Override
-        public String validValueDescription() {
-          return "";
-        }
+      @Override
+      public String validValueDescription() {
+        return "";
+      }
 
-        @Override
-        public Map<GameSetting, String> readValues() {
-          return Collections.singletonMap(clientSetting, String.valueOf(checkBox.switchedOnProperty().get()));
-        }
+      @Override
+      public Map<GameSetting, String> readValues() {
+        return Collections.singletonMap(clientSetting, String.valueOf(checkBox.switchedOnProperty().get()));
+      }
 
-        @Override
-        public void indicateError() {}
+      @Override
+      public void indicateError() {}
 
-        @Override
-        public void clearError() {}
+      @Override
+      public void clearError() {}
 
-        @Override
-        public void resetToDefault() {
-          checkBox.switchedOnProperty().set(Boolean.parseBoolean(clientSetting.defaultValue));
-        }
+      @Override
+      public void resetToDefault() {
+        checkBox.switchedOnProperty().set(Boolean.parseBoolean(clientSetting.defaultValue));
+      }
 
-        @Override
-        public void reset() {
-          checkBox.switchedOnProperty().set(Boolean.parseBoolean(clientSetting.value()));
-        }
-      };
+      @Override
+      public void reset() {
+        checkBox.switchedOnProperty().set(Boolean.parseBoolean(clientSetting.value()));
+      }
     };
   }
 
-  static Supplier<SelectionComponent<Node>> textField(final ClientSetting clientSetting) {
-    return () -> {
+  static Supplier<SelectionComponent<Region>> textField(final ClientSetting clientSetting) {
+    return () -> new SelectionComponent<Region>() {
       final TextField textField = new TextField();
-      textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
-      return new SelectionComponent<Node>() {
 
-        @Override
-        public Node getJComponent() {
-          return textField;
-        }
+      @Override
+      public Region getJComponent() {
+        return textField;
+      }
 
-        @Override
-        public boolean isValid() {
-          return true;
-        }
+      @Override
+      public boolean isValid() {
+        return true;
+      }
 
-        @Override
-        public String validValueDescription() {
-          return "";
-        }
+      @Override
+      public String validValueDescription() {
+        return "";
+      }
 
-        @Override
-        public Map<GameSetting, String> readValues() {
-          return Collections.singletonMap(clientSetting, textField.getText());
-        }
+      @Override
+      public Map<GameSetting, String> readValues() {
+        return Collections.singletonMap(clientSetting, textField.getText());
+      }
 
-        @Override
-        public void indicateError() {}
+      @Override
+      public void indicateError() {}
 
-        @Override
-        public void clearError() {}
+      @Override
+      public void clearError() {}
 
-        @Override
-        public void resetToDefault() {
-          textField.setText(clientSetting.defaultValue);
-        }
+      @Override
+      public void resetToDefault() {
+        textField.setText(clientSetting.defaultValue);
+      }
 
-        @Override
-        public void reset() {
-          textField.setText(clientSetting.value());
-        }
-      };
+      @Override
+      public void reset() {
+        textField.setText(clientSetting.value());
+      }
     };
   }
 
 
-  static Supplier<SelectionComponent<Node>> folderPath(final ClientSetting clientSetting) {
-    return () -> {
+  static Supplier<SelectionComponent<Region>> folderPath(final ClientSetting clientSetting) {
+    return () -> new SelectionComponent<Region>() {
+
+      private final FolderSelector folderSelector = new FolderSelector(clientSetting);
+
+      @Override
+      public Region getJComponent() {
+        return folderSelector;
+      }
+
+      @Override
+      public boolean isValid() {
+        return true;
+      }
+
+      @Override
+      public String validValueDescription() {
+        return "";
+      }
+
+      @Override
+      public Map<GameSetting, String> readValues() {
+        return folderSelector.readValues();
+      }
+
+      @Override
+      public void indicateError() {}
+
+      @Override
+      public void clearError() {}
+
+      @Override
+      public void resetToDefault() {
+        folderSelector.resetToDefault();
+      }
+
+      @Override
+      public void reset() {
+        folderSelector.reset();
+      }
+    };
+  }
+
+  static Supplier<SelectionComponent<Region>> filePath(final ClientSetting clientSetting) {
+    return () -> new SelectionComponent<Region>() {
+      private final FileSelector fileSelector = new FileSelector(clientSetting);
+
+      @Override
+      public Region getJComponent() {
+        return fileSelector;
+      }
+
+      @Override
+      public boolean isValid() {
+        return true;
+      }
+
+      @Override
+      public String validValueDescription() {
+        return "";
+      }
+
+      @Override
+      public Map<GameSetting, String> readValues() {
+        return fileSelector.readValues();
+      }
+
+      @Override
+      public void indicateError() {}
+
+      @Override
+      public void clearError() {}
+
+      @Override
+      public void resetToDefault() {
+        fileSelector.resetToDefault();
+      }
+
+      @Override
+      public void reset() {
+        fileSelector.reset();
+      }
+    };
+  }
+
+
+  static Supplier<SelectionComponent<Region>> proxySettings() {
+    return () -> new SelectionComponent<Region>() {
+
+      private final ProxySetting proxySetting = new ProxySetting();
+
+      @Override
+      public Region getJComponent() {
+        return proxySetting;
+      }
+
+      @Override
+      public boolean isValid() {
+        return proxySetting.isValid();
+      }
+
+      @Override
+      public String validValueDescription() {
+        return "Proxy host can be a network name or an IP address, port should be number, usually 4 to 5 digits.";
+      }
+
+      @Override
+      public Map<GameSetting, String> readValues() {
+        return proxySetting.readValues();
+      }
+
+      @Override
+      public void indicateError() {
+        proxySetting.indicateError();
+      }
+
+      @Override
+      public void clearError() {
+        proxySetting.clearError();
+      }
+
+      @Override
+      public void resetToDefault() {
+        proxySetting.resetToDefault();
+      }
+
+      @Override
+      public void reset() {
+        proxySetting.reset();
+      }
+    };
+  }
+
+
+  private static final class FolderSelector extends Region {
+    private final ClientSetting clientSetting;
+    private final TextField textField;
+    private File selectedFile;
+
+    FolderSelector(final ClientSetting clientSetting) {
+      this.clientSetting = clientSetting;
       final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
       final HBox wrapper = new HBox();
-      final TextField textField = new TextField(clientSetting.value());
+      textField = new TextField(clientSetting.value());
       textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
       textField.setMaxWidth(Double.MAX_VALUE);
       textField.setDisable(true);
       final Button chooseFileButton = new Button("...");
-      final AtomicReference<File> selectedFile = new AtomicReference<>(initialValue);
+      selectedFile = initialValue;
       chooseFileButton.setOnAction(e -> {
         final DirectoryChooser fileChooser = new DirectoryChooser();
-        if (selectedFile.get() != null) {
-          fileChooser.setInitialDirectory(selectedFile.get());
+        if (selectedFile != null) {
+          fileChooser.setInitialDirectory(selectedFile);
         }
         final File file = fileChooser.showDialog(chooseFileButton.getScene().getWindow());
         if (file != null) {
-          selectedFile.set(file);
+          selectedFile = file;
           textField.setText(file.toString());
         }
       });
       wrapper.getChildren().addAll(textField, chooseFileButton);
-      return new SelectionComponent<Node>() {
+      getChildren().add(wrapper);
+    }
 
-        @Override
-        public Node getJComponent() {
-          return wrapper;
-        }
+    Map<GameSetting, String> readValues() {
+      return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, ""));
+    }
 
-        @Override
-        public boolean isValid() {
-          return true;
-        }
+    void resetToDefault() {
+      textField.setText(clientSetting.defaultValue);
+      selectedFile = new File(clientSetting.defaultValue);
+    }
 
-        @Override
-        public String validValueDescription() {
-          return "";
-        }
-
-        @Override
-        public Map<GameSetting, String> readValues() {
-          return Collections.singletonMap(clientSetting, Objects.toString(selectedFile.get(), ""));
-        }
-
-        @Override
-        public void indicateError() {}
-
-        @Override
-        public void clearError() {}
-
-        @Override
-        public void resetToDefault() {
-          textField.setText(clientSetting.defaultValue);
-          selectedFile.set(new File(clientSetting.defaultValue));
-        }
-
-        @Override
-        public void reset() {
-          textField.setText(clientSetting.value());
-          selectedFile.set(new File(clientSetting.value()));
-        }
-      };
-    };
+    void reset() {
+      textField.setText(clientSetting.value());
+      selectedFile = new File(clientSetting.value());
+    }
   }
 
-  static Supplier<SelectionComponent<Node>> filePath(final ClientSetting clientSetting) {
-    return () -> {
+  private static final class FileSelector extends Region {
+    private final ClientSetting clientSetting;
+    private final TextField textField;
+    private File selectedFile;
+
+    FileSelector(final ClientSetting clientSetting) {
+      this.clientSetting = clientSetting;
       final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
       final HBox wrapper = new HBox();
-      final TextField textField = new TextField(clientSetting.value());
+      textField = new TextField(clientSetting.value());
       textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
       textField.setDisable(true);
       final Button chooseFileButton = new Button("...");
-      final AtomicReference<File> selectedFile = new AtomicReference<>(initialValue);
+      selectedFile = initialValue;
       chooseFileButton.setOnAction(e -> {
         final FileChooser fileChooser = new FileChooser();
-        if (selectedFile.get() != null) {
-          fileChooser.setInitialDirectory(selectedFile.get());
+        if (selectedFile != null) {
+          fileChooser.setInitialDirectory(selectedFile);
         }
         final File file = fileChooser.showOpenDialog(chooseFileButton.getScene().getWindow());
         if (file != null) {
-          selectedFile.set(file);
+          selectedFile = file;
           textField.setText(file.toString());
         }
       });
       wrapper.getChildren().addAll(textField, chooseFileButton);
-      return new SelectionComponent<Node>() {
+      getChildren().add(wrapper);
+    }
 
-        @Override
-        public Node getJComponent() {
-          return wrapper;
-        }
+    Map<GameSetting, String> readValues() {
+      return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, ""));
+    }
 
-        @Override
-        public boolean isValid() {
-          return true;
-        }
+    void resetToDefault() {
+      textField.setText(clientSetting.defaultValue);
+      selectedFile = new File(clientSetting.defaultValue);
+    }
 
-        @Override
-        public String validValueDescription() {
-          return "";
-        }
-
-        @Override
-        public Map<GameSetting, String> readValues() {
-          return Collections.singletonMap(clientSetting, Objects.toString(selectedFile.get(), ""));
-        }
-
-        @Override
-        public void indicateError() {}
-
-        @Override
-        public void clearError() {}
-
-        @Override
-        public void resetToDefault() {
-          textField.setText(clientSetting.defaultValue);
-          selectedFile.set(new File(clientSetting.defaultValue));
-        }
-
-        @Override
-        public void reset() {
-          textField.setText(clientSetting.value());
-          selectedFile.set(new File(clientSetting.value()));
-        }
-      };
-    };
+    void reset() {
+      textField.setText(clientSetting.value());
+      selectedFile = new File(clientSetting.value());
+    }
   }
 
+  private static final class ProxySetting extends Region {
+    private final RadioButton noneButton;
+    private final RadioButton systemButton;
+    private final RadioButton userButton;
+    private final TextField hostText;
+    private final TextField portText;
 
-  static Supplier<SelectionComponent<Node>> proxySettings() {
-    return () -> {
+    ProxySetting() {
       final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
       final HttpProxy.ProxyChoice proxyChoice =
           HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
-      final RadioButton noneButton = new RadioButton("None");
+      noneButton = new RadioButton("None");
       noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
-      final RadioButton systemButton = new RadioButton("Use System Settings");
+      systemButton = new RadioButton("Use System Settings");
       systemButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
 
-      final RadioButton userButton = new RadioButton("Use These Settings:");
+      userButton = new RadioButton("Use These Settings:");
       userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-      final TextField hostText = new TextField(ClientSetting.PROXY_HOST.value());
-      final TextField portText = new TextField(ClientSetting.PROXY_PORT.value());
+      hostText = new TextField(ClientSetting.PROXY_HOST.value());
+      portText = new TextField(ClientSetting.PROXY_PORT.value());
       final VBox radioPanel = new VBox();
       radioPanel.getChildren().addAll(
           noneButton,
@@ -347,89 +438,71 @@ class JavaFxSelectionComponentFactory {
       noneButton.setToggleGroup(toggleGroup);
       systemButton.setToggleGroup(toggleGroup);
       userButton.setToggleGroup(toggleGroup);
+      getChildren().add(radioPanel);
+    }
 
-      return new SelectionComponent<Node>() {
+    Map<GameSetting, String> readValues() {
+      final Map<GameSetting, String> values = new HashMap<>();
+      if (noneButton.isSelected()) {
+        values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString());
+      } else if (systemButton.isSelected()) {
+        values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
+        HttpProxy.updateSystemProxy();
+      } else {
+        values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
+        values.put(ClientSetting.PROXY_HOST, hostText.getText().trim());
+        values.put(ClientSetting.PROXY_PORT, portText.getText().trim());
+      }
+      return values;
+    }
 
-        @Override
-        public Node getJComponent() {
-          return radioPanel;
-        }
+    void resetToDefault() {
+      ClientSetting.flush();
+      hostText.setText(ClientSetting.PROXY_HOST.defaultValue);
+      portText.setText(ClientSetting.PROXY_PORT.defaultValue);
+      noneButton.setSelected(Boolean.valueOf(ClientSetting.PROXY_CHOICE.defaultValue));
+    }
 
-        @Override
-        public boolean isValid() {
-          return !userButton.isSelected() || (isHostTextValid() && isPortTextValid());
-        }
+    void reset() {
+      ClientSetting.flush();
+      hostText.setText(ClientSetting.PROXY_HOST.value());
+      portText.setText(ClientSetting.PROXY_PORT.value());
+      noneButton.setSelected(ClientSetting.PROXY_CHOICE.booleanValue());
+    }
 
-        private boolean isHostTextValid() {
-          return !Strings.nullToEmpty(hostText.getText()).trim().isEmpty();
-        }
+    public void indicateError() {
+      if (!isHostTextValid()) {
+        hostText.setStyle("-fx-background-color: #FF0000;");
+      }
+      if (!isPortTextValid()) {
+        portText.setStyle("-fx-background-color: #FF0000;");
+      }
+    }
 
-        private boolean isPortTextValid() {
-          final String value = Strings.nullToEmpty(portText.getText()).trim();
-          if (value.isEmpty()) {
-            return false;
-          }
+    private boolean isHostTextValid() {
+      return !Strings.nullToEmpty(hostText.getText()).trim().isEmpty();
+    }
 
-          try {
-            return Integer.parseInt(value) > 0;
-          } catch (final NumberFormatException e) {
-            return false;
-          }
-        }
+    private boolean isPortTextValid() {
+      final String value = Strings.nullToEmpty(portText.getText()).trim();
+      if (value.isEmpty()) {
+        return false;
+      }
 
-        @Override
-        public String validValueDescription() {
-          return "Proxy host can be a network name or an IP address, port should be number, usually 4 to 5 digits.";
-        }
+      try {
+        return Integer.parseInt(value) > 0;
+      } catch (final NumberFormatException e) {
+        return false;
+      }
+    }
 
-        @Override
-        public Map<GameSetting, String> readValues() {
-          final Map<GameSetting, String> values = new HashMap<>();
-          if (noneButton.isSelected()) {
-            values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString());
-          } else if (systemButton.isSelected()) {
-            values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
-            HttpProxy.updateSystemProxy();
-          } else {
-            values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
-            values.put(ClientSetting.PROXY_HOST, hostText.getText().trim());
-            values.put(ClientSetting.PROXY_PORT, portText.getText().trim());
-          }
-          return values;
-        }
+    public boolean isValid() {
+      return !userButton.isSelected() || (isHostTextValid() && isPortTextValid());
+    }
 
-        @Override
-        public void indicateError() {
-          if (!isHostTextValid()) {
-            hostText.setStyle("-fx-background-color: #FF0000;");
-          }
-          if (!isPortTextValid()) {
-            portText.setStyle("-fx-background-color: #FF0000;");
-          }
-        }
-
-        @Override
-        public void clearError() {
-          hostText.setStyle("-fx-background-color: #FFFFFF;");
-          portText.setStyle("-fx-background-color: #FFFFFF;");
-        }
-
-        @Override
-        public void resetToDefault() {
-          ClientSetting.flush();
-          hostText.setText(ClientSetting.PROXY_HOST.defaultValue);
-          portText.setText(ClientSetting.PROXY_PORT.defaultValue);
-          noneButton.setSelected(Boolean.valueOf(ClientSetting.PROXY_CHOICE.defaultValue));
-        }
-
-        @Override
-        public void reset() {
-          ClientSetting.flush();
-          hostText.setText(ClientSetting.PROXY_HOST.value());
-          portText.setText(ClientSetting.PROXY_PORT.value());
-          noneButton.setSelected(ClientSetting.PROXY_CHOICE.booleanValue());
-        }
-      };
-    };
+    public void clearError() {
+      hostText.setStyle("-fx-background-color: #FFFFFF;");
+      portText.setStyle("-fx-background-color: #FFFFFF;");
+    }
   }
 }
