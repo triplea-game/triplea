@@ -3,6 +3,8 @@ package org.triplea.client.ui.javafx;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.google.common.base.Suppliers;
+
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.GameSettingUiBinding;
@@ -98,12 +100,10 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
   private final SettingType category;
   private final Supplier<SelectionComponent<Region>> nodeSupplier;
 
-  private SelectionComponent<Region> selectionComponent;
-
   private ClientSettingJavaFxUiBinding(final SettingType category,
       final Supplier<SelectionComponent<Region>> nodeSupplier) {
     this.category = category;
-    this.nodeSupplier = nodeSupplier;
+    this.nodeSupplier = Suppliers.memoize(nodeSupplier::get);
   }
 
   private ClientSettingJavaFxUiBinding(final SettingType category, final ClientSetting setting) {
@@ -112,44 +112,37 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
 
   @Override
   public Region buildSelectionComponent() {
-    return current().getUiComponent();
-  }
-
-  private SelectionComponent<Region> current() {
-    if (selectionComponent == null) {
-      selectionComponent = nodeSupplier.get();
-    }
-    return selectionComponent;
+    return nodeSupplier.get().getUiComponent();
   }
 
   @Override
   public boolean isValid() {
-    return current().isValid();
+    return nodeSupplier.get().isValid();
   }
 
   @Override
   public Map<GameSetting, String> readValues() {
-    return current().readValues();
+    return nodeSupplier.get().readValues();
   }
 
   @Override
   public String validValueDescription() {
-    return current().validValueDescription();
+    return nodeSupplier.get().validValueDescription();
   }
 
   @Override
   public void reset() {
-    current().reset();
+    nodeSupplier.get().reset();
   }
 
   @Override
   public String getTitle() {
-    return current().getTitle();
+    return nodeSupplier.get().getTitle();
   }
 
   @Override
   public void resetToDefault() {
-    current().resetToDefault();
+    nodeSupplier.get().resetToDefault();
   }
 
   public SettingType getCategory() {
