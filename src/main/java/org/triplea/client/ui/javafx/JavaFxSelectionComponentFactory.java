@@ -181,7 +181,6 @@ class JavaFxSelectionComponentFactory {
 
   static Supplier<SelectionComponent<Region>> folderPath(final ClientSetting clientSetting) {
     return () -> new SelectionComponent<Region>() {
-
       private final FolderSelector folderSelector = new FolderSelector(clientSetting);
 
       @Override
@@ -470,7 +469,7 @@ class JavaFxSelectionComponentFactory {
       noneButton.setSelected(ClientSetting.PROXY_CHOICE.booleanValue());
     }
 
-    public void indicateError() {
+    void indicateError() {
       if (!isHostTextValid()) {
         hostText.setStyle("-fx-background-color: #FF0000;");
       }
@@ -496,11 +495,11 @@ class JavaFxSelectionComponentFactory {
       }
     }
 
-    public boolean isValid() {
+    boolean isValid() {
       return !userButton.isSelected() || (isHostTextValid() && isPortTextValid());
     }
 
-    public void clearError() {
+    void clearError() {
       hostText.setStyle("-fx-background-color: #FFFFFF;");
       portText.setStyle("-fx-background-color: #FFFFFF;");
     }
