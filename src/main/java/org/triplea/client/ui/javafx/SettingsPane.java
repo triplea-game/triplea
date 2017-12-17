@@ -6,6 +6,7 @@ import java.util.Arrays;
 import games.strategy.triplea.settings.SettingType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -32,8 +33,10 @@ class SettingsPane extends StackPane {
     loader.load();
     this.triplea = triplea;
     Arrays.stream(SettingType.values()).forEach(type -> {
-      final Tab tab = new Tab(type.toString());
+      final Tab tab = new Tab(loader.getResources().getString("settings.tab." + type.toString().toLowerCase()));
       final GridPane pane = new GridPane();
+      pane.setPadding(new Insets(5, 0, 0, 0));
+      pane.setVgap(5);
       tab.setContent(new ScrollPane(pane));
       Arrays.stream(ClientSettingJavaFxUiBinding.values())
           .filter(b -> b.getCategory() == type)
@@ -45,7 +48,9 @@ class SettingsPane extends StackPane {
             pane.addColumn(0, description);
             pane.addColumn(1, node);
           });
-      tabPane.getTabs().add(tab);
+      if (!pane.getChildren().isEmpty()) {
+        tabPane.getTabs().add(tab);
+      }
     });
   }
 

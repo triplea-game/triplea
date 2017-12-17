@@ -5,7 +5,7 @@
 .button:hover {
 	-fx-background-color: #8D1C21;
 }
-.tab-label, .spinner, .text-field, .combo-box, .exitButton {
+.tab-label, .spinner, .text-field, .combo-box, .exitButton, .label, .radio-button {
 	-fx-font-family: "1942 report";
 }
 .tab-label, .text-field {

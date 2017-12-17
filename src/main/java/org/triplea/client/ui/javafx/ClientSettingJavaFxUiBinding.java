@@ -3,7 +3,6 @@ package org.triplea.client.ui.javafx;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.GameSettingUiBinding;
@@ -39,12 +38,6 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Node> {
   SPACE_BAR_CONFIRMS_CASUALTIES_BINDING(
       SettingType.COMBAT,
       ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES),
-
-  LOOK_AND_FEEL_PREF_BINDING(
-      SettingType.LOOK_AND_FEEL,
-      JavaFxSelectionComponentFactory.selectionBox(
-          ClientSetting.LOOK_AND_FEEL_PREF,
-          LookAndFeel.getLookAndFeelAvailableList())),
 
   MAP_EDGE_SCROLL_SPEED_BINDING(
       SettingType.MAP_SCROLLING,
