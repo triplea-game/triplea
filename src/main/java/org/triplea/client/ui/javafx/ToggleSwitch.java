@@ -5,14 +5,14 @@ import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.Parent;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-public class ToggleSwitch extends Parent {
+public class ToggleSwitch extends Region {
   private final BooleanProperty switchedOn = new SimpleBooleanProperty(false);
 
   private final TranslateTransition translateAnimation = new TranslateTransition(Duration.seconds(0.25));
