@@ -2,6 +2,8 @@ package org.triplea.client.ui.javafx;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 import games.strategy.triplea.settings.SettingType;
 import javafx.fxml.FXML;
@@ -61,13 +63,24 @@ class SettingsPane extends StackPane {
   }
 
   @FXML
-  private void reset() {}
+  private void reset() {
+    Arrays.stream(ClientSettingJavaFxUiBinding.values()).forEach(ClientSettingJavaFxUiBinding::reset);
+  }
 
   @FXML
-  private void resetToDefault() {}
+  private void resetToDefault() {
+    Arrays.stream(ClientSettingJavaFxUiBinding.values()).forEach(ClientSettingJavaFxUiBinding::resetToDefault);
+  }
 
   @FXML
-  private void save() {}
+  private void save() {
+    Arrays.stream(ClientSettingJavaFxUiBinding.values())
+        .map(ClientSettingJavaFxUiBinding::readValues)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .forEach(entry -> entry.getKey().save(entry.getValue()));
+    // TODO visual feedback
+  }
 
 
   private static String getSettingLocalizationKey(final Node rootNode, final String name) {

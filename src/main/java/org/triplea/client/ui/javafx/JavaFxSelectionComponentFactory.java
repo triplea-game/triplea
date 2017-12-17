@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
@@ -227,7 +228,7 @@ class JavaFxSelectionComponentFactory {
 
         @Override
         public Map<GameSetting, String> readValues() {
-          return Collections.singletonMap(clientSetting, selectedFile.get().toString());
+          return Collections.singletonMap(clientSetting, Objects.toString(selectedFile.get(), ""));
         }
 
         @Override
@@ -291,7 +292,7 @@ class JavaFxSelectionComponentFactory {
 
         @Override
         public Map<GameSetting, String> readValues() {
-          return Collections.singletonMap(clientSetting, selectedFile.get().toString());
+          return Collections.singletonMap(clientSetting, Objects.toString(selectedFile.get(), ""));
         }
 
         @Override

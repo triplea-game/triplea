@@ -98,6 +98,8 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Node> {
   private final SettingType category;
   private final Supplier<SelectionComponent<Node>> nodeSupplier;
 
+  private SelectionComponent<Node> selectionComponent;
+
   private ClientSettingJavaFxUiBinding(final SettingType category,
       final Supplier<SelectionComponent<Node>> nodeSupplier) {
     this.category = category;
@@ -110,37 +112,44 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Node> {
 
   @Override
   public Node buildSelectionComponent() {
-    return nodeSupplier.get().getJComponent();
+    return current().getJComponent();
+  }
+
+  private SelectionComponent<Node> current() {
+    if (selectionComponent == null) {
+      selectionComponent = nodeSupplier.get();
+    }
+    return selectionComponent;
   }
 
   @Override
   public boolean isValid() {
-    return nodeSupplier.get().isValid();
+    return current().isValid();
   }
 
   @Override
   public Map<GameSetting, String> readValues() {
-    return nodeSupplier.get().readValues();
+    return current().readValues();
   }
 
   @Override
   public String validValueDescription() {
-    return nodeSupplier.get().validValueDescription();
+    return current().validValueDescription();
   }
 
   @Override
   public void reset() {
-    nodeSupplier.get().reset();
+    current().reset();
   }
 
   @Override
   public String getTitle() {
-    return nodeSupplier.get().getTitle();
+    return current().getTitle();
   }
 
   @Override
   public void resetToDefault() {
-    nodeSupplier.get().resetToDefault();
+    current().resetToDefault();
   }
 
   public SettingType getCategory() {
