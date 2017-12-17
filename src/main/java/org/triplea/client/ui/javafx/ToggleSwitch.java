@@ -12,7 +12,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-public class ToggleSwitch extends Region {
+class ToggleSwitch extends Region {
   private final BooleanProperty switchedOn = new SimpleBooleanProperty(false);
 
   private final TranslateTransition translateAnimation = new TranslateTransition(Duration.seconds(0.25));
@@ -24,11 +24,11 @@ public class ToggleSwitch extends Region {
     return switchedOn;
   }
 
-  public ToggleSwitch(final boolean initialState) {
+  ToggleSwitch(final boolean initialState) {
     this(initialState, 50, 25);
   }
 
-  public ToggleSwitch(final boolean initialState, final double width, final double height) {
+  ToggleSwitch(final boolean initialState, final double width, final double height) {
     final Rectangle background = new Rectangle(width, height);
     background.setArcWidth(height);
     background.setArcHeight(height);

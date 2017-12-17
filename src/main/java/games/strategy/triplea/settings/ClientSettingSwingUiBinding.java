@@ -194,7 +194,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
 
   @Override
   public JComponent buildSelectionComponent() {
-    return current().getJComponent();
+    return current().getUiComponent();
   }
 
   private SelectionComponent<JComponent> current() {

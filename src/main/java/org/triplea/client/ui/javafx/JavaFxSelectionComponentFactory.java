@@ -44,7 +44,7 @@ class JavaFxSelectionComponentFactory {
       final Spinner<Integer> spinner = new Spinner<>(minValue, maxValue, value);
 
       @Override
-      public Region getJComponent() {
+      public Region getUiComponent() {
         return spinner;
       }
 
@@ -99,7 +99,7 @@ class JavaFxSelectionComponentFactory {
       final ToggleSwitch checkBox = new ToggleSwitch(Boolean.parseBoolean(clientSetting.value()));
 
       @Override
-      public Region getJComponent() {
+      public Region getUiComponent() {
         return checkBox;
       }
 
@@ -141,7 +141,7 @@ class JavaFxSelectionComponentFactory {
       final TextField textField = new TextField();
 
       @Override
-      public Region getJComponent() {
+      public Region getUiComponent() {
         return textField;
       }
 
@@ -184,7 +184,7 @@ class JavaFxSelectionComponentFactory {
       private final FolderSelector folderSelector = new FolderSelector(clientSetting);
 
       @Override
-      public Region getJComponent() {
+      public Region getUiComponent() {
         return folderSelector;
       }
 
@@ -226,7 +226,7 @@ class JavaFxSelectionComponentFactory {
       private final FileSelector fileSelector = new FileSelector(clientSetting);
 
       @Override
-      public Region getJComponent() {
+      public Region getUiComponent() {
         return fileSelector;
       }
 
@@ -270,7 +270,7 @@ class JavaFxSelectionComponentFactory {
       private final ProxySetting proxySetting = new ProxySetting();
 
       @Override
-      public Region getJComponent() {
+      public Region getUiComponent() {
         return proxySetting;
       }
 
