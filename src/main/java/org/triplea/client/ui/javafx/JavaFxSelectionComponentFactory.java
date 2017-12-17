@@ -180,139 +180,20 @@ class JavaFxSelectionComponentFactory {
 
 
   static Supplier<SelectionComponent<Region>> folderPath(final ClientSetting clientSetting) {
-    return () -> new SelectionComponent<Region>() {
-      private final FolderSelector folderSelector = new FolderSelector(clientSetting);
-
-      @Override
-      public Region getUiComponent() {
-        return folderSelector;
-      }
-
-      @Override
-      public boolean isValid() {
-        return true;
-      }
-
-      @Override
-      public String validValueDescription() {
-        return "";
-      }
-
-      @Override
-      public Map<GameSetting, String> readValues() {
-        return folderSelector.readValues();
-      }
-
-      @Override
-      public void indicateError() {}
-
-      @Override
-      public void clearError() {}
-
-      @Override
-      public void resetToDefault() {
-        folderSelector.resetToDefault();
-      }
-
-      @Override
-      public void reset() {
-        folderSelector.reset();
-      }
-    };
+    return () -> new FolderSelector(clientSetting);
   }
 
   static Supplier<SelectionComponent<Region>> filePath(final ClientSetting clientSetting) {
-    return () -> new SelectionComponent<Region>() {
-      private final FileSelector fileSelector = new FileSelector(clientSetting);
-
-      @Override
-      public Region getUiComponent() {
-        return fileSelector;
-      }
-
-      @Override
-      public boolean isValid() {
-        return true;
-      }
-
-      @Override
-      public String validValueDescription() {
-        return "";
-      }
-
-      @Override
-      public Map<GameSetting, String> readValues() {
-        return fileSelector.readValues();
-      }
-
-      @Override
-      public void indicateError() {}
-
-      @Override
-      public void clearError() {}
-
-      @Override
-      public void resetToDefault() {
-        fileSelector.resetToDefault();
-      }
-
-      @Override
-      public void reset() {
-        fileSelector.reset();
-      }
-    };
+    return () -> new FileSelector(clientSetting);
   }
 
 
   static Supplier<SelectionComponent<Region>> proxySettings() {
-    return () -> new SelectionComponent<Region>() {
-
-      private final ProxySetting proxySetting = new ProxySetting();
-
-      @Override
-      public Region getUiComponent() {
-        return proxySetting;
-      }
-
-      @Override
-      public boolean isValid() {
-        return proxySetting.isValid();
-      }
-
-      @Override
-      public String validValueDescription() {
-        return "Proxy host can be a network name or an IP address, port should be number, usually 4 to 5 digits.";
-      }
-
-      @Override
-      public Map<GameSetting, String> readValues() {
-        return proxySetting.readValues();
-      }
-
-      @Override
-      public void indicateError() {
-        proxySetting.indicateError();
-      }
-
-      @Override
-      public void clearError() {
-        proxySetting.clearError();
-      }
-
-      @Override
-      public void resetToDefault() {
-        proxySetting.resetToDefault();
-      }
-
-      @Override
-      public void reset() {
-        proxySetting.reset();
-      }
-    };
+    return ProxySetting::new;
   }
 
 
-  private static final class FolderSelector extends Region {
+  private static final class FolderSelector extends Region implements SelectionComponent<Region> {
     private final ClientSetting clientSetting;
     private final TextField textField;
     private File selectedFile;
@@ -322,7 +203,7 @@ class JavaFxSelectionComponentFactory {
       final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
       final HBox wrapper = new HBox();
       textField = new TextField(clientSetting.value());
-      textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
+      textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
       textField.setMaxWidth(Double.MAX_VALUE);
       textField.setDisable(true);
       final Button chooseFileButton = new Button("...");
@@ -342,22 +223,46 @@ class JavaFxSelectionComponentFactory {
       getChildren().add(wrapper);
     }
 
-    Map<GameSetting, String> readValues() {
+    @Override
+    public Map<GameSetting, String> readValues() {
       return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, ""));
     }
 
-    void resetToDefault() {
+    @Override
+    public void resetToDefault() {
       textField.setText(clientSetting.defaultValue);
       selectedFile = new File(clientSetting.defaultValue);
     }
 
-    void reset() {
+    @Override
+    public void reset() {
       textField.setText(clientSetting.value());
       selectedFile = new File(clientSetting.value());
     }
+
+    @Override
+    public Region getUiComponent() {
+      return this;
+    }
+
+    @Override
+    public boolean isValid() {
+      return true;
+    }
+
+    @Override
+    public String validValueDescription() {
+      return "";
+    }
+
+    @Override
+    public void indicateError() {}
+
+    @Override
+    public void clearError() {}
   }
 
-  private static final class FileSelector extends Region {
+  private static final class FileSelector extends Region implements SelectionComponent<Region> {
     private final ClientSetting clientSetting;
     private final TextField textField;
     private File selectedFile;
@@ -367,7 +272,9 @@ class JavaFxSelectionComponentFactory {
       final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
       final HBox wrapper = new HBox();
       textField = new TextField(clientSetting.value());
-      textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
+      textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
+      textField.setMaxWidth(Double.MAX_VALUE);
+      textField.setMinWidth(100);
       textField.setDisable(true);
       final Button chooseFileButton = new Button("...");
       selectedFile = initialValue;
@@ -386,22 +293,46 @@ class JavaFxSelectionComponentFactory {
       getChildren().add(wrapper);
     }
 
-    Map<GameSetting, String> readValues() {
+    @Override
+    public Map<GameSetting, String> readValues() {
       return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, ""));
     }
 
-    void resetToDefault() {
+    @Override
+    public void resetToDefault() {
       textField.setText(clientSetting.defaultValue);
       selectedFile = new File(clientSetting.defaultValue);
     }
 
-    void reset() {
+    @Override
+    public void reset() {
       textField.setText(clientSetting.value());
       selectedFile = new File(clientSetting.value());
     }
+
+    @Override
+    public Region getUiComponent() {
+      return this;
+    }
+
+    @Override
+    public boolean isValid() {
+      return true;
+    }
+
+    @Override
+    public String validValueDescription() {
+      return "";
+    }
+
+    @Override
+    public void indicateError() {}
+
+    @Override
+    public void clearError() {}
   }
 
-  private static final class ProxySetting extends Region {
+  private static final class ProxySetting extends Region implements SelectionComponent<Region> {
     private final RadioButton noneButton;
     private final RadioButton systemButton;
     private final RadioButton userButton;
@@ -440,7 +371,8 @@ class JavaFxSelectionComponentFactory {
       getChildren().add(radioPanel);
     }
 
-    Map<GameSetting, String> readValues() {
+    @Override
+    public Map<GameSetting, String> readValues() {
       final Map<GameSetting, String> values = new HashMap<>();
       if (noneButton.isSelected()) {
         values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString());
@@ -455,21 +387,24 @@ class JavaFxSelectionComponentFactory {
       return values;
     }
 
-    void resetToDefault() {
+    @Override
+    public void resetToDefault() {
       ClientSetting.flush();
       hostText.setText(ClientSetting.PROXY_HOST.defaultValue);
       portText.setText(ClientSetting.PROXY_PORT.defaultValue);
       noneButton.setSelected(Boolean.valueOf(ClientSetting.PROXY_CHOICE.defaultValue));
     }
 
-    void reset() {
+    @Override
+    public void reset() {
       ClientSetting.flush();
       hostText.setText(ClientSetting.PROXY_HOST.value());
       portText.setText(ClientSetting.PROXY_PORT.value());
       noneButton.setSelected(ClientSetting.PROXY_CHOICE.booleanValue());
     }
 
-    void indicateError() {
+    @Override
+    public void indicateError() {
       if (!isHostTextValid()) {
         hostText.setStyle("-fx-background-color: #FF0000;");
       }
@@ -495,13 +430,25 @@ class JavaFxSelectionComponentFactory {
       }
     }
 
-    boolean isValid() {
+    @Override
+    public boolean isValid() {
       return !userButton.isSelected() || (isHostTextValid() && isPortTextValid());
     }
 
-    void clearError() {
+    @Override
+    public void clearError() {
       hostText.setStyle("-fx-background-color: #FFFFFF;");
       portText.setStyle("-fx-background-color: #FFFFFF;");
+    }
+
+    @Override
+    public Region getUiComponent() {
+      return this;
+    }
+
+    @Override
+    public String validValueDescription() {
+      return "Proxy host can be a network name or an IP address, port should be number, usually 4 to 5 digits.";
     }
   }
 }
