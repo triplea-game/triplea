@@ -3,7 +3,6 @@ package org.triplea.client.ui.javafx;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -16,18 +15,16 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.SelectionComponent;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.beans.binding.Bindings;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -99,51 +96,6 @@ class JavaFxSelectionComponentFactory {
     };
   }
 
-  static Supplier<SelectionComponent<Node>> selectionBox(final ClientSetting clientSetting, final List<String> values) {
-    return () -> {
-      final ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableList(values));
-      return new SelectionComponent<Node>() {
-
-        @Override
-        public Node getJComponent() {
-          return comboBox;
-        }
-
-        @Override
-        public boolean isValid() {
-          return true;
-        }
-
-        @Override
-        public String validValueDescription() {
-          return "";
-        }
-
-        @Override
-        public Map<GameSetting, String> readValues() {
-          return Collections.singletonMap(clientSetting, String.valueOf(comboBox.getValue()));
-        }
-
-        @Override
-        public void indicateError() {}
-
-        @Override
-        public void clearError() {}
-
-        @Override
-        public void resetToDefault() {
-          comboBox.setValue(clientSetting.defaultValue);
-        }
-
-        @Override
-        public void reset() {
-          comboBox.setValue(clientSetting.value());
-        }
-
-      };
-    };
-  }
-
   static Supplier<SelectionComponent<Node>> toggleButton(final ClientSetting clientSetting) {
     return () -> {
       final ToggleSwitch checkBox = new ToggleSwitch(Boolean.parseBoolean(clientSetting.value()));
@@ -161,7 +113,7 @@ class JavaFxSelectionComponentFactory {
 
         @Override
         public String validValueDescription() {
-          return "";// TODO localize
+          return "";
         }
 
         @Override
@@ -191,6 +143,7 @@ class JavaFxSelectionComponentFactory {
   static Supplier<SelectionComponent<Node>> textField(final ClientSetting clientSetting) {
     return () -> {
       final TextField textField = new TextField();
+      textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
       return new SelectionComponent<Node>() {
 
         @Override
@@ -235,17 +188,24 @@ class JavaFxSelectionComponentFactory {
 
   static Supplier<SelectionComponent<Node>> folderPath(final ClientSetting clientSetting) {
     return () -> {
+      final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
       final HBox wrapper = new HBox();
       final TextField textField = new TextField(clientSetting.value());
+      textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
+      textField.setMaxWidth(Double.MAX_VALUE);
       textField.setDisable(true);
-      final Button chooseFileButton = new Button();// Localize text
-      final AtomicReference<File> selectedFile = new AtomicReference<>(new File(clientSetting.value()));
+      final Button chooseFileButton = new Button("...");
+      final AtomicReference<File> selectedFile = new AtomicReference<>(initialValue);
       chooseFileButton.setOnAction(e -> {
         final DirectoryChooser fileChooser = new DirectoryChooser();
-        fileChooser.setInitialDirectory(new File(clientSetting.value()));
+        if (selectedFile.get() != null) {
+          fileChooser.setInitialDirectory(selectedFile.get());
+        }
         final File file = fileChooser.showDialog(chooseFileButton.getScene().getWindow());
-        selectedFile.set(file);
-        textField.setText(file.toString());
+        if (file != null) {
+          selectedFile.set(file);
+          textField.setText(file.toString());
+        }
       });
       wrapper.getChildren().addAll(textField, chooseFileButton);
       return new SelectionComponent<Node>() {
@@ -293,17 +253,23 @@ class JavaFxSelectionComponentFactory {
 
   static Supplier<SelectionComponent<Node>> filePath(final ClientSetting clientSetting) {
     return () -> {
+      final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
       final HBox wrapper = new HBox();
       final TextField textField = new TextField(clientSetting.value());
+      textField.setPrefWidth(Region.USE_COMPUTED_SIZE);
       textField.setDisable(true);
-      final Button chooseFileButton = new Button("...");// Localize text
-      final AtomicReference<File> selectedFile = new AtomicReference<>(new File(clientSetting.value()));
+      final Button chooseFileButton = new Button("...");
+      final AtomicReference<File> selectedFile = new AtomicReference<>(initialValue);
       chooseFileButton.setOnAction(e -> {
         final FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(selectedFile.get());
+        if (selectedFile.get() != null) {
+          fileChooser.setInitialDirectory(selectedFile.get());
+        }
         final File file = fileChooser.showOpenDialog(chooseFileButton.getScene().getWindow());
-        selectedFile.set(file);
-        textField.setText(file.toString());
+        if (file != null) {
+          selectedFile.set(file);
+          textField.setText(file.toString());
+        }
       });
       wrapper.getChildren().addAll(textField, chooseFileButton);
       return new SelectionComponent<Node>() {
@@ -373,6 +339,8 @@ class JavaFxSelectionComponentFactory {
           hostText,
           new Label("Proxy Port: "),
           portText);
+      hostText.disableProperty().bind(Bindings.not(userButton.selectedProperty()));
+      portText.disableProperty().bind(Bindings.not(userButton.selectedProperty()));
 
       final ToggleGroup toggleGroup = new ToggleGroup();
       noneButton.setToggleGroup(toggleGroup);
@@ -380,27 +348,9 @@ class JavaFxSelectionComponentFactory {
       userButton.setToggleGroup(toggleGroup);
 
       return new SelectionComponent<Node>() {
-        final EventHandler<ActionEvent> enableUserSettings = e -> {
-          if (userButton.isSelected()) {
-            hostText.setDisable(false);
-            hostText.setStyle("-fx-background-color: #FFFFFF;");
-            portText.setDisable(false);
-            portText.setStyle("-fx-background-color: #FFFFFF;");
-          } else {
-            hostText.setDisable(true);
-            hostText.setStyle("-fx-background-color: #404040;");
-            portText.setDisable(true);
-            portText.setStyle("-fx-background-color: #404040;");
-          }
-        };
 
         @Override
         public Node getJComponent() {
-          enableUserSettings.handle(null);
-          userButton.setOnAction(enableUserSettings);
-          noneButton.setOnAction(enableUserSettings);
-          systemButton.setOnAction(enableUserSettings);
-
           return radioPanel;
         }
 
