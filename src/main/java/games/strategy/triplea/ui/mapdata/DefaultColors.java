@@ -5,10 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
 final class DefaultColors {
-  private static final List<Color> COLORS = ImmutableList.of(
+  @VisibleForTesting
+  static final List<Color> COLORS = ImmutableList.of(
       Color.RED,
       Color.MAGENTA,
       Color.YELLOW,
