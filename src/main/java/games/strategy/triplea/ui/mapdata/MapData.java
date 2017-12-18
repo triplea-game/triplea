@@ -86,8 +86,8 @@ public class MapData implements Closeable {
   private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   private static final String DECORATIONS_FILE = "decorations.txt";
 
-  private final List<Color> defaultColors = Arrays.asList(Color.RED, Color.MAGENTA, Color.YELLOW, Color.ORANGE,
-      Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY);
+  private final List<Color> defaultColors = new ArrayList<>(Arrays.asList(Color.RED, Color.MAGENTA, Color.YELLOW,
+      Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY));
   private final Map<String, Color> playerColors = new HashMap<>();
   private Map<String, List<Point>> place;
   private Map<String, List<Polygon>> polys;
