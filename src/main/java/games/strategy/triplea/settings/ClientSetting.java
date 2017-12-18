@@ -92,6 +92,8 @@ public enum ClientSetting implements GameSetting {
 
   SHOW_BETA_FEATURES(false),
 
+  SHOW_CONSOLE_ALWAYS(false),
+
   TEST_LOBBY_HOST,
 
   TEST_LOBBY_PORT,

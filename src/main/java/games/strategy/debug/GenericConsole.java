@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 
 /**
@@ -63,7 +64,7 @@ public abstract class GenericConsole extends JFrame {
    */
   protected void displayStandardError() {
     final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.err);
-    final ThreadReader reader = new ThreadReader(out, textArea, true, getConsoleInstance());
+    final ThreadReader reader = new ThreadReader(out, textArea, Boolean.TRUE::booleanValue, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std err reader");
     thread.setDaemon(true);
     thread.start();
@@ -73,7 +74,8 @@ public abstract class GenericConsole extends JFrame {
 
   protected void displayStandardOutput() {
     final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.out);
-    final ThreadReader reader = new ThreadReader(out, textArea, false, getConsoleInstance());
+    final ThreadReader reader =
+        new ThreadReader(out, textArea, ClientSetting.SHOW_CONSOLE_ALWAYS::booleanValue, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std out reader");
     thread.setDaemon(true);
     thread.start();
