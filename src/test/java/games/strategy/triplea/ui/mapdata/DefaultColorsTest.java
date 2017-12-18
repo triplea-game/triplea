@@ -2,11 +2,9 @@ package games.strategy.triplea.ui.mapdata;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.NoSuchElementException;
-import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
@@ -16,13 +14,13 @@ public final class DefaultColorsTest {
 
   @Test
   public void nextColor_ShouldReturnNextColorWhenColorsAvailable() {
-    assertThat(defaultColors.nextColor(), is(notNullValue()));
+    assertThat(defaultColors.nextColor(), is(DefaultColors.COLORS.get(0)));
   }
 
   @Test
   public void nextColor_ShouldThrowExceptionWhenNoColorsAvailable() {
     assertThrows(
         NoSuchElementException.class,
-        () -> IntStream.iterate(0, IntUnaryOperator.identity()).forEach(i -> defaultColors.nextColor()));
+        () -> IntStream.range(0, DefaultColors.COLORS.size() + 1).forEach(i -> defaultColors.nextColor()));
   }
 }
