@@ -86,8 +86,7 @@ public class MapData implements Closeable {
   private static final String KAMIKAZE_FILE = "kamikaze_place.txt";
   private static final String DECORATIONS_FILE = "decorations.txt";
 
-  private final List<Color> defaultColors = new ArrayList<>(Arrays.asList(Color.RED, Color.MAGENTA, Color.YELLOW,
-      Color.ORANGE, Color.CYAN, Color.GREEN, Color.PINK, Color.GRAY));
+  private final DefaultColors defaultColors = new DefaultColors();
   private final Map<String, Color> playerColors = new HashMap<>();
   private Map<String, List<Point>> place;
   private Map<String, List<Polygon>> polys;
@@ -441,10 +440,10 @@ public class MapData implements Closeable {
       throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
     }
     if (color == null) {
-      color = defaultColors.remove(0);
+      // dont crash, use one of our default colors
+      // its ugly, but usable
+      color = defaultColors.nextColor();
     }
-    // dont crash, use one of our default colors
-    // its ugly, but usable
     playerColors.put(playerName, color);
     return color;
   }
