@@ -14,7 +14,7 @@ enum FxmlManager {
 
   DOWNLOAD_PANE("./fxml/TripleADownload.fxml"),
 
-  MAIN_MANU_PANE("./fxml/TripleAMainMenu.fxml"),
+  MAIN_MENU_PANE("./fxml/TripleAMainMenu.fxml"),
 
   SETTINGS_PANE("./fxml/TripleASettings.fxml"),
 

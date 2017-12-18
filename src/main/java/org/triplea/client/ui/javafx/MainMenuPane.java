@@ -54,7 +54,7 @@ class MainMenuPane extends BorderPane {
    * @throws IOException If the FXML file is not present.
    */
   public MainMenuPane(final TripleA triplea) throws IOException {
-    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.MAIN_MANU_PANE.toString()));
+    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.MAIN_MENU_PANE.toString()));
     loader.setRoot(this);
     loader.setController(this);
     loader.load();
