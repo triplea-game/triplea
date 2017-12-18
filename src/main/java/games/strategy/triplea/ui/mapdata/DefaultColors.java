@@ -1,12 +1,14 @@
 package games.strategy.triplea.ui.mapdata;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import com.google.common.collect.ImmutableList;
 
 final class DefaultColors {
-  private final List<Color> colors = new ArrayList<>(Arrays.asList(
+  private static final List<Color> COLORS = ImmutableList.of(
       Color.RED,
       Color.MAGENTA,
       Color.YELLOW,
@@ -14,12 +16,14 @@ final class DefaultColors {
       Color.CYAN,
       Color.GREEN,
       Color.PINK,
-      Color.GRAY));
+      Color.GRAY);
+
+  private final Iterator<Color> colorIterator = COLORS.iterator();
 
   /**
-   * @throws IndexOutOfBoundsException If the available default colors have been exhausted.
+   * @throws NoSuchElementException If the available default colors have been exhausted.
    */
   Color nextColor() {
-    return colors.remove(0);
+    return colorIterator.next();
   }
 }

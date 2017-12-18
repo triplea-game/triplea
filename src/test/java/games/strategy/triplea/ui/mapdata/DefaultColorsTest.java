@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.NoSuchElementException;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
 
@@ -21,7 +22,7 @@ public final class DefaultColorsTest {
   @Test
   public void nextColor_ShouldThrowExceptionWhenNoColorsAvailable() {
     assertThrows(
-        IndexOutOfBoundsException.class,
+        NoSuchElementException.class,
         () -> IntStream.iterate(0, IntUnaryOperator.identity()).forEach(i -> defaultColors.nextColor()));
   }
 }
