@@ -42,7 +42,7 @@ class SettingsPane extends StackPane {
     this.triplea = triplea;
     final ResourceBundle bundle = loader.getResources();
     Arrays.stream(SettingType.values()).forEach(type -> {
-      final Tab tab = new Tab(bundle.getString("settings.tab." + type.toString().toLowerCase()));
+      final Tab tab = new Tab();
       final GridPane pane = new GridPane();
       pane.setPadding(new Insets(15, 10, 5, 10));
       pane.setVgap(5);
@@ -59,6 +59,7 @@ class SettingsPane extends StackPane {
             pane.addColumn(1, element);
           });
       if (!pane.getChildren().isEmpty()) {
+        tab.setText(bundle.getString("settings.tab." + type.toString().toLowerCase()));
         final ColumnConstraints constraint0 = new ColumnConstraints();
         final ColumnConstraints constraint1 = new ColumnConstraints();
         constraint0.setHgrow(Priority.ALWAYS);
