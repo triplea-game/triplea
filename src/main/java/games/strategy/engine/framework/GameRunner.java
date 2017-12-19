@@ -1,5 +1,28 @@
 package games.strategy.engine.framework;
 
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_COMMENTS;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_HOSTED_BY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_RECONNECTION;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.ArgParser.CliProperties.MAP_FOLDER;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_CLIENT_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_DO_NOT_CHECK_FOR_UPDATES;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_ENGINE_VERSION_BIN;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_HOST_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_LOBBY_PORT_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_MAP_DOWNLOAD_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_PASSWORD_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_STARTED;
+
 import java.awt.AWTEvent;
 import java.awt.Container;
 import java.awt.EventQueue;
@@ -67,7 +90,6 @@ import games.strategy.util.Version;
 public class GameRunner {
 
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
-  public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
   public static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
   public static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
   public static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
@@ -76,32 +98,8 @@ public class GameRunner {
   public static final int PORT = 3300;
   // do not include this in the getProperties list. they are only for loading an old savegame.
   public static final String OLD_EXTENSION = ".old";
-  // argument options below:
-  public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
-  static final String TRIPLEA_MAP_DOWNLOAD_PROPERTY = "triplea.map.download";
-  public static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
-  public static final String TRIPLEA_CLIENT_PROPERTY = "triplea.client";
-  public static final String TRIPLEA_HOST_PROPERTY = "triplea.host";
-  public static final String TRIPLEA_PORT_PROPERTY = "triplea.port";
-  public static final String TRIPLEA_NAME_PROPERTY = "triplea.name";
-  public static final String TRIPLEA_SERVER_PASSWORD_PROPERTY = "triplea.server.password";
-  public static final String TRIPLEA_STARTED = "triplea.started";
-  public static final String LOBBY_HOST = "triplea.lobby.host";
-  public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
-  public static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
-  public static final String LOBBY_GAME_SUPPORT_EMAIL = "triplea.lobby.game.supportEmail";
-  public static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
-  public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
-  static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
-  private static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
-  public static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
 
-  public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
-  public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
-
-  public static final String MAP_FOLDER = "mapFolder";
-
 
   private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private static final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel);
@@ -275,9 +273,9 @@ public class GameRunner {
 
       loadGame();
 
-      if (System.getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
+      if (System.getProperty(TRIPLEA_SERVER_PROPERTY, "false").equals("true")) {
         setupPanelModel.showServer(mainFrame);
-      } else if (System.getProperty(GameRunner.TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
+      } else if (System.getProperty(TRIPLEA_CLIENT_PROPERTY, "false").equals("true")) {
         setupPanelModel.showClient(mainFrame);
       }
     });
@@ -287,12 +285,12 @@ public class GameRunner {
     try {
       newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
         gameSelectorModel.loadDefaultGame(false);
-        final String fileName = System.getProperty(GameRunner.TRIPLEA_GAME_PROPERTY, "");
+        final String fileName = System.getProperty(TRIPLEA_GAME_PROPERTY, "");
         if (fileName.length() > 0) {
           gameSelectorModel.load(new File(fileName), mainFrame);
         }
 
-        final String downloadableMap = System.getProperty(GameRunner.TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
+        final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD_PROPERTY, "");
         if (!downloadableMap.isEmpty()) {
           SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
         }
@@ -475,7 +473,7 @@ public class GameRunner {
     commands.add("-D" + TRIPLEA_NAME_PROPERTY + "=" + playerName);
     commands.add("-D" + LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
-    commands.add("-D" + GameRunner.TRIPLEA_LOBBY_PORT_PROPERTY + "="
+    commands.add("-D" + TRIPLEA_LOBBY_PORT_PROPERTY + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());

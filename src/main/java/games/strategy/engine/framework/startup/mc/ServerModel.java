@@ -1,5 +1,11 @@
 package games.strategy.engine.framework.startup.mc;
 
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_PASSWORD_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_STARTED;
+
 import java.awt.Component;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -193,15 +199,15 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private ServerConnectionProps getServerProps(final Component ui) {
-    if (System.getProperties().getProperty(GameRunner.TRIPLEA_SERVER_PROPERTY, "false").equals("true")
-        && System.getProperties().getProperty(GameRunner.TRIPLEA_STARTED, "").equals("")) {
+    if (System.getProperties().getProperty(TRIPLEA_SERVER_PROPERTY, "false").equals("true")
+        && System.getProperties().getProperty(TRIPLEA_STARTED, "").equals("")) {
       final ServerConnectionProps props = new ServerConnectionProps();
-      props.setName(System.getProperty(GameRunner.TRIPLEA_NAME_PROPERTY));
-      props.setPort(Integer.parseInt(System.getProperty(GameRunner.TRIPLEA_PORT_PROPERTY)));
-      if (System.getProperty(GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY) != null) {
-        props.setPassword(System.getProperty(GameRunner.TRIPLEA_SERVER_PASSWORD_PROPERTY));
+      props.setName(System.getProperty(TRIPLEA_NAME_PROPERTY));
+      props.setPort(Integer.parseInt(System.getProperty(TRIPLEA_PORT_PROPERTY)));
+      if (System.getProperty(TRIPLEA_SERVER_PASSWORD_PROPERTY) != null) {
+        props.setPassword(System.getProperty(TRIPLEA_SERVER_PASSWORD_PROPERTY));
       }
-      System.setProperty(GameRunner.TRIPLEA_STARTED, "true");
+      System.setProperty(TRIPLEA_STARTED, "true");
       return props;
     }
     final String playername = ClientSetting.PLAYER_NAME.value();
