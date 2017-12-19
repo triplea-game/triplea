@@ -76,14 +76,14 @@ public final class GameParser {
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
   public static GameData parse(final String mapName, final InputStream stream)
-      throws GameParseException, SAXException, EngineVersionException {
+      throws GameParseException, EngineVersionException {
     checkNotNull(mapName);
     checkNotNull(stream);
 
     return new GameParser(mapName).parse(stream);
   }
 
-  private GameData parse(final InputStream stream) throws GameParseException, SAXException, EngineVersionException {
+  private GameData parse(final InputStream stream) throws GameParseException, EngineVersionException {
     final Element root = parseDom(stream);
     parseMapProperties(root);
     parseMapDetails(root);
@@ -108,22 +108,25 @@ public final class GameParser {
    *         displaying all available maps); it cannot be used to play the game.
    */
   public static GameData parseShallow(final String mapName, final InputStream stream)
-      throws GameParseException, SAXException, EngineVersionException {
+      throws GameParseException, EngineVersionException {
     checkNotNull(mapName);
     checkNotNull(stream);
 
     return new GameParser(mapName).parseShallow(stream);
   }
 
-  private GameData parseShallow(final InputStream stream)
-      throws GameParseException, SAXException, EngineVersionException {
+  private GameData parseShallow(final InputStream stream) throws GameParseException, EngineVersionException {
     final Element root = parseDom(stream);
     parseMapProperties(root);
     return data;
   }
 
-  private Element parseDom(final InputStream stream) throws SAXException {
-    return getDocument(stream).getDocumentElement();
+  private Element parseDom(final InputStream stream) throws GameParseException {
+    try {
+      return getDocument(stream).getDocumentElement();
+    } catch (final SAXException e) {
+      throw newGameParseException("failed to parse XML document", e);
+    }
   }
 
   private void parseMapProperties(final Element root) throws GameParseException, EngineVersionException {
