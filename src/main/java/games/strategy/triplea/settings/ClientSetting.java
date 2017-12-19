@@ -112,7 +112,7 @@ public enum ClientSetting implements GameSetting {
 
   WHEEL_SCROLL_AMOUNT(60),
 
-  PLAYER_NAME(System.getProperty("user.name")),
+  PLAYER_NAME(SystemProperties.getUserName()),
 
   /* for testing purposes, to be used in unit tests only */
   @VisibleForTesting

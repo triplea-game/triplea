@@ -5,6 +5,8 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import games.strategy.engine.framework.system.SystemProperties;
+
 public class FileOpen {
   private File file = null;
 
@@ -23,7 +25,7 @@ public class FileOpen {
   }
 
   public FileOpen(final String title, final String... extensions) {
-    this(title, new File(System.getProperties().getProperty("user.dir")), extensions);
+    this(title, new File(SystemProperties.getUserDir()), extensions);
   }
 
   public FileOpen(final String title, final File currentDirectory) {
@@ -41,7 +43,7 @@ public class FileOpen {
       chooser.setSelectedFile(selectedFile);
     }
     chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists())
-        ? new File(System.getProperties().getProperty("user.dir"))
+        ? new File(SystemProperties.getUserDir())
         : currentDirectory));
     /*
      * Show only text and gif files

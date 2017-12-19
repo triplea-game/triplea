@@ -32,6 +32,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.UiContext;
@@ -288,7 +289,7 @@ public class HelpMenu {
     editorPane.setText(text);
     final JScrollPane scroll = new JScrollPane(editorPane);
     scroll.setBorder(null);
-    if (System.getProperty("mrj.version") == null) {
+    if (SystemProperties.getMrjVersion() == null) {
       parentMenu.addSeparator();
       parentMenu.add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, editorPane,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE))).setMnemonic(KeyEvent.VK_A);

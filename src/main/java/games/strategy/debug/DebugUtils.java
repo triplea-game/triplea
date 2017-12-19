@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import games.strategy.engine.framework.system.SystemProperties;
+
 /**
  * A collection of methods that provide information about the JVM state that may be useful for debugging.
  */
@@ -73,7 +75,7 @@ public final class DebugUtils {
 
   static String getProperties() {
     final StringBuilder buf = new StringBuilder("SYSTEM PROPERTIES\n");
-    final Properties props = System.getProperties();
+    final Properties props = SystemProperties.all();
     final List<String> keys = new ArrayList<>(props.stringPropertyNames());
     Collections.sort(keys);
     for (final String property : keys) {
