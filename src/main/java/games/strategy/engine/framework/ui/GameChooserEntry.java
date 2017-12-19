@@ -6,9 +6,6 @@ import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
@@ -31,13 +28,12 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     final URI uri = URI.create(ClientSetting.SELECTED_GAME_LOCATION.value());
     try {
       return new GameChooserEntry(uri);
-    } catch (final IOException | GameParseException | SAXException | EngineVersionException e) {
+    } catch (final IOException | GameParseException | EngineVersionException e) {
       throw new IllegalStateException(e);
     }
   }
 
-  public GameChooserEntry(final URI uri)
-      throws IOException, GameParseException, SAXException, EngineVersionException {
+  public GameChooserEntry(final URI uri) throws IOException, GameParseException, EngineVersionException {
     url = uri;
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
@@ -66,17 +62,15 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     try (InputStream input = inputStream.get()) {
       gameData = GameParser.parse(url.toString(), input);
       gameDataFullyLoaded = true;
-
     } catch (final EngineVersionException e) {
       ClientLogger.logQuietly(e);
-      throw new GameParseException(e.getMessage());
-    } catch (final SAXParseException e) {
-      ClientLogger.logError(String.format("Could not parse: %s error at line: %s column: %s",
-          url, e.getLineNumber(), e.getColumnNumber()), e);
-      throw new GameParseException(e.getMessage());
+      throw new GameParseException(e);
+    } catch (final GameParseException e) {
+      ClientLogger.logError("Could not parse:" + url, e);
+      throw e;
     } catch (final Exception e) {
       ClientLogger.logError("Could not parse:" + url, e);
-      throw new GameParseException(e.getMessage());
+      throw new GameParseException(e);
     }
     return gameData;
   }

@@ -24,9 +24,6 @@ import java.util.zip.ZipFile;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
@@ -185,11 +182,6 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
       }
     } catch (final EngineVersionException e) {
       System.out.println(e.getMessage());
-    } catch (final SAXParseException e) {
-      final String msg =
-          "Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber();
-      System.err.println(msg);
-      ClientLogger.logQuietly(e);
     } catch (final Exception e) {
       System.err.println("Could not parse:" + uri);
       ClientLogger.logQuietly(e);
@@ -206,7 +198,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   }
 
   private static GameChooserEntry createEntry(final URI uri)
-      throws IOException, GameParseException, SAXException, EngineVersionException {
+      throws IOException, GameParseException, EngineVersionException {
     return new GameChooserEntry(uri);
   }
 
