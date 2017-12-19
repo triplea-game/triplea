@@ -20,7 +20,6 @@ import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -180,12 +179,11 @@ public class AvailableGames {
     if (uri == null) {
       return false;
     }
-    final AtomicReference<String> gameName = new AtomicReference<>();
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        final GameData data = GameParser.parse(uri.toString(), input, gameName);
+        final GameData data = GameParser.parse(uri.toString(), input);
         final String name = data.getGameName();
         final String mapName = data.getProperties().get(Constants.MAP_NAME, "");
         if (!availableGames.containsKey(name)) {
@@ -196,8 +194,7 @@ public class AvailableGames {
           return true;
         }
       } catch (final Exception e) {
-        ClientLogger.logError("Exception while parsing: " + uri.toString() + " : "
-            + (gameName.get() != null ? gameName.get() + " : " : ""), e);
+        ClientLogger.logError("Exception while parsing: " + uri.toString(), e);
       }
     }
     return false;
@@ -207,15 +204,13 @@ public class AvailableGames {
     if (uri == null) {
       return null;
     }
-    final AtomicReference<String> gameName = new AtomicReference<>();
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        return GameParser.parse(uri.toString(), input, gameName);
+        return GameParser.parse(uri.toString(), input);
       } catch (final Exception e) {
-        ClientLogger.logError("Exception while parsing: " + uri.toString() + " : "
-            + (gameName.get() != null ? gameName.get() + " : " : ""), e);
+        ClientLogger.logError("Exception while parsing: " + uri.toString(), e);
       }
     }
     return null;
