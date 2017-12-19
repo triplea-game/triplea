@@ -7,6 +7,8 @@ import java.util.logging.LogManager;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import games.strategy.engine.framework.system.SystemProperties;
+
 /**
  * Provides support for configuring the Java platform's core logging facilities.
  */
@@ -23,7 +25,7 @@ public final class LoggingConfiguration {
    * </p>
    */
   public static void initialize() {
-    initialize(LogManager.getLogManager(), System.getProperties());
+    initialize(LogManager.getLogManager(), SystemProperties.all());
   }
 
   @VisibleForTesting

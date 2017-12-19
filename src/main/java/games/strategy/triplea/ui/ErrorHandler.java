@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.framework.system.SystemProperties;
 
 /**
  * When dealing with swing threads and new threads, exception handling can get tricky. Namely without
@@ -45,6 +46,6 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandl
    */
   public static void registerExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler(new ErrorHandler());
-    System.setProperty("sun.awt.exception.handler", ErrorHandler.class.getName());
+    SystemProperties.setSunAwtExceptionHandler(ErrorHandler.class.getName());
   }
 }

@@ -97,7 +97,7 @@ public final class ClientFileSystemHelper {
 
     if (!f.exists()) {
       System.err.println("Could not find root folder, does  not exist:" + f);
-      return new File(System.getProperties().getProperty("user.dir"));
+      return new File(SystemProperties.getUserDir());
     }
     return f;
   }
@@ -116,7 +116,7 @@ public final class ClientFileSystemHelper {
    *         not configurable (ideally we would allow this to be set during install perhaps).
    */
   public static File getUserRootFolder() {
-    final File userHome = new File(System.getProperties().getProperty("user.home"));
+    final File userHome = new File(SystemProperties.getUserHome());
     final File rootDir = new File(new File(userHome, "Documents"), "triplea");
     return rootDir.exists() ? rootDir : new File(userHome, "triplea");
   }

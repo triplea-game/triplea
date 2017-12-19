@@ -10,6 +10,7 @@ import javax.swing.JPasswordField;
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.net.IConnectionLogin;
 
 /**
@@ -40,7 +41,7 @@ public class ClientLogin implements IConnectionLogin {
     }
 
     response.put(ENGINE_VERSION_PROPERTY, ClientContext.engineVersion().toString());
-    response.put(JDK_VERSION_PROPERTY, System.getProperty("java.runtime.version"));
+    response.put(JDK_VERSION_PROPERTY, SystemProperties.getJavaRuntimeVersion());
 
     return response;
   }

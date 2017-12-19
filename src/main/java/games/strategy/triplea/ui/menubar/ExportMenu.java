@@ -35,6 +35,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.export.GameDataExporter;
 import games.strategy.engine.framework.GameDataUtils;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
@@ -84,7 +85,7 @@ class ExportMenu {
   private void exportXmlFile() {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    final File rootDir = new File(System.getProperties().getProperty("user.dir"));
+    final File rootDir = new File(SystemProperties.getUserDir());
 
     final int round = gameData.getCurrentRound();
     String defaultFileName =
@@ -142,7 +143,7 @@ class ExportMenu {
     final ExtendedStats statPanel = new ExtendedStats(gameData, uiContext);
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    final File rootDir = new File(System.getProperties().getProperty("user.dir"));
+    final File rootDir = new File(SystemProperties.getUserDir());
     final int currentRound = gameData.getCurrentRound();
     String defaultFileName =
         "stats_" + dateTimeFormatter.format(LocalDateTime.now()) + "_" + gameData.getGameName() + "_round_"
@@ -380,7 +381,7 @@ class ExportMenu {
     final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Unit Charts", e -> {
       final JFileChooser chooser = new JFileChooser();
       chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-      final File rootDir = new File(System.getProperties().getProperty("user.dir"));
+      final File rootDir = new File(SystemProperties.getUserDir());
       String defaultFileName = gameData.getGameName() + "_unit_stats";
       defaultFileName = FileNameUtils.removeIllegalCharacters(defaultFileName);
       defaultFileName = defaultFileName + ".html";

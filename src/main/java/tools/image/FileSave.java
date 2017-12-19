@@ -5,6 +5,8 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
+import games.strategy.engine.framework.system.SystemProperties;
+
 public class FileSave {
   private File file = null;
 
@@ -14,7 +16,7 @@ public class FileSave {
    * their files to be saved in.
    */
   public FileSave(final String title, final String name) {
-    this(title, name, new File(System.getProperties().getProperty("user.dir")));
+    this(title, name, new File(SystemProperties.getUserDir()));
   }
 
   public FileSave(final String title, final String name, final File currentDirectory) {
@@ -53,7 +55,7 @@ public class FileSave {
       chooser.setSelectedFile(selectedFile);
     }
     chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists())
-        ? new File(System.getProperties().getProperty("user.dir"))
+        ? new File(SystemProperties.getUserDir())
         : currentDirectory));
     if (fileFilter != null) {
       chooser.setFileFilter(fileFilter);

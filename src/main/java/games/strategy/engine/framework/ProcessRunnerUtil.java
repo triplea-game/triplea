@@ -27,11 +27,11 @@ public class ProcessRunnerUtil {
   }
 
   public static void populateBasicJavaArgs(final List<String> commands) {
-    populateBasicJavaArgs(commands, System.getProperty("java.class.path"));
+    populateBasicJavaArgs(commands, SystemProperties.getJavaClassPath());
   }
 
   public static void populateBasicJavaArgs(final List<String> commands, final long maxMemory) {
-    populateBasicJavaArgs(commands, System.getProperty("java.class.path"), Optional.of(String.valueOf(maxMemory)));
+    populateBasicJavaArgs(commands, SystemProperties.getJavaClassPath(), Optional.of(String.valueOf(maxMemory)));
   }
 
   static void populateBasicJavaArgs(final List<String> commands, final String newClasspath) {
@@ -41,13 +41,13 @@ public class ProcessRunnerUtil {
 
   private static void populateBasicJavaArgs(final List<String> commands, final String classpath,
       final Optional<String> maxMemory) {
-    final String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+    final String javaCommand = SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";
     commands.add(javaCommand);
     commands.add("-classpath");
     if (classpath != null && classpath.length() > 0) {
       commands.add(classpath);
     } else {
-      commands.add(System.getProperty("java.class.path"));
+      commands.add(SystemProperties.getJavaClassPath());
     }
     if (maxMemory.isPresent()) {
       System.out.println("Setting memory for new triplea process to: " + maxMemory.get());

@@ -57,10 +57,8 @@ public class HttpProxy {
   }
 
   private static Optional<InetSocketAddress> getSystemProxy() {
-    final String javaNetUseSystemProxies = "java.net.useSystemProxies";
-
     // this property is temporarily needed to turn on proxying
-    System.setProperty(javaNetUseSystemProxies, "true");
+    SystemProperties.setJavaNetUseSystemProxies("true");
     try {
       final ProxySelector def = ProxySelector.getDefault();
       if (def != null) {
@@ -77,7 +75,7 @@ public class HttpProxy {
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     } finally {
-      System.setProperty(javaNetUseSystemProxies, "false");
+      SystemProperties.setJavaNetUseSystemProxies("false");
     }
     return Optional.empty();
   }

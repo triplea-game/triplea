@@ -11,8 +11,7 @@ package games.strategy.triplea.ui;
  *
  * <ul>
  * <li>have a zero arg constructor</li>
- * <li>register the class name with a system property, like this:
- * <code>System.setProperty("sun.awt.exception.handler", &lt;your_implementing_instance>.class.getName());</code></li>
+ * <li>set the value of the "sun.awt.exception.handler" system property to the class name</li>
  * </ul>
  *
  * @see ErrorHandler
