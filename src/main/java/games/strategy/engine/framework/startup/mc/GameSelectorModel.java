@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Observable;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -84,12 +83,11 @@ public class GameSelectorModel extends Observable {
       return;
     }
     final GameData newData;
-    final AtomicReference<String> gameName = new AtomicReference<>();
     try {
       // if the file name is xml, load it as a new game
       if (file.getName().toLowerCase().endsWith("xml")) {
-        try (FileInputStream fis = new FileInputStream(file)) {
-          newData = GameParser.parse(file.getAbsolutePath(), fis, gameName);
+        try (InputStream fis = new FileInputStream(file)) {
+          newData = GameParser.parse(file.getAbsolutePath(), fis);
         }
       } else {
         // try to load it as a saved game whatever the extension
@@ -108,8 +106,7 @@ public class GameSelectorModel extends Observable {
       if (message == null && e.getStackTrace() != null) {
         message = e.getClass().getName() + "  at  " + e.getStackTrace()[0].toString();
       }
-      message = "Exception while parsing: " + file.getName() + " : "
-          + (gameName.get() != null ? gameName.get() + " : " : "") + message;
+      message = "Exception while parsing: " + file.getName() + " : " + message;
       ClientLogger.logQuietly(e);
       if (ui != null) {
         error(message + "\r\nPlease see console for full error log!", ui);
