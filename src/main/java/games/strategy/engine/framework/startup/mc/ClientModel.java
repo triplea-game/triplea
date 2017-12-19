@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.mc;
 
-
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_CLIENT_PROPERTY;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_HOST_PROPERTY;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME_PROPERTY;

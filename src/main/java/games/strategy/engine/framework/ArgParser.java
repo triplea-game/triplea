@@ -128,6 +128,9 @@ public final class ArgParser {
   }
 
 
+  /**
+   * An interface for all CLI related constants.
+   */
   public interface CliProperties {
     // argument options below:
     static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
