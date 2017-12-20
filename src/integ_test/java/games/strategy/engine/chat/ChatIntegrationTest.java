@@ -26,14 +26,12 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.SoundPath;
-import games.strategy.test.TestUtil;
 
 public final class ChatIntegrationTest {
   private static final String CHAT_NAME = "c";
   private static final int MESSAGE_COUNT = 50;
   private static final int NODE_COUNT = 3;
 
-  private final int serverPort = TestUtil.getUniquePort();
   private IServerMessenger serverMessenger;
   private IMessenger client1Messenger;
   private IMessenger client2Messenger;
@@ -50,8 +48,9 @@ public final class ChatIntegrationTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    serverMessenger = new ServerMessenger("Server", serverPort);
+    serverMessenger = new ServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
+    final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();
     client1Messenger = new ClientMessenger("localhost", serverPort, "client1", mac);
     client2Messenger = new ClientMessenger("localhost", serverPort, "client2", mac);

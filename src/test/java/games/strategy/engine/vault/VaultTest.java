@@ -23,7 +23,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
-import games.strategy.test.TestUtil;
 
 /**
  * Comment(KG): This test is broken, If you run each test individually they all work, but when running all test in the
@@ -32,7 +31,6 @@ import games.strategy.test.TestUtil;
  * The UnifiedMessenger will create a new ThreadPool with each instantiation, and this pool is never shutdown.
  */
 public class VaultTest {
-  private int serverPort = -1;
   private IServerMessenger serverMessenger;
   private IMessenger clientMessenger;
   private Vault clientVault;
@@ -40,9 +38,9 @@ public class VaultTest {
 
   @BeforeEach
   public void setUp() throws IOException {
-    serverPort = TestUtil.getUniquePort();
-    serverMessenger = new ServerMessenger("Server", serverPort);
+    serverMessenger = new ServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
+    final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();
     clientMessenger = new ClientMessenger("localhost", serverPort, "client1", mac);
     final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(serverMessenger);

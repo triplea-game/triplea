@@ -18,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 
 public class MessengerIntegrationTest {
@@ -32,10 +31,10 @@ public class MessengerIntegrationTest {
 
   @BeforeEach
   public void setUp() throws IOException {
-    serverPort = TestUtil.getUniquePort();
-    serverMessenger = new ServerMessenger("Server", serverPort);
+    serverMessenger = new ServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);
+    serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();
     client1Messenger = new ClientMessenger("localhost", serverPort, "client1", mac);
     client1Messenger.addMessageListener(client1MessageListener);
