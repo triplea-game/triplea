@@ -28,28 +28,24 @@ class LobbyGameTableModel extends AbstractTableModel {
   private final IMessenger messenger;
 
   // these must only be accessed in the swing event thread
-  private final List<Tuple<GUID, GameDescription>> gameList;
-  private final ILobbyGameBroadcaster lobbyGameBroadcaster;
+  private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
+  private final ILobbyGameBroadcaster lobbyGameBroadcaster = new ILobbyGameBroadcaster() {
+    @Override
+    public void gameUpdated(final GUID gameId, final GameDescription description) {
+      assertSentFromServer();
+      updateGame(gameId, description);
+    }
+
+    @Override
+    public void gameRemoved(final GUID gameId) {
+      assertSentFromServer();
+      removeGame(gameId);
+    }
+  };
 
   LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
-
-    gameList = new ArrayList<>();
-
     this.messenger = messenger;
-    lobbyGameBroadcaster = new ILobbyGameBroadcaster() {
-      @Override
-      public void gameUpdated(final GUID gameId, final GameDescription description) {
-        assertSentFromServer();
-        updateGame(gameId, description);
-      }
-
-      @Override
-      public void gameRemoved(final GUID gameId) {
-        assertSentFromServer();
-        removeGame(gameId);
-      }
-    };
     channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
 
     final Map<GUID, GameDescription> games =
