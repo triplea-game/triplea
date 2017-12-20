@@ -85,20 +85,20 @@ public class InGameLobbyWatcher {
    */
   public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent,
       final InGameLobbyWatcher oldWatcher) {
-    final String host = System.getProperties().getProperty(LOBBY_HOST);
-    final String port = System.getProperties().getProperty(LOBBY_PORT);
-    final String hostedBy = System.getProperties().getProperty(LOBBY_GAME_HOSTED_BY);
+    final String host = System.getProperty(LOBBY_HOST);
+    final String port = System.getProperty(LOBBY_PORT);
+    final String hostedBy = System.getProperty(LOBBY_GAME_HOSTED_BY);
     if (host == null || port == null) {
       return null;
     }
     // clear the properties
-    System.getProperties().remove(LOBBY_HOST);
-    System.getProperties().remove(LOBBY_PORT);
-    System.getProperties().remove(LOBBY_GAME_HOSTED_BY);
+    System.clearProperty(LOBBY_HOST);
+    System.clearProperty(LOBBY_PORT);
+    System.clearProperty(LOBBY_GAME_HOSTED_BY);
     // add them as temporary properties (in case we load an old savegame and need them again)
-    System.getProperties().setProperty(LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
-    System.getProperties().setProperty(LOBBY_PORT + GameRunner.OLD_EXTENSION, port);
-    System.getProperties().setProperty(LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
+    System.setProperty(LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
+    System.setProperty(LOBBY_PORT + GameRunner.OLD_EXTENSION, port);
+    System.setProperty(LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
     final IConnectionLogin login = new IConnectionLogin() {
       @Override
       public Map<String, String> getProperties(final Map<String, String> challengeProperties) {
