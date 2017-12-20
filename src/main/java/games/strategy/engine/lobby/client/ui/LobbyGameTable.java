@@ -17,8 +17,8 @@ import games.strategy.engine.lobby.server.GameDescription;
 
 class LobbyGameTable extends JTable {
   private static final long serialVersionUID = 8632519876114231003L;
-  private static final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
-  private static final Font italicFont = new Font(defaultFont.getFamily(), Font.ITALIC, defaultFont.getSize());
+  private static final Font DEFAULT_FONT = UIManager.getDefaults().getFont("Table.font");
+  private static final Font ITALIC_FONT = DEFAULT_FONT.deriveFont(Font.ITALIC);
 
   LobbyGameTable(final LobbyGameTableModel gameTableModel) {
     super(gameTableModel);
@@ -35,7 +35,7 @@ class LobbyGameTable extends JTable {
     final LobbyGameTableModel lobbyGameTableModel = (LobbyGameTableModel) getModel();
     final GameDescription gameDescription = lobbyGameTableModel.get(convertRowIndexToModel(rowIndex));
     final boolean isHostBot = Strings.nullToEmpty(gameDescription.getBotSupportEmail()).length() > 0;
-    component.setFont(isHostBot ? italicFont : defaultFont);
+    component.setFont(isHostBot ? ITALIC_FONT : DEFAULT_FONT);
     return component;
   }
 }
