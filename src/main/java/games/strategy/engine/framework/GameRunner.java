@@ -147,11 +147,11 @@ public class GameRunner {
           System.out.println("Current Engine version in use: " + engineVersion);
         }
       } catch (final Exception e) {
-        System.getProperties().setProperty(ENGINE_VERSION_BIN, engineVersion.toString());
+        System.setProperty(ENGINE_VERSION_BIN, engineVersion.toString());
         System.out.println(ENGINE_VERSION_BIN + ":" + engineVersion);
       }
     } else {
-      System.getProperties().setProperty(ENGINE_VERSION_BIN, engineVersion.toString());
+      System.setProperty(ENGINE_VERSION_BIN, engineVersion.toString());
       System.out.println(ENGINE_VERSION_BIN + ":" + engineVersion);
     }
 

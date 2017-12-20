@@ -627,7 +627,7 @@ public class PlacementPicker extends JFrame {
         for (final String propertie : properties) {
           if (arg.equals(propertie)) {
             final String value = getValue(arg2);
-            System.getProperties().setProperty(propertie, value);
+            System.setProperty(propertie, value);
             System.out.println(propertie + ":" + value);
             found = true;
             break;
