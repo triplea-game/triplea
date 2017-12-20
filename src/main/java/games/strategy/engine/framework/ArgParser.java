@@ -131,31 +131,33 @@ public final class ArgParser {
   /**
    * An interface for all CLI related constants.
    */
-  public interface CliProperties {
+  public static final class CliProperties {
+    private CliProperties() {}
+
     // argument options below:
-    static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
-    static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
-    final String TRIPLEA_MAP_DOWNLOAD_PROPERTY = "triplea.map.download";
-    static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
-    static final String TRIPLEA_CLIENT_PROPERTY = "triplea.client";
-    static final String TRIPLEA_HOST_PROPERTY = "triplea.host";
-    static final String TRIPLEA_PORT_PROPERTY = "triplea.port";
-    static final String TRIPLEA_NAME_PROPERTY = "triplea.name";
-    static final String TRIPLEA_SERVER_PASSWORD_PROPERTY = "triplea.server.password";
-    static final String TRIPLEA_STARTED = "triplea.started";
-    static final String LOBBY_HOST = "triplea.lobby.host";
-    static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
-    static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
-    static final String LOBBY_GAME_SUPPORT_EMAIL = "triplea.lobby.game.supportEmail";
-    static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
-    static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
-    static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
-    static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
-    static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
+    public static final String TRIPLEA_GAME_HOST_CONSOLE_PROPERTY = "triplea.game.host.console";
+    public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
+    public static final String TRIPLEA_MAP_DOWNLOAD_PROPERTY = "triplea.map.download";
+    public static final String TRIPLEA_SERVER_PROPERTY = "triplea.server";
+    public static final String TRIPLEA_CLIENT_PROPERTY = "triplea.client";
+    public static final String TRIPLEA_HOST_PROPERTY = "triplea.host";
+    public static final String TRIPLEA_PORT_PROPERTY = "triplea.port";
+    public static final String TRIPLEA_NAME_PROPERTY = "triplea.name";
+    public static final String TRIPLEA_SERVER_PASSWORD_PROPERTY = "triplea.server.password";
+    public static final String TRIPLEA_STARTED = "triplea.started";
+    public static final String LOBBY_HOST = "triplea.lobby.host";
+    public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
+    public static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
+    public static final String LOBBY_GAME_SUPPORT_EMAIL = "triplea.lobby.game.supportEmail";
+    public static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
+    public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
+    public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
+    public static final String TRIPLEA_DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
+    public static final String TRIPLEA_LOBBY_PORT_PROPERTY = "triplea.lobby.port";
 
-    static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
-    static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
+    public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
+    public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
 
-    static final String MAP_FOLDER = "mapFolder";
+    public static final String MAP_FOLDER = "mapFolder";
   }
 }
