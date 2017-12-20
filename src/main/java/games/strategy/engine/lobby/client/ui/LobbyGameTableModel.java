@@ -75,12 +75,10 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private Tuple<GUID, GameDescription> findGame(final GUID gameId) {
-    for (final Tuple<GUID, GameDescription> game : gameList) {
-      if (game.getFirst().equals(gameId)) {
-        return game;
-      }
-    }
-    return null;
+    return gameList.stream()
+        .filter(game -> game.getFirst().equals(gameId))
+        .findFirst()
+        .orElse(null);
   }
 
 
@@ -115,6 +113,7 @@ class LobbyGameTableModel extends AbstractTableModel {
       final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
       if (toReplace == null) {
         gameList.add(Tuple.of(gameId, description));
+        fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
       } else {
         final int replaceIndex = gameList.indexOf(toReplace);
         gameList.set(replaceIndex, Tuple.of(gameId, description));
