@@ -11,12 +11,10 @@ import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFe
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel;
@@ -50,9 +48,8 @@ public class LookAndFeel {
     substanceLooks.addAll(Arrays.asList(SubstanceAutumnLookAndFeel.class.getName(),
         SubstanceBusinessBlackSteelLookAndFeel.class.getName(), SubstanceBusinessBlueSteelLookAndFeel.class.getName(),
         SubstanceBusinessLookAndFeel.class.getName(), SubstanceCeruleanLookAndFeel.class.getName(),
-        SubstanceChallengerDeepLookAndFeel.class.getName(), SubstanceCremeCoffeeLookAndFeel.class.getName(),
-        SubstanceCremeLookAndFeel.class.getName(), SubstanceDustCoffeeLookAndFeel.class.getName(),
-        SubstanceDustLookAndFeel.class.getName(), SubstanceEmeraldDuskLookAndFeel.class.getName(),
+        SubstanceCremeCoffeeLookAndFeel.class.getName(), SubstanceCremeLookAndFeel.class.getName(),
+        SubstanceDustCoffeeLookAndFeel.class.getName(), SubstanceDustLookAndFeel.class.getName(),
         SubstanceGeminiLookAndFeel.class.getName(), SubstanceGraphiteAquaLookAndFeel.class.getName(),
         SubstanceGraphiteGlassLookAndFeel.class.getName(), SubstanceGraphiteLookAndFeel.class.getName(),
         SubstanceMagellanLookAndFeel.class.getName(), SubstanceMarinerLookAndFeel.class.getName(),
