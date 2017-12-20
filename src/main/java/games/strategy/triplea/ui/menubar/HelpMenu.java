@@ -289,7 +289,7 @@ public class HelpMenu {
     editorPane.setText(text);
     final JScrollPane scroll = new JScrollPane(editorPane);
     scroll.setBorder(null);
-    if (SystemProperties.getMrjVersion() == null) {
+    if (!SystemProperties.isMac()) {
       parentMenu.addSeparator();
       parentMenu.add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, editorPane,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE))).setMnemonic(KeyEvent.VK_A);
