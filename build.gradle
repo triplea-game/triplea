@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.2'
     }
 }
 
@@ -104,12 +104,11 @@ dependencies {
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
     testCompile 'org.apiguardian:apiguardian-api:1.0.0'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.1'
-    testCompile 'org.mockito:mockito-core:2.11.0'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'
+    testCompile 'org.mockito:mockito-core:2.13.0'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
 
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
-    testRuntime 'org.junit.platform:junit-platform-launcher:1.0.1'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
     testRuntime 'org.slf4j:slf4j-nop:1.7.25'
 }
 
