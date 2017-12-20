@@ -7,13 +7,13 @@ import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.ArgParser.CliProperties.MAP_FOLDER;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME_HOST_CONSOLE_PROPERTY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME_PROPERTY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_LOBBY_PORT_PROPERTY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME_PROPERTY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.GAME_HOST_CONSOLE;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_PORT;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
 
 import java.io.File;
@@ -419,7 +419,7 @@ public class HeadlessGameServer {
     }));
     m_availableGames = new AvailableGames();
     m_gameSelectorModel = new GameSelectorModel();
-    final String fileName = System.getProperty(TRIPLEA_GAME_PROPERTY, "");
+    final String fileName = System.getProperty(TRIPLEA_GAME, "");
     if (fileName.length() > 0) {
       try {
         final File file = new File(fileName);
@@ -483,7 +483,7 @@ public class HeadlessGameServer {
   public static void resetLobbyHostOldExtensionProperties() {
     for (final String property : getProperties()) {
       if (LOBBY_HOST.equals(property)
-          || TRIPLEA_LOBBY_PORT_PROPERTY.equals(property)
+          || LOBBY_PORT.equals(property)
           || LOBBY_GAME_HOSTED_BY.equals(property)) {
         // for these 3 properties, we clear them after hosting, but back them up.
         final String oldValue = System.getProperty(property + GameRunner.OLD_EXTENSION);
@@ -495,9 +495,9 @@ public class HeadlessGameServer {
   }
 
   private static Set<String> getProperties() {
-    return new HashSet<>(Arrays.asList(TRIPLEA_GAME_PROPERTY, TRIPLEA_GAME_HOST_CONSOLE_PROPERTY,
-        TRIPLEA_SERVER_PROPERTY, TRIPLEA_PORT_PROPERTY,
-        TRIPLEA_NAME_PROPERTY, LOBBY_HOST, TRIPLEA_LOBBY_PORT_PROPERTY,
+    return new HashSet<>(Arrays.asList(TRIPLEA_GAME, GAME_HOST_CONSOLE,
+        TRIPLEA_SERVER, TRIPLEA_PORT,
+        TRIPLEA_NAME, LOBBY_HOST, LOBBY_PORT,
         LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, LOBBY_GAME_SUPPORT_EMAIL,
         LOBBY_GAME_SUPPORT_PASSWORD, LOBBY_GAME_RECONNECTION,
         TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
@@ -692,13 +692,13 @@ public class HeadlessGameServer {
   private static void usage() {
     // TODO replace this method with the generated usage of commons-cli
     System.out.println("\nUsage and Valid Arguments:\n"
-        + "   " + TRIPLEA_GAME_PROPERTY + "=<FILE_NAME>\n"
-        + "   " + TRIPLEA_GAME_HOST_CONSOLE_PROPERTY + "=<true/false>\n"
-        + "   " + TRIPLEA_SERVER_PROPERTY + "=true\n"
-        + "   " + TRIPLEA_PORT_PROPERTY + "=<PORT>\n"
-        + "   " + TRIPLEA_NAME_PROPERTY + "=<PLAYER_NAME>\n"
+        + "   " + TRIPLEA_GAME + "=<FILE_NAME>\n"
+        + "   " + GAME_HOST_CONSOLE + "=<true/false>\n"
+        + "   " + TRIPLEA_SERVER + "=true\n"
+        + "   " + TRIPLEA_PORT + "=<PORT>\n"
+        + "   " + TRIPLEA_NAME + "=<PLAYER_NAME>\n"
         + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
-        + "   " + TRIPLEA_LOBBY_PORT_PROPERTY + "=<LOBBY_PORT>\n"
+        + "   " + LOBBY_PORT + "=<LOBBY_PORT>\n"
         + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
         + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
         + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
@@ -724,12 +724,12 @@ public class HeadlessGameServer {
 
   private static void handleHeadlessGameServerArgs() {
     boolean printUsage = false;
-    final String playerName = System.getProperty(TRIPLEA_NAME_PROPERTY, "");
+    final String playerName = System.getProperty(TRIPLEA_NAME, "");
     final String hostName = System.getProperty(LOBBY_GAME_HOSTED_BY, "");
     if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
         || !playerName.startsWith("Bot") || !hostName.startsWith("Bot")) {
       System.out.println(
-          "Invalid argument: " + TRIPLEA_NAME_PROPERTY + " and " + LOBBY_GAME_HOSTED_BY
+          "Invalid argument: " + TRIPLEA_NAME + " and " + LOBBY_GAME_HOSTED_BY
               + " must start with \"Bot\" and be at least 7 characters long and be the same.");
       printUsage = true;
     }

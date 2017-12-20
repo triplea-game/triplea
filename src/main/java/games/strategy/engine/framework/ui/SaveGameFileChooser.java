@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_HOSTED_BY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME;
 
 import java.io.File;
 
@@ -41,7 +41,7 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSaveFileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(TRIPLEA_NAME_PROPERTY,
+      final String saveSuffix = System.getProperty(TRIPLEA_NAME,
           System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_FILE_NAME;
@@ -52,7 +52,7 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSaveOddFileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(TRIPLEA_NAME_PROPERTY,
+      final String saveSuffix = System.getProperty(TRIPLEA_NAME,
           System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_ODD_ROUND_FILE_NAME;
@@ -63,7 +63,7 @@ public class SaveGameFileChooser extends JFileChooser {
 
   public static String getAutoSaveEvenFileName() {
     if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(TRIPLEA_NAME_PROPERTY,
+      final String saveSuffix = System.getProperty(TRIPLEA_NAME,
           System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
       if (saveSuffix.length() > 0) {
         return saveSuffix + "_" + AUTOSAVE_EVEN_ROUND_FILE_NAME;

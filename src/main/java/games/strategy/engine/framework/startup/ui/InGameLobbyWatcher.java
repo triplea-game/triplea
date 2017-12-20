@@ -3,9 +3,9 @@ package games.strategy.engine.framework.startup.ui;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_HOST;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_LOBBY_PORT_PROPERTY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT_PROPERTY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_PASSWORD_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_PORT;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT;
+import static games.strategy.engine.framework.ArgParser.CliProperties.SERVER_PASSWORD;
 
 import java.awt.Frame;
 import java.time.Instant;
@@ -86,18 +86,18 @@ public class InGameLobbyWatcher {
   public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent,
       final InGameLobbyWatcher oldWatcher) {
     final String host = System.getProperties().getProperty(LOBBY_HOST);
-    final String port = System.getProperties().getProperty(TRIPLEA_LOBBY_PORT_PROPERTY);
+    final String port = System.getProperties().getProperty(LOBBY_PORT);
     final String hostedBy = System.getProperties().getProperty(LOBBY_GAME_HOSTED_BY);
     if (host == null || port == null) {
       return null;
     }
     // clear the properties
     System.getProperties().remove(LOBBY_HOST);
-    System.getProperties().remove(TRIPLEA_LOBBY_PORT_PROPERTY);
+    System.getProperties().remove(LOBBY_PORT);
     System.getProperties().remove(LOBBY_GAME_HOSTED_BY);
     // add them as temporary properties (in case we load an old savegame and need them again)
     System.getProperties().setProperty(LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
-    System.getProperties().setProperty(TRIPLEA_LOBBY_PORT_PROPERTY + GameRunner.OLD_EXTENSION, port);
+    System.getProperties().setProperty(LOBBY_PORT + GameRunner.OLD_EXTENSION, port);
     System.getProperties().setProperty(LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
     final IConnectionLogin login = new IConnectionLogin() {
       @Override
@@ -164,7 +164,7 @@ public class InGameLobbyWatcher {
     this.messenger = messenger;
     this.remoteMessenger = remoteMessenger;
     this.serverMessenger = serverMessenger;
-    final String password = System.getProperty(TRIPLEA_SERVER_PASSWORD_PROPERTY);
+    final String password = System.getProperty(SERVER_PASSWORD);
     final boolean passworded = password != null && password.length() > 0;
     final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
         || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
@@ -224,7 +224,7 @@ public class InGameLobbyWatcher {
         if (isActive()) {
           shutDown();
           SwingUtilities.invokeLater(() -> {
-            String portString = System.getProperty(TRIPLEA_PORT_PROPERTY);
+            String portString = System.getProperty(TRIPLEA_PORT);
             if (portString == null || portString.trim().length() <= 0) {
               portString = "3300";
             }

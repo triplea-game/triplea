@@ -1,9 +1,9 @@
 package games.strategy.engine.framework.startup.mc;
 
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_CLIENT_PROPERTY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_HOST_PROPERTY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME_PROPERTY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT_PROPERTY;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_CLIENT;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_HOST;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_STARTED;
 
 import java.awt.Component;
@@ -152,12 +152,12 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private static ClientProps getProps(final Component ui) {
-    if (System.getProperties().getProperty(TRIPLEA_CLIENT_PROPERTY, "false").equals("true")
+    if (System.getProperties().getProperty(TRIPLEA_CLIENT, "false").equals("true")
         && System.getProperties().getProperty(TRIPLEA_STARTED, "").equals("")) {
       final ClientProps props = new ClientProps();
-      props.setHost(System.getProperty(TRIPLEA_HOST_PROPERTY));
-      props.setName(System.getProperty(TRIPLEA_NAME_PROPERTY));
-      props.setPort(Integer.parseInt(System.getProperty(TRIPLEA_PORT_PROPERTY)));
+      props.setHost(System.getProperty(TRIPLEA_HOST));
+      props.setName(System.getProperty(TRIPLEA_NAME));
+      props.setPort(Integer.parseInt(System.getProperty(TRIPLEA_PORT)));
       System.setProperty(TRIPLEA_STARTED, "true");
       return props;
     }
