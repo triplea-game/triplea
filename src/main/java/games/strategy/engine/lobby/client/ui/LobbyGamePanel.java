@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Action;
@@ -24,8 +25,11 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableRowSorter;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -47,7 +51,7 @@ class LobbyGamePanel extends JPanel {
   private LobbyGameTableModel gameTableModel;
   private final Messengers messengers;
   private JTable gameTable;
-  private TableSorter tableSorter;
+  private TableRowSorter<LobbyGameTableModel> tableSorter;
 
   LobbyGamePanel(final Messengers messengers) {
     this.messengers = messengers;
@@ -63,16 +67,16 @@ class LobbyGamePanel extends JPanel {
     bootGame = new JButton("Boot Game");
     gameTableModel = new LobbyGameTableModel(messengers.getMessenger(), messengers.getChannelMessenger(),
         messengers.getRemoteMessenger());
-    tableSorter = new TableSorter(gameTableModel);
+    tableSorter = new TableRowSorter<>(gameTableModel);
     gameTable = new LobbyGameTable(tableSorter);
-    tableSorter.setTableHeader(gameTable.getTableHeader());
     // only allow one row to be selected
     gameTable.setColumnSelectionAllowed(false);
+    gameTable.setCellSelectionEnabled(false);
     gameTable.setRowSelectionAllowed(true);
     gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     // by default, sort newest first
     final int dateColumn = gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started);
-    tableSorter.setSortingStatus(dateColumn, TableSorter.DESCENDING);
+    tableSorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(dateColumn, SortOrder.DESCENDING)));
     // these should add up to 700 at most
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players))
         .setPreferredWidth(42);
@@ -180,8 +184,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     // we sort the table, so get the correct index
-    final int modelIndex = tableSorter.modelIndex(selectedIndex);
-    final GameDescription description = gameTableModel.get(modelIndex);
+    final GameDescription description = gameTableModel.get(selectedIndex);
     final JPopupMenu menu = new JPopupMenu();
     boolean hasActions = false;
     for (final Action a : getGamesListRightClickActions(description)) {
@@ -308,8 +311,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     // we sort the table, so get the correct index
-    final int modelIndex = tableSorter.modelIndex(selectedIndex);
-    final GameDescription description = gameTableModel.get(modelIndex);
+    final GameDescription description = gameTableModel.get(selectedIndex);
     GameRunner.joinGame(description, messengers, getParent());
   }
 
@@ -407,8 +409,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {
-    final int modelIndex = tableSorter.modelIndex(selectedIndex);
-    final GameDescription description = gameTableModel.get(modelIndex);
+    final GameDescription description = gameTableModel.get(selectedIndex);
     final String hostedByName = description.getHostedBy().getName();
     final INode lobbyWatcherNode = new Node(
         (hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName
