@@ -1,19 +1,19 @@
 package games.strategy.engine.framework.headlessGameServer;
 
+import static games.strategy.engine.framework.ArgParser.CliProperties.GAME_HOST_CONSOLE;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_RECONNECTION;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_HOST;
-import static games.strategy.engine.framework.ArgParser.CliProperties.MAP_FOLDER;
-import static games.strategy.engine.framework.ArgParser.CliProperties.GAME_HOST_CONSOLE;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_PORT;
+import static games.strategy.engine.framework.ArgParser.CliProperties.MAP_FOLDER;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
 
 import java.io.File;

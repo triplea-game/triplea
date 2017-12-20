@@ -129,7 +129,7 @@ public final class ArgParser {
 
 
   /**
-   * An interface for all CLI related constants.
+   * A collection of all CLI related constants.
    */
   public static final class CliProperties {
     private CliProperties() {}

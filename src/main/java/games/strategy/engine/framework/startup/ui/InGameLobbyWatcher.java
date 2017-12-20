@@ -4,8 +4,8 @@ import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_PORT;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.ArgParser.CliProperties.SERVER_PASSWORD;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT;
 
 import java.awt.Frame;
 import java.time.Instant;

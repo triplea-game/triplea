@@ -1,25 +1,25 @@
 package games.strategy.engine.framework;
 
+import static games.strategy.engine.framework.ArgParser.CliProperties.DO_NOT_CHECK_FOR_UPDATES;
+import static games.strategy.engine.framework.ArgParser.CliProperties.ENGINE_VERSION_BIN;
+import static games.strategy.engine.framework.ArgParser.CliProperties.GAME_HOST_CONSOLE;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_RECONNECTION;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.ArgParser.CliProperties.MAP_FOLDER;
+import static games.strategy.engine.framework.ArgParser.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_CLIENT;
-import static games.strategy.engine.framework.ArgParser.CliProperties.DO_NOT_CHECK_FOR_UPDATES;
-import static games.strategy.engine.framework.ArgParser.CliProperties.ENGINE_VERSION_BIN;
-import static games.strategy.engine.framework.ArgParser.CliProperties.GAME_HOST_CONSOLE;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_HOST;
-import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_MAP_DOWNLOAD;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME;
-import static games.strategy.engine.framework.ArgParser.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER;
+import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_STARTED;
 
