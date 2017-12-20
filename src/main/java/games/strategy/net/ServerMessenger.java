@@ -77,8 +77,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     } else {
       node = new Node(name, InetAddress.getLocalHost(), boundPortNumber);
     }
-    final Thread t = new Thread(new ConnectionHandler(), "Server Messenger Connection Handler");
-    t.start();
+    new Thread(new ConnectionHandler(), "Server Messenger Connection Handler").start();
   }
 
   @Override
