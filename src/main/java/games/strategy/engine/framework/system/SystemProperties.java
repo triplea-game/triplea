@@ -27,10 +27,6 @@ public final class SystemProperties {
     return checkNotNull(System.getProperty("java.home"));
   }
 
-  public static @Nullable String getMrjVersion() {
-    return System.getProperty("mrj.version");
-  }
-
   private static String getOsName() {
     return checkNotNull(System.getProperty("os.name"));
   }
