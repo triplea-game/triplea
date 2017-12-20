@@ -10,7 +10,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Action;
@@ -25,11 +24,8 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableRowSorter;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -66,11 +62,8 @@ class LobbyGamePanel extends JPanel {
     bootGame = new JButton("Boot Game");
     gameTableModel = new LobbyGameTableModel(messengers.getMessenger(), messengers.getChannelMessenger(),
         messengers.getRemoteMessenger());
-    final TableRowSorter<LobbyGameTableModel> tableSorter = new TableRowSorter<>(gameTableModel);
-    // by default, sort newest first
-    final int dateColumn = gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started);
-    tableSorter.setSortKeys(Collections.singletonList(new RowSorter.SortKey(dateColumn, SortOrder.DESCENDING)));
-    gameTable = new LobbyGameTable(tableSorter);
+
+    gameTable = new LobbyGameTable(gameTableModel);
     // only allow one row to be selected
     gameTable.setColumnSelectionAllowed(false);
     gameTable.setCellSelectionEnabled(false);

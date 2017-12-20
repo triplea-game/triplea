@@ -2,8 +2,11 @@ package games.strategy.engine.lobby.client.ui;
 
 import java.awt.Component;
 import java.awt.Font;
+import java.util.Collections;
 
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
@@ -15,8 +18,12 @@ class LobbyGameTable extends JTable {
   private static final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
   private static final Font italicFont = new Font(defaultFont.getFamily(), Font.ITALIC, defaultFont.getSize());
 
-  LobbyGameTable(final TableRowSorter<LobbyGameTableModel> tableSorter) {
-    super(tableSorter.getModel());
+  LobbyGameTable(final LobbyGameTableModel gameTableModel) {
+    super(gameTableModel);
+    final TableRowSorter<LobbyGameTableModel> tableSorter = new TableRowSorter<>(gameTableModel);
+    // by default, sort newest first
+    final int dateColumn = gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started);
+    tableSorter.setSortKeys(Collections.singletonList(new RowSorter.SortKey(dateColumn, SortOrder.DESCENDING)));
     setRowSorter(tableSorter);
   }
 
