@@ -18,22 +18,22 @@ import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
-import games.strategy.test.TestUtil;
 
 public final class ClientLoginIntegrationTest {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
   private IServerMessenger serverMessenger;
-  private final int serverPort = TestUtil.getUniquePort();
+  private int serverPort;
 
   @BeforeEach
   public void setUp() throws Exception {
     serverMessenger = newServerMessenger();
+    serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
   }
 
-  private IServerMessenger newServerMessenger() throws Exception {
-    final ServerMessenger serverMessenger = new ServerMessenger("server", serverPort);
+  private static IServerMessenger newServerMessenger() throws Exception {
+    final ServerMessenger serverMessenger = new ServerMessenger("server", 0);
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.setLoginValidator(newLoginValidator(serverMessenger));
     return serverMessenger;

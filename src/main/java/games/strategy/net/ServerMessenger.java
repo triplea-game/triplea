@@ -58,19 +58,24 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
 
+  public ServerMessenger(final String name, final int requestedPortNumber) throws IOException {
+    this(name, requestedPortNumber, new DefaultObjectStreamFactory());
+  }
+
   // A hack, till I think of something better
-  public ServerMessenger(final String name, final int portNumber, final IObjectStreamFactory streamFactory)
+  public ServerMessenger(final String name, final int requestedPortNumber, final IObjectStreamFactory streamFactory)
       throws IOException {
     socketChannel = ServerSocketChannel.open();
     socketChannel.configureBlocking(false);
     socketChannel.socket().setReuseAddress(true);
-    socketChannel.socket().bind(new InetSocketAddress(portNumber), 10);
+    socketChannel.socket().bind(new InetSocketAddress(requestedPortNumber), 10);
+    final int boundPortNumber = socketChannel.socket().getLocalPort();
     nioSocket = new NioSocket(streamFactory, this, "Server");
     acceptorSelector = Selector.open();
     if (IPFinder.findInetAddress() != null) {
-      node = new Node(name, IPFinder.findInetAddress(), portNumber);
+      node = new Node(name, IPFinder.findInetAddress(), boundPortNumber);
     } else {
-      node = new Node(name, InetAddress.getLocalHost(), portNumber);
+      node = new Node(name, InetAddress.getLocalHost(), boundPortNumber);
     }
     final Thread t = new Thread(new ConnectionHandler(), "Server Messenger Connection Handler");
     t.start();
@@ -84,11 +89,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   @Override
   public ILoginValidator getLoginValidator() {
     return loginValidator;
-  }
-
-  /** Creates new ServerMessenger. */
-  public ServerMessenger(final String name, final int portNumber) throws IOException {
-    this(name, portNumber, new DefaultObjectStreamFactory());
   }
 
   @Override

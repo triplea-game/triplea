@@ -19,7 +19,6 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
-import games.strategy.test.TestUtil;
 import games.strategy.util.ThreadUtil;
 
 public class ChannelMessengerTest {
@@ -32,9 +31,9 @@ public class ChannelMessengerTest {
 
   @BeforeEach
   public void setUp() throws IOException {
-    serverPort = TestUtil.getUniquePort();
-    serverMessenger = new ServerMessenger("Server", serverPort);
+    serverMessenger = new ServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
+    serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();
     clientMessenger = new ClientMessenger("localhost", serverPort, "client1", mac);
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
