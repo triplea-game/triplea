@@ -11,6 +11,8 @@ import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import com.google.common.base.Strings;
+
 import games.strategy.engine.lobby.server.GameDescription;
 
 class LobbyGameTable extends JTable {
@@ -30,13 +32,10 @@ class LobbyGameTable extends JTable {
   @Override
   public Component prepareRenderer(final TableCellRenderer renderer, final int rowIndex, final int colIndex) {
     final Component component = super.prepareRenderer(renderer, rowIndex, colIndex);
-    final LobbyGameTableModel lobbyGameTableModel = (LobbyGameTableModel) this.getModel();
+    final LobbyGameTableModel lobbyGameTableModel = (LobbyGameTableModel) getModel();
     final GameDescription gameDescription = lobbyGameTableModel.get(convertRowIndexToModel(rowIndex));
-    if (gameDescription.getBotSupportEmail() != null && gameDescription.getBotSupportEmail().length() > 0) {
-      component.setFont(italicFont);
-    } else {
-      component.setFont(defaultFont);
-    }
+    final boolean isHostBot = Strings.nullToEmpty(gameDescription.getBotSupportEmail()).length() > 0;
+    component.setFont(isHostBot ? italicFont : defaultFont);
     return component;
   }
 }
