@@ -330,114 +330,114 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   class PlayerRow {
-    private final JLabel m_nameLabel;
-    private final JLabel m_playerLabel;
-    private final JCheckBox m_localCheckBox;
-    private final JCheckBox m_enabledCheckBox;
-    private final JComboBox<String> m_type;
-    private final JLabel m_alliance;
-    private final String[] m_types;
+    private final JLabel nameLabel;
+    private final JLabel playerLabel;
+    private final JCheckBox localCheckBox;
+    private final JCheckBox enabledCheckBox;
+    private final JComboBox<String> type;
+    private final JLabel alliance;
+    private final String[] types;
 
     PlayerRow(final String playerName, final Map<String, String> reloadSelections,
         final Collection<String> playerAlliances, final String[] types) {
-      m_nameLabel = new JLabel(playerName);
-      m_playerLabel = new JLabel(model.getMessenger().getLocalNode().getName());
-      m_localCheckBox = new JCheckBox();
-      m_localCheckBox.addActionListener(m_localPlayerActionListener);
-      m_localCheckBox.setSelected(true);
-      m_enabledCheckBox = new JCheckBox();
-      m_enabledCheckBox.addActionListener(m_disablePlayerActionListener);
+      nameLabel = new JLabel(playerName);
+      playerLabel = new JLabel(model.getMessenger().getLocalNode().getName());
+      localCheckBox = new JCheckBox();
+      localCheckBox.addActionListener(localPlayerActionListener);
+      localCheckBox.setSelected(true);
+      enabledCheckBox = new JCheckBox();
+      enabledCheckBox.addActionListener(disablePlayerActionListener);
       // this gets updated later
-      m_enabledCheckBox.setSelected(true);
-      m_types = types;
-      m_type = new JComboBox<>(types);
+      enabledCheckBox.setSelected(true);
+      this.types = types;
+      type = new JComboBox<>(types);
       String previousSelection = reloadSelections.get(playerName);
       if (previousSelection.equalsIgnoreCase("Client")) {
         previousSelection = types[0];
       }
       if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
-        m_type.setSelectedItem(previousSelection);
-        model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
+        type.setSelectedItem(previousSelection);
+        model.setLocalPlayerType(nameLabel.getText(), (String) type.getSelectedItem());
       } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
         // the 4th in the list should be Pro AI (Hard AI)
-        m_type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
-        model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
+        type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
+        model.setLocalPlayerType(nameLabel.getText(), (String) type.getSelectedItem());
       }
       if (playerAlliances.contains(playerName)) {
-        m_alliance = new JLabel();
+        alliance = new JLabel();
       } else {
-        m_alliance = new JLabel(playerAlliances.toString());
+        alliance = new JLabel(playerAlliances.toString());
       }
-      m_type.addActionListener(
-          e -> model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem()));
+      type.addActionListener(
+          e -> model.setLocalPlayerType(nameLabel.getText(), (String) type.getSelectedItem()));
     }
 
     public JComboBox<String> getType() {
-      return m_type;
+      return type;
     }
 
     public JLabel getName() {
-      return m_nameLabel;
+      return nameLabel;
     }
 
     public JLabel getAlliance() {
-      return m_alliance;
+      return alliance;
     }
 
     public JLabel getPlayer() {
-      return m_playerLabel;
+      return playerLabel;
     }
 
     public JCheckBox getLocal() {
-      return m_localCheckBox;
+      return localCheckBox;
     }
 
     public JCheckBox getEnabledPlayer() {
-      return m_enabledCheckBox;
+      return enabledCheckBox;
     }
 
     public void update(final Map<String, String> playersToNodes, final Map<String, Boolean> playersEnabled) {
-      String text = playersToNodes.get(m_nameLabel.getText());
+      String text = playersToNodes.get(nameLabel.getText());
       if (text == null) {
         text = "-";
       }
-      m_playerLabel.setText(text);
-      m_localCheckBox.setSelected(text.equals(model.getMessenger().getLocalNode().getName()));
-      m_enabledCheckBox.setSelected(playersEnabled.get(m_nameLabel.getText()));
+      playerLabel.setText(text);
+      localCheckBox.setSelected(text.equals(model.getMessenger().getLocalNode().getName()));
+      enabledCheckBox.setSelected(playersEnabled.get(nameLabel.getText()));
       setWidgetActivation();
     }
 
     private void setWidgetActivation() {
-      m_type.setEnabled(m_localCheckBox.isSelected());
-      m_nameLabel.setEnabled(m_enabledCheckBox.isSelected());
-      m_playerLabel.setEnabled(m_enabledCheckBox.isSelected());
-      m_localCheckBox.setEnabled(m_enabledCheckBox.isSelected());
-      m_alliance.setEnabled(m_enabledCheckBox.isSelected());
-      m_enabledCheckBox.setEnabled(model.getPlayersAllowedToBeDisabled().contains(m_nameLabel.getText()));
+      type.setEnabled(localCheckBox.isSelected());
+      nameLabel.setEnabled(enabledCheckBox.isSelected());
+      playerLabel.setEnabled(enabledCheckBox.isSelected());
+      localCheckBox.setEnabled(enabledCheckBox.isSelected());
+      alliance.setEnabled(enabledCheckBox.isSelected());
+      enabledCheckBox.setEnabled(model.getPlayersAllowedToBeDisabled().contains(nameLabel.getText()));
     }
 
-    private final ActionListener m_localPlayerActionListener = new ActionListener() {
+    private final ActionListener localPlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (m_localCheckBox.isSelected()) {
-          model.takePlayer(m_nameLabel.getText());
+        if (localCheckBox.isSelected()) {
+          model.takePlayer(nameLabel.getText());
         } else {
-          model.releasePlayer(m_nameLabel.getText());
+          model.releasePlayer(nameLabel.getText());
         }
         setWidgetActivation();
       }
     };
-    private final ActionListener m_disablePlayerActionListener = new ActionListener() {
+    private final ActionListener disablePlayerActionListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (m_enabledCheckBox.isSelected()) {
-          model.enablePlayer(m_nameLabel.getText());
+        if (enabledCheckBox.isSelected()) {
+          model.enablePlayer(nameLabel.getText());
           // the 1st in the list should be human
-          m_type.setSelectedItem(m_types[0]);
+          type.setSelectedItem(types[0]);
         } else {
-          model.disablePlayer(m_nameLabel.getText());
+          model.disablePlayer(nameLabel.getText());
           // the 2nd in the list should be Weak AI
-          m_type.setSelectedItem(m_types[Math.max(0, Math.min(m_types.length - 1, 1))]);
+          type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 1))]);
         }
         setWidgetActivation();
       }

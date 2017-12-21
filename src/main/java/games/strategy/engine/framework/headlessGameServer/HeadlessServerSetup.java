@@ -25,15 +25,15 @@ import games.strategy.util.ThreadUtil;
  * Server setup model.
  */
 public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
-  private final List<Observer> m_listeners = new CopyOnWriteArrayList<>();
-  private final ServerModel m_model;
-  private final GameSelectorModel m_gameSelectorModel;
-  private final InGameLobbyWatcherWrapper m_lobbyWatcher = new InGameLobbyWatcherWrapper();
+  private final List<Observer> listeners = new CopyOnWriteArrayList<>();
+  private final ServerModel model;
+  private final GameSelectorModel gameSelectorModel;
+  private final InGameLobbyWatcherWrapper lobbyWatcher = new InGameLobbyWatcherWrapper();
 
   HeadlessServerSetup(final ServerModel model, final GameSelectorModel gameSelectorModel) {
-    m_model = model;
-    m_gameSelectorModel = gameSelectorModel;
-    m_model.setRemoteModelListener(this);
+    this.model = model;
+    this.gameSelectorModel = gameSelectorModel;
+    this.model.setRemoteModelListener(this);
     createLobbyWatcher();
     setupListeners();
     setWidgetActivation();
@@ -41,9 +41,9 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   void createLobbyWatcher() {
-    m_lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), null,
-        m_lobbyWatcher.getInGameLobbyWatcher()));
-    m_lobbyWatcher.setGameSelectorModel(m_gameSelectorModel);
+    lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), null,
+        lobbyWatcher.getInGameLobbyWatcher()));
+    lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
 
   synchronized void repostLobbyWatcher(final IGame game) {
@@ -61,7 +61,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   void shutDownLobbyWatcher() {
-    m_lobbyWatcher.shutDown();
+    lobbyWatcher.shutDown();
   }
 
   private void setupListeners() {}
@@ -71,24 +71,24 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
 
   @Override
   public void shutDown() {
-    m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
-    m_model.shutDown();
-    m_lobbyWatcher.shutDown();
+    model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
+    model.shutDown();
+    lobbyWatcher.shutDown();
   }
 
   @Override
   public void cancel() {
-    m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
-    m_model.cancel();
-    m_lobbyWatcher.shutDown();
+    model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
+    model.cancel();
+    lobbyWatcher.shutDown();
   }
 
   @Override
   public boolean canGameStart() {
-    if (m_gameSelectorModel.getGameData() == null || m_model == null) {
+    if (gameSelectorModel.getGameData() == null || model == null) {
       return false;
     }
-    final Map<String, String> players = m_model.getPlayersToNodeListing();
+    final Map<String, String> players = model.getPlayersToNodeListing();
     if (players == null || players.isEmpty()) {
       return false;
     }
@@ -98,7 +98,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
       }
     }
     // make sure at least 1 player is enabled
-    final Map<String, Boolean> someoneEnabled = m_model.getPlayersEnabledListing();
+    final Map<String, Boolean> someoneEnabled = model.getPlayersEnabledListing();
     for (final boolean bool : someoneEnabled.values()) {
       if (bool) {
         return true;
@@ -127,20 +127,20 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
 
   @Override
   public IChatPanel getChatPanel() {
-    return m_model.getChatPanel();
+    return model.getChatPanel();
   }
 
   public ServerModel getModel() {
-    return m_model;
+    return model;
   }
 
   @Override
   public synchronized ILauncher getLauncher() {
-    final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
+    final ServerLauncher launcher = (ServerLauncher) model.getLauncher();
     if (launcher == null) {
       return null;
     }
-    launcher.setInGameLobbyWatcher(m_lobbyWatcher);
+    launcher.setInGameLobbyWatcher(lobbyWatcher);
     return launcher;
   }
 
@@ -151,17 +151,17 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
 
   @Override
   public void addObserver(final Observer observer) {
-    m_listeners.add(observer);
+    listeners.add(observer);
   }
 
   @Override
   public void removeObserver(final Observer observer) {
-    m_listeners.add(observer);
+    listeners.add(observer);
   }
 
   @Override
   public void notifyObservers() {
-    for (final Observer observer : m_listeners) {
+    for (final Observer observer : listeners) {
       observer.update(null, null);
     }
   }
@@ -171,7 +171,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
 
   @Override
   public void postStartGame() {
-    final GameData data = m_gameSelectorModel.getGameData();
+    final GameData data = gameSelectorModel.getGameData();
     data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
   }
 

@@ -263,7 +263,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       serverMessenger.addConnectionChangeListener(this);
       final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
       remoteMessenger = new RemoteMessenger(unifiedMessenger);
-      remoteMessenger.registerRemote(m_serverStartupRemote, SERVER_REMOTE_NAME);
+      remoteMessenger.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
       channelMessenger = new ChannelMessenger(unifiedMessenger);
       final NullModeratorController moderatorController = new NullModeratorController(serverMessenger, null);
       moderatorController.register(remoteMessenger);
@@ -293,7 +293,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
   }
 
-  private final IServerStartupRemote m_serverStartupRemote = new IServerStartupRemote() {
+  private final IServerStartupRemote serverStartupRemote = new IServerStartupRemote() {
     @Override
     public PlayerListing getPlayerListing() {
       return getPlayerListingInternal();
