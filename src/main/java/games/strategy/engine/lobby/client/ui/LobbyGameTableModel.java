@@ -1,6 +1,8 @@
 package games.strategy.engine.lobby.client.ui;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
+import games.strategy.util.TimeManager;
 import games.strategy.util.Tuple;
 
 class LobbyGameTableModel extends AbstractTableModel {
@@ -84,14 +87,6 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   GameDescription get(final int i) {
     return gameList.get(i).getSecond();
-  }
-
-  @Override
-  public Class<?> getColumnClass(final int columnIndex) {
-    if (columnIndex == getColumnIndex(Column.Started)) {
-      return Instant.class;
-    }
-    return Object.class;
   }
 
   private void assertSentFromServer() {
@@ -164,11 +159,15 @@ class LobbyGameTableModel extends AbstractTableModel {
       case Comments:
         return description.getComment();
       case Started:
-        return description.getStartDateTime();
+        return formatBotStartTime(description.getStartDateTime());
       case GUID:
         return gameList.get(rowIndex).getFirst();
       default:
         throw new IllegalStateException("Unknown column:" + column);
     }
+  }
+
+  private static String formatBotStartTime(final Instant instant) {
+    return TimeManager.getLocalizedTimeWithoutSeconds(LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()));
   }
 }

@@ -1,14 +1,10 @@
 package games.strategy.engine.lobby.client.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +21,6 @@ import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableCellRenderer;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -37,7 +32,6 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.TimeManager;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
@@ -92,18 +86,6 @@ class LobbyGamePanel extends JPanel {
         .setPreferredWidth(130);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host))
         .setPreferredWidth(67);
-    gameTable.setDefaultRenderer(Instant.class, new DefaultTableCellRenderer() {
-      private static final long serialVersionUID = -2807387751127250972L;
-
-      @Override
-      public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-          final boolean hasFocus, final int row, final int column) {
-        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        setText(TimeManager
-            .getLocalizedTimeWithoutSeconds(LocalDateTime.ofInstant((Instant) value, ZoneOffset.systemDefault())));
-        return this;
-      }
-    });
   }
 
   private void layoutComponents() {
