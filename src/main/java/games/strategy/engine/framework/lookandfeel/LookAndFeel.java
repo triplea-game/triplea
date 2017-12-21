@@ -17,7 +17,9 @@ import org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteChalkLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteGoldLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel;
@@ -51,7 +53,8 @@ public class LookAndFeel {
         SubstanceCremeCoffeeLookAndFeel.class.getName(), SubstanceCremeLookAndFeel.class.getName(),
         SubstanceDustCoffeeLookAndFeel.class.getName(), SubstanceDustLookAndFeel.class.getName(),
         SubstanceGeminiLookAndFeel.class.getName(), SubstanceGraphiteAquaLookAndFeel.class.getName(),
-        SubstanceGraphiteGlassLookAndFeel.class.getName(), SubstanceGraphiteLookAndFeel.class.getName(),
+        SubstanceGraphiteChalkLookAndFeel.class.getName(), SubstanceGraphiteGlassLookAndFeel.class.getName(),
+        SubstanceGraphiteGoldLookAndFeel.class.getName(), SubstanceGraphiteLookAndFeel.class.getName(),
         SubstanceMagellanLookAndFeel.class.getName(), SubstanceMarinerLookAndFeel.class.getName(),
         SubstanceMistAquaLookAndFeel.class.getName(), SubstanceMistSilverLookAndFeel.class.getName(),
         SubstanceModerateLookAndFeel.class.getName(), SubstanceNebulaBrickWallLookAndFeel.class.getName(),
