@@ -9,11 +9,9 @@ import java.lang.reflect.Proxy;
 
 import org.junit.jupiter.api.Test;
 
-import games.strategy.test.TestUtil;
-
 public final class WrappedInvocationHandlerTest {
   private Object newProxy(final InvocationHandler handler) {
-    return Proxy.newProxyInstance(getClass().getClassLoader(), TestUtil.getClassArrayFrom(), handler);
+    return Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[] {}, handler);
   }
 
   @Test

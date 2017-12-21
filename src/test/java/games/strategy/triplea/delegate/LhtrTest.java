@@ -23,7 +23,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.test.TestUtil;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -107,7 +106,7 @@ public class LhtrTest {
     // fail if we are called
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            TestUtil.getClassArrayFrom(ITripleAPlayer.class), (p, m, a) -> fail("method called:" + m));
+            new Class<?>[] {ITripleAPlayer.class}, (p, m, a) -> fail("method called:" + m));
     bridge.setRemote(player);
     // move 1 fighter over the aa gun in caucus
     final Route route = new Route();
@@ -159,7 +158,7 @@ public class LhtrTest {
     // fail if we are called
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            TestUtil.getClassArrayFrom(ITripleAPlayer.class), (p, m, a) -> null);
+            new Class<?>[] {ITripleAPlayer.class}, (p, m, a) -> null);
     bridge.setRemote(player);
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
@@ -194,7 +193,7 @@ public class LhtrTest {
     // fail if we are called
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
         .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            TestUtil.getClassArrayFrom(ITripleAPlayer.class), (p, m, a) -> null);
+            new Class<?>[] {ITripleAPlayer.class}, (p, m, a) -> null);
     bridge.setRemote(player);
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
