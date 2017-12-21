@@ -12,11 +12,11 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'jacoco'
-    id 'com.github.ben-manes.versions' version '0.12.0'
-    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'com.github.ben-manes.versions' version '0.17.0'
+    id 'com.github.johnrengelman.shadow' version '2.0.2'
     id 'com.install4j.gradle' version '7.0.1'
-    id 'de.undercouch.download' version '3.2.0'
-    id 'net.ltgt.errorprone' version '0.0.11'
+    id 'de.undercouch.download' version '3.3.0'
+    id 'net.ltgt.errorprone' version '0.0.13'
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -84,7 +84,7 @@ repositories {
 }
 
 dependencies {
-    errorprone 'com.google.errorprone:error_prone_core:2.0.5'
+    errorprone 'com.google.errorprone:error_prone_core:2.0.21'
     compile 'org.postgresql:postgresql:42.1.4'
     compile 'org.codehaus.griffon.plugins:griffon-lookandfeel-substance:2.0.0'
     compile 'com.github.openjson:openjson:1.0.10'
