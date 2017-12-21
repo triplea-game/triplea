@@ -24,7 +24,7 @@ apply plugin: 'org.junit.platform.gradle.plugin'
 
 group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
-mainClassName = "games.strategy.engine.framework.GameRunner"
+mainClassName = 'games.strategy.engine.framework.GameRunner'
 
 ext {
     artifactsDir = file("$buildDir/artifacts")
@@ -153,11 +153,11 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
     }
 }
 
-task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
-    ext.output = file("$libsDir/all/triplea.jar")
-    from shadowJar.archivePath
-    into ext.output.parent
-    rename shadowJar.archivePath.name, output.name
+shadowJar {
+    destinationDir = new File("$libsDir/all/")
+    baseName = 'triplea'
+    classifier = null
+    version = null
 }
 
 task downloadAssets(group: 'release') {
@@ -197,7 +197,7 @@ task prepareGameEngineProperties() {
     }
 }
 
-task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, prepareGameEngineProperties]) {
+task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar, prepareGameEngineProperties]) {
     classifier 'all_platforms'
     ['assets', 'dice_servers'].each { folder ->
         from(folder) {
@@ -205,19 +205,19 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, prepa
         }
     }
     from(gameEnginePropertiesArtifactFile)
-    from(renameShadowJar.output) {
+    from(shadowJar.outputs) {
         into('bin')
     }
 }
 
-task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
+task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
     classifier 'server'
     ['config/lobby/lobby.properties'].each { fileName ->
         from(fileName) {
             into('config/lobby')
         }
     }
-    from(renameShadowJar.output) {
+    from(shadowJar.outputs) {
         into('bin')
     }
 }
@@ -225,7 +225,7 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
 task generateZipReleases(group: 'release', dependsOn: [allPlatform, lobbyServer]) {}
 
 import com.install4j.gradle.Install4jTask
-task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, downloadAssets], group: 'release') {
+task generateInstallers(type: Install4jTask, dependsOn: [shadowJar, downloadAssets], group: 'release') {
     projectFile = file('build.install4j')
     release project.version
     doFirst {
