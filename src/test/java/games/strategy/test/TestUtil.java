@@ -40,8 +40,4 @@ public final class TestUtil {
     SwingAction.invokeAndWait(() -> {
     });
   }
-
-  public static Class<?>[] getClassArrayFrom(final Class<?>... classes) {
-    return classes;
-  }
 }

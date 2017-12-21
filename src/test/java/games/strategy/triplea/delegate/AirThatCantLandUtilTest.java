@@ -18,7 +18,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.ScriptedRandomSource;
-import games.strategy.test.TestUtil;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -321,6 +320,6 @@ public class AirThatCantLandUtilTest {
   @Deprecated
   private static ITripleAPlayer getDummyPlayer() {
     return (ITripleAPlayer) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        TestUtil.getClassArrayFrom(ITripleAPlayer.class), (p, m, a) -> null);
+        new Class<?>[] {ITripleAPlayer.class}, (p, m, a) -> null);
   }
 }
