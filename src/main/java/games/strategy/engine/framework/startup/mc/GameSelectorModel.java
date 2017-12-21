@@ -29,34 +29,34 @@ public class GameSelectorModel extends Observable {
    * Example: returns "games" which would be the games folder of "triplea/maps/someMapFooBar/games"
    */
   public static final String DEFAULT_GAME_XML_DIRECTORY_NAME = "games";
-  private GameData m_data = null;
-  private String m_gameName = "";
-  private String m_gameVersion = "";
-  private String m_gameRound = "";
-  private String m_fileName = "";
-  private boolean m_canSelect = true;
-  private boolean m_isHostHeadlessBot = false;
+  private GameData gameData = null;
+  private String gameName = "";
+  private String gameVersion = "";
+  private String gameRound = "";
+  private String fileName = "";
+  private boolean canSelect = true;
+  private boolean isHostHeadlessBot = false;
   // just for host bots, so we can get the actions for loading/saving games on the bots
   // from this model
-  private ClientModel m_clientModelForHostBots = null;
+  private ClientModel clientModelForHostBots = null;
 
   public GameSelectorModel() {
     setGameData(null);
-    m_fileName = "";
+    fileName = "";
   }
 
   public void resetGameDataToNull() {
     setGameData(null);
-    m_fileName = "";
+    fileName = "";
   }
 
   public void load(final GameData data, final String fileName) {
     setGameData(data);
-    m_fileName = fileName;
+    this.fileName = fileName;
   }
 
   public void load(final GameChooserEntry entry) {
-    m_fileName = entry.getLocation();
+    fileName = entry.getLocation();
     setGameData(entry.getGameData());
     if (entry.getGameData() != null) {
       ClientSetting.DEFAULT_GAME_NAME_PREF.save(entry.getGameData().getGameName());
@@ -95,7 +95,7 @@ public class GameSelectorModel extends Observable {
       }
       if (newData != null) {
         synchronized (this) {
-          m_fileName = file.getName();
+          fileName = file.getName();
         }
         setGameData(newData);
       }
@@ -127,11 +127,11 @@ public class GameSelectorModel extends Observable {
   }
 
   public synchronized GameData getGameData() {
-    return m_data;
+    return gameData;
   }
 
   public synchronized boolean isSavedGame() {
-    return !m_fileName.endsWith(".xml");
+    return !fileName.endsWith(".xml");
   }
 
   private static void error(final String message, final Component ui) {
@@ -142,34 +142,34 @@ public class GameSelectorModel extends Observable {
 
   void setCanSelect(final boolean canSelect) {
     synchronized (this) {
-      m_canSelect = canSelect;
+      this.canSelect = canSelect;
     }
     notifyObs();
   }
 
   public synchronized boolean canSelect() {
-    return m_canSelect;
+    return canSelect;
   }
 
   void setIsHostHeadlessBot(final boolean isHostHeadlessBot) {
     synchronized (this) {
-      m_isHostHeadlessBot = isHostHeadlessBot;
+      this.isHostHeadlessBot = isHostHeadlessBot;
     }
     notifyObs();
   }
 
   public synchronized boolean isHostHeadlessBot() {
-    return m_isHostHeadlessBot;
+    return isHostHeadlessBot;
   }
 
   void setClientModelForHostBots(final ClientModel clientModel) {
     synchronized (this) {
-      m_clientModelForHostBots = clientModel;
+      clientModelForHostBots = clientModel;
     }
   }
 
   public synchronized ClientModel getClientModelForHostBots() {
-    return m_clientModelForHostBots;
+    return clientModelForHostBots;
   }
 
   /**
@@ -178,51 +178,51 @@ public class GameSelectorModel extends Observable {
    */
   public void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion) {
     synchronized (this) {
-      m_data = null;
-      m_gameName = gameName;
-      m_gameRound = gameRound;
-      m_gameVersion = gameVersion;
+      gameData = null;
+      this.gameName = gameName;
+      this.gameRound = gameRound;
+      this.gameVersion = gameVersion;
     }
     notifyObs();
   }
 
   public synchronized String getFileName() {
-    if (m_data == null) {
+    if (gameData == null) {
       return "-";
     } else {
-      return m_fileName;
+      return fileName;
     }
   }
 
   public synchronized String getGameName() {
-    return m_gameName;
+    return gameName;
   }
 
   public synchronized String getGameRound() {
-    return m_gameRound;
+    return gameRound;
   }
 
   public synchronized String getGameVersion() {
-    return m_gameVersion;
+    return gameVersion;
   }
 
   void setGameData(final GameData data) {
     synchronized (this) {
       if (data == null) {
-        m_gameName = m_gameRound = m_gameVersion = "-";
+        gameName = gameRound = gameVersion = "-";
       } else {
-        m_gameName = data.getGameName();
-        m_gameRound = "" + data.getSequence().getRound();
-        m_gameVersion = data.getGameVersion().toString();
+        gameName = data.getGameName();
+        gameRound = "" + data.getSequence().getRound();
+        gameVersion = data.getGameVersion().toString();
       }
-      m_data = data;
+      gameData = data;
     }
     notifyObs();
   }
 
   private void notifyObs() {
     super.setChanged();
-    super.notifyObservers(m_data);
+    super.notifyObservers(gameData);
     super.clearChanged();
   }
 

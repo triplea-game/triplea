@@ -21,14 +21,14 @@ import games.strategy.util.ThreadUtil;
 
 public class LocalLauncher extends AbstractLauncher {
   private static final Logger logger = Logger.getLogger(ILauncher.class.getName());
-  private final IRandomSource m_randomSource;
-  private final PlayerListing m_playerListing;
+  private final IRandomSource randomSource;
+  private final PlayerListing playerListing;
 
   public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource,
       final PlayerListing playerListing) {
     super(gameSelectorModel);
-    m_randomSource = randomSource;
-    m_playerListing = playerListing;
+    this.randomSource = randomSource;
+    this.playerListing = playerListing;
   }
 
   @Override
@@ -36,24 +36,24 @@ public class LocalLauncher extends AbstractLauncher {
     Exception exceptionLoadingGame = null;
     ServerGame game = null;
     try {
-      m_gameData.doPreGameStartDataModifications(m_playerListing);
+      gameData.doPreGameStartDataModifications(playerListing);
       final Messengers messengers = new Messengers(new HeadlessServerMessenger());
       final Set<IGamePlayer> gamePlayers =
-          m_gameData.getGameLoader().createPlayers(m_playerListing.getLocalPlayerTypes());
-      game = new ServerGame(m_gameData, gamePlayers, new HashMap<>(), messengers);
-      game.setRandomSource(m_randomSource);
+          gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypes());
+      game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers);
+      game.setRandomSource(randomSource);
       // for debugging, we can use a scripted random source
       if (ScriptedRandomSource.useScriptedRandom()) {
         game.setRandomSource(new ScriptedRandomSource());
       }
-      m_gameData.getGameLoader().startGame(game, gamePlayers, m_headless);
+      gameData.getGameLoader().startGame(game, gamePlayers, headless);
     } catch (final MapNotFoundException e) {
       exceptionLoadingGame = e;
     } catch (final Exception ex) {
       ClientLogger.logQuietly(ex);
       exceptionLoadingGame = ex;
     } finally {
-      m_gameLoadingWindow.doneWait();
+      gameLoadingWindow.doneWait();
     }
     try {
       if (exceptionLoadingGame == null) {
@@ -66,7 +66,7 @@ public class LocalLauncher extends AbstractLauncher {
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
       // by closing of stream while unloading map resources.
       ThreadUtil.sleep(100);
-      m_gameSelectorModel.loadDefaultGame();
+      gameSelectorModel.loadDefaultGame();
       SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
     }
   }

@@ -15,35 +15,35 @@ import games.strategy.engine.framework.ui.background.WaitWindow;
  * Abstract class for launching a game.
  */
 public abstract class AbstractLauncher implements ILauncher {
-  protected final GameData m_gameData;
-  protected final GameSelectorModel m_gameSelectorModel;
-  protected final WaitWindow m_gameLoadingWindow;
-  protected final boolean m_headless;
+  protected final GameData gameData;
+  protected final GameSelectorModel gameSelectorModel;
+  protected final WaitWindow gameLoadingWindow;
+  protected final boolean headless;
 
   protected AbstractLauncher(final GameSelectorModel gameSelectorModel) {
     this(gameSelectorModel, false);
   }
 
   protected AbstractLauncher(final GameSelectorModel gameSelectorModel, final boolean headless) {
-    m_headless = headless;
-    if (m_headless) {
-      m_gameLoadingWindow = null;
+    this.headless = headless;
+    if (this.headless) {
+      gameLoadingWindow = null;
     } else {
-      m_gameLoadingWindow = new WaitWindow();
+      gameLoadingWindow = new WaitWindow();
     }
-    m_gameSelectorModel = gameSelectorModel;
-    m_gameData = gameSelectorModel.getGameData();
+    this.gameSelectorModel = gameSelectorModel;
+    gameData = gameSelectorModel.getGameData();
   }
 
   @Override
   public void launch(final Component parent) {
-    if (!m_headless && !SwingUtilities.isEventDispatchThread()) {
+    if (!headless && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
-    if (!m_headless && m_gameLoadingWindow != null) {
-      m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
-      m_gameLoadingWindow.setVisible(true);
-      m_gameLoadingWindow.showWait();
+    if (!headless && gameLoadingWindow != null) {
+      gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
+      gameLoadingWindow.setVisible(true);
+      gameLoadingWindow.showWait();
     }
     if (parent != null) {
       JOptionPane.getFrameForComponent(parent).setVisible(false);

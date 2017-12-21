@@ -61,12 +61,12 @@ public class HeadlessGameServer {
 
   private static final Logger logger = Logger.getLogger(HeadlessGameServer.class.getName());
   private static HeadlessGameServer instance = null;
-  private final AvailableGames m_availableGames;
-  private final GameSelectorModel m_gameSelectorModel;
-  private SetupPanelModel m_setupPanelModel = null;
-  private final ScheduledExecutorService m_lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
-  private ServerGame m_iGame = null;
-  private boolean m_shutDown = false;
+  private final AvailableGames availableGames;
+  private final GameSelectorModel gameSelectorModel;
+  private SetupPanelModel setupPanelModel = null;
+  private final ScheduledExecutorService lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
+  private ServerGame game = null;
+  private boolean shutDown = false;
   private final String startDate = TimeManager.getFullUtcString(Instant.now());
 
   public static synchronized HeadlessGameServer getInstance() {
@@ -81,60 +81,60 @@ public class HeadlessGameServer {
   }
 
   public Set<String> getAvailableGames() {
-    return m_availableGames.getGameNames();
+    return availableGames.getGameNames();
   }
 
   public synchronized void setGameMapTo(final String gameName) {
     // don't change mid-game
-    if (m_setupPanelModel.getPanel() != null && m_iGame == null) {
-      if (!m_availableGames.getGameNames().contains(gameName)) {
+    if (setupPanelModel.getPanel() != null && game == null) {
+      if (!availableGames.getGameNames().contains(gameName)) {
         return;
       }
-      m_gameSelectorModel.load(m_availableGames.getGameData(gameName), m_availableGames.getGameFilePath(gameName));
+      gameSelectorModel.load(availableGames.getGameData(gameName), availableGames.getGameFilePath(gameName));
       System.out.println("Changed to game map: " + gameName);
     }
   }
 
   public synchronized void loadGameSave(final File file) {
     // don't change mid-game
-    if (m_setupPanelModel.getPanel() != null && m_iGame == null) {
+    if (setupPanelModel.getPanel() != null && game == null) {
       if (file == null || !file.exists()) {
         return;
       }
-      m_gameSelectorModel.load(file, null);
+      gameSelectorModel.load(file, null);
       System.out.println("Changed to save: " + file.getName());
     }
   }
 
   public synchronized void loadGameSave(final InputStream input, final String fileName) {
     // don't change mid-game
-    if (m_setupPanelModel.getPanel() != null && m_iGame == null) {
+    if (setupPanelModel.getPanel() != null && game == null) {
       if (input == null || fileName == null) {
         return;
       }
-      final GameData data = m_gameSelectorModel.getGameData(input);
+      final GameData data = gameSelectorModel.getGameData(input);
       if (data == null) {
         System.out.println("Loading GameData failed for: " + fileName);
         return;
       }
       final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-      final Set<String> availableMaps = m_availableGames.getAvailableMapFolderOrZipNames();
+      final Set<String> availableMaps = availableGames.getAvailableMapFolderOrZipNames();
       if (!availableMaps.contains(mapNameProperty) && !availableMaps.contains(mapNameProperty + "-master")) {
         System.out.println("Game mapName not in available games listing: " + mapNameProperty);
         return;
       }
-      m_gameSelectorModel.load(data, fileName);
+      gameSelectorModel.load(data, fileName);
       System.out.println("Changed to user savegame: " + fileName);
     }
   }
 
   public synchronized void loadGameOptions(final byte[] bytes) {
     // don't change mid-game
-    if (m_setupPanelModel.getPanel() != null && m_iGame == null) {
+    if (setupPanelModel.getPanel() != null && game == null) {
       if (bytes == null || bytes.length == 0) {
         return;
       }
-      final GameData data = m_gameSelectorModel.getGameData();
+      final GameData data = gameSelectorModel.getGameData();
       if (data == null) {
         return;
       }
@@ -150,10 +150,10 @@ public class HeadlessGameServer {
   public static synchronized void setServerGame(final ServerGame serverGame) {
     final HeadlessGameServer instance = getInstance();
     if (instance != null) {
-      instance.m_iGame = serverGame;
+      instance.game = serverGame;
       if (serverGame != null) {
-        System.out.println("Game starting up: " + instance.m_iGame.isGameSequenceRunning() + ", GameOver: "
-            + instance.m_iGame.isGameOver() + ", Players: " + instance.m_iGame.getPlayerManager().toString());
+        System.out.println("Game starting up: " + instance.game.isGameSequenceRunning() + ", GameOver: "
+            + instance.game.isGameOver() + ", Players: " + instance.game.getPlayerManager().toString());
       }
     }
   }
@@ -219,7 +219,7 @@ public class HeadlessGameServer {
     final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     final String encryptedPassword = md5Crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
-      final ServerGame serverGame = m_iGame;
+      final ServerGame serverGame = game;
       if (serverGame != null) {
         new Thread(() -> {
           System.out.println("Remote Stop Game Initiated.");
@@ -400,11 +400,11 @@ public class HeadlessGameServer {
   }
 
   ServerGame getIGame() {
-    return m_iGame;
+    return game;
   }
 
   public boolean isShutDown() {
-    return m_shutDown;
+    return shutDown;
   }
 
   private HeadlessGameServer() {
@@ -417,21 +417,21 @@ public class HeadlessGameServer {
       logger.info("Running ShutdownHook.");
       shutdown();
     }));
-    m_availableGames = new AvailableGames();
-    m_gameSelectorModel = new GameSelectorModel();
+    availableGames = new AvailableGames();
+    gameSelectorModel = new GameSelectorModel();
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
     if (fileName.length() > 0) {
       try {
         final File file = new File(fileName);
-        m_gameSelectorModel.load(file, null);
+        gameSelectorModel.load(file, null);
       } catch (final Exception e) {
-        m_gameSelectorModel.resetGameDataToNull();
+        gameSelectorModel.resetGameDataToNull();
       }
     }
     new Thread(() -> {
       System.out.println("Headless Start");
-      m_setupPanelModel = new HeadlessServerSetupPanelModel(m_gameSelectorModel, null);
-      m_setupPanelModel.showSelectType();
+      setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel, null);
+      setupPanelModel.showSelectType();
       System.out.println("Waiting for users to connect.");
       waitForUsersHeadless();
     }, "Initialize Headless Server Setup Model").start();
@@ -445,13 +445,13 @@ public class HeadlessGameServer {
     } catch (final NumberFormatException e) {
       reconnect = GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
     }
-    m_lobbyWatcherResetupThread.scheduleAtFixedRate(() -> {
+    lobbyWatcherResetupThread.scheduleAtFixedRate(() -> {
       try {
-        restartLobbyWatcher(m_setupPanelModel, m_iGame);
+        restartLobbyWatcher(setupPanelModel, game);
       } catch (final Exception e) {
         ThreadUtil.sleep(10 * 60 * 1000);
         // try again, but don't catch it this time
-        restartLobbyWatcher(m_setupPanelModel, m_iGame);
+        restartLobbyWatcher(setupPanelModel, game);
       }
     }, reconnect, reconnect, TimeUnit.SECONDS);
     logger.info("Game Server initialized");
@@ -533,24 +533,24 @@ public class HeadlessGameServer {
   }
 
   synchronized void shutdown() {
-    m_shutDown = true;
+    shutDown = true;
     try {
-      if (m_lobbyWatcherResetupThread != null) {
-        m_lobbyWatcherResetupThread.shutdown();
+      if (lobbyWatcherResetupThread != null) {
+        lobbyWatcherResetupThread.shutdown();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
     try {
-      if (m_iGame != null) {
-        m_iGame.stopGame();
+      if (game != null) {
+        game.stopGame();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
     try {
-      if (m_setupPanelModel != null) {
-        final ISetupPanel setup = m_setupPanelModel.getPanel();
+      if (setupPanelModel != null) {
+        final ISetupPanel setup = setupPanelModel.getPanel();
         if (setup != null && setup instanceof HeadlessServerSetup) {
           setup.shutDown();
         }
@@ -559,15 +559,15 @@ public class HeadlessGameServer {
       ClientLogger.logQuietly(e);
     }
     try {
-      if (m_gameSelectorModel != null && m_gameSelectorModel.getGameData() != null) {
-        m_gameSelectorModel.getGameData().clearAllListeners();
+      if (gameSelectorModel != null && gameSelectorModel.getGameData() != null) {
+        gameSelectorModel.getGameData().clearAllListeners();
       }
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
     instance = null;
-    m_setupPanelModel = null;
-    m_iGame = null;
+    setupPanelModel = null;
+    game = null;
     System.out.println("Shutdown Script Finished.");
   }
 
@@ -575,14 +575,14 @@ public class HeadlessGameServer {
     setServerGame(null);
 
     new Thread(() -> {
-      while (!m_shutDown) {
+      while (!shutDown) {
         if (!ThreadUtil.sleep(8000)) {
-          m_shutDown = true;
+          shutDown = true;
           break;
         }
-        if (m_setupPanelModel != null && m_setupPanelModel.getPanel() != null
-            && m_setupPanelModel.getPanel().canGameStart()) {
-          final boolean started = startHeadlessGame(m_setupPanelModel);
+        if (setupPanelModel != null && setupPanelModel.getPanel() != null
+            && setupPanelModel.getPanel().canGameStart()) {
+          final boolean started = startHeadlessGame(setupPanelModel);
           if (!started) {
             System.out.println("Error in launcher, going back to waiting.");
           } else {
@@ -631,11 +631,11 @@ public class HeadlessGameServer {
   }
 
   SetupPanelModel getSetupPanelModel() {
-    return m_setupPanelModel;
+    return setupPanelModel;
   }
 
   ServerModel getServerModel() {
-    return getServerModel(m_setupPanelModel);
+    return getServerModel(setupPanelModel);
   }
 
   static ServerModel getServerModel(final SetupPanelModel setupPanelModel) {
@@ -659,7 +659,7 @@ public class HeadlessGameServer {
    * Get the chat for the game, or null if there is no chat.
    */
   public Chat getChat() {
-    final ISetupPanel model = m_setupPanelModel.getPanel();
+    final ISetupPanel model = setupPanelModel.getPanel();
     if (model instanceof ServerSetupPanel) {
       return model.getChatPanel().getChat();
     } else if (model instanceof ClientSetupPanel) {
