@@ -47,7 +47,7 @@ public class ConnectionFinder {
   private static final String SCALE_PIXELS = "triplea.map.scalePixels";
   private static final String MIN_OVERLAP = "triplea.map.minOverlap";
   private static boolean dimensionsSet = false;
-  private static StringBuffer territoryDefinitions = null;
+  private static StringBuilder territoryDefinitions = null;
   // how many pixels should each area become bigger in both x and y axis to see which area it overlaps?
   // default 8, or if LINE_THICKNESS if given 4x linethickness
   private static int scalePixels = 8;
@@ -178,7 +178,7 @@ public class ConnectionFinder {
     try {
       final String fileName = new FileSave("Where To Save connections.txt ? (cancel to print to console)",
           "connections.txt", mapFolderLocation).getPathString();
-      final StringBuffer connectionsString = convertToXml(connections);
+      final StringBuilder connectionsString = convertToXml(connections);
       if (fileName == null) {
         System.out.println();
         if (territoryDefinitions != null) {
@@ -207,10 +207,10 @@ public class ConnectionFinder {
    *        territory is water
    * @return StringBuffer containing XML representing these connections
    */
-  private static StringBuffer doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString) {
+  private static StringBuilder doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString) {
     // sort for pretty xml's
     Collections.sort(allTerritoryNames, new AlphanumComparator());
-    final StringBuffer output = new StringBuffer();
+    final StringBuilder output = new StringBuilder();
     output.append("<!-- Territory Definitions -->\r\n");
     final Pattern waterPattern = Pattern.compile(waterString);
     for (final String t : allTerritoryNames) {
@@ -234,8 +234,8 @@ public class ConnectionFinder {
    *        a map of connections between Territories
    * @return a StringBuffer containing XML representing these connections
    */
-  private static StringBuffer convertToXml(final Map<String, Collection<String>> connections) {
-    final StringBuffer output = new StringBuffer();
+  private static StringBuilder convertToXml(final Map<String, Collection<String>> connections) {
+    final StringBuilder output = new StringBuilder();
     output.append("<!-- Territory Connections -->\r\n");
     // sort for pretty xml's
     final List<String> allTerritories = new ArrayList<>(connections.keySet());

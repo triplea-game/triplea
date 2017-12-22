@@ -337,7 +337,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
   protected String removeFromPlayer(final IntegerMap<Resource> costs, final CompositeChange changes) {
-    final StringBuffer returnString = new StringBuffer("Remaining resources: ");
+    final StringBuilder returnString = new StringBuilder("Remaining resources: ");
     final IntegerMap<Resource> left = m_player.getResources().getResourcesCopy();
     left.subtract(costs);
     for (final Entry<Resource, Integer> entry : left.entrySet()) {

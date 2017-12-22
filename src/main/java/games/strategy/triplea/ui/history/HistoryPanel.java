@@ -8,10 +8,11 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Enumeration;
-import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -335,7 +336,7 @@ public class HistoryPanel extends JPanel {
       final Enumeration<TreePath> expandedDescendants = tree.getExpandedDescendants(root);
       final TreePath selectedPath = tree.getSelectionPath();
       // fill stack with nodes that should be collapsed
-      final Stack<TreePath> collapsePaths = new Stack<>();
+      final Deque<TreePath> collapsePaths = new ArrayDeque<>();
       while (expandedDescendants.hasMoreElements()) {
         final TreePath currentDescendant = expandedDescendants.nextElement();
         if (!currentDescendant.isDescendant(newPath)

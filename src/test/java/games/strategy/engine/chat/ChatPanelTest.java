@@ -12,7 +12,7 @@ public class ChatPanelTest {
   @Test
   public void testTrim() throws Exception {
     final StyledDocument doc = new DefaultStyledDocument();
-    final StringBuffer buffer = new StringBuffer();
+    final StringBuilder buffer = new StringBuilder();
     for (int i = 0; i < 10; i++) {
       buffer.append("\n");
     }

@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.proAI.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +26,7 @@ public class ProSortMoveOptionsUtils {
 
   public static Map<Unit, Set<Territory>> sortUnitMoveOptions(final Map<Unit, Set<Territory>> unitAttackOptions) {
 
-    final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
+    final List<Map.Entry<Unit, Set<Territory>>> list = new ArrayList<>(unitAttackOptions.entrySet());
     Collections.sort(list, (o1, o2) -> {
 
       // Sort by number of move options then cost of unit then unit type
@@ -52,7 +51,7 @@ public class ProSortMoveOptionsUtils {
       final ProOddsCalculator calc) {
     final GameData data = ProData.getData();
 
-    final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
+    final List<Map.Entry<Unit, Set<Territory>>> list = new ArrayList<>(unitAttackOptions.entrySet());
     Collections.sort(list, (o1, o2) -> {
 
       // Find number of territories that still need units
@@ -101,7 +100,7 @@ public class ProSortMoveOptionsUtils {
       final Map<Unit, Territory> unitTerritoryMap, final ProOddsCalculator calc) {
     final GameData data = ProData.getData();
 
-    final List<Map.Entry<Unit, Set<Territory>>> list = new LinkedList<>(unitAttackOptions.entrySet());
+    final List<Map.Entry<Unit, Set<Territory>>> list = new ArrayList<>(unitAttackOptions.entrySet());
     Collections.sort(list, (o1, o2) -> {
 
       // Sort by number of territories that still need units
