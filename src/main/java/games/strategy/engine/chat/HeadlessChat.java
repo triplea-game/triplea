@@ -27,7 +27,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private static final int MAX_LENGTH = 1000 * 200;
   private Chat chat;
   private boolean showTime = true;
-  private StringBuffer allText = new StringBuffer();
+  private StringBuilder allText = new StringBuilder();
   private final ChatFloodControl floodControl = new ChatFloodControl();
   private final Set<String> hiddenPlayers = new HashSet<>();
   private final Set<INode> players = new HashSet<>();
@@ -100,7 +100,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     if (this.chat != null) {
       this.chat.addChatListener(this);
       synchronized (this.chat.getMutex()) {
-        allText = new StringBuffer();
+        allText = new StringBuilder();
         try {
           if (out != null) {
             out.println();
@@ -168,7 +168,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     final String fullMessage = prefix + " " + message + "\n";
     final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
-      allText = new StringBuffer(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
+      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
     }
     allText.append(fullMessage);
     try {
@@ -185,7 +185,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     final String fullMessage = "--- " + message + " ---\n";
     final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
-      allText = new StringBuffer(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
+      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
     }
     allText.append(fullMessage);
     try {

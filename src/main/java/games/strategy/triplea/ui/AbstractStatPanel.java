@@ -54,7 +54,7 @@ public abstract class AbstractStatPanel extends JPanel {
     return players;
   }
 
-  class ResourceStat extends AbstractStat {
+  static class ResourceStat extends AbstractStat {
     final Resource resource;
 
     ResourceStat(final Resource resource) {

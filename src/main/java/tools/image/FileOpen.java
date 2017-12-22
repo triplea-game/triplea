@@ -64,7 +64,7 @@ public class FileOpen {
 
       @Override
       public String getDescription() {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for (final String ex : extensions) {
           buf.append("*").append(ex).append(" ");
         }

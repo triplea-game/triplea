@@ -153,7 +153,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class JComponentTableCellRenderer implements TableCellRenderer {
+  static class JComponentTableCellRenderer implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
         final boolean hasFocus, final int row, final int column) {
@@ -436,7 +436,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class ProductionStat extends AbstractStat {
+  static class ProductionStat extends AbstractStat {
     @Override
     public String getName() {
       return "Production";
@@ -464,7 +464,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class UnitsStat extends AbstractStat {
+  static class UnitsStat extends AbstractStat {
     @Override
     public String getName() {
       return "Units";
@@ -481,7 +481,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class TuvStat extends AbstractStat {
+  static class TuvStat extends AbstractStat {
     @Override
     public String getName() {
       return "TUV";
@@ -500,7 +500,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class VictoryCityStat extends AbstractStat {
+  static class VictoryCityStat extends AbstractStat {
     @Override
     public String getName() {
       return "VC";
@@ -525,7 +525,7 @@ public class StatPanel extends AbstractStatPanel {
     }
   }
 
-  class VpStat extends AbstractStat {
+  static class VpStat extends AbstractStat {
     @Override
     public String getName() {
       return "VPs";

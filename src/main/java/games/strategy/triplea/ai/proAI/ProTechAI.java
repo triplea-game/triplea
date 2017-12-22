@@ -1,11 +1,11 @@
 package games.strategy.triplea.ai.proAI;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -383,7 +383,7 @@ final class ProTechAI {
     final IntegerMap<Territory> distance = new IntegerMap<>();
     final Map<Territory, Territory> visited = new HashMap<>();
     final List<Unit> units = new ArrayList<>();
-    final Queue<Territory> q = new LinkedList<>();
+    final Queue<Territory> q = new ArrayDeque<>();
     q.add(start);
     Territory current;
     distance.put(start, 0);
@@ -451,7 +451,7 @@ final class ProTechAI {
     final IntegerMap<Territory> distance = new IntegerMap<>();
     final IntegerMap<Unit> unitDistance = new IntegerMap<>();
     final List<Unit> units = new ArrayList<>();
-    final Queue<Territory> q = new LinkedList<>();
+    final Queue<Territory> q = new ArrayDeque<>();
     Territory lz = null;
     Territory ac = null;
     final Predicate<Unit> enemyPlane = Matches.unitIsAir()
@@ -608,7 +608,7 @@ final class ProTechAI {
       final GameData data) {
     final Predicate<Territory> canGo = endCondition.or(routeCondition);
     final IntegerMap<Territory> visited = new IntegerMap<>();
-    final Queue<Territory> q = new LinkedList<>();
+    final Queue<Territory> q = new ArrayDeque<>();
     final List<Territory> frontier = new ArrayList<>();
     q.addAll(data.getMap().getNeighbors(start, canGo));
     Territory current;

@@ -524,7 +524,7 @@ public class BattlePanel extends ActionPanel {
     return "BattlePanel";
   }
 
-  private class BombardComponent extends JPanel {
+  private static class BombardComponent extends JPanel {
     private static final long serialVersionUID = -2388895995673156507L;
     private final JList<Object> list;
 

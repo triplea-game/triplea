@@ -49,10 +49,10 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
 public class GameDataExporter {
-  private final StringBuffer xmlfile;
+  private final StringBuilder xmlfile;
 
   public GameDataExporter(final GameData data) {
-    xmlfile = new StringBuffer();
+    xmlfile = new StringBuilder();
     init(data);
     tripleaMinimumVersion();
     diceSides(data);
@@ -95,7 +95,7 @@ public class GameDataExporter {
   }
 
   private static String playertechs(final GameData data) {
-    final StringBuffer returnValue = new StringBuffer();
+    final StringBuilder returnValue = new StringBuilder();
     for (final PlayerID player : data.getPlayerList()) {
       if (player.getTechnologyFrontierList().getFrontiers().size() > 0) {
         returnValue.append("        <playerTech player=\"").append(player.getName()).append("\">\n");
@@ -120,7 +120,7 @@ public class GameDataExporter {
   }
 
   private static String technologies(final GameData data) {
-    final StringBuffer returnValue = new StringBuffer();
+    final StringBuilder returnValue = new StringBuilder();
     if (data.getTechnologyFrontier().getTechs().size() > 0) {
       returnValue.append("        <technologies>\n");
       for (final TechAdvance tech : data.getTechnologyFrontier().getTechs()) {
@@ -352,7 +352,7 @@ public class GameDataExporter {
     if (attachmentPlusValues.isEmpty()) {
       return "";
     }
-    final StringBuffer sb = new StringBuffer("");
+    final StringBuilder sb = new StringBuilder();
     boolean alreadyHasOccupiedTerrOf = false;
     for (final Tuple<String, String> current : attachmentPlusValues) {
       sb.append("            <option name=\"").append(current.getFirst()).append("\" value=\"")
