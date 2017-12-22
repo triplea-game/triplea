@@ -68,7 +68,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs += [ '-Xlint:all', '-XepExcludedPaths:.*\\/src\\/(integ_)?test\\/.*' ]
+    options.compilerArgs += [ '-Xlint:all', '-XepExcludedPaths:.*\\/src\\/(integ_)?test\\/.*', '-Xep:ReferenceEquality:OFF' ]
     options.incremental = true
     options.encoding = 'UTF-8'
 }
