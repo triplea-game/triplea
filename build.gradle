@@ -28,6 +28,7 @@ mainClassName = 'games.strategy.engine.framework.GameRunner'
 
 ext {
     artifactsDir = file("$buildDir/artifacts")
+    downloadsDir = file("${project.gradle.gradleUserHomeDir}/caches/modules-2/files-2.1")
     releasesDir = file("$buildDir/releases")
     rootFilesDir = file("$buildDir/rootFiles")
     schemasDir = file('config/triplea/schemas')
@@ -83,20 +84,20 @@ repositories {
     jcenter()
 }
 
-def urlFile = { url, name ->
-    File file = new File("$buildDir/download/${name}.jar")
+def urlFile = { url ->
+    def file = file("$downloadsDir/${java.nio.file.Paths.get(new URI(url).path).fileName}")
     download {
         src url
-        dest file.absolutePath
+        dest file
         overwrite false
     }
-    files(file.absolutePath)
+    files(file)
 }
 
 dependencies {
     errorprone 'com.google.errorprone:error_prone_core:2.1.3'
     compile 'org.postgresql:postgresql:42.1.4'
-    compile urlFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/substance-7.1.01.jar', 'substance-7.1.01')
+    compile urlFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/substance-7.1.01.jar')
     compile 'com.github.openjson:openjson:1.0.10'
     compile 'com.google.code.findbugs:jsr305:3.0.2'
     compile 'com.google.guava:guava:23.2-jre'
@@ -111,7 +112,7 @@ dependencies {
     compile 'com.yuvimasory:orange-extensions:1.3.0'
     compile 'commons-cli:commons-cli:1.4'
     
-    runtime urlFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/trident-1.4.jar', 'trident-1.4')
+    runtime urlFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/trident-1.4.jar')
 
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
     testCompile 'org.apiguardian:apiguardian-api:1.0.0'
