@@ -19,7 +19,6 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
-import games.strategy.util.Version;
 
 /**
  * Pure utility class, final and private constructor to enforce this
@@ -44,7 +43,7 @@ public final class ClientFileSystemHelper {
     }
 
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    if (fileName.contains("triplea_" + tripleaJarNameWithEngineVersion + ".jar!")) {
+    if (fileName.contains(tripleaJarNameWithEngineVersion)) {
       return getRootFolderRelativeToJar(fileName, tripleaJarNameWithEngineVersion);
     }
 
@@ -66,8 +65,7 @@ public final class ClientFileSystemHelper {
 
 
   private static String getTripleaJarWithEngineVersionStringPath() {
-    final Version version = ClientContext.engineVersion();
-    return "triplea_" + version.toStringFull('_') + ".jar!";
+    return String.format("triplea-%s-all.jar!", ClientContext.engineVersion().getExactVersion());
   }
 
   private static File getRootFolderRelativeToJar(final String fileName, final String tripleaJarName) {
