@@ -68,7 +68,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs += [ '-Xlint:all', '-XepExcludedPaths:.*\\/src\\/(integ_)?test\\/.*', '-Xep:ReferenceEquality:OFF' ]
+    options.compilerArgs += [ '-Xlint:all' ]
     options.incremental = true
     options.encoding = 'UTF-8'
 }
@@ -301,6 +301,10 @@ checkstyleMain {
 checkstyleTest {
     maxWarnings = checkstyleTestMaxWarnings.toInteger()
     source sourceSets.test.output.resourcesDir
+}
+
+compileTestJava {
+    options.compilerArgs += [ '-Xep:ClassCanBeStatic:OFF' ]
 }
 
 afterEvaluate {
