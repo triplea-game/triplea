@@ -3,7 +3,6 @@ package games.strategy.debug;
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import javax.swing.Action;
@@ -64,22 +63,14 @@ public abstract class GenericConsole extends JFrame {
    * Displays standard error to the console.
    */
   protected void displayStandardError() {
-    final ByteArrayOutputStream out = new ByteArrayOutputStream();
     final ThreadReader reader =
-        new ThreadReader(System.err, out, textArea, Boolean.TRUE::booleanValue, getConsoleInstance());
-    final Thread thread = new Thread(reader, "Console std err reader");
-    thread.setDaemon(true);
-    thread.start();
-    System.setErr(new PrintStream(out));
+        new ThreadReader(System.err, textArea, Boolean.TRUE::booleanValue, getConsoleInstance());
+    System.setErr(new PrintStream(reader.getStream()));
   }
 
   protected void displayStandardOutput() {
-    final ByteArrayOutputStream out = new ByteArrayOutputStream();
     final ThreadReader reader = new ThreadReader(
-        System.out, out, textArea, ClientSetting.SHOW_CONSOLE_ALWAYS::booleanValue, getConsoleInstance());
-    final Thread thread = new Thread(reader, "Console std out reader");
-    thread.setDaemon(true);
-    thread.start();
-    System.setOut(new PrintStream(out));
+        System.out, textArea, ClientSetting.SHOW_CONSOLE_ALWAYS::booleanValue, getConsoleInstance());
+    System.setOut(new PrintStream(reader.getStream()));
   }
 }
