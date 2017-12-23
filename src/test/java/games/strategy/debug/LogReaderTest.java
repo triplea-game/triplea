@@ -24,13 +24,23 @@ public class LogReaderTest {
   private GenericConsole console;
 
   @Test
-  public void testStreamSplitting() throws IOException {
+  public void testStreamSplittingArray() throws IOException {
     final LogReader reader = new LogReader(stream, area, Boolean.TRUE::booleanValue, console);
     final String testString = "Some Test String";
     final byte[] testByteArray = testString.getBytes();
     reader.getStream().write(testByteArray);
     verify(stream).write(testByteArray, 0, testByteArray.length);
     verify(area).append(testString);
+  }
+
+  @Test
+  public void testStreamSplittingInt() {
+    final LogReader reader = new LogReader(stream, area, Boolean.TRUE::booleanValue, console);
+    final String testString = " ";
+    final int testInt = testString.codePointAt(0);
+    reader.getStream().write(testInt);
+    verify(stream).write(testInt);
+    verify(area).append(" ");
   }
 
   @Test
