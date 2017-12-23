@@ -63,13 +63,13 @@ public abstract class GenericConsole extends JFrame {
    * Displays standard error to the console.
    */
   protected void displayStandardError() {
-    final ThreadReader reader =
-        new ThreadReader(System.err, textArea, Boolean.TRUE::booleanValue, getConsoleInstance());
+    final LogReader reader =
+        new LogReader(System.err, textArea, Boolean.TRUE::booleanValue, getConsoleInstance());
     System.setErr(new PrintStream(reader.getStream()));
   }
 
   protected void displayStandardOutput() {
-    final ThreadReader reader = new ThreadReader(
+    final LogReader reader = new LogReader(
         System.out, textArea, ClientSetting.SHOW_CONSOLE_ALWAYS::booleanValue, getConsoleInstance());
     System.setOut(new PrintStream(reader.getStream()));
   }

@@ -7,14 +7,14 @@ import java.util.function.BooleanSupplier;
 
 import javax.swing.JTextArea;
 
-final class ThreadReader {
+final class LogReader {
   private final JTextArea text;
   private final ListeningByteArrayOutputStream src = new ListeningByteArrayOutputStream();
   private final BooleanSupplier displayConsoleOnWriteSupplier;
   private final GenericConsole parentConsole;
   private final PrintStream out;
 
-  ThreadReader(
+  LogReader(
       final PrintStream out,
       final JTextArea text,
       final BooleanSupplier displayConsoleOnWriteSupplier,
