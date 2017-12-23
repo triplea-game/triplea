@@ -241,6 +241,11 @@ task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
 
 task prepareArtifacts(group: 'release', dependsOn: [generateZipReleases, prepareInstallers]) {
     doLast {
+	    copy {
+	        from "$libsDir/all/triplea.jar"
+	        into "$libsDir/"
+	        rename ".*", "triplea-$version-all.jar"
+	    }
         def artifacts = [
             file("$libsDir/triplea-$version-all.jar"),
             file("$distsDir/triplea-$version-all_platforms.zip"),
