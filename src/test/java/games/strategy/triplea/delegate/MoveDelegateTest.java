@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,8 +50,8 @@ public class MoveDelegateTest extends DelegateTest {
     final Route route = new Route();
     route.setStart(egypt);
     route.add(eastAfrica);
-    final List<Unit> units = armour.create(1, british);
-    units.addAll(units);
+    final Unit unit = armour.create(british);
+    final List<Unit> units = Arrays.asList(unit, unit);
     final String results = delegate.move(units, route);
     assertError(results);
   }
