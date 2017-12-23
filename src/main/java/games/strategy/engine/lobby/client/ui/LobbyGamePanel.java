@@ -22,6 +22,8 @@ import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
+import com.google.common.base.Strings;
+
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
@@ -158,7 +160,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     // we sort the table, so get the correct index
-    final GameDescription description = gameTableModel.get(selectedIndex);
+    final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
     final JPopupMenu menu = new JPopupMenu();
     boolean hasActions = false;
     for (final Action a : getGamesListRightClickActions(description)) {
@@ -192,9 +194,8 @@ class LobbyGamePanel extends JPanel {
   }
 
   private static Action getHostSupportInfoAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
-    if (supportEmail.length() == 0) {
+    final String supportEmail = description == null ? "" : Strings.nullToEmpty(description.getBotSupportEmail());
+    if (supportEmail.isEmpty()) {
       return null;
     }
     final String text = "Support Email for this Host is as follows. "
@@ -285,7 +286,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     // we sort the table, so get the correct index
-    final GameDescription description = gameTableModel.get(selectedIndex);
+    final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
     GameRunner.joinGame(description, messengers, getParent());
   }
 
@@ -383,7 +384,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {
-    final GameDescription description = gameTableModel.get(selectedIndex);
+    final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
     final String hostedByName = description.getHostedBy().getName();
     final INode lobbyWatcherNode = new Node(
         (hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName
