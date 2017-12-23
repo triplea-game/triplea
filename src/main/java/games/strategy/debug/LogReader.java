@@ -49,7 +49,7 @@ final class LogReader {
     }
 
     @Override
-    public synchronized void write(byte byteArray[], int off, int len) {
+    public synchronized void write(byte[] byteArray, int off, int len) {
       super.write(byteArray, off, len);
       out.write(byteArray, off, len);
       addConsoleText();
