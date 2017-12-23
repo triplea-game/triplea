@@ -3,6 +3,7 @@ package games.strategy.debug;
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import javax.swing.Action;
@@ -63,23 +64,22 @@ public abstract class GenericConsole extends JFrame {
    * Displays standard error to the console.
    */
   protected void displayStandardError() {
-    final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.err);
-    final ThreadReader reader = new ThreadReader(out, textArea, Boolean.TRUE::booleanValue, getConsoleInstance());
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final ThreadReader reader =
+        new ThreadReader(System.err, out, textArea, Boolean.TRUE::booleanValue, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std err reader");
     thread.setDaemon(true);
     thread.start();
-    final PrintStream print = new PrintStream(out);
-    System.setErr(print);
+    System.setErr(new PrintStream(out));
   }
 
   protected void displayStandardOutput() {
-    final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.out);
-    final ThreadReader reader =
-        new ThreadReader(out, textArea, ClientSetting.SHOW_CONSOLE_ALWAYS::booleanValue, getConsoleInstance());
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final ThreadReader reader = new ThreadReader(
+        System.out, out, textArea, ClientSetting.SHOW_CONSOLE_ALWAYS::booleanValue, getConsoleInstance());
     final Thread thread = new Thread(reader, "Console std out reader");
     thread.setDaemon(true);
     thread.start();
-    final PrintStream print = new PrintStream(out);
-    System.setOut(print);
+    System.setOut(new PrintStream(out));
   }
 }
