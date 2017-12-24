@@ -34,7 +34,7 @@ public class LogReaderTest {
   }
 
   @Test
-  public void testStreamSplittingInt() {
+  public void testStreamSplittingInt() throws IOException {
     final LogReader reader = new LogReader(stream, area, Boolean.TRUE::booleanValue, console);
     final String testString = " ";
     final int testInt = testString.codePointAt(0);

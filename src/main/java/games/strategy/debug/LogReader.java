@@ -1,6 +1,7 @@
 package games.strategy.debug;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.function.BooleanSupplier;
 
@@ -8,7 +9,7 @@ import javax.swing.JTextArea;
 
 final class LogReader {
   private final JTextArea text;
-  private final ListeningByteArrayOutputStream stream = new ListeningByteArrayOutputStream();
+  private final ByteArrayOutputStream stream = new ListeningByteArrayOutputStream();
   private final BooleanSupplier displayConsoleOnWriteSupplier;
   private final GenericConsole parentConsole;
   private final PrintStream out;
@@ -27,12 +28,12 @@ final class LogReader {
   /**
    * Returns an OutputStream that triggers the Console (when enabled) when something writes to it.
    */
-  ByteArrayOutputStream getStream() {
+  OutputStream getStream() {
     return stream;
   }
 
   private void addConsoleText() {
-    text.append(new String(stream.toByteArray()));
+    text.append(stream.toString());
     if (displayConsoleOnWriteSupplier.getAsBoolean()) {
       parentConsole.setVisible(true);
     }
@@ -49,7 +50,7 @@ final class LogReader {
     }
 
     @Override
-    public synchronized void write(byte[] byteArray, int off, int len) {
+    public synchronized void write(final byte[] byteArray, final int off, final int len) {
       super.write(byteArray, off, len);
       out.write(byteArray, off, len);
       addConsoleText();
