@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.util.function.BooleanSupplier;
 
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 final class LogReader {
   private final JTextArea text;
@@ -33,10 +34,13 @@ final class LogReader {
   }
 
   private void addConsoleText() {
-    text.append(stream.toString());
-    if (displayConsoleOnWriteSupplier.getAsBoolean()) {
-      parentConsole.setVisible(true);
-    }
+    final String consoleText = stream.toString();
+    SwingUtilities.invokeLater(() -> {
+      text.append(consoleText);
+      if (displayConsoleOnWriteSupplier.getAsBoolean()) {
+        parentConsole.setVisible(true);
+      }
+    });
     stream.reset();
   }
 
