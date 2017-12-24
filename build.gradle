@@ -105,6 +105,7 @@ dependencies {
     testCompile 'org.apiguardian:apiguardian-api:1.0.0'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'
+    testCompile 'org.junit.platform:junit-platform-launcher:1.0.2'
     testCompile 'org.mockito:mockito-core:2.13.0'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
 
