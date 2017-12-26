@@ -467,7 +467,7 @@ public class HistoryLog extends JFrame {
   public void printDiceStatistics(final GameData data, final IRandomStats randomStats) {
     final PrintWriter logWriter = printWriter;
     final RandomStatsDetails stats = randomStats.getRandomStats(data.getDiceSides());
-    final String diceStats = stats.getAllStatsString("    ");
+    final String diceStats = stats.getAllStatsString();
     if (diceStats.length() > 0) {
       logWriter.println(diceStats);
       logWriter.println();
