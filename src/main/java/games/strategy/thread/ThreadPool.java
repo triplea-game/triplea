@@ -1,11 +1,12 @@
 package games.strategy.thread;
 
 import java.util.ArrayDeque;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import games.strategy.util.ThreadUtil;
+import games.strategy.debug.ClientLogger;
 
 /**
  * An ExecutorService backed thread pool.
@@ -19,9 +20,6 @@ public class ThreadPool {
    * fewer threads at any given time.
    */
   public ThreadPool(final int max) {
-    if (max < 1) {
-      throw new IllegalArgumentException("Max must be >= 1, instead it's:" + max);
-    }
     executorService = Executors.newFixedThreadPool(max);
   }
 
@@ -39,10 +37,12 @@ public class ThreadPool {
    */
   public void waitForAll() {
     while (!futuresStack.isEmpty()) {
-      if (futuresStack.peek().isDone()) {
-        futuresStack.pop();
-      } else {
-        ThreadUtil.sleep(5);
+      try {
+        futuresStack.pop().get();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } catch (ExecutionException e) {
+        ClientLogger.logError(e);
       }
     }
   }
