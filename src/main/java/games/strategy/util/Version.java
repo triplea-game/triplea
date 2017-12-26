@@ -195,14 +195,7 @@ public final class Version implements Serializable, Comparable<Version> {
    * Creates a complete version string with '.' as separator, even if some version numbers are 0.
    */
   public String toStringFull() {
-    return toStringFull('.');
-  }
-
-  /**
-   * Creates a complete version string with the given separator, even if some version numbers are 0.
-   */
-  public String toStringFull(final char separator) {
-    return Joiner.on(separator).join(m_major, m_minor, m_point, m_micro == Integer.MAX_VALUE ? "dev" : m_micro);
+    return Joiner.on('.').join(m_major, m_minor, m_point, m_micro == Integer.MAX_VALUE ? "dev" : m_micro);
   }
 
   @Override
