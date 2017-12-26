@@ -119,31 +119,27 @@ public class RandomStatsDetails implements Serializable {
     return sb.toString();
   }
 
-  private static String getAllStatsString(final RandomStatsDetails details, final String indentation) {
-    if (details.m_totalStats.getTotal() <= 0) {
+  public String getAllStatsString(final String indentation) {
+    if (m_totalStats.getTotal() <= 0) {
       return "";
     }
     final StringBuilder sb = new StringBuilder();
     sb.append("Dice Statistics:\n\n");
-    sb.append(getStatsString(details.m_totalMap, details.m_totalStats, "Total", indentation));
-    if (details.getData().containsKey(null)) {
+    sb.append(getStatsString(m_totalMap, m_totalStats, "Total", indentation));
+    if (getData().containsKey(null)) {
       sb.append("\n");
       sb.append(
-          getStatsString(details.getData().get(null), details.m_playerStats.get(null), "Null / Other", indentation));
+          getStatsString(getData().get(null), m_playerStats.get(null), "Null / Other", indentation));
     }
-    for (final Entry<PlayerID, IntegerMap<Integer>> entry : details.getData().entrySet()) {
+    for (final Entry<PlayerID, IntegerMap<Integer>> entry : getData().entrySet()) {
       if (entry.getKey() == null) {
         continue;
       }
       sb.append("\n");
-      sb.append(getStatsString(entry.getValue(), details.m_playerStats.get(entry.getKey()),
+      sb.append(getStatsString(entry.getValue(), m_playerStats.get(entry.getKey()),
           (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat"), indentation));
     }
     return sb.toString();
-  }
-
-  public String getAllStatsString(final String indentation) {
-    return getAllStatsString(this, indentation);
   }
 
   private static JPanel getStatsDisplay(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,
@@ -167,35 +163,31 @@ public class RandomStatsDetails implements Serializable {
     return panel;
   }
 
-  private static JPanel getAllStats(final RandomStatsDetails details) {
+  public JPanel getAllStats() {
     final Insets insets = new Insets(2, 2, 2, 2);
     final JPanel panel = new JPanel();
     panel.setLayout(new GridBagLayout());
     panel.setBorder(BorderFactory.createEmptyBorder());
-    panel.add(getStatsDisplay(details.m_totalMap, details.m_totalStats, "Total"), new GridBagConstraints(0, 0, 1,
+    panel.add(getStatsDisplay(m_totalMap, m_totalStats, "Total"), new GridBagConstraints(0, 0, 1,
         1, 1, 1, GridBagConstraints.FIRST_LINE_START, GridBagConstraints.NONE, insets, 0, 0));
-    if (details.getData().containsKey(null)) {
-      panel.add(getStatsDisplay(details.getData().get(null), details.m_playerStats.get(null), "Null / Other"),
+    if (getData().containsKey(null)) {
+      panel.add(getStatsDisplay(getData().get(null), m_playerStats.get(null), "Null / Other"),
           new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.FIRST_LINE_START, GridBagConstraints.NONE, insets,
               0, 0));
     }
-    final int rows = Math.max(2, details.getData().size() / 6);
+    final int rows = Math.max(2, getData().size() / 6);
     int x = 0;
-    for (final Entry<PlayerID, IntegerMap<Integer>> entry : details.getData().entrySet()) {
+    for (final Entry<PlayerID, IntegerMap<Integer>> entry : getData().entrySet()) {
       if (entry.getKey() == null) {
         continue;
       }
       panel.add(
-          getStatsDisplay(entry.getValue(), details.m_playerStats.get(entry.getKey()),
+          getStatsDisplay(entry.getValue(), m_playerStats.get(entry.getKey()),
               (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat")),
           new GridBagConstraints((x / rows), 1 + (x % rows), 1, 1, 1, 1, GridBagConstraints.FIRST_LINE_START,
               GridBagConstraints.NONE, insets, 0, 0));
       x++;
     }
     return panel;
-  }
-
-  public JPanel getAllStats() {
-    return getAllStats(this);
   }
 }
