@@ -37,11 +37,6 @@ public final class ClientFileSystemHelper {
   public static File getRootFolder() {
     final String fileName = getGameRunnerFileLocation(GameRunner.class.getSimpleName() + ".class");
 
-    final String tripleaJarName = "triplea.jar!";
-    if (fileName.contains(tripleaJarName)) {
-      return getRootFolderRelativeToJar(fileName, tripleaJarName);
-    }
-
     final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
     if (fileName.contains(tripleaJarNameWithEngineVersion)) {
       return getRootFolderRelativeToJar(fileName, tripleaJarNameWithEngineVersion);
