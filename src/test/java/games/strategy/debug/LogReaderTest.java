@@ -3,9 +3,7 @@ package games.strategy.debug;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -26,7 +24,7 @@ public class LogReaderTest {
   private GenericConsole console;
 
   @Test
-  public void testStreamSplittingArray() throws IOException, InvocationTargetException, InterruptedException {
+  public void testStreamSplittingArray() throws Exception {
     final LogReader reader = new LogReader(stream, area, Boolean.TRUE::booleanValue, console);
     final String testString = "Some Test String";
     final byte[] testByteArray = testString.getBytes();
@@ -36,7 +34,7 @@ public class LogReaderTest {
   }
 
   @Test
-  public void testStreamSplittingInt() throws IOException, InvocationTargetException, InterruptedException {
+  public void testStreamSplittingInt() throws Exception {
     final LogReader reader = new LogReader(stream, area, Boolean.TRUE::booleanValue, console);
     final String testString = " ";
     final int testInt = testString.codePointAt(0);
@@ -46,7 +44,7 @@ public class LogReaderTest {
   }
 
   @Test
-  public void testWriteInvisible() throws IOException, InvocationTargetException, InterruptedException {
+  public void testWriteInvisible() throws Exception {
     final LogReader reader = new LogReader(stream, area, Boolean.FALSE::booleanValue, console);
     final String testString = "Some Test String";
     reader.getStream().write(testString.getBytes());
@@ -54,7 +52,7 @@ public class LogReaderTest {
   }
 
   @Test
-  public void testConsolePopup() throws IOException, InvocationTargetException, InterruptedException {
+  public void testConsolePopup() throws Exception {
     final String testString = "Some Test String";
     new LogReader(stream, area, Boolean.TRUE::booleanValue, console).getStream().write(testString.getBytes());
     new LogReader(stream, area, Boolean.FALSE::booleanValue, console).getStream().write(testString.getBytes());
