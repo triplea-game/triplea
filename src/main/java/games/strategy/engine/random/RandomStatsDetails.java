@@ -98,7 +98,8 @@ public class RandomStatsDetails implements Serializable {
   }
 
   private static String getStatsString(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats,
-      final String title, final String indentation) {
+      final String title) {
+    final String indentation = "    ";
     final StringBuilder sb = new StringBuilder();
     sb.append(indentation).append(title).append("\n");
     for (final int key : new TreeSet<>(diceRolls.keySet())) {
@@ -119,17 +120,17 @@ public class RandomStatsDetails implements Serializable {
     return sb.toString();
   }
 
-  public String getAllStatsString(final String indentation) {
+  public String getAllStatsString() {
     if (m_totalStats.getTotal() <= 0) {
       return "";
     }
     final StringBuilder sb = new StringBuilder();
     sb.append("Dice Statistics:\n\n");
-    sb.append(getStatsString(m_totalMap, m_totalStats, "Total", indentation));
+    sb.append(getStatsString(m_totalMap, m_totalStats, "Total"));
     if (getData().containsKey(null)) {
       sb.append("\n");
       sb.append(
-          getStatsString(getData().get(null), m_playerStats.get(null), "Null / Other", indentation));
+          getStatsString(getData().get(null), m_playerStats.get(null), "Null / Other"));
     }
     for (final Entry<PlayerID, IntegerMap<Integer>> entry : getData().entrySet()) {
       if (entry.getKey() == null) {
@@ -137,7 +138,7 @@ public class RandomStatsDetails implements Serializable {
       }
       sb.append("\n");
       sb.append(getStatsString(entry.getValue(), m_playerStats.get(entry.getKey()),
-          (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat"), indentation));
+          (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat")));
     }
     return sb.toString();
   }
