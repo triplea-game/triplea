@@ -21,9 +21,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 
 /**
- * Pure utility class, final and private constructor to enforce this
- * WARNING: do not call ClientContext in this class. ClientContext call this class in turn
- * during construction, depending upon ordering this can cause an infinite call loop.
+ * Provides methods to work with common file locations in a client installation.
  */
 public final class ClientFileSystemHelper {
 
@@ -32,41 +30,37 @@ public final class ClientFileSystemHelper {
   /**
    * @return Folder that is the 'root' of the tripleA binary installation. This folder and
    *         contents contains the versioned content downloaded and initially installed. This is
-   *         in contrast to the user root folder that is not replaced between between installations.
+   *         in contrast to the user root folder that is not replaced between installations.
    */
   public static File getRootFolder() {
-    final String fileName = getGameRunnerFileLocation(GameRunner.class.getSimpleName() + ".class");
+    final String classFilePath = getGameRunnerClassFilePath();
 
-    final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
-    if (fileName.contains(tripleaJarNameWithEngineVersion)) {
-      return getRootFolderRelativeToJar(fileName, tripleaJarNameWithEngineVersion);
+    final String jarFileName = String.format("triplea-%s-all.jar!", ClientContext.engineVersion().getExactVersion());
+    if (classFilePath.contains(jarFileName)) {
+      return getRootFolderRelativeToJar(classFilePath, jarFileName);
     }
 
-    return getRootRelativeToClassFile(fileName);
+    return getRootFolderRelativeToClassFile(classFilePath);
   }
 
-  private static String getGameRunnerFileLocation(final String runnerClassName) {
+  private static String getGameRunnerClassFilePath() {
+    final String runnerClassName = GameRunner.class.getSimpleName() + ".class";
     final URL url = GameRunner.class.getResource(runnerClassName);
-    String fileName = url.getFile();
+    String path = url.getFile();
 
     try {
       // Deal with spaces in the file name which would be url encoded
-      fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8.name());
+      path = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
     } catch (final UnsupportedEncodingException e) {
-      ClientLogger.logError("Unsupported encoding of fileName: " + fileName + ", error: " + e.getMessage());
+      ClientLogger.logError("Unsupported encoding of path: " + path + ", error: " + e.getMessage());
     }
-    return fileName;
+    return path;
   }
 
-
-  private static String getTripleaJarWithEngineVersionStringPath() {
-    return String.format("triplea-%s-all.jar!", ClientContext.engineVersion().getExactVersion());
-  }
-
-  private static File getRootFolderRelativeToJar(final String fileName, final String tripleaJarName) {
-    final String subString = fileName.substring(
+  private static File getRootFolderRelativeToJar(final String path, final String jarFileName) {
+    final String subString = path.substring(
         "file:/".length() - (SystemProperties.isWindows() ? 0 : 1),
-        fileName.indexOf(tripleaJarName) - 1);
+        path.indexOf(jarFileName) - 1);
     final File f = new File(subString).getParentFile();
     if (!f.exists()) {
       throw new IllegalStateException("File not found:" + f);
@@ -74,8 +68,8 @@ public final class ClientFileSystemHelper {
     return f;
   }
 
-  private static File getRootRelativeToClassFile(final String fileName) {
-    File f = new File(fileName);
+  private static File getRootFolderRelativeToClassFile(final String path) {
+    File f = new File(path);
 
     // move up one directory for each package
     final int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
