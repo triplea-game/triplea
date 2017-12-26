@@ -46,15 +46,13 @@ public final class ClientFileSystemHelper {
   private static String getGameRunnerClassFilePath() {
     final String runnerClassName = GameRunner.class.getSimpleName() + ".class";
     final URL url = GameRunner.class.getResource(runnerClassName);
-    String path = url.getFile();
-
+    final String path = url.getFile();
     try {
       // Deal with spaces in the file name which would be url encoded
-      path = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
+      return URLDecoder.decode(path, StandardCharsets.UTF_8.name());
     } catch (final UnsupportedEncodingException e) {
-      ClientLogger.logError("Unsupported encoding of path: " + path + ", error: " + e.getMessage());
+      throw new AssertionError("platform does not support UTF-8 charset", e);
     }
-    return path;
   }
 
   private static File getRootFolderRelativeToJar(final String path, final String jarFileName) {
