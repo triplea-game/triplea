@@ -120,6 +120,9 @@ public class RandomStatsDetails implements Serializable {
     return sb.toString();
   }
 
+  /**
+   * Returns a String containing Information about all Statistics.
+   */
   public String getAllStatsString() {
     if (m_totalStats.getTotal() <= 0) {
       return "";
@@ -164,6 +167,9 @@ public class RandomStatsDetails implements Serializable {
     return panel;
   }
 
+  /**
+   * Returns a JPanel displaying information about all Statistics.
+   */
   public JPanel getAllStats() {
     final Insets insets = new Insets(2, 2, 2, 2);
     final JPanel panel = new JPanel();
