@@ -112,7 +112,7 @@ class BlendComposite implements Composite {
           dstPixels[x] = ((int) (dstPixel[3] + (result[3] - dstPixel[3]) * alpha) & 0xFF) << 24
               | ((int) (dstPixel[0] + (result[0] - dstPixel[0]) * alpha) & 0xFF) << 16
               | ((int) (dstPixel[1] + (result[1] - dstPixel[1]) * alpha) & 0xFF) << 8
-              | (int) (dstPixel[2] + (result[2] - dstPixel[2]) * alpha) & 0xFF;
+              | ((int) (dstPixel[2] + (result[2] - dstPixel[2]) * alpha) & 0xFF);
         }
         dstOut.setDataElements(0, y, width, 1, dstPixels);
       }
@@ -135,9 +135,9 @@ class BlendComposite implements Composite {
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {dst[0] < 128 ? dst[0] * src[0] >> 7 : 255 - ((255 - dst[0]) * (255 - src[0]) >> 7),
-                  dst[1] < 128 ? dst[1] * src[1] >> 7 : 255 - ((255 - dst[1]) * (255 - src[1]) >> 7),
-                  dst[2] < 128 ? dst[2] * src[2] >> 7 : 255 - ((255 - dst[2]) * (255 - src[2]) >> 7),
+              return new int[] {dst[0] < 128 ? (dst[0] * src[0]) >> 7 : 255 - (((255 - dst[0]) * (255 - src[0])) >> 7),
+                  dst[1] < 128 ? (dst[1] * src[1]) >> 7 : 255 - (((255 - dst[1]) * (255 - src[1])) >> 7),
+                  dst[2] < 128 ? (dst[2] * src[2]) >> 7 : 255 - (((255 - dst[2]) * (255 - src[2])) >> 7),
                   Math.min(255, src[3] + dst[3])};
             }
           };
@@ -145,9 +145,9 @@ class BlendComposite implements Composite {
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {dst[0] < 128 ? dst[0] + src[0] >> 7 - 255 : dst[0] + (src[0] - 128) >> 7,
-                  dst[1] < 128 ? dst[1] + src[1] >> 7 - 255 : dst[1] + (src[1] - 128) >> 7,
-                  dst[2] < 128 ? dst[2] + src[2] >> 7 - 255 : dst[2] + (src[2] - 128) >> 7,
+              return new int[] {dst[0] < 128 ? (dst[0] + src[0]) >> (7 - 255) : (dst[0] + (src[0] - 128)) >> 7,
+                  dst[1] < 128 ? (dst[1] + src[1]) >> (7 - 255) : (dst[1] + (src[1] - 128)) >> 7,
+                  dst[2] < 128 ? (dst[2] + src[2]) >> (7 - 255) : (dst[2] + (src[2] - 128)) >> 7,
                   Math.min(255, src[3] + dst[3])};
             }
           };
