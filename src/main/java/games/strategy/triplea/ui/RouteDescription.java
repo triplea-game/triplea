@@ -35,15 +35,15 @@ public class RouteDescription {
       return false;
     }
     final RouteDescription other = (RouteDescription) o;
-    if (start == null && other.start != null || other.start == null && start != null
+    if ((start == null && other.start != null) || (other.start == null && start != null)
         || (start != other.start && !start.equals(other.start))) {
       return false;
     }
-    if (route == null && other.route != null || other.route == null && route != null
+    if ((route == null && other.route != null) || (other.route == null && route != null)
         || (route != other.route && !route.equals(other.route))) {
       return false;
     }
-    if (end == null && other.end != null || other.end == null && end != null) {
+    if ((end == null && other.end != null) || (other.end == null && end != null)) {
       return false;
     }
     if (cursorImage != other.cursorImage) {

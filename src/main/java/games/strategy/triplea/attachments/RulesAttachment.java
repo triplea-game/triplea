@@ -567,7 +567,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     } catch (final Exception e) {
       m_atWarCount = 0;
     }
-    if (s.length < 1 || s.length == 1 && count != -1) {
+    if (s.length < 1 || (s.length == 1 && count != -1)) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
     }
     m_atWarPlayers = new HashSet<>();
@@ -610,7 +610,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     } catch (final Exception e) {
       m_techCount = 0;
     }
-    if (s.length < 1 || s.length == 1 && count != -1) {
+    if (s.length < 1 || (s.length == 1 && count != -1)) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
     }
     m_techs = new ArrayList<>();
@@ -901,12 +901,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       if (!relationShipExistsLongEnnough(currentRelationship, relationshipsExistance)) {
         return false;
       }
-      if (!(relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
-          && Matches.relationshipTypeIsAllied().test(currentRelationshipType)
-          || relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
-              && Matches.relationshipTypeIsNeutral().test(currentRelationshipType)
-          || relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
-              && Matches.relationshipTypeIsAtWar().test(currentRelationshipType)
+      if (!((relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
+          && Matches.relationshipTypeIsAllied().test(currentRelationshipType))
+          || (relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
+              && Matches.relationshipTypeIsNeutral().test(currentRelationshipType))
+          || (relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
+              && Matches.relationshipTypeIsAtWar().test(currentRelationshipType))
           || currentRelationshipType
               .equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2])))) {
         return false;
