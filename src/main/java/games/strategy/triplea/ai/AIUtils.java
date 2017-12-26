@@ -80,7 +80,7 @@ public class AIUtils {
    *        - calculate the strength of the units in a sea or land battle?
    */
   public static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea) {
-    int strength = 0;
+    float strength = 0;
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
       if (unitAttachment.getIsInfrastructure()) {
