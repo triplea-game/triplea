@@ -13,7 +13,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   private int m_currentIndex;
   private int m_round = 1;
   private int m_roundOffset = 0;
-  private transient Object currentStepMutex = new Object();
 
   public GameSequence(final GameData data) {
     super(data);
@@ -94,16 +93,14 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   /**
    * @return boolean whether the round has changed.
    */
-  public boolean next() {
-    synchronized (currentStepMutex) {
-      m_currentIndex++;
-      if (m_currentIndex >= m_steps.size()) {
-        m_currentIndex = 0;
-        m_round++;
-        return true;
-      }
-      return false;
+  public synchronized boolean next() {
+    m_currentIndex++;
+    if (m_currentIndex >= m_steps.size()) {
+      m_currentIndex = 0;
+      m_round++;
+      return true;
     }
+    return false;
   }
 
   /**
@@ -111,23 +108,19 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * Used for finding if we need to make a new round or not.
    * Does not change any data or fields.
    */
-  public boolean testWeAreOnLastStep() {
-    synchronized (currentStepMutex) {
-      return m_currentIndex + 1 >= m_steps.size();
-    }
+  public synchronized boolean testWeAreOnLastStep() {
+    return m_currentIndex + 1 >= m_steps.size();
   }
 
-  public GameStep getStep() {
-    synchronized (currentStepMutex) {
-      // since we can now delete game steps mid game, it is a good idea to test if our index is out of range
-      if (m_currentIndex < 0) {
-        m_currentIndex = 0;
-      }
-      if (m_currentIndex >= m_steps.size()) {
-        next();
-      }
-      return getStep(m_currentIndex);
+  public synchronized GameStep getStep() {
+    // since we can now delete game steps mid game, it is a good idea to test if our index is out of range
+    if (m_currentIndex < 0) {
+      m_currentIndex = 0;
     }
+    if (m_currentIndex >= m_steps.size()) {
+      next();
+    }
+    return getStep(m_currentIndex);
   }
 
   public GameStep getStep(final int index) {
@@ -144,14 +137,5 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 
   public int size() {
     return m_steps.size();
-  }
-
-
-  private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-    in.defaultReadObject();
-    // make sure transient lock object is initialized on deserialization.
-    if (currentStepMutex == null) {
-      currentStepMutex = new Object();
-    }
   }
 }
