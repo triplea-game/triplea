@@ -95,7 +95,7 @@ public class VersionTest {
 
   @Test
   public void testToStringFull() {
-    assertEquals("1_2_3_dev", new Version("1.2.3.dev").toStringFull('_'));
+    assertEquals("1.2.3.dev", new Version("1.2.3.dev").toStringFull());
   }
 
   @Test
