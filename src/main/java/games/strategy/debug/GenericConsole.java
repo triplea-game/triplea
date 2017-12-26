@@ -63,23 +63,14 @@ public abstract class GenericConsole extends JFrame {
    * Displays standard error to the console.
    */
   protected void displayStandardError() {
-    final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.err);
-    final ThreadReader reader = new ThreadReader(out, textArea, Boolean.TRUE::booleanValue, getConsoleInstance());
-    final Thread thread = new Thread(reader, "Console std err reader");
-    thread.setDaemon(true);
-    thread.start();
-    final PrintStream print = new PrintStream(out);
-    System.setErr(print);
+    final LogReader reader =
+        new LogReader(System.err, textArea, Boolean.TRUE::booleanValue, getConsoleInstance());
+    System.setErr(new PrintStream(reader.getStream()));
   }
 
   protected void displayStandardOutput() {
-    final SynchedByteArrayOutputStream out = new SynchedByteArrayOutputStream(System.out);
-    final ThreadReader reader =
-        new ThreadReader(out, textArea, ClientSetting.SHOW_CONSOLE_ALWAYS::booleanValue, getConsoleInstance());
-    final Thread thread = new Thread(reader, "Console std out reader");
-    thread.setDaemon(true);
-    thread.start();
-    final PrintStream print = new PrintStream(out);
-    System.setOut(print);
+    final LogReader reader = new LogReader(
+        System.out, textArea, ClientSetting.SHOW_CONSOLE_ALWAYS::booleanValue, getConsoleInstance());
+    System.setOut(new PrintStream(reader.getStream()));
   }
 }
