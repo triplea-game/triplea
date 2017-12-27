@@ -8,7 +8,7 @@ import games.strategy.engine.data.Unit;
 public class ProBattleResult {
 
   private final double winPercentage;
-  private final double TUVSwing;
+  private final double tuvSwing;
   private final boolean hasLandUnitRemaining;
   private final List<Unit> averageAttackersRemaining;
   private final List<Unit> averageDefendersRemaining;
@@ -16,7 +16,7 @@ public class ProBattleResult {
 
   public ProBattleResult() {
     winPercentage = 0;
-    TUVSwing = -1;
+    tuvSwing = -1;
     hasLandUnitRemaining = false;
     averageAttackersRemaining = new ArrayList<>();
     averageDefendersRemaining = new ArrayList<>();
@@ -27,7 +27,7 @@ public class ProBattleResult {
       final List<Unit> averageAttackersRemaining, final List<Unit> averageDefendersRemaining,
       final double battleRounds) {
     this.winPercentage = winPercentage;
-    this.TUVSwing = tuvSwing;
+    this.tuvSwing = tuvSwing;
     this.hasLandUnitRemaining = hasLandUnitRemaining;
     this.averageAttackersRemaining = averageAttackersRemaining;
     this.averageDefendersRemaining = averageDefendersRemaining;
@@ -39,7 +39,7 @@ public class ProBattleResult {
   }
 
   public double getTuvSwing() {
-    return TUVSwing;
+    return tuvSwing;
   }
 
   public boolean isHasLandUnitRemaining() {
@@ -60,7 +60,7 @@ public class ProBattleResult {
 
   @Override
   public String toString() {
-    return "winPercentage=" + winPercentage + ", TUVSwing=" + TUVSwing + ", hasLandUnitRemaining="
+    return "winPercentage=" + winPercentage + ", tuvSwing=" + tuvSwing + ", hasLandUnitRemaining="
         + hasLandUnitRemaining + ", averageAttackersRemaining=" + averageAttackersRemaining
         + ", averageDefendersRemaining=" + averageDefendersRemaining + ", battleRounds=" + battleRounds;
   }

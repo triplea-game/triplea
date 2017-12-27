@@ -30,7 +30,7 @@ import games.strategy.util.UrlStreams;
  * Based on java Classloaders.
  */
 public class ResourceLoader implements Closeable {
-  private final URLClassLoader m_loader;
+  private final URLClassLoader loader;
   public static final String RESOURCE_FOLDER = "assets";
 
   private final ResourceLocationTracker resourceLocationTracker;
@@ -177,20 +177,20 @@ public class ResourceLoader implements Closeable {
     // Note: URLClassLoader does not always respect the ordering of the search URLs
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
-    m_loader = new URLClassLoader(urls);
+    loader = new URLClassLoader(urls);
   }
 
   @Override
   public void close() {
     try {
-      m_loader.close();
+      loader.close();
     } catch (final IOException e) {
       ClientLogger.logQuietly(e);
     }
   }
 
   public boolean hasPath(final String path) {
-    return m_loader.getResource(path) != null;
+    return loader.getResource(path) != null;
   }
 
   /**
@@ -207,7 +207,7 @@ public class ResourceLoader implements Closeable {
 
   private List<URL> getMatchingResources(final String path) {
     try {
-      return Collections.list(m_loader.getResources(path));
+      return Collections.list(loader.getResources(path));
     } catch (final IOException e) {
       throw new IllegalStateException(e);
     }
