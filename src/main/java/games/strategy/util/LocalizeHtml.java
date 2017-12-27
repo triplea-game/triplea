@@ -18,35 +18,8 @@ public class LocalizeHtml {
    * Regex's found at http://www.mkyong.com/
    */
 
-  /*
-   * Match an <a></a> tag.
-   * ( # start of group #1
-   * ?i # all checking are case insensive
-   * ) # end of group #1
-   * <a # start with "<a"
-   * ( # start of group #2
-   * [^>]+ # anything except (">"), at least one character
-   * ) # end of group #2
-   * > # follow by ">"
-   * (.*?) # match anything
-   * </a> # end with "</a>
-   */
-  public static final String PATTERN_HTML_A_TAG = "(?i)<a([^>]+)>(.*?)</a>";
-  /*
-   * Match the href attribute.
-   * \s* # can start with whitespace
-   * (?i) # all checking are case insensive
-   * href # follow by "href" word
-   * \s*=\s* # allows spaces on either side of the equal sign,
-   * ( # start of group #1
-   * "([^"]*") # allow string with double quotes enclosed - "string"
-   * | # ..or
-   * '[^']*' # allow string with single quotes enclosed - 'string'
-   * | # ..or
-   * ([^'">]+) # can't contains one single quotes, double quotes ">"
-   * ) # end of group #1
-   */
-  public static final String PATTERN_HTML_A_HREF_TAG = "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
+  
+  
   /* Match the <img /> tag */
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
   /* Match the src attribute */

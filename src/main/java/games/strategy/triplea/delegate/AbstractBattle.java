@@ -17,7 +17,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
-import games.strategy.sound.ISound;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -26,7 +25,7 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.IntegerMap;
 
-public abstract class AbstractBattle implements IBattle {
+abstract class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
   final GUID m_battleID = new GUID();
   /**
@@ -316,11 +315,6 @@ public abstract class AbstractBattle implements IBattle {
 
   protected static ITripleADisplay getDisplay(final IDelegateBridge bridge) {
     return (ITripleADisplay) bridge.getDisplayChannelBroadcaster();
-  }
-
-  // TODO: is this called via reflection? If not, can be removed since it is unused.
-  protected static ISound getSoundChannel(final IDelegateBridge bridge) {
-    return bridge.getSoundChannelBroadcaster();
   }
 
   protected static ITripleAPlayer getRemote(final IDelegateBridge bridge) {

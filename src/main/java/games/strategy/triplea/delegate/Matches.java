@@ -846,66 +846,12 @@ public final class Matches {
     return t -> !data.getMap().getNeighbors(t, match).isEmpty();
   }
 
-  public static Predicate<Territory> territoryHasAlliedNeighborWithAlliedUnitMatching(final GameData data,
-      final PlayerID player, final Predicate<Unit> unitMatch) {
-    return t -> !data.getMap()
-        .getNeighbors(t, territoryIsAlliedAndHasAlliedUnitMatching(data, player, unitMatch)).isEmpty();
-  }
-
   public static Predicate<Territory> territoryIsInList(final Collection<Territory> list) {
     return list::contains;
   }
 
   public static Predicate<Territory> territoryIsNotInList(final Collection<Territory> list) {
     return not(list::contains);
-  }
-
-  public static Predicate<Territory> territoryHasRouteToEnemyCapital(final GameData data, final PlayerID player) {
-    return t -> {
-      for (final PlayerID otherPlayer : data.getPlayerList().getPlayers()) {
-        final List<Territory> capitalsListOwned =
-            new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
-        for (final Territory current : capitalsListOwned) {
-          if (!data.getRelationshipTracker().isAtWar(player, current.getOwner())) {
-            continue;
-          }
-          if (data.getMap().getDistance(t, current, territoryIsPassableAndNotRestricted(player, data)) != -1) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-  }
-
-  public static Predicate<Territory> territoryHasLandRouteToEnemyCapital(final GameData data, final PlayerID player) {
-    return t -> {
-      for (final PlayerID otherPlayer : data.getPlayerList().getPlayers()) {
-        final List<Territory> capitalsListOwned =
-            new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
-        for (final Territory current : capitalsListOwned) {
-          if (!data.getRelationshipTracker().isAtWar(player, current.getOwner())) {
-            continue;
-          }
-          if (data.getMap().getDistance(t, current, territoryIsNotImpassableToLandUnits(player, data)) != -1) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-  }
-
-  public static Predicate<Territory> territoryHasEnemyNonNeutralNeighborWithEnemyUnitMatching(final GameData data,
-      final PlayerID player, final Predicate<Unit> unitMatch) {
-    return t -> !data.getMap()
-        .getNeighbors(t, territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, unitMatch)).isEmpty();
-  }
-
-  public static Predicate<Territory> territoryHasOwnedNeighborWithOwnedUnitMatching(final GameData data,
-      final PlayerID player, final Predicate<Unit> unitMatch) {
-    return t -> !data.getMap()
-        .getNeighbors(t, territoryIsOwnedAndHasOwnedUnitMatching(player, unitMatch)).isEmpty();
   }
 
   static Predicate<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(
@@ -916,17 +862,6 @@ public final class Matches {
 
   public static Predicate<Territory> territoryHasWaterNeighbor(final GameData data) {
     return t -> data.getMap().getNeighbors(t, territoryIsWater()).size() > 0;
-  }
-
-  private static Predicate<Territory> territoryIsAlliedAndHasAlliedUnitMatching(final GameData data,
-      final PlayerID player,
-      final Predicate<Unit> unitMatch) {
-    return t -> {
-      if (!data.getRelationshipTracker().isAllied(t.getOwner(), player)) {
-        return false;
-      }
-      return t.getUnits().anyMatch(alliedUnit(player, data).and(unitMatch));
-    };
   }
 
   public static Predicate<Territory> territoryIsOwnedAndHasOwnedUnitMatching(final PlayerID player,

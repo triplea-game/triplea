@@ -24,11 +24,6 @@ import games.strategy.triplea.ai.proAI.ProAI;
 import games.strategy.triplea.settings.ClientSetting;
 
 public class GameSelectorModel extends Observable {
-  /**
-   * Returns the name of the directory within a map's directory where the game xml is held.
-   * Example: returns "games" which would be the games folder of "triplea/maps/someMapFooBar/games"
-   */
-  public static final String DEFAULT_GAME_XML_DIRECTORY_NAME = "games";
   private GameData gameData = null;
   private String gameName = "";
   private String gameVersion = "";

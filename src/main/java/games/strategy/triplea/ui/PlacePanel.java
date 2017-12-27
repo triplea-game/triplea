@@ -38,7 +38,7 @@ public class PlacePanel extends AbstractMovePanel {
   /** Creates new PlacePanel. */
   public PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
-    undoableMovesPanel = new UndoablePlacementsPanel(data, this);
+    undoableMovesPanel = new UndoablePlacementsPanel(this);
     unitsToPlace = new SimpleUnitPanel(map.getUiContext());
     leftToPlaceLabel.setText("Units left to place:");
   }

@@ -222,11 +222,6 @@ public class MyFormatter {
     return defaultNamedToTextList(list, ", ", false);
   }
 
-  public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list,
-      final boolean showQuantity) {
-    return defaultNamedToTextList(list, ", ", showQuantity);
-  }
-
   public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String seperator,
       final boolean showQuantity) {
     final IntegerMap<DefaultNamed> map = new IntegerMap<>();

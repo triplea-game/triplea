@@ -35,7 +35,6 @@ public abstract class AbstractUiContext implements UiContext {
   protected static final String SHOW_TRIGGERED_NOTIFICATIONS = "ShowTriggeredNotifications";
   protected static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
   protected static final String SHOW_TRIGGERED_CHANCE_FAILURE = "ShowTriggeredChanceFailure";
-  protected static final String SHOW_BATTLES_BETWEEN_AIS = "ShowBattlesBetweenAIs";
   protected static ResourceLoader resourceLoader;
 
   protected boolean isShutDown = false;

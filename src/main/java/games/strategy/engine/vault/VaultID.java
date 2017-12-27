@@ -29,13 +29,6 @@ public class VaultID implements Serializable {
     return m_generatedOn;
   }
 
-  /**
-   * @return Returns the id.
-   */
-  long getUniqueId() {
-    return m_uniqueID;
-  }
-
   @Override
   public boolean equals(final Object o) {
     if (o == null || !(o instanceof VaultID)) {

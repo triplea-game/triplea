@@ -42,9 +42,7 @@ public class TripleAUnit extends Unit {
   public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
   public static final String ALREADY_MOVED = "alreadyMoved";
   public static final String BONUS_MOVEMENT = "bonusMovement";
-  public static final String MOVEMENT_LEFT = "movementLeft";
   public static final String SUBMERGED = "submerged";
-  public static final String ORIGINAL_OWNER = "originalOwner";
   public static final String WAS_IN_COMBAT = "wasInCombat";
   public static final String LOADED_AFTER_COMBAT = "wasLoadedAfterCombat";
   public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
@@ -52,7 +50,6 @@ public class TripleAUnit extends Unit {
   public static final String WAS_SCRAMBLED = "wasScrambled";
   public static final String MAX_SCRAMBLE_COUNT = "maxScrambleCount";
   public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
-  public static final String DISABLED = "disabled";
   public static final String LAUNCHED = "launched";
   public static final String AIRBORNE = "airborne";
   // the transport that is currently transporting us

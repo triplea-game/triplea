@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import games.strategy.io.IoUtils;
 
 public class DownloadFileParserTest {
+  private enum ValueType {
+    MAP, MAP_TOOL, MAP_SKIN, MAP_MOD
+  }
 
   private static final String GAME_NAME = "myGame";
 
@@ -54,7 +57,7 @@ public class DownloadFileParserTest {
     return IoUtils.readFromMemory(bytes, DownloadFileParser::parse);
   }
 
-  private static String createTypeTag(final DownloadFileParser.ValueType type) {
+  private static String createTypeTag(final ValueType type) {
     return "  " + DownloadFileParser.Tags.mapType + ": " + type + "\n";
   }
 
@@ -63,7 +66,7 @@ public class DownloadFileParserTest {
     xml += "- url: http://example.com/games/game.zip\n";
     xml += "  mapName: " + GAME_NAME + "\n";
     xml += "  version: 1\n";
-    xml += createTypeTag(DownloadFileParser.ValueType.MAP);
+    xml += createTypeTag(ValueType.MAP);
     xml += "  description: |\n";
     xml += "     <pre>Some notes about the game, simple html allowed.\n";
     xml += "     </pre>\n";
@@ -76,13 +79,13 @@ public class DownloadFileParserTest {
     xml += "- url: http://example.com/games/skin.zip\n";
     xml += "  mapName: skin\n";
     xml += "  version: 1\n";
-    xml += createTypeTag(DownloadFileParser.ValueType.MAP_SKIN);
+    xml += createTypeTag(ValueType.MAP_SKIN);
     xml += "  description: |\n";
     xml += "      map skin\n";
     xml += "- url: http://example.com/games/tool.zip\n";
     xml += "  mapName: mapToolName\n";
     xml += "  version: 1\n";
-    xml += createTypeTag(DownloadFileParser.ValueType.MAP_TOOL);
+    xml += createTypeTag(ValueType.MAP_TOOL);
     xml += "  description: |\n";
     xml += "       <pre>\n";
     xml += "       this is a map tool";

@@ -185,10 +185,6 @@ public class ScrollableTextField extends JPanel {
     listeners.add(listener);
   }
 
-  public void removeChangeListener(final ScrollableTextFieldListener listener) {
-    listeners.remove(listener);
-  }
-
   private void notifyListeners() {
     for (final ScrollableTextFieldListener listener : listeners) {
       listener.changedValue(this);

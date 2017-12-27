@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
@@ -57,8 +56,6 @@ import games.strategy.util.Tuple;
  * Pro AI.
  */
 public class ProAI extends AbstractAI {
-
-  private static final Logger logger = Logger.getLogger(ProAI.class.getName());
 
   // Odds calculator
   private static final IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator("ProAI");
@@ -111,10 +108,6 @@ public class ProAI extends AbstractAI {
   public static void showSettingsWindow() {
     ProLogger.info("Showing Hard AI settings window");
     ProLogUI.showSettingsWindow();
-  }
-
-  public static Logger getLogger() {
-    return logger;
   }
 
   public static void gameOverClearCache() {

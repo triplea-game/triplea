@@ -17,20 +17,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
 class Utils {
-  /**
-   * All the territories that border one of our territories.
-   */
-  static List<Territory> getNeighboringEnemyLandTerritories(final GameData data, final PlayerID player) {
-    final List<Territory> territories = new ArrayList<>();
-    for (final Territory t : data.getMap()) {
-      if (Matches.isTerritoryEnemy(player, data).test(t) && !t.getOwner().isNull()) {
-        if (!data.getMap().getNeighbors(t, Matches.isTerritoryOwnedBy(player)).isEmpty()) {
-          territories.add(t);
-        }
-      }
-    }
-    return territories;
-  }
 
   static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
       final boolean sea) {

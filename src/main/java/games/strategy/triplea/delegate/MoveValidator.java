@@ -59,7 +59,6 @@ public class MoveValidator {
   public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
   public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT =
       "Transport cannot both load AND unload after being in combat";
-  public static final String LOST_BLITZ_ABILITY = "Unit lost blitz ability";
   public static final String NOT_ALL_UNITS_CAN_BLITZ = "Not all units can blitz";
 
   public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,

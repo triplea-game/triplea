@@ -1,9 +1,6 @@
 package games.strategy.engine.data;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,11 +16,6 @@ public class TechnologyFrontierList extends GameDataComponent {
 
   public void addTechnologyFrontier(final TechnologyFrontier tf) {
     m_technologyFrontiers.add(tf);
-  }
-
-  public void addTechnologyFrontiers(final Collection<TechnologyFrontier> technologyFrontiers) {
-    checkNotNull(technologyFrontiers);
-    m_technologyFrontiers.addAll(technologyFrontiers);
   }
 
   public int size() {

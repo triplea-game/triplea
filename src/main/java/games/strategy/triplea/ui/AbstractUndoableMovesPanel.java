@@ -39,15 +39,14 @@ import games.strategy.triplea.util.UnitSeperator;
 public abstract class AbstractUndoableMovesPanel extends JPanel {
   private static final long serialVersionUID = 1910945925958952416L;
   protected List<AbstractUndoableMove> moves;
-  protected final GameData gameData;
+  
   protected final AbstractMovePanel movePanel;
   protected JScrollPane scroll;
   // TODO replace this Integer with a int primitive... Using null as toggle switch is bad code
   protected Integer scrollBarPreviousValue = null;
   protected Integer previousVisibleIndex = null;
 
-  protected AbstractUndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel) {
-    gameData = data;
+  protected AbstractUndoableMovesPanel(final AbstractMovePanel movePanel) {
     this.movePanel = movePanel;
     moves = Collections.emptyList();
   }
