@@ -17,17 +17,17 @@ public class ResourceImageFactory {
   public static final int LARGE_RESOURCE_ICON_SIZE = 24;
   private static final String FILE_NAME_BASE = "resources/";
   // maps Point -> Icon
-  private final Map<String, ImageIcon> m_icons = new HashMap<>();
+  private final Map<String, ImageIcon> icons = new HashMap<>();
   // Scaling factor for images
-  private double m_scaleFactor;
-  private ResourceLoader m_resourceLoader;
+  private double scaleFactor;
+  private ResourceLoader resourceLoader;
 
   /** Creates new ResourceImageFactory. */
   public ResourceImageFactory() {}
 
   public void setResourceLoader(final ResourceLoader loader, final double scaleFactor) {
-    m_scaleFactor = scaleFactor;
-    m_resourceLoader = loader;
+    this.scaleFactor = scaleFactor;
+    resourceLoader = loader;
     clearImageCache();
   }
 
@@ -35,8 +35,8 @@ public class ResourceImageFactory {
    * Set the scaling factor.
    */
   public void setScaleFactor(final double scaleFactor) {
-    if (m_scaleFactor != scaleFactor) {
-      m_scaleFactor = scaleFactor;
+    if (this.scaleFactor != scaleFactor) {
+      this.scaleFactor = scaleFactor;
       clearImageCache();
     }
   }
@@ -45,32 +45,32 @@ public class ResourceImageFactory {
    * Return the scaling factor.
    */
   public double getScaleFactor() {
-    return m_scaleFactor;
+    return scaleFactor;
   }
 
   /**
    * Return the width of scaled.
    */
   public int getUnitImageWidth(final boolean large) {
-    return (int) (m_scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));
+    return (int) (scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));
   }
 
   /**
    * Return the height of scaled.
    */
   public int getUnitImageHeight(final boolean large) {
-    return (int) (m_scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));
+    return (int) (scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));
   }
 
   // Clear the image and icon cache
   private void clearImageCache() {
-    m_icons.clear();
+    icons.clear();
   }
 
   private Image getBaseImage(final String baseImageName) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + baseImageName + ".png";
-    final URL url = m_resourceLoader.getResource(fileName);
+    final URL url = resourceLoader.getResource(fileName);
     if (url == null) {
       throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
     }
@@ -84,12 +84,12 @@ public class ResourceImageFactory {
    */
   public ImageIcon getIcon(final Resource type, final boolean large) {
     final String fullName = type.getName() + (large ? "_large" : "");
-    if (m_icons.containsKey(fullName)) {
-      return m_icons.get(fullName);
+    if (icons.containsKey(fullName)) {
+      return icons.get(fullName);
     }
     final Image img = getBaseImage(fullName);
     final ImageIcon icon = new ImageIcon(img);
-    m_icons.put(fullName, icon);
+    icons.put(fullName, icon);
     return icon;
   }
 }

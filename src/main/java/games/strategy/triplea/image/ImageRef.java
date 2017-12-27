@@ -34,21 +34,19 @@ class ImageRef {
     t.start();
   }
 
-  private final Reference<Image> m_image;
+  private final Reference<Image> image;
 
-  // private final Object m_hardRef;
   public ImageRef(final Image image) {
-    m_image = new SoftReference<>(image, referenceQueue);
-    // m_hardRef = image;
+    this.image = new SoftReference<>(image, referenceQueue);
     logger.finer("Added soft reference image. Image count:" + imageCount.incrementAndGet());
   }
 
   public Image getImage() {
-    return m_image.get();
+    return image.get();
   }
 
   public void clear() {
-    m_image.enqueue();
-    m_image.clear();
+    image.enqueue();
+    image.clear();
   }
 }
