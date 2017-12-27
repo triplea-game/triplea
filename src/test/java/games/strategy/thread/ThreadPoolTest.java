@@ -15,7 +15,7 @@ public class ThreadPoolTest {
   public void testRunOneTask() {
     final ThreadPool pool = new ThreadPool(50);
     final Task task = new Task();
-    pool.runTask(task);
+    pool.submit(task);
     pool.waitForAll();
     assertTrue(task.isDone());
   }
@@ -27,13 +27,13 @@ public class ThreadPoolTest {
     for (int i = 0; i < 30; i++) {
       final Task task = new Task();
       tasks.add(task);
-      pool.runTask(task);
+      pool.submit(task);
     }
     pool.waitForAll();
     for (final Task runnable : tasks) {
       assertTrue(runnable.isDone());
     }
-    pool.shutDown();
+    pool.shutdown();
   }
 
   @Test
@@ -43,14 +43,14 @@ public class ThreadPoolTest {
     for (int i = 0; i < 3000; i++) {
       final Task task = new Task();
       tasks.add(task);
-      pool.runTask(task);
+      pool.submit(task);
     }
 
     pool.waitForAll();
     for (final Task task1 : tasks) {
       assertTrue(task1.isDone());
     }
-    pool.shutDown();
+    pool.shutdown();
   }
 
   @Test
@@ -82,13 +82,13 @@ public class ThreadPoolTest {
     for (int i = 0; i < 10; i++) {
       final BlockedTask task = new BlockedTask();
       blockedTasks.add(task);
-      pool.runTask(task);
+      pool.submit(task);
     }
     pool.waitForAll();
     for (final BlockedTask task : blockedTasks) {
       assertTrue(task.isDone());
     }
-    pool.shutDown();
+    pool.shutdown();
   }
 
   private static class Task implements Runnable {
