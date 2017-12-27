@@ -12,12 +12,12 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
 
 public class ImageFactory {
-  private final Map<String, Image> m_images = new HashMap<>();
-  private ResourceLoader m_resourceLoader;
+  private final Map<String, Image> images = new HashMap<>();
+  private ResourceLoader resourceLoader;
 
   public void setResourceLoader(final ResourceLoader loader) {
-    m_resourceLoader = loader;
-    m_images.clear();
+    resourceLoader = loader;
+    images.clear();
   }
 
   protected Image getImage(final String key1, final String key2, final boolean throwIfNotFound) {
@@ -29,12 +29,12 @@ public class ImageFactory {
   }
 
   protected Image getImage(final String key, final boolean throwIfNotFound) {
-    if (!m_images.containsKey(key)) {
-      final URL url = m_resourceLoader.getResource(key);
+    if (!images.containsKey(key)) {
+      final URL url = resourceLoader.getResource(key);
       if (url == null && throwIfNotFound) {
         throw new IllegalStateException("Image Not Found:" + key);
       } else if (url == null) {
-        m_images.put(key, null);
+        images.put(key, null);
         return null;
       }
       final Image image;
@@ -44,8 +44,8 @@ public class ImageFactory {
         ClientLogger.logQuietly(e);
         throw new IllegalStateException(e.getMessage());
       }
-      m_images.put(key, image);
+      images.put(key, image);
     }
-    return m_images.get(key);
+    return images.get(key);
   }
 }

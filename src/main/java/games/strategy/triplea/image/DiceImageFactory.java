@@ -20,31 +20,31 @@ import games.strategy.ui.Util;
  * Utility for creating dice images.
  */
 public class DiceImageFactory {
-  public int DIE_WIDTH = 32;
-  public int DIE_HEIGHT = 32;
-  private final int m_diceSides;
-  private final ResourceLoader m_resourceLoader;
+  public static final int DIE_WIDTH = 32;
+  public static final int DIE_HEIGHT = 32;
+  private final int diceSides;
+  private final ResourceLoader resourceLoader;
   private static final Color IGNORED = new Color(100, 100, 100, 200);
   // maps Integer -> Image
-  private final Map<Integer, Image> m_images = new HashMap<>();
-  private final Map<Integer, Image> m_imagesHit = new HashMap<>();
-  private final Map<Integer, Image> m_imagesIgnored = new HashMap<>();
+  private final Map<Integer, Image> images = new HashMap<>();
+  private final Map<Integer, Image> imagesHit = new HashMap<>();
+  private final Map<Integer, Image> imagesIgnored = new HashMap<>();
 
   public DiceImageFactory(final ResourceLoader loader, final int diceSides) {
     final int pipSize = 6;
-    m_diceSides = Math.max(6, diceSides);
-    m_resourceLoader = loader;
-    generateDice(pipSize, Color.black, m_images);
-    generateDice(pipSize, Color.red, m_imagesHit);
-    generateDice(pipSize, IGNORED, m_imagesIgnored);
+    this.diceSides = Math.max(6, diceSides);
+    resourceLoader = loader;
+    generateDice(pipSize, Color.black, images);
+    generateDice(pipSize, Color.red, imagesHit);
+    generateDice(pipSize, IGNORED, imagesIgnored);
   }
 
   private void generateDice(final int pipSize, final Color color, final Map<Integer, Image> images) {
     final ImageFactory imageFactory = new ImageFactory();
-    imageFactory.setResourceLoader(m_resourceLoader);
-    for (int i = 0; i <= m_diceSides; i++) {
+    imageFactory.setResourceLoader(resourceLoader);
+    for (int i = 0; i <= diceSides; i++) {
       Image img = null;
-      if (m_resourceLoader != null) {
+      if (resourceLoader != null) {
         if (color == Color.black) {
           img = imageFactory.getImage("dice/" + i + ".png", false);
         } else if (color == Color.red) {
@@ -106,7 +106,7 @@ public class DiceImageFactory {
     if (i < 0) {
       throw new IllegalArgumentException("Die can't be less than 0, value: " + i);
     }
-    if (i > m_diceSides) {
+    if (i > diceSides) {
       final Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
       final Graphics graphics = canvas.getGraphics();
       graphics.setFont(new Font("Arial", Font.BOLD, 16));
@@ -133,11 +133,11 @@ public class DiceImageFactory {
     }
     switch (type) {
       case HIT:
-        return m_imagesHit.get(i);
+        return imagesHit.get(i);
       case MISS:
-        return m_images.get(i);
+        return images.get(i);
       case IGNORED:
-        return m_imagesIgnored.get(i);
+        return imagesIgnored.get(i);
       default:
         throw new IllegalStateException("??");
     }

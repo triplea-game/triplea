@@ -38,12 +38,12 @@ public class UnitImageFactory {
   private static int unitCounterOffsetHeight = unitIconHeight;
   private static final String FILE_NAME_BASE = "units/";
   // maps Point -> image
-  private final Map<String, Image> m_images = new HashMap<>();
+  private final Map<String, Image> images = new HashMap<>();
   // maps Point -> Icon
-  private final Map<String, ImageIcon> m_icons = new HashMap<>();
+  private final Map<String, ImageIcon> icons = new HashMap<>();
   // Scaling factor for unit images
-  private double m_scaleFactor;
-  private ResourceLoader m_resourceLoader;
+  private double scaleFactor;
+  private ResourceLoader resourceLoader;
 
   /** Creates new UnitImageFactory. */
   public UnitImageFactory() {}
@@ -54,8 +54,8 @@ public class UnitImageFactory {
     unitIconHeight = initialUnitHeight;
     unitCounterOffsetWidth = initialUnitCounterOffsetWidth;
     unitCounterOffsetHeight = initialUnitCounterOffsetHeight;
-    m_scaleFactor = scaleFactor;
-    m_resourceLoader = loader;
+    this.scaleFactor = scaleFactor;
+    resourceLoader = loader;
     clearImageCache();
   }
 
@@ -63,8 +63,8 @@ public class UnitImageFactory {
    * Set the unitScaling factor.
    */
   public void setScaleFactor(final double scaleFactor) {
-    if (m_scaleFactor != scaleFactor) {
-      m_scaleFactor = scaleFactor;
+    if (this.scaleFactor != scaleFactor) {
+      this.scaleFactor = scaleFactor;
       clearImageCache();
     }
   }
@@ -73,35 +73,35 @@ public class UnitImageFactory {
    * Return the unit scaling factor.
    */
   public double getScaleFactor() {
-    return m_scaleFactor;
+    return scaleFactor;
   }
 
   /**
    * Return the width of scaled units.
    */
   public int getUnitImageWidth() {
-    return (int) (m_scaleFactor * unitIconWidth);
+    return (int) (scaleFactor * unitIconWidth);
   }
 
   /**
    * Return the height of scaled units.
    */
   public int getUnitImageHeight() {
-    return (int) (m_scaleFactor * unitIconHeight);
+    return (int) (scaleFactor * unitIconHeight);
   }
 
   public int getUnitCounterOffsetWidth() {
-    return (int) (m_scaleFactor * unitCounterOffsetWidth);
+    return (int) (scaleFactor * unitCounterOffsetWidth);
   }
 
   public int getUnitCounterOffsetHeight() {
-    return (int) (m_scaleFactor * unitCounterOffsetHeight);
+    return (int) (scaleFactor * unitCounterOffsetHeight);
   }
 
   // Clear the image and icon cache
   private void clearImageCache() {
-    m_images.clear();
-    m_icons.clear();
+    images.clear();
+    icons.clear();
   }
 
   /**
@@ -111,8 +111,8 @@ public class UnitImageFactory {
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
-    if (m_images.containsKey(fullName)) {
-      return Optional.of(m_images.get(fullName));
+    if (images.containsKey(fullName)) {
+      return Optional.of(images.get(fullName));
     }
     final Optional<Image> image = getBaseImage(baseName, player);
     if (!image.isPresent()) {
@@ -126,17 +126,17 @@ public class UnitImageFactory {
     // to take our time in doing the scaling.
     // Image observer is null, since the image should have been
     // guaranteed to be loaded.
-    final int width = (int) (baseImage.getWidth(null) * m_scaleFactor);
-    final int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
+    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
+    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
     final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     // Ensure the scaling is completed.
     Util.ensureImageLoaded(scaledImage);
-    m_images.put(fullName, scaledImage);
+    images.put(fullName, scaledImage);
     return Optional.of(scaledImage);
   }
 
   public Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerID id) {
-    return getBaseImageUrl(baseImageName, id, m_resourceLoader);
+    return getBaseImageUrl(baseImageName, id, resourceLoader);
   }
 
   private static Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerID id,
@@ -185,8 +185,8 @@ public class UnitImageFactory {
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
-    if (m_icons.containsKey(fullName)) {
-      return Optional.of(m_icons.get(fullName));
+    if (icons.containsKey(fullName)) {
+      return Optional.of(icons.get(fullName));
     }
     final Optional<Image> image = getBaseImage(baseName, player);
     if (!image.isPresent()) {
@@ -194,7 +194,7 @@ public class UnitImageFactory {
     }
 
     final ImageIcon icon = new ImageIcon(image.get());
-    m_icons.put(fullName, icon);
+    icons.put(fullName, icon);
     return Optional.of(icon);
   }
 
