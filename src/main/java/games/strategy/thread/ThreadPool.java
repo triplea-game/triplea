@@ -1,6 +1,7 @@
 package games.strategy.thread;
 
 import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,7 +14,7 @@ import games.strategy.debug.ClientLogger;
  */
 public class ThreadPool {
   private final ExecutorService executorService;
-  private final ArrayDeque<Future<?>> futuresStack = new ArrayDeque<>();
+  private final Queue<Future<?>> futuresStack = new ArrayDeque<>();
 
   /**
    * Creates a thread pool that reuses a fixed number of threads
@@ -38,7 +39,7 @@ public class ThreadPool {
    * Run the given task.
    */
   public void runTask(final Runnable task) {
-    futuresStack.push(executorService.submit(task));
+    futuresStack.add(executorService.submit(task));
   }
 
 
@@ -48,11 +49,11 @@ public class ThreadPool {
   public void waitForAll() {
     while (!futuresStack.isEmpty()) {
       try {
-        futuresStack.pop().get();
+        futuresStack.poll().get();
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (final ExecutionException e) {
-        ClientLogger.logError(e);
+        ClientLogger.logError(e.getCause());
       }
     }
   }
