@@ -1,5 +1,6 @@
 package games.strategy.thread;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -10,6 +11,13 @@ import org.junit.jupiter.api.Test;
 import games.strategy.util.ThreadUtil;
 
 public class ThreadPoolTest {
+
+  @Test
+  public void testThrowsExceptionOnInvalidArgument() {
+    assertThrows(IllegalArgumentException.class, () -> new ThreadPool(0));
+    assertThrows(IllegalArgumentException.class, () -> new ThreadPool(-1));
+    assertThrows(IllegalArgumentException.class, () -> new ThreadPool(Integer.MIN_VALUE));
+  }
 
   @Test
   public void testRunOneTask() {
