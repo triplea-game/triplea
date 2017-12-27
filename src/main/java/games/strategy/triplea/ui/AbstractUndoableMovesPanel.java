@@ -29,7 +29,6 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.collect.Sets;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
