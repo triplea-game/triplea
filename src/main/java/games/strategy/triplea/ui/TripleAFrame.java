@@ -540,7 +540,7 @@ public class TripleAFrame extends MainGameFrame {
       // this frame should not handle shutdowns anymore
       MacQuitMenuWrapper.unregisterShutdownHandler();
     }
-    messageAndDialogThreadPool.shutDown();
+    messageAndDialogThreadPool.shutdown();
     uiContext.shutDown();
     if (chatPanel != null) {
       chatPanel.setPlayerRenderer(null);
@@ -741,7 +741,7 @@ public class TripleAFrame extends MainGameFrame {
     if (messageAndDialogThreadPool == null) {
       return;
     }
-    messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
+    messageAndDialogThreadPool.submit(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
         displayMessage, "Error", JOptionPane.ERROR_MESSAGE, getUiContext().getCountDownLatchHandler()));
   }
 
@@ -772,7 +772,7 @@ public class TripleAFrame extends MainGameFrame {
     }
     final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
     if (messageAndDialogThreadPool != null) {
-      messageAndDialogThreadPool.runTask(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
+      messageAndDialogThreadPool.submit(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
           displayMessage, title, JOptionPane.INFORMATION_MESSAGE, getUiContext().getCountDownLatchHandler()));
     }
   }
@@ -852,7 +852,7 @@ public class TripleAFrame extends MainGameFrame {
     if (messageAndDialogThreadPool == null) {
       return;
     }
-    messageAndDialogThreadPool.runTask(() -> {
+    messageAndDialogThreadPool.submit(() -> {
       final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<>();
       SwingAction.invokeAndWait(() -> {
         final TechResultsDisplay display = new TechResultsDisplay(msg, uiContext, data);

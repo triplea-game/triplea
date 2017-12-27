@@ -14,7 +14,7 @@ import games.strategy.debug.ClientLogger;
  */
 public class ThreadPool {
   private final ExecutorService executorService;
-  private final Queue<Future<?>> futuresStack = new ArrayDeque<>();
+  private final Queue<Future<?>> futureQueue = new ArrayDeque<>();
 
   /**
    * Creates a thread pool that reuses a fixed number of threads
@@ -38,8 +38,8 @@ public class ThreadPool {
   /**
    * Run the given task.
    */
-  public void runTask(final Runnable task) {
-    futuresStack.add(executorService.submit(task));
+  public void submit(final Runnable task) {
+    futureQueue.add(executorService.submit(task));
   }
 
 
@@ -47,9 +47,9 @@ public class ThreadPool {
    * Returns when all tasks run through the runTask method have finished.
    */
   public void waitForAll() {
-    while (!futuresStack.isEmpty()) {
+    while (!futureQueue.isEmpty()) {
       try {
-        futuresStack.poll().get();
+        futureQueue.poll().get();
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (final ExecutionException e) {
@@ -61,9 +61,9 @@ public class ThreadPool {
   /**
    * Shutdown the thread pool. Currently running tasks will finish, but new tasks will not start.
    * All threads will shutdown after finishing any tasks they may be currently running.
-   * A call to shutDown() followed by waitForAll() will ensure that no threads are running.
+   * A call to shutdown() followed by waitForAll() will ensure that no threads are running.
    */
-  public void shutDown() {
+  public void shutdown() {
     executorService.shutdown();
   }
 }
