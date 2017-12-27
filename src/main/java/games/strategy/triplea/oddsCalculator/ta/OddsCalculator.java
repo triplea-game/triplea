@@ -54,7 +54,7 @@ import games.strategy.util.Tuple;
 
 class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   public static final String OOL_ALL = "*";
-  public static final String OOL_ALL_REGEX = "\\*";
+  
   public static final String OOL_SEPARATOR = ";";
   public static final String OOL_SEPARATOR_REGEX = ";";
   public static final String OOL_AMOUNT_DESCRIPTOR = "^";

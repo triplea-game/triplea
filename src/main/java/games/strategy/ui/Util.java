@@ -22,10 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
-import games.strategy.util.EventThreadJOptionPane;
 
 public final class Util {
   public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
@@ -67,11 +64,6 @@ public final class Util {
     g.drawImage(img, 0, 0, null);
     g.dispose();
     return copy;
-  }
-
-  public static void notifyError(final Component parent, final String message) {
-    EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Error",
-        JOptionPane.ERROR_MESSAGE);
   }
 
   /**

@@ -347,8 +347,4 @@ public final class TileImageFactory {
     g.dispose();
     return compatibleImage;
   }
-
-  public static BufferedImage createCompatibleImage(final int width, final int height) {
-    return configuration.createCompatibleImage(width, height);
-  }
 }

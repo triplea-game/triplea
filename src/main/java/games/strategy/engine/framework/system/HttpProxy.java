@@ -26,8 +26,6 @@ public class HttpProxy {
     NONE, USE_SYSTEM_SETTINGS, USE_USER_PREFERENCES
   }
 
-  public static final String PROXY_HOST = "proxy.host";
-  public static final String PROXY_PORT = "proxy.port";
   public static final String PROXY_CHOICE = "proxy.choice";
 
   public static boolean isUsingSystemProxy() {

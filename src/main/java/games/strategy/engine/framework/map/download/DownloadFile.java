@@ -108,12 +108,4 @@ final class DownloadFile {
   boolean isDone() {
     return state == DownloadState.CANCELLED || state == DownloadState.DONE;
   }
-
-  boolean isInProgress() {
-    return state == DownloadState.DOWNLOADING;
-  }
-
-  boolean isWaiting() {
-    return state == DownloadState.NOT_STARTED;
-  }
 }

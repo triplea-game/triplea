@@ -30,10 +30,6 @@ public class UnitCategory implements Comparable<Object> {
   private int bombingDamage = 0;
   private boolean disabled = false;
 
-  public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int transportCost) {
-    this(unit, dependents, movement, 0, 0, false, transportCost);
-  }
-
   public UnitCategory(final UnitType type, final PlayerID owner) {
     this.type = type;
     dependents = Collections.emptyList();
@@ -147,10 +143,6 @@ public class UnitCategory implements Comparable<Object> {
 
   public void addUnit(final Unit unit) {
     units.add(unit);
-  }
-
-  void removeUnit(final Unit unit) {
-    units.remove(unit);
   }
 
   public UnitType getType() {

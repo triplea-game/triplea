@@ -32,7 +32,7 @@ import games.strategy.util.Util;
  */
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
-  static final List<Territory> emptyTerritoryList = Collections.unmodifiableList(new ArrayList<>());
+  private static final List<Territory> EMPTY_TERRITORY_LIST = Collections.emptyList();
   private final List<Territory> m_steps = new ArrayList<>();
   private Territory m_start;
 
@@ -200,16 +200,6 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * Checking if all of the steps match the given Predicate.
-   * 
-   * @param match referring match
-   * @return whether all territories in this route match the given match (start territory is not tested).
-   */
-  public boolean allMatch(final Predicate<Territory> match) {
-    return m_steps.stream().allMatch(match);
-  }
-
-  /**
    * Checking if any of the steps match the given Predicate.
    * 
    * @param match referring match
@@ -267,7 +257,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (numberOfSteps() > 0) {
       return new ArrayList<>(m_steps);
     }
-    return emptyTerritoryList;
+    return EMPTY_TERRITORY_LIST;
   }
 
   /**
@@ -277,7 +267,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (numberOfSteps() > 1) {
       return new ArrayList<>(m_steps).subList(0, numberOfSteps() - 1);
     }
-    return emptyTerritoryList;
+    return EMPTY_TERRITORY_LIST;
   }
 
   /**

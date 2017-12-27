@@ -32,14 +32,6 @@ class BlendComposite implements Composite {
     return new BlendComposite(mode);
   }
 
-  public static BlendComposite getInstance(final BlendingMode mode, final float alpha) {
-    return new BlendComposite(mode, alpha);
-  }
-
-  public BlendComposite derive(final BlendingMode mode) {
-    return this.mode == mode ? this : new BlendComposite(mode, getAlpha());
-  }
-
   public BlendComposite derive(final float alpha) {
     return this.alpha == alpha ? this : new BlendComposite(getMode(), alpha);
   }

@@ -87,7 +87,7 @@ public class MovePanel extends AbstractMovePanel {
   /** Creates new MovePanel. */
   public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
-    undoableMovesPanel = new UndoableMovesPanel(data, this);
+    undoableMovesPanel = new UndoableMovesPanel(this);
     mouseCurrentTerritory = null;
     unitsThatCanMoveOnRoute = Collections.emptyList();
     currentCursorImage = null;

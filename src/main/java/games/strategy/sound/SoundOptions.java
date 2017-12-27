@@ -3,13 +3,10 @@ package games.strategy.sound;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.ui.PropertiesSelector;
@@ -18,7 +15,7 @@ import games.strategy.engine.framework.ui.PropertiesSelector;
  * Sound option window framework.
  */
 public final class SoundOptions {
-  final ClipPlayer clipPlayer;
+  private final ClipPlayer clipPlayer;
 
   /**
    * @param parentMenu
@@ -29,12 +26,6 @@ public final class SoundOptions {
     soundOptions.setMnemonic(KeyEvent.VK_S);
     soundOptions.addActionListener(e -> new SoundOptions(parentMenu));
     parentMenu.add(soundOptions);
-  }
-
-  public static void addToPanel(final JPanel parentPanel) {
-    final JButton soundOptions = new JButton("Sound Options");
-    soundOptions.addActionListener(e -> new SoundOptions(parentPanel));
-    parentPanel.add(soundOptions);
   }
 
   private SoundOptions(final JComponent parent) {
@@ -75,12 +66,5 @@ public final class SoundOptions {
     soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
     soundCheckBox.addActionListener(e -> ClipPlayer.setBeSilent(!soundCheckBox.isSelected()));
     parentMenu.add(soundCheckBox);
-  }
-
-  public static void addGlobalSoundSwitchCheckbox(final JPanel parentPanel) {
-    final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
-    soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
-    soundCheckBox.addActionListener(e -> ClipPlayer.setBeSilent(!soundCheckBox.isSelected()));
-    parentPanel.add(soundCheckBox);
   }
 }

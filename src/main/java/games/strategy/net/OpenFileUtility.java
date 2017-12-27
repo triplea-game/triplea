@@ -18,15 +18,6 @@ public final class OpenFileUtility {
    * Opens a specific file on the user's computer using the local computer's file associations.
    *
    * @param file The file to be opened.
-   */
-  public static void openFile(final File file) {
-    openFile(file, () -> logDesktopApiMessage(file.getAbsolutePath()));
-  }
-
-  /**
-   * Opens a specific file on the user's computer using the local computer's file associations.
-   *
-   * @param file The file to be opened.
    * @param action What to do if the Desktop API is not supported.
    */
   public static void openFile(final File file, final Runnable action) {

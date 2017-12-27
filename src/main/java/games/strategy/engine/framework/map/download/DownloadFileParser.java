@@ -24,10 +24,6 @@ final class DownloadFileParser {
     url, mapType, version, mapName, description, mapCategory, img
   }
 
-  enum ValueType {
-    MAP, MAP_TOOL, MAP_SKIN, MAP_MOD
-  }
-
   public static List<DownloadFileDescription> parse(final InputStream is) {
     final JSONArray yamlData = new JSONArray(new Yaml().loadAs(is, List.class));
 

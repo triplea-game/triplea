@@ -86,12 +86,6 @@ class EndPoint {
     return singleThreaded;
   }
 
-  public boolean hasImplementors() {
-    synchronized (implementorsMutex) {
-      return !implementors.isEmpty();
-    }
-  }
-
   public int getLocalImplementorCount() {
     synchronized (implementorsMutex) {
       return implementors.size();
@@ -174,16 +168,6 @@ class EndPoint {
     } finally {
       MessageContext.setSenderNodeForThread(null);
     }
-  }
-
-  public boolean equivalent(final EndPoint other) {
-    if (other.singleThreaded != this.singleThreaded) {
-      return false;
-    }
-    if (!other.name.equals(this.name)) {
-      return false;
-    }
-    return other.remoteClass.equals(remoteClass);
   }
 
   @Override

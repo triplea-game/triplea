@@ -166,15 +166,11 @@ public class ProTerritory {
     this.units.addAll(units);
   }
 
-  public void addMaxUnits(final List<Unit> units) {
-    this.maxUnits.addAll(units);
-  }
-
-  public void addMaxAmphibUnits(final List<Unit> amphibUnits) {
+  void addMaxAmphibUnits(final List<Unit> amphibUnits) {
     this.maxAmphibUnits.addAll(amphibUnits);
   }
 
-  public void addMaxUnit(final Unit unit) {
+  void addMaxUnit(final Unit unit) {
     this.maxUnits.add(unit);
   }
 
@@ -391,7 +387,7 @@ public class ProTerritory {
     return maxBombardUnits;
   }
 
-  public void addMaxBombardUnit(final Unit unit) {
+  void addMaxBombardUnit(final Unit unit) {
     this.maxBombardUnits.add(unit);
   }
 

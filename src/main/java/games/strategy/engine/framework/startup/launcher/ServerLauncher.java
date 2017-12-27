@@ -45,7 +45,6 @@ import games.strategy.util.ThreadUtil;
 
 public class ServerLauncher extends AbstractLauncher {
   private static final Logger logger = Logger.getLogger(ServerLauncher.class.getName());
-  public static final String SERVER_ROOT_DIR_PROPERTY = "triplea.server.root.dir";
   private final int clientCount;
   private final IRemoteMessenger remoteMessenger;
   private final IChannelMessenger channelMessenger;
