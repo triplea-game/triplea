@@ -19,16 +19,16 @@ public class ThreadPool {
   /**
    * Creates a thread pool that reuses a fixed number of threads
    * operating off a shared unbounded queue. At any point, at most
-   * {@code nThreads} threads will be active processing tasks.
+   * {@code max} threads will be active processing tasks.
    * If additional tasks are submitted when all threads are active,
    * they will wait in the queue until a thread is available.
    * If any thread terminates due to a failure during execution
    * prior to shutdown, a new one will take its place if needed to
    * execute subsequent tasks. The threads in the pool will exist
-   * until it is explicitly {@link ThreadPool#shutDown shutdown}.
+   * until it is explicitly {@link ThreadPool#shutdown shutdown}.
    *
    * @param max the number of threads in the pool
-   * @throws IllegalArgumentException if {@code nThreads <= 0}
+   * @throws IllegalArgumentException if {@code max <= 0}
    */
   public ThreadPool(final int max) {
     executorService = Executors.newFixedThreadPool(max);
