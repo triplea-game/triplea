@@ -33,11 +33,11 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if (!doesPlayerHaveBid(getData(), m_player)) {
+    if (!doesPlayerHaveBid(getData(), player)) {
       return false;
     }
-    if ((m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty())
-        && (m_player.getRepairFrontier() == null || m_player.getRepairFrontier().getRules().isEmpty())) {
+    if ((player.getProductionFrontier() == null || player.getProductionFrontier().getRules().isEmpty())
+        && (player.getRepairFrontier() == null || player.getRepairFrontier().getRules().isEmpty())) {
       return false;
     }
     return canWePurchaseOrRepair();
@@ -48,15 +48,15 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
     // TODO: allow bids to have more than just PUs
     bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid);
-    if (m_player.getProductionFrontier() != null && m_player.getProductionFrontier().getRules() != null) {
-      for (final ProductionRule rule : m_player.getProductionFrontier().getRules()) {
+    if (player.getProductionFrontier() != null && player.getProductionFrontier().getRules() != null) {
+      for (final ProductionRule rule : player.getProductionFrontier().getRules()) {
         if (bidCollection.has(rule.getCosts())) {
           return true;
         }
       }
     }
-    if (m_player.getRepairFrontier() != null && m_player.getRepairFrontier().getRules() != null) {
-      for (final RepairRule rule : m_player.getRepairFrontier().getRules()) {
+    if (player.getRepairFrontier() != null && player.getRepairFrontier().getRules() != null) {
+      for (final RepairRule rule : player.getRepairFrontier().getRules()) {
         if (bidCollection.has(rule.getCosts())) {
           return true;
         }
@@ -79,7 +79,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (m_hasBid) {
       return;
     }
-    m_bid = getBidAmount(m_bridge.getData(), m_bridge.getPlayerId());
+    m_bid = getBidAmount(bridge.getData(), bridge.getPlayerId());
     m_spent = 0;
   }
 
@@ -96,11 +96,11 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (unspent == 0) {
       return;
     }
-    m_bridge.getHistoryWriter()
-        .startEvent(m_bridge.getPlayerId().getName() + " retains " + unspent + " PUS not spent in bid phase");
-    final Change unspentChange = ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(),
+    bridge.getHistoryWriter()
+        .startEvent(bridge.getPlayerId().getName() + " retains " + unspent + " PUS not spent in bid phase");
+    final Change unspentChange = ChangeFactory.changeResourcesChange(bridge.getPlayerId(),
         super.getData().getResourceList().getResource(Constants.PUS), unspent);
-    m_bridge.addChange(unspentChange);
+    bridge.addChange(unspentChange);
     m_hasBid = false;
   }
 

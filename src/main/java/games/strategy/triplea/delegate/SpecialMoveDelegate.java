@@ -54,7 +54,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   public void start() {
     super.start();
     final GameData data = getData();
-    if (!allowAirborne(m_player, data)) {
+    if (!allowAirborne(player, data)) {
       return;
     }
     final boolean onlyWhereUnderAttackAlready =
@@ -62,7 +62,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     if (m_needToInitialize && onlyWhereUnderAttackAlready) {
       // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move
-      BattleDelegate.doInitialize(battleTracker, m_bridge);
+      BattleDelegate.doInitialize(battleTracker, bridge);
       m_needToInitialize = false;
     }
   }
@@ -90,13 +90,13 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    return allowAirborne(m_player, getData());
+    return allowAirborne(player, getData());
   }
 
   @Override
   public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded,
       final Map<Unit, Collection<Unit>> newDependents) {
-    if (!allowAirborne(m_player, getData())) {
+    if (!allowAirborne(player, getData())) {
       return "No Airborne Movement Allowed Yet";
     }
     final GameData data = getData();
@@ -120,7 +120,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     // allow user to cancel move if aa guns will fire
     final AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
-    aaInMoveUtil.initialize(m_bridge);
+    aaInMoveUtil.initialize(bridge);
     final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {
       if (!getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
@@ -130,7 +130,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // do the move
     final UndoableMove currentMove = new UndoableMove(units, route);
     // add dependencies (any move that came before this, from this start territory, is a dependency)
-    for (final UndoableMove otherMove : m_movesToUndo) {
+    for (final UndoableMove otherMove : movesToUndo) {
       if (otherMove.getStart().equals(route.getStart())) {
         currentMove.addDependency(otherMove);
       }
@@ -148,14 +148,14 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // start event
     final String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName()
         + " to " + route.getEnd().getName();
-    m_bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
+    bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
     // actually do our special changes
-    m_bridge.addChange(airborneChange);
-    m_bridge.addChange(fillLaunchCapacity);
-    m_tempMovePerformer = new MovePerformer();
-    m_tempMovePerformer.initialize(this);
-    m_tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
-    m_tempMovePerformer = null;
+    bridge.addChange(airborneChange);
+    bridge.addChange(fillLaunchCapacity);
+    tempMovePerformer = new MovePerformer();
+    tempMovePerformer.initialize(this);
+    tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
+    tempMovePerformer = null;
     return null;
   }
 

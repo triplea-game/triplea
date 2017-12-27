@@ -44,16 +44,16 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     }
     // Activate techs
     final Map<PlayerID, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
-    final Collection<TechAdvance> advances = techMap.get(m_player);
+    final Collection<TechAdvance> advances = techMap.get(player);
     if ((advances != null) && (advances.size() > 0)) {
       // Start event
-      m_bridge.getHistoryWriter().startEvent(m_player.getName() + " activating " + advancesAsString(advances));
+      bridge.getHistoryWriter().startEvent(player.getName() + " activating " + advancesAsString(advances));
       for (final TechAdvance advance : advances) {
-        TechTracker.addAdvance(m_player, m_bridge, advance);
+        TechTracker.addAdvance(player, bridge, advance);
       }
     }
     // empty
-    techMap.put(m_player, null);
+    techMap.put(player, null);
     if (Properties.getTriggers(data)) {
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR.
@@ -65,19 +65,19 @@ public class TechActivationDelegate extends BaseTripleADelegate {
               .or(TriggerAttachment.supportMatch()));
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(Collections.singleton(m_player)), techActivationDelegateTriggerMatch);
+          new HashSet<>(Collections.singleton(player)), techActivationDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final HashMap<ICondition, Boolean> testedConditions =
-            TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
+            TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
             CollectionUtils.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
-        TriggerAttachment.triggerUnitPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
+        TriggerAttachment.triggerUnitPropertyChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
             true);
-        TriggerAttachment.triggerTechChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
-        TriggerAttachment.triggerSupportChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
+        TriggerAttachment.triggerTechChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
+        TriggerAttachment.triggerSupportChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
       }
     }
     shareTechnology();
@@ -96,7 +96,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   }
 
   private void shareTechnology() {
-    final PlayerAttachment pa = PlayerAttachment.get(m_player);
+    final PlayerAttachment pa = PlayerAttachment.get(player);
     if (pa == null) {
       return;
     }
@@ -105,16 +105,16 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       return;
     }
     final GameData data = getData();
-    final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(m_player, data);
+    final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(player, data);
     for (final PlayerID p : shareWith) {
       final Collection<TechAdvance> availableTechs = TechnologyDelegate.getAvailableTechs(p, data);
       final Collection<TechAdvance> toGive = Util.intersection(currentAdvances, availableTechs);
       if (!toGive.isEmpty()) {
         // Start event
-        m_bridge.getHistoryWriter()
-            .startEvent(m_player.getName() + " giving technology to " + p.getName() + ": " + advancesAsString(toGive));
+        bridge.getHistoryWriter()
+            .startEvent(player.getName() + " giving technology to " + p.getName() + ": " + advancesAsString(toGive));
         for (final TechAdvance advance : toGive) {
-          TechTracker.addAdvance(p, m_bridge, advance);
+          TechTracker.addAdvance(p, bridge, advance);
         }
       }
     }

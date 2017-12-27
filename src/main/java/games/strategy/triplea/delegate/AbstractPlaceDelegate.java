@@ -53,9 +53,9 @@ import games.strategy.util.Tuple;
  */
 public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implements IAbstractPlaceDelegate {
   // maps Territory-> Collection of units
-  protected Map<Territory, Collection<Unit>> m_produced = new HashMap<>();
+  protected Map<Territory, Collection<Unit>> produced = new HashMap<>();
   // a list of CompositeChanges
-  protected List<UndoablePlacement> m_placements = new ArrayList<>();
+  protected List<UndoablePlacement> placements = new ArrayList<>();
 
   public void initialize(final String name) {
     initialize(name, name);
@@ -73,19 +73,19 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   protected void doAfterEnd() {
-    final PlayerID player = m_bridge.getPlayerId();
+    final PlayerID player = bridge.getPlayerId();
     // clear all units not placed
     final Collection<Unit> units = player.getUnits().getUnits();
     final GameData data = getData();
     if (!Properties.getUnplacedUnitsLive(data) && !units.isEmpty()) {
-      m_bridge.getHistoryWriter()
+      bridge.getHistoryWriter()
           .startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed", units);
       final Change change = ChangeFactory.removeUnits(player, units);
-      m_bridge.addChange(change);
+      bridge.addChange(change);
     }
     // reset ourselves for next turn
-    m_produced = new HashMap<>();
-    m_placements.clear();
+    produced = new HashMap<>();
+    placements.clear();
     if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(data)) {
       removeAirThatCantLand();
     }
@@ -94,17 +94,17 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
     // nothing to place
-    return !(m_player == null || (m_player.getUnits().size() == 0 && getPlacementsMade() == 0));
+    return !(player == null || (player.getUnits().size() == 0 && getPlacementsMade() == 0));
   }
 
   protected void removeAirThatCantLand() {
     // for LHTR type games
     final GameData data = getData();
-    final AirThatCantLandUtil util = new AirThatCantLandUtil(m_bridge);
-    util.removeAirThatCantLand(m_player, false);
+    final AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
+    util.removeAirThatCantLand(player, false);
     // if edit mode has been on, we need to clean up after all players
     for (final PlayerID player : data.getPlayerList()) {
-      if (!player.equals(m_player)) {
+      if (!player.equals(this.player)) {
         util.removeAirThatCantLand(player, false);
       }
     }
@@ -114,8 +114,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   public Serializable saveState() {
     final PlaceExtendedDelegateState state = new PlaceExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_produced = m_produced;
-    state.m_placements = m_placements;
+    state.m_produced = produced;
+    state.m_placements = placements;
     return state;
   }
 
@@ -123,8 +123,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   public void loadState(final Serializable state) {
     final PlaceExtendedDelegateState s = (PlaceExtendedDelegateState) state;
     super.loadState(s.superState);
-    m_produced = s.m_produced;
-    m_placements = s.m_placements;
+    produced = s.m_produced;
+    placements = s.m_placements;
   }
 
   /**
@@ -134,58 +134,58 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   protected Collection<Unit> getAlreadyProduced(final Territory t) {
     // this list might be modified later
     final Collection<Unit> alreadyProducedUnits = new ArrayList<>();
-    if (m_produced.containsKey(t)) {
-      alreadyProducedUnits.addAll(m_produced.get(t));
+    if (produced.containsKey(t)) {
+      alreadyProducedUnits.addAll(produced.get(t));
     }
     return alreadyProducedUnits;
   }
 
   @Override
   public int getPlacementsMade() {
-    return m_placements.size();
+    return placements.size();
   }
 
   void setProduced(final Map<Territory, Collection<Unit>> produced) {
-    m_produced = produced;
+    this.produced = produced;
   }
 
   /**
-   * @return The actual m_produced variable, allowing direct editing of the variable.
+   * @return The actual produced variable, allowing direct editing of the variable.
    */
   protected final Map<Territory, Collection<Unit>> getProduced() {
-    return m_produced;
+    return produced;
   }
 
   @Override
   public List<UndoablePlacement> getMovesMade() {
-    return m_placements;
+    return placements;
   }
 
   @Override
   public String undoMove(final int moveIndex) {
-    if (moveIndex < m_placements.size() && moveIndex >= 0) {
-      final UndoablePlacement undoPlace = m_placements.get(moveIndex);
-      undoPlace.undo(m_bridge);
-      m_placements.remove(moveIndex);
+    if (moveIndex < placements.size() && moveIndex >= 0) {
+      final UndoablePlacement undoPlace = placements.get(moveIndex);
+      undoPlace.undo(bridge);
+      placements.remove(moveIndex);
       updateUndoablePlacementIndexes();
     }
     return null;
   }
 
   private void updateUndoablePlacementIndexes() {
-    for (int i = 0; i < m_placements.size(); i++) {
-      m_placements.get(i).setIndex(i);
+    for (int i = 0; i < placements.size(); i++) {
+      placements.get(i).setIndex(i);
     }
   }
 
   @Override
   public PlaceableUnits getPlaceableUnits(final Collection<Unit> units, final Territory to) {
-    final String error = canProduce(to, units, m_player);
+    final String error = canProduce(to, units, player);
     if (error != null) {
       return new PlaceableUnits(error);
     }
-    final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, m_player);
-    final int maxUnits = getMaxUnitsToBePlaced(placeableUnits, to, m_player, true);
+    final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, player);
+    final int maxUnits = getMaxUnitsToBePlaced(placeableUnits, to, player, true);
     return new PlaceableUnits(placeableUnits, maxUnits);
   }
 
@@ -194,20 +194,20 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (units == null || units.isEmpty()) {
       return null;
     }
-    final String error = isValidPlacement(units, at, m_player);
+    final String error = isValidPlacement(units, at, player);
     if (error != null) {
       return error;
     }
-    final List<Territory> producers = getAllProducers(at, m_player, units);
-    producers.sort(getBestProducerComparator(at, units, m_player));
-    final IntegerMap<Territory> maxPlaceableMap = getMaxUnitsToBePlacedMap(units, at, m_player, true);
+    final List<Territory> producers = getAllProducers(at, player, units);
+    producers.sort(getBestProducerComparator(at, units, player));
+    final IntegerMap<Territory> maxPlaceableMap = getMaxUnitsToBePlacedMap(units, at, player, true);
 
     // sort both producers and units so that the "to/at" territory comes first, and so that all constructions come first
     // this is because the PRODUCER for ALL CONSTRUCTIONS must be the SAME as the TERRITORY they are going into
     final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
     unitsLeftToPlace.sort(getUnitConstructionComparator());
 
-    final List<Unit> remainingUnitsToPlace = new ArrayList<>(m_player.getUnits().getUnits());
+    final List<Unit> remainingUnitsToPlace = new ArrayList<>(player.getUnits().getUnits());
     remainingUnitsToPlace.removeAll(unitsLeftToPlace);
     while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
       // Get next producer territory
@@ -232,18 +232,18 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
 
       unitsCanBePlacedByThisProducer.sort(getHardestToPlaceWithRequiresUnitsRestrictions(true));
-      final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, m_player);
+      final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
       // don't forget that -1 == infinite
       if (maxForThisProducer == -1 || maxForThisProducer >= unitsCanBePlacedByThisProducer.size()) {
-        performPlaceFrom(producer, unitsCanBePlacedByThisProducer, at, m_player);
+        performPlaceFrom(producer, unitsCanBePlacedByThisProducer, at, player);
         unitsLeftToPlace.removeAll(unitsCanBePlacedByThisProducer);
         continue;
       }
       final int neededExtra = unitsCanBePlacedByThisProducer.size() - maxForThisProducer;
       if (maxPlaceable > maxForThisProducer) {
-        freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, m_player);
+        freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, player);
         final int newMaxForThisProducer =
-            getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, m_player);
+            getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
         if (newMaxForThisProducer != maxPlaceable && neededExtra > newMaxForThisProducer) {
           throw new IllegalStateException("getMaxUnitsToBePlaced originally returned: " + maxPlaceable
               + ", \nWhich is not the same as it is returning after using freePlacementCapacity: "
@@ -255,13 +255,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
       final Collection<Unit> placedUnits =
           CollectionUtils.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Matches.always());
-      performPlaceFrom(producer, placedUnits, at, m_player);
+      performPlaceFrom(producer, placedUnits, at, player);
       unitsLeftToPlace.removeAll(placedUnits);
     }
 
     if (!unitsLeftToPlace.isEmpty()) {
       getDisplay().reportMessageToPlayers(
-          Collections.singletonList(m_player),
+          Collections.singletonList(player),
           Collections.emptyList(),
           "Not enough unit production territories available",
           "Unit Placement Canceled");
@@ -269,13 +269,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
     // play a sound
     if (units.stream().anyMatch(Matches.unitIsInfrastructure())) {
-      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_INFRASTRUCTURE, m_player);
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_INFRASTRUCTURE, player);
     } else if (units.stream().anyMatch(Matches.unitIsSea())) {
-      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_SEA, m_player);
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_SEA, player);
     } else if (units.stream().anyMatch(Matches.unitIsAir())) {
-      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_AIR, m_player);
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_AIR, player);
     } else {
-      m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_LAND, m_player);
+      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_PLACED_LAND, player);
     }
     return null;
   }
@@ -309,30 +309,30 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     change.add(remove);
     change.add(place);
     final UndoablePlacement currentPlacement = new UndoablePlacement(change, producer, at, placeableUnits);
-    m_placements.add(currentPlacement);
+    placements.add(currentPlacement);
     updateUndoablePlacementIndexes();
     final String transcriptText = MyFormatter.unitsToTextNoOwner(placeableUnits) + " placed in " + at.getName();
-    m_bridge.getHistoryWriter().startEvent(transcriptText, currentPlacement.getDescriptionObject());
+    bridge.getHistoryWriter().startEvent(transcriptText, currentPlacement.getDescriptionObject());
     if (movedAirTranscriptTextForHistory != null) {
-      m_bridge.getHistoryWriter().addChildToEvent(movedAirTranscriptTextForHistory);
+      bridge.getHistoryWriter().addChildToEvent(movedAirTranscriptTextForHistory);
     }
-    m_bridge.addChange(change);
+    bridge.addChange(change);
     updateProducedMap(producer, placeableUnits);
   }
 
   protected void updateProducedMap(final Territory producer, final Collection<Unit> additionallyProducedUnits) {
     final Collection<Unit> newProducedUnits = getAlreadyProduced(producer);
     newProducedUnits.addAll(additionallyProducedUnits);
-    m_produced.put(producer, newProducedUnits);
+    produced.put(producer, newProducedUnits);
   }
 
   protected void removeFromProducedMap(final Territory producer, final Collection<Unit> unitsToRemove) {
     final Collection<Unit> newProducedUnits = getAlreadyProduced(producer);
     newProducedUnits.removeAll(unitsToRemove);
     if (newProducedUnits.isEmpty()) {
-      m_produced.remove(producer);
+      produced.remove(producer);
     } else {
-      m_produced.put(producer, newProducedUnits);
+      produced.put(producer, newProducedUnits);
     }
   }
 
@@ -355,7 +355,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // territories the producer produced for (but not itself) and the amount of units it produced
     final HashMap<Territory, Integer> redoPlacementsCount = new HashMap<>();
     // find map place territory -> possible free space for producer
-    for (final UndoablePlacement placement : m_placements) {
+    for (final UndoablePlacement placement : placements) {
       // find placement move of producer that can be taken over
       if (placement.getProducerTerritory().equals(producer)) {
         final Territory placeTerritory = placement.getPlaceTerritory();
@@ -1001,7 +1001,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
     }
     if (weCanConsume && actuallyDoIt && change != null && !change.isEmpty()) {
-      m_bridge.getHistoryWriter().startEvent(
+      bridge.getHistoryWriter().startEvent(
           "Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits),
           removedUnits);
     }
@@ -1085,7 +1085,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
-        factoryUnits.size() > 0 && m_player.equals(getOriginalFactoryOwner(producer));
+        factoryUnits.size() > 0 && this.player.equals(getOriginalFactoryOwner(producer));
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     final Collection<Unit> alreadProducedUnits = getAlreadyProduced(producer);
     final int unitCountAlreadyProduced = alreadProducedUnits.size();
@@ -1149,7 +1149,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       int productionCanNotBeMoved = 0;
       int productionThatCanBeTakenOver = 0;
       // try to find a placement move (to an adjacent sea zone) that can be taken over by some other territory factory
-      for (final UndoablePlacement placementMove : m_placements) {
+      for (final UndoablePlacement placementMove : placements) {
         if (placementMove.getProducerTerritory().equals(producer)) {
           final Territory placeTerritory = placementMove.getPlaceTerritory();
           final Collection<Unit> unitsPlacedByCurrentPlacementMove = placementMove.getUnits();
@@ -1370,7 +1370,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
       if (!doNotCountNeighbors) {
         if (Matches.unitIsSea().test(unitWhichRequiresUnits)) {
-          for (final Territory current : getAllProducers(to, m_player,
+          for (final Territory current : getAllProducers(to, player,
               Collections.singletonList(unitWhichRequiresUnits), true)) {
             final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
             if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
@@ -1388,12 +1388,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!isUnitPlacementRestrictions() || !units.stream().anyMatch(Matches.unitRequiresUnitsOnCreation())) {
       return true;
     }
-    final IntegerMap<Territory> producersMap = getMaxUnitsToBePlacedMap(units, to, m_player, true);
-    final List<Territory> producers = getAllProducers(to, m_player, units);
+    final IntegerMap<Territory> producersMap = getMaxUnitsToBePlacedMap(units, to, player, true);
+    final List<Territory> producers = getAllProducers(to, player, units);
     if (producers.isEmpty()) {
       return false;
     }
-    Collections.sort(producers, getBestProducerComparator(to, units, m_player));
+    Collections.sort(producers, getBestProducerComparator(to, units, player));
     final Collection<Unit> unitsLeftToPlace = new ArrayList<>(units);
     for (final Territory t : producers) {
       if (unitsLeftToPlace.isEmpty()) {
@@ -1509,7 +1509,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final Collection<Unit> unitsInTo = to.getUnits().getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
     if (Matches.territoryIsWater().test(to)) {
-      for (final Territory current : getAllProducers(to, m_player, null, true)) {
+      for (final Territory current : getAllProducers(to, player, null, true)) {
         unitsPlacedAlready.addAll(getAlreadyProduced(current));
       }
     }
@@ -1556,7 +1556,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       throw new IllegalStateException("No factory in territory:" + territory);
     }
     for (final Unit factory : factoryUnits) {
-      if (m_player.equals(OriginalOwnerTracker.getOriginalOwner(factory))) {
+      if (player.equals(OriginalOwnerTracker.getOriginalOwner(factory))) {
         return OriginalOwnerTracker.getOriginalOwner(factory);
       }
     }
@@ -1580,7 +1580,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   @Override
   public Collection<Territory> getTerritoriesWhereAirCantLand() {
-    return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
+    return new AirThatCantLandUtil(bridge).getTerritoriesWhereAirCantLand(player);
   }
 
   protected boolean canProduceFightersOnCarriers() {

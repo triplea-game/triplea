@@ -92,14 +92,14 @@ public class MoveDelegate extends AbstractMoveDelegate {
           .or(moveCombatDelegateAfterBonusTriggerMatch);
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-            new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAllTriggerMatch);
+            new HashSet<>(Collections.singleton(player)), moveCombatDelegateAllTriggerMatch);
         if (!toFirePossible.isEmpty()) {
 
           // collect conditions and test them for ALL triggers, both those that we will fire before and those we will
           // fire after.
-          testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
+          testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
           final HashSet<TriggerAttachment> toFireBeforeBonus =
-              TriggerAttachment.collectForAllTriggersMatching(new HashSet<>(Collections.singleton(m_player)),
+              TriggerAttachment.collectForAllTriggersMatching(new HashSet<>(Collections.singleton(player)),
                   moveCombatDelegateBeforeBonusTriggerMatch);
           if (!toFireBeforeBonus.isEmpty()) {
 
@@ -108,19 +108,19 @@ public class MoveDelegate extends AbstractMoveDelegate {
                 .getMatches(toFireBeforeBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 
             // now list out individual types to fire, once for each of the matches above.
-            TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
+            TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
                 true);
-            TriggerAttachment.triggerPlayerPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true,
+            TriggerAttachment.triggerPlayerPropertyChange(toFireTestedAndSatisfied, bridge, null, null, true, true,
                 true, true);
-            TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, m_bridge, null, null,
+            TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, bridge, null, null,
                 true, true, true, true);
-            TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true,
+            TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, bridge, null, null, true,
                 true, true, true);
-            TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null,
+            TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, bridge, null, null,
                 true, true, true, true);
-            TriggerAttachment.triggerChangeOwnership(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
+            TriggerAttachment.triggerChangeOwnership(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
                 true);
-            TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
+            TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
                 true);
           }
         }
@@ -129,7 +129,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to
       // do this at beginning of combat move)
       if (GameStepPropertiesHelper.isRepairUnits(data)) {
-        MoveDelegate.repairMultipleHitPointUnits(m_bridge, m_player);
+        MoveDelegate.repairMultipleHitPointUnits(bridge, player);
       }
 
       // reset any bonus of units, and give movement to units which begin the turn in the same territory as units with
@@ -139,12 +139,12 @@ public class MoveDelegate extends AbstractMoveDelegate {
       }
 
       // take away all movement from allied fighters sitting on damaged carriers
-      removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
+      removeMovementFromAirOnDamagedAlliedCarriers(bridge, player);
 
       // placing triggered units at beginning of combat move, but after bonuses and repairing, etc, have been done.
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
         final HashSet<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(
-            new HashSet<>(Collections.singleton(m_player)), moveCombatDelegateAfterBonusTriggerMatch);
+            new HashSet<>(Collections.singleton(player)), moveCombatDelegateAfterBonusTriggerMatch);
         if (!toFireAfterBonus.isEmpty()) {
 
           // get all triggers that are satisfied based on the tested conditions.
@@ -152,7 +152,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
               .getMatches(toFireAfterBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 
           // now list out individual types to fire, once for each of the matches above.
-          TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true,
+          TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
               true);
         }
       }
@@ -167,19 +167,19 @@ public class MoveDelegate extends AbstractMoveDelegate {
     boolean addedHistoryEvent = false;
     final Change changeReset = resetBonusMovement();
     if (!changeReset.isEmpty()) {
-      m_bridge.getHistoryWriter().startEvent("Resetting and Giving Bonus Movement to Units");
-      m_bridge.addChange(changeReset);
+      bridge.getHistoryWriter().startEvent("Resetting and Giving Bonus Movement to Units");
+      bridge.addChange(changeReset);
       addedHistoryEvent = true;
     }
     Change changeBonus = null;
     if (Properties.getUnitsMayGiveBonusMovement(getData())) {
-      changeBonus = giveBonusMovement(m_bridge, m_player);
+      changeBonus = giveBonusMovement(bridge, player);
     }
     if (changeBonus != null && !changeBonus.isEmpty()) {
       if (!addedHistoryEvent) {
-        m_bridge.getHistoryWriter().startEvent("Resetting and Giving Bonus Movement to Units");
+        bridge.getHistoryWriter().startEvent("Resetting and Giving Bonus Movement to Units");
       }
-      m_bridge.addChange(changeBonus);
+      bridge.addChange(changeBonus);
     }
   }
 
@@ -194,8 +194,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // WW2V2/WW2V3, fires at end of combat move
     // WW2V1, fires at end of non combat move
     if (GameStepPropertiesHelper.isFireRockets(data)) {
-      if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerId())) {
-        RocketsFireHelper.fireRockets(m_bridge, m_bridge.getPlayerId());
+      if (m_needToDoRockets && TechTracker.hasRocket(bridge.getPlayerId())) {
+        RocketsFireHelper.fireRockets(bridge, bridge.getPlayerId());
         m_needToDoRockets = false;
       }
     }
@@ -209,7 +209,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // Only air units can move during both CM and NCM in the same turn so moved units are set to no moves left
       final List<Unit> alreadyMovedNonAirUnits =
           CollectionUtils.getMatches(data.getUnits().getUnits(), Matches.unitHasMoved().and(Matches.unitIsNotAir()));
-      m_bridge.addChange(ChangeFactory.markNoMovementChange(alreadyMovedNonAirUnits));
+      bridge.addChange(ChangeFactory.markNoMovementChange(alreadyMovedNonAirUnits));
     }
     m_needToInitialize = true;
     m_needToDoRockets = true;
@@ -236,7 +236,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    final Predicate<Unit> moveableUnitOwnedByMe = PredicateBuilder.of(Matches.unitIsOwnedBy(m_player))
+    final Predicate<Unit> moveableUnitOwnedByMe = PredicateBuilder.of(Matches.unitIsOwnedBy(player))
         // right now, land units on transports have movement taken away when they their transport moves
         .and(Matches.unitHasMovementLeft()
             .or(Matches.unitIsLand().and(Matches.unitIsBeingTransported())))
@@ -268,8 +268,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     if (!change.isEmpty()) {
       // if no non-combat occurred, we may have cleanup left from combat
       // that we need to spawn an event for
-      m_bridge.getHistoryWriter().startEvent(CLEANING_UP_DURING_MOVEMENT_PHASE);
-      m_bridge.addChange(change);
+      bridge.getHistoryWriter().startEvent(CLEANING_UP_DURING_MOVEMENT_PHASE);
+      bridge.addChange(change);
     }
   }
 
@@ -549,7 +549,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // the reason we use this, is if we are in edit mode, we may have a different unit owner than the current player
     final PlayerID player = getUnitsOwner(units);
     final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded,
-        newDependents, GameStepPropertiesHelper.isNonCombatMove(data, false), m_movesToUndo, data);
+        newDependents, GameStepPropertiesHelper.isNonCombatMove(data, false), movesToUndo, data);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =
@@ -582,7 +582,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
     // allow user to cancel move if aa guns will fire
     final AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
-    aaInMoveUtil.initialize(m_bridge);
+    aaInMoveUtil.initialize(bridge);
     final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {
       if (!getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
@@ -594,15 +594,15 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final UndoableMove currentMove = new UndoableMove(units, route);
     final String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName()
         + " to " + route.getEnd().getName();
-    m_bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
+    bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
     if (isKamikaze) {
-      m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move, for at least some of the units",
+      bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move, for at least some of the units",
           kamikazeUnits);
     }
-    m_tempMovePerformer = new MovePerformer();
-    m_tempMovePerformer.initialize(this);
-    m_tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
-    m_tempMovePerformer = null;
+    tempMovePerformer = new MovePerformer();
+    tempMovePerformer.initialize(this);
+    tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
+    tempMovePerformer = null;
     return null;
   }
 
@@ -617,20 +617,20 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final boolean lhtrCarrierProd = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     boolean hasProducedCarriers = false;
-    for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, m_player)) {
+    for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, player)) {
       if (p.getUnits().anyMatch(Matches.unitIsCarrier())) {
         hasProducedCarriers = true;
         break;
       }
     }
-    final AirThatCantLandUtil util = new AirThatCantLandUtil(m_bridge);
-    util.removeAirThatCantLand(m_player, lhtrCarrierProd && hasProducedCarriers);
+    final AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
+    util.removeAirThatCantLand(player, lhtrCarrierProd && hasProducedCarriers);
 
     // if edit mode has been on, we need to clean up after all players
     for (final PlayerID player : data.getPlayerList()) {
 
       // Check if player still has units to place
-      if (!player.equals(m_player)) {
+      if (!player.equals(this.player)) {
         util.removeAirThatCantLand(player,
             ((player.getUnits().anyMatch(Matches.unitIsCarrier()) || hasProducedCarriers) && lhtrCarrierProd));
       }

@@ -14,12 +14,12 @@ public final class TestDelegate extends AbstractDelegate {
 
   @Override
   public void initialize(final String name, final String displayName) {
-    m_name = name;
+    this.name = name;
   }
 
   @Override
   public String getName() {
-    return m_name;
+    return name;
   }
 
   @Override

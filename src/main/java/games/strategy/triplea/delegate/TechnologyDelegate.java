@@ -77,16 +77,16 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
           .and(TriggerAttachment.techAvailableMatch());
       // get all possible triggers based on this match.
       final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(Collections.singleton(m_player)), technologyDelegateTriggerMatch);
+          new HashSet<>(Collections.singleton(player)), technologyDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final HashMap<ICondition, Boolean> testedConditions =
-            TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
+            TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final List<TriggerAttachment> toFireTestedAndSatisfied =
             CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
         // now list out individual types to fire, once for each of the matches above.
-        TriggerAttachment.triggerAvailableTechChange(new HashSet<>(toFireTestedAndSatisfied), m_bridge,
+        TriggerAttachment.triggerAvailableTechChange(new HashSet<>(toFireTestedAndSatisfied), bridge,
             null, null, true, true, true, true);
       }
     }
@@ -121,22 +121,22 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (!Properties.getTechDevelopment(getData())) {
       return false;
     }
-    if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData())) {
+    if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, getData())) {
       return false;
     }
     if (Properties.getWW2V3TechModel(getData())) {
       final Resource techtokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
       if (techtokens != null) {
-        final int techTokens = m_player.getResources().getQuantity(techtokens);
+        final int techTokens = player.getResources().getQuantity(techtokens);
         if (techTokens > 0) {
           return true;
         }
       }
     }
-    final int techCost = TechTracker.getTechCost(m_player);
-    int money = m_player.getResources().getQuantity(Constants.PUS);
+    final int techCost = TechTracker.getTechCost(player);
+    int money = player.getResources().getQuantity(Constants.PUS);
     if (money < techCost) {
-      final PlayerAttachment pa = PlayerAttachment.get(m_player);
+      final PlayerAttachment pa = PlayerAttachment.get(player);
       if (pa == null) {
         return false;
       }
@@ -188,21 +188,21 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     chargeForTechRolls(rollCount, whoPaysHowMuch);
     int currTokens = 0;
     if (isWW2V3TechModel()) {
-      currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
+      currTokens = player.getResources().getQuantity(Constants.TECH_TOKENS);
     }
     final GameData data = getData();
-    if (getAvailableTechs(m_player, data).isEmpty()) {
+    if (getAvailableTechs(player, data).isEmpty()) {
       if (isWW2V3TechModel()) {
         final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-        final String transcriptText = m_player.getName() + " No more available tech advances.";
-        m_bridge.getHistoryWriter().startEvent(transcriptText);
+        final String transcriptText = player.getName() + " No more available tech advances.";
+        bridge.getHistoryWriter().startEvent(transcriptText);
         final Change removeTokens =
-            ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), techTokens, -currTokens);
-        m_bridge.addChange(removeTokens);
+            ChangeFactory.changeResourcesChange(bridge.getPlayerId(), techTokens, -currTokens);
+        bridge.addChange(removeTokens);
       }
       return new TechResults("No more available tech advances.");
     }
-    final String annotation = m_player.getName() + " rolling for tech.";
+    final String annotation = player.getName() + " rolling for tech.";
     final int[] random;
     int techHits;
     int remainder = 0;
@@ -215,25 +215,25 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       techHits = techRolls / diceSides;
       remainder = techRolls % diceSides;
       if (remainder > 0) {
-        random = m_bridge.getRandom(diceSides, 1, m_player, DiceType.TECH, annotation);
+        random = bridge.getRandom(diceSides, 1, player, DiceType.TECH, annotation);
         if (random[0] + 1 <= remainder) {
           techHits++;
         }
       } else {
-        random = m_bridge.getRandom(diceSides, 1, m_player, DiceType.TECH, annotation);
+        random = bridge.getRandom(diceSides, 1, player, DiceType.TECH, annotation);
         remainder = diceSides;
       }
     } else {
-      random = m_bridge.getRandom(diceSides, techRolls, m_player, DiceType.TECH, annotation);
+      random = bridge.getRandom(diceSides, techRolls, player, DiceType.TECH, annotation);
       techHits = getTechHits(random);
     }
     final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
     final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
     final DiceRoll renderDice = (isLowLuckTechOnly() ? new DiceRoll(random, techHits, remainder, false)
         : new DiceRoll(random, techHits, diceSides - 1, true));
-    m_bridge.getHistoryWriter()
+    bridge.getHistoryWriter()
         .startEvent(
-            m_player.getName() + (random.length > 1 ? " roll " : " rolls : ") + MyFormatter.asDice(random)
+            player.getName() + (random.length > 1 ? " roll " : " rolls : ") + MyFormatter.asDice(random)
                 + directedTechInfo + " and gets " + techHits + " " + MyFormatter.pluralize("hit", techHits),
             renderDice);
     if (isWW2V3TechModel()
@@ -241,12 +241,12 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       m_techCategory = techToRollFor;
       // remove all the tokens
       final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-      final String transcriptText = m_player.getName() + " removing all Technology Tokens after "
+      final String transcriptText = player.getName() + " removing all Technology Tokens after "
           + (techHits > 0 ? "successful" : "unsuccessful") + " research.";
-      m_bridge.getHistoryWriter().startEvent(transcriptText);
+      bridge.getHistoryWriter().startEvent(transcriptText);
       final Change removeTokens =
-          ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), techTokens, -currTokens);
-      m_bridge.addChange(removeTokens);
+          ChangeFactory.changeResourcesChange(bridge.getPlayerId(), techTokens, -currTokens);
+      bridge.addChange(removeTokens);
     }
     final Collection<TechAdvance> advances;
     if (isRevisedModel) {
@@ -259,7 +259,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       advances = getTechAdvances(techHits);
     }
     // Put in techs so they can be activated later.
-    m_techs.put(m_player, advances);
+    m_techs.put(player, advances);
     final List<String> advancesAsString = new ArrayList<>();
     int count = advances.size();
     final StringBuilder text = new StringBuilder();
@@ -274,22 +274,22 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         text.append(" and ");
       }
     }
-    final String transcriptText = m_player.getName() + " discover " + text.toString();
+    final String transcriptText = player.getName() + " discover " + text.toString();
     if (advances.size() > 0) {
-      m_bridge.getHistoryWriter().startEvent(transcriptText);
+      bridge.getHistoryWriter().startEvent(transcriptText);
       // play a sound
-      getSoundChannel().playSoundForAll(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, m_player);
+      getSoundChannel().playSoundForAll(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, player);
     } else {
-      getSoundChannel().playSoundForAll(SoundPath.CLIP_TECHNOLOGY_FAILURE, m_player);
+      getSoundChannel().playSoundForAll(SoundPath.CLIP_TECHNOLOGY_FAILURE, player);
     }
-    return new TechResults(random, remainder, techHits, advancesAsString, m_player);
+    return new TechResults(random, remainder, techHits, advancesAsString, player);
   }
 
   boolean checkEnoughMoney(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch) {
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
-      final int has = m_bridge.getPlayerId().getResources().getQuantity(pus);
+      final int has = bridge.getPlayerId().getResources().getQuantity(pus);
       return has >= cost;
     } else {
       int runningTotal = 0;
@@ -309,10 +309,10 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
-      final String transcriptText = m_bridge.getPlayerId().getName() + " spend " + cost + " on tech rolls";
-      m_bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), pus, -cost);
-      m_bridge.addChange(charge);
+      final String transcriptText = bridge.getPlayerId().getName() + " spend " + cost + " on tech rolls";
+      bridge.getHistoryWriter().startEvent(transcriptText);
+      final Change charge = ChangeFactory.changeResourcesChange(bridge.getPlayerId(), pus, -cost);
+      bridge.addChange(charge);
     } else {
       for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet()) {
         final PlayerID p = entry.getKey();
@@ -322,15 +322,15 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         }
         cost -= pays;
         final String transcriptText = p.getName() + " spend " + pays + " on tech rolls";
-        m_bridge.getHistoryWriter().startEvent(transcriptText);
+        bridge.getHistoryWriter().startEvent(transcriptText);
         final Change charge = ChangeFactory.changeResourcesChange(p, pus, -pays);
-        m_bridge.addChange(charge);
+        bridge.addChange(charge);
       }
     }
     if (isWW2V3TechModel()) {
       final Resource tokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
-      final Change newTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerId(), tokens, rolls);
-      m_bridge.addChange(newTokens);
+      final Change newTokens = ChangeFactory.changeResourcesChange(bridge.getPlayerId(), tokens, rolls);
+      bridge.addChange(newTokens);
     }
   }
 
@@ -362,7 +362,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return Collections.emptyList();
     }
     final Collection<TechAdvance> newAdvances = new ArrayList<>(hits);
-    final String annotation = m_player.getName() + " rolling to see what tech advances are aquired";
+    final String annotation = player.getName() + " rolling to see what tech advances are aquired";
     final int[] random;
     if (isSelectableTechRoll() || BaseEditDelegate.getEditMode(getData())) {
       final ITripleAPlayer tripleaPlayer = getRemotePlayer();
@@ -373,7 +373,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       // generating discrete rolls. messy, can't think of a more elegant way
       // hits guaranteed to be less than available at this point.
       for (int i = 0; i < hits; i++) {
-        int roll = m_bridge.getRandom(available.size() - i, null, DiceType.ENGINE, annotation);
+        int roll = bridge.getRandom(available.size() - i, null, DiceType.ENGINE, annotation);
         for (final int r : rolled) {
           if (roll >= r) {
             roll++;
@@ -392,12 +392,12 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         rolled.add(index);
       }
     }
-    m_bridge.getHistoryWriter().startEvent("Rolls to resolve tech hits:" + MyFormatter.asDice(random));
+    bridge.getHistoryWriter().startEvent("Rolls to resolve tech hits:" + MyFormatter.asDice(random));
     return newAdvances;
   }
 
   private List<TechAdvance> getAvailableAdvances() {
-    return getAvailableTechs(m_bridge.getPlayerId(), getData());
+    return getAvailableTechs(bridge.getPlayerId(), getData());
   }
 
   public static List<TechAdvance> getAvailableTechs(final PlayerID player, final GameData data) {
@@ -408,13 +408,13 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 
   private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory) {
     final Collection<TechAdvance> playersAdvances =
-        TechTracker.getCurrentTechAdvances(m_bridge.getPlayerId(), getData());
+        TechTracker.getCurrentTechAdvances(bridge.getPlayerId(), getData());
     final List<TechAdvance> available = Util.difference(techCategory.getTechs(), playersAdvances);
     return available;
   }
 
   public int getTechCost() {
-    m_techCost = TechTracker.getTechCost(m_player);
+    m_techCost = TechTracker.getTechCost(player);
     return m_techCost;
   }
 
