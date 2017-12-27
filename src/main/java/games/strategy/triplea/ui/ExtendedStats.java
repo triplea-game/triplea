@@ -92,7 +92,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  class TechCountStat extends AbstractStat {
+  static class TechCountStat extends AbstractStat {
     @Override
     public String getName() {
       return "Techs";
@@ -153,7 +153,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  class GenericResourceStat extends AbstractStat {
+  static class GenericResourceStat extends AbstractStat {
     private String name = null;
 
     public void init(final String name) {
@@ -171,7 +171,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  class GenericTechNameStat extends AbstractStat {
+  static class GenericTechNameStat extends AbstractStat {
     private TechAdvance ta = null;
 
     public void init(final TechAdvance ta) {
@@ -192,7 +192,7 @@ public class ExtendedStats extends StatPanel {
     }
   }
 
-  class GenericUnitNameStat extends AbstractStat {
+  static class GenericUnitNameStat extends AbstractStat {
     private UnitType ut = null;
 
     public void init(final UnitType ut) {
