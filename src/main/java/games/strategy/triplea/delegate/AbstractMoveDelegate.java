@@ -24,10 +24,10 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
  */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
   // A collection of UndoableMoves
-  protected List<UndoableMove> m_movesToUndo = new ArrayList<>();
+  protected List<UndoableMove> movesToUndo = new ArrayList<>();
   // protected final TransportTracker m_transportTracker = new TransportTracker();
   // if we are in the process of doing a move. this instance will allow us to resume the move
-  protected MovePerformer m_tempMovePerformer;
+  protected MovePerformer tempMovePerformer;
 
   public enum MoveType {
     DEFAULT, SPECIAL
@@ -38,17 +38,17 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   @Override
   public void start() {
     super.start();
-    if (m_tempMovePerformer != null) {
-      m_tempMovePerformer.initialize(this);
-      m_tempMovePerformer.resume();
-      m_tempMovePerformer = null;
+    if (tempMovePerformer != null) {
+      tempMovePerformer.initialize(this);
+      tempMovePerformer.resume();
+      tempMovePerformer = null;
     }
   }
 
   @Override
   public void end() {
     super.end();
-    m_movesToUndo.clear();
+    movesToUndo.clear();
   }
 
   @Override
@@ -56,8 +56,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     final AbstractMoveExtendedDelegateState state = new AbstractMoveExtendedDelegateState();
     state.superState = super.saveState();
     // add other variables to state here:
-    state.m_movesToUndo = m_movesToUndo;
-    state.m_tempMovePerformer = m_tempMovePerformer;
+    state.m_movesToUndo = movesToUndo;
+    state.m_tempMovePerformer = tempMovePerformer;
     return state;
   }
 
@@ -68,50 +68,50 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we restore from an undo
     // move
     if (s.m_movesToUndo != null) {
-      m_movesToUndo = s.m_movesToUndo;
+      movesToUndo = s.m_movesToUndo;
     }
-    m_tempMovePerformer = s.m_tempMovePerformer;
+    tempMovePerformer = s.m_tempMovePerformer;
   }
 
   @Override
   public List<UndoableMove> getMovesMade() {
-    return new ArrayList<>(m_movesToUndo);
+    return new ArrayList<>(movesToUndo);
   }
 
   @Override
   public String undoMove(final int moveIndex) {
-    if (m_movesToUndo.isEmpty()) {
+    if (movesToUndo.isEmpty()) {
       return "No moves to undo";
     }
-    if (moveIndex >= m_movesToUndo.size()) {
+    if (moveIndex >= movesToUndo.size()) {
       return "Undo move index out of range";
     }
-    final UndoableMove moveToUndo = m_movesToUndo.get(moveIndex);
+    final UndoableMove moveToUndo = movesToUndo.get(moveIndex);
     if (!moveToUndo.getcanUndo()) {
       return moveToUndo.getReasonCantUndo();
     }
-    moveToUndo.undo(m_bridge);
-    m_movesToUndo.remove(moveIndex);
+    moveToUndo.undo(bridge);
+    movesToUndo.remove(moveIndex);
     updateUndoableMoveIndexes();
     return null;
   }
 
   private void updateUndoableMoveIndexes() {
-    for (int i = 0; i < m_movesToUndo.size(); i++) {
-      m_movesToUndo.get(i).setIndex(i);
+    for (int i = 0; i < movesToUndo.size(); i++) {
+      movesToUndo.get(i).setIndex(i);
     }
   }
 
   protected void updateUndoableMoves(final UndoableMove currentMove) {
-    currentMove.initializeDependencies(m_movesToUndo);
-    m_movesToUndo.add(currentMove);
+    currentMove.initializeDependencies(movesToUndo);
+    movesToUndo.add(currentMove);
     updateUndoableMoveIndexes();
   }
 
   protected PlayerID getUnitsOwner(final Collection<Unit> units) {
-    // if we are not in edit mode, return m_player. if we are in edit mode, we use whoever's units these are.
+    // if we are not in edit mode, return player. if we are in edit mode, we use whoever's units these are.
     if (units.isEmpty() || !BaseEditDelegate.getEditMode(getData())) {
-      return m_player;
+      return player;
     } else {
       return units.iterator().next().getOwner();
     }
@@ -145,17 +145,17 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   @Override
   public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {
-    return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(player);
+    return new AirThatCantLandUtil(bridge).getTerritoriesWhereAirCantLand(player);
   }
 
   @Override
   public Collection<Territory> getTerritoriesWhereAirCantLand() {
-    return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
+    return new AirThatCantLandUtil(bridge).getTerritoriesWhereAirCantLand(player);
   }
 
   @Override
   public Collection<Territory> getTerritoriesWhereUnitsCantFight() {
-    return new UnitsThatCantFightUtil(getData()).getTerritoriesWhereUnitsCantFight(m_player);
+    return new UnitsThatCantFightUtil(getData()).getTerritoriesWhereUnitsCantFight(player);
   }
 
   /**
@@ -166,7 +166,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
    * @return the route that a unit used to move into the given territory
    */
   public Route getRouteUsedToMoveInto(final Unit unit, final Territory end) {
-    return AbstractMoveDelegate.getRouteUsedToMoveInto(m_movesToUndo, unit, end);
+    return AbstractMoveDelegate.getRouteUsedToMoveInto(movesToUndo, unit, end);
   }
 
   /**
@@ -215,7 +215,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   @Override
   public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame) {
-    return poster.post(m_bridge.getHistoryWriter(), title, includeSaveGame);
+    return poster.post(bridge.getHistoryWriter(), title, includeSaveGame);
   }
 
   /**

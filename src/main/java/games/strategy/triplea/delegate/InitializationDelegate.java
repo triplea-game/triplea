@@ -39,15 +39,15 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   @Override
   public void initialize(final String name, final String displayName) {
-    m_name = name;
-    m_displayName = displayName;
+    this.name = name;
+    this.displayName = displayName;
   }
 
   @Override
   public void start() {
     super.start();
     if (m_needToInitialize) {
-      init(m_bridge);
+      init(bridge);
       m_needToInitialize = false;
     }
   }
@@ -97,8 +97,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
   private void resetUnitState() {
     final Change change = MoveDelegate.getResetUnitStateChange(getData());
     if (!change.isEmpty()) {
-      m_bridge.getHistoryWriter().startEvent("Cleaning up unit state.");
-      m_bridge.addChange(change);
+      bridge.getHistoryWriter().startEvent("Cleaning up unit state.");
+      bridge.addChange(change);
     }
   }
 

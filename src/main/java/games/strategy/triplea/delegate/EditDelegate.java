@@ -61,7 +61,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       final List<Unit> unitsOwned = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(p));
       logEvent("Removing units owned by " + p.getName() + " from " + territory.getName() + ": "
           + MyFormatter.unitsToTextNoOwner(unitsOwned), unitsOwned);
-      m_bridge.addChange(ChangeFactory.removeUnits(territory, unitsOwned));
+      bridge.addChange(ChangeFactory.removeUnits(territory, unitsOwned));
     }
     return null;
   }
@@ -113,13 +113,13 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     // now perform the changes
     logEvent("Adding units owned by " + units.iterator().next().getOwner().getName() + " to " + territory.getName()
         + ": " + MyFormatter.unitsToTextNoOwner(units), units);
-    m_bridge.addChange(ChangeFactory.addUnits(territory, units));
+    bridge.addChange(ChangeFactory.addUnits(territory, units));
     if (Properties.getUnitsMayGiveBonusMovement(getData()) && GameStepPropertiesHelper.isGiveBonusMovement(data)) {
-      m_bridge.addChange(MoveDelegate.giveBonusMovementToUnits(player, data, territory));
+      bridge.addChange(MoveDelegate.giveBonusMovementToUnits(player, data, territory));
     }
     if (mapLoading != null && !mapLoading.isEmpty()) {
       for (final Entry<Unit, Unit> entry : mapLoading.entrySet()) {
-        m_bridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey()));
+        bridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey()));
       }
     }
     return null;
@@ -154,20 +154,20 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       // change ownership of friendly factories
       final Collection<Unit> units = territory.getUnits().getMatches(Matches.unitIsInfrastructure());
       for (final Unit unit : units) {
-        m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
+        bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
       }
     } else {
       final Predicate<Unit> enemyNonCom = Matches.unitIsInfrastructure().and(Matches.enemyUnit(player, data));
       final Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
       // mark no movement for enemy units
-      m_bridge.addChange(ChangeFactory.markNoMovementChange(units));
+      bridge.addChange(ChangeFactory.markNoMovementChange(units));
       // change ownership of enemy AA and factories
       for (final Unit unit : units) {
-        m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
+        bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
       }
     }
     // change ownership of territory
-    m_bridge.addChange(ChangeFactory.changeOwner(territory, player));
+    bridge.addChange(ChangeFactory.changeOwner(territory, player));
     return null;
   }
 
@@ -186,7 +186,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return "New PUs total is invalid";
     }
     logEvent("Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
-    m_bridge.addChange(ChangeFactory.changeResourcesChange(player, pus, (newTotal - oldTotal)));
+    bridge.addChange(ChangeFactory.changeResourcesChange(player, pus, (newTotal - oldTotal)));
     return null;
   }
 
@@ -205,7 +205,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return "New token total is invalid";
     }
     logEvent("Changing tech tokens for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
-    m_bridge.addChange(ChangeFactory.changeResourcesChange(player, techTokens, (newTotal - oldTotal)));
+    bridge.addChange(ChangeFactory.changeResourcesChange(player, techTokens, (newTotal - oldTotal)));
     return null;
   }
 
@@ -220,7 +220,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     }
     for (final TechAdvance advance : advances) {
       logEvent("Adding Technology " + advance.getName() + " for " + player.getName(), null);
-      TechTracker.addAdvance(player, m_bridge, advance);
+      TechTracker.addAdvance(player, bridge, advance);
     }
     return null;
   }
@@ -236,7 +236,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     }
     for (final TechAdvance advance : advances) {
       logEvent("Removing Technology " + advance.getName() + " for " + player.getName(), null);
-      TechTracker.removeAdvance(player, m_bridge, advance);
+      TechTracker.removeAdvance(player, bridge, advance);
     }
     return null;
   }
@@ -265,7 +265,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     final Collection<Unit> unitsFinal = new ArrayList<>(unitDamageMap.keySet());
     logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName()
         + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
-    m_bridge.addChange(ChangeFactory.unitsHit(unitDamageMap));
+    bridge.addChange(ChangeFactory.unitsHit(unitDamageMap));
     // territory.notifyChanged();
     return null;
   }
@@ -296,7 +296,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     final Collection<Unit> unitsFinal = new ArrayList<>(unitDamageMap.keySet());
     logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName()
         + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
-    m_bridge.addChange(ChangeFactory.bombingUnitDamage(unitDamageMap));
+    bridge.addChange(ChangeFactory.bombingUnitDamage(unitDamageMap));
     // territory.notifyChanged();
     return null;
   }
@@ -323,7 +323,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
         logEvent("Editing Political Relationship for " + relationshipChange.getFirst().getName() + " and "
             + relationshipChange.getSecond().getName() + " from " + currentRelation.getName() + " to "
             + relationshipChange.getThird().getName(), null);
-        m_bridge.addChange(ChangeFactory.relationshipChange(relationshipChange.getFirst(),
+        bridge.addChange(ChangeFactory.relationshipChange(relationshipChange.getFirst(),
             relationshipChange.getSecond(), currentRelation, relationshipChange.getThird()));
         battleTracker.addRelationshipChangesThisTurn(relationshipChange.getFirst(), relationshipChange.getSecond(),
             currentRelation, relationshipChange.getThird());

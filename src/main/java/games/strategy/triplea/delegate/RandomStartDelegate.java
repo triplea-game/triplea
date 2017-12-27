@@ -32,7 +32,7 @@ import games.strategy.util.Tuple;
  * This delegate sets up the game according to Risk rules, with a few allowed customizations.
  * Either divide all neutral territories between players randomly, or let them pick one by one.
  * After that, any remaining units get placed one by one.
- * (Note that m_player may not be used here, because this delegate is not run by any player [it is null])
+ * (Note that player may not be used here, because this delegate is not run by any player [it is null])
  */
 @MapSupport
 public class RandomStartDelegate extends BaseTripleADelegate {
@@ -83,11 +83,11 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     playersCanPick.addAll(CollectionUtils.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
     // we need a main event
     if (!playersCanPick.isEmpty()) {
-      m_bridge.getHistoryWriter().startEvent("Assigning Territories");
+      bridge.getHistoryWriter().startEvent("Assigning Territories");
     }
     // for random:
     final int[] hitRandom = (!randomTerritories ? new int[0]
-        : m_bridge.getRandom(allPickableTerritories.size(), allPickableTerritories.size(), null, DiceType.ENGINE,
+        : bridge.getRandom(allPickableTerritories.size(), allPickableTerritories.size(), null, DiceType.ENGINE,
             "Picking random territories"));
     int i = 0;
     int pos = 0;
@@ -118,9 +118,9 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         }
         change.add(ChangeFactory.removeUnits(m_currentPickingPlayer, unitsToPlace));
         change.add(ChangeFactory.addUnits(picked, unitsToPlace));
-        m_bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " receives territory "
+        bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " receives territory "
             + picked.getName() + " with units " + MyFormatter.unitsToTextNoOwner(unitsToPlace), picked);
-        m_bridge.addChange(change);
+        bridge.addChange(change);
       } else {
         Tuple<Territory, Set<Unit>> pick;
         Set<Unit> unitsToPlace;
@@ -149,9 +149,9 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         }
         change.add(ChangeFactory.removeUnits(m_currentPickingPlayer, unitsToPlace));
         change.add(ChangeFactory.addUnits(picked, unitsToPlace));
-        m_bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " picks territory "
+        bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " picks territory "
             + picked.getName() + " and places in it " + MyFormatter.unitsToTextNoOwner(unitsToPlace), unitsToPlace);
-        m_bridge.addChange(change);
+        bridge.addChange(change);
       }
       allPickableTerritories.remove(picked);
       final PlayerID lastPlayer = m_currentPickingPlayer;
@@ -196,9 +196,9 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       }
       change.add(ChangeFactory.removeUnits(m_currentPickingPlayer, unitsToPlace));
       change.add(ChangeFactory.addUnits(picked, unitsToPlace));
-      m_bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " places "
+      bridge.getHistoryWriter().addChildToEvent(m_currentPickingPlayer.getName() + " places "
           + MyFormatter.unitsToTextNoOwner(unitsToPlace) + " in territory " + picked.getName(), unitsToPlace);
-      m_bridge.addChange(change);
+      bridge.addChange(change);
       final PlayerID lastPlayer = m_currentPickingPlayer;
       m_currentPickingPlayer = getNextPlayer(playersCanPick, m_currentPickingPlayer);
       if (!playerCanPickMatch.test(lastPlayer)) {

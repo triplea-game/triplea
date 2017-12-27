@@ -291,23 +291,23 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final StringBuilder endTurnReport = new StringBuilder();
     final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
-    final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
+    final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
     final ResourceCollection productionCollection = getResourceProduction(territories, data);
     final IntegerMap<Resource> production = productionCollection.getResourcesCopy();
     for (final Entry<Resource, Integer> resource : production.entrySet()) {
       final Resource r = resource.getKey();
       int toAdd = resource.getValue();
-      int total = m_player.getResources().getQuantity(r) + toAdd;
+      int total = player.getResources().getQuantity(r) + toAdd;
       if (total < 0) {
         toAdd -= total;
         total = 0;
       }
       final String resourceText =
-          m_player.getName() + " collects " + toAdd + " " + MyFormatter.pluralize(r.getName(), toAdd) + "; ends with "
+          player.getName() + " collects " + toAdd + " " + MyFormatter.pluralize(r.getName(), toAdd) + "; ends with "
               + total + " " + MyFormatter.pluralize(r.getName(), total) + " total";
       bridge.getHistoryWriter().startEvent(resourceText);
       endTurnReport.append(resourceText).append("<br />");
-      change.add(ChangeFactory.changeResourcesChange(m_player, r, toAdd));
+      change.add(ChangeFactory.changeResourcesChange(player, r, toAdd));
     }
     if (!change.isEmpty()) {
       bridge.addChange(change);
