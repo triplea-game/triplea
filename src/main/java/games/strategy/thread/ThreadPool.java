@@ -27,7 +27,7 @@ public class ThreadPool {
    * execute subsequent tasks. The threads in the pool will exist
    * until it is explicitly {@link ThreadPool#shutDown shutdown}.
    *
-   * @param nThreads the number of threads in the pool
+   * @param max the number of threads in the pool
    * @throws IllegalArgumentException if {@code nThreads <= 0}
    */
   public ThreadPool(final int max) {
@@ -49,7 +49,7 @@ public class ThreadPool {
   public void waitForAll() {
     while (!futureQueue.isEmpty()) {
       try {
-        futureQueue.poll().get();
+        futureQueue.remove().get();
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (final ExecutionException e) {
