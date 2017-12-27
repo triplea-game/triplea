@@ -13,28 +13,28 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
 public class UnitBattleComparator implements Comparator<Unit> {
-  private final boolean m_defending;
-  private final IntegerMap<UnitType> m_costs;
-  private final GameData m_data;
-  private final boolean m_bonus;
-  private final boolean m_ignorePrimaryPower;
-  private final Collection<TerritoryEffect> m_territoryEffects;
-  private final Collection<UnitType> m_multiHitpointCanRepair = new HashSet<>();
+  private final boolean defending;
+  private final IntegerMap<UnitType> costs;
+  private final GameData gameData;
+  private final boolean bonus;
+  private final boolean ignorePrimaryPower;
+  private final Collection<TerritoryEffect> territoryEffects;
+  private final Collection<UnitType> multiHitpointCanRepair = new HashSet<>();
 
   public UnitBattleComparator(final boolean defending, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus,
       final boolean ignorePrimaryPower) {
-    m_defending = defending;
-    m_costs = costs;
-    m_data = data;
-    m_bonus = bonus;
-    m_ignorePrimaryPower = ignorePrimaryPower;
-    m_territoryEffects = territoryEffects;
+    this.defending = defending;
+    this.costs = costs;
+    gameData = data;
+    this.bonus = bonus;
+    this.ignorePrimaryPower = ignorePrimaryPower;
+    this.territoryEffects = territoryEffects;
     if (Properties.getBattleshipsRepairAtEndOfRound(data)
         || Properties.getBattleshipsRepairAtBeginningOfRound(data)) {
       for (final UnitType ut : data.getUnitTypeList()) {
         if (Matches.unitTypeHasMoreThanOneHitPointTotal().test(ut)) {
-          m_multiHitpointCanRepair.add(ut);
+          multiHitpointCanRepair.add(ut);
         }
       }
       // TODO: check if there are units in the game that can repair this unit
@@ -65,12 +65,12 @@ public class UnitBattleComparator implements Comparator<Unit> {
         || (!transporting2 && Matches.unitIsTransport().test(u2));
     final boolean subDestroyer1 = Matches.unitIsSub().test(u1) || Matches.unitIsDestroyer().test(u1);
     final boolean subDestroyer2 = Matches.unitIsSub().test(u2) || Matches.unitIsDestroyer().test(u2);
-    final boolean multiHpCanRepair1 = m_multiHitpointCanRepair.contains(u1.getType());
-    final boolean multiHpCanRepair2 = m_multiHitpointCanRepair.contains(u2.getType());
-    if (!m_ignorePrimaryPower) {
-      int power1 = 8 * BattleCalculator.getUnitPowerForSorting(u1, m_defending, m_data, m_territoryEffects);
-      int power2 = 8 * BattleCalculator.getUnitPowerForSorting(u2, m_defending, m_data, m_territoryEffects);
-      if (m_bonus) {
+    final boolean multiHpCanRepair1 = multiHitpointCanRepair.contains(u1.getType());
+    final boolean multiHpCanRepair2 = multiHitpointCanRepair.contains(u2.getType());
+    if (!ignorePrimaryPower) {
+      int power1 = 8 * BattleCalculator.getUnitPowerForSorting(u1, defending, gameData, territoryEffects);
+      int power2 = 8 * BattleCalculator.getUnitPowerForSorting(u2, defending, gameData, territoryEffects);
+      if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1 += 4;
         } else if (!subDestroyer1 && subDestroyer2) {
@@ -97,16 +97,16 @@ public class UnitBattleComparator implements Comparator<Unit> {
       }
     }
     {
-      final int cost1 = m_costs.getInt(u1.getType());
-      final int cost2 = m_costs.getInt(u2.getType());
+      final int cost1 = costs.getInt(u1.getType());
+      final int cost2 = costs.getInt(u2.getType());
       if (cost1 != cost2) {
         return cost1 - cost2;
       }
     }
     {
-      int power1reverse = 8 * BattleCalculator.getUnitPowerForSorting(u1, !m_defending, m_data, m_territoryEffects);
-      int power2reverse = 8 * BattleCalculator.getUnitPowerForSorting(u2, !m_defending, m_data, m_territoryEffects);
-      if (m_bonus) {
+      int power1reverse = 8 * BattleCalculator.getUnitPowerForSorting(u1, !defending, gameData, territoryEffects);
+      int power2reverse = 8 * BattleCalculator.getUnitPowerForSorting(u2, !defending, gameData, territoryEffects);
+      if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1reverse += 4;
         } else if (!subDestroyer1 && subDestroyer2) {

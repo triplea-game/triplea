@@ -20,10 +20,10 @@ import games.strategy.triplea.formatter.MyFormatter;
  * Utility for detecting and removing units that can't land at the end of a phase.
  */
 public class AirThatCantLandUtil {
-  private final IDelegateBridge m_bridge;
+  private final IDelegateBridge bridge;
 
   public AirThatCantLandUtil(final IDelegateBridge bridge) {
-    m_bridge = bridge;
+    this.bridge = bridge;
   }
 
   public static boolean isLhtrCarrierProduction(final GameData data) {
@@ -35,7 +35,7 @@ public class AirThatCantLandUtil {
   }
 
   Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {
-    final GameData data = m_bridge.getData();
+    final GameData data = bridge.getData();
     final Collection<Territory> cantLand = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.unitIsOwnedBy(player));
@@ -48,7 +48,7 @@ public class AirThatCantLandUtil {
   }
 
   void removeAirThatCantLand(final PlayerID player, final boolean spareAirInSeaZonesBesideFactories) {
-    final GameData data = m_bridge.getData();
+    final GameData data = bridge.getData();
     final GameMap map = data.getMap();
     for (final Territory current : getTerritoriesWhereAirCantLand(player)) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.alliedUnit(player, data));
@@ -70,7 +70,7 @@ public class AirThatCantLandUtil {
       toRemove.addAll(airUnits);
     } else { // on water we may just no have enough carriers
       // find the carrier capacity
-      final Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_bridge.getData()));
+      final Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, bridge.getData()));
       int capacity = AirMovementValidator.carrierCapacity(carriers, territory);
       for (final Unit unit : airUnits) {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -85,7 +85,7 @@ public class AirThatCantLandUtil {
     final Change remove = ChangeFactory.removeUnits(territory, toRemove);
     final String transcriptText = MyFormatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName()
         + " and " + (toRemove.size() > 1 ? "were" : "was") + " removed";
-    m_bridge.getHistoryWriter().startEvent(transcriptText);
-    m_bridge.addChange(remove);
+    bridge.getHistoryWriter().startEvent(transcriptText);
+    bridge.addChange(remove);
   }
 }

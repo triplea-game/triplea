@@ -10,10 +10,10 @@ import games.strategy.util.IntegerMap;
  * specific techs
  */
 public class TechRoll {
-  private final TechnologyFrontier m_tech;
-  private final int m_rolls;
-  private int m_newTokens;
-  private final IntegerMap<PlayerID> m_whoPaysHowMuch;
+  private final TechnologyFrontier tech;
+  private final int rolls;
+  private int newTokens;
+  private final IntegerMap<PlayerID> whoPaysHowMuch;
 
   public TechRoll(final TechnologyFrontier advance, final int rolls) {
     this(advance, rolls, 0);
@@ -25,29 +25,29 @@ public class TechRoll {
 
   public TechRoll(final TechnologyFrontier advance, final int rolls, final int newTokens,
       final IntegerMap<PlayerID> whoPaysHowMuch) {
-    m_rolls = rolls;
-    m_tech = advance;
-    m_newTokens = newTokens;
-    m_whoPaysHowMuch = whoPaysHowMuch;
+    this.rolls = rolls;
+    tech = advance;
+    this.newTokens = newTokens;
+    this.whoPaysHowMuch = whoPaysHowMuch;
   }
 
   public int getRolls() {
-    return m_rolls;
+    return rolls;
   }
 
   public TechnologyFrontier getTech() {
-    return m_tech;
+    return tech;
   }
 
   public int getNewTokens() {
-    return m_newTokens;
+    return newTokens;
   }
 
   public void setNewTokens(final int tokens) {
-    this.m_newTokens = tokens;
+    this.newTokens = tokens;
   }
 
   public IntegerMap<PlayerID> getWhoPaysHowMuch() {
-    return m_whoPaysHowMuch;
+    return whoPaysHowMuch;
   }
 }

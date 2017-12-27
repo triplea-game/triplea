@@ -16,8 +16,8 @@ import games.strategy.sound.ISound;
  * TripleA implementation of DelegateBridge.
  */
 public class GameDelegateBridge implements IDelegateBridge {
-  private final IDelegateBridge m_bridge;
-  private final GameDelegateHistoryWriter m_historyWriter;
+  private final IDelegateBridge bridge;
+  private final GameDelegateHistoryWriter historyWriter;
 
   /**
    * Creates new TripleADelegateBridge to wrap an existing IDelegateBridge.
@@ -26,13 +26,13 @@ public class GameDelegateBridge implements IDelegateBridge {
    *        delegate bridge
    */
   public GameDelegateBridge(final IDelegateBridge bridge) {
-    m_bridge = bridge;
-    m_historyWriter = new GameDelegateHistoryWriter(m_bridge.getHistoryWriter(), getData());
+    this.bridge = bridge;
+    historyWriter = new GameDelegateHistoryWriter(this.bridge.getHistoryWriter(), getData());
   }
 
   @Override
   public GameData getData() {
-    return m_bridge.getData();
+    return bridge.getData();
   }
 
   /**
@@ -40,12 +40,12 @@ public class GameDelegateBridge implements IDelegateBridge {
    */
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
-    return m_historyWriter;
+    return historyWriter;
   }
 
   @Override
   public PlayerID getPlayerId() {
-    return m_bridge.getPlayerId();
+    return bridge.getPlayerId();
   }
 
   /**
@@ -54,62 +54,62 @@ public class GameDelegateBridge implements IDelegateBridge {
    */
   @Override
   public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
-    return m_bridge.getRandom(max, player, diceType, annotation);
+    return bridge.getRandom(max, player, diceType, annotation);
   }
 
   @Override
   public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation) {
-    return m_bridge.getRandom(max, count, player, diceType, annotation);
+    return bridge.getRandom(max, count, player, diceType, annotation);
   }
 
   @Override
   public void addChange(final Change change) {
-    m_bridge.addChange(change);
+    bridge.addChange(change);
   }
 
   @Override
   public String getStepName() {
-    return m_bridge.getStepName();
+    return bridge.getStepName();
   }
 
   @Override
   public IRemotePlayer getRemotePlayer() {
-    return m_bridge.getRemotePlayer();
+    return bridge.getRemotePlayer();
   }
 
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
-    return m_bridge.getRemotePlayer(id);
+    return bridge.getRemotePlayer(id);
   }
 
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
-    return m_bridge.getDisplayChannelBroadcaster();
+    return bridge.getDisplayChannelBroadcaster();
   }
 
   @Override
   public ISound getSoundChannelBroadcaster() {
-    return m_bridge.getSoundChannelBroadcaster();
+    return bridge.getSoundChannelBroadcaster();
   }
 
   @Override
   public Properties getStepProperties() {
-    return m_bridge.getStepProperties();
+    return bridge.getStepProperties();
   }
 
   @Override
   public void leaveDelegateExecution() {
-    m_bridge.leaveDelegateExecution();
+    bridge.leaveDelegateExecution();
   }
 
   @Override
   public void enterDelegateExecution() {
-    m_bridge.enterDelegateExecution();
+    bridge.enterDelegateExecution();
   }
 
   @Override
   public void stopGameSequence() {
-    m_bridge.stopGameSequence();
+    bridge.stopGameSequence();
   }
 }

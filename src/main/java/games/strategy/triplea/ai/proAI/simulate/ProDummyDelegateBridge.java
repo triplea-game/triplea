@@ -21,25 +21,25 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
 public class ProDummyDelegateBridge implements IDelegateBridge {
-  private final PlainRandomSource m_randomSource = new PlainRandomSource();
-  private final ITripleADisplay m_display = new HeadlessDisplay();
-  private final ISound m_soundChannel = new HeadlessSoundChannel();
-  private final PlayerID m_player;
-  private final ProAI m_proAI;
-  private final DelegateHistoryWriter m_writer = new DelegateHistoryWriter(new ProDummyGameModifiedChannel());
-  private final GameData m_data;
-  private final CompositeChange m_allChanges = new CompositeChange();
-  private MustFightBattle m_battle = null;
+  private final PlainRandomSource randomSource = new PlainRandomSource();
+  private final ITripleADisplay display = new HeadlessDisplay();
+  private final ISound soundChannel = new HeadlessSoundChannel();
+  private final PlayerID player;
+  private final ProAI proAi;
+  private final DelegateHistoryWriter writer = new DelegateHistoryWriter(new ProDummyGameModifiedChannel());
+  private final GameData gameData;
+  private final CompositeChange allChanges = new CompositeChange();
+  private MustFightBattle battle = null;
 
   public ProDummyDelegateBridge(final ProAI proAi, final PlayerID player, final GameData data) {
-    m_proAI = proAi;
-    m_data = data;
-    m_player = player;
+    this.proAi = proAi;
+    gameData = data;
+    this.player = player;
   }
 
   @Override
   public GameData getData() {
-    return m_data;
+    return gameData;
   }
 
   @Override
@@ -57,43 +57,43 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
-    return m_proAI;
+    return proAi;
   }
 
   @Override
   public IRemotePlayer getRemotePlayer() {
-    return m_proAI;
+    return proAi;
   }
 
   @Override
   public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation) {
-    return m_randomSource.getRandom(max, count, annotation);
+    return randomSource.getRandom(max, count, annotation);
   }
 
   @Override
   public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
-    return m_randomSource.getRandom(max, annotation);
+    return randomSource.getRandom(max, annotation);
   }
 
   @Override
   public PlayerID getPlayerId() {
-    return m_player;
+    return player;
   }
 
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
-    return m_writer;
+    return writer;
   }
 
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
-    return m_display;
+    return display;
   }
 
   @Override
   public ISound getSoundChannelBroadcaster() {
-    return m_soundChannel;
+    return soundChannel;
   }
 
   @Override
@@ -101,18 +101,18 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void addChange(final Change change) {
-    m_allChanges.add(change);
-    m_data.performChange(change);
+    allChanges.add(change);
+    gameData.performChange(change);
   }
 
   @Override
   public void stopGameSequence() {}
 
   public MustFightBattle getBattle() {
-    return m_battle;
+    return battle;
   }
 
   public void setBattle(final MustFightBattle battle) {
-    m_battle = battle;
+    this.battle = battle;
   }
 }
