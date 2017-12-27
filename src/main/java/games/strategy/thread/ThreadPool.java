@@ -16,8 +16,18 @@ public class ThreadPool {
   private final ArrayDeque<Future<?>> futuresStack = new ArrayDeque<>();
 
   /**
-   * Creates a new instance of ThreadPool max is the maximum number of threads the pool can have. The pool may have
-   * fewer threads at any given time.
+   * Creates a thread pool that reuses a fixed number of threads
+   * operating off a shared unbounded queue. At any point, at most
+   * {@code nThreads} threads will be active processing tasks.
+   * If additional tasks are submitted when all threads are active,
+   * they will wait in the queue until a thread is available.
+   * If any thread terminates due to a failure during execution
+   * prior to shutdown, a new one will take its place if needed to
+   * execute subsequent tasks. The threads in the pool will exist
+   * until it is explicitly {@link ThreadPool#shutDown shutdown}.
+   *
+   * @param nThreads the number of threads in the pool
+   * @throws IllegalArgumentException if {@code nThreads <= 0}
    */
   public ThreadPool(final int max) {
     executorService = Executors.newFixedThreadPool(max);
@@ -39,9 +49,9 @@ public class ThreadPool {
     while (!futuresStack.isEmpty()) {
       try {
         futuresStack.pop().get();
-      } catch (InterruptedException e) {
+      } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
-      } catch (ExecutionException e) {
+      } catch (final ExecutionException e) {
         ClientLogger.logError(e);
       }
     }
@@ -55,5 +65,4 @@ public class ThreadPool {
   public void shutDown() {
     executorService.shutdown();
   }
-
 }
