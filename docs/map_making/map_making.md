@@ -41,6 +41,17 @@ or like this:
 The version field indicates to the game engine when a map should be marked as out of date for download purposes:
 * To indicate in game that your map should be redownloaded, update the version number in the triplea_maps.yaml file.
 
+### How to get the correct download link
+
+In order to get a download link which maps to the exact current state, your map repository currently is in, you can follow 3 simple steps:
+1. Click on the 7-character long link on the main page, right next to where it says "Latest commit".
+![Step1](https://user-images.githubusercontent.com/8350879/33797137-edb794fc-dd02-11e7-987f-6e024d29227e.png)
+2. Click on "Browse files":
+![Step2](https://user-images.githubusercontent.com/8350879/33797210-51931946-dd04-11e7-91ca-4345f2b0a727.png)
+3. Click on "Clone or download", then right click on "Download ZIP" and copy the link.
+![Step3](https://user-images.githubusercontent.com/8350879/33797279-6bae194c-dd05-11e7-9442-87dae9f1ba5a.png)
+Now insert this link into the right section in the triplea_maps.yaml file
+
 
 ## How to play a map pre-release
 Three ways:
