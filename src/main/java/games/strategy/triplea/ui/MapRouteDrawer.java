@@ -87,7 +87,7 @@ public class MapRouteDrawer {
       drawMoveLength(graphics, points, offsetX, offsetY, scale, numTerritories, maxMovement);
     }
     drawJoints(graphics, points, offsetX, offsetY, scale);
-    drawCustomCursor(graphics, routeDescription, offsetX, offsetY, scale);
+    drawCustomCursor(graphics, routeDescription, offsetX, offsetY, scale, points[points.length - 1]);
   }
 
   /**
@@ -123,10 +123,10 @@ public class MapRouteDrawer {
    * @param scale The scale-factor of the Map
    */
   private void drawCustomCursor(final Graphics2D graphics, final RouteDescription routeDescription, final int offsetX,
-      final int offsetY, final double scale) {
+      final int offsetY, final double scale, final Point lastRoutePoint) {
     final BufferedImage cursorImage = (BufferedImage) routeDescription.getCursorImage();
     if (cursorImage != null) {
-      for (final Point[] endPoint : routeCalculator.getAllPoints(routeCalculator.getLastEndPoint())) {
+      for (final Point[] endPoint : routeCalculator.getAllPoints(lastRoutePoint)) {
         graphics.drawImage(cursorImage,
             (int) (((endPoint[0].getX() - offsetX) - (cursorImage.getWidth() / 2)) * scale),
             (int) (((endPoint[0].getY() - offsetY) - (cursorImage.getHeight() / 2)) * scale), null);

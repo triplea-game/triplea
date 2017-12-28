@@ -9,7 +9,6 @@ public class RouteCalculator {
   public final boolean isInfiniteY;
   public final boolean isInfiniteX;
 
-  private Point endPoint;
   private final int mapWidth;
   private final int mapHeight;
 
@@ -28,13 +27,7 @@ public class RouteCalculator {
    * @return A Point array which goes through Map Borders if necessary
    */
   public Point[] getTranslatedRoute(final Point... route) {
-    if (route == null || route.length == 0) {
-      // Or the array is too small
-      return route;
-    }
-    if (!isInfiniteX && !isInfiniteY) {
-      // If the Map is not infinite scrolling, we can safely return the given Points
-      endPoint = route[route.length - 1];
+    if (route == null || route.length == 0 || (!isInfiniteX && !isInfiniteY)) {
       return route;
     }
     final List<Point> result = new ArrayList<>();
@@ -49,7 +42,6 @@ public class RouteCalculator {
       result.add(closestPoint);
       previousPoint = closestPoint;
     }
-    endPoint = result.get(result.size() - 1);
     return result.toArray(new Point[result.size()]);
   }
 
@@ -111,10 +103,6 @@ public class RouteCalculator {
     return result;
   }
 
-  public Point getLastEndPoint() {
-    return endPoint;
-  }
-
   /**
    * Matrix Transpose method to transpose the 2dimensional point list.
    *
@@ -129,7 +117,7 @@ public class RouteCalculator {
         if (i == 0) {
           allPoints.add(new Point[points.length]);
         }
-        allPoints.get(y)[i] = (subPoints.get(y));
+        allPoints.get(y)[i] = subPoints.get(y);
       }
     }
     return allPoints;
