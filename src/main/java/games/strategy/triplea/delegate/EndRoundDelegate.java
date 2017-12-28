@@ -38,8 +38,8 @@ import games.strategy.util.LocalizeHtml;
  */
 @MapSupport
 public class EndRoundDelegate extends BaseTripleADelegate {
-  private boolean m_gameOver = false;
-  private Collection<PlayerID> m_winners = new ArrayList<>();
+  private boolean gameOver = false;
+  private Collection<PlayerID> winners = new ArrayList<>();
 
   /** Creates a new instance of EndRoundDelegate. */
   public EndRoundDelegate() {}
@@ -47,7 +47,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   @Override
   public void start() {
     super.start();
-    if (m_gameOver) {
+    if (gameOver) {
       return;
     }
     String victoryMessage;
@@ -187,8 +187,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final EndRoundExtendedDelegateState state = new EndRoundExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_gameOver = m_gameOver;
-    state.m_winners = m_winners;
+    state.m_gameOver = gameOver;
+    state.m_winners = winners;
     return state;
   }
 
@@ -196,8 +196,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final EndRoundExtendedDelegateState s = (EndRoundExtendedDelegateState) state;
     super.loadState(s.superState);
-    m_gameOver = s.m_gameOver;
-    m_winners = s.m_winners;
+    gameOver = s.m_gameOver;
+    winners = s.m_winners;
   }
 
   @Override
@@ -257,11 +257,11 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     // TO NOT USE playerBridge, because it might be null here! use aBridge instead.
     // If the game is over, we need to be able to alert all UIs to that fact.
     // The display object can send a message to all UIs.
-    if (!m_gameOver) {
-      m_gameOver = true;
-      m_winners = winners;
+    if (!gameOver) {
+      gameOver = true;
+      this.winners = winners;
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
-          ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next()
+          ((this.winners != null && !this.winners.isEmpty()) ? this.winners.iterator().next()
               : PlayerID.NULL_PLAYERID));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
       final String title = "Victory Achieved"
@@ -298,10 +298,10 @@ public class EndRoundDelegate extends BaseTripleADelegate {
    * if null, the game is not over yet.
    */
   public Collection<PlayerID> getWinners() {
-    if (!m_gameOver) {
+    if (!gameOver) {
       return null;
     }
-    return m_winners;
+    return winners;
   }
 
   private boolean isWW2V2() {

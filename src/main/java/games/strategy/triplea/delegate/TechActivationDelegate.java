@@ -26,7 +26,7 @@ import games.strategy.util.Util;
  */
 @MapSupport
 public class TechActivationDelegate extends BaseTripleADelegate {
-  private boolean m_needToInitialize = true;
+  private boolean needToInitialize = true;
 
   /** Creates new TechActivationDelegate. */
   public TechActivationDelegate() {}
@@ -39,7 +39,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public void start() {
     super.start();
     final GameData data = getData();
-    if (!m_needToInitialize) {
+    if (!needToInitialize) {
       return;
     }
     // Activate techs
@@ -81,13 +81,13 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       }
     }
     shareTechnology();
-    m_needToInitialize = false;
+    needToInitialize = false;
   }
 
   @Override
   public void end() {
     super.end();
-    m_needToInitialize = true;
+    needToInitialize = true;
   }
 
   @Override
@@ -124,7 +124,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final TechActivationExtendedDelegateState state = new TechActivationExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = m_needToInitialize;
+    state.m_needToInitialize = needToInitialize;
     return state;
   }
 
@@ -132,7 +132,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final TechActivationExtendedDelegateState s = (TechActivationExtendedDelegateState) state;
     super.loadState(s.superState);
-    m_needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.m_needToInitialize;
   }
 
   // Return string representing all advances in collection

@@ -52,9 +52,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   // needToInitialize means we only do certain things once, so that if a game is saved then
   // loaded, they aren't done again
-  private boolean m_needToInitialize = true;
-  private boolean m_needToDoRockets = true;
-  private IntegerMap<Territory> m_PUsLost = new IntegerMap<>();
+  private boolean needToInitialize = true;
+  private boolean needToDoRockets = true;
+  private IntegerMap<Territory> pusLost = new IntegerMap<>();
 
   public MoveDelegate() {}
 
@@ -67,7 +67,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   public void start() {
     super.start();
     final GameData data = getData();
-    if (m_needToInitialize) {
+    if (needToInitialize) {
 
       // territory property changes triggered at beginning of combat move
       // TODO create new delegate called "start of turn" and move them there.
@@ -159,7 +159,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (GameStepPropertiesHelper.isResetUnitStateAtStart(data)) {
         resetUnitStateAndDelegateState();
       }
-      m_needToInitialize = false;
+      needToInitialize = false;
     }
   }
 
@@ -194,9 +194,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // WW2V2/WW2V3, fires at end of combat move
     // WW2V1, fires at end of non combat move
     if (GameStepPropertiesHelper.isFireRockets(data)) {
-      if (m_needToDoRockets && TechTracker.hasRocket(bridge.getPlayerId())) {
+      if (needToDoRockets && TechTracker.hasRocket(bridge.getPlayerId())) {
         RocketsFireHelper.fireRockets(bridge, bridge.getPlayerId());
-        m_needToDoRockets = false;
+        needToDoRockets = false;
       }
     }
 
@@ -211,17 +211,17 @@ public class MoveDelegate extends AbstractMoveDelegate {
           CollectionUtils.getMatches(data.getUnits().getUnits(), Matches.unitHasMoved().and(Matches.unitIsNotAir()));
       bridge.addChange(ChangeFactory.markNoMovementChange(alreadyMovedNonAirUnits));
     }
-    m_needToInitialize = true;
-    m_needToDoRockets = true;
+    needToInitialize = true;
+    needToDoRockets = true;
   }
 
   @Override
   public Serializable saveState() {
     final MoveExtendedDelegateState state = new MoveExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = m_needToInitialize;
-    state.m_needToDoRockets = m_needToDoRockets;
-    state.m_PUsLost = m_PUsLost;
+    state.m_needToInitialize = needToInitialize;
+    state.m_needToDoRockets = needToDoRockets;
+    state.m_PUsLost = pusLost;
     return state;
   }
 
@@ -229,9 +229,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
   public void loadState(final Serializable state) {
     final MoveExtendedDelegateState s = (MoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    m_needToInitialize = s.m_needToInitialize;
-    m_needToDoRockets = s.m_needToDoRockets;
-    m_PUsLost = s.m_PUsLost;
+    needToInitialize = s.m_needToInitialize;
+    needToDoRockets = s.m_needToDoRockets;
+    pusLost = s.m_PUsLost;
   }
 
   @Override
@@ -263,7 +263,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   private void resetUnitStateAndDelegateState() {
     // while not a 'unit state', this is fine here for now. since we only have one instance of this delegate, as long as
     // it gets cleared once per player's turn block, we are fine.
-    m_PUsLost.clear();
+    pusLost.clear();
     final Change change = getResetUnitStateChange(getData());
     if (!change.isEmpty()) {
       // if no non-combat occurred, we may have cleanup left from combat
@@ -639,11 +639,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   @Override
   public int pusAlreadyLost(final Territory t) {
-    return m_PUsLost.getInt(t);
+    return pusLost.getInt(t);
   }
 
   @Override
   public void pusLost(final Territory t, final int amt) {
-    m_PUsLost.add(t, amt);
+    pusLost.add(t, amt);
   }
 }

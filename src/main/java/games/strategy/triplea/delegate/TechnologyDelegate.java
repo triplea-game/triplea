@@ -42,10 +42,10 @@ import games.strategy.util.Util;
  */
 @MapSupport
 public class TechnologyDelegate extends BaseTripleADelegate implements ITechDelegate {
-  private int m_techCost;
-  private HashMap<PlayerID, Collection<TechAdvance>> m_techs;
-  private TechnologyFrontier m_techCategory;
-  private boolean m_needToInitialize = true;
+  private int techCost;
+  private HashMap<PlayerID, Collection<TechAdvance>> techs;
+  private TechnologyFrontier techCategory;
+  private boolean needToInitialize = true;
 
   /** Creates new TechnolgoyDelegate. */
   public TechnologyDelegate() {}
@@ -53,8 +53,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   @Override
   public void initialize(final String name, final String displayName) {
     super.initialize(name, displayName);
-    m_techs = new HashMap<>();
-    m_techCost = -1;
+    techs = new HashMap<>();
+    techCost = -1;
   }
 
   @Override
@@ -65,7 +65,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   @Override
   public void start() {
     super.start();
-    if (!m_needToInitialize) {
+    if (!needToInitialize) {
       return;
     }
     if (Properties.getTriggers(getData())) {
@@ -90,21 +90,21 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
             null, null, true, true, true, true);
       }
     }
-    m_needToInitialize = false;
+    needToInitialize = false;
   }
 
   @Override
   public void end() {
     super.end();
-    m_needToInitialize = true;
+    needToInitialize = true;
   }
 
   @Override
   public Serializable saveState() {
     final TechnologyExtendedDelegateState state = new TechnologyExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = m_needToInitialize;
-    state.m_techs = m_techs;
+    state.m_needToInitialize = needToInitialize;
+    state.m_techs = techs;
     return state;
   }
 
@@ -112,8 +112,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   public void loadState(final Serializable state) {
     final TechnologyExtendedDelegateState s = (TechnologyExtendedDelegateState) state;
     super.loadState(s.superState);
-    m_needToInitialize = s.m_needToInitialize;
-    m_techs = s.m_techs;
+    needToInitialize = s.m_needToInitialize;
+    techs = s.m_techs;
   }
 
   @Override
@@ -155,7 +155,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   public Map<PlayerID, Collection<TechAdvance>> getAdvances() {
-    return m_techs;
+    return techs;
   }
 
   private boolean isWW2V2() {
@@ -238,7 +238,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
             renderDice);
     if (isWW2V3TechModel()
         && (techHits > 0 || Properties.getRemoveAllTechTokensAtEndOfTurn(data))) {
-      m_techCategory = techToRollFor;
+      techCategory = techToRollFor;
       // remove all the tokens
       final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
       final String transcriptText = player.getName() + " removing all Technology Tokens after "
@@ -259,7 +259,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       advances = getTechAdvances(techHits);
     }
     // Put in techs so they can be activated later.
-    m_techs.put(player, advances);
+    techs.put(player, advances);
     final List<String> advancesAsString = new ArrayList<>();
     int count = advances.size();
     final StringBuilder text = new StringBuilder();
@@ -347,7 +347,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   private Collection<TechAdvance> getTechAdvances(int hits) {
     final List<TechAdvance> available;
     if (hits > 0 && isWW2V3TechModel()) {
-      available = getAvailableAdvancesForCategory(m_techCategory);
+      available = getAvailableAdvancesForCategory(techCategory);
       hits = 1;
     } else {
       available = getAvailableAdvances();
@@ -414,8 +414,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   public int getTechCost() {
-    m_techCost = TechTracker.getTechCost(player);
-    return m_techCost;
+    techCost = TechTracker.getTechCost(player);
+    return techCost;
   }
 
   @Override

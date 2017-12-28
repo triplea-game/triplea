@@ -32,7 +32,7 @@ import games.strategy.util.IntegerMap;
  * This delegate is only supposed to be run once, per game, at the start of the game.
  */
 public class InitializationDelegate extends BaseTripleADelegate {
-  private boolean m_needToInitialize = true;
+  private boolean needToInitialize = true;
 
   /** Creates a new instance of InitializationDelegate. */
   public InitializationDelegate() {}
@@ -46,9 +46,9 @@ public class InitializationDelegate extends BaseTripleADelegate {
   @Override
   public void start() {
     super.start();
-    if (m_needToInitialize) {
+    if (needToInitialize) {
       init(bridge);
-      m_needToInitialize = false;
+      needToInitialize = false;
     }
   }
 
@@ -62,7 +62,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final InitializationExtendedDelegateState state = new InitializationExtendedDelegateState();
     state.superState = super.saveState();
     // add other variables to state here:
-    state.m_needToInitialize = this.m_needToInitialize;
+    state.m_needToInitialize = this.needToInitialize;
     return state;
   }
 
@@ -70,7 +70,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
     super.loadState(s.superState);
-    this.m_needToInitialize = s.m_needToInitialize;
+    this.needToInitialize = s.m_needToInitialize;
   }
 
   @Override
