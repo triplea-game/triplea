@@ -1,8 +1,13 @@
 package games.strategy.triplea.ui.logic;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.google.common.base.Preconditions;
 
 public class RouteCalculator {
 
@@ -124,23 +129,23 @@ public class RouteCalculator {
   }
 
   /**
-   * Generates a List of Lines which represent "normalized forms" of the given arrays.
+   * Generates a Path which represent "normalized forms" of the given arrays.
    *
    * @param xcoords an array of xCoordinates
    * @param ycoords an array of yCoordinates
-   * @return a List of corresponding Lines
+   * @return a Path representing the Route to be drawn
    */
-  private static List<Line> getNormalizedLines(final double[] xcoords, final double[] ycoords) {
-    final List<Line> lines = new ArrayList<>();
-    Point previousPoint = null;
-    for (int i = 0; i < xcoords.length; i++) {
-      final Point trimmedPoint = new Point(xcoords[i], ycoords[i]);
-      if (previousPoint != null) {
-        lines.add(new Line(previousPoint, trimmedPoint));
-      }
-      previousPoint = trimmedPoint;
+  private static Path2D getNormalizedLines(final double[] xcoords, final double[] ycoords) {
+    Preconditions.checkNotNull(xcoords);
+    Preconditions.checkNotNull(ycoords);
+    Preconditions.checkArgument(xcoords.length > 0, "X-Coordinates must at least contain a single element.");
+    Preconditions.checkArgument(ycoords.length > 0, "Y-Coordinates must at least contain a single element.");
+    final Path2D path = new Path2D.Double();
+    path.moveTo(xcoords[0], ycoords[0]);
+    for (int i = 1; i < xcoords.length; i++) {
+      path.lineTo(xcoords[i], ycoords[i]);
     }
-    return lines;
+    return path;
   }
 
   /**
@@ -150,14 +155,34 @@ public class RouteCalculator {
    * @param ycoords an array of yCoordinates
    * @return a List of corresponding Lines on every possible screen
    */
-  public List<Line> getAllNormalizedLines(final double[] xcoords, final double[] ycoords) {
-    final List<Line> centerLines = getNormalizedLines(xcoords, ycoords);
-    final List<Line> result = new ArrayList<>();
-    for (final Line line : centerLines) {
-      final List<Point[]> allPoints = getAllPoints(line.getP1(), line.getP2());
-      for (final Point[] points : allPoints) {
-        result.add(new Line(points[0], points[1]));
-      }
+  public List<Path2D> getAllNormalizedLines(final double[] xcoords, final double[] ycoords) {
+    final Path2D path = getNormalizedLines(xcoords, ycoords);
+    return getPossibleTranslations().stream()
+        .map(t -> new Path2D.Double(path, t))
+        .collect(Collectors.toList());
+
+  }
+
+
+  private List<AffineTransform> getPossibleTranslations() {
+    final List<AffineTransform> result = new ArrayList<>();
+    result.add(AffineTransform.getTranslateInstance(0, 0));
+    if (isInfiniteX && isInfiniteY) {
+      result.addAll(Arrays.asList(
+          AffineTransform.getTranslateInstance(-mapWidth, -mapHeight),
+          AffineTransform.getTranslateInstance(-mapWidth, +mapHeight),
+          AffineTransform.getTranslateInstance(+mapWidth, -mapHeight),
+          AffineTransform.getTranslateInstance(+mapWidth, +mapHeight)));
+    }
+    if (isInfiniteX) {
+      result.addAll(Arrays.asList(
+          AffineTransform.getTranslateInstance(-mapWidth, 0),
+          AffineTransform.getTranslateInstance(+mapWidth, 0)));
+    }
+    if (isInfiniteY) {
+      result.addAll(Arrays.asList(
+          AffineTransform.getTranslateInstance(0, -mapHeight),
+          AffineTransform.getTranslateInstance(0, +mapHeight)));
     }
     return result;
   }

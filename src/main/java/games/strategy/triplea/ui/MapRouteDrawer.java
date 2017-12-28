@@ -11,6 +11,7 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -151,8 +152,7 @@ public class MapRouteDrawer {
       final int offsetY, final double scale) {
     final Point[] points = routeCalculator.getTranslatedRoute(start, end);
     for (final Point[] newPoints : routeCalculator.getAllPoints(points)) {
-      drawLineWithTranslate(graphics, new Line2D.Float(newPoints[0].toPoint(), newPoints[1].toPoint()), offsetX,
-          offsetY, scale);
+      drawTransformedShape(graphics, new Line2D.Float(newPoints[0].toPoint(), newPoints[1].toPoint()));
       if (newPoints[0].distance(newPoints[1]) > arrowLength) {
         drawArrow(graphics, newPoints[0].toPoint(), newPoints[1].toPoint(), offsetX, offsetY, scale);
       }
@@ -185,17 +185,13 @@ public class MapRouteDrawer {
    * Draws a line to the Screen regarding the Map-Offset and scale.
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
-   * @param line The Line to be drawn
+   * @param shape The Shape to be drawn
    * @param offsetX The horizontal pixel-difference between the frame and the Map
    * @param offsetY The vertical pixel-difference between the frame and the Map
    * @param scale The scale-factor of the Map
    */
-  private static void drawLineWithTranslate(final Graphics2D graphics, final Line2D line, final double offsetX,
-      final double offsetY, final double scale) {
-    graphics.draw(
-        new Line2D.Double(
-            new Point2D.Double((line.getP1().getX() - offsetX) * scale, (line.getP1().getY() - offsetY) * scale),
-            new Point2D.Double((line.getP2().getX() - offsetX) * scale, (line.getP2().getY() - offsetY) * scale)));
+  private void drawTransformedShape(final Graphics2D graphics, final Shape shape) {
+    graphics.draw(getDrawingTransform().createTransformedShape(shape));
   }
 
   /**
@@ -319,18 +315,16 @@ public class MapRouteDrawer {
     final PolynomialSplineFunction ycurve =
         splineInterpolator.interpolate(index, getValues(points, point -> point.getY()));
     final double[] ycoords = getCoords(ycurve, index);
-    final List<Line> lines = routeCalculator.getAllNormalizedLines(xcoords, ycoords);
-    for (final Line line : lines) {
-      drawLineWithTranslate(graphics, line.toLine2D(), offsetX, offsetY, scale);
+    final List<Path2D> paths = routeCalculator.getAllNormalizedLines(xcoords, ycoords);
+    for (final Path2D path : paths) {
+      drawTransformedShape(graphics, path);
     }
     // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no matter what...
     final List<Point[]> finishingPoints = routeCalculator.getAllPoints(
         new Point(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]), points[points.length - 1]);
     final boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > arrowLength;
     for (final Point[] finishingPointArray : finishingPoints) {
-      drawLineWithTranslate(graphics,
-          new Line(finishingPointArray[0], finishingPointArray[1]).toLine2D(),
-          offsetX, offsetY, scale);
+      drawTransformedShape(graphics, new Line(finishingPointArray[0], finishingPointArray[1]).toLine2D());
       if (hasArrowEnoughSpace) {
         drawArrow(graphics, finishingPointArray[0].toPoint(), finishingPointArray[1].toPoint(), offsetX, offsetY,
             scale);
@@ -402,5 +396,12 @@ public class MapRouteDrawer {
     final Point2D scaledEnd = new Point2D.Double((to.getX() - offsetX) * scale,
         (to.getY() - offsetY) * scale);
     graphics.fill(createArrowTipShape(scaledStart, scaledEnd));
+  }
+
+  private AffineTransform getDrawingTransform() {
+    final AffineTransform transform =
+        AffineTransform.getTranslateInstance(-mapPanel.getXOffset(), -mapPanel.getYOffset());
+    transform.scale(mapPanel.getScale(), mapPanel.getScale());
+    return transform;
   }
 }
