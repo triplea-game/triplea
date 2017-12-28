@@ -84,12 +84,12 @@ public class RouteTest {
     final Shape mockShape = mock(Shape.class);
     final Graphics2D mockGraphics = mock(Graphics2D.class);
     when(mockShape.contains(any(Point2D.class))).thenReturn(true);
-    when(mockGraphics.getClip()).thenReturn(mockShape);
     routeDrawer.drawRoute(mockGraphics, dummyRouteDescription, "2");
-    verify(mockGraphics, atLeastOnce()).draw(any(Line2D.class));
-    verify(mockedMapPanel).getXOffset();// Those methods are needed
-    verify(mockedMapPanel).getYOffset();
-    verify(mockedMapPanel).getScale();
+    verify(mockGraphics, atLeastOnce()).fill(any(Shape.class));
+    verify(mockGraphics, atLeastOnce()).draw(any(Shape.class));
+    verify(mockedMapPanel, atLeastOnce()).getXOffset();// Those methods are needed
+    verify(mockedMapPanel, atLeastOnce()).getYOffset();
+    verify(mockedMapPanel, atLeastOnce()).getScale();
 
     verify(dummyRouteDescription, times(2)).getRoute();
     verify(dummyRouteDescription.getRoute(), atLeastOnce()).getAllTerritories();
