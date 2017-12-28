@@ -21,14 +21,14 @@ public class MutedUsernameControllerIntegrationTest {
   public void testMuteUsernameForever() {
     muteUsernameForSeconds(Long.MAX_VALUE);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(Long.MAX_VALUE, controller.getUsernameUnmuteTime(username));
+    assertFalse(controller.getUsernameUnmuteTime(username).isPresent());
   }
 
   @Test
   public void testMuteUsername() {
     final Instant muteUntil = muteUsernameForSeconds(100L);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
+    assertEquals(muteUntil, controller.getUsernameUnmuteTime(username).get());
     when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
     assertFalse(controller.isUsernameMuted(username));
   }
@@ -37,7 +37,7 @@ public class MutedUsernameControllerIntegrationTest {
   public void testUnmuteUsername() {
     final Instant muteUntil = muteUsernameForSeconds(100L);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
+    assertEquals(muteUntil, controller.getUsernameUnmuteTime(username).get());
     controller.addMutedUsername(username, Instant.now().minusSeconds(10L));
     assertFalse(controller.isUsernameMuted(username));
   }
@@ -52,10 +52,10 @@ public class MutedUsernameControllerIntegrationTest {
   public void testMuteUsernameUpdate() {
     muteUsernameForSeconds(Long.MAX_VALUE);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(Long.MAX_VALUE, controller.getUsernameUnmuteTime(username));
+    assertFalse(controller.getUsernameUnmuteTime(username).isPresent());
     final Instant muteUntil = muteUsernameForSeconds(100L);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
+    assertEquals(muteUntil, controller.getUsernameUnmuteTime(username).get());
   }
 
   private Instant muteUsernameForSeconds(final long length) {

@@ -21,14 +21,14 @@ public class MutedMacControllerIntegrationTest {
   public void testMuteMacForever() {
     muteMacForSeconds(Long.MAX_VALUE);
     assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(hashedMac));
+    assertFalse(controller.getMacUnmuteTime(hashedMac).isPresent());
   }
 
   @Test
   public void testMuteMac() {
     final Instant muteUntil = muteMacForSeconds(100L);
     assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
+    assertEquals(muteUntil, controller.getMacUnmuteTime(hashedMac).get());
     when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
     assertFalse(controller.isMacMuted(hashedMac));
   }
@@ -37,7 +37,7 @@ public class MutedMacControllerIntegrationTest {
   public void testUnmuteMac() {
     final Instant muteUntil = muteMacForSeconds(100L);
     assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
+    assertEquals(muteUntil, controller.getMacUnmuteTime(hashedMac).get());
     muteMacForSeconds(-10L);
     assertFalse(controller.isMacMuted(hashedMac));
   }
@@ -52,10 +52,10 @@ public class MutedMacControllerIntegrationTest {
   public void testMuteMacUpdate() {
     muteMacForSeconds(Long.MAX_VALUE);
     assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(Long.MAX_VALUE, controller.getMacUnmuteTime(hashedMac));
+    assertFalse(controller.getMacUnmuteTime(hashedMac).isPresent());
     final Instant muteUntil = muteMacForSeconds(100L);
     assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getMacUnmuteTime(hashedMac)));
+    assertEquals(muteUntil, controller.getMacUnmuteTime(hashedMac).get());
   }
 
   private Instant muteMacForSeconds(final long length) {
