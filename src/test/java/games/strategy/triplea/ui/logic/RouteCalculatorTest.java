@@ -86,7 +86,7 @@ public class RouteCalculatorTest {
     final Point2D[] se = new Point2D[] {point(1000, 1000), point(1001, 1001)};
 
     final List<Point2D[]> points = new RouteCalculator(true, true, 1000, 1000).getAllPoints(input);
-    // This may be changed along with the RouteOptimizer#getPossiblePoints method
+    // This may be changed along with the RouteCalculator#getPossiblePoints method
     assertArrayEquals(input, points.get(0));
     assertArrayEquals(nw, points.get(1));
     assertArrayEquals(sw, points.get(2));

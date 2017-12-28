@@ -5,6 +5,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,19 +37,12 @@ public class RouteCalculator {
     if (route == null || route.length == 0 || (!isInfiniteX && !isInfiniteY)) {
       return route;
     }
-    final List<Point2D> result = new ArrayList<>();
-    Point2D previousPoint = null;
-    for (final Point2D point : route) {
-      if (previousPoint == null) {
-        previousPoint = point;
-        result.add(point);
-        continue;
-      }
-      final Point2D closestPoint = getClosestPoint(previousPoint, getPossiblePoints(point));
-      result.add(closestPoint);
-      previousPoint = closestPoint;
+    final Point2D[] result = new Point2D[route.length];
+    for (int i = 0; i < route.length; i++) {
+      final Point2D point = route[i];
+      result[i] = i == 0 ? point : getClosestPoint(result[i - 1], getPossiblePoints(point));
     }
-    return result.toArray(new Point2D[result.size()]);
+    return result;
   }
 
   /**
@@ -59,21 +53,9 @@ public class RouteCalculator {
    * @return the closest point in the Pool to the source
    */
   public static Point2D getClosestPoint(final Point2D source, final List<Point2D> pool) {
-    double closestDistance = Double.MAX_VALUE;
-    Point2D closestPoint = null;
-    for (final Point2D possibleClosestPoint : pool) {
-      if (closestPoint == null) {
-        closestDistance = source.distance(possibleClosestPoint);
-        closestPoint = possibleClosestPoint;
-      } else {
-        final double distance = source.distance(possibleClosestPoint);
-        if (closestDistance > distance) {
-          closestPoint = possibleClosestPoint;
-          closestDistance = distance;
-        }
-      }
-    }
-    return closestPoint;
+    return pool.stream()
+        .min(Comparator.comparingDouble(source::distance))
+        .orElse(null);
   }
 
   /**
@@ -164,7 +146,7 @@ public class RouteCalculator {
 
 
   private List<AffineTransform> getPossibleTranslations() {
-    final List<AffineTransform> result = new ArrayList<>();
+    final List<AffineTransform> result = new ArrayList<>(7); // 7 is probably the most common value
     result.add(AffineTransform.getTranslateInstance(0, 0));
     if (isInfiniteX && isInfiniteY) {
       result.addAll(Arrays.asList(
