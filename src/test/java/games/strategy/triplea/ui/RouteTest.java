@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -23,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.logic.Point;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 public class RouteTest {
@@ -33,17 +33,17 @@ public class RouteTest {
   private final double[] dummyIndex = spyRouteDrawer.createParameterizedIndex(dummyPoints);
   private final Route dummyRoute = spy(new Route(mock(Territory.class), mock(Territory.class)));
   private final RouteDescription dummyRouteDescription =
-      spy(new RouteDescription(dummyRoute, dummyPoints[0].toPoint(), dummyPoints[2].toPoint(), null));
+      spy(new RouteDescription(dummyRoute, dummyPoints[0], dummyPoints[2], null));
 
   @BeforeEach
   public void setUp() {
-    when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1].toPoint());
+    when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1]);
     when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000, 1000));
   }
 
   @Test
   public void testIndex() {
-    assertArrayEquals(spyRouteDrawer.createParameterizedIndex(new Point[] {}), new double[] {});
+    assertArrayEquals(spyRouteDrawer.createParameterizedIndex(new Point2D[] {}), new double[] {});
     assertEquals(dummyIndex.length, dummyPoints.length);
     // Not sure whether it makes sense to include a Test for specific values
     // The way the index is being calculated may change to a better System

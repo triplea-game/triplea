@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,25 +17,25 @@ public class RouteCalculatorTest {
 
   @Test
   public void testRouteTranslation() {
-    final Point[] inputArray = new Point[] {point(1, 4), point(1001, 1001), point(600, 600)};
-    assertArrayEquals(new Point[] {point(1, 4), point(1, 1), point(-400, -400)},
+    final Point2D[] inputArray = new Point2D[] {point(1, 4), point(1001, 1001), point(600, 600)};
+    assertArrayEquals(new Point2D[] {point(1, 4), point(1, 1), point(-400, -400)},
         new RouteCalculator(true, true, 1000, 1000).getTranslatedRoute(inputArray));
-    assertArrayEquals(new Point[] {point(1, 4), point(1, 1001), point(-400, 600)},
+    assertArrayEquals(new Point2D[] {point(1, 4), point(1, 1001), point(-400, 600)},
         new RouteCalculator(true, false, 1000, 1000).getTranslatedRoute(inputArray));
-    assertArrayEquals(new Point[] {point(1, 4), point(1001, 1), point(600, -400)},
+    assertArrayEquals(new Point2D[] {point(1, 4), point(1001, 1), point(600, -400)},
         new RouteCalculator(false, true, 1000, 1000).getTranslatedRoute(inputArray));
     assertArrayEquals(inputArray, new RouteCalculator(false, false, 1000, 1000).getTranslatedRoute(inputArray));
   }
 
-  private static Point point(final double x, final double y) {
-    return new Point(x, y);
+  private static Point2D point(final double x, final double y) {
+    return new Point2D.Double(x, y);
   }
 
   @Test
   public void testClosestPoint() {
-    final Point origin = new Point();
-    final Point closestPoint = new Point(1, 1);
-    final List<Point> pool = new ArrayList<>();
+    final Point2D origin = new Point2D.Double();
+    final Point2D closestPoint = new Point2D.Double(1, 1);
+    final List<Point2D> pool = new ArrayList<>();
     for (int i = 0; i < 9; i++) {
       pool.add(point((int) (Math.random() * 1000 + 1), (int) (Math.random() * 1000 + 1)));
     }
@@ -44,7 +45,7 @@ public class RouteCalculatorTest {
 
   @Test
   public void testPossiblePoints() {
-    final List<Point> possiblePoints = new ArrayList<>();
+    final List<Point2D> possiblePoints = new ArrayList<>();
     // The values below must be all combinations of
     // x and y values 0, -mapWidth/height, +mapWidth/Height
     possiblePoints.add(point(-1000, -1000));
@@ -62,29 +63,29 @@ public class RouteCalculatorTest {
     checkPoints(8, possiblePoints, false, false);
   }
 
-  private static void checkPoints(final int offset, final List<Point> expected, final boolean isInfiniteX,
+  private static void checkPoints(final int offset, final List<Point2D> expected, final boolean isInfiniteX,
       final boolean isInfiniteY) {
-    final List<Point> calculatedPoints =
-        new RouteCalculator(isInfiniteX, isInfiniteY, 1000, 1000).getPossiblePoints(new Point());
+    final List<Point2D> calculatedPoints =
+        new RouteCalculator(isInfiniteX, isInfiniteY, 1000, 1000).getPossiblePoints(new Point2D.Double());
     assertEquals(expected.size(), calculatedPoints.size() + offset);
-    for (final Point point : calculatedPoints) {
+    for (final Point2D point : calculatedPoints) {
       assertTrue(expected.contains(point));
     }
   }
 
   @Test
   public void testMatrixTransposal() {
-    final Point[] input = new Point[] {point(0, 0), point(1, 1)};
-    final Point[] nw = new Point[] {point(-1000, -1000), point(-999, -999)};
-    final Point[] n = new Point[] {point(0, -1000), point(1, -999)};
-    final Point[] ne = new Point[] {point(1000, -1000), point(1001, -999)};
-    final Point[] w = new Point[] {point(-1000, 0), point(-999, 1)};
-    final Point[] e = new Point[] {point(1000, 0), point(1001, 1)};
-    final Point[] sw = new Point[] {point(-1000, 1000), point(-999, 1001)};
-    final Point[] s = new Point[] {point(0, 1000), point(1, 1001)};
-    final Point[] se = new Point[] {point(1000, 1000), point(1001, 1001)};
+    final Point2D[] input = new Point2D[] {point(0, 0), point(1, 1)};
+    final Point2D[] nw = new Point2D[] {point(-1000, -1000), point(-999, -999)};
+    final Point2D[] n = new Point2D[] {point(0, -1000), point(1, -999)};
+    final Point2D[] ne = new Point2D[] {point(1000, -1000), point(1001, -999)};
+    final Point2D[] w = new Point2D[] {point(-1000, 0), point(-999, 1)};
+    final Point2D[] e = new Point2D[] {point(1000, 0), point(1001, 1)};
+    final Point2D[] sw = new Point2D[] {point(-1000, 1000), point(-999, 1001)};
+    final Point2D[] s = new Point2D[] {point(0, 1000), point(1, 1001)};
+    final Point2D[] se = new Point2D[] {point(1000, 1000), point(1001, 1001)};
 
-    final List<Point[]> points = new RouteCalculator(true, true, 1000, 1000).getAllPoints(input);
+    final List<Point2D[]> points = new RouteCalculator(true, true, 1000, 1000).getAllPoints(input);
     // This may be changed along with the RouteOptimizer#getPossiblePoints method
     assertArrayEquals(input, points.get(0));
     assertArrayEquals(nw, points.get(1));

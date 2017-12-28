@@ -2,6 +2,7 @@ package games.strategy.triplea.ui.logic;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,23 +32,23 @@ public class RouteCalculator {
    * @param route The joints on the Map
    * @return A Point array which goes through Map Borders if necessary
    */
-  public Point[] getTranslatedRoute(final Point... route) {
+  public Point2D[] getTranslatedRoute(final Point2D... route) {
     if (route == null || route.length == 0 || (!isInfiniteX && !isInfiniteY)) {
       return route;
     }
-    final List<Point> result = new ArrayList<>();
-    Point previousPoint = null;
-    for (final Point point : route) {
+    final List<Point2D> result = new ArrayList<>();
+    Point2D previousPoint = null;
+    for (final Point2D point : route) {
       if (previousPoint == null) {
         previousPoint = point;
         result.add(point);
         continue;
       }
-      final Point closestPoint = getClosestPoint(previousPoint, getPossiblePoints(point));
+      final Point2D closestPoint = getClosestPoint(previousPoint, getPossiblePoints(point));
       result.add(closestPoint);
       previousPoint = closestPoint;
     }
-    return result.toArray(new Point[result.size()]);
+    return result.toArray(new Point2D[result.size()]);
   }
 
   /**
@@ -57,10 +58,10 @@ public class RouteCalculator {
    * @param pool Point List with all possible options
    * @return the closest point in the Pool to the source
    */
-  public static Point getClosestPoint(final Point source, final List<Point> pool) {
+  public static Point2D getClosestPoint(final Point2D source, final List<Point2D> pool) {
     double closestDistance = Double.MAX_VALUE;
-    Point closestPoint = null;
-    for (final Point possibleClosestPoint : pool) {
+    Point2D closestPoint = null;
+    for (final Point2D possibleClosestPoint : pool) {
       if (closestPoint == null) {
         closestDistance = source.distance(possibleClosestPoint);
         closestPoint = possibleClosestPoint;
@@ -83,27 +84,25 @@ public class RouteCalculator {
    * @return A List of all possible Points depending in map Properties
    *         size may vary
    */
-  public List<Point> getPossiblePoints(final Point point) {
-    final List<Point> result = new ArrayList<>();
+  public List<Point2D> getPossiblePoints(final Point2D point) {
+    final List<Point2D> result = new ArrayList<>();
     result.add(point);
     if (isInfiniteX && isInfiniteY) {
       result.addAll(Arrays.asList(
-          new Point(point.getX() - mapWidth, point.getY() - mapHeight),
-          new Point(point.getX() - mapWidth, point.getY() + mapHeight),
-          new Point(point.getX() + mapWidth, point.getY() - mapHeight),
-          new Point(point.getX() + mapWidth, point.getY() + mapHeight)));
+          new Point2D.Double(point.getX() - mapWidth, point.getY() - mapHeight),
+          new Point2D.Double(point.getX() - mapWidth, point.getY() + mapHeight),
+          new Point2D.Double(point.getX() + mapWidth, point.getY() - mapHeight),
+          new Point2D.Double(point.getX() + mapWidth, point.getY() + mapHeight)));
     }
     if (isInfiniteX) {
       result.addAll(Arrays.asList(
-          new Point(point.getX() - mapWidth, point.getY()),
-          new Point(point.getX() + mapWidth, point.getY())));
-
+          new Point2D.Double(point.getX() - mapWidth, point.getY()),
+          new Point2D.Double(point.getX() + mapWidth, point.getY())));
     }
     if (isInfiniteY) {
       result.addAll(Arrays.asList(
-          new Point(point.getX(), point.getY() - mapHeight),
-          new Point(point.getX(), point.getY() + mapHeight)));
-
+          new Point2D.Double(point.getX(), point.getY() - mapHeight),
+          new Point2D.Double(point.getX(), point.getY() + mapHeight)));
     }
     return result;
   }
@@ -114,13 +113,13 @@ public class RouteCalculator {
    * @param points A Point array
    * @return Offset Point Arrays including points
    */
-  public List<Point[]> getAllPoints(final Point... points) {
-    final List<Point[]> allPoints = new ArrayList<>();
+  public List<Point2D[]> getAllPoints(final Point2D... points) {
+    final List<Point2D[]> allPoints = new ArrayList<>();
     for (int i = 0; i < points.length; i++) {
-      final List<Point> subPoints = getPossiblePoints(points[i]);
+      final List<Point2D> subPoints = getPossiblePoints(points[i]);
       for (int y = 0; y < subPoints.size(); y++) {
         if (i == 0) {
-          allPoints.add(new Point[points.length]);
+          allPoints.add(new Point2D[points.length]);
         }
         allPoints.get(y)[i] = subPoints.get(y);
       }
