@@ -49,14 +49,14 @@ import games.strategy.util.IntegerMap;
  */
 @MapSupport
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
-  private boolean m_needToInitialize = true;
+  private boolean needToInitialize = true;
   public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";
 
   @Override
   public void start() {
     super.start();
     final GameData data = getData();
-    if (m_needToInitialize) {
+    if (needToInitialize) {
       if (Properties.getTriggers(data)) {
         // First set up a match for what we want to have fire as a default in this delegate. List out as a composite
         // match OR.
@@ -84,21 +84,21 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           TriggerAttachment.triggerPurchase(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
         }
       }
-      m_needToInitialize = false;
+      needToInitialize = false;
     }
   }
 
   @Override
   public void end() {
     super.end();
-    m_needToInitialize = true;
+    needToInitialize = true;
   }
 
   @Override
   public Serializable saveState() {
     final PurchaseExtendedDelegateState state = new PurchaseExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = m_needToInitialize;
+    state.m_needToInitialize = needToInitialize;
     return state;
   }
 
@@ -106,7 +106,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   public void loadState(final Serializable state) {
     final PurchaseExtendedDelegateState s = (PurchaseExtendedDelegateState) state;
     super.loadState(s.superState);
-    m_needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.m_needToInitialize;
   }
 
   @Override

@@ -40,9 +40,8 @@ import games.strategy.util.IntegerMap;
  */
 @MapSupport
 public class SpecialMoveDelegate extends AbstractMoveDelegate {
-  private boolean m_needToInitialize = true;
+  private boolean needToInitialize = true;
 
-  // private boolean m_allowAirborne = true;
   public SpecialMoveDelegate() {}
 
   @Override
@@ -60,24 +59,24 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final boolean onlyWhereUnderAttackAlready =
         Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
-    if (m_needToInitialize && onlyWhereUnderAttackAlready) {
+    if (needToInitialize && onlyWhereUnderAttackAlready) {
       // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move
       BattleDelegate.doInitialize(battleTracker, bridge);
-      m_needToInitialize = false;
+      needToInitialize = false;
     }
   }
 
   @Override
   public void end() {
     super.end();
-    m_needToInitialize = true;
+    needToInitialize = true;
   }
 
   @Override
   public Serializable saveState() {
     final SpecialMoveExtendedDelegateState state = new SpecialMoveExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = m_needToInitialize;
+    state.m_needToInitialize = needToInitialize;
     return state;
   }
 
@@ -85,7 +84,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   public void loadState(final Serializable state) {
     final SpecialMoveExtendedDelegateState s = (SpecialMoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    m_needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.m_needToInitialize;
   }
 
   @Override
