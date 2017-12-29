@@ -121,7 +121,7 @@ public class GameRunner {
     LoggingConfiguration.initialize();
     ClientSetting.initialize();
 
-    if (!ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
+    if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
       ErrorConsole.getConsole();
     }
     if (!new ArgParser(COMMAND_LINE_ARGS).handleCommandLineArgs(args)) {
@@ -155,7 +155,7 @@ public class GameRunner {
       System.out.println(ENGINE_VERSION_BIN + ":" + engineVersion);
     }
 
-    if (ClientContext.gameEnginePropertyReader().useJavaFxUi()) {
+    if (ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
       TripleA.launch(args);
     } else {
       SwingUtilities.invokeLater(() -> {

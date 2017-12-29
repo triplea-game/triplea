@@ -171,7 +171,14 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       SettingType.NETWORK_PROXY,
       SelectionComponentFactory.proxySettings(),
       "Configure TripleA's Network and Proxy Settings\n"
-          + "This only effects Play-By-Forum games, dice servers, and map downloads.");
+          + "This only effects Play-By-Forum games, dice servers, and map downloads."),
+
+  USE_EXPERIMENTAL_JAVAFX_UI(
+      "Use JavaFX UI (Incomplete!)",
+      SettingType.TESTING,
+      ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI,
+      "Enable the experimental JavaFX UI. Not recommended. Isn't working yet.\n"
+          + "Just a proof-of-concept.\nRequires a restart.");
 
 
   final SettingType type;

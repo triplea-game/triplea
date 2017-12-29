@@ -115,6 +115,8 @@ public enum ClientSetting implements GameSetting {
   WHEEL_SCROLL_AMOUNT(60),
 
   PLAYER_NAME(SystemProperties.getUserName()),
+  
+  USE_EXPERIMENTAL_JAVAFX_UI(false),
 
   /* for testing purposes, to be used in unit tests only */
   @VisibleForTesting

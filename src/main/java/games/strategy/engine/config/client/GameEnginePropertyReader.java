@@ -27,13 +27,8 @@ public final class GameEnginePropertyReader {
     return new Version(propertyReader.readProperty(PropertyKeys.ENGINE_VERSION));
   }
 
-  public boolean useJavaFxUi() {
-    return propertyReader.readProperty(PropertyKeys.JAVAFX_UI).equalsIgnoreCase(String.valueOf(true));
-  }
-
   @VisibleForTesting
   interface PropertyKeys {
     String ENGINE_VERSION = "engine_version";
-    String JAVAFX_UI = "javafx_ui";
   }
 }

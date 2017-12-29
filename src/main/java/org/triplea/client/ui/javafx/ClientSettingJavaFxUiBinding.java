@@ -95,7 +95,11 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
 
   PROXY_CHOICE(
       SettingType.NETWORK_PROXY,
-      JavaFxSelectionComponentFactory.proxySettings());
+      JavaFxSelectionComponentFactory.proxySettings()),
+
+  USE_EXPERIMENTAL_JAVAFX_UI(
+      SettingType.TESTING,
+      ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI);
 
   private final SettingType category;
   private final Supplier<SelectionComponent<Region>> nodeSupplier;
