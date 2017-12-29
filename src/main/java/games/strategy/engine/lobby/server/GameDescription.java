@@ -40,20 +40,20 @@ public class GameDescription implements Externalizable, Cloneable {
     }
   }
 
-  private INode m_hostedBy;
-  private int m_port;
-  private Instant m_startDateTime;
-  private String m_gameName;
-  private int m_playerCount;
-  private String m_round;
-  private GameStatus m_status;
-  private int m_version = Integer.MIN_VALUE;
-  private String m_hostName;
-  private String m_comment;
-  private boolean m_passworded;
-  private String m_engineVersion;
-  private String m_gameVersion;
-  private String m_botSupportEmail =
+  private INode hostedBy;
+  private int port;
+  private Instant startDateTime;
+  private String gameName;
+  private int playerCount;
+  private String round;
+  private GameStatus status;
+  private int version = Integer.MIN_VALUE;
+  private String hostName;
+  private String comment;
+  private boolean passworded;
+  private String engineVersion;
+  private String gameVersion;
+  private String botSupportEmail =
       HeadlessGameServer.getInstance() != null ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "";
 
   // if you add a field, add it to write/read object as well for Externalizable
@@ -62,18 +62,18 @@ public class GameDescription implements Externalizable, Cloneable {
   public GameDescription(final INode hostedBy, final int port, final Instant startDateTime, final String gameName,
       final int playerCount, final GameStatus status, final String round, final String hostName, final String comment,
       final boolean passworded, final String engineVersion, final String gameVersion) {
-    m_hostName = hostName;
-    m_hostedBy = hostedBy;
-    m_port = port;
-    m_startDateTime = startDateTime;
-    m_gameName = gameName;
-    m_playerCount = playerCount;
-    m_status = status;
-    m_round = round;
-    m_comment = comment;
-    m_passworded = passworded;
-    m_engineVersion = engineVersion;
-    m_gameVersion = gameVersion;
+    this.hostName = hostName;
+    this.hostedBy = hostedBy;
+    this.port = port;
+    this.startDateTime = startDateTime;
+    this.gameName = gameName;
+    this.playerCount = playerCount;
+    this.status = status;
+    this.round = round;
+    this.comment = comment;
+    this.passworded = passworded;
+    this.engineVersion = engineVersion;
+    this.gameVersion = gameVersion;
   }
 
   @Override
@@ -90,161 +90,161 @@ public class GameDescription implements Externalizable, Cloneable {
    * synchronization problems where updates arrive out of order
    */
   public int getVersion() {
-    return m_version;
+    return version;
   }
 
   public void setGameName(final String gameName) {
-    m_version++;
-    m_gameName = gameName;
+    version++;
+    this.gameName = gameName;
   }
 
   public void setHostedBy(final INode hostedBy) {
-    m_version++;
-    m_hostedBy = hostedBy;
+    version++;
+    this.hostedBy = hostedBy;
   }
 
   public void setPlayerCount(final int playerCount) {
-    m_version++;
-    m_playerCount = playerCount;
+    version++;
+    this.playerCount = playerCount;
   }
 
   public void setPort(final int port) {
-    m_version++;
-    m_port = port;
+    version++;
+    this.port = port;
   }
 
   public void setRound(final String round) {
-    m_version++;
-    m_round = round;
+    version++;
+    this.round = round;
   }
 
   public void setStartDateTime(final Instant startDateTime) {
-    m_version++;
-    m_startDateTime = startDateTime;
+    version++;
+    this.startDateTime = startDateTime;
   }
 
   public void setStatus(final GameStatus status) {
-    m_version++;
-    m_status = status;
+    version++;
+    this.status = status;
   }
 
   public void setPassworded(final boolean passworded) {
-    m_version++;
-    m_passworded = passworded;
+    version++;
+    this.passworded = passworded;
   }
 
   public boolean getPassworded() {
-    return m_passworded;
+    return passworded;
   }
 
   public void setEngineVersion(final String engineVersion) {
-    m_version++;
-    m_engineVersion = engineVersion;
+    version++;
+    this.engineVersion = engineVersion;
   }
 
   public void setGameVersion(final String gameVersion) {
-    m_version++;
-    m_gameVersion = gameVersion;
+    version++;
+    this.gameVersion = gameVersion;
   }
 
   public String getEngineVersion() {
-    return m_engineVersion;
+    return engineVersion;
   }
 
   public String getGameVersion() {
-    return m_gameVersion;
+    return gameVersion;
   }
 
   public String getBotSupportEmail() {
-    return m_botSupportEmail;
+    return botSupportEmail;
   }
 
   public String getRound() {
-    return m_round;
+    return round;
   }
 
   public String getGameName() {
-    return m_gameName;
+    return gameName;
   }
 
   public INode getHostedBy() {
-    return m_hostedBy;
+    return hostedBy;
   }
 
   public int getPlayerCount() {
-    return m_playerCount;
+    return playerCount;
   }
 
   public int getPort() {
-    return m_port;
+    return port;
   }
 
   public Instant getStartDateTime() {
-    return m_startDateTime;
+    return startDateTime;
   }
 
   public GameStatus getStatus() {
-    return m_status;
+    return status;
   }
 
   public String getHostName() {
-    return m_hostName;
+    return hostName;
   }
 
   public void setHostName(final String hostName) {
-    m_version++;
-    m_hostName = hostName;
+    version++;
+    this.hostName = hostName;
   }
 
   public String getComment() {
-    return m_comment;
+    return comment;
   }
 
   public void setComment(final String comment) {
-    m_version++;
-    m_comment = comment;
+    version++;
+    this.comment = comment;
   }
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException {
-    m_hostedBy = new Node();
-    ((Node) m_hostedBy).readExternal(in);
-    m_port = in.readInt();
-    m_startDateTime = Instant.ofEpochMilli(in.readLong());
-    m_playerCount = in.readByte();
-    m_round = in.readUTF();
-    m_status = GameStatus.values()[in.readByte()];
-    m_version = in.readInt();
-    m_hostName = in.readUTF();
-    m_comment = in.readUTF();
-    m_gameName = in.readUTF();
-    m_passworded = in.readBoolean();
-    m_engineVersion = in.readUTF();
-    m_gameVersion = in.readUTF();
-    m_botSupportEmail = in.readUTF();
+    hostedBy = new Node();
+    ((Node) hostedBy).readExternal(in);
+    port = in.readInt();
+    startDateTime = Instant.ofEpochMilli(in.readLong());
+    playerCount = in.readByte();
+    round = in.readUTF();
+    status = GameStatus.values()[in.readByte()];
+    version = in.readInt();
+    hostName = in.readUTF();
+    comment = in.readUTF();
+    gameName = in.readUTF();
+    passworded = in.readBoolean();
+    engineVersion = in.readUTF();
+    gameVersion = in.readUTF();
+    botSupportEmail = in.readUTF();
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
-    ((Node) m_hostedBy).writeExternal(out);
-    out.writeInt(m_port);
-    out.writeLong(m_startDateTime.toEpochMilli());
-    out.writeByte(m_playerCount);
-    out.writeUTF(m_round);
-    out.writeByte(m_status.ordinal());
-    out.writeInt(m_version);
-    out.writeUTF(m_hostName);
-    out.writeUTF(m_comment);
-    out.writeUTF(m_gameName);
-    out.writeBoolean(m_passworded);
-    out.writeUTF(m_engineVersion);
-    out.writeUTF(m_gameVersion);
-    out.writeUTF(m_botSupportEmail);
+    ((Node) hostedBy).writeExternal(out);
+    out.writeInt(port);
+    out.writeLong(startDateTime.toEpochMilli());
+    out.writeByte(playerCount);
+    out.writeUTF(round);
+    out.writeByte(status.ordinal());
+    out.writeInt(version);
+    out.writeUTF(hostName);
+    out.writeUTF(comment);
+    out.writeUTF(gameName);
+    out.writeBoolean(passworded);
+    out.writeUTF(engineVersion);
+    out.writeUTF(gameVersion);
+    out.writeUTF(botSupportEmail);
   }
 
   @Override
   public String toString() {
-    return "Game Hosted By:" + m_hostName + " gameName:" + m_gameName + " at:" + m_hostedBy.getAddress() + ":" + m_port
-        + " playerCount:" + m_playerCount;
+    return "Game Hosted By:" + hostName + " gameName:" + gameName + " at:" + hostedBy.getAddress() + ":" + port
+        + " playerCount:" + playerCount;
   }
 }
