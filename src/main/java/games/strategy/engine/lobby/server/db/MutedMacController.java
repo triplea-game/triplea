@@ -59,7 +59,7 @@ public class MutedMacController extends TimedController {
    * database any mac's whose mute has expired.
    */
   public boolean isMacMuted(final String mac) {
-    return getMacUnmuteTime(mac).map(now()::isBefore).orElse(true);
+    return getMacUnmuteTime(mac).map(now()::isBefore).orElse(false);
   }
 
   /**

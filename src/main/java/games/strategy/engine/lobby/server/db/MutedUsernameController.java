@@ -59,7 +59,7 @@ public class MutedUsernameController extends TimedController {
    * database any username's whose mute has expired.
    */
   public boolean isUsernameMuted(final String username) {
-    return getUsernameUnmuteTime(username).map(now()::isBefore).orElse(true);
+    return getUsernameUnmuteTime(username).map(now()::isBefore).orElse(false);
   }
 
   /**
