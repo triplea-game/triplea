@@ -138,8 +138,9 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   TEST_LOBBY_PORT_BINDING(
       "Lobby Port Override",
       SettingType.TESTING,
-      SelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 99999),
-      "Specifies the port for connecting to a test lobby."),
+      SelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 99999, true),
+      "Specifies the port for connecting to a test lobby.\n"
+          + "Set to 0 for no override"),
 
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(
       "Show First Time Prompts",

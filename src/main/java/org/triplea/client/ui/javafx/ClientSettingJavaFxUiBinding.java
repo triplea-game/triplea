@@ -75,7 +75,7 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
 
   TEST_LOBBY_PORT_BINDING(
       SettingType.TESTING,
-      JavaFxSelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 99999)),
+      JavaFxSelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 99999, true)),
 
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(
       SettingType.GAME,

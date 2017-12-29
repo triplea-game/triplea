@@ -19,7 +19,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import com.google.common.base.Strings;
 
@@ -169,73 +171,62 @@ final class SelectionComponentFactory {
    */
   static Supplier<SelectionComponent<JComponent>> intValueRange(final ClientSetting clientSetting, final int lo,
       final int hi) {
+    return intValueRange(clientSetting, lo, hi, false);
+  }
+
+  /**
+   * Text field that only accepts numbers between a certain range.
+   */
+  static Supplier<SelectionComponent<JComponent>> intValueRange(final ClientSetting clientSetting, final int lo,
+      final int hi, final boolean allowUnset) {
     return () -> new SelectionComponent<JComponent>() {
-      String value = clientSetting.value();
-      final JTextField component = new JTextField(value, String.valueOf(hi).length());
+      private final JSpinner component = new JSpinner(new SpinnerNumberModel(
+          toValidIntValue(clientSetting.value()), lo - (allowUnset ? 1 : 0), hi, 1));
 
       @Override
       public JComponent getUiComponent() {
-        component.setToolTipText(validValueDescription());
-
-        SwingComponents.addTextFieldFocusLostListener(component, () -> {
-          if (isValid()) {
-            clearError();
-          } else {
-            indicateError();
-          }
-        });
-
         return component;
+      }
+
+      private int toValidIntValue(final String value) {
+        return value.isEmpty() && allowUnset ? lo - 1 : Integer.parseInt(value);
+      }
+
+      private String toValidStringValue(final int value) {
+        return allowUnset && value == lo - 1 ? "" : String.valueOf(value);
       }
 
       @Override
       public boolean isValid() {
-        final String value = component.getText();
-
-        if (value.trim().isEmpty()) {
-          return true;
-        }
-
-        try {
-          final int intValue = Integer.parseInt(value);
-          return intValue >= lo && intValue <= hi;
-        } catch (final NumberFormatException e) {
-          return false;
-        }
+        return true;
       }
 
       @Override
       public String validValueDescription() {
-        return "Number between " + lo + " and " + hi;
+        return "";
       }
 
       @Override
-      public void indicateError() {
-        component.setBackground(Color.RED);
-      }
+      public void indicateError() {}
 
       @Override
-      public void clearError() {
-        component.setBackground(Color.WHITE);
-      }
+      public void clearError() {}
 
       @Override
       public Map<GameSetting, String> readValues() {
         final Map<GameSetting, String> map = new HashMap<>();
-        map.put(clientSetting, component.getText());
+        map.put(clientSetting, toValidStringValue((int) component.getValue()));
         return map;
       }
 
       @Override
       public void resetToDefault() {
-        component.setText(clientSetting.defaultValue);
-        clearError();
+        component.setValue(toValidIntValue(clientSetting.defaultValue));
       }
 
       @Override
       public void reset() {
-        component.setText(clientSetting.value());
-        clearError();
+        component.setValue(toValidIntValue(clientSetting.value()));
       }
     };
   }

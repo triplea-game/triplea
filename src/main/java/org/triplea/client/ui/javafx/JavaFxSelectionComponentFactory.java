@@ -36,16 +36,27 @@ class JavaFxSelectionComponentFactory {
       final ClientSetting clientSetting,
       final int minValue,
       final int maxValue) {
-    return () -> new SelectionComponent<Region>() {
+    return intValueRange(clientSetting, minValue, maxValue, false);
+  }
 
-      final int value = clientSetting.value().isEmpty()
-          ? 0
-          : clientSetting.intValue();
-      final Spinner<Integer> spinner = new Spinner<>(minValue, maxValue, value);
+  static Supplier<SelectionComponent<Region>> intValueRange(
+      final ClientSetting clientSetting,
+      final int minValue,
+      final int maxValue,
+      final boolean allowUnset) {
+    return () -> new SelectionComponent<Region>() {
+      final Spinner<Integer> spinner =
+          new Spinner<>(minValue - (allowUnset ? 1 : 0), maxValue, getIntegerFromString(clientSetting.value()));
 
       @Override
       public Region getUiComponent() {
         return spinner;
+      }
+
+      private Integer getIntegerFromString(final String string) {
+        return string.isEmpty() && allowUnset
+            ? minValue - 1
+            : Integer.valueOf(string);
       }
 
       @Override
@@ -60,7 +71,9 @@ class JavaFxSelectionComponentFactory {
 
       @Override
       public Map<GameSetting, String> readValues() {
-        return Collections.singletonMap(clientSetting, spinner.getValue().toString());
+        final Integer value = spinner.getValue();
+        final String stringValue = allowUnset && value == minValue - 1 ? "" : value.toString();
+        return Collections.singletonMap(clientSetting, stringValue);
       }
 
       /**
@@ -79,12 +92,12 @@ class JavaFxSelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        spinner.getValueFactory().setValue(Integer.getInteger(clientSetting.defaultValue));
+        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.defaultValue));
       }
 
       @Override
       public void reset() {
-        spinner.getValueFactory().setValue(Integer.getInteger(clientSetting.value()));
+        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.value()));
       }
 
       @Override
