@@ -82,6 +82,7 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
+import javafx.application.Application;
 
 /**
  * GameRunner - The entrance class with the main method.
@@ -156,7 +157,7 @@ public class GameRunner {
     }
 
     if (ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      TripleA.launch(args);
+      Application.launch(TripleA.class, args);
     } else {
       SwingUtilities.invokeLater(() -> {
         setupPanelModel.showSelectType();

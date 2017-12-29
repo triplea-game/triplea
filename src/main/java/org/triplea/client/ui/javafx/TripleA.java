@@ -59,10 +59,6 @@ public class TripleA extends Application {
     stage.show();
   }
 
-  public static void launch(final String... arg) {
-    Application.launch(arg);
-  }
-
   void returnToMainMenu(final Node currentPane) {
     currentPane.setVisible(false);
     mainMenu.setVisible(true);

@@ -178,7 +178,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       SettingType.TESTING,
       ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI,
       "Enable the experimental JavaFX UI. Not recommended. Isn't working yet.\n"
-          + "Just a proof-of-concept.\nRequires a restart.");
+          + "Just a proof-of-concept. Requires a restart.");
 
 
   final SettingType type;
