@@ -10,7 +10,9 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -22,8 +24,6 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.logic.Line;
-import games.strategy.triplea.ui.logic.Point;
 import games.strategy.triplea.ui.logic.RouteCalculator;
 import games.strategy.triplea.ui.mapdata.MapData;
 
@@ -66,49 +66,44 @@ public class MapRouteDrawer {
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     final int numTerritories = route.getAllTerritories().size();
-    final int offsetX = mapPanel.getXOffset();
-    final int offsetY = mapPanel.getYOffset();
-    final Point[] points = routeCalculator.getTranslatedRoute(getRoutePoints(routeDescription));
+    final Point2D[] points = routeCalculator.getTranslatedRoute(getRoutePoints(routeDescription));
     final boolean tooFewTerritories = numTerritories <= 1;
     final boolean tooFewPoints = points.length <= 2;
-    final double scale = mapPanel.getScale();
     if (tooFewTerritories || tooFewPoints) {
       if (routeDescription.getEnd() != null) { // AI has no End Point
-        drawDirectPath(graphics, new Point(routeDescription.getStart()), new Point(routeDescription.getEnd()), offsetX,
-            offsetY, scale);
+        drawDirectPath(graphics, routeDescription.getStart(), routeDescription.getEnd());
       } else {
-        drawDirectPath(graphics, points[0], points[points.length - 1], offsetX, offsetY, scale);
+        drawDirectPath(graphics, points[0], points[points.length - 1]);
       }
       if (tooFewPoints && !tooFewTerritories) {
-        drawMoveLength(graphics, points, offsetX, offsetY, scale, numTerritories, maxMovement);
+        drawMoveLength(graphics, points, numTerritories, maxMovement);
       }
     } else {
-      drawCurvedPath(graphics, points, offsetX, offsetY, scale);
-      drawMoveLength(graphics, points, offsetX, offsetY, scale, numTerritories, maxMovement);
+      drawCurvedPath(graphics, points);
+      drawMoveLength(graphics, points, numTerritories, maxMovement);
     }
-    drawJoints(graphics, points, offsetX, offsetY, scale);
-    drawCustomCursor(graphics, routeDescription, offsetX, offsetY, scale);
+    drawJoints(graphics, points);
+    drawCustomCursor(graphics, routeDescription, points[points.length - 1]);
   }
 
   /**
    * Draws Points on the Map.
    *
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
-   * @param points The {@linkplain Point} array aka the "Joints" to be drawn
-   * @param offsetX The horizontal pixel-difference between the frame and the Map
-   * @param offsetY The vertical pixel-difference between the frame and the Map
-   * @param jointsize The diameter of the Points being drawn
-   * @param scale The scale-factor of the Map
+   * @param points The {@linkplain Point2D} array aka the "Joints" to be drawn
    */
-  private void drawJoints(final Graphics2D graphics, final Point[] points, final int offsetX, final int offsetY,
-      final double scale) {
+  private void drawJoints(final Graphics2D graphics, final Point2D[] points) {
     final int jointsize = 10;
     // If the points array is bigger than 1 the last joint should not be drawn (draw an arrow instead)
-    final Point[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
-    for (final Point[] joints : routeCalculator.getAllPoints(newPoints)) {
-      for (final Point p : joints) {
-        graphics.fillOval((int) (((p.getX() - offsetX) - (jointsize / 2) / scale) * scale),
-            (int) (((p.getY() - offsetY) - (jointsize / 2) / scale) * scale), jointsize, jointsize);
+    final Point2D[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
+    for (final Point2D[] joints : routeCalculator.getAllPoints(newPoints)) {
+      for (final Point2D p : joints) {
+        final Ellipse2D circle = new Ellipse2D.Double(jointsize / -2, jointsize / -2, jointsize, jointsize);
+        final AffineTransform ellipseTransform = getDrawingTransform();
+        ellipseTransform.translate(p.getX(), p.getY());
+        final double scale = mapPanel.getScale();
+        ellipseTransform.scale(1 / scale, 1 / scale);
+        graphics.fill(ellipseTransform.createTransformedShape(circle));
       }
     }
   }
@@ -118,21 +113,20 @@ public class MapRouteDrawer {
    *
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
    * @param routeDescription The RouteDescription object containing the CursorImage
-   * @param offsetX The horizontal pixel-difference between the frame and the Map
-   * @param offsetY The vertical pixel-difference between the frame and the Map
-   * @param scale The scale-factor of the Map
+   * @param lastRoutePoint The last {@linkplain Point2D} on the drawn Route as a center for the cursor icon.
    */
-  private void drawCustomCursor(final Graphics2D graphics, final RouteDescription routeDescription, final int offsetX,
-      final int offsetY, final double scale) {
+  private void drawCustomCursor(final Graphics2D graphics, final RouteDescription routeDescription,
+      final Point2D lastRoutePoint) {
     final BufferedImage cursorImage = (BufferedImage) routeDescription.getCursorImage();
     if (cursorImage != null) {
-      for (final Point[] endPoint : routeCalculator.getAllPoints(routeCalculator.getLastEndPoint())) {
-        graphics.drawImage(cursorImage,
-            (int) (((endPoint[0].getX() - offsetX) - (cursorImage.getWidth() / 2)) * scale),
-            (int) (((endPoint[0].getY() - offsetY) - (cursorImage.getHeight() / 2)) * scale), null);
+      for (final Point2D[] endPoint : routeCalculator.getAllPoints(lastRoutePoint)) {
+        final AffineTransform imageTransform = getDrawingTransform();
+        imageTransform.translate(endPoint[0].getX(), endPoint[0].getY());
+        imageTransform.translate(cursorImage.getWidth() / 2.0, cursorImage.getHeight() / 2.0);
+        imageTransform.scale(1 / mapPanel.getScale(), 1 / mapPanel.getScale());
+        graphics.drawImage(cursorImage, imageTransform, null);
       }
     }
-
   }
 
   /**
@@ -140,21 +134,15 @@ public class MapRouteDrawer {
    * Also draws a small little point at the end of the Line.
    *
    * @param graphics The {@linkplain Graphics2D} Object being drawn on
-   * @param start The start {@linkplain Point} of the Path
-   * @param end The end {@linkplain Point} of the Path
-   * @param offsetX The horizontal pixel-difference between the frame and the Map
-   * @param offsetY The vertical pixel-difference between the frame and the Map
-   * @param jointsize The diameter of the Points being drawn
-   * @param scale The scale-factor of the Map
+   * @param start The start {@linkplain Point2D} of the Path
+   * @param end The end {@linkplain Point2D} of the Path
    */
-  private void drawDirectPath(final Graphics2D graphics, final Point start, final Point end, final int offsetX,
-      final int offsetY, final double scale) {
-    final Point[] points = routeCalculator.getTranslatedRoute(start, end);
-    for (final Point[] newPoints : routeCalculator.getAllPoints(points)) {
-      drawLineWithTranslate(graphics, new Line2D.Float(newPoints[0].toPoint(), newPoints[1].toPoint()), offsetX,
-          offsetY, scale);
+  private void drawDirectPath(final Graphics2D graphics, final Point2D start, final Point2D end) {
+    final Point2D[] points = routeCalculator.getTranslatedRoute(start, end);
+    for (final Point2D[] newPoints : routeCalculator.getAllPoints(points)) {
+      drawTransformedShape(graphics, new Line2D.Float(newPoints[0], newPoints[1]));
       if (newPoints[0].distance(newPoints[1]) > arrowLength) {
-        drawArrow(graphics, newPoints[0].toPoint(), newPoints[1].toPoint(), offsetX, offsetY, scale);
+        drawArrow(graphics, newPoints[0], newPoints[1]);
       }
     }
   }
@@ -170,7 +158,7 @@ public class MapRouteDrawer {
    * @param points - The Points which should be parameterized
    * @return A Parameter-Array called the "Index"
    */
-  protected double[] createParameterizedIndex(final Point[] points) {
+  protected double[] createParameterizedIndex(final Point2D[] points) {
     final double[] index = new double[points.length];
     if (index.length > 0) {
       index[0] = 0;
@@ -185,51 +173,44 @@ public class MapRouteDrawer {
    * Draws a line to the Screen regarding the Map-Offset and scale.
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
-   * @param line The Line to be drawn
-   * @param offsetX The horizontal pixel-difference between the frame and the Map
-   * @param offsetY The vertical pixel-difference between the frame and the Map
-   * @param scale The scale-factor of the Map
+   * @param shape The Shape to be drawn
    */
-  private static void drawLineWithTranslate(final Graphics2D graphics, final Line2D line, final double offsetX,
-      final double offsetY, final double scale) {
-    graphics.draw(
-        new Line2D.Double(
-            new Point2D.Double((line.getP1().getX() - offsetX) * scale, (line.getP1().getY() - offsetY) * scale),
-            new Point2D.Double((line.getP2().getX() - offsetX) * scale, (line.getP2().getY() - offsetY) * scale)));
+  private void drawTransformedShape(final Graphics2D graphics, final Shape shape) {
+    graphics.draw(getDrawingTransform().createTransformedShape(shape));
   }
 
   /**
-   * Creates a {@linkplain Point} Array out of a {@linkplain RouteDescription} and a {@linkplain MapData} object.
+   * Creates a {@linkplain Point2D} Array out of a {@linkplain RouteDescription} and a {@linkplain MapData} object.
    *
    * @param routeDescription {@linkplain RouteDescription} containing the Route information
    * @param mapData {@linkplain MapData} Object containing Information about the Map Coordinates
-   * @return The {@linkplain Point} array specified by the {@linkplain RouteDescription} and {@linkplain MapData}
+   * @return The {@linkplain Point2D} array specified by the {@linkplain RouteDescription} and {@linkplain MapData}
    *         objects
    */
-  protected Point[] getRoutePoints(final RouteDescription routeDescription) {
+  protected Point2D[] getRoutePoints(final RouteDescription routeDescription) {
     final List<Territory> territories = routeDescription.getRoute().getAllTerritories();
     final int numTerritories = territories.size();
-    final Point[] points = new Point[numTerritories];
+    final Point2D[] points = new Point2D[numTerritories];
     for (int i = 0; i < numTerritories; i++) {
-      points[i] = new Point(mapData.getCenter(territories.get(i)));
+      points[i] = mapData.getCenter(territories.get(i));
     }
     if (routeDescription.getStart() != null) {
-      points[0] = new Point(routeDescription.getStart());
+      points[0] = routeDescription.getStart();
     }
     if (routeDescription.getEnd() != null && numTerritories > 1) {
-      points[numTerritories - 1] = new Point(routeDescription.getEnd());
+      points[numTerritories - 1] = routeDescription.getEnd();
     }
     return points;
   }
 
   /**
-   * Creates double arrays of y or x coordinates of the given {@linkplain Point} Array.
+   * Creates double arrays of y or x coordinates of the given {@linkplain Point2D} Array.
    *
-   * @param points The {@linkplain Point} Array containing the Coordinates
+   * @param points The {@linkplain Point2D} Array containing the Coordinates
    * @param extractor A function specifying which value to return
    * @return A double array with values specified by the given function
    */
-  protected double[] getValues(final Point[] points, final Function<Point, Double> extractor) {
+  protected double[] getValues(final Point2D[] points, final Function<Point2D, Double> extractor) {
     final double[] result = new double[points.length];
     for (int i = 0; i < points.length; i++) {
       result[i] = extractor.apply(points[i]);
@@ -262,17 +243,13 @@ public class MapRouteDrawer {
    * Draws how many moves are left.
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
-   * @param points The {@linkplain Point} array of the unit's tour
-   * @param offsetX The horizontal pixel-difference between the frame and the Map
-   * @param offsetY The vertical pixel-difference between the frame and the Map
-   * @param scale The scale-factor of the Map
+   * @param points The {@linkplain Point2D} array of the unit's tour
    * @param numTerritories how many Territories the unit traveled so far
    * @param maxMovement The String indicating how man
    */
-  private void drawMoveLength(final Graphics2D graphics, final Point[] points,
-      final int offsetX, final int offsetY, final double scale, final int numTerritories,
+  private void drawMoveLength(final Graphics2D graphics, final Point2D[] points, final int numTerritories,
       final String maxMovement) {
-    final Point cursorPos = points[points.length - 1];
+    final Point2D cursorPos = points[points.length - 1];
     final String unitMovementLeft =
         maxMovement == null || maxMovement.trim().length() == 0 ? ""
             : "    /" + maxMovement;
@@ -282,10 +259,12 @@ public class MapRouteDrawer {
     final int textXOffset = -movementImage.getWidth() / 2;
     final double deltaY = cursorPos.getY() - points[numTerritories - 2].getY();
     final int textYOffset = deltaY > 0 ? movementImage.getHeight() : movementImage.getHeight() * -2;
-    for (final Point[] cursorPositions : routeCalculator.getAllPoints(cursorPos)) {
-      graphics.drawImage(movementImage,
-          (int) ((cursorPositions[0].getX() + textXOffset - offsetX) * scale),
-          (int) ((cursorPositions[0].getY() + textYOffset - offsetY) * scale), null);
+    for (final Point2D[] cursorPositions : routeCalculator.getAllPoints(cursorPos)) {
+      final AffineTransform imageTransform = getDrawingTransform();
+      imageTransform.translate(textXOffset, textYOffset);
+      imageTransform.translate(cursorPositions[0].getX(), cursorPositions[0].getY());
+      imageTransform.scale(1 / mapPanel.getScale(), 1 / mapPanel.getScale());
+      graphics.drawImage(movementImage, imageTransform, null);
     }
   }
 
@@ -301,17 +280,13 @@ public class MapRouteDrawer {
    * </p>
    *
    * <p>
-   * Finally those 2 interpolated arrays get unified into a single {@linkplain Point} array and drawn to the Map
+   * Finally those 2 interpolated arrays get unified into a single {@linkplain Point2D} array and drawn to the Map
    * </p>
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param points The Knot Points for the Spline-Interpolator aka the joints
-   * @param offsetX The horizontal pixel-difference between the frame and the Map
-   * @param offsetY The vertical pixel-difference between the frame and the Map
-   * @param scale The scale-factor of the Map
    */
-  private void drawCurvedPath(final Graphics2D graphics, final Point[] points, final int offsetX, final int offsetY,
-      final double scale) {
+  private void drawCurvedPath(final Graphics2D graphics, final Point2D[] points) {
     final double[] index = createParameterizedIndex(points);
     final PolynomialSplineFunction xcurve =
         splineInterpolator.interpolate(index, getValues(points, point -> point.getX()));
@@ -319,21 +294,19 @@ public class MapRouteDrawer {
     final PolynomialSplineFunction ycurve =
         splineInterpolator.interpolate(index, getValues(points, point -> point.getY()));
     final double[] ycoords = getCoords(ycurve, index);
-    final List<Line> lines = routeCalculator.getAllNormalizedLines(xcoords, ycoords);
-    for (final Line line : lines) {
-      drawLineWithTranslate(graphics, line.toLine2D(), offsetX, offsetY, scale);
+    final List<Path2D> paths = routeCalculator.getAllNormalizedLines(xcoords, ycoords);
+    for (final Path2D path : paths) {
+      drawTransformedShape(graphics, path);
     }
     // draws the Line to the Cursor on every possible screen, so that the line ends at the cursor no matter what...
-    final List<Point[]> finishingPoints = routeCalculator.getAllPoints(
-        new Point(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]), points[points.length - 1]);
+    final List<Point2D[]> finishingPoints = routeCalculator.getAllPoints(
+        new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
+        points[points.length - 1]);
     final boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > arrowLength;
-    for (final Point[] finishingPointArray : finishingPoints) {
-      drawLineWithTranslate(graphics,
-          new Line(finishingPointArray[0], finishingPointArray[1]).toLine2D(),
-          offsetX, offsetY, scale);
+    for (final Point2D[] finishingPointArray : finishingPoints) {
+      drawTransformedShape(graphics, new Line2D.Double(finishingPointArray[0], finishingPointArray[1]));
       if (hasArrowEnoughSpace) {
-        drawArrow(graphics, finishingPointArray[0].toPoint(), finishingPointArray[1].toPoint(), offsetX, offsetY,
-            scale);
+        drawArrow(graphics, finishingPointArray[0], finishingPointArray[1]);
       }
     }
   }
@@ -352,7 +325,9 @@ public class MapRouteDrawer {
     textG2D.setFont(new Font("Dialog", Font.BOLD, 20));
     final int textThicknessOffset = textG2D.getFontMetrics().stringWidth(curMovement) / 2;
     final boolean distanceTooBig = maxMovement.equals("");
-    textG2D.drawString(curMovement, distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 10,
+    textG2D.drawString(
+        curMovement,
+        distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 10,
         image.getHeight());
     if (!distanceTooBig) {
       textG2D.setColor(new Color(33, 0, 127));
@@ -364,11 +339,10 @@ public class MapRouteDrawer {
   /**
    * Creates an Arrow-Shape.
    *
-   * @param from The {@linkplain Point2D} specifying the direction of the Arrow
-   * @param to The {@linkplain Point2D} where the arrow is placed
+   * @param angle The radiant angle at which the arrow should be rotated
    * @return A transformed Arrow-Shape
    */
-  private static Shape createArrowTipShape(final Point2D from, final Point2D to) {
+  private static Shape createArrowTipShape(final double angle) {
     final int arrowOffset = 1;
     final Polygon arrowPolygon = new Polygon();
     arrowPolygon.addPoint(arrowOffset - arrowLength, arrowLength / 2);
@@ -377,10 +351,8 @@ public class MapRouteDrawer {
 
 
     final AffineTransform transform = new AffineTransform();
-    transform.translate(to.getX(), to.getY());
     transform.scale(arrowLength, arrowLength);
-    final double rotate = Math.atan2(to.getY() - from.getY(), to.getX() - from.getX());
-    transform.rotate(rotate);
+    transform.rotate(angle);
 
     return transform.createTransformedShape(arrowPolygon);
   }
@@ -391,16 +363,20 @@ public class MapRouteDrawer {
    * @param graphics The {@linkplain Graphics2D} object to draw on
    * @param from The destination {@linkplain Point2D} form the Arrow
    * @param to The placement {@linkplain Point2D} for the Arrow
-   * @param offsetX The horizontal pixel-difference between the frame and the Map
-   * @param offsetY The vertical pixel-difference between the frame and the Map
-   * @param scale The scale-factor of the Map
    */
-  private static void drawArrow(final Graphics2D graphics, final Point2D from, final Point2D to, final int offsetX,
-      final int offsetY, final double scale) {
-    final Point2D scaledStart = new Point2D.Double((from.getX() - offsetX) * scale,
-        (from.getY() - offsetY) * scale);
-    final Point2D scaledEnd = new Point2D.Double((to.getX() - offsetX) * scale,
-        (to.getY() - offsetY) * scale);
-    graphics.fill(createArrowTipShape(scaledStart, scaledEnd));
+  private void drawArrow(final Graphics2D graphics, final Point2D from, final Point2D to) {
+    final Shape arrow = createArrowTipShape(Math.atan2(to.getY() - from.getY(), to.getX() - from.getX()));
+    final double scale = mapPanel.getScale();
+    final Shape antiScaledArrow = AffineTransform.getScaleInstance(1 / scale, 1 / scale).createTransformedShape(arrow);
+    final AffineTransform transform = getDrawingTransform();
+    transform.translate(to.getX(), to.getY());
+    graphics.fill(transform.createTransformedShape(antiScaledArrow));
+  }
+
+  private AffineTransform getDrawingTransform() {
+    final double scale = mapPanel.getScale();
+    final AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+    transform.translate(-mapPanel.getXOffset(), -mapPanel.getYOffset());
+    return transform;
   }
 }
