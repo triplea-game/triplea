@@ -48,9 +48,6 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
     MatcherAssert.assertThat(box.getItemAt(0), Is.is("option 1"));
     MatcherAssert.assertThat(box.getItemAt(1), Is.is("option 2"));
     MatcherAssert.assertThat(box.getItemAt(2), Is.is("option 3"));
-    MatcherAssert.assertThat(
-        // TODO: document which item listener is attached by default, why is this not zero?
-        box.getItemListeners().length, Is.is(1));
     MatcherAssert.assertThat(box.getSelectedItem(), Is.is("option 1"));
   }
 
@@ -67,12 +64,6 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
             triggerCount.incrementAndGet();
           }
         }).build();
-
-    MatcherAssert.assertThat(
-        "There is an existing listener (TODO: learn more about this), and there"
-            + "is the one we added, so we expect 2 in total at this point",
-        box.getItemListeners().length, Is.is(2));
-
     box.setSelectedIndex(1);
     MatcherAssert.assertThat(triggerCount.get(), Is.is(1));
   }
