@@ -307,11 +307,7 @@ public class BattleDisplay extends JPanel {
   }
 
   Territory getRetreat(final String message, final Collection<Territory> possible, final boolean submerge) {
-    if (!submerge || possible.size() > 1) {
-      return getRetreatInternal(message, possible);
-    } else {
-      return getSubmerge(message);
-    }
+    return (!submerge || possible.size() > 1) ? getRetreatInternal(message, possible) : getSubmerge(message);
   }
 
   private Territory getSubmerge(final String message) {

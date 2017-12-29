@@ -102,20 +102,14 @@ public class DownloadFileDescription {
    * @return Name of the zip file.
    */
   String getMapZipFileName() {
-    if (url != null && url.contains("/")) {
-      return url.substring(url.lastIndexOf('/') + 1, url.length());
-    } else {
-      return "";
-    }
+    return (url != null && url.contains("/")) ? url.substring(url.lastIndexOf('/') + 1, url.length()) : "";
   }
 
   /** Translates the stored URL into a github new issue link. */
   String getFeedbackUrl() {
-    if (url.contains("github.com") && url.contains("/releases/")) {
-      return url.substring(0, url.indexOf("/releases/")) + "/issues/new";
-    } else {
-      return "";
-    }
+    return (url.contains("github.com") && url.contains("/releases/"))
+        ? url.substring(0, url.indexOf("/releases/")) + "/issues/new"
+        : "";
   }
 
   /** File reference for where to install the file. */

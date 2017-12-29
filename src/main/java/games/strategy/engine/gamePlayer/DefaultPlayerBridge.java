@@ -155,9 +155,8 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       } catch (final InvocationTargetException ite) {
         if (!game.isGameOver()) {
           throw ite.getCause();
-        } else {
-          throw new GameOverException("Game Over Exception!");
         }
+        throw new GameOverException("Game Over Exception!");
       } catch (final RemoteNotFoundException rnfe) {
         throw new GameOverException("Game Over!");
       }

@@ -366,15 +366,15 @@ public class BattlePanel extends ActionPanel {
     if (battleId == null) {
       return getCasualtiesAa(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
           allowMultipleHitsPerUnit);
-    } else {
-      // something is wong
-      if (!ensureBattleIsDisplayed(battleId)) {
-        System.out.println("Battle Not Displayed?? " + message);
-        return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
-      }
-      return battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
-          allowMultipleHitsPerUnit);
     }
+
+    // something is wong
+    if (!ensureBattleIsDisplayed(battleId)) {
+      System.out.println("Battle Not Displayed?? " + message);
+      return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
+    }
+    return battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties,
+        allowMultipleHitsPerUnit);
   }
 
   private CasualtyDetails getCasualtiesAa(final Collection<Unit> selectFrom,

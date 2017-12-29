@@ -242,12 +242,7 @@ public class AutoPlacementFinder {
    * of course, without the quotes.
    */
   private static String getMapDirectory() {
-    final String mapDir = JOptionPane.showInputDialog(null, "Enter the map name (ie. folder name)");
-    if (mapDir != null) {
-      return mapDir;
-    } else {
-      return null;
-    }
+    return JOptionPane.showInputDialog(null, "Enter the map name (ie. folder name)");
   }
 
   private static File getMapPropertiesFile(final String mapDir) {
@@ -270,11 +265,7 @@ public class AutoPlacementFinder {
   private static String getUnitsScale() {
     final String unitsScale = JOptionPane.showInputDialog(null,
         "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
-    if (unitsScale != null) {
-      return unitsScale;
-    } else {
-      return "1";
-    }
+    return (unitsScale != null) ? unitsScale : "1";
   }
 
   /**

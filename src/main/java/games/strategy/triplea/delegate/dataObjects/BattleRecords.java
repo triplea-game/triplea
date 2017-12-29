@@ -159,9 +159,8 @@ public class BattleRecords implements Serializable {
           if (currentRecord.containsKey(guid)) {
             throw new IllegalStateException("Should not be adding battle record for player " + p.getName()
                 + " when they are already on the record. " + "Trying to add: " + br.toString());
-          } else {
-            currentRecord.put(guid, br);
           }
+          currentRecord.put(guid, br);
         }
         m_records.put(p, currentRecord);
       } else {
@@ -181,9 +180,8 @@ public class BattleRecords implements Serializable {
         final GUID guid = entry.getKey();
         if (!currentRecord.containsKey(guid)) {
           throw new IllegalStateException("Trying to remove a battle record but record does not exist");
-        } else {
-          currentRecord.remove(guid);
         }
+        currentRecord.remove(guid);
       }
     }
   }

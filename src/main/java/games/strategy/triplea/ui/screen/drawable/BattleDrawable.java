@@ -41,13 +41,13 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
           attacker = p;
           draw = true;
           break;
-        } else {
-          // O(n^2), but n is usually 2, and almost always < 10
-          for (final PlayerID p2 : players) {
-            if (data.getRelationshipTracker().isAtWar(p, p2)) {
-              draw = true;
-              break;
-            }
+        }
+
+        // O(n^2), but n is usually 2, and almost always < 10
+        for (final PlayerID p2 : players) {
+          if (data.getRelationshipTracker().isAtWar(p, p2)) {
+            draw = true;
+            break;
           }
         }
       } else {

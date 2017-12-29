@@ -1531,11 +1531,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @Override
   public Territory getCurrentBattleTerritory() {
     final IBattle b = currentBattle;
-    if (b != null) {
-      return b.getTerritory();
-    } else {
-      return null;
-    }
+    return (b != null) ? b.getTerritory() : null;
   }
 
   @Override

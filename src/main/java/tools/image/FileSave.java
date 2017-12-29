@@ -82,10 +82,6 @@ public class FileSave {
    * Returns the directory path as as string.
    */
   public String getPathString() {
-    if (file == null) {
-      return null;
-    } else {
-      return file.getPath();
-    }
+    return (file == null) ? null : file.getPath();
   }
 }

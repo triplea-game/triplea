@@ -24,14 +24,10 @@ class FileSystemAccessStrategy {
 
     if (!potentialFile.exists()) {
       return Optional.empty();
-    } else {
-      final DownloadFileProperties props = DownloadFileProperties.loadForZip(potentialFile);
-      if (props.getVersion() == null) {
-        return Optional.empty();
-      } else {
-        return Optional.of(props.getVersion());
-      }
     }
+
+    final DownloadFileProperties props = DownloadFileProperties.loadForZip(potentialFile);
+    return (props.getVersion() == null) ? Optional.empty() : Optional.of(props.getVersion());
   }
 
   static void remove(final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
@@ -117,9 +113,8 @@ class FileSystemAccessStrategy {
       if (i > maxMapsToList) {
         sb.append("<li>...</li>");
         break;
-      } else {
-        sb.append("<li>").append(outputFunction.apply(mapList.get(i))).append("</li>");
       }
+      sb.append("<li>").append(outputFunction.apply(mapList.get(i))).append("</li>");
     }
     return sb.toString();
   }

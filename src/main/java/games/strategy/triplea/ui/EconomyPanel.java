@@ -125,13 +125,13 @@ public class EconomyPanel extends AbstractStatPanel {
     public synchronized int getRowCount() {
       if (!isDirty) {
         return collectedData.length;
-      } else {
-        gameData.acquireReadLock();
-        try {
-          return gameData.getPlayerList().size() + getAlliances().size();
-        } finally {
-          gameData.releaseReadLock();
-        }
+      }
+
+      gameData.acquireReadLock();
+      try {
+        return gameData.getPlayerList().size() + getAlliances().size();
+      } finally {
+        gameData.releaseReadLock();
       }
     }
 

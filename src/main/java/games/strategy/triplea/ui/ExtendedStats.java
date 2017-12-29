@@ -51,13 +51,13 @@ public class ExtendedStats extends StatPanel {
     for (final Resource r : resources) {
       if (r.getName().equals(Constants.PUS) || r.getName().equals(Constants.TECH_TOKENS)) {
         continue;
-      } else {
-        final GenericResourceStat resourceStat = new GenericResourceStat();
-        resourceStat.init(r.getName());
-        final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
-        statsExtended.add(resourceStat);
-        this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
       }
+
+      final GenericResourceStat resourceStat = new GenericResourceStat();
+      resourceStat.init(r.getName());
+      final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
+      statsExtended.add(resourceStat);
+      this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
     }
     // add tech related stuff
     if (Properties.getTechDevelopment(data)) {

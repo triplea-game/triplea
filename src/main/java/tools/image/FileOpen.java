@@ -101,10 +101,6 @@ public class FileOpen {
    * @return java.lang.String
    */
   public String getPathString() {
-    if (file == null) {
-      return null;
-    } else {
-      return file.getPath();
-    }
+    return (file == null) ? null : file.getPath();
   }
 }

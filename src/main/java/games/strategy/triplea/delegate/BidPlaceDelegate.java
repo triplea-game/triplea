@@ -46,23 +46,23 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       } else {
         return null;
       }
-    } else {
-      // we can place on territories we own
-      if (units.stream().anyMatch(Matches.unitIsSea())) {
-        return "Cant place sea units on land";
-      } else if (to.getOwner() == null) {
-        return "You dont own " + to.getName();
-      } else if (!to.getOwner().equals(player)) {
-        final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
-        if (pa != null && pa.getGiveUnitControl() != null && pa.getGiveUnitControl().contains(player)) {
-          return null;
-        } else if (to.getUnits().anyMatch(Matches.unitIsOwnedBy(player))) {
-          return null;
-        }
-        return "You dont own " + to.getName();
-      } else {
+    }
+
+    // we can place on territories we own
+    if (units.stream().anyMatch(Matches.unitIsSea())) {
+      return "Cant place sea units on land";
+    } else if (to.getOwner() == null) {
+      return "You dont own " + to.getName();
+    } else if (!to.getOwner().equals(player)) {
+      final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
+      if (pa != null && pa.getGiveUnitControl() != null && pa.getGiveUnitControl().contains(player)) {
+        return null;
+      } else if (to.getUnits().anyMatch(Matches.unitIsOwnedBy(player))) {
         return null;
       }
+      return "You dont own " + to.getName();
+    } else {
+      return null;
     }
   }
 
