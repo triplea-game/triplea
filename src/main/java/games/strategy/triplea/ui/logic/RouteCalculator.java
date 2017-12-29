@@ -1,5 +1,8 @@
 package games.strategy.triplea.ui.logic;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
@@ -9,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Preconditions;
+import javax.annotation.Nullable;
 
 public class RouteCalculator {
 
@@ -31,10 +34,11 @@ public class RouteCalculator {
    * Algorithm for finding the shortest path for the given Route.
    *
    * @param route The joints on the Map
-   * @return A Point array which goes through Map Borders if necessary
+   * @return A Point array which goes through Map Borders if necessary or null if route is null
    */
   public Point2D[] getTranslatedRoute(final Point2D... route) {
-    if (route == null || route.length == 0 || (!isInfiniteX && !isInfiniteY)) {
+    checkNotNull(route);
+    if (!isInfiniteX && !isInfiniteY) {
       return route;
     }
     final Point2D[] result = new Point2D[route.length];
@@ -50,8 +54,9 @@ public class RouteCalculator {
    *
    * @param source the reference Point
    * @param pool Point List with all possible options
-   * @return the closest point in the Pool to the source
+   * @return the closest point in the Pool to the source or null if the pool is empty
    */
+  @Nullable
   public static Point2D getClosestPoint(final Point2D source, final List<Point2D> pool) {
     return pool.stream()
         .min(Comparator.comparingDouble(source::distance))
@@ -79,6 +84,7 @@ public class RouteCalculator {
    * @return Offset Point Arrays including points
    */
   public List<Point2D[]> getAllPoints(final Point2D... points) {
+    checkNotNull(points);
     final List<Point2D[]> allPoints = new ArrayList<>();
     for (int i = 0; i < points.length; i++) {
       final List<Point2D> subPoints = getPossiblePoints(points[i]);
@@ -100,10 +106,10 @@ public class RouteCalculator {
    * @return a Path representing the Route to be drawn
    */
   private static Path2D getNormalizedLines(final double[] xcoords, final double[] ycoords) {
-    Preconditions.checkNotNull(xcoords);
-    Preconditions.checkNotNull(ycoords);
-    Preconditions.checkArgument(xcoords.length > 0, "X-Coordinates must at least contain a single element.");
-    Preconditions.checkArgument(ycoords.length > 0, "Y-Coordinates must at least contain a single element.");
+    checkNotNull(xcoords);
+    checkNotNull(ycoords);
+    checkArgument(xcoords.length > 0, "X-Coordinates must at least contain a single element.");
+    checkArgument(ycoords.length > 0, "Y-Coordinates must at least contain a single element.");
     final Path2D path = new Path2D.Double();
     path.moveTo(xcoords[0], ycoords[0]);
     for (int i = 1; i < xcoords.length; i++) {
@@ -124,13 +130,12 @@ public class RouteCalculator {
     return getPossibleTranslations().stream()
         .map(t -> new Path2D.Double(path, t))
         .collect(Collectors.toList());
-
   }
 
 
   private List<AffineTransform> getPossibleTranslations() {
     final List<AffineTransform> result = new ArrayList<>(7); // 7 is probably the most common value
-    result.add(AffineTransform.getTranslateInstance(0, 0));
+    result.add(new AffineTransform());
     if (isInfiniteX && isInfiniteY) {
       result.addAll(Arrays.asList(
           AffineTransform.getTranslateInstance(-mapWidth, -mapHeight),
