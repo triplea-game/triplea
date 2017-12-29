@@ -150,13 +150,11 @@ public class AirMovementValidator {
   }
 
   private static int getMovementLeftForAirUnitNotMovedYet(final Unit airBeingValidated, final Route route) {
-    if (route.getEnd().getUnits().getUnits().contains(airBeingValidated)) {
-      // they are not being moved, they are already at the end
-      return ((TripleAUnit) airBeingValidated).getMovementLeft();
-    } else {
-      // they are being moved (they are still at the start location)
-      return route.getMovementLeft(airBeingValidated);
-    }
+    return route.getEnd().getUnits().getUnits().contains(airBeingValidated)
+        // they are not being moved, they are already at the end
+        ? ((TripleAUnit) airBeingValidated).getMovementLeft()
+        // they are being moved (they are still at the start location)
+        : route.getMovementLeft(airBeingValidated);
   }
 
   private static IntegerMap<Territory> populateStaticAlliedAndBuildingCarrierCapacity(
@@ -562,11 +560,11 @@ public class AirMovementValidator {
           Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
       return (neutralViolatingRoute != null && neutralViolatingRoute.getMovementCost(unit) <= movementLeft
           && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.PUS));
-    } else {
-      final Route noNeutralRoute = data.getMap().getRoute(currentSpot, landingSpot,
-          Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
-      return (noNeutralRoute != null && noNeutralRoute.getMovementCost(unit) <= movementLeft);
     }
+
+    final Route noNeutralRoute = data.getMap().getRoute(currentSpot, landingSpot,
+        Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
+    return noNeutralRoute != null && noNeutralRoute.getMovementCost(unit) <= movementLeft;
   }
 
   /**
@@ -641,9 +639,9 @@ public class AirMovementValidator {
       final int capacity = carrierCapacity(friendly, territory);
       final int cost = carrierCost(friendly);
       return capacity >= cost;
-    } else {
-      return data.getRelationshipTracker().canLandAirUnitsOnOwnedLand(player, territory.getOwner());
     }
+
+    return data.getRelationshipTracker().canLandAirUnitsOnOwnedLand(player, territory.getOwner());
   }
 
   private static Collection<Unit> getAirThatMustLandOnCarriers(final GameData data, final Collection<Unit> ownedAir,
@@ -700,14 +698,14 @@ public class AirMovementValidator {
             }
           }
           return cargo;
-        } else {
-          // capacity = zero 0
-          return 0;
         }
-      } else {
-        final UnitAttachment ua = UnitAttachment.get(unit.getType());
-        return ua.getCarrierCapacity();
+
+        // capacity = zero 0
+        return 0;
       }
+
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
+      return ua.getCarrierCapacity();
     }
     return 0;
   }

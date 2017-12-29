@@ -1178,21 +1178,21 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
                 currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, potential);
                 productionThatCanBeTakenOverFromThisPlacement = maxProductionThatCanBeTakenOverFromThisPlacement;
                 break;
+              }
+
+              final int needed =
+                  maxProductionThatCanBeTakenOverFromThisPlacement - productionThatCanBeTakenOverFromThisPlacement;
+              final int surplus = potential - needed;
+              if (surplus > 0) {
+                currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, surplus);
+                productionThatCanBeTakenOverFromThisPlacement += needed;
               } else {
-                final int needed =
-                    maxProductionThatCanBeTakenOverFromThisPlacement - productionThatCanBeTakenOverFromThisPlacement;
-                final int surplus = potential - needed;
-                if (surplus > 0) {
-                  currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, surplus);
-                  productionThatCanBeTakenOverFromThisPlacement += needed;
-                } else {
-                  currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, 0);
-                  productionThatCanBeTakenOverFromThisPlacement += potential;
-                  notUsableAsOtherProducers.add(potentialOtherProducer);
-                }
-                if (surplus >= 0) {
-                  break;
-                }
+                currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, 0);
+                productionThatCanBeTakenOverFromThisPlacement += potential;
+                notUsableAsOtherProducers.add(potentialOtherProducer);
+              }
+              if (surplus >= 0) {
+                break;
               }
             }
             if (productionThatCanBeTakenOverFromThisPlacement > maxProductionThatCanBeTakenOverFromThisPlacement) {

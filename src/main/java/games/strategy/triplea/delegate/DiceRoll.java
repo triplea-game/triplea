@@ -369,10 +369,9 @@ public class DiceRoll implements Externalizable {
     if (Properties.getLow_Luck(bridge.getData())) {
       return rollDiceLowLuck(units, defending, player, bridge, battle, annotation, territoryEffects,
           allEnemyUnitsAliveOrWaitingToDie);
-    } else {
-      return rollDiceNormal(units, defending, player, bridge, battle, annotation, territoryEffects,
-          allEnemyUnitsAliveOrWaitingToDie);
     }
+    return rollDiceNormal(units, defending, player, bridge, battle, annotation, territoryEffects,
+        allEnemyUnitsAliveOrWaitingToDie);
   }
 
   /**

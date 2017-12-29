@@ -30,11 +30,7 @@ public class DownloadRunnable {
    * we assume a local file reference and parse that.
    */
   public List<DownloadFileDescription> getDownloads() {
-    if (beginsWithHttpProtocol(urlString)) {
-      return downloadFile();
-    } else {
-      return readLocalFile();
-    }
+    return beginsWithHttpProtocol(urlString) ? downloadFile() : readLocalFile();
   }
 
   private static boolean beginsWithHttpProtocol(final String urlString) {

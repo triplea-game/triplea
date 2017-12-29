@@ -344,11 +344,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   private static String trimMessage(final String originalMessage) {
     // don't allow messages that are too long
-    if (originalMessage.length() > 200) {
-      return originalMessage.substring(0, 199) + "...";
-    } else {
-      return originalMessage;
-    }
+    return (originalMessage.length() > 200) ? originalMessage.substring(0, 199) + "..." : originalMessage;
   }
 
   private final Action setStatusAction = SwingAction.of("Status...", e -> {

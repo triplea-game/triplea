@@ -79,11 +79,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   public List<PlayerID> getPlayers() {
-    if (m_players.isEmpty()) {
-      return new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo()));
-    } else {
-      return m_players;
-    }
+    return m_players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo())) : m_players;
   }
 
   public void clearPlayers() {
@@ -353,13 +349,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           && !terrs[1].equals("enemy")) {
         // Get the list of territories
         return getListedTerritories(terrs, true, true);
-      } else {
-        final Set<Territory> territories = getTerritoriesBasedOnStringName(terrs[1], players, data);
-        // set it a second time, since getTerritoriesBasedOnStringName also sets it (so do it
-        setTerritoryCount(String.valueOf(terrs[0]));
-        // after the method call).
-        return territories;
       }
+
+      final Set<Territory> territories = getTerritoriesBasedOnStringName(terrs[1], players, data);
+      // set it a second time, since getTerritoriesBasedOnStringName also sets it (so do it
+      setTerritoryCount(String.valueOf(terrs[0]));
+      // after the method call).
+      return territories;
     } else {
       // Get the list of territories
       return getListedTerritories(terrs, true, true);

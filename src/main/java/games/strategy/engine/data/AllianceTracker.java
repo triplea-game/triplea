@@ -85,11 +85,7 @@ public class AllianceTracker implements Serializable {
 
   public Collection<String> getAlliancesPlayerIsIn(final PlayerID player) {
     final Collection<String> alliancesPlayerIsIn = alliances.get(player);
-    if (!alliancesPlayerIsIn.isEmpty()) {
-      return alliancesPlayerIsIn;
-    } else {
-      return Collections.singleton(player.getName());
-    }
+    return !alliancesPlayerIsIn.isEmpty() ? alliancesPlayerIsIn : Collections.singleton(player.getName());
   }
 
   Set<PlayerID> getAllies(final PlayerID currentPlayer) {

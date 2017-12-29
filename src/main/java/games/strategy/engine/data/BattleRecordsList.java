@@ -35,9 +35,8 @@ public class BattleRecordsList extends GameDataComponent {
     final BattleRecords current = recordList.get(round);
     if (current == null) {
       throw new IllegalStateException("Trying to remove records for round that does not exist");
-    } else {
-      current.removeRecord(other);
     }
+    current.removeRecord(other);
   }
 
   public BattleRecords getCurrentRound() {
@@ -46,11 +45,7 @@ public class BattleRecordsList extends GameDataComponent {
 
   private BattleRecords getCurrentRoundCopy() {
     final BattleRecords current = battleRecords.get(getData().getSequence().getRound());
-    if (current == null) {
-      return new BattleRecords();
-    } else {
-      return new BattleRecords(current);
-    }
+    return (current == null) ? new BattleRecords() : new BattleRecords(current);
   }
 
   public Map<Integer, BattleRecords> getBattleRecordsMap() {

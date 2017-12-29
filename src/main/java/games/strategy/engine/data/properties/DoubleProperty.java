@@ -50,9 +50,8 @@ public class DoubleProperty extends AEditableProperty {
       throw new RuntimeException("Double and Number properties are no longer stored as Strings. "
           + "You should delete your option cache, located at "
           + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
-    } else {
-      m_value = roundToPlace((Double) value, m_places, RoundingMode.FLOOR);
     }
+    m_value = roundToPlace((Double) value, m_places, RoundingMode.FLOOR);
   }
 
   @Override
