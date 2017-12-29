@@ -8,6 +8,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -133,8 +134,19 @@ public class RouteCalculator {
   }
 
 
-  private List<AffineTransform> getPossibleTranslations() {
-    final List<AffineTransform> result = new ArrayList<>(7); // 7 is probably the most common value
+  /**
+   * Creates an unmodifiable List of possible translations on the given map.
+   * If a map has "fixed borders" i.e. you can't infinitely scroll along at least one axis
+   * the returned list will just contain a single identity {@linkplain AffineTransform}.
+   * 
+   * If the map however is infinitely scrolling along an axis, the amount of {@linkplain AffineTransform}s
+   * will multiply by 3.
+   * Each {@linkplain AffineTransform} is a translation by a multiple (between -1 and 1) of mapHeight/mapWidth.
+   * 
+   * @return An unmodifiable List containing 9-1 {@linkplain AffineTransform}s
+   */
+  List<AffineTransform> getPossibleTranslations() {
+    final List<AffineTransform> result = new ArrayList<>(3); // 3 is probably the most common value
     result.add(new AffineTransform());
     if (isInfiniteX && isInfiniteY) {
       result.addAll(Arrays.asList(
@@ -153,6 +165,6 @@ public class RouteCalculator {
           AffineTransform.getTranslateInstance(0, -mapHeight),
           AffineTransform.getTranslateInstance(0, +mapHeight)));
     }
-    return result;
+    return Collections.unmodifiableList(result);
   }
 }

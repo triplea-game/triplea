@@ -3,9 +3,16 @@ package games.strategy.triplea.ui.logic;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.experimental.extensions.MockitoExtension;
@@ -96,5 +103,32 @@ public class RouteCalculatorTest {
     assertArrayEquals(e, points.get(6));
     assertArrayEquals(n, points.get(7));
     assertArrayEquals(s, points.get(8));
+  }
+
+  @Test
+  public void testGetAllNormalizedLines() {
+    final RouteCalculator routeCalculator = new RouteCalculator(true, true, 1000, 1000);
+    final double[] testData = new double[1000];
+    Arrays.setAll(testData, Double::valueOf);
+    final List<Path2D> paths = routeCalculator.getAllNormalizedLines(testData, testData);
+    final Iterator<AffineTransform> transforms = routeCalculator.getPossibleTranslations().iterator();
+    // This method looks more complicated than it actually is.
+    // It checks whether all given points are contained in the returned paths
+    // Unfortunately Path2D#contains does not work for whatever reason
+    paths.forEach(path -> {
+      try {
+        final PathIterator iterator = path.getPathIterator(transforms.next().createInverse());
+        Arrays.stream(testData).forEach(d -> {
+          final int currentsegmentType = iterator.currentSegment(new double[] {d, d});
+          assertTrue(currentsegmentType == PathIterator.SEG_LINETO || currentsegmentType == PathIterator.SEG_MOVETO,
+              "(" + d + ", " + d + ") not contained");
+          if (!iterator.isDone()) {
+            iterator.next();
+          }
+        });
+      } catch (NoninvertibleTransformException e) {
+        fail(e);
+      }
+    });
   }
 }
