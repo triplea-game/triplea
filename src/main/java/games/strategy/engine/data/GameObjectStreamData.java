@@ -17,8 +17,8 @@ public class GameObjectStreamData implements Externalizable {
         || obj instanceof ProductionRule || obj instanceof IAttachment || obj instanceof ProductionFrontier;
   }
 
-  private String m_name;
-  private GameType m_type;
+  private String name;
+  private GameType type;
 
   public GameObjectStreamData() {}
 
@@ -29,17 +29,17 @@ public class GameObjectStreamData implements Externalizable {
    *        named entity
    */
   public GameObjectStreamData(final Named named) {
-    m_name = named.getName();
+    name = named.getName();
     if (named instanceof PlayerID) {
-      m_type = GameType.PLAYERID;
+      type = GameType.PLAYERID;
     } else if (named instanceof Territory) {
-      m_type = GameType.TERRITORY;
+      type = GameType.TERRITORY;
     } else if (named instanceof UnitType) {
-      m_type = GameType.UNITTYPE;
+      type = GameType.UNITTYPE;
     } else if (named instanceof ProductionRule) {
-      m_type = GameType.PRODUCTIONRULE;
+      type = GameType.PRODUCTIONRULE;
     } else if (named instanceof ProductionFrontier) {
-      m_type = GameType.PRODUCTIONFRONTIER;
+      type = GameType.PRODUCTIONFRONTIER;
     } else {
       throw new IllegalArgumentException("Wrong type:" + named);
     }
@@ -51,19 +51,19 @@ public class GameObjectStreamData implements Externalizable {
     }
     data.acquireReadLock();
     try {
-      switch (m_type) {
+      switch (type) {
         case PLAYERID:
-          return data.getPlayerList().getPlayerId(m_name);
+          return data.getPlayerList().getPlayerId(name);
         case TERRITORY:
-          return data.getMap().getTerritory(m_name);
+          return data.getMap().getTerritory(name);
         case UNITTYPE:
-          return data.getUnitTypeList().getUnitType(m_name);
+          return data.getUnitTypeList().getUnitType(name);
         case PRODUCTIONRULE:
-          return data.getProductionRuleList().getProductionRule(m_name);
+          return data.getProductionRuleList().getProductionRule(name);
         case PRODUCTIONFRONTIER:
-          return data.getProductionFrontierList().getProductionFrontier(m_name);
+          return data.getProductionFrontierList().getProductionFrontier(name);
         default:
-          throw new IllegalStateException("Unknown type: " + m_type);
+          throw new IllegalStateException("Unknown type: " + type);
       }
     } finally {
       data.releaseReadLock();
@@ -72,13 +72,13 @@ public class GameObjectStreamData implements Externalizable {
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-    m_name = (String) in.readObject();
-    m_type = GameType.values()[in.readByte()];
+    name = (String) in.readObject();
+    type = GameType.values()[in.readByte()];
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
-    out.writeObject(m_name);
-    out.writeByte((byte) m_type.ordinal());
+    out.writeObject(name);
+    out.writeByte((byte) type.ordinal());
   }
 }
