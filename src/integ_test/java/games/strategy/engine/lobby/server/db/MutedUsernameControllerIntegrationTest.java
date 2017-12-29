@@ -49,7 +49,7 @@ public class MutedUsernameControllerIntegrationTest {
   public void testMuteUsernameInThePast() {
     muteUsernameForSeconds(-10L);
     assertFalse(controller.isUsernameMuted(username));
-    assertEquals(Optional.empty(), controller.isUsernameMuted(username));
+    assertEquals(Optional.empty(), controller.getUsernameUnmuteTime(username));
   }
 
   @Test
