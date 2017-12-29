@@ -59,15 +59,12 @@ public class MutedMacController extends TimedController {
    * database any mac's whose mute has expired.
    */
   public boolean isMacMuted(final String mac) {
-    final Optional<Instant> muteTill = getMacUnmuteTime(mac);
-    return !muteTill.isPresent() || muteTill.get().isAfter(now());
+    return getMacUnmuteTime(mac).map(now()::isBefore).orElse(true);
   }
 
   /**
    * Returns an Optional Instant of the moment when the mute expires.
-   * The optional is empty when the mute never expires.
-   * If the mac isn't muted or the mute already expired the optional instant is
-   * Instant.EPOCH
+   * The optional is empty when the mac is not muted or the mute has already expired.
    */
   public Optional<Instant> getMacUnmuteTime(final String mac) {
     final String sql = "select mac, mute_till from muted_macs where mac=?";
@@ -80,7 +77,7 @@ public class MutedMacController extends TimedController {
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);
           if (muteTill == null) {
-            return Optional.empty();
+            return Optional.of(Instant.MAX);
           }
           final Instant expiration = muteTill.toInstant();
           if (expiration.isBefore(now())) {
@@ -88,11 +85,11 @@ public class MutedMacController extends TimedController {
             // If the mute has expired, allow the mac
             removeMutedMac(mac);
             // Signal as not-muted
-            return Optional.of(Instant.EPOCH);
+            return Optional.empty();
           }
           return Optional.of(expiration);
         }
-        return Optional.of(Instant.EPOCH);
+        return Optional.empty();
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing muted mac existence:" + mac, sqle);

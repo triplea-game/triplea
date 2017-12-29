@@ -59,15 +59,12 @@ public class MutedUsernameController extends TimedController {
    * database any username's whose mute has expired.
    */
   public boolean isUsernameMuted(final String username) {
-    final Optional<Instant> muteTill = getUsernameUnmuteTime(username);
-    return !muteTill.isPresent() || muteTill.get().isAfter(now());
+    return getUsernameUnmuteTime(username).map(now()::isBefore).orElse(true);
   }
 
   /**
    * Returns an Optional Instant of the moment when the mute expires.
-   * The optional is empty when the mute never expires.
-   * If the user isn't muted or the mute already expired the optional instant is
-   * Instant.EPOCH
+   * The optional is empty when the username is not muted or the mute has already expired.
    */
   public Optional<Instant> getUsernameUnmuteTime(final String username) {
     final String sql = "select username, mute_till from muted_usernames where username = ?";
@@ -80,7 +77,7 @@ public class MutedUsernameController extends TimedController {
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);
           if (muteTill == null) {
-            return Optional.empty();
+            return Optional.of(Instant.MAX);
           }
           final Instant expiration = muteTill.toInstant();
           if (expiration.isBefore(now())) {
@@ -88,11 +85,11 @@ public class MutedUsernameController extends TimedController {
             logger.fine("Mute expired for:" + username);
             removeMutedUsername(username);
             // Signal as not-muted
-            return Optional.of(Instant.EPOCH);
+            return Optional.empty();
           }
           return Optional.of(muteTill.toInstant());
         }
-        return Optional.of(Instant.EPOCH);
+        return Optional.empty();
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing muted username existence:" + username, sqle);
