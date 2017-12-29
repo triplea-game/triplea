@@ -67,26 +67,9 @@ public class RouteCalculator {
    *         size may vary
    */
   public List<Point2D> getPossiblePoints(final Point2D point) {
-    final List<Point2D> result = new ArrayList<>();
-    result.add(point);
-    if (isInfiniteX && isInfiniteY) {
-      result.addAll(Arrays.asList(
-          new Point2D.Double(point.getX() - mapWidth, point.getY() - mapHeight),
-          new Point2D.Double(point.getX() - mapWidth, point.getY() + mapHeight),
-          new Point2D.Double(point.getX() + mapWidth, point.getY() - mapHeight),
-          new Point2D.Double(point.getX() + mapWidth, point.getY() + mapHeight)));
-    }
-    if (isInfiniteX) {
-      result.addAll(Arrays.asList(
-          new Point2D.Double(point.getX() - mapWidth, point.getY()),
-          new Point2D.Double(point.getX() + mapWidth, point.getY())));
-    }
-    if (isInfiniteY) {
-      result.addAll(Arrays.asList(
-          new Point2D.Double(point.getX(), point.getY() - mapHeight),
-          new Point2D.Double(point.getX(), point.getY() + mapHeight)));
-    }
-    return result;
+    return getPossibleTranslations().stream()
+        .map(t -> t.transform(point, null))
+        .collect(Collectors.toList());
   }
 
   /**
