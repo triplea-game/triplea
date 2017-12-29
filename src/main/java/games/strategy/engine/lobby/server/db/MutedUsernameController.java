@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -58,14 +59,14 @@ public class MutedUsernameController extends TimedController {
    * database any username's whose mute has expired.
    */
   public boolean isUsernameMuted(final String username) {
-    final long muteTill = getUsernameUnmuteTime(username);
-    return muteTill > now().toEpochMilli();
+    return getUsernameUnmuteTime(username).map(now()::isBefore).orElse(false);
   }
 
   /**
-   * Returns epoch milli's of when mute expires, or negative one if there is no active mute.
+   * Returns an Optional Instant of the moment when the mute expires.
+   * The optional is empty when the username is not muted or the mute has already expired.
    */
-  public long getUsernameUnmuteTime(final String username) {
+  public Optional<Instant> getUsernameUnmuteTime(final String username) {
     final String sql = "select username, mute_till from muted_usernames where username = ?";
 
     try (Connection con = Database.getPostgresConnection();
@@ -76,18 +77,19 @@ public class MutedUsernameController extends TimedController {
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);
           if (muteTill == null) {
-            return Long.MAX_VALUE;
+            return Optional.of(Instant.MAX);
           }
-          if (muteTill.toInstant().isBefore(now())) {
+          final Instant expiration = muteTill.toInstant();
+          if (expiration.isBefore(now())) {
             // If the mute has expired, allow the username
             logger.fine("Mute expired for:" + username);
             removeMutedUsername(username);
             // Signal as not-muted
-            return -1;
+            return Optional.empty();
           }
-          return muteTill.getTime();
+          return Optional.of(muteTill.toInstant());
         }
-        return -1;
+        return Optional.empty();
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing muted username existence:" + username, sqle);

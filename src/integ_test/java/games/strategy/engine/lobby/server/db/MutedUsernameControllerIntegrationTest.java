@@ -7,6 +7,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,41 +22,44 @@ public class MutedUsernameControllerIntegrationTest {
   public void testMuteUsernameForever() {
     muteUsernameForSeconds(Long.MAX_VALUE);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(Long.MAX_VALUE, controller.getUsernameUnmuteTime(username));
+    assertEquals(Optional.of(Instant.MAX), controller.getUsernameUnmuteTime(username));
   }
 
   @Test
   public void testMuteUsername() {
     final Instant muteUntil = muteUsernameForSeconds(100L);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
+    assertEquals(Optional.of(muteUntil), controller.getUsernameUnmuteTime(username));
     when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
     assertFalse(controller.isUsernameMuted(username));
+    assertEquals(Optional.empty(), controller.getUsernameUnmuteTime(username));
   }
 
   @Test
   public void testUnmuteUsername() {
     final Instant muteUntil = muteUsernameForSeconds(100L);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
+    assertEquals(Optional.of(muteUntil), controller.getUsernameUnmuteTime(username));
     controller.addMutedUsername(username, Instant.now().minusSeconds(10L));
     assertFalse(controller.isUsernameMuted(username));
+    assertEquals(Optional.empty(), controller.getUsernameUnmuteTime(username));
   }
 
   @Test
   public void testMuteUsernameInThePast() {
     muteUsernameForSeconds(-10L);
     assertFalse(controller.isUsernameMuted(username));
+    assertEquals(Optional.empty(), controller.getUsernameUnmuteTime(username));
   }
 
   @Test
   public void testMuteUsernameUpdate() {
     muteUsernameForSeconds(Long.MAX_VALUE);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(Long.MAX_VALUE, controller.getUsernameUnmuteTime(username));
+    assertEquals(Optional.of(Instant.MAX), controller.getUsernameUnmuteTime(username));
     final Instant muteUntil = muteUsernameForSeconds(100L);
     assertTrue(controller.isUsernameMuted(username));
-    assertEquals(muteUntil, Instant.ofEpochMilli(controller.getUsernameUnmuteTime(username)));
+    assertEquals(Optional.of(muteUntil), controller.getUsernameUnmuteTime(username));
   }
 
   private Instant muteUsernameForSeconds(final long length) {

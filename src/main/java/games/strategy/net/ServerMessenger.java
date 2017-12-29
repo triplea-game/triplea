@@ -10,12 +10,14 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -247,20 +249,24 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       if (isLobby()) {
         final String realName = uniquePlayerName.split(" ")[0];
         if (!liveMutedUsernames.contains(realName)) {
-          final long muteTill = new MutedUsernameController().getUsernameUnmuteTime(realName);
-          if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
-            // Signal the player as muted
-            liveMutedUsernames.add(realName);
-            scheduleUsernameUnmuteAt(realName, Instant.ofEpochMilli(muteTill));
-          }
+          final Optional<Instant> muteTill = new MutedUsernameController().getUsernameUnmuteTime(realName);
+          muteTill.ifPresent(instant -> {
+            if (instant.isAfter(Instant.now())) {
+              // Signal the player as muted
+              liveMutedUsernames.add(realName);
+              scheduleUsernameUnmuteAt(realName, instant);
+            }
+          });
         }
         if (!liveMutedMacAddresses.contains(mac)) {
-          final long muteTill = new MutedMacController().getMacUnmuteTime(mac);
-          if (muteTill != -1 && muteTill <= System.currentTimeMillis()) {
-            // Signal the player as muted
-            liveMutedMacAddresses.add(mac);
-            scheduleMacUnmuteAt(mac, Instant.ofEpochMilli(muteTill));
-          }
+          final Optional<Instant> muteTill = new MutedMacController().getMacUnmuteTime(mac);
+          muteTill.ifPresent(instant -> {
+            if (instant.isAfter(Instant.now())) {
+              // Signal the player as muted
+              liveMutedMacAddresses.add(mac);
+              scheduleMacUnmuteAt(mac, instant);
+            }
+          });
         }
       }
     }
@@ -430,7 +436,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
               miniBannedMacAddresses.remove(mac);
             }
           }
-        }, expires.toEpochMilli() - System.currentTimeMillis());
+        }, Instant.now().until(expires, ChronoUnit.MILLIS));
       }
     }
   }
@@ -613,7 +619,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   private TimerTask getUsernameUnmuteTask(final String username) {
     return createUnmuteTimerTask(
-        () -> (isLobby() && new MutedUsernameController().getUsernameUnmuteTime(username) == -1) || (isGame()),
+        () -> (isLobby() && !new MutedUsernameController().isUsernameMuted(username)) || isGame(),
         () -> liveMutedUsernames.remove(username));
   }
 
@@ -632,7 +638,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   private TimerTask getMacUnmuteTask(final String mac) {
     return createUnmuteTimerTask(
-        () -> (isLobby() && new MutedMacController().getMacUnmuteTime(mac) == -1) || (isGame()),
+        () -> (isLobby() && !new MutedMacController().isMacMuted(mac)) || isGame(),
         () -> liveMutedMacAddresses.remove(mac));
   }
 

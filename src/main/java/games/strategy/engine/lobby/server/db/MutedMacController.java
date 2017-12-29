@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -58,14 +59,14 @@ public class MutedMacController extends TimedController {
    * database any mac's whose mute has expired.
    */
   public boolean isMacMuted(final String mac) {
-    final long muteTill = getMacUnmuteTime(mac);
-    return muteTill > now().toEpochMilli();
+    return getMacUnmuteTime(mac).map(now()::isBefore).orElse(false);
   }
 
   /**
-   * Returns epoch milli second timestamp of when a mute expires or negative one if there is no mute.
+   * Returns an Optional Instant of the moment when the mute expires.
+   * The optional is empty when the mac is not muted or the mute has already expired.
    */
-  public long getMacUnmuteTime(final String mac) {
+  public Optional<Instant> getMacUnmuteTime(final String mac) {
     final String sql = "select mac, mute_till from muted_macs where mac=?";
 
     try (Connection con = Database.getPostgresConnection();
@@ -76,18 +77,19 @@ public class MutedMacController extends TimedController {
         if (found) {
           final Timestamp muteTill = rs.getTimestamp(2);
           if (muteTill == null) {
-            return Long.MAX_VALUE;
+            return Optional.of(Instant.MAX);
           }
-          if (muteTill.toInstant().isBefore(now())) {
+          final Instant expiration = muteTill.toInstant();
+          if (expiration.isBefore(now())) {
             logger.fine("Mute expired for:" + mac);
             // If the mute has expired, allow the mac
             removeMutedMac(mac);
             // Signal as not-muted
-            return -1;
+            return Optional.empty();
           }
-          return muteTill.getTime();
+          return Optional.of(expiration);
         }
-        return -1;
+        return Optional.empty();
       }
     } catch (final SQLException sqle) {
       throw new IllegalStateException("Error for testing muted mac existence:" + mac, sqle);
