@@ -126,7 +126,7 @@ public class RouteCalculatorTest {
             iterator.next();
           }
         });
-      } catch (NoninvertibleTransformException e) {
+      } catch (final NoninvertibleTransformException e) {
         fail(e);
       }
     });

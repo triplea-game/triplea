@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import com.google.common.annotations.VisibleForTesting;
+
 public class RouteCalculator {
 
   public final boolean isInfiniteY;
@@ -35,7 +37,7 @@ public class RouteCalculator {
    * Algorithm for finding the shortest path for the given Route.
    *
    * @param route The joints on the Map
-   * @return A Point array which goes through Map Borders if necessary or null if route is null
+   * @return A Point array which goes through Map Borders if necessary
    */
   public Point2D[] getTranslatedRoute(final Point2D... route) {
     checkNotNull(route);
@@ -139,12 +141,15 @@ public class RouteCalculator {
    * If a map has "fixed borders" i.e. you can't infinitely scroll along at least one axis
    * the returned list will just contain a single identity {@linkplain AffineTransform}.
    * 
+   * <p>
    * If the map however is infinitely scrolling along an axis, the amount of {@linkplain AffineTransform}s
    * will multiply by 3.
    * Each {@linkplain AffineTransform} is a translation by a multiple (between -1 and 1) of mapHeight/mapWidth.
+   * </p>
    * 
    * @return An unmodifiable List containing 9-1 {@linkplain AffineTransform}s
    */
+  @VisibleForTesting
   List<AffineTransform> getPossibleTranslations() {
     final List<AffineTransform> result = new ArrayList<>(3); // 3 is probably the most common value
     result.add(new AffineTransform());
