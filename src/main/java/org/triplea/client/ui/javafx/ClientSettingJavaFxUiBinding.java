@@ -75,7 +75,7 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
 
   TEST_LOBBY_PORT_BINDING(
       SettingType.TESTING,
-      JavaFxSelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 99999)),
+      JavaFxSelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 65535, true)),
 
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(
       SettingType.GAME,
@@ -95,7 +95,11 @@ enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
 
   PROXY_CHOICE(
       SettingType.NETWORK_PROXY,
-      JavaFxSelectionComponentFactory.proxySettings());
+      JavaFxSelectionComponentFactory.proxySettings()),
+
+  USE_EXPERIMENTAL_JAVAFX_UI(
+      SettingType.TESTING,
+      ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI);
 
   private final SettingType category;
   private final Supplier<SelectionComponent<Region>> nodeSupplier;
