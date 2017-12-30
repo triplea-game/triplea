@@ -50,19 +50,19 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       if (playersToSearch == null) {
         throw new IllegalStateException(
             "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-      } else {
-        for (final PlayerID otherPlayer : playersToSearch) {
-          if (otherPlayer == player) {
-            continue;
-          }
-          paa = (PoliticalActionAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (paa != null) {
-            return paa;
-          }
-        }
-        throw new IllegalStateException(
-            "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
       }
+
+      for (final PlayerID otherPlayer : playersToSearch) {
+        if (otherPlayer == player) {
+          continue;
+        }
+        paa = (PoliticalActionAttachment) otherPlayer.getAttachment(nameOfAttachment);
+        if (paa != null) {
+          return paa;
+        }
+      }
+      throw new IllegalStateException(
+          "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
     }
     return paa;
   }

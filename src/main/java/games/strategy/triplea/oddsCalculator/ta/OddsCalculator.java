@@ -417,11 +417,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
 
     @Override
     public IRemotePlayer getRemotePlayer(final PlayerID id) {
-      if (id.equals(attacker)) {
-        return attackingPlayer;
-      } else {
-        return defendingPlayer;
-      }
+      return id.equals(attacker) ? attackingPlayer : defendingPlayer;
     }
 
     @Override
@@ -605,38 +601,38 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
           return possibleTerritories.iterator().next();
         }
         return null;
-      } else {
-        final MustFightBattle battle = getBattle();
-        if (battle == null) {
-          return null;
-        }
-        if (retreatAfterRound > -1 && battle.getBattleRound() >= retreatAfterRound) {
-          return possibleTerritories.iterator().next();
-        }
-        if (!retreatWhenOnlyAirLeft && retreatAfterXUnitsLeft <= -1) {
-          return null;
-        }
-        final Collection<Unit> unitsLeft = isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
-        final Collection<Unit> airLeft = CollectionUtils.getMatches(unitsLeft, Matches.unitIsAir());
-        if (retreatWhenOnlyAirLeft) {
-          // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
-          // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken
-          // casualty
-          // last)
-          // then we add the number of air, to the retreat after X left number (which we would set to '1')
-          int retreatNum = airLeft.size();
-          if (retreatAfterXUnitsLeft > 0) {
-            retreatNum += retreatAfterXUnitsLeft;
-          }
-          if (retreatNum >= unitsLeft.size()) {
-            return possibleTerritories.iterator().next();
-          }
-        }
-        if (retreatAfterXUnitsLeft > -1 && retreatAfterXUnitsLeft >= unitsLeft.size()) {
-          return possibleTerritories.iterator().next();
-        }
+      }
+
+      final MustFightBattle battle = getBattle();
+      if (battle == null) {
         return null;
       }
+      if (retreatAfterRound > -1 && battle.getBattleRound() >= retreatAfterRound) {
+        return possibleTerritories.iterator().next();
+      }
+      if (!retreatWhenOnlyAirLeft && retreatAfterXUnitsLeft <= -1) {
+        return null;
+      }
+      final Collection<Unit> unitsLeft = isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
+      final Collection<Unit> airLeft = CollectionUtils.getMatches(unitsLeft, Matches.unitIsAir());
+      if (retreatWhenOnlyAirLeft) {
+        // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
+        // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken
+        // casualty
+        // last)
+        // then we add the number of air, to the retreat after X left number (which we would set to '1')
+        int retreatNum = airLeft.size();
+        if (retreatAfterXUnitsLeft > 0) {
+          retreatNum += retreatAfterXUnitsLeft;
+        }
+        if (retreatNum >= unitsLeft.size()) {
+          return possibleTerritories.iterator().next();
+        }
+      }
+      if (retreatAfterXUnitsLeft > -1 && retreatAfterXUnitsLeft >= unitsLeft.size()) {
+        return possibleTerritories.iterator().next();
+      }
+      return null;
     }
 
     // Added new collection autoKilled to handle killing units prior to casualty selection

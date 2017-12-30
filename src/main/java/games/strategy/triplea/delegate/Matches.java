@@ -345,9 +345,8 @@ public final class Matches {
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())) {
         final TripleAUnit taUnit = (TripleAUnit) unit;
         return taUnit.getUnitDamage() >= taUnit.getHowMuchDamageCanThisUnitTakeTotal(unit, t);
-      } else {
-        return false;
       }
+      return false;
     };
   }
 

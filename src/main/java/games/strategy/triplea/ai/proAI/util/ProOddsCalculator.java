@@ -158,14 +158,12 @@ public class ProOddsCalculator {
     // Create battle result object
     final List<Territory> territoryList = new ArrayList<>();
     territoryList.add(t);
-    if (!territoryList.isEmpty() && territoryList.stream().allMatch(Matches.territoryIsLand())) {
-      return new ProBattleResult(winPercentage, tuvSwing,
-          averageAttackersRemaining.stream().anyMatch(Matches.unitIsLand()), averageAttackersRemaining,
-          averageDefendersRemaining, results.getAverageBattleRoundsFought());
-    } else {
-      return new ProBattleResult(winPercentage, tuvSwing, !averageAttackersRemaining.isEmpty(),
-          averageAttackersRemaining, averageDefendersRemaining, results.getAverageBattleRoundsFought());
-    }
+    return (!territoryList.isEmpty() && territoryList.stream().allMatch(Matches.territoryIsLand()))
+        ? new ProBattleResult(winPercentage, tuvSwing,
+            averageAttackersRemaining.stream().anyMatch(Matches.unitIsLand()), averageAttackersRemaining,
+            averageDefendersRemaining, results.getAverageBattleRoundsFought())
+        : new ProBattleResult(winPercentage, tuvSwing, !averageAttackersRemaining.isEmpty(),
+            averageAttackersRemaining, averageDefendersRemaining, results.getAverageBattleRoundsFought());
   }
 
 }

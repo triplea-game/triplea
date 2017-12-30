@@ -342,10 +342,10 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
         layoutComponents();
       });
       return;
-    } else {
-      loadAll();
-      layoutComponents();
     }
+
+    loadAll();
+    layoutComponents();
   }
 
   /**

@@ -182,11 +182,7 @@ public class GameSelectorModel extends Observable {
   }
 
   public synchronized String getFileName() {
-    if (gameData == null) {
-      return "-";
-    } else {
-      return fileName;
-    }
+    return (gameData == null) ? "-" : fileName;
   }
 
   public synchronized String getGameName() {

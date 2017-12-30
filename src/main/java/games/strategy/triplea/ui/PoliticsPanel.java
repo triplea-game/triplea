@@ -91,17 +91,18 @@ public class PoliticsPanel extends ActionPanel {
     if (this.firstRun && validPoliticalActions.isEmpty()) {
       // No Valid political actions, do nothing
       return null;
-    } else {
-      if (this.firstRun) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
-      }
-      SwingUtilities.invokeLater(() -> {
-        selectPoliticalActionButton.setEnabled(true);
-        doneButton.setEnabled(true);
-        // press the politics button for us.
-        selectPoliticalActionAction.actionPerformed(null);
-      });
     }
+
+    if (this.firstRun) {
+      ClipPlayer.play(SoundPath.CLIP_PHASE_POLITICS, getCurrentPlayer());
+    }
+    SwingUtilities.invokeLater(() -> {
+      selectPoliticalActionButton.setEnabled(true);
+      doneButton.setEnabled(true);
+      // press the politics button for us.
+      selectPoliticalActionAction.actionPerformed(null);
+    });
+
     waitForRelease();
     return choice;
   }

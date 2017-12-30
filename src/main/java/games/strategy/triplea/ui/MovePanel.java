@@ -112,11 +112,9 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private PlayerID getUnitOwner(final Collection<Unit> units) {
-    if (BaseEditDelegate.getEditMode(getData()) && units != null && !units.isEmpty()) {
-      return units.iterator().next().getOwner();
-    } else {
-      return getCurrentPlayer();
-    }
+    return (BaseEditDelegate.getEditMode(getData()) && units != null && !units.isEmpty())
+      ? units.iterator().next().getOwner()
+      : getCurrentPlayer();
   }
 
   /**
@@ -388,11 +386,9 @@ public class MovePanel extends AbstractMovePanel {
   private Route getRoute(final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
     getData().acquireReadLock();
     try {
-      if (forced == null) {
-        return getRouteNonForced(start, end, selectedUnits);
-      } else {
-        return getRouteForced(start, end, selectedUnits);
-      }
+      return (forced == null)
+          ? getRouteNonForced(start, end, selectedUnits)
+          : getRouteForced(start, end, selectedUnits);
     } finally {
       getData().releaseReadLock();
     }
@@ -1106,10 +1102,9 @@ public class MovePanel extends AbstractMovePanel {
         if (canMove.isEmpty()) {
           cancelMove();
           return;
-        } else {
-          selectedUnits.clear();
-          selectedUnits.addAll(canMove);
         }
+        selectedUnits.clear();
+        selectedUnits.addAll(canMove);
       } else {
         // keep a map of the max number of each eligible unitType that can be chosen
         final IntegerMap<UnitType> maxMap = new IntegerMap<>();

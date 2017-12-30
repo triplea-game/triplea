@@ -121,48 +121,48 @@ public class PoliticalStateOverview extends JPanel {
       final RelationshipType relType) {
     if (!editable) {
       return new JLabel(relType.getName());
-    } else {
-      final JButton button = new JButton(relType.getName());
-      button.addActionListener(e -> {
-        final List<RelationshipType> types =
-            new ArrayList<>(data.getRelationshipTypeList().getAllRelationshipTypes());
-        types.remove(data.getRelationshipTypeList().getNullRelation());
-        types.remove(data.getRelationshipTypeList().getSelfRelation());
-        final Object[] possibilities = types.toArray();
-        final RelationshipType chosenRelationship =
-            (RelationshipType) JOptionPane.showInputDialog(PoliticalStateOverview.this,
-                "Change Current Relationship between " + player1.getName() + " and " + player2.getName(),
-                "Change Current Relationship", JOptionPane.PLAIN_MESSAGE, null, possibilities, relType);
-        if (chosenRelationship != null) {
-          // remove any old ones
-          final Iterator<Triple<PlayerID, PlayerID, RelationshipType>> iter = editChanges.iterator();
-          while (iter.hasNext()) {
-            final Triple<PlayerID, PlayerID, RelationshipType> changesSoFar = iter.next();
-            if ((player1.equals(changesSoFar.getFirst()) && player2.equals(changesSoFar.getSecond()))
-                || (player2.equals(changesSoFar.getFirst()) && player1.equals(changesSoFar.getSecond()))) {
-              iter.remove();
-            }
-          }
-
-          // see if there is actually a change
-          final RelationshipType actualRelationship;
-          data.acquireReadLock();
-          try {
-            actualRelationship = data.getRelationshipTracker().getRelationshipType(player1, player2);
-          } finally {
-            data.releaseReadLock();
-          }
-          if (!chosenRelationship.equals(actualRelationship)) {
-            // add new change
-            editChanges.add(Triple.of(player1, player2, chosenRelationship));
-          }
-          // redraw everything
-          redrawPolitics();
-        }
-      });
-      button.setBackground(getRelationshipTypeColor(relType));
-      return button;
     }
+
+    final JButton button = new JButton(relType.getName());
+    button.addActionListener(e -> {
+      final List<RelationshipType> types =
+          new ArrayList<>(data.getRelationshipTypeList().getAllRelationshipTypes());
+      types.remove(data.getRelationshipTypeList().getNullRelation());
+      types.remove(data.getRelationshipTypeList().getSelfRelation());
+      final Object[] possibilities = types.toArray();
+      final RelationshipType chosenRelationship =
+          (RelationshipType) JOptionPane.showInputDialog(PoliticalStateOverview.this,
+              "Change Current Relationship between " + player1.getName() + " and " + player2.getName(),
+              "Change Current Relationship", JOptionPane.PLAIN_MESSAGE, null, possibilities, relType);
+      if (chosenRelationship != null) {
+        // remove any old ones
+        final Iterator<Triple<PlayerID, PlayerID, RelationshipType>> iter = editChanges.iterator();
+        while (iter.hasNext()) {
+          final Triple<PlayerID, PlayerID, RelationshipType> changesSoFar = iter.next();
+          if ((player1.equals(changesSoFar.getFirst()) && player2.equals(changesSoFar.getSecond()))
+              || (player2.equals(changesSoFar.getFirst()) && player1.equals(changesSoFar.getSecond()))) {
+            iter.remove();
+          }
+        }
+
+        // see if there is actually a change
+        final RelationshipType actualRelationship;
+        data.acquireReadLock();
+        try {
+          actualRelationship = data.getRelationshipTracker().getRelationshipType(player1, player2);
+        } finally {
+          data.releaseReadLock();
+        }
+        if (!chosenRelationship.equals(actualRelationship)) {
+          // add new change
+          editChanges.add(Triple.of(player1, player2, chosenRelationship));
+        }
+        // redraw everything
+        redrawPolitics();
+      }
+    });
+    button.setBackground(getRelationshipTypeColor(relType));
+    return button;
   }
 
   /**

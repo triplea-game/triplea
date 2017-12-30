@@ -179,11 +179,7 @@ public class ProUtils {
         minDistance = distance;
       }
     }
-    if (minDistance < 10) {
-      return minDistance;
-    } else {
-      return -1;
-    }
+    return (minDistance < 10) ? minDistance : -1;
   }
 
   public static int getClosestEnemyOrNeutralLandTerritoryDistance(final GameData data, final PlayerID player,
@@ -206,11 +202,7 @@ public class ProUtils {
         minDistance = distance;
       }
     }
-    if (minDistance < 10) {
-      return minDistance;
-    } else {
-      return -1;
-    }
+    return (minDistance < 10) ? minDistance : -1;
   }
 
   public static int getClosestEnemyLandTerritoryDistanceOverWater(final GameData data, final PlayerID player,
@@ -226,11 +218,7 @@ public class ProUtils {
         minDistance = distance;
       }
     }
-    if (minDistance < 10) {
-      return minDistance;
-    } else {
-      return -1;
-    }
+    return (minDistance < 10) ? minDistance : -1;
   }
 
   /**

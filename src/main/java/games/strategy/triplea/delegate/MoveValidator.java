@@ -511,11 +511,9 @@ public class MoveValidator {
       final Collection<Unit> matches = CollectionUtils.getMatches(units, Matches.unitIsBeingTransported().negate());
       if (!matches.isEmpty() && matches.stream().allMatch(Matches.unitIsSub())) {
         // this is ok unless there are destroyer on the path
-        if (MoveValidator.enemyDestroyerOnPath(route, player, data)) {
-          return result.setErrorReturnResult("Cannot move submarines under destroyers");
-        } else {
-          return result;
-        }
+        return MoveValidator.enemyDestroyerOnPath(route, player, data)
+          ? result.setErrorReturnResult("Cannot move submarines under destroyers")
+          : result;
       }
     }
     if (onlyIgnoredUnitsOnPath(route, player, data, true)) {

@@ -199,10 +199,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
 
   private static String trimMessage(final String originalMessage) {
     // dont allow messages that are too long
-    if (originalMessage.length() > 200) {
-      return originalMessage.substring(0, 199) + "...";
-    } else {
-      return originalMessage;
-    }
+    return (originalMessage.length() > 200) ? originalMessage.substring(0, 199) + "..." : originalMessage;
   }
 }

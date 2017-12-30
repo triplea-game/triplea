@@ -132,13 +132,13 @@ public class ProTerritory {
   public List<Unit> getAllDefendersForCarrierCalcs(final GameData data, final PlayerID player) {
     if (Properties.getProduceNewFightersOnOldCarriers(data)) {
       return getAllDefenders();
-    } else {
-      final List<Unit> defenders =
-          CollectionUtils.getMatches(cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).negate());
-      defenders.addAll(units);
-      defenders.addAll(tempUnits);
-      return defenders;
     }
+
+    final List<Unit> defenders =
+        CollectionUtils.getMatches(cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).negate());
+    defenders.addAll(units);
+    defenders.addAll(tempUnits);
+    return defenders;
   }
 
   public List<Unit> getMaxDefenders() {
@@ -290,13 +290,18 @@ public class ProTerritory {
     return battleResult;
   }
 
+  /**
+   * Returns a description of the battle result in this territory.
+   */
   public String getResultString() {
-    if (battleResult == null) {
-      return "territory=" + territory.getName();
-    } else {
-      return "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing="
-          + battleResult.getTuvSwing() + ", hasRemainingLandUnit=" + battleResult.isHasLandUnitRemaining();
+    final StringBuilder sb = new StringBuilder();
+    sb.append("territory=").append(territory.getName());
+    if (battleResult != null) {
+      sb.append(", win%=").append(battleResult.getWinPercentage());
+      sb.append(", TUVSwing=").append(battleResult.getTuvSwing());
+      sb.append(", hasRemainingLandUnit=").append(battleResult.isHasLandUnitRemaining());
     }
+    return sb.toString();
   }
 
   public void setCantMoveUnits(final List<Unit> cantMoveUnits) {

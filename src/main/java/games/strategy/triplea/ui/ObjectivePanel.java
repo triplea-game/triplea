@@ -379,11 +379,7 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     @Override
     public String getColumnName(final int col) {
-      if (col == 0) {
-        return "Done";
-      } else {
-        return "Objective Name";
-      }
+      return (col == 0) ? "Done" : "Objective Name";
     }
 
     @Override
@@ -395,13 +391,13 @@ public class ObjectivePanel extends AbstractStatPanel {
     public synchronized int getRowCount() {
       if (!isDirty) {
         return collectedData.length;
-      } else {
-        gameData.acquireReadLock();
-        try {
-          return getRowTotal();
-        } finally {
-          gameData.releaseReadLock();
-        }
+      }
+
+      gameData.acquireReadLock();
+      try {
+        return getRowTotal();
+      } finally {
+        gameData.releaseReadLock();
       }
     }
 

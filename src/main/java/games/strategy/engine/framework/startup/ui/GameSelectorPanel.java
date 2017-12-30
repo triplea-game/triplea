@@ -345,14 +345,10 @@ public class GameSelectorPanel extends JPanel implements Observer {
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();
       final String dirName = fileDialog.getDirectory();
-      if (fileName == null) {
-        return null;
-      } else {
-        return new File(dirName, fileName);
-      }
-    } else {
-      return GameRunner.showSaveGameFileChooser().orElse(null);
+      return (fileName == null) ? null : new File(dirName, fileName);
     }
+
+    return GameRunner.showSaveGameFileChooser().orElse(null);
   }
 
   private void selectGameFile(final boolean saved) {
