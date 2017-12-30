@@ -10,19 +10,19 @@ import javafx.fxml.FXMLLoader;
  * Enum with relative Paths to fxml-related resources.
  */
 enum FxmlManager {
-  ROOT_CONTAINER("./fxml/TripleAMain.fxml"),
+  ROOT_CONTAINER("/org/triplea/client/ui/javafx/fxml/TripleAMain.fxml"),
 
-  DOWNLOAD_PANE("./fxml/TripleADownload.fxml"),
+  DOWNLOAD_PANE("/org/triplea/client/ui/javafx/fxml/TripleADownload.fxml"),
 
-  MAIN_MENU_PANE("./fxml/TripleAMainMenu.fxml"),
+  MAIN_MENU_PANE("/org/triplea/client/ui/javafx/fxml/TripleAMainMenu.fxml"),
 
-  SETTINGS_PANE("./fxml/TripleASettings.fxml"),
+  SETTINGS_PANE("/org/triplea/client/ui/javafx/fxml/TripleASettings.fxml"),
 
   LANG_CLASS_BASENAME("org.triplea.client.ui.javafx.lang.TripleA"),
 
   STYLESHEET_MAIN("/org/triplea/client/ui/javafx/css/main.css"),
 
-  RELATIVE_FONT_PATH("./css/fonts/1942-report.ttf"),
+  RELATIVE_FONT_PATH("/org/triplea/client/ui/javafx/css/fonts/1942-report.ttf"),
 
   ICON_LOCATION("/games/strategy/engine/framework/ta_icon.png");
 
