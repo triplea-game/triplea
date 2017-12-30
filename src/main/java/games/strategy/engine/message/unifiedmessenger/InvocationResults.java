@@ -8,7 +8,9 @@ import java.io.ObjectOutput;
 import games.strategy.engine.message.RemoteMethodCallResults;
 import games.strategy.net.GUID;
 
-// the results of a remote invocation
+/**
+ * The results of a remote invocation.
+ */
 public abstract class InvocationResults implements Externalizable {
   private static final long serialVersionUID = -382704036681832123L;
   public RemoteMethodCallResults results;
