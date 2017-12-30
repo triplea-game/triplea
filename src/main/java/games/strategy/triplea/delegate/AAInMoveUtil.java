@@ -234,13 +234,13 @@ class AAInMoveUtil implements Serializable {
     if (units.stream().anyMatch(Matches.unitIsOwnedBy(m_player))) {
       return m_player;
     }
-    if (units != null) {
-      for (final Unit u : units) {
-        if (u != null && u.getOwner() != null) {
-          return u.getOwner();
-        }
+
+    for (final Unit u : units) {
+      if (u != null && u.getOwner() != null) {
+        return u.getOwner();
       }
     }
+
     return PlayerID.NULL_PLAYERID;
   }
 
