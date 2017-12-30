@@ -293,7 +293,7 @@ public class UnifiedMessenger {
       // maybe an attempt to spoof a message
       assertIsServer(from);
       final SpokeInvocationResults spokeInvocationResults = (SpokeInvocationResults) msg;
-      final GUID methodId = spokeInvocationResults.methodCallID;
+      final GUID methodId = spokeInvocationResults.methodCallId;
       // both of these should already be populated
       // this list should be a synchronized list so we can do the add
       // all
