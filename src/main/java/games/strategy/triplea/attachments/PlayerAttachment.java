@@ -102,9 +102,8 @@ public class PlayerAttachment extends DefaultAttachment {
         final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
         if (ut == null) {
           throw new GameParseException("No unit called: " + s[i] + thisErrorMsg());
-        } else {
-          types.add(ut);
         }
+        types.add(ut);
       }
     }
     m_placementLimit.add(Triple.of(max, s[1], types));
@@ -151,9 +150,8 @@ public class PlayerAttachment extends DefaultAttachment {
         final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
         if (ut == null) {
           throw new GameParseException("No unit called: " + s[i] + thisErrorMsg());
-        } else {
-          types.add(ut);
         }
+        types.add(ut);
       }
     }
     m_movementLimit.add(Triple.of(max, s[1], types));
@@ -200,9 +198,8 @@ public class PlayerAttachment extends DefaultAttachment {
         final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
         if (ut == null) {
           throw new GameParseException("No unit called: " + s[i] + thisErrorMsg());
-        } else {
-          types.add(ut);
         }
+        types.add(ut);
       }
     }
     m_attackingLimit.add(Triple.of(max, s[1], types));

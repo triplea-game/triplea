@@ -183,11 +183,10 @@ public final class LobbyLoginValidator implements ILoginValidator {
     if (propertiesReadFromClient.containsKey(REGISTER_NEW_USER_KEY)) {
       return createUser(propertiesReadFromClient, clientName);
     }
-    if (propertiesReadFromClient.containsKey(ANONYMOUS_LOGIN)) {
-      return anonymousLogin(propertiesReadFromClient, clientName);
-    } else {
-      return validatePassword(propertiesReadFromClient, clientName);
-    }
+
+    return propertiesReadFromClient.containsKey(ANONYMOUS_LOGIN)
+      ? anonymousLogin(propertiesReadFromClient, clientName)
+      : validatePassword(propertiesReadFromClient, clientName);
   }
 
   private static String getBanDurationBreakdown(final Timestamp stamp) {
@@ -279,11 +278,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
         return DBUser.getUserNameValidationErrorMessage(hostName);
       }
     } else {
-      if (DBUser.isValidUserName(userName)) {
-        return null;
-      } else {
-        return DBUser.getUserNameValidationErrorMessage(userName);
-      }
+      return DBUser.isValidUserName(userName) ? null : DBUser.getUserNameValidationErrorMessage(userName);
     }
     return null;
   }

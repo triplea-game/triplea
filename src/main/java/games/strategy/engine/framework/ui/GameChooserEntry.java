@@ -138,10 +138,9 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     final GameChooserEntry other = (GameChooserEntry) obj;
     if (gameData == null && other.gameData != null) {
       return false;
-    } else {
-      if (other.gameData == null) {
-        return false;
-      }
+    }
+    if (other.gameData == null) {
+      return false;
     }
     return this.gameNameAndMapNameProperty.equals(other.gameNameAndMapNameProperty);
   }

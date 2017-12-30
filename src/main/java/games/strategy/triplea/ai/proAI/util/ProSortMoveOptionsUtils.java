@@ -191,11 +191,7 @@ public class ProSortMoveOptionsUtils {
       }
       final double attackEfficiency2 = (double) minPower2 / ProData.unitValueMap.getInt(o2.getKey().getType());
       if (attackEfficiency1 != attackEfficiency2) {
-        if (attackEfficiency1 < attackEfficiency2) {
-          return 1;
-        } else {
-          return -1;
-        }
+        return (attackEfficiency1 < attackEfficiency2) ? 1 : -1;
       }
 
       // Check if unit types are equal and is air then sort by average distance

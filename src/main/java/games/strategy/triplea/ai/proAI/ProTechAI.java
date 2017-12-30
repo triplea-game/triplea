@@ -202,22 +202,22 @@ final class ProTechAI {
                 availInf += 2;
                 availOther += 1;
                 continue;
-              } else {
-                int inf = 2;
-                int other = 1;
-                for (final Unit checkUnit : thisTransUnits) {
-                  if (Matches.unitIsLandTransportable().test(checkUnit)) {
-                    inf--;
-                  }
-                  if (Matches.unitIsNotLandTransportable().test(checkUnit)) {
-                    inf--;
-                    other--;
-                  }
-                  loadedUnits.add(checkUnit);
-                }
-                availInf += inf;
-                availOther += other;
               }
+
+              int inf = 2;
+              int other = 1;
+              for (final Unit checkUnit : thisTransUnits) {
+                if (Matches.unitIsLandTransportable().test(checkUnit)) {
+                  inf--;
+                }
+                if (Matches.unitIsNotLandTransportable().test(checkUnit)) {
+                  inf--;
+                  other--;
+                }
+                loadedUnits.add(checkUnit);
+              }
+              availInf += inf;
+              availOther += other;
             }
             final Set<Territory> transNeighbors =
                 data.getMap().getNeighbors(t4, Matches.isTerritoryAllied(enemyPlayer, data));
@@ -623,15 +623,15 @@ final class ProTechAI {
       current = q.remove();
       if (visited.getInt(current) == distance) {
         break;
-      } else {
-        for (final Territory neighbor : data.getMap().getNeighbors(current, canGo)) {
-          if (!visited.keySet().contains(neighbor)) {
-            q.add(neighbor);
-            final int dist = visited.getInt(current) + 1;
-            visited.put(neighbor, dist);
-            if (dist == distance && endCondition.test(neighbor)) {
-              frontier.add(neighbor);
-            }
+      }
+
+      for (final Territory neighbor : data.getMap().getNeighbors(current, canGo)) {
+        if (!visited.keySet().contains(neighbor)) {
+          q.add(neighbor);
+          final int dist = visited.getInt(current) + 1;
+          visited.put(neighbor, dist);
+          if (dist == distance && endCondition.test(neighbor)) {
+            frontier.add(neighbor);
           }
         }
       }

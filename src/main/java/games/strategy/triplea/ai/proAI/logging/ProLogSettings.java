@@ -46,9 +46,9 @@ public class ProLogSettings implements Serializable {
       }
       lastSettings = result;
       return result;
-    } else {
-      return lastSettings;
     }
+
+    return lastSettings;
   }
 
   static void saveSettings(final ProLogSettings settings) {

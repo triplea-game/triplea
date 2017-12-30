@@ -136,11 +136,7 @@ public class HeadedUiContext extends AbstractUiContext {
       final UnitDamage damaged, final UnitEnable disabled) {
     final Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, damaged == UnitDamage.DAMAGED,
         disabled == UnitEnable.DISABLED);
-    if (image.isPresent()) {
-      return new JLabel(image.get());
-    } else {
-      return new JLabel();
-    }
+    return image.isPresent() ? new JLabel(image.get()) : new JLabel();
   }
 
   @Override

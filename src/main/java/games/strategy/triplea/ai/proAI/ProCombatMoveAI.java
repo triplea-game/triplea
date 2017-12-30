@@ -960,10 +960,10 @@ class ProCombatMoveAI {
       // Determine whether all attacks are successful or try to hold fewer territories
       if (territoryToRemove == null) {
         break;
-      } else {
-        prioritizedTerritories.remove(territoryToRemove);
-        ProLogger.debug("Removing " + territoryToRemove.getTerritory().getName());
       }
+
+      prioritizedTerritories.remove(territoryToRemove);
+      ProLogger.debug("Removing " + territoryToRemove.getTerritory().getName());
     }
   }
 

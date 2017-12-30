@@ -132,13 +132,13 @@ public class ProTerritory {
   public List<Unit> getAllDefendersForCarrierCalcs(final GameData data, final PlayerID player) {
     if (Properties.getProduceNewFightersOnOldCarriers(data)) {
       return getAllDefenders();
-    } else {
-      final List<Unit> defenders =
-          CollectionUtils.getMatches(cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).negate());
-      defenders.addAll(units);
-      defenders.addAll(tempUnits);
-      return defenders;
     }
+
+    final List<Unit> defenders =
+        CollectionUtils.getMatches(cantMoveUnits, ProMatches.unitIsOwnedCarrier(player).negate());
+    defenders.addAll(units);
+    defenders.addAll(tempUnits);
+    return defenders;
   }
 
   public List<Unit> getMaxDefenders() {
@@ -291,12 +291,10 @@ public class ProTerritory {
   }
 
   public String getResultString() {
-    if (battleResult == null) {
-      return "territory=" + territory.getName();
-    } else {
-      return "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing="
-          + battleResult.getTuvSwing() + ", hasRemainingLandUnit=" + battleResult.isHasLandUnitRemaining();
-    }
+    return (battleResult == null)
+        ? "territory=" + territory.getName()
+        : "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing="
+            + battleResult.getTuvSwing() + ", hasRemainingLandUnit=" + battleResult.isHasLandUnitRemaining();
   }
 
   public void setCantMoveUnits(final List<Unit> cantMoveUnits) {

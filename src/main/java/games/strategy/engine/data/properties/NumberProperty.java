@@ -47,9 +47,8 @@ public class NumberProperty extends AEditableProperty {
       throw new RuntimeException(
           "Number properties are no longer stored as Strings. You should delete your option cache, located at "
               + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
-    } else {
-      m_value = (Integer) value;
     }
+    m_value = (Integer) value;
   }
 
   @Override

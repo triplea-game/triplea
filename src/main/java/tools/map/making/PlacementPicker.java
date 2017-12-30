@@ -561,11 +561,7 @@ public class PlacementPicker extends JFrame {
   private static String getUnitsScale() {
     final String unitsScale = JOptionPane.showInputDialog(null,
         "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
-    if (unitsScale != null) {
-      return unitsScale;
-    } else {
-      return "1";
-    }
+    return (unitsScale != null) ? unitsScale : "1";
   }
 
   private static String getValue(final String arg) {

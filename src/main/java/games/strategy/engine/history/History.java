@@ -100,11 +100,7 @@ public class History extends DefaultTreeModel {
     final List<Change> deltaChanges =
         changes.subList(Math.min(firstChange, lastChange), Math.max(firstChange, lastChange));
     final Change compositeChange = new CompositeChange(deltaChanges);
-    if (lastChange >= firstChange) {
-      return compositeChange;
-    } else {
-      return compositeChange.invert();
-    }
+    return (lastChange >= firstChange) ? compositeChange : compositeChange.invert();
   }
 
   public synchronized void gotoNode(final HistoryNode node) {

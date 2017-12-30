@@ -16,11 +16,7 @@ public class GenericTechAdvance extends TechAdvance {
 
   @Override
   public String getProperty() {
-    if (m_advance != null) {
-      return m_advance.getProperty();
-    } else {
-      return getName();
-    }
+    return (m_advance != null) ? m_advance.getProperty() : getName();
   }
 
   @Override

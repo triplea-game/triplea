@@ -600,9 +600,8 @@ public class ProTerritoryManager {
               if (!myRoute.getMiddleSteps().isEmpty()) {
                 eliminatedTerritories.addAll(myRoute.getMiddleSteps()); // Add failed canal territories to list
                 continue;
-              } else {
-                break;
               }
+              break;
             }
             final int myRouteLength = myRoute.numberOfSteps();
             if (myRouteLength > range) {
