@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
@@ -58,7 +59,7 @@ public class GameChooser extends JDialog {
     notesPanel = new JEditorPane();
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
-    notesPanel.setBackground(new JLabel().getBackground());
+    notesPanel.setForeground(Color.BLACK);
   }
 
   private void layoutCoponents() {
