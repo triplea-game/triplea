@@ -2,6 +2,7 @@ package games.strategy.engine.config.client;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -12,10 +13,13 @@ import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.GameSetting;
 import games.strategy.util.Version;
 
-public class LobbyServerPropertiesFetcher {
-
+/**
+ * Fetches the lobby server properties from the remote Source of Truth.
+ */
+public final class LobbyServerPropertiesFetcher {
   private final LobbyLocationFileDownloader fileDownloader;
 
   /**
@@ -39,18 +43,39 @@ public class LobbyServerPropertiesFetcher {
    * In case Github is not available, we also have a backup hardcoded lobby host address in the client
    * configuration that we would pass back in case github is not available.
    *
+   * <p>
+   * The lobby server properties may be overridden by setting values for {@link ClientSetting#TEST_LOBBY_HOST} and
+   * {@link ClientSetting#TEST_LOBBY_PORT} simultaneously. Setting only one or the other will cause them to be ignored.
+   * </p>
+   *
    * @return LobbyServerProperties as fetched and parsed from github hosted remote URL.
    *         Otherwise backup values from client config.
    */
   public LobbyServerProperties fetchLobbyServerProperties() {
-    // props from override
-    if (ClientSetting.TEST_LOBBY_HOST.isSet()) {
-      return new LobbyServerProperties(
-          ClientSetting.TEST_LOBBY_HOST.value(),
-          ClientSetting.TEST_LOBBY_PORT.intValue());
+    return getTestOverrideProperties().orElseGet(this::getRemoteProperties);
+  }
+
+  private static Optional<LobbyServerProperties> getTestOverrideProperties() {
+    return getTestOverrideProperties(ClientSetting.TEST_LOBBY_HOST, ClientSetting.TEST_LOBBY_PORT);
+  }
+
+  @VisibleForTesting
+  static Optional<LobbyServerProperties> getTestOverrideProperties(
+      final GameSetting testLobbyHostSetting,
+      final GameSetting testLobbyPortSetting) {
+    if (testLobbyHostSetting.isSet() && testLobbyPortSetting.isSet()) {
+      return Optional.of(new LobbyServerProperties(testLobbyHostSetting.value(), testLobbyPortSetting.intValue()));
     }
 
-    // normal case, download props file that will tell us where the lobby is
+    if (testLobbyHostSetting.isSet() || testLobbyPortSetting.isSet()) {
+      ClientLogger.logQuietly("Ignoring lobby server override settings. "
+          + "You must override the lobby host and port settings simultaneously.");
+    }
+
+    return Optional.empty();
+  }
+
+  private LobbyServerProperties getRemoteProperties() {
     final String lobbyPropsUrl = UrlConstants.LOBBY_PROPS.toString();
 
     final Version currentVersion = ClientContext.engineVersion();
@@ -83,7 +108,6 @@ public class LobbyServerPropertiesFetcher {
     }
   }
 
-
   /**
    *
    * @param lobbyPropFileUrl The taret URL to scrape for a lobby properties file.
@@ -115,5 +139,4 @@ public class LobbyServerPropertiesFetcher {
     fileDownloadResult.downloadedFile.delete();
     return properties;
   }
-
 }
