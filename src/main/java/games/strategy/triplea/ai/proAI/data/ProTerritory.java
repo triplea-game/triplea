@@ -290,11 +290,18 @@ public class ProTerritory {
     return battleResult;
   }
 
+  /**
+   * Returns a description of the battle result in this territory.
+   */
   public String getResultString() {
-    return (battleResult == null)
-        ? "territory=" + territory.getName()
-        : "territory=" + territory.getName() + ", win%=" + battleResult.getWinPercentage() + ", TUVSwing="
-            + battleResult.getTuvSwing() + ", hasRemainingLandUnit=" + battleResult.isHasLandUnitRemaining();
+    final StringBuilder sb = new StringBuilder();
+    sb.append("territory=").append(territory.getName());
+    if (battleResult != null) {
+      sb.append(", win%=").append(battleResult.getWinPercentage());
+      sb.append(", TUVSwing=").append(battleResult.getTuvSwing());
+      sb.append(", hasRemainingLandUnit=").append(battleResult.isHasLandUnitRemaining());
+    }
+    return sb.toString();
   }
 
   public void setCantMoveUnits(final List<Unit> cantMoveUnits) {
