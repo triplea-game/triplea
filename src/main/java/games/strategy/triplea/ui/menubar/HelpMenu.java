@@ -231,6 +231,7 @@ public class HelpMenu {
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setText(notes);
+      gameNotesPane.setForeground(Color.BLACK);
       final String gameNotesTitle = "Game Notes";
       parentMenu.add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
         final JScrollPane scroll = new JScrollPane(gameNotesPane);
@@ -259,12 +260,9 @@ public class HelpMenu {
         if (dialog.getHeight() > 600) {
           dialog.setSize(dialog.getWidth(), 600);
         }
-        // dialog.setLocationRelativeTo(frame);
         dialog.addWindowListener(new WindowAdapter() {
           @Override
           public void windowOpened(final WindowEvent e) {
-            scroll.getVerticalScrollBar().getModel().setValue(0);
-            scroll.getHorizontalScrollBar().getModel().setValue(0);
             button.requestFocus();
           }
         });

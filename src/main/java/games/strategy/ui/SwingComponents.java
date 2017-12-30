@@ -32,7 +32,6 @@ import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
@@ -293,7 +292,6 @@ public class SwingComponents {
     final JEditorPane descriptionPane = new JEditorPane();
     descriptionPane.setEditable(false);
     descriptionPane.setContentType("text/html");
-    descriptionPane.setBackground(new JLabel().getBackground());
     return descriptionPane;
   }
 
