@@ -3,6 +3,7 @@ package games.strategy.triplea.settings;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -214,9 +215,7 @@ final class SelectionComponentFactory {
 
       @Override
       public Map<GameSetting, String> readValues() {
-        final Map<GameSetting, String> map = new HashMap<>();
-        map.put(clientSetting, toValidStringValue((int) component.getValue()));
-        return map;
+        return Collections.singletonMap(clientSetting, toValidStringValue((int) component.getValue()));
       }
 
       @Override

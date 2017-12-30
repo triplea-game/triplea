@@ -138,7 +138,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   TEST_LOBBY_PORT_BINDING(
       "Lobby Port Override",
       SettingType.TESTING,
-      SelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 99999, true),
+      SelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 65535, true),
       "Specifies the port for connecting to a test lobby.\n"
           + "Set to 0 for no override"),
 

@@ -45,8 +45,17 @@ class JavaFxSelectionComponentFactory {
       final int maxValue,
       final boolean allowUnset) {
     return () -> new SelectionComponent<Region>() {
-      final Spinner<Integer> spinner =
-          new Spinner<>(minValue - (allowUnset ? 1 : 0), maxValue, getIntegerFromString(clientSetting.value()));
+
+      final Spinner<Integer> spinner = createSpinner();
+
+      private Spinner<Integer> createSpinner() {
+        final Spinner<Integer> spinner = new Spinner<>(
+            minValue - (allowUnset ? 1 : 0),
+            maxValue,
+            getIntegerFromString(clientSetting.value()));
+        spinner.setEditable(true);
+        return spinner;
+      }
 
       @Override
       public Region getUiComponent() {
@@ -66,7 +75,7 @@ class JavaFxSelectionComponentFactory {
 
       @Override
       public String validValueDescription() {
-        return "";// TODO localize this as well
+        return "";
       }
 
       @Override
