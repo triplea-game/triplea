@@ -12,7 +12,7 @@ import games.strategy.net.GUID;
 public abstract class InvocationResults implements Externalizable {
   private static final long serialVersionUID = -382704036681832123L;
   public RemoteMethodCallResults results;
-  public GUID methodCallID;
+  public GUID methodCallId;
 
   public InvocationResults() {}
 
@@ -24,25 +24,25 @@ public abstract class InvocationResults implements Externalizable {
       throw new IllegalArgumentException("Null id");
     }
     this.results = results;
-    this.methodCallID = methodCallId;
+    this.methodCallId = methodCallId;
   }
 
   @Override
   public String toString() {
-    return "Invocation results for method id:" + methodCallID + " results:" + results;
+    return "Invocation results for method id:" + methodCallId + " results:" + results;
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
     results.writeExternal(out);
-    methodCallID.writeExternal(out);
+    methodCallId.writeExternal(out);
   }
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
     results = new RemoteMethodCallResults();
     results.readExternal(in);
-    methodCallID = new GUID();
-    methodCallID.readExternal(in);
+    methodCallId = new GUID();
+    methodCallId.readExternal(in);
   }
 }

@@ -23,14 +23,14 @@ public final class GUID implements Externalizable {
   // this coupled with the unique vm prefix comprise
   // our unique id
   private static AtomicInteger lastId = new AtomicInteger();
-  private int m_id;
-  private VMID m_prefix;
+  private int id;
+  private VMID prefix;
 
   public GUID() {
-    m_id = lastId.getAndIncrement();
-    m_prefix = vmPrefix;
+    id = lastId.getAndIncrement();
+    prefix = vmPrefix;
     // handle wrap around if needed
-    if (m_id < 0) {
+    if (id < 0) {
       vmPrefix = new VMID();
       lastId = new AtomicInteger();
     }
@@ -39,16 +39,16 @@ public final class GUID implements Externalizable {
   public GUID(final VMID prefix, final int id) {
     checkNotNull(prefix);
 
-    m_id = id;
-    m_prefix = prefix;
+    this.id = id;
+    this.prefix = prefix;
   }
 
   public int getId() {
-    return m_id;
+    return id;
   }
 
   public VMID getPrefix() {
-    return m_prefix;
+    return prefix;
   }
 
   @Override
@@ -63,28 +63,28 @@ public final class GUID implements Externalizable {
     if (other == this) {
       return true;
     }
-    return this.m_id == other.m_id && (other.m_prefix == this.m_prefix || other.m_prefix.equals(this.m_prefix));
+    return this.id == other.id && (other.prefix == this.prefix || other.prefix.equals(this.prefix));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_id, m_prefix);
+    return Objects.hash(id, prefix);
   }
 
   @Override
   public String toString() {
-    return "GUID:" + m_prefix + ":" + m_id;
+    return "GUID:" + prefix + ":" + id;
   }
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-    m_id = in.readInt();
-    m_prefix = (VMID) in.readObject();
+    id = in.readInt();
+    prefix = (VMID) in.readObject();
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
-    out.writeInt(m_id);
-    out.writeObject(m_prefix);
+    out.writeInt(id);
+    out.writeObject(prefix);
   }
 }

@@ -7,43 +7,43 @@ import java.io.ObjectOutput;
 
 /**
  * The results of a method execution.
- * Note that either one of m_rVal or m_exception will be null,
+ * Note that either one of returnValue or exception will be null,
  * since the method can either throw or return
  */
 public class RemoteMethodCallResults implements Externalizable {
   private static final long serialVersionUID = 4562274411264858613L;
-  private Object m_rVal;
+  private Object returnValue;
   // throwable implements Serializable
-  private Throwable m_exception;
+  private Throwable exception;
 
   public RemoteMethodCallResults() {}
 
   public RemoteMethodCallResults(final Object returnValue) {
-    m_rVal = returnValue;
-    m_exception = null;
+    this.returnValue = returnValue;
+    exception = null;
   }
 
   public RemoteMethodCallResults(final Throwable exception) {
-    m_rVal = null;
-    m_exception = exception;
+    returnValue = null;
+    this.exception = exception;
   }
 
   public Throwable getException() {
-    return m_exception;
+    return exception;
   }
 
   public Object getRVal() {
-    return m_rVal;
+    return returnValue;
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
-    if (m_rVal != null) {
+    if (returnValue != null) {
       out.write(1);
-      out.writeObject(m_rVal);
+      out.writeObject(returnValue);
     } else {
       out.write(0);
-      out.writeObject(m_exception);
+      out.writeObject(exception);
     }
   }
 
@@ -51,16 +51,16 @@ public class RemoteMethodCallResults implements Externalizable {
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
     final boolean hasReturnValue = in.read() == 1;
     if (hasReturnValue) {
-      m_rVal = in.readObject();
+      returnValue = in.readObject();
     } else {
-      m_exception = (Throwable) in.readObject();
+      exception = (Throwable) in.readObject();
     }
   }
 
   @Override
   public String toString() {
-    final String exceptionMsg = (m_exception == null) ? "none" : m_exception.toString();
-    return "Return value: '" + m_rVal + "', exception: " + exceptionMsg;
+    final String exceptionMsg = (exception == null) ? "none" : exception.toString();
+    return "Return value: '" + returnValue + "', exception: " + exceptionMsg;
   }
 
 }
