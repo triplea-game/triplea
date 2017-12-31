@@ -11,7 +11,7 @@ import games.strategy.net.Node;
 
 public class SpokeInvoke extends Invoke {
   private static final long serialVersionUID = -2007645463748969L;
-  private INode m_invoker;
+  private INode invoker;
 
   public SpokeInvoke() {
     super();
@@ -20,23 +20,23 @@ public class SpokeInvoke extends Invoke {
   public SpokeInvoke(final GUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call,
       final INode invoker) {
     super(methodCallId, needReturnValues, call);
-    m_invoker = invoker;
+    this.invoker = invoker;
   }
 
   public INode getInvoker() {
-    return m_invoker;
+    return invoker;
   }
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
     super.readExternal(in);
-    m_invoker = new Node();
-    ((Node) m_invoker).readExternal(in);
+    invoker = new Node();
+    ((Node) invoker).readExternal(in);
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
     super.writeExternal(out);
-    ((Node) m_invoker).writeExternal(out);
+    ((Node) invoker).writeExternal(out);
   }
 }

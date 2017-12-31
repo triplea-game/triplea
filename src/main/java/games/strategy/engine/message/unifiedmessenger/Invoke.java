@@ -8,10 +8,12 @@ import java.io.ObjectOutput;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.net.GUID;
 
-// someone wants us to invoke something locally
+/**
+ * Someone wants us to invoke something locally.
+ */
 public abstract class Invoke implements Externalizable {
   private static final long serialVersionUID = -5453883962199970896L;
-  public GUID methodCallID;
+  public GUID methodCallId;
   public boolean needReturnValues;
   public RemoteMethodCall call;
 
@@ -20,7 +22,7 @@ public abstract class Invoke implements Externalizable {
   @Override
   public String toString() {
     return "invoke on:" + call.getRemoteName() + " method name:" + call.getMethodName() + " method call id:"
-        + methodCallID;
+        + methodCallId;
   }
 
   public Invoke(final GUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call) {
@@ -30,7 +32,7 @@ public abstract class Invoke implements Externalizable {
     if (!needReturnValues && methodCallId != null) {
       throw new IllegalArgumentException("Cant have id and not need return values");
     }
-    this.methodCallID = methodCallId;
+    this.methodCallId = methodCallId;
     this.needReturnValues = needReturnValues;
     this.call = call;
   }
@@ -39,7 +41,7 @@ public abstract class Invoke implements Externalizable {
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
     needReturnValues = in.read() == 1;
     if (needReturnValues) {
-      methodCallID = (GUID) in.readObject();
+      methodCallId = (GUID) in.readObject();
     }
     call = new RemoteMethodCall();
     call.readExternal(in);
@@ -49,7 +51,7 @@ public abstract class Invoke implements Externalizable {
   public void writeExternal(final ObjectOutput out) throws IOException {
     out.write(needReturnValues ? 1 : 0);
     if (needReturnValues) {
-      out.writeObject(methodCallID);
+      out.writeObject(methodCallId);
     }
     call.writeExternal(out);
   }

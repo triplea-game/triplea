@@ -45,7 +45,7 @@ class InvocationInProgress {
   }
 
   GUID getMethodCallId() {
-    return methodCall.methodCallID;
+    return methodCall.methodCallId;
   }
 
   boolean shouldSendResults() {
