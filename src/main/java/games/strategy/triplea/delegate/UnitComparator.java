@@ -60,11 +60,7 @@ public class UnitComparator {
     return (t1, t2) -> {
       final int cost1 = capacityMap.getInt(t1);
       final int cost2 = capacityMap.getInt(t2);
-      if (increasing) {
-        return cost1 - cost2;
-      } else {
-        return cost2 - cost1;
-      }
+      return increasing ? (cost1 - cost2) : (cost2 - cost1);
     };
   }
 
@@ -159,11 +155,7 @@ public class UnitComparator {
       }
 
       // If noTies is set, sort by hashcode so that result is deterministic
-      if (noTies) {
-        return Integer.compare(t1.hashCode(), t2.hashCode());
-      } else {
-        return 0;
-      }
+      return noTies ? Integer.compare(t1.hashCode(), t2.hashCode()) : 0;
     };
   }
 
@@ -203,11 +195,7 @@ public class UnitComparator {
 
       // Sort by increasing movement normally, but by decreasing movement during loading
       if (left1 != left2) {
-        if (route != null && route.isLoad()) {
-          return left2 - left1;
-        } else {
-          return left1 - left2;
-        }
+        return (route != null && route.isLoad()) ? (left2 - left1) : (left1 - left2);
       }
 
       return Integer.compare(u1.hashCode(), u2.hashCode());

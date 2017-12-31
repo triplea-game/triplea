@@ -210,12 +210,9 @@ public class ProductionPanel extends JPanel {
         data.releaseReadLock();
       }
       return bidCollection;
-    } else {
-      if (id == null || id.isNull()) {
-        return new ResourceCollection(data);
-      }
-      return id.getResources();
     }
+
+    return (id == null || id.isNull()) ? new ResourceCollection(data) : id.getResources();
   }
 
   class Rule {

@@ -55,11 +55,7 @@ public class RemoteMethodCall implements Externalizable {
   }
 
   private String debugMethodText() {
-    if (argTypes == null) {
-      return "." + methodName + "(" + ")";
-    } else {
-      return "." + methodName + "(" + Arrays.asList(argTypes) + ")";
-    }
+    return "." + methodName + "(" + (argTypes != null ? Arrays.toString(argTypes) : "") + ")";
   }
 
   /**

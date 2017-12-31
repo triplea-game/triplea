@@ -91,17 +91,18 @@ public class UserActionPanel extends ActionPanel {
     if (validUserActions.isEmpty()) {
       // No Valid User actions, do nothing
       return null;
-    } else {
-      if (this.firstRun) {
-        ClipPlayer.play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
-      }
-      SwingUtilities.invokeLater(() -> {
-        selectUserActionButton.setEnabled(true);
-        doneButton.setEnabled(true);
-        // press the user action button for us.
-        selectUserActionAction.actionPerformed(null);
-      });
     }
+
+    if (this.firstRun) {
+      ClipPlayer.play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
+    }
+    SwingUtilities.invokeLater(() -> {
+      selectUserActionButton.setEnabled(true);
+      doneButton.setEnabled(true);
+      // press the user action button for us.
+      selectUserActionAction.actionPerformed(null);
+    });
+
     waitForRelease();
     return choice;
   }

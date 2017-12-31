@@ -52,15 +52,15 @@ public class PropertyUtil {
       } catch (final NoSuchFieldException e) {
         return getFieldIncludingFromSuperClasses(c, name, true);
       }
-    } else {
-      if (c.getSuperclass() == null) {
-        throw new IllegalStateException("No such Property Field: " + name);
-      }
-      try {
-        return c.getSuperclass().getDeclaredField(name); // TODO: unchecked reflection
-      } catch (final NoSuchFieldException e) {
-        return getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
-      }
+    }
+
+    if (c.getSuperclass() == null) {
+      throw new IllegalStateException("No such Property Field: " + name);
+    }
+    try {
+      return c.getSuperclass().getDeclaredField(name); // TODO: unchecked reflection
+    } catch (final NoSuchFieldException e) {
+      return getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
     }
   }
 

@@ -51,14 +51,14 @@ public class SwingComponentTracker implements Consumer<PlayerSelectionModel> {
     } else if (playerSelectionModel.isCountryTakenByAnyPlayer(country)) {
       if (stagingScreen == StagingScreen.NETWORK_CLIENT) {
         return new JLabel(playerSelectionModel.getPlayerNameByCountry(country));
-      } else {
-        Preconditions.checkState(stagingScreen == StagingScreen.NETWORK_HOST);
-        return JButtonBuilder.builder()
-            .title(playerSelectionModel.getPlayerNameByCountry(country))
-            .toolTip("Click to remove " + playerSelectionModel.getPlayerNameByCountry(country) + " from " + country)
-            .actionListener(() -> playerSelectionModel.updateCountryToEmptyPlayerSelection(country))
-            .build();
       }
+
+      Preconditions.checkState(stagingScreen == StagingScreen.NETWORK_HOST);
+      return JButtonBuilder.builder()
+          .title(playerSelectionModel.getPlayerNameByCountry(country))
+          .toolTip("Click to remove " + playerSelectionModel.getPlayerNameByCountry(country) + " from " + country)
+          .actionListener(() -> playerSelectionModel.updateCountryToEmptyPlayerSelection(country))
+          .build();
     } else {
       return JButtonBuilder.builder()
           .title("Play")

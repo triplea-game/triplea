@@ -83,9 +83,8 @@ public class UnitType extends NamedAttachable {
     if (customTip == null || customTip.trim().length() <= 0) {
       return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(
           (playerId == null ? PlayerID.NULL_PLAYERID : playerId), true, false);
-    } else {
-      return LocalizeHtml.localizeImgLinksInHtml(customTip.trim());
     }
+    return LocalizeHtml.localizeImgLinksInHtml(customTip.trim());
   }
 
   /**

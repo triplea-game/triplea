@@ -315,11 +315,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return the territory before the end territory
    */
   public Territory getTerritoryBeforeEnd() {
-    if (m_steps.size() <= 1) {
-      return getStart();
-    } else {
-      return getTerritoryAtStep(m_steps.size() - 2);
-    }
+    return (m_steps.size() <= 1) ? getStart() : getTerritoryAtStep(m_steps.size() - 2);
   }
 
   /**

@@ -78,34 +78,35 @@ public class TripleAMenuBar extends JMenuBar {
       // If the user selects a filename that already exists,
       // the AWT Dialog on Mac OS X will ask the user for confirmation
       return new File(fileDialog.getDirectory(), GameDataFileUtils.addExtensionIfAbsent(fileName));
-    } else { // Non-Mac platforms should use the normal Swing JFileChooser
-      final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-      final int selectedOption = fileChooser.showSaveDialog(frame);
-      if (selectedOption != JFileChooser.APPROVE_OPTION) {
+    }
+
+    // Non-Mac platforms should use the normal Swing JFileChooser
+    final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+    final int selectedOption = fileChooser.showSaveDialog(frame);
+    if (selectedOption != JFileChooser.APPROVE_OPTION) {
+      return null;
+    }
+    File f = fileChooser.getSelectedFile();
+    // disallow sub directories to be entered (in the form directory/name) for Windows boxes
+    if (SystemProperties.isWindows()) {
+      final int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
+      final String filePath = f.getPath().substring(0, slashIndex);
+      if (!fileChooser.getCurrentDirectory().toString().equals(filePath)) {
+        JOptionPane.showConfirmDialog(frame, "Sub directories are not allowed in the file name.  Please rename it.",
+            "Cancel?", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
         return null;
       }
-      File f = fileChooser.getSelectedFile();
-      // disallow sub directories to be entered (in the form directory/name) for Windows boxes
-      if (SystemProperties.isWindows()) {
-        final int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
-        final String filePath = f.getPath().substring(0, slashIndex);
-        if (!fileChooser.getCurrentDirectory().toString().equals(filePath)) {
-          JOptionPane.showConfirmDialog(frame, "Sub directories are not allowed in the file name.  Please rename it.",
-              "Cancel?", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-          return null;
-        }
-      }
-      f = new File(f.getParent(), GameDataFileUtils.addExtensionIfAbsent(f.getName()));
-      // A small warning so users will not over-write a file
-      if (f.exists()) {
-        final int choice =
-            JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?",
-                "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (choice != JOptionPane.OK_OPTION) {
-          return null;
-        }
-      }
-      return f;
     }
+    f = new File(f.getParent(), GameDataFileUtils.addExtensionIfAbsent(f.getName()));
+    // A small warning so users will not over-write a file
+    if (f.exists()) {
+      final int choice =
+          JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?",
+              "Over-write?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+      if (choice != JOptionPane.OK_OPTION) {
+        return null;
+      }
+    }
+    return f;
   }
 }

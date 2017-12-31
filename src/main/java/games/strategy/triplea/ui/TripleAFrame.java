@@ -2039,11 +2039,8 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public Optional<InGameLobbyWatcherWrapper> getInGameLobbyWatcher() {
-    if (ServerGame.class.isAssignableFrom(getGame().getClass())) {
-      final ServerGame serverGame = (ServerGame) getGame();
-      return Optional.ofNullable(serverGame.getInGameLobbyWatcher());
-    } else {
-      return Optional.empty();
-    }
+    return ServerGame.class.isAssignableFrom(getGame().getClass())
+        ? Optional.ofNullable(((ServerGame) getGame()).getInGameLobbyWatcher())
+        : Optional.empty();
   }
 }

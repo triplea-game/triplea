@@ -98,17 +98,17 @@ public class UnifiedMessenger {
     if (local == null) {
       return invokeAndWaitRemote(remoteCall);
       // we have the implementor here, just invoke it
-    } else {
-      final long number = local.takeANumber();
-      final List<RemoteMethodCallResults> results = local.invokeLocal(remoteCall, number, getLocalNode());
-      if (results.size() == 0) {
-        throw new RemoteNotFoundException("Not found:" + endPointName);
-      }
-      if (results.size() > 1) {
-        throw new IllegalStateException("Too many implementors, got back:" + results);
-      }
-      return results.get(0);
     }
+
+    final long number = local.takeANumber();
+    final List<RemoteMethodCallResults> results = local.invokeLocal(remoteCall, number, getLocalNode());
+    if (results.size() == 0) {
+      throw new RemoteNotFoundException("Not found:" + endPointName);
+    }
+    if (results.size() > 1) {
+      throw new IllegalStateException("Too many implementors, got back:" + results);
+    }
+    return results.get(0);
   }
 
   private RemoteMethodCallResults invokeAndWaitRemote(final RemoteMethodCall remoteCall) {

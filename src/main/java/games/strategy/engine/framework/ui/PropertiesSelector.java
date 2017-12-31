@@ -32,9 +32,9 @@ public class PropertiesSelector {
       final AtomicReference<Object> buttonRef = new AtomicReference<>();
       SwingAction.invokeAndWait(() -> buttonRef.set(showDialog(parent, title, properties, buttonOptions)));
       return buttonRef.get();
-    } else {
-      return showDialog(parent, title, properties, buttonOptions);
     }
+
+    return showDialog(parent, title, properties, buttonOptions);
   }
 
   private static Object showDialog(final JComponent parent, final String title,

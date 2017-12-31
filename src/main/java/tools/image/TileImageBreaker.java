@@ -135,9 +135,8 @@ public class TileImageBreaker {
         ClientLogger.logQuietly(e);
         return loadImage();
       }
-    } else {
-      return null;
     }
+    return null;
   }
 
   private static String getValue(final String arg) {

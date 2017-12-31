@@ -166,11 +166,7 @@ public class TechPanel extends ActionPanel {
       @Override
       public String getToolTipText(final MouseEvent e) {
         final int index = locationToIndex(e.getPoint());
-        if (-1 < index) {
-          return getTechListToolTipText(getModel().getElementAt(index));
-        } else {
-          return null;
-        }
+        return (-1 < index) ? getTechListToolTipText(getModel().getElementAt(index)) : null;
       }
     };
     final JPanel panel = new JPanel();
@@ -222,11 +218,7 @@ public class TechPanel extends ActionPanel {
         @Override
         public String getToolTipText(final MouseEvent e) {
           final int index = locationToIndex(e.getPoint());
-          if (-1 < index) {
-            return getTechListToolTipText(getModel().getElementAt(index));
-          } else {
-            return null;
-          }
+          return (-1 < index) ? getTechListToolTipText(getModel().getElementAt(index)) : null;
         }
       };
       final JPanel panel = new JPanel();
@@ -257,9 +249,8 @@ public class TechPanel extends ActionPanel {
       final TechAdvance advance = iterTechList.next();
       if (listedAlready.contains(advance)) {
         continue;
-      } else {
-        listedAlready.add(advance);
       }
+      listedAlready.add(advance);
       final int freq = Collections.frequency(techList, advance);
       strTechCategory.append(advance.getName()).append(freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
       if (iterTechList.hasNext()) {

@@ -291,18 +291,18 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
       final int has = bridge.getPlayerId().getResources().getQuantity(pus);
       return has >= cost;
-    } else {
-      int runningTotal = 0;
-      for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet()) {
-        final int has = entry.getKey().getResources().getQuantity(pus);
-        final int paying = entry.getValue();
-        if (paying > has) {
-          return false;
-        }
-        runningTotal += paying;
-      }
-      return runningTotal >= cost;
     }
+
+    int runningTotal = 0;
+    for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet()) {
+      final int has = entry.getKey().getResources().getQuantity(pus);
+      final int paying = entry.getValue();
+      if (paying > has) {
+        return false;
+      }
+      runningTotal += paying;
+    }
+    return runningTotal >= cost;
   }
 
   private void chargeForTechRolls(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch) {

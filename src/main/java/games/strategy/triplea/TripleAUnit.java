@@ -343,11 +343,9 @@ public class TripleAUnit extends Unit {
       return 0;
     }
     final TripleAUnit taUnit = (TripleAUnit) u;
-    if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData())) {
-      return Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(u, t) - taUnit.getUnitDamage());
-    } else {
-      return Integer.MAX_VALUE;
-    }
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData())
+        ? Math.max(0, getHowMuchDamageCanThisUnitTakeTotal(u, t) - taUnit.getUnitDamage())
+        : Integer.MAX_VALUE;
   }
 
   /**
@@ -366,21 +364,17 @@ public class TripleAUnit extends Unit {
         // assume that if maxDamage <= 0, then the max damage must be based on the territory value
         // can use "production" or "unitProduction"
         return territoryUnitProduction * 2;
-      } else {
-        if (Matches.unitCanProduceUnits().test(u)) {
-          if (ua.getCanProduceXUnits() < 0) {
-            // can use "production" or "unitProduction"
-            return territoryUnitProduction * ua.getMaxDamage();
-          } else {
-            return ua.getMaxDamage();
-          }
-        } else {
-          return ua.getMaxDamage();
-        }
       }
-    } else {
-      return Integer.MAX_VALUE;
+
+      if (Matches.unitCanProduceUnits().test(u)) {
+        // can use "production" or "unitProduction"
+        return (ua.getCanProduceXUnits() < 0) ? territoryUnitProduction * ua.getMaxDamage() : ua.getMaxDamage();
+      }
+
+      return ua.getMaxDamage();
     }
+
+    return Integer.MAX_VALUE;
   }
 
   public int getHowMuchCanThisUnitBeRepaired(final Unit u, final Territory t) {
@@ -478,11 +472,7 @@ public class TripleAUnit extends Unit {
     if (territoryProduction >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(player, data)) {
       productionCapacity += TechAbilityAttachment.getProductionBonus(u.getType(), player, data);
     }
-    if (mathMaxZero) {
-      return Math.max(0, productionCapacity);
-    } else {
-      return productionCapacity;
-    }
+    return mathMaxZero ? Math.max(0, productionCapacity) : productionCapacity;
   }
 
   /**

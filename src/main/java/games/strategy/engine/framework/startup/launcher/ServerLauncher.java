@@ -94,18 +94,19 @@ public class ServerLauncher extends AbstractLauncher {
     }
     if (gameData == null || serverModel == null) {
       return true;
-    } else {
-      final Map<String, String> players = serverModel.getPlayersToNodeListing();
-      if (players == null || players.isEmpty()) {
+    }
+
+    final Map<String, String> players = serverModel.getPlayersToNodeListing();
+    if (players == null || players.isEmpty()) {
+      return true;
+    }
+
+    for (final String player : players.keySet()) {
+      if (players.get(player) == null) {
         return true;
-      } else {
-        for (final String player : players.keySet()) {
-          if (players.get(player) == null) {
-            return true;
-          }
-        }
       }
     }
+
     if (serverGame != null && serverGame.getPlayerManager() != null) {
       if (serverGame.getPlayerManager().isEmpty()) {
         return true;
