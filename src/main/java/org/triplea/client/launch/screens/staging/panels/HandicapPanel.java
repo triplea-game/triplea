@@ -18,7 +18,7 @@ import swinglib.JPanelBuilder;
  * that side with an advantage).
  * <p>
  * The layout is in a table, looks similar to this:
- * 
+ *
  * <pre>
  *            Bid    Income Adjustment   Income % Adjustment
  *  Allies

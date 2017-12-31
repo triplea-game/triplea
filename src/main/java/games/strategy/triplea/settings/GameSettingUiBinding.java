@@ -6,7 +6,7 @@ import java.util.Map;
  * Interface for UI components used to update ClientSetting values. Since the components can get their
  * initial value from the ClientSetting they represent, the only 'write' operation is 'resetToDefault'.
  * The rest of the operations here are essentially 'read' operations.
- * 
+ *
  * @param <T> The Type of the underlying UI Component
  */
 public interface GameSettingUiBinding<T> {

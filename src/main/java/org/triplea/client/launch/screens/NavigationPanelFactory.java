@@ -71,10 +71,10 @@ public class NavigationPanelFactory {
         .addIf(
             screenWindow.getPreviousScreen().isPresent(),
             JButtonBuilder.builder()
-            .title("Back")
-            .enabled(screenWindow.getPreviousScreen().isPresent())
-            .actionListener(() -> LaunchScreenWindow.draw(screenWindow.getPreviousScreenNotOptional()))
-            .build())
+                .title("Back")
+                .enabled(screenWindow.getPreviousScreen().isPresent())
+                .actionListener(() -> LaunchScreenWindow.draw(screenWindow.getPreviousScreenNotOptional()))
+                .build())
         .add(Box.createHorizontalStrut(50))
         .add(JButtonBuilder.builder()
             .title("Quit")

@@ -37,12 +37,12 @@ public class JoinNetworkGameSetup {
         .text(ClientSetting.PLAYER_NAME.value())
         .columns(12)
         .build();
-    final JTextField  serverField = JTextFieldBuilder.builder()
+    final JTextField serverField = JTextFieldBuilder.builder()
         .text("") // TODO: save and store last used, also add a drop down box of
         // successfully used hosts
         .columns(12)
         .build();
-    final JTextField  portField = JTextFieldBuilder.builder()
+    final JTextField portField = JTextFieldBuilder.builder()
         .text(GameRunner.PORT)
         .columns(5)
         .build();
@@ -70,7 +70,7 @@ public class JoinNetworkGameSetup {
                     JButtonBuilder.builder()
                         .title("Connect")
                         .actionListener(() -> {
-                          ServerConnectionProps connectionProps = new ServerConnectionProps();
+                          final ServerConnectionProps connectionProps = new ServerConnectionProps();
                           connectionProps.setHost(serverField.getText().trim());
                           connectionProps.setName("name");
                           connectionProps.setPassword(""); // TODO: << hardcoded

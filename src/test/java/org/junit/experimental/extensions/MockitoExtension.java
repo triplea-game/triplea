@@ -54,8 +54,8 @@ public class MockitoExtension implements TestInstancePostProcessor, ParameterRes
     final String mockName = getMockName(parameter);
 
     return (mockName != null)
-      ? mocks.getOrComputeIfAbsent(mockName, key -> mock(mockType, mockName))
-      : mocks.getOrComputeIfAbsent(mockType.getCanonicalName(), key -> mock(mockType));
+        ? mocks.getOrComputeIfAbsent(mockName, key -> mock(mockType, mockName))
+        : mocks.getOrComputeIfAbsent(mockType.getCanonicalName(), key -> mock(mockType));
   }
 
   private String getMockName(final Parameter parameter) {

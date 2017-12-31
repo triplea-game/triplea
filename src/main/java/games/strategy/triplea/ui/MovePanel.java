@@ -113,8 +113,8 @@ public class MovePanel extends AbstractMovePanel {
 
   private PlayerID getUnitOwner(final Collection<Unit> units) {
     return (BaseEditDelegate.getEditMode(getData()) && units != null && !units.isEmpty())
-      ? units.iterator().next().getOwner()
-      : getCurrentPlayer();
+        ? units.iterator().next().getOwner()
+        : getCurrentPlayer();
   }
 
   /**

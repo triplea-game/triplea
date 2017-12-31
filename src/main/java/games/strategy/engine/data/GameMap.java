@@ -322,7 +322,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return getNeighbors(newFrontier, searched, --distance, cond);
   }
 
-  private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, int distance) {
+  private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched,
+      final int distance) {
     return getNeighbors(frontier, searched, distance, null);
   }
 

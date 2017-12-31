@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * A SelectionComponent represents a UI component that a user can use to update the value of a ClientSetting.
  * Instances of this type are created in: {@code SelectionComponentFactory}
- * 
+ *
  * @param <T> The Type of the underlying UI Component
  */
 public interface SelectionComponent<T> {

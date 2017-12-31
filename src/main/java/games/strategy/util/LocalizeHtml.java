@@ -18,8 +18,8 @@ public class LocalizeHtml {
    * Regex's found at http://www.mkyong.com/
    */
 
-  
-  
+
+
   /* Match the <img /> tag */
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
   /* Match the src attribute */

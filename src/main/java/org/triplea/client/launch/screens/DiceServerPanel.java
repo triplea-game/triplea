@@ -45,7 +45,7 @@ public class DiceServerPanel {
                     .add(JTextFieldBuilder.builder()
                         .text("todo")
                         .enabled(false)
-                        .build())                         // TODO: use registered email
+                        .build()) // TODO: use registered email
                     .addLabel("To:")
                     .add(toField)
 

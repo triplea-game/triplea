@@ -140,13 +140,13 @@ public class RouteCalculator {
    * Creates an unmodifiable List of possible translations on the given map.
    * If a map has "fixed borders" i.e. you can't infinitely scroll along at least one axis
    * the returned list will just contain a single identity {@linkplain AffineTransform}.
-   * 
+   *
    * <p>
    * If the map however is infinitely scrolling along an axis, the amount of {@linkplain AffineTransform}s
    * will multiply by 3.
    * Each {@linkplain AffineTransform} is a translation by a multiple (between -1 and 1) of mapHeight/mapWidth.
    * </p>
-   * 
+   *
    * @return An unmodifiable List containing 9-1 {@linkplain AffineTransform}s
    */
   @VisibleForTesting
