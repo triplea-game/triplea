@@ -87,7 +87,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         if (invoke.needReturnValues) {
           final RemoteMethodCallResults results =
               new RemoteMethodCallResults(new RemoteNotFoundException("Not found:" + invoke.call.getRemoteName()));
-          send(new SpokeInvocationResults(results, invoke.methodCallID), from);
+          send(new SpokeInvocationResults(results, invoke.methodCallId), from);
         }
         // no end points, this is ok, we
         // we are a channel with no implementors
@@ -126,11 +126,11 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
       }
       final InvocationInProgress invocationInProgress =
           new InvocationInProgress(remote.iterator().next(), hubInvoke, from);
-      invocations.put(hubInvoke.methodCallID, invocationInProgress);
+      invocations.put(hubInvoke.methodCallId, invocationInProgress);
     }
     // invoke remotely
     final SpokeInvoke invoke =
-        new SpokeInvoke(hubInvoke.methodCallID, hubInvoke.needReturnValues, hubInvoke.call, from);
+        new SpokeInvoke(hubInvoke.methodCallId, hubInvoke.needReturnValues, hubInvoke.call, from);
     for (final INode node : remote) {
       send(invoke, node);
     }
