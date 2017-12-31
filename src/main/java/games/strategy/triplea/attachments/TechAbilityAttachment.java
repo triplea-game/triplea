@@ -509,10 +509,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
         if (min == -1) {
           continue;
         }
-
-        double fmin = min;
-        fmin = fmin / 100.0F;
-        repairDiscount -= fmin;
+        repairDiscount -= min / 100.0;
       }
     }
     return Math.max(0.0D, repairDiscount);

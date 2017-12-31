@@ -346,7 +346,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
-    return airCantLand.isEmpty() ? true : ui.getOkToLetAirDie(getPlayerId(), airCantLand, movePhase);
+    return airCantLand.isEmpty() || ui.getOkToLetAirDie(getPlayerId(), airCantLand, movePhase);
   }
 
   private boolean canUnitsFight() {
@@ -359,7 +359,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClientLogger.logQuietly(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
-    return unitsCantFight.isEmpty() ? false : !ui.getOkToLetUnitsDie(unitsCantFight, true);
+    return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDie(unitsCantFight, true));
   }
 
   private void purchase(final boolean bid) {
