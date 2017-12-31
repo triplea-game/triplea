@@ -8,7 +8,9 @@ import java.io.ObjectOutput;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.net.GUID;
 
-// someone wants us to invoke something locally
+/**
+ * Someone wants us to invoke something locally.
+ */
 public abstract class Invoke implements Externalizable {
   private static final long serialVersionUID = -5453883962199970896L;
   public GUID methodCallId;
