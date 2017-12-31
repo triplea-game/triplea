@@ -185,8 +185,8 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
 
     return propertiesReadFromClient.containsKey(ANONYMOUS_LOGIN)
-      ? anonymousLogin(propertiesReadFromClient, clientName)
-      : validatePassword(propertiesReadFromClient, clientName);
+        ? anonymousLogin(propertiesReadFromClient, clientName)
+        : validatePassword(propertiesReadFromClient, clientName);
   }
 
   private static String getBanDurationBreakdown(final Timestamp stamp) {

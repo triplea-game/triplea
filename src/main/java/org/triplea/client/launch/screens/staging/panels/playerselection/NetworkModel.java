@@ -6,8 +6,7 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 
 class NetworkModel {
 
-  NetworkModel(final ServerModel serverModel) {
-  }
+  NetworkModel(final ServerModel serverModel) {}
 
   NetworkModel(final ClientModel clientModel) {
     // TODO implement

@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 
 /**
  * A Utility class to build complex Predicates.
- * 
+ *
  * @param <T> The Type of the Underlying Predicate.
  */
 public class PredicateBuilder<T> {

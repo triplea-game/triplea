@@ -68,7 +68,7 @@ class HostNetworkGameSetup {
                     JButtonBuilder.builder()
                         .title("Host")
                         .actionListener(() -> {
-                          ServerConnectionProps props = new ServerConnectionProps();
+                          final ServerConnectionProps props = new ServerConnectionProps();
                           props.setName(playerNameField.getText().trim());
                           props.setPassword(passwordField.getText().trim());
                           props.setPort(extractPortValue(portField));

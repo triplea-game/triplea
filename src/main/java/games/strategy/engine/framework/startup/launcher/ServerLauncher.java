@@ -132,7 +132,7 @@ public class ServerLauncher extends AbstractLauncher {
       gameData.doPreGameStartDataModifications(playerListing);
       logger.fine("Starting server");
       abortLaunch = testShouldWeAbort();
-      final byte[] gameDataAsBytes  = gameData.toBytes();
+      final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<IGamePlayer> localPlayerSet =
           gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypes());
       final Messengers messengers = new Messengers(messenger, remoteMessenger, channelMessenger);

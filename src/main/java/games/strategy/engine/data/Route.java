@@ -201,7 +201,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /**
    * Checking if any of the steps match the given Predicate.
-   * 
+   *
    * @param match referring match
    * @return whether any territories in this route match the given match (start territory is not tested).
    */

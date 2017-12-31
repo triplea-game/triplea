@@ -139,9 +139,9 @@ public enum StagingScreen {
               GameRunner.showSaveGameFileChooser().ifPresent(file -> {
                 ClientSetting.SELECTED_GAME_LOCATION.save(file.getAbsolutePath());
                 try {
-                  GameData newData = GameDataManager.loadGame(file);
+                  final GameData newData = GameDataManager.loadGame(file);
                   LaunchScreenWindow.draw(previousScreen, currentScreen, newData);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                   ClientLogger.logError("Failed to load: " + file.getAbsolutePath(), e);
                 }
               });
