@@ -236,11 +236,7 @@ public abstract class TechAdvance extends NamedAttachable {
   public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player) {
     final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
     if (technologyFrontier != null && !technologyFrontier.isEmpty()) {
-      if (player != null) {
-        return player.getTechnologyFrontierList().getAdvances();
-      } else {
-        return technologyFrontier.getTechs();
-      }
+      return (player != null) ? player.getTechnologyFrontierList().getAdvances() : technologyFrontier.getTechs();
     }
     // the game has no techs, just return empty list
     return new ArrayList<>();

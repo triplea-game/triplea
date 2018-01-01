@@ -217,9 +217,9 @@ public class ProductionRepairPanel extends JPanel {
         data.releaseReadLock();
       }
       return bidCollection;
-    } else {
-      return id.getResources();
     }
+
+    return id.getResources();
   }
 
   public class Rule extends JPanel {

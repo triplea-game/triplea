@@ -346,11 +346,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(errorContext, e);
     }
-    if (airCantLand.isEmpty()) {
-      return true;
-    } else {
-      return ui.getOkToLetAirDie(getPlayerId(), airCantLand, movePhase);
-    }
+    return airCantLand.isEmpty() || ui.getOkToLetAirDie(getPlayerId(), airCantLand, movePhase);
   }
 
   private boolean canUnitsFight() {
@@ -363,11 +359,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       ClientLogger.logQuietly(errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
-    if (unitsCantFight.isEmpty()) {
-      return false;
-    } else {
-      return !ui.getOkToLetUnitsDie(unitsCantFight, true);
-    }
+    return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDie(unitsCantFight, true));
   }
 
   private void purchase(final boolean bid) {
@@ -514,9 +506,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
         if (!GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData()) || canAirLand(false, id)
             || getPlayerBridge().isGameOver()) {
           return;
-        } else {
-          continue;
         }
+        continue;
       }
       final String error = placeDel.placeUnits(placeData.getUnits(), placeData.getAt(),
           bid ? IAbstractPlaceDelegate.BidMode.BID : IAbstractPlaceDelegate.BidMode.NOT_BID);

@@ -222,11 +222,7 @@ public class ResourceLoader implements Closeable {
       return null;
     }
 
-    final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-    if (inputStream.isPresent()) {
-      return inputStream.get();
-    } else {
-      throw new IllegalStateException("Failed to open an input stream to: " + path);
-    }
+    return UrlStreams.openStream(url)
+        .orElseThrow(() -> new IllegalStateException("Failed to open an input stream to: " + path));
   }
 }

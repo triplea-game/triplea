@@ -82,11 +82,7 @@ public class UnitSeperator {
         categories.put(entry, entry);
       }
     }
-    if (sort) {
-      return new TreeSet<>(categories.keySet());
-    } else {
-      return new LinkedHashSet<>(categories.keySet());
-    }
+    return sort ? new TreeSet<>(categories.keySet()) : new LinkedHashSet<>(categories.keySet());
   }
 
   /**

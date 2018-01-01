@@ -217,11 +217,9 @@ public final class TileImageFactory {
 
   private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent,
       final boolean cache, final boolean scale) {
-    if (showMapBlends && showReliefImages && transparent) {
-      return loadBlendedImage(fileName, cache, scale);
-    } else {
-      return loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);
-    }
+    return (showMapBlends && showReliefImages && transparent)
+        ? loadBlendedImage(fileName, cache, scale)
+        : loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);
   }
 
   private Image loadBlendedImage(final String fileName, final boolean cache, final boolean scaled) {
@@ -285,13 +283,13 @@ public final class TileImageFactory {
         imageCache.put(fileName, ref);
       }
       return blendedImage;
-    } else {
-      final ImageRef ref = new ImageRef(baseFile);
-      if (cache) {
-        imageCache.put(fileName, ref);
-      }
-      return baseFile;
     }
+
+    final ImageRef ref = new ImageRef(baseFile);
+    if (cache) {
+      imageCache.put(fileName, ref);
+    }
+    return baseFile;
   }
 
   private Image loadUnblendedImage(final URL imageLocation, final String fileName, final boolean transparent,

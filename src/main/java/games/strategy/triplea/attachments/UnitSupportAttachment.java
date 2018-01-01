@@ -246,9 +246,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
       final PlayerID player = getData().getPlayerList().getPlayerId(element);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
-      } else {
-        m_players.add(player);
       }
+      m_players.add(player);
     }
   }
 

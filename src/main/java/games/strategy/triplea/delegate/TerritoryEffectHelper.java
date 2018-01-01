@@ -18,11 +18,7 @@ import games.strategy.triplea.attachments.TerritoryEffectAttachment;
 public class TerritoryEffectHelper {
   public static Collection<TerritoryEffect> getEffects(final Territory location) {
     final TerritoryAttachment ta = TerritoryAttachment.get(location);
-    if (ta != null) {
-      return TerritoryAttachment.get(location).getTerritoryEffect();
-    } else {
-      return new ArrayList<>();
-    }
+    return (ta != null) ? ta.getTerritoryEffect() : new ArrayList<>();
   }
 
   static int getTerritoryCombatBonus(final UnitType type, final Collection<TerritoryEffect> effects,

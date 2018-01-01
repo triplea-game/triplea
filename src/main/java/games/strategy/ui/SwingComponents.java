@@ -340,12 +340,7 @@ public class SwingComponents {
     }
 
     final int result = fileChooser.showOpenDialog(null);
-
-    if (result == JFileChooser.APPROVE_OPTION) {
-      return Optional.of(fileChooser.getSelectedFile());
-    } else {
-      return Optional.empty();
-    }
+    return (result == JFileChooser.APPROVE_OPTION) ? Optional.of(fileChooser.getSelectedFile()) : Optional.empty();
   }
 
   /**

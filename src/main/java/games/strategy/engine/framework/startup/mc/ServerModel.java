@@ -337,9 +337,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
             (IObserverWaitingToJoin) remoteMessenger.getRemote(remoteName, true);
         serverLauncher.addObserver(observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
 
     @Override
@@ -451,12 +450,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
             getLocalPlayerTypes(), new Version(0, 0), gameSelectorModel.getGameName(),
             gameSelectorModel.getGameRound(), new HashSet<>(playersAllowedToBeDisabled),
             new LinkedHashMap<>());
-      } else {
-        return new PlayerListing(new HashMap<>(playersToNodeListing),
-            new HashMap<>(playersEnabledListing), getLocalPlayerTypes(), data.getGameVersion(),
-            data.getGameName(), data.getSequence().getRound() + "",
-            new HashSet<>(playersAllowedToBeDisabled), playerNamesAndAlliancesInTurnOrder);
       }
+      return new PlayerListing(new HashMap<>(playersToNodeListing),
+          new HashMap<>(playersEnabledListing), getLocalPlayerTypes(), data.getGameVersion(),
+          data.getGameName(), data.getSequence().getRound() + "",
+          new HashSet<>(playersAllowedToBeDisabled), playerNamesAndAlliancesInTurnOrder);
     }
   }
 

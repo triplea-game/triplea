@@ -112,19 +112,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (playersToSearch == null) {
         throw new IllegalStateException(
             "Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-      } else {
-        for (final PlayerID otherPlayer : playersToSearch) {
-          if (otherPlayer == player) {
-            continue;
-          }
-          ta = (TriggerAttachment) otherPlayer.getAttachment(nameOfAttachment);
-          if (ta != null) {
-            return ta;
-          }
-        }
-        throw new IllegalStateException(
-            "Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
       }
+
+      for (final PlayerID otherPlayer : playersToSearch) {
+        if (otherPlayer == player) {
+          continue;
+        }
+        ta = (TriggerAttachment) otherPlayer.getAttachment(nameOfAttachment);
+        if (ta != null) {
+          return ta;
+        }
+      }
+      throw new IllegalStateException(
+          "Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
     }
     return ta;
   }
@@ -594,9 +594,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final Resource r = getData().getResourceList().getResource(s);
     if (r == null) {
       throw new GameParseException("Invalid resource: " + s + thisErrorMsg());
-    } else {
-      m_resource = s;
     }
+    m_resource = s;
   }
 
   public String getResource() {
@@ -903,11 +902,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public List<PlayerID> getPlayers() {
-    if (m_players.isEmpty()) {
-      return new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo()));
-    } else {
-      return m_players;
-    }
+    return m_players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo())) : m_players;
   }
 
   public void clearPlayers() {
@@ -1267,25 +1262,24 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final Territory territory = getData().getMap().getTerritory(s[i]);
     if (territory == null) {
       throw new GameParseException("Territory does not exist " + s[i] + thisErrorMsg());
-    } else {
-      i++;
-      final IntegerMap<UnitType> map = new IntegerMap<>();
-      for (; i < s.length; i++) {
-        final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
-        if (type == null) {
-          throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
-        } else {
-          map.add(type, count);
-        }
-      }
-      if (m_placement == null) {
-        m_placement = new HashMap<>();
-      }
-      if (m_placement.containsKey(territory)) {
-        map.add(m_placement.get(territory));
-      }
-      m_placement.put(territory, map);
     }
+
+    i++;
+    final IntegerMap<UnitType> map = new IntegerMap<>();
+    for (; i < s.length; i++) {
+      final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
+      if (type == null) {
+        throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
+      }
+      map.add(type, count);
+    }
+    if (m_placement == null) {
+      m_placement = new HashMap<>();
+    }
+    if (m_placement.containsKey(territory)) {
+      map.add(m_placement.get(territory));
+    }
+    m_placement.put(territory, map);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1409,18 +1403,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
     if (s.length < 1 || (s.length == 1 && count != -1)) {
       throw new GameParseException("Empty purchase list" + thisErrorMsg());
-    } else {
-      if (m_purchase == null) {
-        m_purchase = new IntegerMap<>();
+    }
+
+    if (m_purchase == null) {
+      m_purchase = new IntegerMap<>();
+    }
+    for (; i < s.length; i++) {
+      final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
+      if (type == null) {
+        throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
       }
-      for (; i < s.length; i++) {
-        final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
-        if (type == null) {
-          throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
-        } else {
-          m_purchase.add(type, count);
-        }
-      }
+      m_purchase.add(type, count);
     }
   }
 

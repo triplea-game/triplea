@@ -71,11 +71,7 @@ public final class Util {
    * problems. Fix is to use 3Byte rather than INT.
    */
   public static BufferedImage createImage(final int width, final int height, final boolean needAlpha) {
-    if (needAlpha) {
-      return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-    } else {
-      return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-    }
+    return new BufferedImage(width, height, needAlpha ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
   }
 
   public static Dimension getDimension(final Image anImage, final ImageObserver obs) {

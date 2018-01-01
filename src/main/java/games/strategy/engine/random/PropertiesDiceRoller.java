@@ -279,9 +279,8 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         if (status == HttpStatus.SC_TEMPORARY_REDIRECT || status == HttpStatus.SC_MOVED_PERMANENTLY
             || status == HttpStatus.SC_MOVED_TEMPORARILY) {
           return RequestBuilder.copy(request).setUri(uri).build();
-        } else {
-          return new HttpGet(uri);
         }
+        return new HttpGet(uri);
       }
     }
   }

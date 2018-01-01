@@ -259,16 +259,16 @@ public class StatPanel extends AbstractStatPanel {
     public synchronized int getRowCount() {
       if (!isDirty) {
         return collectedData.length;
-      } else {
-        // no need to recalculate all the stats just to get the row count
-        // getting the row count is a fairly frequent operation, and will
-        // happen even if we are not displayed!
-        gameData.acquireReadLock();
-        try {
-          return gameData.getPlayerList().size() + getAlliances().size();
-        } finally {
-          gameData.releaseReadLock();
-        }
+      }
+
+      // no need to recalculate all the stats just to get the row count
+      // getting the row count is a fairly frequent operation, and will
+      // happen even if we are not displayed!
+      gameData.acquireReadLock();
+      try {
+        return gameData.getPlayerList().size() + getAlliances().size();
+      } finally {
+        gameData.releaseReadLock();
       }
     }
 

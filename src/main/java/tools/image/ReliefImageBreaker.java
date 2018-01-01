@@ -137,12 +137,7 @@ public class ReliefImageBreaker {
    * @return map name entered by the user (if any, null returned if canceled)
    */
   private static String getMapDirectory() {
-    final String mapDir = JOptionPane.showInputDialog(null, "Enter the name of the map (ie. revised)");
-    if (mapDir != null) {
-      return mapDir;
-    } else {
-      return null;
-    }
+    return JOptionPane.showInputDialog(null, "Enter the name of the map (ie. revised)");
   }
 
   /**
@@ -165,9 +160,8 @@ public class ReliefImageBreaker {
         ClientLogger.logQuietly("interrupted while loading images", e);
         return loadImage();
       }
-    } else {
-      return null;
     }
+    return null;
   }
 
   private void processImage(final String territory, final Image map) throws IOException {
