@@ -283,10 +283,10 @@ public class GameSelectorModel extends Observable {
     final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();
 
     final GameChooserModel model = new GameChooserModel();
-    GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName);
-    if (selectedGame == null) {
-      selectedGame = model.findByName(userPreferredDefaultGameName);
-    }
+    GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName)
+        .orElse(model.findByName(userPreferredDefaultGameName)
+            .orElse(null));
+
     if (selectedGame == null && model.size() > 0) {
       selectedGame = model.get(0);
     }

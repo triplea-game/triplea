@@ -188,13 +188,16 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     }
   }
 
-  public GameChooserEntry findByName(final String name) {
+  /**
+   * Searches for a GameChooserEntry whose gameName matches the input parameter.
+   */
+  public Optional<GameChooserEntry> findByName(final String name) {
     for (int i = 0; i < size(); i++) {
       if (get(i).getGameData().getGameName().equals(name)) {
-        return get(i);
+        return Optional.of(get(i));
       }
     }
-    return null;
+    return Optional.empty();
   }
 
   private static GameChooserEntry createEntry(final URI uri)

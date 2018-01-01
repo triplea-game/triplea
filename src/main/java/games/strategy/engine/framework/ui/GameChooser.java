@@ -122,10 +122,8 @@ public class GameChooser extends JDialog {
       gameList.setSelectedIndex(0);
       return;
     }
-    final GameChooserEntry entry = gameListModel.findByName(gameName);
-    if (entry != null) {
-      gameList.setSelectedValue(entry, true);
-    }
+    gameListModel.findByName(gameName)
+        .ifPresent(entry -> gameList.setSelectedValue(entry, true));
   }
 
   private void updateInfoPanel() {
