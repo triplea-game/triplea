@@ -124,6 +124,7 @@ public class HelpMenu {
     final String color3 = "FEECE2";
     final StringBuilder hints = new StringBuilder();
     hints.append("<html>");
+    hints.append("<head><style>th, tr{color:black}</style></head>");
     try {
       gameData.acquireReadLock();
       final Map<PlayerID, Map<UnitType, ResourceCollection>> costs =
