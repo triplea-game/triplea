@@ -5,8 +5,7 @@
 .settings
 .checkstyle
 
-triplea.iml
-
+*.iml
 *.backup
 *.swp
 
