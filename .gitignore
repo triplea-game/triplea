@@ -2,6 +2,7 @@
 .gradle
 .idea
 .project
+.remote-libs/
 .settings
 .checkstyle
 
@@ -11,4 +12,3 @@
 bin/
 build/
 out/
-
