@@ -14,10 +14,10 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
  */
 public class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
-  private final transient IRandomSource _randomSource;
+  private final transient IRandomSource randomSource;
 
   public InternalDiceServer() {
-    _randomSource = new PlainRandomSource();
+    randomSource = new PlainRandomSource();
   }
 
   @Override
@@ -29,7 +29,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId,
       final String gameUuid) {
     // the interface is rather stupid, you have to return a string here, which is then passed back in getDice()
-    final int[] ints = _randomSource.getRandom(max, numDice, "Internal Dice Server");
+    final int[] ints = randomSource.getRandom(max, numDice, "Internal Dice Server");
     final StringBuilder sb = new StringBuilder();
     for (final int i : ints) {
       sb.append(i).append(",");
