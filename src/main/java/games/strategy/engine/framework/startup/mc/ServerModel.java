@@ -241,6 +241,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
 
+
+  /**
+   * Creates a server messenger, returns false if any errors happen.
+   * @param ui In non-headless environments we get input from user, the component is for window placements.
+   */
   public boolean createServerMessenger(final Component ui) {
     return getServerProps(ui)
         .map(props -> createServerMessenger(ui, props))
