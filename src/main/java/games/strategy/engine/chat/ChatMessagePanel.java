@@ -26,6 +26,8 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import com.google.common.base.Ascii;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
@@ -277,7 +279,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
-    final String message = trimMessage(originalMessage);
+    final String message = Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
     try {
@@ -340,11 +342,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     } catch (final BadLocationException e) {
       ClientLogger.logError("There was an Error whilst trying trimming Chat", e);
     }
-  }
-
-  private static String trimMessage(final String originalMessage) {
-    // don't allow messages that are too long
-    return (originalMessage.length() > 200) ? originalMessage.substring(0, 199) + "..." : originalMessage;
   }
 
   private final Action setStatusAction = SwingAction.of("Status...", e -> {

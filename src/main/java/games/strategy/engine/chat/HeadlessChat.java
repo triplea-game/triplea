@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.swing.DefaultListCellRenderer;
 
+import com.google.common.base.Ascii;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.message.IChannelMessenger;
@@ -161,7 +163,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   }
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
-    final String message = trimMessage(originalMessage);
+    final String message = Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final String prefix = thirdperson ? (showTime ? "* " + time + " " + from : "* " + from)
         : (showTime ? time + " " + from + ": " : from + ": ");
@@ -195,10 +197,5 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     } catch (final Exception e) {
       ClientLogger.logQuietly(e);
     }
-  }
-
-  private static String trimMessage(final String originalMessage) {
-    // dont allow messages that are too long
-    return (originalMessage.length() > 200) ? originalMessage.substring(0, 199) + "..." : originalMessage;
   }
 }
