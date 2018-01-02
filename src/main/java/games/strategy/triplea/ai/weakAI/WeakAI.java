@@ -43,8 +43,8 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
 
-/*
- * A very weak ai, based on some simple rules.<p>
+/**
+ * A very weak ai, based on some simple rules.
  */
 public class WeakAI extends AbstractAI {
 
