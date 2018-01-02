@@ -14,16 +14,13 @@ class RemoteInterfaceHelper {
   static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
-    if (logger.isLoggable(Level.FINEST)) {
-      logger.fine("Sorted methods:" + Arrays.asList(methods));
-    }
+
     for (int i = 0; i < methods.length; i++) {
       if (methods[i].getName().equals(methodName)) {
         final Class<?>[] types = methods[i].getParameterTypes();
-        // both null
-        if (types == argTypes) {
+        if ((types == null) && (argTypes == null)) {
           return i;
-        } else if (types != null && argTypes != null && types.length == argTypes.length) {
+        } else if ((types != null) && (argTypes != null) && (types.length == argTypes.length)) {
           boolean match = true;
           for (int j = 0; j < argTypes.length; j++) {
             if (!argTypes[j].equals(types[j])) {
@@ -43,9 +40,6 @@ class RemoteInterfaceHelper {
   static Tuple<String, Class<?>[]> getMethodInfo(final int methodNumber, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
-    if (logger.isLoggable(Level.FINEST)) {
-      logger.fine("Sorted methods:" + Arrays.asList(methods));
-    }
     return Tuple.of(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
   }
 
@@ -61,8 +55,7 @@ class RemoteInterfaceHelper {
     }
     final Class<?>[] t1 = o1.getParameterTypes();
     final Class<?>[] t2 = o2.getParameterTypes();
-    // both null
-    if (t1 == t2) {
+    if ((t1 == null) && (t2 == null)) {
       return 0;
     }
     if (t1 == null) {
