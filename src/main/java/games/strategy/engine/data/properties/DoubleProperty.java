@@ -71,9 +71,7 @@ public class DoubleProperty extends AEditableProperty {
       } catch (final Exception e) {
         return false;
       }
-      if (d <= m_max && d >= m_min) {
-        return true;
-      }
+      return d <= m_max && d >= m_min;
     }
     return false;
   }

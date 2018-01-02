@@ -147,9 +147,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       for (final PlayerID p : helpPay) {
         money += p.getResources().getQuantity(Constants.PUS);
       }
-      if (money < techCost) {
-        return false;
-      }
+      return money >= techCost;
     }
     return true;
   }

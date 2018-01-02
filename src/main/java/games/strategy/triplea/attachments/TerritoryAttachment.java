@@ -33,15 +33,10 @@ public class TerritoryAttachment extends DefaultAttachment {
     final PlayerAttachment pa = PlayerAttachment.get(player);
 
     if (pa == null) {
-      if (!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) {
-        return false;
-      }
+      return capitalsListOriginal.isEmpty() || !capitalsListOwned.isEmpty();
     } else {
-      if (pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()) {
-        return false;
-      }
+      return pa.getRetainCapitalProduceNumber() <= capitalsListOwned.size();
     }
-    return true;
   }
 
   /**

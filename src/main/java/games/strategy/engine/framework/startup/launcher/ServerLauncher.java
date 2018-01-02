@@ -102,9 +102,7 @@ public class ServerLauncher extends AbstractLauncher {
     }
 
     if (serverGame != null && serverGame.getPlayerManager() != null) {
-      if (serverGame.getPlayerManager().isEmpty()) {
-        return true;
-      }
+      return serverGame.getPlayerManager().isEmpty();
     }
     return false;
   }

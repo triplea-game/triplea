@@ -129,9 +129,9 @@ public class GameStepPropertiesHelper {
         return Boolean.parseBoolean(prop);
       } else if (Properties.getWW2V2(data) || Properties.getWW2V3(data)) {
         return isCombatDelegate(data);
-      } else {
-        return isNonCombatDelegate(data);
       }
+      return isNonCombatDelegate(data);
+
     } finally {
       data.releaseReadLock();
     }
@@ -314,10 +314,8 @@ public class GameStepPropertiesHelper {
   private static boolean isCombatDelegate(final GameData data) {
     if (data.getSequence().getStep().getName().endsWith("NonCombatMove")) {
       return false;
-    } else if (data.getSequence().getStep().getName().endsWith("CombatMove")) {
-      return true;
     }
-    return false;
+    return data.getSequence().getStep().getName().endsWith("CombatMove");
   }
 
   private static boolean isAirborneDelegate(final GameData data) {

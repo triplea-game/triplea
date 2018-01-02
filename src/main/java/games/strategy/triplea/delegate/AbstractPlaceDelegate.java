@@ -1623,9 +1623,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   protected boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(final PlayerID player) {
     if (isPlaceInAnyTerritory()) {
       final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-      if (ra != null && ra.getPlacementAnyTerritory()) {
-        return true;
-      }
+      return ra != null && ra.getPlacementAnyTerritory();
     }
     return false;
   }
@@ -1633,9 +1631,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   protected boolean isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(final PlayerID player) {
     if (isPlaceInAnyTerritory()) {
       final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-      if (ra != null && ra.getPlacementAnySeaZone()) {
-        return true;
-      }
+      return ra != null && ra.getPlacementAnySeaZone();
     }
     return false;
   }
