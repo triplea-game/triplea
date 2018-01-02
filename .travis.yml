@@ -1,8 +1,12 @@
 dist: trusty
 sudo: false
 language: java
-jdk:
-- oraclejdk9
++matrix:
+  include:
+  - jdk: oraclejdk8
+    env: TRIPLEA_RELEASE=false
+  - jdk: oraclejdk9
+    env: TRIPLEA_RELEASE=true
 addons:
   postgresql: "9.5"
   apt:
@@ -33,6 +37,7 @@ deploy:
   prerelease: true
   on:
     tags: false
+    condition: "$TRIPLEA_RELEASE = true"
     repo: triplea-game/triplea
     branches:
       only:
