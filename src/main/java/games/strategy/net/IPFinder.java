@@ -61,13 +61,13 @@ public class IPFinder {
     }
     // try to find one that is not private and ip4
     for (final InetAddress address : allButLoopback) {
-      if (address.getAddress().length == 4 && !isPrivateNetworkAddress(address)) {
+      if (address.getAddress().length == 4 && isPublicNetworkAddress(address)) {
         return address;
       }
     }
     // try to find one that is not private
     for (final InetAddress address : allButLoopback) {
-      if (!isPrivateNetworkAddress(address)) {
+      if (isPublicNetworkAddress(address)) {
         return address;
       }
     }
@@ -81,7 +81,7 @@ public class IPFinder {
     return InetAddress.getLocalHost();
   } // end static findInetAddress()
 
-  private static boolean isPrivateNetworkAddress(final InetAddress address) {
+  private static boolean isPublicNetworkAddress(final InetAddress address) {
     // stupid java signed byte type
     final byte octet192 = (byte) 0xC0;
     final byte octet172 = (byte) 0xAC;
@@ -93,12 +93,12 @@ public class IPFinder {
     // ip 4
     if (bytes.length == 4) {
       // http://en.wikipedia.org/wiki/Private_network
-      return (bytes[0] == 10) || (bytes[0] == octet172 && bytes[1] >= 16 && bytes[1] <= 31)
-          || (bytes[0] == octet192 && bytes[1] == octet168) || (bytes[0] == octet169 && bytes[1] == octet254);
+      return (bytes[0] != 10) && (bytes[0] != octet172 || bytes[1] < 16 || bytes[1] > 31)
+          && (bytes[0] != octet192 || bytes[1] != octet168) && (bytes[0] != octet169 || bytes[1] != octet254);
     }
     // ip 6
     // http://en.wikipedia.org/wiki/IPv6#Addressing
-    return (bytes[0] == octet252 && bytes[1] == 0) || bytes[0] == octet254;
+    return (bytes[0] != octet252 || bytes[1] != 0) && bytes[0] != octet254;
 
   }
 }
