@@ -901,9 +901,7 @@ public class BattleCalculator {
     final Set<UnitCategory> categorized = UnitSeperator.categorize(targets, dependents, false, false);
     if (categorized.size() == 1) {
       final UnitCategory unitCategory = categorized.iterator().next();
-      if (unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1) {
-        return true;
-      }
+      return unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1;
     }
     return false;
   }

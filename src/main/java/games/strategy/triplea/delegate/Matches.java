@@ -988,14 +988,7 @@ public final class Matches {
   }
 
   private static Predicate<Territory> territoryIsImpassableToLandUnits(final PlayerID player, final GameData data) {
-    return t -> {
-      if (t.isWater()) {
-        return true;
-      } else if (territoryIsPassableAndNotRestricted(player, data).negate().test(t)) {
-        return true;
-      }
-      return false;
-    };
+    return t -> t.isWater() || territoryIsPassableAndNotRestricted(player, data).negate().test(t);
   }
 
   public static Predicate<Territory> territoryIsNotImpassableToLandUnits(final PlayerID player, final GameData data) {
@@ -1490,10 +1483,8 @@ public final class Matches {
         final Collection<Unit> airTransports = CollectionUtils.getMatches(units, unitIsAirTransport());
         final Collection<Unit> paratroops = CollectionUtils.getMatches(units, unitIsAirTransportable());
         if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-          if (TransportUtils.mapTransportsToLoad(paratroops, airTransports)
-              .containsKey(dependent)) {
-            return true;
-          }
+          return TransportUtils.mapTransportsToLoad(paratroops, airTransports)
+              .containsKey(dependent);
         }
       }
       return false;
