@@ -22,7 +22,7 @@ class DebugMenu {
     menuBar.add(debugMenu);
 
     final Set<IGamePlayer> players = frame.getLocalPlayers().getLocalPlayers();
-    final boolean areThereProAIs = players.stream().filter(player -> player instanceof ProAI).findFirst().isPresent();
+    final boolean areThereProAIs = players.stream().anyMatch(ProAI.class::isInstance);
     if (areThereProAIs) {
       ProAI.initialize(frame);
       debugMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
@@ -30,7 +30,7 @@ class DebugMenu {
 
     debugMenu.add(new EnablePerformanceLoggingCheckBox());
     debugMenu.add(SwingAction.of("Show Console", e -> {
-      ErrorConsole.getConsole().setVisible(true);
+      ErrorConsole.showConsole();
       ErrorConsole.getConsole().append(DebugUtils.getMemory());
     })).setMnemonic(KeyEvent.VK_C);
   }

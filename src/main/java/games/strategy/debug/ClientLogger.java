@@ -1,21 +1,25 @@
 package games.strategy.debug;
 
+import java.awt.GraphicsEnvironment;
 import java.io.PrintStream;
-import java.util.Collection;
 
 import javax.annotation.Nullable;
 
+import com.google.common.annotations.VisibleForTesting;
+
+import swinglib.ErrorMessageBuilder;
+
 /**
  * Provides methods for the client to write log messages.
- *
- * <p>
- * In general, the {@code logError()} methods will send their output to the user output (standard error) stream, while
- * the {@code logQuietly()} methods will send their output to the developer output (standard output) stream.
+ * <p> In general, the {@code logError()} methods will send their output to the user output
+ * (standard error) stream, while the {@code logQuietly()} methods will send their output to the
+ * developer output (standard output) stream.
  * </p>
  */
 public final class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
-  private static final PrintStream userOutputStream = System.err;
+
+  private static boolean enableErrorPopup = true;
 
   private ClientLogger() {}
 
@@ -23,6 +27,28 @@ public final class ClientLogger {
     e.printStackTrace(stream);
   }
 
+
+  @VisibleForTesting
+  public static void disableErrorPopupForTesting() {
+    enableErrorPopup = false;
+  }
+
+  @VisibleForTesting
+  public static void resetErrorPopupForTesting() {
+    enableErrorPopup = true;
+  }
+
+  /**
+   * Logs a Throwable to the error console. This method is deprecated, use API version that accepts
+   * an error message.
+   *
+   * @deprecated Use logQuietly(String, Throwable) instead.
+   *             We should always provide more context then just an exception, so this method is deprecated.
+   *             Notably we should always give some details about what happened, what the exception means,
+   *             and also log any parameter values, or any other surrounding context values so
+   *             we can debug more easily.
+   */
+  @Deprecated
   public static void logQuietly(final Throwable e) {
     log(developerOutputStream, e);
   }
@@ -33,30 +59,47 @@ public final class ClientLogger {
 
   public static void logQuietly(final @Nullable String msg, final Throwable e) {
     logQuietly(msg);
-    logQuietly(e);
-  }
-
-  public static void logError(final Throwable e) {
-    log(userOutputStream, e);
-  }
-
-  public static void logError(final @Nullable String msg) {
-    userOutputStream.println(msg);
-  }
-
-  public static void logError(final @Nullable String msg, final Throwable e) {
-    logError(msg);
-    logError(e);
+    log(developerOutputStream, e);
   }
 
   /**
-   * Logs the specified message and collection of errors to the user output stream.
+   * Logs an error message to console, shows a pop-up message to user with the same error message.
    *
-   * @param msg The error message.
-   * @param throwables The collection of errors.
+   * @param msg Message to be displayed in the error pop-up, this will be shown to users. Error
+   *            message should be as well written as possible with context of what error happened
+   *            and what it means for the game (should the player restart? continue playing?).
    */
-  public static void logError(final @Nullable String msg, final Collection<? extends Throwable> throwables) {
-    logError(msg);
-    throwables.forEach(ClientLogger::logError);
+  public static void logError(final @Nullable String msg) {
+    logQuietly(msg);
+    showErrorMessage(msg);
+  }
+
+  /**
+   * Logs an error message and stack trace to console, shows a pop-up message to user with
+   * an error message.
+   *
+   * @param msg Message to be displayed in the error pop-up, this will be shown to users. Error
+   *            message should be as well written as possible with context of what error happened
+   *            and what it means for the game (should the player restart? continue playing?).
+   */
+  public static void logError(final @Nullable String msg, final Throwable e) {
+    logQuietly(msg, e);
+    showErrorMessage(msg);
+  }
+
+  private static void showErrorMessage(final String msg) {
+    if (GraphicsEnvironment.isHeadless() || !enableErrorPopup) {
+      // skip the pop-up if we there is no Swing UI to show the error message.
+      // in all cases the error information should have been quiet logged, the error message pop-up is only
+      // extra to show a clean error message to user, so we lose nothing by skipping it.
+      return;
+    }
+
+    ErrorMessageBuilder.builder()
+        .message(msg)
+        .option("OK", () -> {
+        })
+        .option("Show Details", ErrorConsole::showConsole)
+        .buildAndShow();
   }
 }

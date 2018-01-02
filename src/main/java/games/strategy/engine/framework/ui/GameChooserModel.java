@@ -90,7 +90,10 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (final ExecutionException e) {
-        ClientLogger.logError(e.getCause());
+        // ExecutionException contains no useful information; it's simply an adapter to tunnel
+        // exceptions thrown by tasks through the Executor API. Log the cause only to reducase
+        // stack trace frames.
+        ClientLogger.logError("Failed to parse a map", e.getCause());
       }
     }
     return parsedMapSet;
@@ -170,6 +173,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   }
 
   /**
+   * From a given URI, creates a GameChooserEntry and adds to the given entries list.
    * @param entries
    *        list of entries where to add the new entry.
    * @param uri
@@ -178,7 +182,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   private static void addNewGameChooserEntry(final List<GameChooserEntry> entries, final URI uri) {
     try {
       final GameChooserEntry newEntry = createEntry(uri);
-      if (newEntry != null && !entries.contains(newEntry)) {
+      if (!entries.contains(newEntry)) {
         entries.add(newEntry);
       }
     } catch (final EngineVersionException e) {
