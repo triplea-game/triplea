@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
@@ -58,11 +59,8 @@ public final class OpenJsonUtils {
   public static Stream<Object> stream(final JSONArray jsonArray) {
     checkNotNull(jsonArray);
 
-    final Stream.Builder<Object> streamBuilder = Stream.builder();
-    for (int i = 0, size = jsonArray.length(); i < size; ++i) {
-      streamBuilder.add(jsonArray.get(i));
-    }
-    return streamBuilder.build();
+    return IntStream.range(0, jsonArray.length())
+        .mapToObj(jsonArray::get);
   }
 
   /**
