@@ -126,7 +126,7 @@ public final class Version implements Serializable, Comparable<Version> {
 
   @Override
   public boolean equals(final @Nullable Object o) {
-    return o instanceof Version ? compareTo((Version) o) == 0 : false;
+    return o instanceof Version && compareTo((Version) o) == 0;
   }
 
   @Override
