@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -188,13 +189,14 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     }
   }
 
-  public GameChooserEntry findByName(final String name) {
-    for (int i = 0; i < size(); i++) {
-      if (get(i).getGameData().getGameName().equals(name)) {
-        return get(i);
-      }
-    }
-    return null;
+  /**
+   * Searches for a GameChooserEntry whose gameName matches the input parameter.
+   */
+  public Optional<GameChooserEntry> findByName(final String name) {
+    return IntStream.range(0, size())
+        .mapToObj(this::get)
+        .filter(e -> e.getGameData().getGameName().equals(name))
+        .findAny();
   }
 
   private static GameChooserEntry createEntry(final URI uri)
