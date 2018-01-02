@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -198,7 +199,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     remoteModelListener.playerListChanged();
   }
 
-  private ServerConnectionProps getServerProps(final Component ui) {
+  private Optional<ServerConnectionProps> getServerProps(final Component ui) {
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
         && System.getProperty(TRIPLEA_STARTED, "").equals("")) {
       final ServerConnectionProps props = new ServerConnectionProps();
@@ -208,7 +209,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         props.setPassword(System.getProperty(SERVER_PASSWORD));
       }
       System.setProperty(TRIPLEA_STARTED, "true");
-      return props;
+      return Optional.of(props);
     }
     final String playername = ClientSetting.PLAYER_NAME.value();
     final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
@@ -216,7 +217,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     options.setVisible(true);
     options.dispose();
     if (!options.getOkPressed()) {
-      return null;
+      return Optional.empty();
     }
     final String name = options.getName();
     logger.log(Level.FINE, "Server playing as:" + name);
@@ -230,19 +231,23 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       } else {
         JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
       }
-      return null;
+      return Optional.empty();
     }
     final ServerConnectionProps props = new ServerConnectionProps();
     props.setName(options.getName());
     props.setPort(options.getPort());
     props.setPassword(options.getPassword());
-    return props;
+    return Optional.of(props);
   }
 
-
+  /**
+   * Creates a server messenger, returns false if any errors happen.
+   * @param ui In non-headless environments we get input from user, the component is for window placements.
+   */
   public boolean createServerMessenger(final Component ui) {
-    final ServerConnectionProps props = getServerProps(ui);
-    return props != null && createServerMessenger(ui, props);
+    return getServerProps(ui)
+        .map(props -> createServerMessenger(ui, props))
+        .orElse(false);
   }
 
   /**
