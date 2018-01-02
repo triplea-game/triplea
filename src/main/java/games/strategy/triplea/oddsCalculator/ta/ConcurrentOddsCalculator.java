@@ -58,7 +58,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   public ConcurrentOddsCalculator(final String threadNamePrefix) {
     executor = Executors.newFixedThreadPool(MAX_THREADS,
         new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
-    logger.fine("Initialized executor thread pool with size: " + MAX_THREADS);
   }
 
   @Override
@@ -190,7 +189,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     latchWorkerThreadsCreation.countDown();
     // allow calcing and other stuff to go ahead
     latchSetData.countDown();
-    logger.fine("Initialized worker thread pool with size: " + workers.size());
   }
 
   @Override

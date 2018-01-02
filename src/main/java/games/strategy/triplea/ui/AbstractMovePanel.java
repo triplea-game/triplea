@@ -205,7 +205,6 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   final void cleanUp() {
     SwingUtilities.invokeLater(() -> {
-      logger.fine("cleanup");
       if (!listening) {
         throw new IllegalStateException("Not listening");
       }
@@ -265,7 +264,6 @@ public abstract class AbstractMovePanel extends ActionPanel {
 
   protected final void setUp(final IPlayerBridge bridge) {
     SwingUtilities.invokeLater(() -> {
-      logger.fine("setup");
       setUpSpecific();
       this.bridge = bridge;
       updateMoves();

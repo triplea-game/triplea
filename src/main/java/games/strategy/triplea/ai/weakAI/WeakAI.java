@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 import com.google.common.collect.Streams;
 
@@ -44,13 +43,11 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
 
-/*
- * A very weak ai, based on some simple rules.<p>
+/**
+ * A very weak ai, based on some simple rules.
  */
 public class WeakAI extends AbstractAI {
-  private static final Logger logger = Logger.getLogger(WeakAI.class.getName());
 
-  /** Creates new WeakAI. */
   public WeakAI(final String name, final String type) {
     super(name, type);
   }
@@ -245,17 +242,13 @@ public class WeakAI extends AbstractAI {
       pause();
       if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null
           || moveRoutes.get(i).hasNoSteps()) {
-        logger.fine("Route not valid" + moveRoutes.get(i) + " units:" + moveUnits.get(i));
         continue;
       }
-      final String result;
+
       if (transportsToLoad == null) {
-        result = moveDel.move(moveUnits.get(i), moveRoutes.get(i));
+        moveDel.move(moveUnits.get(i), moveRoutes.get(i));
       } else {
-        result = moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
-      }
-      if (result != null) {
-        logger.fine("could not move " + moveUnits.get(i) + " over " + moveRoutes.get(i) + " because : " + result);
+        moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
       }
     }
   }
@@ -376,7 +369,6 @@ public class WeakAI extends AbstractAI {
           ourStrength += AIUtils.strength(owned.getUnits().getMatches(attackable), true, true);
         }
         if (ourStrength > 1.32 * enemyStrength) {
-          logger.fine("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength);
           for (final Territory owned : attackFrom) {
             if (dontMoveFrom.contains(owned)) {
               continue;
@@ -685,8 +677,6 @@ public class WeakAI extends AbstractAI {
               moveRoutes.add(data.getMap().getRoute(owned, enemy));
             }
           }
-          logger.fine("Attacking : " + enemy + " our strength:" + ourStrength + " enemy strength" + enemyStrength
-              + " remaining strength needed " + remainingStrengthNeeded);
         }
       }
     }
@@ -1052,11 +1042,7 @@ public class WeakAI extends AbstractAI {
   }
 
   private static void doPlace(final Territory where, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
-    final String message = del.placeUnits(new ArrayList<>(toPlace), where, IAbstractPlaceDelegate.BidMode.NOT_BID);
-    if (message != null) {
-      logger.fine(message);
-      logger.fine("Attempt was at:" + where + " with:" + toPlace);
-    }
+    del.placeUnits(new ArrayList<>(toPlace), where, IAbstractPlaceDelegate.BidMode.NOT_BID);
     pause();
   }
 

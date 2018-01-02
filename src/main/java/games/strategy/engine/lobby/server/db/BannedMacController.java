@@ -62,7 +62,6 @@ public class BannedMacController extends TimedController implements BannedMacDao
         if (rs.next()) {
           final Timestamp banTill = rs.getTimestamp(2);
           if (banTill != null && banTill.toInstant().isBefore(now())) {
-            logger.fine("Ban expired for:" + mac);
             removeBannedMac(mac);
             return Tuple.of(false, banTill);
           }

@@ -19,7 +19,6 @@ public class BannedUsernameController extends TimedController implements BannedU
   @Override
   public void addBannedUsername(final String username, final Instant banTill) {
     if (banTill == null || banTill.isAfter(now())) {
-      logger.fine("Banning username:" + username);
 
       try (Connection con = Database.getPostgresConnection();
           PreparedStatement ps = con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)"
@@ -37,7 +36,6 @@ public class BannedUsernameController extends TimedController implements BannedU
   }
 
   private static void removeBannedUsername(final String username) {
-    logger.fine("Removing banned username:" + username);
 
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement("delete from banned_usernames where username = ?")) {
@@ -64,7 +62,6 @@ public class BannedUsernameController extends TimedController implements BannedU
         if (rs.next()) {
           final Timestamp banTill = rs.getTimestamp(2);
           if (banTill != null && banTill.toInstant().isBefore(now())) {
-            logger.fine("Ban expired for:" + username);
             removeBannedUsername(username);
             return Tuple.of(false, banTill);
           }

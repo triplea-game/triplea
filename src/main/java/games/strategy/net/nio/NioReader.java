@@ -83,9 +83,6 @@ class NioReader {
   private void loop() {
     while (running) {
       try {
-        if (logger.isLoggable(Level.FINEST)) {
-          logger.finest("selecting...");
-        }
         try {
           // exceptions can be thrown here, nothing we can do
           // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
@@ -98,9 +95,6 @@ class NioReader {
         }
         selectNewChannels();
         final Set<SelectionKey> selected = selector.selectedKeys();
-        if (logger.isLoggable(Level.FINEST)) {
-          logger.finest("selected:" + selected.size());
-        }
         final Iterator<SelectionKey> iter = selected.iterator();
         while (iter.hasNext()) {
           final SelectionKey key = iter.next();
@@ -108,9 +102,6 @@ class NioReader {
           if (key.isValid() && key.isReadable()) {
             final SocketChannel channel = (SocketChannel) key.channel();
             final SocketReadData packet = getReadData(channel);
-            if (logger.isLoggable(Level.FINEST)) {
-              logger.finest("reading packet:" + packet + " from:" + channel.socket().getRemoteSocketAddress());
-            }
             try {
               final boolean done = packet.read(channel);
               if (done) {
@@ -136,7 +127,6 @@ class NioReader {
               errorReporter.error(channel, e);
             }
           } else if (!key.isValid()) {
-            logger.fine("Remotely closed");
             final SocketChannel channel = (SocketChannel) key.channel();
             key.cancel();
             errorReporter.error(channel, new SocketException("triplea:key cancelled"));

@@ -78,9 +78,6 @@ class LobbyGameController implements ILobbyGameController {
   public void updateGame(final GUID gameId, final GameDescription description) {
     final INode from = MessageContext.getSender();
     assertCorrectHost(description, from);
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("Game updated:" + description);
-    }
     synchronized (mutex) {
       final GameDescription oldDescription = allGames.get(gameId);
       // out of order updates
@@ -121,13 +118,10 @@ class LobbyGameController implements ILobbyGameController {
     assertCorrectHost(description, from);
     final int port = description.getPort();
     final String host = description.getHostedBy().getAddress().getHostAddress();
-    logger.fine("Testing game connection on host:" + host + " port:" + port);
     try (Socket s = new Socket()) {
       s.connect(new InetSocketAddress(host, port), 10 * 1000);
-      logger.fine("Connection test passed for host:" + host + " port:" + port);
       return null;
     } catch (final IOException e) {
-      logger.fine("Connection test failed for host:" + host + " port:" + port + " reason:" + e.getMessage());
       return "host:" + host + " " + " port:" + port;
     }
   }

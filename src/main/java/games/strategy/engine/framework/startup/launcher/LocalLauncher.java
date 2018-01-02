@@ -57,9 +57,7 @@ public class LocalLauncher extends AbstractLauncher {
     }
     try {
       if (exceptionLoadingGame == null) {
-        logger.fine("Game starting");
         game.startGame();
-        logger.fine("Game over");
       }
     } finally {
       // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers

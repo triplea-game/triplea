@@ -24,7 +24,6 @@ class ImageRef {
       while (true) {
         try {
           referenceQueue.remove();
-          logger.finer("Removed soft reference image. Image count:" + imageCount.decrementAndGet());
         } catch (final InterruptedException e) {
           ClientLogger.logQuietly(e);
         }
@@ -38,7 +37,6 @@ class ImageRef {
 
   public ImageRef(final Image image) {
     this.image = new SoftReference<>(image, referenceQueue);
-    logger.finer("Added soft reference image. Image count:" + imageCount.incrementAndGet());
   }
 
   public Image getImage() {

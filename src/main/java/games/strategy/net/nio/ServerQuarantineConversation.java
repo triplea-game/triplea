@@ -64,22 +64,13 @@ public class ServerQuarantineConversation extends QuarantineConversation {
         case READ_NAME:
           // read name, send challent
           remoteName = (String) o;
-          if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER, "read name:" + remoteName);
-          }
           step = Step.READ_MAC;
           return Action.NONE;
         case READ_MAC:
           // read name, send challent
           remoteMac = (String) o;
-          if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER, "read mac:" + remoteMac);
-          }
           if (validator != null) {
             challenge = validator.getChallengeProperties(remoteName, channel.socket().getRemoteSocketAddress());
-          }
-          if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER, "writing challenge:" + challenge);
           }
           send((Serializable) challenge);
           step = Step.CHALLENGE;
@@ -87,15 +78,9 @@ public class ServerQuarantineConversation extends QuarantineConversation {
         case CHALLENGE:
           @SuppressWarnings("unchecked")
           final Map<String, String> response = (Map<String, String>) o;
-          if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER, "read challenge response:" + response);
-          }
           if (validator != null) {
             final String error = validator.verifyConnection(challenge, response, remoteName, remoteMac,
                 channel.socket().getRemoteSocketAddress());
-            if (logger.isLoggable(Level.FINER)) {
-              logger.log(Level.FINER, "error:" + error);
-            }
             send(error);
             if (error != null) {
               step = Step.ACK_ERROR;
@@ -106,9 +91,6 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           }
           // get a unique name
           remoteName = serverMessenger.getUniqueName(remoteName);
-          if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER, "Sending name:" + remoteName);
-          }
           // send the node its name and our name
           send(new String[] {remoteName, serverMessenger.getLocalNode().getName()});
           // send the node its and our address as we see it

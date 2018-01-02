@@ -24,7 +24,6 @@ public class MutedUsernameController extends TimedController {
    */
   public void addMutedUsername(final String username, final Instant muteTill) {
     if (muteTill == null || muteTill.isAfter(now())) {
-      logger.fine("Muting username:" + username);
 
       try (Connection con = Database.getPostgresConnection();
           PreparedStatement ps = con.prepareStatement("insert into muted_usernames (username, mute_till) values (?, ?)"
@@ -42,7 +41,6 @@ public class MutedUsernameController extends TimedController {
   }
 
   private static void removeMutedUsername(final String username) {
-    logger.fine("Removing muted username:" + username);
 
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?")) {
@@ -82,7 +80,6 @@ public class MutedUsernameController extends TimedController {
           final Instant expiration = muteTill.toInstant();
           if (expiration.isBefore(now())) {
             // If the mute has expired, allow the username
-            logger.fine("Mute expired for:" + username);
             removeMutedUsername(username);
             // Signal as not-muted
             return Optional.empty();
