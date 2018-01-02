@@ -149,7 +149,7 @@ class EndPoint {
     try {
       method = implementor.getClass().getMethod(call.getMethodName(), call.getArgTypes());
       method.setAccessible(true);
-    } catch (final SecurityException | NoSuchMethodException e) {
+    } catch (final NoSuchMethodException e) {
       ClientLogger.logQuietly(e);
       throw new IllegalStateException(e.getMessage());
     }

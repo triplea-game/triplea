@@ -156,7 +156,7 @@ public class GameDataExporter {
       edPropField.setAccessible(true);
       printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
       printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
-    } catch (final SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+    } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
       ClientLogger.logError("An Error occured whilst trying trying to setup the Property List", e);
     }
     xmlfile.append("    </propertyList>\n");
@@ -206,7 +206,7 @@ public class GameDataExporter {
         final int max = maxField.getInt(prop);
         final int min = minField.getInt(prop);
         typeString = "            <number min=\"" + min + "\" max=\"" + max + "\"/>\n";
-      } catch (final SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+      } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
         ClientLogger.logError("An Error occured whilst trying to print a Number-XML Tag", e);
       }
     }
