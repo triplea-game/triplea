@@ -537,8 +537,7 @@ public class GameRunner {
   }
 
   /**
-   * todo, replace with something better
-   * Get the chat for the game, or null if there is no chat.
+   * Get the chat for the game, or empty if there is no chat (eg: headless)
    */
   public static Optional<Chat> getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
