@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 import com.google.common.collect.Streams;
 
@@ -48,9 +47,7 @@ import games.strategy.util.Util;
  * A very weak ai, based on some simple rules.<p>
  */
 public class WeakAI extends AbstractAI {
-  private static final Logger logger = Logger.getLogger(WeakAI.class.getName());
 
-  /** Creates new WeakAI. */
   public WeakAI(final String name, final String type) {
     super(name, type);
   }
@@ -249,9 +246,9 @@ public class WeakAI extends AbstractAI {
       }
 
       if (transportsToLoad == null) {
-         moveDel.move(moveUnits.get(i), moveRoutes.get(i));
+        moveDel.move(moveUnits.get(i), moveRoutes.get(i));
       } else {
-         moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
+        moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));
       }
     }
   }
