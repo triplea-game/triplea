@@ -3,14 +3,10 @@ package games.strategy.engine.message;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.util.Tuple;
 
 class RemoteInterfaceHelper {
-  private static final Logger logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
-
   static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
@@ -18,19 +14,8 @@ class RemoteInterfaceHelper {
     for (int i = 0; i < methods.length; i++) {
       if (methods[i].getName().equals(methodName)) {
         final Class<?>[] types = methods[i].getParameterTypes();
-        if ((types == null) && (argTypes == null)) {
+        if (Arrays.equals(types, argTypes)) {
           return i;
-        } else if ((types != null) && (argTypes != null) && (types.length == argTypes.length)) {
-          boolean match = true;
-          for (int j = 0; j < argTypes.length; j++) {
-            if (!argTypes[j].equals(types[j])) {
-              match = false;
-              break;
-            }
-          }
-          if (match) {
-            return i;
-          }
         }
       }
     }
