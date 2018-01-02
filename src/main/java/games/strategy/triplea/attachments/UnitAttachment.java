@@ -3187,8 +3187,8 @@ public class UnitAttachment extends DefaultAttachment {
       if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
           && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
         stats.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
-            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus)
-                : getData().getDiceSides() + (bombingBonus))
+            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + bombingBonus
+                : getData().getDiceSides() + bombingBonus)
             .append(" Rocket Damage, ");
       } else {
         stats.append("1-").append(getData().getDiceSides()).append(" Rocket Damage, ");
@@ -3284,8 +3284,8 @@ public class UnitAttachment extends DefaultAttachment {
       if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
           && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
         stats.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
-            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + (bombingBonus)
-                : getData().getDiceSides() + (bombingBonus))
+            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + bombingBonus
+                : getData().getDiceSides() + bombingBonus)
             .append(" Raid Damage, ");
       } else {
         stats.append("1-").append(getData().getDiceSides()).append(" Raid Damage, ");
