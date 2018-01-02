@@ -423,7 +423,8 @@ public class ClientModel implements IMessengerErrorListener {
   public void messengerInvalid(final IMessenger messenger, final Exception reason) {
     // The self chat disconnect notification is simply so we have an on-screen notification of the disconnect.
     // In case for example there are many game windows open, it may not be clear which game disconnected.
-    GameRunner.getChat().sendMessage("*** Was Disconnected ***", false);
+    GameRunner.getChat()
+        .ifPresent(chat -> chat.sendMessage("*** Was Disconnected ***", false));
     EventThreadJOptionPane.showMessageDialog(ui, "Connection to game host lost.\nPlease save and restart.",
         "Connection Lost!", JOptionPane.ERROR_MESSAGE);
   }

@@ -537,22 +537,17 @@ public class GameRunner {
   }
 
   /**
-   * todo, replace with something better
-   * Get the chat for the game, or null if there is no chat.
+   * Get the chat for the game, or empty if there is no chat (eg: headless).
    */
-  public static Chat getChat() {
+  public static Optional<Chat> getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
     if (model instanceof ServerSetupPanel) {
-      return model.getChatPanel().getChat();
+      return Optional.ofNullable(model.getChatPanel().getChat());
     } else if (model instanceof ClientSetupPanel) {
-      return model.getChatPanel().getChat();
+      return Optional.ofNullable(model.getChatPanel().getChat());
     } else {
-      return null;
+      return Optional.empty();
     }
-  }
-
-  public static boolean hasChat() {
-    return getChat() != null;
   }
 
   /**

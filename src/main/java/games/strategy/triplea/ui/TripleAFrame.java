@@ -264,7 +264,7 @@ public class TripleAFrame extends MainGameFrame {
     chatSplit.setOneTouchExpandable(true);
     chatSplit.setDividerSize(8);
     chatSplit.setResizeWeight(0.95);
-    if (GameRunner.hasChat()) {
+    if (GameRunner.getChat().isPresent()) {
       commentSplit = new JSplitPane();
       commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
       commentSplit.setOneTouchExpandable(true);
@@ -272,7 +272,7 @@ public class TripleAFrame extends MainGameFrame {
       commentSplit.setResizeWeight(0.5);
       commentSplit.setTopComponent(commentPanel);
       commentSplit.setBottomComponent(null);
-      chatPanel = new ChatPanel(GameRunner.getChat());
+      chatPanel = new ChatPanel(GameRunner.getChat().get());
       chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
       final Dimension chatPrefSize = new Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);
       chatPanel.setPreferredSize(chatPrefSize);
