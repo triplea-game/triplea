@@ -62,7 +62,7 @@ public class NumberProperty extends AEditableProperty {
   @Override
   public boolean validate(final Object value) {
     if (value instanceof Integer) {
-      final int i = ((Integer) value);
+      final int i = (int) value;
       return i <= max && i >= min;
     }
     return false;
