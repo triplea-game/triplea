@@ -4,8 +4,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -49,10 +47,6 @@ public class RemoteMethodCall implements Externalizable {
     this.args = args;
     this.argTypes = classesToString(argTypes, args);
     methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
-  }
-
-  private String debugMethodText() {
-    return "." + methodName + "(" + (argTypes != null ? Arrays.toString(argTypes) : "") + ")";
   }
 
   /**
