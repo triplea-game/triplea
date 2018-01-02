@@ -1,7 +1,7 @@
 dist: trusty
 sudo: false
 language: java
-+matrix:
+matrix:
   include:
   - jdk: oraclejdk8
     env: TRIPLEA_RELEASE=false
