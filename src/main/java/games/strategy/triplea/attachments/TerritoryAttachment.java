@@ -34,9 +34,8 @@ public class TerritoryAttachment extends DefaultAttachment {
 
     if (pa == null) {
       return capitalsListOriginal.isEmpty() || !capitalsListOwned.isEmpty();
-    } else {
-      return pa.getRetainCapitalProduceNumber() <= capitalsListOwned.size();
     }
+    return pa.getRetainCapitalProduceNumber() <= capitalsListOwned.size();
   }
 
   /**

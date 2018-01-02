@@ -95,9 +95,10 @@ public class IPFinder {
       // http://en.wikipedia.org/wiki/Private_network
       return (bytes[0] == 10) || (bytes[0] == octet172 && bytes[1] >= 16 && bytes[1] <= 31)
           || (bytes[0] == octet192 && bytes[1] == octet168) || (bytes[0] == octet169 && bytes[1] == octet254);
-    } else { // ip 6
-      // http://en.wikipedia.org/wiki/IPv6#Addressing
-      return (bytes[0] == octet252 && bytes[1] == 0) || bytes[0] == octet254;
     }
+    // ip 6
+    // http://en.wikipedia.org/wiki/IPv6#Addressing
+    return (bytes[0] == octet252 && bytes[1] == 0) || bytes[0] == octet254;
+
   }
 }
