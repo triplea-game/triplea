@@ -15,20 +15,34 @@ public final class ErrorConsole extends GenericConsole {
   }
 
   /**
+   * Makes the error console visible.
+   */
+  public static void showConsole() {
+    getConsole().setVisible(true);
+  }
+
+  /**
    * Gets the singleton instance of the {@code ErrorConsole} class.
    *
    * @return An {@code ErrorConsole}.
    */
   public static ErrorConsole getConsole() {
     if (console == null) {
-      SwingAction.invokeAndWait(() -> {
-        console = new ErrorConsole();
-        console.displayStandardOutput();
-        console.displayStandardError();
-        ErrorHandler.registerExceptionHandler();
-      });
+      createConsole();
     }
     return console;
+  }
+
+  /**
+   * If not yet created, initializes the error console.
+   */
+  public static void createConsole() {
+    SwingAction.invokeAndWait(() -> {
+      console = new ErrorConsole();
+      console.displayStandardOutput();
+      console.displayStandardError();
+      ErrorHandler.registerExceptionHandler();
+    });
   }
 
   @Override

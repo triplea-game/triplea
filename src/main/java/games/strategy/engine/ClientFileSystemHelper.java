@@ -28,6 +28,8 @@ public final class ClientFileSystemHelper {
   private ClientFileSystemHelper() {}
 
   /**
+   * Returns top-most, or the root folder for the TripleA installation folder.
+   *
    * @return Folder that is the 'root' of the tripleA binary installation. This folder and
    *         contents contains the versioned content downloaded and initially installed. This is
    *         in contrast to the user root folder that is not replaced between installations.
@@ -96,6 +98,10 @@ public final class ClientFileSystemHelper {
   }
 
   /**
+   * TripleA stores two folders, one for user content that survives between game installs,
+   * and a second that contains binaries. This method returns the 'user folder', which contains
+   * maps and save games.
+   *
    * @return Folder where tripleA 'user data' is stored between game installations. This folder
    *         would contain as some examples: save games, downloaded maps. This location is currently
    *         not configurable (ideally we would allow this to be set during install perhaps).
@@ -107,6 +113,8 @@ public final class ClientFileSystemHelper {
   }
 
   /**
+   * Returns location of the folder containing downloaded TripleA maps.
+   *
    * @return Folder where maps are downloaded and stored. Default location is relative
    *         to users home folder and not the engine install folder, this allows it to be
    *         retained between engine installations. Users can override this location in settings.
@@ -115,11 +123,7 @@ public final class ClientFileSystemHelper {
     final String path = getUserMapsFolderPath(ClientSetting.USER_MAPS_FOLDER_PATH, ClientSetting.MAP_FOLDER_OVERRIDE);
     final File mapsFolder = new File(path);
     if (!mapsFolder.exists()) {
-      try {
-        mapsFolder.mkdirs();
-      } catch (final SecurityException e) {
-        ClientLogger.logError(e);
-      }
+      mapsFolder.mkdirs();
     }
     if (!mapsFolder.exists()) {
       ClientLogger.logError("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());

@@ -1578,7 +1578,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testOccupiedTerrOfAttachmentWithCapital() {
+  public void testOccupiedTerrOfAttachmentWithCapital() throws GameParseException {
     // Set up test
     final PlayerID british = GameDataTestUtil.british(gameData);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(british(gameData));
@@ -1594,14 +1594,9 @@ public class WW2V3Year41Test {
     // Remove original capital
     final TerritoryAttachment taMongolia = TerritoryAttachment.get(mongolia);
     final TerritoryAttachment taKiangsu = TerritoryAttachment.get(kiangsu);
-    try {
-      final String noVal = null;
-      taMongolia.setCapital(noVal);
-      // Set as NEW capital
-      taKiangsu.setCapital(Constants.PLAYER_NAME_CHINESE);
-    } catch (final GameParseException e) {
-      ClientLogger.logError(e);
-    }
+    taMongolia.setCapital(null);
+    // Set as NEW capital
+    taKiangsu.setCapital(Constants.PLAYER_NAME_CHINESE);
     // Remove all units
     removeFrom(kiangsu, kiangsu.getUnits().getUnits());
     removeFrom(hupeh, hupeh.getUnits().getUnits());

@@ -123,7 +123,7 @@ public class GameRunner {
     ClientSetting.initialize();
 
     if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      ErrorConsole.getConsole();
+      ErrorConsole.createConsole();
     }
     if (!new ArgParser(COMMAND_LINE_ARGS).handleCommandLineArgs(args)) {
       usage();
@@ -188,6 +188,12 @@ public class GameRunner {
     return new FileDialog(mainFrame);
   }
 
+  /**
+   * Opens a Swing FileChooser menu.
+   * 
+   * @return Empty optional if dialog is closed without selection, otherwise returns the user
+   *         selection.
+   */
   public static Optional<File> showFileChooser(final FileFilter fileFilter) {
     final JFileChooser fileChooser = new JFileChooser();
     fileChooser.setFileFilter(fileFilter);
@@ -200,6 +206,10 @@ public class GameRunner {
   }
 
 
+  /**
+   * Opens a file selection dialog where a user can select/create a file for TripleA save game.
+   * An empty optional is returned if user just closes down the dialog window.
+   */
   public static Optional<File> showSaveGameFileChooser() {
     // Non-Mac platforms should use the normal Swing JFileChooser
     final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
@@ -308,7 +318,7 @@ public class GameRunner {
       final String msg = String.format(
           "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.\n%s",
           exceptions.size(), localSystemChecker.getStatusMessage());
-      ClientLogger.logError(msg, exceptions);
+      ClientLogger.logError(msg);
     }
   }
 
@@ -352,7 +362,7 @@ public class GameRunner {
           super.dispatchEvent(newEvent);
           // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
         } catch (final Throwable t) {
-          ClientLogger.logError(t);
+          ClientLogger.logError("Failed while setting up logging", t);
           throw t;
         }
       }
@@ -388,7 +398,7 @@ public class GameRunner {
   }
 
   /**
-   * @return true if we are out of date or this is the first time this triplea has ever been run.
+   * Returns true if we are out of date or this is the first time this triplea has ever been run.
    */
   private static boolean checkForLatestEngineVersionOut() {
     try {

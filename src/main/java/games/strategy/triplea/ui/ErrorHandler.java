@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import java.awt.GraphicsEnvironment;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
 
@@ -26,18 +28,12 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandl
    */
   @Override
   public void handle(final Throwable throwable) {
-    try {
-      ClientLogger.logError(throwable);
-    } catch (final Throwable t) {
-      try {
-        // if client logger fails fall back to methods that may still work
-        final String msg =
-            "Original error: " + throwable.getMessage() + ", next error while handling it: " + t.getMessage();
-        System.err.println(msg);
-        t.printStackTrace();
-      } catch (final Throwable fatal) {
-        // Swallow this last error, if anything is thrown we can have an infinite loop of error handling.
-      }
+    if (GraphicsEnvironment.isHeadless()) {
+      final String msg = "Error: " + throwable.getMessage();
+      System.err.println(msg);
+      throwable.printStackTrace();
+    } else {
+      ClientLogger.logError("Error: " + throwable.getMessage(), throwable);
     }
   }
 

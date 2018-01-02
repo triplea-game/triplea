@@ -173,13 +173,13 @@ public class PointFileReaderWriter {
         current = reader.readLine();
       }
     } catch (final IOException ioe) {
-      ClientLogger.logError(ioe);
+      ClientLogger.logError("PointFileReaderWriter error, " + ioe.getMessage(), ioe);
       System.exit(0);
     } finally {
       try {
         stream.close();
       } catch (final IOException e) {
-        ClientLogger.logError(e);
+        ClientLogger.logError("Failed to close point file reader", e);
       }
     }
     return mapping;
@@ -208,7 +208,7 @@ public class PointFileReaderWriter {
           stream.close();
         }
       } catch (final IOException e) {
-        ClientLogger.logError(e);
+        ClientLogger.logError("Failed to close polygon reader stream", e);
       }
     }
     return mapping;

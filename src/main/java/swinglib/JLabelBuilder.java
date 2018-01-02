@@ -6,6 +6,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 
+import com.google.common.base.Ascii;
 import com.google.common.base.Preconditions;
 
 /**
@@ -24,7 +25,7 @@ public class JLabelBuilder {
   private String text;
   private Alignment alignment;
   private Dimension maxSize;
-  private int maxTextLength;
+  private int maxTextLength = Integer.MAX_VALUE;
   private String tooltip;
   private Border border;
 
@@ -42,9 +43,7 @@ public class JLabelBuilder {
     Preconditions.checkNotNull(text);
     Preconditions.checkState(!text.trim().isEmpty());
 
-    final String truncated =
-        (maxTextLength > 0 && text.length() > maxTextLength) ? text.substring(0, maxTextLength) + "..." : text;
-
+    final String truncated = Ascii.truncate(text, maxTextLength, "...");
     final JLabel label = new JLabel(truncated);
 
     if (alignment != null) {

@@ -6,9 +6,12 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.attachments.CanalAttachment;
@@ -22,6 +25,18 @@ public class XmlGameElementMapperTest {
   private static final String NAME_THAT_DOES_NOT_EXIST = "this is surely not a valid identifier";
 
   private XmlGameElementMapper testObj;
+
+  @BeforeAll
+  public static void disableErrorPopup() {
+    ClientLogger.disableErrorPopupForTesting();
+  }
+
+  @AfterAll
+  public static void resetErrorPopup() {
+    // we do this to make sure any other tests will show the popup and have a similar method
+    // call. We do not want test ordering to be important.
+    ClientLogger.resetErrorPopupForTesting();
+  }
 
   @BeforeEach
   public void setup() {

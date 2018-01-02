@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.debug.ClientLogger;
 
 /**
- * Builder class for using Lambda expressions to create 'AbstractAction'
+ * Builder class for using Lambda expressions to create 'AbstractAction'.
  *
  * <p>
  * For example, instead of:
@@ -41,6 +41,12 @@ import games.strategy.debug.ClientLogger;
 public class SwingAction {
 
   /**
+   * Creates a Swing 'Action' object around a given name and action listener. Example:
+   * <pre><code>
+   *   private final Action nullAction = SwingAction.of(" ", e -> {
+   *   });
+   * </code></pre>
+   *
    * @param name Name for the abstract action, passed along to the AbstractAction constructor.
    * @param swingAction Lambda java.tools.function.Consumer object, accepts one arg and returns void.
    */
@@ -74,7 +80,7 @@ public class SwingAction {
         SwingUtilities.invokeAndWait(action);
       }
     } catch (final InvocationTargetException e) {
-      ClientLogger.logError(e);
+      ClientLogger.logError("Failed while invoking a swing UI action", e);
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
     }
