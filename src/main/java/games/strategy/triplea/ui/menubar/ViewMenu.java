@@ -507,6 +507,6 @@ class ViewMenu {
     chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
     parentMenu.add(chatTimeBox);
-    chatTimeBox.setEnabled(GameRunner.hasChat());
+    chatTimeBox.setEnabled(GameRunner.getChat().isPresent());
   }
 }
