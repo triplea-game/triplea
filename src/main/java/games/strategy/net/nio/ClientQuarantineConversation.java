@@ -103,9 +103,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
         case READ_CHALLENGE:
           // read name, send challenge
           final Map<String, String> challenge = (Map<String, String>) o;
-          if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER, "read challenge:" + challenge);
-          }
           if (challenge != null) {
             challengeProperties = challenge;
             showLatch.countDown();
@@ -117,24 +114,15 @@ public class ClientQuarantineConversation extends QuarantineConversation {
             if (isClosed) {
               return Action.NONE;
             }
-            if (logger.isLoggable(Level.FINER)) {
-              logger.log(Level.FINER, "writing response" + challengeResponse);
-            }
             send((Serializable) challengeResponse);
           } else {
             showLatch.countDown();
-            if (logger.isLoggable(Level.FINER)) {
-              logger.log(Level.FINER, "sending null response");
-            }
             send(null);
           }
           step = Step.READ_ERROR;
           return Action.NONE;
         case READ_ERROR:
           if (o != null) {
-            if (logger.isLoggable(Level.FINER)) {
-              logger.log(Level.FINER, "error:" + o);
-            }
             errorMessage = (String) o;
             // acknowledge the error
             send(null);
@@ -144,9 +132,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           return Action.NONE;
         case READ_NAMES:
           final String[] strings = ((String[]) o);
-          if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER, "new local name:" + strings[0]);
-          }
           localName = strings[0];
           serverName = strings[1];
           step = Step.READ_ADDRESS;
@@ -157,12 +142,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           // this is the address the server thinks he is
           networkVisibleAddress = address[0];
           serverLocalAddress = address[1];
-          if (logger.isLoggable(Level.FINE)) {
-            logger.log(Level.FINE, "Server local address:" + serverLocalAddress);
-            logger.log(Level.FINE, "channel remote address:" + channel.socket().getRemoteSocketAddress());
-            logger.log(Level.FINE, "network visible address:" + networkVisibleAddress);
-            logger.log(Level.FINE, "channel local adresss:" + channel.socket().getLocalSocketAddress());
-          }
           return Action.UNQUARANTINE;
         default:
           throw new IllegalStateException("Invalid state");

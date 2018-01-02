@@ -125,7 +125,6 @@ public class ServerLauncher extends AbstractLauncher {
       }
       remoteMessenger.registerRemote(serverReady, ClientModel.CLIENT_READY_CHANNEL);
       gameData.doPreGameStartDataModifications(playerListing);
-      logger.fine("Starting server");
       abortLaunch = testShouldWeAbort();
       final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<IGamePlayer> localPlayerSet =

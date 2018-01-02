@@ -67,9 +67,6 @@ class Decoder {
         if (data == null || !running) {
           continue;
         }
-        if (logger.isLoggable(Level.FINEST)) {
-          logger.finest("Decoding packet:" + data);
-        }
         try {
           final MessageHeader header = IoUtils.readFromMemory(data.getData(), is -> {
             try {
@@ -78,9 +75,6 @@ class Decoder {
               throw new IOException(e);
             }
           });
-          if (logger.isLoggable(Level.FINEST)) {
-            logger.log(Level.FINEST, "header decoded:" + header);
-          }
           // make sure we are still open
           final Socket s = data.getChannel().socket();
           if (!running || s == null || s.isInputShutdown()) {
@@ -95,9 +89,6 @@ class Decoder {
             }
             if (header.getFrom() == null) {
               throw new IllegalArgumentException("Null from:" + header);
-            }
-            if (logger.isLoggable(Level.FINER)) {
-              logger.log(Level.FINER, "decoded  msg:" + header.getMessage() + " size:" + data.size());
             }
             nioSocket.messageReceived(header, data.getChannel());
           }
@@ -120,16 +111,10 @@ class Decoder {
       final MessageHeader header) {
     final Action a = conversation.message(header.getMessage());
     if (a == Action.TERMINATE) {
-      if (logger.isLoggable(Level.FINER)) {
-        logger.log(Level.FINER, "Terminating quarantined connection to:" + channel.socket().getRemoteSocketAddress());
-      }
       conversation.close();
       // we need to indicate the channel was closed
       errorReporter.error(channel, new CouldNotLogInException());
     } else if (a == Action.UNQUARANTINE) {
-      if (logger.isLoggable(Level.FINER)) {
-        logger.log(Level.FINER, "Accepting quarantined connection to:" + channel.socket().getRemoteSocketAddress());
-      }
       nioSocket.unquarantine(channel, conversation);
       quarantine.remove(channel);
     }

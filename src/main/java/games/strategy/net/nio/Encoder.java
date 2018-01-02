@@ -28,9 +28,6 @@ class Encoder {
   }
 
   void write(final SocketChannel to, final MessageHeader header) {
-    if (logger.isLoggable(Level.FINEST)) {
-      logger.log(Level.FINEST, "Encoding msg:" + header + " to:" + to);
-    }
     if (header.getFrom() == null) {
       throw new IllegalArgumentException("No from node");
     }
@@ -40,9 +37,6 @@ class Encoder {
     try {
       final byte[] bytes = IoUtils.writeToMemory(os -> write(header, objectStreamFactory.create(os), to));
       final SocketWriteData data = new SocketWriteData(bytes, bytes.length);
-      if (logger.isLoggable(Level.FINER)) {
-        logger.log(Level.FINER, "encoded  msg:" + header.getMessage() + " size:" + data.size());
-      }
       writer.enque(data, to);
     } catch (final IOException e) {
       // we arent doing any io, just writing in memory

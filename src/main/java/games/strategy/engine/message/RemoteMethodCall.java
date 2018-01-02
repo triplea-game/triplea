@@ -49,9 +49,6 @@ public class RemoteMethodCall implements Externalizable {
     this.args = args;
     this.argTypes = classesToString(argTypes, args);
     methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("Remote Method Call:" + debugMethodText());
-    }
   }
 
   private String debugMethodText() {
@@ -185,8 +182,5 @@ public class RemoteMethodCall implements Externalizable {
     final Tuple<String, Class<?>[]> values = RemoteInterfaceHelper.getMethodInfo(methodNumber, remoteType);
     methodName = values.getFirst();
     argTypes = classesToString(values.getSecond(), args);
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("Remote Method for class:" + remoteType.getSimpleName() + " Resolved To:" + debugMethodText());
-    }
   }
 }

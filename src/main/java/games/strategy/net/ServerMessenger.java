@@ -139,16 +139,10 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     if (shutdown) {
       return;
     }
-    if (logger.isLoggable(Level.FINEST)) {
-      logger.log(Level.FINEST, "Sending" + msg + " to:" + to);
-    }
     final MessageHeader header = new MessageHeader(to, node, msg);
     final SocketChannel socketChannel = nodeToChannel.get(to);
     // the socket was removed
     if (socketChannel == null) {
-      if (logger.isLoggable(Level.FINER)) {
-        logger.log(Level.FINER, "no channel for node:" + to + " dropping message:" + msg);
-      }
       // the socket has not been added yet
       return;
     }
@@ -685,9 +679,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation conversation) {
     final ServerQuarantineConversation con = (ServerQuarantineConversation) conversation;
     final INode remote = new Node(con.getRemoteName(), (InetSocketAddress) channel.socket().getRemoteSocketAddress());
-    if (logger.isLoggable(Level.FINER)) {
-      logger.log(Level.FINER, "Unquarntined node:" + remote);
-    }
     nodeToChannel.put(remote, channel);
     channelToNode.put(channel, remote);
     notifyConnectionsChanged(true, remote);

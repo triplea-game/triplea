@@ -36,7 +36,6 @@ public class CompositeRouteFinder {
   public CompositeRouteFinder(final GameMap map, final Map<Predicate<Territory>, Integer> matches) {
     this.map = map;
     this.matches = matches;
-    logger.finer("Initializing CompositeRouteFinderClass...");
   }
 
   Route findRoute(final Territory start, final Territory end) {

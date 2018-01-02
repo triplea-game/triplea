@@ -24,7 +24,6 @@ public class MutedMacController extends TimedController {
    */
   public void addMutedMac(final String mac, final Instant muteTill) {
     if (muteTill == null || muteTill.isAfter(now())) {
-      logger.fine("Muting mac:" + mac);
 
       try (Connection con = Database.getPostgresConnection();
           PreparedStatement ps = con.prepareStatement("insert into muted_macs (mac, mute_till) values (?, ?)"
@@ -42,7 +41,6 @@ public class MutedMacController extends TimedController {
   }
 
   private static void removeMutedMac(final String mac) {
-    logger.fine("Removing muted mac:" + mac);
 
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac=?")) {
@@ -81,7 +79,6 @@ public class MutedMacController extends TimedController {
           }
           final Instant expiration = muteTill.toInstant();
           if (expiration.isBefore(now())) {
-            logger.fine("Mute expired for:" + mac);
             // If the mute has expired, allow the mac
             removeMutedMac(mac);
             // Signal as not-muted
