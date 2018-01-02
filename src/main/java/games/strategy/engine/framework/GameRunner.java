@@ -537,7 +537,7 @@ public class GameRunner {
   }
 
   /**
-   * Get the chat for the game, or empty if there is no chat (eg: headless)
+   * Get the chat for the game, or empty if there is no chat (eg: headless).
    */
   public static Optional<Chat> getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
@@ -549,6 +549,7 @@ public class GameRunner {
       return Optional.empty();
     }
   }
+
   /**
    * After the game has been left, call this.
    */
