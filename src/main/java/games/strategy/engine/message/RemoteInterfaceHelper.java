@@ -3,49 +3,25 @@ package games.strategy.engine.message;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 import games.strategy.util.Tuple;
 
 class RemoteInterfaceHelper {
-  private static final Logger logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
-
   static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
-    if (logger.isLoggable(Level.FINEST)) {
-      logger.fine("Sorted methods:" + Arrays.asList(methods));
-    }
-    for (int i = 0; i < methods.length; i++) {
-      if (methods[i].getName().equals(methodName)) {
-        final Class<?>[] types = methods[i].getParameterTypes();
-        // both null
-        if (types == argTypes) {
-          return i;
-        } else if (types != null && argTypes != null && types.length == argTypes.length) {
-          boolean match = true;
-          for (int j = 0; j < argTypes.length; j++) {
-            if (!argTypes[j].equals(types[j])) {
-              match = false;
-              break;
-            }
-          }
-          if (match) {
-            return i;
-          }
-        }
-      }
-    }
-    throw new IllegalStateException("Method not found");
+
+    return IntStream.range(0, methods.length)
+        .filter(i -> methods[i].getName().equals(methodName))
+        .filter(i -> Arrays.equals(argTypes, methods[i].getParameterTypes()))
+        .findAny()
+        .orElseThrow(() -> new IllegalStateException("Method not found: " + methodName));
   }
 
   static Tuple<String, Class<?>[]> getMethodInfo(final int methodNumber, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
-    if (logger.isLoggable(Level.FINEST)) {
-      logger.fine("Sorted methods:" + Arrays.asList(methods));
-    }
     return Tuple.of(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
   }
 
@@ -61,8 +37,7 @@ class RemoteInterfaceHelper {
     }
     final Class<?>[] t1 = o1.getParameterTypes();
     final Class<?>[] t2 = o2.getParameterTypes();
-    // both null
-    if (t1 == t2) {
+    if ((t1 == null) && (t2 == null)) {
       return 0;
     }
     if (t1 == null) {
