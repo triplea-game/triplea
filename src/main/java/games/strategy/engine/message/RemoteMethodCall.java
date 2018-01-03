@@ -4,13 +4,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.logging.Logger;
+import java.lang.reflect.Method;
 
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.util.Tuple;
 
 /**
  * All the info neccassary to describe a method call in one handy
@@ -18,7 +16,6 @@ import games.strategy.util.Tuple;
  */
 public class RemoteMethodCall implements Externalizable {
   private static final long serialVersionUID = 4630825927685836207L;
-  private static final Logger logger = Logger.getLogger(RemoteMethodCall.class.getName());
   private String remoteName;
   private String methodName;
   private Object[] args;
@@ -173,8 +170,8 @@ public class RemoteMethodCall implements Externalizable {
     if (methodName != null) {
       return;
     }
-    final Tuple<String, Class<?>[]> values = RemoteInterfaceHelper.getMethodInfo(methodNumber, remoteType);
-    methodName = values.getFirst();
-    argTypes = classesToString(values.getSecond(), args);
+    final Method method = RemoteInterfaceHelper.getMethod(methodNumber, remoteType);
+    methodName = method.getName();
+    argTypes = classesToString(method.getParameterTypes(), args);
   }
 }

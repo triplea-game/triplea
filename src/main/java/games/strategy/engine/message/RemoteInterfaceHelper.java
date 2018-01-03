@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 
-import games.strategy.util.Tuple;
-
 class RemoteInterfaceHelper {
   static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
@@ -19,10 +17,10 @@ class RemoteInterfaceHelper {
         .orElseThrow(() -> new IllegalStateException("Method not found: " + methodName));
   }
 
-  static Tuple<String, Class<?>[]> getMethodInfo(final int methodNumber, final Class<?> remoteInterface) {
+  static Method getMethod(final int methodNumber, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
-    return Tuple.of(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
+    return methods[methodNumber];
   }
 
   /**
