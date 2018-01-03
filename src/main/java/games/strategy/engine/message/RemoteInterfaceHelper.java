@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 
-import games.strategy.util.Tuple;
-
 class RemoteInterfaceHelper {
   static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
@@ -19,41 +17,26 @@ class RemoteInterfaceHelper {
         .orElseThrow(() -> new IllegalStateException("Method not found: " + methodName));
   }
 
-  static Tuple<String, Class<?>[]> getMethodInfo(final int methodNumber, final Class<?> remoteInterface) {
+  static Method getMethod(final int methodNumber, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
-    return Tuple.of(methods[methodNumber].getName(), methods[methodNumber].getParameterTypes());
+    return methods[methodNumber];
   }
 
   /**
    * get methods does not guarantee an order, so sort.
    */
-  private static final Comparator<Method> methodComparator = (o1, o2) -> {
-    if (o1 == o2) {
-      return 0;
-    }
-    if (!o1.getName().equals(o2.getName())) {
-      return o1.getName().compareTo(o2.getName());
-    }
-    final Class<?>[] t1 = o1.getParameterTypes();
-    final Class<?>[] t2 = o2.getParameterTypes();
-    if ((t1 == null) && (t2 == null)) {
-      return 0;
-    }
-    if (t1 == null) {
-      return -1;
-    }
-    if (t2 == null) {
-      return 1;
-    }
-    if (t1.length != t2.length) {
-      return t1.length - t2.length;
-    }
-    for (int i = 0; i < t1.length; i++) {
-      if (!t1[i].getName().equals(t2[i].getName())) {
-        return t1[i].getName().compareTo(t2[i].getName());
-      }
-    }
-    return 0;
-  };
+  private static final Comparator<Method> methodComparator = Comparator
+      .comparing(Method::getName)
+      .thenComparing(Method::getParameterTypes,
+          Comparator.comparingInt((Class<?>[] a) -> a.length)
+              .thenComparing((o1, o2) -> {
+                for (int i = 0; i < o1.length; i++) {
+                  final int compareValue = o1[i].getName().compareTo(o2[i].getName());
+                  if (compareValue != 0) {
+                    return compareValue;
+                  }
+                }
+                return 0;
+              }));
 }
