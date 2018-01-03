@@ -24,13 +24,16 @@ public class RemoteInterfaceHelperTest {
 
   @Test
   public void testCorrectOverloadOrder() {
-    checkMethodMatches("println", new Class<?>[] {char.class}, RemoteInterfaceHelper.getMethod(30, PrintStream.class));
-    checkMethodMatches("println", new Class<?>[] {boolean.class},
-        RemoteInterfaceHelper.getMethod(29, PrintStream.class));
     checkMethodMatches("printf", new Class<?>[] {Locale.class, String.class, Object[].class},
         RemoteInterfaceHelper.getMethod(26, PrintStream.class));
-    assertEquals(34, RemoteInterfaceHelper.getNumber("println", new Class<?>[] {Object.class}, PrintStream.class));
+    checkMethodMatches("println", new Class<?>[] {char[].class},
+        RemoteInterfaceHelper.getMethod(28, PrintStream.class));
+    checkMethodMatches("println", new Class<?>[] {boolean.class},
+        RemoteInterfaceHelper.getMethod(29, PrintStream.class));
+    checkMethodMatches("println", new Class<?>[] {char.class}, RemoteInterfaceHelper.getMethod(30, PrintStream.class));
+
     assertEquals(27, RemoteInterfaceHelper.getNumber("println", new Class<?>[] {}, PrintStream.class));
+    assertEquals(34, RemoteInterfaceHelper.getNumber("println", new Class<?>[] {Object.class}, PrintStream.class));
   }
 
   private void checkMethodMatches(final String name, final Class<?>[] parameterTypes, final Method method) {
