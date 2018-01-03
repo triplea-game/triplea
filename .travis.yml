@@ -4,9 +4,9 @@ language: java
 matrix:
   include:
   - jdk: oraclejdk8
-    env: TRIPLEA_RELEASE=false
-  - jdk: oraclejdk9
     env: TRIPLEA_RELEASE=true
+  - jdk: oraclejdk9
+    env: TRIPLEA_RELEASE=false
 addons:
   postgresql: "9.5"
   apt:
