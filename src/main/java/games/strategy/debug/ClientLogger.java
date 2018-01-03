@@ -1,5 +1,7 @@
 package games.strategy.debug;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.GraphicsEnvironment;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
@@ -94,7 +96,10 @@ public final class ClientLogger {
    * tasks through the {@code Executor} API. We only log the cause to reduce the number of stack trace frames visible
    * to the user.
    */
-  public static void logError(final @Nullable String msg, final ExecutionException e) {
+  public static void logError(final String msg, final ExecutionException e) {
+    checkNotNull(msg);
+    checkNotNull(e);
+
     logError(msg, e.getCause());
   }
 
