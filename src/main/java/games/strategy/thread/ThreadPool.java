@@ -53,11 +53,7 @@ public class ThreadPool {
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (final ExecutionException e) {
-        // ExecutionException contains no useful information; it's simply an adapter to tunnel
-        // exceptions thrown by tasks through the Executor API. Log the cause only to reducase
-        // stack trace frames.
-        ClientLogger.logError("Threading execution exception: " + e.getCause().getMessage(),
-            e.getCause());
+        ClientLogger.logError("Threading execution exception: " + e.getMessage(), e);
       }
     }
   }
