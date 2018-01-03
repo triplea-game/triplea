@@ -36,7 +36,7 @@ public class RemoteInterfaceHelperTest {
     assertEquals(34, RemoteInterfaceHelper.getNumber("println", new Class<?>[] {Object.class}, PrintStream.class));
   }
 
-  private void checkMethodMatches(final String name, final Class<?>[] parameterTypes, final Method method) {
+  private static void checkMethodMatches(final String name, final Class<?>[] parameterTypes, final Method method) {
     assertEquals(name, method.getName());
     assertArrayEquals(parameterTypes, method.getParameterTypes());
   }
