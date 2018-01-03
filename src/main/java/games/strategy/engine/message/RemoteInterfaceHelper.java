@@ -15,7 +15,7 @@ class RemoteInterfaceHelper {
     return IntStream.range(0, methods.length)
         .filter(i -> methods[i].getName().equals(methodName))
         .filter(i -> Arrays.equals(argTypes, methods[i].getParameterTypes()))
-        .findFirst()
+        .findAny()
         .orElseThrow(() -> new IllegalStateException("Method not found: " + methodName));
   }
 
