@@ -505,7 +505,7 @@ public class UnitAttachment extends DefaultAttachment {
    */
   public Map<Integer, Tuple<Boolean, UnitType>> getWhenHitPointsRepairedChangesInto() {
     if (m_whenHitPointsRepairedChangesInto == null) {
-      resetWhenHitPointsDamagedChangesInto(); // TODO: Can remove for incompatible release
+      resetWhenHitPointsRepairedChangesInto(); // TODO: Can remove for incompatible release
     }
     return m_whenHitPointsRepairedChangesInto;
   }
