@@ -90,7 +90,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (final ExecutionException e) {
-        ClientLogger.logError("Failed to parse a map", e);
+        ClientLogger.logError("Failed to parse a map: " + e.getMessage(), e);
       }
     }
     return parsedMapSet;
