@@ -56,7 +56,7 @@ public class DiceRoll implements Externalizable {
   // this does not need to match the Die with isHit true
   // since for low luck we get many hits with few dice
   private int m_hits;
-  private double m_expectedHits;
+  private double expectedHits;
 
   /**
    * Returns a Tuple with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with
@@ -1075,7 +1075,7 @@ public class DiceRoll implements Externalizable {
    */
   public DiceRoll(final int[] dice, final int hits, final int rollAt, final boolean hitOnlyIfEquals) {
     m_hits = hits;
-    m_expectedHits = 0;
+    expectedHits = 0;
     m_rolls = new ArrayList<>(dice.length);
     for (final int element : dice) {
       final boolean hit;
@@ -1094,7 +1094,7 @@ public class DiceRoll implements Externalizable {
   private DiceRoll(final List<Die> dice, final int hits, final double expectedHits) {
     m_rolls = new ArrayList<>(dice);
     m_hits = hits;
-    m_expectedHits = expectedHits;
+    this.expectedHits = expectedHits;
   }
 
   public int getHits() {
@@ -1102,7 +1102,7 @@ public class DiceRoll implements Externalizable {
   }
 
   public double getExpectedHits() {
-    return m_expectedHits;
+    return expectedHits;
   }
 
   /**
@@ -1138,7 +1138,7 @@ public class DiceRoll implements Externalizable {
     }
     out.writeObject(dice);
     out.writeInt(m_hits);
-    out.writeDouble(m_expectedHits);
+    out.writeDouble(expectedHits);
   }
 
   @Override
@@ -1150,7 +1150,7 @@ public class DiceRoll implements Externalizable {
     }
     m_hits = in.readInt();
     try {
-      m_expectedHits = in.readDouble();
+      expectedHits = in.readDouble();
     } catch (final EOFException e) {
       // TODO: Ignore, can remove exception handling on incompatible release
     }
@@ -1158,6 +1158,6 @@ public class DiceRoll implements Externalizable {
 
   @Override
   public String toString() {
-    return "DiceRoll dice:" + m_rolls + " hits:" + m_hits + " expectedHits:" + m_expectedHits;
+    return "DiceRoll dice:" + m_rolls + " hits:" + m_hits + " expectedHits:" + expectedHits;
   }
 }
