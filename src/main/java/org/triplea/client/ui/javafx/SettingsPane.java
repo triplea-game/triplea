@@ -74,7 +74,7 @@ class SettingsPane extends StackPane {
     });
   }
 
-  private void addTooltipRecursively(final Node node, final Tooltip tooltip) {
+  private static void addTooltipRecursively(final Node node, final Tooltip tooltip) {
     if (node instanceof Control) {
       ((Control) node).setTooltip(tooltip);
     } else if (node instanceof Parent) {
