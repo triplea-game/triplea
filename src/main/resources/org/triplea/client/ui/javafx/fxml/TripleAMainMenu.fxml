@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -127,7 +128,10 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                      <graphic>
-                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/org/triplea/client/ui/javafx/images/group.png" />
+                           </image></ImageView>
                      </graphic>
                      <font>
                         <Font name="1942 report" size="13.0" />
@@ -138,7 +142,10 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                      <graphic>
-                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/org/triplea/client/ui/javafx/images/person.png" />
+                           </image></ImageView>
                      </graphic>
                      <font>
                         <Font name="1942 report" size="13.0" />
@@ -149,7 +156,10 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                      <graphic>
-                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/org/triplea/client/ui/javafx/images/public.png" />
+                           </image></ImageView>
                      </graphic>
                      <font>
                         <Font name="1942 report" size="13.0" />
@@ -160,7 +170,10 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                      <graphic>
-                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/org/triplea/client/ui/javafx/images/person_add.png" />
+                           </image></ImageView>
                      </graphic>
                      <font>
                         <Font name="1942 report" size="13.0" />
@@ -168,7 +181,10 @@
                   </Button>
                   <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPbfPbemMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.startPBEMPBF">
                      <graphic>
-                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/org/triplea/client/ui/javafx/images/forum.png" />
+                           </image></ImageView>
                      </graphic>
                      <font>
                         <Font name="1942 report" size="13.0" />
@@ -179,7 +195,7 @@
                   </Button>
                </children>
             </HBox>
-            <VBox fx:id="mainOptions" prefHeight="200.0" prefWidth="100.0">
+            <VBox fx:id="mainOptions" prefHeight="200.0" prefWidth="100.0" visible="true">
                <children>
                   <Button mnemonicParsing="false" onAction="#showPlayOptions" text="%main.button.play">
                      <VBox.margin>
