@@ -6,9 +6,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -184,6 +186,7 @@ public class HistoryLog extends JFrame {
     final List<String> moveList = new ArrayList<>();
     boolean moving = false;
     DefaultMutableTreeNode curNode = printNode;
+    final Map<String, Double> hitDifferentialMap = new HashMap<>();
     do {
       // keep track of conquered territory during combat
       String conquerStr = "";
@@ -218,13 +221,22 @@ public class HistoryLog extends JFrame {
               // dice roll
               // Japanese roll dice for 1 armour in Russia, round 1
               logWriter.print(indent + moreIndent + diceMsg1);
+              final String player = diceMsg1.split(" roll ")[0];
               final DiceRoll diceRoll = (DiceRoll) details;
               final int hits = diceRoll.getHits();
               int rolls = 0;
               for (int i = 1; i <= diceSides; i++) {
                 rolls += diceRoll.getRolls(i).size();
               }
-              logWriter.println("  " + hits + "/" + rolls + " hits");
+              final double expectedHits = diceRoll.getExpectedHits();
+              logWriter.println(" " + hits + "/" + rolls + " hits, "
+                  + String.format("%.2f", expectedHits) + " expected hits");
+              final double hitDifferential = hits - expectedHits;
+              if (hitDifferentialMap.containsKey(player)) {
+                hitDifferentialMap.put(player, hitDifferentialMap.get(player) + hitDifferential);
+              } else {
+                hitDifferentialMap.put(player, hitDifferential);
+              }
             }
           } else if (details instanceof MoveDescription) {
             // movement
@@ -383,6 +395,14 @@ public class HistoryLog extends JFrame {
       }
     }
     logWriter.println();
+    if (verbose) {
+      logWriter.println("Combat Hit Differential Summary :");
+      logWriter.println();
+      for (final String player : hitDifferentialMap.keySet()) {
+        logWriter.println(moreIndent + player + " : "
+            + String.format("%.2f", hitDifferentialMap.get(player)));
+      }
+    }
     logWriter.println();
     textArea.setText(stringWriter.toString());
   }
