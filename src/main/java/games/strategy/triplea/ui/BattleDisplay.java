@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -46,7 +47,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -496,7 +496,7 @@ public class BattleDisplay extends JPanel {
             int availHeight = screenResolution.height - 80;
             final int availWidth = screenResolution.width - 30;
             availHeight -= 50;
-            chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
+            chooserScrollPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
             chooserScrollPane.setPreferredSize(new Dimension(
                 (chooserScrollPane.getPreferredSize().width > availWidth ? availWidth
                     : (chooserScrollPane.getPreferredSize().height > availHeight
