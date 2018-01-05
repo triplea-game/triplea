@@ -14,7 +14,7 @@ public class Node implements INode, Externalizable {
   static final long serialVersionUID = -2908980662926959943L;
   private String name;
   private int port;
-  private InetAddress m_address;
+  private InetAddress address;
   public static final INode NULL_NODE;
 
   static {
@@ -31,14 +31,14 @@ public class Node implements INode, Externalizable {
   /** Creates new Node. */
   public Node(final String name, final InetSocketAddress address) {
     this.name = name;
-    m_address = address.getAddress();
+    this.address = address.getAddress();
     port = address.getPort();
   }
 
   /** Creates new Node. */
   public Node(final String name, final InetAddress address, final int port) {
     this.name = name;
-    m_address = address;
+    this.address = address;
     this.port = port;
   }
 
@@ -63,17 +63,17 @@ public class Node implements INode, Externalizable {
       return false;
     }
     final Node other = (Node) obj;
-    return other.port == this.port && other.m_address.equals(this.m_address);
+    return other.port == this.port && other.address.equals(this.address);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(port, m_address);
+    return Objects.hash(port, address);
   }
 
   @Override
   public String toString() {
-    return name + " port:" + port + " ip:" + m_address.getHostAddress();
+    return name + " port:" + port + " ip:" + address.getHostAddress();
   }
 
   @Override
@@ -83,7 +83,7 @@ public class Node implements INode, Externalizable {
 
   @Override
   public InetAddress getAddress() {
-    return m_address;
+    return address;
   }
 
   @Override
@@ -95,15 +95,15 @@ public class Node implements INode, Externalizable {
     for (int i = 0; i < length; i++) {
       bytes[i] = in.readByte();
     }
-    m_address = InetAddress.getByAddress(bytes);
+    address = InetAddress.getByAddress(bytes);
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
     out.writeUTF(name);
     out.writeInt(port);
-    out.write(m_address.getAddress().length);
-    out.write(m_address.getAddress());
+    out.write(address.getAddress().length);
+    out.write(address.getAddress());
   }
 
   @Override
@@ -116,6 +116,6 @@ public class Node implements INode, Externalizable {
 
   @Override
   public InetSocketAddress getSocketAddress() {
-    return new InetSocketAddress(m_address, port);
+    return new InetSocketAddress(address, port);
   }
 }
