@@ -496,6 +496,7 @@ public class BattleDisplay extends JPanel {
             int availHeight = screenResolution.height - 80;
             final int availWidth = screenResolution.width - 30;
             availHeight -= 50;
+            chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
             chooserScrollPane.setPreferredSize(new Dimension(
                 (chooserScrollPane.getPreferredSize().width > availWidth ? availWidth
                     : (chooserScrollPane.getPreferredSize().height > availHeight
@@ -503,7 +504,6 @@ public class BattleDisplay extends JPanel {
                         : chooserScrollPane.getPreferredSize().width)),
                 (chooserScrollPane.getPreferredSize().height > availHeight ? availHeight
                     : chooserScrollPane.getPreferredSize().height)));
-            chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
           }
           final String[] options = {"Ok", "Cancel"};
           final String focus = ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES.booleanValue() ? options[0] : null;
