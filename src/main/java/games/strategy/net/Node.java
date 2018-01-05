@@ -9,7 +9,9 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
 
-// written very often over the network, so make externalizable to make faster and reduce traffic
+/**
+ * Written very often over the network, so make externalizable to make faster and reduce traffic.
+ */
 public class Node implements INode, Externalizable {
   static final long serialVersionUID = -2908980662926959943L;
   private String name;
