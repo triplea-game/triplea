@@ -136,8 +136,10 @@ public class GameRunner {
       HttpProxy.updateSystemProxy();
     }
 
-    final String version = System.getProperty(ENGINE_VERSION_BIN);
     final Version engineVersion = ClientContext.engineVersion();
+    System.out.println("TripleA engine version " + engineVersion.getExactVersion());
+
+    final String version = System.getProperty(ENGINE_VERSION_BIN);
     if (version != null && version.length() > 0) {
       final Version testVersion;
       try {
