@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -47,7 +48,7 @@ public class TripleA extends Application {
     final double widthOffsetCompensateValue = 20;
     final double heightOffsetCompensateValue = 30;
     // TODO make those values configurable
-    final Scene scene = new Scene(loader.load(), 960 + widthOffsetCompensateValue, 540 + heightOffsetCompensateValue);
+    final Scene scene = new Scene(loader.load(), 960 + widthOffsetCompensateValue, 540 + heightOffsetCompensateValue, false, SceneAntialiasing.DISABLED);
     Font.loadFont(TripleA.class.getResourceAsStream(FxmlManager.RELATIVE_FONT_PATH.toString()), 14);
     scene.getStylesheets().add(FxmlManager.STYLESHEET_MAIN.toString());
     mainMenu = addRootContent(new MainMenuPane(this));
