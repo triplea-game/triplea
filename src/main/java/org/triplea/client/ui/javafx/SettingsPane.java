@@ -12,6 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -55,6 +57,7 @@ class SettingsPane extends StackPane {
             final Region element = b.buildSelectionComponent();
             final Label description = new Label(bundle.getString(getSettingLocalizationKey(element, b)));
             description.setTooltip(tooltip);
+            addTooltipRecursively(element, tooltip);
             pane.addColumn(0, description);
             pane.addColumn(1, element);
           });
@@ -69,6 +72,14 @@ class SettingsPane extends StackPane {
         tabPane.getTabs().add(tab);
       }
     });
+  }
+
+  private void addTooltipRecursively(final Node node, final Tooltip tooltip) {
+    if (node instanceof Control) {
+      ((Control) node).setTooltip(tooltip);
+    } else if (node instanceof Parent) {
+      ((Parent) node).getChildrenUnmodifiable().forEach(n -> addTooltipRecursively(n, tooltip));
+    }
   }
 
   @FXML
