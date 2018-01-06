@@ -2434,6 +2434,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final String transcriptText = MyFormatter.unitsToText(unitsToAdd) + " added in " + m_battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
       bridge.addChange(ChangeFactory.addUnits(m_battleSite, unitsToAdd));
+      bridge.addChange(ChangeFactory.markNoMovementChange(unitsToAdd));
       units.addAll(unitsToAdd);
       getDisplay(bridge).changedUnitsNotification(m_battleID, unitsToRemove.get(0).getOwner(), unitsToRemove,
           unitsToAdd, null);
