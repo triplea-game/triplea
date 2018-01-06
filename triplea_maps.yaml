@@ -21,7 +21,6 @@
 #          Just know that this is *only* used by the download screen for determining if a map is out of date.
 #          The game keeps track of the current map version downloaded in the extra .properties file that is created
 #          in addition to every map file downloaded
-#
 # description: HTMl description of the map. This description appears in the map download window. The map title
 #         and image are printed automatically and do not need to be included in the description
 #
@@ -85,7 +84,7 @@
 - mapName: Total World War
   mapCategory: BEST
   url: https://github.com/triplea-maps/total_world_war/archive/master.zip
-  version: 1
+  version: 2.8
   img: http://tripleamaps.sourceforge.net/images/TripleA_total_world_war_mini.png
   description: |
     <br> <em><b><font size="6">Created by Rolf Larsson and Hepster</font></b></em>
