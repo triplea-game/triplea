@@ -20,7 +20,7 @@ import swinglib.ErrorMessageBuilder;
 public final class ClientLogger {
   private static final PrintStream developerOutputStream = System.out;
 
-  private static boolean enableErrorPopup = true;
+  private static volatile boolean enableErrorPopup = true;
 
   private ClientLogger() {}
 
