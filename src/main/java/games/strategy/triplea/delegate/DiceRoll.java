@@ -52,10 +52,10 @@ import games.strategy.util.Tuple;
  */
 public class DiceRoll implements Externalizable {
   private static final long serialVersionUID = -1167204061937566271L;
-  private List<Die> m_rolls;
+  private List<Die> rolls;
   // this does not need to match the Die with isHit true
   // since for low luck we get many hits with few dice
-  private int m_hits;
+  private int hits;
   private double expectedHits;
 
   /**
@@ -1074,9 +1074,9 @@ public class DiceRoll implements Externalizable {
    *        rolling at 6 for equal and less than, but is not for equals
    */
   public DiceRoll(final int[] dice, final int hits, final int rollAt, final boolean hitOnlyIfEquals) {
-    m_hits = hits;
+    this.hits = hits;
     expectedHits = 0;
-    m_rolls = new ArrayList<>(dice.length);
+    rolls = new ArrayList<>(dice.length);
     for (final int element : dice) {
       final boolean hit;
       if (hitOnlyIfEquals) {
@@ -1084,7 +1084,7 @@ public class DiceRoll implements Externalizable {
       } else {
         hit = element <= rollAt;
       }
-      m_rolls.add(new Die(element, rollAt, hit ? DieType.HIT : DieType.MISS));
+      rolls.add(new Die(element, rollAt, hit ? DieType.HIT : DieType.MISS));
     }
   }
 
@@ -1092,13 +1092,13 @@ public class DiceRoll implements Externalizable {
   public DiceRoll() {}
 
   private DiceRoll(final List<Die> dice, final int hits, final double expectedHits) {
-    m_rolls = new ArrayList<>(dice);
-    m_hits = hits;
+    rolls = new ArrayList<>(dice);
+    this.hits = hits;
     this.expectedHits = expectedHits;
   }
 
   public int getHits() {
-    return m_hits;
+    return hits;
   }
 
   public double getExpectedHits() {
@@ -1114,7 +1114,7 @@ public class DiceRoll implements Externalizable {
    */
   public List<Die> getRolls(final int rollAt) {
     final List<Die> dice = new ArrayList<>();
-    for (final Die die : m_rolls) {
+    for (final Die die : rolls) {
       if (die.getRolledAt() == rollAt) {
         dice.add(die);
       }
@@ -1123,32 +1123,32 @@ public class DiceRoll implements Externalizable {
   }
 
   public int size() {
-    return m_rolls.size();
+    return rolls.size();
   }
 
   public Die getDie(final int index) {
-    return m_rolls.get(index);
+    return rolls.get(index);
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
-    final int[] dice = new int[m_rolls.size()];
-    for (int i = 0; i < m_rolls.size(); i++) {
-      dice[i] = m_rolls.get(i).getCompressedValue();
+    final int[] dice = new int[rolls.size()];
+    for (int i = 0; i < rolls.size(); i++) {
+      dice[i] = rolls.get(i).getCompressedValue();
     }
     out.writeObject(dice);
-    out.writeInt(m_hits);
+    out.writeInt(hits);
     out.writeDouble(expectedHits);
   }
 
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
     final int[] dice = (int[]) in.readObject();
-    m_rolls = new ArrayList<>(dice.length);
+    rolls = new ArrayList<>(dice.length);
     for (final int element : dice) {
-      m_rolls.add(Die.getFromWriteValue(element));
+      rolls.add(Die.getFromWriteValue(element));
     }
-    m_hits = in.readInt();
+    hits = in.readInt();
     try {
       expectedHits = in.readDouble();
     } catch (final EOFException e) {
@@ -1158,6 +1158,6 @@ public class DiceRoll implements Externalizable {
 
   @Override
   public String toString() {
-    return "DiceRoll dice:" + m_rolls + " hits:" + m_hits + " expectedHits:" + expectedHits;
+    return "DiceRoll dice:" + rolls + " hits:" + hits + " expectedHits:" + expectedHits;
   }
 }
