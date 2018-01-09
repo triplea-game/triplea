@@ -80,7 +80,7 @@ public final class DebugUtils {
     Collections.sort(keys);
     for (final String property : keys) {
       final String value = props.getProperty(property);
-      buf.append(property).append(" ").append(value).append("\n");
+      buf.append(property).append("=").append(value).append("\n");
     }
     return buf.toString();
   }
