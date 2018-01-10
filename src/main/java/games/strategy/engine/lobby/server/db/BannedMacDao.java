@@ -5,6 +5,7 @@ import java.time.Instant;
 
 import javax.annotation.Nullable;
 
+import games.strategy.engine.lobby.server.Moderator;
 import games.strategy.util.Tuple;
 
 /**
@@ -17,8 +18,9 @@ public interface BannedMacDao {
    *
    * @param mac The MAC to ban.
    * @param banTill The instant at which the ban will expire or {@ode null} to ban the MAC forever.
+   * @param moderator The moderator executing the ban.
    */
-  void addBannedMac(String mac, @Nullable Instant banTill);
+  void addBannedMac(String mac, @Nullable Instant banTill, Moderator moderator);
 
   /**
    * Indicates the specified MAC is banned.

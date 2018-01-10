@@ -1,5 +1,7 @@
 package games.strategy.engine.lobby.server.db;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +9,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+import javax.annotation.Nullable;
+
+import games.strategy.engine.lobby.server.Moderator;
 import games.strategy.util.Tuple;
 
 /**
@@ -14,21 +19,33 @@ import games.strategy.util.Tuple;
  */
 public class BannedUsernameController extends TimedController implements BannedUsernameDao {
   @Override
-  public void addBannedUsername(final String username, final Instant banTill) {
-    if (banTill == null || banTill.isAfter(now())) {
+  public void addBannedUsername(final String username, final @Nullable Instant banTill, final Moderator moderator) {
+    checkNotNull(moderator);
 
-      try (Connection con = Database.getPostgresConnection();
-          PreparedStatement ps = con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)"
-              + " on conflict (username) do update set ban_till=excluded.ban_till")) {
-        ps.setString(1, username);
-        ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
-        ps.execute();
-        con.commit();
-      } catch (final SQLException sqle) {
-        throw new IllegalStateException("Error inserting banned username:" + username, sqle);
-      }
-    } else {
+    if (banTill != null && banTill.isBefore(now())) {
       removeBannedUsername(username);
+      return;
+    }
+
+    final String sql = ""
+        + "insert into banned_usernames "
+        + "  (username, ban_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?) "
+        + "on conflict (username) do update set "
+        + "  ban_till=excluded.ban_till, "
+        + "  mod_username=excluded.mod_username, "
+        + "  mod_ip=excluded.mod_ip, "
+        + "  mod_mac=excluded.mod_mac";
+    try (Connection con = Database.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(sql)) {
+      ps.setString(1, username);
+      ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
+      ps.setString(3, moderator.getUsername());
+      ps.setString(4, moderator.getInetAddress().getHostAddress());
+      ps.setString(5, moderator.getHashedMacAddress());
+      ps.execute();
+      con.commit();
+    } catch (final SQLException sqle) {
+      throw new IllegalStateException("Error inserting banned username:" + username, sqle);
     }
   }
 
