@@ -7,14 +7,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete muted macs (there is no update).
  */
 public class MutedMacController extends TimedController {
-  private static final Logger logger = Logger.getLogger(MutedMacController.class.getName());
-
   /**
    * Mute the given mac. If muteTill is not null, the mute will expire when muteTill is reached.
    *

@@ -7,14 +7,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 /**
  * Utilitiy class to create/read/delete muted usernames (there is no update).
  */
 public class MutedUsernameController extends TimedController {
-  private static final Logger logger = Logger.getLogger(MutedUsernameController.class.getName());
-
   /**
    * Mute the given username. If muteTill is not null, the mute will expire when muteTill is reached.
    *

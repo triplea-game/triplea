@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.launcher;
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -20,7 +19,6 @@ import games.strategy.net.Messengers;
 import games.strategy.util.ThreadUtil;
 
 public class LocalLauncher extends AbstractLauncher {
-  private static final Logger logger = Logger.getLogger(ILauncher.class.getName());
   private final IRandomSource randomSource;
   private final PlayerListing playerListing;
 

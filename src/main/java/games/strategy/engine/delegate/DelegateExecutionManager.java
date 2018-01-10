@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Logger;
 
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.message.MessengerException;
@@ -28,7 +27,6 @@ import games.strategy.triplea.util.WrappedInvocationHandler;
  * </p>
  */
 public class DelegateExecutionManager {
-  private final Logger logger = Logger.getLogger(DelegateExecutionManager.class.getName());
   /*
    * Delegate execution can be thought of as a read/write lock.
    * Many delegates can be executing at one time (to execute you acquire the read lock), but
