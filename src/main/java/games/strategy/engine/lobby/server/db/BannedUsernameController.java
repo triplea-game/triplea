@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.logging.Logger;
 
 import games.strategy.util.Tuple;
 
@@ -14,8 +13,6 @@ import games.strategy.util.Tuple;
  * Utility class to create/read/delete banned usernames (there is no update).
  */
 public class BannedUsernameController extends TimedController implements BannedUsernameDao {
-  private static final Logger logger = Logger.getLogger(BannedUsernameController.class.getName());
-
   @Override
   public void addBannedUsername(final String username, final Instant banTill) {
     if (banTill == null || banTill.isAfter(now())) {

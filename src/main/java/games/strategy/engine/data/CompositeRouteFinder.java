@@ -8,14 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
 public class CompositeRouteFinder {
-  private static final Logger logger = Logger.getLogger(CompositeRouteFinder.class.getName());
-
   private final GameMap map;
   private final Map<Predicate<Territory>, Integer> matches;
 

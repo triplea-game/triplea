@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -44,7 +43,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ThreadUtil;
 
 public class ServerLauncher extends AbstractLauncher {
-  private static final Logger logger = Logger.getLogger(ServerLauncher.class.getName());
   private final int clientCount;
   private final IRemoteMessenger remoteMessenger;
   private final IChannelMessenger channelMessenger;

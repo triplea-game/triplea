@@ -4,8 +4,6 @@ import java.awt.Image;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
 import games.strategy.debug.ClientLogger;
 
@@ -16,8 +14,6 @@ import games.strategy.debug.ClientLogger;
  */
 class ImageRef {
   private static final ReferenceQueue<Image> referenceQueue = new ReferenceQueue<>();
-  private static final Logger logger = Logger.getLogger(ImageRef.class.getName());
-  private static final AtomicInteger imageCount = new AtomicInteger();
 
   static {
     final Thread t = new Thread(() -> {

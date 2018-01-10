@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -28,7 +27,6 @@ import swinglib.JButtonBuilder;
 
 public abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
-  private static final Logger logger = Logger.getLogger(MovePanel.class.getName());
   private static final int entryPadding = 15;
   private final TripleAFrame frame;
   private boolean listening = false;

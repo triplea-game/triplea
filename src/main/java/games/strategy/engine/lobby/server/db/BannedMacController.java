@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
@@ -16,8 +15,6 @@ import games.strategy.util.Tuple;
  * Utility class to create/read/delete banned macs (there is no update).
  */
 public class BannedMacController extends TimedController implements BannedMacDao {
-  private static final Logger logger = Logger.getLogger(BannedMacController.class.getName());
-
   @Override
   public void addBannedMac(final String mac, final @Nullable Instant banTill) {
     if (banTill == null || banTill.isAfter(now())) {
