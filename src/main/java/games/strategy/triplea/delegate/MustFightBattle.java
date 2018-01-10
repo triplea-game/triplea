@@ -38,9 +38,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
@@ -218,36 +216,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
         // remove transported fighters from battle display
         m_attackingUnits.removeAll(fighters);
-      }
-    }
-    // Set the dependent paratroopers so they die if the bomber dies.
-    // TODO: this might be legacy code that can be deleted since we now keep paratrooper dependencies til they land (but
-    // need to double check)
-    if (TechAttachment.isAirTransportable(m_attacker)) {
-      final Collection<Unit> airTransports = CollectionUtils.getMatches(units, Matches.unitIsAirTransport());
-      final Collection<Unit> paratroops = CollectionUtils.getMatches(units, Matches.unitIsAirTransportable());
-      if (!airTransports.isEmpty() && !paratroops.isEmpty()) {
-        // Load capable bombers by default
-        final Map<Unit, Unit> unitsToCapableAirTransports =
-            TransportUtils.mapTransportsToLoad(paratroops, airTransports);
-        final HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
-        final Collection<Unit> singleCollection = new ArrayList<>();
-        for (final Unit unit : unitsToCapableAirTransports.keySet()) {
-          final Collection<Unit> unitList = new ArrayList<>();
-          unitList.add(unit);
-          final Unit bomber = unitsToCapableAirTransports.get(unit);
-          singleCollection.add(unit);
-          // Set transportedBy for paratrooper
-          change.add(ChangeFactory.unitPropertyChange(unit, bomber, TripleAUnit.TRANSPORTED_BY));
-          // Set the dependents
-          if (dependentUnits.get(bomber) != null) {
-            dependentUnits.get(bomber).addAll(unitList);
-          } else {
-            dependentUnits.put(bomber, unitList);
-          }
-        }
-        dependencies.putAll(dependentUnits);
-        UnitSeperator.categorize(airTransports, dependentUnits, false, false);
       }
     }
     addDependentUnits(dependencies);
