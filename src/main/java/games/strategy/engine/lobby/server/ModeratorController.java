@@ -3,6 +3,8 @@ package games.strategy.engine.lobby.server;
 import java.time.Instant;
 import java.util.Date;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.lobby.server.db.BannedMacController;
 import games.strategy.engine.lobby.server.db.BannedUsernameController;
 import games.strategy.engine.lobby.server.db.MutedMacController;
@@ -32,7 +34,7 @@ public class ModeratorController extends AbstractModeratorController {
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    new BannedUsernameController().addBannedUsername(getRealName(node), banExpires);
+    new BannedUsernameController().addBannedUsername(getRealName(node), banExpires, getModeratorForNode(modNode));
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     logger.info(String.format(
         "User was banned from the lobby(Username ban). "
@@ -60,19 +62,23 @@ public class ModeratorController extends AbstractModeratorController {
     return user != null && user.isAdmin();
   }
 
+  private Moderator getModeratorForNode(final INode node) {
+    return new Moderator(node.getName(), node.getAddress(), getNodeMacAddress(node));
+  }
+
   @Override
   public void banMac(final INode node, final Date banExpires) {
     banMac(node, banExpires != null ? banExpires.toInstant() : null);
   }
 
-  private void banMac(final INode node, final Instant banExpires) {
+  private void banMac(final INode node, final @Nullable Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    new BannedMacController().addBannedMac(mac, banExpires);
+    new BannedMacController().addBannedMac(mac, banExpires, getModeratorForNode(modNode));
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     logger.info(String.format(
         "User was banned from the lobby(Mac ban). "
@@ -86,13 +92,13 @@ public class ModeratorController extends AbstractModeratorController {
     banMac(node, hashedMac, banExpires != null ? banExpires.toInstant() : null);
   }
 
-  private void banMac(final INode node, final String hashedMac, final Instant banExpires) {
+  private void banMac(final INode node, final String hashedMac, final @Nullable Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
     }
     final INode modNode = MessageContext.getSender();
-    new BannedMacController().addBannedMac(hashedMac, banExpires);
+    new BannedMacController().addBannedMac(hashedMac, banExpires, getModeratorForNode(modNode));
     final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
     logger.info(String.format(
         "User was banned from the lobby(Mac ban). "

@@ -1,0 +1,23 @@
+start transaction;
+
+alter table banned_macs
+  add column mod_username varchar(40),
+  add column mod_ip varchar(45),
+  add column mod_mac char(28),
+  add constraint banned_macs_mod_mac_check check (char_length(mod_mac)=28);
+
+comment on column banned_macs.mod_username is 'The username of the moderator that executed the ban.';
+comment on column banned_macs.mod_ip is 'The IP address (v4 or v6) of the moderator that executed the ban.';
+comment on column banned_macs.mod_mac is 'The hashed MAC address of the moderator that executed the ban.';
+
+alter table banned_usernames
+  add column mod_username varchar(40),
+  add column mod_ip varchar(45),
+  add column mod_mac char(28),
+  add constraint banned_usernames_mod_mac_check check (char_length(mod_mac)=28);
+
+comment on column banned_usernames.mod_username is 'The username of the moderator that executed the ban.';
+comment on column banned_usernames.mod_ip is 'The IP address (v4 or v6) of the moderator that executed the ban.';
+comment on column banned_usernames.mod_mac is 'The hashed MAC address of the moderator that executed the ban.';
+
+commit;
