@@ -68,23 +68,7 @@ public class ModeratorController extends AbstractModeratorController {
 
   @Override
   public void banMac(final INode node, final Date banExpires) {
-    banMac(node, banExpires != null ? banExpires.toInstant() : null);
-  }
-
-  private void banMac(final INode node, final @Nullable Instant banExpires) {
-    assertUserIsAdmin();
-    if (isPlayerAdmin(node)) {
-      throw new IllegalStateException("Can't ban an admin");
-    }
-    final INode modNode = MessageContext.getSender();
-    final String mac = getNodeMacAddress(node);
-    new BannedMacController().addBannedMac(mac, banExpires, getModeratorForNode(modNode));
-    final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
-    logger.info(String.format(
-        "User was banned from the lobby(Mac ban). "
-            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
-        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
-        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+    banMac(node, getNodeMacAddress(node), banExpires);
   }
 
   @Override
