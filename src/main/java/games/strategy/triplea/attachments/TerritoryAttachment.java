@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -784,16 +785,14 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append("Territory Effects: ");
       sb.append(br);
     }
-    m_territoryEffect.stream()
+    sb.append(m_territoryEffect.stream()
         .map(TerritoryEffect::getName)
         .map(name -> "&nbsp;&nbsp;&nbsp;&nbsp;" + name + br)
-        .forEach(sb::append);
+        .collect(Collectors.joining()));
 
     return sb.toString();
   }
 
   @Override
   public void validate(final GameData data) {}
-
-
 }

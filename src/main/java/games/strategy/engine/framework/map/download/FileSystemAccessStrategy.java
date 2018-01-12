@@ -69,8 +69,13 @@ class FileSystemAccessStrategy {
       if (!deletes.isEmpty()) {
         showRemoveSuccessDialog("Successfully removed.", deletes);
         // only once we know for sure we deleted things, then delete the ".properties" file
-        deletes.forEach(dl -> (new File(dl.getInstallLocation() + ".properties")).delete());
-        deletes.forEach(m -> listModel.removeElement(m.getMapName()));
+        deletes.stream()
+            .map(DownloadFileDescription::getInstallLocation)
+            .map(location -> location + ".properties")
+            .map(File::new)
+            .forEach(File::delete);
+
+        deletes.stream().map(DownloadFileDescription::getMapName).forEach(listModel::removeElement);
       }
 
       if (!fails.isEmpty()) {

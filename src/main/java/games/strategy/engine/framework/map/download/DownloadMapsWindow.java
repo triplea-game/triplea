@@ -324,8 +324,10 @@ public class DownloadMapsWindow extends JFrame {
 
   private static List<DownloadFileDescription> filterMaps(final List<DownloadFileDescription> maps,
       final Predicate<DownloadFileDescription> predicate) {
-    maps.forEach(map -> checkNotNull(map, "Maps list contained null element: " + maps));
-    return maps.stream().filter(predicate).collect(Collectors.toList());
+    return maps.stream()
+        .peek(map -> checkNotNull(map, "Maps list contained null element: " + maps))
+        .filter(predicate)
+        .collect(Collectors.toList());
   }
 
   private JTabbedPane createAvailableInstalledTabbedPanel(
@@ -585,7 +587,9 @@ public class DownloadMapsWindow extends JFrame {
         progressPanel.download(downloadList);
       }
 
-      downloadList.forEach(m -> listModel.removeElement(m.getMapName()));
+      downloadList.stream()
+          .map(DownloadFileDescription::getMapName)
+          .forEach(listModel::removeElement);
     };
   }
 }

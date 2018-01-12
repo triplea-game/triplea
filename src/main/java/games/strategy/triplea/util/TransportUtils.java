@@ -10,8 +10,10 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
@@ -266,10 +268,11 @@ public class TransportUtils {
 
   private static Map<Unit, List<Unit>> sortByTransportOptionsAscending(
       final Map<Unit, List<Unit>> unitToPotentialTransports) {
-    final Map<Unit, List<Unit>> result = new LinkedHashMap<>();
-    unitToPotentialTransports.entrySet().stream().sorted((o1, o2) -> o1.getValue().size() - o2.getValue().size())
-        .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
-    return result;
+    return unitToPotentialTransports.entrySet().stream()
+        .sorted(Comparator.comparing(Entry::getValue, Comparator.comparing(List::size)))
+        .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (o1, o2) -> {
+          throw new IllegalStateException("unitToPotentialTransports contains duplicate keys");
+        }, LinkedHashMap::new));
   }
 
   private static Unit findOptimalTransportToUnloadFrom(final Unit unit,
@@ -314,7 +317,7 @@ public class TransportUtils {
   }
 
   private static Unit getEquivalentUnit(final Unit unit, final Collection<Unit> units) {
-    return units.stream().filter(u -> u.isEquivalent(unit)).findFirst().get();
+    return units.stream().filter(unit::isEquivalent).findAny().get();
   }
 
 }

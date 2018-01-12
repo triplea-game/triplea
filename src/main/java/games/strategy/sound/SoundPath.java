@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.properties.IEditableProperty;
 
@@ -141,9 +142,8 @@ public class SoundPath {
   }
 
   static List<IEditableProperty> getSoundOptions() {
-    final List<IEditableProperty> soundBoxes = new ArrayList<>();
-    getAllSoundOptionsWithDescription().forEach(
-        (path, description) -> soundBoxes.add(new SoundOptionCheckBox(path, description)));
-    return soundBoxes;
+    return getAllSoundOptionsWithDescription().entrySet().stream()
+        .map(e -> new SoundOptionCheckBox(e.getKey(), e.getValue()))
+        .collect(Collectors.toList());
   }
 }

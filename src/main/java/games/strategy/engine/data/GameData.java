@@ -317,7 +317,7 @@ public class GameData implements Serializable {
   }
 
   void notifyMapDataChanged() {
-    gameMapListeners.forEach(gameMapListener -> gameMapListener.gameMapDataChanged());
+    gameMapListeners.forEach(GameMapListener::gameMapDataChanged);
   }
 
   public IGameLoader getGameLoader() {
