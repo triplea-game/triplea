@@ -152,7 +152,7 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     final ActionListener setAllTypesAction = e -> {
       final String selectedType = setAllTypes.getSelectedItem().toString();
       if (SET_ALL_DEFAULT_LABEL.equals(selectedType)) {
-        playerRows.forEach(row -> row.setDefaultPlayerType());
+        playerRows.forEach(PlayerSelectorRow::setDefaultPlayerType);
       } else {
         playerRows.forEach(row -> row.setPlayerType(selectedType));
       }

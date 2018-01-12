@@ -1140,11 +1140,9 @@ public class BattleTracker implements Serializable {
     }
     getPendingBattleSites(false).stream()
         .map(territory -> getPendingBattle(territory, false, BattleType.NORMAL))
-        .forEach(battle -> {
-          if (battle instanceof NonFightingBattle && getDependentOn(battle).isEmpty()) {
-            battle.fight(bridge);
-          }
-        });
+        .filter(NonFightingBattle.class::isInstance)
+        .filter(battle -> getDependentOn(battle).isEmpty())
+        .forEach(battle -> battle.fight(bridge));
   }
 
   private static List<Unit> getSortedDefendingUnits(final IDelegateBridge bridge, final GameData gameData,

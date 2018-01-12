@@ -161,7 +161,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
    */
   public Set<PlayerID> getPlayersWithUnits() {
     // note nulls are handled by PlayerID.NULL_PLAYERID
-    return m_units.stream().map(unit -> unit.getOwner()).collect(Collectors.toSet());
+    return m_units.stream().map(Unit::getOwner).collect(Collectors.toSet());
   }
 
   /**

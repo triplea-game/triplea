@@ -89,9 +89,9 @@ public class AllianceTracker implements Serializable {
   }
 
   Set<PlayerID> getAllies(final PlayerID currentPlayer) {
-    final Set<PlayerID> allies = new HashSet<>();
-    // for each of the player alliances, add each player from that alliance to the total alliance list
-    alliances.get(currentPlayer).forEach(alliance -> allies.addAll(getPlayersInAlliance(alliance)));
-    return allies;
+    return alliances.get(currentPlayer).stream()
+        .map(this::getPlayersInAlliance)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 }

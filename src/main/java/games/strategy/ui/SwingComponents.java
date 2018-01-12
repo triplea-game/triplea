@@ -23,7 +23,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
@@ -278,9 +277,8 @@ public class SwingComponents {
   }
 
   public static <T> DefaultListModel<String> newJListModel(final List<T> maps, final Function<T, String> mapper) {
-    final List<String> mapList = maps.stream().map(mapper).collect(Collectors.toList());
     final DefaultListModel<String> model = new DefaultListModel<>();
-    mapList.forEach(model::addElement);
+    maps.stream().map(mapper).forEach(model::addElement);
     return model;
   }
 

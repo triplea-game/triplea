@@ -7,8 +7,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -202,9 +204,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final List<IExecutable> steps = new ArrayList<>();
     if (hasAa) {
       // global1940 rules - each target type fires an AA shot against the planes bombing it
-      m_targets.entrySet().stream()
+      steps.addAll(m_targets.entrySet().stream()
           .filter(entry -> entry.getKey().getUnitAttachment().getIsAAforBombingThisUnitOnly())
-          .forEach(entry -> steps.add(new FireAA(entry.getValue())));
+          .map(Entry::getValue)
+          .map(FireAA::new)
+          .collect(Collectors.toList()));
 
       // otherwise fire an AA shot at all the planes
       if (steps.isEmpty()) {
