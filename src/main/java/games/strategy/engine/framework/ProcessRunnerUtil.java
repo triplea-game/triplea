@@ -1,7 +1,5 @@
 package games.strategy.engine.framework;
 
-import static games.strategy.engine.framework.ArgParser.CliProperties.ENGINE_VERSION_BIN;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +12,6 @@ import java.util.Scanner;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.util.Version;
 
 /**
  * To hold various static utility methods for running a java program.
@@ -61,16 +58,6 @@ public class ProcessRunnerUtil {
       final File icons = new File(ClientFileSystemHelper.getRootFolder(), "icons/triplea_icon.png");
       if (icons.exists()) {
         commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
-      }
-    }
-    final String version = System.getProperty(ENGINE_VERSION_BIN);
-    if (version != null && version.length() > 0) {
-      final Version testVersion;
-      try {
-        testVersion = new Version(version);
-        commands.add("-D" + ENGINE_VERSION_BIN + "=" + testVersion.toString());
-      } catch (final Exception e) {
-        // nothing
       }
     }
   }

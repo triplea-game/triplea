@@ -152,7 +152,6 @@ public final class ArgParser {
     public static final String LOBBY_GAME_SUPPORT_EMAIL = "triplea.lobby.game.supportEmail";
     public static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
     public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
-    public static final String ENGINE_VERSION_BIN = "triplea.engine.version.bin";
     public static final String DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
 
     public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
