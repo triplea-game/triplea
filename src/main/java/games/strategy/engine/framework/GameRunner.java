@@ -1,7 +1,6 @@
 package games.strategy.engine.framework;
 
 import static games.strategy.engine.framework.ArgParser.CliProperties.DO_NOT_CHECK_FOR_UPDATES;
-import static games.strategy.engine.framework.ArgParser.CliProperties.ENGINE_VERSION_BIN;
 import static games.strategy.engine.framework.ArgParser.CliProperties.GAME_HOST_CONSOLE;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_HOSTED_BY;
@@ -110,7 +109,7 @@ public class GameRunner {
       TRIPLEA_GAME, TRIPLEA_MAP_DOWNLOAD, TRIPLEA_SERVER, TRIPLEA_CLIENT,
       TRIPLEA_HOST, TRIPLEA_PORT, TRIPLEA_NAME, SERVER_PASSWORD,
       TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY,
-      ENGINE_VERSION_BIN, DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER));
+      DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER));
 
 
   /**
@@ -138,25 +137,6 @@ public class GameRunner {
 
     final Version engineVersion = ClientContext.engineVersion();
     System.out.println("TripleA engine version " + engineVersion.getExactVersion());
-
-    final String version = System.getProperty(ENGINE_VERSION_BIN);
-    if (version != null && version.length() > 0) {
-      final Version testVersion;
-      try {
-        testVersion = new Version(version);
-        // if successful we don't do anything
-        System.out.println(ENGINE_VERSION_BIN + ":" + version);
-        if (!engineVersion.equals(testVersion)) {
-          System.out.println("Current Engine version in use: " + engineVersion);
-        }
-      } catch (final Exception e) {
-        System.setProperty(ENGINE_VERSION_BIN, engineVersion.toString());
-        System.out.println(ENGINE_VERSION_BIN + ":" + engineVersion);
-      }
-    } else {
-      System.setProperty(ENGINE_VERSION_BIN, engineVersion.toString());
-      System.out.println(ENGINE_VERSION_BIN + ":" + engineVersion);
-    }
 
     if (ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
       Application.launch(TripleA.class, args);
