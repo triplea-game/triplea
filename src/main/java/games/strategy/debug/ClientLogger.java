@@ -7,7 +7,6 @@ import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nullable;
-import javax.swing.SwingUtilities;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -105,10 +104,6 @@ public final class ClientLogger {
   }
 
   private static void showErrorMessage(final String msg) {
-    // FIXME: Temporary fix for #2820: prevent error popup and restore legacy behavior
-    SwingUtilities.invokeLater(ErrorConsole::showConsole);
-    enableErrorPopup = false;
-
     if (GraphicsEnvironment.isHeadless() || !enableErrorPopup) {
       // skip the pop-up if we there is no Swing UI to show the error message.
       // in all cases the error information should have been quiet logged, the error message pop-up is only
