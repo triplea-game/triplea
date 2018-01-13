@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" prefHeight="540.0" prefWidth="960.0" style="-fx-background-color: #EEE;" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" prefHeight="540.0" prefWidth="960.0" style="-fx-background-color: #EEE;" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <bottom>
       <HBox prefHeight="35.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -151,6 +151,20 @@
                         <Font name="1942 report" size="13.0" />
                      </font>
                   </Button>
+                  <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPbfPbemMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.startPBEMPBF">
+                     <graphic>
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/org/triplea/client/ui/javafx/images/forum.png" />
+                           </image></ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="1942 report" size="13.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin>
+                  </Button>
                   <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showHostNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.host_networked_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -178,20 +192,6 @@
                      <font>
                         <Font name="1942 report" size="13.0" />
                      </font>
-                  </Button>
-                  <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPbfPbemMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.startPBEMPBF">
-                     <graphic>
-                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@/org/triplea/client/ui/javafx/images/forum.png" />
-                           </image></ImageView>
-                     </graphic>
-                     <font>
-                        <Font name="1942 report" size="13.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="5.0" right="5.0" />
-                     </HBox.margin>
                   </Button>
                </children>
             </HBox>
