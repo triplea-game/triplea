@@ -11,7 +11,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -24,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessageContext;
@@ -66,13 +64,7 @@ public class RemoteMessengerTest {
         return null;
       }
     }).when(serverMessenger).removeConnection(any());
-    final Node dummyNode;
-    try {
-      dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
-    } catch (final UnknownHostException e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(e);
-    }
+    final Node dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(serverMessenger.getLocalNode()).thenReturn(dummyNode);
     when(serverMessenger.getServerNode()).thenReturn(dummyNode);
     when(serverMessenger.isServer()).thenReturn(true);
