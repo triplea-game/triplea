@@ -195,52 +195,87 @@
                   </Button>
                </children>
             </HBox>
-            <VBox fx:id="mainOptions" prefHeight="200.0" prefWidth="100.0" visible="true">
+            <VBox fx:id="mainOptions" alignment="TOP_CENTER">
                <children>
-                  <Button mnemonicParsing="false" onAction="#showPlayOptions" text="%main.button.play">
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" top="10.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="1942 report" size="20.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#showDownloadMenu" text="%main.button.download_maps">
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" top="10.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="1942 report" size="20.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#showSettingsMenu" text="%main.button.settings">
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" top="10.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="1942 report" size="20.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#showAboutSection" text="%main.button.about">
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" top="10.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="1942 report" size="20.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#showExitConfirmDialog" text="%main.button.exit">
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" top="10.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="1942 report" size="20.0" />
-                     </font>
-                  </Button>
+                  <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#showPlayOptions" text="%main.button.play">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" top="10.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="1942 report" size="20.0" />
+                           </font>
+                        </Button>
+                        <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#showDownloadMenu" text="%main.button.download_maps">
+                                 <font>
+                                    <Font name="1942 report" size="20.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" top="10.0" />
+                                 </VBox.margin>
+                              </Button>
+                              <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#showSettingsMenu" text="%main.button.settings">
+                                       <font>
+                                          <Font name="1942 report" size="20.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" left="10.0" top="10.0" />
+                                       </VBox.margin>
+                                    </Button>
+                                    <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#showAboutSection" text="%main.button.about">
+                                             <font>
+                                                <Font name="1942 report" size="20.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </Button>
+                                          <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Button mnemonicParsing="false" onAction="#showExitConfirmDialog" text="%main.button.exit">
+                                                   <font>
+                                                      <Font name="1942 report" size="20.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets bottom="10.0" left="10.0" top="10.0" />
+                                                   </VBox.margin>
+                                                </Button>
+                                             </children>
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                          </VBox>
+                                       </children>
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                    </VBox>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </VBox>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </VBox>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </VBox>
                </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
             </VBox>
          </children>
       </StackPane>
