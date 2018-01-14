@@ -1,6 +1,5 @@
 package games.strategy.engine.chat;
 
-import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -10,7 +9,6 @@ import javax.swing.DefaultListCellRenderer;
 
 import com.google.common.base.Ascii;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -33,7 +31,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private final ChatFloodControl floodControl = new ChatFloodControl();
   private final Set<String> hiddenPlayers = new HashSet<>();
   private final Set<INode> players = new HashSet<>();
-  private PrintStream out = null;
 
   public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger, final String chatName, final ChatSoundProfile chatSoundProfile) {
@@ -44,10 +41,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   @Override
   public boolean isHeadless() {
     return true;
-  }
-
-  public void setPrintStream(final PrintStream out) {
-    this.out = out;
   }
 
   @Override
@@ -103,13 +96,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
       this.chat.addChatListener(this);
       synchronized (this.chat.getMutex()) {
         allText = new StringBuilder();
-        try {
-          if (out != null) {
-            out.println();
-          }
-        } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
-        }
         for (final ChatMessage message : this.chat.getChatHistory()) {
           if (message.getFrom().equals(this.chat.getServerNode().getName())) {
             if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
@@ -173,13 +159,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
       allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
     }
     allText.append(fullMessage);
-    try {
-      if (out != null) {
-        out.print("CHAT: " + fullMessage);
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
   }
 
   @Override
@@ -190,12 +169,5 @@ public class HeadlessChat implements IChatListener, IChatPanel {
       allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
     }
     allText.append(fullMessage);
-    try {
-      if (out != null) {
-        out.print("CHAT: " + fullMessage);
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
   }
 }
