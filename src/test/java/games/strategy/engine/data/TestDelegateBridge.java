@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -53,7 +52,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     try {
       when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
     } catch (final UnknownHostException e) {
-      ClientLogger.logQuietly(e);
+      throw new IllegalStateException("test cannot run without network interface", e);
     }
     when(messenger.isServer()).thenReturn(true);
     final ChannelMessenger channelMessenger =

@@ -8,19 +8,18 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
+import games.strategy.net.MessengerTestUtils;
 import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
 
@@ -52,30 +51,14 @@ public class VaultTest {
 
   @AfterEach
   public void tearDown() {
-    try {
-      if (serverMessenger != null) {
-        serverMessenger.shutDown();
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
-    try {
-      if (clientMessenger != null) {
-        clientMessenger.shutDown();
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
+    MessengerTestUtils.shutDownQuietly(serverMessenger);
+    MessengerTestUtils.shutDownQuietly(clientMessenger);
   }
 
   @Test
-  public void testLocal() throws NotUnlockedException {
+  public void testLocal() throws Exception {
     final IServerMessenger messenger = mock(IServerMessenger.class);
-    try {
-      when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
-    } catch (final UnknownHostException e) {
-      ClientLogger.logQuietly(e);
-    }
+    when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
     final ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
     // RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);

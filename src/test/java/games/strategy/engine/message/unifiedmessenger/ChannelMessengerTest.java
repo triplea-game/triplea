@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.RemoteName;
@@ -18,6 +17,7 @@ import games.strategy.net.ClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
+import games.strategy.net.MessengerTestUtils;
 import games.strategy.net.ServerMessenger;
 import games.strategy.util.ThreadUtil;
 
@@ -44,20 +44,8 @@ public class ChannelMessengerTest {
 
   @AfterEach
   public void tearDown() {
-    try {
-      if (serverMessenger != null) {
-        serverMessenger.shutDown();
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
-    try {
-      if (clientMessenger != null) {
-        clientMessenger.shutDown();
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
+    MessengerTestUtils.shutDownQuietly(serverMessenger);
+    MessengerTestUtils.shutDownQuietly(clientMessenger);
   }
 
   @Test

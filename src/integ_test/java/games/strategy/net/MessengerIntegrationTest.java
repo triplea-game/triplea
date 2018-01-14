@@ -17,7 +17,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.util.ThreadUtil;
 
 public class MessengerIntegrationTest {
@@ -55,27 +54,9 @@ public class MessengerIntegrationTest {
 
   @AfterEach
   public void tearDown() {
-    try {
-      if (serverMessenger != null) {
-        serverMessenger.shutDown();
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
-    try {
-      if (client1Messenger != null) {
-        client1Messenger.shutDown();
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
-    try {
-      if (client2Messenger != null) {
-        client2Messenger.shutDown();
-      }
-    } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-    }
+    MessengerTestUtils.shutDownQuietly(serverMessenger);
+    MessengerTestUtils.shutDownQuietly(client1Messenger);
+    MessengerTestUtils.shutDownQuietly(client2Messenger);
   }
 
   @Test
