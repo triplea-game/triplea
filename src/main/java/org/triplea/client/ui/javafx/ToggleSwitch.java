@@ -32,7 +32,7 @@ class ToggleSwitch extends Region {
     final Rectangle background = new Rectangle(width, height);
     background.setArcWidth(height);
     background.setArcHeight(height);
-    background.setFill(Color.WHITE);
+    background.setFill(Color.web("#B8242B"));
     background.setStroke(Color.LIGHTGRAY);
 
     final Circle trigger = new Circle(height / 2);
@@ -50,8 +50,8 @@ class ToggleSwitch extends Region {
 
     translateAnimation.setFromX(0);
     translateAnimation.setToX(width - height);
-    fillAnimation.setFromValue(Color.WHITE);
-    fillAnimation.setToValue(Color.LIMEGREEN);
+    fillAnimation.setFromValue(Color.web("#B8242B"));
+    fillAnimation.setToValue(Color.web("#52602F"));
 
     getChildren().addAll(background, trigger);
 

@@ -1,9 +1,9 @@
 .button{
-	-fx-background-color: #B8242B;
+	-fx-background-color: #52602F;
 	-fx-color: #000000;
 }
 .button:hover {
-	-fx-background-color: #8D1C21;
+	-fx-background-color: #2B3318;
 }
 .tab-label, .spinner, .text-field, .combo-box, .exitButton, .label, .radio-button {
 	-fx-font-family: "1942 report";
@@ -11,39 +11,4 @@
 }
 .tab-label, .text-field {
 	-fx-font-size: 14px !important;
-}
-.toggle-button{
-	-fx-background-color: #CCC;
-	-fx-background-radius: 10px;
-	-fx-alignment: center-left;
-	-fx-pref-width: 50px;
-	-fx-pref-height: 24px;
-	-fx-min-width: 50px;
-	-fx-min-height: 24px;
-	-fx-max-width: 50px;
-	-fx-max-height: 24px;
-}
-.toggle-button:selected{
-	-fx-background-color: #00BFFF;
-	-fx-alignment: center-right;
-}
-.toggle-button > .label {
-	-fx-pref-width: 20px;
-	-fx-pref-height: 20px;
-	-fx-min-width: 20px;
-	-fx-min-height: 20px;
-	-fx-max-width: 20px;
-	-fx-max-height: 20px;
-	-fx-background-radius: 20px;
-	-fx-background-color: #EEE;
-	-fx-translate-x: -6px;
-}
-.toggle-button:selected > .label {
-	-fx-translate-x: 6px;
-}
-.borderLabel{
-	-fx-border-color: #CCC;
-	-fx-border-width: 2px;
-	-fx-border-radius: 0;
-	-fx-border-style: solid;
 }
