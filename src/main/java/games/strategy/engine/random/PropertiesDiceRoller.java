@@ -190,12 +190,12 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     }
     int startIndex = string.indexOf(rollStartString);
     if (startIndex == -1) {
-      throw new IOException("Cound not find start index, text returned is:" + string);
+      throw new IOException("Could not find start index, text returned is:" + string);
     }
     startIndex += rollStartString.length();
     final int endIndex = string.indexOf(rollEndString, startIndex);
     if (endIndex == -1) {
-      throw new IOException("Cound not find end index");
+      throw new IOException("Could not find end index");
     }
     final StringTokenizer tokenizer = new StringTokenizer(string.substring(startIndex, endIndex), " ,", false);
     final int[] dice = new int[count];
