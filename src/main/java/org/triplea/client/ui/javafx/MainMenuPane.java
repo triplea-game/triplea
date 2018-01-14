@@ -2,11 +2,19 @@ package org.triplea.client.ui.javafx;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Function;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
+import javafx.css.Styleable;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -54,16 +62,29 @@ class MainMenuPane extends BorderPane {
    * @throws IOException If the FXML file is not present.
    */
   public MainMenuPane(final TripleA triplea) throws IOException {
+    this.triplea = triplea;
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.MAIN_MENU_PANE.toString()));
     loader.setRoot(this);
     loader.setController(this);
     loader.load();
-    this.triplea = triplea;
     version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
     downloadPane = triplea.addRootContent(new DownloadPane(triplea));
     downloadPane.setVisible(false);
     settingsPane = triplea.addRootContent(new SettingsPane(triplea));
     settingsPane.setVisible(false);
+    applyFileSelectionAnimation();
+  }
+
+  private void applyFileSelectionAnimation() {
+    findChildrenWithClassRecursively(mainOptions, "button").stream().forEach(node -> {
+      final Function<Node, NumberBinding> hoverBinding = n -> Bindings.when(n.hoverProperty()).then(-10).otherwise(0);
+      final NumberBinding numberBinding = hoverBinding.apply(node);
+      node.translateYProperty().bind(numberBinding.multiply(-1));
+      node.getParent().translateYProperty().bind(!"mainOptions".equals(node.getParent().getParent().getId())
+          ? Bindings.add(numberBinding,
+              hoverBinding.apply(node.getParent().getParent().getChildrenUnmodifiable().get(0)).multiply(-1))
+          : numberBinding);
+    });
   }
 
   @FXML
@@ -139,4 +160,18 @@ class MainMenuPane extends BorderPane {
 
   @FXML
   private void endHover(final MouseEvent e) {}
+
+
+  private Set<Node> findChildrenWithClassRecursively(final Node node, final String cssClass) {
+    final Set<Node> cssClasses = new HashSet<>();
+    if (node instanceof Parent) {
+      for (final Node child : ((Parent) node).getChildrenUnmodifiable()) {
+        cssClasses.addAll(findChildrenWithClassRecursively(child, cssClass));
+      }
+    }
+    if (((Styleable) node).getStyleClass().contains(cssClass)) {
+      cssClasses.add(node);
+    }
+    return cssClasses;
+  }
 }
