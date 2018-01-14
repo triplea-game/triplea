@@ -251,7 +251,7 @@ public class BattlePanel extends ActionPanel {
         battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
         battleFrame.getContentPane().removeAll();
         battleFrame.getContentPane().add(battleDisplay);
-        battleFrame.setSize(800, 600);
+        battleFrame.setMinimumSize(new Dimension(800, 600));
         battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
         PBEMDiceRoller.setFocusWindow(battleFrame);
         boolean foundHumanInBattle = false;
