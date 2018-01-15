@@ -1807,3 +1807,13 @@
     <br>
     <br>World War II Global 1940 Redesign Maps. Imagine your own combination of house rules for Global!
     <br>
+- mapName: Global 40 House Rules
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/global_40_house_rules/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/description/TripleA_ww2_global_1940_mini.png
+  description:
+    <br>
+    <br>Global 40 House Rules. Adds House Rules using Technologies. Also adds Canada that was created by simon 33. Canada does not currently work with the new Techs.
+    <br>
+ 
