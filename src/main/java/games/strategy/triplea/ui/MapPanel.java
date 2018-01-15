@@ -845,6 +845,7 @@ public class MapPanel extends ImageScrollerLargeView {
         try {
           tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
         } catch (final InterruptedException e) {
+          Thread.currentThread().interrupt();
           continue;
         }
         if (tile == null) {

@@ -275,6 +275,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           final AggregateResults result = future.get();
           results.addResults(result.getResults());
         } catch (final InterruptedException e) {
+          Thread.currentThread().interrupt();
           interruptExceptions.add(e);
         } catch (final ExecutionException e) {
           final String cause = e.getCause().getLocalizedMessage();

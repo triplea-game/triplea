@@ -74,6 +74,7 @@ public abstract class ActionPanel extends JPanel {
     try {
       latch.await();
     } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
       release();
     }
     // cross a memory barrier

@@ -166,6 +166,7 @@ public class ServerGame extends AbstractGame {
         return;
       }
     } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
       nonBlockingObserver.cannotJoinGame(e.getMessage());
       return;
     }
@@ -187,7 +188,7 @@ public class ServerGame extends AbstractGame {
           nonBlockingObserver.cannotJoinGame("Taking too long to join.");
         }
       } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
+        Thread.currentThread().interrupt();
         nonBlockingObserver.cannotJoinGame(e.getMessage());
       }
     } catch (final Exception e) {
@@ -260,7 +261,7 @@ public class ServerGame extends AbstractGame {
             // that the game is over.
             delegateExecutionStoppedLatch.await();
           } catch (final InterruptedException e) {
-            // ignore
+            Thread.currentThread().interrupt();
           }
         } else {
           runStep(false);
@@ -305,7 +306,7 @@ public class ServerGame extends AbstractGame {
         }
       }
     } catch (final InterruptedException e) {
-      ClientLogger.logQuietly(e);
+      Thread.currentThread().interrupt();
     }
     // shutdown
     try {
@@ -370,6 +371,7 @@ public class ServerGame extends AbstractGame {
         throw new IOException("Could not lock delegate execution");
       }
     } catch (final InterruptedException ie) {
+      Thread.currentThread().interrupt();
       throw new IOException(ie.getMessage());
     }
     try {

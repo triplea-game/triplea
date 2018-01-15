@@ -452,7 +452,7 @@ public class GameRunner {
     try {
       tracker.waitForAll();
     } catch (final InterruptedException ex) {
-      ClientLogger.logQuietly(ex);
+      Thread.currentThread().interrupt();
     }
     return img;
   }

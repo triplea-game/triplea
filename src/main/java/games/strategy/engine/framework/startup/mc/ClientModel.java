@@ -103,7 +103,7 @@ public class ClientModel implements IMessengerErrorListener {
       try {
         latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
+        Thread.currentThread().interrupt();
       }
     }
 
@@ -137,7 +137,7 @@ public class ClientModel implements IMessengerErrorListener {
       try {
         latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
+        Thread.currentThread().interrupt();
       }
     }
   };

@@ -316,7 +316,7 @@ public class Vault {
             waitForLock.wait(waitTime);
           }
         } catch (final InterruptedException e) {
-          // not a big deal
+          Thread.currentThread().interrupt();
         }
       }
     }
@@ -339,7 +339,7 @@ public class Vault {
         try {
           waitForLock.wait(leftToWait);
         } catch (final InterruptedException e) {
-          // not a big deal
+          Thread.currentThread().interrupt();
         }
         leftToWait = startTime + timeout - System.currentTimeMillis();
       }

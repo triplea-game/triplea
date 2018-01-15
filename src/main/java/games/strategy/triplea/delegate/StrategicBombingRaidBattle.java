@@ -520,7 +520,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       bridge.leaveDelegateExecution();
       t.join();
     } catch (final InterruptedException e) {
-      // ignore
+      Thread.currentThread().interrupt();
     } finally {
       bridge.enterDelegateExecution();
     }

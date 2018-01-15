@@ -17,7 +17,7 @@ public class ImageIoCompletionWatcher implements ImageObserver {
     try {
       countDownLatch.await();
     } catch (final InterruptedException e) {
-      // Ignore interrupted exception
+      Thread.currentThread().interrupt();
     }
   }
 

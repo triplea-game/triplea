@@ -142,6 +142,7 @@ public final class EventThreadJOptionPane {
         latch.await();
         done = true;
       } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
         latchHandler.interruptLatch(latch);
       }
     }

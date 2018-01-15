@@ -735,7 +735,7 @@ public class AirBattle extends AbstractBattle {
       bridge.leaveDelegateExecution();
       t.join();
     } catch (final InterruptedException e) {
-      // ignore
+      Thread.currentThread().interrupt();
     } finally {
       bridge.enterDelegateExecution();
     }

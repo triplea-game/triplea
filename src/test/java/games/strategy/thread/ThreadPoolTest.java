@@ -79,7 +79,7 @@ public class ThreadPoolTest {
       try {
         thread.join();
       } catch (final InterruptedException e) {
-        // ignore interrupted exception
+        Thread.currentThread().interrupt();
       }
     }
   }
@@ -111,7 +111,7 @@ public class ThreadPoolTest {
       try {
         Thread.sleep(0, 1);
       } catch (final InterruptedException e) {
-        throw new IllegalStateException(e);
+        Thread.currentThread().interrupt();
       }
       done = true;
     }

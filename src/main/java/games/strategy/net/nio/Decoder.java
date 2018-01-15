@@ -62,6 +62,7 @@ class Decoder {
         try {
           data = reader.take();
         } catch (final InterruptedException e) {
+          Thread.currentThread().interrupt();
           continue;
         }
         if (data == null || !running) {

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
@@ -134,7 +133,7 @@ public class TripleA implements IGameLoader {
           frame.toFront();
         });
       } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
+        Thread.currentThread().interrupt();
       }
     }
 

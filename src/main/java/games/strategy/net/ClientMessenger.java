@@ -104,6 +104,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     try {
       initLatch.await();
     } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
       connectionRefusedError = e;
       try {
         socketChannel.close();
