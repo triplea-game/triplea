@@ -5,8 +5,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 
-import games.strategy.debug.ClientLogger;
-
 /**
  * We keep a soft reference to the image to allow it to be garbage collected.
  * Also, the image may not have finished watching when we are created, but the
@@ -21,7 +19,7 @@ class ImageRef {
         try {
           referenceQueue.remove();
         } catch (final InterruptedException e) {
-          ClientLogger.logQuietly(e);
+          Thread.currentThread().interrupt();
         }
       }
     }, "Tile Image Factory Soft Reference Reclaimer");

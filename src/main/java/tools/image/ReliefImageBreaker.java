@@ -21,7 +21,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 import tools.map.making.ImageIoCompletionWatcher;
@@ -157,8 +156,7 @@ public class ReliefImageBreaker {
         tracker.waitForAll();
         return img;
       } catch (final InterruptedException e) {
-        ClientLogger.logQuietly("interrupted while loading images", e);
-        return loadImage();
+        Thread.currentThread().interrupt();
       }
     }
     return null;

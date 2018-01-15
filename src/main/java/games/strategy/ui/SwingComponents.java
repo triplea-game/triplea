@@ -448,8 +448,8 @@ public class SwingComponents {
         } catch (final ExecutionException e) {
           promise.completeExceptionally(e.getCause());
         } catch (final InterruptedException e) {
-          promise.completeExceptionally(e);
           Thread.currentThread().interrupt();
+          promise.completeExceptionally(e);
         }
       }
     };

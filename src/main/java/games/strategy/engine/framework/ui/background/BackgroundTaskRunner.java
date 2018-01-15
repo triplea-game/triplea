@@ -129,6 +129,7 @@ public final class BackgroundTaskRunner {
         } catch (final ExecutionException e) {
           exceptionRef.set(e.getCause());
         } catch (final InterruptedException e) {
+          Thread.currentThread().interrupt();
           exceptionRef.set(e);
         }
       }

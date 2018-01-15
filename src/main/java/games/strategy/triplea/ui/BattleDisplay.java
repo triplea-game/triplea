@@ -50,7 +50,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -404,7 +403,7 @@ public class BattleDisplay extends JPanel {
     try {
       latch.await();
     } catch (final InterruptedException e1) {
-      e1.printStackTrace();
+      Thread.currentThread().interrupt();
     } finally {
       mapPanel.getUiContext().removeShutdownLatch(latch);
     }
@@ -531,7 +530,7 @@ public class BattleDisplay extends JPanel {
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
-      ClientLogger.logQuietly(ex);
+      Thread.currentThread().interrupt();
     } finally {
       mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }

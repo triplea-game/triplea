@@ -54,7 +54,7 @@ public final class Util {
       tracker.waitForAll();
       tracker.removeImage(anImage);
     } catch (final InterruptedException ignored) {
-      // ignore interrupted
+      Thread.currentThread().interrupt();
     }
   }
 

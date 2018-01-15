@@ -55,7 +55,7 @@ class EndPoint {
         try {
           numberMutex.wait();
         } catch (final InterruptedException e) {
-          ClientLogger.logQuietly(e);
+          Thread.currentThread().interrupt();
         }
       }
     }

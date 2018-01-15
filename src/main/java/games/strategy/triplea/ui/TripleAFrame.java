@@ -1026,7 +1026,7 @@ public class TripleAFrame extends MainGameFrame {
       try {
         latch1.await();
       } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
+        Thread.currentThread().interrupt();
       }
     }
     actionButtons.changeToPickTerritoryAndUnits(player);
@@ -1045,7 +1045,7 @@ public class TripleAFrame extends MainGameFrame {
       try {
         latch2.await();
       } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
+        Thread.currentThread().interrupt();
       }
     }
     if (actionButtons != null && actionButtons.getCurrent() != null) {
@@ -1133,7 +1133,7 @@ public class TripleAFrame extends MainGameFrame {
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
-      // ignore interrupted exception
+      Thread.currentThread().interrupt();
     } finally {
       mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }
@@ -1225,7 +1225,7 @@ public class TripleAFrame extends MainGameFrame {
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
-      // ignore interrupted exception
+      Thread.currentThread().interrupt();
     } finally {
       mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }
@@ -1304,7 +1304,7 @@ public class TripleAFrame extends MainGameFrame {
     try {
       continueLatch.await();
     } catch (final InterruptedException ex) {
-      ex.printStackTrace();
+      Thread.currentThread().interrupt();
     } finally {
       mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }

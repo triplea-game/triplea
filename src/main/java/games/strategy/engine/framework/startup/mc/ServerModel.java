@@ -582,7 +582,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     if (removeConnectionsLatch != null) {
       try {
         removeConnectionsLatch.await(6, TimeUnit.SECONDS);
-      } catch (final InterruptedException e) { // no worries
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
     }
     // will be handled elsewhere

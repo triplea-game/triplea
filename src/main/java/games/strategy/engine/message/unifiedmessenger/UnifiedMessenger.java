@@ -124,7 +124,7 @@ public class UnifiedMessenger {
     try {
       latch.await();
     } catch (final InterruptedException e) {
-      logger.log(Level.WARNING, e.getMessage());
+      Thread.currentThread().interrupt();
     }
 
     synchronized (pendingLock) {

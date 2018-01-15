@@ -208,7 +208,7 @@ public class ServerLauncher extends AbstractLauncher {
               }
             }
           } catch (final InterruptedException e) {
-            ClientLogger.logQuietly(e);
+            Thread.currentThread().interrupt();
           }
           stopGame();
         } catch (final Exception e) {
@@ -391,7 +391,7 @@ public class ServerLauncher extends AbstractLauncher {
       try {
         latch.await();
       } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
+        Thread.currentThread().interrupt();
       }
     }
 
@@ -400,7 +400,7 @@ public class ServerLauncher extends AbstractLauncher {
       try {
         didNotTimeOut = latch.await(timeout, timeUnit);
       } catch (final InterruptedException e) {
-        ClientLogger.logQuietly(e);
+        Thread.currentThread().interrupt();
       }
       return didNotTimeOut;
     }

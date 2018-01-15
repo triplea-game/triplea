@@ -109,7 +109,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
             try {
               doneShowLatch.await();
             } catch (final InterruptedException e) {
-              // ignore
+              Thread.currentThread().interrupt();
             }
             if (isClosed) {
               return Action.NONE;
