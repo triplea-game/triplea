@@ -76,7 +76,7 @@ class MainMenuPane extends BorderPane {
   }
 
   private void applyFileSelectionAnimation() {
-    findChildrenWithClassRecursively(mainOptions, "button").stream().forEach(node -> {
+    mainOptions.lookupAll(".button").stream().forEach(node -> {
       final Function<Node, NumberBinding> hoverBinding = n -> Bindings.when(n.hoverProperty()).then(-10).otherwise(0);
       final NumberBinding numberBinding = hoverBinding.apply(node);
       node.translateYProperty().bind(numberBinding.multiply(-1));
@@ -160,18 +160,4 @@ class MainMenuPane extends BorderPane {
 
   @FXML
   private void endHover(final MouseEvent e) {}
-
-
-  private Set<Node> findChildrenWithClassRecursively(final Node node, final String cssClass) {
-    final Set<Node> cssClasses = new HashSet<>();
-    if (node instanceof Parent) {
-      for (final Node child : ((Parent) node).getChildrenUnmodifiable()) {
-        cssClasses.addAll(findChildrenWithClassRecursively(child, cssClass));
-      }
-    }
-    if (((Styleable) node).getStyleClass().contains(cssClass)) {
-      cssClasses.add(node);
-    }
-    return cssClasses;
-  }
 }
