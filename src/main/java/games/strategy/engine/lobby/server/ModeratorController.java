@@ -23,11 +23,11 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banUsername(final INode node, final Date banExpires) {
+  public void banUsername(final INode node, final @Nullable Date banExpires) {
     banUsername(node, banExpires != null ? banExpires.toInstant() : null);
   }
 
-  private void banUsername(final INode node, final Instant banExpires) {
+  private void banUsername(final INode node, final @Nullable Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
@@ -67,12 +67,12 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void banMac(final INode node, final Date banExpires) {
+  public void banMac(final INode node, final @Nullable Date banExpires) {
     banMac(node, getNodeMacAddress(node), banExpires);
   }
 
   @Override
-  public void banMac(final INode node, final String hashedMac, final Date banExpires) {
+  public void banMac(final INode node, final String hashedMac, final @Nullable Date banExpires) {
     banMac(node, hashedMac, banExpires != null ? banExpires.toInstant() : null);
   }
 
@@ -92,11 +92,11 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void muteUsername(final INode node, final Date muteExpires) {
+  public void muteUsername(final INode node, final @Nullable Date muteExpires) {
     muteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
   }
 
-  private void muteUsername(final INode node, final Instant muteExpires) {
+  private void muteUsername(final INode node, final @Nullable Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
@@ -115,11 +115,11 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   @Override
-  public void muteMac(final INode node, final Date muteExpires) {
+  public void muteMac(final INode node, final @Nullable Date muteExpires) {
     muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
   }
 
-  private void muteMac(final INode node, final Instant muteExpires) {
+  private void muteMac(final INode node, final @Nullable Instant muteExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");

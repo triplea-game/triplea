@@ -2,6 +2,8 @@ package games.strategy.engine.lobby.server;
 
 import java.util.Date;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
 
@@ -19,42 +21,56 @@ public interface IModeratorController extends IRemote {
 
   /**
    * Ban the username of the given INode.
+   *
+   * @param banExpires {@code null} for a permanent ban.
    */
-  void banUsername(INode node, Date banExpires);
+  void banUsername(INode node, @Nullable Date banExpires);
 
   /**
+   * @param banExpires {@code null} for a permanent ban.
+   *
    * @deprecated Kept to maintain backwards compatibility.
    *             Remove with next incompatible release.
    */
   @Deprecated
-  default void banIp(final INode node, final Date banExpires) {}
+  default void banIp(final INode node, final @Nullable Date banExpires) {}
 
   /**
    * Ban the mac of the given INode.
+   *
+   * @param banExpires {@code null} for a permanent ban.
    */
-  void banMac(INode node, Date banExpires);
+  void banMac(INode node, @Nullable Date banExpires);
 
   /**
    * Ban the mac.
+   *
+   * @param banExpires {@code null} for a permanent ban.
    */
-  void banMac(INode node, String hashedMac, Date banExpires);
+  void banMac(INode node, String hashedMac, @Nullable Date banExpires);
 
   /**
    * Mute the username of the given INode.
+   *
+   * @param muteExpires {@code null} for a permanent mute.
    */
-  void muteUsername(INode node, Date muteExpires);
+  void muteUsername(INode node, @Nullable Date muteExpires);
 
   /**
+   * @param muteExpires {@code null} for a permanent mute.
+   *
    * @deprecated Kept to maintain backwards compatibility.
    *             Remove with next incompatible release.
    */
   @Deprecated
-  default void muteIp(final INode node, final Date muteExpires) {}
+  default void muteIp(final INode node, final @Nullable Date muteExpires) {}
 
   /**
    * Mute the mac of the given INode.
+   *
+   * @param muteExpires {@code null} for a permanent mute.
    */
-  void muteMac(INode node, Date muteExpires);
+  void muteMac(INode node, @Nullable Date muteExpires);
 
   /**
    * Get list of people in the game.
