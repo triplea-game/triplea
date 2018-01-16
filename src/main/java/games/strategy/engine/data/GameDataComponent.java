@@ -8,7 +8,7 @@ import java.io.Serializable;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 
 public class GameDataComponent implements Serializable {
-  static final long serialVersionUID = -2066504666509851740L;
+  private static final long serialVersionUID = -2066504666509851740L;
   @InternalDoNotExport
   private GameData m_data;
 

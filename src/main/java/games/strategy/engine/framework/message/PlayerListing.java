@@ -21,7 +21,7 @@ import games.strategy.util.Version;
  */
 public class PlayerListing implements Serializable {
   // keep compatability with older versions
-  static final long serialVersionUID = -8913538086737733980L;
+  private static final long serialVersionUID = -8913538086737733980L;
   /**
    * Maps String player name -> node Name
    * if node name is null then the player is available to play.
