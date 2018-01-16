@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.SwingUtilities;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
@@ -37,6 +35,7 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
+import games.strategy.ui.SwingAction;
 
 @MapSupport
 public class TripleA implements IGameLoader {
@@ -117,26 +116,21 @@ public class TripleA implements IGameLoader {
       // technically not needed because we won't have any "local human players" in a headless game.
       connectPlayers(players, null);
     } else {
-      try {
-        SwingUtilities.invokeAndWait(() -> {
-          final TripleAFrame frame;
-          frame = new TripleAFrame(game, localPlayers);
-          display = new TripleADisplay(frame);
-          game.addDisplay(display);
-          soundChannel = new DefaultSoundChannel(localPlayers);
-          game.addSoundChannel(soundChannel);
-          frame.setSize(700, 400);
-          frame.setVisible(true);
-          ClipPlayer.play(SoundPath.CLIP_GAME_START);
-          connectPlayers(players, frame);
-          frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-          frame.toFront();
-        });
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      SwingAction.invokeAndWait(() -> {
+        final TripleAFrame frame;
+        frame = new TripleAFrame(game, localPlayers);
+        display = new TripleADisplay(frame);
+        game.addDisplay(display);
+        soundChannel = new DefaultSoundChannel(localPlayers);
+        game.addSoundChannel(soundChannel);
+        frame.setSize(700, 400);
+        frame.setVisible(true);
+        ClipPlayer.play(SoundPath.CLIP_GAME_START);
+        connectPlayers(players, frame);
+        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+        frame.toFront();
+      });
     }
-
   }
 
   private static void connectPlayers(final Set<IGamePlayer> players, final TripleAFrame frame) {
