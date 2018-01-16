@@ -12,12 +12,24 @@
 .tab-label, .text-field {
 	-fx-font-size: 14px !important;
 }
+.file-container {
+	-fx-background-image: url('/org/triplea/client/ui/javafx/images/folder.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center top;
+}
 #title {
 	-fx-font-size: 90px;
 }
 #subtitle {
 	-fx-font-size: 17px;
+	-fx-background-image: url('/org/triplea/client/ui/javafx/images/subtitle_background.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: stretch;
+	-fx-padding: 0 5px 0 5px;
 }
 #aboutTitle, #exitOverlayQuestion {
 	-fx-font-size: 37px;
+}
+#rootPane {
+	-fx-background-image: url('/org/triplea/client/ui/javafx/images/background.png');
 }
