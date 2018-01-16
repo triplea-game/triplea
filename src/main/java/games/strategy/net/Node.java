@@ -13,7 +13,7 @@ import java.util.Objects;
  * Written very often over the network, so make externalizable to make faster and reduce traffic.
  */
 public class Node implements INode, Externalizable {
-  static final long serialVersionUID = -2908980662926959943L;
+  private static final long serialVersionUID = -2908980662926959943L;
   private String name;
   private int port;
   private InetAddress address;
