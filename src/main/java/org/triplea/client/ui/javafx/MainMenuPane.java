@@ -2,27 +2,23 @@ package org.triplea.client.ui.javafx;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Function;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
-import javafx.css.Styleable;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 class MainMenuPane extends BorderPane {
 
@@ -31,7 +27,7 @@ class MainMenuPane extends BorderPane {
   private final SettingsPane settingsPane;
 
   @FXML
-  private Text loggedInText;
+  private Label loggedIn;
 
   @FXML
   private HBox loginForm;
@@ -46,7 +42,7 @@ class MainMenuPane extends BorderPane {
   private Button buttonBack;
 
   @FXML
-  private Text version;
+  private Label version;
 
   @FXML
   private VBox aboutSection;

@@ -8,8 +8,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -32,11 +30,7 @@
          <children>
             <VBox alignment="CENTER" style="-fx-background-color: #52602F; -fx-border-color: #2B3318; -fx-border-width: 4px;">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%main.text.overlay_question" textAlignment="CENTER">
-                     <font>
-                        <Font name="1942 report" size="37.0" />
-                     </font>
-                  </Text>
+                  <Label id="exitOverlayQuestion" text="%main.label.overlay_question" />
                   <HBox alignment="CENTER" prefHeight="45.0" prefWidth="952.0">
                      <children>
                         <Button mnemonicParsing="false" onAction="#hideExitConfirm" style="-fx-border-color: #2B3318;" styleClass="exitButton" text="%main.button.cancel_leave">
