@@ -104,7 +104,7 @@ public class ModeratorController extends AbstractModeratorController {
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     final String realName = getRealName(node);
-    new MutedUsernameController().addMutedUsername(realName, muteExpires);
+    new MutedUsernameController().addMutedUsername(realName, muteExpires, getModeratorForNode(modNode));
     serverMessenger.notifyUsernameMutingOfPlayer(realName, muteExpires);
     final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
     logger.info(String.format(
@@ -126,7 +126,7 @@ public class ModeratorController extends AbstractModeratorController {
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    new MutedMacController().addMutedMac(mac, muteExpires);
+    new MutedMacController().addMutedMac(mac, muteExpires, getModeratorForNode(modNode));
     serverMessenger.notifyMacMutingOfPlayer(mac, muteExpires);
     final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
     logger.info(String.format(
