@@ -1,4 +1,4 @@
-.button{
+.button {
 	-fx-background-color: #52602F;
 	-fx-color: #000000;
 }
@@ -11,4 +11,13 @@
 }
 .tab-label, .text-field {
 	-fx-font-size: 14px !important;
+}
+#title {
+	-fx-font-size: 90px;
+}
+#subtitle {
+	-fx-font-size: 17px;
+}
+#aboutTitle, #exitOverlayQuestion {
+	-fx-font-size: 37px;
 }
