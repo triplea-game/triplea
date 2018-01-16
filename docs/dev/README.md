@@ -1,3 +1,6 @@
+### Git
+
+TripleA repositories may make use of [Git Large File Storage](https://git-lfs.github.com/) (LFS).  In order to work with such a repository, devs will need to have a Git LFS client installed.  Installation instructions for various platforms is available [here](https://github.com/git-lfs/git-lfs#getting-started).
 
 ### IDE Plugins
 
@@ -26,10 +29,8 @@ Useful build commands:
 ## Set up IDE Formatter
 See [code format](https://github.com/triplea-game/triplea/blob/master/docs/dev/code_format.md)
 
-
 ## Useful Tools
 
 - SCM breeze, useful Git CLI helper: https://github.com/ndbroadbent/scm_breeze
 - EGit in Eclipse: http://www.eclipse.org/egit/
   - more assistance can be found on http://www.vogella.com/tutorials/EclipseGit/article.html
-
