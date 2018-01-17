@@ -171,6 +171,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
 
   /**
    * From a given URI, creates a GameChooserEntry and adds to the given entries list.
+   *
    * @param entries
    *        list of entries where to add the new entry.
    * @param uri

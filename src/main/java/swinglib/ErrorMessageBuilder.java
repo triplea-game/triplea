@@ -95,7 +95,7 @@ public class ErrorMessageBuilder {
 
   /**
    * Adds another 'option' button to error message dialog window. Buttons are added in left to right order.
-   * 
+   *
    * @param buttonText Text of the option button.
    * @param buttonAction Action to be performed when the button is clicked.
    */
