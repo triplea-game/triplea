@@ -26,9 +26,9 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.debug.DebugUtils;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
@@ -173,7 +173,7 @@ public class HeadlessGameServer {
         try {
           chat.sendMessage(chatString, false);
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+          logger.log(Level.SEVERE, "Failed to send chat", e);
         }
       }
     }
@@ -190,7 +190,6 @@ public class HeadlessGameServer {
 
   private static String md5Crypt(final String value, final String salt) {
     return games.strategy.util.MD5Crypt.crypt(value, salt);
-
   }
 
   public String remoteShutdown(final String hashedPassword, final String salt) {
@@ -228,7 +227,7 @@ public class HeadlessGameServer {
                 ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
                 SaveGameFileChooser.getAutoSaveFileName()));
           } catch (final Exception e) {
-            ClientLogger.logQuietly(e);
+            logger.log(Level.SEVERE, "Failed to save game", e);
           }
           serverGame.stopGame();
         }).start();
@@ -294,7 +293,7 @@ public class HeadlessGameServer {
             }
           }
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+          logger.log(Level.SEVERE, "Failed to notify mute of player", e);
         }
       }).start();
       return null;
@@ -332,7 +331,7 @@ public class HeadlessGameServer {
             }
           }
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+          logger.log(Level.SEVERE, "Failed to notify boot of player", e);
         }
       }).start();
       return null;
@@ -374,23 +373,23 @@ public class HeadlessGameServer {
               try {
                 messenger.notifyUsernameMiniBanningOfPlayer(realName, expire);
               } catch (final Exception e) {
-                ClientLogger.logQuietly(e);
+                logger.log(Level.SEVERE, "Failed to notify username ban of player", e);
               }
               try {
                 messenger.notifyIpMiniBanningOfPlayer(ip, expire);
               } catch (final Exception e) {
-                ClientLogger.logQuietly(e);
+                logger.log(Level.SEVERE, "Failed to notify IP ban of player", e);
               }
               try {
                 messenger.notifyMacMiniBanningOfPlayer(mac, expire);
               } catch (final Exception e) {
-                ClientLogger.logQuietly(e);
+                logger.log(Level.SEVERE, "Failed to notify MAC ban of player", e);
               }
               messenger.removeConnection(node);
             }
           }
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+          logger.log(Level.SEVERE, "Failed to notify ban of player", e);
         }
       }).start();
       return null;
@@ -476,7 +475,7 @@ public class HeadlessGameServer {
         ((HeadlessServerSetup) setup).repostLobbyWatcher(serverGame);
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      logger.log(Level.SEVERE, "Failed to restart lobby watcher", e);
     }
   }
 
@@ -539,14 +538,14 @@ public class HeadlessGameServer {
         lobbyWatcherResetupThread.shutdown();
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      logger.log(Level.SEVERE, "Failed to shutdown lobby watcher resetup thread", e);
     }
     try {
       if (game != null) {
         game.stopGame();
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      logger.log(Level.SEVERE, "Failed to stop game", e);
     }
     try {
       if (setupPanelModel != null) {
@@ -556,14 +555,14 @@ public class HeadlessGameServer {
         }
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      logger.log(Level.SEVERE, "Failed to shutdown setup panel", e);
     }
     try {
       if (gameSelectorModel != null && gameSelectorModel.getGameData() != null) {
         gameSelectorModel.getGameData().clearAllListeners();
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      logger.log(Level.SEVERE, "Failed to clear all game data listeners", e);
     }
     instance = null;
     setupPanelModel = null;
@@ -608,7 +607,7 @@ public class HeadlessGameServer {
         return launcher != null;
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      logger.log(Level.SEVERE, "Failed to start headless game", e);
       final ServerModel model = getServerModel(setupPanelModel);
       if (model != null) {
         // if we do not do this, we can get into an infinite loop of launching a game, then crashing out,
@@ -685,7 +684,7 @@ public class HeadlessGameServer {
     try {
       new HeadlessGameServer();
     } catch (final Exception e) {
-      ClientLogger.logError("Failed to start game server: " + e);
+      logger.log(Level.SEVERE, "Failed to start game server", e);
     }
   }
 
