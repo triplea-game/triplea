@@ -29,7 +29,7 @@ class RemoteInterfaceHelper {
   private static final Comparator<Method> methodComparator = Comparator
       .comparing(Method::getName)
       .thenComparing(Method::getParameterTypes,
-          Comparator.comparingInt((Class<?>[] a) -> a.length)
+          Comparator.comparingInt((final Class<?>[] a) -> a.length)
               .thenComparing((o1, o2) -> {
                 for (int i = 0; i < o1.length; i++) {
                   final int compareValue = o1[i].getName().compareTo(o2[i].getName());

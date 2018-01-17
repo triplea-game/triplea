@@ -42,10 +42,13 @@ public class SwingAction {
 
   /**
    * Creates a Swing 'Action' object around a given name and action listener. Example:
-   * <pre><code>
+   *
+   * <pre>
+   * <code>
    *   private final Action nullAction = SwingAction.of(" ", e -> {
    *   });
-   * </code></pre>
+   * </code>
+   * </pre>
    *
    * @param name Name for the abstract action, passed along to the AbstractAction constructor.
    * @param swingAction Lambda java.tools.function.Consumer object, accepts one arg and returns void.

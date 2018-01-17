@@ -14,7 +14,8 @@ import swinglib.ErrorMessageBuilder;
 
 /**
  * Provides methods for the client to write log messages.
- * <p> In general, the {@code logError()} methods will send their output to the user output
+ * <p>
+ * In general, the {@code logError()} methods will send their output to the user output
  * (standard error) stream, while the {@code logQuietly()} methods will send their output to the
  * developer output (standard output) stream.
  * </p>
@@ -69,8 +70,8 @@ public final class ClientLogger {
    * Logs an error message to console, shows a pop-up message to user with the same error message.
    *
    * @param msg Message to be displayed in the error pop-up, this will be shown to users. Error
-   *            message should be as well written as possible with context of what error happened
-   *            and what it means for the game (should the player restart? continue playing?).
+   *        message should be as well written as possible with context of what error happened
+   *        and what it means for the game (should the player restart? continue playing?).
    */
   public static void logError(final @Nullable String msg) {
     logQuietly(msg);
@@ -82,8 +83,8 @@ public final class ClientLogger {
    * an error message.
    *
    * @param msg Message to be displayed in the error pop-up, this will be shown to users. Error
-   *            message should be as well written as possible with context of what error happened
-   *            and what it means for the game (should the player restart? continue playing?).
+   *        message should be as well written as possible with context of what error happened
+   *        and what it means for the game (should the player restart? continue playing?).
    */
   public static void logError(final @Nullable String msg, final Throwable e) {
     logQuietly(msg, e);

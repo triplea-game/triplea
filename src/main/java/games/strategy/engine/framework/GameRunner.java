@@ -172,7 +172,7 @@ public class GameRunner {
 
   /**
    * Opens a Swing FileChooser menu.
-   * 
+   *
    * @return Empty optional if dialog is closed without selection, otherwise returns the user
    *         selection.
    */
