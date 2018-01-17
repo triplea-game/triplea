@@ -4,31 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.lobby.server.Moderator;
 import games.strategy.util.Tuple;
-import games.strategy.util.Util;
 
-public class BannedMacControllerIntegrationTest {
-
+public final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
   private final BannedMacController controller = spy(new BannedMacController());
   private final String hashedMac = newHashedMacAddress();
-  private final Moderator moderator = new Moderator("mod", newInetAddress(), newHashedMacAddress());
 
   @Test
   public void testBanMacForever() {
@@ -86,7 +75,7 @@ public class BannedMacControllerIntegrationTest {
   public void testBanMacUpdatesModerator() {
     banMacForSeconds(Long.MAX_VALUE, moderator);
 
-    final Moderator otherModerator = new Moderator("otherMod", newInetAddress(), newHashedMacAddress());
+    final Moderator otherModerator = newModerator();
     banMacForSeconds(Long.MAX_VALUE, otherModerator);
 
     assertModeratorForBannedMacEquals(otherModerator);
@@ -102,38 +91,11 @@ public class BannedMacControllerIntegrationTest {
     return banEnd;
   }
 
-  private static InetAddress newInetAddress() {
-    final byte[] addr = new byte[4];
-    new Random().nextBytes(addr);
-    try {
-      return InetAddress.getByAddress(addr);
-    } catch (final UnknownHostException e) {
-      throw new AssertionError("should never happen", e);
-    }
-  }
-
-  private static String newHashedMacAddress() {
-    return games.strategy.util.MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
-  }
-
   private void assertModeratorForBannedMacEquals(final Moderator expected) {
-    final String sql = "select mod_username, mod_ip, mod_mac from banned_macs where mac=?";
-    try (Connection con = Database.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, hashedMac);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          assertEquals(expected.getUsername(), rs.getString(1));
-          assertEquals(expected.getInetAddress(), InetAddress.getByName(rs.getString(2)));
-          assertEquals(expected.getHashedMacAddress(), rs.getString(3));
-        } else {
-          fail("unknown banned hashed MAC address: " + hashedMac);
-        }
-      }
-    } catch (final UnknownHostException e) {
-      fail("malformed moderator IP address", e);
-    } catch (final SQLException e) {
-      fail("moderator query failed", e);
-    }
+    assertModeratorEquals(
+        expected,
+        "select mod_username, mod_ip, mod_mac from banned_macs where mac=?",
+        ps -> ps.setString(1, hashedMac),
+        "unknown banned hashed MAC address: " + hashedMac);
   }
 }
