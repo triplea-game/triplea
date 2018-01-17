@@ -23,7 +23,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.random.IRandomStats;
@@ -98,7 +98,7 @@ class GameMenu {
   protected void addGameOptionsMenu(final JMenu menuGame) {
     if (!gameData.getProperties().getEditableProperties().isEmpty()) {
       menuGame.add(SwingAction.of("Map Options", e -> {
-        final PropertiesUI ui = new PropertiesUI(gameData.getProperties().getEditableProperties(), false);
+        final PropertiesUi ui = new PropertiesUi(gameData.getProperties().getEditableProperties(), false);
         JOptionPane.showMessageDialog(frame, ui, "Map Options", JOptionPane.PLAIN_MESSAGE);
       })).setMnemonic(KeyEvent.VK_O);
     }

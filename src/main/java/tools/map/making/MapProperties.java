@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -67,7 +67,7 @@ public class MapProperties {
     colorMap.put(Constants.PLAYER_NAME_IMPASSABLE, new Color(0xD8BA7C));
   }
 
-  public Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> propertyWrapperUi(final boolean editable) {
+  public Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> propertyWrapperUi(final boolean editable) {
     return MapPropertyWrapper.createPropertiesUi(this, editable);
   }
 

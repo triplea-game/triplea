@@ -30,14 +30,14 @@ public class AiUtilsTest {
   public void testCost() {
     final UnitType infantry = GameDataTestUtil.infantry(gameData);
     final PlayerID british = GameDataTestUtil.british(gameData);
-    assertEquals(3, AIUtils.getCost(infantry, british, gameData));
+    assertEquals(3, AiUtils.getCost(infantry, british, gameData));
   }
 
   @Test
   public void testSortByCost() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final List<Unit> sorted = new ArrayList<>(germany.getUnits().getUnits());
-    Collections.sort(sorted, AIUtils.getCostComparator());
+    Collections.sort(sorted, AiUtils.getCostComparator());
     assertEquals(sorted.get(0).getType().getName(), Constants.UNIT_TYPE_INFANTRY);
   }
 }

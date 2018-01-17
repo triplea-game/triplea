@@ -20,7 +20,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-class PUChart {
+class PuChart {
   private final Iterable<PlayerID> players;
   private final IntegerMap<PlayerID> moneyMap;
   private final int numPlayers;
@@ -32,7 +32,7 @@ class PUChart {
   private final Graphics2D g2d;
   private final File outDir;
 
-  PUChart(final PrintGenerationData printData) {
+  PuChart(final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
     players = gameData.getPlayerList();
     moneyMap = new IntegerMap<>();

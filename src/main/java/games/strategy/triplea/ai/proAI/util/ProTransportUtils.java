@@ -12,7 +12,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.AIUtils;
+import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.ai.proAI.ProData;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseOption;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
@@ -261,7 +261,7 @@ public class ProTransportUtils {
 
         // If this is the first carrier seek and not last unit
         if (seekedCarrier == null && i > 0) {
-          final int seekedCarrierIndex = AIUtils.getIndexOfLastUnitMatching(result,
+          final int seekedCarrierIndex = AiUtils.getIndexOfLastUnitMatching(result,
               Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
             break; // No carriers left
@@ -291,7 +291,7 @@ public class ProTransportUtils {
             filledCarriers.add(seekedCarrier);
 
             // Find the next carrier
-            seekedCarrier = AIUtils.getLastUnitMatching(result,
+            seekedCarrier = AiUtils.getLastUnitMatching(result,
                 Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left
@@ -334,7 +334,7 @@ public class ProTransportUtils {
             }
 
             // Find the next carrier
-            seekedCarrier = AIUtils.getLastUnitMatching(result,
+            seekedCarrier = AiUtils.getLastUnitMatching(result,
                 Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
             if (seekedCarrier == null) {
               break; // No carriers left

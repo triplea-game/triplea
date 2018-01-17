@@ -11,7 +11,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.ai.AIUtils;
+import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
@@ -20,13 +20,13 @@ class Utils {
 
   static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
       final boolean sea) {
-    if (AIUtils.strength(units, true, sea) < maxStrength) {
+    if (AiUtils.strength(units, true, sea) < maxStrength) {
       return new ArrayList<>(units);
     }
     final List<Unit> unitsUpToStrength = new ArrayList<>();
     for (final Unit u : units) {
       unitsUpToStrength.add(u);
-      if (AIUtils.strength(unitsUpToStrength, true, sea) > maxStrength) {
+      if (AiUtils.strength(unitsUpToStrength, true, sea) > maxStrength) {
         return unitsUpToStrength;
       }
     }
@@ -38,7 +38,7 @@ class Utils {
     for (final Territory t : data.getMap().getNeighbors(location,
         location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
       final List<Unit> enemies = t.getUnits().getMatches(Matches.enemyUnit(location.getOwner(), data));
-      strength += AIUtils.strength(enemies, true, location.isWater());
+      strength += AiUtils.strength(enemies, true, location.isWater());
     }
     return strength;
   }

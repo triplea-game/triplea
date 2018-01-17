@@ -26,7 +26,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -271,7 +271,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     for (final IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
       currentPropertiesMap.put(property.getName(), property.getValue());
     }
-    final PropertiesUI panel = new PropertiesUI(model.getGameData().getProperties(), true);
+    final PropertiesUi panel = new PropertiesUi(model.getGameData().getProperties(), true);
     final JScrollPane scroll = new JScrollPane(panel);
     scroll.setBorder(null);
     scroll.getViewport().setBorder(null);

@@ -173,7 +173,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public GUID getBattleID() {
+  public GUID getBattleId() {
     return m_battleID;
   }
 

@@ -13,7 +13,7 @@ import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
-import games.strategy.engine.framework.startup.ui.PBEMSetupPanel;
+import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 
 public class SetupPanelModel extends Observable {
@@ -43,7 +43,7 @@ public class SetupPanelModel extends Observable {
   }
 
   public void showPbem() {
-    setGameTypePanel(new PBEMSetupPanel(gameSelectorModel));
+    setGameTypePanel(new PbemSetupPanel(gameSelectorModel));
   }
 
   public void showServer(final Component ui) {

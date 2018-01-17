@@ -86,12 +86,12 @@ public class MapProperty<T, U> extends AEditableProperty {
 
   @Override
   public JComponent getEditorComponent() {
-    return new PropertiesUI(m_properties, true);
+    return new PropertiesUi(m_properties, true);
   }
 
   @Override
   public JComponent getViewComponent() {
-    return new PropertiesUI(m_properties, false);
+    return new PropertiesUi(m_properties, false);
   }
 
   @Override

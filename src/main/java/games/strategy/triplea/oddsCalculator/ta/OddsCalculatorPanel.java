@@ -89,7 +89,7 @@ class OddsCalculatorPanel extends JPanel {
   private final JLabel attackerLeft = new JLabel();
   private final JLabel defenderLeftWhenDefenderWon = new JLabel();
   private final JLabel attackerLeftWhenAttackerWon = new JLabel();
-  private final JLabel averageChangeInTUV = new JLabel();
+  private final JLabel averageChangeInTuv = new JLabel();
   private final JLabel roundsAverage = new JLabel();
   private final JLabel count = new JLabel();
   private final JLabel time = new JLabel();
@@ -116,8 +116,8 @@ class OddsCalculatorPanel extends JPanel {
   private JComboBox<PlayerID> swapSidesCombo;
   private final JLabel attackerUnitsTotalNumber = new JLabel();
   private final JLabel defenderUnitsTotalNumber = new JLabel();
-  private final JLabel attackerUnitsTotalTUV = new JLabel();
-  private final JLabel defenderUnitsTotalTUV = new JLabel();
+  private final JLabel attackerUnitsTotalTuv = new JLabel();
+  private final JLabel defenderUnitsTotalTuv = new JLabel();
   private final JLabel attackerUnitsTotalHitpoints = new JLabel();
   private final JLabel defenderUnitsTotalHitpoints = new JLabel();
   private final JLabel attackerUnitsTotalPower = new JLabel();
@@ -437,7 +437,7 @@ class OddsCalculatorPanel extends JPanel {
       roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
       try {
         data.acquireReadLock();
-        averageChangeInTUV.setText("" + formatValue(results.get().getAverageTuvSwing(getAttacker(),
+        averageChangeInTuv.setText("" + formatValue(results.get().getAverageTuvSwing(getAttacker(),
             mainCombatAttackers, getDefender(), mainCombatDefenders, data)));
       } finally {
         data.releaseReadLock();
@@ -515,11 +515,11 @@ class OddsCalculatorPanel extends JPanel {
     row0++;
     attackAndDefend.add(attackerUnitsTotalNumber, new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, gap, 0, 0), 0, 0));
-    attackAndDefend.add(attackerUnitsTotalTUV, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+    attackAndDefend.add(attackerUnitsTotalTuv, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, gap / 2, 0, gap * 2), 0, 0));
     attackAndDefend.add(defenderUnitsTotalNumber, new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, gap, 0, 0), 0, 0));
-    attackAndDefend.add(defenderUnitsTotalTUV, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+    attackAndDefend.add(defenderUnitsTotalTuv, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, gap / 2, 0, gap * 2), 0, 0));
     row0++;
     attackAndDefend.add(attackerUnitsTotalHitpoints, new GridBagConstraints(0, row0, 1, 1, 0, 0,
@@ -592,7 +592,7 @@ class OddsCalculatorPanel extends JPanel {
         GridBagConstraints.NONE, new Insets(6, 10, 0, 0), 0, 0));
     resultsText.add(attackerLeftWhenAttackerWon, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-    resultsText.add(averageChangeInTUV, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+    resultsText.add(averageChangeInTuv, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(6, 10, 0, 0), 0, 0));
     resultsText.add(roundsAverage, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
@@ -714,7 +714,7 @@ class OddsCalculatorPanel extends JPanel {
         + "does not include Bombarding sea units for land battles.");
     attackerLeftWhenAttackerWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and "
         + "does not include Bombarding sea units for land battles.");
-    averageChangeInTUV.setToolTipText("TUV Swing does not include captured AA guns and other infrastructure, and "
+    averageChangeInTuv.setToolTipText("TUV Swing does not include captured AA guns and other infrastructure, and "
         + "does not include Bombarding sea units for land battles.");
     retreatWhenOnlyAirLeftCheckBox.setToolTipText("We retreat if only air is left, and if 'retreat when x units "
         + "left' is positive we will retreat when x of non-air is left too.");
@@ -734,7 +734,7 @@ class OddsCalculatorPanel extends JPanel {
     defenderLeftWhenDefenderWon.setText(blank);
     attackerLeftWhenAttackerWon.setText(blank);
     roundsAverage.setText(blank);
-    averageChangeInTUV.setText(blank);
+    averageChangeInTuv.setText(blank);
     count.setText(blank);
     time.setText(blank);
   }
@@ -752,9 +752,9 @@ class OddsCalculatorPanel extends JPanel {
           Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
       attackerUnitsTotalNumber.setText("Units: " + attackers.size());
       defenderUnitsTotalNumber.setText("Units: " + defenders.size());
-      attackerUnitsTotalTUV.setText("TUV: " + TuvUtils.getTuv(attackers, getAttacker(),
+      attackerUnitsTotalTuv.setText("TUV: " + TuvUtils.getTuv(attackers, getAttacker(),
           TuvUtils.getCostsForTuv(getAttacker(), data), data));
-      defenderUnitsTotalTUV.setText("TUV: " + TuvUtils.getTuv(defenders, getDefender(),
+      defenderUnitsTotalTuv.setText("TUV: " + TuvUtils.getTuv(defenders, getDefender(),
           TuvUtils.getCostsForTuv(getDefender(), data), data));
       final int attackHitPoints = BattleCalculator.getTotalHitpointsLeft(attackers);
       final int defenseHitPoints = BattleCalculator.getTotalHitpointsLeft(defenders);

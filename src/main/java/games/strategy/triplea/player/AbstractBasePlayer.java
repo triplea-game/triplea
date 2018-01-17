@@ -14,7 +14,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
 
   private final String name; // what nation are we playing? ex: "Americans"
   private final String type; // what are we? ex: "Human" or "AI"
-  private PlayerID playerID;
+  private PlayerID playerId;
   private IPlayerBridge playerBridge;
   private boolean isStoppedGame = false;
 
@@ -28,12 +28,12 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   }
 
   /**
-   * Anything that overrides this MUST call super.initialize(iPlayerBridge, playerID);
+   * Anything that overrides this MUST call super.initialize(playerBridge, playerId);
    */
   @Override
   public void initialize(final IPlayerBridge playerBridge, final PlayerID playerId) {
     this.playerBridge = playerBridge;
-    this.playerID = playerId;
+    this.playerId = playerId;
   }
 
   /**
@@ -65,13 +65,13 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
 
   @Override
   public final PlayerID getPlayerId() {
-    return playerID;
+    return playerId;
   }
 
   @Override
   public String toString() {
-    return (playerID == null || playerID.getName() == null || !playerID.getName().equals(name))
-        ? (type + ":" + name + ":" + (playerID == null ? "NullID" : playerID.getName()))
+    return (playerId == null || playerId.getName() == null || !playerId.getName().equals(name))
+        ? (type + ":" + name + ":" + (playerId == null ? "NullID" : playerId.getName()))
         : (type + ":" + name);
   }
 

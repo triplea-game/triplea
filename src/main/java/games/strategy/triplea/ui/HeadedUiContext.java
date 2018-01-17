@@ -23,7 +23,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.PUImageFactory;
+import games.strategy.triplea.image.PuImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -42,7 +42,7 @@ public class HeadedUiContext extends AbstractUiContext {
   protected final MapImage mapImage;
   protected final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
   protected DiceImageFactory diceImageFactory;
-  protected final PUImageFactory puImageFactory = new PUImageFactory();
+  protected final PuImageFactory puImageFactory = new PuImageFactory();
   protected boolean drawUnits = true;
   protected boolean drawTerritoryEffects = false;
   protected boolean drawMapOnly = false;
@@ -155,7 +155,7 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
-  public PUImageFactory getPuImageFactory() {
+  public PuImageFactory getPuImageFactory() {
     return puImageFactory;
   }
 

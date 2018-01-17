@@ -10,7 +10,7 @@ import javax.swing.event.DocumentListener;
 
 import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
 import games.strategy.engine.random.IRemoteDiceServer;
-import games.strategy.engine.random.PBEMDiceRoller;
+import games.strategy.engine.random.PbemDiceRoller;
 
 /**
  * An class for editing a Dice Server bean.
@@ -69,7 +69,7 @@ public class DiceServerEditor extends EditorPanel {
    */
   private void setupListeners() {
     testDiceyButton.addActionListener(e -> {
-      final PBEMDiceRoller random = new PBEMDiceRoller(getDiceServer(), null);
+      final PbemDiceRoller random = new PbemDiceRoller(getDiceServer(), null);
       random.test();
     });
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();

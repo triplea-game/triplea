@@ -63,7 +63,7 @@ public class Fire implements IExecutable {
     m_defending = defending;
     m_dependentUnits = dependentUnits;
     m_isHeadless = headless;
-    m_battleID = battle.getBattleID();
+    m_battleID = battle.getBattleId();
     m_battleSite = battleSite;
     m_territoryEffects = territoryEffects;
     m_allEnemyUnitsAliveOrWaitingToDie = allEnemyUnitsAliveOrWaitingToDie;

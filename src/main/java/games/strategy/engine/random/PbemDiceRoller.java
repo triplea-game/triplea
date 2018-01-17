@@ -28,7 +28,7 @@ import games.strategy.ui.Util;
  * dice roll finishes. If there is an error we wait until we get a good roll
  * before returning.
  */
-public class PBEMDiceRoller implements IRandomSource {
+public class PbemDiceRoller implements IRandomSource {
   private final String gameUuid;
   private final IRemoteDiceServer remoteDiceServer;
   private static Frame focusWindow;
@@ -43,7 +43,7 @@ public class PBEMDiceRoller implements IRandomSource {
     focusWindow = w;
   }
 
-  public PBEMDiceRoller(final IRemoteDiceServer diceServer, final String gameUuid) {
+  public PbemDiceRoller(final IRemoteDiceServer diceServer, final String gameUuid) {
     remoteDiceServer = diceServer;
     this.gameUuid = gameUuid;
   }
