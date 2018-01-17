@@ -34,7 +34,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.random.PBEMDiceRoller;
+import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -77,7 +77,7 @@ public class BattlePanel extends ActionPanel {
 
       @Override
       public void dispose() {
-        PBEMDiceRoller.setFocusWindow(null);
+        PbemDiceRoller.setFocusWindow(null);
         super.dispose();
       }
     };
@@ -188,7 +188,7 @@ public class BattlePanel extends ActionPanel {
       battleDisplay.cleanUp();
       battleFrame.getContentPane().removeAll();
       battleDisplay = null;
-      PBEMDiceRoller.setFocusWindow(battleFrame);
+      PbemDiceRoller.setFocusWindow(battleFrame);
     }
   }
 
@@ -253,7 +253,7 @@ public class BattlePanel extends ActionPanel {
         battleFrame.getContentPane().add(battleDisplay);
         battleFrame.setMinimumSize(new Dimension(800, 600));
         battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-        PBEMDiceRoller.setFocusWindow(battleFrame);
+        PbemDiceRoller.setFocusWindow(battleFrame);
         boolean foundHumanInBattle = false;
         for (final IGamePlayer gamePlayer : getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
           if ((gamePlayer.getPlayerId().equals(attacker) && gamePlayer instanceof TripleAPlayer)

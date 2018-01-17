@@ -45,7 +45,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
@@ -219,7 +219,7 @@ public class MapPropertiesMaker extends JFrame {
         GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
     final JButton showMore = new JButton("Show All Options");
     showMore.addActionListener(SwingAction.of("Show All Options", e -> {
-      final Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> propertyWrapperUi =
+      final Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> propertyWrapperUi =
           MapPropertiesMaker.mapProperties.propertyWrapperUi(true);
       JOptionPane.showMessageDialog(MapPropertiesMaker.this, propertyWrapperUi.getFirst());
       mapProperties.writePropertiesToObject(propertyWrapperUi.getSecond());

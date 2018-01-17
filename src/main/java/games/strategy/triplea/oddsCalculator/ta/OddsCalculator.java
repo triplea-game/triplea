@@ -34,7 +34,7 @@ import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
-import games.strategy.triplea.ai.AIUtils;
+import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.ai.AbstractAI;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -653,7 +653,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
             && killedUnits.stream().anyMatch(Matches.unitIsLand())) {
           final List<Unit> notKilledAndNotLand = CollectionUtils.getMatches(notKilled, Matches.unitIsNotLand());
           // sort according to cost
-          Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());
+          Collections.sort(notKilledAndNotLand, AiUtils.getCostComparator());
           // remove the last killed unit, this should be the strongest
           killedUnits.remove(killedUnits.size() - 1);
           // add the cheapest unit

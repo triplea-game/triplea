@@ -10,7 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.ui.SwingAction;
 
 /**
@@ -39,7 +39,7 @@ public class PropertiesSelector {
 
   private static Object showDialog(final JComponent parent, final String title,
       final List<IEditableProperty> properties, final Object... buttonOptions) {
-    final PropertiesUI panel = new PropertiesUI(properties, true);
+    final PropertiesUi panel = new PropertiesUi(properties, true);
     final JScrollPane scroll = new JScrollPane(panel);
     scroll.setBorder(null);
     scroll.getViewport().setBorder(null);

@@ -148,7 +148,7 @@ public class LhtrTest {
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
         uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
     addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
-    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
+    tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
@@ -183,7 +183,7 @@ public class LhtrTest {
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
         uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
     addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
-    tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
+    tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));

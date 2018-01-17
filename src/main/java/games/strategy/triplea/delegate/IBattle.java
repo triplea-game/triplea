@@ -185,5 +185,5 @@ public interface IBattle extends Serializable {
 
   PlayerID getDefender();
 
-  GUID getBattleID();
+  GUID getBattleId();
 }

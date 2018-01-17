@@ -42,7 +42,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
-import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
@@ -400,7 +400,7 @@ class ViewMenu {
       properties.add(unitCountColor);
       properties.add(factoryDamageColor);
       properties.add(hitDamageColor);
-      final PropertiesUI pui = new PropertiesUI(properties, true);
+      final PropertiesUi pui = new PropertiesUi(properties, true);
       final JPanel ui = new JPanel();
       ui.setLayout(new BorderLayout());
       ui.add(pui, BorderLayout.CENTER);

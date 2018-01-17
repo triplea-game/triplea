@@ -26,7 +26,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ai.AIUtils;
+import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.ai.AbstractAI;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -353,7 +353,7 @@ public class WeakAI extends AbstractAI {
         continue;
       }
       final Territory enemy = t;
-      final float enemyStrength = AIUtils.strength(enemy.getUnits().getUnits(), false, true);
+      final float enemyStrength = AiUtils.strength(enemy.getUnits().getUnits(), false, true);
       if (enemyStrength > 0) {
         final Predicate<Unit> attackable = Matches.unitIsOwnedBy(player).and(o -> !unitsAlreadyMoved.contains(o));
         final Set<Territory> dontMoveFrom = new HashSet<>();
@@ -366,7 +366,7 @@ public class WeakAI extends AbstractAI {
             dontMoveFrom.add(owned);
             continue;
           }
-          ourStrength += AIUtils.strength(owned.getUnits().getMatches(attackable), true, true);
+          ourStrength += AiUtils.strength(owned.getUnits().getMatches(attackable), true, true);
         }
         if (ourStrength > 1.32 * enemyStrength) {
           for (final Territory owned : attackFrom) {
@@ -429,7 +429,7 @@ public class WeakAI extends AbstractAI {
       if (TerritoryAttachment.get(t) != null && TerritoryAttachment.get(t).isCapital()) {
         // if they are a threat to take our capitol, dont move
         // compare the strength of units we can place
-        final float ourStrength = AIUtils.strength(player.getUnits().getUnits(), false, false);
+        final float ourStrength = AiUtils.strength(player.getUnits().getUnits(), false, false);
         final float attackerStrength = Utils.getStrengthOfPotentialAttackers(t, data);
         if (attackerStrength > ourStrength) {
           continue;
@@ -588,7 +588,7 @@ public class WeakAI extends AbstractAI {
     enemyOwned.removeAll(isWaterTerr);
     // first find the territories we can just walk into
     for (final Territory enemy : enemyOwned) {
-      if (AIUtils.strength(enemy.getUnits().getUnits(), false, false) == 0) {
+      if (AiUtils.strength(enemy.getUnits().getUnits(), false, false) == 0) {
         // only take it with 1 unit
         boolean taken = false;
         for (final Territory attackFrom : data.getMap().getNeighbors(enemy,
@@ -598,7 +598,7 @@ public class WeakAI extends AbstractAI {
           }
           // get the cheapest unit to move in
           final List<Unit> unitsSortedByCost = new ArrayList<>(attackFrom.getUnits().getUnits());
-          Collections.sort(unitsSortedByCost, AIUtils.getCostComparator());
+          Collections.sort(unitsSortedByCost, AiUtils.getCostComparator());
           for (final Unit unit : unitsSortedByCost) {
             final Predicate<Unit> match = Matches.unitIsOwnedBy(player)
                 .and(Matches.unitIsLand())
@@ -629,7 +629,7 @@ public class WeakAI extends AbstractAI {
     }
     // find the territories we can reasonably expect to take
     for (final Territory enemy : enemyOwned) {
-      final float enemyStrength = AIUtils.strength(enemy.getUnits().getUnits(), false, false);
+      final float enemyStrength = AiUtils.strength(enemy.getUnits().getUnits(), false, false);
       if (enemyStrength > 0) {
         final Predicate<Unit> attackable = Matches.unitIsOwnedBy(player)
             .and(Matches.unitIsStrategicBomber().negate())
@@ -646,12 +646,12 @@ public class WeakAI extends AbstractAI {
             data.getMap().getNeighbors(enemy, Matches.territoryHasLandUnitsOwnedBy(player));
         for (final Territory owned : attackFrom) {
           if (TerritoryAttachment.get(owned) != null && TerritoryAttachment.get(owned).isCapital()
-              && (Utils.getStrengthOfPotentialAttackers(owned, data) > AIUtils.strength(owned.getUnits().getUnits(),
+              && (Utils.getStrengthOfPotentialAttackers(owned, data) > AiUtils.strength(owned.getUnits().getUnits(),
                   false, false))) {
             dontMoveFrom.add(owned);
             continue;
           }
-          ourStrength += AIUtils.strength(owned.getUnits().getMatches(attackable), true, false);
+          ourStrength += AiUtils.strength(owned.getUnits().getMatches(attackable), true, false);
         }
         // prevents 2 infantry from attacking 1 infantry
         if (ourStrength > 1.37 * enemyStrength) {
@@ -670,7 +670,7 @@ public class WeakAI extends AbstractAI {
                 && data.getMap().getNeighbors(owned, Matches.territoryHasEnemyLandUnits(player, data)).size() > 1) {
               units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units, false);
             }
-            remainingStrengthNeeded -= AIUtils.strength(units, true, false);
+            remainingStrengthNeeded -= AiUtils.strength(units, true, false);
             if (units.size() > 0) {
               unitsAlreadyMoved.addAll(units);
               moveUnits.add(units);

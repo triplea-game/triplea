@@ -74,8 +74,8 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     final int boundPortNumber = socketChannel.socket().getLocalPort();
     nioSocket = new NioSocket(streamFactory, this, "Server");
     acceptorSelector = Selector.open();
-    if (IPFinder.findInetAddress() != null) {
-      node = new Node(name, IPFinder.findInetAddress(), boundPortNumber);
+    if (IpFinder.findInetAddress() != null) {
+      node = new Node(name, IpFinder.findInetAddress(), boundPortNumber);
     } else {
       node = new Node(name, InetAddress.getLocalHost(), boundPortNumber);
     }

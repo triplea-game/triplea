@@ -479,7 +479,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               && !enemyUnits.isEmpty()
               && enemyUnits.stream().allMatch(Matches.unitHasDefendValueOfAtLeast(1).negate()))) {
         final BattleResults results = new BattleResults(battle, WhoWon.DRAW, data);
-        battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+        battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
             BattleRecord.BattleResultDescription.STALEMATE, results);
         battle.cancelBattle(bridge);
         battleTracker.removeBattle(battle);
@@ -491,7 +491,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (territory.isWater() && Properties.getSeaBattlesMayBeIgnored(data)) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-            battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+            battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
                 BattleRecord.BattleResultDescription.NO_BATTLE, results);
             battle.cancelBattle(bridge);
             battleTracker.removeBattle(battle);
@@ -505,7 +505,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (ignoreTransports && !enemyUnits.isEmpty() && enemyUnits.stream().allMatch(seaTransports)) {
             if (!remotePlayer.selectAttackTransports(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
                   BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(bridge);
               battleTracker.removeBattle(battle);
@@ -516,7 +516,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (ignoreSubs && !enemyUnits.isEmpty() && enemyUnits.stream().allMatch(Matches.unitIsSub())) {
             if (!remotePlayer.selectAttackSubs(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
                   BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(bridge);
               battleTracker.removeBattle(battle);
@@ -528,7 +528,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               && enemyUnits.stream().allMatch(seaTranportsOrSubs)) {
             if (!remotePlayer.selectAttackUnits(territory)) {
               final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0,
+              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
                   BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(bridge);
               battleTracker.removeBattle(battle);

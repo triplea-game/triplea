@@ -26,7 +26,7 @@ import games.strategy.engine.data.properties.FileProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.MapProperty;
 import games.strategy.engine.data.properties.NumberProperty;
-import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.util.PropertyUtil;
 import games.strategy.util.Tuple;
@@ -158,15 +158,15 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     }
   }
 
-  public static PropertiesUI createPropertiesUi(final List<? extends IEditableProperty> properties,
+  public static PropertiesUi createPropertiesUi(final List<? extends IEditableProperty> properties,
       final boolean editable) {
-    return new PropertiesUI(properties, editable);
+    return new PropertiesUi(properties, editable);
   }
 
-  static Tuple<PropertiesUI, List<MapPropertyWrapper<?>>> createPropertiesUi(final Object object,
+  static Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> createPropertiesUi(final Object object,
       final boolean editable) {
     final List<MapPropertyWrapper<?>> properties = createProperties(object);
-    final PropertiesUI ui = new PropertiesUI(properties, editable);
+    final PropertiesUi ui = new PropertiesUi(properties, editable);
     return Tuple.of(ui, properties);
   }
 
@@ -178,7 +178,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
   public static void main(final String[] args) {
     final MapProperties mapProperties = new MapProperties();
     final List<MapPropertyWrapper<?>> properties = createProperties(mapProperties);
-    final PropertiesUI ui = createPropertiesUi(properties, true);
+    final PropertiesUi ui = createPropertiesUi(properties, true);
     final JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.getContentPane().add(ui);

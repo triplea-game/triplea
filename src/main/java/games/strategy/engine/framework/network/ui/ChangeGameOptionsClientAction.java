@@ -13,7 +13,7 @@ import javax.swing.JScrollPane;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.PropertiesUI;
+import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 
 /**
@@ -38,7 +38,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
     }
     try {
       final List<IEditableProperty> properties = GameProperties.readEditableProperties(oldBytes);
-      final PropertiesUI pui = new PropertiesUI(properties, true);
+      final PropertiesUi pui = new PropertiesUi(properties, true);
       final JScrollPane scroll = new JScrollPane(pui);
       scroll.setBorder(null);
       scroll.getViewport().setBorder(null);

@@ -50,7 +50,7 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.engine.pbem.TripleAForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.InternalDiceServer;
-import games.strategy.engine.random.PBEMDiceRoller;
+import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.triplea.pbem.AxisAndAlliesForumPoster;
 
@@ -59,7 +59,7 @@ import games.strategy.triplea.pbem.AxisAndAlliesForumPoster;
  * This panel listens to the GameSelectionModel so it can refresh when a new game is selected or save game loaded
  * The MainPanel also listens to this panel, and we notify it through the notifyObservers()
  */
-public class PBEMSetupPanel extends SetupPanel implements Observer {
+public class PbemSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 9006941131918034674L;
   private static final String DICE_ROLLER = "games.strategy.engine.random.IRemoteDiceServer";
   private final GameSelectorModel gameSelectorModel;
@@ -76,7 +76,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
    * @param model
    *        the GameSelectionModel, though which changes are obtained when new games are chosen, or save games loaded
    */
-  public PBEMSetupPanel(final GameSelectorModel model) {
+  public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
     diceServerEditor = new SelectAndViewEditor("Dice Server", "");
     forumPosterEditor = new SelectAndViewEditor("Post to Forum", "forumPosters.html");
@@ -106,7 +106,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
       }
     });
     localPlayerSelection.addActionListener(
-        e -> JOptionPane.showMessageDialog(PBEMSetupPanel.this, scrollPane, "Select Local Players and AI's",
+        e -> JOptionPane.showMessageDialog(PbemSetupPanel.this, scrollPane, "Select Local Players and AI's",
             JOptionPane.PLAIN_MESSAGE));
   }
 
@@ -367,7 +367,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer {
     LocalBeanCache.INSTANCE.writeToDisk();
     // create local launcher
     final String gameUuid = (String) gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
-    final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) diceServerEditor.getBean(), gameUuid);
+    final PbemDiceRoller randomSource = new PbemDiceRoller((IRemoteDiceServer) diceServerEditor.getBean(), gameUuid);
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PlayerSelectorRow player : this.playerTypes) {

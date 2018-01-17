@@ -38,7 +38,7 @@ public class InitialSetup {
     new PuInfo().saveToFile(printData);
     try {
       new PlayerOrder().saveToFile(printData);
-      new PUChart(printData).saveToFile();
+      new PuChart(printData).saveToFile();
     } catch (final IOException e) {
       ClientLogger.logQuietly(e);
     }

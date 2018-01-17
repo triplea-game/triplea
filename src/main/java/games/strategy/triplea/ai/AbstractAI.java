@@ -138,7 +138,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
     final List<Unit> selectFromSorted = new ArrayList<>(selectFrom);
     final List<Unit> interleavedTargetList = new ArrayList<>(
-        AIUtils.interleaveCarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers));
+        AiUtils.interleaveCarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers));
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {
       myCasualties.addToKilled(interleavedTargetList.get(i));
     }
@@ -601,7 +601,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
     // We want to test the conditions each time to make sure they are still valid
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
-          AIPoliticalUtils.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
+          AiPoliticalUtils.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
       if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty()) {
         Collections.shuffle(actionChoicesTowardsWar);
         int i = 0;
@@ -633,7 +633,7 @@ public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAP
       }
     } else {
       final List<PoliticalActionAttachment> actionChoicesOther =
-          AIPoliticalUtils.getPoliticalActionsOther(id, politicsDelegate.getTestedConditions(), data);
+          AiPoliticalUtils.getPoliticalActionsOther(id, politicsDelegate.getTestedConditions(), data);
       if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;

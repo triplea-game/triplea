@@ -9,16 +9,16 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class PropertiesUI extends JPanel {
+public class PropertiesUi extends JPanel {
   private static final long serialVersionUID = 3870459799384582310L;
   private int nextRow;
   private int labelColumn;
 
-  public PropertiesUI(final GameProperties gameProperties, final boolean editable) {
+  public PropertiesUi(final GameProperties gameProperties, final boolean editable) {
     this(gameProperties.getEditableProperties(), editable);
   }
 
-  public PropertiesUI(final List<? extends IEditableProperty> properties, final boolean editable) {
+  public PropertiesUi(final List<? extends IEditableProperty> properties, final boolean editable) {
     init();
     for (final IEditableProperty property : properties) {
       // Limit it to 14 rows then start a new column

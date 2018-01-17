@@ -12,7 +12,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.PUImageFactory;
+import games.strategy.triplea.image.PuImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -79,7 +79,7 @@ public class HeadlessUiContext extends AbstractUiContext {
   }
 
   @Override
-  public PUImageFactory getPuImageFactory() {
+  public PuImageFactory getPuImageFactory() {
     return null;
   }
 

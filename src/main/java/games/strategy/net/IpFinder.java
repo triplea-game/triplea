@@ -1,5 +1,13 @@
 package games.strategy.net;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 /**
  * nekromancer@users.sourceforge.net
  * Utility class for finding the local ip address of a machine with multiple network interfaces.
@@ -18,15 +26,7 @@ package games.strategy.net;
  * some tests, the 1st ip tends to be the IP used by the gateway to connect to the net.
  * This means that TripleA will still work.
  */
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
-public class IPFinder {
+public class IpFinder {
   /**
    * We iterate through an enumeration of network interfaces on the machine
    * and picks the first IP that is not a loopback and not a link local and not private.
