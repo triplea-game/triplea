@@ -70,7 +70,7 @@ sourceSets {
         java.srcDir 'src/integ_test/java'
         resources.srcDir 'src/integ_test/resources'
 
-        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testRuntime
+        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testCompileOnly + configurations.testRuntime
         runtimeClasspath = output + compileClasspath + configurations.junitPlatform
     }
 }
