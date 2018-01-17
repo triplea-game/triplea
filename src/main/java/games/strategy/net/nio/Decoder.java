@@ -58,16 +58,11 @@ class Decoder {
   private void loop() {
     while (running) {
       try {
-        final SocketReadData data;
-        try {
-          data = reader.take();
-        } catch (final InterruptedException e) {
-          Thread.currentThread().interrupt();
-          continue;
-        }
+        final SocketReadData data = reader.take();
         if (data == null || !running) {
           continue;
         }
+
         try {
           final MessageHeader header = IoUtils.readFromMemory(data.getData(), is -> {
             try {
@@ -93,17 +88,19 @@ class Decoder {
             }
             nioSocket.messageReceived(header, data.getChannel());
           }
-        } catch (final Exception ioe) {
+        } catch (final IOException | RuntimeException e) {
           // we are reading from memory here
           // there should be no network errors, something
           // is odd
-          logger.log(Level.SEVERE, "error reading object", ioe);
-          errorReporter.error(data.getChannel(), ioe);
+          logger.log(Level.SEVERE, "error reading object", e);
+          errorReporter.error(data.getChannel(), e);
         }
-      } catch (final Exception e) {
-        // catch unhandles exceptions to that the decoder
-        // thread doesnt die
-        logger.log(Level.WARNING, "error in decoder", e);
+      } catch (final InterruptedException e) {
+        // Do nothing if we were interrupted due to an explicit shutdown because the thread will terminate normally;
+        // otherwise re-interrupt this thread and keep running
+        if (running) {
+          Thread.currentThread().interrupt();
+        }
       }
     }
   }
