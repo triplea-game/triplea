@@ -34,35 +34,11 @@ public class AvailableGames {
   private static final Logger logger = Logger.getLogger(AvailableGames.class.getName());
 
   private static final String ZIP_EXTENSION = ".zip";
-  private final Map<String, URI> availableGames = new TreeMap<>();
-  private final Set<String> availableMapFolderOrZipNames = new HashSet<>();
+  private final Map<String, URI> availableGames = Collections.synchronizedMap(new TreeMap<>());
+  private final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
 
   AvailableGames() {
-    populateAvailableGames(
-        Collections.synchronizedMap(availableGames),
-        Collections.synchronizedSet(availableMapFolderOrZipNames));
-  }
-
-  Set<String> getGameNames() {
-    return new HashSet<>(availableGames.keySet());
-  }
-
-
-  /**
-   * Returns the path to the file associated with the specified game.
-   *
-   * <p>
-   * The "path" is actually a URI in string form.
-   * </p>
-   *
-   * @param gameName The name of the game whose file path is to be retrieved; may be {@code null}.
-   *
-   * @return The path to the game file; or {@code null} if the game is not available.
-   */
-  String getGameFilePath(final String gameName) {
-    return Optional.ofNullable(availableGames.get(gameName))
-        .map(Object::toString)
-        .orElse(null);
+    populateAvailableGames(availableGames, availableMapFolderOrZipNames);
   }
 
   private static void populateAvailableGames(
@@ -152,6 +128,28 @@ public class AvailableGames {
       }
     }
     return false;
+  }
+
+  Set<String> getGameNames() {
+    return new HashSet<>(availableGames.keySet());
+  }
+
+
+  /**
+   * Returns the path to the file associated with the specified game.
+   *
+   * <p>
+   * The "path" is actually a URI in string form.
+   * </p>
+   *
+   * @param gameName The name of the game whose file path is to be retrieved; may be {@code null}.
+   *
+   * @return The path to the game file; or {@code null} if the game is not available.
+   */
+  String getGameFilePath(final String gameName) {
+    return Optional.ofNullable(availableGames.get(gameName))
+        .map(Object::toString)
+        .orElse(null);
   }
 
   /**
