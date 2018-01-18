@@ -1,7 +1,6 @@
 package games.strategy.triplea;
 
 import java.awt.Frame;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -89,10 +88,8 @@ public class TripleA implements IGameLoader {
     }
   }
 
-
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless)
-      throws InvocationTargetException {
+  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {
     this.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
