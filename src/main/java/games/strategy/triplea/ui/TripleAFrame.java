@@ -116,7 +116,7 @@ import games.strategy.thread.ThreadPool;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProAi;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -550,7 +550,7 @@ public class TripleAFrame extends MainGameFrame {
       historySyncher.deactivate();
       historySyncher = null;
     }
-    ProAI.gameOverClearCache();
+    ProAi.gameOverClearCache();
   }
 
   @Override

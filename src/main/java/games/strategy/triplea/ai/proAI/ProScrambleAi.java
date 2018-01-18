@@ -28,11 +28,11 @@ import games.strategy.util.Tuple;
 /**
  * Pro scramble AI.
  */
-class ProScrambleAI {
+class ProScrambleAi {
 
   private final ProOddsCalculator calc;
 
-  ProScrambleAI(final ProAI ai) {
+  ProScrambleAi(final ProAi ai) {
     calc = ai.getCalc();
   }
 

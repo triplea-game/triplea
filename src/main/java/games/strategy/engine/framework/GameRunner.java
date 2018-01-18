@@ -73,7 +73,7 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
-import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
@@ -262,7 +262,7 @@ public class GameRunner {
 
       SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
 
-      ProAI.gameOverClearCache();
+      ProAi.gameOverClearCache();
 
       loadGame();
 

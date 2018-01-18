@@ -25,7 +25,7 @@ import games.strategy.util.IntegerMap;
  */
 public class ProData {
 
-  private static ProAI proAI;
+  private static ProAi proAi;
   private static GameData data;
   private static PlayerID player;
 
@@ -41,17 +41,17 @@ public class ProData {
   public static ProPurchaseOptionMap purchaseOptions = null;
   public static double minCostPerHitPoint = Double.MAX_VALUE;
 
-  public static void initialize(final ProAI proAi) {
+  public static void initialize(final ProAi proAi) {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerId(), false);
   }
 
-  public static void initializeSimulation(final ProAI proAi, final GameData data, final PlayerID player) {
+  public static void initializeSimulation(final ProAi proAi, final GameData data, final PlayerID player) {
     hiddenInitialize(proAi, data, player, true);
   }
 
-  private static void hiddenInitialize(final ProAI proAi, final GameData data, final PlayerID player,
+  private static void hiddenInitialize(final ProAi proAi, final GameData data, final PlayerID player,
       final boolean isSimulation) {
-    ProData.proAI = proAi;
+    ProData.proAi = proAi;
     ProData.data = data;
     ProData.player = player;
     ProData.isSimulation = isSimulation;
@@ -70,8 +70,8 @@ public class ProData {
     minCostPerHitPoint = getMinCostPerHitPoint(purchaseOptions.getLandOptions());
   }
 
-  public static ProAI getProAi() {
-    return proAI;
+  public static ProAi getProAi() {
+    return proAi;
   }
 
   public static GameData getData() {

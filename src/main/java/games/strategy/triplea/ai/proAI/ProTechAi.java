@@ -35,7 +35,7 @@ import games.strategy.util.PredicateBuilder;
 /**
  * Pro tech AI.
  */
-final class ProTechAI {
+final class ProTechAi {
 
   static void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
     if (!Properties.getWW2V3TechModel(data)) {

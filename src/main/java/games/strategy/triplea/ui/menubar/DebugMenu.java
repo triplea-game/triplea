@@ -10,7 +10,7 @@ import games.strategy.debug.DebugUtils;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.performance.EnablePerformanceLoggingCheckBox;
-import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProAi;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -22,10 +22,10 @@ class DebugMenu {
     menuBar.add(debugMenu);
 
     final Set<IGamePlayer> players = frame.getLocalPlayers().getLocalPlayers();
-    final boolean areThereProAIs = players.stream().anyMatch(ProAI.class::isInstance);
+    final boolean areThereProAIs = players.stream().anyMatch(ProAi.class::isInstance);
     if (areThereProAIs) {
-      ProAI.initialize(frame);
-      debugMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAI.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
+      ProAi.initialize(frame);
+      debugMenu.add(SwingAction.of("Show Hard AI Logs", e -> ProAi.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
     }
 
     debugMenu.add(new EnablePerformanceLoggingCheckBox());

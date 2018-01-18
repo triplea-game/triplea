@@ -34,7 +34,7 @@ import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
-import games.strategy.triplea.ai.AbstractAI;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -503,7 +503,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
         final String displayName, final boolean loadedFromSavedGame) {}
   }
 
-  private static class DummyPlayer extends AbstractAI {
+  private static class DummyPlayer extends AbstractAi {
     private final boolean keepAtLeastOneLand;
     // negative = do not retreat
     private final int retreatAfterRound;

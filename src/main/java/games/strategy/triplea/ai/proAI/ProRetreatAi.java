@@ -41,11 +41,11 @@ import games.strategy.triplea.delegate.Matches;
  * 2. attacker submerges sub at start or end of battle
  * 3. defender submerges (or moves if Classic rules) sub at start or end of battle
  */
-class ProRetreatAI {
+class ProRetreatAi {
 
   private final ProOddsCalculator calc;
 
-  ProRetreatAI(final ProAI ai) {
+  ProRetreatAi(final ProAi ai) {
     calc = ai.getCalc();
   }
 

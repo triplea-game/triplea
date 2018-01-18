@@ -70,11 +70,11 @@ import games.strategy.util.Tuple;
  * through an IDelegate using a change).
  * </p>
  */
-public abstract class AbstractAI extends AbstractBasePlayer implements ITripleAPlayer {
+public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAPlayer {
 
-  private static final Logger logger = Logger.getLogger(AbstractAI.class.getName());
+  private static final Logger logger = Logger.getLogger(AbstractAi.class.getName());
 
-  public AbstractAI(final String name, final String type) {
+  public AbstractAi(final String name, final String type) {
     super(name, type);
   }
 

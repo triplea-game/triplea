@@ -22,10 +22,10 @@ import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.ai.fastAI.FastAI;
-import games.strategy.triplea.ai.proAI.ProAI;
-import games.strategy.triplea.ai.weakAI.DoesNothingAI;
-import games.strategy.triplea.ai.weakAI.WeakAI;
+import games.strategy.triplea.ai.fastAI.FastAi;
+import games.strategy.triplea.ai.proAI.ProAi;
+import games.strategy.triplea.ai.weakAI.DoesNothingAi;
+import games.strategy.triplea.ai.weakAI.WeakAi;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.HeadlessUiContext;
@@ -55,13 +55,13 @@ public class TripleA implements IGameLoader {
     for (final String name : playerNames.keySet()) {
       final String type = playerNames.get(name);
       if (type.equals(WEAK_COMPUTER_PLAYER_TYPE)) {
-        players.add(new WeakAI(name, type));
+        players.add(new WeakAi(name, type));
       } else if (type.equals(FAST_COMPUTER_PLAYER_TYPE)) {
-        players.add(new FastAI(name, type));
+        players.add(new FastAi(name, type));
       } else if (type.equals(PRO_COMPUTER_PLAYER_TYPE)) {
-        players.add(new ProAI(name, type));
+        players.add(new ProAi(name, type));
       } else if (type.equals(DOESNOTHINGAI_COMPUTER_PLAYER_TYPE)) {
-        players.add(new DoesNothingAI(name, type));
+        players.add(new DoesNothingAi(name, type));
       } else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE)) {
         final TripleAPlayer player = new TripleAPlayer(name, type);
         players.add(player);

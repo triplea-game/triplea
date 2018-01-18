@@ -20,7 +20,7 @@ import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.GameChooserModel;
-import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 
 public class GameSelectorModel extends Observable {
@@ -220,7 +220,7 @@ public class GameSelectorModel extends Observable {
   public void loadDefaultGame() {
     // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game
     // at this point)
-    ProAI.gameOverClearCache();
+    ProAi.gameOverClearCache();
     new Thread(() -> loadDefaultGame(false)).start();
   }
 

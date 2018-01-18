@@ -59,7 +59,7 @@ import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ai.AbstractAI;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -721,7 +721,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         final String displayName, final boolean loadedFromSavedGame) {}
   }
 
-  static class ObjectivePanelDummyPlayer extends AbstractAI {
+  static class ObjectivePanelDummyPlayer extends AbstractAi {
     public ObjectivePanelDummyPlayer(final String name, final String type) {
       super(name, type);
     }

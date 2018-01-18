@@ -18,7 +18,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleA;
-import games.strategy.triplea.ai.weakAI.WeakAI;
+import games.strategy.triplea.ai.weakAI.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
 import games.strategy.triplea.player.ITripleAPlayer;
@@ -324,7 +324,7 @@ abstract class AbstractBattle implements IBattle {
   protected static ITripleAPlayer getRemote(final PlayerID player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
-      return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+      return new WeakAi(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
     }
     return (ITripleAPlayer) bridge.getRemotePlayer(player);
   }
