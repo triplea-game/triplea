@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
@@ -81,16 +80,12 @@ public class AvailableGames {
         if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
           final URL url = loader.getResource(entry.getName());
           if (url != null) {
-            try {
-              final boolean added = addToAvailableGames(
-                  new URI(url.toString().replace(" ", "%20")),
-                  availableGames);
-              if (added && map.getName().length() > 4) {
-                availableMapFolderOrZipNames
-                    .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
-              }
-            } catch (final URISyntaxException e) {
-              // only happens when URI couldn't be build and therefore no entry was added. That's fine
+            final boolean added = addToAvailableGames(
+                URI.create(url.toString().replace(" ", "%20")),
+                availableGames);
+            if (added && map.getName().length() > 4) {
+              availableMapFolderOrZipNames
+                  .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
             }
           }
         }
