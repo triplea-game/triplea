@@ -23,6 +23,8 @@ import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.annotation.Nonnull;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
@@ -57,7 +59,9 @@ public class AvailableGames {
    * Can return null.
    */
   public GameData getGameData(final String gameName) {
-    return getGameDataFromXml(availableGames.get(gameName));
+    return Optional.ofNullable(availableGames.get(gameName))
+        .map(AvailableGames::getGameDataFromXml)
+        .orElse(null);
   }
 
   /**
@@ -174,12 +178,10 @@ public class AvailableGames {
   }
 
 
-  private static boolean addToAvailableGames(final URI uri, final Map<String, URI> availableGames,
-      final Set<String> mapNamePropertyList) {
-    if (uri == null) {
-      return false;
-    }
-
+  private static boolean addToAvailableGames(
+      @Nonnull final URI uri,
+      @Nonnull final Map<String, URI> availableGames,
+      @Nonnull final Set<String> mapNamePropertyList) {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
