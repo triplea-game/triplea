@@ -38,13 +38,6 @@ public class AvailableGames {
   private final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
 
   AvailableGames() {
-    populateAvailableGames(availableGames, availableMapFolderOrZipNames);
-  }
-
-  private static void populateAvailableGames(
-      final Map<String, URI> availableGames,
-      final Set<String> availableMapFolderOrZipNames) {
-
     Arrays.asList(Optional.ofNullable(ClientFileSystemHelper.getUserMapsFolder().listFiles())
         .orElse(new File[0]))
         .parallelStream()
