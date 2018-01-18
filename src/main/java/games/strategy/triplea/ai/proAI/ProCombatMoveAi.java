@@ -45,11 +45,11 @@ import games.strategy.util.CollectionUtils;
 /**
  * Pro combat move AI.
  */
-class ProCombatMoveAI {
+class ProCombatMoveAi {
 
   private static final int MIN_BOMBING_SCORE = 4; // Avoid bombing low production factories with AA
 
-  private final ProAI ai;
+  private final ProAi ai;
   private final ProOddsCalculator calc;
   private GameData data;
   private PlayerID player;
@@ -57,7 +57,7 @@ class ProCombatMoveAI {
   private boolean isDefensive;
   private boolean isBombing;
 
-  ProCombatMoveAI(final ProAI ai) {
+  ProCombatMoveAi(final ProAi ai) {
     this.ai = ai;
     calc = ai.getCalc();
   }

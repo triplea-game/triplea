@@ -18,11 +18,11 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.ai.AbstractAI;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.proAI.data.ProBattleResult;
 import games.strategy.triplea.ai.proAI.data.ProPurchaseTerritory;
 import games.strategy.triplea.ai.proAI.data.ProTerritory;
-import games.strategy.triplea.ai.proAI.logging.ProLogUI;
+import games.strategy.triplea.ai.proAI.logging.ProLogUi;
 import games.strategy.triplea.ai.proAI.logging.ProLogger;
 import games.strategy.triplea.ai.proAI.simulate.ProDummyDelegateBridge;
 import games.strategy.triplea.ai.proAI.simulate.ProSimulateTurnUtils;
@@ -55,19 +55,19 @@ import games.strategy.util.Tuple;
 /**
  * Pro AI.
  */
-public class ProAI extends AbstractAI {
+public class ProAi extends AbstractAi {
 
   // Odds calculator
-  private static final IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator("ProAI");
+  private static final IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator("ProAi");
   protected ProOddsCalculator calc;
 
   // Phases
-  private final ProCombatMoveAI combatMoveAI;
-  private final ProNonCombatMoveAI nonCombatMoveAI;
-  private final ProPurchaseAI purchaseAI;
-  private final ProRetreatAI retreatAI;
-  private final ProScrambleAI scrambleAI;
-  private final ProPoliticsAI politicsAI;
+  private final ProCombatMoveAi combatMoveAi;
+  private final ProNonCombatMoveAi nonCombatMoveAi;
+  private final ProPurchaseAi purchaseAi;
+  private final ProRetreatAi retreatAi;
+  private final ProScrambleAi scrambleAi;
+  private final ProPoliticsAi politicsAi;
 
   // Data shared across phases
   private Map<Territory, ProTerritory> storedCombatMoveMap;
@@ -76,15 +76,15 @@ public class ProAI extends AbstractAI {
   private List<PoliticalActionAttachment> storedPoliticalActions;
   private List<Territory> storedStrafingTerritories;
 
-  public ProAI(final String name, final String type) {
+  public ProAi(final String name, final String type) {
     super(name, type);
     initializeCalc();
-    combatMoveAI = new ProCombatMoveAI(this);
-    nonCombatMoveAI = new ProNonCombatMoveAI(this);
-    purchaseAI = new ProPurchaseAI(this);
-    retreatAI = new ProRetreatAI(this);
-    scrambleAI = new ProScrambleAI(this);
-    politicsAI = new ProPoliticsAI(this);
+    combatMoveAi = new ProCombatMoveAi(this);
+    nonCombatMoveAi = new ProNonCombatMoveAi(this);
+    purchaseAi = new ProPurchaseAi(this);
+    retreatAi = new ProRetreatAi(this);
+    scrambleAi = new ProScrambleAi(this);
+    politicsAi = new ProPoliticsAi(this);
     storedCombatMoveMap = null;
     storedFactoryMoveMap = null;
     storedPurchaseTerritories = null;
@@ -101,19 +101,19 @@ public class ProAI extends AbstractAI {
   }
 
   public static void initialize(final TripleAFrame frame) {
-    ProLogUI.initialize(frame);
+    ProLogUi.initialize(frame);
     ProLogger.info("Initialized Hard AI");
   }
 
   public static void showSettingsWindow() {
     ProLogger.info("Showing Hard AI settings window");
-    ProLogUI.showSettingsWindow();
+    ProLogUi.showSettingsWindow();
   }
 
   public static void gameOverClearCache() {
     // Are static, clear so that we don't keep the data around after a game is exited
     concurrentCalc.setGameData(null);
-    ProLogUI.clearCachedInstances();
+    ProLogUi.clearCachedInstances();
   }
 
   @Override
@@ -135,17 +135,17 @@ public class ProAI extends AbstractAI {
       final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOolCache();
-    ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
+    ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     calc.setData(data);
     if (nonCombat) {
-      nonCombatMoveAI.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel);
+      nonCombatMoveAi.doNonCombatMove(storedFactoryMoveMap, storedPurchaseTerritories, moveDel);
       storedFactoryMoveMap = null;
     } else {
       if (storedCombatMoveMap == null) {
-        combatMoveAI.doCombatMove(moveDel);
+        combatMoveAi.doCombatMove(moveDel);
       } else {
-        combatMoveAI.doMove(storedCombatMoveMap, moveDel, data, player);
+        combatMoveAi.doMove(storedCombatMoveMap, moveDel, data, player);
         storedCombatMoveMap = null;
       }
     }
@@ -158,18 +158,18 @@ public class ProAI extends AbstractAI {
       final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOolCache();
-    ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
+    ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     if (pusToSpend <= 0) {
       return;
     }
     if (purchaseForBid) {
       calc.setData(data);
-      storedPurchaseTerritories = purchaseAI.bid(pusToSpend, purchaseDelegate, data);
+      storedPurchaseTerritories = purchaseAi.bid(pusToSpend, purchaseDelegate, data);
     } else {
 
       // Repair factories
-      purchaseAI.repair(pusToSpend, purchaseDelegate, data, player);
+      purchaseAi.repair(pusToSpend, purchaseDelegate, data, player);
 
       // Check if any place territories exist
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories = ProPurchaseUtils.findPurchaseTerritories(player);
@@ -217,13 +217,13 @@ public class ProAI extends AbstractAI {
         ProLogger.info("Simulating phase: " + stepName);
         if (stepName.endsWith("NonCombatMove")) {
           ProData.initializeSimulation(this, dataCopy, playerCopy);
-          final Map<Territory, ProTerritory> factoryMoveMap = nonCombatMoveAI.simulateNonCombatMove(moveDel);
+          final Map<Territory, ProTerritory> factoryMoveMap = nonCombatMoveAi.simulateNonCombatMove(moveDel);
           if (storedFactoryMoveMap == null) {
             storedFactoryMoveMap = ProSimulateTurnUtils.transferMoveMap(factoryMoveMap, data, player);
           }
         } else if (stepName.endsWith("CombatMove") && !stepName.endsWith("AirborneCombatMove")) {
           ProData.initializeSimulation(this, dataCopy, playerCopy);
-          final Map<Territory, ProTerritory> moveMap = combatMoveAI.doCombatMove(moveDel);
+          final Map<Territory, ProTerritory> moveMap = combatMoveAi.doCombatMove(moveDel);
           if (storedCombatMoveMap == null) {
             storedCombatMoveMap = ProSimulateTurnUtils.transferMoveMap(moveMap, data, player);
           }
@@ -232,13 +232,13 @@ public class ProAI extends AbstractAI {
           ProSimulateTurnUtils.simulateBattles(dataCopy, playerCopy, bridge, calc);
         } else if (stepName.endsWith("Place") || stepName.endsWith("EndTurn")) {
           ProData.initializeSimulation(this, dataCopy, player);
-          storedPurchaseTerritories = purchaseAI.purchase(purchaseDelegate, data);
+          storedPurchaseTerritories = purchaseAi.purchase(purchaseDelegate, data);
           break;
         } else if (stepName.endsWith("Politics")) {
           ProData.initializeSimulation(this, dataCopy, player);
           final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(dataCopy);
           politicsDelegate.setDelegateBridgeAndPlayer(bridge);
-          final List<PoliticalActionAttachment> actions = politicsAI.politicalActions();
+          final List<PoliticalActionAttachment> actions = politicsAi.politicalActions();
           if (storedPoliticalActions == null) {
             storedPoliticalActions = actions;
           }
@@ -253,16 +253,16 @@ public class ProAI extends AbstractAI {
       final PlayerID player) {
     final long start = System.currentTimeMillis();
     BattleCalculator.clearOolCache();
-    ProLogUI.notifyStartOfRound(data.getSequence().getRound(), player.getName());
+    ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
-    purchaseAI.place(storedPurchaseTerritories, placeDelegate);
+    purchaseAi.place(storedPurchaseTerritories, placeDelegate);
     storedPurchaseTerritories = null;
     ProLogger.info(player.getName() + " time for place=" + (System.currentTimeMillis() - start));
   }
 
   @Override
   protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
-    ProTechAI.tech(techDelegate, data, player);
+    ProTechAi.tech(techDelegate, data, player);
   }
 
   @Override
@@ -295,12 +295,12 @@ public class ProAI extends AbstractAI {
       return null;
     }
     calc.setData(getGameData());
-    return retreatAI.retreatQuery(battleId, battleTerritory, possibleTerritories);
+    return retreatAi.retreatQuery(battleId, battleTerritory, possibleTerritories);
   }
 
   @Override
   public boolean shouldBomberBomb(final Territory territory) {
-    return combatMoveAI.isBombing();
+    return combatMoveAi.isBombing();
   }
 
   // TODO: Consider supporting this functionality
@@ -407,7 +407,7 @@ public class ProAI extends AbstractAI {
     ProLogger.info(player.getName() + " checking scramble to " + scrambleTo + ", attackers=" + attackers.size()
         + ", defenders=" + defenders.size() + ", possibleScramblers=" + possibleScramblers);
     calc.setData(getGameData());
-    return scrambleAI.scrambleUnitsQuery(scrambleTo, possibleScramblers);
+    return scrambleAi.scrambleUnitsQuery(scrambleTo, possibleScramblers);
   }
 
   @Override
@@ -441,9 +441,9 @@ public class ProAI extends AbstractAI {
     initializeData();
 
     if (storedPoliticalActions == null) {
-      politicsAI.politicalActions();
+      politicsAi.politicalActions();
     } else {
-      politicsAI.doActions(storedPoliticalActions);
+      politicsAi.doActions(storedPoliticalActions);
       storedPoliticalActions = null;
     }
   }

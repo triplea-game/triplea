@@ -58,7 +58,7 @@ public class ProLogger {
     if (logDepth.equals(Level.FINER) && level.equals(Level.FINEST)) {
       return;
     }
-    ProLogUI.notifyAiLogMessage(level, addIndentationCompensation(message, level));
+    ProLogUi.notifyAiLogMessage(level, addIndentationCompensation(message, level));
   }
 
   /**

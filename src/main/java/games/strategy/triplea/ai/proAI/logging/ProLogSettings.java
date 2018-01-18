@@ -10,7 +10,7 @@ import java.util.prefs.Preferences;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.io.IoUtils;
-import games.strategy.triplea.ai.proAI.ProAI;
+import games.strategy.triplea.ai.proAI.ProAi;
 
 /**
  * Class to manage log settings.
@@ -28,7 +28,7 @@ public class ProLogSettings implements Serializable {
     if (lastSettings == null) {
       ProLogSettings result = new ProLogSettings();
       try {
-        final byte[] pool = Preferences.userNodeForPackage(ProAI.class).getByteArray(PROGRAM_SETTINGS, null);
+        final byte[] pool = Preferences.userNodeForPackage(ProAi.class).getByteArray(PROGRAM_SETTINGS, null);
         if (pool != null) {
           result = IoUtils.readFromMemory(pool, is -> {
             try (ObjectInputStream ois = new ObjectInputStream(is)) {
@@ -59,7 +59,7 @@ public class ProLogSettings implements Serializable {
           outputStream.writeObject(settings);
         }
       });
-      final Preferences prefs = Preferences.userNodeForPackage(ProAI.class);
+      final Preferences prefs = Preferences.userNodeForPackage(ProAi.class);
       prefs.putByteArray(PROGRAM_SETTINGS, bytes);
       try {
         prefs.flush();

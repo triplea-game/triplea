@@ -52,7 +52,7 @@ import games.strategy.util.CollectionUtils;
 /**
  * Pro non-combat move AI.
  */
-class ProNonCombatMoveAI {
+class ProNonCombatMoveAi {
 
   private final ProOddsCalculator calc;
   private GameData data;
@@ -60,7 +60,7 @@ class ProNonCombatMoveAI {
   private Map<Unit, Territory> unitTerritoryMap;
   private ProTerritoryManager territoryManager;
 
-  ProNonCombatMoveAI(final ProAI ai) {
+  ProNonCombatMoveAi(final ProAi ai) {
     calc = ai.getCalc();
   }
 

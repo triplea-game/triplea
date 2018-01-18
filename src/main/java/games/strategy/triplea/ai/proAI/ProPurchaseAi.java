@@ -52,7 +52,7 @@ import games.strategy.util.IntegerMap;
 /**
  * Pro purchase AI.
  */
-class ProPurchaseAI {
+class ProPurchaseAi {
 
   private final ProOddsCalculator calc;
   private GameData data;
@@ -62,7 +62,7 @@ class ProPurchaseAI {
   private ProTerritoryManager territoryManager;
   private boolean isBid = false;
 
-  ProPurchaseAI(final ProAI ai) {
+  ProPurchaseAi(final ProAi ai) {
     calc = ai.getCalc();
   }
 

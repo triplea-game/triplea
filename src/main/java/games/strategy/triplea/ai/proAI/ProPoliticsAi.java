@@ -26,11 +26,11 @@ import games.strategy.util.CollectionUtils;
 /**
  * Pro politics AI.
  */
-class ProPoliticsAI {
+class ProPoliticsAi {
 
   private final ProOddsCalculator calc;
 
-  ProPoliticsAI(final ProAI ai) {
+  ProPoliticsAi(final ProAi ai) {
     calc = ai.getCalc();
   }
 

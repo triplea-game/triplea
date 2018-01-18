@@ -26,7 +26,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ai.AbstractAI;
+import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -46,9 +46,9 @@ import games.strategy.util.Util;
 /**
  * A very weak ai, based on some simple rules.
  */
-public class WeakAI extends AbstractAI {
+public class WeakAi extends AbstractAi {
 
-  public WeakAI(final String name, final String type) {
+  public WeakAi(final String name, final String type) {
     super(name, type);
   }
 
