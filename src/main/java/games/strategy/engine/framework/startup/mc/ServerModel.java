@@ -361,7 +361,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       try {
         return IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
       } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e);
       }
     }

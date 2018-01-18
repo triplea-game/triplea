@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -170,8 +169,7 @@ public abstract class TechAdvance extends NamedAttachable {
       constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
       ta = constructor.newInstance(data);
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(s + " is not a valid technology or could not be instantiated");
+      throw new IllegalStateException(s + " is not a valid technology or could not be instantiated", e);
     }
     if (ta == null) {
       throw new IllegalStateException(s + " is not a valid technology or could not be instantiated");

@@ -203,8 +203,7 @@ public class ClientGame extends AbstractGame {
     try (FileOutputStream fout = new FileOutputStream(f)) {
       fout.write(bytes);
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(e.getMessage());
+      throw new IllegalStateException(e);
     }
   }
 }

@@ -726,8 +726,7 @@ public class MapData implements Closeable {
     try {
       return Optional.of(ImageIO.read(url));
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(e.getMessage());
+      throw new IllegalStateException(e);
     }
   }
 

@@ -150,8 +150,7 @@ class EndPoint {
       method = implementor.getClass().getMethod(call.getMethodName(), call.getArgTypes());
       method.setAccessible(true);
     } catch (final NoSuchMethodException e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(e.getMessage());
+      throw new IllegalStateException(e);
     }
     MessageContext.setSenderNodeForThread(messageOriginator);
     try {

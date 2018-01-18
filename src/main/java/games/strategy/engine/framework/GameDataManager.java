@@ -16,7 +16,6 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.swing.JOptionPane;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.GameData;
@@ -127,8 +126,7 @@ public final class GameDataManager {
         instance.initialize(name, displayName);
         data.getDelegateList().addDelegate(instance);
       } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
-        throw new IOException(e.getMessage());
+        throw new IOException(e);
       }
       final String next = (String) input.readObject();
       if (next.equals(DELEGATE_DATA_NEXT)) {
