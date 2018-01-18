@@ -44,18 +44,6 @@ public class AvailableGames {
     return new HashSet<>(availableGames.keySet());
   }
 
-  Set<String> getAvailableMapFolderOrZipNames() {
-    return Collections.unmodifiableSet(availableMapFolderOrZipNames);
-  }
-
-  /**
-   * Can return null.
-   */
-  public GameData getGameData(final String gameName) {
-    return Optional.ofNullable(availableGames.get(gameName))
-        .map(AvailableGames::getGameDataFromXml)
-        .orElse(null);
-  }
 
   /**
    * Returns the path to the file associated with the specified game.
@@ -163,6 +151,15 @@ public class AvailableGames {
     return false;
   }
 
+  /**
+   * Can return null.
+   */
+  public GameData getGameData(final String gameName) {
+    return Optional.ofNullable(availableGames.get(gameName))
+        .map(AvailableGames::getGameDataFromXml)
+        .orElse(null);
+  }
+
   private static GameData getGameDataFromXml(final URI uri) {
     if (uri == null) {
       return null;
@@ -177,5 +174,10 @@ public class AvailableGames {
       }
     }
     return null;
+  }
+
+  public boolean containsMapName(final String mapNameProperty) {
+    return availableMapFolderOrZipNames.contains(mapNameProperty)
+        || availableMapFolderOrZipNames.contains(mapNameProperty + "-master");
   }
 }

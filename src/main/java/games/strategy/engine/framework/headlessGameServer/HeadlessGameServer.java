@@ -117,9 +117,12 @@ public class HeadlessGameServer {
         System.out.println("Loading GameData failed for: " + fileName);
         return;
       }
+
+
       final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-      final Set<String> availableMaps = availableGames.getAvailableMapFolderOrZipNames();
-      if (!availableMaps.contains(mapNameProperty) && !availableMaps.contains(mapNameProperty + "-master")) {
+
+
+      if(!availableGames.containsMapName(mapNameProperty)) {
         System.out.println("Game mapName not in available games listing: " + mapNameProperty);
         return;
       }
