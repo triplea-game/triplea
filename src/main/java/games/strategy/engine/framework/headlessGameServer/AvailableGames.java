@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -30,6 +31,8 @@ import games.strategy.util.UrlStreams;
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
  */
 public class AvailableGames {
+  private static final Logger logger = Logger.getLogger(AvailableGames.class.getName());
+
   private static final String ZIP_EXTENSION = ".zip";
   private final Map<String, URI> availableGames = new TreeMap<>();
   private final Set<String> availableMapFolderOrZipNames = new HashSet<>();
@@ -156,24 +159,21 @@ public class AvailableGames {
    */
   public GameData getGameData(final String gameName) {
     return Optional.ofNullable(availableGames.get(gameName))
-        .map(AvailableGames::getGameDataFromXml)
+        .map(uri -> parse(uri).orElse(null))
         .orElse(null);
+
+
   }
-
-  private static GameData getGameDataFromXml(final URI uri) {
-    if (uri == null) {
-      return null;
-    }
-
+  private static Optional<GameData> parse(final URI uri) {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
-        return GameParser.parse(uri.toString(), input);
+        return Optional.of(GameParser.parse(uri.toString(), input));
       } catch (final Exception e) {
         ClientLogger.logError("Exception while parsing: " + uri.toString(), e);
       }
     }
-    return null;
+    return Optional.empty();
   }
 
   public boolean containsMapName(final String mapNameProperty) {
