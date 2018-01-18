@@ -3,21 +3,13 @@ package games.strategy.engine.framework.ui;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -59,46 +51,25 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     return super.get(i);
   }
 
-  private static List<File> allMapFiles() {
-    return new ArrayList<>(safeListFiles(ClientFileSystemHelper.getUserMapsFolder()));
-  }
-
-  private static List<File> safeListFiles(final File f) {
-    final File[] files = f.listFiles();
-    if (files == null) {
-      return Collections.emptyList();
-    }
-    return Arrays.asList(files);
-  }
-
   static Set<GameChooserEntry> parseMapFiles() {
-    final List<File> files = allMapFiles();
-    final Set<GameChooserEntry> parsedMapSet = new HashSet<>(files.size());
-    final ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 2);
-    final List<Future<List<GameChooserEntry>>> futures = new ArrayList<>(files.size());
-    for (final File map : files) {
-      if (map.isDirectory()) {
-        futures.add(service.submit(() -> populateFromDirectory(map)));
-      } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-        futures.add(service.submit(() -> populateFromZip(map)));
-      }
-    }
-    service.shutdown();
-    for (final Future<List<GameChooserEntry>> future : futures) {
-      try {
-        parsedMapSet.addAll(future.get());
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      } catch (final ExecutionException e) {
-        ClientLogger.logError("Failed to parse a map: " + e.getMessage(), e);
-      }
-    }
+    final Set<GameChooserEntry> parsedMapSet = new HashSet<>();
+
+    Arrays.asList(Optional.ofNullable(ClientFileSystemHelper.getUserMapsFolder().listFiles())
+        .orElse(new File[0]))
+        .parallelStream()
+        .forEach(map -> {
+          if (map.isDirectory()) {
+            parsedMapSet.addAll(populateFromDirectory(map));
+          } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
+            parsedMapSet.addAll(populateFromZip(map));
+          }
+        });
     return parsedMapSet;
   }
 
-  private static List<GameChooserEntry> populateFromZip(final File map) {
+  private static Set<GameChooserEntry> populateFromZip(final File map) {
     boolean badMapZip = false;
-    final List<GameChooserEntry> entries = new ArrayList<>();
+    final Set<GameChooserEntry> entries = new HashSet<>();
 
     try (ZipFile zipFile = new ZipFile(map);
         final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
@@ -124,17 +95,15 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   }
 
   private static ZipProcessingResult processZipEntry(final URLClassLoader loader, final ZipEntry entry,
-      final List<GameChooserEntry> entries) {
+      final Set<GameChooserEntry> entries) {
     final URL url = loader.getResource(entry.getName());
     if (url == null) {
       // not loading the URL means the XML is truncated or otherwise in bad shape
       return ZipProcessingResult.ERROR;
     }
-    try {
-      addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
-    } catch (final URISyntaxException e) {
-      // only happens when URI couldn't be build and therefore no entry was added. That's fine ..
-    }
+
+    addNewGameChooserEntry(URI.create(url.toString().replace(" ", "%20")))
+        .ifPresent(entries::add);
     return ZipProcessingResult.SUCCESS;
   }
 
@@ -152,11 +121,10 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
       final int result = GameRunner.showConfirmDialog(
           message, GameRunner.Title.of(title), optionType, messageType);
       if (result == JOptionPane.YES_OPTION) {
-        final boolean deleted = map.delete();
-        if (deleted) {
+        if (map.delete()) {
           messageType = JOptionPane.INFORMATION_MESSAGE;
           message = "File was deleted successfully.";
-        } else if (!deleted && map.exists()) {
+        } else if (map.exists()) {
           message = "Unable to delete file, please remove it in the file system and restart tripleA:\n" + map
               .getAbsolutePath();
           if (errorDetails.isPresent()) {
@@ -172,23 +140,18 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   /**
    * From a given URI, creates a GameChooserEntry and adds to the given entries list.
    *
-   * @param entries
-   *        list of entries where to add the new entry.
    * @param uri
    *        URI of the new entry
    */
-  private static void addNewGameChooserEntry(final List<GameChooserEntry> entries, final URI uri) {
+  private static Optional<GameChooserEntry> addNewGameChooserEntry(final URI uri) {
     try {
-      final GameChooserEntry newEntry = createEntry(uri);
-      if (!entries.contains(newEntry)) {
-        entries.add(newEntry);
-      }
+      return Optional.of(createEntry(uri));
     } catch (final EngineVersionException e) {
-      System.out.println(e.getMessage());
+      ClientLogger.logQuietly("Engine version problem:" + uri, e);
     } catch (final Exception e) {
-      System.err.println("Could not parse:" + uri);
       ClientLogger.logQuietly("Could not parse: " + uri, e);
     }
+    return Optional.empty();
   }
 
   /**
@@ -206,8 +169,8 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     return new GameChooserEntry(uri);
   }
 
-  private static List<GameChooserEntry> populateFromDirectory(final File mapDir) {
-    final List<GameChooserEntry> entries = new ArrayList<>();
+  private static Set<GameChooserEntry> populateFromDirectory(final File mapDir) {
+    final Set<GameChooserEntry> entries = new HashSet<>();
 
     // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents directly
     final File mapFolder = new File(mapDir, "map");
@@ -219,9 +182,11 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
       // no games in this map dir
       return entries;
     }
-    for (final File game : games.listFiles()) {
-      if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-        addNewGameChooserEntry(entries, game.toURI());
+    if (games.listFiles() != null) {
+      for (final File game : games.listFiles()) {
+        if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
+          addNewGameChooserEntry(game.toURI()).ifPresent(entries::add);
+        }
       }
     }
     return entries;
