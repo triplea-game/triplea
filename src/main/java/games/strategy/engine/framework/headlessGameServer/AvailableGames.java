@@ -24,7 +24,6 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
-import games.strategy.triplea.Constants;
 import games.strategy.util.UrlStreams;
 
 /**
@@ -38,8 +37,7 @@ public class AvailableGames {
   AvailableGames() {
     populateAvailableGames(
         Collections.synchronizedMap(availableGames),
-        Collections.synchronizedSet(availableMapFolderOrZipNames),
-        Collections.synchronizedSet(new HashSet<>()));
+        Collections.synchronizedSet(availableMapFolderOrZipNames));
   }
 
   Set<String> getGameNames() {
@@ -78,17 +76,16 @@ public class AvailableGames {
 
   private static void populateAvailableGames(
       final Map<String, URI> availableGames,
-      final Set<String> availableMapFolderOrZipNames,
-      final Set<String> mapNamePropertyList) {
+      final Set<String> availableMapFolderOrZipNames) {
 
     Arrays.asList(Optional.ofNullable(ClientFileSystemHelper.getUserMapsFolder().listFiles())
         .orElse(new File[0]))
         .parallelStream()
         .forEach(map -> {
           if (map.isDirectory()) {
-            populateFromDirectory(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
+            populateFromDirectory(map, availableGames, availableMapFolderOrZipNames);
           } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-            populateFromZip(map, availableGames, availableMapFolderOrZipNames, mapNamePropertyList);
+            populateFromZip(map, availableGames, availableMapFolderOrZipNames);
           }
         });
   }
@@ -96,8 +93,7 @@ public class AvailableGames {
   private static void populateFromDirectory(
       final File mapDir,
       final Map<String, URI> availableGames,
-      final Set<String> availableMapFolderOrZipNames,
-      final Set<String> mapNamePropertyList) {
+      final Set<String> availableMapFolderOrZipNames) {
     final File games = new File(mapDir, "games");
     if (!games.exists()) {
       // no games in this map dir
@@ -106,7 +102,7 @@ public class AvailableGames {
     if (games.listFiles() != null) {
       for (final File game : games.listFiles()) {
         if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-          final boolean added = addToAvailableGames(game.toURI(), availableGames, mapNamePropertyList);
+          final boolean added = addToAvailableGames(game.toURI(), availableGames);
           if (added) {
             availableMapFolderOrZipNames.add(mapDir.getName());
           }
@@ -116,7 +112,7 @@ public class AvailableGames {
   }
 
   private static void populateFromZip(final File map, final Map<String, URI> availableGames,
-      final Set<String> availableMapFolderOrZipNames, final Set<String> mapNamePropertyList) {
+      final Set<String> availableMapFolderOrZipNames) {
     try (InputStream fis = new FileInputStream(map);
         ZipInputStream zis = new ZipInputStream(fis);
         URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
@@ -128,8 +124,7 @@ public class AvailableGames {
             try {
               final boolean added = addToAvailableGames(
                   new URI(url.toString().replace(" ", "%20")),
-                  availableGames,
-                  mapNamePropertyList);
+                  availableGames);
               if (added && map.getName().length() > 4) {
                 availableMapFolderOrZipNames
                     .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
@@ -151,19 +146,14 @@ public class AvailableGames {
 
   private static boolean addToAvailableGames(
       @Nonnull final URI uri,
-      @Nonnull final Map<String, URI> availableGames,
-      @Nonnull final Set<String> mapNamePropertyList) {
+      @Nonnull final Map<String, URI> availableGames) {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
         final GameData data = GameParser.parse(uri.toString(), input);
         final String name = data.getGameName();
-        final String mapName = data.getProperties().get(Constants.MAP_NAME, "");
         if (!availableGames.containsKey(name)) {
           availableGames.put(name, uri);
-          if (mapName.length() > 0) {
-            mapNamePropertyList.add(mapName);
-          }
           return true;
         }
       } catch (final Exception e) {
