@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
 
 public class ImageFactory {
@@ -41,8 +40,7 @@ public class ImageFactory {
       try {
         image = ImageIO.read(url);
       } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
-        throw new IllegalStateException(e.getMessage());
+        throw new IllegalStateException(e);
       }
       images.put(key, image);
     }

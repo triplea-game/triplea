@@ -15,7 +15,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.RemoteName;
@@ -69,8 +68,7 @@ public class Vault {
       secretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
       keyGen = KeyGenerator.getInstance(ALGORITHM);
     } catch (final NoSuchAlgorithmException e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException("Nothing known about algorithm:" + ALGORITHM);
+      throw new IllegalStateException("Nothing known about algorithm:" + ALGORITHM, e);
     }
   }
 
@@ -130,8 +128,7 @@ public class Vault {
       cipher = Cipher.getInstance(ALGORITHM);
       cipher.init(Cipher.ENCRYPT_MODE, key);
     } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(e.getMessage());
+      throw new IllegalStateException(e);
     }
     // join the data and known value into one array
     final byte[] dataAndCheck = joinDataAndKnown(data);
@@ -139,8 +136,7 @@ public class Vault {
     try {
       encrypted = cipher.doFinal(dataAndCheck);
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(e.getMessage());
+      throw new IllegalStateException(e);
     }
     // tell the world
     getRemoteBroadcaster().addLockedValue(id, encrypted);
@@ -257,8 +253,7 @@ public class Vault {
         cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
       } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
-        ClientLogger.logQuietly(e);
-        throw new IllegalStateException(e.getMessage());
+        throw new IllegalStateException(e);
       }
       final byte[] encrypted = unverifiedValues.remove(id);
       final byte[] decrypted;

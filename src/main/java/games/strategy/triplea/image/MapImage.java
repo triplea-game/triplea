@@ -11,7 +11,6 @@ import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
@@ -29,8 +28,7 @@ public class MapImage {
     try {
       return ImageIO.read(mapFileUrl);
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(e.getMessage());
+      throw new IllegalStateException(e);
     }
   }
 

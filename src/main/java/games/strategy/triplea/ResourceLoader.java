@@ -149,8 +149,7 @@ public class ResourceLoader implements Closeable {
         }
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(e.getMessage());
+      throw new IllegalStateException(e);
     }
     return paths;
   }
@@ -169,8 +168,7 @@ public class ResourceLoader implements Closeable {
       try {
         urls[i] = f.toURI().toURL();
       } catch (final MalformedURLException e) {
-        ClientLogger.logQuietly(e);
-        throw new IllegalStateException(e.getMessage());
+        throw new IllegalStateException(e);
       }
     }
     resourceLocationTracker = new ResourceLocationTracker(mapName, urls);

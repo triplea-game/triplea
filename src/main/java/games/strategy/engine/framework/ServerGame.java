@@ -151,7 +151,6 @@ public class ServerGame extends AbstractGame {
       try {
         return IoUtils.writeToMemory(this::saveGame);
       } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
         throw new IllegalStateException(e);
       }
     };

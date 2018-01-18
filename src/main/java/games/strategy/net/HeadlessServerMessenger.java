@@ -7,8 +7,6 @@ import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.Set;
 
-import games.strategy.debug.ClientLogger;
-
 public class HeadlessServerMessenger implements IServerMessenger {
 
   private final INode node;
@@ -17,8 +15,7 @@ public class HeadlessServerMessenger implements IServerMessenger {
     try {
       node = new Node("dummy", InetAddress.getLocalHost(), 0);
     } catch (final UnknownHostException e) {
-      ClientLogger.logQuietly(e);
-      throw new IllegalStateException(e.getMessage());
+      throw new IllegalStateException(e);
     }
   }
 
