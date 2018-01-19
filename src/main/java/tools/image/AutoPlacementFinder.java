@@ -144,7 +144,7 @@ public class AutoPlacementFinder {
           }
         }
       } catch (final Exception ex) {
-        ClientLogger.logQuietly(ex);
+        ClientLogger.logQuietly("Failed to initialize from map properties: " + file.getAbsolutePath(), ex);
       }
     }
     if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
@@ -179,7 +179,7 @@ public class AutoPlacementFinder {
         }
         placeDimensionsSet = true;
       } catch (final Exception ex) {
-        ClientLogger.logQuietly(ex);
+        ClientLogger.logQuietly("Failed to initialize from user input", ex);
       }
     }
     try {

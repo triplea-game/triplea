@@ -48,7 +48,7 @@ public class LocalLauncher extends AbstractLauncher {
     } catch (final MapNotFoundException e) {
       exceptionLoadingGame = e;
     } catch (final Exception ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to start game", ex);
       exceptionLoadingGame = ex;
     } finally {
       gameLoadingWindow.doneWait();

@@ -181,7 +181,7 @@ public class ClientGame extends AbstractGame {
         remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
       }
     } catch (final RuntimeException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to shut down client game", e);
     }
     gameData.getGameLoader().shutDown();
   }

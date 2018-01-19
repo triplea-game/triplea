@@ -118,7 +118,7 @@ public class TileImageReconstructor {
           polygons = PointFileReaderWriter.readOneToManyPolygons(in);
         }
       } catch (final Exception ex) {
-        ClientLogger.logQuietly(ex);
+        ClientLogger.logQuietly("Failed to load polygons", ex);
       }
     }
     createMap();
@@ -160,7 +160,7 @@ public class TileImageReconstructor {
     try {
       ImageIO.write(mapImage, "png", new File(imageSaveLocation));
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to save image: " + imageSaveLocation, e);
     }
     textOptionPane.appendNewLine("Wrote " + imageSaveLocation);
     textOptionPane.appendNewLine("\r\nAll Finished!");

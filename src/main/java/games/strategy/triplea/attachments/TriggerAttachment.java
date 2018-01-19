@@ -2522,7 +2522,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
           ((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage.trim(), t.getPlayers(), bridge);
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+          ClientLogger.logQuietly("Failed to signal game over", e);
         }
       }
     }

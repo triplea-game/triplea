@@ -179,7 +179,7 @@ public class ServerGame extends AbstractGame {
         } catch (final ConnectionLostException cle) {
           System.out.println("Connection lost to observer while joining: " + newNode.getName());
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+          ClientLogger.logQuietly("Failed to join game", e);
         }
       }, "Waiting on observer to finish joining: " + newNode.getName()).start();
       try {
@@ -191,7 +191,7 @@ public class ServerGame extends AbstractGame {
         nonBlockingObserver.cannotJoinGame(e.getMessage());
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to join game", e);
       nonBlockingObserver.cannotJoinGame(e.getMessage());
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
@@ -268,7 +268,7 @@ public class ServerGame extends AbstractGame {
       }
     } catch (final GameOverException e) {
       if (!isGameOver) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("GameOverException raised, but game is not over", e);
       }
     }
   }
@@ -327,7 +327,7 @@ public class ServerGame extends AbstractGame {
         remoteMessenger.unregisterRemote(getRemoteName(delegate));
       }
     } catch (final RuntimeException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to shut down server game", e);
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
     }
@@ -360,7 +360,7 @@ public class ServerGame extends AbstractGame {
     try (FileOutputStream fout = new FileOutputStream(f)) {
       saveGame(fout);
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to save game to file: " + f.getAbsolutePath(), e);
     }
   }
 

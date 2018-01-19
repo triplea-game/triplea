@@ -1501,7 +1501,7 @@ public class TripleAFrame extends MainGameFrame {
           }
         });
       } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to process game data change", e);
       }
     }
   };
@@ -1758,7 +1758,7 @@ public class TripleAFrame extends MainGameFrame {
               JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",
                   JOptionPane.INFORMATION_MESSAGE);
             } catch (final IOException e) {
-              ClientLogger.logQuietly(e);
+              ClientLogger.logQuietly("Failed to save game: " + f.getAbsolutePath(), e);
             }
           }
         } finally {

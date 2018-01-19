@@ -174,7 +174,7 @@ public class ClipPlayer {
       try {
         setPref = !Arrays.asList(prefs.keys()).contains(SOUND_PREFERENCE_GLOBAL_SWITCH);
       } catch (final BackingStoreException e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to get keys for preferences: " + prefs.absolutePath(), e);
       }
     }
     if (setPref) {
@@ -182,7 +182,7 @@ public class ClipPlayer {
       try {
         prefs.flush();
       } catch (final BackingStoreException e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), e);
       }
     }
   }
@@ -240,7 +240,7 @@ public class ClipPlayer {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 
@@ -425,7 +425,7 @@ public class ClipPlayer {
                       }
                       availableSounds.add(zipSoundUrl);
                     } catch (final Exception e) {
-                      ClientLogger.logQuietly(e);
+                      ClientLogger.logQuietly("Failed to load sound resource: " + zipElement.getName(), e);
                     }
                   }
                 }
@@ -433,7 +433,7 @@ public class ClipPlayer {
               }
             }
           } catch (final Exception e) {
-            ClientLogger.logQuietly(e);
+            ClientLogger.logQuietly("Failed to read sound file: " + decoded, e);
           }
         }
       }

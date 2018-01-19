@@ -239,7 +239,7 @@ public class ServerLauncher extends AbstractLauncher {
               gameSelectorModel.resetGameDataToNull();
             }
           } catch (final Exception e1) {
-            ClientLogger.logQuietly(e1);
+            ClientLogger.logQuietly("Failed to load game", e1);
             gameSelectorModel.resetGameDataToNull();
           }
         } else {
@@ -342,7 +342,7 @@ public class ServerLauncher extends AbstractLauncher {
     try {
       serverGame.saveGame(f);
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to save game: " + f.getAbsolutePath(), e);
       if (headless && HeadlessGameServer.getInstance() != null) {
         HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
         // TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3,

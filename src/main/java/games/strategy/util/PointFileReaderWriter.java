@@ -200,7 +200,8 @@ public class PointFileReaderWriter {
         current = reader.readLine();
       }
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to read polygons", e);
+      // FIXME: o_O Should not exit process from "library" code
       System.exit(0);
     } finally {
       try {

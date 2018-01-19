@@ -104,12 +104,10 @@ class ExportMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    try {
-      try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
-        writer.write(xmlFile);
-      }
+    try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
+      writer.write(xmlFile);
     } catch (final IOException e1) {
-      ClientLogger.logQuietly(e1);
+      ClientLogger.logQuietly("Failed to write XML: " + chooser.getSelectedFile().getAbsolutePath(), e1);
     }
   }
 
@@ -373,7 +371,7 @@ class ExportMenu {
     try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
       writer.write(text.toString());
     } catch (final IOException e1) {
-      ClientLogger.logQuietly(e1);
+      ClientLogger.logQuietly("Failed to write stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
     }
   }
 
@@ -394,7 +392,7 @@ class ExportMenu {
             HelpMenu.getUnitStatsTable(gameData, uiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
                 .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
-        ClientLogger.logQuietly(e1);
+        ClientLogger.logQuietly("Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
       }
 
     }));

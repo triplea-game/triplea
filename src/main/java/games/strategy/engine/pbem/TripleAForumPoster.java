@@ -47,7 +47,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
         deleteToken(client, userId, token);
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to post game to forum", e);
       m_turnSummaryRef = e.getMessage();
     }
     return false;

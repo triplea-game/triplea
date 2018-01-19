@@ -113,7 +113,7 @@ public class PBEMMessagePoster implements Serializable {
           historyWriter.startEvent("Turn Summary: " + m_turnSummaryRef);
         }
       } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to post game to forum", e);
       }
     }
     boolean emailSuccess = true;
@@ -127,7 +127,7 @@ public class PBEMMessagePoster implements Serializable {
       } catch (final IOException e) {
         emailSuccess = false;
         m_emailSendStatus = "Failed! Error " + e.getMessage();
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to send game via email", e);
       }
     }
     if (historyWriter != null) {
@@ -228,7 +228,7 @@ public class PBEMMessagePoster implements Serializable {
           }
         } catch (final Exception e) {
           postOk = false;
-          ClientLogger.logQuietly(e);
+          ClientLogger.logQuietly("Failed to create save game", e);
         }
         posterPbem.setTurnSummary(historyLog.toString());
         try {
@@ -244,7 +244,7 @@ public class PBEMMessagePoster implements Serializable {
           }
         } catch (final Exception e) {
           postOk = false;
-          ClientLogger.logQuietly(e);
+          ClientLogger.logQuietly("Failed to post save game to forum", e);
         }
         if (postingDelegate != null) {
           postingDelegate.setHasPostedTurnSummary(postOk);

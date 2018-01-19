@@ -71,7 +71,7 @@ public class HttpProxy {
         }
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to get system HTTP proxy", e);
     } finally {
       SystemProperties.setJavaNetUseSystemProxies("false");
     }

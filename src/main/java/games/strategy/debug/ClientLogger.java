@@ -42,21 +42,6 @@ public final class ClientLogger {
     enableErrorPopup = true;
   }
 
-  /**
-   * Logs a Throwable to the error console. This method is deprecated, use API version that accepts
-   * an error message.
-   *
-   * @deprecated Use logQuietly(String, Throwable) instead.
-   *             We should always provide more context then just an exception, so this method is deprecated.
-   *             Notably we should always give some details about what happened, what the exception means,
-   *             and also log any parameter values, or any other surrounding context values so
-   *             we can debug more easily.
-   */
-  @Deprecated
-  public static void logQuietly(final Throwable e) {
-    log(developerOutputStream, e);
-  }
-
   public static void logQuietly(final @Nullable String msg) {
     developerOutputStream.println(msg);
   }

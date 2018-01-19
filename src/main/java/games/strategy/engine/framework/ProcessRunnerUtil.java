@@ -82,7 +82,7 @@ public class ProcessRunnerUtil {
       t.setDaemon(true);
       t.start();
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to start new process", e);
     }
   }
 }

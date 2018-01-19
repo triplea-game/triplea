@@ -143,7 +143,7 @@ public class CommentPanel extends JPanel {
             doc.insertString(doc.getLength(), prefix, bold);
             doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
           } catch (final BadLocationException e1) {
-            ClientLogger.logQuietly(e1);
+            ClientLogger.logQuietly("Failed to add history node", e1);
           }
         }
       } finally {
@@ -193,7 +193,7 @@ public class CommentPanel extends JPanel {
             doc.insertString(doc.getLength(), prefix, bold);
             doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
           } catch (final BadLocationException e) {
-            ClientLogger.logQuietly(e);
+            ClientLogger.logQuietly("Failed to add history", e);
           }
         }
       }
@@ -217,7 +217,7 @@ public class CommentPanel extends JPanel {
           doc.insertString(doc.getLength(), error + "\n", italic);
         }
       } catch (final BadLocationException e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to add comment", e);
       }
       final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
       scrollModel.setValue(scrollModel.getMaximum());
@@ -250,7 +250,7 @@ public class CommentPanel extends JPanel {
         }
       }
     } catch (final BadLocationException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to trim lines", e);
     }
   }
 

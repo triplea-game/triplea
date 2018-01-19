@@ -26,7 +26,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -219,12 +218,8 @@ public class BattlePanel extends ActionPanel {
 
   public void listBattle(final GUID battleId, final List<String> steps) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      try {
-        // recursive call
-        SwingUtilities.invokeLater(() -> listBattle(battleId, steps));
-      } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
-      }
+      // recursive call
+      SwingUtilities.invokeLater(() -> listBattle(battleId, steps));
       return;
     }
     removeAll();
