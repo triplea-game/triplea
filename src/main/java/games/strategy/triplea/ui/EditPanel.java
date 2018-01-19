@@ -273,12 +273,14 @@ class EditPanel extends ActionPanel {
           return;
         }
         final Set<TechAdvance> advance = new HashSet<>();
+        // FIXME: This try-catch block appears to be guarding against a ClassCastException.
+        // It should be removed and the underlying problem fixed.
         try {
           for (final Object selection : techList.getSelectedValuesList()) {
             advance.add((TechAdvance) selection);
           }
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+          ClientLogger.logQuietly("Failed to copy all selected tech advances", e);
         }
         final String result = EditPanel.this.frame.getEditDelegate().addTechAdvance(player, advance);
         if (result != null) {
@@ -336,12 +338,14 @@ class EditPanel extends ActionPanel {
           return;
         }
         final Set<TechAdvance> advance = new HashSet<>();
+        // FIXME: This try-catch block appears to be guarding against a ClassCastException.
+        // It should be removed and the underlying problem fixed.
         try {
           for (final Object selection : techList.getSelectedValuesList()) {
             advance.add((TechAdvance) selection);
           }
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
+          ClientLogger.logQuietly("Failed to copy all selected tech advances", e);
         }
         final String result = EditPanel.this.frame.getEditDelegate().removeTechAdvance(player, advance);
         if (result != null) {

@@ -212,7 +212,7 @@ public class PlacementPicker extends JFrame {
           }
         }
       } catch (final Exception ex) {
-        ClientLogger.logQuietly(ex);
+        ClientLogger.logQuietly("Failed to initialize from map properties", ex);
       }
     }
     if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
@@ -247,7 +247,7 @@ public class PlacementPicker extends JFrame {
         }
         placeDimensionsSet = true;
       } catch (final Exception ex) {
-        ClientLogger.logQuietly(ex);
+        ClientLogger.logQuietly("Failed to initialize from user input", ex);
       }
     }
     File file = null;
@@ -507,7 +507,7 @@ public class PlacementPicker extends JFrame {
       placements = PointFileReaderWriter.readOneToMany(in);
       repaint();
     } catch (final HeadlessException | IOException ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to load placements", ex);
     }
   }
 

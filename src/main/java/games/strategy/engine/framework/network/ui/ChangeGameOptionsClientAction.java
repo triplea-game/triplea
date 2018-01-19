@@ -55,11 +55,11 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
         try {
           serverRemote.changeToGameOptions(GameProperties.writeEditableProperties(properties));
         } catch (final IOException ex) {
-          ClientLogger.logQuietly(ex);
+          ClientLogger.logQuietly("Failed to write game properties", ex);
         }
       }
     } catch (final IOException | ClassCastException ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to read game properties", ex);
     }
   }
 }

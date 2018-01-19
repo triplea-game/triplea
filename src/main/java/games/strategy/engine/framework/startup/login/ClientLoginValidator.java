@@ -145,7 +145,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
       return ErrorMessages.NO_ERROR;
     } catch (final AuthenticationException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Authentication failed", e);
       return ErrorMessages.INVALID_PASSWORD;
     }
   }

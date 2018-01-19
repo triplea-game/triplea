@@ -71,8 +71,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
             propFiles.add(props);
           }
         } catch (final IOException e) {
-          System.out.println("error reading file:" + file);
-          ClientLogger.logQuietly(e);
+          ClientLogger.logQuietly("Failed to read dice server properties: " + file.getAbsolutePath(), e);
         }
       }
     }

@@ -97,7 +97,7 @@ public class ConnectionFinder {
         territoryAreas.put(territoryName, listOfAreas);
       }
     } catch (final IOException ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to load polygons: " + polyFile.getAbsolutePath(), ex);
     }
     if (!dimensionsSet) {
       final String lineWidth = JOptionPane.showInputDialog(null,

@@ -171,7 +171,7 @@ public class MapData implements Closeable {
       }
       initializeContains();
     } catch (final IOException ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to load map properties", ex);
     }
   }
 
@@ -244,7 +244,7 @@ public class MapData implements Closeable {
     try {
       return Double.parseDouble(mapProperties.getProperty(PROPERTY_UNITS_SCALE));
     } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_SCALE, e);
       return 1.0;
     }
   }
@@ -259,7 +259,7 @@ public class MapData implements Closeable {
     try {
       return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_WIDTH));
     } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_WIDTH, e);
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
     }
   }
@@ -274,7 +274,7 @@ public class MapData implements Closeable {
     try {
       return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_HEIGHT));
     } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_HEIGHT, e);
       return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
     }
   }
@@ -290,7 +290,7 @@ public class MapData implements Closeable {
     try {
       return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH));
     } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_COUNTER_OFFSET_WIDTH, e);
       return getDefaultUnitWidth() / 4;
     }
   }
@@ -306,7 +306,7 @@ public class MapData implements Closeable {
     try {
       return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT));
     } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT, e);
       return getDefaultUnitHeight();
     }
   }

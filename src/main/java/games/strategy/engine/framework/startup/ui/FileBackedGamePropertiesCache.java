@@ -53,7 +53,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         out.writeObject(serializableMap);
       }
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to write game properties to cache: " + cache.getAbsolutePath(), e);
     }
   }
 
@@ -76,7 +76,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         }
       }
     } catch (final IOException | ClassNotFoundException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to load game properties from cache: " + cache.getAbsolutePath(), e);
     }
   }
 

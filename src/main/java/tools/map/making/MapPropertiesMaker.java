@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -319,10 +320,11 @@ public class MapPropertiesMaker extends JFrame {
       if (centerName == null) {
         return;
       }
-      final FileInputStream in = new FileInputStream(centerName);
-      properties.load(in);
+      try (InputStream in = new FileInputStream(centerName)) {
+        properties.load(in);
+      }
     } catch (final HeadlessException | IOException ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to load map properties", ex);
     }
     for (final Method setter : mapProperties.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");
@@ -353,7 +355,7 @@ public class MapPropertiesMaker extends JFrame {
       System.out.println("");
       System.out.println(stringToWrite);
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to save map properties", e);
     }
   }
 
@@ -367,7 +369,7 @@ public class MapPropertiesMaker extends JFrame {
       try {
         outString.append(outMethod.invoke(mapProperties));
       } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to invoke method reflectively: " + outMethod.getName(), e);
       }
     }
     return outString.toString();

@@ -183,7 +183,7 @@ public class ResourceLoader implements Closeable {
     try {
       loader.close();
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to close resource loader", e);
     }
   }
 

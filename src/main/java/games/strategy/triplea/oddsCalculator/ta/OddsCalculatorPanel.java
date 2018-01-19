@@ -193,7 +193,7 @@ class OddsCalculatorPanel extends JPanel {
       // must be shutdown, as it has a thread pool per each instance.
       calculator.shutdown();
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to shut down odds calculator", e);
     }
   }
 

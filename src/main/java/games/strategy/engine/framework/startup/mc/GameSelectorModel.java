@@ -102,7 +102,7 @@ public class GameSelectorModel extends Observable {
         message = e.getClass().getName() + "  at  " + e.getStackTrace()[0].toString();
       }
       message = "Exception while parsing: " + file.getName() + " : " + message;
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly(message, e);
       if (ui != null) {
         error(message + "\r\nPlease see console for full error log!", ui);
       }
@@ -116,7 +116,7 @@ public class GameSelectorModel extends Observable {
         return newData;
       }
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to load game", e);
     }
     return null;
   }

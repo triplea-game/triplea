@@ -63,7 +63,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
       gameData = GameParser.parse(url.toString(), input);
       gameDataFullyLoaded = true;
     } catch (final EngineVersionException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Game engine not compatible with: " + url, e);
       throw new GameParseException(e);
     } catch (final GameParseException e) {
       ClientLogger.logError("Could not parse:" + url, e);

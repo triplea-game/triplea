@@ -110,7 +110,7 @@ public class HeadedUiContext extends AbstractUiContext {
           cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
         }
       } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to create cursor from: " + cursorUrl, e);
       }
     }
     stopWatch.done();
@@ -228,7 +228,7 @@ public class HeadedUiContext extends AbstractUiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 }

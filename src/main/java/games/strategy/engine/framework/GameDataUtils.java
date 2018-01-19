@@ -28,7 +28,7 @@ public final class GameDataUtils {
       final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, copyDelegates));
       return IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to clone game data", e);
       return null;
     }
   }

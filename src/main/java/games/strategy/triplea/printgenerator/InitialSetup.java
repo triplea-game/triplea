@@ -40,7 +40,7 @@ public class InitialSetup {
       new PlayerOrder().saveToFile(printData);
       new PuChart(printData).saveToFile();
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to save print generation data", e);
     }
   }
 }

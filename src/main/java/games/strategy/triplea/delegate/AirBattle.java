@@ -726,7 +726,7 @@ public class AirBattle extends AbstractBattle {
       try {
         getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleId, "Press space to continue", hitPlayer);
       } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Error during casualty notification", e);
       }
     }, "Click to continue waiter");
     t.start();

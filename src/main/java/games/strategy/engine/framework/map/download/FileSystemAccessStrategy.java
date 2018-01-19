@@ -48,7 +48,7 @@ class FileSystemAccessStrategy {
         try {
           Files.delete(map.getInstallLocation().toPath());
         } catch (final IOException e) {
-          ClientLogger.logQuietly(e);
+          ClientLogger.logQuietly("Failed to delete map: " + map.getInstallLocation().getAbsolutePath(), e);
         }
         map.getInstallLocation().delete();
       }

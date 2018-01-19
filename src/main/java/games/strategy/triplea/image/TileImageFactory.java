@@ -247,7 +247,7 @@ public final class TileImageFactory {
       }
       loadingImages.done();
     } catch (final IOException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to load one or more images: " + urlrelief + ", " + urlBase, e);
     }
 
     // This does the blend
@@ -256,7 +256,7 @@ public final class TileImageFactory {
       try {
         reliefFile = loadCompatibleImage(urlBlankRelief);
       } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to load image: " + urlBlankRelief, e);
       }
     }
     // This fixes the blank land territories

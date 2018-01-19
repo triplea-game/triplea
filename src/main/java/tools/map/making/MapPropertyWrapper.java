@@ -114,7 +114,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       System.out.println(setter + "   to   " + value);
       setter.invoke(object, args);
     } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to invoke setter reflectively: " + setter.getName(), e);
     }
   }
 
@@ -133,11 +133,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       final Object currentValue;
       try {
         currentValue = field.get(object);
-      } catch (final IllegalArgumentException e) {
-        ClientLogger.logQuietly(e);
-        continue;
-      } catch (final IllegalAccessException e) {
-        ClientLogger.logQuietly(e);
+      } catch (final IllegalArgumentException | IllegalAccessException e) {
+        ClientLogger.logQuietly("Failed to get field value reflectively: " + field.getName(), e);
         continue;
       }
       try {
@@ -145,7 +142,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
             new MapPropertyWrapper<>(propertyName, null, currentValue, setter);
         properties.add(wrapper);
       } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to create map property wrapper", e);
       }
     }
     properties.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));

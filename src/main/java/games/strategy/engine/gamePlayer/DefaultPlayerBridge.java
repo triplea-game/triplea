@@ -80,13 +80,13 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         try {
           remoteName = ServerGame.getRemoteName(delegate);
         } catch (final Exception e) {
-          ClientLogger.logQuietly(e);
           final String errorMessage =
               "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: "
                   + currentStep + ", and CurrentDelegate: " + currentDelegate;
           // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
           // too
           System.err.println(errorMessage);
+          ClientLogger.logQuietly(errorMessage, e);
           throw new IllegalStateException(errorMessage, e);
         }
         return getRemoteThatChecksForGameOver(game.getRemoteMessenger().getRemote(remoteName));

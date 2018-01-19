@@ -120,7 +120,7 @@ public class InGameLobbyWatcher {
       rm.registerRemote(rhu, RemoteHostUtils.getRemoteHostUtilsName(um.getLocalNode()));
       return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
     } catch (final Exception e) {
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Failed to create in-game lobby watcher", e);
       return null;
     }
   }

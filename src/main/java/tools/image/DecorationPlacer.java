@@ -468,7 +468,7 @@ public class DecorationPlacer extends JFrame {
       }
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final Exception ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to save points", ex);
     }
     System.out.println("");
   }
@@ -609,7 +609,7 @@ public class DecorationPlacer extends JFrame {
         currentPoints = new HashMap<>();
       }
     } catch (final HeadlessException | IOException ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to load points", ex);
     }
   }
 

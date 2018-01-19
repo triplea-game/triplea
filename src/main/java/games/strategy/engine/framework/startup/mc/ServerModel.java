@@ -376,7 +376,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       try {
         return GameProperties.writeEditableProperties(currentEditableProperties);
       } catch (final IOException e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to write game properties", e);
       }
       return null;
     }
@@ -427,7 +427,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           }
         });
       } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to load save game: " + fileName, e);
       }
     }
 
@@ -443,7 +443,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       try {
         headless.loadGameOptions(bytes);
       } catch (final Exception e) {
-        ClientLogger.logQuietly(e);
+        ClientLogger.logQuietly("Failed to load game options", e);
       }
     }
   };

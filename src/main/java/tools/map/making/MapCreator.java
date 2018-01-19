@@ -356,7 +356,7 @@ public class MapCreator extends JFrame {
           try {
             TileImageBreaker.main(new String[0]);
           } catch (final Exception exception) {
-            ClientLogger.logQuietly(exception);
+            ClientLogger.logQuietly("Failed to run tile image breaker", exception);
           }
         }).start();
       }
@@ -372,7 +372,7 @@ public class MapCreator extends JFrame {
           try {
             DecorationPlacer.main(new String[0]);
           } catch (final Exception exception) {
-            ClientLogger.logQuietly(exception);
+            ClientLogger.logQuietly("Failed to run decoration placer", exception);
           }
         }).start();
       }
@@ -398,7 +398,7 @@ public class MapCreator extends JFrame {
           try {
             ConnectionFinder.main(new String[0]);
           } catch (final Exception exception) {
-            ClientLogger.logQuietly(exception);
+            ClientLogger.logQuietly("Failed to run connection finder", exception);
           }
         }).start();
       }
@@ -423,7 +423,7 @@ public class MapCreator extends JFrame {
           try {
             ReliefImageBreaker.main(new String[0]);
           } catch (final Exception exception) {
-            ClientLogger.logQuietly(exception);
+            ClientLogger.logQuietly("Failed to run relief image breaker", exception);
           }
         }).start();
       }
@@ -439,7 +439,7 @@ public class MapCreator extends JFrame {
           try {
             ImageShrinker.main(new String[0]);
           } catch (final Exception exception) {
-            ClientLogger.logQuietly(exception);
+            ClientLogger.logQuietly("Failed to run image shrinker", exception);
           }
         }).start();
       }
@@ -455,7 +455,7 @@ public class MapCreator extends JFrame {
           try {
             TileImageReconstructor.main(new String[0]);
           } catch (final Exception exception) {
-            ClientLogger.logQuietly(exception);
+            ClientLogger.logQuietly("Failed to run tile image reconstructor", exception);
           }
         }).start();
       }

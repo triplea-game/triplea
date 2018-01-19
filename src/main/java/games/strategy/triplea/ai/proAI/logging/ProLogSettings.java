@@ -39,7 +39,7 @@ public class ProLogSettings implements Serializable {
           });
         }
       } catch (final Exception ex) {
-        ClientLogger.logQuietly(ex);
+        ClientLogger.logQuietly("Failed to load pro AI log settings", ex);
       }
       if (result == null) {
         result = new ProLogSettings();
@@ -64,10 +64,10 @@ public class ProLogSettings implements Serializable {
       try {
         prefs.flush();
       } catch (final BackingStoreException ex) {
-        ClientLogger.logQuietly(ex);
+        ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), ex);
       }
     } catch (final Exception ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to save pro AI log settings", ex);
     }
   }
 }

@@ -187,7 +187,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
       System.out.println(e.getMessage());
     } catch (final Exception e) {
       System.err.println("Could not parse:" + uri);
-      ClientLogger.logQuietly(e);
+      ClientLogger.logQuietly("Could not parse: " + uri, e);
     }
   }
 

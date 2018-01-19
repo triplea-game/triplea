@@ -394,7 +394,7 @@ public class PolygonGrabber extends JFrame {
       ClientLogger.logQuietly("file name = " + polyName, ex);
     } catch (final HeadlessException ex) {
       // TODO: remove HeadlessException (fix anti-pattern control flow via exception handling with proper control flow)
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to load polygons", ex);
     }
   }
 

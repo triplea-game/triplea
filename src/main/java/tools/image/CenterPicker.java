@@ -242,7 +242,7 @@ public class CenterPicker extends JFrame {
       }
       System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
     } catch (final Exception ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to save centers", ex);
     }
   }
 
@@ -261,7 +261,7 @@ public class CenterPicker extends JFrame {
       centers = PointFileReaderWriter.readOneToOne(in);
       repaint();
     } catch (final HeadlessException | IOException ex) {
-      ClientLogger.logQuietly(ex);
+      ClientLogger.logQuietly("Failed to load centers", ex);
     }
   }
 
