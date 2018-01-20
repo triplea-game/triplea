@@ -31,5 +31,8 @@
 	-fx-font-size: 37px;
 }
 #rootPane {
-	-fx-background-image: url('/org/triplea/client/ui/javafx/images/background.png');
+	-fx-background-image: url('/org/triplea/client/ui/javafx/images/wood.png'), url('/org/triplea/client/ui/javafx/images/background.png');
+	-fx-background-position: center center, center center;
+	-fx-background-size: 100% auto, 100% auto;
+	-fx-background-repeat: repeat, no-repeat;
 }
