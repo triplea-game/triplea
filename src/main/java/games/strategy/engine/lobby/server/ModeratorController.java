@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.lobby.server.db.BannedMacController;
 import games.strategy.engine.lobby.server.db.BannedUsernameController;
 import games.strategy.engine.lobby.server.db.MutedMacController;
@@ -32,15 +34,16 @@ public class ModeratorController extends AbstractModeratorController {
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
     }
-    final INode modNode = MessageContext.getSender();
-    final String mac = getNodeMacAddress(node);
-    new BannedUsernameController().addBannedUsername(getRealName(node), banExpires, getModeratorForNode(modNode));
-    final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
+
+    final User bannedUser = getUserForNode(node);
+    final User moderator = getUserForNode(MessageContext.getSender());
+    new BannedUsernameController().addBannedUsername(bannedUser, banExpires, moderator);
     logger.info(String.format(
-        "User was banned from the lobby(Username ban). "
-            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
-        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
-        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+        "User was banned from the lobby (by username); "
+            + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
+        bannedUser.getUsername(), bannedUser.getInetAddress().getHostAddress(), bannedUser.getHashedMacAddress(),
+        moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
+        banExpires == null ? "forever" : banExpires.toString()));
   }
 
   private void assertUserIsAdmin() {
@@ -57,13 +60,19 @@ public class ModeratorController extends AbstractModeratorController {
 
   @Override
   public boolean isPlayerAdmin(final INode node) {
-    final String name = getRealName(node);
-    final DBUser user = new UserController().getUserByName(name);
-    return user != null && user.isAdmin();
+    final User user = getUserForNode(node);
+    final DBUser dbUser = new UserController().getUserByName(user.getUsername());
+    return dbUser != null && dbUser.isAdmin();
   }
 
-  private Moderator getModeratorForNode(final INode node) {
-    return new Moderator(node.getName(), node.getAddress(), getNodeMacAddress(node));
+  private User getUserForNode(final INode node) {
+    return new User(getUsernameForNode(node), node.getAddress(), getNodeMacAddress(node));
+  }
+
+  @VisibleForTesting
+  static String getUsernameForNode(final INode node) {
+    // usernames may contain a " (n)" suffix when the same user is logged in multiple times
+    return node.getName().split(" ")[0];
   }
 
   @Override
@@ -81,14 +90,16 @@ public class ModeratorController extends AbstractModeratorController {
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
     }
-    final INode modNode = MessageContext.getSender();
-    new BannedMacController().addBannedMac(hashedMac, banExpires, getModeratorForNode(modNode));
-    final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
+
+    final User bannedUser = getUserForNode(node).withHashedMacAddress(hashedMac);
+    final User moderator = getUserForNode(MessageContext.getSender());
+    new BannedMacController().addBannedMac(bannedUser, banExpires, moderator);
     logger.info(String.format(
-        "User was banned from the lobby(Mac ban). "
-            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
-        node.getName(), node.getAddress().getHostAddress(), hashedMac, modNode.getName(),
-        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
+        "User was banned from the lobby (by MAC); "
+            + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
+        bannedUser.getUsername(), bannedUser.getInetAddress().getHostAddress(), bannedUser.getHashedMacAddress(),
+        moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
+        banExpires == null ? "forever" : banExpires.toString()));
   }
 
   @Override
@@ -101,17 +112,17 @@ public class ModeratorController extends AbstractModeratorController {
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
     }
-    final INode modNode = MessageContext.getSender();
-    final String mac = getNodeMacAddress(node);
-    final String realName = getRealName(node);
-    new MutedUsernameController().addMutedUsername(realName, muteExpires, getModeratorForNode(modNode));
-    serverMessenger.notifyUsernameMutingOfPlayer(realName, muteExpires);
-    final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
+
+    final User mutedUser = getUserForNode(node);
+    final User moderator = getUserForNode(MessageContext.getSender());
+    new MutedUsernameController().addMutedUsername(mutedUser, muteExpires, moderator);
+    serverMessenger.notifyUsernameMutingOfPlayer(mutedUser.getUsername(), muteExpires);
     logger.info(String.format(
-        "User was muted on the lobby(Username mute). "
-            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
-        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
-        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
+        "User was muted in the lobby (by username); "
+            + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
+        mutedUser.getUsername(), mutedUser.getInetAddress().getHostAddress(), mutedUser.getHashedMacAddress(),
+        moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
+        muteExpires == null ? "forever" : muteExpires.toString()));
   }
 
   @Override
@@ -124,16 +135,17 @@ public class ModeratorController extends AbstractModeratorController {
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't mute an admin");
     }
-    final INode modNode = MessageContext.getSender();
-    final String mac = getNodeMacAddress(node);
-    new MutedMacController().addMutedMac(mac, muteExpires, getModeratorForNode(modNode));
-    serverMessenger.notifyMacMutingOfPlayer(mac, muteExpires);
-    final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
+
+    final User mutedUser = getUserForNode(node);
+    final User moderator = getUserForNode(MessageContext.getSender());
+    new MutedMacController().addMutedMac(mutedUser, muteExpires, moderator);
+    serverMessenger.notifyMacMutingOfPlayer(mutedUser.getHashedMacAddress(), muteExpires);
     logger.info(String.format(
-        "User was muted on the lobby(Mac mute). "
-            + "Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s Expires: %s",
-        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
-        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
+        "User was muted in the lobby (by MAC); "
+            + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
+        mutedUser.getUsername(), mutedUser.getInetAddress().getHostAddress(), mutedUser.getHashedMacAddress(),
+        moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
+        muteExpires == null ? "forever" : muteExpires.toString()));
   }
 
   @Override
@@ -311,9 +323,14 @@ public class ModeratorController extends AbstractModeratorController {
     builder.append("\r\nHost Name: ").append(node.getAddress().getHostName());
     builder.append("\r\nIP Address: ").append(node.getAddress().getHostAddress());
     builder.append("\r\nPort: ").append(node.getPort());
-    builder.append("\r\nHashed Mac: ").append(mac != null && mac.startsWith(games.strategy.util.MD5Crypt.MAGIC + "MH$")
-        ? mac.substring(6)
-        : mac + " (Invalid)");
+    builder.append("\r\nHashed Mac: ");
+    if (UNKNOWN_HASHED_MAC_ADDRESS.equals(mac)) {
+      builder.append("(Unknown)");
+    } else if (mac.startsWith(games.strategy.util.MD5Crypt.MAGIC + "MH$")) {
+      builder.append(mac.substring(6));
+    } else {
+      builder.append(mac + " (Invalid)");
+    }
     builder.append("\r\nAliases: ").append(getAliasesFor(node));
     return builder.toString();
   }

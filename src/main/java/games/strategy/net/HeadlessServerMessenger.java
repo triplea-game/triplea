@@ -7,6 +7,8 @@ import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 public class HeadlessServerMessenger implements IServerMessenger {
 
   private final INode node;
@@ -105,7 +107,7 @@ public class HeadlessServerMessenger implements IServerMessenger {
   public void notifyUsernameMiniBanningOfPlayer(final String username, final Instant expires) {}
 
   @Override
-  public String getPlayerMac(final String name) {
+  public @Nullable String getPlayerMac(final String name) {
     return null;
   }
 

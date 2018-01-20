@@ -9,83 +9,103 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.lobby.server.Moderator;
+import games.strategy.engine.lobby.server.User;
 
 public final class MutedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
   private final MutedMacController controller = spy(new MutedMacController());
-  private final String hashedMac = newHashedMacAddress();
 
   @Test
   public void testMuteMacForever() {
     muteMacForSeconds(Long.MAX_VALUE);
-    assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(Optional.of(Instant.MAX), controller.getMacUnmuteTime(hashedMac));
+    assertTrue(isMacMuted());
+    assertEquals(Optional.of(Instant.MAX), getMacUnmuteTime());
   }
 
   @Test
   public void testMuteMac() {
     final Instant muteUntil = muteMacForSeconds(100L);
-    assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(Optional.of(muteUntil), controller.getMacUnmuteTime(hashedMac));
+    assertMutedUserEquals(user);
+    assertTrue(isMacMuted());
+    assertEquals(Optional.of(muteUntil), getMacUnmuteTime());
     when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
-    assertFalse(controller.isMacMuted(hashedMac));
-    assertEquals(Optional.empty(), controller.getMacUnmuteTime(hashedMac));
+    assertFalse(isMacMuted());
+    assertEquals(Optional.empty(), getMacUnmuteTime());
   }
 
   @Test
   public void testUnmuteMac() {
     final Instant muteUntil = muteMacForSeconds(100L);
-    assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(Optional.of(muteUntil), controller.getMacUnmuteTime(hashedMac));
+    assertTrue(isMacMuted());
+    assertEquals(Optional.of(muteUntil), getMacUnmuteTime());
     muteMacForSeconds(-10L);
-    assertFalse(controller.isMacMuted(hashedMac));
-    assertEquals(Optional.empty(), controller.getMacUnmuteTime(hashedMac));
+    assertFalse(isMacMuted());
+    assertEquals(Optional.empty(), getMacUnmuteTime());
   }
 
   @Test
   public void testMuteMacInThePast() {
     muteMacForSeconds(-10L);
-    assertFalse(controller.isMacMuted(hashedMac));
-    assertEquals(Optional.empty(), controller.getMacUnmuteTime(hashedMac));
+    assertFalse(isMacMuted());
+    assertEquals(Optional.empty(), getMacUnmuteTime());
   }
 
   @Test
   public void testMuteMacUpdate() {
     muteMacForSeconds(Long.MAX_VALUE);
-    assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(Optional.of(Instant.MAX), controller.getMacUnmuteTime(hashedMac));
+    assertTrue(isMacMuted());
+    assertEquals(Optional.of(Instant.MAX), getMacUnmuteTime());
     final Instant muteUntil = muteMacForSeconds(100L);
-    assertTrue(controller.isMacMuted(hashedMac));
-    assertEquals(Optional.of(muteUntil), controller.getMacUnmuteTime(hashedMac));
+    assertTrue(isMacMuted());
+    assertEquals(Optional.of(muteUntil), getMacUnmuteTime());
   }
 
   @Test
-  public void testMuteMacUpdatesModerator() {
-    muteMacForSeconds(Long.MAX_VALUE, moderator);
+  public void testMuteMacUpdatesMutedUserAndModerator() {
+    muteMacForSeconds(user, Long.MAX_VALUE, moderator);
 
-    final Moderator otherModerator = newModerator();
-    muteMacForSeconds(Long.MAX_VALUE, otherModerator);
+    final User otherUser = newUser().withHashedMacAddress(user.getHashedMacAddress());
+    final User otherModerator = newUser();
+    muteMacForSeconds(otherUser, Long.MAX_VALUE, otherModerator);
 
-    assertModeratorForMutedMacEquals(otherModerator);
+    assertMutedUserEquals(otherUser);
+    assertModeratorEquals(otherModerator);
   }
 
-  private Instant muteMacForSeconds(final long length) {
-    return muteMacForSeconds(length, moderator);
+  private @Nullable Instant muteMacForSeconds(final long seconds) {
+    return muteMacForSeconds(user, seconds, moderator);
   }
 
-  private Instant muteMacForSeconds(final long length, final Moderator moderator) {
-    final Instant muteEnd = length == Long.MAX_VALUE ? null : Instant.now().plusSeconds(length);
-    controller.addMutedMac(hashedMac, muteEnd, moderator);
+  private @Nullable Instant muteMacForSeconds(final User mutedUser, final long seconds, final User moderator) {
+    final @Nullable Instant muteEnd = (seconds == Long.MAX_VALUE) ? null : Instant.now().plusSeconds(seconds);
+    controller.addMutedMac(mutedUser, muteEnd, moderator);
     return muteEnd;
   }
 
-  private void assertModeratorForMutedMacEquals(final Moderator expected) {
-    assertModeratorEquals(
+  private Optional<Instant> getMacUnmuteTime() {
+    return controller.getMacUnmuteTime(user.getHashedMacAddress());
+  }
+
+  private boolean isMacMuted() {
+    return controller.isMacMuted(user.getHashedMacAddress());
+  }
+
+  private void assertMutedUserEquals(final User expected) {
+    assertUserEquals(
+        expected,
+        "select username, ip, mac from muted_macs where mac=?",
+        ps -> ps.setString(1, user.getHashedMacAddress()),
+        "unknown muted hashed MAC address: " + user.getHashedMacAddress());
+  }
+
+  private void assertModeratorEquals(final User expected) {
+    assertUserEquals(
         expected,
         "select mod_username, mod_ip, mod_mac from muted_macs where mac=?",
-        ps -> ps.setString(1, hashedMac),
-        "unknown muted hashed MAC address: " + hashedMac);
+        ps -> ps.setString(1, user.getHashedMacAddress()),
+        "unknown muted hashed MAC address: " + user.getHashedMacAddress());
   }
 }

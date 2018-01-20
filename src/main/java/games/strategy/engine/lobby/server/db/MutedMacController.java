@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import games.strategy.engine.lobby.server.Moderator;
+import games.strategy.engine.lobby.server.User;
 
 /**
  * Utility class to create/read/delete muted macs (there is no update).
@@ -25,42 +25,48 @@ public class MutedMacController extends TimedController {
    * If this mac is already muted, this call will update the mute_end.
    * </p>
    *
-   * @param mac The MAC to mute.
+   * @param mutedUser The user whose MAC will be muted.
    * @param muteTill The instant at which the mute will expire or {@code null} to mute the MAC forever.
    * @param moderator The moderator executing the mute.
+   *
+   * @throws IllegalStateException If an error occurs while adding, updating, or removing the mute.
    */
-  public void addMutedMac(final String mac, final @Nullable Instant muteTill, final Moderator moderator) {
+  public void addMutedMac(final User mutedUser, final @Nullable Instant muteTill, final User moderator) {
+    checkNotNull(mutedUser);
     checkNotNull(moderator);
 
     if (muteTill != null && muteTill.isBefore(now())) {
-      removeMutedMac(mac);
+      removeMutedMac(mutedUser.getHashedMacAddress());
       return;
     }
 
     final String sql = ""
         + "insert into muted_macs "
-        + "  (mac, mute_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?) "
+        + "  (username, ip, mac, mute_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?, ?, ?) "
         + "on conflict (mac) do update set "
+        + "  username=excluded.username, "
+        + "  ip=excluded.ip, "
         + "  mute_till=excluded.mute_till, "
         + "  mod_username=excluded.mod_username, "
         + "  mod_ip=excluded.mod_ip, "
         + "  mod_mac=excluded.mod_mac";
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, mac);
-      ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
-      ps.setString(3, moderator.getUsername());
-      ps.setString(4, moderator.getInetAddress().getHostAddress());
-      ps.setString(5, moderator.getHashedMacAddress());
+      ps.setString(1, mutedUser.getUsername());
+      ps.setString(2, mutedUser.getInetAddress().getHostAddress());
+      ps.setString(3, mutedUser.getHashedMacAddress());
+      ps.setTimestamp(4, muteTill != null ? Timestamp.from(muteTill) : null);
+      ps.setString(5, moderator.getUsername());
+      ps.setString(6, moderator.getInetAddress().getHostAddress());
+      ps.setString(7, moderator.getHashedMacAddress());
       ps.execute();
       con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error inserting muted mac:" + mac, sqle);
+    } catch (final SQLException e) {
+      throw new IllegalStateException("Error inserting muted mac: " + mutedUser.getHashedMacAddress(), e);
     }
   }
 
   private static void removeMutedMac(final String mac) {
-
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac=?")) {
       ps.setString(1, mac);
@@ -85,7 +91,6 @@ public class MutedMacController extends TimedController {
    */
   public Optional<Instant> getMacUnmuteTime(final String mac) {
     final String sql = "select mac, mute_till from muted_macs where mac=?";
-
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);

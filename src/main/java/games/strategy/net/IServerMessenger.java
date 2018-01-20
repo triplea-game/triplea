@@ -3,6 +3,8 @@ package games.strategy.net;
 import java.time.Instant;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 /**
  * A server messenger. Additional methods for accepting new connections.
  */
@@ -41,7 +43,10 @@ public interface IServerMessenger extends IMessenger {
 
   void notifyUsernameMiniBanningOfPlayer(String username, Instant expires);
 
-  String getPlayerMac(String name);
+  /**
+   * @return The hashed MAC address for the user with the specified name or {@code null} if unknown.
+   */
+  @Nullable String getPlayerMac(String name);
 
   void notifyUsernameMutingOfPlayer(String username, Instant muteExpires);
 

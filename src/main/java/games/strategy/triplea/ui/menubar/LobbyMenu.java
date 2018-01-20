@@ -201,7 +201,7 @@ public class LobbyMenu extends JMenuBar {
           "Please consult other admins before banning longer than 1 day.", date -> {
             final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
                 .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-            controller.banMac(newDummyNode("None (Admin menu originated ban)"), mac, date);
+            controller.banMac(newDummyNode("__unknown__"), mac, date);
           });
     });
     item.setEnabled(true);
@@ -255,7 +255,7 @@ public class LobbyMenu extends JMenuBar {
       }
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
           .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-      controller.banMac(newDummyNode("None (Admin menu originated unban)"), mac, Date.from(Instant.EPOCH));
+      controller.banMac(newDummyNode("__unknown__"), mac, Date.from(Instant.EPOCH));
     });
     item.setEnabled(true);
     parentMenu.add(item);
