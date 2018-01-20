@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import games.strategy.engine.lobby.server.Moderator;
+import games.strategy.engine.lobby.server.User;
 
 /**
  * Utility class to create/read/delete muted usernames (there is no update).
@@ -25,42 +25,48 @@ public class MutedUsernameController extends TimedController {
    * If this username is already muted, this call will update the mute_end.
    * </p>
    *
-   * @param username The username to mute.
+   * @param mutedUser The user whose username will be muted.
    * @param muteTill The instant at which the mute will expire or {@code null} to mute the username forever.
    * @param moderator The moderator executing the mute.
+   *
+   * @throws IllegalStateException If an error occurs while adding, updating, or removing the mute.
    */
-  public void addMutedUsername(final String username, final @Nullable Instant muteTill, final Moderator moderator) {
+  public void addMutedUsername(final User mutedUser, final @Nullable Instant muteTill, final User moderator) {
+    checkNotNull(mutedUser);
     checkNotNull(moderator);
 
     if (muteTill != null && muteTill.isBefore(now())) {
-      removeMutedUsername(username);
+      removeMutedUsername(mutedUser.getUsername());
       return;
     }
 
     final String sql = ""
         + "insert into muted_usernames "
-        + "  (username, mute_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?) "
+        + "  (username, ip, mac, mute_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?, ?, ?) "
         + "on conflict (username) do update set "
+        + "  ip=excluded.ip, "
+        + "  mac=excluded.mac, "
         + "  mute_till=excluded.mute_till, "
         + "  mod_username=excluded.mod_username, "
         + "  mod_ip=excluded.mod_ip, "
         + "  mod_mac=excluded.mod_mac";
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, username);
-      ps.setTimestamp(2, muteTill != null ? Timestamp.from(muteTill) : null);
-      ps.setString(3, moderator.getUsername());
-      ps.setString(4, moderator.getInetAddress().getHostAddress());
-      ps.setString(5, moderator.getHashedMacAddress());
+      ps.setString(1, mutedUser.getUsername());
+      ps.setString(2, mutedUser.getInetAddress().getHostAddress());
+      ps.setString(3, mutedUser.getHashedMacAddress());
+      ps.setTimestamp(4, muteTill != null ? Timestamp.from(muteTill) : null);
+      ps.setString(5, moderator.getUsername());
+      ps.setString(6, moderator.getInetAddress().getHostAddress());
+      ps.setString(7, moderator.getHashedMacAddress());
       ps.execute();
       con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error inserting muted username:" + username, sqle);
+    } catch (final SQLException e) {
+      throw new IllegalStateException("Error inserting muted username: " + mutedUser.getUsername(), e);
     }
   }
 
   private static void removeMutedUsername(final String username) {
-
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?")) {
       ps.setString(1, username);
@@ -85,7 +91,6 @@ public class MutedUsernameController extends TimedController {
    */
   public Optional<Instant> getUsernameUnmuteTime(final String username) {
     final String sql = "select username, mute_till from muted_usernames where username = ?";
-
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);

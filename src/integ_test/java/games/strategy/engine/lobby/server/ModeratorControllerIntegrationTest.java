@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.util.Util;
 
@@ -34,6 +36,12 @@ public class ModeratorControllerIntegrationTest {
 
   private static String md5Crypt(final String value) {
     return games.strategy.util.MD5Crypt.crypt(value);
+  }
+
+  private static String newHashedMacAddress() {
+    final byte[] bytes = new byte[6];
+    new Random().nextBytes(bytes);
+    return MacFinder.getHashedMacAddress(bytes);
   }
 
   @BeforeEach
@@ -48,6 +56,7 @@ public class ModeratorControllerIntegrationTest {
     userController.makeAdmin(dbUser);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
+    when(serverMessenger.getPlayerMac(adminName)).thenReturn(newHashedMacAddress());
   }
 
   @Test

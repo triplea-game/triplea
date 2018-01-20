@@ -1,15 +1,27 @@
 package games.strategy.engine.lobby.server;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.logging.Logger;
+
+import javax.annotation.Nullable;
 
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 
 public abstract class AbstractModeratorController implements IModeratorController {
   protected static final Logger logger = Logger.getLogger(ModeratorController.class.getName());
+
+  /**
+   * The hashed MAC address used when the MAC address of a node is unknown. It corresponds to the MAC address
+   * {@code 00:00:00:00:00:00}.
+   */
+  protected static final String UNKNOWN_HASHED_MAC_ADDRESS = MacFinder.getHashedMacAddress(new byte[6]);
+
   protected final IServerMessenger serverMessenger;
   protected final Messengers allMessengers;
 
@@ -26,13 +38,19 @@ public abstract class AbstractModeratorController implements IModeratorControlle
     messenger.registerRemote(this, getModeratorControllerName());
   }
 
-  protected String getNodeMacAddress(final INode node) {
-    return serverMessenger.getPlayerMac(node.getName());
-  }
+  /**
+   * Gets the hashed MAC address of the specified node.
+   *
+   * @param node The node whose hashed MAC address is desired.
+   *
+   * @return The hashed MAC address of the specified node. If the MAC address of the node cannot be determined, this
+   *         method returns {@link #UNKNOWN_HASHED_MAC_ADDRESS}.
+   */
+  protected final String getNodeMacAddress(final INode node) {
+    checkNotNull(node);
 
-  protected String getRealName(final INode node) {
-    // Remove any (n) that is added to distinguish duplicate names
-    return node.getName().split(" ")[0];
+    final @Nullable String hashedMacAddress = serverMessenger.getPlayerMac(node.getName());
+    return hashedMacAddress != null ? hashedMacAddress : UNKNOWN_HASHED_MAC_ADDRESS;
   }
 
   protected String getAliasesFor(final INode node) {
@@ -42,7 +60,8 @@ public abstract class AbstractModeratorController implements IModeratorControlle
       if (cur.equals(node) || cur.getName().equals("Admin")) {
         continue;
       }
-      if (cur.getAddress().equals(node.getAddress()) || getNodeMacAddress(cur).equals(nodeMac)) {
+      if (cur.getAddress().equals(node.getAddress())
+          || (!UNKNOWN_HASHED_MAC_ADDRESS.equals(nodeMac) && getNodeMacAddress(cur).equals(nodeMac))) {
         if (builder.length() > 0) {
           builder.append(", ");
         }

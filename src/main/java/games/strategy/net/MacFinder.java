@@ -1,5 +1,8 @@
 package games.strategy.net;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -18,7 +21,8 @@ import com.google.common.primitives.Bytes;
 
 import games.strategy.debug.ClientLogger;
 
-public class MacFinder {
+public final class MacFinder {
+  private MacFinder() {}
 
   /**
    * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3.
@@ -29,7 +33,27 @@ public class MacFinder {
       throw new IllegalArgumentException(
           "You have an invalid MAC address or TripleA can't find your mac address");
     }
-    return games.strategy.util.MD5Crypt.crypt(mac, "MH");
+    return getHashedMacAddress(mac);
+  }
+
+  /**
+   * Gets the hash of the specified MAC address.
+   *
+   * @param macAddressBytes The MAC address bytes.
+   *
+   * @return The hash of the specified MAC address.
+   *
+   * @throws IllegalArgumentException If the length of {@code macAddressBytes} is not six bytes.
+   */
+  public static String getHashedMacAddress(final byte[] macAddressBytes) {
+    checkNotNull(macAddressBytes);
+    checkArgument(macAddressBytes.length == 6, "MAC address length must be six bytes");
+
+    return getHashedMacAddress(convertMacBytesToString(macAddressBytes));
+  }
+
+  private static String getHashedMacAddress(final String macAddress) {
+    return games.strategy.util.MD5Crypt.crypt(macAddress, "MH");
   }
 
   private static String getMacAddress() {

@@ -5,7 +5,7 @@ import java.time.Instant;
 
 import javax.annotation.Nullable;
 
-import games.strategy.engine.lobby.server.Moderator;
+import games.strategy.engine.lobby.server.User;
 import games.strategy.util.Tuple;
 
 /**
@@ -16,11 +16,13 @@ public interface BannedUsernameDao {
    * Adds the specified banned username to the table if it does not exist or updates the instant at which the ban will
    * expire if it already exists.
    *
-   * @param username The username to ban.
+   * @param bannedUser The user whose username will be banned.
    * @param banTill The instant at which the ban will expire or {@ode null} to ban the username forever.
    * @param moderator The moderator executing the ban.
+   *
+   * @throws IllegalStateException If an error occurs while adding, updating, or removing the ban.
    */
-  void addBannedUsername(String username, @Nullable Instant banTill, Moderator moderator);
+  void addBannedUsername(User bannedUser, @Nullable Instant banTill, User moderator);
 
   /**
    * Indicates the specified username is banned.

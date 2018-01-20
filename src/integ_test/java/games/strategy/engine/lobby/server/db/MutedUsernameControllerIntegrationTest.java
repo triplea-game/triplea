@@ -9,83 +9,103 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.lobby.server.Moderator;
+import games.strategy.engine.lobby.server.User;
 
 public final class MutedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
   private final MutedUsernameController controller = spy(new MutedUsernameController());
-  private final String username = newUsername();
 
   @Test
   public void testMuteUsernameForever() {
     muteUsernameForSeconds(Long.MAX_VALUE);
-    assertTrue(controller.isUsernameMuted(username));
-    assertEquals(Optional.of(Instant.MAX), controller.getUsernameUnmuteTime(username));
+    assertTrue(isUsernameMuted());
+    assertEquals(Optional.of(Instant.MAX), getUsernameUnmuteTime());
   }
 
   @Test
   public void testMuteUsername() {
     final Instant muteUntil = muteUsernameForSeconds(100L);
-    assertTrue(controller.isUsernameMuted(username));
-    assertEquals(Optional.of(muteUntil), controller.getUsernameUnmuteTime(username));
+    assertMutedUserEquals(user);
+    assertTrue(isUsernameMuted());
+    assertEquals(Optional.of(muteUntil), getUsernameUnmuteTime());
     when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
-    assertFalse(controller.isUsernameMuted(username));
-    assertEquals(Optional.empty(), controller.getUsernameUnmuteTime(username));
+    assertFalse(isUsernameMuted());
+    assertEquals(Optional.empty(), getUsernameUnmuteTime());
   }
 
   @Test
   public void testUnmuteUsername() {
     final Instant muteUntil = muteUsernameForSeconds(100L);
-    assertTrue(controller.isUsernameMuted(username));
-    assertEquals(Optional.of(muteUntil), controller.getUsernameUnmuteTime(username));
+    assertTrue(isUsernameMuted());
+    assertEquals(Optional.of(muteUntil), getUsernameUnmuteTime());
     muteUsernameForSeconds(-10L);
-    assertFalse(controller.isUsernameMuted(username));
-    assertEquals(Optional.empty(), controller.getUsernameUnmuteTime(username));
+    assertFalse(isUsernameMuted());
+    assertEquals(Optional.empty(), getUsernameUnmuteTime());
   }
 
   @Test
   public void testMuteUsernameInThePast() {
     muteUsernameForSeconds(-10L);
-    assertFalse(controller.isUsernameMuted(username));
-    assertEquals(Optional.empty(), controller.getUsernameUnmuteTime(username));
+    assertFalse(isUsernameMuted());
+    assertEquals(Optional.empty(), getUsernameUnmuteTime());
   }
 
   @Test
   public void testMuteUsernameUpdate() {
     muteUsernameForSeconds(Long.MAX_VALUE);
-    assertTrue(controller.isUsernameMuted(username));
-    assertEquals(Optional.of(Instant.MAX), controller.getUsernameUnmuteTime(username));
+    assertTrue(isUsernameMuted());
+    assertEquals(Optional.of(Instant.MAX), getUsernameUnmuteTime());
     final Instant muteUntil = muteUsernameForSeconds(100L);
-    assertTrue(controller.isUsernameMuted(username));
-    assertEquals(Optional.of(muteUntil), controller.getUsernameUnmuteTime(username));
+    assertTrue(isUsernameMuted());
+    assertEquals(Optional.of(muteUntil), getUsernameUnmuteTime());
   }
 
   @Test
-  public void testMuteUsernameUpdatesModerator() {
-    muteUsernameForSeconds(Long.MAX_VALUE, moderator);
+  public void testMuteUsernameUpdatesMutedUserAndModerator() {
+    muteUsernameForSeconds(user, Long.MAX_VALUE, moderator);
 
-    final Moderator otherModerator = newModerator();
-    muteUsernameForSeconds(Long.MAX_VALUE, otherModerator);
+    final User otherUser = newUser().withUsername(user.getUsername());
+    final User otherModerator = newUser();
+    muteUsernameForSeconds(otherUser, Long.MAX_VALUE, otherModerator);
 
-    assertModeratorForMutedUsernameEquals(otherModerator);
+    assertMutedUserEquals(otherUser);
+    assertModeratorEquals(otherModerator);
   }
 
-  private Instant muteUsernameForSeconds(final long length) {
-    return muteUsernameForSeconds(length, moderator);
+  private @Nullable Instant muteUsernameForSeconds(final long seconds) {
+    return muteUsernameForSeconds(user, seconds, moderator);
   }
 
-  private Instant muteUsernameForSeconds(final long length, final Moderator moderator) {
-    final Instant muteEnd = length == Long.MAX_VALUE ? null : Instant.now().plusSeconds(length);
-    controller.addMutedUsername(username, muteEnd, moderator);
+  private @Nullable Instant muteUsernameForSeconds(final User mutedUser, final long seconds, final User moderator) {
+    final @Nullable Instant muteEnd = (seconds == Long.MAX_VALUE) ? null : Instant.now().plusSeconds(seconds);
+    controller.addMutedUsername(mutedUser, muteEnd, moderator);
     return muteEnd;
   }
 
-  private void assertModeratorForMutedUsernameEquals(final Moderator expected) {
-    assertModeratorEquals(
+  private Optional<Instant> getUsernameUnmuteTime() {
+    return controller.getUsernameUnmuteTime(user.getUsername());
+  }
+
+  private boolean isUsernameMuted() {
+    return controller.isUsernameMuted(user.getUsername());
+  }
+
+  private void assertMutedUserEquals(final User expected) {
+    assertUserEquals(
+        expected,
+        "select username, ip, mac from muted_usernames where username=?",
+        ps -> ps.setString(1, user.getUsername()),
+        "unknown muted username: " + user.getUsername());
+  }
+
+  private void assertModeratorEquals(final User expected) {
+    assertUserEquals(
         expected,
         "select mod_username, mod_ip, mod_mac from muted_usernames where username=?",
-        ps -> ps.setString(1, username),
-        "unknown muted username: " + username);
+        ps -> ps.setString(1, user.getUsername()),
+        "unknown muted username: " + user.getUsername());
   }
 }

@@ -11,7 +11,7 @@ import java.time.Instant;
 
 import javax.annotation.Nullable;
 
-import games.strategy.engine.lobby.server.Moderator;
+import games.strategy.engine.lobby.server.User;
 import games.strategy.util.Tuple;
 
 /**
@@ -19,38 +19,42 @@ import games.strategy.util.Tuple;
  */
 public class BannedUsernameController extends TimedController implements BannedUsernameDao {
   @Override
-  public void addBannedUsername(final String username, final @Nullable Instant banTill, final Moderator moderator) {
+  public void addBannedUsername(final User bannedUser, final @Nullable Instant banTill, final User moderator) {
+    checkNotNull(bannedUser);
     checkNotNull(moderator);
 
     if (banTill != null && banTill.isBefore(now())) {
-      removeBannedUsername(username);
+      removeBannedUsername(bannedUser.getUsername());
       return;
     }
 
     final String sql = ""
         + "insert into banned_usernames "
-        + "  (username, ban_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?) "
+        + "  (username, ip, mac, ban_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?, ?, ?) "
         + "on conflict (username) do update set "
+        + "  ip=excluded.ip, "
+        + "  mac=excluded.mac, "
         + "  ban_till=excluded.ban_till, "
         + "  mod_username=excluded.mod_username, "
         + "  mod_ip=excluded.mod_ip, "
         + "  mod_mac=excluded.mod_mac";
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, username);
-      ps.setTimestamp(2, banTill != null ? Timestamp.from(banTill) : null);
-      ps.setString(3, moderator.getUsername());
-      ps.setString(4, moderator.getInetAddress().getHostAddress());
-      ps.setString(5, moderator.getHashedMacAddress());
+      ps.setString(1, bannedUser.getUsername());
+      ps.setString(2, bannedUser.getInetAddress().getHostAddress());
+      ps.setString(3, bannedUser.getHashedMacAddress());
+      ps.setTimestamp(4, banTill != null ? Timestamp.from(banTill) : null);
+      ps.setString(5, moderator.getUsername());
+      ps.setString(6, moderator.getInetAddress().getHostAddress());
+      ps.setString(7, moderator.getHashedMacAddress());
       ps.execute();
       con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error inserting banned username:" + username, sqle);
+    } catch (final SQLException e) {
+      throw new IllegalStateException("Error inserting banned username: " + bannedUser.getUsername(), e);
     }
   }
 
   private static void removeBannedUsername(final String username) {
-
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement("delete from banned_usernames where username = ?")) {
       ps.setString(1, username);
@@ -65,9 +69,8 @@ public class BannedUsernameController extends TimedController implements BannedU
    * This implementation has the side effect of removing any usernames whose ban has expired.
    */
   @Override
-  public Tuple<Boolean, Timestamp> isUsernameBanned(final String username) {
+  public Tuple<Boolean, /* @Nullable */ Timestamp> isUsernameBanned(final String username) {
     final String sql = "select username, ban_till from banned_usernames where username = ?";
-
     try (Connection con = Database.getPostgresConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);

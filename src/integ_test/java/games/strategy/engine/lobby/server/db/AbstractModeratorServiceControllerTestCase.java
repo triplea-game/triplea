@@ -11,28 +11,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 
-import games.strategy.engine.lobby.server.Moderator;
+import games.strategy.engine.lobby.server.User;
+import games.strategy.net.MacFinder;
 import games.strategy.util.Util;
 
 /**
  * Superclass for fixtures that test a moderator service controller.
  */
 public abstract class AbstractModeratorServiceControllerTestCase {
-  protected final Moderator moderator = newModerator();
+  protected final User user = newUser();
+  protected final User moderator = newUser();
 
   protected AbstractModeratorServiceControllerTestCase() {}
 
   /**
-   * Creates a new unique moderator.
+   * Creates a new unique user.
    */
-  protected static Moderator newModerator() {
-    return new Moderator(newUsername(), newInetAddress(), newHashedMacAddress());
+  protected static User newUser() {
+    return new User(newUsername(), newInetAddress(), newHashedMacAddress());
   }
 
-  /**
-   * Creates a new unique username.
-   */
-  protected static String newUsername() {
+  private static String newUsername() {
     return "user_" + Util.createUniqueTimeStamp();
   }
 
@@ -46,31 +45,30 @@ public abstract class AbstractModeratorServiceControllerTestCase {
     }
   }
 
-  /**
-   * Creates a new unique hashed MAC address.
-   */
-  protected static String newHashedMacAddress() {
-    return games.strategy.util.MD5Crypt.crypt(Util.createUniqueTimeStamp(), "MH");
+  private static String newHashedMacAddress() {
+    final byte[] bytes = new byte[6];
+    new Random().nextBytes(bytes);
+    return MacFinder.getHashedMacAddress(bytes);
   }
 
   /**
-   * Asserts the moderator returned from the specified query is equal to the expected moderator.
+   * Asserts the user returned from the specified query is equal to the expected user.
    *
-   * @param expected The expected moderator.
-   * @param moderatorQuerySql The SQL used to query for the moderator. It is expected that this query returns the
-   *        moderator's username in the first column, the moderator's IP address in the second column, and the
-   *        moderator's hashed MAC address in the third column.
+   * @param expected The expected user.
+   * @param userQuerySql The SQL used to query for the user. It is expected that this query returns the user's name
+   *        in the first column, the user's IP address in the second column, and the user's hashed MAC address in the
+   *        third column.
    * @param preparedStatementInitializer Callback to initialize the parameters in the prepared statement used to query
-   *        for the moderator.
-   * @param unknownModeratorMessage The failure message to be used when the requested moderator does not exist.
+   *        for the user.
+   * @param unknownUserMessage The failure message to be used when the requested user does not exist.
    */
-  protected static void assertModeratorEquals(
-      final Moderator expected,
-      final String moderatorQuerySql,
+  protected static void assertUserEquals(
+      final User expected,
+      final String userQuerySql,
       final PreparedStatementInitializer preparedStatementInitializer,
-      final String unknownModeratorMessage) {
+      final String unknownUserMessage) {
     try (Connection conn = Database.getPostgresConnection();
-        PreparedStatement ps = conn.prepareStatement(moderatorQuerySql)) {
+        PreparedStatement ps = conn.prepareStatement(userQuerySql)) {
       preparedStatementInitializer.initialize(ps);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
@@ -78,13 +76,13 @@ public abstract class AbstractModeratorServiceControllerTestCase {
           assertEquals(expected.getInetAddress(), InetAddress.getByName(rs.getString(2)));
           assertEquals(expected.getHashedMacAddress(), rs.getString(3));
         } else {
-          fail(unknownModeratorMessage);
+          fail(unknownUserMessage);
         }
       }
     } catch (final UnknownHostException e) {
-      fail("malformed moderator IP address", e);
+      fail("malformed user IP address", e);
     } catch (final SQLException e) {
-      fail("moderator query failed", e);
+      fail("user query failed", e);
     }
   }
 

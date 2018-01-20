@@ -27,6 +27,8 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
 import games.strategy.engine.lobby.server.db.MutedMacController;
@@ -167,7 +169,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private final HashMap<String, String> cachedMacAddresses = new HashMap<>();
 
   @Override
-  public String getPlayerMac(final String name) {
+  public @Nullable String getPlayerMac(final String name) {
     synchronized (cachedListLock) {
       String mac = cachedMacAddresses.get(name);
       if (mac == null) {
