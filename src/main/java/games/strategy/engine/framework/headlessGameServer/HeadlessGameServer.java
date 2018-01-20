@@ -632,15 +632,11 @@ public class HeadlessGameServer {
     }
   }
 
-  SetupPanelModel getSetupPanelModel() {
-    return setupPanelModel;
-  }
-
-  ServerModel getServerModel() {
+  private ServerModel getServerModel() {
     return getServerModel(setupPanelModel);
   }
 
-  static ServerModel getServerModel(final SetupPanelModel setupPanelModel) {
+  private static ServerModel getServerModel(final SetupPanelModel setupPanelModel) {
     if (setupPanelModel == null) {
       return null;
     }
@@ -673,6 +669,12 @@ public class HeadlessGameServer {
     }
   }
 
+  /**
+   * Launches a bot server. Most properties are passed via command line-like arguments.
+   */
+  /*
+   * TODO: get properties from a configuration file instead of CLI.
+   */
   public static void main(final String[] args) {
     ClientSetting.initialize();
 
