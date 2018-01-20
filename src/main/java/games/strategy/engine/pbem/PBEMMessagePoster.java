@@ -32,22 +32,22 @@ public class PBEMMessagePoster implements Serializable {
   private static final long serialVersionUID = 2256265436928530566L;
   private final IForumPoster m_forumPoster;
   private final IEmailSender m_emailSender;
-  private transient File m_saveGameFile = null;
-  private transient String m_turnSummary = null;
-  private final transient String m_saveGameRef = null;
-  private transient String m_turnSummaryRef = null;
-  private transient String m_emailSendStatus;
-  private final transient PlayerID m_currentPlayer;
-  private final transient int m_roundNumber;
-  private final transient String m_gameNameAndInfo;
+  private transient File saveGameFile = null;
+  private transient String turnSummary = null;
+  private final transient String saveGameRef = null;
+  private transient String turnSummaryRef = null;
+  private transient String emailSendStatus;
+  private final transient PlayerID currentPlayer;
+  private final transient int roundNumber;
+  private final transient String gameNameAndInfo;
 
   public PBEMMessagePoster(final GameData gameData, final PlayerID currentPlayer, final int roundNumber,
       final String title) {
-    m_currentPlayer = currentPlayer;
-    m_roundNumber = roundNumber;
+    this.currentPlayer = currentPlayer;
+    this.roundNumber = roundNumber;
     m_forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
     m_emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
-    m_gameNameAndInfo =
+    gameNameAndInfo =
         "TripleA " + title + " for game: " + gameData.getGameName() + ", version: " + gameData.getGameVersion();
   }
 
@@ -70,19 +70,19 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   public void setTurnSummary(final String turnSummary) {
-    m_turnSummary = turnSummary;
+    this.turnSummary = turnSummary;
   }
 
   public void setSaveGame(final File saveGameFile) {
-    m_saveGameFile = saveGameFile;
+    this.saveGameFile = saveGameFile;
   }
 
   public String getTurnSummaryRef() {
-    return m_turnSummaryRef;
+    return turnSummaryRef;
   }
 
   public String getSaveGameRef() {
-    return m_saveGameRef;
+    return saveGameRef;
   }
 
   /**
@@ -98,19 +98,19 @@ public class PBEMMessagePoster implements Serializable {
     if (m_forumPoster != null) {
       saveGameSb.append(m_forumPoster.getTopicId()).append("_");
     }
-    saveGameSb.append(m_currentPlayer.getName().substring(0, Math.min(3, m_currentPlayer.getName().length() - 1)))
-        .append(m_roundNumber);
+    saveGameSb.append(currentPlayer.getName().substring(0, Math.min(3, currentPlayer.getName().length() - 1)))
+        .append(roundNumber);
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
     if (m_forumPoster != null) {
       if (includeSaveGame) {
-        m_forumPoster.addSaveGame(m_saveGameFile, saveGameName);
+        m_forumPoster.addSaveGame(saveGameFile, saveGameName);
       }
       try {
-        forumSuccess = m_forumPoster.postTurnSummary((m_gameNameAndInfo + "\n\n" + m_turnSummary),
-            "TripleA " + title + ": " + m_currentPlayer.getName() + " round " + m_roundNumber);
-        m_turnSummaryRef = m_forumPoster.getTurnSummaryRef();
-        if (m_turnSummaryRef != null && historyWriter != null) {
-          historyWriter.startEvent("Turn Summary: " + m_turnSummaryRef);
+        forumSuccess = m_forumPoster.postTurnSummary((gameNameAndInfo + "\n\n" + turnSummary),
+            "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber);
+        turnSummaryRef = m_forumPoster.getTurnSummaryRef();
+        if (turnSummaryRef != null && historyWriter != null) {
+          historyWriter.startEvent("Turn Summary: " + turnSummaryRef);
         }
       } catch (final Exception e) {
         ClientLogger.logQuietly("Failed to post game to forum", e);
@@ -118,15 +118,15 @@ public class PBEMMessagePoster implements Serializable {
     }
     boolean emailSuccess = true;
     if (m_emailSender != null) {
-      final StringBuilder subjectPostFix = new StringBuilder(m_currentPlayer.getName());
-      subjectPostFix.append(" - ").append("round ").append(m_roundNumber);
+      final StringBuilder subjectPostFix = new StringBuilder(currentPlayer.getName());
+      subjectPostFix.append(" - ").append("round ").append(roundNumber);
       try {
-        m_emailSender.sendEmail(subjectPostFix.toString(), convertToHtml((m_gameNameAndInfo + "\n\n" + m_turnSummary)),
-            m_saveGameFile, saveGameName);
-        m_emailSendStatus = "Success, sent to " + m_emailSender.getToAddress();
+        m_emailSender.sendEmail(subjectPostFix.toString(), convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)),
+            saveGameFile, saveGameName);
+        emailSendStatus = "Success, sent to " + m_emailSender.getToAddress();
       } catch (final IOException e) {
         emailSuccess = false;
-        m_emailSendStatus = "Failed! Error " + e.getMessage();
+        emailSendStatus = "Failed! Error " + e.getMessage();
         ClientLogger.logQuietly("Failed to send game via email", e);
       }
     }
@@ -175,7 +175,7 @@ public class PBEMMessagePoster implements Serializable {
    * @return a success of failure string, or null if no email sender was configured
    */
   public String getEmailSendStatus() {
-    return m_emailSendStatus;
+    return emailSendStatus;
   }
 
   public boolean alsoPostMoveSummary() {

@@ -160,9 +160,9 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
               .addTextBody("message", message)
               // If the user has chosen to receive notifications, ensure this setting is passed on
               .addTextBody("notify", NOTIFY_PATTERN.matcher(body).matches() ? "1" : "0");
-          if (m_includeSaveGame && m_saveGameFile != null) {
-            builder.addBinaryBody("attachment[]", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM,
-                m_saveGameFileName);
+          if (m_includeSaveGame && saveGameFile != null) {
+            builder.addBinaryBody("attachment[]", saveGameFile, ContentType.APPLICATION_OCTET_STREAM,
+                saveGameFileName);
           }
           builder
               .addTextBody("post", "Post")
@@ -189,7 +189,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
               // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
               // given thread
               // since the site is lenient we can just give a high post_number to go to the last post in the thread
-              m_turnSummaryRef = UrlConstants.AXIS_AND_ALLIES_FORUM + "?topic=" + m_topicId + ".10000";
+              turnSummaryRef = UrlConstants.AXIS_AND_ALLIES_FORUM + "?topic=" + m_topicId + ".10000";
             } else {
               // these two patterns find general errors, where the first pattern checks if the error text appears,
               // the second pattern extracts the error message. This could be the "The last posting from your IP was
@@ -230,7 +230,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
         }
       }
     } catch (final Exception e) {
-      m_turnSummaryRef = e.getMessage();
+      turnSummaryRef = e.getMessage();
       return false;
     }
     return true;
