@@ -76,7 +76,6 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     httpPost.addHeader("Accept", "*/*");
     httpPost.addHeader("Accept-Language", "en-us");
     httpPost.addHeader("Cache-Control", "no-cache");
-    httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
     final List<NameValuePair> parameters = new ArrayList<>(2);
     parameters.add(new BasicNameValuePair("user", getUsername()));

@@ -53,17 +53,15 @@ public class TripleAForumPoster extends AbstractForumPoster {
     return false;
   }
 
-  private void post(final CloseableHttpClient client, final String token, String text) throws Exception {
+  private void post(final CloseableHttpClient client, final String token, final String text) throws Exception {
     final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/topics/" + getTopicId());
     addTokenHeader(post, token);
-    if (m_includeSaveGame && m_saveGameFile != null) {
-      text += uploadSaveGame(client, token);
-    }
     post.setEntity(new UrlEncodedFormEntity(
-        Collections.singletonList(new BasicNameValuePair("content", text)),
+        Collections.singletonList(new BasicNameValuePair("content",
+            text + ((m_includeSaveGame && m_saveGameFile != null) ? uploadSaveGame(client, token) : ""))),
         StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
-    client.execute(post);
+    client.execute(post).close();
   }
 
   private String uploadSaveGame(final CloseableHttpClient client, final String token) throws Exception {
@@ -87,7 +85,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
       throws IOException {
     final HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userId + "/tokens/" + token);
     addTokenHeader(httpDelete, token);
-    client.execute(httpDelete);
+    client.execute(httpDelete).close();
   }
 
   private int getUserId(final CloseableHttpClient client) throws Exception {
