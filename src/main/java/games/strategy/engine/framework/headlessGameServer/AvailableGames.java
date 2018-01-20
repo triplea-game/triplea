@@ -150,6 +150,7 @@ public class AvailableGames {
 
 
   }
+
   private static Optional<GameData> parse(final URI uri) {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
