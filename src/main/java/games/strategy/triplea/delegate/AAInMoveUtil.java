@@ -32,21 +32,21 @@ import games.strategy.util.CollectionUtils;
  */
 class AAInMoveUtil implements Serializable {
   private static final long serialVersionUID = 1787497998642717678L;
-  private transient IDelegateBridge m_bridge;
-  private transient PlayerID m_player;
+  private transient IDelegateBridge bridge;
+  private transient PlayerID player;
   private Collection<Unit> m_casualties = new ArrayList<>();
   private final ExecutionStack m_executionStack = new ExecutionStack();
 
   AAInMoveUtil() {}
 
   public AAInMoveUtil initialize(final IDelegateBridge bridge) {
-    m_bridge = bridge;
-    m_player = bridge.getPlayerId();
+    this.bridge = bridge;
+    this.player = bridge.getPlayerId();
     return this;
   }
 
   private GameData getData() {
-    return m_bridge.getData();
+    return bridge.getData();
   }
 
   private boolean isAlwaysOnAaEnabled() {
@@ -58,11 +58,11 @@ class AAInMoveUtil implements Serializable {
   }
 
   private ITripleAPlayer getRemotePlayer(final PlayerID id) {
-    return (ITripleAPlayer) m_bridge.getRemotePlayer(id);
+    return (ITripleAPlayer) bridge.getRemotePlayer(id);
   }
 
   private ITripleAPlayer getRemotePlayer() {
-    return getRemotePlayer(m_player);
+    return getRemotePlayer(player);
   }
 
   /**
@@ -73,7 +73,7 @@ class AAInMoveUtil implements Serializable {
     if (m_executionStack.isEmpty()) {
       populateExecutionStack(route, units, decreasingMovement, currentMove);
     }
-    m_executionStack.execute(m_bridge);
+    m_executionStack.execute(bridge);
     return m_casualties;
   }
 
@@ -115,7 +115,8 @@ class AAInMoveUtil implements Serializable {
           // get rid of units already killed, so we don't target them twice
           validTargetedUnitsForThisRoll.removeAll(m_casualties);
           if (!validTargetedUnitsForThisRoll.isEmpty()) {
-            dice[0] = DiceRoll.rollAa(validTargetedUnitsForThisRoll, currentPossibleAa, m_bridge, territory, true);
+            dice[0] = DiceRoll.rollAa(validTargetedUnitsForThisRoll, currentPossibleAa, AAInMoveUtil.this.bridge,
+                territory, true);
           }
         }
       };
@@ -128,10 +129,10 @@ class AAInMoveUtil implements Serializable {
             final int hitCount = dice[0].getHits();
             if (hitCount == 0) {
               if (currentTypeAa.equals("AA")) {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
+                AAInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
                     findDefender(currentPossibleAa, territory));
               } else {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(
+                AAInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(
                     SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
                     findDefender(currentPossibleAa, territory));
               }
@@ -139,10 +140,10 @@ class AAInMoveUtil implements Serializable {
                   "No " + currentTypeAa + " hits in " + territory.getName());
             } else {
               if (currentTypeAa.equals("AA")) {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
+                AAInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
                     findDefender(currentPossibleAa, territory));
               } else {
-                m_bridge.getSoundChannelBroadcaster().playSoundForAll(
+                AAInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(
                     SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
                     findDefender(currentPossibleAa, territory));
               }
@@ -231,8 +232,8 @@ class AAInMoveUtil implements Serializable {
   }
 
   private PlayerID movingPlayer(final Collection<Unit> units) {
-    if (units.stream().anyMatch(Matches.unitIsOwnedBy(m_player))) {
-      return m_player;
+    if (units.stream().anyMatch(Matches.unitIsOwnedBy(player))) {
+      return player;
     }
 
     for (final Unit u : units) {
@@ -270,12 +271,12 @@ class AAInMoveUtil implements Serializable {
       final Collection<Unit> validTargetedUnitsForThisRoll, final Collection<Unit> defendingAa,
       final Collection<Unit> allEnemyUnits, final Territory territory, final String currentTypeAa) {
     final CasualtyDetails casualties = BattleCalculator.getAaCasualties(false, validTargetedUnitsForThisRoll,
-        allFriendlyUnits, defendingAa, allEnemyUnits, dice, m_bridge, territory.getOwner(), m_player, null, territory,
+        allFriendlyUnits, defendingAa, allEnemyUnits, dice, bridge, territory.getOwner(), player, null, territory,
         TerritoryEffectHelper.getEffects(territory), false, new ArrayList<>());
     getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),
         casualties.size() + " " + currentTypeAa + " hits in " + territory.getName());
-    BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), m_bridge);
-    m_bridge.getHistoryWriter().addChildToEvent(
+    BattleDelegate.markDamaged(new ArrayList<>(casualties.getDamaged()), bridge);
+    bridge.getHistoryWriter().addChildToEvent(
         MyFormatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(),
         new ArrayList<>(casualties.getKilled()));
     allFriendlyUnits.removeAll(casualties.getKilled());
