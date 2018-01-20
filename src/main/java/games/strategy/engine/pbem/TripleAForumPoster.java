@@ -46,14 +46,14 @@ public class TripleAForumPoster extends AbstractForumPoster {
       } finally {
         deleteToken(client, userId, token);
       }
-    } catch (final Exception e) {
+    } catch (final IOException | IllegalStateException e) {
       ClientLogger.logQuietly("Failed to post game to forum", e);
       m_turnSummaryRef = e.getMessage();
     }
     return false;
   }
 
-  private void post(final CloseableHttpClient client, final String token, final String text) throws Exception {
+  private void post(final CloseableHttpClient client, final String token, final String text) throws IOException {
     final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/topics/" + getTopicId());
     addTokenHeader(post, token);
     post.setEntity(new UrlEncodedFormEntity(
@@ -61,10 +61,15 @@ public class TripleAForumPoster extends AbstractForumPoster {
             text + ((m_includeSaveGame && m_saveGameFile != null) ? uploadSaveGame(client, token) : ""))),
         StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
-    client.execute(post).close();
+    try (CloseableHttpResponse response = client.execute(post)) {
+      final int code = response.getStatusLine().getStatusCode();
+      if (code != HttpURLConnection.HTTP_OK) {
+        throw new IllegalStateException("Forum responded with code " + code);
+      }
+    }
   }
 
-  private String uploadSaveGame(final CloseableHttpClient client, final String token) throws Exception {
+  private String uploadSaveGame(final CloseableHttpClient client, final String token) throws IOException {
     final HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v1/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
         .addBinaryBody("files[]", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM, m_saveGameFileName)
@@ -77,7 +82,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
         final String json = EntityUtils.toString(response.getEntity());
         return "\n[Savegame](" + new JSONArray(json).getJSONObject(0).getString("url") + ")";
       }
-      throw new Exception("Failed to upload savegame, server returned Error Code " + status);
+      throw new IllegalStateException("Failed to upload savegame, server returned Error Code " + status);
     }
   }
 
@@ -85,24 +90,30 @@ public class TripleAForumPoster extends AbstractForumPoster {
       throws IOException {
     final HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userId + "/tokens/" + token);
     addTokenHeader(httpDelete, token);
-    client.execute(httpDelete).close();
+    try (CloseableHttpResponse response = client.execute(httpDelete)) {
+      final int code = response.getStatusLine().getStatusCode();
+      if (code != HttpURLConnection.HTTP_OK) {
+        // Cleanup failed, this is not a severe issue
+        ClientLogger.logQuietly("Failed to delete API Token after posting, server responded with error code " + code);
+      }
+    }
   }
 
-  private int getUserId(final CloseableHttpClient client) throws Exception {
+  private int getUserId(final CloseableHttpClient client) throws IOException {
     final JSONObject jsonObject = login(client);
     checkUser(jsonObject);
     return jsonObject.getInt("uid");
   }
 
-  private static void checkUser(final JSONObject jsonObject) throws Exception {
+  private static void checkUser(final JSONObject jsonObject) {
     if (jsonObject.has("message")) {
-      throw new Exception(jsonObject.getString("message"));
+      throw new IllegalStateException(jsonObject.getString("message"));
     }
     if (jsonObject.getInt("banned") != 0) {
-      throw new Exception("Your account is banned from the forum");
+      throw new IllegalStateException("Your account is banned from the forum");
     }
     if (jsonObject.getInt("email:confirmed") != 1) {
-      throw new Exception("Your email isn't confirmed yet!");
+      throw new IllegalStateException("Your email isn't confirmed yet!");
     }
   }
 
@@ -126,7 +137,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     return new BasicNameValuePair("password", getPassword());
   }
 
-  private String getToken(final CloseableHttpClient client, final int userId) throws Exception {
+  private String getToken(final CloseableHttpClient client, final int userId) throws IOException {
     final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/users/" + userId + "/tokens");
     post.setEntity(new UrlEncodedFormEntity(
         Collections.singletonList(newPasswordParameter()),
@@ -140,9 +151,10 @@ public class TripleAForumPoster extends AbstractForumPoster {
         if (code.equalsIgnoreCase("ok")) {
           return jsonObject.getJSONObject("payload").getString("token");
         }
-        throw new Exception("Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.getString("message"));
+        throw new IllegalStateException(
+            "Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.getString("message"));
       }
-      throw new Exception("Failed to retrieve Token, server did not return correct JSON: " + rawJson);
+      throw new IllegalStateException("Failed to retrieve Token, server did not return correct JSON: " + rawJson);
     }
   }
 
