@@ -41,14 +41,14 @@ public class TripleAForumPoster extends AbstractForumPoster {
       final String token = getToken(client, userId);
       try {
         post(client, token, "### " + title + "\n" + summary);
-        m_turnSummaryRef = "Sucessfully posted!";
+        turnSummaryRef = "Sucessfully posted!";
         return true;
       } finally {
         deleteToken(client, userId, token);
       }
     } catch (final IOException | IllegalStateException e) {
       ClientLogger.logQuietly("Failed to post game to forum", e);
-      m_turnSummaryRef = e.getMessage();
+      turnSummaryRef = e.getMessage();
     }
     return false;
   }
@@ -58,7 +58,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
     addTokenHeader(post, token);
     post.setEntity(new UrlEncodedFormEntity(
         Collections.singletonList(new BasicNameValuePair("content",
-            text + ((m_includeSaveGame && m_saveGameFile != null) ? uploadSaveGame(client, token) : ""))),
+            text + ((m_includeSaveGame && saveGameFile != null) ? uploadSaveGame(client, token) : ""))),
         StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
@@ -72,7 +72,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
   private String uploadSaveGame(final CloseableHttpClient client, final String token) throws IOException {
     final HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v1/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
-        .addBinaryBody("files[]", m_saveGameFile, ContentType.APPLICATION_OCTET_STREAM, m_saveGameFileName)
+        .addBinaryBody("files[]", saveGameFile, ContentType.APPLICATION_OCTET_STREAM, saveGameFileName)
         .build());
     HttpProxy.addProxy(fileUpload);
     addTokenHeader(fileUpload, token);

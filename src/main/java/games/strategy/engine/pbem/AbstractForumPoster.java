@@ -40,9 +40,9 @@ public abstract class AbstractForumPoster implements IForumPoster {
   protected String m_topicId = null;
   protected boolean m_includeSaveGame = true;
   protected boolean m_alsoPostAfterCombatMove = false;
-  protected transient File m_saveGameFile = null;
-  protected transient String m_turnSummaryRef = null;
-  protected transient String m_saveGameFileName = null;
+  protected transient File saveGameFile = null;
+  protected transient String turnSummaryRef = null;
+  protected transient String saveGameFileName = null;
   private boolean credentialsSaved = false;
   private boolean credentialsProtected = false;
 
@@ -94,7 +94,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
 
   @Override
   public String getTurnSummaryRef() {
-    return m_turnSummaryRef;
+    return turnSummaryRef;
   }
 
   @Override
@@ -119,8 +119,8 @@ public abstract class AbstractForumPoster implements IForumPoster {
 
   @Override
   public void addSaveGame(final File saveGame, final String fileName) {
-    m_saveGameFile = saveGame;
-    m_saveGameFileName = fileName;
+    saveGameFile = saveGame;
+    saveGameFileName = fileName;
   }
 
   @Override
