@@ -60,14 +60,64 @@ import games.strategy.util.Util;
 public class HeadlessGameServer {
 
   private static final Logger logger = Logger.getLogger(HeadlessGameServer.class.getName());
-  private static HeadlessGameServer instance = null;
   private final AvailableGames availableGames;
   private final GameSelectorModel gameSelectorModel;
-  private SetupPanelModel setupPanelModel = null;
   private final ScheduledExecutorService lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
+  private final String startDate = TimeManager.getFullUtcString(Instant.now());
+  private static HeadlessGameServer instance = null;
+  private SetupPanelModel setupPanelModel = null;
   private ServerGame game = null;
   private boolean shutDown = false;
-  private final String startDate = TimeManager.getFullUtcString(Instant.now());
+
+  private HeadlessGameServer() {
+    super();
+    if (instance != null) {
+      throw new IllegalStateException("Instance already exists");
+    }
+    instance = this;
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      logger.info("Running ShutdownHook.");
+      shutdown();
+    }));
+    availableGames = new AvailableGames();
+    gameSelectorModel = new GameSelectorModel();
+    final String fileName = System.getProperty(TRIPLEA_GAME, "");
+    if (fileName.length() > 0) {
+      try {
+        final File file = new File(fileName);
+        gameSelectorModel.load(file, null);
+      } catch (final Exception e) {
+        gameSelectorModel.resetGameDataToNull();
+      }
+    }
+    new Thread(() -> {
+      System.out.println("Headless Start");
+      setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel, null);
+      setupPanelModel.showSelectType();
+      System.out.println("Waiting for users to connect.");
+      waitForUsersHeadless();
+    }, "Initialize Headless Server Setup Model").start();
+
+    int reconnect;
+    try {
+      final String reconnectionSeconds = System.getProperty(LOBBY_GAME_RECONNECTION,
+          "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
+      reconnect =
+          Math.max(Integer.parseInt(reconnectionSeconds), GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM);
+    } catch (final NumberFormatException e) {
+      reconnect = GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
+    }
+    lobbyWatcherResetupThread.scheduleAtFixedRate(() -> {
+      try {
+        restartLobbyWatcher(setupPanelModel, game);
+      } catch (final Exception e) {
+        ThreadUtil.sleep(10 * 60 * 1000);
+        // try again, but don't catch it this time
+        restartLobbyWatcher(setupPanelModel, game);
+      }
+    }, reconnect, reconnect, TimeUnit.SECONDS);
+    logger.info("Game Server initialized");
+  }
 
   public static synchronized HeadlessGameServer getInstance() {
     return instance;
@@ -122,7 +172,7 @@ public class HeadlessGameServer {
       final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
 
 
-      if(!availableGames.containsMapName(mapNameProperty)) {
+      if (!availableGames.containsMapName(mapNameProperty)) {
         System.out.println("Game mapName not in available games listing: " + mapNameProperty);
         return;
       }
@@ -407,56 +457,6 @@ public class HeadlessGameServer {
 
   public boolean isShutDown() {
     return shutDown;
-  }
-
-  private HeadlessGameServer() {
-    super();
-    if (instance != null) {
-      throw new IllegalStateException("Instance already exists");
-    }
-    instance = this;
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      logger.info("Running ShutdownHook.");
-      shutdown();
-    }));
-    availableGames = new AvailableGames();
-    gameSelectorModel = new GameSelectorModel();
-    final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (fileName.length() > 0) {
-      try {
-        final File file = new File(fileName);
-        gameSelectorModel.load(file, null);
-      } catch (final Exception e) {
-        gameSelectorModel.resetGameDataToNull();
-      }
-    }
-    new Thread(() -> {
-      System.out.println("Headless Start");
-      setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel, null);
-      setupPanelModel.showSelectType();
-      System.out.println("Waiting for users to connect.");
-      waitForUsersHeadless();
-    }, "Initialize Headless Server Setup Model").start();
-
-    int reconnect;
-    try {
-      final String reconnectionSeconds = System.getProperty(LOBBY_GAME_RECONNECTION,
-          "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
-      reconnect =
-          Math.max(Integer.parseInt(reconnectionSeconds), GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM);
-    } catch (final NumberFormatException e) {
-      reconnect = GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
-    }
-    lobbyWatcherResetupThread.scheduleAtFixedRate(() -> {
-      try {
-        restartLobbyWatcher(setupPanelModel, game);
-      } catch (final Exception e) {
-        ThreadUtil.sleep(10 * 60 * 1000);
-        // try again, but don't catch it this time
-        restartLobbyWatcher(setupPanelModel, game);
-      }
-    }, reconnect, reconnect, TimeUnit.SECONDS);
-    logger.info("Game Server initialized");
   }
 
   private static synchronized void restartLobbyWatcher(
