@@ -36,9 +36,9 @@ import games.strategy.util.Util;
 
 public class MovePerformer implements Serializable {
   private static final long serialVersionUID = 3752242292777658310L;
-  private transient AbstractMoveDelegate m_moveDelegate;
-  private transient IDelegateBridge m_bridge;
-  private transient PlayerID m_player;
+  private transient AbstractMoveDelegate moveDelegate;
+  private transient IDelegateBridge bridge;
+  private transient PlayerID player;
   private AAInMoveUtil m_aaInMoveUtil;
   private final ExecutionStack m_executionStack = new ExecutionStack();
   private UndoableMove m_currentMove;
@@ -48,24 +48,24 @@ public class MovePerformer implements Serializable {
   MovePerformer() {}
 
   private BattleTracker getBattleTracker() {
-    return DelegateFinder.battleDelegate(m_bridge.getData()).getBattleTracker();
+    return DelegateFinder.battleDelegate(bridge.getData()).getBattleTracker();
   }
 
   void initialize(final AbstractMoveDelegate delegate) {
-    m_moveDelegate = delegate;
-    m_bridge = delegate.getBridge();
-    m_player = m_bridge.getPlayerId();
+    this.moveDelegate = delegate;
+    bridge = delegate.getBridge();
+    player = bridge.getPlayerId();
     if (m_aaInMoveUtil != null) {
-      m_aaInMoveUtil.initialize(m_bridge);
+      m_aaInMoveUtil.initialize(bridge);
     }
   }
 
   private ITripleAPlayer getRemotePlayer(final PlayerID id) {
-    return (ITripleAPlayer) m_bridge.getRemotePlayer(id);
+    return (ITripleAPlayer) bridge.getRemotePlayer(id);
   }
 
   private ITripleAPlayer getRemotePlayer() {
-    return getRemotePlayer(m_player);
+    return getRemotePlayer(player);
   }
 
   void moveUnits(final Collection<Unit> units, final Route route, final PlayerID id,
@@ -74,11 +74,11 @@ public class MovePerformer implements Serializable {
     m_currentMove = currentMove;
     m_newDependents = newDependents;
     populateStack(units, route, id, transportsToLoad);
-    m_executionStack.execute(m_bridge);
+    m_executionStack.execute(bridge);
   }
 
   public void resume() {
-    m_executionStack.execute(m_bridge);
+    m_executionStack.execute(bridge);
   }
 
   /**
@@ -95,7 +95,7 @@ public class MovePerformer implements Serializable {
         // this can happen for air units moving out of a battle zone
         for (final IBattle battle : getBattleTracker().getPendingBattles(route.getStart(), null)) {
           for (final Unit unit : units) {
-            final Route routeUnitUsedToMove = m_moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
+            final Route routeUnitUsedToMove = moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
             if (battle != null) {
               battle.removeAttack(routeUnitUsedToMove, Collections.singleton(unit));
             }
@@ -219,7 +219,7 @@ public class MovePerformer implements Serializable {
                 final HashMap<Unit, HashSet<Unit>> targets = new HashMap<>();
                 targets.put(target, new HashSet<>(arrived));
                 // createdBattle = true;
-                getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove,
+                getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, MovePerformer.this.bridge, m_currentMove,
                     dependentOnSomethingTilTheEndOfRoute, targets, false);
               }
             }
@@ -238,10 +238,10 @@ public class MovePerformer implements Serializable {
           if (!ignoreBattle && GameStepPropertiesHelper.isCombatMove(data) && !targetedAttack) {
             // createdBattle = true;
             if (bombing) {
-              getBattleTracker().addBombingBattle(route, arrivedCopyForBattles, id, m_bridge, m_currentMove,
+              getBattleTracker().addBombingBattle(route, arrivedCopyForBattles, id, MovePerformer.this.bridge, m_currentMove,
                   dependentOnSomethingTilTheEndOfRoute);
             } else {
-              getBattleTracker().addBattle(route, arrivedCopyForBattles, id, m_bridge, m_currentMove,
+              getBattleTracker().addBattle(route, arrivedCopyForBattles, id, MovePerformer.this.bridge, m_currentMove,
                   dependentOnSomethingTilTheEndOfRoute);
             }
           }
@@ -277,17 +277,17 @@ public class MovePerformer implements Serializable {
           final Change add = ChangeFactory.addUnits(route.getEnd(), arrived);
           change.add(add, remove);
         }
-        m_bridge.addChange(change);
+        MovePerformer.this.bridge.addChange(change);
         m_currentMove.addChange(change);
         m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from "
             + route.getStart().getName() + " to " + route.getEnd().getName());
-        m_moveDelegate.updateUndoableMoves(m_currentMove);
+        moveDelegate.updateUndoableMoves(m_currentMove);
       }
     };
     m_executionStack.push(postAaFire);
     m_executionStack.push(fireAa);
     m_executionStack.push(preAaFire);
-    m_executionStack.execute(m_bridge);
+    m_executionStack.execute(bridge);
   }
 
   private static Predicate<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
@@ -303,7 +303,7 @@ public class MovePerformer implements Serializable {
   }
 
   private Change markMovementChange(final Collection<Unit> units, final Route route, final PlayerID id) {
-    final GameData data = m_bridge.getData();
+    final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     final Territory routeStart = route.getStart();
     final TerritoryAttachment taRouteStart = TerritoryAttachment.get(routeStart);
@@ -360,7 +360,7 @@ public class MovePerformer implements Serializable {
     if (transporting == null) {
       return;
     }
-    final GameData data = m_bridge.getData();
+    final GameData data = bridge.getData();
     final Predicate<Unit> paratroopNAirTransports = Matches.unitIsAirTransport().or(Matches.unitIsAirTransportable());
     final boolean paratroopsLanding = arrived.stream().anyMatch(paratroopNAirTransports)
         && MoveValidator.allLandUnitsAreBeingParatroopered(arrived);
@@ -394,7 +394,7 @@ public class MovePerformer implements Serializable {
           final Change change = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
           m_currentMove.addChange(change);
           m_currentMove.load(transport);
-          m_bridge.addChange(change);
+          bridge.addChange(change);
         }
       }
       if (transporting.isEmpty()) {
@@ -403,7 +403,7 @@ public class MovePerformer implements Serializable {
             final Change change = TransportTracker.loadTransportChange((TripleAUnit) airTransport, unit);
             m_currentMove.addChange(change);
             m_currentMove.load(airTransport);
-            m_bridge.addChange(change);
+            bridge.addChange(change);
           }
         }
       }
@@ -430,7 +430,7 @@ public class MovePerformer implements Serializable {
         // we will unload our paratroopers after they land in battle (after aa guns fire)
         if (paratroopsLanding && transportedBy != null && Matches.unitIsAirTransport().test(transportedBy)
             && GameStepPropertiesHelper.isCombatMove(data)
-            && Matches.territoryHasNonSubmergedEnemyUnits(m_player, data).test(route.getEnd())) {
+            && Matches.territoryHasNonSubmergedEnemyUnits(player, data).test(route.getEnd())) {
           continue;
         }
         // unload the transports
@@ -438,11 +438,11 @@ public class MovePerformer implements Serializable {
             m_currentMove.getRoute().getEnd(), pendingBattles);
         m_currentMove.addChange(change1);
         m_currentMove.unload(unit);
-        m_bridge.addChange(change1);
+        bridge.addChange(change1);
         // set noMovement
         final Change change2 = ChangeFactory.markNoMovementChange(Collections.singleton(unit));
         m_currentMove.addChange(change2);
-        m_bridge.addChange(change2);
+        bridge.addChange(change2);
       }
     }
   }
@@ -464,7 +464,7 @@ public class MovePerformer implements Serializable {
     if (m_aaInMoveUtil == null) {
       m_aaInMoveUtil = new AAInMoveUtil();
     }
-    m_aaInMoveUtil.initialize(m_bridge);
+    m_aaInMoveUtil.initialize(bridge);
     final Collection<Unit> unitsToRemove =
         m_aaInMoveUtil.fireAa(route, units, UnitComparator.getLowestToHighestMovementComparator(), m_currentMove);
     m_aaInMoveUtil = null;
