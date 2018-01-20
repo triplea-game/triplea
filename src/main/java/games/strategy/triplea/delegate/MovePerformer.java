@@ -219,8 +219,8 @@ public class MovePerformer implements Serializable {
                 final HashMap<Unit, HashSet<Unit>> targets = new HashMap<>();
                 targets.put(target, new HashSet<>(arrived));
                 // createdBattle = true;
-                getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, MovePerformer.this.bridge, m_currentMove,
-                    dependentOnSomethingTilTheEndOfRoute, targets, false);
+                getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, MovePerformer.this.bridge,
+                    m_currentMove, dependentOnSomethingTilTheEndOfRoute, targets, false);
               }
             }
           }
@@ -238,8 +238,8 @@ public class MovePerformer implements Serializable {
           if (!ignoreBattle && GameStepPropertiesHelper.isCombatMove(data) && !targetedAttack) {
             // createdBattle = true;
             if (bombing) {
-              getBattleTracker().addBombingBattle(route, arrivedCopyForBattles, id, MovePerformer.this.bridge, m_currentMove,
-                  dependentOnSomethingTilTheEndOfRoute);
+              getBattleTracker().addBombingBattle(route, arrivedCopyForBattles, id, MovePerformer.this.bridge,
+                  m_currentMove, dependentOnSomethingTilTheEndOfRoute);
             } else {
               getBattleTracker().addBattle(route, arrivedCopyForBattles, id, MovePerformer.this.bridge, m_currentMove,
                   dependentOnSomethingTilTheEndOfRoute);

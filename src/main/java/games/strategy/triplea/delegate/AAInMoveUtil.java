@@ -115,7 +115,8 @@ class AAInMoveUtil implements Serializable {
           // get rid of units already killed, so we don't target them twice
           validTargetedUnitsForThisRoll.removeAll(m_casualties);
           if (!validTargetedUnitsForThisRoll.isEmpty()) {
-            dice[0] = DiceRoll.rollAa(validTargetedUnitsForThisRoll, currentPossibleAa, AAInMoveUtil.this.bridge, territory, true);
+            dice[0] = DiceRoll.rollAa(validTargetedUnitsForThisRoll, currentPossibleAa, AAInMoveUtil.this.bridge,
+                territory, true);
           }
         }
       };
