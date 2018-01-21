@@ -84,10 +84,16 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public ILauncher getLauncher() {
+    return getLocalLaunchers(gameSelectorModel, playerTypes);
+  }
+
+  private static ILauncher getLocalLaunchers(
+      final GameSelectorModel gameSelectorModel,
+      final List<PlayerSelectorRow> playerRows) {
     final IRandomSource randomSource = new PlainRandomSource();
     final Map<String, String> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
-    for (final PlayerSelectorRow player : this.playerTypes) {
+    for (final PlayerSelectorRow player : playerRows) {
       playerTypes.put(player.getPlayerName(), player.getPlayerType());
       playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
     }
