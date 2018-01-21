@@ -70,7 +70,6 @@ public class HeadlessGameServer {
   private boolean shutDown = false;
 
   private HeadlessGameServer() {
-    super();
     if (instance != null) {
       throw new IllegalStateException("Instance already exists");
     }
