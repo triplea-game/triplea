@@ -18,7 +18,7 @@
    <top>
       <VBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-            <Label id="title" text="%main.label.title" />
+            <HBox id="header" minHeight="90.0" />
             <Label id="subtitle" text="%main.label.subtitle" />
          </children>
       </VBox>

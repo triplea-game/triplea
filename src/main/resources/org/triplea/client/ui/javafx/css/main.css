@@ -42,3 +42,9 @@
 	-fx-background-repeat: no-repeat;
 	-fx-translate-x: -300px;
 }
+#header {
+	-fx-background-image: url('/org/triplea/client/ui/javafx/images/header.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center center;
+	-fx-background-size: auto 100%;
+}
