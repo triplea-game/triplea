@@ -68,6 +68,9 @@
                      <font>
                         <Font name="1942 report" size="13.0" />
                      </font>
+                     <effect>
+                        <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
+                     </effect>
                   </Button>
                   <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showLocalGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.local_game">
                      <HBox.margin>
@@ -82,6 +85,9 @@
                      <font>
                         <Font name="1942 report" size="13.0" />
                      </font>
+                     <effect>
+                        <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
+                     </effect>
                   </Button>
                   <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPbfPbemMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.startPBEMPBF">
                      <graphic>
@@ -96,6 +102,9 @@
                      <HBox.margin>
                         <Insets left="5.0" right="5.0" />
                      </HBox.margin>
+                     <effect>
+                        <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
+                     </effect>
                   </Button>
                   <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showHostNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.host_networked_game">
                      <HBox.margin>
@@ -110,6 +119,9 @@
                      <font>
                         <Font name="1942 report" size="13.0" />
                      </font>
+                     <effect>
+                        <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
+                     </effect>
                   </Button>
                   <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showJoinNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.join_networked_game">
                      <HBox.margin>
@@ -124,6 +136,9 @@
                      <font>
                         <Font name="1942 report" size="13.0" />
                      </font>
+                     <effect>
+                        <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
+                     </effect>
                   </Button>
                </children>
             </HBox>
