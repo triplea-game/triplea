@@ -19,10 +19,15 @@ import javax.swing.JLabel;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 
-class PlayerSelectorRow {
+/**
+ * Represents a player selection row worth of data, during initial setup this is a row where a player can choose
+ * to play a country, set it to AI, etc.
+ */
+public class PlayerSelectorRow implements PlayerCountrySelection {
 
   private static final String PLAYER_TYPE_AI = "AI";
   private static final String PLAYER_TYPE_DOES_NOTHING = "DoesNothing";
@@ -176,15 +181,18 @@ class PlayerSelectorRow {
     }
   }
 
-  String getPlayerName() {
+  @Override
+  public String getPlayerName() {
     return playerName;
   }
 
-  String getPlayerType() {
+  @Override
+  public String getPlayerType() {
     return (String) playerTypes.getSelectedItem();
   }
 
-  boolean isPlayerEnabled() {
+  @Override
+  public boolean isPlayerEnabled() {
     return enabledCheckBox.isSelected();
   }
 
