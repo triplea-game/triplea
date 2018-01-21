@@ -1,22 +1,17 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
-import games.strategy.engine.framework.startup.launcher.LocalLauncher;
+import games.strategy.engine.framework.startup.launcher.LauncherFactory;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.engine.random.IRandomSource;
-import games.strategy.engine.random.PlainRandomSource;
 
 /** Setup panel when hosting a local game. */
 public class LocalSetupPanel extends SetupPanel implements Observer {
@@ -84,26 +79,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public ILauncher getLauncher() {
-    return getLocalLaunchers(gameSelectorModel, playerTypes);
-  }
-
-  private static ILauncher getLocalLaunchers(
-      final GameSelectorModel gameSelectorModel,
-      final List<PlayerSelectorRow> playerRows) {
-    final IRandomSource randomSource = new PlainRandomSource();
-    final Map<String, String> playerTypes = new HashMap<>();
-    final Map<String, Boolean> playersEnabled = new HashMap<>();
-    for (final PlayerSelectorRow player : playerRows) {
-      playerTypes.put(player.getPlayerName(), player.getPlayerType());
-      playersEnabled.put(player.getPlayerName(), player.isPlayerEnabled());
-    }
-    // we don't need the playerToNode list, the disable-able players, or the alliances
-    // list, for a local game
-    final PlayerListing pl =
-        new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
-            gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
-    final LocalLauncher launcher = new LocalLauncher(gameSelectorModel, randomSource, pl);
-    return launcher;
+    return LauncherFactory.getLocalLaunchers(gameSelectorModel, playerTypes);
   }
 
 }
