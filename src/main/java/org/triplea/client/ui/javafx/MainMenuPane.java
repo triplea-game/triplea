@@ -76,7 +76,7 @@ class MainMenuPane extends BorderPane {
       final Function<Node, NumberBinding> hoverBinding = n -> Bindings.when(n.hoverProperty()).then(-10).otherwise(0);
       final NumberBinding numberBinding = hoverBinding.apply(node);
       node.translateYProperty().bind(numberBinding.multiply(-1));
-      node.getParent().translateYProperty().bind(!"mainOptions".equals(node.getParent().getParent().getId())
+      node.getParent().translateYProperty().bind(!mainOptions.equals(node.getParent().getParent())
           ? Bindings.add(numberBinding,
               hoverBinding.apply(node.getParent().getParent().getChildrenUnmodifiable().get(0)).multiply(-1))
           : numberBinding);
