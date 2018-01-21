@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.startup.launcher;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -9,11 +9,17 @@ import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelec
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.random.PlainRandomSource;
 
+/**
+ * Factory class to create instances of {@code ILauncher}.
+ */
 public class LauncherFactory {
 
+  /**
+   * Creates a launcher for a single player local (no network) game.
+   */
   public static ILauncher getLocalLaunchers(
       final GameSelectorModel gameSelectorModel,
-      final List<? extends PlayerCountrySelection> playerRows) {
+      final Collection<? extends PlayerCountrySelection> playerRows) {
 
     final Map<String, String> playerTypes = playerRows.stream()
         .collect(Collectors.toMap(PlayerCountrySelection::getPlayerName, PlayerCountrySelection::getPlayerType));
