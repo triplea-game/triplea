@@ -11,9 +11,6 @@ import javax.swing.JComponent;
 public enum LaunchScreen {
   INITIAL(InitialLaunchScreen::build),
 
-  MORE_OPTIONS(INITIAL, MoreOptions::build),
-
-
   NETWORK_GAME_TYPE_SELECT(INITIAL, NetworkGameTypeSelectionScreen::build),
 
   JOIN_NETWORK_GAME_OPTIONS(NETWORK_GAME_TYPE_SELECT, JoinNetworkGameSetup::build),
