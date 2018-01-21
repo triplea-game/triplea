@@ -23,6 +23,10 @@ import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelec
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleA;
 
+/**
+ * Represents a player selection row worth of data, during initial setup this is a row where a player can choose
+ * to play a country, set it to AI, etc.
+ */
 public class PlayerSelectorRow implements PlayerCountrySelection {
 
   private static final String PLAYER_TYPE_AI = "AI";
