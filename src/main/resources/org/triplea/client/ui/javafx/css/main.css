@@ -36,3 +36,9 @@
 	-fx-background-size: 100% auto, 100% auto;
 	-fx-background-repeat: repeat, no-repeat;
 }
+#bottomFolderBody {
+	-fx-background-image: url('/org/triplea/client/ui/javafx/images/dice.png');
+	-fx-background-position: center 20px;
+	-fx-background-repeat: no-repeat;
+	-fx-translate-x: -300px;
+}

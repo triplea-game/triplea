@@ -178,6 +178,11 @@
                                                       <Insets bottom="10.0" left="10.0" top="10.0" />
                                                    </VBox.margin>
                                                 </Button>
+                                                <VBox id="bottomFolderBody" alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
+                                                   <opaqueInsets>
+                                                      <Insets />
+                                                   </opaqueInsets>
+                                                </VBox>
                                              </children>
                                              <opaqueInsets>
                                                 <Insets />

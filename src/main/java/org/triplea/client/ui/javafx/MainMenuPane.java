@@ -72,7 +72,7 @@ class MainMenuPane extends BorderPane {
   }
 
   private void applyFileSelectionAnimation() {
-    mainOptions.lookupAll(".button").stream().forEach(node -> {
+    mainOptions.lookupAll(".button").forEach(node -> {
       final Function<Node, NumberBinding> hoverBinding = n -> Bindings.when(n.hoverProperty()).then(-10).otherwise(0);
       final NumberBinding numberBinding = hoverBinding.apply(node);
       node.translateYProperty().bind(numberBinding.multiply(-1));
