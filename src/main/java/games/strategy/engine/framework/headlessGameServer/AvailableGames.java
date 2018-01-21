@@ -37,9 +37,9 @@ public class AvailableGames {
   private final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
 
   AvailableGames() {
-    Arrays.asList(Optional.ofNullable(ClientFileSystemHelper.getUserMapsFolder().listFiles())
+    Arrays.stream(Optional.ofNullable(ClientFileSystemHelper.getUserMapsFolder().listFiles())
         .orElse(new File[0]))
-        .parallelStream()
+        .parallel()
         .forEach(map -> {
           if (map.isDirectory()) {
             populateFromDirectory(map, availableGames, availableMapFolderOrZipNames);
