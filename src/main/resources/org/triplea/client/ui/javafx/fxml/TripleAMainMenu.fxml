@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -253,7 +254,10 @@
                                           <Insets bottom="10.0" right="10.0" />
                                        </VBox.margin>
                                     </Button>
-                                    <Label fx:id="version" text="%main.label.triplea_version" />
+                                    <Label fx:id="version" text="%main.label.triplea_version">
+                                       <effect>
+                                          <DropShadow color="WHITE" spread="0.33" />
+                                       </effect></Label>
                                  </children>
                               </VBox>
                            </children>
