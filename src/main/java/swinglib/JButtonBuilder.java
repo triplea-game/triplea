@@ -25,6 +25,7 @@ public class JButtonBuilder {
   private Runnable actionListener;
   private boolean visible = true;
   private boolean enabled = false;
+  private boolean selected = false;
   private int biggerFont = 0;
 
   private JButtonBuilder() {}
@@ -58,6 +59,7 @@ public class JButtonBuilder {
               button.getFont().getSize() + biggerFont));
     }
 
+    button.setSelected(selected);
     return button;
   }
 
@@ -66,6 +68,14 @@ public class JButtonBuilder {
   public JButtonBuilder title(final String title) {
     Preconditions.checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
     this.title = title;
+    return this;
+  }
+
+  /**
+   * Toggles the button as 'selected', which gives keyboard focus to the button. By default button is not selected.
+   */
+  public JButtonBuilder selected(final boolean value) {
+    selected = value;
     return this;
   }
 

@@ -54,6 +54,7 @@ import org.triplea.client.ui.javafx.TripleA;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
+import games.strategy.debug.ErrorMessage;
 import games.strategy.debug.LoggingConfiguration;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
@@ -144,6 +145,7 @@ public class GameRunner {
       SwingUtilities.invokeLater(() -> {
         setupPanelModel.showSelectType();
         mainFrame = newMainFrame();
+        ErrorMessage.INSTANCE.init();
       });
 
       showMainFrame();

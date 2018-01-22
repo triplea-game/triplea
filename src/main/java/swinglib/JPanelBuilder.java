@@ -226,6 +226,25 @@ public class JPanelBuilder {
   }
 
   /**
+   * Adds a center component with padding.
+   */
+  public JPanelBuilder addCenter(final JComponent child, final Padding padding) {
+    return addCenter(
+        JPanelBuilder.builder()
+            .verticalBoxLayout()
+            .addVerticalStrut(padding.value)
+            .add(JPanelBuilder.builder()
+                .flowLayout()
+                .addHorizontalStrut(padding.value)
+                .add(child)
+                .addHorizontalStrut(padding.value)
+                .build())
+            .addVerticalStrut(padding.value)
+            .build());
+  }
+
+
+  /**
    * Specify a grid layout with a given number of rows and columns.
    *
    * @param rows First parameter for 'new GridLayout'
@@ -409,6 +428,22 @@ public class JPanelBuilder {
     public PanelProperties(final GridBagHelper.ColumnSpan columnSpan) {
       Preconditions.checkNotNull(columnSpan);
       this.columnSpan = columnSpan;
+    }
+  }
+
+
+  /**
+   * Class that represents simple top/bottom + left/right padding.
+   */
+  public static class Padding {
+    private final int value;
+
+    private Padding(final int value) {
+      this.value = value;
+    }
+
+    public static Padding of(final int value) {
+      return new Padding(value);
     }
   }
 }

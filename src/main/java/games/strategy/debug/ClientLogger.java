@@ -10,8 +10,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import swinglib.ErrorMessageBuilder;
-
 /**
  * Provides methods for the client to write log messages.
  * <p>
@@ -97,11 +95,6 @@ public final class ClientLogger {
       return;
     }
 
-    ErrorMessageBuilder.builder()
-        .message(msg)
-        .option("OK", () -> {
-        })
-        .option("Show Details", ErrorConsole::showConsole)
-        .buildAndShow();
+    ErrorMessage.show(msg);
   }
 }
