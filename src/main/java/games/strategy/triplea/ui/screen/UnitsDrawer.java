@@ -94,7 +94,7 @@ public class UnitsDrawer implements IDrawable {
         uiContext.getUnitImageFactory().getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
 
     if (!img.isPresent()) {
-      ClientLogger.logQuietly("MISSING IMAGE (this unit or image will be invisible): " + type);
+      ClientLogger.logError("MISSING IMAGE (this unit or image will be invisible): " + type);
     }
 
     if (img.isPresent() && enabledFlags) {
