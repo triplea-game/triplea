@@ -20,12 +20,11 @@ import java.util.StringTokenizer;
 import games.strategy.debug.ClientLogger;
 
 /**
- * Utiltity to read and write files in the form of
+ * Utility to read and write files in the form of
  * String -> a list of points, or string-> list of polygons.
  */
-public class PointFileReaderWriter {
-  /** Creates a new instance of PointFileReader. */
-  public PointFileReaderWriter() {}
+public final class PointFileReaderWriter {
+  private PointFileReaderWriter() {}
 
   /**
    * Returns a map of the form String -> Point.
@@ -310,5 +309,4 @@ public class PointFileReaderWriter {
     }
     mapping.put(name, points);
   }
-  // TODO add write methods
 }
