@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.annotation.Nullable;
+
+import org.apache.commons.io.input.CloseShieldInputStream;
+
 import games.strategy.debug.ClientLogger;
 
 /**
@@ -28,15 +32,18 @@ public final class PointFileReaderWriter {
 
   /**
    * Returns a map of the form String -> Point.
+   *
+   * @param stream The stream from which to read the point file. If {@code null}, an empty map will be returned.
    */
-  public static Map<String, Point> readOneToOne(final InputStream stream) throws IOException {
+  public static Map<String, Point> readOneToOne(final @Nullable InputStream stream) throws IOException {
     if (stream == null) {
       return Collections.emptyMap();
     }
-    final Map<String, Point> mapping = new HashMap<>();
 
-    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+    final Map<String, Point> mapping = new HashMap<>();
+    try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
+      @Nullable
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -44,8 +51,6 @@ public final class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
-    } finally {
-      stream.close();
     }
     return mapping;
   }

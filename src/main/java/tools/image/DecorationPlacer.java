@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -196,9 +197,9 @@ public class DecorationPlacer extends JFrame {
         "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
             + "centers?",
         "File Suggestion", 1) == 0) {
-      try {
+      try (InputStream is = new FileInputStream(fileCenters.getPath())) {
         System.out.println("Centers : " + fileCenters.getPath());
-        centers = PointFileReaderWriter.readOneToOne(new FileInputStream(fileCenters.getPath()));
+        centers = PointFileReaderWriter.readOneToOne(is);
       } catch (final IOException ex1) {
         System.out.println("Something wrong with Centers file");
         ex1.printStackTrace();
@@ -210,7 +211,9 @@ public class DecorationPlacer extends JFrame {
         final String centerPath = new FileOpen("Select A Center File", mapFolderLocation, ".txt").getPathString();
         if (centerPath != null) {
           System.out.println("Centers : " + centerPath);
-          centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
+          try (InputStream is = new FileInputStream(centerPath)) {
+            centers = PointFileReaderWriter.readOneToOne(is);
+          }
         } else {
           System.out.println("You must specify a centers file.");
           System.out.println("Shutting down.");

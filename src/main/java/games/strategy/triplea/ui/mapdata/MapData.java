@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
 import games.strategy.debug.ClientLogger;
@@ -146,14 +147,14 @@ public class MapData implements Closeable {
 
       polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
       centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
-      vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
-      convoyPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CONVOY_MARKERS));
-      commentPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + COMMENT_MARKERS));
-      blockadePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + BLOCKADE_MARKERS));
-      capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
-      puPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + PU_PLACE_FILE));
-      namePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + TERRITORY_NAME_PLACE_FILE));
-      kamikazePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + KAMIKAZE_FILE));
+      vcPlace = readPointsOneToOne(prefix + VC_MARKERS);
+      convoyPlace = readPointsOneToOne(prefix + CONVOY_MARKERS);
+      commentPlace = readPointsOneToOne(prefix + COMMENT_MARKERS);
+      blockadePlace = readPointsOneToOne(prefix + BLOCKADE_MARKERS);
+      capitolPlace = readPointsOneToOne(prefix + CAPITAL_MARKERS);
+      puPlace = readPointsOneToOne(prefix + PU_PLACE_FILE);
+      namePlace = readPointsOneToOne(prefix + TERRITORY_NAME_PLACE_FILE);
+      kamikazePlace = readPointsOneToOne(prefix + KAMIKAZE_FILE);
       mapProperties = new Properties();
       decorations = loadDecorations();
       territoryNameImages = territoryNameImages();
@@ -172,6 +173,12 @@ public class MapData implements Closeable {
       initializeContains();
     } catch (final IOException ex) {
       ClientLogger.logQuietly("Failed to load map properties", ex);
+    }
+  }
+
+  private Map<String, Point> readPointsOneToOne(final String path) throws IOException {
+    try (@Nullable InputStream is = resourceLoader.getResourceAsStream(path)) {
+      return PointFileReaderWriter.readOneToOne(is);
     }
   }
 
