@@ -62,8 +62,9 @@ public enum ErrorMessage {
   }
 
   /**
-   * Call this to make sure static swing components have been initialized. This will ensure that we have done
-   * this before hand and not during an error (in which case
+   * Call this to make sure static swing components have been initialized. This will ensure that we initialized
+   * the frame before an error occurs. This way when an error event does happen, we only need to pack and make
+   * visible the frame.
    */
   public void init() {}
 
