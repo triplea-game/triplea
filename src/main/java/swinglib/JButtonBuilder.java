@@ -74,7 +74,7 @@ public class JButtonBuilder {
   /**
    * Toggles the button as 'selected', which gives keyboard focus to the button. By default button is not selected.
    */
-  public JButtonBuilder selected(boolean value) {
+  public JButtonBuilder selected(final boolean value) {
     selected = value;
     return this;
   }
