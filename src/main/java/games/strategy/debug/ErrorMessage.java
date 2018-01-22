@@ -72,7 +72,7 @@ public enum ErrorMessage {
    * Displays the error dialog window with a given message. This is no-op if the window is already visible.
    */
   public static void show(final String msg) {
-    if (!INSTANCE.isVisible.compareAndSet(false, true)) {
+    if (INSTANCE.isVisible.compareAndSet(false, true)) {
       SwingUtilities.invokeLater(() -> {
         INSTANCE.errorMessage.setText(msg);
         INSTANCE.windowReference.pack();
