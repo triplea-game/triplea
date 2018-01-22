@@ -20,12 +20,9 @@ public class ComboProperty<T> extends AEditableProperty {
   private T value;
 
   /**
-   * @param name
-   *        name of the property.
-   * @param defaultValue
-   *        default string value
-   * @param possibleValues
-   *        collection of values
+   * @param name name of the property.
+   * @param defaultValue default string value
+   * @param possibleValues collection of values
    */
   public ComboProperty(final String name, final String description, final T defaultValue,
       final Collection<T> possibleValues) {
@@ -36,15 +33,19 @@ public class ComboProperty<T> extends AEditableProperty {
   private ComboProperty(final String name, final String description, final T defaultValue,
       final Collection<T> possibleValues, final boolean allowNone) {
     super(name, description);
-    if (!allowNone && !possibleValues.contains(defaultValue) && defaultValue == null) {
-      throw new IllegalStateException("possible values does not contain default");
-    } else if (allowNone && !possibleValues.contains(defaultValue) && !possibleValues.isEmpty()) {
-      value = possibleValues.iterator().next();
-    } else if (allowNone && !possibleValues.contains(defaultValue)) {
-      try {
-        value = (T) "";
-      } catch (final Exception e) {
-        value = null;
+    if (!allowNone) {
+      if (defaultValue == null && !possibleValues.contains(defaultValue)) {
+        throw new IllegalStateException("possible values does not contain default");
+      }
+    } else if (!possibleValues.contains(defaultValue)) {
+      if (!possibleValues.isEmpty()) {
+        value = possibleValues.iterator().next();
+      } else {
+        try {
+          value = (T) "";
+        } catch (final ClassCastException e) {
+          value = null;
+        }
       }
     } else {
       value = defaultValue;
@@ -77,17 +78,8 @@ public class ComboProperty<T> extends AEditableProperty {
 
   @Override
   public boolean validate(final Object value) {
-    if (possibleValues == null || possibleValues.isEmpty()) {
-      return false;
-    }
-    try {
-      if (possibleValues.contains(value)) {
-        return true;
-      }
-    } catch (final ClassCastException e) {
-      return false;
-    } catch (final NullPointerException e) {
-      return false;
+    if (possibleValues != null && possibleValues.contains(value)) {
+      return true;
     }
     return false;
   }
