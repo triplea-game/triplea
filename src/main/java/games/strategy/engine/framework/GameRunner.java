@@ -145,7 +145,7 @@ public class GameRunner {
       SwingUtilities.invokeLater(() -> {
         setupPanelModel.showSelectType();
         mainFrame = newMainFrame();
-        ErrorMessage.INSTANCE.init();//mainFrame);
+        ErrorMessage.INSTANCE.init();
       });
 
       showMainFrame();
