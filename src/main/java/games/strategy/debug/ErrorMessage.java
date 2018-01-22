@@ -1,6 +1,7 @@
 package games.strategy.debug;
 
 import java.awt.Dialog;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,7 +28,7 @@ public enum ErrorMessage {
 
   private final JFrame windowReference;
   private final JLabel errorMessage;
-  private volatile boolean isVisible;
+  private final AtomicBoolean isVisible = new AtomicBoolean(false);
 
   ErrorMessage() {
     windowReference = new JFrame("TripleA Error");
@@ -53,7 +54,7 @@ public enum ErrorMessage {
                 .toolTip("Shows the error console window with full error details.")
                 .actionListener(() -> {
                   windowReference.setVisible(false);
-                  isVisible = false;
+                  isVisible.set(false);
                   ErrorConsole.showConsole();
                 })
                 .build())
@@ -73,8 +74,7 @@ public enum ErrorMessage {
    * Displays the error dialog window with a given message. This is no-op if the window is already visible.
    */
   public static void show(final String msg) {
-    if (!INSTANCE.isVisible) {
-      INSTANCE.isVisible = true;
+    if (!INSTANCE.isVisible.compareAndSet(false,true)) {
       SwingUtilities.invokeLater(() -> {
         INSTANCE.errorMessage.setText(msg);
         INSTANCE.windowReference.pack();
