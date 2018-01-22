@@ -53,27 +53,6 @@ public final class PointFileReaderWriter {
     return mapping;
   }
 
-  /**
-   * Returns a map of the form String -> Point.
-   */
-  public static Map<String, Point> readOneToOneCenters(final InputStream stream) throws IOException {
-    final Map<String, Point> mapping = new HashMap<>();
-
-    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      String current = reader.readLine();
-      while (current != null) {
-        if (current.trim().length() != 0) {
-          readSingle(current, mapping);
-        }
-        current = reader.readLine();
-      }
-    } finally {
-      stream.close();
-    }
-    return mapping;
-  }
-
   private static void readSingle(final String line, final Map<String, Point> mapping) throws IOException {
     final StringTokenizer tokens = new StringTokenizer(line, "", false);
     final String name = tokens.nextToken("(").trim();

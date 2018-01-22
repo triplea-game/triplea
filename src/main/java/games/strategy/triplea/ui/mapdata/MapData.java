@@ -8,6 +8,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -23,9 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
 import games.strategy.debug.ClientLogger;
@@ -148,7 +147,7 @@ public class MapData implements Closeable {
       }
 
       polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
-      centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
+      centers = readPointsOneToOneRequired(prefix + CENTERS_FILE);
       vcPlace = readPointsOneToOneOptional(prefix + VC_MARKERS);
       convoyPlace = readPointsOneToOneOptional(prefix + CONVOY_MARKERS);
       commentPlace = readPointsOneToOneOptional(prefix + COMMENT_MARKERS);
@@ -180,17 +179,27 @@ public class MapData implements Closeable {
 
   private Map<String, Point> readPointsOneToOneOptional(final String path) throws IOException {
     return readPointsOneToOne(() -> {
-      final @Nullable InputStream is = resourceLoader.getResourceAsStream(path);
-      return (is != null) ? is : new ByteArrayInputStream(new byte[0]);
+      return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+          .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
     });
   }
 
-  private static Map<String, Point> readPointsOneToOne(
-      final Supplier<InputStream> inputStreamSupplier)
-      throws IOException {
-    try (InputStream is = inputStreamSupplier.get()) {
+  private Map<String, Point> readPointsOneToOneRequired(final String path) throws IOException {
+    return readPointsOneToOne(() -> {
+      return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+          .orElseThrow(() -> new FileNotFoundException(path));
+    });
+  }
+
+  private static Map<String, Point> readPointsOneToOne(final InputStreamFactory inputStreamFactory) throws IOException {
+    try (InputStream is = inputStreamFactory.newInputStream()) {
       return PointFileReaderWriter.readOneToOne(is);
     }
+  }
+
+  @FunctionalInterface
+  private interface InputStreamFactory {
+    InputStream newInputStream() throws IOException;
   }
 
   @Override
