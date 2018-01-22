@@ -34,7 +34,7 @@ public enum ErrorMessage {
     windowReference = new JFrame("TripleA Error");
     windowReference.setAlwaysOnTop(true);
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-    errorMessage = new JLabel("TripleA Error");
+    errorMessage = new JLabel();
     windowReference.add(JPanelBuilder.builder()
         .borderLayout()
         .addCenter(
