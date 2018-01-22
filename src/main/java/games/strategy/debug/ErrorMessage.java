@@ -26,15 +26,13 @@ import swinglib.JPanelBuilder;
 public enum ErrorMessage {
   INSTANCE;
 
-  private final JFrame windowReference;
-  private final JLabel errorMessage;
+  private final JFrame windowReference = new JFrame("TripleA Error");
+  private final JLabel errorMessage = new JLabel();
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
 
   ErrorMessage() {
-    windowReference = new JFrame("TripleA Error");
     windowReference.setAlwaysOnTop(true);
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-    errorMessage = new JLabel();
     windowReference.add(JPanelBuilder.builder()
         .borderLayout()
         .addCenter(
