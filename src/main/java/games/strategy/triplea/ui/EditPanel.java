@@ -36,7 +36,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -261,7 +260,7 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final JList<?> techList = new JList<>(techs);
+        final JList<TechAdvance> techList = new JList<>(techs);
         techList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         techList.setLayoutOrientation(JList.VERTICAL);
         techList.setVisibleRowCount(10);
@@ -272,17 +271,8 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final Set<TechAdvance> advance = new HashSet<>();
-        // FIXME: This try-catch block appears to be guarding against a ClassCastException.
-        // It should be removed and the underlying problem fixed.
-        try {
-          for (final Object selection : techList.getSelectedValuesList()) {
-            advance.add((TechAdvance) selection);
-          }
-        } catch (final Exception e) {
-          ClientLogger.logQuietly("Failed to copy all selected tech advances", e);
-        }
-        final String result = EditPanel.this.frame.getEditDelegate().addTechAdvance(player, advance);
+        final Set<TechAdvance> techAdvances = new HashSet<>(techList.getSelectedValuesList());
+        final String result = EditPanel.this.frame.getEditDelegate().addTechAdvance(player, techAdvances);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
@@ -326,7 +316,7 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final JList<?> techList = new JList<>(techs);
+        final JList<TechAdvance> techList = new JList<>(techs);
         techList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         techList.setLayoutOrientation(JList.VERTICAL);
         techList.setVisibleRowCount(10);
@@ -337,17 +327,8 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final Set<TechAdvance> advance = new HashSet<>();
-        // FIXME: This try-catch block appears to be guarding against a ClassCastException.
-        // It should be removed and the underlying problem fixed.
-        try {
-          for (final Object selection : techList.getSelectedValuesList()) {
-            advance.add((TechAdvance) selection);
-          }
-        } catch (final Exception e) {
-          ClientLogger.logQuietly("Failed to copy all selected tech advances", e);
-        }
-        final String result = EditPanel.this.frame.getEditDelegate().removeTechAdvance(player, advance);
+        final Set<TechAdvance> techAdvances = new HashSet<>(techList.getSelectedValuesList());
+        final String result = EditPanel.this.frame.getEditDelegate().removeTechAdvance(player, techAdvances);
         if (result != null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit",
               JOptionPane.ERROR_MESSAGE);
