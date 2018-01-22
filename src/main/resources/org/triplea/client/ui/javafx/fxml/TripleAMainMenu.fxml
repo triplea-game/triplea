@@ -53,9 +53,9 @@
                   </Button>
                </children>
             </VBox>
-            <HBox fx:id="gameOptions" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false">
+            <HBox fx:id="gameOptions" alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button contentDisplay="TOP" disable="true" mnemonicParsing="false" onAction="#showLobbyMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.join_lobby">
+                  <Button contentDisplay="TOP" disable="true" mnemonicParsing="false" onAction="#showLobbyMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.join_lobby">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -72,7 +72,7 @@
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showLocalGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.local_game">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showLocalGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.local_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -89,24 +89,42 @@
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
                   </Button>
-                  <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPbfPbemMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.startPBEMPBF">
+                  <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPlayByForumMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.startPBF">
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/org/triplea/client/ui/javafx/images/play_by_forum_email.png" />
+                              <Image url="@/org/triplea/client/ui/javafx/images/play_by_forum.png" />
                            </image></ImageView>
                      </graphic>
                      <font>
                         <Font name="1942 report" size="13.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="5.0" right="5.0" />
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                      <effect>
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showHostNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.host_networked_game">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showPlayByEmailMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.startPBEM">
+                     <graphic>
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/org/triplea/client/ui/javafx/images/play_by_email.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="1942 report" size="13.0" />
+                     </font>
+                     <effect>
+                        <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
+                     </effect>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showHostNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.host_networked_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -123,7 +141,7 @@
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showJoinNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" text="%main.button.join_networked_game">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showJoinNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.join_networked_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -142,7 +160,7 @@
                   </Button>
                </children>
             </HBox>
-            <VBox fx:id="mainOptions" alignment="TOP_CENTER">
+            <VBox fx:id="mainOptions" alignment="TOP_CENTER" visible="false">
                <children>
                   <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
                      <children>

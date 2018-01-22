@@ -118,7 +118,10 @@ class MainMenuPane extends BorderPane {
   private void showJoinNetworkGameMenu() {}
 
   @FXML
-  private void showPbfPbemMenu() {}
+  private void showPlayByForumMenu() {}
+  
+  @FXML
+  private void showPlayByEmailMenu() {}
 
   @FXML
   private void showPlayOptions() {
