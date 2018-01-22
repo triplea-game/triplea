@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -147,14 +149,14 @@ public class MapData implements Closeable {
 
       polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
       centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
-      vcPlace = readPointsOneToOne(prefix + VC_MARKERS);
-      convoyPlace = readPointsOneToOne(prefix + CONVOY_MARKERS);
-      commentPlace = readPointsOneToOne(prefix + COMMENT_MARKERS);
-      blockadePlace = readPointsOneToOne(prefix + BLOCKADE_MARKERS);
-      capitolPlace = readPointsOneToOne(prefix + CAPITAL_MARKERS);
-      puPlace = readPointsOneToOne(prefix + PU_PLACE_FILE);
-      namePlace = readPointsOneToOne(prefix + TERRITORY_NAME_PLACE_FILE);
-      kamikazePlace = readPointsOneToOne(prefix + KAMIKAZE_FILE);
+      vcPlace = readPointsOneToOneOptional(prefix + VC_MARKERS);
+      convoyPlace = readPointsOneToOneOptional(prefix + CONVOY_MARKERS);
+      commentPlace = readPointsOneToOneOptional(prefix + COMMENT_MARKERS);
+      blockadePlace = readPointsOneToOneOptional(prefix + BLOCKADE_MARKERS);
+      capitolPlace = readPointsOneToOneOptional(prefix + CAPITAL_MARKERS);
+      puPlace = readPointsOneToOneOptional(prefix + PU_PLACE_FILE);
+      namePlace = readPointsOneToOneOptional(prefix + TERRITORY_NAME_PLACE_FILE);
+      kamikazePlace = readPointsOneToOneOptional(prefix + KAMIKAZE_FILE);
       mapProperties = new Properties();
       decorations = loadDecorations();
       territoryNameImages = territoryNameImages();
@@ -176,8 +178,17 @@ public class MapData implements Closeable {
     }
   }
 
-  private Map<String, Point> readPointsOneToOne(final String path) throws IOException {
-    try (@Nullable InputStream is = resourceLoader.getResourceAsStream(path)) {
+  private Map<String, Point> readPointsOneToOneOptional(final String path) throws IOException {
+    return readPointsOneToOne(() -> {
+      final @Nullable InputStream is = resourceLoader.getResourceAsStream(path);
+      return (is != null) ? is : new ByteArrayInputStream(new byte[0]);
+    });
+  }
+
+  private static Map<String, Point> readPointsOneToOne(
+      final Supplier<InputStream> inputStreamSupplier)
+      throws IOException {
+    try (InputStream is = inputStreamSupplier.get()) {
       return PointFileReaderWriter.readOneToOne(is);
     }
   }

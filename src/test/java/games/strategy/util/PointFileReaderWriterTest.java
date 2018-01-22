@@ -24,17 +24,17 @@ public final class PointFileReaderWriterTest {
   @Nested
   public final class ReadOneToOneTest {
     @Test
-    public void shouldReturnEmptyMapWhenStreamIsNull() throws Exception {
-      assertThat(PointFileReaderWriter.readOneToOne(null), is(Collections.emptyMap()));
-    }
-
-    @Test
     public void shouldNotCloseStream() throws Exception {
       final InputStream is = spy(new ByteArrayInputStream(new byte[0]));
 
       PointFileReaderWriter.readOneToOne(is);
 
       verify(is, never()).close();
+    }
+
+    @Test
+    public void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
+      assertThat(IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToOne), is(Collections.emptyMap()));
     }
 
     @Test

@@ -1,5 +1,7 @@
 package games.strategy.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.Point;
 import java.awt.Polygon;
 import java.io.IOException;
@@ -32,13 +34,9 @@ public final class PointFileReaderWriter {
 
   /**
    * Returns a map of the form String -> Point.
-   *
-   * @param stream The stream from which to read the point file. If {@code null}, an empty map will be returned.
    */
-  public static Map<String, Point> readOneToOne(final @Nullable InputStream stream) throws IOException {
-    if (stream == null) {
-      return Collections.emptyMap();
-    }
+  public static Map<String, Point> readOneToOne(final InputStream stream) throws IOException {
+    checkNotNull(stream);
 
     final Map<String, Point> mapping = new HashMap<>();
     try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
