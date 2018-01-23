@@ -136,7 +136,7 @@ public class MapData implements Closeable {
       place = readPointsOneToMany(optionalResource(PLACEMENT_FILE));
       territoryEffects = readPointsOneToMany(optionalResource(TERRITORY_EFFECT_FILE));
 
-      if (loader.getResourceAsStream(POLYGON_FILE) == null) {
+      if (loader.getResource(POLYGON_FILE) == null) {
         throw new IllegalStateException(
             "Error in resource loading. Unable to load expected resource: " + POLYGON_FILE + ", the error"
                 + " is that either we did not find the correct path to load. Check the resource loader to make"

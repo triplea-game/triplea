@@ -197,12 +197,14 @@ public class ResourceLoader implements Closeable {
    * @param inputPath
    *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or
    *        File.separator)
+   *
+   * @return The resource URL or {@code null} if the resource does not exist.
    */
-  public URL getResource(final String inputPath) {
+  public @Nullable URL getResource(final String inputPath) {
     final String path = resourceLocationTracker.getMapPrefix() + inputPath;
     return getMatchingResources(path).stream().findFirst().orElse(
-        getMatchingResources(inputPath).stream().findFirst().orElseGet(
-            () -> null));
+        getMatchingResources(inputPath).stream().findFirst().orElse(
+            null));
   }
 
   private List<URL> getMatchingResources(final String path) {
