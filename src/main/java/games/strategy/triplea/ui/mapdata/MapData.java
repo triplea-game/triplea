@@ -180,28 +180,35 @@ public class MapData implements Closeable {
   }
 
   private static Map<String, Point> readPointsOneToOne(final InputStreamFactory inputStreamFactory) throws IOException {
-    try (InputStream is = inputStreamFactory.newInputStream()) {
-      return PointFileReaderWriter.readOneToOne(is);
-    }
+    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToOne);
   }
 
   private static Map<String, List<Point>> readPointsOneToMany(final InputStreamFactory inputStreamFactory)
       throws IOException {
-    try (InputStream is = inputStreamFactory.newInputStream()) {
-      return PointFileReaderWriter.readOneToMany(is);
-    }
+    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToMany);
   }
 
   private static Map<String, List<Polygon>> readPolygonsOneToMany(final InputStreamFactory inputStreamFactory)
       throws IOException {
+    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToManyPolygons);
+  }
+
+  private static <R> R runWithInputStream(
+      final InputStreamFactory inputStreamFactory,
+      final InputStreamReader<R> reader) throws IOException {
     try (InputStream is = inputStreamFactory.newInputStream()) {
-      return PointFileReaderWriter.readOneToManyPolygons(is);
+      return reader.read(is);
     }
   }
 
   @FunctionalInterface
   private interface InputStreamFactory {
     InputStream newInputStream() throws IOException;
+  }
+
+  @FunctionalInterface
+  private interface InputStreamReader<R> {
+    R read(InputStream is) throws IOException;
   }
 
   @Override
