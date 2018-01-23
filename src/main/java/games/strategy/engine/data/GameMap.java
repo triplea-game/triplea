@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -57,14 +58,10 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       if (allowNull) {
         return null;
       }
-      final StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < coordinate.length; i++) {
-        sb.append(coordinate[i]);
-        if (i + 1 < coordinate.length) {
-          sb.append(", ");
-        }
-      }
-      throw new IllegalStateException("No Territory at coordinates: " + sb.toString());
+      final String coordinates = Arrays.stream(coordinate)
+          .mapToObj(String::valueOf)
+          .collect(Collectors.joining(", "));
+      throw new IllegalStateException("No Territory at coordinates: " + coordinates);
     }
     int listIndex = coordinate[0];
     int multiplier = 1;
@@ -227,33 +224,26 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return getNeighbors(t);
     }
     final Set<Territory> possible = m_connections.get(t);
-    final Set<Territory> passed = new HashSet<>();
     if (possible == null) {
-      return passed;
+      return new HashSet<>();
     }
-    for (final Territory current : possible) {
-      if (cond.test(current)) {
-        passed.add(current);
-      }
-    }
-    return passed;
+    return possible.stream()
+        .filter(cond)
+        .collect(Collectors.toSet());
   }
 
   /**
-   * @param territory
-   *        referring territory
-   * @param distance
-   *        maximal distance of the neighboring territories
+   * @param territory referring territory
+   * @param distance maximal distance of the neighboring territories
    * @return All neighbors within a certain distance of the starting territory that match the condition.
    *         Does NOT include the original/starting territory in the returned Set.
    */
-  @SuppressWarnings("unchecked")
   public Set<Territory> getNeighbors(final Territory territory, int distance) {
     if (distance < 0) {
       throw new IllegalArgumentException("Distance must be positive not:" + distance);
     }
     if (distance == 0) {
-      return Collections.EMPTY_SET;
+      return Collections.emptySet();
     }
     final Set<Territory> start = getNeighbors(territory);
     if (distance == 1) {
@@ -268,13 +258,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @return All neighbors within a certain distance of the starting territory that match the condition.
    *         Does NOT include the original/starting territory in the returned Set.
    */
-  @SuppressWarnings("unchecked")
   public Set<Territory> getNeighbors(final Territory territory, int distance, final Predicate<Territory> cond) {
     if (distance < 0) {
       throw new IllegalArgumentException("Distance must be positive not:" + distance);
     }
     if (distance == 0) {
-      return Collections.EMPTY_SET;
+      return Collections.emptySet();
     }
     final Set<Territory> start = getNeighbors(territory, cond);
     if (distance == 1) {
@@ -339,12 +328,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
-   * @param cond
-   *        condition that covered territories of the route must match
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
+   * @param cond condition that covered territories of the route must match
    * @return the shortest route between two territories so that covered territories match the condition
    *         or null if no route exists.
    */
@@ -355,15 +341,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (getNeighbors(t1, cond).contains(t2)) {
       return new Route(t1, t2);
     }
-    final RouteFinder engine = new RouteFinder(this, cond);
-    return engine.findRoute(t1, t2);
+    return new RouteFinder(this, cond).findRoute(t1, t2);
   }
 
   /**
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
    * @return the shortest land route between two territories or null if no route exists.
    */
   public Route getLandRoute(final Territory t1, final Territory t2) {
@@ -371,10 +354,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
    * @return the shortest water route between two territories or null if no route exists.
    */
   public Route getWaterRoute(final Territory t1, final Territory t2) {
@@ -396,12 +377,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * (Recommended that you use 2,3,4 as scores, unless you will allow routes to be much longer under certain conditions)
    * Returns null if there is no route that exists that matches any of the matches.
    *
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
-   * @param matches
-   *        HashMap of territory matches for covered territories
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
+   * @param matches HashMap of territory matches for covered territories
    * @return a composite route between two territories
    */
   public Route getCompositeRoute(final Territory t1, final Territory t2,
@@ -413,12 +391,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (getNeighbors(t1, allCond).contains(t2)) {
       return new Route(t1, t2);
     }
-    final CompositeRouteFinder engine = new CompositeRouteFinder(this, matches);
-    return engine.findRoute(t1, t2);
+    return new CompositeRouteFinder(this, matches).findRoute(t1, t2);
   }
 
   public Route getCompositeRoute_IgnoreEnd(final Territory t1, final Territory t2,
-      final HashMap<Predicate<Territory>, Integer> matches) {
+      final Map<Predicate<Territory>, Integer> matches) {
     matches.put(Matches.territoryIs(t2), 0);
     return getCompositeRoute(t1, t2, matches);
   }
