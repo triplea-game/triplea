@@ -68,8 +68,8 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldReturnEmptyMapWhenStreamIsNull() {
-      assertThat(PointFileReaderWriter.readOneToMany(null), is(Collections.emptyMap()));
+    public void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
+      assertThat(IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToMany), is(Collections.emptyMap()));
     }
 
     @Test

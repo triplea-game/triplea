@@ -12,7 +12,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -138,10 +137,8 @@ public final class PointFileReaderWriter {
   /**
    * Returns a map of the form String -> Collection of points.
    */
-  public static Map<String, List<Point>> readOneToMany(final @Nullable InputStream stream) {
-    if (stream == null) {
-      return Collections.emptyMap();
-    }
+  public static Map<String, List<Point>> readOneToMany(final InputStream stream) {
+    checkNotNull(stream);
 
     final HashMap<String, List<Point>> mapping = new HashMap<>();
     try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));

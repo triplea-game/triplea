@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
 import games.strategy.debug.ClientLogger;
@@ -136,8 +135,8 @@ public class MapData implements Closeable {
     try {
       final String prefix = "";
 
-      place = readPointsOneToMany(prefix + PLACEMENT_FILE);
-      territoryEffects = readPointsOneToMany(prefix + TERRITORY_EFFECT_FILE);
+      place = readPointsOneToManyOptional(prefix + PLACEMENT_FILE);
+      territoryEffects = readPointsOneToManyOptional(prefix + TERRITORY_EFFECT_FILE);
 
       if (loader.getResourceAsStream(prefix + POLYGON_FILE) == null) {
         throw new IllegalStateException(
@@ -198,9 +197,16 @@ public class MapData implements Closeable {
     }
   }
 
-  private Map<String, List<Point>> readPointsOneToMany(final String path) throws IOException {
-    try (@Nullable
-    InputStream is = resourceLoader.getResourceAsStream(path)) {
+  private Map<String, List<Point>> readPointsOneToManyOptional(final String path) throws IOException {
+    return readPointsOneToMany(() -> {
+      return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+          .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
+    });
+  }
+
+  private static Map<String, List<Point>> readPointsOneToMany(final InputStreamFactory inputStreamFactory)
+      throws IOException {
+    try (InputStream is = inputStreamFactory.newInputStream()) {
       return PointFileReaderWriter.readOneToMany(is);
     }
   }
@@ -255,7 +261,7 @@ public class MapData implements Closeable {
 
   private Map<Image, List<Point>> loadDecorations() throws IOException {
     final Map<Image, List<Point>> decorations = new HashMap<>();
-    final Map<String, List<Point>> points = readPointsOneToMany(DECORATIONS_FILE);
+    final Map<String, List<Point>> points = readPointsOneToManyOptional(DECORATIONS_FILE);
     for (final String name : points.keySet()) {
       loadImage("misc/" + name).ifPresent(img -> decorations.put(img, points.get(name)));
     }
