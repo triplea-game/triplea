@@ -553,8 +553,7 @@ public final class GameParser {
       final String horizontalConnections = current.getAttribute("horizontal-connections");
       final String verticalConnections = current.getAttribute("vertical-connections");
       final String diagonalConnections = current.getAttribute("diagonal-connections");
-      setGrids(data, gridType, name, xs, ys, water, horizontalConnections, verticalConnections, diagonalConnections,
-          false);
+      setGrids(data, gridType, name, xs, ys, water, horizontalConnections, verticalConnections, diagonalConnections);
     }
   }
 
@@ -563,7 +562,7 @@ public final class GameParser {
    */
   private void setGrids(final GameData data, final String gridType, final String name, final String xs,
       final String ys, final Set<String> water, final String horizontalConnections, final String verticalConnections,
-      final String diagonalConnections, final boolean addingOntoExistingMap) throws GameParseException {
+      final String diagonalConnections) throws GameParseException {
     final GameMap map = data.getMap();
     final boolean horizontalConnectionsImplict;
     if (horizontalConnections.equals("implicit")) {
@@ -603,15 +602,8 @@ public final class GameParser {
         for (int x = 0; x < sizeX; x++) {
           final boolean isWater;
           isWater = water.contains(x + "-" + y);
-          final Territory newTerritory = new Territory(name + "_" + x + "_" + y, isWater, data, x, y);
-          if (addingOntoExistingMap && map.getTerritories().contains(newTerritory)) {
-            continue;
-          }
-          map.addTerritory(newTerritory);
+          map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data, x, y));
         }
-      }
-      if (addingOntoExistingMap) {
-        map.reorderTerritoryList();
       }
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {
@@ -652,16 +644,9 @@ public final class GameParser {
         for (int x = 0; x < sizeX; x++) {
           final boolean isWater = false;
           if (!water.contains(x + "-" + y)) {
-            final Territory newTerritory = new Territory(name + "_" + x + "_" + y, isWater, data, x, y);
-            if (addingOntoExistingMap && map.getTerritories().contains(newTerritory)) {
-              continue;
-            }
-            map.addTerritory(newTerritory);
+            map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data, x, y));
           }
         }
-      }
-      if (addingOntoExistingMap) {
-        map.reorderTerritoryList();
       }
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {

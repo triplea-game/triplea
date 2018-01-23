@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nullable;
 
@@ -73,74 +73,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return m_territories.get(listIndex);
   }
 
-  protected void reorderTerritoryList() {
-    Collections.sort(m_territories, TERRITORY_GRID_ORDERING);
-  }
-
-  private static final Comparator<Territory> TERRITORY_GRID_ORDERING = (t1, t2) -> {
-    if ((t1 == null && t2 == null) || t1 == t2) {
-      return 0;
-    }
-    if (t1 == null && t2 != null) {
-      return 1;
-    }
-    if (t1 != null && t2 == null) {
-      return -1;
-    }
-    if (t1.equals(t2)) {
-      return 0;
-    }
-    final int t1index = t1.getName().indexOf("_");
-    final int t2index = t2.getName().indexOf("_");
-    if (t1index == -1 && t2index == -1) {
-      return 0;
-    }
-    if (t1index == -1 && t2index != -1) {
-      return 1;
-    }
-    if (t1index != -1 && t2index == -1) {
-      return -1;
-    }
-    final String name1 = t1.getName().substring(0, t1index);
-    final String name2 = t1.getName().substring(0, t2index);
-    if (!name1.equals(name2)) {
-      return name1.compareTo(name2);
-    }
-    String tname1y = t1.getName().replaceFirst(name1 + "_", "");
-    tname1y = tname1y.substring(tname1y.indexOf("_") + 1, tname1y.length());
-    final int ty1 = Integer.parseInt(tname1y);
-    String tname2y = t2.getName().replaceFirst(name2 + "_", "");
-    tname2y = tname2y.substring(tname2y.indexOf("_") + 1, tname2y.length());
-    final int ty2 = Integer.parseInt(tname2y);
-    if (ty1 < ty2) {
-      return -1;
-    } else if (ty1 > ty2) {
-      return 1;
-    }
-    String tname1x = t1.getName().replaceFirst(name1 + "_", "");
-    tname1x = tname1x.substring(0, tname1x.indexOf("_"));
-    final int tx1 = Integer.parseInt(tname1x);
-    String tname2x = t2.getName().replaceFirst(name2 + "_", "");
-    tname2x = tname2x.substring(0, tname2x.indexOf("_"));
-    final int tx2 = Integer.parseInt(tname2x);
-    if (tx1 < tx2) {
-      return -1;
-    } else if (tx1 > tx2) {
-      return 1;
-    }
-    return 0;
-  };
-
   boolean isCoordinateValid(final int... coordinate) {
     if (coordinate.length != m_gridDimensions.length) {
       return false;
     }
-    for (int i = 0; i < m_gridDimensions.length; i++) {
-      if (coordinate[i] >= m_gridDimensions[i] || coordinate[i] < 0) {
-        return false;
-      }
-    }
-    return true;
+    return IntStream.range(0, coordinate.length)
+        .noneMatch(i -> coordinate[i] >= m_gridDimensions[i] || coordinate[i] < 0);
   }
 
   protected void addTerritory(final Territory t1) {
@@ -167,20 +105,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     setConnection(t2, t1);
   }
 
-  /**
-   * Uni-directional. T1 connects to T2, while T2 does NOT connect to T1.
-   */
-  protected void addOneWayConnection(final Territory t1, final Territory t2) {
-    if (t1.equals(t2)) {
-      throw new IllegalArgumentException("Cannot connect a territory to itself");
-    }
-    if (!m_territories.contains(t1) || !m_territories.contains(t2)) {
-      throw new IllegalArgumentException("Map doesnt know about one of " + t1 + " " + t2);
-    }
-    // connect t1 to t2
-    setConnection(t1, t2);
-  }
-
   private void setConnection(final Territory from, final Territory to) {
     // preserves the unmodifiable nature of the entries
     final Set<Territory> current = m_connections.get(from);
@@ -190,8 +114,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param s
-   *        name of the searched territory (case sensitive)
+   * @param s name of the searched territory (case sensitive)
    * @return the territory with the given name, or null if no territory can be found (case sensitive).
    */
   public Territory getTerritory(final String s) {
@@ -199,8 +122,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t
-   *        referring territory
+   * @param t referring territory
    * @return All adjacent neighbors of the starting territory.
    *         Does NOT include the original/starting territory in the returned Set.
    */
@@ -223,11 +145,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (cond == null) {
       return getNeighbors(t);
     }
-    final Set<Territory> possible = m_connections.get(t);
-    if (possible == null) {
-      return new HashSet<>();
-    }
-    return possible.stream()
+    return m_connections.getOrDefault(t, Collections.emptySet()).stream()
         .filter(cond)
         .collect(Collectors.toSet());
   }
@@ -317,10 +235,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
    * @return the shortest route between two territories or null if no route exists.
    */
   public Route getRoute(final Territory t1, final Territory t2) {
@@ -401,10 +317,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
    * @return the distance between two territories or -1 if they are not connected.
    */
   public int getDistance(final Territory t1, final Territory t2) {
@@ -412,12 +326,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
-   * @param cond
-   *        condition that covered territories of the route must match
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
+   * @param cond condition that covered territories of the route must match
    * @return the distance between two territories where the covered territories of the route satisfy the condition
    *         or -1 if they are not connected.
    */
@@ -425,9 +336,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1.equals(t2)) {
       return 0;
     }
-    final Set<Territory> frontier = new HashSet<>();
-    frontier.add(t1);
-    return getDistance(0, new HashSet<>(), frontier, t2, cond);
+    return getDistance(0, new HashSet<>(), Collections.singleton(t1), t2, cond);
   }
 
   /**
@@ -469,10 +378,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
    * @return the land distance between two territories or -1 if they are not connected.
    */
   public int getLandDistance(final Territory t1, final Territory t2) {
@@ -480,10 +387,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
    * @return the water distance between two territories or -1 if they are not connected.
    */
   public int getWaterDistance(final Territory t1, final Territory t2) {
@@ -491,15 +396,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @param t1
-   *        start territory of the route
-   * @param t2
-   *        end territory of the route
-   * @param cond
-   *        condition that covered territories of the route must match EXCEPT FOR THE END
+   * @param t1 start territory of the route
+   * @param t2 end territory of the route
+   * @param cond condition that covered territories of the route must match EXCEPT FOR THE END
    * @return the distance between two territories where the covered territories of the route (except the end) satisfy
-   *         the condition
-   *         or -1 if they are not connected. (Distance includes to the end)
+   *         the condition or -1 if they are not connected. (Distance includes to the end)
    */
   public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2,
       final Predicate<Territory> cond) {
