@@ -35,7 +35,6 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
-import games.strategy.util.UrlStreams;
 
 /**
  * contains data about the territories useful for drawing.
@@ -157,18 +156,13 @@ public class MapData implements Closeable {
       mapProperties = new Properties();
       decorations = loadDecorations();
       territoryNameImages = territoryNameImages();
-      try {
-        final URL url = loader.getResource(MAP_PROPERTIES);
-        if (url == null) {
-          throw new IllegalStateException("No map.properties file defined");
-        }
-        final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-        if (inputStream.isPresent()) {
-          mapProperties.load(inputStream.get());
-        }
+
+      try (InputStream inputStream = requiredResource(MAP_PROPERTIES).newInputStream()) {
+        mapProperties.load(inputStream);
       } catch (final Exception e) {
-        System.out.println("Error reading map.properties:" + e);
+        ClientLogger.logQuietly("Error reading map.properties", e);
       }
+
       initializeContains();
     } catch (final IOException ex) {
       ClientLogger.logQuietly("Failed to load map properties", ex);
