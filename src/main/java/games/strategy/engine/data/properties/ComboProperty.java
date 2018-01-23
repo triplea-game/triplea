@@ -24,33 +24,16 @@ public class ComboProperty<T> extends AEditableProperty {
    * @param defaultValue default string value
    * @param possibleValues collection of values
    */
-  public ComboProperty(final String name, final String description, final T defaultValue,
+  public ComboProperty(final String name,
+      final String description,
+      final T defaultValue,
       final Collection<T> possibleValues) {
-    this(name, description, defaultValue, possibleValues, false);
-  }
-
-  @SuppressWarnings("unchecked")
-  private ComboProperty(final String name, final String description, final T defaultValue,
-      final Collection<T> possibleValues, final boolean allowNone) {
     super(name, description);
-    if (!allowNone) {
-      if (defaultValue == null && !possibleValues.contains(defaultValue)) {
-        throw new IllegalStateException("possible values does not contain default");
-      }
-    } else if (!possibleValues.contains(defaultValue)) {
-      if (!possibleValues.isEmpty()) {
-        value = possibleValues.iterator().next();
-      } else {
-        try {
-          value = (T) "";
-        } catch (final ClassCastException e) {
-          value = null;
-        }
-      }
-    } else {
-      value = defaultValue;
-    }
     this.possibleValues = new ArrayList<>(possibleValues);
+    if (defaultValue == null && !possibleValues.contains(defaultValue)) {
+      throw new IllegalStateException("possible values does not contain default");
+    }
+    value = defaultValue;
   }
 
   @Override
