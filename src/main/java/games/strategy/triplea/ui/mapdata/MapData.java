@@ -135,8 +135,8 @@ public class MapData implements Closeable {
     try {
       final String prefix = "";
 
-      place = readPointsOneToManyOptional(prefix + PLACEMENT_FILE);
-      territoryEffects = readPointsOneToManyOptional(prefix + TERRITORY_EFFECT_FILE);
+      place = readPointsOneToMany(optionalResource(prefix + PLACEMENT_FILE));
+      territoryEffects = readPointsOneToMany(optionalResource(prefix + TERRITORY_EFFECT_FILE));
 
       if (loader.getResourceAsStream(prefix + POLYGON_FILE) == null) {
         throw new IllegalStateException(
@@ -146,16 +146,16 @@ public class MapData implements Closeable {
                 + " relative to the map folder, or relative to the root of the map zip");
       }
 
-      polys = readPolygonsOneToManyRequired(prefix + POLYGON_FILE);
-      centers = readPointsOneToOneRequired(prefix + CENTERS_FILE);
-      vcPlace = readPointsOneToOneOptional(prefix + VC_MARKERS);
-      convoyPlace = readPointsOneToOneOptional(prefix + CONVOY_MARKERS);
-      commentPlace = readPointsOneToOneOptional(prefix + COMMENT_MARKERS);
-      blockadePlace = readPointsOneToOneOptional(prefix + BLOCKADE_MARKERS);
-      capitolPlace = readPointsOneToOneOptional(prefix + CAPITAL_MARKERS);
-      puPlace = readPointsOneToOneOptional(prefix + PU_PLACE_FILE);
-      namePlace = readPointsOneToOneOptional(prefix + TERRITORY_NAME_PLACE_FILE);
-      kamikazePlace = readPointsOneToOneOptional(prefix + KAMIKAZE_FILE);
+      polys = readPolygonsOneToMany(requiredResource(prefix + POLYGON_FILE));
+      centers = readPointsOneToOne(requiredResource(prefix + CENTERS_FILE));
+      vcPlace = readPointsOneToOne(optionalResource(prefix + VC_MARKERS));
+      convoyPlace = readPointsOneToOne(optionalResource(prefix + CONVOY_MARKERS));
+      commentPlace = readPointsOneToOne(optionalResource(prefix + COMMENT_MARKERS));
+      blockadePlace = readPointsOneToOne(optionalResource(prefix + BLOCKADE_MARKERS));
+      capitolPlace = readPointsOneToOne(optionalResource(prefix + CAPITAL_MARKERS));
+      puPlace = readPointsOneToOne(optionalResource(prefix + PU_PLACE_FILE));
+      namePlace = readPointsOneToOne(optionalResource(prefix + TERRITORY_NAME_PLACE_FILE));
+      kamikazePlace = readPointsOneToOne(optionalResource(prefix + KAMIKAZE_FILE));
       mapProperties = new Properties();
       decorations = loadDecorations();
       territoryNameImages = territoryNameImages();
@@ -177,21 +177,13 @@ public class MapData implements Closeable {
     }
   }
 
-  private Map<String, Point> readPointsOneToOneOptional(final String path) throws IOException {
-    return readPointsOneToOne(() -> optionalResourceAsStream(path));
-  }
-
-  private InputStream optionalResourceAsStream(final String path) {
-    return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+  private InputStreamFactory optionalResource(final String path) {
+    return () -> Optional.ofNullable(resourceLoader.getResourceAsStream(path))
         .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
   }
 
-  private Map<String, Point> readPointsOneToOneRequired(final String path) throws IOException {
-    return readPointsOneToOne(() -> requiredResourceAsStream(path));
-  }
-
-  private InputStream requiredResourceAsStream(final String path) throws IOException {
-    return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+  private InputStreamFactory requiredResource(final String path) {
+    return () -> Optional.ofNullable(resourceLoader.getResourceAsStream(path))
         .orElseThrow(() -> new FileNotFoundException(path));
   }
 
@@ -201,19 +193,11 @@ public class MapData implements Closeable {
     }
   }
 
-  private Map<String, List<Point>> readPointsOneToManyOptional(final String path) throws IOException {
-    return readPointsOneToMany(() -> optionalResourceAsStream(path));
-  }
-
   private static Map<String, List<Point>> readPointsOneToMany(final InputStreamFactory inputStreamFactory)
       throws IOException {
     try (InputStream is = inputStreamFactory.newInputStream()) {
       return PointFileReaderWriter.readOneToMany(is);
     }
-  }
-
-  private Map<String, List<Polygon>> readPolygonsOneToManyRequired(final String path) throws IOException {
-    return readPolygonsOneToMany(() -> requiredResourceAsStream(path));
   }
 
   private static Map<String, List<Polygon>> readPolygonsOneToMany(final InputStreamFactory inputStreamFactory)
@@ -273,7 +257,7 @@ public class MapData implements Closeable {
 
   private Map<Image, List<Point>> loadDecorations() throws IOException {
     final Map<Image, List<Point>> decorations = new HashMap<>();
-    final Map<String, List<Point>> points = readPointsOneToManyOptional(DECORATIONS_FILE);
+    final Map<String, List<Point>> points = readPointsOneToMany(optionalResource(DECORATIONS_FILE));
     for (final String name : points.keySet()) {
       loadImage("misc/" + name).ifPresent(img -> decorations.put(img, points.get(name)));
     }
