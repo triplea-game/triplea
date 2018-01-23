@@ -53,7 +53,7 @@
                   </Button>
                </children>
             </VBox>
-            <HBox fx:id="gameOptions" alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+            <HBox fx:id="gameOptions" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false">
                <children>
                   <Button contentDisplay="TOP" disable="true" mnemonicParsing="false" onAction="#showLobbyMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.join_lobby">
                      <HBox.margin>
@@ -160,7 +160,7 @@
                   </Button>
                </children>
             </HBox>
-            <VBox fx:id="mainOptions" alignment="TOP_CENTER" visible="false">
+            <VBox fx:id="mainOptions" alignment="TOP_CENTER">
                <children>
                   <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
                      <children>
