@@ -133,34 +133,32 @@ public class MapData implements Closeable {
   public MapData(final ResourceLoader loader) {
     resourceLoader = loader;
     try {
-      final String prefix = "";
+      place = readPointsOneToMany(optionalResource(PLACEMENT_FILE));
+      territoryEffects = readPointsOneToMany(optionalResource(TERRITORY_EFFECT_FILE));
 
-      place = readPointsOneToMany(optionalResource(prefix + PLACEMENT_FILE));
-      territoryEffects = readPointsOneToMany(optionalResource(prefix + TERRITORY_EFFECT_FILE));
-
-      if (loader.getResourceAsStream(prefix + POLYGON_FILE) == null) {
+      if (loader.getResourceAsStream(POLYGON_FILE) == null) {
         throw new IllegalStateException(
-            "Error in resource loading. Unable to load expected resource: " + prefix + POLYGON_FILE + ", the error"
+            "Error in resource loading. Unable to load expected resource: " + POLYGON_FILE + ", the error"
                 + " is that either we did not find the correct path to load. Check the resource loader to make"
                 + " sure the map zip or dir was added. Failing that, the path in this error message should be available"
                 + " relative to the map folder, or relative to the root of the map zip");
       }
 
-      polys = readPolygonsOneToMany(requiredResource(prefix + POLYGON_FILE));
-      centers = readPointsOneToOne(requiredResource(prefix + CENTERS_FILE));
-      vcPlace = readPointsOneToOne(optionalResource(prefix + VC_MARKERS));
-      convoyPlace = readPointsOneToOne(optionalResource(prefix + CONVOY_MARKERS));
-      commentPlace = readPointsOneToOne(optionalResource(prefix + COMMENT_MARKERS));
-      blockadePlace = readPointsOneToOne(optionalResource(prefix + BLOCKADE_MARKERS));
-      capitolPlace = readPointsOneToOne(optionalResource(prefix + CAPITAL_MARKERS));
-      puPlace = readPointsOneToOne(optionalResource(prefix + PU_PLACE_FILE));
-      namePlace = readPointsOneToOne(optionalResource(prefix + TERRITORY_NAME_PLACE_FILE));
-      kamikazePlace = readPointsOneToOne(optionalResource(prefix + KAMIKAZE_FILE));
+      polys = readPolygonsOneToMany(requiredResource(POLYGON_FILE));
+      centers = readPointsOneToOne(requiredResource(CENTERS_FILE));
+      vcPlace = readPointsOneToOne(optionalResource(VC_MARKERS));
+      convoyPlace = readPointsOneToOne(optionalResource(CONVOY_MARKERS));
+      commentPlace = readPointsOneToOne(optionalResource(COMMENT_MARKERS));
+      blockadePlace = readPointsOneToOne(optionalResource(BLOCKADE_MARKERS));
+      capitolPlace = readPointsOneToOne(optionalResource(CAPITAL_MARKERS));
+      puPlace = readPointsOneToOne(optionalResource(PU_PLACE_FILE));
+      namePlace = readPointsOneToOne(optionalResource(TERRITORY_NAME_PLACE_FILE));
+      kamikazePlace = readPointsOneToOne(optionalResource(KAMIKAZE_FILE));
       mapProperties = new Properties();
       decorations = loadDecorations();
       territoryNameImages = territoryNameImages();
       try {
-        final URL url = loader.getResource(prefix + MAP_PROPERTIES);
+        final URL url = loader.getResource(MAP_PROPERTIES);
         if (url == null) {
           throw new IllegalStateException("No map.properties file defined");
         }
