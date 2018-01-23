@@ -160,12 +160,13 @@ public final class PointFileReaderWriter {
   }
 
   /**
-   * Returns a map of the form String -> Collection of points.
+   * Returns a map of the form String -> Collection of polygons.
    */
   public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) {
     final HashMap<String, List<Polygon>> mapping = new HashMap<>();
-    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+    try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
+      @Nullable
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -177,14 +178,6 @@ public final class PointFileReaderWriter {
       ClientLogger.logQuietly("Failed to read polygons", e);
       // FIXME: o_O Should not exit process from "library" code
       System.exit(0);
-    } finally {
-      try {
-        if (stream != null) {
-          stream.close();
-        }
-      } catch (final IOException e) {
-        ClientLogger.logError("Failed to close polygon reader stream", e);
-      }
     }
     return mapping;
   }

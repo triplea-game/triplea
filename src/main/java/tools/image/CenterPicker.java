@@ -119,8 +119,8 @@ public class CenterPicker extends JFrame {
         "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
             + "names?",
         "File Suggestion", 1) == 0) {
-      try {
-        polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
+      try (InputStream is = new FileInputStream(file.getPath())) {
+        polygons = PointFileReaderWriter.readOneToManyPolygons(is);
       } catch (final IOException ex1) {
         System.out.println("Something wrong with your Polygons file: " + ex1);
         ex1.printStackTrace();
@@ -129,7 +129,9 @@ public class CenterPicker extends JFrame {
       try {
         final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
-          polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
+          try (InputStream is = new FileInputStream(polyPath)) {
+            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+          }
         }
       } catch (final IOException ex1) {
         System.out.println("Something wrong with your Polygons file: " + ex1);

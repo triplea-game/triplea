@@ -236,9 +236,9 @@ public class DecorationPlacer extends JFrame {
         "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
             + "polygons?",
         "File Suggestion", 1) == 0) {
-      try {
+      try (InputStream is = new FileInputStream(filePoly.getPath())) {
         System.out.println("Polygons : " + filePoly.getPath());
-        polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(filePoly.getPath()));
+        polygons = PointFileReaderWriter.readOneToManyPolygons(is);
       } catch (final IOException ex1) {
         System.out.println("Something wrong with your Polygons file");
         ex1.printStackTrace();
@@ -250,7 +250,9 @@ public class DecorationPlacer extends JFrame {
         final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
           System.out.println("Polygons : " + polyPath);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
+          try (InputStream is = new FileInputStream(polyPath)) {
+            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+          }
         } else {
           System.out.println("You must specify a Polgyon file.");
           System.out.println("Shutting down.");

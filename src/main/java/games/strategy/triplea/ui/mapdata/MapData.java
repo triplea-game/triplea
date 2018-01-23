@@ -146,7 +146,7 @@ public class MapData implements Closeable {
                 + " relative to the map folder, or relative to the root of the map zip");
       }
 
-      polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
+      polys = readPolygonsOneToManyRequired(prefix + POLYGON_FILE);
       centers = readPointsOneToOneRequired(prefix + CENTERS_FILE);
       vcPlace = readPointsOneToOneOptional(prefix + VC_MARKERS);
       convoyPlace = readPointsOneToOneOptional(prefix + CONVOY_MARKERS);
@@ -178,17 +178,21 @@ public class MapData implements Closeable {
   }
 
   private Map<String, Point> readPointsOneToOneOptional(final String path) throws IOException {
-    return readPointsOneToOne(() -> {
-      return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
-          .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
-    });
+    return readPointsOneToOne(() -> optionalResourceAsStream(path));
+  }
+
+  private InputStream optionalResourceAsStream(final String path) {
+    return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+        .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
   }
 
   private Map<String, Point> readPointsOneToOneRequired(final String path) throws IOException {
-    return readPointsOneToOne(() -> {
-      return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
-          .orElseThrow(() -> new FileNotFoundException(path));
-    });
+    return readPointsOneToOne(() -> requiredResourceAsStream(path));
+  }
+
+  private InputStream requiredResourceAsStream(final String path) throws IOException {
+    return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+        .orElseThrow(() -> new FileNotFoundException(path));
   }
 
   private static Map<String, Point> readPointsOneToOne(final InputStreamFactory inputStreamFactory) throws IOException {
@@ -198,16 +202,24 @@ public class MapData implements Closeable {
   }
 
   private Map<String, List<Point>> readPointsOneToManyOptional(final String path) throws IOException {
-    return readPointsOneToMany(() -> {
-      return Optional.ofNullable(resourceLoader.getResourceAsStream(path))
-          .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
-    });
+    return readPointsOneToMany(() -> optionalResourceAsStream(path));
   }
 
   private static Map<String, List<Point>> readPointsOneToMany(final InputStreamFactory inputStreamFactory)
       throws IOException {
     try (InputStream is = inputStreamFactory.newInputStream()) {
       return PointFileReaderWriter.readOneToMany(is);
+    }
+  }
+
+  private Map<String, List<Polygon>> readPolygonsOneToManyRequired(final String path) throws IOException {
+    return readPolygonsOneToMany(() -> requiredResourceAsStream(path));
+  }
+
+  private static Map<String, List<Polygon>> readPolygonsOneToMany(final InputStreamFactory inputStreamFactory)
+      throws IOException {
+    try (InputStream is = inputStreamFactory.newInputStream()) {
+      return PointFileReaderWriter.readOneToManyPolygons(is);
     }
   }
 

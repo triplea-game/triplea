@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,8 +86,7 @@ public class ConnectionFinder {
     }
     final Map<String, List<Area>> territoryAreas = new HashMap<>();
     Map<String, List<Polygon>> mapOfPolygons = null;
-    try {
-      final FileInputStream in = new FileInputStream(polyFile);
+    try (InputStream in = new FileInputStream(polyFile)) {
       mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(in);
       for (final String territoryName : mapOfPolygons.keySet()) {
         final List<Polygon> listOfPolygons = mapOfPolygons.get(territoryName);

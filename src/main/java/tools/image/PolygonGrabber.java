@@ -20,7 +20,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -390,10 +389,11 @@ public class PolygonGrabber extends JFrame {
       if (polyName == null) {
         return;
       }
-      final FileInputStream in = new FileInputStream(polyName);
-      polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+      try (InputStream in = new FileInputStream(polyName)) {
+        polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+      }
       repaint();
-    } catch (final FileNotFoundException ex) {
+    } catch (final IOException ex) {
       ClientLogger.logQuietly("file name = " + polyName, ex);
     } catch (final HeadlessException ex) {
       // TODO: remove HeadlessException (fix anti-pattern control flow via exception handling with proper control flow)
