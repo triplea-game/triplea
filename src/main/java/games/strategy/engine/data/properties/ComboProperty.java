@@ -61,9 +61,6 @@ public class ComboProperty<T> extends AEditableProperty {
 
   @Override
   public boolean validate(final Object value) {
-    if (possibleValues != null && possibleValues.contains(value)) {
-      return true;
-    }
-    return false;
+    return possibleValues != null && possibleValues.contains(value);
   }
 }
