@@ -606,8 +606,9 @@ public class DecorationPlacer extends JFrame {
           new File(mapFolderLocation, imagePointType.getFileName()), ".txt");
       currentImagePointsTextFile = centerName.getFile();
       if (centerName.getFile() != null && centerName.getFile().exists() && centerName.getPathString() != null) {
-        final FileInputStream in = new FileInputStream(centerName.getPathString());
-        currentPoints = PointFileReaderWriter.readOneToMany(in);
+        try (InputStream in = new FileInputStream(centerName.getPathString())) {
+          currentPoints = PointFileReaderWriter.readOneToMany(in);
+        }
       } else {
         currentPoints = new HashMap<>();
       }

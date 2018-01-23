@@ -138,14 +138,15 @@ public final class PointFileReaderWriter {
   /**
    * Returns a map of the form String -> Collection of points.
    */
-  public static Map<String, List<Point>> readOneToMany(final InputStream stream) {
+  public static Map<String, List<Point>> readOneToMany(final @Nullable InputStream stream) {
     if (stream == null) {
       return Collections.emptyMap();
     }
 
     final HashMap<String, List<Point>> mapping = new HashMap<>();
-    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+    try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
+      @Nullable
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -153,15 +154,10 @@ public final class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
-    } catch (final IOException ioe) {
-      ClientLogger.logError("PointFileReaderWriter error, " + ioe.getMessage(), ioe);
+    } catch (final IOException e) {
+      ClientLogger.logError("Failed to read one-to-many points file", e);
+      // FIXME: o_O Should not exit process from "library" code
       System.exit(0);
-    } finally {
-      try {
-        stream.close();
-      } catch (final IOException e) {
-        ClientLogger.logError("Failed to close point file reader", e);
-      }
     }
     return mapping;
   }

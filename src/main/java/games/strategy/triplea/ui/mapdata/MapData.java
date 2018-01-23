@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
 import games.strategy.debug.ClientLogger;
@@ -134,9 +135,9 @@ public class MapData implements Closeable {
     resourceLoader = loader;
     try {
       final String prefix = "";
-      place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
-      territoryEffects =
-          PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + TERRITORY_EFFECT_FILE));
+
+      place = readPointsOneToMany(prefix + PLACEMENT_FILE);
+      territoryEffects = readPointsOneToMany(prefix + TERRITORY_EFFECT_FILE);
 
       if (loader.getResourceAsStream(prefix + POLYGON_FILE) == null) {
         throw new IllegalStateException(
@@ -197,6 +198,13 @@ public class MapData implements Closeable {
     }
   }
 
+  private Map<String, List<Point>> readPointsOneToMany(final String path) throws IOException {
+    try (@Nullable
+    InputStream is = resourceLoader.getResourceAsStream(path)) {
+      return PointFileReaderWriter.readOneToMany(is);
+    }
+  }
+
   @FunctionalInterface
   private interface InputStreamFactory {
     InputStream newInputStream() throws IOException;
@@ -245,21 +253,11 @@ public class MapData implements Closeable {
     return "territoryNames/" + baseName + ".png";
   }
 
-  private Map<Image, List<Point>> loadDecorations() {
-    final URL decorationsFileUrl = resourceLoader.getResource(DECORATIONS_FILE);
-    if (decorationsFileUrl == null) {
-      return Collections.emptyMap();
-    }
+  private Map<Image, List<Point>> loadDecorations() throws IOException {
     final Map<Image, List<Point>> decorations = new HashMap<>();
-    final Optional<InputStream> inputStream = UrlStreams.openStream(decorationsFileUrl);
-    if (inputStream.isPresent()) {
-      final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(inputStream.get());
-      for (final String name : points.keySet()) {
-        final Optional<Image> img = loadImage("misc/" + name);
-        if (img.isPresent()) {
-          decorations.put(img.get(), points.get(name));
-        }
-      }
+    final Map<String, List<Point>> points = readPointsOneToMany(DECORATIONS_FILE);
+    for (final String name : points.keySet()) {
+      loadImage("misc/" + name).ifPresent(img -> decorations.put(img, points.get(name)));
     }
     return decorations;
   }
