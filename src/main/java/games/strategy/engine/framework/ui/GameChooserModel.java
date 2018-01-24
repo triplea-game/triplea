@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Optional;
@@ -22,6 +21,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.io.FileUtils;
 import games.strategy.ui.SwingAction;
 
 /**
@@ -53,10 +53,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
 
   static Set<GameChooserEntry> parseMapFiles() {
     final Set<GameChooserEntry> parsedMapSet = new HashSet<>();
-
-    Arrays.asList(Optional.ofNullable(ClientFileSystemHelper.getUserMapsFolder().listFiles())
-        .orElse(new File[0]))
-        .parallelStream()
+    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).parallelStream()
         .forEach(map -> {
           if (map.isDirectory()) {
             parsedMapSet.addAll(populateFromDirectory(map));
@@ -177,16 +174,9 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
 
     final File parentFolder = mapFolder.exists() ? mapFolder : mapDir;
     final File games = new File(parentFolder, "games");
-
-    if (!games.exists()) {
-      // no games in this map dir
-      return entries;
-    }
-    if (games.listFiles() != null) {
-      for (final File game : games.listFiles()) {
-        if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-          createGameChooserEntry(game.toURI()).ifPresent(entries::add);
-        }
+    for (final File game : FileUtils.listFiles(games)) {
+      if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
+        createGameChooserEntry(game.toURI()).ifPresent(entries::add);
       }
     }
     return entries;

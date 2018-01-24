@@ -18,6 +18,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.LocalPlayers;
+import games.strategy.io.FileUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.CountDownLatchHandler;
@@ -247,11 +248,7 @@ public abstract class AbstractUiContext implements UiContext {
 
   private static Map<String, String> getSkins(final String mapName) {
     final Map<String, String> skinsByDisplayName = new HashMap<>();
-    final File[] files = ClientFileSystemHelper.getUserMapsFolder().listFiles();
-    if (files == null) {
-      return skinsByDisplayName;
-    }
-    for (final File f : files) {
+    for (final File f : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
       if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
         final String displayName = f.getName().replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
         skinsByDisplayName.put(displayName, f.getName());

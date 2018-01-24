@@ -6,10 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -17,6 +13,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.config.client.GameEnginePropertyReader;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.io.FileUtils;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 
@@ -90,11 +87,9 @@ public final class ClientFileSystemHelper {
   }
 
   private static boolean folderContainsGamePropsFile(final File folder) {
-    final File[] files = folder.listFiles();
-
-    final List<String> fileNames = (files == null) ? Collections.emptyList()
-        : Arrays.stream(files).map(File::getName).collect(Collectors.toList());
-    return fileNames.contains(GameEnginePropertyReader.GAME_ENGINE_PROPERTIES_FILE);
+    return FileUtils.listFiles(folder).stream()
+        .map(File::getName)
+        .anyMatch(it -> GameEnginePropertyReader.GAME_ENGINE_PROPERTIES_FILE.equals(it));
   }
 
   /**

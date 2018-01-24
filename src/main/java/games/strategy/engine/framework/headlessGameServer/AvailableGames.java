@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,6 +22,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
+import games.strategy.io.FileUtils;
 import games.strategy.util.UrlStreams;
 
 /**
@@ -34,9 +34,7 @@ public class AvailableGames {
   private final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
 
   AvailableGames() {
-    Arrays.stream(Optional.ofNullable(ClientFileSystemHelper.getUserMapsFolder().listFiles())
-        .orElse(new File[0]))
-        .parallel()
+    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).parallelStream()
         .forEach(map -> {
           if (map.isDirectory()) {
             populateFromDirectory(map, availableGames, availableMapFolderOrZipNames);
@@ -51,17 +49,11 @@ public class AvailableGames {
       final Map<String, URI> availableGames,
       final Set<String> availableMapFolderOrZipNames) {
     final File games = new File(mapDir, "games");
-    if (!games.exists()) {
-      // no games in this map dir
-      return;
-    }
-    if (games.listFiles() != null) {
-      for (final File game : games.listFiles()) {
-        if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-          final boolean added = addToAvailableGames(game.toURI(), availableGames);
-          if (added) {
-            availableMapFolderOrZipNames.add(mapDir.getName());
-          }
+    for (final File game : FileUtils.listFiles(games)) {
+      if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
+        final boolean added = addToAvailableGames(game.toURI(), availableGames);
+        if (added) {
+          availableMapFolderOrZipNames.add(mapDir.getName());
         }
       }
     }
