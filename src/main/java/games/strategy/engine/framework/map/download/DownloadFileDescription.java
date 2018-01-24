@@ -6,6 +6,7 @@ import java.util.Objects;
 import com.google.common.base.MoreObjects;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 
 /**
@@ -107,9 +108,9 @@ public class DownloadFileDescription {
 
   /** Translates the stored URL into a github new issue link. */
   String getFeedbackUrl() {
-    return (url.contains("github.com") && url.contains("/releases/"))
-        ? url.substring(0, url.indexOf("/releases/")) + "/issues/new"
-        : "";
+    return (url.contains("github.com") && url.contains("/archive/"))
+        ? url.substring(0, url.indexOf("/archive/")) + "/issues/new"
+        : UrlConstants.GITHUB_ISSUES.toString();
   }
 
   /** File reference for where to install the file. */
