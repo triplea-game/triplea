@@ -42,6 +42,7 @@ import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.io.FileUtils;
 
 /**
  * A pbem dice roller that reads its configuration from a properties file.
@@ -61,8 +62,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       throw new IllegalStateException("No dice server folder:" + f);
     }
     final List<Properties> propFiles = new ArrayList<>();
-    final File[] files = f.listFiles();
-    for (final File file : files) {
+    for (final File file : FileUtils.listFiles(f)) {
       if (!file.isDirectory() && file.getName().endsWith(".properties")) {
         try {
           final Properties props = new Properties();

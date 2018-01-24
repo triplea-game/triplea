@@ -51,6 +51,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
@@ -664,7 +665,7 @@ public class DecorationPlacer extends JFrame {
     final int addY = (imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
         : (imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
     final List<String> allTerritories = new ArrayList<>(centers.keySet());
-    for (final File file : currentImageFolderLocation.listFiles()) {
+    for (final File file : FileUtils.listFiles(currentImageFolderLocation)) {
       if (!file.getPath().endsWith(".png") && !file.getPath().endsWith(".gif")) {
         continue;
       }

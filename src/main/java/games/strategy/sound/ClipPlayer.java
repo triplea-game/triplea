@@ -26,6 +26,7 @@ import java.util.zip.ZipFile;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.UrlStreams;
 import javazoom.jl.player.AudioDevice;
@@ -447,7 +448,7 @@ public class ClipPlayer {
       }
     }
     if (thisSoundFile.isDirectory()) {
-      for (final File soundFile : thisSoundFile.listFiles()) {
+      for (final File soundFile : FileUtils.listFiles(thisSoundFile)) {
         if (isSoundFileNamed(soundFile)) {
           try {
             final URL individualSoundUrl = soundFile.toURI().toURL();
