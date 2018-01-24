@@ -8,6 +8,7 @@ import java.io.File;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.util.Version;
 
@@ -77,29 +78,23 @@ public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testGetFeedbackUrl() {
-    final String commonPrefix = "http://github.com/triplea-maps/world_war_ii_revised/";
-    String inputUrl = commonPrefix + "releases/download/0.1/abc.zip";
-    String expected = commonPrefix + "issues/new";
-
-    DownloadFileDescription testObj = testObjFromUrl(inputUrl);
-    assertThat(testObj.getFeedbackUrl(), is(expected));
-
-
-    inputUrl = "http://randomWebsite/releases/abc.zip";
-    expected = "";
-
-    testObj = testObjFromUrl(inputUrl);
-    assertThat("Missing 'github.com' in the URL should return empty", testObj.getFeedbackUrl(), is(expected));
-
-
-    inputUrl = "http://github.com/random/abc.zip";
-    expected = "";
-
-    testObj = testObjFromUrl(inputUrl);
-    assertThat("Missing 'releases' in the URL, should return empty", testObj.getFeedbackUrl(), is(expected));
+  public void testGetFeedbackUrl_ShouldReturnMapIssueTrackerUrlWhenDownloadUrlIsGitHubArchive() {
+    assertThat(
+        testObjFromUrl("https://github.com/org/repo/archive/master.zip").getFeedbackUrl(),
+        is("https://github.com/org/repo/issues/new"));
   }
 
+  @Test
+  public void testGetFeedbackUrl_ShouldReturnGeneralIssueTrackerUrlWhenDownloadUrlIsNotGitHubArchive() {
+    assertThat(
+        "when URL does not contain 'github.com'",
+        testObjFromUrl("https://somewhere-else.com/org/repo/archive/master.zip").getFeedbackUrl(),
+        is(UrlConstants.GITHUB_ISSUES.toString()));
+    assertThat(
+        "when URL does not contain '/archive/'",
+        testObjFromUrl("https://github.com/org/repo/releases/download/1.0/repo.zip").getFeedbackUrl(),
+        is(UrlConstants.GITHUB_ISSUES.toString()));
+  }
 
   @Test
   public void testGetInstallLocation() {
