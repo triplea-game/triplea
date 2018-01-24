@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <fx:root id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" prefHeight="540.0" prefWidth="960.0" style="-fx-background-color: #EEE;" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
@@ -30,32 +29,22 @@
             <VBox fx:id="aboutSection" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                <children>
                   <Label id="aboutTitle" text="%main.label.about_title" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%main.text.about_description">
-                     <font>
-                        <Font name="1942 report" size="17.0" />
-                     </font>
-                  </Text>
-                  <Button mnemonicParsing="false" onAction="#showHelp" text="%main.button.help">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="normal-font-size" text="%main.text.about_description" />
+                  <Button mnemonicParsing="false" onAction="#showHelp" styleClass="normal-font-size" text="%main.button.help">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
-                     <font>
-                        <Font name="1942 report" size="14.0" />
-                     </font>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#showRuleBook" text="%main.button.rule_book">
+                  <Button mnemonicParsing="false" onAction="#showRuleBook" styleClass="normal-font-size" text="%main.button.rule_book">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
-                     <font>
-                        <Font name="1942 report" size="14.0" />
-                     </font>
                   </Button>
                </children>
             </VBox>
             <HBox fx:id="gameOptions" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false">
                <children>
-                  <Button contentDisplay="TOP" disable="true" mnemonicParsing="false" onAction="#showLobbyMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.join_lobby">
+                  <Button contentDisplay="TOP" disable="true" mnemonicParsing="false" onAction="#showLobbyMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" styleClass="normal-font-size" text="%main.button.join_lobby">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -65,14 +54,11 @@
                               <Image url="@/org/triplea/client/ui/javafx/images/join_lobby.png" />
                            </image></ImageView>
                      </graphic>
-                     <font>
-                        <Font name="1942 report" size="13.0" />
-                     </font>
                      <effect>
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showLocalGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.local_game">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showLocalGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" styleClass="normal-font-size" text="%main.button.local_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -82,23 +68,17 @@
                               <Image url="@/org/triplea/client/ui/javafx/images/local_game.png" />
                            </image></ImageView>
                      </graphic>
-                     <font>
-                        <Font name="1942 report" size="13.0" />
-                     </font>
                      <effect>
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
                   </Button>
-                  <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPlayByForumMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.startPBF">
+                  <Button contentDisplay="TOP" layoutX="723.0" layoutY="85.0" mnemonicParsing="false" onAction="#showPlayByForumMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" styleClass="normal-font-size" text="%main.button.startPBF">
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@/org/triplea/client/ui/javafx/images/play_by_forum.png" />
                            </image></ImageView>
                      </graphic>
-                     <font>
-                        <Font name="1942 report" size="13.0" />
-                     </font>
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -106,7 +86,7 @@
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showPlayByEmailMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.startPBEM">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showPlayByEmailMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" styleClass="normal-font-size" text="%main.button.startPBEM">
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -114,9 +94,6 @@
                            </image>
                         </ImageView>
                      </graphic>
-                     <font>
-                        <Font name="1942 report" size="13.0" />
-                     </font>
                      <effect>
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
@@ -124,7 +101,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showHostNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.host_networked_game">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showHostNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" styleClass="normal-font-size" text="%main.button.host_networked_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -134,14 +111,11 @@
                               <Image url="@/org/triplea/client/ui/javafx/images/host_game.png" />
                            </image></ImageView>
                      </graphic>
-                     <font>
-                        <Font name="1942 report" size="13.0" />
-                     </font>
                      <effect>
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
                   </Button>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showJoinNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" text="%main.button.join_networked_game">
+                  <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showJoinNetworkGameMenu" onMouseEntered="#startHover" onMouseExited="#endHover" prefWidth="168.0" styleClass="normal-font-size" text="%main.button.join_networked_game">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -151,9 +125,6 @@
                               <Image url="@/org/triplea/client/ui/javafx/images/join_game.png" />
                            </image></ImageView>
                      </graphic>
-                     <font>
-                        <Font name="1942 report" size="13.0" />
-                     </font>
                      <effect>
                         <DropShadow color="#00000080" offsetX="5.0" offsetY="10.0" />
                      </effect>
@@ -164,50 +135,35 @@
                <children>
                   <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#showPlayOptions" text="%main.button.play">
+                        <Button mnemonicParsing="false" onAction="#showPlayOptions" styleClass="big-font-size" text="%main.button.play">
                            <VBox.margin>
                               <Insets bottom="10.0" left="10.0" top="10.0" />
                            </VBox.margin>
-                           <font>
-                              <Font name="1942 report" size="20.0" />
-                           </font>
                         </Button>
                         <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#showDownloadMenu" text="%main.button.download_maps">
-                                 <font>
-                                    <Font name="1942 report" size="20.0" />
-                                 </font>
+                              <Button mnemonicParsing="false" onAction="#showDownloadMenu" styleClass="big-font-size" text="%main.button.download_maps">
                                  <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" top="10.0" />
                                  </VBox.margin>
                               </Button>
                               <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#showSettingsMenu" text="%main.button.settings">
-                                       <font>
-                                          <Font name="1942 report" size="20.0" />
-                                       </font>
+                                    <Button mnemonicParsing="false" onAction="#showSettingsMenu" styleClass="big-font-size" text="%main.button.settings">
                                        <VBox.margin>
                                           <Insets bottom="10.0" left="10.0" top="10.0" />
                                        </VBox.margin>
                                     </Button>
                                     <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
                                        <children>
-                                          <Button mnemonicParsing="false" onAction="#showAboutSection" text="%main.button.about">
-                                             <font>
-                                                <Font name="1942 report" size="20.0" />
-                                             </font>
+                                          <Button mnemonicParsing="false" onAction="#showAboutSection" styleClass="big-font-size" text="%main.button.about">
                                              <VBox.margin>
                                                 <Insets bottom="10.0" left="10.0" top="10.0" />
                                              </VBox.margin>
                                           </Button>
                                           <VBox alignment="TOP_CENTER" styleClass="file-container" visible="true" VBox.vgrow="ALWAYS">
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#showExitConfirmDialog" text="%main.button.exit">
-                                                   <font>
-                                                      <Font name="1942 report" size="20.0" />
-                                                   </font>
+                                                <Button mnemonicParsing="false" onAction="#showExitConfirmDialog" styleClass="big-font-size" text="%main.button.exit">
                                                    <VBox.margin>
                                                       <Insets bottom="10.0" left="10.0" top="10.0" />
                                                    </VBox.margin>
@@ -256,21 +212,9 @@
                               <Label fx:id="loggedIn" text="%main.label.logged_in_as" />
                               <HBox fx:id="loginForm" alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="476.0" StackPane.alignment="BOTTOM_LEFT">
                                  <children>
-                                    <TextField fx:id="username" promptText="%main.textfield.username">
-                                       <font>
-                                          <Font name="1942 report" size="14.0" />
-                                       </font>
-                                    </TextField>
-                                    <PasswordField fx:id="password" promptText="%main.textfield.password">
-                                       <font>
-                                          <Font name="1942 report" size="14.0" />
-                                       </font>
-                                    </PasswordField>
-                                    <Button mnemonicParsing="false" onAction="#login" text="%main.button.login">
-                                       <font>
-                                          <Font name="1942 report" size="14.0" />
-                                       </font>
-                                    </Button>
+                                    <TextField fx:id="username" promptText="%main.textfield.username" styleClass="normal-font-size" />
+                                    <PasswordField fx:id="password" promptText="%main.textfield.password" styleClass="normal-font-size" />
+                                    <Button mnemonicParsing="false" onAction="#login" styleClass="normal-font-size" text="%main.button.login" />
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" />
