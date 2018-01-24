@@ -16,7 +16,7 @@ class AccessLog {
   }
 
   static void failedLogin(final String userName, final InetAddress from, final String error) {
-    logger.info(String.format("FAILED name: %s, ip: %s",
-        userName, from.getHostAddress()));
+    logger.info(String.format("FAILED name: %s, ip: %s, error: %s",
+        userName, from.getHostAddress(), error));
   }
 }

@@ -2,6 +2,8 @@ package games.strategy.triplea.ai.proAI.logging;
 
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
+
 /**
  * Class to log messages to log window and console.
  */
@@ -47,7 +49,7 @@ public class ProLogger {
    * Finer for just about everything else. (There's also the SERVER, INFO, etc. levels)
    * Just keep these things in mind while adding new logging code.
    */
-  public static void log(final Level level, final String message, final Throwable t) {
+  public static void log(final Level level, final String message, final @Nullable Throwable t) {
     if (!ProLogSettings.loadSettings().EnableAILogging) {
       return; // Skip displaying to settings window if settings window option is turned off
     }
@@ -58,22 +60,22 @@ public class ProLogger {
     if (logDepth.equals(Level.FINER) && level.equals(Level.FINEST)) {
       return;
     }
-    ProLogUi.notifyAiLogMessage(level, addIndentationCompensation(message, level));
+    ProLogUi.notifyAiLogMessage(level, formatMessage(message, t, level));
   }
 
   /**
    * Adds extra spaces to get logs to lineup correctly. (Adds two spaces to fine, one to finer, none to finest, etc.)
    */
-  private static String addIndentationCompensation(final String message, final Level level) {
+  private static String formatMessage(final String message, final @Nullable Throwable t, final Level level) {
     final StringBuilder builder = new StringBuilder();
     final int compensateLength = (level.toString().length() - 4) * 2;
-    if (compensateLength == 0) {
-      return message;
-    }
     for (int i = 0; i < compensateLength; i++) {
       builder.append(" ");
     }
     builder.append(message);
+    if (t != null) {
+      builder.append(" (error: ").append(t.getMessage()).append(")");
+    }
     return builder.toString();
   }
 }

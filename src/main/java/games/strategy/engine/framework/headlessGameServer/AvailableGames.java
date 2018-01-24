@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -30,8 +29,6 @@ import games.strategy.util.UrlStreams;
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
  */
 public class AvailableGames {
-  private static final Logger logger = Logger.getLogger(AvailableGames.class.getName());
-
   private static final String ZIP_EXTENSION = ".zip";
   private final Map<String, URI> availableGames = Collections.synchronizedMap(new TreeMap<>());
   private final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
