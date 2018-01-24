@@ -194,8 +194,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    * Load the Forum poster that are stored in the GameData, and select it in the list.
    * Sensitive information such as passwords are not stored in save games, so the are loaded from the LocalBeanCache
    *
-   * @param data
-   *        the game data
+   * @param data the game data
    */
   private void loadForumPosters(final GameData data) {
     // get the forum posters,
@@ -290,12 +289,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
       return false;
     }
     // make sure at least 1 player is enabled
-    for (final PlayerSelectorRow player : playerTypes) {
-      if (player.isPlayerEnabled()) {
-        return true;
-      }
-    }
-    return false;
+    return playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }
 
   @Override
@@ -306,10 +300,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     // store the Turn Summary Poster
     final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
     if (poster != null) {
-      IForumPoster summaryPoster = poster;
       // clone the poster, the remove sensitive info, and put the clone into the game data
       // this was the sensitive info is not stored in the save game, but the user cache still has the password
-      summaryPoster = summaryPoster.doClone();
+      final IForumPoster summaryPoster = poster.doClone();
       summaryPoster.clearSensitiveInfo();
       data.getProperties().set(PBEMMessagePoster.FORUM_POSTER_PROP_NAME, summaryPoster);
     }
@@ -419,7 +412,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
             throw new Exception("File is corrupt");
           }
           // we know that the map has proper type key/value
-          return (HashMap<String, IBean>) o;
+          return (Map<String, IBean>) o;
         } catch (final Exception e) {
           // on error we delete the cache file, if we can
           file.delete();
@@ -432,12 +425,10 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     /**
      * adds a new Serializable to the cache
      *
-     * @param key
-     *        the key the serializable should be stored under. Take care not to override a serializable stored by other
-     *        code
-     *        it is generally a good ide to use fully qualified class names, getClass().getCanonicalName() as key
-     * @param bean
-     *        the bean
+     * @param key the key the serializable should be stored under. Take care not to override a serializable stored by
+     *        other code it is generally a good ide to use fully qualified class names, getClass().getCanonicalName() as
+     *        key
+     * @param bean the bean
      */
     void storeSerializable(final String key, final IBean bean) {
       map.put(key, bean);
