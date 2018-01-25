@@ -44,34 +44,14 @@ public class UnitComparator {
       final PlayerID player) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
     final Predicate<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
-    return Comparator.comparing(TripleAUnit::get, (t1, t2) -> {
-      // Check if transport is incapable due to game state
-      final boolean isIncapable1 = incapableTransportMatch.test(t1);
-      final boolean isIncapable2 = incapableTransportMatch.test(t2);
-      if (!isIncapable1 && isIncapable2) {
-        return -1;
-      }
-      if (isIncapable1 && !isIncapable2) {
-        return 1;
-      }
-
-      // Use allied transports as a last resort
-      final boolean isAlliedTrn1 = !t1.getOwner().equals(player);
-      final boolean isAlliedTrn2 = !t2.getOwner().equals(player);
-      if (!isAlliedTrn1 && isAlliedTrn2) {
-        return -1;
-      }
-      if (isAlliedTrn1 && !isAlliedTrn2) {
-        return 1;
-      }
-
-      // Sort by decreasing transport capacity
-      // Sort by decreasing movement
-      return decreasingCapacityComparator
-          .thenComparing(TripleAUnit.class::cast, Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
-          .thenComparingInt(Object::hashCode)
-          .compare(t1, t2);
-    });
+    return Comparator.comparing(TripleAUnit::get,
+        Comparator.comparing(incapableTransportMatch::test)
+            .thenComparing(Unit::getOwner,
+                Comparator.comparing(player::equals).reversed())
+            .thenComparing(decreasingCapacityComparator
+                .thenComparing(TripleAUnit.class::cast,
+                    Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
+                .thenComparingInt(Object::hashCode)));
   }
 
   /**
@@ -81,35 +61,11 @@ public class UnitComparator {
       final PlayerID player, final boolean noTies) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
     final Predicate<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
-    return (t1, t2) -> {
-
-      // Check if transport is incapable due to game state
-      final boolean isIncapable1 = incapableTransportMatch.test(t1);
-      final boolean isIncapable2 = incapableTransportMatch.test(t2);
-      if (!isIncapable1 && isIncapable2) {
-        return -1;
-      }
-      if (isIncapable1 && !isIncapable2) {
-        return 1;
-      }
-
-      // Prioritize allied transports
-      final boolean isAlliedTrn1 = !t1.getOwner().equals(player);
-      final boolean isAlliedTrn2 = !t2.getOwner().equals(player);
-      if (isAlliedTrn1 && !isAlliedTrn2) {
-        return -1;
-      }
-      if (!isAlliedTrn1 && isAlliedTrn2) {
-        return 1;
-      }
-
-      // Sort by decreasing transport capacity
-      // If noTies is set, sort by hashcode so that result is deterministic
-      return decreasingCapacityComparator
-          .thenComparing(TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft))
-          .thenComparingInt(t -> noTies ? t.hashCode() : 0)
-          .compare(t1, t2);
-    };
+    return Comparator.comparing(incapableTransportMatch::test)
+        .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
+        .thenComparing(decreasingCapacityComparator
+            .thenComparing(TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft))
+            .thenComparingInt(t -> noTies ? t.hashCode() : 0));
   }
 
   /**
