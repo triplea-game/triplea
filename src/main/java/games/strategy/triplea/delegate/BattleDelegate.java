@@ -610,11 +610,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     // first, figure out all the territories where scrambling units could scramble to
     // then ask the defending player if they wish to scramble units there, and actually move the units there
     final GameData data = getData();
-    if (!Properties.getScramble_Rules_In_Effect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data)) {
       return;
     }
-    final boolean fromIslandOnly = Properties.getScramble_From_Island_Only(data);
-    final boolean toSeaOnly = Properties.getScramble_To_Sea_Only(data);
+    final boolean fromIslandOnly = Properties.getScrambleFromIslandOnly(data);
+    final boolean toSeaOnly = Properties.getScrambleToSeaOnly(data);
     final boolean toAnyAmphibious = Properties.getScrambleToAnyAmphibiousAssault(data);
     final boolean toSbr = Properties.getCanScrambleIntoAirBattles(data);
     int maxScrambleDistance = 0;
@@ -946,10 +946,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private void scramblingCleanup() {
     // return scrambled units to their original territories, or let them move 1 or x to a new territory.
     final GameData data = getData();
-    if (!Properties.getScramble_Rules_In_Effect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data)) {
       return;
     }
-    final boolean mustReturnToBase = Properties.getScrambled_Units_Return_To_Base(data);
+    final boolean mustReturnToBase = Properties.getScrambledUnitsReturnToBase(data);
     for (final Territory t : data.getMap().getTerritories()) {
       int carrierCostOfCurrentTerr = 0;
       final Collection<Unit> wasScrambled = t.getUnits().getMatches(Matches.unitWasScrambled());
@@ -996,7 +996,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private static void resetMaxScrambleCount(final IDelegateBridge bridge) {
     // reset the tripleaUnit property for all airbases that were used
     final GameData data = bridge.getData();
-    if (!Properties.getScramble_Rules_In_Effect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data)) {
       return;
     }
     final CompositeChange change = new CompositeChange();
@@ -1347,7 +1347,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final CompositeChange change = new CompositeChange();
     int hits = 0;
     int[] rolls = null;
-    if (Properties.getLow_Luck(data)) {
+    if (Properties.getLowLuck(data)) {
       int power = 0;
       for (final Entry<Resource, Integer> entry : numberOfAttacks.entrySet()) {
         final Resource r = entry.getKey();

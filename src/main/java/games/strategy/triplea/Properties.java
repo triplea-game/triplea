@@ -6,12 +6,15 @@ import games.strategy.engine.data.PlayerID;
 /**
  * Provides typed access to the properties of GameData.
  */
-public class Properties implements Constants {
+public final class Properties implements Constants {
+  private Properties() {}
+
   // These should always default to false, if boolean, and if not should default to whatever is the "default" behavior
   // of TripleA.
   // If you want something to default to "true", when change the wording of the constant to make it a negative of
   // itself, then default to
   // false. (ex: "Do not do something", false; instead of "Do something", true;)
+
   public static int getNeutralCharge(final GameData data) {
     return data.getProperties().get(NEUTRAL_CHARGE_PROPERTY, 0);
   }
@@ -127,14 +130,14 @@ public class Properties implements Constants {
   /*
    * Are AA casualties chosen randomly
    */
-  public static boolean getRandomAACasualties(final GameData data) {
+  public static boolean getRandomAaCasualties(final GameData data) {
     return data.getProperties().get(RANDOM_AA_CASUALTIES, false);
   }
 
   /*
    * Are AA casualties chosen randomly
    */
-  public static boolean getRollAAIndividually(final GameData data) {
+  public static boolean getRollAaIndividually(final GameData data) {
     return data.getProperties().get(ROLL_AA_INDIVIDUALLY, false);
   }
 
@@ -142,7 +145,7 @@ public class Properties implements Constants {
    * Limit the damage caused by each bomber on rockets and Strategic Bomb Raids to
    * production of territory
    */
-  public static boolean getLimitRocketAndSBRDamageToProduction(final GameData data) {
+  public static boolean getLimitRocketAndSbrDamageToProduction(final GameData data) {
     return data.getProperties().get(LIMIT_ROCKET_AND_SBR_DAMAGE_TO_PRODUCTION, false);
   }
 
@@ -150,7 +153,7 @@ public class Properties implements Constants {
    * Limit the TOTAL damage caused by Bombers in a turn to territory's
    * production
    */
-  public static boolean getLimitSBRDamagePerTurn(final GameData data) {
+  public static boolean getLimitSbrDamagePerTurn(final GameData data) {
     return data.getProperties().get(LIMIT_SBR_DAMAGE_PER_TURN, false);
   }
 
@@ -166,14 +169,14 @@ public class Properties implements Constants {
    * Limit the TOTAL PUs lost to Bombers/Rockets in a turn to territory's
    * production.
    */
-  public static boolean getPUCap(final GameData data) {
+  public static boolean getPuCap(final GameData data) {
     return data.getProperties().get(PU_CAP, false);
   }
 
   /**
    * Reduce Victory Points by Strategic Bombing.
    */
-  public static boolean getSBRVictoryPoint(final GameData data) {
+  public static boolean getSbrVictoryPoints(final GameData data) {
     return data.getProperties().get(SBR_VICTORY_POINTS, false);
   }
 
@@ -222,7 +225,7 @@ public class Properties implements Constants {
   /**
    * Restricted from blitz through territories with factories/AA.
    */
-  public static boolean getBlitzThroughFactoriesAndAARestricted(final GameData data) {
+  public static boolean getBlitzThroughFactoriesAndAaRestricted(final GameData data) {
     return data.getProperties().get(BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED, false);
   }
 
@@ -342,11 +345,11 @@ public class Properties implements Constants {
   /**
    * AA restricted to Attacked Territory Only.
    */
-  public static boolean getAATerritoryRestricted(final GameData data) {
+  public static boolean getAaTerritoryRestricted(final GameData data) {
     return data.getProperties().get(AA_TERRITORY_RESTRICTED, false);
   }
 
-  public static boolean getMultipleAAPerTerritory(final GameData data) {
+  public static boolean getMultipleAaPerTerritory(final GameData data) {
     return data.getProperties().get(MULTIPLE_AA_PER_TERRITORY, false);
   }
 
@@ -358,11 +361,11 @@ public class Properties implements Constants {
     return data.getProperties().get(TRIGGERS, false);
   }
 
-  public static boolean getAlwaysOnAA(final GameData data) {
+  public static boolean getAlwaysOnAa(final GameData data) {
     return data.getProperties().get(ALWAYS_ON_AA_PROPERTY, false);
   }
 
-  public static boolean getLHTRCarrierProductionRules(final GameData data) {
+  public static boolean getLhtrCarrierProductionRules(final GameData data) {
     return data.getProperties().get(LHTR_CARRIER_PRODUCTION_RULES, false);
   }
 
@@ -401,63 +404,63 @@ public class Properties implements Constants {
     return data.getProperties().get(TWO_HITPOINT_UNITS_REQUIRE_REPAIR_FACILITIES, false);
   }
 
-  public static boolean getChoose_AA_Casualties(final GameData data) {
+  public static boolean getChooseAaCasualties(final GameData data) {
     return data.getProperties().get(CHOOSE_AA, false);
   }
 
-  public static boolean getSubmersible_Subs(final GameData data) {
+  public static boolean getSubmersibleSubs(final GameData data) {
     return data.getProperties().get(SUBMERSIBLE_SUBS, false);
   }
 
-  public static boolean getUse_Destroyers_And_Artillery(final GameData data) {
+  public static boolean getUseDestroyersAndArtillery(final GameData data) {
     return data.getProperties().get(USE_DESTROYERS_AND_ARTILLERY, false);
   }
 
-  public static boolean getUse_Shipyards(final GameData data) {
+  public static boolean getUseShipyards(final GameData data) {
     return data.getProperties().get(USE_SHIPYARDS, false);
   }
 
-  public static boolean getLow_Luck(final GameData data) {
+  public static boolean getLowLuck(final GameData data) {
     return data.getProperties().get(LOW_LUCK, false);
   }
 
-  public static boolean getLL_AA_ONLY(final GameData data) {
+  public static boolean getLowLuckAaOnly(final GameData data) {
     return data.getProperties().get(LL_AA_ONLY, false);
   }
 
-  public static boolean getLL_TECH_ONLY(final GameData data) {
+  public static boolean getLowLuckTechOnly(final GameData data) {
     return data.getProperties().get(LL_TECH_ONLY, false);
   }
 
-  public static boolean getLL_DAMAGE_ONLY(final GameData data) {
+  public static boolean getLowLuckDamageOnly(final GameData data) {
     return data.getProperties().get(LL_DAMAGE_ONLY, false);
   }
 
-  public static boolean getKamikaze_Airplanes(final GameData data) {
+  public static boolean getKamikazeAirplanes(final GameData data) {
     return data.getProperties().get(KAMIKAZE, false);
   }
 
-  public static boolean getLHTR_Heavy_Bombers(final GameData data) {
+  public static boolean getLhtrHeavyBombers(final GameData data) {
     return data.getProperties().get(LHTR_HEAVY_BOMBERS, false);
   }
 
-  public static int getSuper_Sub_Defense_Bonus(final GameData data) {
+  public static int getSuperSubDefenseBonus(final GameData data) {
     return data.getProperties().get(SUPER_SUB_DEFENSE_BONUS, 0);
   }
 
-  public static boolean getScramble_Rules_In_Effect(final GameData data) {
+  public static boolean getScrambleRulesInEffect(final GameData data) {
     return data.getProperties().get(SCRAMBLE_RULES_IN_EFFECT, false);
   }
 
-  public static boolean getScrambled_Units_Return_To_Base(final GameData data) {
+  public static boolean getScrambledUnitsReturnToBase(final GameData data) {
     return data.getProperties().get(SCRAMBLED_UNITS_RETURN_TO_BASE, false);
   }
 
-  public static boolean getScramble_To_Sea_Only(final GameData data) {
+  public static boolean getScrambleToSeaOnly(final GameData data) {
     return data.getProperties().get(SCRAMBLE_TO_SEA_ONLY, false);
   }
 
-  public static boolean getScramble_From_Island_Only(final GameData data) {
+  public static boolean getScrambleFromIslandOnly(final GameData data) {
     return data.getProperties().get(SCRAMBLE_FROM_ISLAND_ONLY, false);
   }
 
@@ -465,7 +468,7 @@ public class Properties implements Constants {
     return data.getProperties().get(SCRAMBLE_TO_ANY_AMPHIBIOUS_ASSAULT, false);
   }
 
-  public static int getPU_Multiplier(final GameData data) {
+  public static int getPuMultiplier(final GameData data) {
     return data.getProperties().get(PU_MULTIPLIER, 1);
   }
 
@@ -566,7 +569,7 @@ public class Properties implements Constants {
     return data.getProperties().get(KAMIKAZE_SUICIDE_ATTACKS_DONE_BY_CURRENT_TERRITORY_OWNER, false);
   }
 
-  public static boolean getForceAAattacksForLastStepOfFlyOver(final GameData data) {
+  public static boolean getForceAaAttacksForLastStepOfFlyOver(final GameData data) {
     return data.getProperties().get(FORCE_AA_ATTACKS_FOR_LAST_STEP_OF_FLY_OVER, false);
   }
 
@@ -667,6 +670,4 @@ public class Properties implements Constants {
   public static boolean getControlAllCanalsBetweenTerritoriesToPass(final GameData data) {
     return data.getProperties().get(CONTROL_ALL_CANALS_BETWEEN_TERRITORIES_TO_PASS, false);
   }
-
-  private Properties() {}
 }

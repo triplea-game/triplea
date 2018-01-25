@@ -50,11 +50,11 @@ class AAInMoveUtil implements Serializable {
   }
 
   private boolean isAlwaysOnAaEnabled() {
-    return Properties.getAlwaysOnAA(getData());
+    return Properties.getAlwaysOnAa(getData());
   }
 
   private boolean isAaTerritoryRestricted() {
-    return Properties.getAATerritoryRestricted(getData());
+    return Properties.getAaTerritoryRestricted(getData());
   }
 
   private ITripleAPlayer getRemotePlayer(final PlayerID id) {
@@ -207,7 +207,7 @@ class AAInMoveUtil implements Serializable {
         territoriesWhereAaWillFire.add(current);
       }
     }
-    if (Properties.getForceAAattacksForLastStepOfFlyOver(data)) {
+    if (Properties.getForceAaAttacksForLastStepOfFlyOver(data)) {
       if (route.getEnd().getUnits().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(route.getEnd());
       }

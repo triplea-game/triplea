@@ -350,7 +350,7 @@ public class ProAi extends AbstractAi {
         defenders.removeAll(defaultCasualties.getKilled());
         final double strengthDifference = ProBattleUtils.estimateStrengthDifference(battlesite, attackers, defenders);
         int minStrengthDifference = 60;
-        if (!Properties.getLow_Luck(data)) {
+        if (!Properties.getLowLuck(data)) {
           minStrengthDifference = 55;
         }
         if (strengthDifference > minStrengthDifference) {

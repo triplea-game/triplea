@@ -81,7 +81,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       int toAdd = getProduction(territories);
       final int blockadeLoss = getBlockadeProductionLoss(player, data, bridge, endTurnReport);
       toAdd -= blockadeLoss;
-      toAdd *= Properties.getPU_Multiplier(data);
+      toAdd *= Properties.getPuMultiplier(data);
       int total = player.getResources().getQuantity(pus) + toAdd;
       final String transcriptText;
       if (blockadeLoss == 0) {

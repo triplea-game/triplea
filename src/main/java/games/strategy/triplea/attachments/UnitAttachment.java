@@ -1612,7 +1612,7 @@ public class UnitAttachment extends DefaultAttachment {
     int defenseValue =
         m_defense + TechAbilityAttachment.getDefenseBonus((UnitType) this.getAttachedTo(), player, getData());
     if (defenseValue > 0 && m_isSub && TechTracker.hasSuperSubs(player)) {
-      final int bonus = Properties.getSuper_Sub_Defense_Bonus(getData());
+      final int bonus = Properties.getSuperSubDefenseBonus(getData());
       defenseValue += bonus;
     }
     return Math.min(getData().getDiceSides(), Math.max(0, defenseValue));
@@ -2744,7 +2744,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (max == Integer.MAX_VALUE && (ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly())) {
       // under certain rules (classic rules) there can only be 1 aa gun in a territory.
       if (!(Properties.getWW2V2(data) || Properties.getWW2V3(data)
-          || Properties.getMultipleAAPerTerritory(data))) {
+          || Properties.getMultipleAaPerTerritory(data))) {
         max = 1;
       }
     }
@@ -3165,10 +3165,10 @@ public class UnitAttachment extends DefaultAttachment {
       if (getIsAAforCombatOnly() && getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()) {
         stats.append(getTypeAA()).append(", ");
       } else if (getIsAAforCombatOnly() && getIsAAforFlyOverOnly()
-          && !Properties.getAATerritoryRestricted(getData())) {
+          && !Properties.getAaTerritoryRestricted(getData())) {
         stats.append(getTypeAA()).append(" for Combat & Move Through, ");
       } else if (getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()
-          && !Properties.getAATerritoryRestricted(getData())) {
+          && !Properties.getAaTerritoryRestricted(getData())) {
         stats.append(getTypeAA()).append(" for Raids & Move Through, ");
       } else if (getIsAAforCombatOnly()) {
         stats.append(getTypeAA()).append(" for Combat, ");
@@ -3222,10 +3222,10 @@ public class UnitAttachment extends DefaultAttachment {
     } else if (getCanBeDamaged()) {
       stats.append("can be Attacked By Raids, ");
     }
-    if (getIsAirBase() && Properties.getScramble_Rules_In_Effect(getData())) {
+    if (getIsAirBase() && Properties.getScrambleRulesInEffect(getData())) {
       stats.append("can Allow Scrambling, ");
     }
-    if (getCanScramble() && Properties.getScramble_Rules_In_Effect(getData())) {
+    if (getCanScramble() && Properties.getScrambleRulesInEffect(getData())) {
       stats.append("can Scramble ").append(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1)
           .append(" Distance, ");
     }
@@ -3317,7 +3317,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (getIsSuicideOnHit()) {
       stats.append("SuicideOnHit Unit, ");
     }
-    if (getIsAir() && (getIsKamikaze() || Properties.getKamikaze_Airplanes(getData()))) {
+    if (getIsAir() && (getIsKamikaze() || Properties.getKamikazeAirplanes(getData()))) {
       stats.append("can use All Movement To Attack Target, ");
     }
     if ((getIsInfantry() || getIsLandTransportable()) && playerHasMechInf(player)) {
@@ -3438,7 +3438,7 @@ public class UnitAttachment extends DefaultAttachment {
           && (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
-              || Properties.getMultipleAAPerTerritory(getData()))) {
+              || Properties.getMultipleAaPerTerritory(getData()))) {
         stats.append("max of 1 ").append(getMovementLimit().getSecond()).append(" moving per territory, ");
       } else if (getMovementLimit().getFirst() < 10000) {
         stats.append("max of ").append(getMovementLimit().getFirst()).append(" ").append(getMovementLimit().getSecond())
@@ -3450,7 +3450,7 @@ public class UnitAttachment extends DefaultAttachment {
           && (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
-              || Properties.getMultipleAAPerTerritory(getData()))) {
+              || Properties.getMultipleAaPerTerritory(getData()))) {
         stats.append("max of 1 ").append(getAttackingLimit().getSecond()).append(" attacking per territory, ");
       } else if (getAttackingLimit().getFirst() < 10000) {
         stats.append("max of ").append(getAttackingLimit().getFirst()).append(" ")
@@ -3462,7 +3462,7 @@ public class UnitAttachment extends DefaultAttachment {
           && (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
-              || Properties.getMultipleAAPerTerritory(getData()))) {
+              || Properties.getMultipleAaPerTerritory(getData()))) {
         stats.append("max of 1 ").append(getPlacementLimit().getSecond()).append(" placed per territory, ");
       } else if (getPlacementLimit().getFirst() < 10000) {
         stats.append("max of ").append(getPlacementLimit().getFirst()).append(" ")

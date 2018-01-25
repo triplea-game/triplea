@@ -230,7 +230,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initDestroyerArtillery(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final boolean addArtilleryAndDestroyers = Properties.getUse_Destroyers_And_Artillery(data);
+    final boolean addArtilleryAndDestroyers = Properties.getUseDestroyersAndArtillery(data);
     if (!isWW2V2(data) && addArtilleryAndDestroyers) {
       final CompositeChange change = new CompositeChange();
       final ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
@@ -265,7 +265,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initShipyards(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final boolean useShipyards = Properties.getUse_Shipyards(data);
+    final boolean useShipyards = Properties.getUseShipyards(data);
     if (useShipyards) {
       final CompositeChange change = new CompositeChange();
       final ProductionFrontier frontierShipyards =

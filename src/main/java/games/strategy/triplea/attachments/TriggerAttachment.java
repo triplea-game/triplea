@@ -2396,7 +2396,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         for (int i = 0; i < eachMultiple; ++i) {
           int toAdd = t.getResourceCount();
           if (t.getResource().equals(Constants.PUS)) {
-            toAdd *= Properties.getPU_Multiplier(data);
+            toAdd *= Properties.getPuMultiplier(data);
           }
           int total = player.getResources().getQuantity(t.getResource()) + toAdd;
           if (total < 0) {

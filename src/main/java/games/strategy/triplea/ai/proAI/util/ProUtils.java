@@ -137,7 +137,7 @@ public class ProUtils {
         production += TerritoryAttachment.getProduction(place);
       }
     }
-    production *= Properties.getPU_Multiplier(data);
+    production *= Properties.getPuMultiplier(data);
     return production;
   }
 

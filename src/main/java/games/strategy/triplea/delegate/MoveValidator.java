@@ -960,7 +960,7 @@ public class MoveValidator {
       }
       final Collection<Unit> transports = TransportUtils.mapTransports(route, units, null).values();
       final boolean isScramblingOrKamikazeAttacksEnabled =
-          Properties.getScramble_Rules_In_Effect(data) || Properties.getUseKamikazeSuicideAttacks(data);
+          Properties.getScrambleRulesInEffect(data) || Properties.getUseKamikazeSuicideAttacks(data);
       final boolean submarinesPreventUnescortedAmphibAssaults =
           Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data);
       final Predicate<Unit> enemySubmarineMatch = Matches.unitIsEnemyOf(data, player).and(Matches.unitIsSub());
@@ -1556,7 +1556,7 @@ public class MoveValidator {
   }
 
   private static boolean isSubmersibleSubsAllowed(final GameData data) {
-    return Properties.getSubmersible_Subs(data);
+    return Properties.getSubmersibleSubs(data);
   }
 
   private static boolean isIgnoreTransportInMovement(final GameData data) {

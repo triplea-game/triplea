@@ -690,7 +690,7 @@ class OddsCalculatorPanel extends JPanel {
     numRuns.setMin(1);
     numRuns.setMax(20000);
 
-    final int simulationCount = Properties.getLow_Luck(data)
+    final int simulationCount = Properties.getLowLuck(data)
         ? ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK.intValue()
         : ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE.intValue();
     numRuns.setValue(simulationCount);

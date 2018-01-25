@@ -293,13 +293,13 @@ public class ProTerritoryManager {
   private static void findScrambleOptions(final PlayerID player, final Map<Territory, ProTerritory> moveMap) {
     final GameData data = ProData.getData();
 
-    if (!Properties.getScramble_Rules_In_Effect(data)) {
+    if (!Properties.getScrambleRulesInEffect(data)) {
       return;
     }
 
     // Find scramble properties
-    final boolean fromIslandOnly = Properties.getScramble_From_Island_Only(data);
-    final boolean toSeaOnly = Properties.getScramble_To_Sea_Only(data);
+    final boolean fromIslandOnly = Properties.getScrambleFromIslandOnly(data);
+    final boolean toSeaOnly = Properties.getScrambleToSeaOnly(data);
     final int maxScrambleDistance = StreamSupport.stream(data.getUnitTypeList().spliterator(), false)
         .map(UnitAttachment::get)
         .filter(UnitAttachment::getCanScramble)
