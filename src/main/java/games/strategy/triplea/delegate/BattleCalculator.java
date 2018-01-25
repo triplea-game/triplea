@@ -60,13 +60,10 @@ public class BattleCalculator {
   // we also want to sort by movement, so casualties will be choosen as the
   // units with least movement
   static void sortPreBattle(final List<Unit> units) {
-    final Comparator<Unit> comparator = (u1, u2) -> {
-      if (u1.getType().equals(u2.getType())) {
-        return UnitComparator.getLowestToHighestMovementComparator().compare(u1, u2);
-      }
-      return u1.getType().getName().compareTo(u2.getType().getName());
-    };
-    Collections.sort(units, comparator);
+    Collections.sort(units,
+        Comparator.comparing(Unit::getType,
+            Comparator.comparing(UnitType::getName))
+            .thenComparing(UnitComparator.getLowestToHighestMovementComparator()));
   }
 
   public static int getTotalHitpointsLeft(final Collection<Unit> units) {

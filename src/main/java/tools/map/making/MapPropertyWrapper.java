@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,7 +146,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         ClientLogger.logQuietly("Failed to create map property wrapper", e);
       }
     }
-    properties.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+    properties.sort(Comparator.comparing(MapPropertyWrapper::getName));
     return properties;
   }
 

@@ -18,6 +18,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -851,9 +852,7 @@ class OddsCalculatorPanel extends JPanel {
     void init(final PlayerID id, final List<Unit> units, final boolean land) {
       isLand = land;
       categories = new ArrayList<>(categorize(id, units));
-      Collections.sort(categories, (o1, o2) -> {
-        final UnitType ut1 = o1.getType();
-        final UnitType ut2 = o2.getType();
+      Collections.sort(categories, Comparator.comparing(UnitCategory::getType, (ut1, ut2) -> {
         final UnitAttachment u1 = UnitAttachment.get(ut1);
         final UnitAttachment u2 = UnitAttachment.get(ut2);
         // for land, we want land, air, aa gun, then bombarding
@@ -873,7 +872,7 @@ class OddsCalculatorPanel extends JPanel {
           }
         }
         return u1.getName().compareTo(u2.getName());
-      });
+      }));
       removeAll();
       final Predicate<UnitType> predicate;
       if (land) {
