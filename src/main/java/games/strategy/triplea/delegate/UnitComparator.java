@@ -68,7 +68,7 @@ public class UnitComparator {
       // Sort by decreasing transport capacity
       // Sort by decreasing movement
       return decreasingCapacityComparator
-          .thenComparing(t -> (TripleAUnit) t, Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
+          .thenComparing(TripleAUnit.class::cast, Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
           .thenComparingInt(Object::hashCode)
           .compare(t1, t2);
     });

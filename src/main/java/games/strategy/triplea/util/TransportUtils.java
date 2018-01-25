@@ -195,7 +195,7 @@ public class TransportUtils {
     final List<Unit> canTransport = new ArrayList<>(transports);
     Collections.sort(canTransport, Comparator.comparingInt(TransportTracker::getAvailableCapacity)
         .thenComparing(TripleAUnit::get,
-            Comparator.comparingInt(TripleAUnit::getMovementLeft)));
+            Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed()));
     return canTransport;
   }
 
@@ -206,7 +206,7 @@ public class TransportUtils {
     final List<Unit> canBeTransported = new ArrayList<>(units);
     Collections.sort(canBeTransported, Comparator.comparing(Unit::getType,
         Comparator.comparing(UnitAttachment::get,
-            Comparator.comparingInt(UnitAttachment::getTransportCost))));
+            Comparator.comparingInt(UnitAttachment::getTransportCost).reversed())));
     return canBeTransported;
   }
 
