@@ -27,7 +27,7 @@ public class AirThatCantLandUtil {
   }
 
   public static boolean isLhtrCarrierProduction(final GameData data) {
-    return Properties.getLHTRCarrierProductionRules(data);
+    return Properties.getLhtrCarrierProductionRules(data);
   }
 
   public static boolean isLandExistingFightersOnNewCarriers(final GameData data) {

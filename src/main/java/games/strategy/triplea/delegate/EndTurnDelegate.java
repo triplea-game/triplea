@@ -185,7 +185,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         continue;
       }
       if (resource.getName().equals(Constants.PUS)) {
-        toAdd *= Properties.getPU_Multiplier(getData());
+        toAdd *= Properties.getPuMultiplier(getData());
       }
       int total = player.getResources().getQuantity(resource) + toAdd;
       if (total < 0) {
@@ -256,7 +256,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         continue;
       }
       int toAdd = rule.getObjectiveValue();
-      toAdd *= Properties.getPU_Multiplier(data);
+      toAdd *= Properties.getPuMultiplier(data);
       toAdd *= rule.getEachMultiple();
       int total = player.getResources().getQuantity(Constants.PUS) + toAdd;
       if (total < 0) {

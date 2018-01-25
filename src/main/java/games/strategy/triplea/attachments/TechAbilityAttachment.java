@@ -1310,7 +1310,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
           final List<UnitType> allBombers =
               CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsStrategicBomber());
           final int heavyBomberDiceRollsTotal = Properties.getHeavyBomberDiceRolls(data);
-          final boolean heavyBombersLhtr = Properties.getLHTR_Heavy_Bombers(data);
+          final boolean heavyBombersLhtr = Properties.getLhtrHeavyBombers(data);
           for (final UnitType bomber : allBombers) {
             // TODO: The bomber dice rolls get set when the xml is parsed.
             // we subtract the base rolls to get the bonus

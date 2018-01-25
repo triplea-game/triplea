@@ -30,7 +30,7 @@ public final class ImprovedShipyardsAdvance extends TechAdvance {
   @Override
   public void perform(final PlayerID id, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    if (!Properties.getUse_Shipyards(data)) {
+    if (!Properties.getUseShipyards(data)) {
       return;
     }
     final ProductionFrontier current = id.getProductionFrontier();

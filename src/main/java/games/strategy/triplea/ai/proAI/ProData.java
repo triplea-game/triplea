@@ -56,7 +56,7 @@ public class ProData {
     ProData.player = player;
     ProData.isSimulation = isSimulation;
 
-    if (!Properties.getLow_Luck(data)) {
+    if (!Properties.getLowLuck(data)) {
       winPercentage = 90;
       minWinPercentage = 65;
     }

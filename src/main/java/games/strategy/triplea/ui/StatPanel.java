@@ -453,7 +453,7 @@ public class StatPanel extends AbstractStatPanel {
           production += TerritoryAttachment.getProduction(place);
         }
       }
-      production *= Properties.getPU_Multiplier(data);
+      production *= Properties.getPuMultiplier(data);
       return production;
     }
   }

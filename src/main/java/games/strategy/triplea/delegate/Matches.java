@@ -1288,7 +1288,7 @@ public final class Matches {
           .of(enemyUnit(player, data).negate())
           // WW2V2, cant blitz through factories and aa guns
           // WW2V1, you can
-          .orIf(!Properties.getWW2V2(data) && !Properties.getBlitzThroughFactoriesAndAARestricted(data),
+          .orIf(!Properties.getWW2V2(data) && !Properties.getBlitzThroughFactoriesAndAaRestricted(data),
               unitIsInfrastructure())
           .build();
       return t.getUnits().allMatch(blitzableUnits);

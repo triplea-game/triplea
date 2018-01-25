@@ -169,7 +169,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   private boolean isLowLuckTechOnly() {
-    return Properties.getLL_TECH_ONLY(getData());
+    return Properties.getLowLuckTechOnly(getData());
   }
 
   @Override

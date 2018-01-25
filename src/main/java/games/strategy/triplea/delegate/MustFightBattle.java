@@ -133,7 +133,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean canSubsSubmerge() {
-    return Properties.getSubmersible_Subs(m_data);
+    return Properties.getSubmersibleSubs(m_data);
   }
 
   @Override

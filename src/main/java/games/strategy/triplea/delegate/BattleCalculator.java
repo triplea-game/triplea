@@ -112,7 +112,7 @@ public class BattleCalculator {
           dice.getHits(), allowMultipleHitsPerUnit);
     }
 
-    if (Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
+    if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
       return getLowLuckAaCasualties(defending, planes, defendingAa, dice, bridge, allowMultipleHitsPerUnit);
     }
 
@@ -985,21 +985,21 @@ public class BattleCalculator {
    * @return Random AA Casualties - casualties randomly assigned.
    */
   private static boolean isRandomAaCasualties(final GameData data) {
-    return Properties.getRandomAACasualties(data);
+    return Properties.getRandomAaCasualties(data);
   }
 
   /**
    * @return Roll AA Individually - roll against each aircraft.
    */
   private static boolean isRollAaIndividually(final GameData data) {
-    return Properties.getRollAAIndividually(data);
+    return Properties.getRollAaIndividually(data);
   }
 
   /**
    * @return Choose AA - attacker selects casualties.
    */
   private static boolean isChooseAa(final GameData data) {
-    return Properties.getChoose_AA_Casualties(data);
+    return Properties.getChooseAaCasualties(data);
   }
 
   /**
@@ -1021,7 +1021,7 @@ public class BattleCalculator {
    */
   public static int getUnitPowerForSorting(final Unit current, final boolean defending, final GameData data,
       final Collection<TerritoryEffect> territoryEffects) {
-    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
     final UnitAttachment ua = UnitAttachment.get(current.getType());
     final int rolls = (defending) ? ua.getDefenseRolls(current.getOwner()) : ua.getAttackRolls(current.getOwner());
     int strengthWithoutSupport = 0;

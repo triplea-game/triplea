@@ -59,7 +59,7 @@ public class RocketsFireHelper {
   }
 
   private static boolean isPuCap(final GameData data) {
-    return Properties.getPUCap(data);
+    return Properties.getPuCap(data);
   }
 
   private static boolean isLimitRocketDamagePerTurn(final GameData data) {
@@ -67,7 +67,7 @@ public class RocketsFireHelper {
   }
 
   private static boolean isLimitRocketDamageToProduction(final GameData data) {
-    return Properties.getLimitRocketAndSBRDamageToProduction(data);
+    return Properties.getLimitRocketAndSbrDamageToProduction(data);
   }
 
   static void fireRockets(final IDelegateBridge bridge, final PlayerID player) {
@@ -248,7 +248,7 @@ public class RocketsFireHelper {
     final boolean doNotUseBombingBonus =
         !Properties.getUseBombingMaxDiceSidesAndBonus(data) || rockets == null;
     int cost = 0;
-    if (!Properties.getLL_DAMAGE_ONLY(data)) {
+    if (!Properties.getLowLuckDamageOnly(data)) {
       if (doNotUseBombingBonus || rockets == null) {
         // no low luck, and no bonus, so just roll based on the map's dice sides
         final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, player, DiceType.BOMBING,
@@ -399,7 +399,7 @@ public class RocketsFireHelper {
       bridge.getHistoryWriter().startEvent("Rocket attack in " + attackedTerritory.getName() + " does " + cost
           + " damage to " + targets.iterator().next());
     } else {
-      cost *= Properties.getPU_Multiplier(data);
+      cost *= Properties.getPuMultiplier(data);
       getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost,
           "Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
       // Trying to remove more PUs than the victim has is A Bad Thing[tm]

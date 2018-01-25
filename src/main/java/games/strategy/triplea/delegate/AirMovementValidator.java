@@ -734,7 +734,7 @@ public class AirMovementValidator {
   }
 
   private static boolean isKamikazeAircraft(final GameData data) {
-    return Properties.getKamikaze_Airplanes(data);
+    return Properties.getKamikazeAirplanes(data);
   }
 
   private static boolean areNeutralsPassableByAir(final GameData data) {

@@ -449,19 +449,19 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private boolean isLimitSbrDamageToProduction() {
-    return Properties.getLimitRocketAndSBRDamageToProduction(m_data);
+    return Properties.getLimitRocketAndSbrDamageToProduction(m_data);
   }
 
   private static boolean isLimitSbrDamagePerTurn(final GameData data) {
-    return Properties.getLimitSBRDamagePerTurn(data);
+    return Properties.getLimitSbrDamagePerTurn(data);
   }
 
   private static boolean isPuCap(final GameData data) {
-    return Properties.getPUCap(data);
+    return Properties.getPuCap(data);
   }
 
   private boolean isSbrVictoryPoints() {
-    return Properties.getSBRVictoryPoint(m_data);
+    return Properties.getSbrVictoryPoints(m_data);
   }
 
   private boolean isPacificTheater() {
@@ -597,7 +597,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             !Properties.getUseBombingMaxDiceSidesAndBonus(m_data);
         final String annotation = m_attacker.getName() + " rolling to allocate cost of strategic bombing raid against "
             + m_defender.getName() + " in " + m_battleSite.getName();
-        if (!Properties.getLL_DAMAGE_ONLY(m_data)) {
+        if (!Properties.getLowLuckDamageOnly(m_data)) {
           if (doNotUseBombingBonus) {
             // no low luck, and no bonus, so just roll based on the map's dice sides
             m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, m_attacker, DiceType.BOMBING, annotation);
@@ -703,7 +703,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
       int damageLimit = TerritoryAttachment.getProduction(m_battleSite);
       int cost = 0;
-      final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(m_data);
+      final boolean lhtrBombers = Properties.getLhtrHeavyBombers(m_data);
       int index = 0;
       final boolean limitDamage = isWW2V2() || isLimitSbrDamageToProduction();
       final List<Die> dice = new ArrayList<>();
@@ -814,7 +814,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       } else {
         // Record PUs lost
         DelegateFinder.moveDelegate(m_data).pusLost(m_battleSite, cost);
-        cost *= Properties.getPU_Multiplier(m_data);
+        cost *= Properties.getPuMultiplier(m_data);
         getDisplay(bridge).bombingResults(m_battleID, dice, cost);
         if (cost > 0) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);

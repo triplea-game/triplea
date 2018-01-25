@@ -151,7 +151,7 @@ public class DiceRoll implements Externalizable {
     final Triple<Integer, Integer, Boolean> triple = getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
         null, null, defending, defendingAa, validAttackingUnitsForThisRoll, data, false);
     final int totalPower = triple.getFirst();
-    if (Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data)) {
+    if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
       final String annotation = "Roll " + typeAa + " in " + location.getName();
       hits += getLowLuckHits(bridge, sortedDice, totalPower, chosenDiceSizeForAll, defendingAa.get(0).getOwner(),
           annotation);
@@ -367,7 +367,7 @@ public class DiceRoll implements Externalizable {
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     // Decide whether to use low luck rules or normal rules.
-    if (Properties.getLow_Luck(bridge.getData())) {
+    if (Properties.getLowLuck(bridge.getData())) {
       return rollDiceLowLuck(units, defending, player, bridge, battle, annotation, territoryEffects,
           allEnemyUnitsAliveOrWaitingToDie);
     }
@@ -520,8 +520,8 @@ public class DiceRoll implements Externalizable {
   private static Tuple<Integer, Integer> getTotalPowerAndRolls(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
     final int diceSides = data.getDiceSides();
-    final boolean lowLuck = Properties.getLow_Luck(data);
-    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lowLuck = Properties.getLowLuck(data);
+    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
     // bonus is normally 1 for most games
     final int extraRollBonus = Math.max(1, data.getDiceSides() / 6);
     int totalPower = 0;
@@ -849,7 +849,7 @@ public class DiceRoll implements Externalizable {
       }
     }
     final GameData data = bridge.getData();
-    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
     final List<Unit> units = new ArrayList<>(unitsList);
     final int rollCount = AirBattle.getAirBattleRolls(unitsList, defending);
     if (rollCount == 0) {
@@ -882,7 +882,7 @@ public class DiceRoll implements Externalizable {
       totalPower += Math.min(Math.max(totalStrength, 0), data.getDiceSides());
     }
 
-    if (Properties.getLow_Luck(data)) {
+    if (Properties.getLowLuck(data)) {
       // Get number of hits
       hitCount = totalPower / data.getDiceSides();
       random = new int[0];
@@ -972,7 +972,7 @@ public class DiceRoll implements Externalizable {
       return new DiceRoll(new ArrayList<>(), 0, 0);
     }
     final int[] random = bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
-    final boolean lhtrBombers = Properties.getLHTR_Heavy_Bombers(data);
+    final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
     final List<Die> dice = new ArrayList<>();
     int hitCount = 0;
     int diceIndex = 0;

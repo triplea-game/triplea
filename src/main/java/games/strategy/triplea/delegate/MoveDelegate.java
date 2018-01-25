@@ -561,7 +561,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       return errorMsg.append(result.getDisallowedUnitWarning(0)).append(numErrorsMsg).toString();
     }
     boolean isKamikaze = false;
-    final boolean getKamikazeAir = Properties.getKamikaze_Airplanes(data);
+    final boolean getKamikazeAir = Properties.getKamikazeAirplanes(data);
     Collection<Unit> kamikazeUnits = new ArrayList<>();
 
     // confirm kamikaze moves, and remove them from unresolved units

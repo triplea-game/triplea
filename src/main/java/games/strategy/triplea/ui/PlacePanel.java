@@ -71,7 +71,7 @@ public class PlacePanel extends AbstractMovePanel {
   }
 
   private boolean isLhtrCarrierProductionRules() {
-    return Properties.getLHTRCarrierProductionRules(getData());
+    return Properties.getLhtrCarrierProductionRules(getData());
   }
 
   private final MapSelectionListener placeMapSelectionListener = new DefaultMapSelectionListener() {
