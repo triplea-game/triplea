@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
+import javax.annotation.Nullable;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
@@ -195,12 +197,14 @@ public class ResourceLoader implements Closeable {
    * @param inputPath
    *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or
    *        File.separator)
+   *
+   * @return The resource URL or {@code null} if the resource does not exist.
    */
-  public URL getResource(final String inputPath) {
+  public @Nullable URL getResource(final String inputPath) {
     final String path = resourceLocationTracker.getMapPrefix() + inputPath;
     return getMatchingResources(path).stream().findFirst().orElse(
-        getMatchingResources(inputPath).stream().findFirst().orElseGet(
-            () -> null));
+        getMatchingResources(inputPath).stream().findFirst().orElse(
+            null));
   }
 
   private List<URL> getMatchingResources(final String path) {
@@ -212,9 +216,12 @@ public class ResourceLoader implements Closeable {
   }
 
   /**
-   * Ensure that you close the InputStream returned by this method when you are done using it.
+   * @return An input stream for the specified resource or {@code null} if the resource does not exist. The caller is
+   *         responsible for closing the returned input stream.
+   *
+   * @throws IllegalStateException If the specified resource exists but the input stream cannot be opened.
    */
-  public InputStream getResourceAsStream(final String path) {
+  public @Nullable InputStream getResourceAsStream(final String path) {
     final URL url = getResource(path);
     if (url == null) {
       return null;

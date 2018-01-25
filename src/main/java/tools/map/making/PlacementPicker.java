@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -260,9 +261,9 @@ public class PlacementPicker extends JFrame {
     if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
         "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories?",
         "File Suggestion", 1) == 0) {
-      try {
+      try (InputStream is = new FileInputStream(file.getPath())) {
         System.out.println("Polygons : " + file.getPath());
-        polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
+        polygons = PointFileReaderWriter.readOneToManyPolygons(is);
       } catch (final IOException ex1) {
         ex1.printStackTrace();
       }
@@ -272,7 +273,9 @@ public class PlacementPicker extends JFrame {
         final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
           System.out.println("Polygons : " + polyPath);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(polyPath));
+          try (InputStream is = new FileInputStream(polyPath)) {
+            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+          }
         } else {
           System.out.println("Polygons file not given. Will run regardless");
         }
@@ -503,8 +506,9 @@ public class PlacementPicker extends JFrame {
       if (placeName == null) {
         return;
       }
-      final FileInputStream in = new FileInputStream(placeName);
-      placements = PointFileReaderWriter.readOneToMany(in);
+      try (InputStream in = new FileInputStream(placeName)) {
+        placements = PointFileReaderWriter.readOneToMany(in);
+      }
       repaint();
     } catch (final HeadlessException | IOException ex) {
       ClientLogger.logQuietly("Failed to load placements", ex);

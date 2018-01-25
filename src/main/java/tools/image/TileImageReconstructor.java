@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,8 +115,9 @@ public class TileImageReconstructor {
         System.out.println("Load a polygon file");
         final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyName != null) {
-          final FileInputStream in = new FileInputStream(polyName);
-          polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+          try (InputStream in = new FileInputStream(polyName)) {
+            polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+          }
         }
       } catch (final Exception ex) {
         ClientLogger.logQuietly("Failed to load polygons", ex);

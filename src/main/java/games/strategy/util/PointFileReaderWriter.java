@@ -1,5 +1,7 @@
 package games.strategy.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.Point;
 import java.awt.Polygon;
 import java.io.IOException;
@@ -10,34 +12,35 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.annotation.Nullable;
+
+import org.apache.commons.io.input.CloseShieldInputStream;
+
 import games.strategy.debug.ClientLogger;
 
 /**
- * Utiltity to read and write files in the form of
+ * Utility to read and write files in the form of
  * String -> a list of points, or string-> list of polygons.
  */
-public class PointFileReaderWriter {
-  /** Creates a new instance of PointFileReader. */
-  public PointFileReaderWriter() {}
+public final class PointFileReaderWriter {
+  private PointFileReaderWriter() {}
 
   /**
    * Returns a map of the form String -> Point.
    */
   public static Map<String, Point> readOneToOne(final InputStream stream) throws IOException {
-    if (stream == null) {
-      return Collections.emptyMap();
-    }
-    final Map<String, Point> mapping = new HashMap<>();
+    checkNotNull(stream);
 
-    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+    final Map<String, Point> mapping = new HashMap<>();
+    try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
+      @Nullable
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -45,29 +48,6 @@ public class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
-    } finally {
-      stream.close();
-    }
-    return mapping;
-  }
-
-  /**
-   * Returns a map of the form String -> Point.
-   */
-  public static Map<String, Point> readOneToOneCenters(final InputStream stream) throws IOException {
-    final Map<String, Point> mapping = new HashMap<>();
-
-    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      String current = reader.readLine();
-      while (current != null) {
-        if (current.trim().length() != 0) {
-          readSingle(current, mapping);
-        }
-        current = reader.readLine();
-      }
-    } finally {
-      stream.close();
     }
     return mapping;
   }
@@ -158,13 +138,12 @@ public class PointFileReaderWriter {
    * Returns a map of the form String -> Collection of points.
    */
   public static Map<String, List<Point>> readOneToMany(final InputStream stream) {
-    if (stream == null) {
-      return Collections.emptyMap();
-    }
+    checkNotNull(stream);
 
     final HashMap<String, List<Point>> mapping = new HashMap<>();
-    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+    try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
+      @Nullable
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -172,26 +151,22 @@ public class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
-    } catch (final IOException ioe) {
-      ClientLogger.logError("PointFileReaderWriter error, " + ioe.getMessage(), ioe);
+    } catch (final IOException e) {
+      ClientLogger.logError("Failed to read one-to-many points file", e);
+      // FIXME: o_O Should not exit process from "library" code
       System.exit(0);
-    } finally {
-      try {
-        stream.close();
-      } catch (final IOException e) {
-        ClientLogger.logError("Failed to close point file reader", e);
-      }
     }
     return mapping;
   }
 
   /**
-   * Returns a map of the form String -> Collection of points.
+   * Returns a map of the form String -> Collection of polygons.
    */
   public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) {
     final HashMap<String, List<Polygon>> mapping = new HashMap<>();
-    try (InputStreamReader inputStreamReader = new InputStreamReader(stream);
+    try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
+      @Nullable
       String current = reader.readLine();
       while (current != null) {
         if (current.trim().length() != 0) {
@@ -203,14 +178,6 @@ public class PointFileReaderWriter {
       ClientLogger.logQuietly("Failed to read polygons", e);
       // FIXME: o_O Should not exit process from "library" code
       System.exit(0);
-    } finally {
-      try {
-        if (stream != null) {
-          stream.close();
-        }
-      } catch (final IOException e) {
-        ClientLogger.logError("Failed to close polygon reader stream", e);
-      }
     }
     return mapping;
   }
@@ -310,5 +277,4 @@ public class PointFileReaderWriter {
     }
     mapping.put(name, points);
   }
-  // TODO add write methods
 }

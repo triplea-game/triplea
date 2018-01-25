@@ -20,9 +20,9 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -142,9 +142,9 @@ public class PolygonGrabber extends JFrame {
         "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
             + "names?",
         "File Suggestion", 1) == 0) {
-      try {
+      try (InputStream is = new FileInputStream(file.getPath())) {
         System.out.println("Centers : " + file.getPath());
-        centers = PointFileReaderWriter.readOneToOne(new FileInputStream(file.getPath()));
+        centers = PointFileReaderWriter.readOneToOne(is);
       } catch (final IOException ex1) {
         System.out.println("Something wrong with Centers file");
         ex1.printStackTrace();
@@ -155,7 +155,9 @@ public class PolygonGrabber extends JFrame {
         final String centerPath = new FileOpen("Select A Center File", mapFolderLocation, ".txt").getPathString();
         if (centerPath != null) {
           System.out.println("Centers : " + centerPath);
-          centers = PointFileReaderWriter.readOneToOne(new FileInputStream(centerPath));
+          try (InputStream is = new FileInputStream(centerPath)) {
+            centers = PointFileReaderWriter.readOneToOne(is);
+          }
         } else {
           System.out.println("You must specify a centers file.");
           System.out.println("Shutting down.");
@@ -387,10 +389,11 @@ public class PolygonGrabber extends JFrame {
       if (polyName == null) {
         return;
       }
-      final FileInputStream in = new FileInputStream(polyName);
-      polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+      try (InputStream in = new FileInputStream(polyName)) {
+        polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+      }
       repaint();
-    } catch (final FileNotFoundException ex) {
+    } catch (final IOException ex) {
       ClientLogger.logQuietly("file name = " + polyName, ex);
     } catch (final HeadlessException ex) {
       // TODO: remove HeadlessException (fix anti-pattern control flow via exception handling with proper control flow)

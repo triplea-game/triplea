@@ -6,7 +6,9 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -33,7 +35,6 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
-import games.strategy.util.UrlStreams;
 
 /**
  * contains data about the territories useful for drawing.
@@ -131,48 +132,83 @@ public class MapData implements Closeable {
   public MapData(final ResourceLoader loader) {
     resourceLoader = loader;
     try {
-      final String prefix = "";
-      place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
-      territoryEffects =
-          PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + TERRITORY_EFFECT_FILE));
+      place = readPointsOneToMany(optionalResource(PLACEMENT_FILE));
+      territoryEffects = readPointsOneToMany(optionalResource(TERRITORY_EFFECT_FILE));
 
-      if (loader.getResourceAsStream(prefix + POLYGON_FILE) == null) {
+      if (loader.getResource(POLYGON_FILE) == null) {
         throw new IllegalStateException(
-            "Error in resource loading. Unable to load expected resource: " + prefix + POLYGON_FILE + ", the error"
+            "Error in resource loading. Unable to load expected resource: " + POLYGON_FILE + ", the error"
                 + " is that either we did not find the correct path to load. Check the resource loader to make"
                 + " sure the map zip or dir was added. Failing that, the path in this error message should be available"
                 + " relative to the map folder, or relative to the root of the map zip");
       }
 
-      polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
-      centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
-      vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
-      convoyPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CONVOY_MARKERS));
-      commentPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + COMMENT_MARKERS));
-      blockadePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + BLOCKADE_MARKERS));
-      capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
-      puPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + PU_PLACE_FILE));
-      namePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + TERRITORY_NAME_PLACE_FILE));
-      kamikazePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + KAMIKAZE_FILE));
+      polys = readPolygonsOneToMany(requiredResource(POLYGON_FILE));
+      centers = readPointsOneToOne(requiredResource(CENTERS_FILE));
+      vcPlace = readPointsOneToOne(optionalResource(VC_MARKERS));
+      convoyPlace = readPointsOneToOne(optionalResource(CONVOY_MARKERS));
+      commentPlace = readPointsOneToOne(optionalResource(COMMENT_MARKERS));
+      blockadePlace = readPointsOneToOne(optionalResource(BLOCKADE_MARKERS));
+      capitolPlace = readPointsOneToOne(optionalResource(CAPITAL_MARKERS));
+      puPlace = readPointsOneToOne(optionalResource(PU_PLACE_FILE));
+      namePlace = readPointsOneToOne(optionalResource(TERRITORY_NAME_PLACE_FILE));
+      kamikazePlace = readPointsOneToOne(optionalResource(KAMIKAZE_FILE));
       mapProperties = new Properties();
       decorations = loadDecorations();
       territoryNameImages = territoryNameImages();
-      try {
-        final URL url = loader.getResource(prefix + MAP_PROPERTIES);
-        if (url == null) {
-          throw new IllegalStateException("No map.properties file defined");
-        }
-        final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-        if (inputStream.isPresent()) {
-          mapProperties.load(inputStream.get());
-        }
+
+      try (InputStream inputStream = requiredResource(MAP_PROPERTIES).newInputStream()) {
+        mapProperties.load(inputStream);
       } catch (final Exception e) {
-        System.out.println("Error reading map.properties:" + e);
+        ClientLogger.logQuietly("Error reading map.properties", e);
       }
+
       initializeContains();
     } catch (final IOException ex) {
       ClientLogger.logQuietly("Failed to load map properties", ex);
     }
+  }
+
+  private InputStreamFactory optionalResource(final String path) {
+    return () -> Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+        .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
+  }
+
+  private InputStreamFactory requiredResource(final String path) {
+    return () -> Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+        .orElseThrow(() -> new FileNotFoundException(path));
+  }
+
+  private static Map<String, Point> readPointsOneToOne(final InputStreamFactory inputStreamFactory) throws IOException {
+    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToOne);
+  }
+
+  private static Map<String, List<Point>> readPointsOneToMany(final InputStreamFactory inputStreamFactory)
+      throws IOException {
+    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToMany);
+  }
+
+  private static Map<String, List<Polygon>> readPolygonsOneToMany(final InputStreamFactory inputStreamFactory)
+      throws IOException {
+    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToManyPolygons);
+  }
+
+  private static <R> R runWithInputStream(
+      final InputStreamFactory inputStreamFactory,
+      final InputStreamReader<R> reader) throws IOException {
+    try (InputStream is = inputStreamFactory.newInputStream()) {
+      return reader.read(is);
+    }
+  }
+
+  @FunctionalInterface
+  private interface InputStreamFactory {
+    InputStream newInputStream() throws IOException;
+  }
+
+  @FunctionalInterface
+  private interface InputStreamReader<R> {
+    R read(InputStream is) throws IOException;
   }
 
   @Override
@@ -218,21 +254,11 @@ public class MapData implements Closeable {
     return "territoryNames/" + baseName + ".png";
   }
 
-  private Map<Image, List<Point>> loadDecorations() {
-    final URL decorationsFileUrl = resourceLoader.getResource(DECORATIONS_FILE);
-    if (decorationsFileUrl == null) {
-      return Collections.emptyMap();
-    }
+  private Map<Image, List<Point>> loadDecorations() throws IOException {
     final Map<Image, List<Point>> decorations = new HashMap<>();
-    final Optional<InputStream> inputStream = UrlStreams.openStream(decorationsFileUrl);
-    if (inputStream.isPresent()) {
-      final Map<String, List<Point>> points = PointFileReaderWriter.readOneToMany(inputStream.get());
-      for (final String name : points.keySet()) {
-        final Optional<Image> img = loadImage("misc/" + name);
-        if (img.isPresent()) {
-          decorations.put(img.get(), points.get(name));
-        }
-      }
+    final Map<String, List<Point>> points = readPointsOneToMany(optionalResource(DECORATIONS_FILE));
+    for (final String name : points.keySet()) {
+      loadImage("misc/" + name).ifPresent(img -> decorations.put(img, points.get(name)));
     }
     return decorations;
   }
