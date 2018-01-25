@@ -98,6 +98,7 @@ public class ConnectionFinder {
       }
     } catch (final IOException ex) {
       ClientLogger.logQuietly("Failed to load polygons: " + polyFile.getAbsolutePath(), ex);
+      System.exit(0);
     }
     if (!dimensionsSet) {
       final String lineWidth = JOptionPane.showInputDialog(null,

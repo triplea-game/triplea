@@ -22,8 +22,6 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
 
-import games.strategy.debug.ClientLogger;
-
 /**
  * Utility to read and write files in the form of
  * String -> a list of points, or string-> list of polygons.
@@ -137,7 +135,7 @@ public final class PointFileReaderWriter {
   /**
    * Returns a map of the form String -> Collection of points.
    */
-  public static Map<String, List<Point>> readOneToMany(final InputStream stream) {
+  public static Map<String, List<Point>> readOneToMany(final InputStream stream) throws IOException {
     checkNotNull(stream);
 
     final HashMap<String, List<Point>> mapping = new HashMap<>();
@@ -151,10 +149,6 @@ public final class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
-    } catch (final IOException e) {
-      ClientLogger.logError("Failed to read one-to-many points file", e);
-      // FIXME: o_O Should not exit process from "library" code
-      System.exit(0);
     }
     return mapping;
   }
@@ -162,7 +156,7 @@ public final class PointFileReaderWriter {
   /**
    * Returns a map of the form String -> Collection of polygons.
    */
-  public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) {
+  public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException {
     final HashMap<String, List<Polygon>> mapping = new HashMap<>();
     try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
@@ -174,10 +168,6 @@ public final class PointFileReaderWriter {
         }
         current = reader.readLine();
       }
-    } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to read polygons", e);
-      // FIXME: o_O Should not exit process from "library" code
-      System.exit(0);
     }
     return mapping;
   }

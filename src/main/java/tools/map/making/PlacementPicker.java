@@ -264,23 +264,23 @@ public class PlacementPicker extends JFrame {
       try (InputStream is = new FileInputStream(file.getPath())) {
         System.out.println("Polygons : " + file.getPath());
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
-      } catch (final IOException ex1) {
-        ex1.printStackTrace();
+      } catch (final IOException e) {
+        ClientLogger.logQuietly("Failed to load polygons: " + file.getAbsolutePath(), e);
+        System.exit(0);
       }
     } else {
-      try {
-        System.out.println("Select the Polygons file");
-        final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
-        if (polyPath != null) {
-          System.out.println("Polygons : " + polyPath);
-          try (InputStream is = new FileInputStream(polyPath)) {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
-          }
-        } else {
-          System.out.println("Polygons file not given. Will run regardless");
+      System.out.println("Select the Polygons file");
+      final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
+      if (polyPath != null) {
+        System.out.println("Polygons : " + polyPath);
+        try (InputStream is = new FileInputStream(polyPath)) {
+          polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+        } catch (final IOException e) {
+          ClientLogger.logQuietly("Failed to load polygons: " + polyPath, e);
+          System.exit(0);
         }
-      } catch (final IOException ex1) {
-        ex1.printStackTrace();
+      } else {
+        System.out.println("Polygons file not given. Will run regardless");
       }
     }
     createImage(mapName);
@@ -508,10 +508,13 @@ public class PlacementPicker extends JFrame {
       }
       try (InputStream in = new FileInputStream(placeName)) {
         placements = PointFileReaderWriter.readOneToMany(in);
+      } catch (final IOException e) {
+        ClientLogger.logQuietly("Failed to load placements: " + placeName, e);
+        System.exit(0);
       }
       repaint();
-    } catch (final HeadlessException | IOException ex) {
-      ClientLogger.logQuietly("Failed to load placements", ex);
+    } catch (final HeadlessException e) {
+      ClientLogger.logQuietly("Failed to load placements", e);
     }
   }
 
