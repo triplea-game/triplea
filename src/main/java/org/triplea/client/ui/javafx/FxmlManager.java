@@ -22,7 +22,7 @@ enum FxmlManager {
 
   STYLESHEET_MAIN("/org/triplea/client/ui/javafx/css/main.css"),
 
-  RELATIVE_FONT_PATH("/org/triplea/client/ui/javafx/css/fonts/1942-report.ttf"),
+  FONT_PATH("/org/triplea/client/ui/javafx/css/fonts/1942-report.ttf"),
 
   ICON_LOCATION("/games/strategy/engine/framework/ta_icon.png");
 

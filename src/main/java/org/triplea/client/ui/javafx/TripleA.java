@@ -55,7 +55,7 @@ public class TripleA extends Application {
     stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
     stage.setFullScreen(true);
 
-    Font.loadFont(TripleA.class.getResourceAsStream(FxmlManager.RELATIVE_FONT_PATH.toString()), 14);
+    Font.loadFont(TripleA.class.getResourceAsStream(FxmlManager.FONT_PATH.toString()), 14);
     stage.setScene(scene);
     stage.getIcons().add(new Image(getClass().getResourceAsStream(FxmlManager.ICON_LOCATION.toString())));
     stage.setTitle("TripleA");
