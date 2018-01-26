@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -42,16 +41,12 @@ public class UnitComparator {
    */
   public static Comparator<Unit> getLoadableTransportsComparator(final List<Unit> transports, final Route route,
       final PlayerID player) {
-    final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
-    final Predicate<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
     return Comparator.comparing(TripleAUnit::get,
-        Comparator.comparing(incapableTransportMatch::test)
-            .thenComparing(Unit::getOwner,
-                Comparator.comparing(player::equals).reversed())
-            .thenComparing(decreasingCapacityComparator
-                .thenComparing(TripleAUnit.class::cast,
-                    Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
-                .thenComparingInt(Object::hashCode)));
+        Comparator.<TripleAUnit, Boolean>comparing(Matches.transportCannotUnload(route.getEnd())::test)
+            .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
+            .thenComparing(getDecreasingCapacityComparator(transports))
+            .thenComparing(Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
+            .thenComparingInt(Object::hashCode));
   }
 
   /**
@@ -59,13 +54,11 @@ public class UnitComparator {
    */
   public static Comparator<Unit> getUnloadableTransportsComparator(final List<Unit> transports, final Route route,
       final PlayerID player, final boolean noTies) {
-    final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
-    final Predicate<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
-    return Comparator.comparing(incapableTransportMatch::test)
-        .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
-        .thenComparing(decreasingCapacityComparator
-            .thenComparing(TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft))
-            .thenComparingInt(t -> noTies ? t.hashCode() : 0));
+    return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
+        .thenComparing(Unit::getOwner, Comparator.comparing(player::equals))
+        .thenComparing(getDecreasingCapacityComparator(transports))
+        .thenComparing(TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft))
+        .thenComparingInt(t -> noTies ? t.hashCode() : 0);
   }
 
   /**
