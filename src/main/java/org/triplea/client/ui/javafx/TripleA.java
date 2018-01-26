@@ -2,6 +2,8 @@ package org.triplea.client.ui.javafx;
 
 import java.io.File;
 
+import org.triplea.client.ui.javafx.util.FxmlManager;
+
 import games.strategy.net.OpenFileUtility;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -102,11 +104,11 @@ public class TripleA extends Application {
     Platform.exit();
   }
 
-  void displayLoadingScreen(final boolean bool) {
+  public void displayLoadingScreen(final boolean bool) {
     loadingOverlay.setVisible(bool);
   }
 
-  void setLoadingMessage(final String message) {
+  public void setLoadingMessage(final String message) {
     progressLabel.setText(message);
     progressTooltip.setText(message);
   }

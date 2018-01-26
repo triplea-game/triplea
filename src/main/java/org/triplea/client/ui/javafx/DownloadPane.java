@@ -2,6 +2,8 @@ package org.triplea.client.ui.javafx;
 
 import java.io.IOException;
 
+import org.triplea.client.ui.javafx.util.FxmlManager;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.VBox;

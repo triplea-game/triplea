@@ -1,8 +1,10 @@
-package org.triplea.client.ui.javafx;
+package org.triplea.client.ui.javafx.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.function.Function;
+
+import org.triplea.client.ui.javafx.TripleA;
 
 import javafx.application.Platform;
 
