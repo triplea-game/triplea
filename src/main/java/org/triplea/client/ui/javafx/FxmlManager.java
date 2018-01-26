@@ -22,7 +22,7 @@ enum FxmlManager {
 
   STYLESHEET_MAIN("/org/triplea/client/ui/javafx/css/main.css"),
 
-  RELATIVE_FONT_PATH("/org/triplea/client/ui/javafx/css/fonts/1942-report.ttf"),
+  FONT_PATH("/org/triplea/client/ui/javafx/css/fonts/1942-report.ttf"),
 
   ICON_LOCATION("/games/strategy/engine/framework/ta_icon.png");
 
@@ -44,8 +44,7 @@ enum FxmlManager {
    * @return An FXMLLoader object
    */
   static FXMLLoader getLoader(final URL location) {
-    final FXMLLoader loader = new FXMLLoader();
-    loader.setLocation(location);
+    final FXMLLoader loader = new FXMLLoader(location);
     // TODO load locale based on user setting
     loader.setResources(ResourceBundle.getBundle(LANG_CLASS_BASENAME.toString(), new Locale("en", "US")));
     return loader;
