@@ -25,6 +25,7 @@ public class TripleACheckBoxSkin extends SkinBase<CheckBox> {
   }
 
   private void layoutImage() {
+    StackPane.setAlignment(view, Pos.BOTTOM_LEFT);
     view.visibleProperty().bind(getSkinnable().selectedProperty());
     view.setImage(new Image(getClass().getResourceAsStream("/org/triplea/client/ui/javafx/images/checkmark.png")));
     view.getStyleClass().setAll("mark");
@@ -48,8 +49,8 @@ public class TripleACheckBoxSkin extends SkinBase<CheckBox> {
     rect.setStroke(Color.DARKOLIVEGREEN);
     rect.setStrokeWidth(5);
     rect.setFill(Color.ANTIQUEWHITE);
-    rect.widthProperty().bind(Bindings.multiply(pane.widthProperty(), 2.0 / 3));
-    rect.heightProperty().bind(Bindings.multiply(pane.heightProperty(), 2.0 / 3));
+    rect.widthProperty().bind(Bindings.multiply(Bindings.min(pane.widthProperty(), pane.heightProperty()), 2.0 / 3));
+    rect.heightProperty().bind(Bindings.multiply(Bindings.min(pane.widthProperty(), pane.heightProperty()), 2.0 / 3));
     pane.getChildren().add(rect);
   }
 }
