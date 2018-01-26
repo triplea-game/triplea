@@ -265,7 +265,8 @@ public class PlacementPicker extends JFrame {
         System.out.println("Polygons : " + file.getPath());
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
       } catch (final IOException e) {
-        ClientLogger.logQuietly("Failed to load polygons: " + file.getAbsolutePath(), e);
+        System.out.println("Failed to load polygons: " + file.getAbsolutePath());
+        e.printStackTrace();
         System.exit(0);
       }
     } else {
@@ -276,7 +277,8 @@ public class PlacementPicker extends JFrame {
         try (InputStream is = new FileInputStream(polyPath)) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          ClientLogger.logQuietly("Failed to load polygons: " + polyPath, e);
+          System.out.println("Failed to load polygons: " + polyPath);
+          e.printStackTrace();
           System.exit(0);
         }
       } else {
@@ -509,7 +511,8 @@ public class PlacementPicker extends JFrame {
       try (InputStream in = new FileInputStream(placeName)) {
         placements = PointFileReaderWriter.readOneToMany(in);
       } catch (final IOException e) {
-        ClientLogger.logQuietly("Failed to load placements: " + placeName, e);
+        System.out.println("Failed to load placements: " + placeName);
+        e.printStackTrace();
         System.exit(0);
       }
       repaint();

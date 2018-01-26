@@ -392,7 +392,8 @@ public class PolygonGrabber extends JFrame {
       try (InputStream in = new FileInputStream(polyName)) {
         polygons = PointFileReaderWriter.readOneToManyPolygons(in);
       } catch (final IOException e) {
-        ClientLogger.logQuietly("Failed to load polygons: " + polyName, e);
+        System.out.println("Failed to load polygons: " + polyName);
+        e.printStackTrace();
         System.exit(0);
       }
       repaint();

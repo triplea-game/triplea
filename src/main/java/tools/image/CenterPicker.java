@@ -122,7 +122,8 @@ public class CenterPicker extends JFrame {
       try (InputStream is = new FileInputStream(file.getPath())) {
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
       } catch (final IOException e) {
-        ClientLogger.logQuietly("Something wrong with your Polygons file: " + file.getAbsolutePath(), e);
+        System.out.println("Something wrong with your Polygons file: " + file.getAbsolutePath());
+        e.printStackTrace();
         System.exit(0);
       }
     } else {
@@ -131,7 +132,8 @@ public class CenterPicker extends JFrame {
         try (InputStream is = new FileInputStream(polyPath)) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          ClientLogger.logQuietly("Something wrong with your Polygons file: " + polyPath, e);
+          System.out.println("Something wrong with your Polygons file: " + polyPath);
+          e.printStackTrace();
           System.exit(0);
         }
       }

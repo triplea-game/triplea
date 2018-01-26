@@ -241,7 +241,8 @@ public class DecorationPlacer extends JFrame {
         System.out.println("Polygons : " + filePoly.getPath());
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
       } catch (final IOException e) {
-        ClientLogger.logQuietly("Something wrong with your Polygons file: " + filePoly.getAbsolutePath(), e);
+        System.out.println("Something wrong with your Polygons file: " + filePoly.getAbsolutePath());
+        e.printStackTrace();
         System.exit(0);
       }
     } else {
@@ -252,7 +253,8 @@ public class DecorationPlacer extends JFrame {
         try (InputStream is = new FileInputStream(polyPath)) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          ClientLogger.logQuietly("Something wrong with your Polygons file: " + polyPath, e);
+          System.out.println("Something wrong with your Polygons file: " + polyPath);
+          e.printStackTrace();
           System.exit(0);
         }
       } else {
@@ -608,7 +610,8 @@ public class DecorationPlacer extends JFrame {
         try (InputStream in = new FileInputStream(centerName.getPathString())) {
           currentPoints = PointFileReaderWriter.readOneToMany(in);
         } catch (final IOException e) {
-          ClientLogger.logQuietly("Failed to load image points: " + centerName.getPathString(), e);
+          System.out.println("Failed to load image points: " + centerName.getPathString());
+          e.printStackTrace();
           System.exit(0);
         }
       } else {
