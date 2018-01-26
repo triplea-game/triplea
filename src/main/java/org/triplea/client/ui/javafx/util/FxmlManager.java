@@ -1,4 +1,4 @@
-package org.triplea.client.ui.javafx;
+package org.triplea.client.ui.javafx.util;
 
 import java.net.URL;
 import java.util.Locale;
@@ -9,7 +9,7 @@ import javafx.fxml.FXMLLoader;
 /**
  * Enum with relative Paths to fxml-related resources.
  */
-enum FxmlManager {
+public enum FxmlManager {
   ROOT_CONTAINER("/org/triplea/client/ui/javafx/fxml/TripleAMain.fxml"),
 
   DOWNLOAD_PANE("/org/triplea/client/ui/javafx/fxml/TripleADownload.fxml"),
@@ -43,7 +43,7 @@ enum FxmlManager {
    * @param location The FXML File to load
    * @return An FXMLLoader object
    */
-  static FXMLLoader getLoader(final URL location) {
+  public static FXMLLoader getLoader(final URL location) {
     final FXMLLoader loader = new FXMLLoader(location);
     // TODO load locale based on user setting
     loader.setResources(ResourceBundle.getBundle(LANG_CLASS_BASENAME.toString(), new Locale("en", "US")));

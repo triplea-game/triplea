@@ -1,4 +1,4 @@
-package org.triplea.client.ui.javafx;
+package org.triplea.client.ui.javafx.util;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -12,7 +12,7 @@ import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SettingType;
 import javafx.scene.layout.Region;
 
-enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
+public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
   AI_PAUSE_DURATION_BINDING(
       SettingType.AI,
       JavaFxSelectionComponentFactory.intValueRange(ClientSetting.AI_PAUSE_DURATION, 0, 3000)),

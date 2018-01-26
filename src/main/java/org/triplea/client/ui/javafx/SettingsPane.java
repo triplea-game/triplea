@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.triplea.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
+import org.triplea.client.ui.javafx.util.FxmlManager;
+
 import games.strategy.triplea.settings.SettingType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

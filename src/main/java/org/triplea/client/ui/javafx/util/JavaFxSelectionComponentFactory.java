@@ -1,4 +1,4 @@
-package org.triplea.client.ui.javafx;
+package org.triplea.client.ui.javafx.util;
 
 import java.io.File;
 import java.util.Collections;
@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
+
+import org.triplea.client.ui.javafx.controls.ToggleSwitch;
 
 import com.google.common.base.Strings;
 
