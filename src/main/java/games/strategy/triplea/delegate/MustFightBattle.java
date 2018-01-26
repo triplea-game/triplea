@@ -2642,22 +2642,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private void sortAmphib(final List<Unit> units) {
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
-    final Comparator<Unit> comparator = (u1, u2) -> {
-      int amphibComp = 0;
-      if (u1.getType().equals(u2.getType())) {
-        final UnitAttachment ua = UnitAttachment.get(u1.getType());
-        final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-        if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
-          amphibComp = compareAccordingToAmphibious(u1, u2);
-        }
-        if (amphibComp == 0) {
-          return decreasingMovement.compare(u1, u2);
-        }
-        return amphibComp;
-      }
-      return u1.getType().getName().compareTo(u2.getType().getName());
-    };
-    Collections.sort(units, comparator);
+    Collections.sort(units,
+        Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
+            .thenComparing((u1, u2) -> {
+              final UnitAttachment ua = UnitAttachment.get(u1.getType());
+              final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+              if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
+                return compareAccordingToAmphibious(u1, u2);
+              }
+              return 0;
+            })
+            .thenComparing(decreasingMovement));
   }
 
   private int compareAccordingToAmphibious(final Unit u1, final Unit u2) {

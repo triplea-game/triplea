@@ -56,8 +56,7 @@ public class MyFormatter {
     final StringBuilder buf = new StringBuilder();
     // sort on unit name
     final List<UnitType> sortedList = new ArrayList<>(map.keySet());
-    final Comparator<UnitType> comp = (u1, u2) -> u1.getName().compareTo(u2.getName());
-    Collections.sort(sortedList, comp);
+    Collections.sort(sortedList, Comparator.comparing(UnitType::getName));
     int count = map.keySet().size();
     for (final UnitType type : sortedList) {
       final int quantity = map.getInt(type);
@@ -234,8 +233,7 @@ public class MyFormatter {
     final StringBuilder buf = new StringBuilder();
     // sort on unit name
     final List<DefaultNamed> sortedList = new ArrayList<>(map.keySet());
-    final Comparator<DefaultNamed> comp = (u1, u2) -> u1.getName().compareTo(u2.getName());
-    Collections.sort(sortedList, comp);
+    Collections.sort(sortedList, Comparator.comparing(DefaultNamed::getName));
     int count = map.keySet().size();
     for (final DefaultNamed type : sortedList) {
       if (showQuantity) {

@@ -192,18 +192,10 @@ public class TransportUtils {
   }
 
   private static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
-    final Comparator<Unit> transportCapacityComparator = (o1, o2) -> {
-      final int capacityLeft1 = TransportTracker.getAvailableCapacity(o1);
-      final int capacityLeft2 = TransportTracker.getAvailableCapacity(o2);
-      if (capacityLeft1 != capacityLeft2) {
-        return Integer.compare(capacityLeft2, capacityLeft1);
-      }
-      final int movementLeft1 = TripleAUnit.get(o1).getMovementLeft();
-      final int movementLeft2 = TripleAUnit.get(o2).getMovementLeft();
-      return Integer.compare(movementLeft2, movementLeft1);
-    };
     final List<Unit> canTransport = new ArrayList<>(transports);
-    Collections.sort(canTransport, transportCapacityComparator);
+    Collections.sort(canTransport, Comparator.comparingInt(TransportTracker::getAvailableCapacity)
+        .thenComparing(TripleAUnit::get,
+            Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed()));
     return canTransport;
   }
 
@@ -211,13 +203,10 @@ public class TransportUtils {
    * Creates a new list with the units sorted descending by transport cost.
    */
   public static List<Unit> sortByTransportCostDescending(final Collection<Unit> units) {
-    final Comparator<Unit> transportCostComparator = (o1, o2) -> {
-      final int cost1 = UnitAttachment.get(o1.getType()).getTransportCost();
-      final int cost2 = UnitAttachment.get(o2.getType()).getTransportCost();
-      return Integer.compare(cost2, cost1);
-    };
     final List<Unit> canBeTransported = new ArrayList<>(units);
-    Collections.sort(canBeTransported, transportCostComparator);
+    Collections.sort(canBeTransported, Comparator.comparing(Unit::getType,
+        Comparator.comparing(UnitAttachment::get,
+            Comparator.comparingInt(UnitAttachment::getTransportCost).reversed())));
     return canBeTransported;
   }
 

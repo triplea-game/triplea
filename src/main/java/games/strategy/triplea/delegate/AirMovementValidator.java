@@ -539,17 +539,7 @@ public class AirMovementValidator {
   }
 
   private static Comparator<Unit> getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(final Route route) {
-    return (u1, u2) -> {
-      final int left1 = getMovementLeftForAirUnitNotMovedYet(u1, route);
-      final int left2 = getMovementLeftForAirUnitNotMovedYet(u2, route);
-      if (left1 == left2) {
-        return 0;
-      }
-      if (left1 > left2) {
-        return 1;
-      }
-      return -1;
-    };
+    return Comparator.comparingInt(u -> getMovementLeftForAirUnitNotMovedYet(u, route));
   }
 
   private static boolean canAirReachThisSpot(final GameData data, final PlayerID player, final Unit unit,
