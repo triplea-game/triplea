@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
-import org.triplea.client.ui.javafx.controls.ToggleSwitch;
+import org.triplea.client.ui.javafx.controls.TripleACheckBoxSkin;
 
 import com.google.common.base.Strings;
 
@@ -19,6 +19,7 @@ import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
@@ -120,7 +121,14 @@ class JavaFxSelectionComponentFactory {
 
   static Supplier<SelectionComponent<Region>> toggleButton(final ClientSetting clientSetting) {
     return () -> new SelectionComponent<Region>() {
-      final ToggleSwitch checkBox = new ToggleSwitch(Boolean.parseBoolean(clientSetting.value()));
+      final CheckBox checkBox = getCheckBox();
+
+      private CheckBox getCheckBox() {
+        final CheckBox checkBox = new CheckBox();
+        checkBox.setSelected(Boolean.parseBoolean(clientSetting.value()));
+        checkBox.setSkin(new TripleACheckBoxSkin(checkBox));
+        return checkBox;
+      }
 
       @Override
       public Region getUiComponent() {
@@ -139,7 +147,7 @@ class JavaFxSelectionComponentFactory {
 
       @Override
       public Map<GameSetting, String> readValues() {
-        return Collections.singletonMap(clientSetting, String.valueOf(checkBox.switchedOnProperty().get()));
+        return Collections.singletonMap(clientSetting, String.valueOf(checkBox.selectedProperty().get()));
       }
 
       @Override
@@ -150,12 +158,12 @@ class JavaFxSelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        checkBox.switchedOnProperty().set(Boolean.parseBoolean(clientSetting.defaultValue));
+        checkBox.selectedProperty().set(Boolean.parseBoolean(clientSetting.defaultValue));
       }
 
       @Override
       public void reset() {
-        checkBox.switchedOnProperty().set(Boolean.parseBoolean(clientSetting.value()));
+        checkBox.selectedProperty().set(Boolean.parseBoolean(clientSetting.value()));
       }
     };
   }
