@@ -121,21 +121,21 @@ public class CenterPicker extends JFrame {
         "File Suggestion", 1) == 0) {
       try (InputStream is = new FileInputStream(file.getPath())) {
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
-      } catch (final IOException ex1) {
-        System.out.println("Something wrong with your Polygons file: " + ex1);
-        ex1.printStackTrace();
+      } catch (final IOException e) {
+        System.out.println("Something wrong with your Polygons file: " + file.getAbsolutePath());
+        e.printStackTrace();
+        System.exit(0);
       }
     } else {
-      try {
-        final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
-        if (polyPath != null) {
-          try (InputStream is = new FileInputStream(polyPath)) {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
-          }
+      final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
+      if (polyPath != null) {
+        try (InputStream is = new FileInputStream(polyPath)) {
+          polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+        } catch (final IOException e) {
+          System.out.println("Something wrong with your Polygons file: " + polyPath);
+          e.printStackTrace();
+          System.exit(0);
         }
-      } catch (final IOException ex1) {
-        System.out.println("Something wrong with your Polygons file: " + ex1);
-        ex1.printStackTrace();
       }
     }
     createImage(mapName);

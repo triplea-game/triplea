@@ -117,6 +117,10 @@ public class TileImageReconstructor {
         if (polyName != null) {
           try (InputStream in = new FileInputStream(polyName)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+          } catch (final IOException e) {
+            System.out.println("Failed to load polygons: " + polyName);
+            e.printStackTrace();
+            System.exit(0);
           }
         }
       } catch (final Exception ex) {

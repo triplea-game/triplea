@@ -391,10 +391,12 @@ public class PolygonGrabber extends JFrame {
       }
       try (InputStream in = new FileInputStream(polyName)) {
         polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+      } catch (final IOException e) {
+        System.out.println("Failed to load polygons: " + polyName);
+        e.printStackTrace();
+        System.exit(0);
       }
       repaint();
-    } catch (final IOException ex) {
-      ClientLogger.logQuietly("file name = " + polyName, ex);
     } catch (final HeadlessException ex) {
       // TODO: remove HeadlessException (fix anti-pattern control flow via exception handling with proper control flow)
       ClientLogger.logQuietly("Failed to load polygons", ex);

@@ -165,7 +165,7 @@ public class MapData implements Closeable {
 
       initializeContains();
     } catch (final IOException ex) {
-      ClientLogger.logQuietly("Failed to load map properties", ex);
+      ClientLogger.logQuietly("Failed to initialize map data", ex);
     }
   }
 

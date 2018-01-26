@@ -240,28 +240,26 @@ public class DecorationPlacer extends JFrame {
       try (InputStream is = new FileInputStream(filePoly.getPath())) {
         System.out.println("Polygons : " + filePoly.getPath());
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
-      } catch (final IOException ex1) {
-        System.out.println("Something wrong with your Polygons file");
-        ex1.printStackTrace();
+      } catch (final IOException e) {
+        System.out.println("Something wrong with your Polygons file: " + filePoly.getAbsolutePath());
+        e.printStackTrace();
         System.exit(0);
       }
     } else {
-      try {
-        System.out.println("Select the Polygons file");
-        final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
-        if (polyPath != null) {
-          System.out.println("Polygons : " + polyPath);
-          try (InputStream is = new FileInputStream(polyPath)) {
-            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
-          }
-        } else {
-          System.out.println("You must specify a Polgyon file.");
-          System.out.println("Shutting down.");
+      System.out.println("Select the Polygons file");
+      final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
+      if (polyPath != null) {
+        System.out.println("Polygons : " + polyPath);
+        try (InputStream is = new FileInputStream(polyPath)) {
+          polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+        } catch (final IOException e) {
+          System.out.println("Something wrong with your Polygons file: " + polyPath);
+          e.printStackTrace();
           System.exit(0);
         }
-      } catch (final IOException ex1) {
-        System.out.println("Something wrong with your Polygons file");
-        ex1.printStackTrace();
+      } else {
+        System.out.println("You must specify a Polgyon file.");
+        System.out.println("Shutting down.");
         System.exit(0);
       }
     }
@@ -611,12 +609,16 @@ public class DecorationPlacer extends JFrame {
       if (centerName.getFile() != null && centerName.getFile().exists() && centerName.getPathString() != null) {
         try (InputStream in = new FileInputStream(centerName.getPathString())) {
           currentPoints = PointFileReaderWriter.readOneToMany(in);
+        } catch (final IOException e) {
+          System.out.println("Failed to load image points: " + centerName.getPathString());
+          e.printStackTrace();
+          System.exit(0);
         }
       } else {
         currentPoints = new HashMap<>();
       }
-    } catch (final HeadlessException | IOException ex) {
-      ClientLogger.logQuietly("Failed to load points", ex);
+    } catch (final HeadlessException e) {
+      ClientLogger.logQuietly("Failed to load image points", e);
     }
   }
 
