@@ -41,12 +41,11 @@ public class UnitComparator {
    */
   public static Comparator<Unit> getLoadableTransportsComparator(final List<Unit> transports, final Route route,
       final PlayerID player) {
-    return Comparator.comparing(TripleAUnit::get,
-        Comparator.<TripleAUnit, Boolean>comparing(Matches.transportCannotUnload(route.getEnd())::test)
-            .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
-            .thenComparing(getDecreasingCapacityComparator(transports))
-            .thenComparing(Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
-            .thenComparingInt(Object::hashCode));
+    return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
+        .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
+        .thenComparing(getDecreasingCapacityComparator(transports))
+        .thenComparing(TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
+        .thenComparingInt(Object::hashCode);
   }
 
   /**
