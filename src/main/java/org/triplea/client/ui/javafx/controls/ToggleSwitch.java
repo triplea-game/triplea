@@ -1,4 +1,4 @@
-package org.triplea.client.ui.javafx;
+package org.triplea.client.ui.javafx.controls;
 
 import javafx.animation.FillTransition;
 import javafx.animation.ParallelTransition;

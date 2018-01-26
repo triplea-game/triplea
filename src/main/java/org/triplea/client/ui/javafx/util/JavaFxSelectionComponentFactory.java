@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
-import org.triplea.client.ui.javafx.ToggleSwitch;
+import org.triplea.client.ui.javafx.controls.ToggleSwitch;
 
 import com.google.common.base.Strings;
 
