@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
@@ -313,18 +312,16 @@ public class MapPropertiesMaker extends JFrame {
 
   private void loadProperties() {
     final Properties properties = new Properties();
-    try {
-      System.out.println("Load a properties file");
-      final String centerName =
-          new FileOpen("Load A Properties File", mapFolderLocation, ".properties").getPathString();
-      if (centerName == null) {
-        return;
-      }
-      try (InputStream in = new FileInputStream(centerName)) {
-        properties.load(in);
-      }
-    } catch (final HeadlessException | IOException ex) {
-      ClientLogger.logQuietly("Failed to load map properties", ex);
+    System.out.println("Load a properties file");
+    final String centerName =
+        new FileOpen("Load A Properties File", mapFolderLocation, ".properties").getPathString();
+    if (centerName == null) {
+      return;
+    }
+    try (InputStream in = new FileInputStream(centerName)) {
+      properties.load(in);
+    } catch (final IOException e) {
+      ClientLogger.logQuietly("Failed to load map properties: " + centerName, e);
     }
     for (final Method setter : mapProperties.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");

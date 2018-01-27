@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -601,24 +600,20 @@ public class DecorationPlacer extends JFrame {
   }
 
   private void loadImagePointTextFile() {
-    try {
-      System.out.println("Load the points text file (eg: decorations.txt or pu_place.txt, etc)");
-      final FileOpen centerName = new FileOpen("Load an Image Points Text File", mapFolderLocation,
-          new File(mapFolderLocation, imagePointType.getFileName()), ".txt");
-      currentImagePointsTextFile = centerName.getFile();
-      if (centerName.getFile() != null && centerName.getFile().exists() && centerName.getPathString() != null) {
-        try (InputStream in = new FileInputStream(centerName.getPathString())) {
-          currentPoints = PointFileReaderWriter.readOneToMany(in);
-        } catch (final IOException e) {
-          System.out.println("Failed to load image points: " + centerName.getPathString());
-          e.printStackTrace();
-          System.exit(0);
-        }
-      } else {
-        currentPoints = new HashMap<>();
+    System.out.println("Load the points text file (eg: decorations.txt or pu_place.txt, etc)");
+    final FileOpen centerName = new FileOpen("Load an Image Points Text File", mapFolderLocation,
+        new File(mapFolderLocation, imagePointType.getFileName()), ".txt");
+    currentImagePointsTextFile = centerName.getFile();
+    if (centerName.getFile() != null && centerName.getFile().exists() && centerName.getPathString() != null) {
+      try (InputStream in = new FileInputStream(centerName.getPathString())) {
+        currentPoints = PointFileReaderWriter.readOneToMany(in);
+      } catch (final IOException e) {
+        System.out.println("Failed to load image points: " + centerName.getPathString());
+        e.printStackTrace();
+        System.exit(0);
       }
-    } catch (final HeadlessException e) {
-      ClientLogger.logQuietly("Failed to load image points", e);
+    } else {
+      currentPoints = new HashMap<>();
     }
   }
 

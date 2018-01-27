@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.GridBagConstraints;
-import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -177,14 +176,10 @@ public class EmailSenderEditor extends EditorPanel {
         final String finalMessage = message;
         final int finalMessageType = messageType;
         SwingUtilities.invokeLater(() -> {
-          try {
-            GameRunner.showMessageDialog(
-                finalMessage,
-                GameRunner.Title.of("Email Test"),
-                finalMessageType);
-          } catch (final HeadlessException e) {
-            // should never happen in a GUI app
-          }
+          GameRunner.showMessageDialog(
+              finalMessage,
+              GameRunner.Title.of("Email Test"),
+              finalMessageType);
         });
         progressWindow.setVisible(false);
       }
