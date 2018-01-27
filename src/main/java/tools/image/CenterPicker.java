@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -254,19 +253,17 @@ public class CenterPicker extends JFrame {
    * Loads a pre-defined file with map center points.
    */
   private void loadCenters() {
-    try {
-      System.out.println("Load a center file");
-      final String centerName = new FileOpen("Load A Center File", mapFolderLocation, ".txt").getPathString();
-      if (centerName == null) {
-        return;
-      }
-      try (InputStream in = new FileInputStream(centerName)) {
-        centers = PointFileReaderWriter.readOneToOne(in);
-      }
-      repaint();
-    } catch (final HeadlessException | IOException ex) {
-      ClientLogger.logQuietly("Failed to load centers", ex);
+    System.out.println("Load a center file");
+    final String centerName = new FileOpen("Load A Center File", mapFolderLocation, ".txt").getPathString();
+    if (centerName == null) {
+      return;
     }
+    try (InputStream in = new FileInputStream(centerName)) {
+      centers = PointFileReaderWriter.readOneToOne(in);
+    } catch (final IOException e) {
+      ClientLogger.logQuietly("Failed to load centers: " + centerName, e);
+    }
+    repaint();
   }
 
   /**

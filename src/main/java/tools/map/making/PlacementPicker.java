@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -504,21 +503,17 @@ public class PlacementPicker extends JFrame {
   private void loadPlacements() {
     System.out.println("Load a placement file");
     final String placeName = new FileOpen("Load A Placement File", mapFolderLocation, ".txt").getPathString();
-    try {
-      if (placeName == null) {
-        return;
-      }
-      try (InputStream in = new FileInputStream(placeName)) {
-        placements = PointFileReaderWriter.readOneToMany(in);
-      } catch (final IOException e) {
-        System.out.println("Failed to load placements: " + placeName);
-        e.printStackTrace();
-        System.exit(0);
-      }
-      repaint();
-    } catch (final HeadlessException e) {
-      ClientLogger.logQuietly("Failed to load placements", e);
+    if (placeName == null) {
+      return;
     }
+    try (InputStream in = new FileInputStream(placeName)) {
+      placements = PointFileReaderWriter.readOneToMany(in);
+    } catch (final IOException e) {
+      System.out.println("Failed to load placements: " + placeName);
+      e.printStackTrace();
+      System.exit(0);
+    }
+    repaint();
   }
 
   /**

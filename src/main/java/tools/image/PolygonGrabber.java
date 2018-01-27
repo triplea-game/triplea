@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -385,22 +384,17 @@ public class PolygonGrabber extends JFrame {
   private void loadPolygons() {
     System.out.println("Load a polygon file");
     final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
-    try {
-      if (polyName == null) {
-        return;
-      }
-      try (InputStream in = new FileInputStream(polyName)) {
-        polygons = PointFileReaderWriter.readOneToManyPolygons(in);
-      } catch (final IOException e) {
-        System.out.println("Failed to load polygons: " + polyName);
-        e.printStackTrace();
-        System.exit(0);
-      }
-      repaint();
-    } catch (final HeadlessException ex) {
-      // TODO: remove HeadlessException (fix anti-pattern control flow via exception handling with proper control flow)
-      ClientLogger.logQuietly("Failed to load polygons", ex);
+    if (polyName == null) {
+      return;
     }
+    try (InputStream in = new FileInputStream(polyName)) {
+      polygons = PointFileReaderWriter.readOneToManyPolygons(in);
+    } catch (final IOException e) {
+      System.out.println("Failed to load polygons: " + polyName);
+      e.printStackTrace();
+      System.exit(0);
+    }
+    repaint();
   }
 
   /**
@@ -461,7 +455,7 @@ public class PolygonGrabber extends JFrame {
    * Does something with respect to check if the name
    * of a territory is valid or not.
    */
-  private void doneCurrentGroup() throws HeadlessException {
+  private void doneCurrentGroup() {
     final JTextField text = new JTextField();
     guessCountryName(text, centers.entrySet());
     final int option = JOptionPane.showConfirmDialog(this, text);

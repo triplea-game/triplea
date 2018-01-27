@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
-import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -148,14 +147,10 @@ public class ForumPosterEditor extends EditorPanel {
       progressWindow.setVisible(false);
       // now that we have a result, marshall it back unto the swing thread
       SwingUtilities.invokeLater(() -> {
-        try {
-          GameRunner.showMessageDialog(
-              bean.getTurnSummaryRef(),
-              GameRunner.Title.of("Test Turn Summary Post"),
-              JOptionPane.INFORMATION_MESSAGE);
-        } catch (final HeadlessException e) {
-          // should never happen in a GUI app
-        }
+        GameRunner.showMessageDialog(
+            bean.getTurnSummaryRef(),
+            GameRunner.Title.of("Test Turn Summary Post"),
+            JOptionPane.INFORMATION_MESSAGE);
       });
     }).start();
   }
