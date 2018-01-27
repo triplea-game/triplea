@@ -7,10 +7,10 @@
 }
 .tab-label, .spinner, .text-field, .combo-box, .exitButton, .label, .radio-button, .normal-font-size, .button {
 	-fx-font-family: "1942 report";
-	-fx-font-size: 12px;
+	-fx-font-size: 16px;
 }
-.tab-label, .text-field, .normal-font-size {
-	-fx-font-size: 14px !important;
+.tab-label, .text-field {
+	-fx-font-size: 18px;
 }
 .big-font-size {
 	-fx-font-size: 20px !important;
