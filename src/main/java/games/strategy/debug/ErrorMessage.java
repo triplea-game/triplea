@@ -1,6 +1,8 @@
 package games.strategy.debug;
 
 import java.awt.Dialog;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
@@ -34,6 +36,12 @@ public enum ErrorMessage {
   ErrorMessage() {
     windowReference.setAlwaysOnTop(true);
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+    windowReference.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(final WindowEvent e) {
+        hide();
+      }
+    });
     windowReference.add(JPanelBuilder.builder()
         .borderLayout()
         .borderEmpty(10)
@@ -51,7 +59,7 @@ public enum ErrorMessage {
             .addHorizontalGlue()
             .add(JButtonBuilder.builder()
                 .okTitle()
-                .actionListener(() -> windowReference.setVisible(false))
+                .actionListener(this::hide)
                 .selected(true)
                 .build())
             .addHorizontalStrut(5)
@@ -59,14 +67,18 @@ public enum ErrorMessage {
                 .title("Show Details")
                 .toolTip("Shows the error console window with full error details.")
                 .actionListener(() -> {
-                  windowReference.setVisible(false);
-                  isVisible.set(false);
+                  hide();
                   ErrorConsole.showConsole();
                 })
                 .build())
             .addHorizontalGlue()
             .build())
         .build());
+  }
+
+  private void hide() {
+    windowReference.setVisible(false);
+    isVisible.set(false);
   }
 
   /**
