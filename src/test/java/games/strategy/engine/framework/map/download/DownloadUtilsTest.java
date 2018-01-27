@@ -25,8 +25,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.junit.experimental.extensions.TemporaryFolder;
-import org.junit.experimental.extensions.TemporaryFolderExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -37,6 +35,8 @@ import org.mockito.Mock;
 import com.example.mockito.MockitoExtension;
 
 import games.strategy.engine.framework.map.download.DownloadUtils.DownloadLengthSupplier;
+import games.strategy.test.extensions.TemporaryFolder;
+import games.strategy.test.extensions.TemporaryFolderExtension;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 public final class DownloadUtilsTest extends AbstractClientSettingTestCase {

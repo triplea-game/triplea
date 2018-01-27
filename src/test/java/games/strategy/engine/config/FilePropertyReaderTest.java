@@ -8,11 +8,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 
-import org.junit.experimental.extensions.TemporaryFolder;
-import org.junit.experimental.extensions.TemporaryFolderExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import games.strategy.test.extensions.TemporaryFolder;
+import games.strategy.test.extensions.TemporaryFolderExtension;
 
 @ExtendWith(TemporaryFolderExtension.class)
 public final class FilePropertyReaderTest {

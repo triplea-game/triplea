@@ -1,12 +1,13 @@
-package org.junit.experimental.extensions;
+package games.strategy.test.extensions;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
+ * Replacement for the JUnit 4 TemporaryFolder.
  * Based off
  * https://raw.githubusercontent.com/rherrmann/junit5-experiments/master/src/main/java/com/codeaffine/junit5/TemporaryFolder.java
- * Replacement for the JUnit 4 TemporaryFolder.
+ * Originally licensed under EPL-2.0 OR GPL-2.0-or-later.
  */
 public class TemporaryFolder {
   private File rootFolder;

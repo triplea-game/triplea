@@ -6,14 +6,14 @@ import static org.hamcrest.Matchers.is;
 import java.io.File;
 import java.util.Optional;
 
-import org.junit.experimental.extensions.TemporaryFolder;
-import org.junit.experimental.extensions.TemporaryFolderExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.google.common.io.Files;
 
+import games.strategy.test.extensions.TemporaryFolder;
+import games.strategy.test.extensions.TemporaryFolderExtension;
 import games.strategy.util.Version;
 
 /**
