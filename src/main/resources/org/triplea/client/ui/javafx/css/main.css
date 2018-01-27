@@ -52,10 +52,13 @@
 	-fx-background-size: auto 100%;
 }
 .check-box {
-	-fx-skin: "org.triplea.client.ui.javafx.controls.TripleACheckBoxSkin";
+	-fx-skin: 'org.triplea.client.ui.javafx.controls.TripleACheckBoxSkin';
 }
-.check-box .mark {
+.check-box .box {
 	-fx-fill: ANTIQUEWHITE;
 	-fx-stroke: DARKOLIVEGREEN;
 	-fx-stroke-width: 5;
+}
+.check-box .mark {
+	-fx-image: url('/org/triplea/client/ui/javafx/images/checkmark.png');
 }
