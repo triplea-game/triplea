@@ -7,7 +7,6 @@ import javafx.scene.control.SkinBase;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class TripleACheckBoxSkin extends SkinBase<CheckBox> {
@@ -46,9 +45,6 @@ public class TripleACheckBoxSkin extends SkinBase<CheckBox> {
   private void layoutRect() {
     StackPane.setAlignment(rect, Pos.BOTTOM_LEFT);
     rect.getStyleClass().setAll("mark");
-    rect.setStroke(Color.DARKOLIVEGREEN);
-    rect.setStrokeWidth(5);
-    rect.setFill(Color.ANTIQUEWHITE);
     rect.widthProperty().bind(Bindings.multiply(Bindings.min(pane.widthProperty(), pane.heightProperty()), 2.0 / 3));
     rect.heightProperty().bind(Bindings.multiply(Bindings.min(pane.widthProperty(), pane.heightProperty()), 2.0 / 3));
     pane.getChildren().add(rect);

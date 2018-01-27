@@ -51,3 +51,11 @@
 	-fx-background-position: center center;
 	-fx-background-size: auto 100%;
 }
+.check-box {
+	-fx-skin: "org.triplea.client.ui.javafx.controls.TripleACheckBoxSkin";
+}
+.check-box .mark {
+	-fx-fill: ANTIQUEWHITE;
+	-fx-stroke: DARKOLIVEGREEN;
+	-fx-stroke-width: 5;
+}

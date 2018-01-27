@@ -8,8 +8,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
-import org.triplea.client.ui.javafx.controls.TripleACheckBoxSkin;
-
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.GameRunner;
@@ -126,7 +124,6 @@ class JavaFxSelectionComponentFactory {
       private CheckBox getCheckBox() {
         final CheckBox checkBox = new CheckBox();
         checkBox.setSelected(Boolean.parseBoolean(clientSetting.value()));
-        checkBox.setSkin(new TripleACheckBoxSkin(checkBox));
         return checkBox;
       }
 
