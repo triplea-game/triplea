@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import swinglib.JButtonBuilder;
+import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
 
 /**
@@ -35,18 +36,25 @@ public enum ErrorMessage {
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
     windowReference.add(JPanelBuilder.builder()
         .borderLayout()
-        .addCenter(
-            errorMessage,
-            JPanelBuilder.Padding.of(20))
-        .addSouth(JPanelBuilder.builder()
-            .flowLayout()
+        .borderEmpty(10)
+        .addCenter(JPanelBuilder.builder()
             .horizontalBoxLayout()
+            .addHorizontalGlue()
+            .add(JLabelBuilder.builder().errorIcon().build())
+            .addHorizontalStrut(10)
+            .add(errorMessage)
+            .addHorizontalGlue()
+            .build())
+        .addSouth(JPanelBuilder.builder()
+            .horizontalBoxLayout()
+            .borderEmpty(20, 0, 0, 0)
+            .addHorizontalGlue()
             .add(JButtonBuilder.builder()
-                .title("Ok")
+                .okTitle()
                 .actionListener(() -> windowReference.setVisible(false))
                 .selected(true)
                 .build())
-            .addHorizontalStrut(10)
+            .addHorizontalStrut(5)
             .add(JButtonBuilder.builder()
                 .title("Show Details")
                 .toolTip("Shows the error console window with full error details.")
@@ -56,6 +64,7 @@ public enum ErrorMessage {
                   ErrorConsole.showConsole();
                 })
                 .build())
+            .addHorizontalGlue()
             .build())
         .build());
   }
@@ -66,7 +75,6 @@ public enum ErrorMessage {
    * visible the frame.
    */
   public void init() {}
-
 
   /**
    * Displays the error dialog window with a given message. This is no-op if the window is already visible.

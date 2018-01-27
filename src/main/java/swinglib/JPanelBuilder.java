@@ -15,13 +15,13 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
@@ -256,7 +256,11 @@ public class JPanelBuilder {
   }
 
   public JPanelBuilder borderEmpty(final int borderWidth) {
-    border = new EmptyBorder(borderWidth, borderWidth, borderWidth, borderWidth);
+    return borderEmpty(borderWidth, borderWidth, borderWidth, borderWidth);
+  }
+
+  public JPanelBuilder borderEmpty(final int top, final int left, final int bottom, final int right) {
+    border = BorderFactory.createEmptyBorder(top, left, bottom, right);
     return this;
   }
 

@@ -28,22 +28,6 @@ public class JPanelBuilderTest {
   }
 
   @Test
-  public void testBorder() {
-    final int borderWidth = 3;
-    final JPanel panel = JPanelBuilder.builder()
-        .borderEmpty(borderWidth)
-        .build();
-
-    assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
-
-    final Insets borderInsets = ((EmptyBorder) panel.getBorder()).getBorderInsets();
-    assertThat(borderInsets.top, is(borderWidth));
-    assertThat(borderInsets.bottom, is(borderWidth));
-    assertThat(borderInsets.left, is(borderWidth));
-    assertThat(borderInsets.right, is(borderWidth));
-  }
-
-  @Test
   public void horizontalAlignmentCenter() {
     final JPanel panel = JPanelBuilder.builder()
         .horizontalAlignmentCenter()
@@ -97,7 +81,7 @@ public class JPanelBuilderTest {
   }
 
   @Test
-  public void emptyBorder() {
+  public void emptyBorderWithSingleWidth() {
     final int borderWidth = 100;
     final JPanel panel = JPanelBuilder.builder()
         .borderEmpty(borderWidth)
@@ -110,6 +94,20 @@ public class JPanelBuilderTest {
     assertThat(insets.right, is(borderWidth));
   }
 
+  @Test
+  public void emptyBorderWithIndependentWidths() {
+    final JPanel panel = JPanelBuilder.builder()
+        .borderEmpty(1, 2, 3, 4)
+        .build();
+
+    assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
+
+    final Insets insets = panel.getBorder().getBorderInsets(panel);
+    assertThat(insets.top, is(1));
+    assertThat(insets.left, is(2));
+    assertThat(insets.bottom, is(3));
+    assertThat(insets.right, is(4));
+  }
 
   @Test
   public void addLabel() {
