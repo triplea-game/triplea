@@ -14,12 +14,13 @@ import static org.mockito.Mockito.verify;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Stubber;
+
+import com.example.mockito.MockitoExtension;
 
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences.PreferenceKeys;
 import games.strategy.security.CredentialManager;

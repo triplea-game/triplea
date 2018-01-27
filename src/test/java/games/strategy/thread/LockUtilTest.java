@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+
+import com.example.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public final class LockUtilTest {

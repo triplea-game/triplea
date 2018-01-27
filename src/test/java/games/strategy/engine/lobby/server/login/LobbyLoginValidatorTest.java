@@ -19,7 +19,6 @@ import java.sql.Timestamp;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mock;
 
+import com.example.mockito.MockitoExtension;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.config.PropertyReader;

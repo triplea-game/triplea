@@ -16,11 +16,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+
+import com.example.mockito.MockitoExtension;
 
 import games.strategy.engine.framework.map.download.MapDownloadController.DownloadedMaps;
 import games.strategy.engine.framework.map.download.MapDownloadController.TutorialMapPreferences;

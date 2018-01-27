@@ -10,11 +10,12 @@ import javax.swing.JComboBox;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
+import com.example.mockito.MockitoExtension;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;

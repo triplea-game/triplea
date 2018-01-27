@@ -13,13 +13,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Observer;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
+import com.example.mockito.MockitoExtension;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;

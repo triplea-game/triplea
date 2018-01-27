@@ -15,9 +15,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.example.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class RouteCalculatorTest {
