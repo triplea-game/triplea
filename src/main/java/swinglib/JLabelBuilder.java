@@ -2,8 +2,11 @@ package swinglib;
 
 import java.awt.Dimension;
 
+import javax.annotation.Nullable;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import com.google.common.base.Ascii;
@@ -23,6 +26,7 @@ import com.google.common.base.Preconditions;
 public class JLabelBuilder {
 
   private String text;
+  private @Nullable Icon icon;
   private Alignment alignment;
   private Dimension maxSize;
   private int maxTextLength = Integer.MAX_VALUE;
@@ -37,14 +41,24 @@ public class JLabelBuilder {
 
   /**
    * Constructs a Swing JLabel using current builder values.
-   * Values that must be set: text
+   * Values that must be set: text or icon
    */
   public JLabel build() {
-    Preconditions.checkNotNull(text);
-    Preconditions.checkState(!text.trim().isEmpty());
+    Preconditions.checkState(text != null || icon != null);
 
-    final String truncated = Ascii.truncate(text, maxTextLength, "...");
+    final String truncated;
+    if (text != null) {
+      Preconditions.checkState(!text.trim().isEmpty());
+      truncated = Ascii.truncate(text, maxTextLength, "...");
+    } else {
+      truncated = "";
+    }
+
     final JLabel label = new JLabel(truncated);
+
+    if (icon != null) {
+      label.setIcon(icon);
+    }
 
     if (alignment != null) {
       switch (alignment) {
@@ -67,6 +81,11 @@ public class JLabelBuilder {
     }
 
     return label;
+  }
+
+  public JLabelBuilder errorIcon() {
+    icon = UIManager.getIcon("OptionPane.errorIcon");
+    return this;
   }
 
   public JLabelBuilder leftAlign() {

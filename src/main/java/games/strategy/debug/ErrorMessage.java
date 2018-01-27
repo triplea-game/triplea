@@ -1,6 +1,8 @@
 package games.strategy.debug;
 
 import java.awt.Dialog;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
@@ -8,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import swinglib.JButtonBuilder;
+import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
 
 /**
@@ -33,31 +36,49 @@ public enum ErrorMessage {
   ErrorMessage() {
     windowReference.setAlwaysOnTop(true);
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+    windowReference.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(final WindowEvent e) {
+        hide();
+      }
+    });
     windowReference.add(JPanelBuilder.builder()
         .borderLayout()
-        .addCenter(
-            errorMessage,
-            JPanelBuilder.Padding.of(20))
-        .addSouth(JPanelBuilder.builder()
-            .flowLayout()
+        .borderEmpty(10)
+        .addCenter(JPanelBuilder.builder()
             .horizontalBoxLayout()
+            .addHorizontalGlue()
+            .add(JLabelBuilder.builder().errorIcon().build())
+            .addHorizontalStrut(10)
+            .add(errorMessage)
+            .addHorizontalGlue()
+            .build())
+        .addSouth(JPanelBuilder.builder()
+            .horizontalBoxLayout()
+            .borderEmpty(20, 0, 0, 0)
+            .addHorizontalGlue()
             .add(JButtonBuilder.builder()
-                .title("Ok")
-                .actionListener(() -> windowReference.setVisible(false))
+                .okTitle()
+                .actionListener(this::hide)
                 .selected(true)
                 .build())
-            .addHorizontalStrut(10)
+            .addHorizontalStrut(5)
             .add(JButtonBuilder.builder()
                 .title("Show Details")
                 .toolTip("Shows the error console window with full error details.")
                 .actionListener(() -> {
-                  windowReference.setVisible(false);
-                  isVisible.set(false);
+                  hide();
                   ErrorConsole.showConsole();
                 })
                 .build())
+            .addHorizontalGlue()
             .build())
         .build());
+  }
+
+  private void hide() {
+    windowReference.setVisible(false);
+    isVisible.set(false);
   }
 
   /**
@@ -66,7 +87,6 @@ public enum ErrorMessage {
    * visible the frame.
    */
   public void init() {}
-
 
   /**
    * Displays the error dialog window with a given message. This is no-op if the window is already visible.

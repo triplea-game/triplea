@@ -30,8 +30,8 @@ public class JLabelBuilderTest {
   }
 
   @Test
-  public void textIsRequired() {
-    assertThrows(NullPointerException.class, JLabelBuilder.builder()::build);
+  public void textOrIconIsRequired() {
+    assertThrows(IllegalStateException.class, JLabelBuilder.builder()::build);
   }
 
   @Test

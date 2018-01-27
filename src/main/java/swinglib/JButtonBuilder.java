@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.awt.Font;
 
 import javax.swing.JButton;
+import javax.swing.UIManager;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -69,6 +70,13 @@ public class JButtonBuilder {
     Preconditions.checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
     this.title = title;
     return this;
+  }
+
+  /**
+   * Sets the button title to the system's OK button text.
+   */
+  public JButtonBuilder okTitle() {
+    return title(UIManager.getString("OptionPane.okButtonText"));
   }
 
   /**
