@@ -39,7 +39,7 @@ import tools.image.PolygonGrabber;
 import tools.image.ReliefImageBreaker;
 import tools.image.TileImageBreaker;
 import tools.image.TileImageReconstructor;
-import tools.util.ToolConsole;
+import tools.util.ToolLogger;
 
 /**
  * A frame that will run the different map making utilities we have.
@@ -356,7 +356,7 @@ public class MapCreator extends JFrame {
           try {
             TileImageBreaker.main(new String[0]);
           } catch (final Exception e) {
-            ToolConsole.error("Failed to run tile image breaker", e);
+            ToolLogger.error("Failed to run tile image breaker", e);
           }
         }).start();
       }
@@ -372,7 +372,7 @@ public class MapCreator extends JFrame {
           try {
             DecorationPlacer.main(new String[0]);
           } catch (final Exception e) {
-            ToolConsole.error("Failed to run decoration placer", e);
+            ToolLogger.error("Failed to run decoration placer", e);
           }
         }).start();
       }
@@ -398,7 +398,7 @@ public class MapCreator extends JFrame {
           try {
             ConnectionFinder.main(new String[0]);
           } catch (final Exception e) {
-            ToolConsole.error("Failed to run connection finder", e);
+            ToolLogger.error("Failed to run connection finder", e);
           }
         }).start();
       }
@@ -423,7 +423,7 @@ public class MapCreator extends JFrame {
           try {
             ReliefImageBreaker.main(new String[0]);
           } catch (final Exception e) {
-            ToolConsole.error("Failed to run relief image breaker", e);
+            ToolLogger.error("Failed to run relief image breaker", e);
           }
         }).start();
       }
@@ -439,7 +439,7 @@ public class MapCreator extends JFrame {
           try {
             ImageShrinker.main(new String[0]);
           } catch (final Exception e) {
-            ToolConsole.error("Failed to run image shrinker", e);
+            ToolLogger.error("Failed to run image shrinker", e);
           }
         }).start();
       }
@@ -455,7 +455,7 @@ public class MapCreator extends JFrame {
           try {
             TileImageReconstructor.main(new String[0]);
           } catch (final Exception e) {
-            ToolConsole.error("Failed to run tile image reconstructor", e);
+            ToolLogger.error("Failed to run tile image reconstructor", e);
           }
         }).start();
       }

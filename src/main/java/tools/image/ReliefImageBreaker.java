@@ -24,7 +24,7 @@ import javax.swing.JOptionPane;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 import tools.map.making.ImageIoCompletionWatcher;
-import tools.util.ToolConsole;
+import tools.util.ToolLogger;
 
 /**
  * Utility for breaking an image into seperate smaller images.
@@ -59,8 +59,8 @@ public class ReliefImageBreaker {
       mapFolderLocation = locationSelection.getFile().getParentFile();
     }
     if (location == null) {
-      ToolConsole.info("You need to select a folder to save the tiles in for this to work");
-      ToolConsole.info("Shutting down");
+      ToolLogger.info("You need to select a folder to save the tiles in for this to work");
+      ToolLogger.info("Shutting down");
       System.exit(0);
       return;
     }
@@ -75,8 +75,8 @@ public class ReliefImageBreaker {
     // ask user to input image location
     final Image map = loadImage();
     if (map == null) {
-      ToolConsole.info("You need to select a map image for this to work");
-      ToolConsole.info("Shutting down");
+      ToolLogger.info("You need to select a map image for this to work");
+      ToolLogger.info("Shutting down");
       System.exit(0);
     }
     // ask user wether it is sea zone only or not
@@ -85,15 +85,15 @@ public class ReliefImageBreaker {
     // ask user where the map is
     final String mapDir = getMapDirectory();
     if (mapDir == null || mapDir.equals("")) {
-      ToolConsole.info("You need to specify a map name for this to work");
-      ToolConsole.info("Shutting down");
+      ToolLogger.info("You need to specify a map name for this to work");
+      ToolLogger.info("Shutting down");
       System.exit(0);
     }
     try {
       mapData = new MapData(mapDir);
       // files for the map.
     } catch (final NullPointerException e) {
-      ToolConsole.error("Bad data given or missing text files, shutting down", e);
+      ToolLogger.error("Bad data given or missing text files, shutting down", e);
       System.exit(0);
     }
     for (final String territoryName : mapData.getTerritories()) {
@@ -106,7 +106,7 @@ public class ReliefImageBreaker {
       }
       processImage(territoryName, map);
     }
-    ToolConsole.info("All Finished!");
+    ToolLogger.info("All Finished!");
     System.exit(0);
   }
 
@@ -147,7 +147,7 @@ public class ReliefImageBreaker {
    * @return java.awt.Image img the loaded image
    */
   private static Image loadImage() {
-    ToolConsole.info("Select the map");
+    ToolLogger.info("Select the map");
     final String mapName = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getPathString();
     if (mapName != null) {
       final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
@@ -187,7 +187,7 @@ public class ReliefImageBreaker {
       outFileName += ".png";
     }
     ImageIO.write(relief, "png", new File(outFileName));
-    ToolConsole.info("wrote " + outFileName);
+    ToolLogger.info("wrote " + outFileName);
   }
 
   /**
@@ -232,10 +232,10 @@ public class ReliefImageBreaker {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolConsole.info("Could not find directory: " + value);
+        ToolLogger.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      ToolConsole.info("Only argument allowed is the map directory.");
+      ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -245,7 +245,7 @@ public class ReliefImageBreaker {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolConsole.info("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
     }

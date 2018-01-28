@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import tools.image.FileOpen;
-import tools.util.ToolConsole;
+import tools.util.ToolLogger;
 
 /**
  * Takes an image and shrinks it. Used for making small images.
@@ -65,7 +65,7 @@ public class ImageShrinker {
       encoder.setOutput(out);
       encoder.write(null, new IIOImage(thumbImage, null, null), param);
     }
-    ToolConsole.info("Image successfully written to " + file.getPath());
+    ToolLogger.info("Image successfully written to " + file.getPath());
     System.exit(0);
   }
 
@@ -90,10 +90,10 @@ public class ImageShrinker {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolConsole.info("Could not find directory: " + value);
+        ToolLogger.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      ToolConsole.info("Only argument allowed is the map directory.");
+      ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -103,7 +103,7 @@ public class ImageShrinker {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolConsole.info("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
     }

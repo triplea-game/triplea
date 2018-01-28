@@ -3,13 +3,13 @@ package tools.util;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A collection of methods for use by support tools to write messages to the console.
+ * Provides methods for support tools to write log messages.
  */
-public final class ToolConsole {
-  private ToolConsole() {}
+public final class ToolLogger {
+  private ToolLogger() {}
 
   /**
-   * Writes the specified error message to the console.
+   * Logs the specified error message.
    */
   public static void error(final String message) {
     checkNotNull(message);
@@ -18,7 +18,7 @@ public final class ToolConsole {
   }
 
   /**
-   * Writes the specified error message and exception to the console.
+   * Logs the specified error message with an associated exception.
    */
   public static void error(final String message, final Throwable t) {
     checkNotNull(message);
@@ -29,7 +29,7 @@ public final class ToolConsole {
   }
 
   /**
-   * Writes the specified informational message to the console.
+   * Logs the specified informational message.
    */
   public static void info(final String message) {
     checkNotNull(message);

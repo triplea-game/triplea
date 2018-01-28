@@ -47,7 +47,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
-import tools.util.ToolConsole;
+import tools.util.ToolLogger;
 
 /**
  * old comments
@@ -85,14 +85,14 @@ public class PolygonGrabber extends JFrame {
    */
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
-    ToolConsole.info("Select the map");
+    ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
-      ToolConsole.info("Map : " + mapName);
+      ToolLogger.info("Map : " + mapName);
       final PolygonGrabber grabber = new PolygonGrabber(mapName);
       grabber.setSize(800, 600);
       grabber.setLocationRelativeTo(null);
@@ -114,7 +114,7 @@ public class PolygonGrabber extends JFrame {
               + "<br><br>RIGHT CLICK = save or replace those borders for that territory."
               + "<br><br>When finished, save the polygons and exit." + "</html>"));
     } else {
-      ToolConsole.info("No Image Map Selected. Shutting down.");
+      ToolLogger.info("No Image Map Selected. Shutting down.");
       System.exit(0);
     }
   } // end main
@@ -142,27 +142,27 @@ public class PolygonGrabber extends JFrame {
             + "names?",
         "File Suggestion", 1) == 0) {
       try (InputStream is = new FileInputStream(file.getPath())) {
-        ToolConsole.info("Centers : " + file.getPath());
+        ToolLogger.info("Centers : " + file.getPath());
         centers = PointFileReaderWriter.readOneToOne(is);
       } catch (final IOException e) {
-        ToolConsole.error("Something wrong with Centers file", e);
+        ToolLogger.error("Something wrong with Centers file", e);
       }
     } else {
       try {
-        ToolConsole.info("Select the Centers file");
+        ToolLogger.info("Select the Centers file");
         final String centerPath = new FileOpen("Select A Center File", mapFolderLocation, ".txt").getPathString();
         if (centerPath != null) {
-          ToolConsole.info("Centers : " + centerPath);
+          ToolLogger.info("Centers : " + centerPath);
           try (InputStream is = new FileInputStream(centerPath)) {
             centers = PointFileReaderWriter.readOneToOne(is);
           }
         } else {
-          ToolConsole.info("You must specify a centers file.");
-          ToolConsole.info("Shutting down.");
+          ToolLogger.info("You must specify a centers file.");
+          ToolLogger.info("Shutting down.");
           System.exit(0);
         }
       } catch (final IOException e) {
-        ToolConsole.error("Something wrong with Centers file", e);
+        ToolLogger.error("Something wrong with Centers file", e);
         System.exit(0);
       }
     }
@@ -219,7 +219,7 @@ public class PolygonGrabber extends JFrame {
       g.drawImage(bufferedImage, 0, 0, null);
       for (final String territoryName : centers.keySet()) {
         final Point center = centers.get(territoryName);
-        ToolConsole.info("Detecting Polygon for:" + territoryName);
+        ToolLogger.info("Detecting Polygon for:" + territoryName);
         final Polygon p = findPolygon(center.x, center.y);
         // test if the poly contains the center point (this often fails when there is an island right above (because
         // findPolygon will grab
@@ -369,9 +369,9 @@ public class PolygonGrabber extends JFrame {
       try (OutputStream out = new FileOutputStream(polyName)) {
         PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
       }
-      ToolConsole.info("Data written to :" + new File(polyName).getCanonicalPath());
+      ToolLogger.info("Data written to :" + new File(polyName).getCanonicalPath());
     } catch (final Exception e) {
-      ToolConsole.error("file save name: " + polyName, e);
+      ToolLogger.error("file save name: " + polyName, e);
     }
   }
 
@@ -380,7 +380,7 @@ public class PolygonGrabber extends JFrame {
    * Loads a pre-defined file with map polygon points.
    */
   private void loadPolygons() {
-    ToolConsole.info("Load a polygon file");
+    ToolLogger.info("Load a polygon file");
     final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
     if (polyName == null) {
       return;
@@ -388,7 +388,7 @@ public class PolygonGrabber extends JFrame {
     try (InputStream in = new FileInputStream(polyName)) {
       polygons = PointFileReaderWriter.readOneToManyPolygons(in);
     } catch (final IOException e) {
-      ToolConsole.error("Failed to load polygons: " + polyName, e);
+      ToolLogger.error("Failed to load polygons: " + polyName, e);
       System.exit(0);
     }
     repaint();
@@ -412,7 +412,7 @@ public class PolygonGrabber extends JFrame {
     if (rightMouse && current != null) { // right click and list of polys is not empty
       doneCurrentGroup();
     } else if (pointInCurrentPolygon(point)) { // point clicked is already highlighted
-      ToolConsole.info("rejecting");
+      ToolLogger.info("rejecting");
       return;
     } else if (ctrlDown) {
       if (current == null) {
@@ -471,7 +471,7 @@ public class PolygonGrabber extends JFrame {
     } else if (option > 0) {
       current = null;
     } else {
-      ToolConsole.info("something very invalid");
+      ToolLogger.info("something very invalid");
     }
   }
 
@@ -708,7 +708,7 @@ public class PolygonGrabber extends JFrame {
       ypoints[i] = item.y;
       i++;
     }
-    ToolConsole.info("Done finding polygon. total points;" + xpoints.length);
+    ToolLogger.info("Done finding polygon. total points;" + xpoints.length);
     return new Polygon(xpoints, ypoints, xpoints.length);
   }
 
@@ -733,10 +733,10 @@ public class PolygonGrabber extends JFrame {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolConsole.info("Could not find directory: " + value);
+        ToolLogger.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      ToolConsole.info("Only argument allowed is the map directory.");
+      ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -746,7 +746,7 @@ public class PolygonGrabber extends JFrame {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolConsole.info("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
     }

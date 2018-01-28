@@ -32,7 +32,7 @@ import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
-import tools.util.ToolConsole;
+import tools.util.ToolLogger;
 
 /**
  * Utility to find connections between polygons
@@ -66,7 +66,7 @@ public class ConnectionFinder {
             + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read "
             + "by the engine. "
             + "</html>"));
-    ToolConsole.info("Select polygons.txt");
+    ToolLogger.info("Select polygons.txt");
     File polyFile = null;
     if (mapFolderLocation != null && mapFolderLocation.exists()) {
       polyFile = new File(mapFolderLocation, "polygons.txt");
@@ -78,7 +78,7 @@ public class ConnectionFinder {
       polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
     }
     if (polyFile == null || !polyFile.exists()) {
-      ToolConsole.info("No polygons.txt Selected. Shutting down.");
+      ToolLogger.info("No polygons.txt Selected. Shutting down.");
       System.exit(0);
     }
     if (mapFolderLocation == null && polyFile != null) {
@@ -97,7 +97,7 @@ public class ConnectionFinder {
         territoryAreas.put(territoryName, listOfAreas);
       }
     } catch (final IOException e) {
-      ToolConsole.error("Failed to load polygons: " + polyFile.getAbsolutePath(), e);
+      ToolLogger.error("Failed to load polygons: " + polyFile.getAbsolutePath(), e);
       System.exit(0);
     }
     if (!dimensionsSet) {
@@ -135,7 +135,7 @@ public class ConnectionFinder {
       }
     }
     final Map<String, Collection<String>> connections = new HashMap<>();
-    ToolConsole.info("Now Scanning for Connections");
+    ToolLogger.info("Now Scanning for Connections");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
         mapOfPolygons == null ? new ArrayList<>() : new ArrayList<>(mapOfPolygons.keySet());
@@ -182,9 +182,9 @@ public class ConnectionFinder {
       final StringBuilder connectionsString = convertToXml(connections);
       if (fileName == null) {
         if (territoryDefinitions != null) {
-          ToolConsole.info(territoryDefinitions.toString());
+          ToolLogger.info(territoryDefinitions.toString());
         }
-        ToolConsole.info(connectionsString.toString());
+        ToolLogger.info(connectionsString.toString());
       } else {
         try (OutputStream out = new FileOutputStream(fileName)) {
           if (territoryDefinitions != null) {
@@ -192,10 +192,10 @@ public class ConnectionFinder {
           }
           out.write(String.valueOf(connectionsString).getBytes());
         }
-        ToolConsole.info("Data written to :" + new File(fileName).getCanonicalPath());
+        ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
       }
     } catch (final Exception e) {
-      ToolConsole.error("Failed to write connections", e);
+      ToolLogger.error("Failed to write connections", e);
     }
   } // end main
 
@@ -388,7 +388,7 @@ public class ConnectionFinder {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolConsole.info("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
       if (arg.startsWith(LINE_THICKNESS)) {
@@ -412,7 +412,7 @@ public class ConnectionFinder {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolConsole.info("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
     }

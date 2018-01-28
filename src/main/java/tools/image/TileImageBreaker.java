@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import games.strategy.triplea.ui.screen.TileManager;
-import tools.util.ToolConsole;
+import tools.util.ToolLogger;
 
 /**
  * Utility for breaking an image into seperate smaller images.
@@ -61,8 +61,8 @@ public class TileImageBreaker {
       mapFolderLocation = locationSelection.getFile().getParentFile();
     }
     if (location == null) {
-      ToolConsole.info("You need to select a folder to save the tiles in for this to work");
-      ToolConsole.info("Shutting down");
+      ToolLogger.info("You need to select a folder to save the tiles in for this to work");
+      ToolLogger.info("Shutting down");
       System.exit(0);
       return;
     }
@@ -81,8 +81,8 @@ public class TileImageBreaker {
     // ask user to input image location
     final Image map = loadImage();
     if (map == null) {
-      ToolConsole.info("You need to select a map image for this to work");
-      ToolConsole.info("Shutting down");
+      ToolLogger.info("You need to select a map image for this to work");
+      ToolLogger.info("Shutting down");
       System.exit(0);
       return;
     }
@@ -122,7 +122,7 @@ public class TileImageBreaker {
    * @return java.awt.Image img the loaded image
    */
   private static Image loadImage() {
-    ToolConsole.info("Select the map");
+    ToolLogger.info("Select the map");
     final String mapName = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getPathString();
     if (mapName != null) {
       final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
@@ -159,10 +159,10 @@ public class TileImageBreaker {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolConsole.info("Could not find directory: " + value);
+        ToolLogger.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      ToolConsole.info("Only argument allowed is the map directory.");
+      ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -172,7 +172,7 @@ public class TileImageBreaker {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolConsole.info("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
     }

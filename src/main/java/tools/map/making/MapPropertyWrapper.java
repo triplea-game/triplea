@@ -30,7 +30,7 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.util.PropertyUtil;
 import games.strategy.util.Tuple;
-import tools.util.ToolConsole;
+import tools.util.ToolLogger;
 
 /**
  * This will take ANY object, and then look at every method that begins with 'set[name]' and if there also exists a
@@ -112,10 +112,10 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     final Object value = getValue();
     final Object[] args = {value};
     try {
-      ToolConsole.info(setter + "   to   " + value);
+      ToolLogger.info(setter + "   to   " + value);
       setter.invoke(object, args);
     } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-      ToolConsole.error("Failed to invoke setter reflectively: " + setter.getName(), e);
+      ToolLogger.error("Failed to invoke setter reflectively: " + setter.getName(), e);
     }
   }
 
@@ -135,7 +135,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       try {
         currentValue = field.get(object);
       } catch (final IllegalArgumentException | IllegalAccessException e) {
-        ToolConsole.error("Failed to get field value reflectively: " + field.getName(), e);
+        ToolLogger.error("Failed to get field value reflectively: " + field.getName(), e);
         continue;
       }
       try {
@@ -143,7 +143,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
             new MapPropertyWrapper<>(propertyName, null, currentValue, setter);
         properties.add(wrapper);
       } catch (final Exception e) {
-        ToolConsole.error("Failed to create map property wrapper", e);
+        ToolLogger.error("Failed to create map property wrapper", e);
       }
     }
     properties.sort(Comparator.comparing(MapPropertyWrapper::getName));
