@@ -362,16 +362,14 @@ public class PolygonGrabber extends JFrame {
   private void savePolygons() {
     final String polyName =
         new FileSave("Where To Save Polygons.txt ?", "polygons.txt", mapFolderLocation).getPathString();
-    try {
-      if (polyName == null) {
-        return;
-      }
-      try (OutputStream out = new FileOutputStream(polyName)) {
-        PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
-      }
+    if (polyName == null) {
+      return;
+    }
+    try (OutputStream out = new FileOutputStream(polyName)) {
+      PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
       ToolLogger.info("Data written to :" + new File(polyName).getCanonicalPath());
-    } catch (final Exception e) {
-      ToolLogger.error("file save name: " + polyName, e);
+    } catch (final IOException e) {
+      ToolLogger.error("Failed to save polygons: " + polyName, e);
     }
   }
 

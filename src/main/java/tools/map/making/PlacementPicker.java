@@ -481,16 +481,14 @@ public class PlacementPicker extends JFrame {
   private void savePlacements() {
     final String fileName =
         new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
-    try {
-      if (fileName == null) {
-        return;
-      }
-      try (OutputStream out = new FileOutputStream(fileName)) {
-        PointFileReaderWriter.writeOneToMany(out, new HashMap<>(placements));
-      }
+    if (fileName == null) {
+      return;
+    }
+    try (OutputStream out = new FileOutputStream(fileName)) {
+      PointFileReaderWriter.writeOneToMany(out, placements);
       ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final Exception e) {
-      ToolLogger.error("fileName = " + fileName, e);
+    } catch (final IOException e) {
+      ToolLogger.error("Failed to write placements: " + fileName, e);
     }
   }
 

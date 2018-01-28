@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.StringTokenizer;
 import javax.annotation.Nullable;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
+import org.apache.commons.io.output.CloseShieldOutputStream;
 
 /**
  * Utility to read and write files in the form of
@@ -62,7 +64,18 @@ public final class PointFileReaderWriter {
     mapping.put(name, p);
   }
 
-  public static void writeOneToOne(final OutputStream sink, final Map<String, Point> mapping) throws Exception {
+  /**
+   * Writes the specified one-to-one mapping between names and points to the specified stream.
+   *
+   * @param sink The stream to which the name-to-point mappings will be written.
+   * @param mapping The name-to-point mapping to be written.
+   *
+   * @throws IOException If an I/O error occurs while writing to the stream.
+   */
+  public static void writeOneToOne(final OutputStream sink, final Map<String, Point> mapping) throws IOException {
+    checkNotNull(sink);
+    checkNotNull(mapping);
+
     final StringBuilder out = new StringBuilder();
     final Iterator<String> keyIter = mapping.keySet().iterator();
     while (keyIter.hasNext()) {
@@ -77,8 +90,19 @@ public final class PointFileReaderWriter {
     write(out, sink);
   }
 
+  /**
+   * Writes the specified one-to-many mapping between names and polygons to the specified stream.
+   *
+   * @param sink The stream to which the name-to-polygons mappings will be written.
+   * @param mapping The name-to-polygons mapping to be written.
+   *
+   * @throws IOException If an I/O error occurs while writing to the stream.
+   */
   public static void writeOneToManyPolygons(final OutputStream sink, final Map<String, List<Polygon>> mapping)
-      throws Exception {
+      throws IOException {
+    checkNotNull(sink);
+    checkNotNull(mapping);
+
     final StringBuilder out = new StringBuilder();
     final Iterator<String> keyIter = mapping.keySet().iterator();
     while (keyIter.hasNext()) {
@@ -102,16 +126,25 @@ public final class PointFileReaderWriter {
   }
 
   private static void write(final StringBuilder buf, final OutputStream sink) throws IOException {
-    final OutputStreamWriter out = new OutputStreamWriter(sink);
-    out.write(buf.toString());
-    out.flush();
+    try (Writer out = new OutputStreamWriter(new CloseShieldOutputStream(sink))) {
+      out.write(buf.toString());
+    }
   }
 
-  public static void writeOneToMany(final OutputStream sink, Map<String, Collection<Point>> mapping) throws Exception {
+  /**
+   * Writes the specified one-to-many mapping between names and points to the specified stream.
+   *
+   * @param sink The stream to which the name-to-points mappings will be written.
+   * @param mapping The name-to-points mapping to be written.
+   *
+   * @throws IOException If an I/O error occurs while writing to the stream.
+   */
+  public static void writeOneToMany(final OutputStream sink, final Map<String, List<Point>> mapping)
+      throws IOException {
+    checkNotNull(sink);
+    checkNotNull(mapping);
+
     final StringBuilder out = new StringBuilder();
-    if (mapping == null) {
-      mapping = new HashMap<>();
-    }
     final Iterator<String> keyIter = mapping.keySet().iterator();
     while (keyIter.hasNext()) {
       final String name = keyIter.next();
