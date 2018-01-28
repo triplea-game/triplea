@@ -10,11 +10,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+
+import com.example.mockito.MockitoExtension;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;

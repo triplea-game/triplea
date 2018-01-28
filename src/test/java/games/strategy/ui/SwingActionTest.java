@@ -14,10 +14,11 @@ import java.util.function.Consumer;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+
+import com.example.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class SwingActionTest {

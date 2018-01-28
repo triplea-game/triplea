@@ -9,9 +9,10 @@ import java.util.HashSet;
 
 import javax.swing.SwingUtilities;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.example.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class GameChooserModelTest {

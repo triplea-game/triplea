@@ -10,12 +10,12 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import org.hamcrest.MatcherAssert;
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import com.example.mockito.MockitoExtension;
 import com.google.common.collect.ImmutableMap;
 
 @ExtendWith(MockitoExtension.class)

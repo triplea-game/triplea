@@ -12,11 +12,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+
+import com.example.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class UrlStreamsTest {

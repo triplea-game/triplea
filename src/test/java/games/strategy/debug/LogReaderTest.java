@@ -8,10 +8,11 @@ import java.io.PrintStream;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+
+import com.example.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class LogReaderTest {

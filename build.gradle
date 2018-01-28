@@ -92,6 +92,10 @@ jar {
 
 repositories {
     jcenter()
+
+    maven {
+        url 'https://jitpack.io'
+    }
 }
 
 dependencies {
@@ -114,6 +118,7 @@ dependencies {
 
     runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/trident-1.4.jar')
 
+    testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'

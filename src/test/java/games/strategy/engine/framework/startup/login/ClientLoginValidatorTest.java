@@ -8,13 +8,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import org.junit.experimental.extensions.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 
+import com.example.mockito.MockitoExtension;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
