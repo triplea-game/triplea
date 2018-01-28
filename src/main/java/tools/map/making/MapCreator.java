@@ -25,7 +25,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.OpenFileUtility;
@@ -40,6 +39,7 @@ import tools.image.PolygonGrabber;
 import tools.image.ReliefImageBreaker;
 import tools.image.TileImageBreaker;
 import tools.image.TileImageReconstructor;
+import tools.util.ToolLogger;
 
 /**
  * A frame that will run the different map making utilities we have.
@@ -348,15 +348,15 @@ public class MapCreator extends JFrame {
     panel2.add(placementPickerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton tileBreakerButton = new JButton("Run the Tile Image Breaker");
-    tileBreakerButton.addActionListener(SwingAction.of("Run the Tile Image Breaker", e -> {
+    tileBreakerButton.addActionListener(SwingAction.of("Run the Tile Image Breaker", event -> {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(TileImageBreaker.class);
       } else {
         new Thread(() -> {
           try {
             TileImageBreaker.main(new String[0]);
-          } catch (final Exception exception) {
-            ClientLogger.logQuietly("Failed to run tile image breaker", exception);
+          } catch (final Exception e) {
+            ToolLogger.error("Failed to run tile image breaker", e);
           }
         }).start();
       }
@@ -364,15 +364,15 @@ public class MapCreator extends JFrame {
     panel2.add(tileBreakerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton decorationPlacerButton = new JButton("Run the Decoration Placer");
-    decorationPlacerButton.addActionListener(SwingAction.of("Run the Decoration Placer", e -> {
+    decorationPlacerButton.addActionListener(SwingAction.of("Run the Decoration Placer", event -> {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(DecorationPlacer.class);
       } else {
         new Thread(() -> {
           try {
             DecorationPlacer.main(new String[0]);
-          } catch (final Exception exception) {
-            ClientLogger.logQuietly("Failed to run decoration placer", exception);
+          } catch (final Exception e) {
+            ToolLogger.error("Failed to run decoration placer", e);
           }
         }).start();
       }
@@ -390,15 +390,15 @@ public class MapCreator extends JFrame {
     panel3.add(new JLabel("Sorry but for now the only XML creator is Wisconsin's 'Part 2' of his map maker."));
     panel3.add(Box.createVerticalStrut(30));
     final JButton connectionFinderButton = new JButton("Run the Connection Finder");
-    connectionFinderButton.addActionListener(SwingAction.of("Run the Connection Finder", e -> {
+    connectionFinderButton.addActionListener(SwingAction.of("Run the Connection Finder", event -> {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(ConnectionFinder.class);
       } else {
         new Thread(() -> {
           try {
             ConnectionFinder.main(new String[0]);
-          } catch (final Exception exception) {
-            ClientLogger.logQuietly("Failed to run connection finder", exception);
+          } catch (final Exception e) {
+            ToolLogger.error("Failed to run connection finder", e);
           }
         }).start();
       }
@@ -415,15 +415,15 @@ public class MapCreator extends JFrame {
     panel4.add(new JLabel("Other or Optional Utilities:"));
     panel4.add(Box.createVerticalStrut(30));
     final JButton reliefBreakerButton = new JButton("Run the Relief Image Breaker");
-    reliefBreakerButton.addActionListener(SwingAction.of("Run the Relief Image Breaker", e -> {
+    reliefBreakerButton.addActionListener(SwingAction.of("Run the Relief Image Breaker", event -> {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(ReliefImageBreaker.class);
       } else {
         new Thread(() -> {
           try {
             ReliefImageBreaker.main(new String[0]);
-          } catch (final Exception exception) {
-            ClientLogger.logQuietly("Failed to run relief image breaker", exception);
+          } catch (final Exception e) {
+            ToolLogger.error("Failed to run relief image breaker", e);
           }
         }).start();
       }
@@ -431,15 +431,15 @@ public class MapCreator extends JFrame {
     panel4.add(reliefBreakerButton);
     panel4.add(Box.createVerticalStrut(30));
     final JButton imageShrinkerButton = new JButton("Run the Image Shrinker");
-    imageShrinkerButton.addActionListener(SwingAction.of("Run the Image Shrinker", e -> {
+    imageShrinkerButton.addActionListener(SwingAction.of("Run the Image Shrinker", event -> {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(ImageShrinker.class);
       } else {
         new Thread(() -> {
           try {
             ImageShrinker.main(new String[0]);
-          } catch (final Exception exception) {
-            ClientLogger.logQuietly("Failed to run image shrinker", exception);
+          } catch (final Exception e) {
+            ToolLogger.error("Failed to run image shrinker", e);
           }
         }).start();
       }
@@ -447,15 +447,15 @@ public class MapCreator extends JFrame {
     panel4.add(imageShrinkerButton);
     panel4.add(Box.createVerticalStrut(30));
     final JButton tileImageReconstructorButton = new JButton("Run the Tile Image Reconstructor");
-    tileImageReconstructorButton.addActionListener(SwingAction.of("Run the Tile Image Reconstructor", e -> {
+    tileImageReconstructorButton.addActionListener(SwingAction.of("Run the Tile Image Reconstructor", event -> {
       if (runUtilitiesAsSeperateProcesses) {
         runUtility(TileImageReconstructor.class);
       } else {
         new Thread(() -> {
           try {
             TileImageReconstructor.main(new String[0]);
-          } catch (final Exception exception) {
-            ClientLogger.logQuietly("Failed to run tile image reconstructor", exception);
+          } catch (final Exception e) {
+            ToolLogger.error("Failed to run tile image reconstructor", e);
           }
         }).start();
       }

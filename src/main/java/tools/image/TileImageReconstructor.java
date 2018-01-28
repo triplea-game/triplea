@@ -25,10 +25,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import tools.util.ToolLogger;
 
 /**
  * For taking a folder of basetiles and putting them back together into an image.
@@ -59,8 +59,8 @@ public class TileImageReconstructor {
       mapFolderLocation = baseTileLocationSelection.getFile().getParentFile();
     }
     if (baseTileLocation == null) {
-      System.out.println("You need to select a folder where the basetiles are for this to work");
-      System.out.println("Shutting down");
+      ToolLogger.info("You need to select a folder where the basetiles are for this to work");
+      ToolLogger.info("Shutting down");
       System.exit(0);
       return;
     }
@@ -81,8 +81,8 @@ public class TileImageReconstructor {
         });
     imageSaveLocation = imageSaveLocationSelection.getPathString();
     if (imageSaveLocation == null) {
-      System.out.println("You need to choose a name and location for your image file for this to work");
-      System.out.println("Shutting down");
+      ToolLogger.info("You need to choose a name and location for your image file for this to work");
+      ToolLogger.info("Shutting down");
       System.exit(0);
       return;
     }
@@ -103,8 +103,8 @@ public class TileImageReconstructor {
       }
     }
     if (sizeX <= 0 || sizeY <= 0) {
-      System.out.println("Map dimensions must be greater than zero for this to work");
-      System.out.println("Shutting down");
+      ToolLogger.info("Map dimensions must be greater than zero for this to work");
+      ToolLogger.info("Shutting down");
       System.exit(0);
       return;
     }
@@ -112,19 +112,18 @@ public class TileImageReconstructor {
         "Do not draw polgyons.txt file onto your image?\r\n(Default = 'yes' = do not draw)",
         "Do Not Also Draw Polygons?", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
       try {
-        System.out.println("Load a polygon file");
+        ToolLogger.info("Load a polygon file");
         final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyName != null) {
           try (InputStream in = new FileInputStream(polyName)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(in);
           } catch (final IOException e) {
-            System.out.println("Failed to load polygons: " + polyName);
-            e.printStackTrace();
+            ToolLogger.error("Failed to load polygons: " + polyName, e);
             System.exit(0);
           }
         }
-      } catch (final Exception ex) {
-        ClientLogger.logQuietly("Failed to load polygons", ex);
+      } catch (final Exception e) {
+        ToolLogger.error("Failed to load polygons", e);
       }
     }
     createMap();
@@ -166,7 +165,7 @@ public class TileImageReconstructor {
     try {
       ImageIO.write(mapImage, "png", new File(imageSaveLocation));
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to save image: " + imageSaveLocation, e);
+      ToolLogger.error("Failed to save image: " + imageSaveLocation, e);
     }
     textOptionPane.appendNewLine("Wrote " + imageSaveLocation);
     textOptionPane.appendNewLine("\r\nAll Finished!");
@@ -197,10 +196,10 @@ public class TileImageReconstructor {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        System.out.println("Could not find directory: " + value);
+        ToolLogger.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      System.out.println("Only argument allowed is the map directory.");
+      ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -210,7 +209,7 @@ public class TileImageReconstructor {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          System.out.println("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
     }

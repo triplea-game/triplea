@@ -18,6 +18,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import games.strategy.io.IoUtils;
+import tools.util.ToolLogger;
 
 public class XmlUpdater {
   private static File mapFolderLocation = null;
@@ -30,7 +31,7 @@ public class XmlUpdater {
     handleCommandLineArgs(args);
     final File gameXmlFile = new FileOpen("Select xml file", mapFolderLocation, ".xml").getFile();
     if (gameXmlFile == null) {
-      System.out.println("No file selected");
+      ToolLogger.info("No file selected");
       return;
     }
     final InputStream source = XmlUpdater.class.getResourceAsStream("gameupdate.xslt");
@@ -57,7 +58,7 @@ public class XmlUpdater {
     try (OutputStream outStream = new FileOutputStream(gameXmlFile)) {
       outStream.write(resultBytes);
     }
-    System.out.println("Successfully updated:" + gameXmlFile);
+    ToolLogger.info("Successfully updated:" + gameXmlFile);
   }
 
   private static String getValue(final String arg) {
@@ -81,10 +82,10 @@ public class XmlUpdater {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        System.out.println("Could not find directory: " + value);
+        ToolLogger.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      System.out.println("Only argument allowed is the map directory.");
+      ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -94,7 +95,7 @@ public class XmlUpdater {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          System.out.println("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
     }

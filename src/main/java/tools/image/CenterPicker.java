@@ -37,10 +37,10 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import tools.util.ToolLogger;
 
 public class CenterPicker extends JFrame {
   private static final long serialVersionUID = -5633998810385136625L;
@@ -64,14 +64,14 @@ public class CenterPicker extends JFrame {
    */
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
-    System.out.println("Select the map");
+    ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
-      System.out.println("Map : " + mapName);
+      ToolLogger.info("Map : " + mapName);
       final CenterPicker picker = new CenterPicker(mapName);
       picker.setSize(800, 600);
       picker.setLocationRelativeTo(null);
@@ -91,7 +91,7 @@ public class CenterPicker extends JFrame {
               + "<br><br>RIGHT CLICK on an existing center = delete that center point."
               + "<br><br>When finished, save the centers and exit." + "</html>"));
     } else {
-      System.out.println("No Image Map Selected. Shutting down.");
+      ToolLogger.info("No Image Map Selected. Shutting down.");
       System.exit(0);
     }
   } // end main
@@ -121,8 +121,7 @@ public class CenterPicker extends JFrame {
       try (InputStream is = new FileInputStream(file.getPath())) {
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
       } catch (final IOException e) {
-        System.out.println("Something wrong with your Polygons file: " + file.getAbsolutePath());
-        e.printStackTrace();
+        ToolLogger.error("Something wrong with your Polygons file: " + file.getAbsolutePath(), e);
         System.exit(0);
       }
     } else {
@@ -131,8 +130,7 @@ public class CenterPicker extends JFrame {
         try (InputStream is = new FileInputStream(polyPath)) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          System.out.println("Something wrong with your Polygons file: " + polyPath);
-          e.printStackTrace();
+          ToolLogger.error("Something wrong with your Polygons file: " + polyPath, e);
           System.exit(0);
         }
       }
@@ -242,9 +240,9 @@ public class CenterPicker extends JFrame {
       try (OutputStream out = new FileOutputStream(fileName)) {
         PointFileReaderWriter.writeOneToOne(out, centers);
       }
-      System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final Exception ex) {
-      ClientLogger.logQuietly("Failed to save centers", ex);
+      ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
+    } catch (final Exception e) {
+      ToolLogger.error("Failed to save centers", e);
     }
   }
 
@@ -253,7 +251,7 @@ public class CenterPicker extends JFrame {
    * Loads a pre-defined file with map center points.
    */
   private void loadCenters() {
-    System.out.println("Load a center file");
+    ToolLogger.info("Load a center file");
     final String centerName = new FileOpen("Load A Center File", mapFolderLocation, ".txt").getPathString();
     if (centerName == null) {
       return;
@@ -261,7 +259,7 @@ public class CenterPicker extends JFrame {
     try (InputStream in = new FileInputStream(centerName)) {
       centers = PointFileReaderWriter.readOneToOne(in);
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to load centers: " + centerName, e);
+      ToolLogger.error("Failed to load centers: " + centerName, e);
     }
     repaint();
   }
@@ -337,10 +335,10 @@ public class CenterPicker extends JFrame {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        System.out.println("Could not find directory: " + value);
+        ToolLogger.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      System.out.println("Only argument allowed is the map directory.");
+      ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -350,7 +348,7 @@ public class CenterPicker extends JFrame {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          System.out.println("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
     }

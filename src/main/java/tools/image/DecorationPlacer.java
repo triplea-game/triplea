@@ -49,7 +49,6 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
@@ -58,6 +57,7 @@ import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
+import tools.util.ToolLogger;
 
 /**
  * This is the DecorationPlacer, it will create a text file for you containing the points to place images at. <br>
@@ -122,14 +122,14 @@ public class DecorationPlacer extends JFrame {
 
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
-    System.out.println("Select the map");
+    ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
-      System.out.println("Map : " + mapName);
+      ToolLogger.info("Map : " + mapName);
       final DecorationPlacer picker = new DecorationPlacer(mapName);
       picker.setSize(800, 600);
       picker.setLocationRelativeTo(null);
@@ -176,7 +176,7 @@ public class DecorationPlacer extends JFrame {
               + "</html>"));
       picker.loadImagesAndPoints();
     } else {
-      System.out.println("No Image Map Selected. Shutting down.");
+      ToolLogger.info("No Image Map Selected. Shutting down.");
       System.exit(0);
     }
   } // end main
@@ -198,30 +198,28 @@ public class DecorationPlacer extends JFrame {
             + "centers?",
         "File Suggestion", 1) == 0) {
       try (InputStream is = new FileInputStream(fileCenters.getPath())) {
-        System.out.println("Centers : " + fileCenters.getPath());
+        ToolLogger.info("Centers : " + fileCenters.getPath());
         centers = PointFileReaderWriter.readOneToOne(is);
-      } catch (final IOException ex1) {
-        System.out.println("Something wrong with Centers file");
-        ex1.printStackTrace();
+      } catch (final IOException e) {
+        ToolLogger.error("Something wrong with Centers file", e);
         System.exit(0);
       }
     } else {
       try {
-        System.out.println("Select the Centers file");
+        ToolLogger.info("Select the Centers file");
         final String centerPath = new FileOpen("Select A Center File", mapFolderLocation, ".txt").getPathString();
         if (centerPath != null) {
-          System.out.println("Centers : " + centerPath);
+          ToolLogger.info("Centers : " + centerPath);
           try (InputStream is = new FileInputStream(centerPath)) {
             centers = PointFileReaderWriter.readOneToOne(is);
           }
         } else {
-          System.out.println("You must specify a centers file.");
-          System.out.println("Shutting down.");
+          ToolLogger.info("You must specify a centers file.");
+          ToolLogger.info("Shutting down.");
           System.exit(0);
         }
-      } catch (final IOException ex1) {
-        System.out.println("Something wrong with Centers file");
-        ex1.printStackTrace();
+      } catch (final IOException e) {
+        ToolLogger.error("Something wrong with Centers file", e);
         System.exit(0);
       }
     }
@@ -237,28 +235,26 @@ public class DecorationPlacer extends JFrame {
             + "polygons?",
         "File Suggestion", 1) == 0) {
       try (InputStream is = new FileInputStream(filePoly.getPath())) {
-        System.out.println("Polygons : " + filePoly.getPath());
+        ToolLogger.info("Polygons : " + filePoly.getPath());
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
       } catch (final IOException e) {
-        System.out.println("Something wrong with your Polygons file: " + filePoly.getAbsolutePath());
-        e.printStackTrace();
+        ToolLogger.error("Something wrong with your Polygons file: " + filePoly.getAbsolutePath(), e);
         System.exit(0);
       }
     } else {
-      System.out.println("Select the Polygons file");
+      ToolLogger.info("Select the Polygons file");
       final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
       if (polyPath != null) {
-        System.out.println("Polygons : " + polyPath);
+        ToolLogger.info("Polygons : " + polyPath);
         try (InputStream is = new FileInputStream(polyPath)) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          System.out.println("Something wrong with your Polygons file: " + polyPath);
-          e.printStackTrace();
+          ToolLogger.error("Something wrong with your Polygons file: " + polyPath, e);
           System.exit(0);
         }
       } else {
-        System.out.println("You must specify a Polgyon file.");
-        System.out.println("Shutting down.");
+        ToolLogger.info("You must specify a Polgyon file.");
+        ToolLogger.info("Shutting down.");
         System.exit(0);
       }
     }
@@ -469,15 +465,14 @@ public class DecorationPlacer extends JFrame {
       try (OutputStream out = new FileOutputStream(fileName)) {
         PointFileReaderWriter.writeOneToMany(out, new HashMap<>(currentPoints));
       }
-      System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final Exception ex) {
-      ClientLogger.logQuietly("Failed to save points", ex);
+      ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
+    } catch (final Exception e) {
+      ToolLogger.error("Failed to save points", e);
     }
-    System.out.println("");
   }
 
   private void selectImagePointType() {
-    System.out.println("Select Which type of image points file are we making?");
+    ToolLogger.info("Select Which type of image points file are we making?");
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.add(new JLabel("Which type of image points file are we making?"));
@@ -500,7 +495,7 @@ public class DecorationPlacer extends JFrame {
     for (final ImagePointType type : ImagePointType.getTypes()) {
       if (type.toString().equals(choice)) {
         imagePointType = type;
-        System.out.println("Selected Type: " + choice);
+        ToolLogger.info("Selected Type: " + choice);
         break;
       }
     }
@@ -508,7 +503,7 @@ public class DecorationPlacer extends JFrame {
 
   private void topLeftOrBottomLeft() {
     final Object[] options = {"Point is Top Left", "Point is Bottom Left"};
-    System.out.println("Select Show images from top left or bottom left point?");
+    ToolLogger.info("Select Show images from top left or bottom left point?");
     showFromTopLeft = JOptionPane.showOptionDialog(this,
         "Are the images shown from the top left, or from the bottom left point? \r\n"
             + "All images are shown from the top left, except for 'name_place.txt', 'pu_place.txt', and "
@@ -530,7 +525,7 @@ public class DecorationPlacer extends JFrame {
     final Object[] miscOrNamesOptions = {"Folder Full of Images", "Text File Full of Points"};
     final Object[] pointsAreNamesOptions = {"Points end in .png", "Points do NOT end in .png"};
     final Object[] fillAllOptions = {"Fill In All Territories", "Let Me Select Territories"};
-    System.out.println("Select Folder full of images OR Text file full of points?");
+    ToolLogger.info("Select Folder full of images OR Text file full of points?");
     if (JOptionPane.showOptionDialog(this,
         "Are you doing a folder full of different images (decorations.txt [misc] and name_place.txt [territoryNames]) "
             + "\r\n"
@@ -552,7 +547,7 @@ public class DecorationPlacer extends JFrame {
       // while everything else (like pu_place.txt (PUs folder)) will use either a static image or a dynamically chosen
       // image based on some
       // in game property in the game data.
-      System.out.println("Points end in .png OR they do not?");
+      ToolLogger.info("Points end in .png OR they do not?");
       fillCurrentImagePointsBasedOnImageFolder(JOptionPane.showOptionDialog(this,
           "Does the text file use the exact image file name, including the .png extension (decorations.txt) \r\n"
               + "Or does the text file not use the full file name with no extension, just a territory name "
@@ -568,7 +563,7 @@ public class DecorationPlacer extends JFrame {
       // load all territories? things like pu_place.txt should have all or most territories, while things like
       // blockade.txt and
       // kamikaze_place.txt and capitols.txt will only have a small number of territories
-      System.out.println("Select Fill in all territories OR let you select them?");
+      ToolLogger.info("Select Fill in all territories OR let you select them?");
       fillCurrentImagePointsBasedOnTextFile(JOptionPane.showOptionDialog(this,
           "Are you going to do a point for every single territory (pu_place.txt) \r\n"
               + "Or are you going to do just a few territories (capitols.txt, convoy.txt, vc.txt, etc, most others) ? "
@@ -579,13 +574,12 @@ public class DecorationPlacer extends JFrame {
           null, fillAllOptions, fillAllOptions[(imagePointType.isFillAll() ? 0 : 1)]) != JOptionPane.NO_OPTION);
     }
     cheapMutex = false;
-    System.out.println("");
     repaint();
     JOptionPane.showMessageDialog(this, new JLabel(imagePointType.getInstructions()));
   }
 
   private static void loadImageFolder() {
-    System.out.println("Load an image folder (eg: 'misc' or 'territoryNames', etc)");
+    ToolLogger.info("Load an image folder (eg: 'misc' or 'territoryNames', etc)");
     File folder = new File(mapFolderLocation, imagePointType.getFolderName());
     if (!folder.exists()) {
       folder = mapFolderLocation;
@@ -600,7 +594,7 @@ public class DecorationPlacer extends JFrame {
   }
 
   private void loadImagePointTextFile() {
-    System.out.println("Load the points text file (eg: decorations.txt or pu_place.txt, etc)");
+    ToolLogger.info("Load the points text file (eg: decorations.txt or pu_place.txt, etc)");
     final FileOpen centerName = new FileOpen("Load an Image Points Text File", mapFolderLocation,
         new File(mapFolderLocation, imagePointType.getFileName()), ".txt");
     currentImagePointsTextFile = centerName.getFile();
@@ -608,8 +602,7 @@ public class DecorationPlacer extends JFrame {
       try (InputStream in = new FileInputStream(centerName.getPathString())) {
         currentPoints = PointFileReaderWriter.readOneToMany(in);
       } catch (final IOException e) {
-        System.out.println("Failed to load image points: " + centerName.getPathString());
-        e.printStackTrace();
+        ToolLogger.error("Failed to load image points: " + centerName.getPathString(), e);
         System.exit(0);
       }
     } else {
@@ -644,13 +637,13 @@ public class DecorationPlacer extends JFrame {
       for (final Entry<String, Point> entry : centers.entrySet()) {
         List<Point> points = currentPoints.get(entry.getKey());
         if (points == null) {
-          System.out.println("Did NOT find point for: " + entry.getKey());
+          ToolLogger.info("Did NOT find point for: " + entry.getKey());
           points = new ArrayList<>();
           final Point p = new Point(entry.getValue().x - (width / 2),
               entry.getValue().y + addY + ((showFromTopLeft ? -1 : 1) * (height / 2)));
           points.add(p);
         } else {
-          System.out.println("Found point for: " + entry.getKey());
+          ToolLogger.info("Found point for: " + entry.getKey());
         }
         currentImagePoints.put(entry.getKey(), Tuple.of(staticImageForPlacing, points));
       }
@@ -682,14 +675,14 @@ public class DecorationPlacer extends JFrame {
         points = new ArrayList<>();
         Point p = centers.get(possibleTerritoryName);
         if (p == null) {
-          System.out.println("Did NOT find point for: " + possibleTerritoryName);
+          ToolLogger.info("Did NOT find point for: " + possibleTerritoryName);
           points.add(new Point(50, 50));
         } else {
           p = new Point(p.x - (image.getWidth(null) / 2),
               p.y + addY + ((showFromTopLeft ? -1 : 1) * (image.getHeight(null) / 2)));
           points.add(p);
           allTerritories.remove(possibleTerritoryName);
-          System.out.println("Found point for: " + possibleTerritoryName);
+          ToolLogger.info("Found point for: " + possibleTerritoryName);
         }
       } else {
         allTerritories.remove(possibleTerritoryName);
@@ -699,7 +692,7 @@ public class DecorationPlacer extends JFrame {
     }
     if (!allTerritories.isEmpty() && imagePointType == ImagePointType.name_place) {
       JOptionPane.showMessageDialog(this, new JLabel("Territory images not found in folder: " + allTerritories));
-      System.out.println(allTerritories);
+      ToolLogger.info("Territory images not found in folder: " + allTerritories);
     }
   }
 
@@ -806,10 +799,10 @@ public class DecorationPlacer extends JFrame {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        System.out.println("Could not find directory: " + value);
+        ToolLogger.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      System.out.println("Only argument allowed is the map directory.");
+      ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -819,7 +812,7 @@ public class DecorationPlacer extends JFrame {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          System.out.println("Could not find directory: " + value);
+          ToolLogger.info("Could not find directory: " + value);
         }
       }
     }

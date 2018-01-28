@@ -22,11 +22,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.PointFileReaderWriter;
+import tools.util.ToolLogger;
 
 public class AutoPlacementFinder {
   private static int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -78,8 +78,8 @@ public class AutoPlacementFinder {
     // ask user where the map is
     final String mapDir = mapFolderLocation == null ? getMapDirectory() : mapFolderLocation.getName();
     if (mapDir == null) {
-      System.out.println("You need to specify a map name for this to work");
-      System.out.println("Shutting down");
+      ToolLogger.info("You need to specify a map name for this to work");
+      ToolLogger.info("Shutting down");
       System.exit(0);
     }
     final File file = getMapPropertiesFile(mapDir);
@@ -143,8 +143,8 @@ public class AutoPlacementFinder {
             }
           }
         }
-      } catch (final Exception ex) {
-        ClientLogger.logQuietly("Failed to initialize from map properties: " + file.getAbsolutePath(), ex);
+      } catch (final Exception e) {
+        ToolLogger.error("Failed to initialize from map properties: " + file.getAbsolutePath(), e);
       }
     }
     if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
@@ -178,20 +178,19 @@ public class AutoPlacementFinder {
           }
         }
         placeDimensionsSet = true;
-      } catch (final Exception ex) {
-        ClientLogger.logQuietly("Failed to initialize from user input", ex);
+      } catch (final Exception e) {
+        ToolLogger.error("Failed to initialize from user input", e);
       }
     }
     try {
       // makes TripleA read all the text data files for the map.
       mapData = new MapData(mapDir);
-    } catch (final Exception ex) {
+    } catch (final Exception e) {
       JOptionPane.showMessageDialog(null, new JLabel(
           "Could not find map. Make sure it is in finalized location and contains centers.txt and polygons.txt"));
-      System.out.println("Caught Exception.");
-      System.out.println("Could be due to some missing text files.");
-      System.out.println("Or due to the map folder not being in the right location.");
-      ex.printStackTrace();
+      ToolLogger.error("Caught Exception.");
+      ToolLogger.error("Could be due to some missing text files.");
+      ToolLogger.error("Or due to the map folder not being in the right location.", e);
       System.exit(0);
     }
     textOptionPane.show();
@@ -226,8 +225,8 @@ public class AutoPlacementFinder {
       }
       PointFileReaderWriter.writeOneToMany(new FileOutputStream(fileName), placements);
       textOptionPane.appendNewLine("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final Exception ex) {
-      ex.printStackTrace();
+    } catch (final Exception e) {
+      ToolLogger.error("Failed to write points file", e);
       textOptionPane.dispose();
       System.exit(0);
     }
@@ -497,17 +496,17 @@ public class AutoPlacementFinder {
           if (arg.equals(propertie)) {
             final String value = getValue(arg2);
             System.setProperty(propertie, value);
-            System.out.println(propertie + ":" + value);
+            ToolLogger.info(propertie + ":" + value);
             found = true;
             break;
           }
         }
       }
       if (!found) {
-        System.out.println("Unrecogized:" + arg2);
+        ToolLogger.info("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          System.out.println("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
+          ToolLogger.info("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
               + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
               + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
         }
@@ -519,43 +518,43 @@ public class AutoPlacementFinder {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        System.out.println("Could not find directory: " + folderString);
+        ToolLogger.info("Could not find directory: " + folderString);
       }
     }
     final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
         unitZoomPercent = Double.parseDouble(zoomString);
-        System.out.println("Unit Zoom Percent to use: " + unitZoomPercent);
+        ToolLogger.info("Unit Zoom Percent to use: " + unitZoomPercent);
         placeDimensionsSet = true;
-      } catch (final Exception ex) {
-        System.err.println("Not a decimal percentage: " + zoomString);
+      } catch (final Exception e) {
+        ToolLogger.error("Not a decimal percentage: " + zoomString);
       }
     }
     final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
     if (widthString != null && widthString.length() > 0) {
       try {
         unitWidth = Integer.parseInt(widthString);
-        System.out.println("Unit Width to use: " + unitWidth);
+        ToolLogger.info("Unit Width to use: " + unitWidth);
         placeDimensionsSet = true;
-      } catch (final Exception ex) {
-        System.err.println("Not an integer: " + widthString);
+      } catch (final Exception e) {
+        ToolLogger.error("Not an integer: " + widthString);
       }
     }
     final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
     if (heightString != null && heightString.length() > 0) {
       try {
         unitHeight = Integer.parseInt(heightString);
-        System.out.println("Unit Height to use: " + unitHeight);
+        ToolLogger.info("Unit Height to use: " + unitHeight);
         placeDimensionsSet = true;
-      } catch (final Exception ex) {
-        System.err.println("Not an integer: " + heightString);
+      } catch (final Exception e) {
+        ToolLogger.error("Not an integer: " + heightString);
       }
     }
     if (placeDimensionsSet) {
       placeWidth = (int) (unitZoomPercent * unitWidth);
       placeHeight = (int) (unitZoomPercent * unitHeight);
-      System.out.println("Place Dimensions to use: " + placeWidth + "x" + placeHeight);
+      ToolLogger.info("Place Dimensions to use: " + placeWidth + "x" + placeHeight);
     }
   }
 }
