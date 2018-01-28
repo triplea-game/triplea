@@ -27,12 +27,12 @@ import java.util.regex.Pattern;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.util.ToolConsole;
 
 /**
  * Utility to find connections between polygons
@@ -66,7 +66,7 @@ public class ConnectionFinder {
             + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read "
             + "by the engine. "
             + "</html>"));
-    System.out.println("Select polygons.txt");
+    ToolConsole.info("Select polygons.txt");
     File polyFile = null;
     if (mapFolderLocation != null && mapFolderLocation.exists()) {
       polyFile = new File(mapFolderLocation, "polygons.txt");
@@ -78,7 +78,7 @@ public class ConnectionFinder {
       polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
     }
     if (polyFile == null || !polyFile.exists()) {
-      System.out.println("No polygons.txt Selected. Shutting down.");
+      ToolConsole.info("No polygons.txt Selected. Shutting down.");
       System.exit(0);
     }
     if (mapFolderLocation == null && polyFile != null) {
@@ -96,8 +96,8 @@ public class ConnectionFinder {
         }
         territoryAreas.put(territoryName, listOfAreas);
       }
-    } catch (final IOException ex) {
-      ClientLogger.logQuietly("Failed to load polygons: " + polyFile.getAbsolutePath(), ex);
+    } catch (final IOException e) {
+      ToolConsole.error("Failed to load polygons: " + polyFile.getAbsolutePath(), e);
       System.exit(0);
     }
     if (!dimensionsSet) {
@@ -135,7 +135,7 @@ public class ConnectionFinder {
       }
     }
     final Map<String, Collection<String>> connections = new HashMap<>();
-    System.out.println("Now Scanning for Connections");
+    ToolConsole.info("Now Scanning for Connections");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
         mapOfPolygons == null ? new ArrayList<>() : new ArrayList<>(mapOfPolygons.keySet());
@@ -181,11 +181,10 @@ public class ConnectionFinder {
           "connections.txt", mapFolderLocation).getPathString();
       final StringBuilder connectionsString = convertToXml(connections);
       if (fileName == null) {
-        System.out.println();
         if (territoryDefinitions != null) {
-          System.out.println(territoryDefinitions.toString());
+          ToolConsole.info(territoryDefinitions.toString());
         }
-        System.out.println(connectionsString.toString());
+        ToolConsole.info(connectionsString.toString());
       } else {
         try (OutputStream out = new FileOutputStream(fileName)) {
           if (territoryDefinitions != null) {
@@ -193,10 +192,10 @@ public class ConnectionFinder {
           }
           out.write(String.valueOf(connectionsString).getBytes());
         }
-        System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
+        ToolConsole.info("Data written to :" + new File(fileName).getCanonicalPath());
       }
-    } catch (final Exception ex) {
-      ex.printStackTrace();
+    } catch (final Exception e) {
+      ToolConsole.error("Failed to write connections", e);
     }
   } // end main
 
@@ -389,7 +388,7 @@ public class ConnectionFinder {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          System.out.println("Could not find directory: " + value);
+          ToolConsole.info("Could not find directory: " + value);
         }
       }
       if (arg.startsWith(LINE_THICKNESS)) {
@@ -413,7 +412,7 @@ public class ConnectionFinder {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          System.out.println("Could not find directory: " + value);
+          ToolConsole.info("Could not find directory: " + value);
         }
       }
     }

@@ -44,7 +44,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.IntTextField;
@@ -52,6 +51,7 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.Tuple;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.util.ToolConsole;
 
 /**
  * This is the MapPropertiesMaker, it will create a map.properties file for you. <br>
@@ -82,7 +82,7 @@ public class MapPropertiesMaker extends JFrame {
     // map.properties file for
     // you. " + "</html>"));
     if (mapFolderLocation == null) {
-      System.out.println("Select the map folder");
+      ToolConsole.info("Select the map folder");
       final String path = new FileSave("Where is your map's folder?", null, mapFolderLocation).getPathString();
       if (path != null) {
         final File mapFolder = new File(path);
@@ -98,7 +98,7 @@ public class MapPropertiesMaker extends JFrame {
       maker.setLocationRelativeTo(null);
       maker.setVisible(true);
     } else {
-      System.out.println("No Map Folder Selected. Shutting down.");
+      ToolConsole.info("No Map Folder Selected. Shutting down.");
       System.exit(0);
     }
   } // end main
@@ -254,7 +254,7 @@ public class MapPropertiesMaker extends JFrame {
       label.addMouseListener(new MouseListener() {
         @Override
         public void mouseClicked(final MouseEvent e) {
-          System.out.println(label.getBackground());
+          ToolConsole.info(label.getBackground().toString());
           final Color color = JColorChooser.showDialog(label, "Choose color", label.getBackground());
           mapProperties.getColorMap().put(label.getText(), color);
           MapPropertiesMaker.this.createPlayerColorChooser();
@@ -312,7 +312,7 @@ public class MapPropertiesMaker extends JFrame {
 
   private void loadProperties() {
     final Properties properties = new Properties();
-    System.out.println("Load a properties file");
+    ToolConsole.info("Load a properties file");
     final String centerName =
         new FileOpen("Load A Properties File", mapFolderLocation, ".properties").getPathString();
     if (centerName == null) {
@@ -321,7 +321,7 @@ public class MapPropertiesMaker extends JFrame {
     try (InputStream in = new FileInputStream(centerName)) {
       properties.load(in);
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to load map properties: " + centerName, e);
+      ToolConsole.error("Failed to load map properties: " + centerName, e);
     }
     for (final Method setter : mapProperties.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");
@@ -347,12 +347,10 @@ public class MapPropertiesMaker extends JFrame {
           Writer out = new OutputStreamWriter(sink)) {
         out.write(stringToWrite);
       }
-      System.out.println("");
-      System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-      System.out.println("");
-      System.out.println(stringToWrite);
+      ToolConsole.info("Data written to :" + new File(fileName).getCanonicalPath());
+      ToolConsole.info(stringToWrite);
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Failed to save map properties", e);
+      ToolConsole.error("Failed to save map properties", e);
     }
   }
 
@@ -366,7 +364,7 @@ public class MapPropertiesMaker extends JFrame {
       try {
         outString.append(outMethod.invoke(mapProperties));
       } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-        ClientLogger.logQuietly("Failed to invoke method reflectively: " + outMethod.getName(), e);
+        ToolConsole.error("Failed to invoke method reflectively: " + outMethod.getName(), e);
       }
     }
     return outString.toString();
@@ -393,17 +391,17 @@ public class MapPropertiesMaker extends JFrame {
           if (arg.equals(propertie)) {
             final String value = getValue(arg2);
             System.setProperty(propertie, value);
-            System.out.println(propertie + ":" + value);
+            ToolConsole.info(propertie + ":" + value);
             found = true;
             break;
           }
         }
       }
       if (!found) {
-        System.out.println("Unrecogized:" + arg2);
+        ToolConsole.info("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          System.out.println("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
+          ToolConsole.info("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
               + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
               + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
         }
@@ -416,7 +414,7 @@ public class MapPropertiesMaker extends JFrame {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        System.out.println("Could not find directory: " + folderString);
+        ToolConsole.info("Could not find directory: " + folderString);
       }
     }
     final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
@@ -425,9 +423,9 @@ public class MapPropertiesMaker extends JFrame {
         final double unitZoomPercent = Double.parseDouble(zoomString);
         // mapProperties.setUNITS_SCALE(unit_zoom_percent);
         mapProperties.setUnitsScale(zoomString);
-        System.out.println("Unit Zoom Percent to use: " + unitZoomPercent);
-      } catch (final Exception ex) {
-        System.err.println("Not a decimal percentage: " + zoomString);
+        ToolConsole.info("Unit Zoom Percent to use: " + unitZoomPercent);
+      } catch (final Exception e) {
+        ToolConsole.error("Not a decimal percentage: " + zoomString);
       }
     }
     final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
@@ -436,9 +434,9 @@ public class MapPropertiesMaker extends JFrame {
         final int unitWidth = Integer.parseInt(widthString);
         mapProperties.setUnitsWidth(unitWidth);
         mapProperties.setUnitsCounterOffsetWidth(unitWidth / 4);
-        System.out.println("Unit Width to use: " + unitWidth);
-      } catch (final Exception ex) {
-        System.err.println("Not an integer: " + widthString);
+        ToolConsole.info("Unit Width to use: " + unitWidth);
+      } catch (final Exception e) {
+        ToolConsole.error("Not an integer: " + widthString);
       }
     }
     final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
@@ -447,9 +445,9 @@ public class MapPropertiesMaker extends JFrame {
         final int unitHeight = Integer.parseInt(heightString);
         mapProperties.setUnitsHeight(unitHeight);
         mapProperties.setUnitsCounterOffsetHeight(unitHeight);
-        System.out.println("Unit Height to use: " + unitHeight);
-      } catch (final Exception ex) {
-        System.err.println("Not an integer: " + heightString);
+        ToolConsole.info("Unit Height to use: " + unitHeight);
+      } catch (final Exception e) {
+        ToolConsole.error("Not an integer: " + heightString);
       }
     }
   }
