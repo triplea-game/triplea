@@ -1,4 +1,4 @@
-package org.junit.experimental.extensions;
+package games.strategy.test.extensions;
 
 import static java.util.Arrays.stream;
 
@@ -12,9 +12,10 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
 /**
+ * Replacement for the JUnit4 TemporaryFolder Rule.
  * Based off
  * https://raw.githubusercontent.com/rherrmann/junit5-experiments/master/src/main/java/com/codeaffine/junit5/TemporaryFolderExtension.java
- * Replacement for the JUnit4 TemporaryFolder Rule.
+ * Originally licensed under EPL-2.0 OR GPL-2.0-or-later.
  */
 public class TemporaryFolderExtension implements TestInstancePostProcessor, ParameterResolver {
 
@@ -56,6 +57,4 @@ public class TemporaryFolderExtension implements TestInstancePostProcessor, Para
     tempFolders.add(result);
     return result;
   }
-
 }
-

@@ -6,9 +6,10 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
 
-import org.junit.experimental.extensions.TemporaryFolder;
-import org.junit.experimental.extensions.TemporaryFolderExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import games.strategy.test.extensions.TemporaryFolder;
+import games.strategy.test.extensions.TemporaryFolderExtension;
 
 @ExtendWith(TemporaryFolderExtension.class)
 public final class FilePropertyReaderAsPropertyReaderTest extends AbstractPropertyReaderTestCase {
