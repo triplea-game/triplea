@@ -27,13 +27,13 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandl
    * Method used to handle errors. Called auto-magically by sun property
    */
   @Override
-  public void handle(final Throwable throwable) {
+  public void handle(final Throwable t) {
+    final String msg = "Error: " + (t.getLocalizedMessage() != null ? t.getLocalizedMessage() : t);
     if (GraphicsEnvironment.isHeadless()) {
-      final String msg = "Error: " + throwable.getMessage();
       System.err.println(msg);
-      throwable.printStackTrace();
+      t.printStackTrace();
     } else {
-      ClientLogger.logError("Error: " + throwable.getMessage(), throwable);
+      ClientLogger.logError(msg, t);
     }
   }
 

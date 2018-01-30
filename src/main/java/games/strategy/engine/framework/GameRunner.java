@@ -123,14 +123,17 @@ public class GameRunner {
     ClientSetting.initialize();
 
     if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      ErrorConsole.createConsole();
+      SwingAction.invokeAndWait(() -> {
+        LookAndFeel.setupLookAndFeel();
+        ErrorConsole.createConsole();
+        ErrorMessage.INSTANCE.init();
+      });
     }
+
     if (!new ArgParser(COMMAND_LINE_ARGS).handleCommandLineArgs(args)) {
       usage();
       return;
     }
-
-    LookAndFeel.setupLookAndFeel();
 
     if (HttpProxy.isUsingSystemProxy()) {
       HttpProxy.updateSystemProxy();
@@ -145,7 +148,6 @@ public class GameRunner {
       SwingUtilities.invokeLater(() -> {
         setupPanelModel.showSelectType();
         mainFrame = newMainFrame();
-        ErrorMessage.INSTANCE.init();
       });
 
       showMainFrame();
