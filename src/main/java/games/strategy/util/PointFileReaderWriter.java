@@ -171,7 +171,7 @@ public final class PointFileReaderWriter {
   public static Map<String, List<Point>> readOneToMany(final InputStream stream) throws IOException {
     checkNotNull(stream);
 
-    final HashMap<String, List<Point>> mapping = new HashMap<>();
+    final Map<String, List<Point>> mapping = new HashMap<>();
     try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       @Nullable
@@ -190,7 +190,9 @@ public final class PointFileReaderWriter {
    * Returns a map of the form String -> Collection of polygons.
    */
   public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException {
-    final HashMap<String, List<Polygon>> mapping = new HashMap<>();
+    checkNotNull(stream);
+
+    final Map<String, List<Polygon>> mapping = new HashMap<>();
     try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       @Nullable
@@ -205,7 +207,7 @@ public final class PointFileReaderWriter {
     return mapping;
   }
 
-  private static void readMultiplePolygons(final String line, final HashMap<String, List<Polygon>> mapping)
+  private static void readMultiplePolygons(final String line, final Map<String, List<Polygon>> mapping)
       throws IOException {
     try {
       // this loop is executed a lot when loading games
@@ -213,7 +215,7 @@ public final class PointFileReaderWriter {
       final String name = line.substring(0, line.indexOf('<')).trim();
       int index = name.length();
       final List<Polygon> polygons = new ArrayList<>(64);
-      final ArrayList<Point> points = new ArrayList<>();
+      final List<Point> points = new ArrayList<>();
       final int length = line.length();
       while (index < length) {
         char current = line.charAt(index);
@@ -270,7 +272,7 @@ public final class PointFileReaderWriter {
     }
   }
 
-  private static void createPolygonFromPoints(final Collection<Polygon> polygons, final ArrayList<Point> points) {
+  private static void createPolygonFromPoints(final Collection<Polygon> polygons, final List<Point> points) {
     final int[] pointsX = new int[points.size()];
     final int[] pointsY = new int[points.size()];
     for (int i = 0; i < points.size(); i++) {
@@ -281,7 +283,7 @@ public final class PointFileReaderWriter {
     polygons.add(new Polygon(pointsX, pointsY, pointsX.length));
   }
 
-  private static void readMultiple(final String line, final HashMap<String, List<Point>> mapping) throws IOException {
+  private static void readMultiple(final String line, final Map<String, List<Point>> mapping) throws IOException {
     final StringTokenizer tokens = new StringTokenizer(line, "");
     final String name = tokens.nextToken("(").trim();
     if (mapping.containsKey(name)) {
