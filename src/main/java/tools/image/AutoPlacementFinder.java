@@ -7,6 +7,8 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,8 +75,7 @@ public class AutoPlacementFinder {
    * Will calculate the placements on the map automatically.
    */
   static void calculate() {
-    // create hash map of placements
-    final Map<String, Collection<Point>> placements = new HashMap<>();
+    final Map<String, List<Point>> placements = new HashMap<>();
     // ask user where the map is
     final String mapDir = mapFolderLocation == null ? getMapDirectory() : mapFolderLocation.getName();
     if (mapDir == null) {
@@ -215,18 +216,17 @@ public class AutoPlacementFinder {
     } // while
     textOptionPane.appendNewLine("\r\nAll Finished!");
     textOptionPane.countDown();
-    try {
-      final String fileName =
-          new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
-      if (fileName == null) {
-        textOptionPane.appendNewLine("You chose not to save, Shutting down");
-        textOptionPane.dispose();
-        System.exit(0);
-      }
-      PointFileReaderWriter.writeOneToMany(new FileOutputStream(fileName), placements);
+    final String fileName = new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
+    if (fileName == null) {
+      textOptionPane.appendNewLine("You chose not to save, Shutting down");
+      textOptionPane.dispose();
+      System.exit(0);
+    }
+    try (OutputStream os = new FileOutputStream(fileName)) {
+      PointFileReaderWriter.writeOneToMany(os, placements);
       textOptionPane.appendNewLine("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final Exception e) {
-      ToolLogger.error("Failed to write points file", e);
+    } catch (final IOException e) {
+      ToolLogger.error("Failed to write points file: " + fileName, e);
       textOptionPane.dispose();
       System.exit(0);
     }

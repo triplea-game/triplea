@@ -231,18 +231,16 @@ public class CenterPicker extends JFrame {
    * Saves the centers to disk.
    */
   private void saveCenters() {
-    try {
-      final String fileName =
-          new FileSave("Where To Save centers.txt ?", "centers.txt", mapFolderLocation).getPathString();
-      if (fileName == null) {
-        return;
-      }
-      try (OutputStream out = new FileOutputStream(fileName)) {
-        PointFileReaderWriter.writeOneToOne(out, centers);
-      }
+    final String fileName =
+        new FileSave("Where To Save centers.txt ?", "centers.txt", mapFolderLocation).getPathString();
+    if (fileName == null) {
+      return;
+    }
+    try (OutputStream out = new FileOutputStream(fileName)) {
+      PointFileReaderWriter.writeOneToOne(out, centers);
       ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final Exception e) {
-      ToolLogger.error("Failed to save centers", e);
+    } catch (final IOException e) {
+      ToolLogger.error("Failed to save centers: " + fileName, e);
     }
   }
 

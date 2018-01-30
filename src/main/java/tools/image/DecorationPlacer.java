@@ -456,18 +456,16 @@ public class DecorationPlacer extends JFrame {
       entry.getValue().getSecond().addAll(pointSet);
       currentPoints.put(entry.getKey(), entry.getValue().getSecond());
     }
-    try {
-      final String fileName = new FileSave("Where To Save Image Points Text File?", JFileChooser.FILES_ONLY,
-          currentImagePointsTextFile, mapFolderLocation).getPathString();
-      if (fileName == null) {
-        return;
-      }
-      try (OutputStream out = new FileOutputStream(fileName)) {
-        PointFileReaderWriter.writeOneToMany(out, new HashMap<>(currentPoints));
-      }
+    final String fileName = new FileSave("Where To Save Image Points Text File?", JFileChooser.FILES_ONLY,
+        currentImagePointsTextFile, mapFolderLocation).getPathString();
+    if (fileName == null) {
+      return;
+    }
+    try (OutputStream out = new FileOutputStream(fileName)) {
+      PointFileReaderWriter.writeOneToMany(out, currentPoints);
       ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final Exception e) {
-      ToolLogger.error("Failed to save points", e);
+    } catch (final IOException e) {
+      ToolLogger.error("Failed to save points: " + fileName, e);
     }
   }
 
