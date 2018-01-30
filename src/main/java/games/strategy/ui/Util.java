@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.swing.SwingUtilities;
-
 public final class Util {
   public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
 
@@ -35,9 +33,6 @@ public final class Util {
   }
 
   public static <T> T runInSwingEventThread(final Task<T> task) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      return task.run();
-    }
     final AtomicReference<T> results = new AtomicReference<>();
     SwingAction.invokeAndWait(() -> results.set(task.run()));
     return results.get();

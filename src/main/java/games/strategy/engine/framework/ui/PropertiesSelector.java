@@ -7,7 +7,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
@@ -28,13 +27,9 @@ public class PropertiesSelector {
    */
   public static Object getButton(final JComponent parent, final String title,
       final List<IEditableProperty> properties, final Object... buttonOptions) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      final AtomicReference<Object> buttonRef = new AtomicReference<>();
-      SwingAction.invokeAndWait(() -> buttonRef.set(showDialog(parent, title, properties, buttonOptions)));
-      return buttonRef.get();
-    }
-
-    return showDialog(parent, title, properties, buttonOptions);
+    final AtomicReference<Object> buttonRef = new AtomicReference<>();
+    SwingAction.invokeAndWait(() -> buttonRef.set(showDialog(parent, title, properties, buttonOptions)));
+    return buttonRef.get();
   }
 
   private static Object showDialog(final JComponent parent, final String title,

@@ -23,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
@@ -148,19 +147,12 @@ public class MapCreator extends JFrame {
   }
 
   private void setWidgetActivation() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setWidgetActivation();
-        }
-      });
-      return;
-    }
-    mainPanel.validate();
-    mainPanel.repaint();
-    this.validate();
-    this.repaint();
+    SwingAction.invokeNowOrLater(() -> {
+      mainPanel.validate();
+      mainPanel.repaint();
+      this.validate();
+      this.repaint();
+    });
   }
 
   private void createPart1Panel() {

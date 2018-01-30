@@ -95,41 +95,39 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   void setChat(final Chat chat) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingAction.invokeAndWait(() -> setChat(chat));
-      return;
-    }
-    if (chat != null) {
-      chat.removeChatListener(this);
-      cleanupKeyMap();
-    }
-    this.chat = chat;
-    if (chat != null) {
-      setupKeyMap();
-      chat.addChatListener(this);
-      send.setEnabled(true);
-      text.setEnabled(true);
-      synchronized (chat.getMutex()) {
-        text.setText("");
-        for (final ChatMessage message : chat.getChatHistory()) {
-          if (message.getFrom().equals(chat.getServerNode().getName())) {
-            if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-              addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
-                  "ADMIN_CHAT_CONTROL", false);
-              continue;
-            } else if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
-              addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
-              continue;
-            }
-          }
-          addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
-        }
+    SwingAction.invokeAndWait(() -> {
+      if (chat != null) {
+        chat.removeChatListener(this);
+        cleanupKeyMap();
       }
-    } else {
-      send.setEnabled(false);
-      text.setEnabled(false);
-      updatePlayerList(Collections.emptyList());
-    }
+      this.chat = chat;
+      if (chat != null) {
+        setupKeyMap();
+        chat.addChatListener(this);
+        send.setEnabled(true);
+        text.setEnabled(true);
+        synchronized (chat.getMutex()) {
+          text.setText("");
+          for (final ChatMessage message : chat.getChatHistory()) {
+            if (message.getFrom().equals(chat.getServerNode().getName())) {
+              if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
+                addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
+                    "ADMIN_CHAT_CONTROL", false);
+                continue;
+              } else if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
+                addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
+                continue;
+              }
+            }
+            addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
+          }
+        }
+      } else {
+        send.setEnabled(false);
+        text.setEnabled(false);
+        updatePlayerList(Collections.emptyList());
+      }
+    });
   }
 
   public Chat getChat() {

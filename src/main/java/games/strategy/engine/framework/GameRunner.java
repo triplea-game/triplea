@@ -550,15 +550,13 @@ public class GameRunner {
    * After the game has been left, call this.
    */
   public static void clientLeftGame() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingAction.invokeAndWait(GameRunner::clientLeftGame);
-      return;
-    }
-    // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
-    // closing of stream while unloading map resources.
-    ThreadUtil.sleep(100);
-    setupPanelModel.showSelectType();
-    showMainFrame();
+    SwingAction.invokeAndWait(() -> {
+      // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
+      // closing of stream while unloading map resources.
+      ThreadUtil.sleep(100);
+      setupPanelModel.showSelectType();
+      showMainFrame();
+    });
   }
 
   public static void quitGame() {

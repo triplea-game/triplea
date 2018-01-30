@@ -1858,40 +1858,36 @@ public class TripleAFrame extends MainGameFrame {
     validate();
   }
 
-
-
   private void setWidgetActivation() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> setWidgetActivation());
-      return;
-    }
-    if (showHistoryAction != null) {
-      showHistoryAction.setEnabled(!(inHistory || uiContext.getShowMapOnly()));
-    }
-    if (showGameAction != null) {
-      showGameAction.setEnabled(!inGame);
-    }
-    if (showMapOnlyAction != null) {
-      // We need to check and make sure there are no local human players
-      boolean foundHuman = false;
-      for (final IGamePlayer gamePlayer : localPlayers.getLocalPlayers()) {
-        if (gamePlayer instanceof TripleAPlayer) {
-          foundHuman = true;
+    SwingAction.invokeNowOrLater(() -> {
+      if (showHistoryAction != null) {
+        showHistoryAction.setEnabled(!(inHistory || uiContext.getShowMapOnly()));
+      }
+      if (showGameAction != null) {
+        showGameAction.setEnabled(!inGame);
+      }
+      if (showMapOnlyAction != null) {
+        // We need to check and make sure there are no local human players
+        boolean foundHuman = false;
+        for (final IGamePlayer gamePlayer : localPlayers.getLocalPlayers()) {
+          if (gamePlayer instanceof TripleAPlayer) {
+            foundHuman = true;
+          }
+        }
+        if (!foundHuman) {
+          showMapOnlyAction.setEnabled(inGame || inHistory);
+        } else {
+          showMapOnlyAction.setEnabled(false);
         }
       }
-      if (!foundHuman) {
-        showMapOnlyAction.setEnabled(inGame || inHistory);
-      } else {
-        showMapOnlyAction.setEnabled(false);
+      if (editModeButtonModel != null) {
+        if (editDelegate == null || uiContext.getShowMapOnly()) {
+          editModeButtonModel.setEnabled(false);
+        } else {
+          editModeButtonModel.setEnabled(true);
+        }
       }
-    }
-    if (editModeButtonModel != null) {
-      if (editDelegate == null || uiContext.getShowMapOnly()) {
-        editModeButtonModel.setEnabled(false);
-      } else {
-        editModeButtonModel.setEnabled(true);
-      }
-    }
+    });
   }
 
   // setEditDelegate is called by TripleAPlayer at the start and end of a turn

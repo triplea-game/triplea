@@ -5,13 +5,12 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.SwingUtilities;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LauncherFactory;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.ui.SwingAction;
 
 /** Setup panel when hosting a local game. */
 public class LocalSetupPanel extends SetupPanel implements Observer {
@@ -70,11 +69,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void update(final Observable o, final Object arg) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData()));
-      return;
-    }
-    layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData());
+    SwingAction.invokeNowOrLater(() -> layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData()));
   }
 
   @Override
