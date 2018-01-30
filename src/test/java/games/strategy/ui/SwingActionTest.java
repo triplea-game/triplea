@@ -1,6 +1,7 @@
 package games.strategy.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -9,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
 import javax.swing.Action;
@@ -47,5 +50,17 @@ public class SwingActionTest {
       SwingAction.invokeAndWait(action);
       verify(action, times(2)).run();
     });
+  }
+
+  @Test
+  public void testInvokeNowOrLater() {
+    final CountDownLatch latch = new CountDownLatch(1);
+    final Runnable action = () -> {
+      latch.countDown();
+    };
+
+    SwingAction.invokeNowOrLater(action);
+
+    assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> latch.await());
   }
 }

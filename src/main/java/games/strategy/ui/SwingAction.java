@@ -38,7 +38,8 @@ import games.strategy.debug.ClientLogger;
  * SwingAction.of(e -> doSomething());
  * </pre>
  */
-public class SwingAction {
+public final class SwingAction {
+  private SwingAction() {}
 
   /**
    * Creates a Swing 'Action' object around a given name and action listener. Example:
@@ -86,6 +87,26 @@ public class SwingAction {
       ClientLogger.logError("Failed while invoking a swing UI action", e);
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
+    }
+  }
+
+  /**
+   * Synchronously executes the specified action if called from the Swing event dispatch thread. Otherwise,
+   * asynchronously executes the specified action on the Swing event dispatch thread.
+   *
+   * <p>
+   * This method may safely be called from any thread, including the Swing event dispatch thread.
+   * </p>
+   *
+   * @param action The action to execute.
+   */
+  public static void invokeNowOrLater(final Runnable action) {
+    checkNotNull(action);
+
+    if (SwingUtilities.isEventDispatchThread()) {
+      action.run();
+    } else {
+      SwingUtilities.invokeLater(action);
     }
   }
 

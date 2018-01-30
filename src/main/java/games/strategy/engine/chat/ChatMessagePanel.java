@@ -243,7 +243,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   @Override
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
-    final Runnable runner = () -> {
+    SwingAction.invokeNowOrLater(() -> {
       if (from == null || chat == null || chat.getServerNode() == null || chat.getServerNode().getName() == null) {
         // someone likely disconnected from the game.
         return;
@@ -270,12 +270,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         scrollModel.setValue(scrollModel.getMaximum());
       });
       ClipPlayer.play(sound);
-    };
-    if (SwingUtilities.isEventDispatchThread()) {
-      runner.run();
-    } else {
-      SwingUtilities.invokeLater(runner);
-    }
+    });
   }
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {

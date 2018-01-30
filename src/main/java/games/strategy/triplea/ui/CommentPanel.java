@@ -20,7 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.text.BadLocationException;
@@ -120,7 +119,7 @@ public class CommentPanel extends JPanel {
   }
 
   private void readHistoryTreeEvent(final TreeModelEvent e) {
-    final Runnable runner = () -> {
+    SwingAction.invokeNowOrLater(() -> {
       data.acquireReadLock();
       try {
         final Document doc = text.getDocument();
@@ -149,13 +148,7 @@ public class CommentPanel extends JPanel {
       } finally {
         data.releaseReadLock();
       }
-    };
-    // invoke in the swing event thread
-    if (SwingUtilities.isEventDispatchThread()) {
-      runner.run();
-    } else {
-      SwingUtilities.invokeLater(runner);
-    }
+    });
   }
 
   private void setupKeyMap() {
@@ -202,7 +195,7 @@ public class CommentPanel extends JPanel {
 
   /** thread safe. */
   public void addMessage(final String message) {
-    final Runnable runner = () -> {
+    SwingAction.invokeNowOrLater(() -> {
       try {
         final Document doc = text.getDocument();
         // save history entry
@@ -221,13 +214,7 @@ public class CommentPanel extends JPanel {
       }
       final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
       scrollModel.setValue(scrollModel.getMaximum());
-    };
-    // invoke in the swing event thread
-    if (SwingUtilities.isEventDispatchThread()) {
-      runner.run();
-    } else {
-      SwingUtilities.invokeLater(runner);
-    }
+    });
   }
 
   /**
