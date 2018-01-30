@@ -30,6 +30,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import tools.image.AutoPlacementFinder;
 import tools.image.CenterPicker;
@@ -71,10 +72,15 @@ public class MapCreator extends JFrame {
     return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
   }
 
+  /**
+   * Entry point for the map-making utilities application.
+   */
   public static void main(final String[] args) {
-    LookAndFeel.setupLookAndFeel();
+    ClientSetting.initialize();
 
     SwingAction.invokeAndWait(() -> {
+      LookAndFeel.setupLookAndFeel();
+
       final MapCreator creator = new MapCreator();
       creator.setSize(800, 600);
       creator.setLocationRelativeTo(null);

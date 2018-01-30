@@ -1,9 +1,12 @@
 package games.strategy.engine.framework.lookandfeel;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
@@ -38,10 +41,16 @@ import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.ui.SwingAction;
 
-public class LookAndFeel {
+/**
+ * Provides methods for working with the Swing Look-And-Feel.
+ */
+public final class LookAndFeel {
+  private LookAndFeel() {}
 
+  /**
+   * Returns a collection of the available Look-And-Feels.
+   */
   public static List<String> getLookAndFeelAvailableList() {
     final List<String> substanceLooks = new ArrayList<>();
     for (final UIManager.LookAndFeelInfo look : UIManager.getInstalledLookAndFeels()) {
@@ -65,26 +74,30 @@ public class LookAndFeel {
     return substanceLooks;
   }
 
+  /**
+   * Sets the user's preferred Look-And-Feel. If not available, the system Look-And-Feel will be used.
+   *
+   * @throws IllegalStateException If this method is not called from the EDT.
+   */
   public static void setupLookAndFeel() {
-    SwingAction.invokeAndWait(() -> {
-      try {
-        UIManager.setLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
-        // FYI if you are getting a null pointer exception in Substance, like this:
-        // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
-        // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
-        // Then it is because you included the swingx substance library without including swingx.
-        // You can solve by including both swingx libraries or removing both,
-        // or by setting the look and feel twice in a row.
-      } catch (final Throwable t) {
-        if (!SystemProperties.isMac()) {
-          try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          } catch (final Exception e) {
-            ClientLogger.logQuietly("Failed to set system look and feel", e);
-          }
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    try {
+      UIManager.setLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
+      // FYI if you are getting a null pointer exception in Substance, like this:
+      // org.pushingpixels.substance.internal.utils.SubstanceColorUtilities
+      // .getDefaultBackgroundColor(SubstanceColorUtilities.java:758)
+      // Then it is because you included the swingx substance library without including swingx.
+      // You can solve by including both swingx libraries or removing both,
+      // or by setting the look and feel twice in a row.
+    } catch (final Throwable t) {
+      if (!SystemProperties.isMac()) {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (final Exception e) {
+          ClientLogger.logQuietly("Failed to set system look and feel", e);
         }
       }
-    });
+    }
   }
-
 }
