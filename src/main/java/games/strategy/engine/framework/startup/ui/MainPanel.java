@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
@@ -27,6 +26,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.ui.SwingAction;
 
 /**
  * When the game launches, the MainFrame is loaded which will contain
@@ -200,12 +200,10 @@ public class MainPanel extends JPanel implements Observer {
   }
 
   private void setWidgetActivation() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> setWidgetActivation());
-      return;
-    }
-    gameTypePanelModel.setWidgetActivation();
-    playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart());
+    SwingAction.invokeNowOrLater(() -> {
+      gameTypePanelModel.setWidgetActivation();
+      playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart());
+    });
   }
 
   @Override

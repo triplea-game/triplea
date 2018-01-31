@@ -95,41 +95,39 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   void setChat(final Chat chat) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingAction.invokeAndWait(() -> setChat(chat));
-      return;
-    }
-    if (chat != null) {
-      chat.removeChatListener(this);
-      cleanupKeyMap();
-    }
-    this.chat = chat;
-    if (chat != null) {
-      setupKeyMap();
-      chat.addChatListener(this);
-      send.setEnabled(true);
-      text.setEnabled(true);
-      synchronized (chat.getMutex()) {
-        text.setText("");
-        for (final ChatMessage message : chat.getChatHistory()) {
-          if (message.getFrom().equals(chat.getServerNode().getName())) {
-            if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-              addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
-                  "ADMIN_CHAT_CONTROL", false);
-              continue;
-            } else if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
-              addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
-              continue;
-            }
-          }
-          addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
-        }
+    SwingAction.invokeAndWait(() -> {
+      if (chat != null) {
+        chat.removeChatListener(this);
+        cleanupKeyMap();
       }
-    } else {
-      send.setEnabled(false);
-      text.setEnabled(false);
-      updatePlayerList(Collections.emptyList());
-    }
+      this.chat = chat;
+      if (chat != null) {
+        setupKeyMap();
+        chat.addChatListener(this);
+        send.setEnabled(true);
+        text.setEnabled(true);
+        synchronized (chat.getMutex()) {
+          text.setText("");
+          for (final ChatMessage message : chat.getChatHistory()) {
+            if (message.getFrom().equals(chat.getServerNode().getName())) {
+              if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
+                addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
+                    "ADMIN_CHAT_CONTROL", false);
+                continue;
+              } else if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
+                addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
+                continue;
+              }
+            }
+            addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
+          }
+        }
+      } else {
+        send.setEnabled(false);
+        text.setEnabled(false);
+        updatePlayerList(Collections.emptyList());
+      }
+    });
   }
 
   public Chat getChat() {
@@ -243,7 +241,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   @Override
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
-    final Runnable runner = () -> {
+    SwingAction.invokeNowOrLater(() -> {
       if (from == null || chat == null || chat.getServerNode() == null || chat.getServerNode().getName() == null) {
         // someone likely disconnected from the game.
         return;
@@ -270,12 +268,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         scrollModel.setValue(scrollModel.getMaximum());
       });
       ClipPlayer.play(sound);
-    };
-    if (SwingUtilities.isEventDispatchThread()) {
-      runner.run();
-    } else {
-      SwingUtilities.invokeLater(runner);
-    }
+    });
   }
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {

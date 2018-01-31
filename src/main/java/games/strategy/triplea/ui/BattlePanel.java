@@ -217,16 +217,13 @@ public class BattlePanel extends ActionPanel {
   }
 
   public void listBattle(final GUID battleId, final List<String> steps) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      // recursive call
-      SwingUtilities.invokeLater(() -> listBattle(battleId, steps));
-      return;
-    }
-    removeAll();
-    if (battleDisplay != null) {
-      getMap().centerOn(battleDisplay.getBattleLocation());
-      battleDisplay.listBattle(steps);
-    }
+    SwingAction.invokeNowOrLater(() -> {
+      removeAll();
+      if (battleDisplay != null) {
+        getMap().centerOn(battleDisplay.getBattleLocation());
+        battleDisplay.listBattle(steps);
+      }
+    });
   }
 
   public void showBattle(final GUID battleId, final Territory location,

@@ -53,6 +53,7 @@ import games.strategy.engine.random.InternalDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.triplea.pbem.AxisAndAlliesForumPoster;
+import games.strategy.ui.SwingAction;
 
 /**
  * A panel for setting up Play by Email/Forum.
@@ -329,16 +330,10 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    */
   @Override
   public void update(final Observable o, final Object arg) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> {
-        loadAll();
-        layoutComponents();
-      });
-      return;
-    }
-
-    loadAll();
-    layoutComponents();
+    SwingAction.invokeNowOrLater(() -> {
+      loadAll();
+      layoutComponents();
+    });
   }
 
   /**

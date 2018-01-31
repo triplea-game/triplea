@@ -10,12 +10,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.image.DiceImageFactory;
+import games.strategy.ui.SwingAction;
 
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
@@ -41,24 +41,22 @@ public class DicePanel extends JPanel {
   }
 
   public void setDiceRoll(final DiceRoll diceRoll) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> setDiceRoll(diceRoll));
-      return;
-    }
-    removeAll();
-    for (int i = 1; i <= data.getDiceSides(); i++) {
-      final List<Die> dice = diceRoll.getRolls(i);
-      if (dice.isEmpty()) {
-        continue;
+    SwingAction.invokeNowOrLater(() -> {
+      removeAll();
+      for (int i = 1; i <= data.getDiceSides(); i++) {
+        final List<Die> dice = diceRoll.getRolls(i);
+        if (dice.isEmpty()) {
+          continue;
+        }
+        add(new JLabel("Rolled at " + (i) + ":"));
+        add(create(diceRoll.getRolls(i)));
       }
-      add(new JLabel("Rolled at " + (i) + ":"));
-      add(create(diceRoll.getRolls(i)));
-    }
-    add(Box.createVerticalGlue());
-    add(new JLabel("Total hits:" + diceRoll.getHits()));
-    validate();
-    invalidate();
-    repaint();
+      add(Box.createVerticalGlue());
+      add(new JLabel("Total hits:" + diceRoll.getHits()));
+      validate();
+      invalidate();
+      repaint();
+    });
   }
 
   private JComponent create(final List<Die> dice) {

@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -59,18 +58,19 @@ public class PbemDiceRoller implements IRandomSource {
     dialog.roll();
   }
 
-
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      final AtomicReference<int[]> result = new AtomicReference<>();
-      SwingAction.invokeAndWait(() -> result.set(getRandom(max, count, annotation)));
-      return result.get();
+    try {
+      return SwingAction.invokeAndWait(() -> {
+        final HttpDiceRollerDialog dialog =
+            new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer, gameUuid);
+        dialog.roll();
+        return dialog.getDiceRoll();
+      });
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+      return new int[0];
     }
-    final HttpDiceRollerDialog dialog =
-        new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer, gameUuid);
-    dialog.roll();
-    return dialog.getDiceRoll();
   }
 
   @Override

@@ -20,7 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
@@ -37,6 +36,7 @@ import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.ui.SwingAction;
 import swinglib.JButtonBuilder;
 
 public class GameSelectorPanel extends JPanel implements Observer {
@@ -75,23 +75,21 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private void updateGameData() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(this::updateGameData);
-      return;
-    }
-    nameText.setText(model.getGameName());
-    versionText.setText(model.getGameVersion());
-    roundText.setText(model.getGameRound());
-    String fileName = model.getFileName();
-    if (fileName != null && fileName.length() > 1) {
-      try {
-        fileName = URLDecoder.decode(fileName, "UTF-8");
-      } catch (final IllegalArgumentException | UnsupportedEncodingException e) { // ignore
+    SwingAction.invokeNowOrLater(() -> {
+      nameText.setText(model.getGameName());
+      versionText.setText(model.getGameVersion());
+      roundText.setText(model.getGameRound());
+      String fileName = model.getFileName();
+      if (fileName != null && fileName.length() > 1) {
+        try {
+          fileName = URLDecoder.decode(fileName, "UTF-8");
+        } catch (final IllegalArgumentException | UnsupportedEncodingException e) { // ignore
+        }
       }
-    }
-    fileNameText.setText(getFormattedFileNameText(fileName,
-        Math.max(22, 3 + nameText.getText().length() + nameLabel.getText().length())));
-    fileNameText.setToolTipText(fileName);
+      fileNameText.setText(getFormattedFileNameText(fileName,
+          Math.max(22, 3 + nameText.getText().length() + nameLabel.getText().length())));
+      fileNameText.setToolTipText(fileName);
+    });
   }
 
   /**
@@ -305,21 +303,19 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private void setWidgetActivation() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> setWidgetActivation());
-      return;
-    }
-    final boolean canSelectGameData = canSelectLocalGameData();
-    final boolean canChangeHostBotGameData = canChangeHostBotGameData();
-    loadSavedGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
-    loadNewGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
-    // Disable game options if there are none.
-    if (canChangeHostBotGameData || (canSelectGameData && model.getGameData() != null
-        && model.getGameData().getProperties().getEditableProperties().size() > 0)) {
-      gameOptions.setEnabled(true);
-    } else {
-      gameOptions.setEnabled(false);
-    }
+    SwingAction.invokeNowOrLater(() -> {
+      final boolean canSelectGameData = canSelectLocalGameData();
+      final boolean canChangeHostBotGameData = canChangeHostBotGameData();
+      loadSavedGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
+      loadNewGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
+      // Disable game options if there are none.
+      if (canChangeHostBotGameData || (canSelectGameData && model.getGameData() != null
+          && model.getGameData().getProperties().getEditableProperties().size() > 0)) {
+        gameOptions.setEnabled(true);
+      } else {
+        gameOptions.setEnabled(false);
+      }
+    });
   }
 
   private boolean canSelectLocalGameData() {

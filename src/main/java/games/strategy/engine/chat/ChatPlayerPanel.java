@@ -28,7 +28,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import games.strategy.net.INode;
@@ -219,20 +218,14 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
 
   @Override
   public synchronized void updatePlayerList(final Collection<INode> players) {
-    final Runnable runner = () -> {
+    SwingAction.invokeNowOrLater(() -> {
       listModel.clear();
       for (final INode name : players) {
         if (!hiddenPlayers.contains(name.getName())) {
           listModel.addElement(name);
         }
       }
-    };
-    // invoke in the swing event thread
-    if (SwingUtilities.isEventDispatchThread()) {
-      runner.run();
-    } else {
-      SwingUtilities.invokeLater(runner);
-    }
+    });
   }
 
   @Override
