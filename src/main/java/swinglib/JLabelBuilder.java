@@ -27,6 +27,7 @@ public class JLabelBuilder {
 
   private String text;
   private @Nullable Icon icon;
+  private @Nullable Integer iconTextGap;
   private Alignment alignment;
   private Dimension maxSize;
   private int maxTextLength = Integer.MAX_VALUE;
@@ -60,6 +61,10 @@ public class JLabelBuilder {
       label.setIcon(icon);
     }
 
+    if (iconTextGap != null) {
+      label.setIconTextGap(iconTextGap);
+    }
+
     if (alignment != null) {
       switch (alignment) {
         case LEFT:
@@ -85,6 +90,11 @@ public class JLabelBuilder {
 
   public JLabelBuilder errorIcon() {
     icon = UIManager.getIcon("OptionPane.errorIcon");
+    return this;
+  }
+
+  public JLabelBuilder iconTextGap(final int iconTextGap) {
+    this.iconTextGap = iconTextGap;
     return this;
   }
 
