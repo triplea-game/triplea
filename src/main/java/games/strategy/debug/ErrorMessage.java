@@ -30,7 +30,7 @@ public enum ErrorMessage {
   INSTANCE;
 
   private final JFrame windowReference = new JFrame("TripleA Error");
-  private final JLabel errorMessage = new JLabel();
+  private final JLabel errorMessage = JLabelBuilder.builder().errorIcon().iconTextGap(10).build();
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
 
   ErrorMessage() {
@@ -48,8 +48,6 @@ public enum ErrorMessage {
         .addCenter(JPanelBuilder.builder()
             .horizontalBoxLayout()
             .addHorizontalGlue()
-            .add(JLabelBuilder.builder().errorIcon().build())
-            .addHorizontalStrut(10)
             .add(errorMessage)
             .addHorizontalGlue()
             .build())

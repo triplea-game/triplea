@@ -30,6 +30,16 @@ public class JLabelBuilderTest {
   }
 
   @Test
+  public void iconTextGap() {
+    final int value = 42;
+    final JLabel label = JLabelBuilder.builder()
+        .text("value")
+        .iconTextGap(value)
+        .build();
+    MatcherAssert.assertThat(label.getIconTextGap(), is(value));
+  }
+
+  @Test
   public void textOrIconIsRequired() {
     assertThrows(IllegalStateException.class, JLabelBuilder.builder()::build);
   }
