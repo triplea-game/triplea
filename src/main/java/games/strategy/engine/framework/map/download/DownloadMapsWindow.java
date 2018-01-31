@@ -518,11 +518,6 @@ public class DownloadMapsWindow extends JFrame {
             .toolTip("Click this button to learn more about the map download feature in TripleA")
             .actionListener(() -> JOptionPane.showMessageDialog(this, new MapDownloadHelpPanel()))
             .build())
-        .add(JButtonBuilder.builder()
-            .title("Give Map Feedback")
-            .toolTip("Click this button to submit map comments and bug reports back to the map makers")
-            .actionListener(() -> FeedbackDialog.showFeedbackDialog(gamesList.getSelectedValuesList(), maps))
-            .build())
         .add(Box.createGlue())
         .add(JButtonBuilder.builder()
             .title("Close")
@@ -534,7 +529,6 @@ public class DownloadMapsWindow extends JFrame {
             .build())
         .build();
   }
-
 
   private static final String MULTIPLE_SELECT_MSG =
       "You can select multiple maps by holding control or shift while clicking map names.";
