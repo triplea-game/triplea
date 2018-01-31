@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.ui;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -27,9 +26,12 @@ public class PropertiesSelector {
    */
   public static Object getButton(final JComponent parent, final String title,
       final List<IEditableProperty> properties, final Object... buttonOptions) {
-    final AtomicReference<Object> buttonRef = new AtomicReference<>();
-    SwingAction.invokeAndWait(() -> buttonRef.set(showDialog(parent, title, properties, buttonOptions)));
-    return buttonRef.get();
+    try {
+      return SwingAction.invokeAndWait(() -> showDialog(parent, title, properties, buttonOptions));
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+      return JOptionPane.UNINITIALIZED_VALUE;
+    }
   }
 
   private static Object showDialog(final JComponent parent, final String title,

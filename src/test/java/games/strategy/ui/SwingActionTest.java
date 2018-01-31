@@ -1,7 +1,9 @@
 package games.strategy.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,6 +15,7 @@ import java.awt.event.KeyListener;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
@@ -43,12 +46,53 @@ public class SwingActionTest {
   }
 
   @Test
-  public void testInvokeAndWait(@Mock final Runnable action) throws Exception {
+  public void testInvokeAndWaitWithRunnable(@Mock final Runnable action) throws Exception {
     SwingAction.invokeAndWait(action);
     verify(action).run();
     SwingUtilities.invokeAndWait(() -> {
       SwingAction.invokeAndWait(action);
       verify(action, times(2)).run();
+    });
+  }
+
+  @Test
+  public void testInvokeAndWaitWithSupplier_ShouldReturnActionResultWhenCalledOffEdt() throws Exception {
+    final Object value = new Object();
+
+    assertEquals(value, SwingAction.invokeAndWait(() -> value));
+  }
+
+  @Test
+  public void testInvokeAndWaitWithSupplier_ShouldReturnActionResultWhenCalledOnEdt() throws Exception {
+    final Object value = new Object();
+
+    SwingUtilities.invokeAndWait(() -> {
+      try {
+        assertEquals(value, SwingAction.invokeAndWait(() -> value));
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+        fail("unexpected interruption");
+      }
+    });
+  }
+
+  @Test
+  public void testInvokeAndWaitWithSupplier_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
+    final Supplier<?> action = () -> {
+      throw new IllegalStateException();
+    };
+
+    assertThrows(IllegalStateException.class, () -> SwingAction.invokeAndWait(action));
+  }
+
+  @Test
+  public void testInvokeAndWaitWithSupplier_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt() throws Exception {
+    final Supplier<?> action = () -> {
+      throw new IllegalStateException();
+    };
+
+    SwingUtilities.invokeAndWait(() -> {
+      assertThrows(IllegalStateException.class, () -> SwingAction.invokeAndWait(action));
     });
   }
 

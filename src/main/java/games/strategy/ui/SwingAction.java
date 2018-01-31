@@ -8,11 +8,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
+
+import com.google.common.base.Throwables;
 
 import games.strategy.debug.ClientLogger;
 
@@ -77,6 +81,7 @@ public final class SwingAction {
   public static void invokeAndWait(final Runnable action) {
     checkNotNull(action);
 
+    // FIXME: should rethrow unchecked exceptions and not consume InterruptedException
     try {
       if (SwingUtilities.isEventDispatchThread()) {
         action.run();
@@ -87,6 +92,37 @@ public final class SwingAction {
       ClientLogger.logError("Failed while invoking a swing UI action", e);
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
+    }
+  }
+
+  /**
+   * Synchronously executes the specified action on the Swing event dispatch thread and returns the value it supplies.
+   *
+   * <p>
+   * This method may safely be called from any thread, including the Swing event dispatch thread.
+   * </p>
+   *
+   * @param action The action to execute.
+   *
+   * @return The value supplied by the action.
+   *
+   * @throws RuntimeException If the action throws an unchecked exception.
+   * @throws InterruptedException If the current thread is interrupted while waiting for the action to complete.
+   */
+  public static <T> T invokeAndWait(final Supplier<T> action) throws InterruptedException {
+    checkNotNull(action);
+
+    if (SwingUtilities.isEventDispatchThread()) {
+      return action.get();
+    }
+
+    try {
+      final AtomicReference<T> result = new AtomicReference<>();
+      SwingUtilities.invokeAndWait(() -> result.set(action.get()));
+      return result.get();
+    } catch (final InvocationTargetException e) {
+      Throwables.throwIfUnchecked(e.getCause());
+      throw new AssertionError("unexpected checked exception", e.getCause());
     }
   }
 
