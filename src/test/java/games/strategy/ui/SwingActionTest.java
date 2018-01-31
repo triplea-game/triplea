@@ -55,11 +55,8 @@ public class SwingActionTest {
   @Test
   public void testInvokeNowOrLater() {
     final CountDownLatch latch = new CountDownLatch(1);
-    final Runnable action = () -> {
-      latch.countDown();
-    };
 
-    SwingAction.invokeNowOrLater(action);
+    SwingAction.invokeNowOrLater(latch::countDown);
 
     assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> latch.await());
   }
