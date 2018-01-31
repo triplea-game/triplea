@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -40,13 +41,14 @@ import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.LocalizeHtml;
+import swinglib.JLabelBuilder;
 
 public class HelpMenu {
 
   private final UiContext uiContext;
   private final GameData gameData;
 
-  HelpMenu(final JMenuBar menuBar, final UiContext uiContext, final GameData gameData, final Color backgroundColor) {
+  HelpMenu(final JMenuBar menuBar, final UiContext uiContext, final GameData gameData) {
     this.uiContext = uiContext;
     this.gameData = gameData;
 
@@ -56,14 +58,10 @@ public class HelpMenu {
 
     addMoveHelpMenu(helpMenu);
     addUnitHelpMenu(helpMenu);
-
     addGameNotesMenu(helpMenu);
-
-    addAboutMenu(helpMenu, backgroundColor);
-
+    addAboutMenu(helpMenu);
     addReportBugsMenu(helpMenu);
   }
-
 
   private static void addMoveHelpMenu(final JMenu parentMenu) {
     final String moveSelectionHelpTitle = "Movement/Selection Help";
@@ -272,28 +270,37 @@ public class HelpMenu {
     }
   }
 
-  private void addAboutMenu(final JMenu parentMenu, final Color backgroundColor) {
-    final String text = "<h2>" + gameData.getGameName() + "</h2>"
-        + "<p><b>Engine Version:</b> "
-        + ClientContext.engineVersion()
-        + "<br><b>Game:</b> " + gameData.getGameName()
-        + "<br><b>Game Version:</b> " + gameData.getGameVersion() + "</p>"
-        + "<p>For more information please visit,<br><br>"
-        + "<b><a hlink='" + UrlConstants.TRIPLEA_WEBSITE + "'>" + UrlConstants.TRIPLEA_WEBSITE + "</a></b><br><br>";
-    final JEditorPane editorPane = new JEditorPane();
-    editorPane.setBorder(null);
-    editorPane.setBackground(backgroundColor);
-    editorPane.setEditable(false);
-    editorPane.setContentType("text/html");
-    editorPane.setText(text);
-    final JScrollPane scroll = new JScrollPane(editorPane);
-    scroll.setBorder(null);
+  private void addAboutMenu(final JMenu parentMenu) {
+    final String text = "<html>"
+        + "<h2>" + gameData.getGameName() + "</h2>"
+        + "<b>Engine Version:</b> " + ClientContext.engineVersion().getExactVersion() + "<br>"
+        + "<b>Game Version:</b> " + gameData.getGameVersion() + "<br>"
+        + "<br>"
+        + "For more information, please visit: <b>" + UrlConstants.TRIPLEA_WEBSITE + "</b><br>"
+        + "<br>"
+        + "<b>License</b><br>"
+        + "<br>"
+        + "This program is free software; you can redistribute it and/or<br>"
+        + "modify it under the terms of the GNU General Public License<br>"
+        + "as published by the Free Software Foundation; either version 2<br>"
+        + "of the License, or (at your option) any later version.<br>"
+        + "<br>"
+        + "This program is distributed in the hope that it will be useful,<br>"
+        + "but WITHOUT ANY WARRANTY; without even the implied warranty of<br>"
+        + "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br>"
+        + "GNU General Public License for more details.<br>"
+        + "</html>";
+    final JLabel label = JLabelBuilder.builder()
+        .border(BorderFactory.createEmptyBorder(0, 0, 20, 0))
+        .text(text)
+        .build();
+
     if (!SystemProperties.isMac()) {
       parentMenu.addSeparator();
-      parentMenu.add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, editorPane,
+      parentMenu.add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, label,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE))).setMnemonic(KeyEvent.VK_A);
     } else { // On Mac OS X, put the About menu where Mac users expect it to be
-      Application.getApplication().setAboutHandler(paramAboutEvent -> JOptionPane.showMessageDialog(null, editorPane,
+      Application.getApplication().setAboutHandler(paramAboutEvent -> JOptionPane.showMessageDialog(null, label,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE));
     }
   }
@@ -302,5 +309,4 @@ public class HelpMenu {
     parentMenu.add(SwingAction.of("Send Bug Report",
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))).setMnemonic(KeyEvent.VK_B);
   }
-
 }
