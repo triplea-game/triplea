@@ -274,8 +274,7 @@ public class HelpMenu {
 
   private void addAboutMenu(final JMenu parentMenu, final Color backgroundColor) {
     final String text = "<h2>" + gameData.getGameName() + "</h2>"
-        + "<p><b>Engine Version:</b> "
-        + ClientContext.engineVersion()
+        + "<p><b>Engine Version:</b> " + ClientContext.engineVersion().getExactVersion()
         + "<br><b>Game:</b> " + gameData.getGameName()
         + "<br><b>Game Version:</b> " + gameData.getGameVersion() + "</p>"
         + "<p>For more information please visit,<br><br>"
@@ -288,6 +287,7 @@ public class HelpMenu {
     editorPane.setText(text);
     final JScrollPane scroll = new JScrollPane(editorPane);
     scroll.setBorder(null);
+
     if (!SystemProperties.isMac()) {
       parentMenu.addSeparator();
       parentMenu.add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, editorPane,
