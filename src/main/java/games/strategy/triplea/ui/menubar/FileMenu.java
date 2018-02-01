@@ -21,28 +21,28 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.SwingAction;
 
-class FileMenu {
+final class FileMenu extends JMenu {
+  private static final long serialVersionUID = -3855695429784752428L;
 
   private final GameData gameData;
   private final TripleAFrame frame;
   private final IGame game;
 
-  FileMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
+  FileMenu(final TripleAFrame frame) {
+    super("File");
+
     this.frame = frame;
     game = frame.getGame();
     gameData = frame.getGame().getData();
 
-    final JMenu fileMenu = new JMenu("File");
-    fileMenu.setMnemonic(KeyEvent.VK_F);
-    fileMenu.add(createSaveMenu());
+    setMnemonic(KeyEvent.VK_F);
 
+    add(createSaveMenu());
     if (PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
-      fileMenu.add(addPostPbem());
+      add(addPostPbem());
     }
-
-    fileMenu.addSeparator();
-    addExitMenu(fileMenu);
-    menuBar.add(fileMenu);
+    addSeparator();
+    addExitMenu();
   }
 
   private JMenuItem createSaveMenu() {
@@ -85,7 +85,7 @@ class FileMenu {
     return menuPbem;
   }
 
-  void addExitMenu(final JMenu parentMenu) {
+  private void addExitMenu() {
     final boolean isMac = SystemProperties.isMac();
     final JMenuItem leaveGameMenuExit = new JMenuItem(SwingAction.of("Leave Game", e -> frame.leaveGame()));
     leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
@@ -97,7 +97,7 @@ class FileMenu {
       leaveGameMenuExit.setAccelerator(
           KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
-    parentMenu.add(leaveGameMenuExit);
+    add(leaveGameMenuExit);
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (isMac) {
@@ -105,8 +105,7 @@ class FileMenu {
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
       final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit Program", e -> frame.shutdown()));
       menuFileExit.setMnemonic(KeyEvent.VK_E);
-      parentMenu.add(menuFileExit);
+      add(menuFileExit);
     }
   }
-
 }

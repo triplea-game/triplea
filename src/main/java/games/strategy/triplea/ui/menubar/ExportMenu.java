@@ -53,33 +53,35 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.FileNameUtils;
 import games.strategy.util.LocalizeHtml;
 
-class ExportMenu {
+final class ExportMenu extends JMenu {
+  private static final long serialVersionUID = 8416990293444575737L;
 
   private final TripleAFrame frame;
   private final GameData gameData;
   private final UiContext uiContext;
   private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
-  ExportMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
+  ExportMenu(final TripleAFrame frame) {
+    super("Export");
+
     this.frame = frame;
     gameData = frame.getGame().getData();
     uiContext = frame.getUiContext();
 
-    final JMenu menuGame = new JMenu("Export");
-    menuGame.setMnemonic(KeyEvent.VK_E);
-    menuBar.add(menuGame);
-    addExportXml(menuGame);
-    addExportStats(menuGame);
-    addExportStatsFull(menuGame);
-    addExportSetupCharts(menuGame);
-    addExportUnitStats(menuGame);
-    addSaveScreenshot(menuGame);
+    setMnemonic(KeyEvent.VK_E);
+
+    addExportXml();
+    addExportStats();
+    addExportStatsFull();
+    addExportSetupCharts();
+    addExportUnitStats();
+    addSaveScreenshot();
   }
 
   // TODO: create a second menu option for parsing current attachments
-  private void addExportXml(final JMenu parentMenu) {
+  private void addExportXml() {
     final Action exportXml = SwingAction.of("Export game.xml File (Beta)", e -> exportXmlFile());
-    parentMenu.add(exportXml).setMnemonic(KeyEvent.VK_X);
+    add(exportXml).setMnemonic(KeyEvent.VK_X);
   }
 
   private void exportXmlFile() {
@@ -111,8 +113,7 @@ class ExportMenu {
     }
   }
 
-
-  private void addSaveScreenshot(final JMenu parentMenu) {
+  private void addSaveScreenshot() {
     final Action abstractAction = SwingAction.of("Export Map Snapshot", e -> {
       // get current history node. if we are in history view, get the selected node.
       final HistoryPanel historyPanel = frame.getHistoryPanel();
@@ -124,17 +125,17 @@ class ExportMenu {
       }
       ScreenshotExporter.exportScreenshot(frame, gameData, curNode);
     });
-    parentMenu.add(abstractAction).setMnemonic(KeyEvent.VK_E);
+    add(abstractAction).setMnemonic(KeyEvent.VK_E);
   }
 
-  private void addExportStatsFull(final JMenu parentMenu) {
+  private void addExportStatsFull() {
     final Action showDiceStats = SwingAction.of("Export Full Game Stats", e -> createAndSaveStats(true));
-    parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_F);
+    add(showDiceStats).setMnemonic(KeyEvent.VK_F);
   }
 
-  private void addExportStats(final JMenu parentMenu) {
+  private void addExportStats() {
     final Action showDiceStats = SwingAction.of("Export Short Game Stats", e -> createAndSaveStats(false));
-    parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_S);
+    add(showDiceStats).setMnemonic(KeyEvent.VK_S);
   }
 
   private void createAndSaveStats(final boolean showPhaseStats) {
@@ -375,7 +376,7 @@ class ExportMenu {
     }
   }
 
-  private void addExportUnitStats(final JMenu parentMenu) {
+  private void addExportUnitStats() {
     final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Unit Charts", e -> {
       final JFileChooser chooser = new JFileChooser();
       chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -394,14 +395,12 @@ class ExportMenu {
       } catch (final IOException e1) {
         ClientLogger.logQuietly("Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
       }
-
     }));
     menuFileExport.setMnemonic(KeyEvent.VK_U);
-    parentMenu.add(menuFileExport);
+    add(menuFileExport);
   }
 
-
-  private void addExportSetupCharts(final JMenu parentMenu) {
+  private void addExportSetupCharts() {
     final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Setup Charts", e -> {
       final JFrame frame = new JFrame("Export Setup Charts");
       frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -421,10 +420,8 @@ class ExportMenu {
       frame.setLocationRelativeTo(frame);
       frame.setVisible(true);
       uiContext.addShutdownWindow(frame);
-
     }));
     menuFileExport.setMnemonic(KeyEvent.VK_C);
-    parentMenu.add(menuFileExport);
-
+    add(menuFileExport);
   }
 }

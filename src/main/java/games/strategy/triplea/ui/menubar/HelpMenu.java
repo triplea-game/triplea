@@ -20,7 +20,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -43,29 +42,33 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.LocalizeHtml;
 import swinglib.JLabelBuilder;
 
-public class HelpMenu {
+/**
+ * The help menu.
+ */
+public final class HelpMenu extends JMenu {
+  private static final long serialVersionUID = 4070541434144687452L;
 
   private final UiContext uiContext;
   private final GameData gameData;
 
-  HelpMenu(final JMenuBar menuBar, final UiContext uiContext, final GameData gameData) {
+  HelpMenu(final UiContext uiContext, final GameData gameData) {
+    super("Help");
+
     this.uiContext = uiContext;
     this.gameData = gameData;
 
-    final JMenu helpMenu = new JMenu("Help");
-    helpMenu.setMnemonic(KeyEvent.VK_H);
-    menuBar.add(helpMenu);
+    setMnemonic(KeyEvent.VK_H);
 
-    addMoveHelpMenu(helpMenu);
-    addUnitHelpMenu(helpMenu);
-    addGameNotesMenu(helpMenu);
-    addAboutMenu(helpMenu);
-    addReportBugsMenu(helpMenu);
+    addMoveHelpMenu();
+    addUnitHelpMenu();
+    addGameNotesMenu();
+    addAboutMenu();
+    addReportBugsMenu();
   }
 
-  private static void addMoveHelpMenu(final JMenu parentMenu) {
+  private void addMoveHelpMenu() {
     final String moveSelectionHelpTitle = "Movement/Selection Help";
-    parentMenu.add(SwingAction.of(moveSelectionHelpTitle, e -> {
+    add(SwingAction.of(moveSelectionHelpTitle, e -> {
       // html formatted string
       final String hints = "<b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
           + "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
@@ -167,9 +170,9 @@ public class HelpMenu {
 
 
 
-  private void addUnitHelpMenu(final JMenu parentMenu) {
+  private void addUnitHelpMenu() {
     final String unitHelpTitle = "Unit Help";
-    parentMenu.add(SwingAction.of(unitHelpTitle, e -> {
+    add(SwingAction.of(unitHelpTitle, e -> {
       final JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
       editorPane.setContentType("text/html");
@@ -218,10 +221,9 @@ public class HelpMenu {
     })).setMnemonic(KeyEvent.VK_U);
   }
 
-
   public static final JEditorPane gameNotesPane = new JEditorPane();
 
-  private void addGameNotesMenu(final JMenu parentMenu) {
+  private void addGameNotesMenu() {
     // allow the game developer to write notes that appear in the game
     // displays whatever is in the notes field in html
     final String notesProperty = gameData.getProperties().get("notes", "");
@@ -232,7 +234,7 @@ public class HelpMenu {
       gameNotesPane.setText(notes);
       gameNotesPane.setForeground(Color.BLACK);
       final String gameNotesTitle = "Game Notes";
-      parentMenu.add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
+      add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
         final JScrollPane scroll = new JScrollPane(gameNotesPane);
         scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
         final JDialog dialog = new JDialog((JFrame) null, gameNotesTitle);
@@ -270,7 +272,7 @@ public class HelpMenu {
     }
   }
 
-  private void addAboutMenu(final JMenu parentMenu) {
+  private void addAboutMenu() {
     final String text = "<html>"
         + "<h2>" + gameData.getGameName() + "</h2>"
         + "<b>Engine Version:</b> " + ClientContext.engineVersion().getExactVersion() + "<br>"
@@ -296,8 +298,8 @@ public class HelpMenu {
         .build();
 
     if (!SystemProperties.isMac()) {
-      parentMenu.addSeparator();
-      parentMenu.add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, label,
+      addSeparator();
+      add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, label,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE))).setMnemonic(KeyEvent.VK_A);
     } else { // On Mac OS X, put the About menu where Mac users expect it to be
       Application.getApplication().setAboutHandler(paramAboutEvent -> JOptionPane.showMessageDialog(null, label,
@@ -305,8 +307,8 @@ public class HelpMenu {
     }
   }
 
-  private static void addReportBugsMenu(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Send Bug Report",
+  private void addReportBugsMenu() {
+    add(SwingAction.of("Send Bug Report",
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))).setMnemonic(KeyEvent.VK_B);
   }
 }
