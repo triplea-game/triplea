@@ -3,7 +3,6 @@ package games.strategy.triplea.ui.menubar;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
-import javax.swing.Action;
 import javax.swing.JMenu;
 
 import games.strategy.engine.framework.IGame;
@@ -18,68 +17,60 @@ import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
 
-class NetworkMenu {
+final class NetworkMenu extends JMenu {
+  private static final long serialVersionUID = 2947249649948115833L;
 
   private final IGame game;
   private final TripleAFrame frame;
 
-  NetworkMenu(final TripleAMenuBar menuBar, final Optional<InGameLobbyWatcherWrapper> watcher,
-      final TripleAFrame frame) {
+  NetworkMenu(final Optional<InGameLobbyWatcherWrapper> watcher, final TripleAFrame frame) {
+    super("Network");
+
     this.frame = frame;
     game = frame.getGame();
-    final JMenu menuNetwork = new JMenu("Network");
-    menuNetwork.setMnemonic(KeyEvent.VK_N);
-    addBootPlayer(menuNetwork);
-    addBanPlayer(menuNetwork);
-    addMutePlayer(menuNetwork);
-    addSetGamePassword(menuNetwork, watcher);
-    addShowPlayers(menuNetwork);
-    menuBar.add(menuNetwork);
+
+    setMnemonic(KeyEvent.VK_N);
+
+    addBootPlayer();
+    addBanPlayer();
+    addMutePlayer();
+    watcher.ifPresent(this::addSetGamePassword);
+    addShowPlayers();
   }
 
-  private void addBootPlayer(final JMenu parentMenu) {
-    if (!game.getMessenger().isServer()) {
-      return;
+  private void addBootPlayer() {
+    if (isServer()) {
+      add(new BootPlayerAction(this, getServerMessenger()));
     }
-    final IServerMessenger messenger = (IServerMessenger) game.getMessenger();
-    final Action boot = new BootPlayerAction(parentMenu, messenger);
-    parentMenu.add(boot);
   }
 
-  private void addBanPlayer(final JMenu parentMenu) {
-    if (!game.getMessenger().isServer()) {
-      return;
+  private boolean isServer() {
+    return game.getMessenger().isServer();
+  }
+
+  private IServerMessenger getServerMessenger() {
+    return (IServerMessenger) game.getMessenger();
+  }
+
+  private void addBanPlayer() {
+    if (isServer()) {
+      add(new BanPlayerAction(this, getServerMessenger()));
     }
-    final IServerMessenger messenger = (IServerMessenger) game.getMessenger();
-    final Action ban = new BanPlayerAction(parentMenu, messenger);
-    parentMenu.add(ban);
   }
 
-  private void addMutePlayer(final JMenu parentMenu) {
-    if (!game.getMessenger().isServer()) {
-      return;
+  private void addMutePlayer() {
+    if (isServer()) {
+      add(new MutePlayerAction(this, getServerMessenger()));
     }
-    final IServerMessenger messenger = (IServerMessenger) game.getMessenger();
-    final Action mute = new MutePlayerAction(parentMenu, messenger);
-    parentMenu.add(mute);
   }
 
-  private void addSetGamePassword(final JMenu parentMenu, final Optional<InGameLobbyWatcherWrapper> watcher) {
-    if (!watcher.isPresent()) {
-      return;
-    }
-    final IServerMessenger messenger = (IServerMessenger) game.getMessenger();
-    parentMenu
-        .add(new SetPasswordAction(parentMenu, watcher.get(), (ClientLoginValidator) messenger.getLoginValidator()));
+  private void addSetGamePassword(final InGameLobbyWatcherWrapper watcher) {
+    add(new SetPasswordAction(this, watcher, (ClientLoginValidator) getServerMessenger().getLoginValidator()));
   }
 
-  private void addShowPlayers(final JMenu menuGame) {
+  private void addShowPlayers() {
     if (!game.getData().getProperties().getEditableProperties().isEmpty()) {
-      final Action optionsAction =
-          SwingAction.of("Show Who is Who", e -> PlayersPanel.showPlayers(game, frame));
-      menuGame.add(optionsAction);
+      add(SwingAction.of("Show Who is Who", e -> PlayersPanel.showPlayers(game, frame)));
     }
   }
-
-
 }

@@ -25,7 +25,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -54,7 +53,9 @@ import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.ui.SwingAction;
 
-class ViewMenu {
+final class ViewMenu extends JMenu {
+  private static final long serialVersionUID = -4703734404422047487L;
+
   private JCheckBoxMenuItem showMapDetails;
   private JCheckBoxMenuItem showMapBlends;
 
@@ -62,53 +63,52 @@ class ViewMenu {
   private final TripleAFrame frame;
   private final UiContext uiContext;
 
-  ViewMenu(final JMenuBar menuBar, final TripleAFrame frame) {
+  ViewMenu(final TripleAFrame frame) {
+    super("View");
+
     this.frame = frame;
     this.uiContext = frame.getUiContext();
     gameData = frame.getGame().getData();
 
+    setMnemonic(KeyEvent.VK_V);
 
-    final JMenu menuView = new JMenu("View");
-    menuView.setMnemonic(KeyEvent.VK_V);
-    menuBar.add(menuView);
-    addZoomMenu(menuView);
-    addUnitSizeMenu(menuView);
-    addLockMap(menuView);
-    addShowUnits(menuView);
-    addUnitNationDrawMenu(menuView);
+    addZoomMenu();
+    addUnitSizeMenu();
+    addLockMap();
+    addShowUnits();
+    addUnitNationDrawMenu();
     if (uiContext.getMapData().useTerritoryEffectMarkers()) {
-      addShowTerritoryEffects(menuView);
+      addShowTerritoryEffects();
     }
-    addMapSkinsMenu(menuView);
-    addShowMapDetails(menuView);
-    addShowMapBlends(menuView);
-    addDrawTerritoryBordersAgain(menuView);
-    addMapFontAndColorEditorMenu(menuView);
-    addChatTimeMenu(menuView);
-    addShowCommentLog(menuView);
-    // The menuItem to turn TabbedProduction on or off
-    addTabbedProduction(menuView);
-    addShowGameUuid(menuView);
+    addMapSkinsMenu();
+    addShowMapDetails();
+    addShowMapBlends();
+    addDrawTerritoryBordersAgain();
+    addMapFontAndColorEditorMenu();
+    addChatTimeMenu();
+    addShowCommentLog();
+    addTabbedProduction();
+    addShowGameUuid();
 
     showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
   }
 
-  private void addShowCommentLog(final JMenu parentMenu) {
+  private void addShowCommentLog() {
     final JCheckBoxMenuItem showCommentLog = new JCheckBoxMenuItem("Show Comment Log");
     showCommentLog.setModel(frame.getShowCommentLogButtonModel());
-    parentMenu.add(showCommentLog).setMnemonic(KeyEvent.VK_L);
+    add(showCommentLog).setMnemonic(KeyEvent.VK_L);
   }
 
-  private static void addTabbedProduction(final JMenu parentMenu) {
+  private void addTabbedProduction() {
     final JCheckBoxMenuItem tabbedProduction = new JCheckBoxMenuItem("Show Production Tabs");
     tabbedProduction.setMnemonic(KeyEvent.VK_P);
     tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
     tabbedProduction.addActionListener(e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected()));
-    parentMenu.add(tabbedProduction);
+    add(tabbedProduction);
   }
 
-  private void addShowGameUuid(final JMenu menuView) {
-    menuView.add(SwingAction.of("Game UUID", e -> {
+  private void addShowGameUuid() {
+    add(SwingAction.of("Game UUID", e -> {
       final String id = (String) gameData.getProperties().get(GameData.GAME_UUID);
       final JTextField text = new JTextField();
       text.setText(id);
@@ -118,12 +118,12 @@ class ViewMenu {
           GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
       panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
           new Insets(0, 0, 0, 0), 0, 0));
-      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(menuView), panel, "Game UUID",
+      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(this), panel, "Game UUID",
           JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
     })).setMnemonic(KeyEvent.VK_U);
   }
 
-  private void addZoomMenu(final JMenu menuGame) {
+  private void addZoomMenu() {
     final Action mapZoom = SwingAction.of("Map Zoom", e -> {
       final SpinnerNumberModel model = new SpinnerNumberModel();
       model.setMaximum(100);
@@ -168,10 +168,10 @@ class ViewMenu {
       frame.setScale(value.doubleValue());
 
     });
-    menuGame.add(mapZoom).setMnemonic(KeyEvent.VK_Z);
+    add(mapZoom).setMnemonic(KeyEvent.VK_Z);
   }
 
-  private void addUnitSizeMenu(final JMenu parentMenu) {
+  private void addUnitSizeMenu() {
     final NumberFormat decimalFormat = new DecimalFormat("00.##");
     // This is the action listener used
     class UnitSizeAction extends AbstractAction {
@@ -239,13 +239,13 @@ class ViewMenu {
     unitSizeMenu.add(radioItem66);
     unitSizeMenu.add(radioItem56);
     unitSizeMenu.add(radioItem50);
-    parentMenu.add(unitSizeMenu);
+    add(unitSizeMenu);
   }
 
-  private void addMapSkinsMenu(final JMenu menuGame) {
+  private void addMapSkinsMenu() {
     final JMenu mapSubMenu = new JMenu("Map Skins");
     mapSubMenu.setMnemonic(KeyEvent.VK_K);
-    menuGame.add(mapSubMenu);
+    add(mapSubMenu);
     final ButtonGroup mapButtonGroup = new ButtonGroup();
     final Map<String, String> skins = AbstractUiContext.getSkins(frame.getGame().getData());
     mapSubMenu.setEnabled(skins.size() > 1);
@@ -270,7 +270,7 @@ class ViewMenu {
     }
   }
 
-  private void addShowMapDetails(final JMenu menuGame) {
+  private void addShowMapDetails() {
     showMapDetails = new JCheckBoxMenuItem("Show Map Details");
     showMapDetails.setMnemonic(KeyEvent.VK_D);
     showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
@@ -282,10 +282,10 @@ class ViewMenu {
       new Thread(() -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
           "Triplea : Show map details thread").start();
     });
-    menuGame.add(showMapDetails);
+    add(showMapDetails);
   }
 
-  private void addShowMapBlends(final JMenu menuGame) {
+  private void addShowMapBlends() {
     showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
     showMapBlends.setMnemonic(KeyEvent.VK_B);
     if (uiContext.getMapData().getHasRelief() && showMapDetails.isEnabled() && showMapDetails.isSelected()) {
@@ -307,10 +307,10 @@ class ViewMenu {
         frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
       }, "Triplea : Show map Blends thread").start();
     });
-    menuGame.add(showMapBlends);
+    add(showMapBlends);
   }
 
-  private void addShowUnits(final JMenu parentMenu) {
+  private void addShowUnits() {
     final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
     showUnitsBox.setMnemonic(KeyEvent.VK_U);
     showUnitsBox.setSelected(true);
@@ -319,10 +319,10 @@ class ViewMenu {
       uiContext.setShowUnits(tfselected);
       frame.getMapPanel().resetMap();
     });
-    parentMenu.add(showUnitsBox);
+    add(showUnitsBox);
   }
 
-  private void addDrawTerritoryBordersAgain(final JMenu parentMenu) {
+  private void addDrawTerritoryBordersAgain() {
     final JMenu drawBordersMenu = new JMenu();
     drawBordersMenu.setMnemonic(KeyEvent.VK_O);
     drawBordersMenu.setText("Draw Borders On Top");
@@ -379,10 +379,10 @@ class ViewMenu {
     drawBordersMenu.add(noneButton);
     drawBordersMenu.add(mediumButton);
     drawBordersMenu.add(highButton);
-    parentMenu.add(drawBordersMenu);
+    add(drawBordersMenu);
   }
 
-  private void addMapFontAndColorEditorMenu(final JMenu parentMenu) {
+  private void addMapFontAndColorEditorMenu() {
     final Action mapFontOptions = SwingAction.of("Edit Map Font and Color", e -> {
       final List<IEditableProperty> properties = new ArrayList<>();
       final NumberProperty fontsize =
@@ -429,12 +429,11 @@ class ViewMenu {
         MapImage.setPropertyUnitHitDamageColor((Color) hitDamageColor.getValue());
         frame.getMapPanel().resetMap();
       }
-
     });
-    parentMenu.add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
+    add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
   }
 
-  private void addShowTerritoryEffects(final JMenu parentMenu) {
+  private void addShowTerritoryEffects() {
     final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
     territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
     territoryEffectsBox.addActionListener(e -> {
@@ -442,19 +441,19 @@ class ViewMenu {
       uiContext.setShowTerritoryEffects(tfselected);
       frame.getMapPanel().resetMap();
     });
-    parentMenu.add(territoryEffectsBox);
+    add(territoryEffectsBox);
     territoryEffectsBox.setSelected(true);
   }
 
-  private void addLockMap(final JMenu parentMenu) {
+  private void addLockMap() {
     final JCheckBoxMenuItem lockMapBox = new JCheckBoxMenuItem("Lock Map");
     lockMapBox.setMnemonic(KeyEvent.VK_M);
     lockMapBox.setSelected(uiContext.getLockMap());
     lockMapBox.addActionListener(e -> uiContext.setLockMap(lockMapBox.isSelected()));
-    parentMenu.add(lockMapBox);
+    add(lockMapBox);
   }
 
-  private void addUnitNationDrawMenu(final JMenu parentMenu) {
+  private void addUnitNationDrawMenu() {
     final JMenu unitSizeMenu = new JMenu();
     unitSizeMenu.setMnemonic(KeyEvent.VK_N);
     unitSizeMenu.setText("Flag Display Mode");
@@ -480,7 +479,7 @@ class ViewMenu {
         UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
     unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Large", unitFlagSettingGroup,
         UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
-    parentMenu.add(unitSizeMenu);
+    add(unitSizeMenu);
   }
 
   private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(final String text, final ButtonGroup group,
@@ -501,12 +500,12 @@ class ViewMenu {
     return buttonItem;
   }
 
-  private void addChatTimeMenu(final JMenu parentMenu) {
+  private void addChatTimeMenu() {
     final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
     chatTimeBox.setMnemonic(KeyEvent.VK_T);
     chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
-    parentMenu.add(chatTimeBox);
+    add(chatTimeBox);
     chatTimeBox.setEnabled(GameRunner.getChat().isPresent());
   }
 }

@@ -39,7 +39,10 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 
-public class LobbyMenu extends JMenuBar {
+/**
+ * The lobby client menu bar.
+ */
+public final class LobbyMenu extends JMenuBar {
   private static final long serialVersionUID = 4980621864542042057L;
   private static final String HASHED_MAC_PREFIX = games.strategy.util.MD5Crypt.MAGIC + "MH$";
 
@@ -284,7 +287,6 @@ public class LobbyMenu extends JMenuBar {
     helpPageLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP));
     parentMenu.add(helpPageLink);
 
-
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
     lobbyRules.addActionListener(
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES));
@@ -293,7 +295,6 @@ public class LobbyMenu extends JMenuBar {
     final JMenuItem warClub = new JMenuItem("TripleA Forum");
     warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
     parentMenu.add(warClub);
-
   }
 
   private void addChatTimeMenu(final JMenu parentMenu) {

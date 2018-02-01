@@ -21,33 +21,37 @@ import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
 
-public class TripleAMenuBar extends JMenuBar {
+/**
+ * The game client menu bar.
+ */
+public final class TripleAMenuBar extends JMenuBar {
   private static final long serialVersionUID = -1447295944297939539L;
-  protected final TripleAFrame frame;
+
+  private final TripleAFrame frame;
 
   public TripleAMenuBar(final TripleAFrame frame) {
     this.frame = frame;
-    new FileMenu(this, frame);
-    new ViewMenu(this, frame);
-    new GameMenu(this, frame);
-    new ExportMenu(this, frame);
+
+    add(new FileMenu(frame));
+    add(new ViewMenu(frame));
+    add(new GameMenu(frame));
+    add(new ExportMenu(frame));
 
     final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
-    if (watcher.isPresent() && watcher.get().isActive()) {
-      createLobbyMenu(this, watcher.get());
-    }
+    watcher.filter(InGameLobbyWatcherWrapper::isActive).ifPresent(this::createLobbyMenu);
     if (!(frame.getGame().getMessenger() instanceof HeadlessServerMessenger)) {
-      new NetworkMenu(this, watcher, frame);
+      add(new NetworkMenu(watcher, frame));
     }
-    new WebHelpMenu(this);
-    new DebugMenu(this, frame);
-    new HelpMenu(this, frame.getUiContext(), frame.getGame().getData());
+
+    add(new WebHelpMenu());
+    add(new DebugMenu(frame));
+    add(new HelpMenu(frame.getUiContext(), frame.getGame().getData()));
   }
 
-  private void createLobbyMenu(final JMenuBar menuBar, final InGameLobbyWatcherWrapper watcher) {
+  private void createLobbyMenu(final InGameLobbyWatcherWrapper watcher) {
     final JMenu lobby = new JMenu("Lobby");
     lobby.setMnemonic(KeyEvent.VK_L);
-    menuBar.add(lobby);
+    add(lobby);
     lobby.add(new EditGameCommentAction(watcher, frame));
     lobby.add(new RemoveGameFromLobbyAction(watcher));
   }

@@ -37,67 +37,61 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 
-class GameMenu {
+final class GameMenu extends JMenu {
+  private static final long serialVersionUID = -6273782490069588052L;
 
   private final TripleAFrame frame;
   private final UiContext uiContext;
   private final GameData gameData;
   private final IGame game;
 
-  GameMenu(final TripleAMenuBar menuBar, final TripleAFrame frame) {
+  GameMenu(final TripleAFrame frame) {
+    super("Game");
+
     this.frame = frame;
     game = frame.getGame();
     gameData = frame.getGame().getData();
     uiContext = frame.getUiContext();
 
-    menuBar.add(createGameMenu());
+    setMnemonic(KeyEvent.VK_G);
+
+    addEditMode();
+    addSeparator();
+    add(SwingAction.of("Engine Settings", e -> ClientSetting.showSettingsWindow()));
+    SoundOptions.addGlobalSoundSwitchMenu(this);
+    SoundOptions.addToMenu(this);
+    addSeparator();
+    add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
+    add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
+    add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
+    addSeparator();
+    addGameOptionsMenu();
+    addShowVerifiedDice();
+    addPoliticsMenu();
+    addNotificationSettings();
+    addShowDiceStats();
+    addRollDice();
+    addBattleCalculatorMenu();
   }
 
-  private JMenu createGameMenu() {
-    final JMenu menuGame = SwingComponents.newJMenu("Game", SwingComponents.KeyboardCode.G);
-    addEditMode(menuGame);
-
-    menuGame.addSeparator();
-    menuGame.add(SwingAction.of("Engine Settings", e -> ClientSetting.showSettingsWindow()));
-    SoundOptions.addGlobalSoundSwitchMenu(menuGame);
-    SoundOptions.addToMenu(menuGame);
-    menuGame.addSeparator();
-    menuGame.add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
-    menuGame.add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
-    menuGame.add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
-
-    menuGame.addSeparator();
-    addGameOptionsMenu(menuGame);
-    addShowVerifiedDice(menuGame);
-    addPoliticsMenu(menuGame);
-    addNotificationSettings(menuGame);
-    addShowDiceStats(menuGame);
-    addRollDice(menuGame);
-    addBattleCalculatorMenu(menuGame);
-    return menuGame;
-  }
-
-  private void addEditMode(final JMenu parentMenu) {
+  private void addEditMode() {
     final JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
     editMode.setModel(frame.getEditModeButtonModel());
-    parentMenu.add(editMode).setMnemonic(KeyEvent.VK_E);
+    add(editMode).setMnemonic(KeyEvent.VK_E);
   }
 
-
-
-  private void addShowVerifiedDice(final JMenu parentMenu) {
+  private void addShowVerifiedDice() {
     final Action showVerifiedDice = SwingAction.of("Show Verified Dice",
         e -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true));
     if (game instanceof ClientGame) {
-      parentMenu.add(showVerifiedDice).setMnemonic(KeyEvent.VK_V);
+      add(showVerifiedDice).setMnemonic(KeyEvent.VK_V);
     }
   }
 
-  protected void addGameOptionsMenu(final JMenu menuGame) {
+  private void addGameOptionsMenu() {
     if (!gameData.getProperties().getEditableProperties().isEmpty()) {
-      menuGame.add(SwingAction.of("Map Options", e -> {
+      add(SwingAction.of("Map Options", e -> {
         final PropertiesUi ui = new PropertiesUi(gameData.getProperties().getEditableProperties(), false);
         JOptionPane.showMessageDialog(frame, ui, "Map Options", JOptionPane.PLAIN_MESSAGE);
       })).setMnemonic(KeyEvent.VK_O);
@@ -108,8 +102,8 @@ class GameMenu {
    * Add a Politics Panel button to the game menu, this panel will show the
    * current political landscape as a reference, no actions on this panel.
    */
-  private void addPoliticsMenu(final JMenu menuGame) {
-    menuGame.add(SwingAction.of("Show Politics Panel", e -> {
+  private void addPoliticsMenu() {
+    add(SwingAction.of("Show Politics Panel", e -> {
       final PoliticalStateOverview ui = new PoliticalStateOverview(gameData, uiContext, false);
       final JScrollPane scroll = new JScrollPane(ui);
       scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -124,11 +118,10 @@ class GameMenu {
               (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
 
       JOptionPane.showMessageDialog(frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
-
     })).setMnemonic(KeyEvent.VK_P);
   }
 
-  private void addNotificationSettings(final JMenu parentMenu) {
+  private void addNotificationSettings() {
     final JMenu notificationMenu = new JMenu();
     notificationMenu.setMnemonic(KeyEvent.VK_U);
     notificationMenu.setText("User Notifications");
@@ -168,11 +161,11 @@ class GameMenu {
     notificationMenu.add(showTriggeredNotifications);
     notificationMenu.add(showTriggerChanceSuccessful);
     notificationMenu.add(showTriggerChanceFailure);
-    parentMenu.add(notificationMenu);
+    add(notificationMenu);
   }
 
-  private void addShowDiceStats(final JMenu parentMenu) {
-    parentMenu.add(SwingAction.of("Show Dice Stats", e -> {
+  private void addShowDiceStats() {
+    add(SwingAction.of("Show Dice Stats", e -> {
       final IRandomStats randomStats =
           (IRandomStats) game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
       final RandomStatsDetails stats = randomStats.getRandomStats(gameData.getDiceSides());
@@ -181,7 +174,7 @@ class GameMenu {
     })).setMnemonic(KeyEvent.VK_D);
   }
 
-  private void addRollDice(final JMenu parentMenu) {
+  private void addRollDice() {
     final JMenuItem rollDiceBox = new JMenuItem("Roll Dice");
     rollDiceBox.setMnemonic(KeyEvent.VK_R);
     rollDiceBox.addActionListener(e -> {
@@ -199,7 +192,7 @@ class GameMenu {
           GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
       panel.add(diceSidesText, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
-      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(parentMenu), panel, "Roll Dice",
+      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(this), panel, "Roll Dice",
           JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
       try {
         final int numberOfDice = Integer.parseInt(numberOfText.getText());
@@ -225,12 +218,12 @@ class GameMenu {
         // ignore malformed input
       }
     });
-    parentMenu.add(rollDiceBox);
+    add(rollDiceBox);
   }
 
-  private void addBattleCalculatorMenu(final JMenu menuGame) {
+  private void addBattleCalculatorMenu() {
     final Action showBattleMenu = SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null));
-    final JMenuItem showBattleMenuItem = menuGame.add(showBattleMenu);
+    final JMenuItem showBattleMenuItem = add(showBattleMenu);
     showBattleMenuItem.setMnemonic(KeyEvent.VK_B);
     showBattleMenuItem.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
