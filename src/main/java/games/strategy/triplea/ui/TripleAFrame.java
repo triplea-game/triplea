@@ -690,7 +690,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private void requestWindowFocus() {
-    SwingAction.invokeAndWait(() -> {
+    SwingAction.invokeAndWaitUninterruptibly(() -> {
       requestFocusInWindow();
       transferFocus();
     });
@@ -853,13 +853,14 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     messageAndDialogThreadPool.submit(() -> {
-      final AtomicReference<TechResultsDisplay> displayRef = new AtomicReference<>();
-      SwingAction.invokeAndWait(() -> {
-        final TechResultsDisplay display = new TechResultsDisplay(msg, uiContext, data);
-        displayRef.set(display);
-      });
-      EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, displayRef.get(), "Tech roll", JOptionPane.OK_OPTION,
-          JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUiContext().getCountDownLatchHandler());
+      try {
+        final TechResultsDisplay display =
+            SwingAction.invokeAndWait(() -> new TechResultsDisplay(msg, uiContext, data));
+        EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, display, "Tech roll", JOptionPane.OK_OPTION,
+            JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUiContext().getCountDownLatchHandler());
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
     });
   }
 
@@ -1348,29 +1349,32 @@ public class TripleAFrame extends MainGameFrame {
     if (messageAndDialogThreadPool == null) {
       return null;
     }
+
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(from);
-    final AtomicReference<Territory> selected = new AtomicReference<>();
-    SwingAction.invokeAndWait(() -> {
-      final JList<Territory> list = new JList<>(new Vector<>(candidates));
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      list.setSelectedIndex(0);
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BorderLayout());
-      final JScrollPane scroll = new JScrollPane(list);
-      panel.add(scroll, BorderLayout.CENTER);
-      if (from != null) {
-        panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
-      }
-      final String[] options = {"OK", "Dont attack"};
-      final String message = "Select Rocket Target";
-      final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-      if (selection == 0) {
-        selected.set(list.getSelectedValue());
-      }
-    });
-    return selected.get();
+
+    try {
+      return SwingAction.invokeAndWait(() -> {
+        final JList<Territory> list = new JList<>(new Vector<>(candidates));
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setSelectedIndex(0);
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        final JScrollPane scroll = new JScrollPane(list);
+        panel.add(scroll, BorderLayout.CENTER);
+        if (from != null) {
+          panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
+        }
+        final String[] options = {"OK", "Dont attack"};
+        final String message = "Select Rocket Target";
+        final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+        return (selection == 0) ? list.getSelectedValue() : null;
+      });
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+      return null;
+    }
   }
 
   GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
@@ -1392,7 +1396,7 @@ public class TripleAFrame extends MainGameFrame {
     // change, we need to ensure that no further history
     // events are run until our historySynchronizer is set up
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingAction.invokeAndWait(() -> updateStep());
+      SwingAction.invokeAndWaitUninterruptibly(this::updateStep);
       return;
     }
     int round;
@@ -1443,7 +1447,7 @@ public class TripleAFrame extends MainGameFrame {
     if (player == null || !ThreadUtil.sleep(300)) {
       return;
     }
-    SwingAction.invokeAndWait(() -> {
+    SwingAction.invokeAndWaitUninterruptibly(() -> {
       final Boolean play = requiredTurnSeries.get(player);
       if (play != null && play) {
         ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
@@ -1954,7 +1958,7 @@ public class TripleAFrame extends MainGameFrame {
     mapPanel.centerOn(where);
     final AtomicReference<JScrollPane> panelRef = new AtomicReference<>();
     final AtomicReference<UnitChooser> chooserRef = new AtomicReference<>();
-    SwingAction.invokeAndWait(() -> {
+    SwingAction.invokeAndWaitUninterruptibly(() -> {
       final UnitChooser chooser = new UnitChooser(fighters, Collections.emptyMap(), false, uiContext);
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
       final int availHeight = screenResolution.height - 120;

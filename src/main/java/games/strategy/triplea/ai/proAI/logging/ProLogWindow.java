@@ -388,7 +388,7 @@ class ProLogWindow extends JDialog {
   }
 
   void notifyNewRound(final int roundNumber, final String name) {
-    SwingAction.invokeAndWait(() -> {
+    SwingAction.invokeAndWaitUninterruptibly(() -> {
       final JPanel newPanel = new JPanel();
       final JScrollPane newScrollPane = new JScrollPane();
       final JTextArea newTextArea = new JTextArea();
@@ -419,7 +419,7 @@ class ProLogWindow extends JDialog {
       } else {
         maxHistoryRounds = 1; // If we're not logging, trim to 1
       }
-      SwingAction.invokeAndWait(() -> {
+      SwingAction.invokeAndWaitUninterruptibly(() -> {
         for (int i = 0; i < logHolderTabbedPane.getTabCount(); i++) {
           // Remember, we never remove last tab, in case user turns logging back on in the middle of a round
           if (i != 0 && i < logHolderTabbedPane.getTabCount() - maxHistoryRounds) {

@@ -127,7 +127,7 @@ public class ClientModel implements IMessengerErrorListener {
     @Override
     public void gameReset() {
       objectStreamFactory.setData(null);
-      SwingAction.invokeAndWait(GameRunner::showMainFrame);
+      SwingAction.invokeAndWaitUninterruptibly(GameRunner::showMainFrame);
     }
 
     @Override
