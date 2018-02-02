@@ -231,7 +231,7 @@ public class BattlePanel extends ActionPanel {
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
       final PlayerID attacker, final PlayerID defender,
       final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
-    SwingAction.invokeAndWait(() -> {
+    SwingAction.invokeAndWaitUninterruptibly(() -> {
       if (battleDisplay != null) {
         cleanUpBattleWindow();
         currentBattleDisplayed = null;

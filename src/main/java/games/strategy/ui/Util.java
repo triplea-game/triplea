@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 public final class Util {
   public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
@@ -33,9 +32,12 @@ public final class Util {
   }
 
   public static <T> T runInSwingEventThread(final Task<T> task) {
-    final AtomicReference<T> results = new AtomicReference<>();
-    SwingAction.invokeAndWait(() -> results.set(task.run()));
-    return results.get();
+    try {
+      return SwingAction.invokeAndWait(task::run);
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+      return null;
+    }
   }
 
   private static final Component component = new Component() {

@@ -18,7 +18,7 @@ public final class TestUtil {
    */
   public static void waitForSwingThreads() {
     // add a no-op action to the end of the swing event queue, and then wait for it
-    SwingAction.invokeAndWait(() -> {
+    SwingAction.invokeAndWaitUninterruptibly(() -> {
     });
   }
 }

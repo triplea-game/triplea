@@ -18,8 +18,6 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.base.Throwables;
 
-import games.strategy.debug.ClientLogger;
-
 /**
  * Builder class for using Lambda expressions to create 'AbstractAction'.
  *
@@ -77,22 +75,17 @@ public final class SwingAction {
    * </p>
    *
    * @param action The action to execute.
+   *
+   * @throws RuntimeException If the action throws an unchecked exception.
+   * @throws InterruptedException If the current thread is interrupted while waiting for the action to complete.
    */
-  public static void invokeAndWait(final Runnable action) {
+  public static void invokeAndWait(final Runnable action) throws InterruptedException {
     checkNotNull(action);
 
-    // FIXME: should rethrow unchecked exceptions and not consume InterruptedException
-    try {
-      if (SwingUtilities.isEventDispatchThread()) {
-        action.run();
-      } else {
-        SwingUtilities.invokeAndWait(action);
-      }
-    } catch (final InvocationTargetException e) {
-      ClientLogger.logError("Failed while invoking a swing UI action", e);
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    invokeAndWait(() -> {
+      action.run();
+      return null;
+    });
   }
 
   /**
@@ -121,8 +114,31 @@ public final class SwingAction {
       SwingUtilities.invokeAndWait(() -> result.set(action.get()));
       return result.get();
     } catch (final InvocationTargetException e) {
-      Throwables.throwIfUnchecked(e.getCause());
-      throw new AssertionError("unexpected checked exception", e.getCause());
+      final Throwable cause = e.getCause();
+      Throwables.throwIfUnchecked(cause);
+      throw new AssertionError("unexpected checked exception", cause);
+    }
+  }
+
+  /**
+   * Synchronously executes the specified action on the Swing event dispatch thread. If interrupted while waiting for
+   * the action to complete, this method will set the thread's interrupted status and return immediately.
+   *
+   * <p>
+   * This method may safely be called from any thread, including the Swing event dispatch thread.
+   * </p>
+   *
+   * @param action The action to execute.
+   *
+   * @throws RuntimeException If the action throws an unchecked exception.
+   */
+  public static void invokeAndWaitUninterruptibly(final Runnable action) {
+    checkNotNull(action);
+
+    try {
+      invokeAndWait(action);
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
   }
 

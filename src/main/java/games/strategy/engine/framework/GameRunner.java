@@ -118,7 +118,7 @@ public class GameRunner {
    * No args will launch a client, additional args can be supplied to specify additional behavior.
    * Warning: game engine code invokes this method to spawn new game clients.
    */
-  public static void main(final String[] args) {
+  public static void main(final String[] args) throws InterruptedException{
     LoggingConfiguration.initialize();
     ClientSetting.initialize();
 
@@ -550,7 +550,7 @@ public class GameRunner {
    * After the game has been left, call this.
    */
   public static void clientLeftGame() {
-    SwingAction.invokeAndWait(() -> {
+    SwingAction.invokeAndWaitUninterruptibly(() -> {
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
       // closing of stream while unloading map resources.
       ThreadUtil.sleep(100);
@@ -562,5 +562,4 @@ public class GameRunner {
   public static void quitGame() {
     mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
   }
-
 }

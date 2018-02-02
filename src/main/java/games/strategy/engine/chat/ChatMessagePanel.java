@@ -95,7 +95,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   void setChat(final Chat chat) {
-    SwingAction.invokeAndWait(() -> {
+    SwingAction.invokeAndWaitUninterruptibly(() -> {
       if (chat != null) {
         chat.removeChatListener(this);
         cleanupKeyMap();

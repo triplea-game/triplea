@@ -37,7 +37,7 @@ public final class ErrorConsole extends GenericConsole {
    * If not yet created, initializes the error console.
    */
   public static void createConsole() {
-    SwingAction.invokeAndWait(() -> {
+    SwingAction.invokeAndWaitUninterruptibly(() -> {
       console = new ErrorConsole();
       console.displayStandardOutput();
       console.displayStandardError();
