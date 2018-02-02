@@ -97,8 +97,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           send(new InetSocketAddress[] {(InetSocketAddress) channel.socket().getRemoteSocketAddress(),
               serverMessenger.getLocalNode().getSocketAddress()});
           // Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
-          serverMessenger.notifyPlayerLogin(remoteName, channel.socket().getInetAddress().getHostAddress(),
-              remoteMac);
+          serverMessenger.notifyPlayerLogin(remoteName, remoteMac);
           // We are good
           return Action.UNQUARANTINE;
         case ACK_ERROR:

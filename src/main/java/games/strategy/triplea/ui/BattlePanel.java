@@ -216,7 +216,7 @@ public class BattlePanel extends ActionPanel {
     return battleFrame;
   }
 
-  public void listBattle(final GUID battleId, final List<String> steps) {
+  public void listBattle(final List<String> steps) {
     SwingAction.invokeNowOrLater(() -> {
       removeAll();
       if (battleDisplay != null) {

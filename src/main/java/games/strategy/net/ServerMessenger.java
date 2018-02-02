@@ -238,8 +238,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     unmuteMacTimer.schedule(getMacUnmuteTask(mac), checkTime.toEpochMilli() - System.currentTimeMillis());
   }
 
-  // TODO: remove 'ip' parameter if can confirm no backwards compat issues
-  public void notifyPlayerLogin(final String uniquePlayerName, final String ip, final String mac) {
+  public void notifyPlayerLogin(final String uniquePlayerName, final String mac) {
     synchronized (cachedListLock) {
       cachedMacAddresses.put(uniquePlayerName, mac);
       if (isLobby()) {
