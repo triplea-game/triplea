@@ -90,8 +90,8 @@ create_remote_branch() {
   local -r branch_name=$1
 
   echo "Creating branch '$branch_name' in '$TRAVIS_REPO_SLUG' at SHA '$TRAVIS_COMMIT'..."
-  local -r create_ref_request="{ \
-    \"ref\": \"refs/heads/$branch_name\", \
+  local -r create_ref_request="{
+    \"ref\": \"refs/heads/$branch_name\",
     \"sha\": \"$TRAVIS_COMMIT\"
   }"
   curl \
@@ -109,15 +109,15 @@ update_remote_file() {
   local -r old_hash=$2
 
   echo "Updating '$GRADLE_PROPERTIES' in '$TRAVIS_REPO_SLUG' on branch '$branch_name'..."
-  local -r update_file_request="{ \
-    \"message\": \"Bot: Update Checkstyle thresholds after build $TRAVIS_BUILD_NUMBER\", \
-    \"committer\": { \
-      \"name\": \"tripleabuilderbot\", \
-      \"email\": \"tripleabuilderbot@gmail.com\" \
-    }, \
-    \"branch\": \"$branch_name\", \
-    \"content\": \"$(base64 -w 0 $GRADLE_PROPERTIES)\", \
-    \"sha\": \"$old_hash\" \
+  local -r update_file_request="{
+    \"message\": \"Bot: Update Checkstyle thresholds after build $TRAVIS_BUILD_NUMBER\",
+    \"committer\": {
+      \"name\": \"tripleabuilderbot\",
+      \"email\": \"tripleabuilderbot@gmail.com\"
+    },
+    \"branch\": \"$branch_name\",
+    \"content\": \"$(base64 -w 0 $GRADLE_PROPERTIES)\",
+    \"sha\": \"$old_hash\"
   }"
   curl \
       --silent \
@@ -133,8 +133,8 @@ create_remote_pull_request() {
   local -r branch_name=$1
 
   echo "Creating new pull request in '$TRAVIS_REPO_SLUG' for branch '$branch_name'..."
-  local -r create_pr_request="{ \
-    \"title\": \"Bot: Update Checkstyle thresholds after build $TRAVIS_BUILD_NUMBER\", \
+  local -r create_pr_request="{
+    \"title\": \"Bot: Update Checkstyle thresholds after build $TRAVIS_BUILD_NUMBER\",
     \"head\": \"$branch_name\",
     \"base\": \"master\",
     \"body\": \"**Note to reviewer:** Please delete the PR branch after merging.\",
