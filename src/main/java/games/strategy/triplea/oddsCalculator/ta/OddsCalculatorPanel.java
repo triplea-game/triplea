@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -855,13 +856,17 @@ class OddsCalculatorPanel extends JPanel {
       Collections.sort(categories, Comparator.comparing(UnitCategory::getType, (ut1, ut2) -> {
         final UnitAttachment u1 = UnitAttachment.get(ut1);
         final UnitAttachment u2 = UnitAttachment.get(ut2);
-        // for land, we want land, air, aa gun, then bombarding
+        // For land battles, sort by land, air, can't combat move (AA), bombarding
         if (land) {
           if (u1.getIsSea() != u2.getIsSea()) {
             return u1.getIsSea() ? 1 : -1;
           }
-          if (Matches.unitTypeIsAaForAnything().test(ut1) != Matches.unitTypeIsAaForAnything().test(ut2)) {
-            return Matches.unitTypeIsAaForAnything().test(ut1) ? 1 : -1;
+          final boolean u1CanNotCombatMove =
+              Matches.unitTypeCanNotMoveDuringCombatMove().test(ut1) || !Matches.unitTypeCanMove(id).test(ut1);
+          final boolean u2CanNotCombatMove =
+              Matches.unitTypeCanNotMoveDuringCombatMove().test(ut2) || !Matches.unitTypeCanMove(id).test(ut2);
+          if (u1CanNotCombatMove != u2CanNotCombatMove) {
+            return u1CanNotCombatMove ? 1 : -1;
           }
           if (u1.getIsAir() != u2.getIsAir()) {
             return u1.getIsAir() ? 1 : -1;
@@ -904,23 +909,40 @@ class OddsCalculatorPanel extends JPanel {
       getParent().invalidate();
     }
 
+    /**
+     * Get all unit type categories that can be in combat first in the order of the player's
+     * production frontier and then any unit types the player owns on the map. Then populate the list
+     * of units into the categories.
+     */
     private Set<UnitCategory> categorize(final PlayerID id, final List<Unit> units) {
-      // these are the units that exist
-      final Set<UnitCategory> categories = UnitSeperator.categorize(units);
-      // the units that can be produced or moved in
+
+      // Get all unit types from production frontier and player unit types on the map
+      final Set<UnitCategory> categories = new LinkedHashSet<>();
       for (final UnitType t : getUnitTypes(id)) {
         final UnitCategory category = new UnitCategory(t, id);
         categories.add(category);
       }
+
+      // Populate units into each category then add any remaining categories (damaged units, etc)
+      final Set<UnitCategory> unitCategories = UnitSeperator.categorize(units);
+      for (final UnitCategory category : categories) {
+        for (final UnitCategory unitCategory : unitCategories) {
+          if (category.equals(unitCategory)) {
+            category.getUnits().addAll(unitCategory.getUnits());
+          }
+        }
+      }
+      categories.addAll(unitCategories);
+
       return categories;
     }
 
     /**
-     * return all the unit types available for the given player. a unit type is
-     * available if the unit is producable, or if a player has one
+     * Return all the unit types available for the given player. A unit type is
+     * available if the unit can be purchased or if a player has one on the map.
      */
     private Collection<UnitType> getUnitTypes(final PlayerID player) {
-      Collection<UnitType> unitTypes = new HashSet<>();
+      Collection<UnitType> unitTypes = new LinkedHashSet<>();
       final ProductionFrontier frontier = player.getProductionFrontier();
       if (frontier != null) {
         for (final ProductionRule rule : frontier) {
@@ -942,6 +964,7 @@ class OddsCalculatorPanel extends JPanel {
       // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
       unitTypes = CollectionUtils.getMatches(unitTypes,
           Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
+
       return unitTypes;
     }
 
