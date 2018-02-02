@@ -63,7 +63,7 @@ public final class GUID implements Externalizable {
     if (other == this) {
       return true;
     }
-    return this.id == other.id && (other.prefix == this.prefix || other.prefix.equals(this.prefix));
+    return this.id == other.id && Objects.equals(this.prefix, other.prefix);
   }
 
   @Override

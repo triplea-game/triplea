@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
@@ -1417,13 +1418,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   protected Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units,
       final PlayerID player) {
     return (t1, t2) -> {
-      if (t1 == t2 || t1.equals(t2)) {
+      if (Objects.equals(t1, t2)) {
         return 0;
       }
       // producing to territory comes first
-      if (to == t1 || to.equals(t1)) {
+      if (Objects.equals(to, t1)) {
         return -1;
-      } else if (to == t2 || to.equals(t2)) {
+      } else if (Objects.equals(to, t2)) {
         return 1;
       }
       final int left1 = getMaxUnitsToBePlacedFrom(t1, units, to, player);
@@ -1461,7 +1462,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   protected Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions(final boolean sortConstructionsToFront) {
     return (u1, u2) -> {
-      if (u1 == u2 || u1.equals(u2)) {
+      if (Objects.equals(u1, u2)) {
         return 0;
       }
       final UnitAttachment ua1 = UnitAttachment.get(u1.getType());

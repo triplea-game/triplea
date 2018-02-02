@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -533,7 +534,7 @@ public class WeakAi extends AbstractAi {
     Collections.shuffle(enemyOwned);
     Collections.sort(enemyOwned, (o1, o2) -> {
       // -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
-      if (o1 == o2 || (o1 == null && o2 == null)) {
+      if (Objects.equals(o1, o2)) {
         return 0;
       }
       if (o1 == null) {
@@ -541,9 +542,6 @@ public class WeakAi extends AbstractAi {
       }
       if (o2 == null) {
         return -1;
-      }
-      if (o1.equals(o2)) {
-        return 0;
       }
       final TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
       final TerritoryAttachment ta2 = TerritoryAttachment.get(o2);

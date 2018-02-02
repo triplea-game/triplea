@@ -64,7 +64,7 @@ public class DelegateExecutionManager {
   }
 
   private boolean currentThreadHasReadLock() {
-    return currentThreadHasReadLock.get() == Boolean.TRUE;
+    return currentThreadHasReadLock.get();
   }
 
   /**

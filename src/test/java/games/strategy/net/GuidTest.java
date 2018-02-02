@@ -9,7 +9,7 @@ public final class GuidTest {
   @Test
   public void shouldBeEquatableAndHashable() {
     EqualsVerifier.forClass(GUID.class)
-        .suppress(Warning.NONFINAL_FIELDS, Warning.NULL_FIELDS)
+        .suppress(Warning.NONFINAL_FIELDS)
         .verify();
   }
 }
