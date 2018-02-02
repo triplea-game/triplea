@@ -42,7 +42,7 @@ public class TripleADisplay implements ITripleADisplay {
 
   @Override
   public void listBattleSteps(final GUID battleId, final List<String> steps) {
-    ui.getBattlePanel().listBattle(battleId, steps);
+    ui.getBattlePanel().listBattle(steps);
   }
 
   @Override
