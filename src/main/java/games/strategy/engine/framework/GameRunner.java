@@ -118,7 +118,7 @@ public class GameRunner {
    * No args will launch a client, additional args can be supplied to specify additional behavior.
    * Warning: game engine code invokes this method to spawn new game clients.
    */
-  public static void main(final String[] args) throws InterruptedException{
+  public static void main(final String[] args) throws InterruptedException {
     LoggingConfiguration.initialize();
     ClientSetting.initialize();
 
