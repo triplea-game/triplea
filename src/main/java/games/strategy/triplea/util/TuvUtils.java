@@ -81,11 +81,12 @@ public class TuvUtils {
     }
 
     // Override with XML TUV or consumesUnit sum
+    final IntegerMap<UnitType> result = new IntegerMap<>(costs);
     for (final UnitType unitType : costs.keySet()) {
-      costs.put(unitType, getTotalTuv(unitType, costs, new HashSet<>()));
+      result.put(unitType, getTotalTuv(unitType, costs, new HashSet<>()));
     }
 
-    return costs;
+    return result;
   }
 
   /**
