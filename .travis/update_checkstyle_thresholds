@@ -83,25 +83,18 @@ update_remote_thresholds() {
 
   create_remote_branch "$branch_name"
   update_remote_file "$branch_name" "$old_hash"
-  create_remote_pull_request "$branch_name"
+  create_pull_request "$branch_name"
 }
 
 create_remote_branch() {
   local -r branch_name=$1
 
   echo "Creating branch '$branch_name' in '$TRAVIS_REPO_SLUG' at SHA '$TRAVIS_COMMIT'..."
-  local -r create_ref_request="{
+  local -r request_data="{
     \"ref\": \"refs/heads/$branch_name\",
     \"sha\": \"$TRAVIS_COMMIT\"
   }"
-  curl \
-      --silent \
-      --show-error \
-      -X POST \
-      --header "Accept: application/vnd.github.v3+json" \
-      --data "$create_ref_request" \
-      --user ":$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS" \
-      "https://api.github.com/repos/$TRAVIS_REPO_SLUG/git/refs"
+  call_github_api "POST" "git/refs" "$request_data"
 }
 
 update_remote_file() {
@@ -109,7 +102,7 @@ update_remote_file() {
   local -r old_hash=$2
 
   echo "Updating '$GRADLE_PROPERTIES' in '$TRAVIS_REPO_SLUG' on branch '$branch_name'..."
-  local -r update_file_request="{
+  local -r request_data="{
     \"message\": \"Bot: Update Checkstyle thresholds after build $TRAVIS_BUILD_NUMBER\",
     \"committer\": {
       \"name\": \"tripleabuilderbot\",
@@ -119,35 +112,36 @@ update_remote_file() {
     \"content\": \"$(base64 -w 0 $GRADLE_PROPERTIES)\",
     \"sha\": \"$old_hash\"
   }"
-  curl \
-      --silent \
-      --show-error \
-      -X PUT \
-      --header "Accept: application/vnd.github.v3+json" \
-      --data "$update_file_request" \
-      --user ":$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS" \
-      "https://api.github.com/repos/$TRAVIS_REPO_SLUG/contents/$GRADLE_PROPERTIES"
+  call_github_api "PUT" "contents/$GRADLE_PROPERTIES" "$request_data"
 }
 
-create_remote_pull_request() {
+create_pull_request() {
   local -r branch_name=$1
 
   echo "Creating new pull request in '$TRAVIS_REPO_SLUG' for branch '$branch_name'..."
-  local -r create_pr_request="{
+  local -r request_data="{
     \"title\": \"Bot: Update Checkstyle thresholds after build $TRAVIS_BUILD_NUMBER\",
     \"head\": \"$branch_name\",
     \"base\": \"master\",
     \"body\": \"**Note to reviewer:** Please delete the PR branch after merging.\",
     \"maintainer_can_modify\": true
   }"
+  call_github_api "POST" "pulls" "$request_data"
+}
+
+call_github_api() {
+  local -r method=$1
+  local -r uri_path=$2
+  local -r data=$3
+
   curl \
       --silent \
       --show-error \
-      -X POST \
+      --request "$method" \
       --header "Accept: application/vnd.github.v3+json" \
-      --data "$create_pr_request" \
+      --data "$data" \
       --user ":$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS" \
-      "https://api.github.com/repos/$TRAVIS_REPO_SLUG/pulls"
+      "https://api.github.com/repos/$TRAVIS_REPO_SLUG/$uri_path"
 }
 
 main
