@@ -240,6 +240,13 @@ public class GameDataTestUtil {
   }
 
   /**
+   * Returns a germanFortification UnitType object for the specified GameData object.
+   */
+  public static UnitType germanFortification(final GameData data) {
+    return unitType("germanFortification", data);
+  }
+
+  /**
    * Returns a truck UnitType object for the specified GameData object.
    */
   public static UnitType truck(final GameData data) {
