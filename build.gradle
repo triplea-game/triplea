@@ -106,6 +106,7 @@ dependencies {
     compile 'com.google.guava:guava:23.2-jre'
     compile 'com.googlecode.soundlibs:jlayer:1.0.1.4'
     compile 'com.sun.mail:javax.mail:1.6.0'
+    compile 'commons-codec:commons-codec:1.11'
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.httpcomponents:httpclient:4.5.3'
     compile 'org.apache.httpcomponents:httpmime:4.5.3'
