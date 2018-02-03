@@ -3,16 +3,16 @@
 
 TripleA is a free game engine that runs on open source and is community supported.
 
-# Installing TripleA and Playing
+# Installing and Playing TripleA
 
-- Download and install TripleA: http://triplea-game.org/download/
+- [Download and install TripleA](http://triplea-game.org/download/)
 
 # TripleA Websites
 
-- Home Page: http://triplea-game.org/
-- Community Website: https://forums.triplea-game.org/
-- Community Maps Repository: https://github.com/triplea-maps/
-- Source Forge (legacy): https://sourceforge.net/projects/triplea/
+- [Home Page](http://triplea-game.org/)
+- [Community Website](https://forums.triplea-game.org/)
+- [Community Maps Repository](https://github.com/triplea-maps/)
+- [Source Forge](https://sourceforge.net/projects/triplea/) (legacy)
 
 # TripleA Game Features
 
@@ -25,21 +25,21 @@ TripleA is a free game engine that runs on open source and is community supporte
 
 # Reporting Bugs
 
-- Please use: https://github.com/triplea-game/triplea/issues/new
+- [Create new bug report](https://github.com/triplea-game/triplea/issues/new)
 
 # Feature Requests
 
-- Create a new forum topic at: https://forums.triplea-game.org/category/42/feature-requests-and-ideas
+- [Create new feature request](https://forums.triplea-game.org/category/42/feature-requests-and-ideas)
 
 # Lobby Game Bot Hosting
 
-- Please see: https://github.com/triplea-game/lobby#bots
+- [Create and start a bot](https://github.com/triplea-game/lobby#bots)
 
 # Development
 
-- Project documentation, including 'how to get started guides' at: https://github.com/triplea-game/triplea/tree/master/docs/dev
-- Broken map list: https://github.com/triplea-game/triplea/wiki/Broken-Maps
-- Additional feature request list: https://github.com/triplea-game/triplea/issues?q=label%3A%22ice+box+-+revisit+later%22+is%3Aclosed (list is not to be added to, if picked up, re-open and remove the ice-box label)
+- [Project documentation](https://github.com/triplea-game/triplea/tree/master/docs/dev) (including 'how to get started guides')
+- [Broken map list](https://github.com/triplea-game/triplea/wiki/Broken-Maps)
+- [Additional feature request list](https://github.com/triplea-game/triplea/issues?q=label%3A%22ice+box+-+close+and+revisit+later%22+is%3Aclosed) (list is not to be added to, if picked up, re-open and remove the ice-box label)
 
 # License
 
