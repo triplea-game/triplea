@@ -40,7 +40,9 @@ public enum UrlConstants {
   MAP_DOWNLOAD_LIST("https://raw.githubusercontent.com/triplea-game/triplea/master/triplea_maps.yaml"),
 
   MAP_MAKER_HELP(
-      "https://github.com/triplea-game/triplea/blob/master/docs/map_making/map_and_map_skin_making_overview.md");
+      "https://github.com/triplea-game/triplea/blob/master/docs/map_making/map_and_map_skin_making_overview.md"),
+
+  LICENSE_NOTICE("https://github.com/triplea-game/triplea/blob/master/README.md#license");
 
   private final String urlString;
 
