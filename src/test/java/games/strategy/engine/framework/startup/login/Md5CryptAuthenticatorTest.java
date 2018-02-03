@@ -83,7 +83,7 @@ public final class Md5CryptAuthenticatorTest {
   @Test
   public void newResponse_ShouldIncludeResponseWhenChallengeContainsSalt() throws Exception {
     final Map<String, String> challenge = ImmutableMap.of(
-        ChallengePropertyNames.SALT, games.strategy.util.MD5Crypt.newSalt());
+        ChallengePropertyNames.SALT, games.strategy.util.Md5Crypt.newSalt());
 
     final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 

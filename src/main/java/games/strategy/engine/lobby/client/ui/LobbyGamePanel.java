@@ -380,7 +380,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private static String md5Crypt(final String value, final String salt) {
-    return games.strategy.util.MD5Crypt.crypt(value, salt);
+    return games.strategy.util.Md5Crypt.crypt(value, salt);
   }
 
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {

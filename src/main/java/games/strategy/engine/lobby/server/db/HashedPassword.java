@@ -8,7 +8,7 @@ import com.google.common.base.Strings;
 /**
  * A Wrapper class for salted password hashes.
  * If the given String is not matching the format
- * of MD5Crypt or BCrypt hashes isValidSyntax returns false.
+ * of Md5Crypt or BCrypt hashes isValidSyntax returns false.
  */
 public final class HashedPassword {
   public final String value;
@@ -29,7 +29,7 @@ public final class HashedPassword {
   }
 
   public boolean isMd5Crypted() {
-    return value != null && value.startsWith(games.strategy.util.MD5Crypt.MAGIC);
+    return value != null && value.startsWith(games.strategy.util.Md5Crypt.MAGIC);
   }
 
   /**

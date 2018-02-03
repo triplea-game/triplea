@@ -233,15 +233,15 @@ public class HeadlessGameServer {
 
   public String getSalt() {
     final String encryptedPassword = md5Crypt(System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, ""));
-    return games.strategy.util.MD5Crypt.getSalt(encryptedPassword);
+    return games.strategy.util.Md5Crypt.getSalt(encryptedPassword);
   }
 
   private static String md5Crypt(final String value) {
-    return games.strategy.util.MD5Crypt.crypt(value);
+    return games.strategy.util.Md5Crypt.crypt(value);
   }
 
   private static String md5Crypt(final String value, final String salt) {
-    return games.strategy.util.MD5Crypt.crypt(value, salt);
+    return games.strategy.util.Md5Crypt.crypt(value, salt);
   }
 
   public String remoteShutdown(final String hashedPassword, final String salt) {
