@@ -45,11 +45,11 @@ public class DiceImageFactory {
     for (int i = 0; i <= diceSides; i++) {
       Image img = null;
       if (resourceLoader != null) {
-        if (color == Color.black) {
+        if (Color.BLACK.equals(color)) {
           img = imageFactory.getImage("dice/" + i + ".png", false);
-        } else if (color == Color.red) {
+        } else if (Color.RED.equals(color)) {
           img = imageFactory.getImage("dice/" + i + "_hit.png", false);
-        } else if (color == IGNORED) {
+        } else if (IGNORED.equals(color)) {
           img = imageFactory.getImage("dice/" + i + "_ignored.png", false);
         }
       }
