@@ -267,7 +267,6 @@ task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
 task prepareArtifacts(group: 'release', dependsOn: [generateZipReleases, prepareInstallers]) {
     doLast {
         def artifacts = [
-            file("$libsDir/triplea-$version-all.jar"),
             file("$distsDir/triplea-$version-all_platforms.zip"),
             file("$distsDir/triplea-$version-server.zip"),
             file("$releasesDir/TripleA_${version}_macos.dmg"),
