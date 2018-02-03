@@ -581,7 +581,7 @@ public final class Matches {
     return obj -> UnitAttachment.get(obj.getType()).getAttackingLimit() != null;
   }
 
-  private static Predicate<UnitType> unitTypeCanNotMoveDuringCombatMove() {
+  public static Predicate<UnitType> unitTypeCanNotMoveDuringCombatMove() {
     return type -> UnitAttachment.get(type).getCanNotMoveDuringCombatMove();
   }
 
@@ -1132,7 +1132,7 @@ public final class Matches {
     return u -> unitTypeCanMove(u.getOwner()).test(u.getType());
   }
 
-  private static Predicate<UnitType> unitTypeCanMove(final PlayerID player) {
+  public static Predicate<UnitType> unitTypeCanMove(final PlayerID player) {
     return obj -> UnitAttachment.get(obj).getMovement(player) > 0;
   }
 
