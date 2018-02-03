@@ -35,6 +35,13 @@ public class TuvUtilsTest {
   }
 
   @Test
+  public void testCostsForTuvWithConsumesUnitChain() {
+    final PlayerID germans = GameDataTestUtil.germany(gameData);
+    final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
+    assertEquals(12, result.getInt(GameDataTestUtil.germanFortification(gameData)));
+  }
+
+  @Test
   public void testCostsForTuvWithXmlPropertySet() {
     final PlayerID germans = GameDataTestUtil.germany(gameData);
     final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
