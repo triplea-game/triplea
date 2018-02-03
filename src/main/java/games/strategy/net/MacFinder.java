@@ -53,7 +53,7 @@ public final class MacFinder {
   }
 
   private static String getHashedMacAddress(final String macAddress) {
-    return games.strategy.util.MD5Crypt.crypt(macAddress, "MH");
+    return games.strategy.util.Md5Crypt.crypt(macAddress, "MH");
   }
 
   private static String getMacAddress() {

@@ -48,7 +48,7 @@ public class EmailLimitIntegrationTest {
         connection.prepareStatement("insert into ta_users (username, email, password) values (?, ?, ?)")) {
       ps.setString(1, Util.createUniqueTimeStamp());
       ps.setString(2, email);
-      ps.setString(3, games.strategy.util.MD5Crypt.crypt("password"));
+      ps.setString(3, games.strategy.util.Md5Crypt.crypt("password"));
       ps.execute();
     }
   }

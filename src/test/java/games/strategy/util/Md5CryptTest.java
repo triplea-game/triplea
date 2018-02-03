@@ -9,21 +9,21 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-public final class MD5CryptTest {
+public final class Md5CryptTest {
   private static String crypt(final String password) {
-    return MD5Crypt.crypt(password);
+    return Md5Crypt.crypt(password);
   }
 
   private static String crypt(final String password, final String salt) {
-    return MD5Crypt.crypt(password, salt);
+    return Md5Crypt.crypt(password, salt);
   }
 
   private static String getSalt(final String encryptedPassword) {
-    return MD5Crypt.getSalt(encryptedPassword);
+    return Md5Crypt.getSalt(encryptedPassword);
   }
 
   private static String newSalt() {
-    return MD5Crypt.newSalt();
+    return Md5Crypt.newSalt();
   }
 
   @Test

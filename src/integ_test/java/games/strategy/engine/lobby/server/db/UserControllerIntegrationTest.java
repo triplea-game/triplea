@@ -118,7 +118,7 @@ public class UserControllerIntegrationTest {
   }
 
   private static String md5Crypt(final String value) {
-    return games.strategy.util.MD5Crypt.crypt(value);
+    return games.strategy.util.Md5Crypt.crypt(value);
   }
 
   private static String obfuscate(final String string) {

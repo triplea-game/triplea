@@ -17,7 +17,7 @@ public class HashedPasswordTest {
 
   @Test
   public void isValidSyntax() {
-    final String md5CryptMagic = games.strategy.util.MD5Crypt.MAGIC;
+    final String md5CryptMagic = games.strategy.util.Md5Crypt.MAGIC;
 
     Arrays.asList(
         md5CryptMagic,

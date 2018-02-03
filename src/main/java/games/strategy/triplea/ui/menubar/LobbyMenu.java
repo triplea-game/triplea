@@ -44,7 +44,7 @@ import games.strategy.ui.SwingComponents;
  */
 public final class LobbyMenu extends JMenuBar {
   private static final long serialVersionUID = 4980621864542042057L;
-  private static final String HASHED_MAC_PREFIX = games.strategy.util.MD5Crypt.MAGIC + "MH$";
+  private static final String HASHED_MAC_PREFIX = games.strategy.util.Md5Crypt.MAGIC + "MH$";
 
   private final LobbyFrame lobbyFrame;
 
@@ -330,7 +330,7 @@ public final class LobbyMenu extends JMenuBar {
         + Strings.nullToEmpty(manager.updateUser(
             panel.getUserName(),
             panel.getEmail(),
-            games.strategy.util.MD5Crypt.crypt(panel.getPassword())))
+            games.strategy.util.Md5Crypt.crypt(panel.getPassword())))
         + Strings.nullToEmpty(manager.updateUser(
             panel.getUserName(),
             panel.getEmail(),

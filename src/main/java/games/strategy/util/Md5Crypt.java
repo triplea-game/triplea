@@ -18,13 +18,13 @@ import java.util.regex.Pattern;
  *             (kept for backwards compatibility)
  */
 @Deprecated
-public final class MD5Crypt {
+public final class Md5Crypt {
   public static final String MAGIC = "$1$";
   private static final Pattern ENCRYPTED_PASSWORD_PATTERN =
       Pattern.compile("^" + MAGIC.replace("$", "\\$") + "([\\.\\/a-zA-Z0-9]{1,8})\\$[\\.\\/a-zA-Z0-9]{22}$");
   private static final byte[] EMPTY_KEY_BYTES = new byte[0];
 
-  private MD5Crypt() {}
+  private Md5Crypt() {}
 
   /**
    * Encrypts the specified password using a new random salt.

@@ -35,7 +35,7 @@ public class ModeratorControllerIntegrationTest {
   private INode adminNode;
 
   private static String md5Crypt(final String value) {
-    return games.strategy.util.MD5Crypt.crypt(value);
+    return games.strategy.util.Md5Crypt.crypt(value);
   }
 
   private static String newHashedMacAddress() {

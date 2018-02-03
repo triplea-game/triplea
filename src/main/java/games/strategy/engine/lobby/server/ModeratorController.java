@@ -326,7 +326,7 @@ public class ModeratorController extends AbstractModeratorController {
     builder.append("\r\nHashed Mac: ");
     if (UNKNOWN_HASHED_MAC_ADDRESS.equals(mac)) {
       builder.append("(Unknown)");
-    } else if (mac.startsWith(games.strategy.util.MD5Crypt.MAGIC + "MH$")) {
+    } else if (mac.startsWith(games.strategy.util.Md5Crypt.MAGIC + "MH$")) {
       builder.append(mac.substring(6));
     } else {
       builder.append(mac + " (Invalid)");

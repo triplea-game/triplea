@@ -30,7 +30,7 @@ public final class ClientLoginValidator implements ILoginValidator {
   @VisibleForTesting
   static final int MAC_ADDRESS_LENGTH = 28;
   @VisibleForTesting
-  static final String MAC_MAGIC_STRING_PREFIX = games.strategy.util.MD5Crypt.MAGIC + "MH$";
+  static final String MAC_MAGIC_STRING_PREFIX = games.strategy.util.Md5Crypt.MAGIC + "MH$";
 
 
   @VisibleForTesting
