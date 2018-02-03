@@ -5,11 +5,11 @@ TripleA is a free game engine that runs on open source and is community supporte
 
 # Installing TripleA and Playing
 
-- Download and install TripleA: http://www.triplea-game.org/download/
+- Download and install TripleA: http://triplea-game.org/download/
 
 # TripleA Websites
 
-- HomePage: http://www.triplea-game.org/
+- Home Page: http://triplea-game.org/
 - Community Website: https://forums.triplea-game.org/
 - Community Maps Repository: https://github.com/triplea-maps/
 - Source Forge (legacy): https://sourceforge.net/projects/triplea/
