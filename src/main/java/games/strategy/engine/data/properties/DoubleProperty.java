@@ -5,9 +5,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import javax.swing.JComponent;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.ui.DoubleTextField;
 
 public class DoubleProperty extends AEditableProperty {
   private static final long serialVersionUID = 5521967819500867581L;
@@ -56,9 +57,9 @@ public class DoubleProperty extends AEditableProperty {
 
   @Override
   public JComponent getEditorComponent() {
-    final DoubleTextField field = new DoubleTextField(m_min, m_max);
+    final JSpinner field = new JSpinner(new SpinnerNumberModel(m_min, m_min, m_max, 1));
     field.setValue(m_value);
-    field.addChangeListener(aField -> m_value = aField.getValue());
+    field.addChangeListener(e -> m_value = (double) field.getValue());
     return field;
   }
 

@@ -41,11 +41,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SpinnerNumberModel;
 
 import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.ui.DoubleTextField;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Tuple;
@@ -193,8 +194,8 @@ public class MapPropertiesMaker extends JFrame {
             + "<br>Must be one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5</html>"),
         new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE,
             new Insets(10, 10, 10, 10), 0, 0));
-    final DoubleTextField scaleField = new DoubleTextField(0.1d, 2.0d);
-    scaleField.setText("" + mapProperties.getUnitsScale());
+    final JSpinner scaleField = new JSpinner(new SpinnerNumberModel(0.1, 0.1, 2.0, 1));
+    scaleField.setValue(Double.parseDouble(mapProperties.getUnitsScale()));
     scaleField.addFocusListener(new FocusListener() {
       @Override
       public void focusGained(final FocusEvent e) {}
@@ -202,12 +203,11 @@ public class MapPropertiesMaker extends JFrame {
       @Override
       public void focusLost(final FocusEvent e) {
         try {
-          // mapProperties.setUNITS_SCALE(Double.parseDouble(scaleField.getText()));
-          mapProperties.setUnitsScale(scaleField.getText());
+          mapProperties.setUnitsScale(String.valueOf(scaleField.getValue()));
         } catch (final Exception ex) {
           // ignore malformed input
         }
-        scaleField.setText("" + mapProperties.getUnitsScale());
+        scaleField.setValue(Double.parseDouble(mapProperties.getUnitsScale()));
       }
     });
     panel.add(scaleField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
