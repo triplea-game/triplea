@@ -403,7 +403,7 @@ class OddsCalculatorPanel extends JPanel {
   }
 
   String formatPercentage(final double percentage) {
-    final NumberFormat format = new DecimalFormat("%");
+    final NumberFormat format = new DecimalFormat("#%");
     return format.format(percentage);
   }
 
