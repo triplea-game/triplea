@@ -12,7 +12,6 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -403,13 +402,11 @@ class OddsCalculatorPanel extends JPanel {
   }
 
   String formatPercentage(final double percentage) {
-    final NumberFormat format = new DecimalFormat("#%");
-    return format.format(percentage);
+    return new DecimalFormat("#%").format(percentage);
   }
 
   String formatValue(final double value) {
-    final NumberFormat format = new DecimalFormat("#0.##");
-    return format.format(value);
+    return new DecimalFormat("#0.##").format(value);
   }
 
   private void updateDefender(List<Unit> units) {
