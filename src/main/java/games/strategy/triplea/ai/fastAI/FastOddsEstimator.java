@@ -65,73 +65,32 @@ public class FastOddsEstimator implements IOddsCalculator {
   }
 
   @Override
-  public int getRunCount() {
-    return 1;
-  }
+  public void setKeepOneAttackingLandUnit(final boolean bool) {}
 
   @Override
-  public boolean getIsReady() {
-    return true;
-  }
+  public void setAmphibious(final boolean bool) {}
 
   @Override
-  public void setKeepOneAttackingLandUnit(final boolean bool) {
-
-  }
+  public void setRetreatAfterRound(final int value) {}
 
   @Override
-  public void setAmphibious(final boolean bool) {
-
-  }
+  public void setRetreatAfterXUnitsLeft(final int value) {}
 
   @Override
-  public void setRetreatAfterRound(final int value) {
-
-  }
+  public void setRetreatWhenOnlyAirLeft(final boolean value) {}
 
   @Override
-  public void setRetreatAfterXUnitsLeft(final int value) {
-
-  }
+  public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {}
 
   @Override
-  public void setRetreatWhenOnlyAirLeft(final boolean value) {
-
-  }
+  public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {}
 
   @Override
-  public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
-
-  }
+  public void cancel() {}
 
   @Override
-  public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
-
-  }
+  public void shutdown() {}
 
   @Override
-  public void cancel() {
-
-  }
-
-  @Override
-  public void shutdown() {
-
-  }
-
-  @Override
-  public int getThreadCount() {
-    return 1;
-  }
-
-  @Override
-  public void addOddsCalculatorListener(final OddsCalculatorListener listener) {
-
-  }
-
-  @Override
-  public void removeOddsCalculatorListener(final OddsCalculatorListener listener) {
-
-  }
-
+  public void addOddsCalculatorListener(final OddsCalculatorListener listener) {}
 }

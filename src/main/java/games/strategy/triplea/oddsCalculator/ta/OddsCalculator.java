@@ -217,14 +217,8 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     return calculate();
   }
 
-  @Override
-  public boolean getIsReady() {
+  private boolean getIsReady() {
     return isDataSet && isCalcSet;
-  }
-
-  @Override
-  public int getRunCount() {
-    return runCount;
   }
 
   @Override
@@ -273,11 +267,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     synchronized (listeners) {
       listeners.clear();
     }
-  }
-
-  @Override
-  public int getThreadCount() {
-    return 1;
   }
 
   static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
@@ -363,13 +352,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   public void addOddsCalculatorListener(final OddsCalculatorListener listener) {
     synchronized (listeners) {
       listeners.add(listener);
-    }
-  }
-
-  @Override
-  public void removeOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (listeners) {
-      listeners.remove(listener);
     }
   }
 

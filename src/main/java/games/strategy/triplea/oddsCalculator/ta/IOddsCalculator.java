@@ -24,10 +24,6 @@ public interface IOddsCalculator {
       final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
       final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount);
 
-  int getRunCount();
-
-  boolean getIsReady();
-
   void setKeepOneAttackingLandUnit(final boolean bool);
 
   void setAmphibious(final boolean bool);
@@ -46,10 +42,5 @@ public interface IOddsCalculator {
 
   void shutdown();
 
-  int getThreadCount();
-
   void addOddsCalculatorListener(final OddsCalculatorListener listener);
-
-  // TODO: this method appears to never used.
-  void removeOddsCalculatorListener(final OddsCalculatorListener listener);
 }
