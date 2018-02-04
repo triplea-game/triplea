@@ -10,8 +10,6 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -110,7 +108,7 @@ class OddsCalculatorPanel extends JPanel {
   private final JCheckBox retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
-  private final IOddsCalculator calculator;
+  private final IOddsCalculator calculator = new OddsCalculator(null);
   private PlayerUnitsPanel attackingUnitsPanel;
   private PlayerUnitsPanel defendingUnitsPanel;
   private JComboBox<PlayerID> attackerCombo;
@@ -172,18 +170,10 @@ class OddsCalculatorPanel extends JPanel {
       updateDefender(null);
       updateAttacker(null);
     }
-    if (OddsCalculatorPanel.percentageOfFreeMemoryAvailable() < 0.4) {
-      System.gc();
-      System.runFinalization();
-      System.gc();
-    }
-    calculator = new OddsCalculator(null);
-
     calculator.addOddsCalculatorListener(() -> {
       calculateButton.setText("Calculate Odds");
       calculateButton.setEnabled(true);
     });
-
     calculator.setGameData(data);
     setWidgetActivation();
     revalidate();
@@ -197,19 +187,6 @@ class OddsCalculatorPanel extends JPanel {
     } catch (final Exception e) {
       ClientLogger.logQuietly("Failed to shut down odds calculator", e);
     }
-  }
-
-  private static double percentageOfFreeMemoryAvailable() {
-    final Runtime runtime = Runtime.getRuntime();
-    final long maxMemory = runtime.maxMemory();
-    final long memoryAvailable = Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
-    return (((double) memoryAvailable) / ((double) maxMemory));
-  }
-
-  private static long freeMemoryAvailable() {
-    final Runtime runtime = Runtime.getRuntime();
-    final long maxMemory = runtime.maxMemory();
-    return Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
   }
 
   private PlayerID getDefender() {
@@ -256,25 +233,6 @@ class OddsCalculatorPanel extends JPanel {
       updateDefender(null);
       updateAttacker(null);
       setWidgetActivation();
-    });
-    calculateButton.addMouseMotionListener(new MouseMotionListener() {
-      @Override
-      public void mouseDragged(final MouseEvent e) {}
-
-      @Override
-      public void mouseMoved(final MouseEvent e) {
-        final String memoryAvailable = "<br/>Percentage of memory available: "
-            + String.format("%.2f", (percentageOfFreeMemoryAvailable() * 100)) + "% <br/>Free memory available: "
-            + (freeMemoryAvailable() / (1024 * 1024)) + "MB <br/>Maximum allowed memory: "
-            + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB </html>";
-        if (calculateButton.isEnabled()) {
-          calculateButton.setToolTipText("<html>Data copying finished. " + memoryAvailable);
-        } else {
-          calculateButton.setToolTipText("<html>If this is taking forever to enable, it means "
-              + "<br/>you do not have enough memory to copy the data quickly! "
-              + "<br/>Consider increasing the max memory for TripleA. " + memoryAvailable);
-        }
-      }
     });
     calculateButton.addActionListener(e -> updateStats());
     closeButton.addActionListener(e -> {
