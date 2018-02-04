@@ -17,7 +17,7 @@ import games.strategy.util.Tuple;
  */
 public class MapProperties {
   public Map<String, Color> colorMap = new TreeMap<>();
-  public String unitsScale = "0.75";
+  public double unitsScale = 0.75;
   public int unitsWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   public int unitsHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   public int unitsCounterOffsetWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE / 4;
@@ -100,30 +100,30 @@ public class MapProperties {
     return hexString;
   }
 
-  public String getUnitsScale() {
+  public double getUnitsScale() {
     return unitsScale;
   }
 
-  public void setUnitsScale(final String value) {
-    final double dvalue = Math.max(0.0, Math.min(2.0, Double.parseDouble(value)));
+  public void setUnitsScale(final double value) {
+    final double dvalue = Math.max(0.0, Math.min(2.0, value));
     if (Math.abs(1.25 - dvalue) < 0.01) {
-      unitsScale = "1.25";
+      unitsScale = 1.25;
     } else if (Math.abs(1.0 - dvalue) < 0.01) {
-      unitsScale = "1.0";
+      unitsScale = 1.0;
     } else if (Math.abs(0.875 - dvalue) < 0.01) {
-      unitsScale = "0.875";
+      unitsScale = 0.875;
     } else if (Math.abs(0.8333 - dvalue) < 0.01) {
-      unitsScale = "0.8333";
+      unitsScale = 0.8333;
     } else if (Math.abs(0.75 - dvalue) < 0.01) {
-      unitsScale = "0.75";
+      unitsScale = 0.75;
     } else if (Math.abs(0.6666 - dvalue) < 0.01) {
-      unitsScale = "0.6666";
+      unitsScale = 0.6666;
     } else if (Math.abs(0.5625 - dvalue) < 0.01) {
-      unitsScale = "0.5625";
+      unitsScale = 0.5625;
     } else if (Math.abs(0.5 - dvalue) < 0.01) {
-      unitsScale = "0.5";
+      unitsScale = 0.5;
     } else {
-      unitsScale = "" + dvalue;
+      unitsScale = dvalue;
     }
   }
 

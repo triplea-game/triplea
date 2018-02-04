@@ -9,12 +9,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -195,19 +196,12 @@ public class MapPropertiesMaker extends JFrame {
         new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE,
             new Insets(10, 10, 10, 10), 0, 0));
     final JSpinner scaleField = new JSpinner(new SpinnerNumberModel(0.1, 0.1, 2.0, 1));
-    scaleField.setValue(Double.parseDouble(mapProperties.getUnitsScale()));
-    scaleField.addFocusListener(new FocusListener() {
-      @Override
-      public void focusGained(final FocusEvent e) {}
-
+    scaleField.setValue(mapProperties.getUnitsScale());
+    scaleField.addFocusListener(new FocusAdapter() {
       @Override
       public void focusLost(final FocusEvent e) {
-        try {
-          mapProperties.setUnitsScale(String.valueOf(scaleField.getValue()));
-        } catch (final Exception ex) {
-          // ignore malformed input
-        }
-        scaleField.setValue(Double.parseDouble(mapProperties.getUnitsScale()));
+        mapProperties.setUnitsScale((double) scaleField.getValue());
+        scaleField.setValue(mapProperties.getUnitsScale());
       }
     });
     panel.add(scaleField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
@@ -226,7 +220,6 @@ public class MapPropertiesMaker extends JFrame {
       MapPropertiesMaker.this.createPlayerColorChooser();
       MapPropertiesMaker.this.validate();
       MapPropertiesMaker.this.repaint();
-
     }));
     panel.add(showMore, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 10, 10, 10), 0, 0));
@@ -251,7 +244,7 @@ public class MapPropertiesMaker extends JFrame {
         }
       };
       label.setBackground(entry.getValue());
-      label.addMouseListener(new MouseListener() {
+      label.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(final MouseEvent e) {
           ToolLogger.info(label.getBackground().toString());
@@ -261,18 +254,6 @@ public class MapPropertiesMaker extends JFrame {
           MapPropertiesMaker.this.validate();
           MapPropertiesMaker.this.repaint();
         }
-
-        @Override
-        public void mouseEntered(final MouseEvent e) {}
-
-        @Override
-        public void mouseExited(final MouseEvent e) {}
-
-        @Override
-        public void mousePressed(final MouseEvent e) {}
-
-        @Override
-        public void mouseReleased(final MouseEvent e) {}
       });
       playerColorChooser.add(label, new GridBagConstraints(1, row, 1, 1, 1, 1, GridBagConstraints.CENTER,
           GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
@@ -421,8 +402,7 @@ public class MapPropertiesMaker extends JFrame {
     if (zoomString != null && zoomString.length() > 0) {
       try {
         final double unitZoomPercent = Double.parseDouble(zoomString);
-        // mapProperties.setUNITS_SCALE(unit_zoom_percent);
-        mapProperties.setUnitsScale(zoomString);
+        mapProperties.setUnitsScale(Double.parseDouble(zoomString));
         ToolLogger.info("Unit Zoom Percent to use: " + unitZoomPercent);
       } catch (final Exception e) {
         ToolLogger.error("Not a decimal percentage: " + zoomString);
