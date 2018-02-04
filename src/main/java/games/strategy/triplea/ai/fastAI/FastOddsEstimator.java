@@ -14,7 +14,6 @@ import games.strategy.triplea.ai.proAI.util.ProBattleUtils;
 import games.strategy.triplea.ai.proAI.util.ProPurchaseUtils;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorListener;
 
 public class FastOddsEstimator implements IOddsCalculator {
 
@@ -90,7 +89,4 @@ public class FastOddsEstimator implements IOddsCalculator {
 
   @Override
   public void shutdown() {}
-
-  @Override
-  public void addOddsCalculatorListener(final OddsCalculatorListener listener) {}
 }

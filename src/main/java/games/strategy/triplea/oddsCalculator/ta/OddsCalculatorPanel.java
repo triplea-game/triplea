@@ -97,7 +97,7 @@ class OddsCalculatorPanel extends JPanel {
   private final IntTextField retreatAfterXRounds = new IntTextField();
   private final IntTextField retreatAfterXUnitsLeft = new IntTextField();
   private final JPanel resultsPanel = new JPanel();
-  private final JButton calculateButton = new JButton("Pls Wait, Copying Data...");
+  private final JButton calculateButton = new JButton("Calculate Odds");
   private final JButton clearButton = new JButton("Clear");
   private final JButton closeButton = new JButton("Close");
   private final JButton swapSidesButton = new JButton("Swap Sides");
@@ -108,7 +108,7 @@ class OddsCalculatorPanel extends JPanel {
   private final JCheckBox retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
-  private final IOddsCalculator calculator = new OddsCalculator(null);
+  private final IOddsCalculator calculator;
   private PlayerUnitsPanel attackingUnitsPanel;
   private PlayerUnitsPanel defendingUnitsPanel;
   private JComboBox<PlayerID> attackerCombo;
@@ -134,7 +134,6 @@ class OddsCalculatorPanel extends JPanel {
     this.uiContext = uiContext;
     this.location = location;
     this.parent = parent;
-    calculateButton.setEnabled(false);
     createComponents();
     layoutComponents();
     setupListeners();
@@ -170,11 +169,7 @@ class OddsCalculatorPanel extends JPanel {
       updateDefender(null);
       updateAttacker(null);
     }
-    calculator.addOddsCalculatorListener(() -> {
-      calculateButton.setText("Calculate Odds");
-      calculateButton.setEnabled(true);
-    });
-    calculator.setGameData(data);
+    calculator = new OddsCalculator(data);
     setWidgetActivation();
     revalidate();
   }

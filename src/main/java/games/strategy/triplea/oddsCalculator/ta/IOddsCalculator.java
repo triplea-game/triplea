@@ -41,6 +41,4 @@ public interface IOddsCalculator {
   void cancel();
 
   void shutdown();
-
-  void addOddsCalculatorListener(final OddsCalculatorListener listener);
 }

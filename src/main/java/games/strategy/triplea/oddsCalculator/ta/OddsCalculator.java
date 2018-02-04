@@ -82,7 +82,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   private volatile boolean isDataSet = false;
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
-  private final List<OddsCalculatorListener> listeners = new ArrayList<>();
 
   public OddsCalculator(final GameData data) {
     this(data, false);
@@ -92,7 +91,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     gameData = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
     if (data != null) {
       isDataSet = true;
-      notifyListenersGameDataIsSet();
     }
   }
 
@@ -115,7 +113,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     runCount = 0;
     if (data != null) {
       isDataSet = true;
-      notifyListenersGameDataIsSet();
     }
   }
 
@@ -264,9 +261,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   @Override
   public void shutdown() {
     cancel();
-    synchronized (listeners) {
-      listeners.clear();
-    }
   }
 
   static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
@@ -346,21 +340,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     }
     Collections.reverse(order);
     return order;
-  }
-
-  @Override
-  public void addOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (listeners) {
-      listeners.add(listener);
-    }
-  }
-
-  private void notifyListenersGameDataIsSet() {
-    synchronized (listeners) {
-      for (final OddsCalculatorListener listener : listeners) {
-        listener.dataReady();
-      }
-    }
   }
 
   private static class DummyDelegateBridge implements IDelegateBridge {
