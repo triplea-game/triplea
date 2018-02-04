@@ -354,7 +354,7 @@ class OddsCalculatorPanel extends JPanel {
     final AtomicReference<AggregateResults> results = new AtomicReference<>();
     final WaitDialog dialog = new WaitDialog(
         this,
-        "Calculating Odds (" + calculator.getThreadCount() + " threads)",
+        "Calculating Odds",
         calculator::cancel);
     final AtomicReference<Collection<Unit>> defenders = new AtomicReference<>();
     final AtomicReference<Collection<Unit>> attackers = new AtomicReference<>();
