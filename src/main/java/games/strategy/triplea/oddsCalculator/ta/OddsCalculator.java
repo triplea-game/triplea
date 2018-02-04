@@ -10,6 +10,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
+import java.util.stream.IntStream;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -52,7 +54,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Tuple;
 
-class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
+public class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   public static final String OOL_ALL = "*";
 
   public static final String OOL_SEPARATOR = ";";
@@ -166,8 +168,6 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   private AggregateResults calculate(final int count) {
     isRunning = true;
     final long start = System.currentTimeMillis();
-    final AggregateResults aggregateResults = new AggregateResults(count);
-    final BattleTracker battleTracker = new BattleTracker();
     // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
     // the AI and a human
     // are both using the calc)
@@ -178,25 +178,34 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
         OddsCalculator.getUnitListByOrderOfLoss(this.attackerOrderOfLosses, attackingUnits, gameData);
     final List<Unit> defenderOrderOfLosses =
         OddsCalculator.getUnitListByOrderOfLoss(this.defenderOrderOfLosses, defendingUnits, gameData);
-    for (int i = 0; i < count && !cancelled; i++) {
-      final CompositeChange allChanges = new CompositeChange();
-      final DummyDelegateBridge bridge1 =
-          new DummyDelegateBridge(attacker, gameData, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
-              keepOneAttackingLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
-      final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
-      final MustFightBattle battle = new MustFightBattle(location, attacker, gameData, battleTracker);
-      battle.setHeadless(true);
-      battle.isAmphibious();
-      battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
-          (amphibious ? attackingUnits : new ArrayList<>()), defender, territoryEffects);
-      bridge1.setBattle(battle);
-      battle.fight(bridge);
-      aggregateResults.addResult(new BattleResults(battle, gameData));
-      // restore the game to its original state
-      gameData.performChange(allChanges.invert());
-      battleTracker.clear();
-      battleTracker.clearBattleRecords();
-    }
+    final AggregateResults aggregateResults = IntStream.range(0, count).parallel()
+        .filter(i -> !cancelled)
+        .mapToObj(i -> {
+          final CompositeChange allChanges = new CompositeChange();
+          final BattleTracker battleTracker = new BattleTracker();
+          try {
+            final DummyDelegateBridge bridge1 =
+                new DummyDelegateBridge(attacker, gameData, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
+                    keepOneAttackingLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
+            final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
+            final MustFightBattle battle = new MustFightBattle(location, attacker, gameData, battleTracker);
+            battle.setHeadless(true);
+            battle.isAmphibious();
+            battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
+                (amphibious ? attackingUnits : new ArrayList<>()), defender, territoryEffects);
+            bridge1.setBattle(battle);
+            battle.fight(bridge);
+            return new BattleResults(battle, gameData);
+          } finally {
+            // restore the game to its original state
+            gameData.performChange(allChanges.invert());
+            battleTracker.clear();
+            battleTracker.clearBattleRecords();
+          }
+        }).collect(Collector.of(() -> new AggregateResults(count), (a, b) -> a.addResult(b), (a1, a2) -> {
+          a1.addResults(a2.getResults());
+          return a1;
+        }));
     aggregateResults.setTime(System.currentTimeMillis() - start);
     isRunning = false;
     cancelled = false;

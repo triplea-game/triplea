@@ -46,8 +46,8 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.triplea.oddsCalculator.ta.ConcurrentOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
+import games.strategy.triplea.oddsCalculator.ta.OddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Tuple;
@@ -58,7 +58,7 @@ import games.strategy.util.Tuple;
 public class ProAi extends AbstractAi {
 
   // Odds calculator
-  private static final IOddsCalculator concurrentCalc = new ConcurrentOddsCalculator("ProAi");
+  private static final IOddsCalculator concurrentCalc = new OddsCalculator(null);
   protected ProOddsCalculator calc;
 
   // Phases

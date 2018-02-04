@@ -177,7 +177,7 @@ class OddsCalculatorPanel extends JPanel {
       System.runFinalization();
       System.gc();
     }
-    calculator = new ConcurrentOddsCalculator("BtlCalc Panel");
+    calculator = new OddsCalculator(null);
 
     calculator.addOddsCalculatorListener(() -> {
       calculateButton.setText("Calculate Odds");
