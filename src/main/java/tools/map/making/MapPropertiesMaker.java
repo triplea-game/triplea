@@ -401,9 +401,8 @@ public class MapPropertiesMaker extends JFrame {
     final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
-        final double unitZoomPercent = Double.parseDouble(zoomString);
         mapProperties.setUnitsScale(Double.parseDouble(zoomString));
-        ToolLogger.info("Unit Zoom Percent to use: " + unitZoomPercent);
+        ToolLogger.info("Unit Zoom Percent to use: " + zoomString);
       } catch (final Exception e) {
         ToolLogger.error("Not a decimal percentage: " + zoomString);
       }
