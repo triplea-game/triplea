@@ -20,9 +20,12 @@ public interface IOddsCalculator {
 
   AggregateResults calculate();
 
-  AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
+  default AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
       final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
-      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount);
+      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
+    setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
+    return calculate();
+  }
 
   void setKeepOneAttackingLandUnit(final boolean bool);
 

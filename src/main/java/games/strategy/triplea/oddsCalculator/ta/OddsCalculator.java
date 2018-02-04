@@ -147,14 +147,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   }
 
   @Override
-  public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
-      final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
-      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
-    setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
-    return calculate();
-  }
-
-  @Override
   public AggregateResults calculate() {
     if (!getIsReady()) {
       throw new IllegalStateException("Called calculate before setting calculate data!");
