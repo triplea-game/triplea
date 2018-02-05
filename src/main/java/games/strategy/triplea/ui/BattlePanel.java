@@ -13,7 +13,9 @@ import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,8 +46,6 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
-import games.strategy.ui.Util;
-import games.strategy.ui.Util.Task;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ThreadUtil;
 import swinglib.JPanelBuilder;
@@ -280,16 +280,19 @@ public class BattlePanel extends ActionPanel {
   /**
    * Ask user which territory to bombard with a given unit.
    */
-  public Territory getBombardment(final Unit unit, final Territory unitTerritory,
+  public @Nullable Territory getBombardment(final Unit unit, final Territory unitTerritory,
       final Collection<Territory> territories, final boolean noneAvailable) {
-    final BombardComponent comp = Util.runInSwingEventThread(
-        () -> new BombardComponent(unit, unitTerritory, territories, noneAvailable));
-    int option = JOptionPane.NO_OPTION;
-    while (option != JOptionPane.OK_OPTION) {
-      option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection",
-          JOptionPane.OK_OPTION, getMap().getUiContext().getCountDownLatchHandler());
-    }
-    return comp.getSelection();
+    return SwingAction
+        .invokeAndWaitUninterruptibly(() -> new BombardComponent(unit, unitTerritory, territories, noneAvailable))
+        .map(comp -> {
+          int option = JOptionPane.NO_OPTION;
+          while (option != JOptionPane.OK_OPTION) {
+            option = EventThreadJOptionPane.showConfirmDialog(this, comp, "Bombardment Territory Selection",
+                JOptionPane.OK_OPTION, getMap().getUiContext().getCountDownLatchHandler());
+          }
+          return comp.getSelection();
+        })
+        .orElse(null);
   }
 
   public boolean getAttackSubs(final Territory terr) {
@@ -369,10 +372,10 @@ public class BattlePanel extends ActionPanel {
         allowMultipleHitsPerUnit);
   }
 
-  private CasualtyDetails getCasualtiesAa(final Collection<Unit> selectFrom,
+  private @Nullable CasualtyDetails getCasualtiesAa(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
       final PlayerID hit, final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit) {
-    final Task<CasualtyDetails> task = () -> {
+    final Supplier<CasualtyDetails> action = () -> {
       final boolean isEditMode = (dice == null);
       final UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents,
           allowMultipleHitsPerUnit, getMap().getUiContext());
@@ -401,7 +404,7 @@ public class BattlePanel extends ActionPanel {
           new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
       return response;
     };
-    return Util.runInSwingEventThread(task);
+    return SwingAction.invokeAndWaitUninterruptibly(action).orElse(null);
   }
 
   public Territory getRetreat(final GUID battleId, final String message, final Collection<Territory> possible,

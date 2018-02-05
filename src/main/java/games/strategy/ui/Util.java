@@ -24,21 +24,7 @@ import java.util.Optional;
 public final class Util {
   public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
 
-  // all we have is static methods
   private Util() {}
-
-  public interface Task<T> {
-    T run();
-  }
-
-  public static <T> T runInSwingEventThread(final Task<T> task) {
-    try {
-      return SwingAction.invokeAndWait(task::run);
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      return null;
-    }
-  }
 
   private static final Component component = new Component() {
     private static final long serialVersionUID = 1800075529163275600L;
