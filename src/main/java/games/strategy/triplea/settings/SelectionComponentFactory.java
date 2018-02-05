@@ -11,7 +11,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
-import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -301,7 +300,7 @@ final class SelectionComponentFactory {
         return JPanelBuilder.builder()
             .horizontalBoxLayout()
             .add(field)
-            .add(Box.createHorizontalStrut(10))
+            .addHorizontalStrut(5)
             .add(button)
             .build();
       }

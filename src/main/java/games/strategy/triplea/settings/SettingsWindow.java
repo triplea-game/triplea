@@ -1,11 +1,16 @@
 package games.strategy.triplea.settings;
 
 import java.awt.Dimension;
-import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -13,9 +18,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
 
 import com.google.common.base.Preconditions;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;
@@ -32,7 +40,9 @@ import swinglib.JTextAreaBuilder;
 enum SettingsWindow {
   INSTANCE;
 
-  private JDialog dialog;
+  private @Nullable JDialog dialog;
+  private @Nullable JTabbedPane tabbedPane;
+  private final List<SettingType> settingTypes = Collections.unmodifiableList(Arrays.asList(SettingType.values()));
 
   public void close() {
     if (dialog != null) {
@@ -46,10 +56,11 @@ enum SettingsWindow {
   public void open() {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
     if (dialog == null) {
-      dialog = new JDialog((Frame) null, "Settings");
-      dialog.setContentPane(createContents(this::close));
+      dialog = GameRunner.newDialog("Settings");
+      dialog.setContentPane(createContents());
       dialog.setMinimumSize(new Dimension(400, 50));
       dialog.pack();
+      dialog.setLocationRelativeTo(dialog.getOwner());
       dialog.setVisible(true);
       SwingComponents.addWindowClosingListener(dialog, this::close);
       SwingComponents.addEscapeKeyListener(dialog, this::close);
@@ -59,16 +70,18 @@ enum SettingsWindow {
     }
   }
 
-  private static JComponent createContents(final Runnable closeListener) {
-    final JTabbedPane tabbedPane = SwingComponents.newJTabbedPane(1000, 400);
-
-    Arrays.stream(SettingType.values()).forEach(settingType -> {
-      final List<ClientSettingSwingUiBinding> settings = getSettingsByType(settingType);
-
-      final JComponent tab = buildTab(settings, closeListener);
-      tabbedPane.add(settingType.tabTitle, tab);
+  private JComponent createContents() {
+    tabbedPane = SwingComponents.newJTabbedPane(1000, 400);
+    settingTypes.forEach(settingType -> {
+      tabbedPane.add(settingType.tabTitle, buildTabPanel(getSettingsByType(settingType)));
     });
-    return tabbedPane;
+
+    return JPanelBuilder.builder()
+        .borderLayout()
+        .borderEmpty(10)
+        .addCenter(tabbedPane)
+        .addSouth(buildButtonPanel())
+        .build();
   }
 
   private static List<ClientSettingSwingUiBinding> getSettingsByType(final SettingType type) {
@@ -77,76 +90,103 @@ enum SettingsWindow {
         .collect(Collectors.toList());
   }
 
-  private static JComponent buildTab(final List<ClientSettingSwingUiBinding> settings, final Runnable closeListener) {
-    return JPanelBuilder.builder()
-        .borderLayout()
-        .addCenter(tabMainContents(settings))
-        .addSouth(buttonPanel(settings, closeListener))
+  private static JComponent buildTabPanel(final Iterable<ClientSettingSwingUiBinding> settings) {
+    final JPanel panel = JPanelBuilder.builder()
+        .borderEmpty(10)
         .build();
-  }
+    panel.setLayout(new GridBagLayout());
 
-  private static JComponent tabMainContents(final Iterable<ClientSettingSwingUiBinding> settings) {
-    final JPanelBuilder contents = JPanelBuilder.builder()
-        .gridBagLayout(3);
+    // Hack to ensure scroll panes have a border when using a Substance L&F. The default Substance scroll pane border is
+    // invisible, which makes it difficult to visualize the different setting descriptions. Using the text field border
+    // provides a satisfactory display. Most non-Substance L&Fs use a {@code null} default text field border, and so the
+    // default scroll pane border in those cases is not changed.
+    final Optional<Border> descriptionScrollPaneBorder = Optional.ofNullable(UIManager.getBorder("TextField.border"));
 
-    // Add settings, one per row, columns of 3:
-    // setting title (JLabel) | input component (eg: radio buttons) | description (JTextArea)}
-
-    settings.forEach(setting -> {
-      contents.add(JPanelBuilder.builder()
-          .horizontalBoxLayout()
-          .add(
-              JLabelBuilder.builder()
-                  .text(setting.title)
-                  .leftAlign()
-                  .maximumSize(200, 50)
+    int row = 0;
+    for (final ClientSettingSwingUiBinding setting : settings) {
+      final int topInset = (row == 0) ? 0 : 10;
+      panel.add(
+          JLabelBuilder.builder()
+              .text(setting.title)
+              .build(),
+          new GridBagConstraints(0, row, 1, 1, 0.0, 0.0,
+              GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(topInset, 0, 0, 0), 0, 0));
+      panel.add(
+          setting.buildSelectionComponent(),
+          new GridBagConstraints(1, row, 1, 1, 0.0, 0.0,
+              GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(topInset, 10, 0, 0), 0, 0));
+      panel.add(
+          JScrollPaneBuilder.builder()
+              .border(descriptionScrollPaneBorder)
+              .view(JTextAreaBuilder.builder()
+                  .text(setting.description)
+                  .rows(2)
+                  .readOnly()
                   .build())
-          .build());
+              .build(),
+          new GridBagConstraints(2, row, 1, 1, 1.0, 0.0,
+              GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(topInset, 10, 0, 0), 0, 0));
+      ++row;
+    }
 
-      contents.add(setting.buildSelectionComponent());
+    // Use some glue having weighty != 0 and all other components having weighty == 0 to ensure all
+    // setting components are pushed to the top of the panel rather than being centered
+    panel.add(Box.createGlue(), new GridBagConstraints(0, row, 3, 1, 1.0, 1.0,
+        GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
-      contents.add(JScrollPaneBuilder.builder()
-          .view(JTextAreaBuilder.builder()
-              .text(setting.description)
-              .rows(2)
-              .columns(40)
-              .readOnly()
-              .build())
-          .build());
-    });
-    return SwingComponents.newJScrollPane(contents.build());
+    return SwingComponents.newJScrollPane(panel);
   }
 
-  private static JPanel buttonPanel(final List<ClientSettingSwingUiBinding> settings, final Runnable closeListener) {
+  private JComponent buildButtonPanel() {
     return JPanelBuilder.builder()
+        .borderEmpty(20, 0, 0, 0)
         .horizontalBoxLayout()
         .horizontalAlignmentCenter()
-        .add(Box.createHorizontalGlue())
+        .addHorizontalGlue()
         .add(JButtonBuilder.builder()
             .title("Save")
-            .actionListener(() -> {
-              final SaveFunction.SaveResult saveResult = SaveFunction.saveSettings(settings, ClientSetting::flush);
-              JOptionPane.showMessageDialog(null, saveResult.message, "Results", saveResult.dialogType);
-            })
+            .actionListener(this::saveSettings)
             .build())
-        .add(Box.createHorizontalStrut(40))
+        .addHorizontalStrut(5)
         .add(JButtonBuilder.builder()
             .title("Close")
-            .actionListener(closeListener)
+            .actionListener(this::close)
             .build())
-        .add(Box.createHorizontalStrut(40))
+        .addHorizontalStrut(5)
         .add(JButtonBuilder.builder()
             .title("Reset")
-            .actionListener(() -> settings.forEach(
-                ClientSettingSwingUiBinding::reset))
+            .actionListener(this::resetSettings)
             .build())
-        .add(Box.createHorizontalStrut(40))
+        .addHorizontalStrut(5)
         .add(JButtonBuilder.builder()
-            .title("Reset To Default")
-            .actionListener(() -> settings.forEach(
-                ClientSettingSwingUiBinding::resetToDefault))
+            .title("Reset to Default")
+            .actionListener(this::resetSettingsToDefault)
             .build())
-        .add(Box.createHorizontalGlue())
+        .addHorizontalGlue()
         .build();
+  }
+
+  private void saveSettings() {
+    getSelectedSettings().ifPresent(settings -> {
+      final SaveFunction.SaveResult saveResult = SaveFunction.saveSettings(settings, ClientSetting::flush);
+      JOptionPane.showMessageDialog(dialog, saveResult.message, "Results", saveResult.dialogType);
+    });
+  }
+
+  private void resetSettings() {
+    getSelectedSettings().ifPresent(settings -> settings.forEach(ClientSettingSwingUiBinding::reset));
+  }
+
+  private void resetSettingsToDefault() {
+    getSelectedSettings().ifPresent(settings -> settings.forEach(ClientSettingSwingUiBinding::resetToDefault));
+  }
+
+  private Optional<List<ClientSettingSwingUiBinding>> getSelectedSettings() {
+    assert tabbedPane != null;
+
+    final int selectedTabIndex = tabbedPane.getSelectedIndex();
+    return (selectedTabIndex != -1)
+        ? Optional.of(getSettingsByType(settingTypes.get(selectedTabIndex)))
+        : Optional.empty();
   }
 }

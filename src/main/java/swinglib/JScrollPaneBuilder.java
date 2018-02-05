@@ -4,8 +4,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.awt.Component;
+import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.swing.JScrollPane;
+import javax.swing.border.Border;
 
 /**
  * A builder for incrementally creating instances of {@link JScrollPane}.
@@ -23,6 +26,7 @@ import javax.swing.JScrollPane;
  * </pre>
  */
 public final class JScrollPaneBuilder {
+  private @Nullable Border border;
   private Component view;
 
   private JScrollPaneBuilder() {}
@@ -32,14 +36,36 @@ public final class JScrollPaneBuilder {
   }
 
   /**
+   * Sets the scroll pane border.
+   *
+   * @param border The border.
+   */
+  public JScrollPaneBuilder border(final Border border) {
+    checkNotNull(border);
+
+    this.border = border;
+    return this;
+  }
+
+  /**
+   * Conditionally sets the scroll pane border.
+   *
+   * @param border The border; if empty, the current border will not be changed.
+   */
+  public JScrollPaneBuilder border(final Optional<Border> border) {
+    checkNotNull(border);
+
+    border.ifPresent(this::border);
+    return this;
+  }
+
+  /**
    * Sets the component to display in the scroll pane's viewport.
    *
    * @param view The component to display in the scroll pane's viewport.
-   *
-   * @throws NullPointerException If {@code view} is {@code null}.
    */
   public JScrollPaneBuilder view(final Component view) {
-    checkNotNull(view, "view must not be null");
+    checkNotNull(view);
 
     this.view = view;
     return this;
@@ -55,6 +81,12 @@ public final class JScrollPaneBuilder {
   public JScrollPane build() {
     checkState(view != null, "view must be specified");
 
-    return new JScrollPane(view);
+    final JScrollPane scrollPane = new JScrollPane(view);
+
+    if (border != null) {
+      scrollPane.setBorder(border);
+    }
+
+    return scrollPane;
   }
 }
