@@ -1,6 +1,5 @@
 package games.strategy.engine.data.properties;
 
-import java.awt.Dimension;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -58,10 +57,16 @@ public class DoubleProperty extends AEditableProperty {
 
   @Override
   public JComponent getEditorComponent() {
-    final JSpinner field = new JSpinner(new SpinnerNumberModel(m_min, m_min, m_max, 1));
-    field.setValue(m_value);
+    final JSpinner field = new JSpinner(new SpinnerNumberModel(m_value, m_min, m_max, 1.0));
+
+    // NB: Workaround for JSpinner default sizing algorithm when min/max values have very large magnitudes
+    // (see: https://implementsblog.com/2012/11/26/java-gotcha-jspinner-preferred-size/)
+    final JComponent fieldEditor = field.getEditor();
+    if (fieldEditor instanceof JSpinner.DefaultEditor) {
+      ((JSpinner.DefaultEditor) fieldEditor).getTextField().setColumns(10);
+    }
+
     field.addChangeListener(e -> m_value = (double) field.getValue());
-    field.setPreferredSize(new Dimension(50, 20));
     return field;
   }
 
