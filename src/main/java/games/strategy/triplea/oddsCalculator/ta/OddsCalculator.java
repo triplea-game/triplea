@@ -167,27 +167,22 @@ public class OddsCalculator implements IOddsCalculator {
         .filter(i -> !cancelled)
         .mapToObj(i -> {
           final CompositeChange allChanges = new CompositeChange();
-          final BattleTracker battleTracker = new BattleTracker();
           try {
-            final DummyDelegateBridge bridge1 = new DummyDelegateBridge(
+            final DummyDelegateBridge bridge = new DummyDelegateBridge(
                 attacker, gameData, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
                 keepOneAttackingLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
 
-            final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
-            final MustFightBattle battle = new MustFightBattle(location, attacker, gameData, battleTracker);
+            final MustFightBattle battle = new MustFightBattle(location, attacker, gameData, new BattleTracker());
             battle.setHeadless(true);
-            battle.isAmphibious();
             battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
-                (amphibious ? attackingUnits : new ArrayList<>()),
+                (amphibious ? attackingUnits : Collections.emptyList()),
                 defender, territoryEffects);
-            bridge1.setBattle(battle);
-            battle.fight(bridge);
+            bridge.setBattle(battle);
+            battle.fight(new GameDelegateBridge(bridge));
             return new BattleResults(battle, gameData);
           } finally {
             // restore the game to its original state
             gameData.performChange(allChanges.invert());
-            battleTracker.clear();
-            battleTracker.clearBattleRecords();
           }
         }).collect(AggregateResults.unionCollector(count));
     aggregateResults.setTime(System.currentTimeMillis() - start);
