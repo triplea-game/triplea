@@ -60,17 +60,14 @@ public class PbemDiceRoller implements IRandomSource {
 
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException {
-    try {
-      return SwingAction.invokeAndWait(() -> {
-        final HttpDiceRollerDialog dialog =
-            new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer, gameUuid);
-        dialog.roll();
-        return dialog.getDiceRoll();
-      });
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      return new int[0];
-    }
+    return SwingAction
+        .invokeAndWaitUninterruptibly(() -> {
+          final HttpDiceRollerDialog dialog =
+              new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer, gameUuid);
+          dialog.roll();
+          return dialog.getDiceRoll();
+        })
+        .orElseGet(() -> new int[0]);
   }
 
   @Override

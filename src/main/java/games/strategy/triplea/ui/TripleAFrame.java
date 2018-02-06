@@ -854,14 +854,10 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     messageAndDialogThreadPool.submit(() -> {
-      try {
-        final TechResultsDisplay display =
-            SwingAction.invokeAndWait(() -> new TechResultsDisplay(msg, uiContext, data));
-        EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, display, "Tech roll", JOptionPane.OK_OPTION,
-            JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUiContext().getCountDownLatchHandler());
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      SwingAction.invokeAndWaitUninterruptibly(() -> new TechResultsDisplay(msg, uiContext, data))
+          .ifPresent(display -> EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, display, "Tech roll",
+              JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK",
+              getUiContext().getCountDownLatchHandler()));
     });
   }
 
@@ -1370,28 +1366,25 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(from);
 
-    try {
-      return SwingAction.invokeAndWait(() -> {
-        final JList<Territory> list = new JList<>(new Vector<>(candidates));
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        final JScrollPane scroll = new JScrollPane(list);
-        panel.add(scroll, BorderLayout.CENTER);
-        if (from != null) {
-          panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
-        }
-        final String[] options = {"OK", "Dont attack"};
-        final String message = "Select Rocket Target";
-        final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-        return (selection == 0) ? list.getSelectedValue() : null;
-      });
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      return null;
-    }
+    return SwingAction
+        .invokeAndWaitUninterruptibly(() -> {
+          final JList<Territory> list = new JList<>(new Vector<>(candidates));
+          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+          list.setSelectedIndex(0);
+          final JPanel panel = new JPanel();
+          panel.setLayout(new BorderLayout());
+          final JScrollPane scroll = new JScrollPane(list);
+          panel.add(scroll, BorderLayout.CENTER);
+          if (from != null) {
+            panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
+          }
+          final String[] options = {"OK", "Dont attack"};
+          final String message = "Select Rocket Target";
+          final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
+              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+          return (selection == 0) ? list.getSelectedValue() : null;
+        })
+        .orElse(null);
   }
 
   GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
