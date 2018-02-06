@@ -1,6 +1,9 @@
 package games.strategy.engine.data;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,7 +47,7 @@ public class SerializationTest {
     final PlayerID id = gameDataSource.getPlayerList().getPlayerId("chretian");
     final PlayerID readId = (PlayerID) serialize(id);
     final PlayerID localId = gameDataSink.getPlayerList().getPlayerId("chretian");
-    assertTrue(localId != readId);
+    assertThat(localId, is(not(sameInstance(readId))));
   }
 
   @Test
@@ -52,7 +55,7 @@ public class SerializationTest {
     final Object orig = gameDataSource.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     final Object read = serialize(orig);
     final Object local = gameDataSink.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
-    assertTrue(local != read);
+    assertThat(local, is(not(sameInstance(read))));
   }
 
   @Test
@@ -60,7 +63,7 @@ public class SerializationTest {
     final Object orig = gameDataSource.getMap().getTerritory("canada");
     final Object read = serialize(orig);
     final Object local = gameDataSink.getMap().getTerritory("canada");
-    assertTrue(local != read);
+    assertThat(local, is(not(sameInstance(read))));
   }
 
   @Test
@@ -68,6 +71,6 @@ public class SerializationTest {
     final Object orig = gameDataSource.getProductionRuleList().getProductionRule("infForSilver");
     final Object read = serialize(orig);
     final Object local = gameDataSink.getProductionRuleList().getProductionRule("infForSilver");
-    assertTrue(local != read);
+    assertThat(local, is(not(sameInstance(read))));
   }
 }
