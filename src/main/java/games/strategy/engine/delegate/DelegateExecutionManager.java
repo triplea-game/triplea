@@ -33,7 +33,7 @@ public class DelegateExecutionManager {
    * only 1 block can be held (the block is equivalent to the read lock).
    */
   private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-  private final ThreadLocal<Boolean> currentThreadHasReadLock = ThreadLocal.withInitial(() -> Boolean.FALSE);
+  private final ThreadLocal<Boolean> currentThreadHasReadLock = ThreadLocal.withInitial(() -> false);
   private volatile boolean isGameOver = false;
 
   public void setGameOver() {
@@ -141,7 +141,7 @@ public class DelegateExecutionManager {
 
   public void leaveDelegateExecution() {
     readWriteLock.readLock().unlock();
-    currentThreadHasReadLock.set(Boolean.FALSE);
+    currentThreadHasReadLock.set(false);
   }
 
   public void enterDelegateExecution() {
@@ -149,6 +149,6 @@ public class DelegateExecutionManager {
       throw new IllegalStateException("Already locked?");
     }
     readWriteLock.readLock().lock();
-    currentThreadHasReadLock.set(Boolean.TRUE);
+    currentThreadHasReadLock.set(true);
   }
 }
