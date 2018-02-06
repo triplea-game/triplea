@@ -149,10 +149,6 @@ public class OddsCalculator implements IOddsCalculator {
     if (!getIsReady()) {
       throw new IllegalStateException("Called calculate before setting calculate data!");
     }
-    return calculate(runCount);
-  }
-
-  private AggregateResults calculate(final int count) {
     isRunning = true;
     final long start = System.currentTimeMillis();
     // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
@@ -163,7 +159,7 @@ public class OddsCalculator implements IOddsCalculator {
         OddsCalculator.getUnitListByOrderOfLoss(this.attackerOrderOfLosses, attackingUnits, gameData);
     final List<Unit> defenderOrderOfLosses =
         OddsCalculator.getUnitListByOrderOfLoss(this.defenderOrderOfLosses, defendingUnits, gameData);
-    final AggregateResults aggregateResults = IntStream.range(0, count).parallel()
+    final AggregateResults aggregateResults = IntStream.range(0, runCount).parallel()
         .filter(i -> !cancelled)
         .mapToObj(i -> {
           final CompositeChange allChanges = new CompositeChange();
@@ -184,7 +180,7 @@ public class OddsCalculator implements IOddsCalculator {
             // restore the game to its original state
             gameData.performChange(allChanges.invert());
           }
-        }).collect(AggregateResults.unionCollector(count));
+        }).collect(AggregateResults.unionCollector(runCount));
     aggregateResults.setTime(System.currentTimeMillis() - start);
     isRunning = false;
     cancelled = false;
