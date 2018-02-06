@@ -174,6 +174,7 @@ public class SwingActionTest {
           testCompleteLatch.await();
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
+          fail("unexpected interruption on EDT");
         }
         return VALUE;
       }));
