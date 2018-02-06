@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collector;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -220,5 +221,15 @@ public class AggregateResults implements Serializable {
 
   public void setTime(final long time) {
     m_time = time;
+  }
+
+  static Collector<BattleResults, AggregateResults, AggregateResults> unionCollector(final int expectedSize) {
+    return Collector.of(
+        () -> new AggregateResults(expectedSize),
+        AggregateResults::addResult,
+        (a1, a2) -> {
+          a1.addResults(a2.getResults());
+          return a1;
+        });
   }
 }

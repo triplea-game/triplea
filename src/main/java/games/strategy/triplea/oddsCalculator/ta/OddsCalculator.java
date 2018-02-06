@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.IntStream;
 
 import games.strategy.engine.data.Change;
@@ -190,10 +189,7 @@ public class OddsCalculator implements IOddsCalculator {
             battleTracker.clear();
             battleTracker.clearBattleRecords();
           }
-        }).collect(Collector.of(() -> new AggregateResults(count), (a, b) -> a.addResult(b), (a1, a2) -> {
-          a1.addResults(a2.getResults());
-          return a1;
-        }));
+        }).collect(AggregateResults.unionCollector(count));
     aggregateResults.setTime(System.currentTimeMillis() - start);
     isRunning = false;
     cancelled = false;
