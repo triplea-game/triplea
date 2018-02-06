@@ -57,7 +57,6 @@ import games.strategy.util.Tuple;
  */
 public class ProAi extends AbstractAi {
 
-  // Odds calculator
   private static final IOddsCalculator concurrentCalc = new OddsCalculator(null);
   protected ProOddsCalculator calc;
 

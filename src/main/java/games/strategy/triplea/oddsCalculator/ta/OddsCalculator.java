@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.IntStream;
@@ -54,7 +53,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Tuple;
 
-public class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
+public class OddsCalculator implements IOddsCalculator {
   public static final String OOL_ALL = "*";
 
   public static final String OOL_SEPARATOR = ";";
@@ -88,7 +87,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
   }
 
   OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
-    gameData = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
+    gameData = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data));
     if (data != null) {
       isDataSet = true;
     }
@@ -101,7 +100,7 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     }
     isDataSet = false;
     isCalcSet = false;
-    gameData = (data == null ? null : GameDataUtils.cloneGameData(data, false));
+    gameData = (data == null ? null : GameDataUtils.cloneGameData(data));
     // reset old data
     attacker = null;
     defender = null;
@@ -130,10 +129,10 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     if (!isDataSet) {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
-    this.attacker =
-        gameData.getPlayerList().getPlayerId(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
-    this.defender =
-        gameData.getPlayerList().getPlayerId(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
+    this.attacker = gameData.getPlayerList()
+        .getPlayerId(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
+    this.defender = gameData.getPlayerList()
+        .getPlayerId(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
     this.location = gameData.getMap().getTerritory(location.getName());
     attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
     defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
@@ -158,11 +157,9 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     isRunning = true;
     final long start = System.currentTimeMillis();
     // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
-    // the AI and a human
-    // are both using the calc)
+    // the AI and a human are both using the calc)
     // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a
-    // per-thread, per-calc
-    // caching
+    // per-thread, per-calc caching
     final List<Unit> attackerOrderOfLosses =
         OddsCalculator.getUnitListByOrderOfLoss(this.attackerOrderOfLosses, attackingUnits, gameData);
     final List<Unit> defenderOrderOfLosses =
@@ -173,15 +170,17 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
           final CompositeChange allChanges = new CompositeChange();
           final BattleTracker battleTracker = new BattleTracker();
           try {
-            final DummyDelegateBridge bridge1 =
-                new DummyDelegateBridge(attacker, gameData, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
-                    keepOneAttackingLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
+            final DummyDelegateBridge bridge1 = new DummyDelegateBridge(
+                attacker, gameData, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
+                keepOneAttackingLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
+
             final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
             final MustFightBattle battle = new MustFightBattle(location, attacker, gameData, battleTracker);
             battle.setHeadless(true);
             battle.isAmphibious();
             battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
-                (amphibious ? attackingUnits : new ArrayList<>()), defender, territoryEffects);
+                (amphibious ? attackingUnits : new ArrayList<>()),
+                defender, territoryEffects);
             bridge1.setBattle(battle);
             battle.fight(bridge);
             return new BattleResults(battle, gameData);
@@ -199,11 +198,6 @@ public class OddsCalculator implements IOddsCalculator, Callable<AggregateResult
     isRunning = false;
     cancelled = false;
     return aggregateResults;
-  }
-
-  @Override
-  public AggregateResults call() {
-    return calculate();
   }
 
   private boolean getIsReady() {
