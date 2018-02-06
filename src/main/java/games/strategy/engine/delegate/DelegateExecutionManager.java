@@ -1,5 +1,7 @@
 package games.strategy.engine.delegate;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -145,9 +147,8 @@ public class DelegateExecutionManager {
   }
 
   public void enterDelegateExecution() {
-    if (currentThreadHasReadLock()) {
-      throw new IllegalStateException("Already locked?");
-    }
+    checkState(!currentThreadHasReadLock(), "Already locked?");
+
     readWriteLock.readLock().lock();
     currentThreadHasReadLock.set(true);
   }
