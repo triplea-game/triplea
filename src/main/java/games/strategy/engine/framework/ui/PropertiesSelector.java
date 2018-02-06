@@ -26,12 +26,8 @@ public class PropertiesSelector {
    */
   public static Object getButton(final JComponent parent, final String title,
       final List<IEditableProperty> properties, final Object... buttonOptions) {
-    try {
-      return SwingAction.invokeAndWait(() -> showDialog(parent, title, properties, buttonOptions));
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      return JOptionPane.UNINITIALIZED_VALUE;
-    }
+    return SwingAction.invokeAndWaitUninterruptibly(() -> showDialog(parent, title, properties, buttonOptions))
+        .orElse(JOptionPane.UNINITIALIZED_VALUE);
   }
 
   private static Object showDialog(final JComponent parent, final String title,

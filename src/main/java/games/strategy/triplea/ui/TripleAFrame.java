@@ -40,8 +40,10 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -153,7 +155,6 @@ import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.ui.Util;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
@@ -853,14 +854,10 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     messageAndDialogThreadPool.submit(() -> {
-      try {
-        final TechResultsDisplay display =
-            SwingAction.invokeAndWait(() -> new TechResultsDisplay(msg, uiContext, data));
-        EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, display, "Tech roll", JOptionPane.OK_OPTION,
-            JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK", getUiContext().getCountDownLatchHandler());
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      SwingAction.invokeAndWaitUninterruptibly(() -> new TechResultsDisplay(msg, uiContext, data))
+          .ifPresent(display -> EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, display, "Tech roll",
+              JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK",
+              getUiContext().getCountDownLatchHandler()));
     });
   }
 
@@ -884,7 +881,9 @@ public class TripleAFrame extends MainGameFrame {
     return choice == JOptionPane.OK_OPTION;
   }
 
-  public Unit getStrategicBombingRaidTarget(final Territory territory, final Collection<Unit> potentialTargets,
+  public @Nullable Unit getStrategicBombingRaidTarget(
+      final Territory territory,
+      final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
     if (potentialTargets.size() == 1 || messageAndDialogThreadPool == null) {
       return potentialTargets.iterator().next();
@@ -892,7 +891,7 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     final AtomicReference<Unit> selected = new AtomicReference<>();
     final String message = "Select bombing target in " + territory.getName();
-    final Tuple<JPanel, JList<Unit>> comps = Util.runInSwingEventThread(() -> {
+    final Supplier<Tuple<JPanel, JList<Unit>>> action = () -> {
       final JList<Unit> list = new JList<>(new Vector<>(potentialTargets));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setSelectedIndex(0);
@@ -905,16 +904,20 @@ public class TripleAFrame extends MainGameFrame {
       final JScrollPane scroll = new JScrollPane(list);
       panel.add(scroll, BorderLayout.CENTER);
       return Tuple.of(panel, list);
-    });
-    final JPanel panel = comps.getFirst();
-    final JList<?> list = comps.getSecond();
-    final String[] options = {"OK"};
-    final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_OPTION,
-        JOptionPane.PLAIN_MESSAGE, null, options, null, getUiContext().getCountDownLatchHandler());
-    if (selection == 0) {
-      selected.set((Unit) list.getSelectedValue());
-    }
-    return selected.get();
+    };
+    return SwingAction.invokeAndWaitUninterruptibly(action)
+        .map(comps -> {
+          final JPanel panel = comps.getFirst();
+          final JList<?> list = comps.getSecond();
+          final String[] options = {"OK"};
+          final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_OPTION,
+              JOptionPane.PLAIN_MESSAGE, null, options, null, getUiContext().getCountDownLatchHandler());
+          if (selection == 0) {
+            selected.set((Unit) list.getSelectedValue());
+          }
+          return selected.get();
+        })
+        .orElse(null);
   }
 
   /**
@@ -959,16 +962,21 @@ public class TripleAFrame extends MainGameFrame {
       return new int[numDice];
     }
     messageAndDialogThreadPool.waitForAll();
-    final DiceChooser chooser =
-        Util.runInSwingEventThread(() -> new DiceChooser(getUiContext(), numDice, hitAt, hitOnlyIfEquals, diceSides));
-    do {
-      EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
-          getUiContext().getCountDownLatchHandler());
-    } while (chooser.getDice() == null);
-    return chooser.getDice();
+    return SwingAction
+        .invokeAndWaitUninterruptibly(() -> new DiceChooser(getUiContext(), numDice, hitAt, hitOnlyIfEquals, diceSides))
+        .map(chooser -> {
+          do {
+            EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
+                getUiContext().getCountDownLatchHandler());
+          } while (chooser.getDice() == null);
+          return chooser.getDice();
+        })
+        .orElseGet(() -> new int[numDice]);
   }
 
-  public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory,
+  public @Nullable Territory selectTerritoryForAirToLand(
+      final Collection<Territory> candidates,
+      final Territory currentTerritory,
       final String unitMessage) {
     if (candidates == null || candidates.isEmpty()) {
       return null;
@@ -977,7 +985,7 @@ public class TripleAFrame extends MainGameFrame {
       return candidates.iterator().next();
     }
     messageAndDialogThreadPool.waitForAll();
-    final Tuple<JPanel, JList<Territory>> comps = Util.runInSwingEventThread(() -> {
+    final Supplier<Tuple<JPanel, JList<Territory>>> action = () -> {
       mapPanel.centerOn(currentTerritory);
       final JList<Territory> list = new JList<>(new Vector<>(candidates));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -992,15 +1000,20 @@ public class TripleAFrame extends MainGameFrame {
       panel.add(text, BorderLayout.NORTH);
       panel.add(scroll, BorderLayout.CENTER);
       return Tuple.of(panel, list);
-    });
-    final JPanel panel = comps.getFirst();
-    final JList<?> list = comps.getSecond();
-    final String[] options = {"OK"};
-    final String title = "Select territory for air units to land, current territory is " + currentTerritory.getName();
-    EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-        null, options, null, getUiContext().getCountDownLatchHandler());
-    final Territory selected = (Territory) list.getSelectedValue();
-    return selected;
+    };
+    return SwingAction.invokeAndWaitUninterruptibly(action)
+        .map(comps -> {
+          final JPanel panel = comps.getFirst();
+          final JList<?> list = comps.getSecond();
+          final String[] options = {"OK"};
+          final String title =
+              "Select territory for air units to land, current territory is " + currentTerritory.getName();
+          EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION,
+              JOptionPane.PLAIN_MESSAGE, null, options, null, getUiContext().getCountDownLatchHandler());
+          final Territory selected = (Territory) list.getSelectedValue();
+          return selected;
+        })
+        .orElse(null);
   }
 
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final PlayerID player,
@@ -1353,28 +1366,25 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(from);
 
-    try {
-      return SwingAction.invokeAndWait(() -> {
-        final JList<Territory> list = new JList<>(new Vector<>(candidates));
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        final JScrollPane scroll = new JScrollPane(list);
-        panel.add(scroll, BorderLayout.CENTER);
-        if (from != null) {
-          panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
-        }
-        final String[] options = {"OK", "Dont attack"};
-        final String message = "Select Rocket Target";
-        final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-        return (selection == 0) ? list.getSelectedValue() : null;
-      });
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      return null;
-    }
+    return SwingAction
+        .invokeAndWaitUninterruptibly(() -> {
+          final JList<Territory> list = new JList<>(new Vector<>(candidates));
+          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+          list.setSelectedIndex(0);
+          final JPanel panel = new JPanel();
+          panel.setLayout(new BorderLayout());
+          final JScrollPane scroll = new JScrollPane(list);
+          panel.add(scroll, BorderLayout.CENTER);
+          if (from != null) {
+            panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
+          }
+          final String[] options = {"OK", "Dont attack"};
+          final String message = "Select Rocket Target";
+          final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
+              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+          return (selection == 0) ? list.getSelectedValue() : null;
+        })
+        .orElse(null);
   }
 
   GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
