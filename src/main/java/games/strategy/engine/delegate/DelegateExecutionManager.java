@@ -141,11 +141,25 @@ public class DelegateExecutionManager {
     return Proxy.newProxyInstance(implementor.getClass().getClassLoader(), interfaces, ih);
   }
 
+  /**
+   * Invoke immediately after executing a delegate.
+   */
   public void leaveDelegateExecution() {
     readWriteLock.readLock().unlock();
     currentThreadHasReadLock.set(false);
   }
 
+  /**
+   * Invoke immediately before executing a delegate. Upon completion of delegate execution, you must invoke
+   * {@link #leaveDelegateExecution()} in order to execute another delegate on the current thread.
+   *
+   * <p>
+   * This method will block if delegate execution is currently blocked due to a call to
+   * {@link #blockDelegateExecution(int)} and will not resume until {@link #resumeDelegateExecution()} is called.
+   * </p>
+   *
+   * @throws IllegalStateException If a delegate is currently executing on the current thread.
+   */
   public void enterDelegateExecution() {
     checkState(!currentThreadHasReadLock(), "Already locked?");
 

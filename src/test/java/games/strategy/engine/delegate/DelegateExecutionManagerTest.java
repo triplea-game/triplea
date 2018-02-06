@@ -8,7 +8,7 @@ public final class DelegateExecutionManagerTest {
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
 
   @Test
-  public void enterDelegateExecution_ShouldThrowExceptionWhenThreadTriesToReacquireLock() {
+  public void enterDelegateExecution_ShouldThrowExceptionWhenDelegateExecutingOnCurrentThread() {
     delegateExecutionManager.enterDelegateExecution();
     try {
       assertThrows(IllegalStateException.class, delegateExecutionManager::enterDelegateExecution);
