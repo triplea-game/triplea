@@ -1,8 +1,9 @@
 package games.strategy.engine.config;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.Properties;
 
@@ -18,7 +19,7 @@ public final class FilePropertyReaderAsPropertyReaderTest extends AbstractProper
   @Override
   protected PropertyReader createPropertyReader(final Map<String, String> properties) throws Exception {
     final File file = temporaryFolder.newFile(getClass().getName());
-    try (Writer writer = new FileWriter(file)) {
+    try (Writer writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
       final Properties props = new Properties();
       properties.forEach(props::setProperty);
       props.store(writer, null);

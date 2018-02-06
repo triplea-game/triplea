@@ -4,7 +4,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,6 @@ public class LobbyPropertyFileParserTest {
     testProps1.errorMessage = TestData.errorMessage;
     testProps1.message = TestData.message;
     testProps1.version = TestData.version0;
-
 
     final TestProps testProps2 = new TestProps();
     testProps2.host = TestData.host;
@@ -41,7 +42,6 @@ public class LobbyPropertyFileParserTest {
         testProps1, testProps2, testPropsMatch
     };
   }
-
 
   /**
    * Just one set of values in a config file with no verson. The props we return should be a pretty
@@ -68,7 +68,7 @@ public class LobbyPropertyFileParserTest {
 
   private static File createTempFile(final TestProps... testProps) throws Exception {
     final File f = File.createTempFile("testing", ".tmp");
-    try (FileWriter writer = new FileWriter(f)) {
+    try (Writer writer = Files.newBufferedWriter(f.toPath(), StandardCharsets.UTF_8)) {
       for (final TestProps testProp : Arrays.asList(testProps)) {
         writer.write(testProp.toYaml());
       }
@@ -105,7 +105,6 @@ public class LobbyPropertyFileParserTest {
     String version1 = "1.0.0.0";
     String clientCurrentVersion = "2.0.0.0";
   }
-
 
   /**
    * Simple struct-like object to keep our test data together and form a YAML more easily.

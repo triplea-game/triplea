@@ -5,8 +5,9 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ public final class FilePropertyReaderTest {
   @BeforeEach
   public void setup() throws Exception {
     final File file = temporaryFolder.newFile(getClass().getName());
-    try (Writer writer = new FileWriter(file)) {
+    try (Writer writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
       writer.write("a=b\n");
       writer.write(" 1 = 2 \n");
       writer.write("whitespace =      \n");

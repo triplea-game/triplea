@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +37,7 @@ public class FileSystemStrategyTest {
     final String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
     mapFile = temporaryFolder.newFile(getClass().getName());
     final File propFile = temporaryFolder.newFile(mapFile.getName() + ".properties");
-    Files.write(text.getBytes(), propFile);
+    Files.write(text.getBytes(StandardCharsets.UTF_8), propFile);
   }
 
   @Test
@@ -48,5 +49,4 @@ public class FileSystemStrategyTest {
   public void testMapFileFound() {
     assertThat(testObj.getMapVersion(mapFile.getAbsolutePath()), is(Optional.of(new Version(1, 2))));
   }
-
 }
