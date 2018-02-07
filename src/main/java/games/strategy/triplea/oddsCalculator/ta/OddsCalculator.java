@@ -8,8 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -52,75 +58,60 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Tuple;
 
-public class OddsCalculator implements IOddsCalculator {
+// this class is not thread safe from a client's perspective;
+// it is thread safe with respect to any threads created internally
+// TODO: it needs to be verified that clients do not call instances concurrently
+public final class OddsCalculator implements IOddsCalculator {
   public static final String OOL_ALL = "*";
-
   public static final String OOL_SEPARATOR = ";";
   public static final String OOL_SEPARATOR_REGEX = ";";
   public static final String OOL_AMOUNT_DESCRIPTOR = "^";
   public static final String OOL_AMOUNT_DESCRIPTOR_REGEX = "\\^";
 
-  private GameData gameData = null;
-  private PlayerID attacker = null;
-  private PlayerID defender = null;
-  private Territory location = null;
-  private Collection<Unit> attackingUnits = new ArrayList<>();
-  private Collection<Unit> defendingUnits = new ArrayList<>();
-  private Collection<Unit> bombardingUnits = new ArrayList<>();
-  private Collection<TerritoryEffect> territoryEffects = new ArrayList<>();
-  private boolean keepOneAttackingLandUnit = false;
-  private boolean amphibious = false;
-  private int retreatAfterRound = -1;
-  private int retreatAfterXUnitsLeft = -1;
-  private boolean retreatWhenOnlyAirLeft = false;
-  private String attackerOrderOfLosses = null;
-  private String defenderOrderOfLosses = null;
-  private int runCount = 0;
+  private Configuration configuration = new Configuration();
+  private boolean isDataSet = false;
+  private boolean isCalcSet = false;
+  private boolean isRunning = false;
+  private final int concurrentSimCount = Runtime.getRuntime().availableProcessors();
+  private final Collection<GameData> gameDataClones = new ArrayList<>();
+
+  // only the following fields are accessed by multiple threads
   private volatile boolean cancelled = false;
-  private volatile boolean isDataSet = false;
-  private volatile boolean isCalcSet = false;
-  private volatile boolean isRunning = false;
+  private final BlockingQueue<SimulationContext> contextQueue = new ArrayBlockingQueue<>(concurrentSimCount);
 
-  public OddsCalculator(final GameData data) {
-    this(data, false);
-  }
-
-  OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
-    gameData = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data));
-    if (data != null) {
-      isDataSet = true;
-    }
+  public OddsCalculator(final @Nullable GameData data) {
+    setGameData(data);
   }
 
   @Override
-  public void setGameData(final GameData data) {
+  public void setGameData(final @Nullable GameData data) {
     if (isRunning) {
       return;
     }
-    isDataSet = false;
     isCalcSet = false;
-    gameData = (data == null ? null : GameDataUtils.cloneGameData(data));
-    // reset old data
-    attacker = null;
-    defender = null;
-    location = null;
-    attackingUnits = new ArrayList<>();
-    defendingUnits = new ArrayList<>();
-    bombardingUnits = new ArrayList<>();
-    territoryEffects = new ArrayList<>();
-    runCount = 0;
-    if (data != null) {
-      isDataSet = true;
+
+    isDataSet = (data != null);
+    if (isDataSet) {
+      gameDataClones.clear();
+      final GameData gameData = GameDataUtils.cloneGameData(data);
+      gameDataClones.add(gameData);
+      gameDataClones.addAll(IntStream.range(1, concurrentSimCount).parallel()
+          .mapToObj(it -> GameDataUtils.cloneGameData(gameData))
+          .collect(Collectors.toList()));
     }
   }
 
-  /**
-   * Calculates odds using the stored game data.
-   */
   @Override
-  public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
+  public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
+      final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
+      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
+    setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
+    return calculate();
+  }
+
+  private void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
       final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects, final int runCount) throws IllegalStateException {
+      final Collection<TerritoryEffect> territoryEffects, final int runCount) {
     if (isRunning) {
       return;
     }
@@ -128,63 +119,117 @@ public class OddsCalculator implements IOddsCalculator {
     if (!isDataSet) {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
-    this.attacker = gameData.getPlayerList()
-        .getPlayerId(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
-    this.defender = gameData.getPlayerList()
-        .getPlayerId(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
-    this.location = gameData.getMap().getTerritory(location.getName());
-    attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
-    defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
-    bombardingUnits = GameDataUtils.translateIntoOtherGameData(bombarding, gameData);
-    this.territoryEffects = GameDataUtils.translateIntoOtherGameData(territoryEffects, gameData);
-    gameData.performChange(ChangeFactory.removeUnits(this.location, this.location.getUnits().getUnits()));
-    gameData.performChange(ChangeFactory.addUnits(this.location, attackingUnits));
-    gameData.performChange(ChangeFactory.addUnits(this.location, defendingUnits));
-    this.runCount = runCount;
+
+    configuration = configuration.withRunCount(runCount);
+
+    // ensure Configuration reference is published correctly between threads
+    final Configuration configuration = this.configuration;
+    contextQueue.clear();
+    contextQueue.addAll(gameDataClones.parallelStream()
+        .map(gameData -> newSimulationContext(
+            gameData,
+            configuration,
+            attacker,
+            defender,
+            location,
+            attacking,
+            defending,
+            bombarding,
+            territoryEffects))
+        .collect(Collectors.toList()));
+
     isCalcSet = true;
   }
 
-  @Override
-  public AggregateResults calculate() {
+  // this method may be run concurrently
+  private static SimulationContext newSimulationContext(
+      final GameData gameData,
+      final Configuration configuration,
+      final PlayerID attacker,
+      final PlayerID defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects) {
+    final Collection<Unit> attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
+    final Collection<Unit> defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
+    return new SimulationContext(
+        gameData,
+        gameData.getPlayerList().getPlayerId(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName()),
+        gameData.getPlayerList().getPlayerId(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName()),
+        gameData.getMap().getTerritory(location.getName()),
+        attackingUnits,
+        defendingUnits,
+        GameDataUtils.translateIntoOtherGameData(bombarding, gameData),
+        GameDataUtils.translateIntoOtherGameData(territoryEffects, gameData),
+        getUnitListByOrderOfLoss(configuration.attackerOrderOfLosses, attackingUnits, gameData),
+        getUnitListByOrderOfLoss(configuration.defenderOrderOfLosses, defendingUnits, gameData));
+  }
+
+  private AggregateResults calculate() {
     if (!getIsReady()) {
       throw new IllegalStateException("Called calculate before setting calculate data!");
     }
     isRunning = true;
+
     final long start = System.currentTimeMillis();
-    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
-    // the AI and a human are both using the calc)
-    // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a
-    // per-thread, per-calc caching
-    final List<Unit> attackerOrderOfLosses =
-        OddsCalculator.getUnitListByOrderOfLoss(this.attackerOrderOfLosses, attackingUnits, gameData);
-    final List<Unit> defenderOrderOfLosses =
-        OddsCalculator.getUnitListByOrderOfLoss(this.defenderOrderOfLosses, defendingUnits, gameData);
-    final AggregateResults aggregateResults = IntStream.range(0, runCount).parallel()
+
+    // ensure Configuration reference is published correctly between threads
+    final Configuration configuration = this.configuration;
+    final AggregateResults aggregateResults = IntStream.range(0, configuration.runCount).parallel()
         .filter(i -> !cancelled)
         .mapToObj(i -> {
-          final CompositeChange allChanges = new CompositeChange();
           try {
-            final DummyDelegateBridge bridge = new DummyDelegateBridge(
-                attacker, gameData, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
-                keepOneAttackingLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
-
-            final MustFightBattle battle = new MustFightBattle(location, attacker, gameData, new BattleTracker());
-            battle.setHeadless(true);
-            battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
-                (amphibious ? attackingUnits : Collections.emptyList()),
-                defender, territoryEffects);
-            bridge.setBattle(battle);
-            battle.fight(new GameDelegateBridge(bridge));
-            return new BattleResults(battle, gameData);
-          } finally {
-            // restore the game to its original state
-            gameData.performChange(allChanges.invert());
+            final SimulationContext context = contextQueue.take();
+            try {
+              return runSimulation(configuration, context);
+            } finally {
+              contextQueue.add(context);
+            }
+          } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            // TODO: better way to deal with interruption? basically want to throw away this result similar to filter
+            // return Optional instead and then map it again?
+            throw new RuntimeException("interrupted", e);
           }
-        }).collect(AggregateResults.unionCollector(runCount));
+        })
+        .collect(AggregateResults.unionCollector(configuration.runCount));
     aggregateResults.setTime(System.currentTimeMillis() - start);
     isRunning = false;
     cancelled = false;
     return aggregateResults;
+  }
+
+  // this method may be run concurrently
+  private static BattleResults runSimulation(final Configuration configuration, final SimulationContext context) {
+    final CompositeChange allChanges = new CompositeChange();
+    try {
+      context.gameData
+          .performChange(ChangeFactory.removeUnits(context.location, context.location.getUnits().getUnits()));
+      context.gameData.performChange(ChangeFactory.addUnits(context.location, context.attackingUnits));
+      context.gameData.performChange(ChangeFactory.addUnits(context.location, context.defendingUnits));
+
+      final DummyDelegateBridge bridge = new DummyDelegateBridge(
+          context.attacker, context.gameData, allChanges,
+          context.attackerOrderOfLosses, context.defenderOrderOfLosses,
+          configuration.keepOneAttackingLandUnit, configuration.retreatAfterRound,
+          configuration.retreatAfterXUnitsLeft, configuration.retreatWhenOnlyAirLeft);
+      final MustFightBattle battle =
+          new MustFightBattle(context.location, context.attacker, context.gameData, new BattleTracker());
+      battle.setHeadless(true);
+      battle.setUnits(context.defendingUnits, context.attackingUnits, context.bombardingUnits,
+          (configuration.amphibious ? context.attackingUnits : Collections.emptyList()),
+          context.defender, context.territoryEffects);
+      bridge.setBattle(battle);
+      battle.fight(new GameDelegateBridge(bridge));
+      // TODO: BattleResults keeps a reference to GameData, which will change after this method returns
+      // is this a problem?
+      return new BattleResults(battle, context.gameData);
+    } finally {
+      // restore the game to its original state
+      context.gameData.performChange(allChanges.invert());
+    }
   }
 
   private boolean getIsReady() {
@@ -193,37 +238,37 @@ public class OddsCalculator implements IOddsCalculator {
 
   @Override
   public void setKeepOneAttackingLandUnit(final boolean bool) {
-    keepOneAttackingLandUnit = bool;
+    configuration = configuration.withKeepOneAttackingLandUnit(bool);
   }
 
   @Override
   public void setAmphibious(final boolean bool) {
-    amphibious = bool;
+    configuration = configuration.withAmphibious(bool);
   }
 
   @Override
   public void setRetreatAfterRound(final int value) {
-    retreatAfterRound = value;
+    configuration = configuration.withRetreatAfterRound(value);
   }
 
   @Override
   public void setRetreatAfterXUnitsLeft(final int value) {
-    retreatAfterXUnitsLeft = value;
+    configuration = configuration.withRetreatAfterXUnitsLeft(value);
   }
 
   @Override
   public void setRetreatWhenOnlyAirLeft(final boolean value) {
-    retreatWhenOnlyAirLeft = value;
+    configuration = configuration.withRetreatWhenOnlyAirLeft(value);
   }
 
   @Override
-  public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
-    this.attackerOrderOfLosses = attackerOrderOfLosses;
+  public void setAttackerOrderOfLosses(final @Nullable String attackerOrderOfLosses) {
+    configuration = configuration.withAttackerOrderOfLosses(attackerOrderOfLosses);
   }
 
   @Override
-  public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
-    this.defenderOrderOfLosses = defenderOrderOfLosses;
+  public void setDefenderOrderOfLosses(final @Nullable String defenderOrderOfLosses) {
+    configuration = configuration.withDefenderOrderOfLosses(defenderOrderOfLosses);
   }
 
   @Override
@@ -313,6 +358,189 @@ public class OddsCalculator implements IOddsCalculator {
     }
     Collections.reverse(order);
     return order;
+  }
+
+  @Immutable
+  private static final class SimulationContext {
+    final GameData gameData;
+    final PlayerID attacker;
+    final PlayerID defender;
+    final Territory location;
+    final Collection<Unit> attackingUnits;
+    final Collection<Unit> defendingUnits;
+    final Collection<Unit> bombardingUnits;
+    final Collection<TerritoryEffect> territoryEffects;
+    // TODO: may have to calculate the following two collections per iteration
+    // ===
+    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
+    // the AI and a human are both using the calc)
+    // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a
+    // per-thread, per-calc caching
+    // ===
+    final List<Unit> attackerOrderOfLosses;
+    final List<Unit> defenderOrderOfLosses;
+
+    SimulationContext(
+        final GameData gameData,
+        final PlayerID attacker,
+        final PlayerID defender,
+        final Territory location,
+        final Collection<Unit> attackingUnits,
+        final Collection<Unit> defendingUnits,
+        final Collection<Unit> bombardingUnits,
+        final Collection<TerritoryEffect> territoryEffects,
+        final List<Unit> attackerOrderOfLosses,
+        final List<Unit> defenderOrderOfLosses) {
+      this.gameData = gameData;
+      this.attacker = attacker;
+      this.defender = defender;
+      this.location = location;
+      this.attackingUnits = attackingUnits;
+      this.defendingUnits = defendingUnits;
+      this.bombardingUnits = bombardingUnits;
+      this.territoryEffects = territoryEffects;
+      this.attackerOrderOfLosses = attackerOrderOfLosses;
+      this.defenderOrderOfLosses = defenderOrderOfLosses;
+    }
+  }
+
+  @Immutable
+  private static final class Configuration {
+    final boolean keepOneAttackingLandUnit;
+    final boolean amphibious;
+    final int retreatAfterRound;
+    final int retreatAfterXUnitsLeft;
+    final boolean retreatWhenOnlyAirLeft;
+    final @Nullable String attackerOrderOfLosses;
+    final @Nullable String defenderOrderOfLosses;
+    final int runCount;
+
+    Configuration() {
+      this(
+          false,
+          false,
+          -1,
+          -1,
+          false,
+          null,
+          null,
+          0);
+    }
+
+    Configuration(
+        final boolean keepOneAttackingLandUnit,
+        final boolean amphibious,
+        final int retreatAfterRound,
+        final int retreatAfterXUnitsLeft,
+        final boolean retreatWhenOnlyAirLeft,
+        final @Nullable String attackerOrderOfLosses,
+        final @Nullable String defenderOrderOfLosses,
+        final int runCount) {
+      this.keepOneAttackingLandUnit = keepOneAttackingLandUnit;
+      this.amphibious = amphibious;
+      this.retreatAfterRound = retreatAfterRound;
+      this.retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;
+      this.retreatWhenOnlyAirLeft = retreatWhenOnlyAirLeft;
+      this.attackerOrderOfLosses = attackerOrderOfLosses;
+      this.defenderOrderOfLosses = defenderOrderOfLosses;
+      this.runCount = runCount;
+    }
+
+    Configuration withKeepOneAttackingLandUnit(final boolean keepOneAttackingLandUnit) {
+      return new Configuration(
+          keepOneAttackingLandUnit,
+          amphibious,
+          retreatAfterRound,
+          retreatAfterXUnitsLeft,
+          retreatWhenOnlyAirLeft,
+          attackerOrderOfLosses,
+          defenderOrderOfLosses,
+          runCount);
+    }
+
+    Configuration withAmphibious(final boolean amphibious) {
+      return new Configuration(
+          keepOneAttackingLandUnit,
+          amphibious,
+          retreatAfterRound,
+          retreatAfterXUnitsLeft,
+          retreatWhenOnlyAirLeft,
+          attackerOrderOfLosses,
+          defenderOrderOfLosses,
+          runCount);
+    }
+
+    Configuration withRetreatAfterRound(final int retreatAfterRound) {
+      return new Configuration(
+          keepOneAttackingLandUnit,
+          amphibious,
+          retreatAfterRound,
+          retreatAfterXUnitsLeft,
+          retreatWhenOnlyAirLeft,
+          attackerOrderOfLosses,
+          defenderOrderOfLosses,
+          runCount);
+    }
+
+    Configuration withRetreatAfterXUnitsLeft(final int retreatAfterXUnitsLeft) {
+      return new Configuration(
+          keepOneAttackingLandUnit,
+          amphibious,
+          retreatAfterRound,
+          retreatAfterXUnitsLeft,
+          retreatWhenOnlyAirLeft,
+          attackerOrderOfLosses,
+          defenderOrderOfLosses,
+          runCount);
+    }
+
+    Configuration withRetreatWhenOnlyAirLeft(final boolean retreatWhenOnlyAirLeft) {
+      return new Configuration(
+          keepOneAttackingLandUnit,
+          amphibious,
+          retreatAfterRound,
+          retreatAfterXUnitsLeft,
+          retreatWhenOnlyAirLeft,
+          attackerOrderOfLosses,
+          defenderOrderOfLosses,
+          runCount);
+    }
+
+    Configuration withAttackerOrderOfLosses(final @Nullable String attackerOrderOfLosses) {
+      return new Configuration(
+          keepOneAttackingLandUnit,
+          amphibious,
+          retreatAfterRound,
+          retreatAfterXUnitsLeft,
+          retreatWhenOnlyAirLeft,
+          attackerOrderOfLosses,
+          defenderOrderOfLosses,
+          runCount);
+    }
+
+    Configuration withDefenderOrderOfLosses(final @Nullable String defenderOrderOfLosses) {
+      return new Configuration(
+          keepOneAttackingLandUnit,
+          amphibious,
+          retreatAfterRound,
+          retreatAfterXUnitsLeft,
+          retreatWhenOnlyAirLeft,
+          attackerOrderOfLosses,
+          defenderOrderOfLosses,
+          runCount);
+    }
+
+    Configuration withRunCount(final int runCount) {
+      return new Configuration(
+          keepOneAttackingLandUnit,
+          amphibious,
+          retreatAfterRound,
+          retreatAfterXUnitsLeft,
+          retreatWhenOnlyAirLeft,
+          attackerOrderOfLosses,
+          defenderOrderOfLosses,
+          runCount);
+    }
   }
 
   private static class DummyDelegateBridge implements IDelegateBridge {
