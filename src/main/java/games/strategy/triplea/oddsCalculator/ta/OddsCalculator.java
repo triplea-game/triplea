@@ -224,8 +224,6 @@ public final class OddsCalculator implements IOddsCalculator {
           context.defender, context.territoryEffects);
       bridge.setBattle(battle);
       battle.fight(new GameDelegateBridge(bridge));
-      // TODO: BattleResults keeps a reference to GameData, which will change after this method returns
-      // is this a problem?
       return new BattleResults(battle, context.gameData);
     } finally {
       // restore the game to its original state
