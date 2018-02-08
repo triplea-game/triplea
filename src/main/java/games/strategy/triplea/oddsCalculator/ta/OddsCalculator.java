@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -13,6 +14,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -178,22 +180,21 @@ public final class OddsCalculator implements IOddsCalculator {
     // ensure Configuration reference is published correctly between threads
     final Configuration configuration = this.configuration;
     final AggregateResults aggregateResults = IntStream.range(0, configuration.runCount).parallel()
-        .filter(i -> !cancelled)
-        .mapToObj(i -> {
+        .filter(it -> !cancelled)
+        .mapToObj(it -> {
           try {
             final SimulationContext context = contextQueue.take();
             try {
-              return runSimulation(configuration, context);
+              return Optional.of(runSimulation(configuration, context));
             } finally {
               contextQueue.add(context);
             }
           } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
-            // TODO: better way to deal with interruption? basically want to throw away this result similar to filter
-            // return Optional instead and then map it again?
-            throw new RuntimeException("interrupted", e);
+            return Optional.<BattleResults>empty();
           }
         })
+        .flatMap(it -> it.map(Stream::of).orElseGet(Stream::empty))
         .collect(AggregateResults.unionCollector(configuration.runCount));
     aggregateResults.setTime(System.currentTimeMillis() - start);
     isRunning = false;
