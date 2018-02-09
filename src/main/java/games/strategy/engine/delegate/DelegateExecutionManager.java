@@ -1,5 +1,7 @@
 package games.strategy.engine.delegate;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -139,15 +141,28 @@ public class DelegateExecutionManager {
     return Proxy.newProxyInstance(implementor.getClass().getClassLoader(), interfaces, ih);
   }
 
+  /**
+   * Invoke immediately after executing a delegate.
+   */
   public void leaveDelegateExecution() {
     readWriteLock.readLock().unlock();
     currentThreadHasReadLock.set(Boolean.FALSE);
   }
 
+  /**
+   * Invoke immediately before executing a delegate. Upon completion of delegate execution, you must invoke
+   * {@link #leaveDelegateExecution()} in order to execute another delegate on the current thread.
+   *
+   * <p>
+   * This method will block if delegate execution is currently blocked due to a call to
+   * {@link #blockDelegateExecution(int)} and will not resume until {@link #resumeDelegateExecution()} is called.
+   * </p>
+   *
+   * @throws IllegalStateException If a delegate is currently executing on the current thread.
+   */
   public void enterDelegateExecution() {
-    if (currentThreadHasReadLock()) {
-      throw new IllegalStateException("Already locked?");
-    }
+    checkState(!currentThreadHasReadLock(), "Already locked?");
+
     readWriteLock.readLock().lock();
     currentThreadHasReadLock.set(Boolean.TRUE);
   }
