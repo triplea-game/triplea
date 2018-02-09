@@ -1,10 +1,15 @@
 package games.strategy.engine.data;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -35,5 +40,22 @@ public class AllianceTrackerTest {
     assertTrue(relationshipTracker.isAllied(bush, castro));
   }
 
-  // TODO create test suite for Alliance/Relationships/Politics
+  @Test
+  public void getPlayersInAlliance_ShouldDifferentiateAllianceNamesThatAreSubstringsOfOtherAllianceNames() {
+    final PlayerID player1 = new PlayerID("Player1", gameData);
+    final PlayerID player2 = new PlayerID("Player2", gameData);
+    final PlayerID player3 = new PlayerID("Player3", gameData);
+    final PlayerID player4 = new PlayerID("Player4", gameData);
+    final String alliance1Name = "Alliance"; // NOTE: alliance1 name is a substring of alliance2 name
+    final String alliance2Name = "AntiAlliance";
+    final AllianceTracker allianceTracker = new AllianceTracker(ImmutableMultimap.<PlayerID, String>builder()
+        .put(player1, alliance1Name)
+        .put(player2, alliance1Name)
+        .put(player3, alliance2Name)
+        .put(player4, alliance2Name)
+        .build());
+
+    assertThat(allianceTracker.getPlayersInAlliance(alliance1Name), is(ImmutableSet.of(player1, player2)));
+    assertThat(allianceTracker.getPlayersInAlliance(alliance2Name), is(ImmutableSet.of(player3, player4)));
+  }
 }
