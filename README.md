@@ -3,26 +3,25 @@
 
 TripleA is an open source gaming community, free to play, 100% open source and volunteer run
 
-[Download and install TripleA](http://triplea-game.org/download/)
 
-- Online lobby, find, join and observe live games
+
+## [Download and install TripleA](http://triplea-game.org/download/)
+
+![screenshot from 2018-02-08 20-00-46](https://user-images.githubusercontent.com/12397753/36011234-c5fc3ce6-0d0a-11e8-921b-302289b0601f.png)
+
+- Online lobby, find and join live games
 - Play by email
 - Play vs AI
 - Many community created maps available for in-game download, you can create your own with your own rule set!
 
-## 
-- [Home Page](http://triplea-game.org/)
-- [Forums](https://forums.triplea-game.org/)
-- [Community Maps](https://github.com/triplea-maps/)
 
+## [Developers Start Here](https://github.com/triplea-game/triplea/tree/master/docs/dev)
+
+
+## Contact Us
 - [Bug report](https://github.com/triplea-game/triplea/issues/new)
 - [Feature requests](https://forums.triplea-game.org/category/42/feature-requests-and-ideas)
-- [Developers Start Here](https://github.com/triplea-game/triplea/tree/master/docs/dev)
-
-##
-
-![screenshot from 2018-02-08 20-00-46](https://user-images.githubusercontent.com/12397753/36011234-c5fc3ce6-0d0a-11e8-921b-302289b0601f.png)
-
+- [Gitter](https://gitter.im/triplea-game/social)
 
 
 # License
