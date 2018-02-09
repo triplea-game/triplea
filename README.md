@@ -20,7 +20,7 @@ TripleA is an open source gaming community, free to play, 100% open source and v
 - [Gitter](https://gitter.im/triplea-game/social)
 
 
-# License
+## License
 
 Copyright (C) 2001-2018 TripleA contributors.
 
