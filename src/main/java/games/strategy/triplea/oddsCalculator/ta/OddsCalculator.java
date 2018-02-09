@@ -60,9 +60,8 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Tuple;
 
-// this class is not thread safe from a client's perspective;
-// it is thread safe with respect to any threads created internally
-// TODO: it needs to be verified that clients do not call instances concurrently
+// FIXME: OddsCalculatorPanel calls the public methods of this class from multiple threads.  Either it needs to be
+// modified to only make calls from one thread (the EDT) or this class must be made thread safe.
 public final class OddsCalculator implements IOddsCalculator {
   public static final String OOL_ALL = "*";
   public static final String OOL_SEPARATOR = ";";
