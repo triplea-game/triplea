@@ -369,7 +369,6 @@ public final class OddsCalculator implements IOddsCalculator {
     final Collection<Unit> defendingUnits;
     final Collection<Unit> bombardingUnits;
     final Collection<TerritoryEffect> territoryEffects;
-    // TODO: may have to calculate the following two collections per iteration
     // ===
     // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
     // the AI and a human are both using the calc)
