@@ -95,7 +95,7 @@ In the above example key would be unitAttachment.  Objects implementing the Atta
 interface are PlayerID, Resource, Territory, and UnitType.
 
 
---------
+##
 
 
 Turn based strategy games generally go through a series of
@@ -138,109 +138,59 @@ changes, and then add them through the Delegates DelegateBridge.
 
 
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-
-
-
 In the game xml file you can specify the sequence of steps
 the game goes through in the gamePlay tag.
 
 
 
+```
+<delegate name="battle&quot" javaClass="BattleDelegate"/>
+<delegate name="move" javaClass="MoveDelegate"/>
 
-
-
-
-
-
-&lt;delegate name=&quot;battle&quot;
-javaClass=&quot;BattleDelegate&quot;/&gt;
-
-&lt;delegate name=&quot;move&quot;
-javaClass=&quot;MoveDelegate&quot;/&gt;
-
-&lt;step
-name=&quot;usMove&quot; delegate=&quot;move&quot; player=&quot;bush&quot;/&gt;
-
-&lt;step
-name=&quot;usFight&quot; delegate=&quot;battle&quot;
-player=&quot;bush&quot;/&gt;
-
-&lt;step
-name=&quot;canMove&quot; delegate=&quot;move&quot;
-player=&quot;chretian&quot;/&gt;
-
-&lt;step
-name=&quot;canFight&quot; delegate=&quot;battle&quot;
-player=&quot;chretian&quot;/&gt;
-
+<step name="usMove" delegate="move" player="bush"/>
+<step name="usFight" delegate="battle" player="bush"/>
+<step name="canMove" delegate="move" player="chretian"/>
+<step name="canFight" delegate="battle" player="chretian"/>
+```
 
 
 This tells the engine that there are two delegates, battle
 and move, and that there are four steps, usMove, usFight, canMove, canFight,
 and that the game cycles through these 4 steps until the game ends.
 
+ The delegates start method is called.
 
+ If a GamePlayer is specified in the game xml file for the step, then the
+ players start method is called. The argument to start is the name of the 
+ step specified in the game xml file.
 
-
-
- The
-     delegates start method is called.
-
- If a
-     GamePlayer is specified in the game xml file for the step, then the
-     players start method is called.
-     The argument to start is the name of the step specified in the game
-     xml file.
- The
-     delegates end method is called.Signifying
-     that the step is over.
-
-
+ The delegates end method is called. Signifying that the step is over.
 
 
 ###
 
-
-
-
 To preserve network transparency game data is not changed
-directly by the delegates.All changes
+directly by the delegates. All changes
 to game data are made by through the DelegateBridge.addChange(Change
-aChange).This allows the game engine
+aChange). This allows the game engine
 to synchronize changes in game data between machines.
 
 
-
-The Change class encapsulates a change of game data.<span
-style="mso-spacerun: yes">  Changes are created using the ChangeFactory
+The Change class encapsulates a change of game data. Changes are created using the ChangeFactory
 class.
-
-
 
 For example, a Delegate wanting to change the owner of a
 territory would use the following code,
 
-
-
-Change
-aChange = ChangeFactory.changeOwner(aTerritory, aPlayer);
-
-
-
-
+```java
+Change aChange = ChangeFactory.changeOwner(aTerritory, aPlayer);
+```
 
 ##
-
-
-
 
 A GamePlayer is responsible for making moves in a game.<span
 style="mso-spacerun: yes">  A game player can be anything from a GUI to
 an AI to a PBEM interface.
-
-
 
 A GamePlayer sends messages to the current game delegate
 saying what moves the player would like to make.<span style="mso-spacerun:
@@ -248,17 +198,10 @@ yes">  The Delegate will then validate the move, and if the move is
 valid, alter the GameData.
 
 
-
 ##
-
-
-
 
 Communication between delegates and game players is done
 through a simple remote method invocation scheme.
-
-
-
 
 A Delegate can send a message to any GamePlayer while it is
 executing (ie after its start method is called, and before its end method
@@ -269,19 +212,13 @@ start method returns.
 ###
 
 
-
-
 Because delegates and game players may not be on the same
 machine, communication is done through Bridges.<span style="mso-spacerun:
 yes">  
 
-
-
 A delegate can send a message to a player through its
 delegateBridge using the sendMessage(..) functions.<span style="mso-spacerun:
 yes">  
-
-
 
 A GamePlayer can only send a message to the games current
 delegate. The message is sent using the
