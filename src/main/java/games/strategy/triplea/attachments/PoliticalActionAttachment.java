@@ -3,7 +3,7 @@ package games.strategy.triplea.attachments;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -116,7 +116,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
    * @return a set of all other players involved in this PoliticalAction.
    */
   public Set<PlayerID> getOtherPlayers() {
-    final HashSet<PlayerID> otherPlayers = new HashSet<>();
+    final Set<PlayerID> otherPlayers = new LinkedHashSet<>();
     for (final String relationshipChange : m_relationshipChange) {
       final String[] s = relationshipChange.split(":");
       otherPlayers.add(getData().getPlayerList().getPlayerId(s[0]));
