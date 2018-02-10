@@ -14,7 +14,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -60,7 +59,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Tuple;
 
-// FIXME: OddsCalculatorPanel calls the public methods of this class from multiple threads.  Either it needs to be
+// FIXME: OddsCalculatorPanel calls the public methods of this class from multiple threads. Either it needs to be
 // modified to only make calls from one thread (the EDT) or this class must be made thread safe.
 public final class OddsCalculator implements IOddsCalculator {
   public static final String OOL_ALL = "*";
@@ -193,7 +192,8 @@ public final class OddsCalculator implements IOddsCalculator {
             return Optional.<BattleResults>empty();
           }
         })
-        .flatMap(it -> it.map(Stream::of).orElseGet(Stream::empty))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
         .collect(AggregateResults.unionCollector(configuration.runCount));
     aggregateResults.setTime(System.currentTimeMillis() - start);
     isRunning = false;
