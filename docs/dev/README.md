@@ -2,6 +2,7 @@
 
 ```
 ./gradlew test
+./gradlew check
 ./gradlew run
 ```
 
