@@ -8,6 +8,9 @@
 
 # IDE Setup
 
+Format, cleanup and import ordering files are checked in to: 
+https://github.com/triplea-game/triplea/tree/master/eclipse/format
+
 ## *Eclipse*
  Plugins:
   - [Buildship](https://github.com/eclipse/buildship/blob/master/docs/user/Installation.md)
@@ -24,7 +27,8 @@ Useful:
 Plugins:
   - *Eclipse Code Formatter* 
     - configure in settings to pick up the eclipse xml formatter and import ordering files.
-  - *checkstyle-IDEA*
+  - *checkstyle-IDEA* [plugin](https://github.com/jshiell/checkstyle-idea) 
+    - after install finish configuration in: **Other Settings > Checkstyle** 
   - *Save Actions*
     - configure in settings to add 'final' to local variables and class variables.
   - Method ordering: ![keep_dependents_first](https://user-images.githubusercontent.com/12397753/27557429-72fb899c-5a6e-11e7-8f9f-59cc508ba86c.png)
