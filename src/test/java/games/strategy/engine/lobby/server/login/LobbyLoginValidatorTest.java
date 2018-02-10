@@ -41,6 +41,7 @@ import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.security.TestSecurityUtils;
 import games.strategy.util.Tuple;
 
+@ExtendWith(MockitoExtension.class)
 public final class LobbyLoginValidatorTest {
 
   interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {
@@ -231,7 +232,6 @@ public final class LobbyLoginValidatorTest {
 
   @Nested
   public final class DatabaseInteractionTest {
-    @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUserIsAnonymousTest extends AbstractTestCase {
       @Test
@@ -265,7 +265,6 @@ public final class LobbyLoginValidatorTest {
 
     @Nested
     public final class WhenUserDoesNotExistTest {
-      @ExtendWith(MockitoExtension.class)
       @Nested
       public final class WhenUsingLegacyClientTest extends AbstractTestCase {
         @Test
@@ -288,7 +287,6 @@ public final class LobbyLoginValidatorTest {
         }
       }
 
-      @ExtendWith(MockitoExtension.class)
       @Nested
       public final class WhenUsingCurrentClientTest extends AbstractTestCase {
         @Test
@@ -316,7 +314,6 @@ public final class LobbyLoginValidatorTest {
 
     @Nested
     public final class WhenUserExistsTest {
-      @ExtendWith(MockitoExtension.class)
       @Nested
       public final class WhenUsingLegacyClientTest extends AbstractTestCase {
         @Test
@@ -362,7 +359,6 @@ public final class LobbyLoginValidatorTest {
         }
       }
 
-      @ExtendWith(MockitoExtension.class)
       @Nested
       public final class WhenUsingCurrentClientTest extends AbstractTestCase {
         @Test
@@ -422,7 +418,6 @@ public final class LobbyLoginValidatorTest {
 
   @Nested
   public final class MaintenanceModeTest {
-    @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUsingLegacyClientTest extends AbstractTestCase {
       @Test
@@ -448,7 +443,6 @@ public final class LobbyLoginValidatorTest {
       }
     }
 
-    @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUsingCurrentClientTest extends AbstractTestCase {
       @Test
@@ -479,7 +473,6 @@ public final class LobbyLoginValidatorTest {
 
   @Nested
   public final class AccessLogTest {
-    @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUserIsAnonymous extends AbstractTestCase {
       @Test
@@ -509,7 +502,6 @@ public final class LobbyLoginValidatorTest {
       }
     }
 
-    @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUserIsRegistered extends AbstractTestCase {
       @Test
