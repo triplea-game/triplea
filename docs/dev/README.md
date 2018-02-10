@@ -6,7 +6,6 @@
 ./gradlew run
 ```
 
-
 # IDE Setup
 
 Format, cleanup and import ordering files are checked in to: 
@@ -115,7 +114,7 @@ Simplified 3 number versioning system based on semantic versioning:
 
 Response to a frozen game problem, below are steps notes of what would be needed to debug such a problem:
 
-  - launch the game from a console window, running: ./triplea_unix.sh  | tee output.txt
+  - launch the game from a console window
   - recreate the game freeze.
   - In a second console, "`kill -3`" the process id of the running game. As a one line that would be:
      - `ps -ef | grep java | grep GameRunner | awk '{print $2}' | xargs kill -3`
