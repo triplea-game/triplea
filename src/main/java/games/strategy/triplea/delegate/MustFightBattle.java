@@ -1275,6 +1275,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!defender) {
       units = new HashSet<>(units);
       units.addAll(m_battleSite.getUnits().getMatches(Matches.unitIsOwnedBy(m_attacker)));
+      units.removeAll(m_killed);
     }
     if (subs) {
       units = CollectionUtils.getMatches(units, Matches.unitIsSub());
