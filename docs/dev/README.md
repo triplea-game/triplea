@@ -142,22 +142,3 @@ $ ./gradlew clean checkstyleMain checkstyleTest checkstyleIntegTest
 Checkstyle reports can be found within the folder `build/reports/checkstyle`.
 
 You are **strongly encouraged** to run the `check` task before submitting a PR.
- 
-## Eclipse
-
-The [Eclipse Checkstyle plugin](http://eclipse-cs.sourceforge.net) integrates Checkstyle into the Eclipse IDE and notifies you of violations in real time.
-Installation instructions are available at the above website.  You should install the version of the plugin that matches the Checkstyle version used in the Gradle build (see the `checkstyle` configuration in `build.gradle`).
-
-Once installed, configure your TripleA workspace as follows:
-
-1. Open the Preferences window from the main menu: **Window > Preferences**
-1. Select the **Checkstyle** node
-1. Under **Global Check Configurations** select **New...** to open the Check Configuration Properties window
-1. Under **Type** select **Project Relative Configuration**
-1. Under **Name** enter **TripleA**
-1. Under **Location** click the **Browse...** button and select the file `/config/checkstyle/checkstyle.xml` relative to the project root
-1. Click **OK** to close the Check Configuration Properties window
-1. Click **OK** to close the Preferences window
-
-Finally, configure the TripleA project as follows:
-
