@@ -121,33 +121,29 @@ Response to a frozen game problem, below are steps notes of what would be needed
      - `ps -ef | grep java | grep GameRunner | awk '{print $2}' | xargs kill -3`
   - Go back to the first console, a lot of new text should have shown up. Kill the game (ctrl+c), the file: "`output.txt`" will have the debug data we want.
 
-# CheckStyle
+# [Checkstyle](http://checkstyle.sourceforge.net)
 
-This project uses [Checkstyle](http://checkstyle.sourceforge.net) to enforce code guidelines and standards.  The build is configured to fail under the following conditions:
+Build will fail if checkstyle violation is increased.
 
-* The error count is greater than zero
-* The net warning count increases over the current baseline on `master`
-
-The following sections describe how to use Checkstyle in various environments.
 
 ## Gradle
 
-During a Gradle build, Checkstyle runs as part of the `check` task:
+Checkstyle can be run with:
 
 ```
 $ ./gradlew clean check
 ```
 
-To run Checkstyle on its own, use the `checkstyleMain`, `checkstyleTest`, and `checkstyleIntegTest` tasks:
+To run individually:
 
 ```
 $ ./gradlew clean checkstyleMain checkstyleTest checkstyleIntegTest
 ```
 
-Checkstyle will generate HTML and XML reports for the main, unit test, and integration test code.  These reports can be found within the folder `build/reports/checkstyle`.
+Checkstyle reports can be found within the folder `build/reports/checkstyle`.
 
-You are **strongly encouraged** to run the `check` task before submitting a PR to avoid adding unnecessary commits for Checkstyle violations you may have introduced.
-
+You are **strongly encouraged** to run the `check` task before submitting a PR.
+ 
 ## Eclipse
 
 The [Eclipse Checkstyle plugin](http://eclipse-cs.sourceforge.net) integrates Checkstyle into the Eclipse IDE and notifies you of violations in real time.
