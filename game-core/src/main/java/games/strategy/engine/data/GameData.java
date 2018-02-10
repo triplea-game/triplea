@@ -105,9 +105,7 @@ public class GameData implements Serializable {
   private IGameLoader loader;
   private final History gameHistory = new History(this);
   private transient volatile boolean testLockIsHeld = false;
-  private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
-      new ArrayList<>();
-  // TODO: change to Map/HashMap upon next incompatible release
+  private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues = new ArrayList<>();
   private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
@@ -438,11 +436,11 @@ public class GameData implements Serializable {
   }
 
   public void addToAttachmentOrderAndValues(
-      final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues) {
+      final Tuple<IAttachment, List<Tuple<String, String>>> attachmentAndValues) {
     attachmentOrderAndValues.add(attachmentAndValues);
   }
 
-  public List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> getAttachmentOrderAndValues() {
+  public List<Tuple<IAttachment, List<Tuple<String, String>>>> getAttachmentOrderAndValues() {
     return attachmentOrderAndValues;
   }
 
@@ -464,7 +462,7 @@ public class GameData implements Serializable {
     return relationships;
   }
 
-  public Map<String, TerritoryEffect> getTerritoryEffectList() {
+  public Hashtable<String, TerritoryEffect> getTerritoryEffectList() {
     return territoryEffectList;
   }
 
