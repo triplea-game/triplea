@@ -1,3 +1,29 @@
+# How to Release
+## Tasks:
+
+## Standard release
+- Verify the release notes: https://github.com/triplea-game/triplea-game.github.io/blob/master/release_notes.md
+   - Add link to full list of merged PRs included in release: https://github.com/triplea-game/triplea-game.github.io/blob/master/.github/generate_release_changes_url
+- Mark the target release version as latest: https://github.com/triplea-game/triplea/releases
+- Update the lobby bots and the lobby server: https://github.com/triplea-game/lobby
+
+## Major releases
+- Can send new game clients to a new lobby: https://github.com/triplea-game/triplea/blob/master/lobby_server.yaml
+- Change the version number in the game_engine.properties file: https://github.com/triplea-game/triplea/blob/master/game_engine.properties
+- Trigger game client notifications: https://github.com/triplea-game/triplea/blob/master/latest_version.properties
+- Update partner sites:  
+  - http://www.freewarefiles.com/TripleA_program_56699.html  
+  - http://download.cnet.com/TripleA/3000-18516_4-75184098.html  
+- Post to forums:
+  - https://forums.triplea-game.org/category/1/announcements
+  - http://www.axisandallies.org/forums/index.php?board=53.0
+
+
+
+
+
+# Server Ops
+
 All TripleA related processes are started as the `triplea` user, so if you ever get an error because of insufficient permissions, make sure all the files are owned by the `triplea` user.
 
 
@@ -104,3 +130,39 @@ The old tripleawarclub forum runs on the same server as the lobby, it is powered
 ```
 sudo service nginx restart
 ```
+
+
+# Bot Account
+
+Bot Account: [github.com/tripleabuilderbot](https://github.com/tripleabuilderbot)
+
+An admin owned account used for automated build tasks that require repository write access.
+
+## Personal Access Keys
+
+![Tokens](https://cloud.githubusercontent.com/assets/12397753/26811743/822517d6-4a28-11e7-8342-ef4826e834b9.png)
+
+- *push_tags*: 
+  - *Description*: Write permission to TripleA repo for creating a new tag on each release.
+      The tags are primarily for convenience, so we can relatively easily checkout a specific
+      version that we released. This is also a carry-over of the process TripleA used when
+      hosted in SVN.
+  - *Location*: environment variable
+  - *Usage*: [push_tags script](https://github.com/triplea-game/triplea/blob/master/.travis/push_tag#L13)
+- *push_maps*
+  - *Description*: Write-Access to TripleA github.io website repo to add map description files
+  - *Location*: environment variable
+  - *Usage*: [push_maps script](https://github.com/triplea-game/triplea/blob/master/.travis/push_maps#L8)
+- *automatic releases*
+  - *Description*: This key allows Travis to push to github releases. It is set up by the
+      Travis ruby set up program when first configuring travis with TripleA.
+  - *Stored Location*: encrypted in the travis.yml file
+  - *Usage*: [travis.yml](https://github.com/triplea-game/triplea/blob/master/.travis.yml#L32)
+
+
+## Regenerating Travis Environment Variables:
+
+Can be done through the Travis UI. Note they are write-once, so they just need to be deleted and re-created with known values.
+
+The config can be found here (You must be logged in as the bot or with admin/write-access to TripleA): [travis-ci.org/triplea-game/triplea/settings](https://travis-ci.org/triplea-game/triplea/settings)
+![Travis](https://cloud.githubusercontent.com/assets/12397753/26811735/6e69c5de-4a28-11e7-8996-49338f428349.png)
