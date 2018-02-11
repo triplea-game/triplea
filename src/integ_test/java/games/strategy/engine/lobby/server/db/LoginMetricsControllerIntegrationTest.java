@@ -4,44 +4,30 @@ import static games.strategy.engine.lobby.server.db.LoginMetricsController.setUt
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
-import com.example.mockito.MockitoExtension;
 
 import games.strategy.engine.lobby.server.login.LoginType;
 
-@ExtendWith(MockitoExtension.class)
 public final class LoginMetricsControllerIntegrationTest {
   // NB: use an instant that will cross dates when converted to UTC to detect implementation errors
-  private static final Instant LOGIN_INSTANT =
-      DateTimeFormatter.ISO_DATE_TIME.parse("2011-12-03T23:59:00.00-05:00", Instant::from);
+  private static final Clock CLOCK = Clock.fixed(
+      DateTimeFormatter.ISO_DATE_TIME.parse("2011-12-03T23:59:00.00-05:00", Instant::from),
+      ZoneOffset.UTC);
 
-  @Mock
-  private Clock clock;
-
-  @InjectMocks
-  private LoginMetricsController loginMetricsController;
-
-  @BeforeEach
-  public void setupClock() {
-    when(clock.instant()).thenReturn(LOGIN_INSTANT);
-  }
+  private final LoginMetricsController loginMetricsController = new LoginMetricsController(CLOCK);
 
   @Nested
   public final class WhenLoginTypeIsAnonymousTest {
@@ -99,7 +85,7 @@ public final class LoginMetricsControllerIntegrationTest {
     final String sql = "delete from login_metrics where login_date = ?";
     try (Connection conn = Database.getPostgresConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
-      setUtcDate(ps, 1, LOGIN_INSTANT);
+      setUtcDate(ps, 1, LocalDate.now(CLOCK));
       ps.executeUpdate();
       conn.commit();
     }
@@ -114,7 +100,7 @@ public final class LoginMetricsControllerIntegrationTest {
         + "  registered_logins=excluded.registered_logins";
     try (Connection conn = Database.getPostgresConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
-      setUtcDate(ps, 1, LOGIN_INSTANT);
+      setUtcDate(ps, 1, LocalDate.now(CLOCK));
       ps.setInt(2, loginMetrics.anonymousLogins);
       ps.setInt(3, loginMetrics.registeredLogins);
       ps.executeUpdate();
@@ -126,13 +112,13 @@ public final class LoginMetricsControllerIntegrationTest {
     final String sql = "select anonymous_logins, registered_logins from login_metrics where login_date = ?";
     try (Connection conn = Database.getPostgresConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
-      setUtcDate(ps, 1, LOGIN_INSTANT);
+      setUtcDate(ps, 1, LocalDate.now(CLOCK));
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           assertThat(rs.getInt(1), is(loginMetrics.anonymousLogins));
           assertThat(rs.getInt(2), is(loginMetrics.registeredLogins));
         } else {
-          fail("no login metrics for " + LOGIN_INSTANT);
+          fail("no login metrics for " + LocalDate.now(CLOCK));
         }
       }
     }
