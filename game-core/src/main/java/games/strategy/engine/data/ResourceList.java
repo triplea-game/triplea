@@ -1,16 +1,21 @@
 package games.strategy.engine.data;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ResourceList extends GameDataComponent {
   private static final long serialVersionUID = -8812702449627698253L;
-  private final Map<String, Resource> m_resourceList = new LinkedHashMap<>();
+  private final Map<String, Resource> m_resourceList;
 
   public ResourceList(final GameData data) {
+    this(data, new HashMap<>());
+  }
+
+  private ResourceList(final GameData data, final Map<String, Resource> resourceList) {
     super(data);
+    m_resourceList = resourceList;
   }
 
   protected void addResource(final Resource resource) {
@@ -27,5 +32,9 @@ public class ResourceList extends GameDataComponent {
 
   public List<Resource> getResources() {
     return new ArrayList<>(m_resourceList.values());
+  }
+
+  ResourceList clone(final GameData newData) {
+    return new ResourceList(newData, new HashMap<>(m_resourceList));
   }
 }

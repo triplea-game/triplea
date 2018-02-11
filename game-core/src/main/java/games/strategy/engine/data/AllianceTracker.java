@@ -20,7 +20,7 @@ import com.google.common.collect.Multimap;
  * victory conditions.
  * Not used for determining in-game alliances (instead, see the Relationship tracker for that).
  */
-public class AllianceTracker implements Serializable {
+public class AllianceTracker implements Serializable, Cloneable {
   private static final long serialVersionUID = 2815023984535209353L;
   // maps PlayerID to Collection of alliances names
   private final Multimap<PlayerID, String> alliances;
@@ -93,5 +93,10 @@ public class AllianceTracker implements Serializable {
         .map(this::getPlayersInAlliance)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
+  }
+
+  @Override
+  public AllianceTracker clone() {
+    return new AllianceTracker(HashMultimap.create(alliances));
   }
 }

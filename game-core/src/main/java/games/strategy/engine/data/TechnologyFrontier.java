@@ -113,4 +113,11 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
     final TechnologyFrontier other = (TechnologyFrontier) o;
     return m_name.equals(other.getName());
   }
+
+  TechnologyFrontier clone(final GameData newData) {
+    final TechnologyFrontier frontier = new TechnologyFrontier(m_name, newData);
+    frontier.m_techs.addAll(m_techs);
+    frontier.m_cachedTechs = m_cachedTechs;
+    return frontier;
+  }
 }

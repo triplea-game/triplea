@@ -25,18 +25,29 @@ import games.strategy.util.IntegerMap;
  */
 public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private static final long serialVersionUID = -4606700588396439283L;
-  private final List<Territory> m_territories = new ArrayList<>();
+  private final List<Territory> m_territories;
   // note that all entries are unmodifiable
-  private final Map<Territory, Set<Territory>> m_connections = new HashMap<>();
+  private final Map<Territory, Set<Territory>> m_connections;
   // for fast lookup based on the string name of the territory
-  private final Map<String, Territory> m_territoryLookup = new HashMap<>();
+  private final Map<String, Territory> m_territoryLookup;
   // nil if the map is not grid-based
   // otherwise, m_gridDimensions.length is the number of dimensions,
   // and each element is the size of a dimension
   private int[] m_gridDimensions = null;
 
   GameMap(final GameData data) {
+    this(data, new ArrayList<>(), new HashMap<>(), new HashMap<>());
+  }
+
+  private GameMap(
+      final GameData data,
+      final List<Territory> territories,
+      final Map<Territory, Set<Territory>> connections,
+      final Map<String, Territory> territoryLookup) {
     super(data);
+    m_territories = territories;
+    m_connections = connections;
+    m_territoryLookup = territoryLookup;
   }
 
   public void setGridDimensions(final int... gridDimensions) {
@@ -444,5 +455,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public void notifyChanged() {
     getData().notifyMapDataChanged();
+  }
+
+  GameMap clone(final GameData newData) {
+    return new GameMap(newData,
+        new ArrayList<>(m_territories),
+        new HashMap<>(m_connections),
+        new HashMap<>(m_territoryLookup));
   }
 }

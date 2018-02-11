@@ -14,7 +14,7 @@ import com.google.common.base.MoreObjects;
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID> {
   private static final long serialVersionUID = -3895068111754745446L;
   // maps String playerName -> PlayerID
-  private final Map<String, PlayerID> m_players = new LinkedHashMap<>();
+  private final Map<String, PlayerID> m_players;
 
   /**
    * Creates new PlayerList.
@@ -23,7 +23,12 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
    *        game data
    */
   public PlayerList(final GameData data) {
+    this(data, new LinkedHashMap<>());
+  }
+
+  private PlayerList(final GameData data, final Map<String, PlayerID> players) {
     super(data);
+    m_players = players;
   }
 
   void addPlayerId(final PlayerID player) {
@@ -84,5 +89,9 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
     return MoreObjects.toStringHelper(this)
         .add("players", m_players)
         .toString();
+  }
+
+  PlayerList clone(final GameData newData) {
+    return new PlayerList(newData, new LinkedHashMap<>(m_players));
   }
 }

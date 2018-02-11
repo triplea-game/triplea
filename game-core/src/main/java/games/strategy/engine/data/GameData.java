@@ -71,7 +71,7 @@ import games.strategy.util.Version;
  * History object.
  * </p>
  */
-public class GameData implements Serializable {
+public class GameData implements Serializable, Cloneable {
   private static final long serialVersionUID = -2612710634080125728L;
   public static final String GAME_UUID = "GAME_UUID";
   private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -132,7 +132,7 @@ public class GameData implements Serializable {
         BattleRecordsList::new);
   }
 
-  public GameData(
+  private GameData(
       final AllianceTracker alliances,
       final Function<GameData, RelationshipTracker> relationships,
       final Function<GameData, GameMap> map,
@@ -603,5 +603,31 @@ public class GameData implements Serializable {
     } finally {
       releaseReadLock();
     }
+  }
+
+
+  @Override
+  public GameData clone() {
+    return new GameData(
+        getAllianceTracker().clone(),
+        getRelationshipTracker()::clone,
+        getMap()::clone,
+        getPlayerList()::clone,
+        getProductionFrontierList()::clone,
+        getProductionRuleList()::clone,
+        getRepairFrontierList()::clone,
+        getRepairRuleList()::clone,
+        getResourceList()::clone,
+        getSequence()::clone,
+        getUnitTypeList()::clone,
+        getRelationshipTypeList()::clone,
+        // Clone delegates if needed
+        getProperties()::clone,
+        getUnits().clone(),
+        getTechnologyFrontier()::clone,
+        getHistory()::clone,
+        new ArrayList<>(getAttachmentOrderAndValues()),
+        new Hashtable<>(getTerritoryEffectList()),
+        getBattleRecordsList()::clone);
   }
 }

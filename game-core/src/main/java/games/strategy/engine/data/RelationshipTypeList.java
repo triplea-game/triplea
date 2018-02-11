@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
@@ -12,7 +13,7 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
  */
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType> {
   private static final long serialVersionUID = 6590541694575435151L;
-  private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<>();
+  private final Map<String, RelationshipType> m_relationshipTypes;
 
   /**
    * convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with yourself)
@@ -39,7 +40,12 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
    *        GameData used for construction
    */
   protected RelationshipTypeList(final GameData data) {
+    this(data, new HashMap<>());
+  }
+
+  private RelationshipTypeList(final GameData data, final Map<String, RelationshipType> relationshipTypes) {
     super(data);
+    m_relationshipTypes = relationshipTypes;
     try {
       createDefaultRelationship(Constants.RELATIONSHIP_TYPE_SELF, RelationshipTypeAttachment.ARCHETYPE_ALLIED, data);
       createDefaultRelationship(Constants.RELATIONSHIP_TYPE_NULL, RelationshipTypeAttachment.ARCHETYPE_WAR, data);
@@ -49,8 +55,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
           data);
     } catch (final GameParseException e) {
       // this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType
-      // is supplied, but we
-      // never do that
+      // is supplied, but we never do that
       throw new IllegalStateException(e);
     }
   }
@@ -126,5 +131,9 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 
   public Collection<RelationshipType> getAllRelationshipTypes() {
     return m_relationshipTypes.values();
+  }
+
+  RelationshipTypeList clone(final GameData newData) {
+    return new RelationshipTypeList(newData, new HashMap<>(m_relationshipTypes));
   }
 }
