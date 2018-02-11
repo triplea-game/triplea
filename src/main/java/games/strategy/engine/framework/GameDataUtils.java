@@ -3,6 +3,11 @@ package games.strategy.engine.framework;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -30,6 +35,36 @@ public final class GameDataUtils {
     } catch (final IOException e) {
       ClientLogger.logQuietly("Failed to clone game data", e);
       return null;
+    }
+  }
+
+  /**
+   * Clones a single GameData object multiple times.
+   * This is faster than calling {@link GameDataUtils#cloneGameData(GameData)} multiple times,
+   * because the original GameData object is only getting serialized once.
+   * 
+   * @param data The {@link GameData} to be cloned.
+   * @param times The targeted amount of {@link GameData} objects the returned {@link List} should contain.
+   * @return An unmodifiable {@link List} that containing clones of the passed data
+   */
+  public static List<GameData> cloneGameData(final GameData data, final int times) {
+    try {
+      final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, false));
+      return Collections.unmodifiableList(
+          IntStream.range(0, times).parallel()
+              .mapToObj(it -> {
+                try {
+                  return IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
+                } catch (IOException e) {
+                  ClientLogger.logQuietly("Failed to clone game data", e);
+                  return null;
+                }
+              })
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList()));
+    } catch (IOException e) {
+      ClientLogger.logQuietly("Failed to clone game data", e);
+      return Collections.emptyList();
     }
   }
 

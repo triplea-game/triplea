@@ -93,11 +93,7 @@ public final class OddsCalculator implements IOddsCalculator {
     isDataSet = (data != null);
     if (isDataSet) {
       gameDataClones.clear();
-      final GameData gameData = GameDataUtils.cloneGameData(data);
-      gameDataClones.add(gameData);
-      gameDataClones.addAll(IntStream.range(1, concurrentSimCount).parallel()
-          .mapToObj(it -> GameDataUtils.cloneGameData(gameData))
-          .collect(Collectors.toList()));
+      gameDataClones.addAll(GameDataUtils.cloneGameData(data, concurrentSimCount));
     }
   }
 
