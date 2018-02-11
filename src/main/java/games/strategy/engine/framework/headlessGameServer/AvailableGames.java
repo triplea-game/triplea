@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +18,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -28,20 +31,36 @@ import games.strategy.util.UrlStreams;
 /**
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
  */
-public class AvailableGames {
+@Immutable
+public final class AvailableGames {
   private static final String ZIP_EXTENSION = ".zip";
-  private final Map<String, URI> availableGames = Collections.synchronizedMap(new TreeMap<>());
-  private final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
+  private final Map<String, URI> availableGames;
+  private final Set<String> availableMapFolderOrZipNames;
 
   AvailableGames() {
+    final GameRepository gameRepository = newGameRepository();
+    availableGames = Collections.unmodifiableMap(new TreeMap<>(gameRepository.availableGames));
+    availableMapFolderOrZipNames =
+        Collections.unmodifiableSet(new HashSet<>(gameRepository.availableMapFolderOrZipNames));
+  }
+
+  @ThreadSafe
+  private static final class GameRepository {
+    final Map<String, URI> availableGames = Collections.synchronizedMap(new HashMap<>());
+    final Set<String> availableMapFolderOrZipNames = Collections.synchronizedSet(new HashSet<>());
+  }
+
+  private static GameRepository newGameRepository() {
+    final GameRepository gameRepository = new GameRepository();
     FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).parallelStream()
         .forEach(map -> {
           if (map.isDirectory()) {
-            populateFromDirectory(map, availableGames, availableMapFolderOrZipNames);
+            populateFromDirectory(map, gameRepository.availableGames, gameRepository.availableMapFolderOrZipNames);
           } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-            populateFromZip(map, availableGames, availableMapFolderOrZipNames);
+            populateFromZip(map, gameRepository.availableGames, gameRepository.availableMapFolderOrZipNames);
           }
         });
+    return gameRepository;
   }
 
   private static void populateFromDirectory(
@@ -87,7 +106,6 @@ public class AvailableGames {
     }
   }
 
-
   private static boolean addToAvailableGames(
       @Nonnull final URI uri,
       @Nonnull final Map<String, URI> availableGames) {
@@ -110,7 +128,6 @@ public class AvailableGames {
   Set<String> getGameNames() {
     return new HashSet<>(availableGames.keySet());
   }
-
 
   /**
    * Returns the path to the file associated with the specified game.
@@ -136,8 +153,6 @@ public class AvailableGames {
     return Optional.ofNullable(availableGames.get(gameName))
         .map(uri -> parse(uri).orElse(null))
         .orElse(null);
-
-
   }
 
   private static Optional<GameData> parse(final URI uri) {
