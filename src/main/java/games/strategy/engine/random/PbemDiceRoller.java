@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
+import java.util.function.Supplier;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,6 +21,7 @@ import javax.swing.WindowConstants;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
+import games.strategy.util.Interruptibles;
 
 /**
  * Its a bit messy, but the threads are a pain to deal with We want to be able
@@ -60,13 +62,13 @@ public class PbemDiceRoller implements IRandomSource {
 
   @Override
   public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException {
-    return SwingAction
-        .invokeAndWaitUninterruptibly(() -> {
-          final HttpDiceRollerDialog dialog =
-              new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer, gameUuid);
-          dialog.roll();
-          return dialog.getDiceRoll();
-        })
+    final Supplier<int[]> action = () -> {
+      final HttpDiceRollerDialog dialog =
+          new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer, gameUuid);
+      dialog.roll();
+      return dialog.getDiceRoll();
+    };
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
         .orElseGet(() -> new int[0]);
   }
 

@@ -47,6 +47,7 @@ import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.ThreadUtil;
 import swinglib.JPanelBuilder;
 
@@ -231,7 +232,7 @@ public class BattlePanel extends ActionPanel {
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
       final PlayerID attacker, final PlayerID defender,
       final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
-    SwingAction.invokeAndWaitUninterruptibly(() -> {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       if (battleDisplay != null) {
         cleanUpBattleWindow();
         currentBattleDisplayed = null;
@@ -266,7 +267,7 @@ public class BattlePanel extends ActionPanel {
         currentBattleDisplayed = battleId;
         SwingUtilities.invokeLater(() -> battleFrame.toFront());
       }
-    });
+    }));
   }
 
   FightBattleDetails waitForBattleSelection() {
@@ -282,8 +283,9 @@ public class BattlePanel extends ActionPanel {
    */
   public @Nullable Territory getBombardment(final Unit unit, final Territory unitTerritory,
       final Collection<Territory> territories, final boolean noneAvailable) {
-    return SwingAction
-        .invokeAndWaitUninterruptibly(() -> new BombardComponent(unit, unitTerritory, territories, noneAvailable))
+    final Supplier<BombardComponent> action =
+        () -> new BombardComponent(unit, unitTerritory, territories, noneAvailable);
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
         .map(comp -> {
           int option = JOptionPane.NO_OPTION;
           while (option != JOptionPane.OK_OPTION) {
@@ -404,7 +406,8 @@ public class BattlePanel extends ActionPanel {
           new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
       return response;
     };
-    return SwingAction.invokeAndWaitUninterruptibly(action).orElse(null);
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+        .orElse(null);
   }
 
   public Territory getRetreat(final GUID battleId, final String message, final Collection<Territory> possible,

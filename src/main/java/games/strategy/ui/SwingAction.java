@@ -8,7 +8,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -118,54 +117,6 @@ public final class SwingAction {
       final Throwable cause = e.getCause();
       Throwables.throwIfUnchecked(cause);
       throw new AssertionError("unexpected checked exception", cause);
-    }
-  }
-
-  /**
-   * Synchronously executes the specified action on the Swing event dispatch thread. If interrupted while waiting for
-   * the action to complete, this method will set the thread's interrupted status and return immediately.
-   *
-   * <p>
-   * This method may safely be called from any thread, including the Swing event dispatch thread.
-   * </p>
-   *
-   * @param action The action to execute.
-   *
-   * @throws RuntimeException If the action throws an unchecked exception.
-   */
-  public static void invokeAndWaitUninterruptibly(final Runnable action) {
-    checkNotNull(action);
-
-    invokeAndWaitUninterruptibly(() -> {
-      action.run();
-      return null;
-    });
-  }
-
-  /**
-   * Synchronously executes the specified action on the Swing event dispatch thread and returns the value it supplies.
-   * If interrupted while waiting for the action to complete, this method will set the thread's interrupted status and
-   * return immediately.
-   *
-   * <p>
-   * This method may safely be called from any thread, including the Swing event dispatch thread.
-   * </p>
-   *
-   * @param action The action to execute.
-   *
-   * @return The value supplied by the action or empty if the thread was interrupted. If the action supplies
-   *         {@code null}, it will be indistinguishable from the interrupted case.
-   *
-   * @throws RuntimeException If the action throws an unchecked exception.
-   */
-  public static <T> Optional<T> invokeAndWaitUninterruptibly(final Supplier<T> action) {
-    checkNotNull(action);
-
-    try {
-      return Optional.ofNullable(invokeAndWait(action));
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-      return Optional.empty();
     }
   }
 

@@ -29,6 +29,7 @@ import javax.swing.SpinnerNumberModel;
 
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 
 /**
  * GUI class used to display logging window and logging settings.
@@ -388,7 +389,7 @@ class ProLogWindow extends JDialog {
   }
 
   void notifyNewRound(final int roundNumber, final String name) {
-    SwingAction.invokeAndWaitUninterruptibly(() -> {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       final JPanel newPanel = new JPanel();
       final JScrollPane newScrollPane = new JScrollPane();
       final JTextArea newTextArea = new JTextArea();
@@ -402,7 +403,7 @@ class ProLogWindow extends JDialog {
       newPanel.add(newScrollPane);
       logHolderTabbedPane.addTab(Integer.toString(roundNumber) + "-" + name, newPanel);
       currentLogTextArea = newTextArea;
-    });
+    }));
     // Now remove round logging that has 'expired'.
     // Note that this method will also trim all but the first and last log panels if logging is turned off
     // (We always keep first round's log panel, and we keep last because the user might turn logging back on in the
@@ -419,7 +420,7 @@ class ProLogWindow extends JDialog {
       } else {
         maxHistoryRounds = 1; // If we're not logging, trim to 1
       }
-      SwingAction.invokeAndWaitUninterruptibly(() -> {
+      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
         for (int i = 0; i < logHolderTabbedPane.getTabCount(); i++) {
           // Remember, we never remove last tab, in case user turns logging back on in the middle of a round
           if (i != 0 && i < logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
@@ -428,7 +429,7 @@ class ProLogWindow extends JDialog {
             i--;
           }
         }
-      });
+      }));
     }
   }
 }

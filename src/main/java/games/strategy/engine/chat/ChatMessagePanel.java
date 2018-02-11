@@ -34,6 +34,7 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.TimeManager;
 
 /**
@@ -95,7 +96,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   void setChat(final Chat chat) {
-    SwingAction.invokeAndWaitUninterruptibly(() -> {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       if (chat != null) {
         chat.removeChatListener(this);
         cleanupKeyMap();
@@ -127,7 +128,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         text.setEnabled(false);
         updatePlayerList(Collections.emptyList());
       }
-    });
+    }));
   }
 
   public Chat getChat() {
