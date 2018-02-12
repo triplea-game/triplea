@@ -1,12 +1,11 @@
 package games.strategy.engine.lobby.server.login;
 
-import java.net.InetAddress;
+import java.time.Instant;
 
-/**
- * A lobby access log.
- */
+import games.strategy.engine.lobby.server.User;
+
 interface AccessLog {
-  void logFailedLogin(LoginType loginType, String username, InetAddress address, String errorMessage);
+  void logFailedAccess(Instant instant, User user, AccessMethod accessMethod, String errorMessage);
 
-  void logSuccessfulLogin(LoginType loginType, String username, InetAddress address);
+  void logSuccessfulAccess(Instant instant, User user, AccessMethod accessMethod);
 }

@@ -2,11 +2,12 @@ package games.strategy.engine.lobby.server.login;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import java.net.InetAddress;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -16,45 +17,51 @@ import org.mockito.Mock;
 
 import com.example.mockito.MockitoExtension;
 
-import games.strategy.engine.lobby.server.db.LoginMetricsDao;
+import games.strategy.engine.lobby.server.TestUserUtils;
+import games.strategy.engine.lobby.server.User;
+import games.strategy.engine.lobby.server.db.AccessLogDao;
 
 @ExtendWith(MockitoExtension.class)
 public final class CompositeAccessLogTest {
   @Mock
-  private LoginMetricsDao loginMetricsDao;
+  private AccessLogDao accessLogDao;
 
   @InjectMocks
   private CompositeAccessLog compositeAccessLog;
 
-  @Test
-  public void logFailedLogin_ShouldNotAddLoginRecord() {
-    Arrays.stream(LoginType.values()).forEach(loginType -> {
-      compositeAccessLog.logFailedLogin(loginType, "username", InetAddress.getLoopbackAddress(), "error");
+  private final Instant instant = Instant.now();
 
-      thenShouldNotAddLoginRecord();
+  private final User user = TestUserUtils.newUser();
+
+  @Test
+  public void logFailedAccess_ShouldNotAddDatabaseAccessLogRecord() {
+    Arrays.stream(AccessMethod.values()).forEach(accessMethod -> {
+      compositeAccessLog.logFailedAccess(instant, user, accessMethod, "error message");
+
+      thenShouldNotAddDatabaseAccessLogRecord();
     });
   }
 
   @Test
-  public void logSuccessfulLogin_ShouldAddLoginRecord() {
-    Arrays.stream(LoginType.values()).forEach(loginType -> {
-      compositeAccessLog.logSuccessfulLogin(loginType, "username", InetAddress.getLoopbackAddress());
+  public void logSuccessfulAccess_ShouldAddDatabaseAccessLogRecord() {
+    Arrays.stream(AccessMethod.values()).forEach(accessMethod -> {
+      compositeAccessLog.logSuccessfulAccess(instant, user, accessMethod);
 
-      thenShouldAddLoginRecordForType(loginType);
+      thenShouldAddDatabaseAccessLogRecordFor(accessMethod);
     });
   }
 
-  private void thenShouldNotAddLoginRecord() {
+  private void thenShouldNotAddDatabaseAccessLogRecord() {
     try {
-      verify(loginMetricsDao, never()).addSuccessfulLogin(any(LoginType.class));
+      verify(accessLogDao, never()).insert(any(Instant.class), any(User.class), anyBoolean());
     } catch (final SQLException e) {
       fail("unexpected exception", e);
     }
   }
 
-  private void thenShouldAddLoginRecordForType(final LoginType loginType) {
+  private void thenShouldAddDatabaseAccessLogRecordFor(final AccessMethod accessMethod) {
     try {
-      verify(loginMetricsDao).addSuccessfulLogin(loginType);
+      verify(accessLogDao).insert(instant, user, accessMethod == AccessMethod.AUTHENTICATION);
     } catch (final SQLException e) {
       fail("unexpected exception", e);
     }

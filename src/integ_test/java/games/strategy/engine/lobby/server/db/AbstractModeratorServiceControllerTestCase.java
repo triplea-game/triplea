@@ -9,11 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Random;
 
+import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
-import games.strategy.net.MacFinder;
-import games.strategy.util.Util;
 
 /**
  * Superclass for fixtures that test a moderator service controller.
@@ -28,27 +26,7 @@ public abstract class AbstractModeratorServiceControllerTestCase {
    * Creates a new unique user.
    */
   protected static User newUser() {
-    return new User(newUsername(), newInetAddress(), newHashedMacAddress());
-  }
-
-  private static String newUsername() {
-    return "user_" + Util.createUniqueTimeStamp();
-  }
-
-  private static InetAddress newInetAddress() {
-    final byte[] addr = new byte[4];
-    new Random().nextBytes(addr);
-    try {
-      return InetAddress.getByAddress(addr);
-    } catch (final UnknownHostException e) {
-      throw new AssertionError("should never happen", e);
-    }
-  }
-
-  private static String newHashedMacAddress() {
-    final byte[] bytes = new byte[6];
-    new Random().nextBytes(bytes);
-    return MacFinder.getHashedMacAddress(bytes);
+    return TestUserUtils.newUser();
   }
 
   /**

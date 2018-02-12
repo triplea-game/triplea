@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -32,6 +33,8 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.TestUserUtils;
+import games.strategy.engine.lobby.server.User;
 import games.strategy.engine.lobby.server.db.BadWordDao;
 import games.strategy.engine.lobby.server.db.BannedMacDao;
 import games.strategy.engine.lobby.server.db.BannedUsernameDao;
@@ -50,8 +53,6 @@ public final class LobbyLoginValidatorTest {
   abstract class AbstractTestCase {
     static final String EMAIL = "n@n.com";
     static final String PASSWORD = "password";
-    private final InetSocketAddress remoteAddress = new InetSocketAddress(9999);
-    private static final String USERNAME = "username";
 
     @Mock
     private AccessLog accessLog;
@@ -77,7 +78,9 @@ public final class LobbyLoginValidatorTest {
 
     private final String bcryptSalt = BCrypt.gensalt();
 
-    private final DBUser dbUser = new DBUser(new DBUser.UserName(USERNAME), new DBUser.UserEmail(EMAIL));
+    private final User user = TestUserUtils.newUser();
+
+    private final DBUser dbUser = new DBUser(new DBUser.UserName(user.getUsername()), new DBUser.UserEmail(EMAIL));
 
     private final String md5CryptSalt = games.strategy.util.Md5Crypt.newSalt();
 
@@ -110,27 +113,27 @@ public final class LobbyLoginValidatorTest {
     }
 
     final void givenAnonymousAuthenticationWillFail() {
-      when(userDao.doesUserExist(USERNAME)).thenReturn(true);
+      when(userDao.doesUserExist(user.getUsername())).thenReturn(true);
     }
 
     final void givenAnonymousAuthenticationWillSucceed() {
-      when(userDao.doesUserExist(USERNAME)).thenReturn(false);
+      when(userDao.doesUserExist(user.getUsername())).thenReturn(false);
     }
 
     final void givenAuthenticationWillUseMd5CryptedPasswordAndSucceed() {
-      when(userDao.login(USERNAME, new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(true);
+      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(true);
     }
 
     final void givenAuthenticationWillUseMd5CryptedPasswordAndFail() {
-      when(userDao.login(USERNAME, new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(false);
+      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(false);
     }
 
     final void givenAuthenticationWillUseObfuscatedPasswordAndSucceed() {
-      when(userDao.login(USERNAME, new HashedPassword(obfuscate(PASSWORD)))).thenReturn(true);
+      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD)))).thenReturn(true);
     }
 
     final void givenAuthenticationWillUseObfuscatedPasswordAndFail() {
-      when(userDao.login(USERNAME, new HashedPassword(obfuscate(PASSWORD)))).thenReturn(false);
+      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD)))).thenReturn(false);
     }
 
     final void givenMaintenanceModeIsEnabled() {
@@ -147,46 +150,47 @@ public final class LobbyLoginValidatorTest {
     }
 
     final void givenUserDoesNotExist() {
-      when(userDao.doesUserExist(USERNAME)).thenReturn(false);
+      when(userDao.doesUserExist(user.getUsername())).thenReturn(false);
     }
 
     final void givenUserDoesNotHaveBcryptedPassword() {
-      when(userDao.getPassword(USERNAME)).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
+      when(userDao.getPassword(user.getUsername())).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void givenUserDoesNotHaveMd5CryptedPassword() {
-      when(userDao.getLegacyPassword(USERNAME)).thenReturn(new HashedPassword(""));
+      when(userDao.getLegacyPassword(user.getUsername())).thenReturn(new HashedPassword(""));
     }
 
     final void givenUserExists() {
-      when(userDao.getUserByName(USERNAME)).thenReturn(dbUser);
+      when(userDao.getUserByName(user.getUsername())).thenReturn(dbUser);
     }
 
     final void givenUserHasBcryptedPassword() {
-      when(userDao.getPassword(USERNAME)).thenReturn(new HashedPassword(bcrypt(PASSWORD)));
+      when(userDao.getPassword(user.getUsername())).thenReturn(new HashedPassword(bcrypt(PASSWORD)));
     }
 
     final void givenUserHasMd5CryptedPassword() {
-      when(userDao.getLegacyPassword(USERNAME)).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
+      when(userDao.getLegacyPassword(user.getUsername())).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void whenAuthenticating(final ResponseGenerator responseGenerator) {
-      final String hashedMac = "$1$MH$lW2b9Tx3VIpD4llOnivrP1";
-      final Map<String, String> challenge = lobbyLoginValidator.getChallengeProperties(USERNAME, remoteAddress);
+      final InetSocketAddress remoteAddress = new InetSocketAddress(user.getInetAddress(), 9999);
+      final Map<String, String> challenge =
+          lobbyLoginValidator.getChallengeProperties(user.getUsername(), remoteAddress);
       authenticationErrorMessage = lobbyLoginValidator.verifyConnection(
           challenge,
           responseGenerator.apply(challenge),
-          USERNAME,
-          hashedMac,
+          user.getUsername(),
+          user.getHashedMacAddress(),
           remoteAddress);
     }
 
-    final void thenAccessLogShouldReceiveFailedLoginOfType(final LoginType loginType) {
-      verify(accessLog).logFailedLogin(eq(loginType), eq(USERNAME), eq(remoteAddress.getAddress()), anyString());
+    final void thenAccessLogShouldReceiveFailedAccessOf(final AccessMethod accessMethod) {
+      verify(accessLog).logFailedAccess(any(Instant.class), eq(user), eq(accessMethod), anyString());
     }
 
-    final void thenAccessLogShouldReceiveSuccessfulLoginOfType(final LoginType loginType) {
-      verify(accessLog).logSuccessfulLogin(loginType, USERNAME, remoteAddress.getAddress());
+    final void thenAccessLogShouldReceiveSuccessfulAccessOf(final AccessMethod accessMethod) {
+      verify(accessLog).logSuccessfulAccess(any(Instant.class), eq(user), eq(accessMethod));
     }
 
     final void thenAuthenticationShouldFail() {
@@ -482,7 +486,7 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
-        thenAccessLogShouldReceiveSuccessfulLoginOfType(LoginType.ANONYMOUS);
+        thenAccessLogShouldReceiveSuccessfulAccessOf(AccessMethod.GUEST);
       }
 
       @Test
@@ -492,7 +496,7 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldFail();
-        thenAccessLogShouldReceiveFailedLoginOfType(LoginType.ANONYMOUS);
+        thenAccessLogShouldReceiveFailedAccessOf(AccessMethod.GUEST);
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
@@ -513,7 +517,7 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
-        thenAccessLogShouldReceiveSuccessfulLoginOfType(LoginType.REGISTERED);
+        thenAccessLogShouldReceiveSuccessfulAccessOf(AccessMethod.AUTHENTICATION);
       }
 
       @Test
@@ -525,7 +529,7 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldFail();
-        thenAccessLogShouldReceiveFailedLoginOfType(LoginType.REGISTERED);
+        thenAccessLogShouldReceiveFailedAccessOf(AccessMethod.AUTHENTICATION);
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
