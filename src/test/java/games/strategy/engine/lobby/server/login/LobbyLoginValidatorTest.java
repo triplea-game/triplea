@@ -2,6 +2,7 @@ package games.strategy.engine.lobby.server.login;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -13,9 +14,9 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -32,6 +33,8 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.config.PropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.server.TestUserUtils;
+import games.strategy.engine.lobby.server.User;
 import games.strategy.engine.lobby.server.db.BadWordDao;
 import games.strategy.engine.lobby.server.db.BannedMacDao;
 import games.strategy.engine.lobby.server.db.BannedUsernameDao;
@@ -49,8 +52,9 @@ public final class LobbyLoginValidatorTest {
   abstract class AbstractTestCase {
     static final String EMAIL = "n@n.com";
     static final String PASSWORD = "password";
-    private final SocketAddress remoteAddress = new InetSocketAddress(9999);
-    private static final String USERNAME = "username";
+
+    @Mock
+    private AccessLog accessLog;
 
     @Mock
     private BadWordDao badWordDao;
@@ -73,7 +77,9 @@ public final class LobbyLoginValidatorTest {
 
     private final String bcryptSalt = BCrypt.gensalt();
 
-    private final DBUser dbUser = new DBUser(new DBUser.UserName(USERNAME), new DBUser.UserEmail(EMAIL));
+    private final User user = TestUserUtils.newUser();
+
+    private final DBUser dbUser = new DBUser(new DBUser.UserName(user.getUsername()), new DBUser.UserEmail(EMAIL));
 
     private final String md5CryptSalt = games.strategy.util.Md5Crypt.newSalt();
 
@@ -85,6 +91,7 @@ public final class LobbyLoginValidatorTest {
           bannedMacDao,
           bannedUsernameDao,
           userDao,
+          accessLog,
           new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair()),
           () -> bcryptSalt);
 
@@ -104,16 +111,28 @@ public final class LobbyLoginValidatorTest {
       return games.strategy.util.Md5Crypt.crypt(password, md5CryptSalt);
     }
 
+    final void givenAnonymousAuthenticationWillFail() {
+      when(userDao.doesUserExist(user.getUsername())).thenReturn(true);
+    }
+
+    final void givenAnonymousAuthenticationWillSucceed() {
+      when(userDao.doesUserExist(user.getUsername())).thenReturn(false);
+    }
+
     final void givenAuthenticationWillUseMd5CryptedPasswordAndSucceed() {
-      when(userDao.login(USERNAME, new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(true);
+      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(true);
     }
 
     final void givenAuthenticationWillUseMd5CryptedPasswordAndFail() {
-      when(userDao.login(USERNAME, new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(false);
+      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(false);
     }
 
     final void givenAuthenticationWillUseObfuscatedPasswordAndSucceed() {
-      when(userDao.login(USERNAME, new HashedPassword(obfuscate(PASSWORD)))).thenReturn(true);
+      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD)))).thenReturn(true);
+    }
+
+    final void givenAuthenticationWillUseObfuscatedPasswordAndFail() {
+      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD)))).thenReturn(false);
     }
 
     final void givenMaintenanceModeIsEnabled() {
@@ -130,38 +149,51 @@ public final class LobbyLoginValidatorTest {
     }
 
     final void givenUserDoesNotExist() {
-      when(userDao.doesUserExist(USERNAME)).thenReturn(false);
+      when(userDao.doesUserExist(user.getUsername())).thenReturn(false);
     }
 
     final void givenUserDoesNotHaveBcryptedPassword() {
-      when(userDao.getPassword(USERNAME)).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
+      when(userDao.getPassword(user.getUsername())).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void givenUserDoesNotHaveMd5CryptedPassword() {
-      when(userDao.getLegacyPassword(USERNAME)).thenReturn(new HashedPassword(""));
+      when(userDao.getLegacyPassword(user.getUsername())).thenReturn(new HashedPassword(""));
     }
 
     final void givenUserExists() {
-      when(userDao.getUserByName(USERNAME)).thenReturn(dbUser);
+      when(userDao.getUserByName(user.getUsername())).thenReturn(dbUser);
     }
 
     final void givenUserHasBcryptedPassword() {
-      when(userDao.getPassword(USERNAME)).thenReturn(new HashedPassword(bcrypt(PASSWORD)));
+      when(userDao.getPassword(user.getUsername())).thenReturn(new HashedPassword(bcrypt(PASSWORD)));
     }
 
     final void givenUserHasMd5CryptedPassword() {
-      when(userDao.getLegacyPassword(USERNAME)).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
+      when(userDao.getLegacyPassword(user.getUsername())).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void whenAuthenticating(final ResponseGenerator responseGenerator) {
-      final String hashedMac = "$1$MH$lW2b9Tx3VIpD4llOnivrP1";
-      final Map<String, String> challenge = lobbyLoginValidator.getChallengeProperties(USERNAME, remoteAddress);
+      final InetSocketAddress remoteAddress = new InetSocketAddress(user.getInetAddress(), 9999);
+      final Map<String, String> challenge =
+          lobbyLoginValidator.getChallengeProperties(user.getUsername(), remoteAddress);
       authenticationErrorMessage = lobbyLoginValidator.verifyConnection(
           challenge,
           responseGenerator.apply(challenge),
-          USERNAME,
-          hashedMac,
+          user.getUsername(),
+          user.getHashedMacAddress(),
           remoteAddress);
+    }
+
+    final void thenAccessLogShouldReceiveFailedAuthentication(final UserType userType) {
+      verify(accessLog).logFailedAuthentication(any(Instant.class), eq(user), eq(userType), anyString());
+    }
+
+    final void thenAccessLogShouldReceiveSuccessfulAuthentication(final UserType userType) {
+      verify(accessLog).logSuccessfulAuthentication(any(Instant.class), eq(user), eq(userType));
+    }
+
+    final void thenAuthenticationShouldFail() {
+      assertThat(authenticationErrorMessage, is(not(nullValue())));
     }
 
     final void thenAuthenticationShouldFailWithMessage(final String errorMessage) {
@@ -201,87 +233,14 @@ public final class LobbyLoginValidatorTest {
     }
   }
 
-  @ExtendWith(MockitoExtension.class)
   @Nested
-  public final class WhenUserIsAnonymousTest extends AbstractTestCase {
-    @Test
-    public void shouldNotCreateOrUpdateUser() {
-      givenUserDoesNotExist();
-
-      whenAuthenticating(givenAuthenticationResponse());
-
-      thenAuthenticationShouldSucceed();
-      thenUserShouldNotBeCreated();
-      thenUserShouldNotBeUpdated();
-    }
-
-    private ResponseGenerator givenAuthenticationResponse() {
-      return challenge -> ImmutableMap.of(
-          LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
-          LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-    }
-  }
-
-  @Nested
-  public final class WhenUserDoesNotExistTest {
+  public final class DatabaseInteractionTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
-    public final class WhenUsingLegacyClientTest extends AbstractTestCase {
+    public final class WhenUserIsAnonymousTest extends AbstractTestCase {
       @Test
-      public void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
-        givenUserDoesNotExist();
-
-        whenAuthenticating(givenAuthenticationResponse());
-
-        thenAuthenticationShouldSucceed();
-        thenUserShouldBeCreatedWithMd5CryptedPassword();
-        thenUserShouldNotBeUpdatedWithBcryptedPassword();
-      }
-
-      private ResponseGenerator givenAuthenticationResponse() {
-        return challenge -> ImmutableMap.of(
-            LobbyLoginValidator.EMAIL_KEY, EMAIL,
-            LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD),
-            LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString(),
-            LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
-      }
-    }
-
-    @ExtendWith(MockitoExtension.class)
-    @Nested
-    public final class WhenUsingCurrentClientTest extends AbstractTestCase {
-      @Test
-      public void shouldCreateNewUserWithBothPasswords() {
-        givenUserDoesNotExist();
-
-        whenAuthenticating(givenAuthenticationResponse());
-
-        thenAuthenticationShouldSucceed();
-        thenUserShouldBeCreatedWithMd5CryptedPassword();
-        thenUserShouldBeUpdatedWithBcryptedPassword();
-      }
-
-      private ResponseGenerator givenAuthenticationResponse() {
-        return challenge -> ImmutableMap.<String, String>builder()
-            .put(LobbyLoginValidator.EMAIL_KEY, EMAIL)
-            .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
-            .put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString())
-            .put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString())
-            .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
-            .build();
-      }
-    }
-  }
-
-  @Nested
-  public final class WhenUserExistsTest {
-    @ExtendWith(MockitoExtension.class)
-    @Nested
-    public final class WhenUsingLegacyClientTest extends AbstractTestCase {
-      @Test
-      public void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
-        givenUserDoesNotHaveBcryptedPassword();
-        givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
+      public void shouldNotCreateOrUpdateUserWhenAuthenticationSucceeds() {
+        givenAnonymousAuthenticationWillSucceed();
 
         whenAuthenticating(givenAuthenticationResponse());
 
@@ -291,95 +250,182 @@ public final class LobbyLoginValidatorTest {
       }
 
       @Test
-      public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
-        givenUserHasBcryptedPassword();
-        givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
+      public void shouldNotCreateOrUpdateUserWhenAuthenticationFails() {
+        givenAnonymousAuthenticationWillFail();
 
         whenAuthenticating(givenAuthenticationResponse());
 
-        thenAuthenticationShouldSucceed();
-        thenUserShouldNotBeCreated();
-        thenUserShouldNotBeUpdated();
-      }
-
-      @Test
-      public void shouldNotUpdatePasswordsWhenUserHasOnlyBcryptedPassword() {
-        givenUserHasBcryptedPassword();
-        givenAuthenticationWillUseMd5CryptedPasswordAndFail();
-
-        whenAuthenticating(givenAuthenticationResponse());
-
-        thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.AUTHENTICATION_FAILED);
+        thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.ANONYMOUS_AUTHENTICATION_FAILED);
         thenUserShouldNotBeCreated();
         thenUserShouldNotBeUpdated();
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
         return challenge -> ImmutableMap.of(
-            LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD),
+            LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
             LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
       }
     }
 
-    @ExtendWith(MockitoExtension.class)
     @Nested
-    public final class WhenUsingCurrentClientTest extends AbstractTestCase {
-      @Test
-      public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
-        givenUserExists();
-        givenUserHasMd5CryptedPassword();
-        givenUserHasBcryptedPassword();
-        givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
+    public final class WhenUserDoesNotExistTest {
+      @ExtendWith(MockitoExtension.class)
+      @Nested
+      public final class WhenUsingLegacyClientTest extends AbstractTestCase {
+        @Test
+        public void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
+          givenUserDoesNotExist();
 
-        whenAuthenticating(givenAuthenticationResponse());
+          whenAuthenticating(givenAuthenticationResponse());
 
-        thenAuthenticationShouldSucceed();
-        thenUserShouldNotBeCreated();
-        thenUserShouldNotBeUpdated();
+          thenAuthenticationShouldSucceed();
+          thenUserShouldBeCreatedWithMd5CryptedPassword();
+          thenUserShouldNotBeUpdatedWithBcryptedPassword();
+        }
+
+        private ResponseGenerator givenAuthenticationResponse() {
+          return challenge -> ImmutableMap.of(
+              LobbyLoginValidator.EMAIL_KEY, EMAIL,
+              LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD),
+              LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString(),
+              LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
+        }
       }
 
-      @Test
-      public void shouldUpdateBcryptedPasswordWhenUserHasOnlyMd5CryptedPassword() {
-        givenUserExists();
-        givenUserHasMd5CryptedPassword();
-        givenUserDoesNotHaveBcryptedPassword();
-        givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
+      @ExtendWith(MockitoExtension.class)
+      @Nested
+      public final class WhenUsingCurrentClientTest extends AbstractTestCase {
+        @Test
+        public void shouldCreateNewUserWithBothPasswords() {
+          givenUserDoesNotExist();
 
-        whenAuthenticating(givenAuthenticationResponse());
+          whenAuthenticating(givenAuthenticationResponse());
 
-        thenAuthenticationShouldSucceed();
-        thenUserShouldNotBeCreated();
-        thenUserShouldNotBeUpdatedWithMd5CryptedPassword();
-        thenUserShouldBeUpdatedWithBcryptedPassword();
+          thenAuthenticationShouldSucceed();
+          thenUserShouldBeCreatedWithMd5CryptedPassword();
+          thenUserShouldBeUpdatedWithBcryptedPassword();
+        }
+
+        private ResponseGenerator givenAuthenticationResponse() {
+          return challenge -> ImmutableMap.<String, String>builder()
+              .put(LobbyLoginValidator.EMAIL_KEY, EMAIL)
+              .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
+              .put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString())
+              .put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString())
+              .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+              .build();
+        }
+      }
+    }
+
+    @Nested
+    public final class WhenUserExistsTest {
+      @ExtendWith(MockitoExtension.class)
+      @Nested
+      public final class WhenUsingLegacyClientTest extends AbstractTestCase {
+        @Test
+        public void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
+          givenUserDoesNotHaveBcryptedPassword();
+          givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
+
+          whenAuthenticating(givenAuthenticationResponse());
+
+          thenAuthenticationShouldSucceed();
+          thenUserShouldNotBeCreated();
+          thenUserShouldNotBeUpdated();
+        }
+
+        @Test
+        public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
+          givenUserHasBcryptedPassword();
+          givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
+
+          whenAuthenticating(givenAuthenticationResponse());
+
+          thenAuthenticationShouldSucceed();
+          thenUserShouldNotBeCreated();
+          thenUserShouldNotBeUpdated();
+        }
+
+        @Test
+        public void shouldNotUpdatePasswordsWhenUserHasOnlyBcryptedPassword() {
+          givenUserHasBcryptedPassword();
+          givenAuthenticationWillUseMd5CryptedPasswordAndFail();
+
+          whenAuthenticating(givenAuthenticationResponse());
+
+          thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.AUTHENTICATION_FAILED);
+          thenUserShouldNotBeCreated();
+          thenUserShouldNotBeUpdated();
+        }
+
+        private ResponseGenerator givenAuthenticationResponse() {
+          return challenge -> ImmutableMap.of(
+              LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD),
+              LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+        }
       }
 
-      @Test
-      public void shouldUpdateBothPasswordsWhenUserHasOnlyBcryptedPassword() {
-        givenUserExists();
-        givenUserDoesNotHaveMd5CryptedPassword();
-        givenUserHasBcryptedPassword();
-        givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
+      @ExtendWith(MockitoExtension.class)
+      @Nested
+      public final class WhenUsingCurrentClientTest extends AbstractTestCase {
+        @Test
+        public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
+          givenUserExists();
+          givenUserHasMd5CryptedPassword();
+          givenUserHasBcryptedPassword();
+          givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
 
-        whenAuthenticating(givenAuthenticationResponse());
+          whenAuthenticating(givenAuthenticationResponse());
 
-        thenAuthenticationShouldSucceed();
-        thenUserShouldNotBeCreated();
-        thenUserShouldBeUpdatedWithMd5CryptedPassword();
-        thenUserShouldBeUpdatedWithBcryptedPassword();
-      }
+          thenAuthenticationShouldSucceed();
+          thenUserShouldNotBeCreated();
+          thenUserShouldNotBeUpdated();
+        }
 
-      private ResponseGenerator givenAuthenticationResponse() {
-        return challenge -> ImmutableMap.<String, String>builder()
-            .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
-            .put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString())
-            .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
-            .build();
+        @Test
+        public void shouldUpdateBcryptedPasswordWhenUserHasOnlyMd5CryptedPassword() {
+          givenUserExists();
+          givenUserHasMd5CryptedPassword();
+          givenUserDoesNotHaveBcryptedPassword();
+          givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
+
+          whenAuthenticating(givenAuthenticationResponse());
+
+          thenAuthenticationShouldSucceed();
+          thenUserShouldNotBeCreated();
+          thenUserShouldNotBeUpdatedWithMd5CryptedPassword();
+          thenUserShouldBeUpdatedWithBcryptedPassword();
+        }
+
+        @Test
+        public void shouldUpdateBothPasswordsWhenUserHasOnlyBcryptedPassword() {
+          givenUserExists();
+          givenUserDoesNotHaveMd5CryptedPassword();
+          givenUserHasBcryptedPassword();
+          givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
+
+          whenAuthenticating(givenAuthenticationResponse());
+
+          thenAuthenticationShouldSucceed();
+          thenUserShouldNotBeCreated();
+          thenUserShouldBeUpdatedWithMd5CryptedPassword();
+          thenUserShouldBeUpdatedWithBcryptedPassword();
+        }
+
+        private ResponseGenerator givenAuthenticationResponse() {
+          return challenge -> ImmutableMap.<String, String>builder()
+              .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
+              .put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString())
+              .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+              .build();
+        }
       }
     }
   }
 
   @Nested
-  public final class WhenMaintenanceModeIsEnabledTest {
+  public final class MaintenanceModeTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUsingLegacyClientTest extends AbstractTestCase {
@@ -431,6 +477,74 @@ public final class LobbyLoginValidatorTest {
 
       private void thenChallengeShouldBeProcessableByRsaAuthenticator(final Map<String, String> challenge) {
         assertThat(RsaAuthenticator.canProcessChallenge(challenge), is(true));
+      }
+    }
+  }
+
+  @Nested
+  public final class AccessLogTest {
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenUserIsAnonymous extends AbstractTestCase {
+      @Test
+      public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
+        givenAnonymousAuthenticationWillSucceed();
+
+        whenAuthenticating(givenAuthenticationResponse());
+
+        thenAuthenticationShouldSucceed();
+        thenAccessLogShouldReceiveSuccessfulAuthentication(UserType.ANONYMOUS);
+      }
+
+      @Test
+      public void shouldLogFailedAuthenticationWhenAuthenticationFails() {
+        givenAnonymousAuthenticationWillFail();
+
+        whenAuthenticating(givenAuthenticationResponse());
+
+        thenAuthenticationShouldFail();
+        thenAccessLogShouldReceiveFailedAuthentication(UserType.ANONYMOUS);
+      }
+
+      private ResponseGenerator givenAuthenticationResponse() {
+        return challenge -> ImmutableMap.of(
+            LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
+            LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+      }
+    }
+
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    public final class WhenUserIsRegistered extends AbstractTestCase {
+      @Test
+      public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
+        givenUserExists();
+        givenUserHasBcryptedPassword();
+        givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
+
+        whenAuthenticating(givenAuthenticationResponse());
+
+        thenAuthenticationShouldSucceed();
+        thenAccessLogShouldReceiveSuccessfulAuthentication(UserType.REGISTERED);
+      }
+
+      @Test
+      public void shouldLogFailedAuthenticationWhenAuthenticationFails() {
+        givenUserExists();
+        givenUserHasBcryptedPassword();
+        givenAuthenticationWillUseObfuscatedPasswordAndFail();
+
+        whenAuthenticating(givenAuthenticationResponse());
+
+        thenAuthenticationShouldFail();
+        thenAccessLogShouldReceiveFailedAuthentication(UserType.REGISTERED);
+      }
+
+      private ResponseGenerator givenAuthenticationResponse() {
+        return challenge -> ImmutableMap.<String, String>builder()
+            .put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString())
+            .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+            .build();
       }
     }
   }

@@ -1,22 +1,11 @@
 package games.strategy.engine.lobby.server.login;
 
-import java.net.InetAddress;
-import java.util.logging.Logger;
+import java.time.Instant;
 
-/**
- * This class is used to allow an access log to be easily created. The log settings should
- * be set up to log messages from this class to a seperate access log file.
- */
-class AccessLog {
-  private static final Logger logger = Logger.getLogger(AccessLog.class.getName());
+import games.strategy.engine.lobby.server.User;
 
-  static void successfulLogin(final String userName, final InetAddress from) {
-    logger.info(String.format("LOGIN name: %s, ip: %s",
-        userName, from.getHostAddress()));
-  }
+interface AccessLog {
+  void logFailedAuthentication(Instant instant, User user, UserType userType, String errorMessage);
 
-  static void failedLogin(final String userName, final InetAddress from, final String error) {
-    logger.info(String.format("FAILED name: %s, ip: %s, error: %s",
-        userName, from.getHostAddress(), error));
-  }
+  void logSuccessfulAuthentication(Instant instant, User user, UserType userType);
 }
