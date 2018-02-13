@@ -185,12 +185,12 @@ public final class LobbyLoginValidatorTest {
           remoteAddress);
     }
 
-    final void thenAccessLogShouldReceiveFailedAccessOf(final AuthenticationType authenticationType) {
-      verify(accessLog).logFailedAccess(any(Instant.class), eq(user), eq(authenticationType), anyString());
+    final void thenAccessLogShouldReceiveFailedAuthentication(final AuthenticationType authenticationType) {
+      verify(accessLog).logFailedAuthentication(any(Instant.class), eq(user), eq(authenticationType), anyString());
     }
 
-    final void thenAccessLogShouldReceiveSuccessfulAccessOf(final AuthenticationType authenticationType) {
-      verify(accessLog).logSuccessfulAccess(any(Instant.class), eq(user), eq(authenticationType));
+    final void thenAccessLogShouldReceiveSuccessfulAuthentication(final AuthenticationType authenticationType) {
+      verify(accessLog).logSuccessfulAuthentication(any(Instant.class), eq(user), eq(authenticationType));
     }
 
     final void thenAuthenticationShouldFail() {
@@ -480,23 +480,23 @@ public final class LobbyLoginValidatorTest {
     @Nested
     public final class WhenUserIsAnonymous extends AbstractTestCase {
       @Test
-      public void shouldLogSuccessfulLoginWhenAuthenticationSucceeds() {
+      public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
 
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
-        thenAccessLogShouldReceiveSuccessfulAccessOf(AuthenticationType.ANONYMOUS);
+        thenAccessLogShouldReceiveSuccessfulAuthentication(AuthenticationType.ANONYMOUS);
       }
 
       @Test
-      public void shouldLogFailedLoginWhenAuthenticationFails() {
+      public void shouldLogFailedAuthenticationWhenAuthenticationFails() {
         givenAnonymousAuthenticationWillFail();
 
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldFail();
-        thenAccessLogShouldReceiveFailedAccessOf(AuthenticationType.ANONYMOUS);
+        thenAccessLogShouldReceiveFailedAuthentication(AuthenticationType.ANONYMOUS);
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
@@ -509,7 +509,7 @@ public final class LobbyLoginValidatorTest {
     @Nested
     public final class WhenUserIsRegistered extends AbstractTestCase {
       @Test
-      public void shouldLogSuccessfulLoginWhenAuthenticationSucceeds() {
+      public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
         givenUserExists();
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
@@ -517,11 +517,11 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
-        thenAccessLogShouldReceiveSuccessfulAccessOf(AuthenticationType.REGISTERED);
+        thenAccessLogShouldReceiveSuccessfulAuthentication(AuthenticationType.REGISTERED);
       }
 
       @Test
-      public void shouldLogFailedLoginWhenAuthenticationFails() {
+      public void shouldLogFailedAuthenticationWhenAuthenticationFails() {
         givenUserExists();
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndFail();
@@ -529,7 +529,7 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldFail();
-        thenAccessLogShouldReceiveFailedAccessOf(AuthenticationType.REGISTERED);
+        thenAccessLogShouldReceiveFailedAuthentication(AuthenticationType.REGISTERED);
       }
 
       private ResponseGenerator givenAuthenticationResponse() {

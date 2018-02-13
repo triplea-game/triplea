@@ -139,12 +139,12 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
 
     final User user = new User(clientName, ((InetSocketAddress) remoteAddress).getAddress(), clientMac);
-    final @Nullable String errorMessage = verifyConnectionInternal(response, user);
-    logAccess(user, getAuthenticationTypeFor(response), errorMessage);
+    final @Nullable String errorMessage = authenticateUser(response, user);
+    logAuthenticationResult(user, getAuthenticationTypeFor(response), errorMessage);
     return errorMessage;
   }
 
-  private @Nullable String verifyConnectionInternal(final Map<String, String> response, final User user) {
+  private @Nullable String authenticateUser(final Map<String, String> response, final User user) {
     if (response == null) {
       return "No Client Properties";
     }
@@ -197,14 +197,14 @@ public final class LobbyLoginValidator implements ILoginValidator {
     return response.containsKey(ANONYMOUS_LOGIN) ? AuthenticationType.ANONYMOUS : AuthenticationType.REGISTERED;
   }
 
-  private void logAccess(
+  private void logAuthenticationResult(
       final User user,
       final AuthenticationType authenticationType,
       final @Nullable String errorMessage) {
     if (errorMessage == null) {
-      accessLog.logSuccessfulAccess(Instant.now(), user, authenticationType);
+      accessLog.logSuccessfulAuthentication(Instant.now(), user, authenticationType);
     } else {
-      accessLog.logFailedAccess(Instant.now(), user, authenticationType, errorMessage);
+      accessLog.logFailedAuthentication(Instant.now(), user, authenticationType, errorMessage);
     }
   }
 
