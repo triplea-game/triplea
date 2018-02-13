@@ -1,0 +1,31 @@
+start transaction;
+
+alter table banned_macs
+  alter column ip type inet using ip::inet,
+  alter column mod_ip type inet using mod_ip::inet;
+
+comment on column banned_macs.ip is 'The IP address of the banned user.';
+comment on column banned_macs.mod_ip is 'The IP address of the moderator that executed the ban.';
+
+alter table banned_usernames
+  alter column ip type inet using ip::inet,
+  alter column mod_ip type inet using mod_ip::inet;
+
+comment on column banned_usernames.ip is 'The IP address of the banned user.';
+comment on column banned_usernames.mod_ip is 'The IP address of the moderator that executed the ban.';
+
+alter table muted_macs
+  alter column ip type inet using ip::inet,
+  alter column mod_ip type inet using mod_ip::inet;
+
+comment on column muted_macs.ip is 'The IP address of the muted user.';
+comment on column muted_macs.mod_ip is 'The IP address of the moderator that executed the mute.';
+
+alter table muted_usernames
+  alter column ip type inet using ip::inet,
+  alter column mod_ip type inet using mod_ip::inet;
+
+comment on column muted_usernames.ip is 'The IP address of the muted user.';
+comment on column muted_usernames.mod_ip is 'The IP address of the moderator that executed the mute.';
+
+commit;

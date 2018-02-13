@@ -42,7 +42,7 @@ public class MutedMacController extends TimedController {
 
     final String sql = ""
         + "insert into muted_macs "
-        + "  (username, ip, mac, mute_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?, ?, ?) "
+        + "  (username, ip, mac, mute_till, mod_username, mod_ip, mod_mac) values (?, ?::inet, ?, ?, ?, ?::inet, ?) "
         + "on conflict (mac) do update set "
         + "  username=excluded.username, "
         + "  ip=excluded.ip, "

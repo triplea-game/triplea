@@ -30,7 +30,7 @@ public class BannedMacController extends TimedController implements BannedMacDao
 
     final String sql = ""
         + "insert into banned_macs "
-        + "  (username, ip, mac, ban_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?, ?, ?) "
+        + "  (username, ip, mac, ban_till, mod_username, mod_ip, mod_mac) values (?, ?::inet, ?, ?, ?, ?::inet, ?) "
         + "on conflict (mac) do update set "
         + "  ban_till=excluded.ban_till, "
         + "  username=excluded.username, "

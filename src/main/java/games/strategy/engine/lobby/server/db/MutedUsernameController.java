@@ -42,7 +42,7 @@ public class MutedUsernameController extends TimedController {
 
     final String sql = ""
         + "insert into muted_usernames "
-        + "  (username, ip, mac, mute_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?, ?, ?) "
+        + "  (username, ip, mac, mute_till, mod_username, mod_ip, mod_mac) values (?, ?::inet, ?, ?, ?, ?::inet, ?) "
         + "on conflict (username) do update set "
         + "  ip=excluded.ip, "
         + "  mac=excluded.mac, "
