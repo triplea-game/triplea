@@ -185,12 +185,12 @@ public final class LobbyLoginValidatorTest {
           remoteAddress);
     }
 
-    final void thenAccessLogShouldReceiveFailedAccessOf(final AccessMethod accessMethod) {
-      verify(accessLog).logFailedAccess(any(Instant.class), eq(user), eq(accessMethod), anyString());
+    final void thenAccessLogShouldReceiveFailedAccessOf(final AuthenticationType authenticationType) {
+      verify(accessLog).logFailedAccess(any(Instant.class), eq(user), eq(authenticationType), anyString());
     }
 
-    final void thenAccessLogShouldReceiveSuccessfulAccessOf(final AccessMethod accessMethod) {
-      verify(accessLog).logSuccessfulAccess(any(Instant.class), eq(user), eq(accessMethod));
+    final void thenAccessLogShouldReceiveSuccessfulAccessOf(final AuthenticationType authenticationType) {
+      verify(accessLog).logSuccessfulAccess(any(Instant.class), eq(user), eq(authenticationType));
     }
 
     final void thenAuthenticationShouldFail() {
@@ -486,7 +486,7 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
-        thenAccessLogShouldReceiveSuccessfulAccessOf(AccessMethod.GUEST);
+        thenAccessLogShouldReceiveSuccessfulAccessOf(AuthenticationType.ANONYMOUS);
       }
 
       @Test
@@ -496,7 +496,7 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldFail();
-        thenAccessLogShouldReceiveFailedAccessOf(AccessMethod.GUEST);
+        thenAccessLogShouldReceiveFailedAccessOf(AuthenticationType.ANONYMOUS);
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
@@ -517,7 +517,7 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
-        thenAccessLogShouldReceiveSuccessfulAccessOf(AccessMethod.AUTHENTICATION);
+        thenAccessLogShouldReceiveSuccessfulAccessOf(AuthenticationType.REGISTERED);
       }
 
       @Test
@@ -529,7 +529,7 @@ public final class LobbyLoginValidatorTest {
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldFail();
-        thenAccessLogShouldReceiveFailedAccessOf(AccessMethod.AUTHENTICATION);
+        thenAccessLogShouldReceiveFailedAccessOf(AuthenticationType.REGISTERED);
       }
 
       private ResponseGenerator givenAuthenticationResponse() {

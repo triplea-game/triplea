@@ -5,14 +5,14 @@ create table access_log (
   username varchar(40) not null,
   ip inet not null,
   mac char(28) not null check (char_length(mac)=28),
-  authenticated boolean not null
+  registered boolean not null
 );
 
 comment on column access_log.access_time is 'The date and time the lobby was accessed.';
 comment on column access_log.username is 'The name of the user accessing the lobby.';
 comment on column access_log.ip is 'The IP address of the user accessing the lobby.';
 comment on column access_log.mac is 'The hashed MAC address of the user accessing the lobby.';
-comment on column access_log.authenticated is 'True if the user was authenticated when accessing the lobby (i.e. a registered user); otherwise false (i.e. an anonymous user)';
+comment on column access_log.registered is 'True if the user was registered when accessing the lobby; otherwise false if the user was anonymous';
 
 alter table access_log owner to postgres;
 

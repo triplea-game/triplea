@@ -15,13 +15,13 @@ import games.strategy.engine.lobby.server.User;
  */
 public final class AccessLogController implements AccessLogDao {
   @Override
-  public void insert(final Instant instant, final User user, final boolean authenticated) throws SQLException {
+  public void insert(final Instant instant, final User user, final boolean registered) throws SQLException {
     checkNotNull(instant);
     checkNotNull(user);
 
     final String sql = ""
         + "insert into access_log "
-        + "  (access_time, username, ip, mac, authenticated) "
+        + "  (access_time, username, ip, mac, registered) "
         + "  values "
         + "  (?, ?, ?::inet, ?, ?)";
     try (Connection conn = Database.getPostgresConnection();
@@ -30,7 +30,7 @@ public final class AccessLogController implements AccessLogDao {
       ps.setString(2, user.getUsername());
       ps.setString(3, user.getInetAddress().getHostAddress());
       ps.setString(4, user.getHashedMacAddress());
-      ps.setBoolean(5, authenticated);
+      ps.setBoolean(5, registered);
       ps.execute();
       conn.commit();
     }

@@ -5,7 +5,7 @@ import java.time.Instant;
 import games.strategy.engine.lobby.server.User;
 
 interface AccessLog {
-  void logFailedAccess(Instant instant, User user, AccessMethod accessMethod, String errorMessage);
+  void logFailedAccess(Instant instant, User user, AuthenticationType authenticationType, String errorMessage);
 
-  void logSuccessfulAccess(Instant instant, User user, AccessMethod accessMethod);
+  void logSuccessfulAccess(Instant instant, User user, AuthenticationType authenticationType);
 }

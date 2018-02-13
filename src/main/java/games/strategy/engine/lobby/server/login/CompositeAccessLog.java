@@ -13,7 +13,7 @@ import games.strategy.engine.lobby.server.db.AccessLogDao;
 
 /**
  * Implementation of {@link AccessLog} that logs lobby access attempts to both the system logger framework and the
- * database login metrics tables.
+ * database access log table.
  */
 final class CompositeAccessLog implements AccessLog {
   private static final Logger logger = Logger.getLogger(CompositeAccessLog.class.getName());
@@ -33,10 +33,10 @@ final class CompositeAccessLog implements AccessLog {
   public void logFailedAccess(
       final Instant instant,
       final User user,
-      final AccessMethod accessMethod,
+      final AuthenticationType authenticationType,
       final String errorMessage) {
-    logger.info(String.format("Failed %s access [%s]: name: %s, IP: %s, MAC: %s, error: %s",
-        accessMethod.toString().toLowerCase(),
+    logger.info(String.format("Failed access by %s user at [%s]: name: %s, IP: %s, MAC: %s, error: %s",
+        authenticationType.toString().toLowerCase(),
         instant,
         user.getUsername(),
         user.getInetAddress().getHostAddress(),
@@ -45,18 +45,18 @@ final class CompositeAccessLog implements AccessLog {
   }
 
   @Override
-  public void logSuccessfulAccess(final Instant instant, final User user, final AccessMethod accessMethod) {
-    logger.info(String.format("Successful %s access [%s]: name: %s, IP: %s, MAC: %s",
-        accessMethod.toString().toLowerCase(),
+  public void logSuccessfulAccess(final Instant instant, final User user, final AuthenticationType authenticationType) {
+    logger.info(String.format("Successful access by %s user at [%s]: name: %s, IP: %s, MAC: %s",
+        authenticationType.toString().toLowerCase(),
         instant,
         user.getUsername(),
         user.getInetAddress().getHostAddress(),
         user.getHashedMacAddress()));
 
     try {
-      accessLogDao.insert(instant, user, accessMethod == AccessMethod.AUTHENTICATION);
+      accessLogDao.insert(instant, user, authenticationType == AuthenticationType.REGISTERED);
     } catch (final SQLException e) {
-      logger.log(Level.SEVERE, "failed to record successful access", e);
+      logger.log(Level.SEVERE, "failed to record successful access in database", e);
     }
   }
 }

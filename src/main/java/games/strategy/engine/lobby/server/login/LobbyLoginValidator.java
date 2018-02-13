@@ -140,7 +140,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
     final User user = new User(clientName, ((InetSocketAddress) remoteAddress).getAddress(), clientMac);
     final @Nullable String errorMessage = verifyConnectionInternal(response, user);
-    logAccess(user, getAccessMethodFor(response), errorMessage);
+    logAccess(user, getAuthenticationTypeFor(response), errorMessage);
     return errorMessage;
   }
 
@@ -182,26 +182,29 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return createUser(response, user);
     }
 
-    final AccessMethod accessMethod = getAccessMethodFor(response);
-    switch (accessMethod) {
-      case AUTHENTICATION:
-        return authenticateUser(response, user);
-      case GUEST:
-        return validateGuest(response, user);
+    final AuthenticationType authenticationType = getAuthenticationTypeFor(response);
+    switch (authenticationType) {
+      case ANONYMOUS:
+        return authenticateAnonymousUser(response, user);
+      case REGISTERED:
+        return authenticateRegisteredUser(response, user);
       default:
-        throw new AssertionError("unknown access method: " + accessMethod);
+        throw new AssertionError("unknown authentication type: " + authenticationType);
     }
   }
 
-  private static AccessMethod getAccessMethodFor(final Map<String, String> response) {
-    return response.containsKey(ANONYMOUS_LOGIN) ? AccessMethod.GUEST : AccessMethod.AUTHENTICATION;
+  private static AuthenticationType getAuthenticationTypeFor(final Map<String, String> response) {
+    return response.containsKey(ANONYMOUS_LOGIN) ? AuthenticationType.ANONYMOUS : AuthenticationType.REGISTERED;
   }
 
-  private void logAccess(final User user, final AccessMethod accessMethod, final @Nullable String errorMessage) {
+  private void logAccess(
+      final User user,
+      final AuthenticationType authenticationType,
+      final @Nullable String errorMessage) {
     if (errorMessage == null) {
-      accessLog.logSuccessfulAccess(Instant.now(), user, accessMethod);
+      accessLog.logSuccessfulAccess(Instant.now(), user, authenticationType);
     } else {
-      accessLog.logFailedAccess(Instant.now(), user, accessMethod, errorMessage);
+      accessLog.logFailedAccess(Instant.now(), user, authenticationType, errorMessage);
     }
   }
 
@@ -244,7 +247,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     return badWordDao.list();
   }
 
-  private @Nullable String authenticateUser(final Map<String, String> response, final User user) {
+  private @Nullable String authenticateRegisteredUser(final Map<String, String> response, final User user) {
     final String username = user.getUsername();
     final String errorMessage = ErrorMessages.AUTHENTICATION_FAILED;
     final HashedPassword hashedPassword = userDao.getPassword(username);
@@ -279,7 +282,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     return null;
   }
 
-  private @Nullable String validateGuest(final Map<String, String> response, final User user) {
+  private @Nullable String authenticateAnonymousUser(final Map<String, String> response, final User user) {
     final String username = user.getUsername();
     if (userDao.doesUserExist(username)) {
       return ErrorMessages.ANONYMOUS_AUTHENTICATION_FAILED;

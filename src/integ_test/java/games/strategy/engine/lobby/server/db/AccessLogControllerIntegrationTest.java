@@ -22,28 +22,25 @@ public final class AccessLogControllerIntegrationTest {
   public void insert_ShouldInsertNewRecord() throws Exception {
     final Instant instant = Instant.now();
     final User user = TestUserUtils.newUser();
-    final boolean authenticated = true;
+    final boolean registered = true;
 
-    accessLogController.insert(instant, user, authenticated);
+    accessLogController.insert(instant, user, registered);
 
-    thenAccessLogRecordShouldExist(instant, user, authenticated);
+    thenAccessLogRecordShouldExist(instant, user, registered);
   }
 
-  private static void thenAccessLogRecordShouldExist(
-      final Instant instant,
-      final User user,
-      final boolean authenticated)
+  private static void thenAccessLogRecordShouldExist(final Instant instant, final User user, final boolean registered)
       throws Exception {
     final String sql = ""
         + "select count(*) from access_log "
-        + "where access_time=? and username=? and ip=?::inet and mac=? and authenticated=?";
+        + "where access_time=? and username=? and ip=?::inet and mac=? and registered=?";
     try (Connection conn = Database.getPostgresConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setTimestamp(1, Timestamp.from(instant));
       ps.setString(2, user.getUsername());
       ps.setString(3, user.getInetAddress().getHostAddress());
       ps.setString(4, user.getHashedMacAddress());
-      ps.setBoolean(5, authenticated);
+      ps.setBoolean(5, registered);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           assertThat(rs.getInt(1), is(1));

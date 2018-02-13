@@ -14,9 +14,9 @@ public interface AccessLogDao {
    *
    * @param instant The instant of the access.
    * @param user The user who accessed the lobby.
-   * @param authenticated {@code true} if the access was authenticated; otherwise {@code false}.
+   * @param registered {@code true} if the user was registered at the time of access; otherwise {@code false}.
    *
    * @throws SQLException If an error occurs while logging the access.
    */
-  void insert(Instant instant, User user, boolean authenticated) throws SQLException;
+  void insert(Instant instant, User user, boolean registered) throws SQLException;
 }

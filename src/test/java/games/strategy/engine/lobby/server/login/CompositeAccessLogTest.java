@@ -1,14 +1,11 @@
 package games.strategy.engine.lobby.server.login;
 
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import java.sql.SQLException;
 import java.time.Instant;
-import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,36 +31,20 @@ public final class CompositeAccessLogTest {
   private final User user = TestUserUtils.newUser();
 
   @Test
-  public void logFailedAccess_ShouldNotAddDatabaseAccessLogRecord() {
-    Arrays.stream(AccessMethod.values()).forEach(accessMethod -> {
-      compositeAccessLog.logFailedAccess(instant, user, accessMethod, "error message");
+  public void logFailedAccess_ShouldNotAddDatabaseAccessLogRecord() throws Exception {
+    for (final AuthenticationType authenticationType : AuthenticationType.values()) {
+      compositeAccessLog.logFailedAccess(instant, user, authenticationType, "error message");
 
-      thenShouldNotAddDatabaseAccessLogRecord();
-    });
-  }
-
-  @Test
-  public void logSuccessfulAccess_ShouldAddDatabaseAccessLogRecord() {
-    Arrays.stream(AccessMethod.values()).forEach(accessMethod -> {
-      compositeAccessLog.logSuccessfulAccess(instant, user, accessMethod);
-
-      thenShouldAddDatabaseAccessLogRecordFor(accessMethod);
-    });
-  }
-
-  private void thenShouldNotAddDatabaseAccessLogRecord() {
-    try {
       verify(accessLogDao, never()).insert(any(Instant.class), any(User.class), anyBoolean());
-    } catch (final SQLException e) {
-      fail("unexpected exception", e);
     }
   }
 
-  private void thenShouldAddDatabaseAccessLogRecordFor(final AccessMethod accessMethod) {
-    try {
-      verify(accessLogDao).insert(instant, user, accessMethod == AccessMethod.AUTHENTICATION);
-    } catch (final SQLException e) {
-      fail("unexpected exception", e);
+  @Test
+  public void logSuccessfulAccess_ShouldAddDatabaseAccessLogRecord() throws Exception {
+    for (final AuthenticationType authenticationType : AuthenticationType.values()) {
+      compositeAccessLog.logSuccessfulAccess(instant, user, authenticationType);
+
+      verify(accessLogDao).insert(instant, user, authenticationType == AuthenticationType.REGISTERED);
     }
   }
 }
