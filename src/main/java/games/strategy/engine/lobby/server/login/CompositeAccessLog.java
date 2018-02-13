@@ -56,7 +56,7 @@ final class CompositeAccessLog implements AccessLog {
     try {
       accessLogDao.insert(instant, user, accessMethod == AccessMethod.AUTHENTICATION);
     } catch (final SQLException e) {
-      logger.log(Level.SEVERE, "failed to record successful login", e);
+      logger.log(Level.SEVERE, "failed to record successful access", e);
     }
   }
 }
