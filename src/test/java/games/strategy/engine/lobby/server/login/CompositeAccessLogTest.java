@@ -31,19 +31,19 @@ public final class CompositeAccessLogTest {
 
   @Test
   public void logFailedAuthentication_ShouldNotAddDatabaseAccessLogRecord() throws Exception {
-    for (final AuthenticationType authenticationType : AuthenticationType.values()) {
-      compositeAccessLog.logFailedAuthentication(instant, user, authenticationType, "error message");
+    for (final UserType userType : UserType.values()) {
+      compositeAccessLog.logFailedAuthentication(instant, user, userType, "error message");
 
-      verify(accessLogDao, never()).insert(any(Instant.class), any(User.class), any(AuthenticationType.class));
+      verify(accessLogDao, never()).insert(any(Instant.class), any(User.class), any(UserType.class));
     }
   }
 
   @Test
   public void logSuccessfulAuthentication_ShouldAddDatabaseAccessLogRecord() throws Exception {
-    for (final AuthenticationType authenticationType : AuthenticationType.values()) {
-      compositeAccessLog.logSuccessfulAuthentication(instant, user, authenticationType);
+    for (final UserType userType : UserType.values()) {
+      compositeAccessLog.logSuccessfulAuthentication(instant, user, userType);
 
-      verify(accessLogDao).insert(instant, user, authenticationType);
+      verify(accessLogDao).insert(instant, user, userType);
     }
   }
 }

@@ -33,10 +33,10 @@ final class CompositeAccessLog implements AccessLog {
   public void logFailedAuthentication(
       final Instant instant,
       final User user,
-      final AuthenticationType authenticationType,
+      final UserType userType,
       final String errorMessage) {
     logger.info(String.format("Failed authentication by %s user at [%s]: name: %s, IP: %s, MAC: %s, error: %s",
-        authenticationType.toString().toLowerCase(),
+        userType.toString().toLowerCase(),
         instant,
         user.getUsername(),
         user.getInetAddress().getHostAddress(),
@@ -45,19 +45,16 @@ final class CompositeAccessLog implements AccessLog {
   }
 
   @Override
-  public void logSuccessfulAuthentication(
-      final Instant instant,
-      final User user,
-      final AuthenticationType authenticationType) {
+  public void logSuccessfulAuthentication(final Instant instant, final User user, final UserType userType) {
     logger.info(String.format("Successful authentication by %s user at [%s]: name: %s, IP: %s, MAC: %s",
-        authenticationType.toString().toLowerCase(),
+        userType.toString().toLowerCase(),
         instant,
         user.getUsername(),
         user.getInetAddress().getHostAddress(),
         user.getHashedMacAddress()));
 
     try {
-      accessLogDao.insert(instant, user, authenticationType);
+      accessLogDao.insert(instant, user, userType);
     } catch (final SQLException e) {
       logger.log(Level.SEVERE, "failed to record successful authentication in database", e);
     }

@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 
 import games.strategy.engine.lobby.server.User;
-import games.strategy.engine.lobby.server.login.AuthenticationType;
+import games.strategy.engine.lobby.server.login.UserType;
 
 /**
  * Data access object for the access log table.
@@ -15,9 +15,9 @@ public interface AccessLogDao {
    *
    * @param instant The instant of the access.
    * @param user The user who accessed the lobby.
-   * @param authenticationType The type of authentication used to grant access to the lobby.
+   * @param userType The type of the user who accessed the lobby.
    *
    * @throws SQLException If an error occurs while logging the access.
    */
-  void insert(Instant instant, User user, AuthenticationType authenticationType) throws SQLException;
+  void insert(Instant instant, User user, UserType userType) throws SQLException;
 }

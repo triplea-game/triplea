@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
-import games.strategy.engine.lobby.server.login.AuthenticationType;
+import games.strategy.engine.lobby.server.login.UserType;
 
 public final class AccessLogControllerIntegrationTest {
   private final AccessLogController accessLogController = new AccessLogController();
@@ -24,14 +24,14 @@ public final class AccessLogControllerIntegrationTest {
     final Instant instant = Instant.now();
     final User user = TestUserUtils.newUser();
 
-    for (final AuthenticationType authenticationType : AuthenticationType.values()) {
-      accessLogController.insert(instant, user, authenticationType);
+    for (final UserType userType : UserType.values()) {
+      accessLogController.insert(instant, user, userType);
 
-      thenAccessLogRecordShouldExist(instant, user, authenticationType == AuthenticationType.REGISTERED);
+      thenAccessLogRecordShouldExist(instant, user, userType);
     }
   }
 
-  private static void thenAccessLogRecordShouldExist(final Instant instant, final User user, final boolean registered)
+  private static void thenAccessLogRecordShouldExist(final Instant instant, final User user, final UserType userType)
       throws Exception {
     final String sql = ""
         + "select count(*) from access_log "
@@ -42,7 +42,7 @@ public final class AccessLogControllerIntegrationTest {
       ps.setString(2, user.getUsername());
       ps.setString(3, user.getInetAddress().getHostAddress());
       ps.setString(4, user.getHashedMacAddress());
-      ps.setBoolean(5, registered);
+      ps.setBoolean(5, userType == UserType.REGISTERED);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           assertThat(rs.getInt(1), is(1));

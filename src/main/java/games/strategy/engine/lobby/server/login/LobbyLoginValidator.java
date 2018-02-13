@@ -140,7 +140,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
     final User user = new User(clientName, ((InetSocketAddress) remoteAddress).getAddress(), clientMac);
     final @Nullable String errorMessage = authenticateUser(response, user);
-    logAuthenticationResult(user, getAuthenticationTypeFor(response), errorMessage);
+    logAuthenticationResult(user, getUserTypeFor(response), errorMessage);
     return errorMessage;
   }
 
@@ -182,29 +182,26 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return createUser(response, user);
     }
 
-    final AuthenticationType authenticationType = getAuthenticationTypeFor(response);
-    switch (authenticationType) {
+    final UserType userType = getUserTypeFor(response);
+    switch (userType) {
       case ANONYMOUS:
         return authenticateAnonymousUser(response, user);
       case REGISTERED:
         return authenticateRegisteredUser(response, user);
       default:
-        throw new AssertionError("unknown authentication type: " + authenticationType);
+        throw new AssertionError("unknown user type: " + userType);
     }
   }
 
-  private static AuthenticationType getAuthenticationTypeFor(final Map<String, String> response) {
-    return response.containsKey(ANONYMOUS_LOGIN) ? AuthenticationType.ANONYMOUS : AuthenticationType.REGISTERED;
+  private static UserType getUserTypeFor(final Map<String, String> response) {
+    return response.containsKey(ANONYMOUS_LOGIN) ? UserType.ANONYMOUS : UserType.REGISTERED;
   }
 
-  private void logAuthenticationResult(
-      final User user,
-      final AuthenticationType authenticationType,
-      final @Nullable String errorMessage) {
+  private void logAuthenticationResult(final User user, final UserType userType, final @Nullable String errorMessage) {
     if (errorMessage == null) {
-      accessLog.logSuccessfulAuthentication(Instant.now(), user, authenticationType);
+      accessLog.logSuccessfulAuthentication(Instant.now(), user, userType);
     } else {
-      accessLog.logFailedAuthentication(Instant.now(), user, authenticationType, errorMessage);
+      accessLog.logFailedAuthentication(Instant.now(), user, userType, errorMessage);
     }
   }
 
