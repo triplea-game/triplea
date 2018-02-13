@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
+import games.strategy.engine.lobby.server.login.AuthenticationType;
 
 public final class AccessLogControllerIntegrationTest {
   private final AccessLogController accessLogController = new AccessLogController();
@@ -22,11 +23,12 @@ public final class AccessLogControllerIntegrationTest {
   public void insert_ShouldInsertNewRecord() throws Exception {
     final Instant instant = Instant.now();
     final User user = TestUserUtils.newUser();
-    final boolean registered = true;
 
-    accessLogController.insert(instant, user, registered);
+    for (final AuthenticationType authenticationType : AuthenticationType.values()) {
+      accessLogController.insert(instant, user, authenticationType);
 
-    thenAccessLogRecordShouldExist(instant, user, registered);
+      thenAccessLogRecordShouldExist(instant, user, authenticationType == AuthenticationType.REGISTERED);
+    }
   }
 
   private static void thenAccessLogRecordShouldExist(final Instant instant, final User user, final boolean registered)

@@ -9,15 +9,18 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 import games.strategy.engine.lobby.server.User;
+import games.strategy.engine.lobby.server.login.AuthenticationType;
 
 /**
  * Implementation of {@link AccessLogDao} for a Postgres database.
  */
 public final class AccessLogController implements AccessLogDao {
   @Override
-  public void insert(final Instant instant, final User user, final boolean registered) throws SQLException {
+  public void insert(final Instant instant, final User user, final AuthenticationType authenticationType)
+      throws SQLException {
     checkNotNull(instant);
     checkNotNull(user);
+    checkNotNull(authenticationType);
 
     final String sql = ""
         + "insert into access_log "
@@ -30,7 +33,7 @@ public final class AccessLogController implements AccessLogDao {
       ps.setString(2, user.getUsername());
       ps.setString(3, user.getInetAddress().getHostAddress());
       ps.setString(4, user.getHashedMacAddress());
-      ps.setBoolean(5, registered);
+      ps.setBoolean(5, authenticationType == AuthenticationType.REGISTERED);
       ps.execute();
       conn.commit();
     }

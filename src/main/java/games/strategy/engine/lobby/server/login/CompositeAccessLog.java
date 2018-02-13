@@ -57,7 +57,7 @@ final class CompositeAccessLog implements AccessLog {
         user.getHashedMacAddress()));
 
     try {
-      accessLogDao.insert(instant, user, authenticationType == AuthenticationType.REGISTERED);
+      accessLogDao.insert(instant, user, authenticationType);
     } catch (final SQLException e) {
       logger.log(Level.SEVERE, "failed to record successful authentication in database", e);
     }

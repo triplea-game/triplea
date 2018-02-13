@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.server.login;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -35,7 +34,7 @@ public final class CompositeAccessLogTest {
     for (final AuthenticationType authenticationType : AuthenticationType.values()) {
       compositeAccessLog.logFailedAuthentication(instant, user, authenticationType, "error message");
 
-      verify(accessLogDao, never()).insert(any(Instant.class), any(User.class), anyBoolean());
+      verify(accessLogDao, never()).insert(any(Instant.class), any(User.class), any(AuthenticationType.class));
     }
   }
 
@@ -44,7 +43,7 @@ public final class CompositeAccessLogTest {
     for (final AuthenticationType authenticationType : AuthenticationType.values()) {
       compositeAccessLog.logSuccessfulAuthentication(instant, user, authenticationType);
 
-      verify(accessLogDao).insert(instant, user, authenticationType == AuthenticationType.REGISTERED);
+      verify(accessLogDao).insert(instant, user, authenticationType);
     }
   }
 }
