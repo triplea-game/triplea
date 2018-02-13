@@ -230,6 +230,7 @@ public interface Constants {
   String DISABLED_PLAYERS_ASSETS_DELETED = "Disabled Players Assets Deleted";
   String CONTROL_ALL_CANALS_BETWEEN_TERRITORIES_TO_PASS =
       "Control All Canals Between Territories To Pass";
+  String UNITS_CAN_LOAD_IN_HOSTILE_SEA_ZONES = "Units Can Load In Hostile Sea Zones";
 
   // relationships stuff
   String RELATIONSHIP_TYPE_SELF = "self_relation";

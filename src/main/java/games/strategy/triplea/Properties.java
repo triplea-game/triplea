@@ -670,4 +670,8 @@ public final class Properties implements Constants {
   public static boolean getControlAllCanalsBetweenTerritoriesToPass(final GameData data) {
     return data.getProperties().get(CONTROL_ALL_CANALS_BETWEEN_TERRITORIES_TO_PASS, false);
   }
+
+  public static boolean getUnitsCanLoadInHostileSeaZones(final GameData data) {
+    return data.getProperties().get(UNITS_CAN_LOAD_IN_HOSTILE_SEA_ZONES, false);
+  }
 }

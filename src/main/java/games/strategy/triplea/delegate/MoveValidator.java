@@ -1057,19 +1057,17 @@ public class MoveValidator {
           }
         }
       }
-    } // end if end is water
+    }
     if (route.isLoad()) {
       if (!isEditMode && !route.hasExactlyOneStep() && nonParatroopersPresent(player, landAndAir)) {
         return result.setErrorReturnResult("Units cannot move before loading onto transports");
       }
       final Predicate<Unit> enemyNonSubmerged = Matches.enemyUnit(player, data).and(Matches.unitIsSubmerged().negate());
-      if (route.getEnd().getUnits().anyMatch(enemyNonSubmerged) && nonParatroopersPresent(player, landAndAir)) {
-        if (!onlyIgnoredUnitsOnPath(route, player, data, false)) {
-          if (!AbstractMoveDelegate.getBattleTracker(data).didAllThesePlayersJustGoToWarThisTurn(player,
+      if (!Properties.getUnitsCanLoadInHostileSeaZones(data) && route.getEnd().getUnits().anyMatch(enemyNonSubmerged)
+          && nonParatroopersPresent(player, landAndAir) && !onlyIgnoredUnitsOnPath(route, player, data, false)
+          && !AbstractMoveDelegate.getBattleTracker(data).didAllThesePlayersJustGoToWarThisTurn(player,
               route.getEnd().getUnits().getUnits(), data)) {
-            return result.setErrorReturnResult("Cannot load when enemy sea units are present");
-          }
-        }
+        return result.setErrorReturnResult("Cannot load when enemy sea units are present");
       }
       final Map<Unit, Unit> unitsToTransports = TransportUtils.mapTransports(route, land, transportsToLoad);
       if (!isEditMode) {

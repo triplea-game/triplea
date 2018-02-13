@@ -20,6 +20,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -216,6 +217,37 @@ public class MoveValidatorTest extends DelegateTest {
     results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
         new HashMap<>(), true, null, twwGameData);
     assertFalse(results.isMoveValid());
+  }
+
+  @Test
+  public void testValidateUnitsCanLoadInHostileSeaZones() throws Exception {
+
+    final GameData twwGameData = TestMapGameData.TWW.getGameData();
+
+    // Load german unit in sea zone with no enemy ships
+    final PlayerID germans = GameDataTestUtil.germany(twwGameData);
+    final Territory northernGermany = territory("Northern Germany", twwGameData);
+    final Territory sz27 = territory("27 Sea Zone", twwGameData);
+    final Route r = new Route(northernGermany, sz27);
+    northernGermany.getUnits().clear();
+    addTo(northernGermany, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
+    final List<Unit> transport = sz27.getUnits().getMatches(Matches.unitIsTransport());
+    MoveValidationResult results = MoveValidator.validateMove(northernGermany.getUnits(), r, germans,
+        transport, new HashMap<>(), false, null, twwGameData);
+    assertTrue(results.isMoveValid());
+
+    // Add USA ship to transport sea zone
+    final PlayerID usa = GameDataTestUtil.usa(twwGameData);
+    addTo(sz27, GameDataTestUtil.americanCruiser(twwGameData).create(1, usa));
+    results = MoveValidator.validateMove(northernGermany.getUnits(), r, germans,
+        transport, new HashMap<>(), false, null, twwGameData);
+    assertFalse(results.isMoveValid());
+
+    // Set 'Units Can Load In Hostile Sea Zones' to true
+    twwGameData.getProperties().set(Constants.UNITS_CAN_LOAD_IN_HOSTILE_SEA_ZONES, true);
+    results = MoveValidator.validateMove(northernGermany.getUnits(), r, germans,
+        transport, new HashMap<>(), false, null, twwGameData);
+    assertTrue(results.isMoveValid());
   }
 
 }
