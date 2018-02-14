@@ -840,7 +840,7 @@ public class MapPanel extends ImageScrollerLargeView {
       while (running) {
         final BlockingQueue<Tile> undrawnTiles = mapPanel.getUndrawnTiles();
         try {
-          final Tile tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
+          final Tile tile = undrawnTiles.poll(2, TimeUnit.SECONDS);
           final GameData data = mapPanel.getData();
           data.acquireReadLock();
           try {
