@@ -824,41 +824,36 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private static final class BackgroundDrawer implements Runnable {
-    private MapPanel mapPanel;
+    private final MapPanel mapPanel;
+    private volatile boolean running = true;
 
     BackgroundDrawer(final MapPanel panel) {
       mapPanel = panel;
     }
 
     void stop() {
-      // the thread will eventually wake up and notice we are done
-      mapPanel = null;
+      running = false;
     }
 
     @Override
     public void run() {
-      while (mapPanel != null) {
-        final BlockingQueue<Tile> undrawnTiles;
-        final MapPanel panel = mapPanel;
-        undrawnTiles = panel.getUndrawnTiles();
-        final Tile tile;
+      while (running) {
+        final BlockingQueue<Tile> undrawnTiles = mapPanel.getUndrawnTiles();
         try {
-          tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
+          final Tile tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
+          final GameData data = mapPanel.getData();
+          data.acquireReadLock();
+          try {
+            // FIXME: tile could be null
+            tile.getImage(data, mapPanel.getUiContext().getMapData());
+          } finally {
+            data.releaseReadLock();
+          }
+          SwingUtilities.invokeLater(mapPanel::repaint);
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
           continue;
         }
-        if (tile == null) {
-          continue;
-        }
-        final GameData data = mapPanel.getData();
-        data.acquireReadLock();
-        try {
-          tile.getImage(data, mapPanel.getUiContext().getMapData());
-        } finally {
-          data.releaseReadLock();
-        }
-        SwingUtilities.invokeLater(mapPanel::repaint);
       }
     }
   }
