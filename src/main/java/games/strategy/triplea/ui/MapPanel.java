@@ -105,7 +105,7 @@ public class MapPanel extends ImageScrollerLargeView {
     routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
     setCursor(this.uiContext.getCursor());
     this.scale = this.uiContext.getScale();
-    this.backgroundDrawer = new BackgroundDrawer(this);
+    this.backgroundDrawer = new BackgroundDrawer();
     this.tileManager = new TileManager(this.uiContext);
     final Thread t = new Thread(this.backgroundDrawer, "Map panel background drawer");
     t.setDaemon(true);
@@ -217,7 +217,7 @@ public class MapPanel extends ImageScrollerLargeView {
     recreateTiles(data, this.uiContext);
     this.uiContext.addActive(() -> {
       // super.deactivate
-      MapPanel.this.deactivate();
+      deactivate();
       clearUndrawn();
       backgroundDrawer.stop();
     });
@@ -823,13 +823,8 @@ public class MapPanel extends ImageScrollerLargeView {
     return uiContext.getMapData().getWarningImage();
   }
 
-  private static final class BackgroundDrawer implements Runnable {
-    private final MapPanel mapPanel;
+  private final class BackgroundDrawer implements Runnable {
     private volatile boolean running = true;
-
-    BackgroundDrawer(final MapPanel panel) {
-      mapPanel = panel;
-    }
 
     void stop() {
       running = false;
@@ -838,6 +833,7 @@ public class MapPanel extends ImageScrollerLargeView {
     @Override
     public void run() {
       while (running) {
+        final MapPanel mapPanel = MapPanel.this;
         final BlockingQueue<Tile> undrawnTiles = mapPanel.getUndrawnTiles();
         try {
           final Tile tile = undrawnTiles.poll(2, TimeUnit.SECONDS);
