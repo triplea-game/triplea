@@ -158,6 +158,7 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.LocalizeHtml;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
@@ -691,10 +692,10 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private void requestWindowFocus() {
-    SwingAction.invokeAndWaitUninterruptibly(() -> {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       requestFocusInWindow();
       transferFocus();
-    });
+    }));
   }
 
   public PlaceData waitForPlace(final PlayerID player, final boolean bid, final IPlayerBridge bridge) {
@@ -853,12 +854,18 @@ public class TripleAFrame extends MainGameFrame {
     if (messageAndDialogThreadPool == null) {
       return;
     }
-    messageAndDialogThreadPool.submit(() -> {
-      SwingAction.invokeAndWaitUninterruptibly(() -> new TechResultsDisplay(msg, uiContext, data))
-          .ifPresent(display -> EventThreadJOptionPane.showOptionDialog(TripleAFrame.this, display, "Tech roll",
-              JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK"}, "OK",
-              getUiContext().getCountDownLatchHandler()));
-    });
+    final Supplier<TechResultsDisplay> action = () -> new TechResultsDisplay(msg, uiContext, data);
+    messageAndDialogThreadPool.submit(() -> Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+        .ifPresent(display -> EventThreadJOptionPane.showOptionDialog(
+            TripleAFrame.this,
+            display,
+            "Tech roll",
+            JOptionPane.OK_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            new String[] {"OK"},
+            "OK",
+            getUiContext().getCountDownLatchHandler())));
   }
 
   public boolean getStrategicBombingRaid(final Territory location) {
@@ -905,7 +912,7 @@ public class TripleAFrame extends MainGameFrame {
       panel.add(scroll, BorderLayout.CENTER);
       return Tuple.of(panel, list);
     };
-    return SwingAction.invokeAndWaitUninterruptibly(action)
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
         .map(comps -> {
           final JPanel panel = comps.getFirst();
           final JList<?> list = comps.getSecond();
@@ -962,8 +969,9 @@ public class TripleAFrame extends MainGameFrame {
       return new int[numDice];
     }
     messageAndDialogThreadPool.waitForAll();
-    return SwingAction
-        .invokeAndWaitUninterruptibly(() -> new DiceChooser(getUiContext(), numDice, hitAt, hitOnlyIfEquals, diceSides))
+    final Supplier<DiceChooser> action =
+        () -> new DiceChooser(getUiContext(), numDice, hitAt, hitOnlyIfEquals, diceSides);
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
         .map(chooser -> {
           do {
             EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
@@ -1001,7 +1009,7 @@ public class TripleAFrame extends MainGameFrame {
       panel.add(scroll, BorderLayout.CENTER);
       return Tuple.of(panel, list);
     };
-    return SwingAction.invokeAndWaitUninterruptibly(action)
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
         .map(comps -> {
           final JPanel panel = comps.getFirst();
           final JList<?> list = comps.getSecond();
@@ -1366,24 +1374,24 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(from);
 
-    return SwingAction
-        .invokeAndWaitUninterruptibly(() -> {
-          final JList<Territory> list = new JList<>(new Vector<>(candidates));
-          list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-          list.setSelectedIndex(0);
-          final JPanel panel = new JPanel();
-          panel.setLayout(new BorderLayout());
-          final JScrollPane scroll = new JScrollPane(list);
-          panel.add(scroll, BorderLayout.CENTER);
-          if (from != null) {
-            panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
-          }
-          final String[] options = {"OK", "Dont attack"};
-          final String message = "Select Rocket Target";
-          final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
-              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
-          return (selection == 0) ? list.getSelectedValue() : null;
-        })
+    final Supplier<Territory> action = () -> {
+      final JList<Territory> list = new JList<>(new Vector<>(candidates));
+      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      list.setSelectedIndex(0);
+      final JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout());
+      final JScrollPane scroll = new JScrollPane(list);
+      panel.add(scroll, BorderLayout.CENTER);
+      if (from != null) {
+        panel.add(BorderLayout.NORTH, new JLabel("Targets for rocket in " + from.getName()));
+      }
+      final String[] options = {"OK", "Dont attack"};
+      final String message = "Select Rocket Target";
+      final int selection = JOptionPane.showOptionDialog(TripleAFrame.this, panel, message,
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+      return (selection == 0) ? list.getSelectedValue() : null;
+    };
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
         .orElse(null);
   }
 
@@ -1406,7 +1414,7 @@ public class TripleAFrame extends MainGameFrame {
     // change, we need to ensure that no further history
     // events are run until our historySynchronizer is set up
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingAction.invokeAndWaitUninterruptibly(this::updateStep);
+      Interruptibles.await(() -> SwingAction.invokeAndWait(this::updateStep));
       return;
     }
     int round;
@@ -1457,7 +1465,7 @@ public class TripleAFrame extends MainGameFrame {
     if (player == null || !ThreadUtil.sleep(300)) {
       return;
     }
-    SwingAction.invokeAndWaitUninterruptibly(() -> {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       final Boolean play = requiredTurnSeries.get(player);
       if (play != null && play) {
         ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player);
@@ -1473,7 +1481,7 @@ public class TripleAFrame extends MainGameFrame {
           data.releaseReadLock();
         }
       }
-    });
+    }));
   }
 
   GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
@@ -1968,7 +1976,7 @@ public class TripleAFrame extends MainGameFrame {
     mapPanel.centerOn(where);
     final AtomicReference<JScrollPane> panelRef = new AtomicReference<>();
     final AtomicReference<UnitChooser> chooserRef = new AtomicReference<>();
-    SwingAction.invokeAndWaitUninterruptibly(() -> {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       final UnitChooser chooser = new UnitChooser(fighters, Collections.emptyMap(), false, uiContext);
       final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
       final int availHeight = screenResolution.height - 120;
@@ -1982,7 +1990,7 @@ public class TripleAFrame extends MainGameFrame {
               : (scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
       panelRef.set(scroll);
       chooserRef.set(chooser);
-    });
+    }));
     final int option = EventThreadJOptionPane.showOptionDialog(this, panelRef.get(),
         "Move air units to carrier", JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
         new String[] {"OK", "Cancel"}, "OK", getUiContext().getCountDownLatchHandler());

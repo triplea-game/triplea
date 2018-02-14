@@ -82,6 +82,7 @@ import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 import javafx.application.Application;
@@ -565,13 +566,13 @@ public class GameRunner {
    * After the game has been left, call this.
    */
   public static void clientLeftGame() {
-    SwingAction.invokeAndWaitUninterruptibly(() -> {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
       // closing of stream while unloading map resources.
       ThreadUtil.sleep(100);
       setupPanelModel.showSelectType();
       showMainFrame();
-    });
+    }));
   }
 
   public static void quitGame() {

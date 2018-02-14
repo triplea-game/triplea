@@ -12,9 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -117,90 +115,6 @@ public class SwingActionTest {
     SwingUtilities.invokeAndWait(() -> assertThrows(
         IllegalStateException.class,
         () -> SwingAction.invokeAndWait(SUPPLIER_THROWING_EXCEPTION)));
-  }
-
-  @Test
-  public void testInvokeAndWaitUninterruptiblyWithRunnable_ShouldInvokeActionWhenCalledOffEdt(
-      @Mock final Runnable action) {
-    SwingAction.invokeAndWaitUninterruptibly(action);
-
-    verify(action).run();
-  }
-
-  @Test
-  public void testInvokeAndWaitUninterruptiblyWithRunnable_ShouldInvokeActionWhenCalledOnEdt(
-      @Mock final Runnable action) throws Exception {
-    SwingUtilities.invokeAndWait(() -> SwingAction.invokeAndWaitUninterruptibly(action));
-
-    verify(action).run();
-  }
-
-  @Test
-  public void testInvokeAndWaitUninterruptiblyWithRunnable_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
-    assertThrows(
-        IllegalStateException.class,
-        () -> SwingAction.invokeAndWaitUninterruptibly(RUNNABLE_THROWING_EXCEPTION));
-  }
-
-  @Test
-  public void testInvokeAndWaitUninterruptiblyWithRunnable_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt()
-      throws Exception {
-    SwingUtilities.invokeAndWait(() -> assertThrows(
-        IllegalStateException.class,
-        () -> SwingAction.invokeAndWaitUninterruptibly(RUNNABLE_THROWING_EXCEPTION)));
-  }
-
-  @Test
-  public void testInvokeAndWaitUninterruptiblyWithSupplier_ShouldReturnActionResultWhenCalledOffEdt() {
-    assertEquals(Optional.of(VALUE), SwingAction.invokeAndWaitUninterruptibly(() -> VALUE));
-  }
-
-  @Test
-  public void testInvokeAndWaitUninterruptiblyWithSupplier_ShouldReturnActionResultWhenCalledOnEdt() throws Exception {
-    SwingUtilities.invokeAndWait(
-        () -> assertEquals(Optional.of(VALUE), SwingAction.invokeAndWaitUninterruptibly(() -> VALUE)));
-  }
-
-  @Test
-  public void testInvokeAndWaitUninterruptiblyWithSupplier_ShouldReturnEmptyResultWhenInterrupted() throws Exception {
-    final CountDownLatch threadReadyLatch = new CountDownLatch(1);
-    final CountDownLatch testCompleteLatch = new CountDownLatch(1);
-    final AtomicReference<Optional<Object>> result = new AtomicReference<>();
-
-    final Thread thread = new Thread(() -> {
-      result.set(SwingAction.invokeAndWaitUninterruptibly(() -> {
-        threadReadyLatch.countDown();
-        try {
-          testCompleteLatch.await();
-        } catch (final InterruptedException e) {
-          Thread.currentThread().interrupt();
-          fail("unexpected interruption on EDT");
-        }
-        return VALUE;
-      }));
-    });
-    thread.start();
-    threadReadyLatch.await();
-    thread.interrupt();
-    thread.join();
-    testCompleteLatch.countDown();
-
-    assertEquals(Optional.empty(), result.get());
-  }
-
-  @Test
-  public void testInvokeAndWaitUninterruptiblyWithSupplier_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
-    assertThrows(
-        IllegalStateException.class,
-        () -> SwingAction.invokeAndWaitUninterruptibly(SUPPLIER_THROWING_EXCEPTION));
-  }
-
-  @Test
-  public void testInvokeAndWaitUninterruptiblyWithSupplier_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt()
-      throws Exception {
-    SwingUtilities.invokeAndWait(() -> assertThrows(
-        IllegalStateException.class,
-        () -> SwingAction.invokeAndWaitUninterruptibly(SUPPLIER_THROWING_EXCEPTION)));
   }
 
   @Test

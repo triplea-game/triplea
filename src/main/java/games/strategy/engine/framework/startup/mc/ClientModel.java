@@ -68,6 +68,7 @@ import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.Interruptibles;
 
 /**
  * Represents a network aware game client connecting to another game that is acting as a server.
@@ -127,7 +128,7 @@ public class ClientModel implements IMessengerErrorListener {
     @Override
     public void gameReset() {
       objectStreamFactory.setData(null);
-      SwingAction.invokeAndWaitUninterruptibly(GameRunner::showMainFrame);
+      Interruptibles.await(() -> SwingAction.invokeAndWait(GameRunner::showMainFrame));
     }
 
     @Override

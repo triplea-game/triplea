@@ -23,6 +23,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.io.FileUtils;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 
 /**
  * The model for a {@link GameChooser} dialog.
@@ -109,7 +110,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
    * parameter, then show confirmation of deletion.
    */
   private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, final Optional<String> errorDetails) {
-    SwingAction.invokeAndWaitUninterruptibly(() -> {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
           + "\n(You may see this error message again if you keep the file)";
       String title = "Corrup Map File Found";
@@ -131,7 +132,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
         title = "File Removal Result";
         JOptionPane.showMessageDialog(null, message, title, messageType);
       }
-    });
+    }));
   }
 
   /**

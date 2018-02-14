@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.ui;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -10,6 +11,7 @@ import javax.swing.JScrollPane;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 
 /**
  * Wrapper for properties selection window.
@@ -26,7 +28,8 @@ public class PropertiesSelector {
    */
   public static Object getButton(final JComponent parent, final String title,
       final List<IEditableProperty> properties, final Object... buttonOptions) {
-    return SwingAction.invokeAndWaitUninterruptibly(() -> showDialog(parent, title, properties, buttonOptions))
+    final Supplier<Object> action = () -> showDialog(parent, title, properties, buttonOptions);
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
         .orElse(JOptionPane.UNINITIALIZED_VALUE);
   }
 
