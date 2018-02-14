@@ -91,7 +91,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
   private final UiContext uiContext;
-  private final LinkedBlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
+  private final BlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
@@ -221,10 +221,6 @@ public class MapPanel extends ImageScrollerLargeView {
       clearUndrawn();
       backgroundDrawer.stop();
     });
-  }
-
-  LinkedBlockingQueue<Tile> getUndrawnTiles() {
-    return undrawnTiles;
   }
 
   private void recreateTiles(final GameData data, final UiContext uiContext) {
@@ -833,7 +829,6 @@ public class MapPanel extends ImageScrollerLargeView {
     @Override
     public void run() {
       while (running) {
-        final BlockingQueue<Tile> undrawnTiles = MapPanel.this.getUndrawnTiles();
         try {
           final Tile tile = undrawnTiles.poll(2, TimeUnit.SECONDS);
           final GameData data = MapPanel.this.getData();
