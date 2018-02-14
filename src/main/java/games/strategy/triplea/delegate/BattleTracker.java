@@ -735,6 +735,10 @@ public class BattleTracker implements Serializable {
     markWasInCombat(arrivedUnits, bridge, changeTracker);
   }
 
+  /**
+   * Called when a territory is conquered to determine if remaining enemy units should be
+   * captured, destroyed, or take damage.
+   */
   public static void captureOrDestroyUnits(final Territory territory, final PlayerID id, final PlayerID newOwner,
       final IDelegateBridge bridge, final UndoableMove changeTracker) {
     final GameData data = bridge.getData();
@@ -844,6 +848,36 @@ public class BattleTracker implements Serializable {
       bridge.addChange(noMovementChange);
       if (changeTracker != null) {
         changeTracker.addChange(noMovementChange);
+      }
+      final IntegerMap<Unit> damageMap = new IntegerMap<>();
+      for (final Unit unit : CollectionUtils.getMatches(nonCom, Matches.unitWhenCapturedSustainsDamage())) {
+        final TripleAUnit taUnit = (TripleAUnit) unit;
+        final int damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(unit, territory);
+        final int sustainedDamage = UnitAttachment.get(unit.getType()).getWhenCapturedSustainsDamage();
+        final int actualDamage = Math.max(0, Math.min(sustainedDamage, damageLimit));
+        final int totalDamage = taUnit.getUnitDamage() + actualDamage;
+        damageMap.put(unit, totalDamage);
+      }
+      if (!damageMap.isEmpty()) {
+        final Change damageChange = ChangeFactory.bombingUnitDamage(damageMap);
+        bridge.addChange(damageChange);
+        if (changeTracker != null) {
+          changeTracker.addChange(damageChange);
+        }
+        // Kill any units that can die if they have reached max damage
+        if (damageMap.keySet().stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
+          final List<Unit> unitsCanDie =
+              CollectionUtils.getMatches(damageMap.keySet(), Matches.unitCanDieFromReachingMaxDamage());
+          unitsCanDie.retainAll(
+              CollectionUtils.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(territory)));
+          if (!unitsCanDie.isEmpty()) {
+            final Change removeDead = ChangeFactory.removeUnits(territory, unitsCanDie);
+            bridge.addChange(removeDead);
+            if (changeTracker != null) {
+              changeTracker.addChange(removeDead);
+            }
+          }
+        }
       }
     }
   }

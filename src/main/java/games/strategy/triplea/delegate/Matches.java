@@ -2056,6 +2056,10 @@ public final class Matches {
     return u -> !UnitAttachment.get(u.getType()).getWhenCapturedChangesInto().isEmpty();
   }
 
+  static Predicate<Unit> unitWhenCapturedSustainsDamage() {
+    return u -> UnitAttachment.get(u.getType()).getWhenCapturedSustainsDamage() > 0;
+  }
+
   public static <T extends AbstractUserActionAttachment> Predicate<T> abstractUserActionAttachmentCanBeAttempted(
       final HashMap<ICondition, Boolean> testedConditions) {
     return uaa -> uaa.hasAttemptsLeft() && uaa.canPerform(testedConditions);
