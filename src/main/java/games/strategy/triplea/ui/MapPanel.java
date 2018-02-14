@@ -102,17 +102,16 @@ public class MapPanel extends ImageScrollerLargeView {
     super(uiContext.getMapData().getMapDimensions(), model);
     this.uiContext = uiContext;
     routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
-    setCursor(this.uiContext.getCursor());
-    this.scale = this.uiContext.getScale();
-    this.tileManager = new TileManager(this.uiContext);
+    setCursor(uiContext.getCursor());
+    this.scale = uiContext.getScale();
+    this.tileManager = new TileManager(uiContext);
     final BackgroundDrawer backgroundDrawer = new BackgroundDrawer();
     final Thread t = new Thread(backgroundDrawer, "Map panel background drawer");
     t.setDaemon(true);
     t.start();
     setDoubleBuffered(false);
     this.smallView = smallView;
-    this.smallMapImageManager =
-        new SmallMapImageManager(smallView, this.uiContext.getMapImage().getSmallMapImage(), this.tileManager);
+    smallMapImageManager = new SmallMapImageManager(smallView, uiContext.getMapImage().getSmallMapImage(), tileManager);
     setGameData(data);
     this.addMouseListener(new MouseAdapter() {
 
@@ -213,8 +212,8 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     });
     this.addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
-    recreateTiles(data, this.uiContext);
-    this.uiContext.addActive(() -> {
+    recreateTiles(data, uiContext);
+    uiContext.addActive(() -> {
       // super.deactivate
       deactivate();
       clearUndrawn();
