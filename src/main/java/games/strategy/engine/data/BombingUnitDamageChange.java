@@ -29,8 +29,8 @@ public class BombingUnitDamageChange extends Change {
     }
     this.hits = hits.copy();
     undoHits = new IntegerMap<>();
-    for (final Unit item : this.hits.keySet()) {
-      undoHits.put(item, item.getHits());
+    for (final Unit unit : this.hits.keySet()) {
+      undoHits.put(unit, ((TripleAUnit) unit).getUnitDamage());
     }
   }
 
@@ -50,5 +50,10 @@ public class BombingUnitDamageChange extends Change {
   @Override
   public Change invert() {
     return new BombingUnitDamageChange(undoHits, hits);
+  }
+
+  @Override
+  public String toString() {
+    return "Bombing unit damage change. Hits:" + hits + " undoHits:" + undoHits;
   }
 }
