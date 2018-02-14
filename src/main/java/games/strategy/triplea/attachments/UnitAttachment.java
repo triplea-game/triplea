@@ -215,6 +215,7 @@ public class UnitAttachment extends DefaultAttachment {
   private Map<Integer, Tuple<Boolean, UnitType>> m_whenHitPointsDamagedChangesInto = new HashMap<>();
   private Map<Integer, Tuple<Boolean, UnitType>> m_whenHitPointsRepairedChangesInto = new HashMap<>();
   private Map<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto = new LinkedHashMap<>();
+  private int m_whenCapturedSustainsDamage = 0;
   private List<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<>();
   private List<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<>();
   // a set of information for dealing with special abilities or
@@ -566,6 +567,24 @@ public class UnitAttachment extends DefaultAttachment {
 
   public void resetWhenCapturedChangesInto() {
     m_whenCapturedChangesInto = new LinkedHashMap<>();
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setWhenCapturedSustainsDamage(final String s) {
+    m_whenCapturedSustainsDamage = getInt(s);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setWhenCapturedSustainsDamage(final Integer s) {
+    m_whenCapturedSustainsDamage = s;
+  }
+
+  public int getWhenCapturedSustainsDamage() {
+    return m_whenCapturedSustainsDamage;
+  }
+
+  public void resetWhenCapturedSustainsDamage() {
+    m_whenCapturedSustainsDamage = 0;
   }
 
   /**
@@ -3064,6 +3083,7 @@ public class UnitAttachment extends DefaultAttachment {
         + (m_whenCapturedChangesInto != null
             ? (m_whenCapturedChangesInto.size() == 0 ? "empty" : m_whenCapturedChangesInto.toString())
             : "null")
+        + " whenCapturedSustainsDamage:" + m_whenCapturedSustainsDamage
         + "  whenHitPointsDamagedChangesInto:"
         + (m_whenHitPointsDamagedChangesInto != null
             ? (m_whenHitPointsDamagedChangesInto.size() == 0 ? "empty" : m_whenHitPointsDamagedChangesInto.toString())
