@@ -3,7 +3,6 @@ package games.strategy.engine.lobby.server.login;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,9 +197,9 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   private void logAuthenticationResult(final User user, final UserType userType, final @Nullable String errorMessage) {
     if (errorMessage == null) {
-      accessLog.logSuccessfulAuthentication(Instant.now(), user, userType);
+      accessLog.logSuccessfulAuthentication(user, userType);
     } else {
-      accessLog.logFailedAuthentication(Instant.now(), user, userType, errorMessage);
+      accessLog.logFailedAuthentication(user, userType, errorMessage);
     }
   }
 
