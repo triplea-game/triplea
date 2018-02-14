@@ -831,18 +831,18 @@ public class MapPanel extends ImageScrollerLargeView {
       while (running) {
         try {
           final Tile tile = undrawnTiles.poll(2, TimeUnit.SECONDS);
-          final GameData data = MapPanel.this.getData();
-          data.acquireReadLock();
-          try {
-            // FIXME: tile could be null
-            tile.getImage(data, MapPanel.this.getUiContext().getMapData());
-          } finally {
-            data.releaseReadLock();
+          if (tile != null) {
+            final GameData data = MapPanel.this.getData();
+            data.acquireReadLock();
+            try {
+              tile.getImage(data, MapPanel.this.getUiContext().getMapData());
+            } finally {
+              data.releaseReadLock();
+            }
+            SwingUtilities.invokeLater(MapPanel.this::repaint);
           }
-          SwingUtilities.invokeLater(MapPanel.this::repaint);
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
-          continue;
         }
       }
     }
