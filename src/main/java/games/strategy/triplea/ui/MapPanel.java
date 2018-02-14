@@ -87,7 +87,6 @@ public class MapPanel extends ImageScrollerLargeView {
   private final List<Tile> images = new ArrayList<>();
   private RouteDescription routeDescription;
   private final TileManager tileManager;
-  private final BackgroundDrawer backgroundDrawer;
   private BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
   private final UiContext uiContext;
@@ -105,9 +104,9 @@ public class MapPanel extends ImageScrollerLargeView {
     routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
     setCursor(this.uiContext.getCursor());
     this.scale = this.uiContext.getScale();
-    this.backgroundDrawer = new BackgroundDrawer();
     this.tileManager = new TileManager(this.uiContext);
-    final Thread t = new Thread(this.backgroundDrawer, "Map panel background drawer");
+    final BackgroundDrawer backgroundDrawer = new BackgroundDrawer();
+    final Thread t = new Thread(backgroundDrawer, "Map panel background drawer");
     t.setDaemon(true);
     t.start();
     setDoubleBuffered(false);
