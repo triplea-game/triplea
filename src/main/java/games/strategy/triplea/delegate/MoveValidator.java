@@ -179,9 +179,7 @@ public class MoveValidator {
     for (final Unit unit : units) {
       if (TripleAUnit.get(unit).getSubmerged()) {
         result.addDisallowedUnit("Cannot move submerged units", unit);
-        continue;
-      }
-      if (Matches.unitIsDisabled().test(unit)) {
+      } else if (Matches.unitIsDisabled().test(unit)) {
         result.addDisallowedUnit("Cannot move disabled units", unit);
       }
     }
