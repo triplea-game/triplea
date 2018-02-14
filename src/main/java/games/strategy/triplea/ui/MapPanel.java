@@ -833,19 +833,18 @@ public class MapPanel extends ImageScrollerLargeView {
     @Override
     public void run() {
       while (running) {
-        final MapPanel mapPanel = MapPanel.this;
-        final BlockingQueue<Tile> undrawnTiles = mapPanel.getUndrawnTiles();
+        final BlockingQueue<Tile> undrawnTiles = MapPanel.this.getUndrawnTiles();
         try {
           final Tile tile = undrawnTiles.poll(2, TimeUnit.SECONDS);
-          final GameData data = mapPanel.getData();
+          final GameData data = MapPanel.this.getData();
           data.acquireReadLock();
           try {
             // FIXME: tile could be null
-            tile.getImage(data, mapPanel.getUiContext().getMapData());
+            tile.getImage(data, MapPanel.this.getUiContext().getMapData());
           } finally {
             data.releaseReadLock();
           }
-          SwingUtilities.invokeLater(mapPanel::repaint);
+          SwingUtilities.invokeLater(MapPanel.this::repaint);
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
           continue;
