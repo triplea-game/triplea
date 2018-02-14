@@ -735,6 +735,10 @@ public class BattleTracker implements Serializable {
     markWasInCombat(arrivedUnits, bridge, changeTracker);
   }
 
+  /**
+   * Called when a territory is conquered to determine if remaining enemy units should be
+   * captured, destroyed, or take damage.
+   */
   public static void captureOrDestroyUnits(final Territory territory, final PlayerID id, final PlayerID newOwner,
       final IDelegateBridge bridge, final UndoableMove changeTracker) {
     final GameData data = bridge.getData();
