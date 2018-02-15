@@ -1169,74 +1169,71 @@ public class TripleAFrame extends MainGameFrame {
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final HashMap<Territory, Collection<Unit>> selection = new HashMap<>();
     final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<>();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        mapPanel.centerOn(scrambleTo);
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        final JLabel whereTo = new JLabel("Scramble To: " + scrambleTo.getName());
-        whereTo.setFont(new Font("Arial", Font.ITALIC, 12));
-        panel.add(whereTo, BorderLayout.NORTH);
-        final JPanel panel2 = new JPanel();
-        panel2.setBorder(BorderFactory.createEmptyBorder());
-        panel2.setLayout(new FlowLayout());
-        for (final Territory from : possibleScramblers.keySet()) {
-          final JPanel panelChooser = new JPanel();
-          panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
-          panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
-          final JLabel whereFrom = new JLabel("From: " + from.getName());
-          whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
-          whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
-          panelChooser.add(whereFrom);
-          panelChooser.add(new JLabel(" "));
-          final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
-          final int maxAllowed =
-              Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
-          final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
-          chooser.setMaxAndShowMaxButton(maxAllowed);
-          choosers.add(Tuple.of(from, chooser));
-          panelChooser.add(chooser);
-          final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
-          panel2.add(chooserScrollPane);
-        }
-        panel.add(panel2, BorderLayout.CENTER);
-        final String optionScramble = "Scramble";
-        final String optionNone = "None";
-        final Object[] options = {optionScramble, optionNone};
-        final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
-        final JDialog dialog = new JDialog((Frame) getParent(), "Select units to scramble to " + scrambleTo.getName());
-        dialog.setContentPane(optionPane);
-        dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        dialog.setLocationRelativeTo(getParent());
-        dialog.setAlwaysOnTop(true);
-        dialog.pack();
-        dialog.setVisible(true);
-        dialog.requestFocusInWindow();
-        optionPane.addPropertyChangeListener(e -> {
-          if (!dialog.isVisible()) {
-            return;
-          }
-          final String option = ((String) optionPane.getValue());
-          if (option.equals(optionNone)) {
-            choosers.clear();
-            selection.clear();
-            dialog.setVisible(false);
-            dialog.removeAll();
-            dialog.dispose();
-            continueLatch.countDown();
-          } else if (option.equals(optionScramble)) {
-            for (final Tuple<Territory, UnitChooser> terrChooser : choosers) {
-              selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
-            }
-            dialog.setVisible(false);
-            dialog.removeAll();
-            dialog.dispose();
-            continueLatch.countDown();
-          }
-        });
+    SwingUtilities.invokeLater(() -> {
+      mapPanel.centerOn(scrambleTo);
+      final JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout());
+      final JLabel whereTo = new JLabel("Scramble To: " + scrambleTo.getName());
+      whereTo.setFont(new Font("Arial", Font.ITALIC, 12));
+      panel.add(whereTo, BorderLayout.NORTH);
+      final JPanel panel2 = new JPanel();
+      panel2.setBorder(BorderFactory.createEmptyBorder());
+      panel2.setLayout(new FlowLayout());
+      for (final Territory from : possibleScramblers.keySet()) {
+        final JPanel panelChooser = new JPanel();
+        panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
+        panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
+        final JLabel whereFrom = new JLabel("From: " + from.getName());
+        whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
+        whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
+        panelChooser.add(whereFrom);
+        panelChooser.add(new JLabel(" "));
+        final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
+        final int maxAllowed =
+            Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
+        final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
+        chooser.setMaxAndShowMaxButton(maxAllowed);
+        choosers.add(Tuple.of(from, chooser));
+        panelChooser.add(chooser);
+        final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
+        panel2.add(chooserScrollPane);
       }
+      panel.add(panel2, BorderLayout.CENTER);
+      final String optionScramble = "Scramble";
+      final String optionNone = "None";
+      final Object[] options = {optionScramble, optionNone};
+      final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
+          JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
+      final JDialog dialog = new JDialog((Frame) getParent(), "Select units to scramble to " + scrambleTo.getName());
+      dialog.setContentPane(optionPane);
+      dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+      dialog.setLocationRelativeTo(getParent());
+      dialog.setAlwaysOnTop(true);
+      dialog.pack();
+      dialog.setVisible(true);
+      dialog.requestFocusInWindow();
+      optionPane.addPropertyChangeListener(e -> {
+        if (!dialog.isVisible()) {
+          return;
+        }
+        final String option = ((String) optionPane.getValue());
+        if (option.equals(optionNone)) {
+          choosers.clear();
+          selection.clear();
+          dialog.setVisible(false);
+          dialog.removeAll();
+          dialog.dispose();
+          continueLatch.countDown();
+        } else if (option.equals(optionScramble)) {
+          for (final Tuple<Territory, UnitChooser> terrChooser : choosers) {
+            selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
+          }
+          dialog.setVisible(false);
+          dialog.removeAll();
+          dialog.dispose();
+          continueLatch.countDown();
+        }
+      });
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
     try {
@@ -1260,62 +1257,59 @@ public class TripleAFrame extends MainGameFrame {
     }
     final CountDownLatch continueLatch = new CountDownLatch(1);
     final Collection<Unit> selection = new ArrayList<>();
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        mapPanel.centerOn(current);
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        final JLabel messageLabel = new JLabel(message);
-        messageLabel.setFont(new Font("Arial", Font.ITALIC, 12));
-        panel.add(messageLabel, BorderLayout.NORTH);
-        final JPanel panelChooser = new JPanel();
-        panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
-        panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
-        final JLabel whereFrom = new JLabel("From: " + current.getName());
-        whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
-        whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
-        panelChooser.add(whereFrom);
-        panelChooser.add(new JLabel(" "));
-        final int maxAllowed = possible.size();
-        final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
-        chooser.setMaxAndShowMaxButton(maxAllowed);
-        panelChooser.add(chooser);
-        final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
-        panel.add(chooserScrollPane, BorderLayout.CENTER);
-        final String optionSelect = "Select";
-        final String optionNone = "None";
-        final Object[] options = {optionSelect, optionNone};
-        final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
-        final JDialog dialog = new JDialog((Frame) getParent(), message);
-        dialog.setContentPane(optionPane);
-        dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        dialog.setLocationRelativeTo(getParent());
-        dialog.setAlwaysOnTop(true);
-        dialog.pack();
-        dialog.setVisible(true);
-        dialog.requestFocusInWindow();
-        optionPane.addPropertyChangeListener(e -> {
-          if (!dialog.isVisible()) {
-            return;
-          }
-          final String option = ((String) optionPane.getValue());
-          if (option.equals(optionNone)) {
-            selection.clear();
-            dialog.setVisible(false);
-            dialog.removeAll();
-            dialog.dispose();
-            continueLatch.countDown();
-          } else if (option.equals(optionSelect)) {
-            selection.addAll(chooser.getSelected());
-            dialog.setVisible(false);
-            dialog.removeAll();
-            dialog.dispose();
-            continueLatch.countDown();
-          }
-        });
-      }
+    SwingUtilities.invokeLater(() -> {
+      mapPanel.centerOn(current);
+      final JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout());
+      final JLabel messageLabel = new JLabel(message);
+      messageLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+      panel.add(messageLabel, BorderLayout.NORTH);
+      final JPanel panelChooser = new JPanel();
+      panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
+      panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
+      final JLabel whereFrom = new JLabel("From: " + current.getName());
+      whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
+      whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
+      panelChooser.add(whereFrom);
+      panelChooser.add(new JLabel(" "));
+      final int maxAllowed = possible.size();
+      final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
+      chooser.setMaxAndShowMaxButton(maxAllowed);
+      panelChooser.add(chooser);
+      final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
+      panel.add(chooserScrollPane, BorderLayout.CENTER);
+      final String optionSelect = "Select";
+      final String optionNone = "None";
+      final Object[] options = {optionSelect, optionNone};
+      final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
+          JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
+      final JDialog dialog = new JDialog((Frame) getParent(), message);
+      dialog.setContentPane(optionPane);
+      dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+      dialog.setLocationRelativeTo(getParent());
+      dialog.setAlwaysOnTop(true);
+      dialog.pack();
+      dialog.setVisible(true);
+      dialog.requestFocusInWindow();
+      optionPane.addPropertyChangeListener(e -> {
+        if (!dialog.isVisible()) {
+          return;
+        }
+        final String option = ((String) optionPane.getValue());
+        if (option.equals(optionNone)) {
+          selection.clear();
+          dialog.setVisible(false);
+          dialog.removeAll();
+          dialog.dispose();
+          continueLatch.countDown();
+        } else if (option.equals(optionSelect)) {
+          selection.addAll(chooser.getSelected());
+          dialog.setVisible(false);
+          dialog.removeAll();
+          dialog.dispose();
+          continueLatch.countDown();
+        }
+      });
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
     try {

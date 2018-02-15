@@ -65,13 +65,7 @@ public class ThreadPoolTest {
   public void testBlocked() {
     final Collection<Thread> threads = new ArrayList<>();
     for (int j = 0; j < 50; j++) {
-      final Runnable r = new Runnable() {
-        @Override
-        public void run() {
-          threadTestBlock();
-        }
-      };
-      final Thread t = new Thread(r);
+      final Thread t = new Thread(ThreadPoolTest::threadTestBlock);
       threads.add(t);
       t.start();
     }
