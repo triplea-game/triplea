@@ -71,13 +71,14 @@ public class LobbyFrame extends JFrame {
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
     leftSplit.setTopComponent(gamePanel);
     leftSplit.setBottomComponent(chatMessagePanel);
-    leftSplit.setResizeWeight(0.8);
+    leftSplit.setResizeWeight(0.5);
     gamePanel.setPreferredSize(new Dimension(700, 200));
     chatMessagePanel.setPreferredSize(new Dimension(700, 400));
     final JSplitPane mainSplit = new JSplitPane();
     mainSplit.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
     mainSplit.setLeftComponent(leftSplit);
     mainSplit.setRightComponent(chatPlayers);
+    mainSplit.setResizeWeight(1);
     add(mainSplit, BorderLayout.CENTER);
     pack();
     chatMessagePanel.requestFocusInWindow();
