@@ -18,7 +18,6 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.util.CollectionUtils;
-import games.strategy.util.Util;
 
 /**
  * Logic for activating tech rolls. This delegate requires the
@@ -108,7 +107,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(player, data);
     for (final PlayerID p : shareWith) {
       final Collection<TechAdvance> availableTechs = TechnologyDelegate.getAvailableTechs(p, data);
-      final Collection<TechAdvance> toGive = Util.intersection(currentAdvances, availableTechs);
+      final Collection<TechAdvance> toGive = CollectionUtils.intersection(currentAdvances, availableTechs);
       if (!toGive.isEmpty()) {
         // Start event
         bridge.getHistoryWriter()

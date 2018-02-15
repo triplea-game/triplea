@@ -48,7 +48,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
-import games.strategy.util.Util;
 
 public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
@@ -240,7 +239,7 @@ public class MovePanel extends AbstractMovePanel {
             final Collection<UnitCategory> unitCategory = UnitSeperator.categorize(Collections.singleton(unit));
 
             // Is one of the transported units of the same type we want to unload?
-            if (Util.someIntersect(transCategories, unitCategory)) {
+            if (CollectionUtils.someIntersect(transCategories, unitCategory)) {
 
               // Unload the unit, remove the transport from our list, and continue
               hasChanged = true;
@@ -1167,8 +1166,8 @@ public class MovePanel extends AbstractMovePanel {
               continue;
             }
             // if we are moving some of the units from either category, then we need to stop
-            if (!Util.intersection(category1.getUnits(), units).isEmpty()
-                || !Util.intersection(category2.getUnits(), units).isEmpty()) {
+            if (!CollectionUtils.intersection(category1.getUnits(), units).isEmpty()
+                || !CollectionUtils.intersection(category2.getUnits(), units).isEmpty()) {
               mustQueryUser = true;
             }
           }

@@ -21,7 +21,6 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CollectionUtils;
-import games.strategy.util.Util;
 
 /**
  * Battle in which no fighting occurs.
@@ -153,7 +152,7 @@ public class NonFightingBattle extends DependentBattle {
       return;
     }
     Collection<Unit> lost = getDependentUnits(units);
-    lost.addAll(Util.intersection(units, m_attackingUnits));
+    lost.addAll(CollectionUtils.intersection(units, m_attackingUnits));
     lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
     if (lost.size() != 0) {
       final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();

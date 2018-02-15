@@ -42,7 +42,6 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
-import games.strategy.util.Util;
 
 /**
  * Useful match interfaces.
@@ -1169,7 +1168,7 @@ public final class Matches {
       if (transporting == null) {
         return false;
       }
-      return Util.someIntersect(UnitSeperator.categorize(transporting), unitCategories);
+      return CollectionUtils.someIntersect(UnitSeperator.categorize(transporting), unitCategories);
     };
   }
 

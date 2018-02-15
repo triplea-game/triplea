@@ -402,7 +402,7 @@ public class MapPanel extends ImageScrollerLargeView {
         && (newUnits == null
             || currentUnits == null
             || !newUnits.getFirst().equals(currentUnits.getFirst())
-            || !games.strategy.util.Util.equals(newUnits.getSecond(), currentUnits.getSecond()));
+            || !CollectionUtils.equals(newUnits.getSecond(), currentUnits.getSecond()));
   }
 
   public void updateCountries(final Collection<Territory> countries) {

@@ -32,7 +32,6 @@ import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.PredicateBuilder;
-import games.strategy.util.Util;
 
 public class MovePerformer implements Serializable {
   private static final long serialVersionUID = 3752242292777658310L;
@@ -127,7 +126,7 @@ public class MovePerformer implements Serializable {
             }
           }
         }
-        arrivingUnits = Util.difference(units, aaCasualtiesWithDependents);
+        arrivingUnits = CollectionUtils.difference(units, aaCasualtiesWithDependents);
       }
     };
     final IExecutable postAaFire = new IExecutable() {
@@ -141,7 +140,7 @@ public class MovePerformer implements Serializable {
         // not owned)
         final GameData data = bridge.getData();
         final Predicate<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
-        final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits));
+        final Collection<Unit> arrived = Collections.unmodifiableList(CollectionUtils.intersection(units, arrivingUnits));
         // Reset Optional
         arrivingUnits = new ArrayList<>();
         final Collection<Unit> arrivedCopyForBattles = new ArrayList<>(arrived);

@@ -11,7 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
-import games.strategy.util.Util;
+import games.strategy.util.CollectionUtils;
 
 public class UnitCategory implements Comparable<Object> {
   private final UnitType type;
@@ -100,7 +100,7 @@ public class UnitCategory implements Comparable<Object> {
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
     final boolean equalsIgnoreDamaged = other.type.equals(this.type) && other.movement == this.movement
-        && other.owner.equals(this.owner) && Util.equals(this.dependents, other.dependents);
+        && other.owner.equals(this.owner) && CollectionUtils.equals(this.dependents, other.dependents);
     return equalsIgnoreDamaged;
   }
 
@@ -165,7 +165,7 @@ public class UnitCategory implements Comparable<Object> {
     if (movement != other.movement) {
       return movement - other.movement;
     }
-    if (!Util.equals(this.dependents, other.dependents)) {
+    if (!CollectionUtils.equals(this.dependents, other.dependents)) {
       return dependents.toString().compareTo(other.dependents.toString());
     }
     if (this.damaged != other.damaged) {

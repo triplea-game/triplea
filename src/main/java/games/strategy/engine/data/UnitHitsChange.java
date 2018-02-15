@@ -3,8 +3,8 @@ package games.strategy.engine.data;
 import java.util.Collection;
 import java.util.Set;
 
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Util;
 
 public class UnitHitsChange extends Change {
   private static final long serialVersionUID = 2862726651812142713L;
@@ -35,7 +35,7 @@ public class UnitHitsChange extends Change {
     }
     final Set<Unit> units = m_hits.keySet();
     for (final Territory element : data.getMap().getTerritories()) {
-      if (Util.someIntersect(element.getUnits().getUnits(), units)) {
+      if (CollectionUtils.someIntersect(element.getUnits().getUnits(), units)) {
         element.notifyChanged();
       }
     }

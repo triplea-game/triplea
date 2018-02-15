@@ -15,7 +15,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
-import games.strategy.util.Util;
 
 /**
  * A route between two territories.
@@ -82,7 +81,7 @@ public class Route implements Serializable, Iterable<Territory> {
     final Collection<Territory> c1 = new ArrayList<>(r1.m_steps);
     c1.add(r1.getStart());
     final Collection<Territory> c2 = new ArrayList<>(r2.m_steps);
-    if (!Util.intersection(c1, c2).isEmpty()) {
+    if (!CollectionUtils.intersection(c1, c2).isEmpty()) {
       return null;
     }
     final Route joined = new Route();

@@ -34,7 +34,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
-import games.strategy.util.Util;
 
 /**
  * Despite the misleading name, this attaches not to individual Units but to UnitTypes.
@@ -2204,7 +2203,7 @@ public class UnitAttachment extends DefaultAttachment {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       final Set<UnitType> bombingTargets = ua.getBombingTargets(data);
       if (bombingTargets != null) {
-        allowedTargets = Util.intersection(allowedTargets, bombingTargets);
+        allowedTargets = CollectionUtils.intersection(allowedTargets, bombingTargets);
       }
     }
     return new HashSet<>(allowedTargets);
