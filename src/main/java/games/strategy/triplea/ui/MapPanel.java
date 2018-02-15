@@ -87,11 +87,10 @@ public class MapPanel extends ImageScrollerLargeView {
   private final List<Tile> images = new ArrayList<>();
   private RouteDescription routeDescription;
   private final TileManager tileManager;
-  private final BackgroundDrawer backgroundDrawer;
   private BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
   private final UiContext uiContext;
-  private final LinkedBlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
+  private final BlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
@@ -103,17 +102,16 @@ public class MapPanel extends ImageScrollerLargeView {
     super(uiContext.getMapData().getMapDimensions(), model);
     this.uiContext = uiContext;
     routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
-    setCursor(this.uiContext.getCursor());
-    this.scale = this.uiContext.getScale();
-    this.backgroundDrawer = new BackgroundDrawer(this);
-    this.tileManager = new TileManager(this.uiContext);
-    final Thread t = new Thread(this.backgroundDrawer, "Map panel background drawer");
+    setCursor(uiContext.getCursor());
+    this.scale = uiContext.getScale();
+    this.tileManager = new TileManager(uiContext);
+    final BackgroundDrawer backgroundDrawer = new BackgroundDrawer();
+    final Thread t = new Thread(backgroundDrawer, "Map panel background drawer");
     t.setDaemon(true);
     t.start();
     setDoubleBuffered(false);
     this.smallView = smallView;
-    this.smallMapImageManager =
-        new SmallMapImageManager(smallView, this.uiContext.getMapImage().getSmallMapImage(), this.tileManager);
+    smallMapImageManager = new SmallMapImageManager(smallView, uiContext.getMapImage().getSmallMapImage(), tileManager);
     setGameData(data);
     this.addMouseListener(new MouseAdapter() {
 
@@ -214,17 +212,13 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     });
     this.addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
-    recreateTiles(data, this.uiContext);
-    this.uiContext.addActive(() -> {
+    recreateTiles(data, uiContext);
+    uiContext.addActive(() -> {
       // super.deactivate
-      MapPanel.this.deactivate();
+      deactivate();
       clearUndrawn();
       backgroundDrawer.stop();
     });
-  }
-
-  LinkedBlockingQueue<Tile> getUndrawnTiles() {
-    return undrawnTiles;
   }
 
   private void recreateTiles(final GameData data, final UiContext uiContext) {
@@ -823,42 +817,31 @@ public class MapPanel extends ImageScrollerLargeView {
     return uiContext.getMapData().getWarningImage();
   }
 
-  private static final class BackgroundDrawer implements Runnable {
-    private MapPanel mapPanel;
-
-    BackgroundDrawer(final MapPanel panel) {
-      mapPanel = panel;
-    }
+  private final class BackgroundDrawer implements Runnable {
+    private volatile boolean running = true;
 
     void stop() {
-      // the thread will eventually wake up and notice we are done
-      mapPanel = null;
+      running = false;
     }
 
     @Override
     public void run() {
-      while (mapPanel != null) {
-        final BlockingQueue<Tile> undrawnTiles;
-        final MapPanel panel = mapPanel;
-        undrawnTiles = panel.getUndrawnTiles();
-        final Tile tile;
+      while (running) {
         try {
-          tile = undrawnTiles.poll(2000, TimeUnit.MILLISECONDS);
+          final Tile tile = undrawnTiles.poll(2, TimeUnit.SECONDS);
+          if (tile != null) {
+            final GameData data = MapPanel.this.getData();
+            data.acquireReadLock();
+            try {
+              tile.getImage(data, MapPanel.this.getUiContext().getMapData());
+            } finally {
+              data.releaseReadLock();
+            }
+            SwingUtilities.invokeLater(MapPanel.this::repaint);
+          }
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
-          continue;
         }
-        if (tile == null) {
-          continue;
-        }
-        final GameData data = mapPanel.getData();
-        data.acquireReadLock();
-        try {
-          tile.getImage(data, mapPanel.getUiContext().getMapData());
-        } finally {
-          data.releaseReadLock();
-        }
-        SwingUtilities.invokeLater(mapPanel::repaint);
       }
     }
   }
