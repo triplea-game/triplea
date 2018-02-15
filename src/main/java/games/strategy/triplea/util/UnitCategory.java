@@ -84,7 +84,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof UnitCategory)) {
+    if (!(o instanceof UnitCategory)) {
       return false;
     }
     final UnitCategory other = (UnitCategory) o;
