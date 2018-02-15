@@ -100,9 +100,9 @@ public class ThreadPoolTest {
   }
 
   private static class Task implements Runnable {
-    private boolean done = false;
+    private volatile boolean done = false;
 
-    public synchronized boolean isDone() {
+    public boolean isDone() {
       return done;
     }
 
