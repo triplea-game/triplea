@@ -140,7 +140,8 @@ public class MovePerformer implements Serializable {
         // not owned)
         final GameData data = bridge.getData();
         final Predicate<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
-        final Collection<Unit> arrived = Collections.unmodifiableList(CollectionUtils.intersection(units, arrivingUnits));
+        final Collection<Unit> arrived =
+            Collections.unmodifiableList(CollectionUtils.intersection(units, arrivingUnits));
         // Reset Optional
         arrivingUnits = new ArrayList<>();
         final Collection<Unit> arrivedCopyForBattles = new ArrayList<>(arrived);

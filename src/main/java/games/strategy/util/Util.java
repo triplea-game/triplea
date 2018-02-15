@@ -68,7 +68,9 @@ public class Util {
    * @return A predicate that represents the logical negation of the specified predicate; never {@code null}.
    */
   public static <T> Predicate<T> not(final Predicate<T> p) {
-    return checkNotNull(p).negate();
+    checkNotNull(p);
+
+    return p.negate();
   }
 
   /**
