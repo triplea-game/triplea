@@ -108,11 +108,7 @@ public class ThreadPoolTest {
 
     @Override
     public void run() {
-      try {
-        Thread.sleep(0, 1);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      Interruptibles.sleep(0L, 1);
       done = true;
     }
   }

@@ -98,4 +98,22 @@ public final class InterruptiblesTest {
       assertThrows(IllegalArgumentException.class, () -> Interruptibles.sleep(-1L));
     }
   }
+
+  @Nested
+  public final class SleepWithNanosTest {
+    @Test
+    public void shouldThrowExceptionWhenMillisIsNegative() {
+      assertThrows(IllegalArgumentException.class, () -> Interruptibles.sleep(-1L, 0));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenNanosIsLessThanZero() {
+      assertThrows(IllegalArgumentException.class, () -> Interruptibles.sleep(0L, -1));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenNanosIsGreaterThan999999() {
+      assertThrows(IllegalArgumentException.class, () -> Interruptibles.sleep(0L, 1_000_000));
+    }
+  }
 }

@@ -82,6 +82,22 @@ public final class Interruptibles {
   }
 
   /**
+   * Causes the currently executing thread to sleep for the specified number of milliseconds plus the specified number
+   * of nanoseconds.
+   *
+   * @param millis The length of time to sleep in milliseconds.
+   * @param nanos [0, 999999] additional nanoseconds to sleep.
+   *
+   * @return {@code true} if the current thread slept for the entire length of time without interruption; otherwise
+   *         {@code false} if the current thread was interrupted before waking up from the sleep.
+   *
+   * @throws IllegalArgumentException If {@code millis} is negative, or {@code nanos} is not in the range [0, 999999].
+   */
+  public static boolean sleep(final long millis, final int nanos) {
+    return await(() -> Thread.sleep(millis, nanos));
+  }
+
+  /**
    * An interruptible action that does not supply a result.
    */
   @FunctionalInterface
