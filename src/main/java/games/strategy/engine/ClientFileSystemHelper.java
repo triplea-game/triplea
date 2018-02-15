@@ -1,17 +1,17 @@
 package games.strategy.engine;
 
+import static games.strategy.engine.config.client.GameEnginePropertyReader.GAME_ENGINE_PROPERTIES_FILE;
+
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
+
+import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.config.client.GameEnginePropertyReader;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.settings.ClientSetting;
@@ -21,7 +21,6 @@ import games.strategy.triplea.settings.GameSetting;
  * Provides methods to work with common file locations in a client installation.
  */
 public final class ClientFileSystemHelper {
-
   private ClientFileSystemHelper() {}
 
   /**
@@ -30,66 +29,57 @@ public final class ClientFileSystemHelper {
    * @return Folder that is the 'root' of the tripleA binary installation. This folder and
    *         contents contains the versioned content downloaded and initially installed. This is
    *         in contrast to the user root folder that is not replaced between installations.
+   *
+   * @throws IllegalStateException If the root folder cannot be located.
    */
   public static File getRootFolder() {
-    final String classFilePath = getGameRunnerClassFilePath();
-
-    final String jarFileName = String.format("triplea-%s-all.jar!", ClientContext.engineVersion().getExactVersion());
-    if (classFilePath.contains(jarFileName)) {
-      return getRootFolderRelativeToJar(classFilePath, jarFileName);
-    }
-
-    return getRootFolderRelativeToClassFile(classFilePath);
-  }
-
-  private static String getGameRunnerClassFilePath() {
-    final String runnerClassName = GameRunner.class.getSimpleName() + ".class";
-    final URL url = GameRunner.class.getResource(runnerClassName);
-    final String path = url.getFile();
     try {
-      // Deal with spaces in the file name which would be url encoded
-      return URLDecoder.decode(path, StandardCharsets.UTF_8.name());
-    } catch (final UnsupportedEncodingException e) {
-      throw new AssertionError("platform does not support UTF-8 charset", e);
+      return getFolderContainingFileWithName(GAME_ENGINE_PROPERTIES_FILE, getCodeSourceFolder());
+    } catch (final IOException e) {
+      throw new IllegalStateException("unable to locate root folder", e);
     }
   }
 
-  private static File getRootFolderRelativeToJar(final String path, final String jarFileName) {
-    final String subString = path.substring(
-        "file:/".length() - (SystemProperties.isWindows() ? 0 : 1),
-        path.indexOf(jarFileName) - 1);
-    final File f = new File(subString).getParentFile();
-    if (!f.exists()) {
-      throw new IllegalStateException("File not found:" + f);
+  private static File getCodeSourceFolder() throws IOException {
+    final @Nullable CodeSource codeSource = ClientFileSystemHelper.class.getProtectionDomain().getCodeSource();
+    if (codeSource == null) {
+      throw new IOException("code source is not available");
     }
-    return f;
+
+    final File codeSourceLocation;
+    try {
+      codeSourceLocation = new File(codeSource.getLocation().toURI());
+    } catch (final URISyntaxException e) {
+      throw new IOException("code source location URI is malformed", e);
+    }
+
+    // code source location is either a jar file (installation) or a folder (dev environment)
+    return codeSourceLocation.isFile() ? codeSourceLocation.getParentFile() : codeSourceLocation;
   }
 
-  private static File getRootFolderRelativeToClassFile(final String path) {
-    File f = new File(path);
-
-    // move up one directory for each package
-    final int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
-    for (int i = 0; i < moveUpCount; i++) {
-      f = f.getParentFile();
-    }
-
-    // keep moving up one directory until we find the game_engine properties file that we expect to be at the root
-    while (!folderContainsGamePropsFile(f)) {
-      f = f.getParentFile();
-    }
-
-    if (!f.exists()) {
-      System.err.println("Could not find root folder, does  not exist:" + f);
-      return new File(SystemProperties.getUserDir());
-    }
-    return f;
+  @VisibleForTesting
+  static File getFolderContainingFileWithName(final String fileName, final File startFolder) throws IOException {
+    return getFolderContainingFileWithName(fileName, startFolder, startFolder);
   }
 
-  private static boolean folderContainsGamePropsFile(final File folder) {
-    return FileUtils.listFiles(folder).stream()
+  private static File getFolderContainingFileWithName(
+      final String fileName,
+      final File startFolder,
+      final @Nullable File currentFolder)
+      throws IOException {
+    if (currentFolder == null) {
+      throw new IOException(String.format(
+          "unable to locate file with name '%s' starting from folder '%s'",
+          fileName, startFolder.getAbsolutePath()));
+    }
+
+    final boolean currentFolderContainsFileWithName = FileUtils.listFiles(currentFolder).stream()
+        .filter(File::isFile)
         .map(File::getName)
-        .anyMatch(it -> GameEnginePropertyReader.GAME_ENGINE_PROPERTIES_FILE.equals(it));
+        .anyMatch(fileName::equals);
+    return currentFolderContainsFileWithName
+        ? currentFolder
+        : getFolderContainingFileWithName(fileName, startFolder, currentFolder.getParentFile());
   }
 
   /**
