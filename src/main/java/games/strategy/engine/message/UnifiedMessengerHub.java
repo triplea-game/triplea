@@ -18,7 +18,7 @@ import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
   private static final int NODE_IMPLEMENTATION_TIMEOUT = 200;
@@ -146,7 +146,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   public void waitForNodesToImplement(final String endPointName) {
     final long endTime = NODE_IMPLEMENTATION_TIMEOUT + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !hasImplementors(endPointName)) {
-      if (!ThreadUtil.sleep(50)) {
+      if (!Interruptibles.sleep(50)) {
         return;
       }
     }

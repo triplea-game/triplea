@@ -27,7 +27,7 @@ import games.strategy.net.nio.ClientQuarantineConversation;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode node;
@@ -84,7 +84,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
         if (socketChannel.finishConnect()) {
           break;
         }
-        if (!ThreadUtil.sleep(50)) {
+        if (!Interruptibles.sleep(50)) {
           shutDown();
           nioSocket = null;
           return;

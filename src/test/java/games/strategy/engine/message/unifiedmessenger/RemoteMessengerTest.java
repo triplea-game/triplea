@@ -37,7 +37,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class RemoteMessengerTest {
   private IServerMessenger serverMessenger = mock(IServerMessenger.class);
@@ -176,7 +176,7 @@ public class RemoteMessengerTest {
       int waitCount = 0;
       while (!unifiedMessengerHub.hasImplementors(test.getName()) && waitCount < 20) {
         waitCount++;
-        ThreadUtil.sleep(50);
+        Interruptibles.sleep(50);
       }
       // call it on the client
       final int incrementedValue = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
@@ -241,7 +241,7 @@ public class RemoteMessengerTest {
       serverUnifiedMessenger.getHub().waitForNodesToImplement(test.getName());
       assertTrue(serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
       client.shutDown();
-      ThreadUtil.sleep(200);
+      Interruptibles.sleep(200);
       assertTrue(!serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
     } finally {
       shutdownServerAndClient(server, client);
@@ -296,9 +296,9 @@ public class RemoteMessengerTest {
       t.start();
       // wait for the thread to start
       while (started.get() == false) {
-        ThreadUtil.sleep(1);
+        Interruptibles.sleep(1);
       }
-      ThreadUtil.sleep(20);
+      Interruptibles.sleep(20);
       // TODO: we are getting a RemoteNotFoundException because the client is disconnecting before the invoke goes out
       // completely
       // Perhaps this situation should be changed to a ConnectionLostException or something else?

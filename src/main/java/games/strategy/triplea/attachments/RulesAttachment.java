@@ -38,7 +38,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 
 @MapSupport
@@ -869,7 +869,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
         // together, then
         // getting a ton of random numbers at once instead of one at a time)
-        ThreadUtil.sleep(100);
+        Interruptibles.sleep(100);
         final int rollResult = delegateBridge.getRandom(diceSides, null, DiceType.ENGINE,
             "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
         objectiveMet = rollResult <= hitTarget;

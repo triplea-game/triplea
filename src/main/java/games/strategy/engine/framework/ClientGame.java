@@ -18,7 +18,7 @@ import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class ClientGame extends AbstractGame {
   public static RemoteName getRemoteStepAdvancerName(final INode node) {
@@ -129,7 +129,7 @@ public class ClientGame extends AbstractGame {
           } finally {
             gameData.releaseReadLock();
           }
-          if (!ThreadUtil.sleep(100)) {
+          if (!Interruptibles.sleep(100)) {
             break;
           }
           i++;

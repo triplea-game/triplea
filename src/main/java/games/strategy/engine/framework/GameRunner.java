@@ -83,7 +83,6 @@ import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Interruptibles;
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Version;
 import javafx.application.Application;
 
@@ -569,7 +568,7 @@ public class GameRunner {
     Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
       // closing of stream while unloading map resources.
-      ThreadUtil.sleep(100);
+      Interruptibles.sleep(100);
       setupPanelModel.showSelectType();
       showMainFrame();
     }));

@@ -40,7 +40,7 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class ServerLauncher extends AbstractLauncher {
   private final int clientCount;
@@ -222,7 +222,7 @@ public class ServerLauncher extends AbstractLauncher {
         }
         // having an oddball issue with the zip stream being closed while parsing to load default game. might be
         // caused by closing of stream while unloading map resources.
-        ThreadUtil.sleep(200);
+        Interruptibles.sleep(200);
         // either game ended, or aborted, or a player left or disconnected
         if (headless) {
           try {

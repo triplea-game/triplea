@@ -25,7 +25,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 
 /**
@@ -96,7 +96,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       if (currentPickingPlayer == null || !playersCanPick.contains(currentPickingPlayer)) {
         currentPickingPlayer = playersCanPick.get(0);
       }
-      if (!ThreadUtil.sleep(250)) {
+      if (!Interruptibles.sleep(250)) {
         return;
       }
       Territory picked;

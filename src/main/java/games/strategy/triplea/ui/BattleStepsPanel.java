@@ -12,7 +12,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 /**
  * A panel for showing the battle steps in a display.
@@ -135,7 +135,7 @@ class BattleStepsPanel extends JPanel implements Active {
         hasWalkThread = true;
       }
       try {
-        if (ThreadUtil.sleep(330)) {
+        if (Interruptibles.sleep(330)) {
           SwingUtilities.invokeLater(this::walkStep);
         }
       } finally {

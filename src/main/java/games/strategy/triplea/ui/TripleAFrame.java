@@ -160,7 +160,6 @@ import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.LocalizeHtml;
-import games.strategy.util.ThreadUtil;
 import games.strategy.util.Tuple;
 
 /**
@@ -479,7 +478,7 @@ public class TripleAFrame extends MainGameFrame {
               toggleFlags(keyCode);
               blockInputs = false;
             }
-            ThreadUtil.sleep(100);
+            Interruptibles.sleep(100);
           }
         }).start();
       }
@@ -1462,7 +1461,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public void requiredTurnSeries(final PlayerID player) {
-    if (player == null || !ThreadUtil.sleep(300)) {
+    if (player == null || !Interruptibles.sleep(300)) {
       return;
     }
     Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
@@ -1581,7 +1580,7 @@ public class TripleAFrame extends MainGameFrame {
             final Popup popup = popupFactory.getPopup(mapPanel, info, currentPoint.x, currentPoint.y);
             popup.show();
             new Thread(() -> {
-              ThreadUtil.sleep(5000);
+              Interruptibles.sleep(5000);
               popup.hide();
             }, "popup waiter").start();
           }

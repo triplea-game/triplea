@@ -13,7 +13,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
 
 /**
@@ -126,7 +126,7 @@ public final class ClientLoginValidator implements ILoginValidator {
       if (!Objects.equals(errorMessage, ErrorMessages.NO_ERROR)) {
         // sleep on average 2 seconds
         // try to prevent flooding to guess the password
-        ThreadUtil.sleep((int) (4_000 * Math.random()));
+        Interruptibles.sleep((long) (4_000 * Math.random()));
         return errorMessage;
       }
     }

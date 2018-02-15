@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
@@ -87,7 +87,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
       int i = 0;
       boolean shownErrorMessage = false;
       while (!stepName.equals(bridgeStep)) {
-        ThreadUtil.sleep(100);
+        Interruptibles.sleep(100);
         i++;
         if (i > 30 && !shownErrorMessage) {
           System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStep

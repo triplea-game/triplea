@@ -21,7 +21,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.CollectionUtils;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).
@@ -250,6 +250,6 @@ public class ProUtils {
    * Pause the game to allow the human player to see what is going on.
    */
   public static void pause() {
-    ThreadUtil.sleep(ClientSetting.AI_PAUSE_DURATION.intValue());
+    Interruptibles.sleep(ClientSetting.AI_PAUSE_DURATION.intValue());
   }
 }

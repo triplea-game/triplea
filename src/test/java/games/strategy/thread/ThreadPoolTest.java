@@ -8,7 +8,7 @@ import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class ThreadPoolTest {
 
@@ -100,19 +100,15 @@ public class ThreadPoolTest {
   }
 
   private static class Task implements Runnable {
-    private boolean done = false;
+    private volatile boolean done = false;
 
-    public synchronized boolean isDone() {
+    public boolean isDone() {
       return done;
     }
 
     @Override
     public void run() {
-      try {
-        Thread.sleep(0, 1);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      Interruptibles.sleep(0L, 1);
       done = true;
     }
   }
@@ -121,7 +117,7 @@ public class ThreadPoolTest {
     @Override
     public void run() {
       synchronized (this) {
-        ThreadUtil.sleep(10L);
+        Interruptibles.sleep(10L);
         super.run();
       }
     }

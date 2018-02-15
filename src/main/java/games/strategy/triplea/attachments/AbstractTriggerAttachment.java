@@ -17,7 +17,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
@@ -210,7 +210,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     // live and pbem games) to lock up or error out
     // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
     // together, then getting a ton of random numbers at once instead of one at a time)
-    ThreadUtil.sleep(100);
+    Interruptibles.sleep(100);
     final int rollResult = bridge.getRandom(diceSides, null, DiceType.ENGINE,
         "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
     final boolean testChance = rollResult <= hitTarget;
