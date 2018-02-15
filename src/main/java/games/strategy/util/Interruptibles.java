@@ -37,10 +37,10 @@ public final class Interruptibles {
   public static boolean await(final InterruptibleRunnable runnable) {
     checkNotNull(runnable);
 
-    return !awaitResult(() -> {
+    return awaitResult(() -> {
       runnable.run();
       return null;
-    }).interrupted;
+    }).completed;
   }
 
   /**
@@ -51,19 +51,18 @@ public final class Interruptibles {
    *
    * @param supplier The operation to execute and await.
    *
-   * @return If the operation completed without interruption, {@code interrupted} will be {@code false} and
-   *         {@code result} will contain the operation's result (a {@code null} result is modeled as an empty result);
-   *         if the operation was interrupted, {@code interrupted} will be {@code true} and {@code result} will be
-   *         empty.
+   * @return If the operation completed without interruption, {@code completed} will be {@code true} and {@code result}
+   *         will contain the operation's result (a {@code null} result is modeled as an empty result); if the operation
+   *         was interrupted, {@code completed} will be {@code false} and {@code result} will be empty.
    */
   public static <T> Result<T> awaitResult(final InterruptibleSupplier<T> supplier) {
     checkNotNull(supplier);
 
     try {
-      return new Result<>(Optional.ofNullable(supplier.get()), false);
+      return new Result<>(true, Optional.ofNullable(supplier.get()));
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
-      return new Result<>(Optional.empty(), true);
+      return new Result<>(false, Optional.empty());
     }
   }
 
@@ -136,17 +135,19 @@ public final class Interruptibles {
   @Immutable
   public static final class Result<T> {
     /**
-     * Indicates the operation was interrupted; {@code result} is meaningless.
+     * {@code true} if the operation was completed without interruption; otherwise {@code false} if the operation was
+     * interrupted before it was complete.
      */
-    public final boolean interrupted;
+    public final boolean completed;
 
     /**
-     * The result of the operation or empty if the operation did not supply a result.
+     * If {@code completed} is {@code true}, contains the result of the operation or empty if the operation did not
+     * supply a result. If {@code completed} is {@code false}, always empty and effectively meaningless.
      */
     public final Optional<T> result;
 
-    private Result(final Optional<T> result, final boolean interrupted) {
-      this.interrupted = interrupted;
+    private Result(final boolean completed, final Optional<T> result) {
+      this.completed = completed;
       this.result = result;
     }
   }

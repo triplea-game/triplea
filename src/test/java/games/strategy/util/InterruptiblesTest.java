@@ -27,7 +27,7 @@ public final class InterruptiblesTest {
   @Nested
   public final class AwaitTest {
     @Test
-    public void shouldReturnTrueWhenNotInterrupted(@Mock final InterruptibleRunnable runnable) throws Exception {
+    public void shouldReturnTrueWhenCompleted(@Mock final InterruptibleRunnable runnable) throws Exception {
       final boolean completed = Interruptibles.await(runnable);
 
       verify(runnable).run();
@@ -55,20 +55,20 @@ public final class InterruptiblesTest {
   @Nested
   public final class AwaitResultTest {
     @Test
-    public void shouldReturnUninterruptedSupplierNonNullResultWhenNotInterrupted() {
+    public void shouldReturnCompletedSupplierNonNullResultWhenCompleted() {
       final Object value = new Object();
 
       final Interruptibles.Result<Object> result = Interruptibles.awaitResult(() -> value);
 
-      assertThat(result.interrupted, is(false));
+      assertThat(result.completed, is(true));
       assertThat(result.result, is(Optional.of(value)));
     }
 
     @Test
-    public void shouldReturnUninterruptedSupplierNullResultWhenNotInterrupted() {
+    public void shouldReturnCompletedSupplierNullResultWhenCompleted() {
       final Interruptibles.Result<Object> result = Interruptibles.awaitResult(() -> null);
 
-      assertThat(result.interrupted, is(false));
+      assertThat(result.completed, is(true));
       assertThat(result.result, is(Optional.empty()));
     }
 
@@ -78,7 +78,7 @@ public final class InterruptiblesTest {
         throw new InterruptedException();
       });
 
-      assertThat(result.interrupted, is(true));
+      assertThat(result.completed, is(false));
       assertThat(result.result, is(Optional.empty()));
       assertThat(Thread.currentThread().isInterrupted(), is(true));
     }
