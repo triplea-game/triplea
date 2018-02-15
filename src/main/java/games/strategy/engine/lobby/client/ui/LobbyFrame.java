@@ -78,6 +78,7 @@ public class LobbyFrame extends JFrame {
     mainSplit.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
     mainSplit.setLeftComponent(leftSplit);
     mainSplit.setRightComponent(chatPlayers);
+    mainSplit.setResizeWeight(1);
     add(mainSplit, BorderLayout.CENTER);
     pack();
     chatMessagePanel.requestFocusInWindow();
