@@ -596,7 +596,7 @@ return console.askOkCancel(message, true);
                     </serializedBean>
                     <condition />
                   </action>
-                  <action name="" id="220" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" rollbackBarrierExitCode="1" multiExec="false" failureStrategy="1" errorMessage="Failed to create protocol handler">
+                  <action name="Linux protocol handler" id="220" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" rollbackBarrierExitCode="1" multiExec="false" failureStrategy="1" errorMessage="Failed to create protocol handler">
                     <serializedBean>
                       <java class="java.beans.XMLDecoder">
                         <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
@@ -666,6 +666,40 @@ return true;</string>
                       </java>
                     </serializedBean>
                     <condition>Util.isLinux()</condition>
+                  </action>
+                  <action name="OSX protocol handler" id="456" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" rollbackBarrierExitCode="1" multiExec="false" failureStrategy="1" errorMessage="Failed to create protocol handler">
+                    <serializedBean>
+                      <java class="java.beans.XMLDecoder">
+                        <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
+                          <void property="script">
+                            <object class="com.install4j.api.beans.ScriptProperty">
+                              <void property="value">
+                                <string>final File installDir = new File((String)context.getVariable("sys.installationDir"));
+final File infoPlist = new File(installDir, "./Contents/Info.plist");
+final java.nio.charset.Charset utf8 = java.nio.charset.StandardCharsets.UTF_8;
+final String fileContent = new String(java.nio.file.Files.readAllBytes(infoPlist.toPath()), utf8);
+final String replacement = ""
++ "&lt;key&gt;CFBundleURLTypes&lt;/key&gt;\n"
++ "&lt;array&gt;\n"
++ "    &lt;dict&gt;\n"
++ "        &lt;key&gt;CFBundleURLName&lt;/key&gt;\n"
++ "        &lt;string&gt;TripleA&lt;/string&gt;\n"
++ "        &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;\n"
++ "        &lt;array&gt;\n"
++ "            &lt;string&gt;triplea&lt;/string&gt;\n"
++ "        &lt;/array&gt;\n"
++ "    &lt;/dict&gt;\n"
++ "&lt;/array&gt;\n";
+final String regex = "\n(?:" + replacement + ")?(?=&lt;!-- I4J_INSERT_DOCTYPE --&gt;)";
+java.nio.file.Files.write(infoPlist.toPath(), fileContent.replaceFirst(regex, "$1" + replacement).getBytes(utf8));
+return true;</string>
+                              </void>
+                            </object>
+                          </void>
+                        </object>
+                      </java>
+                    </serializedBean>
+                    <condition>Util.isMacOS()</condition>
                   </action>
                 </beans>
               </group>
@@ -1682,7 +1716,7 @@ return true;</string>
         <customAttributes />
       </autoUpdate>
     </windows>
-    <macos name="Mac OS X" id="35" customizedId="" mediaFileName="" installDir="${compiler:sys.fullName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="build/assets/install4j/macosx-amd64-1.8.0_144.tar.gz" manualJREEntry="true" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/macosx-amd64-1.8.0_144.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" requiredVmIdPrefix="" customInstallBaseDir="" contentFilesType="1" installerName="${i18n:InstallerName(${compiler:sys.fullName})}" volumeName="${compiler:sys.shortName}" compressDmg="true" launcherId="33">
+    <macos name="Mac OS X" id="35" customizedId="" mediaFileName="" installDir="${compiler:sys.fullName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="build/assets/install4j/macosx-amd64-1.8.0_144.tar.gz" manualJREEntry="true" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/macosx-amd64-1.8.0_144.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" requiredVmIdPrefix="" customInstallBaseDir="" contentFilesType="1" installerName="${i18n:InstallerName(${compiler:sys.fullName})}" volumeName="${compiler:sys.shortName}" compressDmg="false" launcherId="33">
       <excludedComponents />
       <includedDownloadableComponents />
       <excludedBeans />
