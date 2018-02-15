@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -69,7 +70,6 @@ import games.strategy.util.Tuple;
  */
 public class MapPanel extends ImageScrollerLargeView {
   private static final long serialVersionUID = -3571551538356292556L;
-  private static final Logger logger = Logger.getLogger(MapPanel.class.getName());
   private final List<MapSelectionListener> mapSelectionListeners = new ArrayList<>();
   private final List<UnitSelectionListener> unitSelectionListeners = new ArrayList<>();
   private final List<MouseOverUnitListener> mouseOverUnitsListeners = new ArrayList<>();
@@ -103,8 +103,8 @@ public class MapPanel extends ImageScrollerLargeView {
     this.uiContext = uiContext;
     routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
     setCursor(uiContext.getCursor());
-    this.scale = uiContext.getScale();
-    this.tileManager = new TileManager(uiContext);
+    scale = uiContext.getScale();
+    tileManager = new TileManager(uiContext);
     final BackgroundDrawer backgroundDrawer = new BackgroundDrawer();
     final Thread t = new Thread(backgroundDrawer, "Map panel background drawer");
     t.setDaemon(true);
@@ -113,7 +113,7 @@ public class MapPanel extends ImageScrollerLargeView {
     this.smallView = smallView;
     smallMapImageManager = new SmallMapImageManager(smallView, uiContext.getMapImage().getSmallMapImage(), tileManager);
     setGameData(data);
-    this.addMouseListener(new MouseAdapter() {
+    addMouseListener(new MouseAdapter() {
 
       private boolean is4Pressed = false;
       private boolean is5Pressed = false;
@@ -184,7 +184,7 @@ public class MapPanel extends ImageScrollerLargeView {
         lastActive = e.getButton();
       }
     });
-    this.addMouseMotionListener(new MouseMotionAdapter() {
+    addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
         final MouseDetails md = convert(e);
@@ -193,9 +193,7 @@ public class MapPanel extends ImageScrollerLargeView {
         final double x = normalizeX(scaledMouseX + getXOffset());
         final double y = normalizeY(scaledMouseY + getYOffset());
         final Territory terr = getTerritory(x, y);
-        // we can use == here since they will be the same object.
-        // dont use .equals since we have nulls
-        if (terr != currentTerritory) {
+        if (!Objects.equals(terr, currentTerritory)) {
           currentTerritory = terr;
           notifyMouseEntered(terr);
         }
@@ -211,7 +209,7 @@ public class MapPanel extends ImageScrollerLargeView {
         }
       }
     });
-    this.addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
+    addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
     recreateTiles(data, uiContext);
     uiContext.addActive(() -> {
       // super.deactivate
@@ -529,7 +527,7 @@ public class MapPanel extends ImageScrollerLargeView {
     int y = model.getY();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
-    final Stopwatch stopWatch = new Stopwatch(logger, Level.FINER, "Paint");
+    final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
     // make sure we use the same data for the entire paint
     final GameData data = gameData;
     // if the map fits on screen, dont draw any overlap
