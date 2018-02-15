@@ -699,26 +699,21 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     }
     final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
     for (final Entry<Resource, Integer> entry : attackTokens.entrySet()) {
-      final Resource r = entry.getKey();
+      final Resource resource = entry.getKey();
       final int max = entry.getValue();
-      final HashMap<Territory, IntegerMap<Unit>> selection =
-          ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, r, max);
+      final Map<Territory, IntegerMap<Unit>> selection =
+          ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, resource, max);
       for (final Entry<Territory, IntegerMap<Unit>> selectionEntry : selection.entrySet()) {
-        final Territory t = selectionEntry.getKey();
-        HashMap<Unit, IntegerMap<Resource>> currentTerr = kamikazeSuicideAttacks.get(t);
-        if (currentTerr == null) {
-          currentTerr = new HashMap<>();
-        }
+        final Territory territory = selectionEntry.getKey();
+        final HashMap<Unit, IntegerMap<Resource>> currentTerr =
+            kamikazeSuicideAttacks.getOrDefault(territory, new HashMap<>());
         for (final Entry<Unit, Integer> unitEntry : selectionEntry.getValue().entrySet()) {
-          final Unit u = unitEntry.getKey();
-          IntegerMap<Resource> currentUnit = currentTerr.get(u);
-          if (currentUnit == null) {
-            currentUnit = new IntegerMap<>();
-          }
-          currentUnit.add(r, unitEntry.getValue());
-          currentTerr.put(u, currentUnit);
+          final Unit unit = unitEntry.getKey();
+          final IntegerMap<Resource> currentUnit = currentTerr.getOrDefault(unit, new IntegerMap<>());
+          currentUnit.add(resource, unitEntry.getValue());
+          currentTerr.put(unit, currentUnit);
         }
-        kamikazeSuicideAttacks.put(t, currentTerr);
+        kamikazeSuicideAttacks.put(territory, currentTerr);
       }
     }
     return kamikazeSuicideAttacks;
@@ -728,7 +723,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices,
       final List<Unit> unitChoices, final int unitsPerPick) {
     if (territoryChoices == null || territoryChoices.isEmpty() || unitsPerPick < 1) {
-      return Tuple.of(null, new HashSet<Unit>());
+      return Tuple.of(null, new HashSet<>());
     }
     return ui.pickTerritoryAndUnits(this.getPlayerId(), territoryChoices, unitChoices, unitsPerPick);
   }

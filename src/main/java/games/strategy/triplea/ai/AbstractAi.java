@@ -279,19 +279,16 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
           continue;
         }
         final IntegerMap<Resource> resourceMap = new IntegerMap<>();
-        final Resource r = attackTokens.keySet().iterator().next();
-        final int num = Math.min(attackTokens.getInt(r),
+        final Resource resource = attackTokens.keySet().iterator().next();
+        final int num = Math.min(attackTokens.getInt(resource),
             (UnitAttachment.get(u.getType()).getHitPoints() * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
-        resourceMap.put(r, num);
-        HashMap<Unit, IntegerMap<Resource>> attMap = kamikazeSuicideAttacks.get(t);
-        if (attMap == null) {
-          attMap = new HashMap<>();
-        }
+        resourceMap.put(resource, num);
+        final HashMap<Unit, IntegerMap<Resource>> attMap = kamikazeSuicideAttacks.getOrDefault(t, new HashMap<>());
         attMap.put(u, resourceMap);
         kamikazeSuicideAttacks.put(t, attMap);
-        attackTokens.add(r, -num);
-        if (attackTokens.getInt(r) <= 0) {
-          attackTokens.removeKey(r);
+        attackTokens.add(resource, -num);
+        if (attackTokens.getInt(resource) <= 0) {
+          attackTokens.removeKey(resource);
         }
       }
     }
