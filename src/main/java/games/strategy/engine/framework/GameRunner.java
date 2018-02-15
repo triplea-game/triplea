@@ -23,14 +23,11 @@ import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SE
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_STARTED;
 
-import java.awt.AWTEvent;
 import java.awt.Container;
-import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.MediaTracker;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -153,7 +150,6 @@ public class GameRunner {
       });
 
       showMainFrame();
-      new Thread(GameRunner::setupLogging).start();
       new Thread(GameRunner::checkLocalSystem).start();
       new Thread(GameRunner::checkForUpdates).start();
     }
@@ -352,22 +348,6 @@ public class GameRunner {
         + "following actions: ban player, stop game, shutdown server."
         + " (Please email this password to one of the lobby moderators, or private message an admin on the "
         + "TripleaWarClub.org website forum.)\n");
-  }
-
-
-  private static void setupLogging() {
-    Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueue() {
-      @Override
-      protected void dispatchEvent(final AWTEvent newEvent) {
-        try {
-          super.dispatchEvent(newEvent);
-          // This ensures, that all exceptions/errors inside any swing framework (like substance) are logged correctly
-        } catch (final Throwable t) {
-          ClientLogger.logError("Failed while setting up logging", t);
-          throw t;
-        }
-      }
-    });
   }
 
   private static void checkForUpdates() {
