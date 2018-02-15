@@ -632,8 +632,12 @@ public class MoveValidator {
             + (route.numberOfSteps() > 1 ? "these territories" : "this territory"));
       }
       // Check requiresUnitsToMove conditions
+      Collection<Unit> requiresUnitsToMoveList = moveTest;
+      if (route.isUnload()) {
+        requiresUnitsToMoveList = units;
+      }
       for (final Territory t : route.getAllTerritories()) {
-        if (!units.stream().allMatch(Matches.unitHasRequiredUnitsToMove(t, data))) {
+        if (!requiresUnitsToMoveList.stream().allMatch(Matches.unitHasRequiredUnitsToMove(t, data))) {
           return result.setErrorReturnResult(
               t.getName() + " doesn't have the required units to allow moving the selected units into it");
         }
