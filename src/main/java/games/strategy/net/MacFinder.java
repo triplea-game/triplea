@@ -21,17 +21,23 @@ import com.google.common.primitives.Bytes;
 
 import games.strategy.debug.ClientLogger;
 
+/**
+ * Provides access to the MAC address of the local node.
+ */
 public final class MacFinder {
+  private static final String HASHED_MAC_ADDRESS_SALT = "MH";
+
   private MacFinder() {}
 
   /**
    * Should result in something like this: $1$MH$345ntXD4G3AKpAeHZdaGe3.
+   *
+   * @throws IllegalArgumentException If the MAC address is not available.
    */
   public static String getHashedMacAddress() {
     final String mac = getMacAddress();
     if (mac == null) {
-      throw new IllegalArgumentException(
-          "You have an invalid MAC address or TripleA can't find your mac address");
+      throw new IllegalArgumentException("You have an invalid MAC address or TripleA can't find your mac address");
     }
     return getHashedMacAddress(mac);
   }
@@ -53,7 +59,7 @@ public final class MacFinder {
   }
 
   private static String getHashedMacAddress(final String macAddress) {
-    return games.strategy.util.Md5Crypt.crypt(macAddress, "MH");
+    return games.strategy.util.Md5Crypt.crypt(macAddress, HASHED_MAC_ADDRESS_SALT);
   }
 
   private static String getMacAddress() {
@@ -267,5 +273,22 @@ public final class MacFinder {
       }
     }
     return null;
+  }
+
+  /**
+   * Indicates the specified value is a valid hashed MAC address.
+   *
+   * @param value The value to test.
+   *
+   * @return {@code true} if the specified value is a valid hashed MAC address; otherwise {@code false}.
+   */
+  public static boolean isValidHashedMacAddress(final String value) {
+    checkNotNull(value);
+
+    try {
+      return HASHED_MAC_ADDRESS_SALT.equals(games.strategy.util.Md5Crypt.getSalt(value));
+    } catch (final IllegalArgumentException e) {
+      return false;
+    }
   }
 }

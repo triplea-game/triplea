@@ -21,4 +21,25 @@ public final class MacFinderTest {
     assertThat(hashedMacAddress.length(), is(28));
     assertThat(hashedMacAddress, startsWith("$1$MH$"));
   }
+
+  @Test
+  public void isValidHashedMacAddress_ShouldReturnTrueWhenValid() {
+    assertThat(MacFinder.isValidHashedMacAddress("$1$MH$ABCDWXYZabcdwxyz0189./"), is(true));
+  }
+
+  @Test
+  public void isValidHashedMacAddress_ShouldReturnFalseWhenLengthIsInvalid() {
+    assertThat(MacFinder.isValidHashedMacAddress("$1$MH$ABCDWXYZabcdwxyz0189."), is(false));
+    assertThat(MacFinder.isValidHashedMacAddress("$1$MH$ABCDWXYZabcdwxyz0189./1"), is(false));
+  }
+
+  @Test
+  public void isValidHashedMacAddress_ShouldReturnFalseWhenDoesNotHaveExpectedPrefix() {
+    assertThat(MacFinder.isValidHashedMacAddress("1$MH$ABCDWXYZabcdwxyz0189./1"), is(false));
+  }
+
+  @Test
+  public void isValidHashedMacAddress_ShouldReturnFalseWhenContainsInvalidCharacters() {
+    assertThat(MacFinder.isValidHashedMacAddress("$1$MH$ABCDWXYZabcdwxyz0189._"), is(false));
+  }
 }

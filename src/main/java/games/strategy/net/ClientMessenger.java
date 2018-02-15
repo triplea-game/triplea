@@ -17,7 +17,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.HubInvoke;
@@ -68,8 +67,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
       final IObjectStreamFactory streamFact, final IConnectionLogin login)
       throws IOException {
     Preconditions.checkNotNull(mac);
-    Preconditions.checkArgument(ClientLoginValidator.isValidMac(mac),
-        "Not a valid mac: " + mac + ", length: " + mac.length());
+    Preconditions.checkArgument(MacFinder.isValidHashedMacAddress(mac), "Not a valid mac: " + mac);
     socketChannel = SocketChannel.open();
     socketChannel.configureBlocking(false);
     final InetSocketAddress remote = new InetSocketAddress(host, port);
