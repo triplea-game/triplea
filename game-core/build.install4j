@@ -1082,7 +1082,7 @@ return console.askYesNo(message, true);
                 </serializedBean>
                 <condition />
               </action>
-              <action name="" id="176" customizedId="" beanClass="com.install4j.runtime.beans.actions.registry.DeleteRegistryItemAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" rollbackBarrierExitCode="1" multiExec="false" failureStrategy="1" errorMessage="Failed to unregister the protocol handler">
+              <action name="Remove Windows Protocol Handler" id="176" customizedId="" beanClass="com.install4j.runtime.beans.actions.registry.DeleteRegistryItemAction" enabled="true" commentSet="false" comment="" actionElevationType="elevated" rollbackBarrier="false" rollbackBarrierExitCode="1" multiExec="false" failureStrategy="1" errorMessage="Failed to unregister the protocol handler">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.actions.registry.DeleteRegistryItemAction">
@@ -1103,7 +1103,7 @@ return console.askYesNo(message, true);
                 </serializedBean>
                 <condition>Util.isWindows() &amp;&amp; ((String)WinRegistry.getValue(RegistryRoot.HKEY_CURRENT_USER, "Software\\Classes\\triplea\\shell\\open\\command", "")).equalsIgnoreCase("\"" + context.getVariable("sys.installationDir") + "\\TripleA.exe\" \"%1\"")</condition>
               </action>
-              <action name="" id="221" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" rollbackBarrierExitCode="1" multiExec="false" failureStrategy="1" errorMessage="Failed to remove protocol handler">
+              <action name="Remove Linux protocol handler" id="221" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" rollbackBarrierExitCode="1" multiExec="false" failureStrategy="1" errorMessage="Failed to remove protocol handler">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
                     <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
