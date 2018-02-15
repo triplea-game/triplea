@@ -84,17 +84,13 @@ public class UnitCategory implements Comparable<UnitCategory> {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null) {
-      return false;
-    }
-    if (!(o instanceof UnitCategory)) {
+    if (o == null || !(o instanceof UnitCategory)) {
       return false;
     }
     final UnitCategory other = (UnitCategory) o;
     // equality of categories does not compare the number
     // of units in the category, so don't compare on units
     final boolean equalsIgnoreDamaged = equalsIgnoreDamagedAndBombingDamageAndDisabled(other);
-    // return equalsIgnoreDamaged && other.m_damaged == this.m_damaged;
     return equalsIgnoreDamaged && other.damaged == this.damaged && other.bombingDamage == this.bombingDamage
         && other.disabled == this.disabled;
   }
