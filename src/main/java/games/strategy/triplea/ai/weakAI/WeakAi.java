@@ -42,7 +42,6 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Util;
 
 /**
  * A very weak ai, based on some simple rules.
@@ -612,7 +611,7 @@ public class WeakAi extends AbstractAi {
               // number of units, to leave units free to move elsewhere
               if (attackFrom.isWater()) {
                 final List<Unit> units = attackFrom.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(player));
-                moveUnits.add(Util.difference(units, unitsAlreadyMoved));
+                moveUnits.add(CollectionUtils.difference(units, unitsAlreadyMoved));
                 unitsAlreadyMoved.addAll(units);
               } else {
                 moveUnits.add(Collections.singleton(unit));

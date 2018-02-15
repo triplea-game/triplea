@@ -34,7 +34,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Util;
 
 /**
  * Logic for dealing with player tech rolls. This class requires the
@@ -401,13 +400,13 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   public static List<TechAdvance> getAvailableTechs(final PlayerID player, final GameData data) {
     final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(player, data);
     final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, player);
-    return Util.difference(allAdvances, currentAdvances);
+    return CollectionUtils.difference(allAdvances, currentAdvances);
   }
 
   private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory) {
     final Collection<TechAdvance> playersAdvances =
         TechTracker.getCurrentTechAdvances(bridge.getPlayerId(), getData());
-    final List<TechAdvance> available = Util.difference(techCategory.getTechs(), playersAdvances);
+    final List<TechAdvance> available = CollectionUtils.difference(techCategory.getTechs(), playersAdvances);
     return available;
   }
 

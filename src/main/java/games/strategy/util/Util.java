@@ -5,11 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding;
@@ -20,59 +16,6 @@ import com.google.common.io.BaseEncoding;
 public class Util {
 
   private static final String SHA_512 = "SHA-512";
-
-  /**
-   * return a such that a exists in c1 and a exists in c2.
-   * always returns a new collection.
-   */
-  public static <T> List<T> intersection(final Collection<T> c1, final Collection<T> c2) {
-    if (c1 == null || c2 == null) {
-      return new ArrayList<>();
-    }
-    return c1.stream().filter(c2::contains).collect(Collectors.toList());
-  }
-
-  /**
-   * Equivalent to !intersection(c1,c2).isEmpty(), but more efficient.
-   *
-   * @return true if some element in c1 is in c2
-   */
-  public static <T> boolean someIntersect(final Collection<T> c1, final Collection<T> c2) {
-    return c1.stream().anyMatch(c2::contains);
-  }
-
-  /**
-   * Returns a such that a exists in c1 but not in c2.
-   * Always returns a new collection.
-   */
-  public static <T> List<T> difference(final Collection<T> c1, final Collection<T> c2) {
-    if (c1 == null || c1.size() == 0) {
-      return new ArrayList<>(0);
-    }
-    if (c2 == null || c2.size() == 0) {
-      return new ArrayList<>(c1);
-    }
-    return c1.stream().filter(not(c2::contains)).collect(Collectors.toList());
-  }
-
-  /**
-   * true if for each a in c1, a exists in c2,
-   * and if for each b in c2, b exist in c1
-   * and c1 and c2 are the same size.
-   * Note that (a,a,b) (a,b,b) are equal.
-   */
-  public static <T> boolean equals(final Collection<T> c1, final Collection<T> c2) {
-    if (c1 == null || c2 == null) {
-      return c1 == c2;
-    }
-    if (c1.size() != c2.size()) {
-      return false;
-    }
-    if (c1 == c2) {
-      return true;
-    }
-    return c2.containsAll(c1) && c1.containsAll(c2);
-  }
 
   /** Creates new Util. */
   private Util() {}
@@ -128,5 +71,15 @@ public class Util {
     checkNotNull(p);
 
     return p.negate();
+  }
+
+  /**
+   * A helper method to allow one-line creation of daemon Threads.
+   */
+  public static Thread createDaemonThread(final Runnable runnable, final String name) {
+    Preconditions.checkNotNull(runnable);
+    final Thread thread = new Thread(runnable, name);
+    thread.setDaemon(true);
+    return thread;
   }
 }

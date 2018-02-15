@@ -43,7 +43,6 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
-import games.strategy.util.Util;
 
 /**
  * Handles logic for battles in which fighting actually occurs.
@@ -2252,8 +2251,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         doNotIncludeSeaBombardmentUnits, removeForNextRound);
     final List<Unit> notRemovedAttacking = removeNonCombatants(m_attackingUnits, true, doNotIncludeAa,
         doNotIncludeSeaBombardmentUnits, removeForNextRound);
-    final Collection<Unit> toRemoveDefending = Util.difference(m_defendingUnits, notRemovedDefending);
-    final Collection<Unit> toRemoveAttacking = Util.difference(m_attackingUnits, notRemovedAttacking);
+    final Collection<Unit> toRemoveDefending = CollectionUtils.difference(m_defendingUnits, notRemovedDefending);
+    final Collection<Unit> toRemoveAttacking = CollectionUtils.difference(m_attackingUnits, notRemovedAttacking);
     m_defendingUnits = notRemovedDefending;
     m_attackingUnits = notRemovedAttacking;
     if (!m_headless) {
@@ -2678,7 +2677,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     Collection<Unit> lost = getDependentUnits(units);
-    lost.addAll(Util.intersection(units, m_attackingUnits));
+    lost.addAll(CollectionUtils.intersection(units, m_attackingUnits));
     // if all the amphibious attacking land units are lost, then we are no longer a naval invasion
     m_amphibiousLandAttackers.removeAll(lost);
     if (m_amphibiousLandAttackers.isEmpty()) {

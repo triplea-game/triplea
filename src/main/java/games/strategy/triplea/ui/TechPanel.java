@@ -34,8 +34,8 @@ import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Util;
 
 public class TechPanel extends ActionPanel {
   private static final long serialVersionUID = -6477919141575138007L;
@@ -89,14 +89,14 @@ public class TechPanel extends ActionPanel {
   private List<TechAdvance> getAvailableTechs() {
     final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(getCurrentPlayer(), getData());
     final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(), getCurrentPlayer());
-    return Util.difference(allAdvances, currentAdvances);
+    return CollectionUtils.difference(allAdvances, currentAdvances);
   }
 
   private List<TechnologyFrontier> getAvailableCategories() {
     final Collection<TechnologyFrontier> currentAdvances =
         TechTracker.getFullyResearchedPlayerTechCategories(getCurrentPlayer());
     final Collection<TechnologyFrontier> allAdvances = TechAdvance.getPlayerTechCategories(getCurrentPlayer());
-    return Util.difference(allAdvances, currentAdvances);
+    return CollectionUtils.difference(allAdvances, currentAdvances);
   }
 
   private final Action getTechRollsAction = SwingAction.of("Roll Tech...", e -> {

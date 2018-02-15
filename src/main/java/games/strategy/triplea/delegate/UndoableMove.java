@@ -20,7 +20,6 @@ import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.util.CollectionUtils;
-import games.strategy.util.Util;
 
 /**
  * Contains all the data to describe a move and to undo it.
@@ -167,17 +166,17 @@ public class UndoableMove extends AbstractUndoableMove {
         throw new IllegalStateException("other should not be null");
       }
       // if the other move has moves that depend on this
-      if (!Util.intersection(other.getUnits(), this.getUnits()).isEmpty()
+      if (!CollectionUtils.intersection(other.getUnits(), this.getUnits()).isEmpty()
           // if the other move has transports that we are loading
-          || !Util.intersection(other.m_units, this.m_loaded).isEmpty()
+          || !CollectionUtils.intersection(other.m_units, this.m_loaded).isEmpty()
           // or we are moving through a previously conqueured territory
           // we should be able to take this out later
           // we need to add logic for this move to take over the same territories
           // when the other move is undone
-          || !Util.intersection(other.m_conquered, m_route.getAllTerritories()).isEmpty()
+          || !CollectionUtils.intersection(other.m_conquered, m_route.getAllTerritories()).isEmpty()
           // or we are unloading transports that have moved in another turn
-          || !Util.intersection(other.m_units, this.m_unloaded).isEmpty()
-          || !Util.intersection(other.m_unloaded, this.m_unloaded).isEmpty()) {
+          || !CollectionUtils.intersection(other.m_units, this.m_unloaded).isEmpty()
+          || !CollectionUtils.intersection(other.m_unloaded, this.m_unloaded).isEmpty()) {
         m_iDependOn.add(other);
         other.m_dependOnMe.add(this);
       }

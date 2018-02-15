@@ -23,7 +23,6 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Util;
 
 /**
  * A sort of scripted battle made for blitzed/conquered territories without a fight.
@@ -130,7 +129,7 @@ public class FinishedBattle extends AbstractBattle {
   public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     final Collection<Unit> lost = getDependentUnits(units);
-    lost.addAll(Util.intersection(units, m_attackingUnits));
+    lost.addAll(CollectionUtils.intersection(units, m_attackingUnits));
     if (lost.size() != 0) {
       m_attackingUnits.removeAll(lost);
       /*

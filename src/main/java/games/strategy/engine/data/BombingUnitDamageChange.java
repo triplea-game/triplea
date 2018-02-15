@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.Util;
 
 public class BombingUnitDamageChange extends Change {
   private static final long serialVersionUID = -6425858423179501847L;
@@ -41,7 +41,7 @@ public class BombingUnitDamageChange extends Change {
     }
     final Set<Unit> units = hits.keySet();
     for (final Territory element : data.getMap().getTerritories()) {
-      if (Util.someIntersect(element.getUnits().getUnits(), units)) {
+      if (CollectionUtils.someIntersect(element.getUnits().getUnits(), units)) {
         element.notifyChanged();
       }
     }

@@ -3,6 +3,7 @@ package games.strategy.triplea.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,9 +12,9 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
-import games.strategy.util.Util;
+import games.strategy.util.CollectionUtils;
 
-public class UnitCategory implements Comparable<Object> {
+public class UnitCategory implements Comparable<UnitCategory> {
   private final UnitType type;
   // Collection of UnitOwners, the type of our dependents, not the dependents
   private Collection<UnitOwner> dependents;
@@ -83,9 +84,6 @@ public class UnitCategory implements Comparable<Object> {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null) {
-      return false;
-    }
     if (!(o instanceof UnitCategory)) {
       return false;
     }
@@ -93,14 +91,13 @@ public class UnitCategory implements Comparable<Object> {
     // equality of categories does not compare the number
     // of units in the category, so don't compare on units
     final boolean equalsIgnoreDamaged = equalsIgnoreDamagedAndBombingDamageAndDisabled(other);
-    // return equalsIgnoreDamaged && other.m_damaged == this.m_damaged;
     return equalsIgnoreDamaged && other.damaged == this.damaged && other.bombingDamage == this.bombingDamage
         && other.disabled == this.disabled;
   }
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
     final boolean equalsIgnoreDamaged = other.type.equals(this.type) && other.movement == this.movement
-        && other.owner.equals(this.owner) && Util.equals(this.dependents, other.dependents);
+        && other.owner.equals(this.owner) && CollectionUtils.equals(this.dependents, other.dependents);
     return equalsIgnoreDamaged;
   }
 
@@ -150,36 +147,20 @@ public class UnitCategory implements Comparable<Object> {
   }
 
   @Override
-  public int compareTo(final Object o) {
-    if (o == null) {
-      return -1;
-    }
-    final UnitCategory other = (UnitCategory) o;
-    if (!other.owner.equals(this.owner)) {
-      return this.owner.getName().compareTo(other.owner.getName());
-    }
-    final int typeCompare = new UnitTypeComparator().compare(this.getType(), other.getType());
-    if (typeCompare != 0) {
-      return typeCompare;
-    }
-    if (movement != other.movement) {
-      return movement - other.movement;
-    }
-    if (!Util.equals(this.dependents, other.dependents)) {
-      return dependents.toString().compareTo(other.dependents.toString());
-    }
-    if (this.damaged != other.damaged) {
-      return this.damaged - other.damaged;
-    }
-    if (this.bombingDamage != other.bombingDamage) {
-      return this.bombingDamage - other.bombingDamage;
-    }
-    if (this.disabled != other.disabled) {
-      if (disabled) {
-        return 1;
-      }
-      return -1;
-    }
-    return 0;
+  public int compareTo(final UnitCategory other) {
+    return Comparator.nullsLast(
+        Comparator.comparing(UnitCategory::getOwner, Comparator.comparing(PlayerID::getName))
+            .thenComparing(UnitCategory::getType, new UnitTypeComparator()::compare)
+            .thenComparingInt(UnitCategory::getMovement)
+            .thenComparing(UnitCategory::getDependents, (o1, o2) -> {
+              if (CollectionUtils.equals(o1, o2)) {
+                return 0;
+              }
+              return o1.toString().compareTo(o2.toString());
+            })
+            .thenComparingInt(UnitCategory::getDamaged)
+            .thenComparingInt(UnitCategory::getBombingDamage)
+            .thenComparing(UnitCategory::getDisabled))
+        .compare(this, other);
   }
 }
