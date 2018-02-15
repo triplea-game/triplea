@@ -129,4 +129,10 @@ public class Util {
 
     return p.negate();
   }
+
+  public static Thread createDaemonThread(final Runnable runnable, final String name) {
+    final Thread thread = new Thread(runnable, name);
+    thread.setDaemon(true);
+    return thread;
+  }
 }

@@ -101,18 +101,17 @@ public class MapPanel extends ImageScrollerLargeView {
       final ImageScrollModel model, final Supplier<Integer> computeScrollSpeed) {
     super(uiContext.getMapData().getMapDimensions(), model);
     this.uiContext = uiContext;
-    routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
-    setCursor(uiContext.getCursor());
-    scale = uiContext.getScale();
-    tileManager = new TileManager(uiContext);
-    final BackgroundDrawer backgroundDrawer = new BackgroundDrawer();
-    final Thread t = new Thread(backgroundDrawer, "Map panel background drawer");
-    t.setDaemon(true);
-    t.start();
-    setDoubleBuffered(false);
     this.smallView = smallView;
+    tileManager = new TileManager(uiContext);
+    scale = uiContext.getScale();
+    routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
     smallMapImageManager = new SmallMapImageManager(smallView, uiContext.getMapImage().getSmallMapImage(), tileManager);
     setGameData(data);
+
+    setCursor(uiContext.getCursor());
+    final BackgroundDrawer backgroundDrawer = new BackgroundDrawer();
+    games.strategy.util.Util.createDaemonThread(backgroundDrawer, "Map panel background drawer").start();
+    setDoubleBuffered(false);
     addMouseListener(new MouseAdapter() {
 
       private boolean is4Pressed = false;
