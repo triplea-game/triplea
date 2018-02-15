@@ -33,7 +33,7 @@ public final class ClientFileSystemHelperTest {
     private final File startFolder = new File("start");
 
     private File getFolderContainingFileWithName() throws Exception {
-      return ClientFileSystemHelper.getFolderContainingFileWithName(startFolder, file.getName());
+      return ClientFileSystemHelper.getFolderContainingFileWithName(file.getName(), startFolder);
     }
 
     @BeforeEach

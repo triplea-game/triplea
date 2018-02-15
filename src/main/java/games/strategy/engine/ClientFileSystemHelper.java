@@ -34,7 +34,7 @@ public final class ClientFileSystemHelper {
    */
   public static File getRootFolder() {
     try {
-      return getFolderContainingFileWithName(getCodeSourceFolder(), GAME_ENGINE_PROPERTIES_FILE);
+      return getFolderContainingFileWithName(GAME_ENGINE_PROPERTIES_FILE, getCodeSourceFolder());
     } catch (final IOException e) {
       throw new IllegalStateException("unable to locate root folder", e);
     }
@@ -58,22 +58,28 @@ public final class ClientFileSystemHelper {
   }
 
   @VisibleForTesting
-  static File getFolderContainingFileWithName(final File startFolder, final String fileName) throws IOException {
-    @Nullable
-    File folder;
-    for (folder = startFolder; folder != null; folder = folder.getParentFile()) {
-      final boolean containsFileWithName = FileUtils.listFiles(folder).stream()
-          .filter(File::isFile)
-          .map(File::getName)
-          .anyMatch(fileName::equals);
-      if (containsFileWithName) {
-        return folder;
-      }
+  static File getFolderContainingFileWithName(final String fileName, final File startFolder) throws IOException {
+    return getFolderContainingFileWithName(fileName, startFolder, startFolder);
+  }
+
+  private static File getFolderContainingFileWithName(
+      final String fileName,
+      final File startFolder,
+      final @Nullable File currentFolder)
+      throws IOException {
+    if (currentFolder == null) {
+      throw new IOException(String.format(
+          "unable to locate file with name '%s' starting from folder '%s'",
+          fileName, startFolder.getAbsolutePath()));
     }
 
-    throw new IOException(String.format(
-        "unable to locate file with name '%s' starting from folder '%s'",
-        fileName, startFolder.getAbsolutePath()));
+    final boolean currentFolderContainsFileWithName = FileUtils.listFiles(currentFolder).stream()
+        .filter(File::isFile)
+        .map(File::getName)
+        .anyMatch(fileName::equals);
+    return currentFolderContainsFileWithName
+        ? currentFolder
+        : getFolderContainingFileWithName(fileName, startFolder, currentFolder.getParentFile());
   }
 
   /**
