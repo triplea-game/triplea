@@ -66,8 +66,18 @@
       <customScript mode="1" file="">
         <content />
       </customScript>
-      <infoPlist mode="1" file="">
-        <content />
+      <infoPlist mode="3" file="">
+        <content>&lt;key&gt;CFBundleURLTypes&lt;/key&gt;
+&lt;array&gt;
+    &lt;dict&gt;
+        &lt;key&gt;CFBundleURLName&lt;/key&gt;
+        &lt;string&gt;TripleA&lt;/string&gt;
+        &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;
+        &lt;array&gt;
+            &lt;string&gt;triplea&lt;/string&gt;
+        &lt;/array&gt;
+    &lt;/dict&gt;
+&lt;/array&gt;</content>
       </infoPlist>
       <iconImageFiles>
         <file path="./build/assets/icons/triplea_icon_16_16.png" />
@@ -666,40 +676,6 @@ return true;</string>
                       </java>
                     </serializedBean>
                     <condition>Util.isLinux()</condition>
-                  </action>
-                  <action name="OSX protocol handler" id="456" customizedId="" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="true" commentSet="false" comment="" actionElevationType="inherit" rollbackBarrier="false" rollbackBarrierExitCode="1" multiExec="false" failureStrategy="1" errorMessage="Failed to create protocol handler">
-                    <serializedBean>
-                      <java class="java.beans.XMLDecoder">
-                        <object class="com.install4j.runtime.beans.actions.control.RunScriptAction">
-                          <void property="script">
-                            <object class="com.install4j.api.beans.ScriptProperty">
-                              <void property="value">
-                                <string>final File installDir = new File((String)context.getVariable("sys.installationDir"));
-final File infoPlist = new File(installDir, "./Contents/Info.plist");
-final java.nio.charset.Charset utf8 = java.nio.charset.StandardCharsets.UTF_8;
-final String fileContent = new String(java.nio.file.Files.readAllBytes(infoPlist.toPath()), utf8);
-final String replacement = ""
-+ "&lt;key&gt;CFBundleURLTypes&lt;/key&gt;\n"
-+ "&lt;array&gt;\n"
-+ "    &lt;dict&gt;\n"
-+ "        &lt;key&gt;CFBundleURLName&lt;/key&gt;\n"
-+ "        &lt;string&gt;TripleA&lt;/string&gt;\n"
-+ "        &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;\n"
-+ "        &lt;array&gt;\n"
-+ "            &lt;string&gt;triplea&lt;/string&gt;\n"
-+ "        &lt;/array&gt;\n"
-+ "    &lt;/dict&gt;\n"
-+ "&lt;/array&gt;\n";
-final String regex = "\n(?:" + replacement + ")?(?=&lt;!-- I4J_INSERT_DOCTYPE --&gt;)";
-java.nio.file.Files.write(infoPlist.toPath(), fileContent.replaceFirst(regex, "$1" + replacement).getBytes(utf8));
-return true;</string>
-                              </void>
-                            </object>
-                          </void>
-                        </object>
-                      </java>
-                    </serializedBean>
-                    <condition>Util.isMacOS()</condition>
                   </action>
                 </beans>
               </group>
