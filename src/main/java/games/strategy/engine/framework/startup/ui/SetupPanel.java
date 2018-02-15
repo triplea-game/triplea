@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -141,23 +140,23 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
       }
     }
 
-    final Action resourceModifiersAction = SwingAction.of("Resource Modifiers", e -> {
+    resourceModifiers.setAction(SwingAction.of("Resource Modifiers", e -> {
       final boolean isVisible = incomeLabel.isVisible();
       incomeLabel.setVisible(!isVisible);
       puIncomeBonusLabel.setVisible(!isVisible);
       playerRows.forEach(row -> row.setResourceModifiersVisble(!isVisible));
-    });
-    resourceModifiers.setAction(resourceModifiersAction);
+    }));
 
-    final ActionListener setAllTypesAction = e -> {
-      final String selectedType = setAllTypes.getSelectedItem().toString();
-      if (SET_ALL_DEFAULT_LABEL.equals(selectedType)) {
-        playerRows.forEach(PlayerSelectorRow::setDefaultPlayerType);
-      } else {
-        playerRows.forEach(row -> row.setPlayerType(selectedType));
+    setAllTypes.addActionListener(e -> {
+      final String selectedType = (String) setAllTypes.getSelectedItem();
+      if (selectedType != null) {
+        if (SET_ALL_DEFAULT_LABEL.equals(selectedType)) {
+          playerRows.forEach(PlayerSelectorRow::setDefaultPlayerType);
+        } else {
+          playerRows.forEach(row -> row.setPlayerType(selectedType));
+        }
       }
-    };
-    setAllTypes.addActionListener(setAllTypesAction);
+    });
 
     panel.validate();
     panel.repaint();
