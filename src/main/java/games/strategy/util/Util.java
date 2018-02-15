@@ -96,7 +96,7 @@ public class Util {
   public static String createUniqueTimeStamp() {
     final long time = System.currentTimeMillis();
     while (time == System.currentTimeMillis()) {
-      ThreadUtil.sleep(1);
+      Interruptibles.sleep(1);
     }
     return "" + System.currentTimeMillis();
   }

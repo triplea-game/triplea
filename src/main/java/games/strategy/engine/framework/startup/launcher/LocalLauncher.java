@@ -16,7 +16,7 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class LocalLauncher extends AbstractLauncher {
   private final IRandomSource randomSource;
@@ -61,7 +61,7 @@ public class LocalLauncher extends AbstractLauncher {
       // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
       // by closing of stream while unloading map resources.
-      ThreadUtil.sleep(100);
+      Interruptibles.sleep(100);
       gameSelectorModel.loadDefaultGame();
       SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
     }

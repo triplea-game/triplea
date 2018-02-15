@@ -8,7 +8,7 @@ import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class ThreadPoolTest {
 
@@ -121,7 +121,7 @@ public class ThreadPoolTest {
     @Override
     public void run() {
       synchronized (this) {
-        ThreadUtil.sleep(10L);
+        Interruptibles.sleep(10L);
         super.run();
       }
     }

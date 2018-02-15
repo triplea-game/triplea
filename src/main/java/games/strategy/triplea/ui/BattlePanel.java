@@ -48,7 +48,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Interruptibles;
-import games.strategy.util.ThreadUtil;
 import swinglib.JPanelBuilder;
 
 /**
@@ -200,7 +199,7 @@ public class BattlePanel extends ActionPanel {
     int count = 0;
     while (displayed == null || !battleId.equals(displayed)) {
       count++;
-      ThreadUtil.sleep(count);
+      Interruptibles.sleep(count);
       // something is wrong, we shouldnt have to wait this long
       if (count > 200) {
         ErrorConsole.getConsole().dumpStacks();

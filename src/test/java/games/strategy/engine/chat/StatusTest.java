@@ -13,7 +13,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class StatusTest {
 
@@ -30,7 +30,7 @@ public class StatusTest {
     final StatusManager manager = new StatusManager(messengers);
     assertNull(manager.getStatus(messenger.getLocalNode()));
     manager.setStatus("test");
-    ThreadUtil.sleep(200);
+    Interruptibles.sleep(200);
     assertEquals("test", manager.getStatus(messenger.getLocalNode()));
     assertEquals("test", new StatusManager(messengers).getStatus(messenger.getLocalNode()));
   }

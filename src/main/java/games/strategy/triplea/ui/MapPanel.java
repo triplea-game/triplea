@@ -61,7 +61,7 @@ import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
 import games.strategy.util.CollectionUtils;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 
 /**
@@ -179,7 +179,7 @@ public class MapPanel extends ImageScrollerLargeView {
               }
               // 50ms seems to be a good interval between "clicks"
               // changing this number changes the scroll speed
-              ThreadUtil.sleep(50);
+              Interruptibles.sleep(50);
             }
           }).start();
         }

@@ -45,7 +45,7 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 
 /**
@@ -665,7 +665,6 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * Pause the game to allow the human player to see what is going on.
    */
   protected static void pause() {
-    ThreadUtil.sleep(ClientSetting.AI_PAUSE_DURATION.intValue());
+    Interruptibles.sleep(ClientSetting.AI_PAUSE_DURATION.intValue());
   }
-
 }

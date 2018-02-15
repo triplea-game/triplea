@@ -32,7 +32,7 @@ import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.help.HelpSupport;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 /**
  * Post turn summary to www.axisandallies.org to the thread identified by the forumId
@@ -176,7 +176,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
               + m_topicId + ".0;num_replies=" + numReplies);
           httpPost.addHeader("Accept", "*/*");
           // the site has spam prevention which means you can't post until 15 seconds after login
-          if (!ThreadUtil.sleep(15 * 1000)) {
+          if (!Interruptibles.sleep(15 * 1000)) {
             return false;
           }
           httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(false).build());

@@ -50,7 +50,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
 
@@ -110,7 +110,7 @@ public class HeadlessGameServer {
       try {
         restartLobbyWatcher(setupPanelModel, game);
       } catch (final Exception e) {
-        ThreadUtil.sleep(10 * 60 * 1000);
+        Interruptibles.sleep(10 * 60 * 1000);
         // try again, but don't catch it this time
         restartLobbyWatcher(setupPanelModel, game);
       }
@@ -577,7 +577,7 @@ public class HeadlessGameServer {
 
     new Thread(() -> {
       while (!shutDown) {
-        if (!ThreadUtil.sleep(8000)) {
+        if (!Interruptibles.sleep(8000)) {
           shutDown = true;
           break;
         }

@@ -27,20 +27,20 @@ public final class InterruptiblesTest {
   @Nested
   public final class AwaitTest {
     @Test
-    public void shouldReturnFalseWhenNotInterrupted(@Mock final InterruptibleRunnable runnable) throws Exception {
-      final boolean interrupted = Interruptibles.await(runnable);
+    public void shouldReturnTrueWhenNotInterrupted(@Mock final InterruptibleRunnable runnable) throws Exception {
+      final boolean completed = Interruptibles.await(runnable);
 
       verify(runnable).run();
-      assertThat(interrupted, is(false));
+      assertThat(completed, is(true));
     }
 
     @Test
-    public void shouldReturnTrueWhenInterrupted() {
-      final boolean interrupted = Interruptibles.await(() -> {
+    public void shouldReturnFalseWhenInterrupted() {
+      final boolean completed = Interruptibles.await(() -> {
         throw new InterruptedException();
       });
 
-      assertThat(interrupted, is(true));
+      assertThat(completed, is(false));
       assertThat(Thread.currentThread().isInterrupted(), is(true));
     }
 
@@ -88,6 +88,14 @@ public final class InterruptiblesTest {
       assertThrows(IllegalStateException.class, () -> Interruptibles.awaitResult(() -> {
         throw new IllegalStateException();
       }));
+    }
+  }
+
+  @Nested
+  public final class SleepTest {
+    @Test
+    public void shouldThrowExceptionWhenMillisIsNegative() {
+      assertThrows(IllegalArgumentException.class, () -> Interruptibles.sleep(-1L));
     }
   }
 }

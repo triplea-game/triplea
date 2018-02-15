@@ -19,7 +19,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.MessengerTestUtils;
 import games.strategy.net.ServerMessenger;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class ChannelMessengerTest {
   private IServerMessenger serverMessenger;
@@ -113,7 +113,7 @@ public class ChannelMessengerTest {
   private static void assertHasChannel(final RemoteName descriptor, final UnifiedMessengerHub hub) {
     int waitCount = 0;
     while (waitCount < 10 && !hub.hasImplementors(descriptor.getName())) {
-      ThreadUtil.sleep(100);
+      Interruptibles.sleep(100);
       waitCount++;
     }
     assertTrue(hub.hasImplementors(descriptor.getName()));
@@ -124,7 +124,7 @@ public class ChannelMessengerTest {
     // wait for the call to go through, but dont wait too long
     int waitCount = 0;
     while (waitCount < 20 && expected != subscribor.getCallCount()) {
-      ThreadUtil.sleep(50);
+      Interruptibles.sleep(50);
       waitCount++;
     }
     assertEquals(expected, subscribor.getCallCount());

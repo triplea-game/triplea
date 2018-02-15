@@ -17,7 +17,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 public class MessengerIntegrationTest {
   private int serverPort = -1;
@@ -44,7 +44,7 @@ public class MessengerIntegrationTest {
     assertEquals(serverMessenger.getServerNode(), serverMessenger.getLocalNode());
     for (int i = 0; i < 100; i++) {
       if (serverMessenger.getNodes().size() != 3) {
-        ThreadUtil.sleep(1);
+        Interruptibles.sleep(1);
       } else {
         break;
       }
@@ -185,7 +185,7 @@ public class MessengerIntegrationTest {
       if (serverMessenger.getNodes().size() == 3) {
         break;
       }
-      ThreadUtil.sleep(10);
+      Interruptibles.sleep(10);
     }
     final AtomicInteger serverCount = new AtomicInteger(3);
     serverMessenger.addConnectionChangeListener(new IConnectionChangeListener() {
@@ -202,10 +202,10 @@ public class MessengerIntegrationTest {
     client1Messenger.shutDown();
     for (int i = 0; i < 100; i++) {
       if (serverMessenger.getNodes().size() == 2) {
-        ThreadUtil.sleep(10);
+        Interruptibles.sleep(10);
         break;
       }
-      ThreadUtil.sleep(10);
+      Interruptibles.sleep(10);
     }
     assertEquals(2, serverCount.get());
   }
@@ -216,17 +216,17 @@ public class MessengerIntegrationTest {
       if (serverMessenger.getNodes().size() == 3) {
         break;
       }
-      ThreadUtil.sleep(10);
+      Interruptibles.sleep(10);
     }
     assertEquals(3, serverMessenger.getNodes().size());
     client1Messenger.shutDown();
     client2Messenger.shutDown();
     for (int i = 0; i < 100; i++) {
       if (serverMessenger.getNodes().size() == 1) {
-        ThreadUtil.sleep(10);
+        Interruptibles.sleep(10);
         break;
       }
-      ThreadUtil.sleep(1);
+      Interruptibles.sleep(1);
     }
     assertEquals(serverMessenger.getNodes().size(), 1);
   }
@@ -243,7 +243,7 @@ public class MessengerIntegrationTest {
     serverMessenger.removeConnection(client1Messenger.getLocalNode());
     int waitCount = 0;
     while (!closed.get() && waitCount < 10) {
-      ThreadUtil.sleep(40);
+      Interruptibles.sleep(40);
       waitCount++;
     }
     assert (closed.get());

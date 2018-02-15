@@ -36,7 +36,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.ThreadUtil;
+import games.strategy.util.Interruptibles;
 
 /**
  * At the end of the turn collect income.
@@ -153,7 +153,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
     // together, then getting
     // a ton of random numbers at once instead of one at a time)
-    ThreadUtil.sleep(100);
+    Interruptibles.sleep(100);
     final List<Territory> list = new ArrayList<>(territories);
     final int random =
         // ZERO BASED
