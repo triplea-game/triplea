@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import javax.swing.JComponent;
 
-public abstract class AEditableProperty implements IEditableProperty, Serializable, Comparable<Object> {
+public abstract class AEditableProperty implements IEditableProperty, Serializable, Comparable<AEditableProperty> {
   private static final long serialVersionUID = -5005729898242568847L;
   private final String m_name;
   private final String m_description;
@@ -44,18 +44,12 @@ public abstract class AEditableProperty implements IEditableProperty, Serializab
 
   @Override
   public boolean equals(final Object other) {
-    if (other instanceof AEditableProperty) {
-      return ((AEditableProperty) other).m_name.equals(m_name);
-    }
-    return false;
+    return other instanceof AEditableProperty && ((AEditableProperty) other).m_name.equals(m_name);
   }
 
   @Override
-  public int compareTo(final Object other) {
-    if (other instanceof AEditableProperty) {
-      return m_name.compareTo(((AEditableProperty) other).getName());
-    }
-    return -1;
+  public int compareTo(final AEditableProperty other) {
+    return m_name.compareTo(other.getName());
   }
 
   @Override
