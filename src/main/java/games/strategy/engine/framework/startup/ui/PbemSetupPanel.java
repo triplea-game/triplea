@@ -85,9 +85,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     createComponents();
     layoutComponents();
     setupListeners();
-    if (gameSelectorModel.getGameData() != null) {
-      loadAll();
-    }
+    loadAll();
     setWidgetActivation();
   }
 
@@ -158,9 +156,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   private void loadAll() {
-    loadDiceServer(gameSelectorModel.getGameData());
-    loadForumPosters(gameSelectorModel.getGameData());
-    loadEmailSender(gameSelectorModel.getGameData());
+    final GameData data = gameSelectorModel.getGameData();
+    if (data != null) {
+      loadDiceServer(data);
+      loadForumPosters(data);
+      loadEmailSender(data);
+    }
   }
 
   /**
