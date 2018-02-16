@@ -18,6 +18,10 @@ public final class Md5CryptTest {
     return Md5Crypt.crypt(password, salt);
   }
 
+  private static String getHash(final String encryptedPassword) {
+    return Md5Crypt.getHash(encryptedPassword);
+  }
+
   private static String getSalt(final String encryptedPassword) {
     return Md5Crypt.getSalt(encryptedPassword);
   }
@@ -90,6 +94,43 @@ public final class Md5CryptTest {
   }
 
   @Test
+  public void getHash_ShouldReturnHashWhenEncryptedPasswordIsLegal() {
+    Arrays.asList(
+        Tuple.of("$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0", "KsXRew.PuhVQTNMKSXQZx0"),
+        Tuple.of("$1$Eim8FgMk$Y7Rv7y5WCc7rARI/g7xgH1", "Y7Rv7y5WCc7rARI/g7xgH1"),
+        Tuple.of("$1$XlnQ6h98$iIDgBB73DNCK/RwmzU0kv.", "iIDgBB73DNCK/RwmzU0kv."),
+        Tuple.of("$1$3lvJqBhy$ZjNcN3vfMfRdNcDyzQbQq.", "ZjNcN3vfMfRdNcDyzQbQq."),
+        Tuple.of("$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11", "J5dZUS3L8DAMUim4wdL/11"))
+        .forEach(t -> {
+          final String encryptedPassword = t.getFirst();
+          final String hash = t.getSecond();
+          assertThat(
+              String.format("wrong hash for '%s'", encryptedPassword),
+              getHash(encryptedPassword),
+              is(hash));
+        });
+  }
+
+  @Test
+  public void getHash_ShouldThrowExceptionWhenEncryptedPasswordIsIllegal() {
+    Arrays.asList(
+        "1$A$KnCRC85Rudn6P3cpfe3LR/",
+        "$$AB$4jo772pXjQ9qCwNdBde3d1",
+        "$1ABC$3tP1DHUbEbG4bd67/3fFu/",
+        "$1$$dQqZjlWf5HeY7rWTLu23s.",
+        "$1$ABCDEFGHI$ACfvKmv8y/KjlzX1R.tBw.",
+        "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw_",
+        "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw",
+        "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw..")
+        .forEach(encryptedPassword -> {
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> getHash(encryptedPassword),
+              () -> String.format("expected exception for illegal encrypted password '%s'", encryptedPassword));
+        });
+  }
+
+  @Test
   public void getSalt_ShouldReturnSaltWhenEncryptedPasswordIsLegal() {
     Arrays.asList(
         Tuple.of("$1$A$KnCRC85Rudn6P3cpfe3LR/", "A"),
@@ -117,7 +158,10 @@ public final class Md5CryptTest {
         "$$AB$4jo772pXjQ9qCwNdBde3d1",
         "$1ABC$3tP1DHUbEbG4bd67/3fFu/",
         "$1$$dQqZjlWf5HeY7rWTLu23s.",
-        "$1$ABCDEFGHI$ACfvKmv8y/KjlzX1R.tBw.")
+        "$1$ABCDEFGHI$ACfvKmv8y/KjlzX1R.tBw.",
+        "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw_",
+        "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw",
+        "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw..")
         .forEach(encryptedPassword -> {
           assertThrows(
               IllegalArgumentException.class,

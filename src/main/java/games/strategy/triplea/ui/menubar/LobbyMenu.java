@@ -33,6 +33,7 @@ import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.INode;
+import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
@@ -44,7 +45,6 @@ import games.strategy.ui.SwingComponents;
  */
 public final class LobbyMenu extends JMenuBar {
   private static final long serialVersionUID = 4980621864542042057L;
-  private static final String HASHED_MAC_PREFIX = games.strategy.util.Md5Crypt.MAGIC + "MH$";
 
   private final LobbyFrame lobbyFrame;
 
@@ -185,18 +185,8 @@ public final class LobbyMenu extends JMenuBar {
       if (mac == null || mac.length() < 1) {
         return;
       }
-      final String error;
-      if (mac.length() != 28) {
-        error = "Must be 28 characters long";
-      } else if (!mac.startsWith(HASHED_MAC_PREFIX)) {
-        error = "Must start with: " + HASHED_MAC_PREFIX;
-      } else if (!mac.matches("[0-9a-zA-Z$./]+")) {
-        error = "Must use only these characters: 0-9a-zA-Z$./";
-      } else {
-        error = null;
-      }
-      if (error != null) {
-        JOptionPane.showMessageDialog(lobbyFrame, "The hashed Mac Address you entered is invalid (" + error + ").",
+      if (!MacFinder.isValidHashedMacAddress(mac)) {
+        JOptionPane.showMessageDialog(lobbyFrame, "The hashed Mac Address you entered is invalid.",
             "Invalid Hashed Mac", JOptionPane.ERROR_MESSAGE);
         return;
       }
@@ -241,18 +231,8 @@ public final class LobbyMenu extends JMenuBar {
       if (mac == null || mac.length() < 1) {
         return;
       }
-      final String error;
-      if (mac.length() != 28) {
-        error = "Must be 28 characters long";
-      } else if (!mac.startsWith(HASHED_MAC_PREFIX)) {
-        error = "Must start with: " + HASHED_MAC_PREFIX;
-      } else if (!mac.matches("[0-9a-zA-Z$./]+")) {
-        error = "Must use only these characters: 0-9a-zA-Z$./";
-      } else {
-        error = null;
-      }
-      if (error != null) {
-        JOptionPane.showMessageDialog(lobbyFrame, "The hashed Mac Address you entered is invalid (" + error + ").",
+      if (!MacFinder.isValidHashedMacAddress(mac)) {
+        JOptionPane.showMessageDialog(lobbyFrame, "The hashed Mac Address you entered is invalid.",
             "Invalid Hashed Mac", JOptionPane.ERROR_MESSAGE);
         return;
       }

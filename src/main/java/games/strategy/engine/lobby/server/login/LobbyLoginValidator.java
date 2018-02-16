@@ -32,6 +32,7 @@ import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.db.UserDao;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
+import games.strategy.net.MacFinder;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
@@ -162,9 +163,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
         return ErrorMessages.THATS_NOT_A_NICE_NAME;
       }
     }
-    if (user.getHashedMacAddress().length() != 28
-        || !user.getHashedMacAddress().startsWith(games.strategy.util.Md5Crypt.MAGIC + "MH$")
-        || !user.getHashedMacAddress().matches("[0-9a-zA-Z$./]+")) {
+    if (!MacFinder.isValidHashedMacAddress(user.getHashedMacAddress())) {
       // Must have been tampered with
       return ErrorMessages.INVALID_MAC;
     }

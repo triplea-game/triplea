@@ -17,6 +17,7 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 
 public class ModeratorController extends AbstractModeratorController {
@@ -326,8 +327,8 @@ public class ModeratorController extends AbstractModeratorController {
     builder.append("\r\nHashed Mac: ");
     if (UNKNOWN_HASHED_MAC_ADDRESS.equals(mac)) {
       builder.append("(Unknown)");
-    } else if (mac.startsWith(games.strategy.util.Md5Crypt.MAGIC + "MH$")) {
-      builder.append(mac.substring(6));
+    } else if (MacFinder.isValidHashedMacAddress(mac)) {
+      builder.append(MacFinder.trimHashedMacAddressPrefix(mac));
     } else {
       builder.append(mac + " (Invalid)");
     }

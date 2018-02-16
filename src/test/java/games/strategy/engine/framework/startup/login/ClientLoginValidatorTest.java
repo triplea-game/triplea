@@ -4,8 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.net.SocketAddress;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 
 import com.example.mockito.MockitoExtension;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorMessages;
@@ -23,29 +20,6 @@ import games.strategy.engine.framework.startup.login.ClientLoginValidator.ErrorM
 public final class ClientLoginValidatorTest {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
-
-  @Nested
-  public final class MacValidationTest {
-    private static final String MAGIC_MAC_START = ClientLoginValidator.MAC_MAGIC_STRING_PREFIX;
-
-    @Test
-    public void invalidMacs() {
-      final Collection<String> macs = Arrays.asList(
-          MAGIC_MAC_START + "no spaces allowed",
-          MAGIC_MAC_START + "tooShort",
-          MAGIC_MAC_START + "#%@symbol",
-          Strings.repeat("0", ClientLoginValidator.MAC_ADDRESS_LENGTH));
-      macs.forEach(invalidValue -> assertThat(ClientLoginValidator.isValidMac(invalidValue), is(false)));
-    }
-
-    @Test
-    public void validMac() {
-      final int remainingPaddingLength = ClientLoginValidator.MAC_ADDRESS_LENGTH - MAGIC_MAC_START.length();
-      final String valid = MAGIC_MAC_START + Strings.repeat("0", remainingPaddingLength);
-
-      assertThat(ClientLoginValidator.isValidMac(valid), is(true));
-    }
-  }
 
   @Nested
   public final class GetChallengePropertiesTest {
