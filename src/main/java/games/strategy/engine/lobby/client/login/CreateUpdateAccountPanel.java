@@ -23,6 +23,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 
 /**
@@ -127,8 +128,16 @@ public final class CreateUpdateAccountPanel extends JPanel {
   }
 
   private void setupListeners() {
-    cancelButton.addActionListener(e -> dialog.setVisible(false));
+    cancelButton.addActionListener(e -> close());
     okButton.addActionListener(e -> okPressed());
+
+    SwingComponents.addEnterKeyListener(this, this::okPressed);
+  }
+
+  private void close() {
+    if (dialog != null) {
+      dialog.setVisible(false);
+    }
   }
 
   private void okPressed() {
@@ -158,7 +167,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
     }
 
     returnValue = ReturnValue.OK;
-    dialog.setVisible(false);
+    close();
   }
 
   /**
@@ -172,6 +181,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
   public ReturnValue show(final Window parent) {
     dialog = new JDialog(JOptionPane.getFrameForComponent(parent), title, true);
     dialog.getContentPane().add(this);
+    SwingComponents.addEscapeKeyListener(dialog, this::close);
     dialog.pack();
     dialog.setLocationRelativeTo(parent);
     dialog.setVisible(true);
