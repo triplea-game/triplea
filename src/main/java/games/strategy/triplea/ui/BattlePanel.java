@@ -119,34 +119,31 @@ public class BattlePanel extends ActionPanel {
   @Override
   public void display(final PlayerID id) {
     super.display(id);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        removeAll();
-        actionLabel.setText(id.getName() + " battle");
-        setLayout(new BorderLayout());
-        final JPanel panel = JPanelBuilder.builder()
-            .gridLayout(0, 1)
-            .add(actionLabel)
-            .build();
-        for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
-          for (final Territory t : entry.getValue()) {
-            addBattleActions(panel, t, entry.getKey().isBombingRun(), entry.getKey());
-          }
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      actionLabel.setText(id.getName() + " battle");
+      setLayout(new BorderLayout());
+      final JPanel panel = JPanelBuilder.builder()
+          .gridLayout(0, 1)
+          .add(actionLabel)
+          .build();
+      for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
+        for (final Territory t : entry.getValue()) {
+          addBattleActions(panel, t, entry.getKey().isBombingRun(), entry.getKey());
         }
-        add(panel, BorderLayout.NORTH);
-        SwingUtilities.invokeLater(refresh);
       }
-
-      private void addBattleActions(final JPanel panel, final Territory territory, final boolean bomb,
-          final BattleType battleType) {
-        final JPanel innerPanel = new JPanel();
-        innerPanel.setLayout(new BorderLayout());
-        innerPanel.add(new JButton(new FightBattleAction(territory, bomb, battleType)), BorderLayout.CENTER);
-        innerPanel.add(new JButton(new CenterBattleAction(territory)), BorderLayout.EAST);
-        panel.add(innerPanel);
-      }
+      add(panel, BorderLayout.NORTH);
+      SwingUtilities.invokeLater(refresh);
     });
+  }
+
+  private void addBattleActions(final JPanel panel, final Territory territory, final boolean bomb,
+      final BattleType battleType) {
+    final JPanel innerPanel = new JPanel();
+    innerPanel.setLayout(new BorderLayout());
+    innerPanel.add(new JButton(new FightBattleAction(territory, bomb, battleType)), BorderLayout.CENTER);
+    innerPanel.add(new JButton(new CenterBattleAction(territory)), BorderLayout.EAST);
+    panel.add(innerPanel);
   }
 
   public void notifyRetreat(final String messageLong, final String step) {

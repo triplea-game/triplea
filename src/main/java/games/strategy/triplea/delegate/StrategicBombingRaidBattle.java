@@ -570,15 +570,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
 
     private void rollDice(final IDelegateBridge bridge) {
-      {
-        final Set<Unit> duplicatesCheckSet1 = new HashSet<>(m_attackingUnits);
-        if (m_attackingUnits.size() != duplicatesCheckSet1.size()) {
-          throw new IllegalStateException(
-              "Duplicate Units Detected: Original List:" + m_attackingUnits + "  HashSet:" + duplicatesCheckSet1);
-        }
+      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(m_attackingUnits);
+      if (m_attackingUnits.size() != duplicatesCheckSet1.size()) {
+        throw new IllegalStateException(
+            "Duplicate Units Detected: Original List:" + m_attackingUnits + "  HashSet:" + duplicatesCheckSet1);
       }
-      final int rollCount =
-          BattleCalculator.getRolls(m_attackingUnits, m_attacker, false, true, m_territoryEffects);
+
+      final int rollCount = BattleCalculator.getRolls(m_attackingUnits, m_attacker, false, true, m_territoryEffects);
       if (rollCount == 0) {
         m_dice = null;
         return;

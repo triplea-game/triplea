@@ -755,9 +755,5 @@ public class AirBattle extends AbstractBattle {
 
   @Override
   public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
-      final IDelegateBridge bridge, final boolean withdrawn) {
-    // should never happen
-    // throw new IllegalStateException("AirBattle should not have any preceding battle with which to possibly remove
-    // dependents from");
-  }
+      final IDelegateBridge bridge, final boolean withdrawn) {}
 }

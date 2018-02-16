@@ -281,18 +281,14 @@ public class RemoteMessengerTest {
       serverUnifiedMessenger.getHub().waitForNodesToImplement(test.getName());
       assertTrue(serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
       final AtomicReference<ConnectionLostException> rme = new AtomicReference<>(null);
-      final Runnable r = new Runnable() {
-        @Override
-        public void run() {
-          try {
-            final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
-            remoteFoo.foo();
-          } catch (final ConnectionLostException e) {
-            rme.set(e);
-          }
+      final Thread t = new Thread(() -> {
+        try {
+          final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
+          remoteFoo.foo();
+        } catch (final ConnectionLostException e) {
+          rme.set(e);
         }
-      };
-      final Thread t = new Thread(r);
+      });
       t.start();
       // wait for the thread to start
       while (started.get() == false) {
