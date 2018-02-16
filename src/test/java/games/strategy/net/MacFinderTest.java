@@ -42,4 +42,14 @@ public final class MacFinderTest {
   public void isValidHashedMacAddress_ShouldReturnFalseWhenContainsInvalidCharacters() {
     assertThat(MacFinder.isValidHashedMacAddress("$1$MH$ABCDWXYZabcdwxyz0189._"), is(false));
   }
+
+  @Test
+  public void trimHashedMacAddressPrefix_ShouldReturnHashedMacAddressWithoutPrefixWhenValid() {
+    assertThat(MacFinder.trimHashedMacAddressPrefix("$1$MH$ABCDWXYZabcdwxyz0189./"), is("ABCDWXYZabcdwxyz0189./"));
+  }
+
+  @Test
+  public void trimHashedMacAddressPrefix_ShouldThrowExceptionWhenInvalid() {
+    assertThrows(IllegalArgumentException.class, () -> MacFinder.trimHashedMacAddressPrefix("invalid"));
+  }
 }

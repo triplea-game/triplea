@@ -328,7 +328,7 @@ public class ModeratorController extends AbstractModeratorController {
     if (UNKNOWN_HASHED_MAC_ADDRESS.equals(mac)) {
       builder.append("(Unknown)");
     } else if (MacFinder.isValidHashedMacAddress(mac)) {
-      builder.append(mac.substring(6));
+      builder.append(MacFinder.trimHashedMacAddressPrefix(mac));
     } else {
       builder.append(mac + " (Invalid)");
     }

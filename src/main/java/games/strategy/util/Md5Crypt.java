@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public final class Md5Crypt {
   public static final String MAGIC = "$1$";
   private static final Pattern ENCRYPTED_PASSWORD_PATTERN =
-      Pattern.compile("^" + MAGIC.replace("$", "\\$") + "([\\.\\/a-zA-Z0-9]{1,8})\\$[\\.\\/a-zA-Z0-9]{22}$");
+      Pattern.compile("^" + MAGIC.replace("$", "\\$") + "([\\.\\/a-zA-Z0-9]{1,8})\\$([\\.\\/a-zA-Z0-9]{22})$");
   private static final byte[] EMPTY_KEY_BYTES = new byte[0];
 
   private Md5Crypt() {}
@@ -73,6 +73,24 @@ public final class Md5Crypt {
    */
   public static String newSalt() {
     return getSalt(md5Crypt(EMPTY_KEY_BYTES));
+  }
+
+  /**
+   * Gets the hash for the specified encrypted password.
+   *
+   * @param encryptedPassword The encrypted password from a previous call to {@link #crypt(String, String)} whose hash
+   *        is to be returned.
+   *
+   * @return The hash for the specified encrypted password.
+   *
+   * @throws IllegalArgumentException If {@code encryptedPassword} is not an MD5-crypted password.
+   */
+  public static String getHash(final String encryptedPassword) {
+    checkNotNull(encryptedPassword);
+
+    final Matcher matcher = ENCRYPTED_PASSWORD_PATTERN.matcher(encryptedPassword);
+    checkArgument(matcher.matches(), "'" + encryptedPassword + "' is not an MD5-crypted password");
+    return matcher.group(2);
   }
 
   /**
