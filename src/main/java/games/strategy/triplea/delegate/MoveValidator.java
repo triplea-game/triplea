@@ -346,7 +346,9 @@ public class MoveValidator {
             .getUnitTypesThatLostBlitz((wasStartFoughtOver ? route.getAllTerritories() : route.getSteps())))));
         for (final Unit unit : nonBlitzingUnits) {
           // TODO: Need to actually test if the unit is being air transported or land transported
-          if (Matches.unitIsAirTransportable().test(unit) || Matches.unitIsLandTransportable().test(unit)) {
+          if ((Matches.unitIsAirTransportable().test(unit) && units.stream().anyMatch(Matches.unitIsAirTransport()))
+              || (Matches.unitIsLandTransportable().test(unit)
+                  && units.stream().anyMatch(Matches.unitIsLandTransport()))) {
             continue;
           }
           final TripleAUnit taUnit = (TripleAUnit) unit;
