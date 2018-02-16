@@ -94,12 +94,18 @@ final class LoginPanel extends JPanel {
     logon.addActionListener(e -> logonPressed());
     createAccount.addActionListener(e -> {
       returnValue = ReturnValue.CREATE_ACCOUNT;
-      dialog.setVisible(false);
+      close();
     });
-    cancel.addActionListener(e -> dialog.setVisible(false));
+    cancel.addActionListener(e -> close());
     anonymousLogin.addActionListener(e -> updateComponents());
 
     SwingComponents.addEnterKeyListener(this, this::logonPressed);
+  }
+
+  private void close() {
+    if (dialog != null) {
+      dialog.setVisible(false);
+    }
   }
 
   private void logonPressed() {
@@ -117,7 +123,7 @@ final class LoginPanel extends JPanel {
     }
 
     returnValue = ReturnValue.LOGON;
-    dialog.setVisible(false);
+    close();
   }
 
   private void updateComponents() {
@@ -143,6 +149,7 @@ final class LoginPanel extends JPanel {
   ReturnValue show(final Window parent) {
     dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "Login", true);
     dialog.getContentPane().add(this);
+    SwingComponents.addEscapeKeyListener(dialog, this::close);
     dialog.pack();
     dialog.setLocationRelativeTo(parent);
     dialog.setVisible(true);
