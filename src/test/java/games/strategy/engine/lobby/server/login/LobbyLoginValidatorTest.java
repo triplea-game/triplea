@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -185,11 +184,11 @@ public final class LobbyLoginValidatorTest {
     }
 
     final void thenAccessLogShouldReceiveFailedAuthentication(final UserType userType) {
-      verify(accessLog).logFailedAuthentication(any(Instant.class), eq(user), eq(userType), anyString());
+      verify(accessLog).logFailedAuthentication(eq(user), eq(userType), anyString());
     }
 
     final void thenAccessLogShouldReceiveSuccessfulAuthentication(final UserType userType) {
-      verify(accessLog).logSuccessfulAuthentication(any(Instant.class), eq(user), eq(userType));
+      verify(accessLog).logSuccessfulAuthentication(eq(user), eq(userType));
     }
 
     final void thenAuthenticationShouldFail() {

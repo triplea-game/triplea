@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.server.login;
 
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,14 +29,9 @@ final class CompositeAccessLog implements AccessLog {
   }
 
   @Override
-  public void logFailedAuthentication(
-      final Instant instant,
-      final User user,
-      final UserType userType,
-      final String errorMessage) {
-    logger.info(String.format("Failed authentication by %s user at [%s]: name: %s, IP: %s, MAC: %s, error: %s",
+  public void logFailedAuthentication(final User user, final UserType userType, final String errorMessage) {
+    logger.info(String.format("Failed authentication by %s user: name: %s, IP: %s, MAC: %s, error: %s",
         userType.toString().toLowerCase(),
-        instant,
         user.getUsername(),
         user.getInetAddress().getHostAddress(),
         user.getHashedMacAddress(),
@@ -45,16 +39,15 @@ final class CompositeAccessLog implements AccessLog {
   }
 
   @Override
-  public void logSuccessfulAuthentication(final Instant instant, final User user, final UserType userType) {
-    logger.info(String.format("Successful authentication by %s user at [%s]: name: %s, IP: %s, MAC: %s",
+  public void logSuccessfulAuthentication(final User user, final UserType userType) {
+    logger.info(String.format("Successful authentication by %s user: name: %s, IP: %s, MAC: %s",
         userType.toString().toLowerCase(),
-        instant,
         user.getUsername(),
         user.getInetAddress().getHostAddress(),
         user.getHashedMacAddress()));
 
     try {
-      accessLogDao.insert(instant, user, userType);
+      accessLogDao.insert(user, userType);
     } catch (final SQLException e) {
       logger.log(Level.SEVERE, "failed to record successful authentication in database", e);
     }
