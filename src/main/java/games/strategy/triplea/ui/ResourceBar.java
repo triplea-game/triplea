@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
   private static final long serialVersionUID = -7713792841831042952L;
 
   private final UiContext uiContext;
-  private final List<IStat> resources = new ArrayList<>();
+  private final List<IStat> resourceStats = new ArrayList<>();
   private final List<JLabel> labels = new ArrayList<>();
 
   public ResourceBar(final GameData data, final UiContext uiContext) {
@@ -37,6 +38,7 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
   protected void initLayout() {
     setBorder(new EtchedBorder(EtchedBorder.RAISED));
     labels.stream().forEachOrdered(this::add);
+    this.setPreferredSize(new Dimension(400, 0));
   }
 
   @Override
@@ -51,7 +53,7 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
       if (resource.getName().equals(Constants.VPS)) {
         continue;
       }
-      resources.add(new ResourceStat(resource));
+      resourceStats.add(new ResourceStat(resource));
       final JLabel label = new JLabel();
       label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
       labels.add(label);
@@ -64,15 +66,17 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
     try {
       final PlayerID player = gameData.getSequence().getStep().getPlayerId();
       if (player != null) {
-        for (int i = 0; i < resources.size(); i++) {
-          final String quantity = resources.get(i).getFormatter().format(resources.get(i).getValue(player, gameData));
+        for (int i = 0; i < resourceStats.size(); i++) {
+          final IStat resourceStat = resourceStats.get(i);
+          final Resource resource = gameData.getResourceList().getResource(resourceStat.getName());
+          final String quantity = resourceStat.getFormatter().format(resourceStat.getValue(player, gameData));
+          labels.get(i).setVisible(resource.isDisplayedFor(player));
           try {
-            labels.get(i).setIcon(uiContext.getResourceImageFactory()
-                .getIcon(gameData.getResourceList().getResource(resources.get(i).getName()), true));
+            labels.get(i).setIcon(uiContext.getResourceImageFactory().getIcon(resource, true));
             labels.get(i).setText(quantity);
-            labels.get(i).setToolTipText(resources.get(i).getName());
+            labels.get(i).setToolTipText(resourceStat.getName());
           } catch (final IllegalStateException e) {
-            labels.get(i).setText(resources.get(i).getName() + " " + quantity);
+            labels.get(i).setText(resourceStat.getName() + " " + quantity);
           }
         }
       }

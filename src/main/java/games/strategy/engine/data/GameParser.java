@@ -732,11 +732,25 @@ public final class GameParser {
     }
   }
 
-  private void parseResources(final Element root) {
-    getChildren("resource", root).stream()
-        .map(e -> e.getAttribute("name"))
-        .map(name -> new Resource(name, data))
-        .forEach(data.getResourceList()::addResource);
+  private void parseResources(final Element root) throws GameParseException {
+    for (final Element element : getChildren("resource", root)) {
+      final String name = element.getAttribute("name");
+      final String isDisplayedFor = element.getAttribute("isDisplayedFor");
+      final List<PlayerID> players = data.getPlayerList().getPlayers();
+      if (isDisplayedFor.equalsIgnoreCase("NONE")) {
+        players.clear();
+      } else if (!isDisplayedFor.isEmpty()) {
+        players.clear();
+        for (final String s : isDisplayedFor.split(":")) {
+          final PlayerID player = data.getPlayerList().getPlayerId(s);
+          if (player == null) {
+            throw new GameParseException("Parse resources could not find player: " + s);
+          }
+          players.add(player);
+        }
+      }
+      data.getResourceList().addResource(new Resource(name, data, players));
+    }
   }
 
   private void parseRelationshipTypes(final Element root) {
