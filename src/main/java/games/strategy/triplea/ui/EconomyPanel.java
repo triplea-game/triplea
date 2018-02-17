@@ -47,12 +47,12 @@ public class EconomyPanel extends AbstractStatPanel {
     private String[][] collectedData;
 
     public ResourceTableModel() {
-      setResourceCollums();
+      setResourceColumns();
       gameData.addDataChangeListener(this);
       isDirty = true;
     }
 
-    private void setResourceCollums() {
+    private void setResourceColumns() {
       final List<IStat> statList = new ArrayList<>();
       for (final Resource resource : gameData.getResourceList().getResources()) {
         if (resource.getName().equals(Constants.TECH_TOKENS) || resource.getName().equals(Constants.VPS)) {

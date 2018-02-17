@@ -172,6 +172,7 @@ public class TripleAFrame extends MainGameFrame {
   private final MapPanel mapPanel;
   private final MapPanelSmallView smallView;
   private final JLabel message = new JLabel("No selection");
+  private final ResourceBar resourceBar;
   private final JLabel status = new JLabel("");
   private final JLabel step = new JLabel("xxxxxx");
   private final JLabel round = new JLabel("xxxxxx");
@@ -290,7 +291,8 @@ public class TripleAFrame extends MainGameFrame {
     gameSouthPanel.setLayout(new BorderLayout());
     message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     message.setPreferredSize(message.getPreferredSize());
-    message.setText("some text to set a reasonable preferred size");
+    message.setText("some text to set a reasonable preferred size for territory name and resources");
+    resourceBar = new ResourceBar(data, uiContext);
     status.setText("some text to set a reasonable preferred size for movement error messages");
     message.setPreferredSize(message.getPreferredSize());
     status.setPreferredSize(message.getPreferredSize());
@@ -299,9 +301,11 @@ public class TripleAFrame extends MainGameFrame {
     final JPanel bottomMessagePanel = new JPanel();
     bottomMessagePanel.setLayout(new GridBagLayout());
     bottomMessagePanel.setBorder(BorderFactory.createEmptyBorder());
-    bottomMessagePanel.add(message, new GridBagConstraints(0, 0, 1, 1, .35, 1, GridBagConstraints.WEST,
+    bottomMessagePanel.add(message, new GridBagConstraints(0, 0, 1, 1, .40, 1, GridBagConstraints.WEST,
         GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    bottomMessagePanel.add(status, new GridBagConstraints(1, 0, 1, 1, .65, 1, GridBagConstraints.CENTER,
+    bottomMessagePanel.add(resourceBar, new GridBagConstraints(1, 0, 1, 1, .30, 1, GridBagConstraints.CENTER,
+        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    bottomMessagePanel.add(status, new GridBagConstraints(2, 0, 1, 1, .30, 1, GridBagConstraints.EAST,
         GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     gameSouthPanel.add(bottomMessagePanel, BorderLayout.CENTER);
     status.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -1428,6 +1432,7 @@ public class TripleAFrame extends MainGameFrame {
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }
+    resourceBar.gameDataChanged(null);
     // if the game control has passed to someone else and we are not just showing the map
     // show the history
     if (player != null && !player.isNull()) {
