@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,6 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
   protected void initLayout() {
     setBorder(new EtchedBorder(EtchedBorder.RAISED));
     labels.stream().forEachOrdered(this::add);
-    this.setPreferredSize(new Dimension(400, 0));
   }
 
   @Override
