@@ -81,6 +81,8 @@ public class ResourceImageFactory {
 
   /**
    * Return a icon image.
+   *
+   * @throws IllegalStateException if image can't be found
    */
   public ImageIcon getIcon(final Resource type, final boolean large) {
     final String fullName = type.getName() + (large ? "_large" : "");
