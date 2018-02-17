@@ -1,1 +1,3 @@
 rootProject.name='triplea'
+include 'game-core'
+
