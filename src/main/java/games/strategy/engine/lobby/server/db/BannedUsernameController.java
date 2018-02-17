@@ -30,7 +30,7 @@ public class BannedUsernameController extends TimedController implements BannedU
 
     final String sql = ""
         + "insert into banned_usernames "
-        + "  (username, ip, mac, ban_till, mod_username, mod_ip, mod_mac) values (?, ?, ?, ?, ?, ?, ?) "
+        + "  (username, ip, mac, ban_till, mod_username, mod_ip, mod_mac) values (?, ?::inet, ?, ?, ?, ?::inet, ?) "
         + "on conflict (username) do update set "
         + "  ip=excluded.ip, "
         + "  mac=excluded.mac, "
