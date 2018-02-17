@@ -17,21 +17,20 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
@@ -39,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ListModel;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -276,14 +276,34 @@ public class SwingComponents {
     });
   }
 
-  public static <T> DefaultListModel<String> newJListModel(final List<T> maps, final Function<T, String> mapper) {
-    final DefaultListModel<String> model = new DefaultListModel<>();
-    maps.stream().map(mapper).forEach(model::addElement);
-    return model;
+  /**
+   * Creates a new combo box model containing a copy of the specified collection of values.
+   *
+   * @param values The values used to populate the combo box model.
+   *
+   * @return A new combo box model.
+   */
+  public static <T> ComboBoxModel<T> newComboBoxModel(final Collection<T> values) {
+    checkNotNull(values);
+
+    final DefaultComboBoxModel<T> comboBoxModel = new DefaultComboBoxModel<>();
+    values.forEach(comboBoxModel::addElement);
+    return comboBoxModel;
   }
 
-  public static JList<String> newJList(final DefaultListModel<String> listModel) {
-    return new JList<>(listModel);
+  /**
+   * Creates a new list model containing a copy of the specified collection of values.
+   *
+   * @param values The values used to populate the list model.
+   *
+   * @return A new list model.
+   */
+  public static <T> ListModel<T> newListModel(final Collection<T> values) {
+    checkNotNull(values);
+
+    final DefaultListModel<T> listModel = new DefaultListModel<>();
+    values.forEach(listModel::addElement);
+    return listModel;
   }
 
   public static JEditorPane newHtmlJEditorPane() {

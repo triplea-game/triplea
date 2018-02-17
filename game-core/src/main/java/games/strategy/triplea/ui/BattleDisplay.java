@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -426,8 +425,8 @@ public class BattleDisplay extends JPanel {
       imagePanel.add(retreatTerritory);
       imagePanel.setBorder(new EmptyBorder(10, 10, 10, 0));
       this.add(imagePanel, BorderLayout.EAST);
-      final Vector<Territory> listElements = new Vector<>(possible);
-      list = new JList<>(listElements);
+      final List<Territory> listElements = new ArrayList<>(possible);
+      list = new JList<>(SwingComponents.newListModel(listElements));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       if (listElements.size() >= 1) {
         list.setSelectedIndex(0);

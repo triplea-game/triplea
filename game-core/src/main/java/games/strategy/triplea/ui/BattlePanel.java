@@ -6,13 +6,13 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -46,6 +46,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Interruptibles;
 import swinglib.JPanelBuilder;
@@ -528,11 +529,11 @@ public class BattlePanel extends ActionPanel {
       final String unitName = unit.getType().getName() + " in " + unitTerritory;
       final JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
       this.add(label, BorderLayout.NORTH);
-      final Vector<Object> listElements = new Vector<>(territories);
+      final List<Object> listElements = new ArrayList<>(territories);
       if (noneAvailable) {
         listElements.add(0, "None");
       }
-      list = new JList<>(listElements);
+      list = new JList<>(SwingComponents.newListModel(listElements));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       if (listElements.size() >= 1) {
         list.setSelectedIndex(0);

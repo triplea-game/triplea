@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,6 +15,7 @@ import javax.swing.JScrollPane;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
+import games.strategy.ui.SwingComponents;
 
 public class TechResultsDisplay extends JPanel {
   private static final long serialVersionUID = -8303376983862918107L;
@@ -27,7 +27,7 @@ public class TechResultsDisplay extends JPanel {
     if (msg.getHits() != 0) {
       add(new JLabel("Technologies discovered:"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-      final JList<String> list = new JList<>(new Vector<>(msg.getAdvances()));
+      final JList<String> list = new JList<>(SwingComponents.newListModel(msg.getAdvances()));
       add(list, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
           new Insets(0, 0, 5, 0), 0, 0));
       list.setBackground(this.getBackground());

@@ -20,12 +20,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
@@ -76,6 +75,7 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
+import games.strategy.ui.SwingComponents;
 import games.strategy.ui.WidgetChangedListener;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
@@ -332,7 +332,7 @@ class OddsCalculatorPanel extends JPanel {
       final List<String> selected = territoryEffectsJList.getSelectedValuesList();
       data.acquireReadLock();
       try {
-        final Hashtable<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
+        final Map<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
         for (final String selection : selected) {
           if (selection.equals(NO_EFFECTS)) {
             territoryEffects.clear();
@@ -652,17 +652,17 @@ class OddsCalculatorPanel extends JPanel {
       if (doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, data)) {
         playerList.add(PlayerID.NULL_PLAYERID);
       }
-      attackerCombo = new JComboBox<>(new Vector<>(playerList));
-      defenderCombo = new JComboBox<>(new Vector<>(playerList));
-      swapSidesCombo = new JComboBox<>(new Vector<>(playerList));
-      final Hashtable<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
+      attackerCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
+      defenderCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
+      swapSidesCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
+      final Map<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
       if (allTerritoryEffects == null || allTerritoryEffects.isEmpty()) {
         territoryEffectsJList = null;
       } else {
-        final Vector<String> effectNames = new Vector<>();
+        final List<String> effectNames = new ArrayList<>();
         effectNames.add(NO_EFFECTS);
         effectNames.addAll(allTerritoryEffects.keySet());
-        territoryEffectsJList = new JList<>(effectNames);
+        territoryEffectsJList = new JList<>(SwingComponents.newListModel(effectNames));
         territoryEffectsJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);
         // equal to the amount of space left (number of remaining items on the right)

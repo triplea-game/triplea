@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -34,6 +33,7 @@ import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
@@ -107,7 +107,7 @@ public class TechPanel extends ActionPanel {
         JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
         return;
       }
-      final JList<TechAdvance> list = new JList<>(new Vector<>(available));
+      final JList<TechAdvance> list = new JList<>(SwingComponents.newListModel(available));
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
       panel.add(list, BorderLayout.CENTER);
@@ -160,7 +160,7 @@ public class TechPanel extends ActionPanel {
       JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
       return;
     }
-    final JList<TechnologyFrontier> list = new JList<TechnologyFrontier>(new Vector<>(techCategories)) {
+    final JList<TechnologyFrontier> list = new JList<TechnologyFrontier>(SwingComponents.newListModel(techCategories)) {
       private static final long serialVersionUID = 35094445315520702L;
 
       @Override
@@ -212,15 +212,16 @@ public class TechPanel extends ActionPanel {
       if (techCategories.isEmpty()) {
         return;
       }
-      final JList<TechnologyFrontier> list = new JList<TechnologyFrontier>(new Vector<>(techCategories)) {
-        private static final long serialVersionUID = -8415987764855418565L;
+      final JList<TechnologyFrontier> list =
+          new JList<TechnologyFrontier>(SwingComponents.newListModel(techCategories)) {
+            private static final long serialVersionUID = -8415987764855418565L;
 
-        @Override
-        public String getToolTipText(final MouseEvent e) {
-          final int index = locationToIndex(e.getPoint());
-          return (-1 < index) ? getTechListToolTipText(getModel().getElementAt(index)) : null;
-        }
-      };
+            @Override
+            public String getToolTipText(final MouseEvent e) {
+              final int index = locationToIndex(e.getPoint());
+              return (-1 < index) ? getTechListToolTipText(getModel().getElementAt(index)) : null;
+            }
+          };
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
       panel.add(list, BorderLayout.CENTER);
