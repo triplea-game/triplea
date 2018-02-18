@@ -78,6 +78,9 @@ public class MapPropertiesMaker extends JFrame {
     return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
   }
 
+  /**
+   * Entry point for the Map Properties Maker tool.
+   */
   public static void main(final String[] args) {
     handleCommandLineArgs(args);
     // JOptionPane.showMessageDialog(null, new JLabel("<html>" + "This is the MapPropertiesMaker, it will create a
