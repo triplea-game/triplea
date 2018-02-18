@@ -382,10 +382,10 @@ public class DownloadMapsWindow extends JFrame {
 
     final JLabel mapSizeLabel = new JLabel(" ");
 
-    final DefaultListModel<String> model = SwingComponents.newJListModel(maps, map -> map.getMapName());
-
-
     if (maps.size() > 0) {
+      final DefaultListModel<String> model = new DefaultListModel<>();
+      maps.stream().map(DownloadFileDescription::getMapName).forEach(model::addElement);
+
       final DownloadFileDescription mapToSelect = determineCurrentMapSelection(maps, selectedMap);
       final JList<String> gamesList = createGameSelectionList(mapToSelect, maps, descriptionPane, model);
       gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
@@ -423,8 +423,7 @@ public class DownloadMapsWindow extends JFrame {
   private static JList<String> createGameSelectionList(final DownloadFileDescription selectedMap,
       final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel,
       final DefaultListModel<String> model) {
-
-    final JList<String> gamesList = SwingComponents.newJList(model);
+    final JList<String> gamesList = new JList<>(model);
     final int selectedIndex = maps.indexOf(selectedMap);
     gamesList.setSelectedIndex(selectedIndex);
 

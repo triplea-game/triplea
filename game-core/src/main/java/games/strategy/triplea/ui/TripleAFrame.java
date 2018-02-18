@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -902,7 +901,7 @@ public class TripleAFrame extends MainGameFrame {
     final AtomicReference<Unit> selected = new AtomicReference<>();
     final String message = "Select bombing target in " + territory.getName();
     final Supplier<Tuple<JPanel, JList<Unit>>> action = () -> {
-      final JList<Unit> list = new JList<>(new Vector<>(potentialTargets));
+      final JList<Unit> list = new JList<>(SwingComponents.newListModel(potentialTargets));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setSelectedIndex(0);
       list.setCellRenderer(new UnitRenderer());
@@ -998,7 +997,7 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     final Supplier<Tuple<JPanel, JList<Territory>>> action = () -> {
       mapPanel.centerOn(currentTerritory);
-      final JList<Territory> list = new JList<>(new Vector<>(candidates));
+      final JList<Territory> list = new JList<>(SwingComponents.newListModel(candidates));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setSelectedIndex(0);
       final JPanel panel = new JPanel();
@@ -1368,7 +1367,7 @@ public class TripleAFrame extends MainGameFrame {
     mapPanel.centerOn(from);
 
     final Supplier<Territory> action = () -> {
-      final JList<Territory> list = new JList<>(new Vector<>(candidates));
+      final JList<Territory> list = new JList<>(SwingComponents.newListModel(candidates));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.setSelectedIndex(0);
       final JPanel panel = new JPanel();

@@ -3,10 +3,11 @@ package games.strategy.engine.data.properties;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+
+import games.strategy.ui.SwingComponents;
 
 /**
  * A property that uses a list for selecting the value.
@@ -53,7 +54,7 @@ public class ComboProperty<T> extends AEditableProperty {
 
   @Override
   public JComponent getEditorComponent() {
-    final JComboBox<T> box = new JComboBox<>(new Vector<>(possibleValues));
+    final JComboBox<T> box = new JComboBox<>(SwingComponents.newComboBoxModel(possibleValues));
     box.setSelectedItem(value);
     box.addActionListener(e -> value = box.getItemAt(box.getSelectedIndex()));
     return box;

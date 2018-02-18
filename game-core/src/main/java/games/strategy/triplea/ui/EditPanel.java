@@ -17,7 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -62,6 +61,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.ui.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
@@ -249,10 +249,10 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final Vector<TechAdvance> techs;
+        final Collection<TechAdvance> techs;
         getData().acquireReadLock();
         try {
-          techs = new Vector<>(TechnologyDelegate.getAvailableTechs(player, data));
+          techs = TechnologyDelegate.getAvailableTechs(player, data);
         } finally {
           getData().releaseReadLock();
         }
@@ -260,7 +260,7 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final JList<TechAdvance> techList = new JList<>(techs);
+        final JList<TechAdvance> techList = new JList<>(SwingComponents.newListModel(techs));
         techList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         techList.setLayoutOrientation(JList.VERTICAL);
         techList.setVisibleRowCount(10);
@@ -296,10 +296,10 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final Vector<TechAdvance> techs;
+        final Collection<TechAdvance> techs;
         getData().acquireReadLock();
         try {
-          techs = new Vector<>(TechTracker.getCurrentTechAdvances(player, data));
+          techs = TechTracker.getCurrentTechAdvances(player, data);
           // there is no way to "undo" these two techs, so do not allow them to be removed
           final Iterator<TechAdvance> iter = techs.iterator();
           while (iter.hasNext()) {
@@ -316,7 +316,7 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final JList<TechAdvance> techList = new JList<>(techs);
+        final JList<TechAdvance> techList = new JList<>(SwingComponents.newListModel(techs));
         techList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         techList.setLayoutOrientation(JList.VERTICAL);
         techList.setVisibleRowCount(10);
