@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -55,7 +54,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -594,10 +592,6 @@ public class BattleDisplay extends JPanel {
     add(diceAndSteps, BorderLayout.CENTER);
     add(actionButton, BorderLayout.SOUTH);
     actionButton.setEnabled(false);
-    if (!SystemProperties.isMac()) {
-      actionButton.setBackground(Color.lightGray.darker());
-      actionButton.setForeground(Color.white);
-    }
     setDefaultWidths(defenderTable);
     setDefaultWidths(attackerTable);
 
