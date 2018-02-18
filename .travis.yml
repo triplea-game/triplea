@@ -22,7 +22,7 @@ after_success:
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 before_deploy:
 - ./.travis/install_install4j
-- ENGINE_VERSION="$(grep engine_version game_engine.properties | sed 's/.*= *//g').$TRAVIS_BUILD_NUMBER"
+- ENGINE_VERSION="$(grep engine_version game-core/game_engine.properties | sed 's/.*= *//g').$TRAVIS_BUILD_NUMBER"
 - ./gradlew -PengineVersion="$ENGINE_VERSION" release
 - ./.travis/generate_artifact_checksums
 - ./.travis/push_tag $ENGINE_VERSION
