@@ -12,7 +12,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Constants;
 
 /**
@@ -22,7 +21,7 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
   private static final long serialVersionUID = -7713792841831042952L;
 
   private final UiContext uiContext;
-  private final List<IStat> resourceStats = new ArrayList<>();
+  private final List<ResourceStat> resourceStats = new ArrayList<>();
   private final List<JLabel> labels = new ArrayList<>();
 
   public ResourceBar(final GameData data, final UiContext uiContext) {
@@ -65,16 +64,17 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
       final PlayerID player = gameData.getSequence().getStep().getPlayerId();
       if (player != null) {
         for (int i = 0; i < resourceStats.size(); i++) {
-          final IStat resourceStat = resourceStats.get(i);
-          final Resource resource = gameData.getResourceList().getResource(resourceStat.getName());
+          final ResourceStat resourceStat = resourceStats.get(i);
+          final Resource resource = resourceStat.resource;
+          final JLabel label = labels.get(i);
           final String quantity = resourceStat.getFormatter().format(resourceStat.getValue(player, gameData));
-          labels.get(i).setVisible(resource.isDisplayedFor(player));
+          label.setVisible(resource.isDisplayedFor(player));
           try {
-            labels.get(i).setIcon(uiContext.getResourceImageFactory().getIcon(resource, true));
-            labels.get(i).setText(quantity);
-            labels.get(i).setToolTipText(resourceStat.getName());
+            label.setIcon(uiContext.getResourceImageFactory().getIcon(resource, true));
+            label.setText(quantity);
+            label.setToolTipText(resourceStat.getName());
           } catch (final IllegalStateException e) {
-            labels.get(i).setText(resourceStat.getName() + " " + quantity);
+            label.setText(resourceStat.getName() + " " + quantity);
           }
         }
       }

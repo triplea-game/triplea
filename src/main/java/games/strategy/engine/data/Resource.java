@@ -17,16 +17,17 @@ public class Resource extends NamedAttachable {
    *        game data
    */
   public Resource(final String name, final GameData data) {
-    super(name, data);
+    this(name, data, new ArrayList<>());
   }
 
   public Resource(final String name, final GameData data, final List<PlayerID> players) {
-    this(name, data);
+    super(name, data);
     this.players = players;
   }
 
   public boolean isDisplayedFor(final PlayerID player) {
-    return players != null ? players.contains(player) : true;
+    // TODO: remove null check on incompatible release
+    return players == null || players.contains(player);
   }
 
 }

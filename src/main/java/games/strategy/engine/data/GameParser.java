@@ -61,6 +61,8 @@ import games.strategy.util.Version;
  */
 public final class GameParser {
   private static final Class<?>[] SETTER_ARGS = {String.class};
+  private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
+
   private final GameData data = new GameData();
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
@@ -737,7 +739,7 @@ public final class GameParser {
       final String name = element.getAttribute("name");
       final String isDisplayedFor = element.getAttribute("isDisplayedFor");
       final List<PlayerID> players = data.getPlayerList().getPlayers();
-      if (isDisplayedFor.equalsIgnoreCase("NONE")) {
+      if (isDisplayedFor.equalsIgnoreCase(RESOURCE_IS_DISPLAY_FOR_NONE)) {
         players.clear();
       } else if (!isDisplayedFor.isEmpty()) {
         players.clear();
