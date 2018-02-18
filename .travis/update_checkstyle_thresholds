@@ -10,7 +10,7 @@
 #
 
 readonly FALSE=1
-readonly GRADLE_PROPERTIES=gradle.properties
+readonly GRADLE_PROPERTIES=game-core/gradle.properties
 readonly TRUE=0
 
 main() {
@@ -58,7 +58,7 @@ update_threshold() {
   local -r report_file=$1
   local -r violation_property_name=$2
   local -r checkstyle_warning_pattern='<error [^>]*severity="warning"'
-  local -r checkstyle_reports_dir=build/reports/checkstyle
+  local -r checkstyle_reports_dir=game-core/build/reports/checkstyle
   local -r violation_count=$(grep -c "$checkstyle_warning_pattern" $checkstyle_reports_dir/$report_file)
   local -r violation_property="checkstyle${violation_property_name}MaxWarnings"
   sed -i -r "s/$violation_property=[[:digit:]]+/$violation_property=$violation_count/" $GRADLE_PROPERTIES
