@@ -106,7 +106,7 @@ class FileSystemAccessStrategy {
   }
 
   private static String createDialogMessage(final String message, final List<DownloadFileDescription> mapList) {
-    final String plural = mapList.size() > 0 ? "s" : "";
+    final String plural = mapList.size() != 1 ? "s" : "";
     return message + " " + mapList.size() + " map" + plural;
   }
 
