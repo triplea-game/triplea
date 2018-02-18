@@ -250,7 +250,7 @@ public abstract class AbstractUiContext implements UiContext {
     final Map<String, String> skinsByDisplayName = new HashMap<>();
     for (final File f : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
       if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
-        final String displayName = f.getName().replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
+        final String displayName = f.getName().replace(mapName + "-", "").replace(".zip", "");
         skinsByDisplayName.put(displayName, f.getName());
       }
     }

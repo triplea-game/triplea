@@ -26,7 +26,7 @@ public class ResourceLocationTrackerTest {
   public void masterZipsGetSpecialPrefixBasedOnTheMapName() throws Exception {
     final String fakeMapName = "fakeMapName";
     final ResourceLocationTracker testObj = new ResourceLocationTracker(fakeMapName,
-        new URL[] {new URL("file://pretend" + ResourceLocationTracker.MASTER_ZIP_IDENTIFYING_SUFFIX)});
+        new URL[] {new URL("file://pretend" + ResourceLocationTracker.ZIP_IDENTIFYING_SUFFIX)});
     assertThat(testObj.getMapPrefix(), is(fakeMapName + ResourceLocationTracker.MASTER_ZIP_MAGIC_PREFIX));
   }
 

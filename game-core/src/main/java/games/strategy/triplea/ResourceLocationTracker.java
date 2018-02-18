@@ -13,7 +13,7 @@ class ResourceLocationTracker {
    */
   static final String MASTER_ZIP_MAGIC_PREFIX = "-master/map/";
 
-  static final String MASTER_ZIP_IDENTIFYING_SUFFIX = "-master.zip";
+  static final String ZIP_IDENTIFYING_SUFFIX = ".zip";
 
   private final String mapPrefix;
 
@@ -25,16 +25,16 @@ class ResourceLocationTracker {
    *        loaded from a zip or a directory, and if zip, if it matches any particular naming.
    */
   ResourceLocationTracker(final String mapName, final URL[] resourcePaths) {
-    final boolean isUsingMasterZip = Arrays.stream(resourcePaths)
+    final boolean isUsingZip = Arrays.stream(resourcePaths)
         .map(Object::toString)
-        .anyMatch(path -> path.endsWith(MASTER_ZIP_IDENTIFYING_SUFFIX));
+        .anyMatch(path -> path.endsWith(ZIP_IDENTIFYING_SUFFIX));
 
 
     // map skins will have the full path name as their map name.
-    if (mapName.endsWith("-master.zip")) {
+    if (mapName.endsWith(".zip")) {
       mapPrefix = mapName.substring(0, mapName.length() - "-master.zip".length()) + MASTER_ZIP_MAGIC_PREFIX;
     } else {
-      mapPrefix = isUsingMasterZip ? mapName + MASTER_ZIP_MAGIC_PREFIX : "";
+      mapPrefix = isUsingZip ? mapName + MASTER_ZIP_MAGIC_PREFIX : "";
     }
   }
 

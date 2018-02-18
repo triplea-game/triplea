@@ -168,7 +168,6 @@ public final class AvailableGames {
   }
 
   public boolean containsMapName(final String mapNameProperty) {
-    return availableMapFolderOrZipNames.contains(mapNameProperty)
-        || availableMapFolderOrZipNames.contains(mapNameProperty + "-master");
+    return availableMapFolderOrZipNames.contains(mapNameProperty);
   }
 }
