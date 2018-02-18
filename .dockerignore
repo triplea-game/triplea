@@ -1,5 +1,6 @@
 .git
 .gradle
-.remote-libs
-bin
-build
+
+game-core/.remote-libs
+game-core/bin
+game-core/build
