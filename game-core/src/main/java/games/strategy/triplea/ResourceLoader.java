@@ -89,6 +89,7 @@ public class ResourceLoader implements Closeable {
     final String normalizedMapName = normalizeMapName(mapName);
     return Arrays.asList(
         new File(userMapsFolder, mapName + ".zip"),
+        new File(userMapsFolder, normalizedMapName + "-master.zip"), 
         new File(userMapsFolder, normalizedMapName + ".zip"));
   }
 
