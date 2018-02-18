@@ -1,7 +1,7 @@
 start transaction;
 
 create table access_log (
-  access_time timestamptz not null,
+  access_time timestamptz not null default now(),
   username varchar(40) not null,
   ip inet not null,
   mac char(28) not null check (char_length(mac)=28),
