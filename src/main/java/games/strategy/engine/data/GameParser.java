@@ -738,11 +738,12 @@ public final class GameParser {
     for (final Element element : getChildren("resource", root)) {
       final String name = element.getAttribute("name");
       final String isDisplayedFor = element.getAttribute("isDisplayedFor");
-      final List<PlayerID> players = data.getPlayerList().getPlayers();
-      if (isDisplayedFor.equalsIgnoreCase(RESOURCE_IS_DISPLAY_FOR_NONE)) {
-        players.clear();
-      } else if (!isDisplayedFor.isEmpty()) {
-        players.clear();
+      if (isDisplayedFor.isEmpty()) {
+        data.getResourceList().addResource(new Resource(name, data, data.getPlayerList().getPlayers()));
+      } else if (isDisplayedFor.equalsIgnoreCase(RESOURCE_IS_DISPLAY_FOR_NONE)) {
+        data.getResourceList().addResource(new Resource(name, data));
+      } else {
+        final List<PlayerID> players = new ArrayList<>();
         for (final String s : isDisplayedFor.split(":")) {
           final PlayerID player = data.getPlayerList().getPlayerId(s);
           if (player == null) {
@@ -750,8 +751,8 @@ public final class GameParser {
           }
           players.add(player);
         }
+        data.getResourceList().addResource(new Resource(name, data, players));
       }
-      data.getResourceList().addResource(new Resource(name, data, players));
     }
   }
 

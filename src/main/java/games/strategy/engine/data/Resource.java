@@ -6,7 +6,7 @@ import java.util.List;
 public class Resource extends NamedAttachable {
   private static final long serialVersionUID = 7471431759007499935L;
 
-  private List<PlayerID> players = new ArrayList<>();
+  private final List<PlayerID> players;
 
   /**
    * Creates new Resource.
