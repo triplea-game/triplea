@@ -383,6 +383,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
             }
             model.load(entry);
           });
+          // warning: NPE check is not to protect against concurrency, another thread could still null out game data.
+          // The NPE check is to protect against the case where there are errors loading game, in which case
+          // we'll have a null game data.
           if (model.getGameData() != null) {
             setOriginalPropertiesMap(model.getGameData());
             // only for new games, not saved games, we set the default options, and set them only once
