@@ -39,6 +39,9 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import swinglib.JButtonBuilder;
 
+/**
+ * Left hand side panel of the launcher screen that has various info, like selected game and engine version.
+ */
 public class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
 
@@ -380,7 +383,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
             }
             model.load(entry);
           });
-          if(model.getGameData() != null) {
+          if (model.getGameData() != null) {
             setOriginalPropertiesMap(model.getGameData());
             // only for new games, not saved games, we set the default options, and set them only once
             // (the first time it is loaded)
