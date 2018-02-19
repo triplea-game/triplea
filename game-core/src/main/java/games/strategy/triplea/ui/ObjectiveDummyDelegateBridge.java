@@ -32,6 +32,9 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.Tuple;
 
+/**
+ * Class used to avoid making actual data changes when checking objectives.
+ */
 public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   private final ITripleADisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
