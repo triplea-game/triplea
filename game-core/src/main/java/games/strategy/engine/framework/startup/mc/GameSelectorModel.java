@@ -62,19 +62,11 @@ public class GameSelectorModel extends Observable {
 
   public void load(final File file, final Component ui) {
     if (!file.exists()) {
-      if (ui == null) {
-        System.out.println("Could not find file:" + file);
-      } else {
-        error("Could not find file:" + file, ui);
-      }
+      error("Could not find file:" + file, ui);
       return;
     }
     if (file.isDirectory()) {
-      if (ui == null) {
-        System.out.println("Cannot load a directory:" + file);
-      } else {
-        error("Cannot load a directory:" + file, ui);
-      }
+      error("Cannot load a directory:" + file, ui);
       return;
     }
     final GameData newData;
@@ -130,9 +122,13 @@ public class GameSelectorModel extends Observable {
   }
 
   private static void error(final String message, final Component ui) {
-    SwingUtilities.invokeLater(
-        () -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
-            JOptionPane.ERROR_MESSAGE));
+    if (ui == null) {
+      System.out.println(message);
+    } else {
+      SwingUtilities.invokeLater(
+          () -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
+              JOptionPane.ERROR_MESSAGE));
+    }
   }
 
   void setCanSelect(final boolean canSelect) {
