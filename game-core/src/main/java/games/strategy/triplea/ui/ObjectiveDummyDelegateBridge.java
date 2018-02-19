@@ -1,0 +1,230 @@
+package games.strategy.triplea.ui;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
+import games.strategy.engine.framework.IGameModifiedChannel;
+import games.strategy.engine.gamePlayer.IRemotePlayer;
+import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.net.GUID;
+import games.strategy.sound.HeadlessSoundChannel;
+import games.strategy.sound.ISound;
+import games.strategy.triplea.ai.AbstractAi;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
+import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
+import games.strategy.triplea.delegate.remote.ITechDelegate;
+import games.strategy.triplea.ui.display.HeadlessDisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
+import games.strategy.util.Tuple;
+
+public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
+  private final ITripleADisplay display = new HeadlessDisplay();
+  private final ISound soundChannel = new HeadlessSoundChannel();
+  private final DelegateHistoryWriter writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
+  private final GameData gameData;
+  private final ObjectivePanelDummyPlayer dummyAi =
+      new ObjectivePanelDummyPlayer("objective panel dummy", "None (AI)");
+
+  public ObjectiveDummyDelegateBridge(final GameData data) {
+    gameData = data;
+  }
+
+  @Override
+  public GameData getData() {
+    return gameData;
+  }
+
+  @Override
+  public void leaveDelegateExecution() {}
+
+  @Override
+  public Properties getStepProperties() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public String getStepName() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public IRemotePlayer getRemotePlayer(final PlayerID id) {
+    return dummyAi;
+  }
+
+  @Override
+  public IRemotePlayer getRemotePlayer() {
+    return dummyAi;
+  }
+
+  @Override
+  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+      final String annotation) {
+    if (count <= 0) {
+      throw new IllegalStateException("count must be > o, annotation:" + annotation);
+    }
+    final int[] numbers = new int[count];
+    for (int i = 0; i < count; i++) {
+      numbers[i] = getRandom(max, player, diceType, annotation);
+    }
+    return numbers;
+  }
+
+  @Override
+  public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
+    return 0;
+  }
+
+  @Override
+  public PlayerID getPlayerId() {
+    return PlayerID.NULL_PLAYERID;
+  }
+
+  @Override
+  public IDelegateHistoryWriter getHistoryWriter() {
+    return writer;
+  }
+
+  @Override
+  public IDisplay getDisplayChannelBroadcaster() {
+    return display;
+  }
+
+  @Override
+  public ISound getSoundChannelBroadcaster() {
+    return soundChannel;
+  }
+
+  @Override
+  public void enterDelegateExecution() {}
+
+  @Override
+  public void addChange(final Change change) {}
+
+  @Override
+  public void stopGameSequence() {}
+
+  static class DummyGameModifiedChannel implements IGameModifiedChannel {
+    @Override
+    public void addChildToEvent(final String text, final Object renderingData) {}
+
+    @Override
+    public void gameDataChanged(final Change change) {}
+
+    @Override
+    public void shutDown() {}
+
+    @Override
+    public void startHistoryEvent(final String event) {}
+
+    @Override
+    public void startHistoryEvent(final String event, final Object renderingData) {}
+
+    @Override
+    public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
+        final String displayName, final boolean loadedFromSavedGame) {}
+  }
+
+  static class ObjectivePanelDummyPlayer extends AbstractAi {
+    public ObjectivePanelDummyPlayer(final String name, final String type) {
+      super(name, type);
+    }
+
+    @Override
+    protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
+        final PlayerID player) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
+        final PlayerID player) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void purchase(final boolean purcahseForBid, final int pusToSpend,
+        final IPurchaseDelegate purchaseDelegate,
+        final GameData data, final PlayerID player) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean confirmMoveInFaceOfAa(final Collection<Territory> aaFiringTerritories) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
+        final Territory from) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleSite,
+        final Collection<Territory> possibleTerritories, final String message) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+        final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
+        final String message) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
+        final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+        final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+        final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
+        final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
+        final boolean allowMultipleHitsPerUnit) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates,
+        final Territory currentTerritory,
+        final String unitMessage) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean shouldBomberBomb(final Territory territory) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+        final Collection<Unit> bombers) {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+}
