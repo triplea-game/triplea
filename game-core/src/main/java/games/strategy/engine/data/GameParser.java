@@ -5,14 +5,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -60,7 +59,6 @@ import games.strategy.util.Version;
  * Parses a game XML file into a {@link GameData} domain object.
  */
 public final class GameParser {
-  private static final Class<?>[] SETTER_ARGS = {String.class};
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
   private final GameData data = new GameData();
@@ -1248,29 +1246,15 @@ public final class GameParser {
     return returnVal;
   }
 
-  private static String capitalizeFirstLetter(final String input) {
-    char first = input.charAt(0);
-    first = Character.toUpperCase(first);
-    return first + input.substring(1);
-  }
-
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
       throws GameParseException {
+    final Map<String, Function<IAttachment, AttachmentProperty<?>>>  attachmentMap = attachment.getAttachmentMap();
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // find the setter
       final String name = current.getAttribute("name");
       if (name.length() == 0) {
         throw newGameParseException("Option name with 0 length");
-      }
-      final Method setter;
-      try {
-        setter = attachment.getClass().getMethod("set" + capitalizeFirstLetter(name), SETTER_ARGS);
-      } catch (final NoSuchMethodException nsme) {
-        throw newGameParseException(String.format(
-            "The following option name of %s of class %s are either misspelled"
-                + " or exist only in a future version of TripleA. Setter: %s",
-            attachment.getName(), attachment.getClass().getSimpleName(), name));
       }
       // find the value
       final String value = current.getAttribute("value");
@@ -1281,15 +1265,8 @@ public final class GameParser {
       } else {
         itemValues = value;
       }
-      // invoke
-      try {
-        setter.invoke(attachment, itemValues);
-      } catch (final IllegalAccessException iae) {
-        throw newGameParseException(
-            "Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName(), iae);
-      } catch (final InvocationTargetException ite) {
-        throw newGameParseException("Error setting property:" + name, ite);
-      }
+      attachmentMap.get(name).apply(attachment).setValue(itemValues);
+
       options.add(Tuple.of(name, itemValues));
     }
     return options;

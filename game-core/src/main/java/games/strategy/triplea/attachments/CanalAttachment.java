@@ -1,13 +1,19 @@
 package games.strategy.triplea.attachments;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -19,6 +25,9 @@ import games.strategy.util.CollectionUtils;
 @MapSupport
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
   private String m_canalName = null;
   private Set<Territory> m_landTerritories = null;
   private Set<UnitType> m_excludedUnits = null;
@@ -93,7 +102,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setLandTerritories(final HashSet<Territory> value) {
+  public void setLandTerritories(final Set<Territory> value) {
     m_landTerritories = value;
   }
 
@@ -134,7 +143,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setExcludedUnits(final HashSet<UnitType> value) {
+  public void setExcludedUnits(final Set<UnitType> value) {
     m_excludedUnits = value;
   }
 
@@ -144,10 +153,6 @@ public class CanalAttachment extends DefaultAttachment {
           CollectionUtils.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
     }
     return m_excludedUnits;
-  }
-
-  public void clearExcludedUnits() {
-    m_excludedUnits.clear();
   }
 
   public void resetExcludedUnits() {
@@ -162,5 +167,33 @@ public class CanalAttachment extends DefaultAttachment {
     if (m_landTerritories == null || m_landTerritories.size() == 0) {
       throw new GameParseException("Canal named " + m_canalName + " must have landTerritories set!" + thisErrorMsg());
     }
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("canalName", ofCast(a -> AttachmentProperty.of(a::setCanalName, a::getCanalName, a::resetCanalName)))
+        .put("landTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setLandTerritories,
+                a::setLandTerritories,
+                a::getLandTerritories,
+                a::resetLandTerritories)))
+        .put("excludedUnits",
+            ofCast(a -> AttachmentProperty.of(
+                a::setExcludedUnits,
+                a::setExcludedUnits,
+                a::getExcludedUnits,
+                a::resetExcludedUnits)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<CanalAttachment, AttachmentProperty<?>> function) {
+    return function.compose(CanalAttachment.class::cast);
   }
 }

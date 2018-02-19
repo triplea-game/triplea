@@ -1,9 +1,16 @@
 package games.strategy.triplea.attachments;
 
+import java.util.Map;
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
@@ -20,6 +27,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
   public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
   public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
   private String m_archeType = ARCHETYPE_WAR;
   // private final String m_helpsDefendAtSea = PROPERTY_DEFAULT;
   private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
@@ -402,4 +412,91 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("archeType",
+            ofCast(a -> AttachmentProperty.of(
+                a::setArcheType,
+                a::setArcheType,
+                a::getArcheType,
+                a::resetArcheType)))
+        .put("canMoveLandUnitsOverOwnedLand",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanMoveLandUnitsOverOwnedLand,
+                a::setCanMoveLandUnitsOverOwnedLand,
+                a::getCanMoveLandUnitsOverOwnedLand,
+                a::resetCanMoveLandUnitsOverOwnedLand)))
+        .put("canMoveAirUnitsOverOwnedLand",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanMoveAirUnitsOverOwnedLand,
+                a::setCanMoveAirUnitsOverOwnedLand,
+                a::getCanMoveAirUnitsOverOwnedLand,
+                a::resetCanMoveAirUnitsOverOwnedLand)))
+        .put("alliancesCanChainTogether",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAlliancesCanChainTogether,
+                a::setAlliancesCanChainTogether,
+                a::getAlliancesCanChainTogether,
+                a::resetAlliancesCanChainTogether)))
+        .put("isDefaultWarPosition",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsDefaultWarPosition,
+                a::setIsDefaultWarPosition,
+                a::getIsDefaultWarPosition,
+                a::resetIsDefaultWarPosition)))
+        .put("upkeepCost",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUpkeepCost,
+                a::setUpkeepCost,
+                a::getUpkeepCost,
+                a::resetUpkeepCost)))
+        .put("canLandAirUnitsOnOwnedLand",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanLandAirUnitsOnOwnedLand,
+                a::setCanLandAirUnitsOnOwnedLand,
+                a::getCanLandAirUnitsOnOwnedLand,
+                a::resetCanLandAirUnitsOnOwnedLand)))
+        .put("canTakeOverOwnedTerritory",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanTakeOverOwnedTerritory,
+                a::setCanTakeOverOwnedTerritory,
+                a::getCanTakeOverOwnedTerritory,
+                a::resetCanTakeOverOwnedTerritory)))
+        .put("givesBackOriginalTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setGivesBackOriginalTerritories,
+                a::setGivesBackOriginalTerritories,
+                a::getGivesBackOriginalTerritories,
+                a::resetGivesBackOriginalTerritories)))
+        .put("canMoveIntoDuringCombatMove",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanMoveIntoDuringCombatMove,
+                a::setCanMoveIntoDuringCombatMove,
+                a::getCanMoveIntoDuringCombatMove,
+                a::resetCanMoveIntoDuringCombatMove)))
+        .put("canMoveThroughCanals",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanMoveThroughCanals,
+                a::setCanMoveThroughCanals,
+                a::getCanMoveThroughCanals,
+                a::resetCanMoveThroughCanals)))
+        .put("rocketsCanFlyOver",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRocketsCanFlyOver,
+                a::setRocketsCanFlyOver,
+                a::getRocketsCanFlyOver,
+                a::resetRocketsCanFlyOver)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<RelationshipTypeAttachment, AttachmentProperty<?>> function) {
+    return function.compose(RelationshipTypeAttachment.class::cast);
+  }
 }

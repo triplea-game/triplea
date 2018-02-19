@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -20,6 +26,9 @@ import games.strategy.util.IntegerMap;
 @MapSupport
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
   private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<>();
   private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<>();
   private List<UnitType> m_noBlitz = new ArrayList<>();
@@ -139,7 +148,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNoBlitz(final ArrayList<UnitType> value) {
+  public void setNoBlitz(final List<UnitType> value) {
     m_noBlitz = value;
   }
 
@@ -174,7 +183,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitsNotAllowed(final ArrayList<UnitType> value) {
+  public void setUnitsNotAllowed(final List<UnitType> value) {
     m_unitsNotAllowed = value;
   }
 
@@ -192,4 +201,44 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("combatDefenseEffect",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCombatDefenseEffect,
+                a::setCombatDefenseEffect,
+                a::getCombatDefenseEffect,
+                a::resetCombatDefenseEffect)))
+        .put("combatOffenseEffect",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCombatOffenseEffect,
+                a::setCombatOffenseEffect,
+                a::getCombatOffenseEffect,
+                a::resetCombatOffenseEffect)))
+        .put("noBlitz",
+            ofCast(a -> AttachmentProperty.of(
+                a::setNoBlitz,
+                a::setNoBlitz,
+                a::getNoBlitz,
+                a::resetNoBlitz)))
+        .put("unitsNotAllowed",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnitsNotAllowed,
+                a::setUnitsNotAllowed,
+                a::getUnitsNotAllowed,
+                a::resetUnitsNotAllowed)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<TerritoryEffectAttachment, AttachmentProperty<?>> function) {
+    return function.compose(TerritoryEffectAttachment.class::cast);
+  }
 }

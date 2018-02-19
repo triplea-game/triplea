@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -25,6 +31,8 @@ import games.strategy.util.Triple;
 @MapSupport
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1880755875866426270L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
 
   /**
    * Convenience method. can be null
@@ -295,7 +303,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSuicideAttackTargets(final HashSet<UnitType> value) {
+  public void setSuicideAttackTargets(final Set<UnitType> value) {
     m_suicideAttackTargets = value;
   }
 
@@ -437,7 +445,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setGiveUnitControl(final ArrayList<PlayerID> value) {
+  public void setGiveUnitControl(final List<PlayerID> value) {
     m_giveUnitControl = value;
   }
 
@@ -470,7 +478,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCaptureUnitOnEnteringBy(final ArrayList<PlayerID> value) {
+  public void setCaptureUnitOnEnteringBy(final List<PlayerID> value) {
     m_captureUnitOnEnteringBy = value;
   }
 
@@ -503,7 +511,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setShareTechnology(final ArrayList<PlayerID> value) {
+  public void setShareTechnology(final List<PlayerID> value) {
     m_shareTechnology = value;
   }
 
@@ -536,7 +544,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setHelpPayTechCost(final ArrayList<PlayerID> value) {
+  public void setHelpPayTechCost(final List<PlayerID> value) {
     m_helpPayTechCost = value;
   }
 
@@ -590,4 +598,105 @@ public class PlayerAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("vps", ofCast(a -> AttachmentProperty.of(a::setVps, a::setVps, a::getVps, a::resetVps)))
+        .put("captureVps",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCaptureVps,
+                a::setCaptureVps,
+                a::getCaptureVps,
+                a::resetCaptureVps)))
+        .put("retainCapitalNumber",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRetainCapitalNumber,
+                a::setRetainCapitalNumber,
+                a::getRetainCapitalNumber,
+                a::resetRetainCapitalNumber)))
+        .put("retainCapitalProduceNumber",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRetainCapitalProduceNumber,
+                a::setRetainCapitalProduceNumber,
+                a::getRetainCapitalProduceNumber,
+                a::resetRetainCapitalProduceNumber)))
+        .put("giveUnitControl",
+            ofCast(a -> AttachmentProperty.of(
+                a::setGiveUnitControl,
+                a::setGiveUnitControl,
+                a::getGiveUnitControl,
+                a::resetGiveUnitControl)))
+        .put("captureUnitOnEnteringBy",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCaptureUnitOnEnteringBy,
+                a::setCaptureUnitOnEnteringBy,
+                a::getCaptureUnitOnEnteringBy,
+                a::resetCaptureUnitOnEnteringBy)))
+        .put("shareTechnology",
+            ofCast(a -> AttachmentProperty.of(
+                a::setShareTechnology,
+                a::setShareTechnology,
+                a::getShareTechnology,
+                a::resetShareTechnology)))
+        .put("helpPayTechCost",
+            ofCast(a -> AttachmentProperty.of(
+                a::setHelpPayTechCost,
+                a::setHelpPayTechCost,
+                a::getHelpPayTechCost,
+                a::resetHelpPayTechCost)))
+        .put("destroysPUs",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDestroysPUs,
+                a::setDestroysPUs,
+                a::getDestroysPUs,
+                a::resetDestroysPUs)))
+        .put("immuneToBlockade",
+            ofCast(a -> AttachmentProperty.of(
+                a::setImmuneToBlockade,
+                a::setImmuneToBlockade,
+                a::getImmuneToBlockade,
+                a::resetImmuneToBlockade)))
+        .put("suicideAttackResources",
+            ofCast(a -> AttachmentProperty.of(
+                a::setSuicideAttackResources,
+                a::setSuicideAttackResources,
+                a::getSuicideAttackResources,
+                a::resetSuicideAttackResources)))
+        .put("suicideAttackTargets",
+            ofCast(a -> AttachmentProperty.of(
+                a::setSuicideAttackTargets,
+                a::setSuicideAttackTargets,
+                a::getSuicideAttackTargets,
+                a::resetSuicideAttackTargets)))
+        .put("placementLimit",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlacementLimit,
+                a::setPlacementLimit,
+                a::getPlacementLimit,
+                a::resetPlacementLimit)))
+        .put("movementLimit",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMovementLimit,
+                a::setMovementLimit,
+                a::getMovementLimit,
+                a::resetMovementLimit)))
+        .put("attackingLimit",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAttackingLimit,
+                a::setAttackingLimit,
+                a::getAttackingLimit,
+                a::resetAttackingLimit)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<PlayerAttachment, AttachmentProperty<?>> function) {
+    return function.compose(PlayerAttachment.class::cast);
+  }
 }

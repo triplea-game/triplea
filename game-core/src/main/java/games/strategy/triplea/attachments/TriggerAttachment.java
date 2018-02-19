@@ -9,10 +9,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -56,6 +60,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final long serialVersionUID = -3327739180569606093L;
   private static final String PREFIX_CLEAR = "-clear-";
   private static final String PREFIX_RESET = "-reset-";
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
   private ProductionFrontier m_frontier = null;
   private List<String> m_productionRule = null;
   private List<TechAdvance> m_tech = new ArrayList<>();
@@ -321,7 +328,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setActivateTrigger(final ArrayList<Tuple<String, String>> value) {
+  public void setActivateTrigger(final List<Tuple<String, String>> value) {
     m_activateTrigger = value;
   }
 
@@ -393,7 +400,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProductionRule(final ArrayList<String> value) {
+  public void setProductionRule(final List<String> value) {
     m_productionRule = value;
   }
 
@@ -462,7 +469,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTech(final ArrayList<TechAdvance> value) {
+  public void setTech(final List<TechAdvance> value) {
     m_tech = value;
   }
 
@@ -569,7 +576,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSupport(final LinkedHashMap<String, Boolean> value) {
+  public void setSupport(final Map<String, Boolean> value) {
     m_support = value;
   }
 
@@ -639,7 +646,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipChange(final ArrayList<String> value) {
+  public void setRelationshipChange(final List<String> value) {
     m_relationshipChange = value;
   }
 
@@ -671,7 +678,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitType(final ArrayList<UnitType> value) {
+  public void setUnitType(final List<UnitType> value) {
     m_unitType = value;
   }
 
@@ -752,7 +759,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitProperty(final ArrayList<Tuple<String, String>> value) {
+  public void setUnitProperty(final List<Tuple<String, String>> value) {
     m_unitProperty = value;
   }
 
@@ -784,7 +791,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritories(final ArrayList<Territory> value) {
+  public void setTerritories(final List<Territory> value) {
     m_territories = value;
   }
 
@@ -865,7 +872,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryProperty(final ArrayList<Tuple<String, String>> value) {
+  public void setTerritoryProperty(final List<Tuple<String, String>> value) {
     m_territoryProperty = value;
   }
 
@@ -897,7 +904,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayers(final ArrayList<PlayerID> value) {
+  public void setPlayers(final List<PlayerID> value) {
     m_players = value;
   }
 
@@ -994,7 +1001,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayerProperty(final ArrayList<Tuple<String, String>> value) {
+  public void setPlayerProperty(final List<Tuple<String, String>> value) {
     m_playerProperty = value;
   }
 
@@ -1026,7 +1033,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipTypes(final ArrayList<RelationshipType> value) {
+  public void setRelationshipTypes(final List<RelationshipType> value) {
     m_relationshipTypes = value;
   }
 
@@ -1106,7 +1113,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipTypeProperty(final ArrayList<Tuple<String, String>> value) {
+  public void setRelationshipTypeProperty(final List<Tuple<String, String>> value) {
     m_relationshipTypeProperty = value;
   }
 
@@ -1138,7 +1145,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryEffects(final ArrayList<TerritoryEffect> value) {
+  public void setTerritoryEffects(final List<TerritoryEffect> value) {
     m_territoryEffects = value;
   }
 
@@ -1218,7 +1225,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryEffectProperty(final ArrayList<Tuple<String, String>> value) {
+  public void setTerritoryEffectProperty(final List<Tuple<String, String>> value) {
     m_territoryEffectProperty = value;
   }
 
@@ -1283,7 +1290,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlacement(final HashMap<Territory, IntegerMap<UnitType>> value) {
+  public void setPlacement(final Map<Territory, IntegerMap<UnitType>> value) {
     m_placement = value;
   }
 
@@ -1364,7 +1371,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRemoveUnits(final HashMap<Territory, IntegerMap<UnitType>> value) {
+  public void setRemoveUnits(final Map<Territory, IntegerMap<UnitType>> value) {
     m_removeUnits = value;
   }
 
@@ -1467,7 +1474,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChangeOwnership(final ArrayList<String> value) {
+  public void setChangeOwnership(final List<String> value) {
     m_changeOwnership = value;
   }
 
@@ -2603,5 +2610,194 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   @Override
   public void validate(final GameData data) throws GameParseException {
     super.validate(data);
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("frontier",
+            ofCast(a -> AttachmentProperty.of(
+                a::setFrontier,
+                a::setFrontier,
+                a::getFrontier,
+                a::resetFrontier)))
+        .put("productionRule",
+            ofCast(a -> AttachmentProperty.of(
+                a::setProductionRule,
+                a::setProductionRule,
+                a::getProductionRule,
+                a::resetProductionRule)))
+        .put("tech",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTech,
+                a::setTech,
+                a::getTech,
+                a::resetTech)))
+        .put("availableTech",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAvailableTech,
+                a::setAvailableTech,
+                a::getAvailableTech,
+                a::resetAvailableTech)))
+        .put("placement",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlacement,
+                a::setPlacement,
+                a::getPlacement,
+                a::resetPlacement)))
+        .put("removeUnits",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRemoveUnits,
+                a::setRemoveUnits,
+                a::getRemoveUnits,
+                a::resetRemoveUnits)))
+        .put("purchase",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPurchase,
+                a::setPurchase,
+                a::getPurchase,
+                a::resetPurchase)))
+        .put("resource",
+            ofCast(a -> AttachmentProperty.of(
+                a::setResource,
+                a::setResource,
+                a::getResource,
+                a::resetResource)))
+        .put("resourceCount",
+            ofCast(a -> AttachmentProperty.of(
+                a::setResourceCount,
+                a::setResourceCount,
+                a::getResourceCount,
+                a::resetResourceCount)))
+        .put("support",
+            ofCast(a -> AttachmentProperty.of(
+                a::setSupport,
+                a::setSupport,
+                a::getSupport,
+                a::resetSupport)))
+        .put("relationshipChange",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRelationshipChange,
+                a::setRelationshipChange,
+                a::getRelationshipChange,
+                a::resetRelationshipChange)))
+        .put("victory",
+            ofCast(a -> AttachmentProperty.of(
+                a::setVictory,
+                a::setVictory,
+                a::getVictory,
+                a::resetVictory)))
+        .put("activateTrigger",
+            ofCast(a -> AttachmentProperty.of(
+                a::setActivateTrigger,
+                a::setActivateTrigger,
+                a::getActivateTrigger,
+                a::resetActivateTrigger)))
+        .put("changeOwnership",
+            ofCast(a -> AttachmentProperty.of(
+                a::setChangeOwnership,
+                a::setChangeOwnership,
+                a::getChangeOwnership,
+                a::resetChangeOwnership)))
+        .put("unitType",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnitType,
+                a::setUnitType,
+                a::getUnitType,
+                a::resetUnitType)))
+        .put("unitAttachmentName",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnitAttachmentName,
+                a::setUnitAttachmentName,
+                a::getUnitAttachmentName,
+                a::resetUnitAttachmentName)))
+        .put("unitProperty",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnitProperty,
+                a::setUnitProperty,
+                a::getUnitProperty,
+                a::resetUnitProperty)))
+        .put("territories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTerritories,
+                a::setTerritories,
+                a::getTerritories,
+                a::resetTerritories)))
+        .put("territoryAttachmentName",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTerritoryAttachmentName,
+                a::setTerritoryAttachmentName,
+                a::getTerritoryAttachmentName,
+                a::resetTerritoryAttachmentName)))
+        .put("territoryProperty",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTerritoryProperty,
+                a::setTerritoryProperty,
+                a::getTerritoryProperty,
+                a::resetTerritoryProperty)))
+        .put("players",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlayers,
+                a::setPlayers,
+                a::getPlayers,
+                a::resetPlayers)))
+        .put("playerAttachmentName",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlayerAttachmentName,
+                a::setPlayerAttachmentName,
+                a::getPlayerAttachmentName,
+                a::resetPlayerAttachmentName)))
+        .put("playerProperty",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlayerProperty,
+                a::setPlayerProperty,
+                a::getPlayerProperty,
+                a::resetPlayerProperty)))
+        .put("relationshipTypes",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRelationshipTypes,
+                a::setRelationshipTypes,
+                a::getRelationshipTypes,
+                a::resetRelationshipTypes)))
+        .put("relationshipTypeAttachmentName",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRelationshipTypeAttachmentName,
+                a::setRelationshipTypeAttachmentName,
+                a::getRelationshipTypeAttachmentName,
+                a::resetRelationshipTypeAttachmentName)))
+        .put("relationshipTypeProperty",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRelationshipTypeProperty,
+                a::setRelationshipTypeProperty,
+                a::getRelationshipTypeProperty,
+                a::resetRelationshipTypeProperty)))
+        .put("territoryEffects",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTerritoryEffects,
+                a::setTerritoryEffects,
+                a::getTerritoryEffects,
+                a::resetTerritoryEffects)))
+        .put("territoryEffectAttachmentName",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTerritoryEffectAttachmentName,
+                a::setTerritoryEffectAttachmentName,
+                a::getTerritoryEffectAttachmentName,
+                a::resetTerritoryEffectAttachmentName)))
+        .put("territoryEffectProperty",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTerritoryEffectProperty,
+                a::setTerritoryEffectProperty,
+                a::getTerritoryEffectProperty,
+                a::resetTerritoryEffectProperty)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<TriggerAttachment, AttachmentProperty<?>> function) {
+    return function.compose(TriggerAttachment.class::cast);
   }
 }

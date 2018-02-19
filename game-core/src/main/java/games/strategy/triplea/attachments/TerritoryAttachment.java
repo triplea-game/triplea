@@ -5,13 +5,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -26,6 +32,9 @@ import games.strategy.triplea.formatter.MyFormatter;
 @MapSupport
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
     final List<Territory> capitalsListOriginal = new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
@@ -264,7 +273,12 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIsImpassable(final String value) {
-    m_isImpassable = getBool(value);
+    setIsImpassable(getBool(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setIsImpassable(final boolean value) {
+    m_isImpassable = value;
   }
 
   public boolean getIsImpassable() {
@@ -302,7 +316,12 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setVictoryCity(final String value) {
-    m_victoryCity = getInt(value);
+    setVictoryCity(getInt(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setVictoryCity(final int value) {
+    m_victoryCity = value;
   }
 
   public int getVictoryCity() {
@@ -315,7 +334,12 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setOriginalFactory(final String value) {
-    m_originalFactory = getBool(value);
+    setOriginalFactory(getBool(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setOriginalFactory(final boolean value) {
+    m_originalFactory = value;
   }
 
   public boolean getOriginalFactory() {
@@ -795,4 +819,128 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("capital",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCapital,
+                a::setCapital,
+                a::getCapital,
+                a::resetCapital)))
+        .put("originalFactory",
+            ofCast(a -> AttachmentProperty.of(
+                a::setOriginalFactory,
+                a::setOriginalFactory,
+                a::getOriginalFactory,
+                a::resetOriginalFactory)))
+        .put("production",
+            ofCast(a -> AttachmentProperty.of(
+                a::setProduction,
+                a::setProduction,
+                a::getProduction,
+                a::resetProduction)))
+        .put("victoryCity",
+            ofCast(a -> AttachmentProperty.of(
+                a::setVictoryCity,
+                a::setVictoryCity,
+                a::getVictoryCity,
+                a::resetVictoryCity)))
+        .put("isImpassable",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsImpassable,
+                a::setIsImpassable,
+                a::getIsImpassable,
+                a::resetIsImpassable)))
+        .put("originalOwner",
+            ofCast(a -> AttachmentProperty.of(
+                a::setOriginalOwner,
+                a::setOriginalOwner,
+                a::getOriginalOwner,
+                a::resetOriginalOwner)))
+        .put("convoyRoute",
+            ofCast(a -> AttachmentProperty.of(
+                a::setConvoyRoute,
+                a::setConvoyRoute,
+                a::getConvoyRoute,
+                a::resetConvoyRoute)))
+        .put("convoyAttached",
+            ofCast(a -> AttachmentProperty.of(
+                a::setConvoyAttached,
+                a::setConvoyAttached,
+                a::getConvoyAttached,
+                a::resetConvoyAttached)))
+        .put("changeUnitOwners",
+            ofCast(a -> AttachmentProperty.of(
+                a::setChangeUnitOwners,
+                a::setChangeUnitOwners,
+                a::getChangeUnitOwners,
+                a::resetChangeUnitOwners)))
+        .put("captureUnitOnEnteringBy",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCaptureUnitOnEnteringBy,
+                a::setCaptureUnitOnEnteringBy,
+                a::getCaptureUnitOnEnteringBy,
+                a::resetCaptureUnitOnEnteringBy)))
+        .put("navalBase",
+            ofCast(a -> AttachmentProperty.of(
+                a::setNavalBase,
+                a::setNavalBase,
+                a::getNavalBase,
+                a::resetNavalBase)))
+        .put("airBase",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAirBase,
+                a::setAirBase,
+                a::getAirBase,
+                a::resetAirBase)))
+        .put("kamikazeZone",
+            ofCast(a -> AttachmentProperty.of(
+                a::setKamikazeZone,
+                a::setKamikazeZone,
+                a::getKamikazeZone,
+                a::resetKamikazeZone)))
+        .put("unitProduction",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnitProduction,
+                a::setUnitProduction,
+                a::getUnitProduction,
+                a::resetUnitProduction)))
+        .put("blockadeZone",
+            ofCast(a -> AttachmentProperty.of(
+                a::setBlockadeZone,
+                a::setBlockadeZone,
+                a::getBlockadeZone,
+                a::resetBlockadeZone)))
+        .put("territoryEffect",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTerritoryEffect,
+                a::setTerritoryEffect,
+                a::getTerritoryEffect,
+                a::resetTerritoryEffect)))
+        .put("whenCapturedByGoesTo",
+            ofCast(a -> AttachmentProperty.of(
+                a::setWhenCapturedByGoesTo,
+                a::setWhenCapturedByGoesTo,
+                a::getWhenCapturedByGoesTo,
+                a::resetWhenCapturedByGoesTo)))
+        .put("resources",
+            ofCast(a -> AttachmentProperty.of(
+                a::setResources,
+                a::setResources,
+                a::getResources,
+                a::resetResources)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<TerritoryAttachment, AttachmentProperty<?>> function) {
+    return function.compose(TerritoryAttachment.class::cast);
+  }
 }

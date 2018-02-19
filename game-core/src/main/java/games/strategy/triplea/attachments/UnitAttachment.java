@@ -11,14 +11,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -46,6 +51,8 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class UnitAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2946748686268541820L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
 
   /**
    * Convenience method.
@@ -389,7 +396,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanBeGivenByTerritoryTo(final ArrayList<PlayerID> value) {
+  public void setCanBeGivenByTerritoryTo(final List<PlayerID> value) {
     m_canBeGivenByTerritoryTo = value;
   }
 
@@ -422,7 +429,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanBeCapturedOnEnteringBy(final ArrayList<PlayerID> value) {
+  public void setCanBeCapturedOnEnteringBy(final List<PlayerID> value) {
     m_canBeCapturedOnEnteringBy = value;
   }
 
@@ -552,7 +559,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWhenCapturedChangesInto(final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> value) {
+  public void setWhenCapturedChangesInto(final Map<String, Tuple<String, IntegerMap<UnitType>>> value) {
     m_whenCapturedChangesInto = value;
   }
 
@@ -614,7 +621,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDestroyedWhenCapturedBy(final ArrayList<Tuple<String, PlayerID>> value) {
+  public void setDestroyedWhenCapturedBy(final List<Tuple<String, PlayerID>> value) {
     m_destroyedWhenCapturedBy = value;
   }
 
@@ -965,7 +972,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSpecial(final HashSet<String> value) {
+  public void setSpecial(final Set<String> value) {
     m_special = value;
   }
 
@@ -1029,7 +1036,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRequiresUnits(final ArrayList<String[]> value) {
+  public void setRequiresUnits(final List<String[]> value) {
     m_requiresUnits = value;
   }
 
@@ -1064,7 +1071,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRequiresUnitsToMove(final ArrayList<String[]> value) {
+  public void setRequiresUnitsToMove(final List<String[]> value) {
     m_requiresUnitsToMove = value;
   }
 
@@ -1108,7 +1115,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWhenCombatDamaged(final ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> value) {
+  public void setWhenCombatDamaged(final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> value) {
     m_whenCombatDamaged = value;
   }
 
@@ -1133,7 +1140,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setReceivesAbilityWhenWith(final ArrayList<String> value) {
+  public void setReceivesAbilityWhenWith(final List<String> value) {
     m_receivesAbilityWhenWith = value;
   }
 
@@ -2165,7 +2172,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBombingTargets(final HashSet<UnitType> value) {
+  public void setBombingTargets(final Set<UnitType> value) {
     m_bombingTargets = value;
   }
 
@@ -2513,7 +2520,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTargetsAA(final HashSet<UnitType> value) {
+  public void setTargetsAA(final Set<UnitType> value) {
     m_targetsAA = value;
   }
 
@@ -2554,7 +2561,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWillNotFireIfPresent(final HashSet<UnitType> value) {
+  public void setWillNotFireIfPresent(final Set<UnitType> value) {
     m_willNotFireIfPresent = value;
   }
 
@@ -3508,4 +3515,608 @@ public class UnitAttachment extends DefaultAttachment {
   @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
   public void setIsMechanized(final String s) {}
+
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("isAir",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsAir,
+                a::setIsAir,
+                a::getIsAir,
+                a::resetIsAir)))
+        .put("isSea",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsSea,
+                a::setIsSea,
+                a::getIsSea,
+                a::resetIsSea)))
+        .put("movement",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMovement,
+                a::setMovement,
+                a::getMovement,
+                a::resetMovement)))
+        .put("canBlitz",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanBlitz,
+                a::setCanBlitz,
+                a::getCanBlitz,
+                a::resetCanBlitz)))
+        .put("isKamikaze",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsKamikaze,
+                a::setIsKamikaze,
+                a::getIsKamikaze,
+                a::resetIsKamikaze)))
+        .put("canInvadeOnlyFrom",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanInvadeOnlyFrom,
+                a::setCanInvadeOnlyFrom,
+                a::getCanInvadeOnlyFrom,
+                a::resetCanInvadeOnlyFrom)))
+        .put("fuelCost",
+            ofCast(a -> AttachmentProperty.of(
+                a::setFuelCost,
+                a::setFuelCost,
+                a::getFuelCost,
+                a::resetFuelCost)))
+        .put("canNotMoveDuringCombatMove",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanNotMoveDuringCombatMove,
+                a::setCanNotMoveDuringCombatMove,
+                a::getCanNotMoveDuringCombatMove,
+                a::resetCanNotMoveDuringCombatMove)))
+        .put("movementLimit",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMovementLimit,
+                a::setMovementLimit,
+                a::getMovementLimit,
+                a::resetMovementLimit)))
+        .put("attack",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAttack,
+                a::setAttack,
+                a::getAttack,
+                a::resetAttack)))
+        .put("defense",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDefense,
+                a::setDefense,
+                a::getDefense,
+                a::resetDefense)))
+        .put("isInfrastructure",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsInfrastructure,
+                a::setIsInfrastructure,
+                a::getIsInfrastructure,
+                a::resetIsInfrastructure)))
+        .put("canBombard",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanBombard,
+                a::setCanBombard,
+                a::getCanBombard,
+                a::resetCanBombard)))
+        .put("bombard",
+            ofCast(a -> AttachmentProperty.of(
+                a::setBombard,
+                a::setBombard,
+                a::getBombard,
+                a::resetBombard)))
+        .put("isSub",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsSub,
+                a::setIsSub,
+                a::getIsSub,
+                a::resetIsSub)))
+        .put("isDestroyer",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsDestroyer,
+                a::setIsDestroyer,
+                a::getIsDestroyer,
+                a::resetIsDestroyer)))
+        .put("artillery",
+            ofCast(a -> AttachmentProperty.of(
+                a::setArtillery,
+                a::setArtillery,
+                a::getArtillery,
+                a::resetArtillery)))
+        .put("artillerySupportable",
+            ofCast(a -> AttachmentProperty.of(
+                a::setArtillerySupportable,
+                a::setArtillerySupportable,
+                a::getArtillerySupportable,
+                a::resetArtillerySupportable)))
+        .put("unitSupportCount",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnitSupportCount,
+                a::setUnitSupportCount,
+                a::getUnitSupportCount,
+                a::resetUnitSupportCount)))
+        .put("isMarine",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsMarine,
+                a::setIsMarine,
+                a::getIsMarine,
+                a::resetIsMarine)))
+        .put("isSuicide",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsSuicide,
+                a::setIsSuicide,
+                a::getIsSuicide,
+                a::resetIsSuicide)))
+        .put("isSuicideOnHit",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsSuicideOnHit,
+                a::setIsSuicideOnHit,
+                a::getIsSuicideOnHit,
+                a::resetIsSuicideOnHit)))
+        .put("attackingLimit",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAttackingLimit,
+                a::setAttackingLimit,
+                a::getAttackingLimit,
+                a::resetAttackingLimit)))
+        .put("attackRolls",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAttackRolls,
+                a::setAttackRolls,
+                a::getAttackRolls,
+                a::resetAttackRolls)))
+        .put("defenseRolls",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDefenseRolls,
+                a::setDefenseRolls,
+                a::getDefenseRolls,
+                a::resetDefenseRolls)))
+        .put("chooseBestRoll",
+            ofCast(a -> AttachmentProperty.of(
+                a::setChooseBestRoll,
+                a::setChooseBestRoll,
+                a::getChooseBestRoll,
+                a::resetChooseBestRoll)))
+        .put("isCombatTransport",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsCombatTransport,
+                a::setIsCombatTransport,
+                a::getIsCombatTransport,
+                a::resetIsCombatTransport)))
+        .put("transportCapacity",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTransportCapacity,
+                a::setTransportCapacity,
+                a::getTransportCapacity,
+                a::resetTransportCapacity)))
+        .put("transportCost",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTransportCost,
+                a::setTransportCost,
+                a::getTransportCost,
+                a::resetTransportCost)))
+        .put("carrierCapacity",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCarrierCapacity,
+                a::setCarrierCapacity,
+                a::getCarrierCapacity,
+                a::resetCarrierCapacity)))
+        .put("carrierCost",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCarrierCost,
+                a::setCarrierCost,
+                a::getCarrierCost,
+                a::resetCarrierCost)))
+        .put("isAirTransport",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsAirTransport,
+                a::setIsAirTransport,
+                a::getIsAirTransport,
+                a::resetIsAirTransport)))
+        .put("isAirTransportable",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsAirTransportable,
+                a::setIsAirTransportable,
+                a::getIsAirTransportable,
+                a::resetIsAirTransportable)))
+        .put("isInfantry",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsInfantry,
+                a::setIsInfantry,
+                a::getIsInfantry,
+                a::resetIsInfantry)))
+        .put("isLandTransport",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsLandTransport,
+                a::setIsLandTransport,
+                a::getIsLandTransport,
+                a::resetIsLandTransport)))
+        .put("isLandTransportable",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsLandTransportable,
+                a::setIsLandTransportable,
+                a::getIsLandTransportable,
+                a::resetIsLandTransportable)))
+        .put("isAAforCombatOnly",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsAAforCombatOnly,
+                a::setIsAAforCombatOnly,
+                a::getIsAAforCombatOnly,
+                a::resetIsAAforCombatOnly)))
+        .put("isAAforBombingThisUnitOnly",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsAAforBombingThisUnitOnly,
+                a::setIsAAforBombingThisUnitOnly,
+                a::getIsAAforBombingThisUnitOnly,
+                a::resetIsAAforBombingThisUnitOnly)))
+        .put("isAAforFlyOverOnly",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsAAforFlyOverOnly,
+                a::setIsAAforFlyOverOnly,
+                a::getIsAAforFlyOverOnly,
+                a::resetIsAAforFlyOverOnly)))
+        .put("isRocket",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsRocket,
+                a::setIsRocket,
+                a::getIsRocket,
+                a::resetIsRocket)))
+        .put("attackAA",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAttackAA,
+                a::setAttackAA,
+                a::getAttackAA,
+                a::resetAttackAA)))
+        .put("offensiveAttackAA",
+            ofCast(a -> AttachmentProperty.of(
+                a::setOffensiveAttackAA,
+                a::setOffensiveAttackAA,
+                a::getOffensiveAttackAA,
+                a::resetOffensiveAttackAA)))
+        .put("attackAAmaxDieSides",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAttackAAmaxDieSides,
+                a::setAttackAAmaxDieSides,
+                a::getAttackAAmaxDieSides,
+                a::resetAttackAAmaxDieSides)))
+        .put("offensiveAttackAAmaxDieSides",
+            ofCast(a -> AttachmentProperty.of(
+                a::setOffensiveAttackAAmaxDieSides,
+                a::setOffensiveAttackAAmaxDieSides,
+                a::getOffensiveAttackAAmaxDieSides,
+                a::resetOffensiveAttackAAmaxDieSides)))
+        .put("maxAAattacks",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMaxAAattacks,
+                a::setMaxAAattacks,
+                a::getMaxAAattacks,
+                a::resetMaxAAattacks)))
+        .put("maxRoundsAA",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMaxRoundsAA,
+                a::setMaxRoundsAA,
+                a::getMaxRoundsAA,
+                a::resetMaxRoundsAA)))
+        .put("typeAA",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTypeAA,
+                a::setTypeAA,
+                a::getTypeAA,
+                a::resetTypeAA)))
+        .put("targetsAA",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTargetsAA,
+                a::setTargetsAA,
+                a::getTargetsAA,
+                a::resetTargetsAA)))
+        .put("mayOverStackAA",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMayOverStackAA,
+                a::setMayOverStackAA,
+                a::getMayOverStackAA,
+                a::resetMayOverStackAA)))
+        .put("damageableAA",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDamageableAA,
+                a::setDamageableAA,
+                a::getDamageableAA,
+                a::resetDamageableAA)))
+        .put("willNotFireIfPresent",
+            ofCast(a -> AttachmentProperty.of(
+                a::setWillNotFireIfPresent,
+                a::setWillNotFireIfPresent,
+                a::getWillNotFireIfPresent,
+                a::resetWillNotFireIfPresent)))
+        .put("isStrategicBomber",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsStrategicBomber,
+                a::setIsStrategicBomber,
+                a::getIsStrategicBomber,
+                a::resetIsStrategicBomber)))
+        .put("bombingMaxDieSides",
+            ofCast(a -> AttachmentProperty.of(
+                a::setBombingMaxDieSides,
+                a::setBombingMaxDieSides,
+                a::getBombingMaxDieSides,
+                a::resetBombingMaxDieSides)))
+        .put("bombingBonus",
+            ofCast(a -> AttachmentProperty.of(
+                a::setBombingBonus,
+                a::setBombingBonus,
+                a::getBombingBonus,
+                a::resetBombingBonus)))
+        .put("canIntercept",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanIntercept,
+                a::setCanIntercept,
+                a::getCanIntercept,
+                a::resetCanIntercept)))
+        .put("canEscort",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanEscort,
+                a::setCanEscort,
+                a::getCanEscort,
+                a::resetCanEscort)))
+        .put("canAirBattle",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanAirBattle,
+                a::setCanAirBattle,
+                a::getCanAirBattle,
+                a::resetCanAirBattle)))
+        .put("airDefense",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAirDefense,
+                a::setAirDefense,
+                a::getAirDefense,
+                a::resetAirDefense)))
+        .put("airAttack",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAirAttack,
+                a::setAirAttack,
+                a::getAirAttack,
+                a::resetAirAttack)))
+        .put("bombingTargets",
+            ofCast(a -> AttachmentProperty.of(
+                a::setBombingTargets,
+                a::setBombingTargets,
+                a::getBombingTargets,
+                a::resetBombingTargets)))
+        .put("canProduceUnits",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanProduceUnits,
+                a::setCanProduceUnits,
+                a::getCanProduceUnits,
+                a::resetCanProduceUnits)))
+        .put("canProduceXUnits",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanProduceXUnits,
+                a::setCanProduceXUnits,
+                a::getCanProduceXUnits,
+                a::resetCanProduceXUnits)))
+        .put("createsUnitsList",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCreatesUnitsList,
+                a::setCreatesUnitsList,
+                a::getCreatesUnitsList,
+                a::resetCreatesUnitsList)))
+        .put("createsResourcesList",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCreatesResourcesList,
+                a::setCreatesResourcesList,
+                a::getCreatesResourcesList,
+                a::resetCreatesResourcesList)))
+        .put("hitPoints",
+            ofCast(a -> AttachmentProperty.of(
+                a::setHitPoints,
+                a::setHitPoints,
+                a::getHitPoints,
+                a::resetHitPoints)))
+        .put("canBeDamaged",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanBeDamaged,
+                a::setCanBeDamaged,
+                a::getCanBeDamaged,
+                a::resetCanBeDamaged)))
+        .put("maxDamage",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMaxDamage,
+                a::setMaxDamage,
+                a::getMaxDamage,
+                a::resetMaxDamage)))
+        .put("maxOperationalDamage",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMaxOperationalDamage,
+                a::setMaxOperationalDamage,
+                a::getMaxOperationalDamage,
+                a::resetMaxOperationalDamage)))
+        .put("canDieFromReachingMaxDamage",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanDieFromReachingMaxDamage,
+                a::setCanDieFromReachingMaxDamage,
+                a::getCanDieFromReachingMaxDamage,
+                a::resetCanDieFromReachingMaxDamage)))
+        .put("isConstruction",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsConstruction,
+                a::setIsConstruction,
+                a::getIsConstruction,
+                a::resetIsConstruction)))
+        .put("constructionType",
+            ofCast(a -> AttachmentProperty.of(
+                a::setConstructionType,
+                a::setConstructionType,
+                a::getConstructionType,
+                a::resetConstructionType)))
+        .put("constructionsPerTerrPerTypePerTurn",
+            ofCast(a -> AttachmentProperty.of(
+                a::setConstructionsPerTerrPerTypePerTurn,
+                a::setConstructionsPerTerrPerTypePerTurn,
+                a::getConstructionsPerTerrPerTypePerTurn,
+                a::resetConstructionsPerTerrPerTypePerTurn)))
+        .put("maxConstructionsPerTypePerTerr",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMaxConstructionsPerTypePerTerr,
+                a::setMaxConstructionsPerTypePerTerr,
+                a::getMaxConstructionsPerTypePerTerr,
+                a::resetMaxConstructionsPerTypePerTerr)))
+        .put("canOnlyBePlacedInTerritoryValuedAtX",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanOnlyBePlacedInTerritoryValuedAtX,
+                a::setCanOnlyBePlacedInTerritoryValuedAtX,
+                a::getCanOnlyBePlacedInTerritoryValuedAtX,
+                a::resetCanOnlyBePlacedInTerritoryValuedAtX)))
+        .put("requiresUnits",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRequiresUnits,
+                a::setRequiresUnits,
+                a::getRequiresUnits,
+                a::resetRequiresUnits)))
+        .put("consumesUnits",
+            ofCast(a -> AttachmentProperty.of(
+                a::setConsumesUnits,
+                a::setConsumesUnits,
+                a::getConsumesUnits,
+                a::resetConsumesUnits)))
+        .put("requiresUnitsToMove",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRequiresUnitsToMove,
+                a::setRequiresUnitsToMove,
+                a::getRequiresUnitsToMove,
+                a::resetRequiresUnitsToMove)))
+        .put("unitPlacementRestrictions",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnitPlacementRestrictions,
+                a::setUnitPlacementRestrictions,
+                a::getUnitPlacementRestrictions,
+                a::resetUnitPlacementRestrictions)))
+        .put("maxBuiltPerPlayer",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMaxBuiltPerPlayer,
+                a::setMaxBuiltPerPlayer,
+                a::getMaxBuiltPerPlayer,
+                a::resetMaxBuiltPerPlayer)))
+        .put("placementLimit",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlacementLimit,
+                a::setPlacementLimit,
+                a::getPlacementLimit,
+                a::resetPlacementLimit)))
+        .put("canScramble",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanScramble,
+                a::setCanScramble,
+                a::getCanScramble,
+                a::resetCanScramble)))
+        .put("isAirBase",
+            ofCast(a -> AttachmentProperty.of(
+                a::setIsAirBase,
+                a::setIsAirBase,
+                a::getIsAirBase,
+                a::resetIsAirBase)))
+        .put("maxScrambleDistance",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMaxScrambleDistance,
+                a::setMaxScrambleDistance,
+                a::getMaxScrambleDistance,
+                a::resetMaxScrambleDistance)))
+        .put("maxScrambleCount",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMaxScrambleCount,
+                a::setMaxScrambleCount,
+                a::getMaxScrambleCount,
+                a::resetMaxScrambleCount)))
+        .put("blockade",
+            ofCast(a -> AttachmentProperty.of(
+                a::setBlockade,
+                a::setBlockade,
+                a::getBlockade,
+                a::resetBlockade)))
+        .put("repairsUnits",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRepairsUnits,
+                a::setRepairsUnits,
+                a::getRepairsUnits,
+                a::resetRepairsUnits)))
+        .put("givesMovement",
+            ofCast(a -> AttachmentProperty.of(
+                a::setGivesMovement,
+                a::setGivesMovement,
+                a::getGivesMovement,
+                a::resetGivesMovement)))
+        .put("destroyedWhenCapturedBy",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDestroyedWhenCapturedBy,
+                a::setDestroyedWhenCapturedBy,
+                a::getDestroyedWhenCapturedBy,
+                a::resetDestroyedWhenCapturedBy)))
+        .put("whenHitPointsDamagedChangesInto",
+            ofCast(a -> AttachmentProperty.of(
+                a::setWhenHitPointsDamagedChangesInto,
+                a::setWhenHitPointsDamagedChangesInto,
+                a::getWhenHitPointsDamagedChangesInto,
+                a::resetWhenHitPointsDamagedChangesInto)))
+        .put("whenHitPointsRepairedChangesInto",
+            ofCast(a -> AttachmentProperty.of(
+                a::setWhenHitPointsRepairedChangesInto,
+                a::setWhenHitPointsRepairedChangesInto,
+                a::getWhenHitPointsRepairedChangesInto,
+                a::resetWhenHitPointsRepairedChangesInto)))
+        .put("whenCapturedChangesInto",
+            ofCast(a -> AttachmentProperty.of(
+                a::setWhenCapturedChangesInto,
+                a::setWhenCapturedChangesInto,
+                a::getWhenCapturedChangesInto,
+                a::resetWhenCapturedChangesInto)))
+        .put("whenCapturedSustainsDamage",
+            ofCast(a -> AttachmentProperty.of(
+                a::setWhenCapturedSustainsDamage,
+                a::setWhenCapturedSustainsDamage,
+                a::getWhenCapturedSustainsDamage,
+                a::resetWhenCapturedSustainsDamage)))
+        .put("canBeCapturedOnEnteringBy",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanBeCapturedOnEnteringBy,
+                a::setCanBeCapturedOnEnteringBy,
+                a::getCanBeCapturedOnEnteringBy,
+                a::resetCanBeCapturedOnEnteringBy)))
+        .put("canBeGivenByTerritoryTo",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCanBeGivenByTerritoryTo,
+                a::setCanBeGivenByTerritoryTo,
+                a::getCanBeGivenByTerritoryTo,
+                a::resetCanBeGivenByTerritoryTo)))
+        .put("whenCombatDamaged",
+            ofCast(a -> AttachmentProperty.of(
+                a::setWhenCombatDamaged,
+                a::setWhenCombatDamaged,
+                a::getWhenCombatDamaged,
+                a::resetWhenCombatDamaged)))
+        .put("receivesAbilityWhenWith",
+            ofCast(a -> AttachmentProperty.of(
+                a::setReceivesAbilityWhenWith,
+                a::setReceivesAbilityWhenWith,
+                a::getReceivesAbilityWhenWith,
+                a::resetReceivesAbilityWhenWith)))
+        .put("special",
+            ofCast(a -> AttachmentProperty.of(
+                a::setSpecial,
+                a::setSpecial,
+                a::getSpecial,
+                a::resetSpecial)))
+        .put("tuv",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTuv,
+                a::setTuv,
+                a::getTuv,
+                a::resetTuv)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<UnitAttachment, AttachmentProperty<?>> function) {
+    return function.compose(UnitAttachment.class::cast);
+  }
 }

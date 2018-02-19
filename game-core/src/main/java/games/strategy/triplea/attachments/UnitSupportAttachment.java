@@ -5,14 +5,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -23,6 +29,9 @@ import games.strategy.triplea.MapSupport;
 @MapSupport
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
   private Set<UnitType> m_unitType = null;
   @InternalDoNotExport
   // Do Not Export
@@ -95,7 +104,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitType(final HashSet<UnitType> value) {
+  public void setUnitType(final Set<UnitType> value) {
     m_unitType = value;
   }
 
@@ -252,7 +261,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayers(final ArrayList<PlayerID> value) {
+  public void setPlayers(final List<PlayerID> value) {
     m_players = value;
   }
 
@@ -414,4 +423,83 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("unitType",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnitType,
+                a::setUnitType,
+                a::getUnitType,
+                a::resetUnitType)))
+        .put("offence",
+            ofCast(a -> AttachmentProperty.of(a::getOffence)))
+        .put("defence",
+            ofCast(a -> AttachmentProperty.of(a::getDefence)))
+        .put("roll",
+            ofCast(a -> AttachmentProperty.of(a::getRoll)))
+        .put("strength",
+            ofCast(a -> AttachmentProperty.of(a::getStrength)))
+        .put("bonus",
+            ofCast(a -> AttachmentProperty.of(
+                a::setBonus,
+                a::setBonus,
+                a::getBonus,
+                a::resetBonus)))
+        .put("number",
+            ofCast(a -> AttachmentProperty.of(
+                a::setNumber,
+                a::setNumber,
+                a::getNumber,
+                a::resetNumber)))
+        .put("allied",
+            ofCast(a -> AttachmentProperty.of(a::getAllied)))
+        .put("enemy",
+            ofCast(a -> AttachmentProperty.of(a::getEnemy)))
+        .put("bonusType",
+            ofCast(a -> AttachmentProperty.of(
+                a::setBonusType,
+                a::setBonusType,
+                a::getBonusType,
+                a::resetBonusType)))
+        .put("players",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlayers,
+                a::setPlayers,
+                a::getPlayers,
+                a::resetPlayers)))
+        .put("impArtTech",
+            ofCast(a -> AttachmentProperty.of(
+                a::setImpArtTech,
+                a::setImpArtTech,
+                a::getImpArtTech,
+                a::resetImpArtTech)))
+        .put("dice",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDice,
+                a::getDice,
+                a::resetDice)))
+        .put("side",
+            ofCast(a -> AttachmentProperty.of(
+                a::setSide,
+                a::getSide,
+                a::resetSide)))
+        .put("faction",
+            ofCast(a -> AttachmentProperty.of(
+                a::setFaction,
+                a::getFaction,
+                a::resetFaction)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<UnitSupportAttachment, AttachmentProperty<?>> function) {
+    return function.compose(UnitSupportAttachment.class::cast);
+  }
 }

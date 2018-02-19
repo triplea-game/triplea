@@ -11,8 +11,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -44,6 +48,9 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
   // condition for having techs
   private List<TechAdvance> m_techs = null;
   @InternalDoNotExport
@@ -273,7 +280,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationship(final ArrayList<String> value) {
+  public void setRelationship(final List<String> value) {
     m_relationship = value;
   }
 
@@ -581,7 +588,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAtWarPlayers(final HashSet<PlayerID> value) {
+  public void setAtWarPlayers(final Set<PlayerID> value) {
     m_atWarPlayers = value;
   }
 
@@ -627,7 +634,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTechs(final ArrayList<TechAdvance> value) {
+  public void setTechs(final List<TechAdvance> value) {
     m_techs = value;
   }
 
@@ -1158,5 +1165,114 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_directPresenceTerritories);
     validateNames(m_alliedPresenceTerritories);
     validateNames(m_enemyPresenceTerritories);
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("techs",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTechs,
+                a::setTechs,
+                a::getTechs,
+                a::resetTechs)))
+        .put("techCount",
+            ofCast(a -> AttachmentProperty.of(a::getTechCount)))
+        .put("relationship",
+            ofCast(a -> AttachmentProperty.of(
+                a::setRelationship,
+                a::setRelationship,
+                a::getRelationship,
+                a::resetRelationship)))
+        .put("atWarPlayers",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAtWarPlayers,
+                a::setAtWarPlayers,
+                a::getAtWarPlayers,
+                a::resetAtWarPlayers)))
+        .put("atWarCount",
+            ofCast(a -> AttachmentProperty.of(a::getAtWarCount)))
+        .put("destroyedTUV",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDestroyedTUV,
+                a::setDestroyedTUV,
+                a::getDestroyedTUV,
+                a::resetDestroyedTUV)))
+        .put("battle",
+            ofCast(a -> AttachmentProperty.of(
+                a::setBattle,
+                a::setBattle,
+                a::getBattle,
+                a::resetBattle)))
+        .put("alliedOwnershipTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAlliedOwnershipTerritories,
+                a::setAlliedOwnershipTerritories,
+                a::getAlliedOwnershipTerritories,
+                a::resetAlliedOwnershipTerritories)))
+        .put("directOwnershipTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDirectOwnershipTerritories,
+                a::setDirectOwnershipTerritories,
+                a::getDirectOwnershipTerritories,
+                a::resetDirectOwnershipTerritories)))
+        .put("alliedExclusionTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAlliedExclusionTerritories,
+                a::setAlliedExclusionTerritories,
+                a::getAlliedExclusionTerritories,
+                a::resetAlliedExclusionTerritories)))
+        .put("directExclusionTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDirectExclusionTerritories,
+                a::setDirectExclusionTerritories,
+                a::getDirectExclusionTerritories,
+                a::resetDirectExclusionTerritories)))
+        .put("enemyExclusionTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setEnemyExclusionTerritories,
+                a::setEnemyExclusionTerritories,
+                a::getEnemyExclusionTerritories,
+                a::resetEnemyExclusionTerritories)))
+        .put("enemySurfaceExclusionTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setEnemySurfaceExclusionTerritories,
+                a::setEnemySurfaceExclusionTerritories,
+                a::getEnemySurfaceExclusionTerritories,
+                a::resetEnemySurfaceExclusionTerritories)))
+        .put("directPresenceTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDirectPresenceTerritories,
+                a::setDirectPresenceTerritories,
+                a::getDirectPresenceTerritories,
+                a::resetDirectPresenceTerritories)))
+        .put("alliedPresenceTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAlliedPresenceTerritories,
+                a::setAlliedPresenceTerritories,
+                a::getAlliedPresenceTerritories,
+                a::resetAlliedPresenceTerritories)))
+        .put("enemyPresenceTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setEnemyPresenceTerritories,
+                a::setEnemyPresenceTerritories,
+                a::getEnemyPresenceTerritories,
+                a::resetEnemyPresenceTerritories)))
+        .put("unitPresence",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnitPresence,
+                a::setUnitPresence,
+                a::getUnitPresence,
+                a::resetUnitPresence)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<RulesAttachment, AttachmentProperty<?>> function) {
+    return function.compose(RulesAttachment.class::cast);
   }
 }

@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
@@ -29,6 +34,10 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
+  private List<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
+
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
 
   public UserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -49,9 +58,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
     return getAttachment(player, nameOfAttachment, UserActionAttachment.class);
   }
-
-  // instance variables:
-  private ArrayList<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
 
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -96,11 +102,11 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setActivateTrigger(final ArrayList<Tuple<String, String>> value) {
+  public void setActivateTrigger(final List<Tuple<String, String>> value) {
     m_activateTrigger = value;
   }
 
-  public ArrayList<Tuple<String, String>> getActivateTrigger() {
+  public List<Tuple<String, String>> getActivateTrigger() {
     return m_activateTrigger;
   }
 
@@ -175,5 +181,26 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   @Override
   public void validate(final GameData data) throws GameParseException {
     super.validate(data);
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("activateTrigger",
+            ofCast(a -> AttachmentProperty.of(
+                a::setActivateTrigger,
+                a::setActivateTrigger,
+                a::getActivateTrigger,
+                a::resetActivateTrigger)))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<UserActionAttachment, AttachmentProperty<?>> function) {
+    return function.compose(UserActionAttachment.class::cast);
   }
 }

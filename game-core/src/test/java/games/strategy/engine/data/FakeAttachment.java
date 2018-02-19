@@ -2,11 +2,14 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 
@@ -16,6 +19,8 @@ import games.strategy.engine.data.annotations.InternalDoNotExport;
 @Immutable
 public final class FakeAttachment implements IAttachment {
   private static final long serialVersionUID = 3686559484645729844L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
 
   private final String name;
 
@@ -74,5 +79,22 @@ public final class FakeAttachment implements IAttachment {
   @Override
   public void validate(final GameData data) {
     throw new UnsupportedOperationException();
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("name", ofCast(a -> AttachmentProperty.of(a::setName, a::getName, () -> {
+        })))
+        .build();
+  }
+
+  @Override
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+    return attachmentSetters;
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<FakeAttachment, AttachmentProperty<?>> function) {
+    return function.compose(FakeAttachment.class::cast);
   }
 }
