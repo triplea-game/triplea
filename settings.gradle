@@ -1,3 +1,5 @@
 rootProject.name='triplea'
 include 'game-core'
-
+include 'socket-lobby'
+include 'socket-client'
+include 'socket-data'
