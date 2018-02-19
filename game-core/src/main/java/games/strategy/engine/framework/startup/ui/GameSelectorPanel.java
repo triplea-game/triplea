@@ -39,6 +39,9 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import swinglib.JButtonBuilder;
 
+/**
+ * Left hand side panel of the launcher screen that has various info, like selected game and engine version.
+ */
 public class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
 
@@ -380,10 +383,15 @@ public class GameSelectorPanel extends JPanel implements Observer {
             }
             model.load(entry);
           });
-          setOriginalPropertiesMap(model.getGameData());
-          // only for new games, not saved games, we set the default options, and set them only once
-          // (the first time it is loaded)
-          gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
+          // warning: NPE check is not to protect against concurrency, another thread could still null out game data.
+          // The NPE check is to protect against the case where there are errors loading game, in which case
+          // we'll have a null game data.
+          if (model.getGameData() != null) {
+            setOriginalPropertiesMap(model.getGameData());
+            // only for new games, not saved games, we set the default options, and set them only once
+            // (the first time it is loaded)
+            gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
+          }
         }
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
