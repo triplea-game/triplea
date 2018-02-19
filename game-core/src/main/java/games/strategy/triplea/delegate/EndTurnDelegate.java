@@ -195,6 +195,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return endTurnReport.toString();
   }
 
+  /**
+   * Find all of the resources that will be created by units on the map.
+   */
   public static IntegerMap<Resource> findUnitCreatedResources(final PlayerID player, final GameData data) {
     final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
     final Predicate<Unit> myCreatorsMatch = Matches.unitIsOwnedBy(player).and(Matches.unitCreatesResources());
