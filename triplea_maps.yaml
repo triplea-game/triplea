@@ -434,12 +434,32 @@
     <br>Use the special tech tree system to gain access to specific units.
     <br>
     <br>
+- mapName: Another World
+  mapCategory: GOOD
+  url: https://raw.githubusercontent.com/triplea-maps/another_world/master.zip
+  version: 3.7
+  img: https://raw.githubusercontent.com/triplea-maps/another_world/master/description/map_with_sea_zone_names.png
+  description: |
+    <br><b><em>by BeornTheBold</em></b>
+    <br>
+    <br>This is an 18 player map with all players neutral to each other at the start.  Players can change their political
+    <br>stance toward other nations, from neutral to cooperative, friendly, aligned and allied or to uncooperative,
+    <br>unfriendly, hostile, and permanent war.  Every nation starts with the same units but a different geographic
+    <br>in a completely custom world.
+    <br>
+    <br>Grow your population, build cities and factories, expand militarily, and use diplomacy to advance your
+    <br>nation to supremacy.  Develop nuclear capabilities, control the seas, and use canals to out-manuever your
+    <br>enemies.  Units fight and move differently depending on terrain.  Use generals and admirals.
+    <br>Neutral units control most of the land at the start, some are very difficult to defeat.  
+    <br>In addition to resources from gaining territory, use merchant ships to gain income from trade.
+    <br>
+    <br>
 - mapName: Big World 2
   mapCategory: GOOD
   url: https://github.com/triplea-maps/big_world_2/archive/master.zip
   version: 1
   img: https://raw.githubusercontent.com/triplea-maps/big_world_2/master/description/TripleA_big_world2_mini.png
-  description: |
+  description:
     <br>Version 6.1.2, last update 2015.1.2 for engine 1.8.0.5
     <br>Mod done by Prussia.
     <br>Suggestions to y3364andy@hotmail.com
