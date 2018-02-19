@@ -5,10 +5,6 @@ import java.awt.Image;
 import games.strategy.engine.data.PlayerID;
 
 public class FlagIconImageFactory extends ImageFactory {
-  public static final int FLAG_ICON_WIDTH = 30;
-  public static final int FLAG_ICON_HEIGHT = 15;
-  public static final int SMALL_FLAG_ICON_WIDTH = 12;
-  public static final int SMALL_FLAG_ICON_HEIGHT = 7;
   private static final String PREFIX = "flags/";
 
   /** Creates new FlagIconImageFactory. */
