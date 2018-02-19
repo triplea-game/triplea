@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import java.awt.Dimension;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
@@ -15,6 +17,8 @@ public abstract class MainGameFrame extends JFrame {
     super(name);
     localPlayers = players;
     setIconImage(GameRunner.getGameIcon(this));
+    // 200 size is pretty arbitrary, goal is to not allow users to shrink window down to nothing.
+    setMinimumSize(new Dimension(200,200));
   }
 
   public abstract IGame getGame();
