@@ -16,7 +16,7 @@ public class BattleResults extends GameDataComponent {
   private final int m_battleRoundsFought;
   final List<Unit> m_remainingAttackingUnits;
   final List<Unit> m_remainingDefendingUnits;
-  private WhoWon m_whoWon;
+  private final WhoWon m_whoWon;
 
   // FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also causes problems with
   // BattleResults being
@@ -46,10 +46,6 @@ public class BattleResults extends GameDataComponent {
     m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
     m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
     m_whoWon = scriptedWhoWon;
-  }
-
-  public void setWhoWon(final WhoWon whoWon) {
-    m_whoWon = whoWon;
   }
 
   public List<Unit> getRemainingAttackingUnits() {
