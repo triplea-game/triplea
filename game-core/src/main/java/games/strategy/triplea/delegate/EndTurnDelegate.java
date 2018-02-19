@@ -208,10 +208,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         resourceTotalsMap.add(generatedResourcesMap);
       }
     }
-    for (final Resource resource : resourceTotalsMap.keySet()) {
-      if (resource.getName().equals(Constants.PUS)) {
-        resourceTotalsMap.put(resource, resourceTotalsMap.getInt(resource) * Properties.getPuMultiplier(data));
-      }
+    final Resource pus = new Resource(Constants.PUS, data);
+    if (resourceTotalsMap.containsKey(pus)) {
+      resourceTotalsMap.put(pus, resourceTotalsMap.getInt(pus) * Properties.getPuMultiplier(data));
     }
     return resourceTotalsMap;
   }
@@ -229,10 +228,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       if (uses == 0 || !rule.isSatisfied(testedConditions)) {
         continue;
       }
-      int toAdd = rule.getObjectiveValue();
-      toAdd *= Properties.getPuMultiplier(data);
-      toAdd *= rule.getEachMultiple();
-      pus += toAdd;
+      pus += (rule.getObjectiveValue() * rule.getEachMultiple() * Properties.getPuMultiplier(data));
     }
     return pus;
   }
