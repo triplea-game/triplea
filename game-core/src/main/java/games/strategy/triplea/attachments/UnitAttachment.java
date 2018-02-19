@@ -4107,6 +4107,14 @@ public class UnitAttachment extends DefaultAttachment {
                 a::setTuv,
                 a::getTuv,
                 a::resetTuv)))
+        .put("isFactory",
+            ofCast(a -> AttachmentProperty.<Boolean>of(
+                a::setIsFactory,
+                a::setIsFactory)))
+        .put("isAA",
+            ofCast(a -> AttachmentProperty.<Boolean>of(
+                a::setIsAA,
+                a::setIsAA)))
         .build();
   }
 

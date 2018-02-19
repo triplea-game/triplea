@@ -6,11 +6,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -31,6 +37,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   protected static final String XOR = "XOR";
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
   // list of conditions that this condition can
   protected List<RulesAttachment> m_conditions = new ArrayList<>();
   // contain
@@ -76,7 +85,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setConditions(final ArrayList<RulesAttachment> value) {
+  public void setConditions(final List<RulesAttachment> value) {
     m_conditions = value;
   }
 
@@ -98,7 +107,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   @Override
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setInvert(final String s) {
-    m_invert = getBool(s);
+    setInvert(getBool(s));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setInvert(final boolean s) {
+    m_invert = s;
   }
 
   @Override
@@ -313,7 +327,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setChanceIncrementOnFailure(final String value) {
-    m_chanceIncrementOnFailure = getInt(value);
+    setChanceIncrementOnFailure(getInt(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setChanceIncrementOnFailure(final int value) {
+    m_chanceIncrementOnFailure = value;
   }
 
   public int getChanceIncrementOnFailure() {
@@ -326,7 +345,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setChanceDecrementOnSuccess(final String value) {
-    m_chanceDecrementOnSuccess = getInt(value);
+    setChanceDecrementOnSuccess(getInt(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setChanceDecrementOnSuccess(final int value) {
+    m_chanceDecrementOnSuccess = value;
   }
 
   public int getChanceDecrementOnSuccess() {
@@ -374,5 +398,51 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       }
       delegateBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
     }
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("conditions",
+            ofCast(a -> AttachmentProperty.of(
+                a::setConditions,
+                a::setConditions,
+                a::getConditions,
+                a::resetConditions)))
+        .put("conditionType",
+            ofCast(a -> AttachmentProperty.of(
+                a::setConditionType,
+                a::setConditionType,
+                a::getConditionType,
+                a::resetConditionType)))
+        .put("invert",
+            ofCast(a -> AttachmentProperty.of(
+                a::setInvert,
+                a::setInvert,
+                a::getInvert,
+                a::resetInvert)))
+        .put("chance",
+            ofCast(a -> AttachmentProperty.of(
+                a::setChance,
+                a::setChance,
+                a::getChance,
+                a::resetChance)))
+        .put("chanceIncrementOnFailure",
+            ofCast(a -> AttachmentProperty.of(
+                a::setChanceIncrementOnFailure,
+                a::setChanceIncrementOnFailure,
+                a::getChanceIncrementOnFailure,
+                a::resetChanceIncrementOnFailure)))
+        .put("chanceDecrementOnSuccess",
+            ofCast(a -> AttachmentProperty.of(
+                a::setChanceDecrementOnSuccess,
+                a::setChanceDecrementOnSuccess,
+                a::getChanceDecrementOnSuccess,
+                a::resetChanceDecrementOnSuccess)))
+        .build();
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<AbstractConditionsAttachment, AttachmentProperty<?>> function) {
+    return function.compose(AbstractConditionsAttachment.class::cast);
   }
 }

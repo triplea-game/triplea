@@ -3,12 +3,18 @@ package games.strategy.triplea.attachments;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -22,6 +28,9 @@ import games.strategy.util.Tuple;
 
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 5866039180681962697L;
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
@@ -151,7 +160,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWhen(final ArrayList<Tuple<String, String>> value) {
+  public void setWhen(final List<Tuple<String, String>> value) {
     m_when = value;
   }
 
@@ -302,5 +311,40 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     if (m_conditions == null) {
       throw new GameParseException("must contain at least one condition: " + thisErrorMsg());
     }
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("uses",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUses,
+                a::setUses,
+                a::getUses,
+                a::resetUses)))
+        .put("usedThisRound",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUsedThisRound,
+                a::setUsedThisRound,
+                a::getUsedThisRound,
+                a::resetUsedThisRound)))
+        .put("notification",
+            ofCast(a -> AttachmentProperty.of(
+                a::setNotification,
+                a::setNotification,
+                a::getNotification,
+                a::resetNotification)))
+        .put("when",
+            ofCast(a -> AttachmentProperty.of(
+                a::setWhen,
+                a::setWhen,
+                a::getWhen,
+                a::resetWhen)))
+        .putAll(AbstractConditionsAttachment.attachmentSetters)
+        .build();
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<AbstractTriggerAttachment, AttachmentProperty<?>> function) {
+    return function.compose(AbstractTriggerAttachment.class::cast);
   }
 }

@@ -1,8 +1,15 @@
 package games.strategy.triplea.attachments;
 
+import java.util.Map;
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -20,6 +27,8 @@ import games.strategy.util.IntegerMap;
  */
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
   // These variables are related to a "rulesAttachment" that changes certain rules for the attached player. They are
   // not related to
@@ -327,5 +336,88 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   @Override
   public void validate(final GameData data) {
     validateNames(m_movementRestrictionTerritories);
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("movementRestrictionType",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMovementRestrictionType,
+                a::setMovementRestrictionType,
+                a::getMovementRestrictionType,
+                a::resetMovementRestrictionType)))
+        .put("movementRestrictionTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMovementRestrictionTerritories,
+                a::setMovementRestrictionTerritories,
+                a::getMovementRestrictionTerritories,
+                a::resetMovementRestrictionTerritories)))
+        .put("placementAnyTerritory",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlacementAnyTerritory,
+                a::setPlacementAnyTerritory,
+                a::getPlacementAnyTerritory,
+                a::resetPlacementAnyTerritory)))
+        .put("placementAnySeaZone",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlacementAnySeaZone,
+                a::setPlacementAnySeaZone,
+                a::getPlacementAnySeaZone,
+                a::resetPlacementAnySeaZone)))
+        .put("placementCapturedTerritory",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlacementCapturedTerritory,
+                a::setPlacementCapturedTerritory,
+                a::getPlacementCapturedTerritory,
+                a::resetPlacementCapturedTerritory)))
+        .put("unlimitedProduction",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUnlimitedProduction,
+                a::setUnlimitedProduction,
+                a::getUnlimitedProduction,
+                a::resetUnlimitedProduction)))
+        .put("placementInCapitalRestricted",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlacementInCapitalRestricted,
+                a::setPlacementInCapitalRestricted,
+                a::getPlacementInCapitalRestricted,
+                a::resetPlacementInCapitalRestricted)))
+        .put("dominatingFirstRoundAttack",
+            ofCast(a -> AttachmentProperty.of(
+                a::setDominatingFirstRoundAttack,
+                a::setDominatingFirstRoundAttack,
+                a::getDominatingFirstRoundAttack,
+                a::resetDominatingFirstRoundAttack)))
+        .put("negateDominatingFirstRoundAttack",
+            ofCast(a -> AttachmentProperty.of(
+                a::setNegateDominatingFirstRoundAttack,
+                a::setNegateDominatingFirstRoundAttack,
+                a::getNegateDominatingFirstRoundAttack,
+                a::resetNegateDominatingFirstRoundAttack)))
+        .put("productionPerXTerritories",
+            ofCast(a -> AttachmentProperty.of(
+                a::setProductionPerXTerritories,
+                a::setProductionPerXTerritories,
+                a::getProductionPerXTerritories,
+                a::resetProductionPerXTerritories)))
+        .put("placementPerTerritory",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlacementPerTerritory,
+                a::setPlacementPerTerritory,
+                a::getPlacementPerTerritory,
+                a::resetPlacementPerTerritory)))
+        .put("maxPlacePerTerritory",
+            ofCast(a -> AttachmentProperty.of(
+                a::setMaxPlacePerTerritory,
+                a::setMaxPlacePerTerritory,
+                a::getMaxPlacePerTerritory,
+                a::resetMaxPlacePerTerritory)))
+        .putAll(AbstractRulesAttachment.attachmentSetters)
+        .build();
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<AbstractPlayerRulesAttachment, AttachmentProperty<?>> function) {
+    return function.compose(AbstractPlayerRulesAttachment.class::cast);
   }
 }

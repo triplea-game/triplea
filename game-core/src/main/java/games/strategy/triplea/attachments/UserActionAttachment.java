@@ -191,6 +191,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
                 a::setActivateTrigger,
                 a::getActivateTrigger,
                 a::resetActivateTrigger)))
+        .putAll(AbstractUserActionAttachment.attachmentSetters)
         .build();
   }
 

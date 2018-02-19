@@ -2788,6 +2788,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                 a::setTerritoryEffectProperty,
                 a::getTerritoryEffectProperty,
                 a::resetTerritoryEffectProperty)))
+        .putAll(AbstractTriggerAttachment.attachmentSetters)
         .build();
   }
 

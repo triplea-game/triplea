@@ -8,11 +8,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
@@ -27,6 +32,8 @@ import games.strategy.util.CollectionUtils;
  */
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
   // purposes of m_objectiveValue
@@ -74,7 +81,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayers(final ArrayList<PlayerID> value) {
+  public void setPlayers(final List<PlayerID> value) {
     m_players = value;
   }
 
@@ -253,7 +260,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTurns(final HashMap<Integer, Integer> value) {
+  public void setTurns(final Map<Integer, Integer> value) {
     m_turns = value;
   }
 
@@ -428,5 +435,54 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       setTerritoryCount(String.valueOf(territories.size()));
     }
     return territories;
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("countEach", ofCast(a -> AttachmentProperty.of(a::getCountEach)))
+        .put("eachMultiple", ofCast(a -> AttachmentProperty.of(a::getEachMultiple)))
+        .put("players",
+            ofCast(a -> AttachmentProperty.of(
+                a::setPlayers,
+                a::setPlayers,
+                a::getPlayers,
+                a::resetPlayers)))
+        .put("objectiveValue",
+            ofCast(a -> AttachmentProperty.of(
+                a::setObjectiveValue,
+                a::setObjectiveValue,
+                a::getObjectiveValue,
+                a::resetObjectiveValue)))
+        .put("uses",
+            ofCast(a -> AttachmentProperty.of(
+                a::setUses,
+                a::setUses,
+                a::getUses,
+                a::resetUses)))
+        .put("turns",
+            ofCast(a -> AttachmentProperty.of(
+                a::setTurns,
+                a::setTurns,
+                a::getTurns,
+                a::resetTurns)))
+        .put("switch",
+            ofCast(a -> AttachmentProperty.of(
+                a::setSwitch,
+                a::setSwitch,
+                a::getSwitch,
+                a::resetSwitch)))
+        .put("gameProperty",
+            ofCast(a -> AttachmentProperty.of(
+                a::setGameProperty,
+                a::setGameProperty,
+                a::getGameProperty,
+                a::resetGameProperty)))
+        .putAll(AbstractConditionsAttachment.attachmentSetters)
+        .build();
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<AbstractRulesAttachment, AttachmentProperty<?>> function) {
+    return function.compose(AbstractRulesAttachment.class::cast);
   }
 }

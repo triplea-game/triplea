@@ -3,10 +3,16 @@ package games.strategy.triplea.attachments;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -19,6 +25,9 @@ import games.strategy.engine.delegate.IDelegateBridge;
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 3569461523853104614L;
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
+      getPopulatedAttachmentMap();
+
 
   public AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -111,7 +120,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setActionAccept(final ArrayList<PlayerID> value) {
+  public void setActionAccept(final List<PlayerID> value) {
     m_actionAccept = value;
   }
 
@@ -167,8 +176,8 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setAttemptsLeftThisTurn(final Integer attempts) {
-    m_attemptsLeftThisTurn = attempts;
+  public void setAttemptsLeftThisTurn(final String attempts) {
+    setAttemptsLeftThisTurn(getInt(attempts));
   }
 
   /**
@@ -202,5 +211,46 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     if (m_text.trim().length() <= 0) {
       throw new GameParseException("value: text can't be empty" + thisErrorMsg());
     }
+  }
+
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+        .put("text",
+            ofCast(a -> AttachmentProperty.of(
+                a::setText,
+                a::setText,
+                a::getText,
+                a::resetText)))
+        .put("costPU",
+            ofCast(a -> AttachmentProperty.of(
+                a::setCostPU,
+                a::setCostPU,
+                a::getCostPU,
+                a::resetCostPU)))
+        .put("attemptsPerTurn",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAttemptsPerTurn,
+                a::setAttemptsPerTurn,
+                a::getAttemptsPerTurn,
+                a::resetAttemptsPerTurn)))
+        .put("attemptsLeftThisTurn",
+            ofCast(a -> AttachmentProperty.of(
+                a::setAttemptsLeftThisTurn,
+                a::setAttemptsLeftThisTurn,
+                a::getAttemptsLeftThisTurn,
+                a::resetAttemptsLeftThisTurn)))
+        .put("actionAccept",
+            ofCast(a -> AttachmentProperty.of(
+                a::setActionAccept,
+                a::setActionAccept,
+                a::getActionAccept,
+                a::resetActionAccept)))
+        .putAll(AbstractConditionsAttachment.attachmentSetters)
+        .build();
+  }
+
+  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
+      final Function<AbstractUserActionAttachment, AttachmentProperty<?>> function) {
+    return function.compose(AbstractUserActionAttachment.class::cast);
   }
 }

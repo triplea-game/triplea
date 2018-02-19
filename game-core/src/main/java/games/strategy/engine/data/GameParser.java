@@ -1248,7 +1248,7 @@ public final class GameParser {
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
       throws GameParseException {
-    final Map<String, Function<IAttachment, AttachmentProperty<?>>>  attachmentMap = attachment.getAttachmentMap();
+    final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentMap = attachment.getAttachmentMap();
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // find the setter
@@ -1259,12 +1259,7 @@ public final class GameParser {
       // find the value
       final String value = current.getAttribute("value");
       final String count = current.getAttribute("count");
-      final String itemValues;
-      if (count.length() > 0) {
-        itemValues = count + ":" + value;
-      } else {
-        itemValues = value;
-      }
+      final String itemValues = (count.length() > 0 ? count + ":" : "") + value;
       attachmentMap.get(name).apply(attachment).setValue(itemValues);
 
       options.add(Tuple.of(name, itemValues));

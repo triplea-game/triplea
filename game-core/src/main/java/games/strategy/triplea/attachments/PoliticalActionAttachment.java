@@ -165,6 +165,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
                 a::setRelationshipChange,
                 a::getRelationshipChange,
                 a::resetRelationshipChange)))
+        .putAll(AbstractUserActionAttachment.attachmentSetters)
         .build();
   }
 

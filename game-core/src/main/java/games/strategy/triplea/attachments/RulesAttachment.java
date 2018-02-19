@@ -1263,6 +1263,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                 a::setUnitPresence,
                 a::getUnitPresence,
                 a::resetUnitPresence)))
+        .putAll(AbstractPlayerRulesAttachment.attachmentSetters)
         .build();
   }
 

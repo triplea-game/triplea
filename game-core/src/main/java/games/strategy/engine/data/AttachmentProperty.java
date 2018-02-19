@@ -40,6 +40,13 @@ public interface AttachmentProperty<T> {
       }
     };
   }
+  
+  static <T> AttachmentProperty<T> of(
+      final GameParsingConsumer<T> setter,
+      final GameParsingConsumer<String> stringSetter,
+      final Supplier<T> getter) {
+    return of(setter, stringSetter, getter, () -> throwIllegalStateException("No Resetter"));
+  }
 
   static AttachmentProperty<String> of(
       final GameParsingConsumer<String> setter,
@@ -49,9 +56,20 @@ public interface AttachmentProperty<T> {
   }
 
   static <T> AttachmentProperty<T> of(final Supplier<T> getter) {
-    return of(t -> throwIllegalStateException("No Setter"),
+    return of(
+        t -> throwIllegalStateException("No Setter"),
         t -> throwIllegalStateException("No Setter"),
         getter,
+        () -> throwIllegalStateException("No Resetter"));
+  }
+
+  static <T> AttachmentProperty<T> of(
+      final GameParsingConsumer<T> setter,
+      final GameParsingConsumer<String> stringSetter) {
+    return of(
+        setter,
+        stringSetter,
+        () -> throwIllegalStateException("No Getter"),
         () -> throwIllegalStateException("No Resetter"));
   }
 
@@ -60,7 +78,7 @@ public interface AttachmentProperty<T> {
     void accept(T object) throws GameParseException;
   }
 
-  static void throwIllegalStateException(final String text) {
+  static <T> T throwIllegalStateException(final String text) {
     throw new IllegalStateException(text);
   }
 }
