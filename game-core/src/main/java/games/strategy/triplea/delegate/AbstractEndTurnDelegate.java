@@ -34,6 +34,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.ui.ObjectiveDummyDelegateBridge;
 import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
@@ -55,6 +56,23 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 
   private static boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
     return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
+  }
+
+  /**
+   * Find estimated income for given player. This only takes into account income from territories,
+   * units, and NOs. It ignores blockades, war bonds, triggers, relationship upkeep, and bonus income.
+   */
+  public static IntegerMap<Resource> findEstimatedIncome(final PlayerID player, final GameData data) {
+    final IntegerMap<Resource> resources = new IntegerMap<>();
+    final List<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
+    final int pusFromTerritories = getProduction(territories, data) * Properties.getPuMultiplier(data);
+    resources.add(new Resource(Constants.PUS, data), pusFromTerritories);
+    resources.add(EndTurnDelegate.getResourceProduction(territories, data));
+    resources.add(EndTurnDelegate.findUnitCreatedResources(player, data));
+    final IDelegateBridge bridge = new ObjectiveDummyDelegateBridge(data);
+    final int pusFromNationalObjectives = EndTurnDelegate.findNationalObjectivePus(player, data, bridge);
+    resources.add(new Resource(Constants.PUS, data), pusFromNationalObjectives);
+    return resources;
   }
 
   @Override
@@ -109,6 +127,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       final Change change = ChangeFactory.changeResourcesChange(player, pus, toAdd);
       bridge.addChange(change);
+
       if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null) {
         final Change changeVp = (ChangeFactory.attachmentPropertyChange(pa,
             (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
@@ -116,6 +135,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         final CompositeChange ccVp = new CompositeChange(changeVp, changeCaptureVp);
         bridge.addChange(ccVp);
       }
+
       endTurnReport.append("<br />").append(addOtherResources(bridge));
       endTurnReport.append("<br />").append(doNationalObjectivesAndOtherEndTurnEffects(bridge));
       final IntegerMap<Resource> income = player.getResources().getResourcesCopy();

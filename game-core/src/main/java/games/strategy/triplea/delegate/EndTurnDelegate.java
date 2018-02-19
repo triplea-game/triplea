@@ -166,15 +166,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // Find total unit generated resources for all owned units
     final GameData data = getData();
     final PlayerID player = data.getSequence().getStep().getPlayerId();
-    final Predicate<Unit> myCreatorsMatch = Matches.unitIsOwnedBy(player).and(Matches.unitCreatesResources());
-    final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
-    for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
-      for (final Unit unit : myCreators) {
-        final IntegerMap<Resource> generatedResourcesMap = UnitAttachment.get(unit.getType()).getCreatesResourcesList();
-        resourceTotalsMap.add(generatedResourcesMap);
-      }
-    }
+    final IntegerMap<Resource> resourceTotalsMap = findUnitCreatedResources(player, data);
 
     // Add resource changes and create end turn report string
     final StringBuilder endTurnReport = new StringBuilder();
@@ -183,9 +175,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       int toAdd = resourceTotalsMap.getInt(resource);
       if (toAdd == 0) {
         continue;
-      }
-      if (resource.getName().equals(Constants.PUS)) {
-        toAdd *= Properties.getPuMultiplier(getData());
       }
       int total = player.getResources().getQuantity(resource) + toAdd;
       if (total < 0) {
@@ -207,50 +196,68 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   }
 
   /**
+   * Find all of the resources that will be created by units on the map.
+   */
+  public static IntegerMap<Resource> findUnitCreatedResources(final PlayerID player, final GameData data) {
+    final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
+    final Predicate<Unit> myCreatorsMatch = Matches.unitIsOwnedBy(player).and(Matches.unitCreatesResources());
+    for (final Territory t : data.getMap().getTerritories()) {
+      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+      for (final Unit unit : myCreators) {
+        final IntegerMap<Resource> generatedResourcesMap = UnitAttachment.get(unit.getType()).getCreatesResourcesList();
+        resourceTotalsMap.add(generatedResourcesMap);
+      }
+    }
+    final Resource pus = new Resource(Constants.PUS, data);
+    if (resourceTotalsMap.containsKey(pus)) {
+      resourceTotalsMap.put(pus, resourceTotalsMap.getInt(pus) * Properties.getPuMultiplier(data));
+    }
+    return resourceTotalsMap;
+  }
+
+  /**
+   * Find the PU value of national objectives that are currently met.
+   */
+  public static int findNationalObjectivePus(final PlayerID player, final GameData data, final IDelegateBridge bridge) {
+    final List<RulesAttachment> objectives = new ArrayList<>();
+    final HashMap<ICondition, Boolean> testedConditions =
+        testNationalObjectivesAndTriggers(player, data, bridge, new HashSet<>(), objectives);
+    int pus = 0;
+    for (final RulesAttachment rule : objectives) {
+      final int uses = rule.getUses();
+      if (uses == 0 || !rule.isSatisfied(testedConditions)) {
+        continue;
+      }
+      pus += (rule.getObjectiveValue() * rule.getEachMultiple() * Properties.getPuMultiplier(data));
+    }
+    return pus;
+  }
+
+  /**
    * Determine if National Objectives have been met, and then do them.
    */
   private String determineNationalObjectives(final IDelegateBridge bridge) {
     final GameData data = getData();
     final PlayerID player = data.getSequence().getStep().getPlayerId();
-    // First figure out all the conditions that will be tested, so we can test them all at the same time.
-    final HashSet<TriggerAttachment> toFirePossible = new HashSet<>();
-    final HashSet<ICondition> allConditionsNeeded = new HashSet<>();
-    final boolean useTriggers = Properties.getTriggers(data);
-    if (useTriggers) {
-      // add conditions required for triggers
-      final Predicate<TriggerAttachment> endTurnDelegateTriggerMatch = AbstractTriggerAttachment.availableUses
-          .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
-          .and(TriggerAttachment.resourceMatch());
-      toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(Collections.singleton(player)), endTurnDelegateTriggerMatch));
-      allConditionsNeeded.addAll(
-          AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(toFirePossible), null));
-    }
-    // add conditions required for national objectives (nat objs that have uses left)
-    final List<RulesAttachment> natObjs =
-        CollectionUtils.getMatches(RulesAttachment.getNationalObjectives(player), availableUses);
-    allConditionsNeeded
-        .addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(natObjs), null));
-    if (allConditionsNeeded.isEmpty()) {
-      return "";
-    }
-    final StringBuilder endTurnReport = new StringBuilder();
-    // now test all the conditions
+
+    // Find and test all the conditions for triggers and national objectives
+    final Set<TriggerAttachment> triggers = new HashSet<>();
+    final List<RulesAttachment> objectives = new ArrayList<>();
     final HashMap<ICondition, Boolean> testedConditions =
-        AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
-    // now that we have all testedConditions, may as well do triggers first.
-    if (useTriggers) {
-      if (!toFirePossible.isEmpty()) {
-        // get all triggers that are satisfied based on the tested conditions.
-        final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
-        // now list out individual types to fire, once for each of the matches above.
-        endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true,
-            true, true, true)).append("<br />");
-      }
+        testNationalObjectivesAndTriggers(player, data, bridge, triggers, objectives);
+
+    // Execute triggers
+    final StringBuilder endTurnReport = new StringBuilder();
+    final boolean useTriggers = Properties.getTriggers(data);
+    if (useTriggers && !triggers.isEmpty()) {
+      final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
+          CollectionUtils.getMatches(triggers, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+      endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true,
+          true, true, true)).append("<br />");
     }
-    // now do all the national objectives
-    for (final RulesAttachment rule : natObjs) {
+
+    // Execute national objectives
+    for (final RulesAttachment rule : objectives) {
       int uses = rule.getUses();
       if (uses == 0 || !rule.isSatisfied(testedConditions)) {
         continue;
@@ -280,6 +287,36 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return endTurnReport.toString();
   }
 
+  private static HashMap<ICondition, Boolean> testNationalObjectivesAndTriggers(final PlayerID player,
+      final GameData data, final IDelegateBridge bridge, Set<TriggerAttachment> triggers,
+      List<RulesAttachment> objectives) {
+
+    // First figure out all the conditions that will be tested, so we can test them all at the same time.
+    final HashSet<ICondition> allConditionsNeeded = new HashSet<>();
+    final boolean useTriggers = Properties.getTriggers(data);
+    if (useTriggers) {
+
+      // Add conditions required for triggers
+      final Predicate<TriggerAttachment> endTurnDelegateTriggerMatch = AbstractTriggerAttachment.availableUses
+          .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
+          .and(TriggerAttachment.resourceMatch());
+      triggers = TriggerAttachment.collectForAllTriggersMatching(new HashSet<>(Collections.singleton(player)),
+          endTurnDelegateTriggerMatch);
+      allConditionsNeeded
+          .addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(triggers), null));
+    }
+
+    // Add conditions required for national objectives (nat objs that have uses left)
+    objectives = CollectionUtils.getMatches(RulesAttachment.getNationalObjectives(player), availableUses);
+    allConditionsNeeded.addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(objectives), null));
+    if (allConditionsNeeded.isEmpty()) {
+      return new HashMap<>();
+    }
+
+    // Now test all the conditions
+    return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
+  }
+
   private boolean isNationalObjectives() {
     return Properties.getNationalObjectives(getData());
   }
@@ -292,8 +329,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
-    final ResourceCollection productionCollection = getResourceProduction(territories, data);
-    final IntegerMap<Resource> production = productionCollection.getResourcesCopy();
+    final IntegerMap<Resource> production = getResourceProduction(territories, data);
     for (final Entry<Resource, Integer> resource : production.entrySet()) {
       final Resource r = resource.getKey();
       int toAdd = resource.getValue();
@@ -319,9 +355,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
    * Since territory resource may contain any resource except PUs (PUs use "getProduction" instead),
    * we will now figure out the total production of non-PUs resources.
    */
-  private static ResourceCollection getResourceProduction(final Collection<Territory> territories,
+  public static IntegerMap<Resource> getResourceProduction(final Collection<Territory> territories,
       final GameData data) {
-    final ResourceCollection resources = new ResourceCollection(data);
+    final IntegerMap<Resource> resources = new IntegerMap<>();
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);
       if (attachment == null) {
@@ -331,9 +367,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       if (toAdd == null) {
         continue;
       }
-      // Match will Check if territory is originally owned convoy center, or if contested
+      // Match will check if territory is originally owned convoy center, or if contested
       if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).test(current)) {
-        resources.add(toAdd);
+        resources.add(toAdd.getResourcesCopy());
       }
     }
     return resources;
