@@ -13,6 +13,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
+import games.strategy.util.IntegerMap;
 
 /**
  * Panel used to display the current players resources.
@@ -63,6 +65,7 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
     try {
       final PlayerID player = gameData.getSequence().getStep().getPlayerId();
       if (player != null) {
+        final IntegerMap<Resource> resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
         for (int i = 0; i < resourceStats.size(); i++) {
           final ResourceStat resourceStat = resourceStats.get(i);
           final Resource resource = resourceStat.resource;
@@ -71,10 +74,10 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
           label.setVisible(resource.isDisplayedFor(player));
           try {
             label.setIcon(uiContext.getResourceImageFactory().getIcon(resource, true));
-            label.setText(quantity);
+            label.setText(quantity + " (+" + resourceIncomes.getInt(resource) + ")");
             label.setToolTipText(resourceStat.getName());
           } catch (final IllegalStateException e) {
-            label.setText(resourceStat.getName() + " " + quantity);
+            label.setText(resourceStat.getName() + " " + quantity + " (+" + resourceIncomes.getInt(resource) + ")");
           }
         }
       }
