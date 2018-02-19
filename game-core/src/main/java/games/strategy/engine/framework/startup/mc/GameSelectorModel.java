@@ -232,8 +232,7 @@ public class GameSelectorModel extends Observable {
     // was using running a game within its root folder, we shouldn't open it)
     GameChooserEntry selectedGame;
     final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
-    if (userPreferredDefaultGameUri != null && userPreferredDefaultGameUri.length() > 0
-        && userPreferredDefaultGameUri.contains(user)) {
+    if (!userPreferredDefaultGameUri.isEmpty() && userPreferredDefaultGameUri.contains(user)) {
       // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole
       // game model list
       try {
