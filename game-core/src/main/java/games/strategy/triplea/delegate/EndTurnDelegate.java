@@ -288,8 +288,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   }
 
   private static HashMap<ICondition, Boolean> testNationalObjectivesAndTriggers(final PlayerID player,
-      final GameData data, final IDelegateBridge bridge, Set<TriggerAttachment> triggers,
-      List<RulesAttachment> objectives) {
+      final GameData data, final IDelegateBridge bridge, final Set<TriggerAttachment> triggers,
+      final List<RulesAttachment> objectives) {
 
     // First figure out all the conditions that will be tested, so we can test them all at the same time.
     final HashSet<ICondition> allConditionsNeeded = new HashSet<>();
@@ -300,14 +300,14 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       final Predicate<TriggerAttachment> endTurnDelegateTriggerMatch = AbstractTriggerAttachment.availableUses
           .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
           .and(TriggerAttachment.resourceMatch());
-      triggers = TriggerAttachment.collectForAllTriggersMatching(new HashSet<>(Collections.singleton(player)),
-          endTurnDelegateTriggerMatch);
+      triggers.addAll(TriggerAttachment.collectForAllTriggersMatching(new HashSet<>(Collections.singleton(player)),
+          endTurnDelegateTriggerMatch));
       allConditionsNeeded
           .addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(triggers), null));
     }
 
     // Add conditions required for national objectives (nat objs that have uses left)
-    objectives = CollectionUtils.getMatches(RulesAttachment.getNationalObjectives(player), availableUses);
+    objectives.addAll(CollectionUtils.getMatches(RulesAttachment.getNationalObjectives(player), availableUses));
     allConditionsNeeded.addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(objectives), null));
     if (allConditionsNeeded.isEmpty()) {
       return new HashMap<>();
