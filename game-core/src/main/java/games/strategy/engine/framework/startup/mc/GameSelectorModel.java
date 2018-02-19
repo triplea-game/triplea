@@ -221,23 +221,10 @@ public class GameSelectorModel extends Observable {
     // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game
     // at this point)
     ProAi.gameOverClearCache();
-    new Thread(() -> loadDefaultGame(false)).start();
+    new Thread(this::loadDefaultGameTask).start();
   }
 
-  /**
-   * @param forceFactoryDefault
-   *        - False is default behavior and causes the new game chooser model to be cleared (and refreshed if needed).
-   *        True causes the default game preference to be reset, but the model does not get cleared/refreshed (because
-   *        we only call with
-   *        'true' if loading the user preferred map failed).
-   */
-  public void loadDefaultGame(final boolean forceFactoryDefault) {
-    // load the previously saved value
-    if (forceFactoryDefault) {
-      // we don't refresh the game chooser model because we have just removed a bad map from it
-      ClientSetting.DEFAULT_GAME_URI_PREF.save(ClientSetting.DEFAULT_GAME_URI_PREF.defaultValue);
-      ClientSetting.flush();
-    }
+  private void loadDefaultGameTask() {
     final String userPreferredDefaultGameUri = ClientSetting.DEFAULT_GAME_URI_PREF.value();
 
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
@@ -245,7 +232,7 @@ public class GameSelectorModel extends Observable {
     // was using running a game within its root folder, we shouldn't open it)
     GameChooserEntry selectedGame;
     final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
-    if (!forceFactoryDefault && userPreferredDefaultGameUri != null && userPreferredDefaultGameUri.length() > 0
+    if (userPreferredDefaultGameUri != null && userPreferredDefaultGameUri.length() > 0
         && userPreferredDefaultGameUri.contains(user)) {
       // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole
       // game model list
@@ -253,7 +240,8 @@ public class GameSelectorModel extends Observable {
         final URI defaultUri = new URI(userPreferredDefaultGameUri);
         selectedGame = new GameChooserEntry(defaultUri);
       } catch (final Exception e) {
-        selectedGame = selectByName(forceFactoryDefault);
+        resetToFactoryDefault();
+        selectedGame = selectByName();
         if (selectedGame == null) {
           return;
         }
@@ -262,12 +250,14 @@ public class GameSelectorModel extends Observable {
         try {
           selectedGame.fullyParseGameData();
         } catch (final GameParseException e) {
-          loadDefaultGame(true);
+          resetToFactoryDefault();
+          loadDefaultGame();
           return;
         }
       }
     } else {
-      selectedGame = selectByName(forceFactoryDefault);
+      resetToFactoryDefault();
+      selectedGame = selectByName();
       if (selectedGame == null) {
         return;
       }
@@ -275,11 +265,13 @@ public class GameSelectorModel extends Observable {
     load(selectedGame);
   }
 
-  private GameChooserEntry selectByName(final boolean forceFactoryDefault) {
-    if (forceFactoryDefault) {
-      ClientSetting.DEFAULT_GAME_NAME_PREF.save(ClientSetting.DEFAULT_GAME_NAME_PREF.defaultValue);
-      ClientSetting.flush();
-    }
+  private static void resetToFactoryDefault() {
+    // we don't refresh the game chooser model because we have just removed a bad map from it
+    ClientSetting.DEFAULT_GAME_URI_PREF.save(ClientSetting.DEFAULT_GAME_URI_PREF.defaultValue);
+    ClientSetting.flush();
+  }
+
+  private GameChooserEntry selectByName() {
     final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();
 
     final GameChooserModel model = new GameChooserModel();
@@ -297,7 +289,8 @@ public class GameSelectorModel extends Observable {
         selectedGame.fullyParseGameData();
       } catch (final GameParseException e) {
         model.removeEntry(selectedGame);
-        loadDefaultGame(true);
+        resetToFactoryDefault();
+        loadDefaultGame();
         return null;
       }
     }

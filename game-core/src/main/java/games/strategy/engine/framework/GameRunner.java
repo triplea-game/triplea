@@ -292,7 +292,7 @@ public class GameRunner {
   private static void loadGame() {
     try {
       newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
-        gameSelectorModel.loadDefaultGame(false);
+        gameSelectorModel.loadDefaultGame();
         final String fileName = System.getProperty(TRIPLEA_GAME, "");
         if (fileName.length() > 0) {
           gameSelectorModel.load(new File(fileName), mainFrame);
