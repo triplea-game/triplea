@@ -265,7 +265,6 @@ public class GameSelectorModel extends Observable {
   }
 
   private static void resetToFactoryDefault() {
-    // we don't refresh the game chooser model because we have just removed a bad map from it
     ClientSetting.DEFAULT_GAME_URI_PREF.save(ClientSetting.DEFAULT_GAME_URI_PREF.defaultValue);
     ClientSetting.flush();
   }
