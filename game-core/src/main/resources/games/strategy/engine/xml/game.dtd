@@ -61,6 +61,7 @@
 	<!ELEMENT resource EMPTY>
 	<!ATTLIST resource 
 		name ID #REQUIRED
+		isDisplayedFor CDATA #IMPLIED
 	>
 
 <!ELEMENT unitList (unit+) >
