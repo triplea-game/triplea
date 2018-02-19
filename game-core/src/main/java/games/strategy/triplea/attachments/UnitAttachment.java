@@ -1364,10 +1364,14 @@ public class UnitAttachment extends DefaultAttachment {
     m_transportCapacity = -1;
   }
 
-  // DO NOT REMOVE.
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setIsTwoHit(final String s) {
-    m_hitPoints = getBool(s) ? 2 : 1;
+    setIsTwoHit(getBool(s));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
+  public void setIsTwoHit(final boolean s) {
+    m_hitPoints = s ? 2 : 1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2583,7 +2587,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
-  public void setIsAAmovement(final Boolean s) throws GameParseException {
+  public void setIsAAmovement(final boolean s) throws GameParseException {
     setCanNotMoveDuringCombatMove(s);
     if (s) {
       setMovementLimit(Integer.MAX_VALUE + ":allied");
@@ -4115,6 +4119,12 @@ public class UnitAttachment extends DefaultAttachment {
             ofCast(a -> AttachmentProperty.<Boolean>of(
                 a::setIsAA,
                 a::setIsAA)))
+        .put("destroyedWhenCapturedFrom",
+            ofCast(a -> AttachmentProperty.of(a::setDestroyedWhenCapturedFrom, a::setDestroyedWhenCapturedFrom)))
+        .put("unitPlacementOnlyAllowedIn",
+            ofCast(a -> AttachmentProperty.of(a::setUnitPlacementOnlyAllowedIn, a::setUnitPlacementOnlyAllowedIn)))
+        .put("isAAmovement", ofCast(a -> AttachmentProperty.<Boolean>of(a::setIsAAmovement, a::setIsAAmovement)))
+        .put("isTwoHit", ofCast(a -> AttachmentProperty.<Boolean>of(a::setIsTwoHit, a::setIsTwoHit)))
         .build();
   }
 

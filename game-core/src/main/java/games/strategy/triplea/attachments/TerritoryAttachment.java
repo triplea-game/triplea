@@ -393,7 +393,13 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUnitProduction(final String value) {
-    m_unitProduction = Integer.parseInt(value);
+    setUnitProduction(getInt(value));
+  }
+
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setUnitProduction(final int value) {
+    m_unitProduction = value;
   }
 
   public void resetUnitProduction() {

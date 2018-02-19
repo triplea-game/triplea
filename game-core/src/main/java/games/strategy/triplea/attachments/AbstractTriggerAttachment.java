@@ -339,6 +339,14 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
                 a::setWhen,
                 a::getWhen,
                 a::resetWhen)))
+        .put("trigger",
+            ofCast(a -> AttachmentProperty.of(
+                l -> {
+                  throw new IllegalStateException("Can't set trigger directly");
+                },
+                a::setTrigger,
+                a::getTrigger,
+                a::resetTrigger)))
         .putAll(AbstractConditionsAttachment.attachmentSetters)
         .build();
   }

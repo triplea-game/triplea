@@ -477,6 +477,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
                 a::setGameProperty,
                 a::getGameProperty,
                 a::resetGameProperty)))
+        .put("rounds", ofCast(a -> AttachmentProperty.of(a::setRounds, a::setRounds)))
         .putAll(AbstractConditionsAttachment.attachmentSetters)
         .build();
   }
