@@ -289,7 +289,6 @@ public class GameSelectorModel extends Observable {
       } catch (final GameParseException e) {
         model.removeEntry(selectedGame);
         resetToFactoryDefault();
-        loadDefaultGame();
         return null;
       }
     }
