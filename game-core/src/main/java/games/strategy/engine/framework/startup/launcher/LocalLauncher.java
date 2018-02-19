@@ -62,7 +62,7 @@ public class LocalLauncher extends AbstractLauncher {
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
       // by closing of stream while unloading map resources.
       Interruptibles.sleep(100);
-      gameSelectorModel.loadDefaultGame();
+      gameSelectorModel.loadDefaultGameNewThread();
       SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
     }
   }

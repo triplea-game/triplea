@@ -243,7 +243,7 @@ public class ServerLauncher extends AbstractLauncher {
             gameSelectorModel.resetGameDataToNull();
           }
         } else {
-          gameSelectorModel.loadDefaultGame();
+          gameSelectorModel.loadDefaultGameNewThread();
         }
         if (parent != null) {
           SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));

@@ -217,14 +217,21 @@ public class GameSelectorModel extends Observable {
     super.clearChanged();
   }
 
-  public void loadDefaultGame() {
+  /**
+   * Clears AI game over cache and loads default game in a new thread.
+   */
+  public void loadDefaultGameNewThread() {
     // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game
     // at this point)
     ProAi.gameOverClearCache();
-    new Thread(this::loadDefaultGameTask).start();
+    new Thread(this::loadDefaultGameSameThread).start();
   }
 
-  private void loadDefaultGameTask() {
+  /**
+   * Runs the load default game logic in same thread. Default game is the one that we loaded
+   * on startup.
+   */
+  public void loadDefaultGameSameThread() {
     final String userPreferredDefaultGameUri = ClientSetting.DEFAULT_GAME_URI_PREF.value();
 
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
@@ -250,7 +257,7 @@ public class GameSelectorModel extends Observable {
           selectedGame.fullyParseGameData();
         } catch (final GameParseException e) {
           resetToFactoryDefault();
-          loadDefaultGame();
+          loadDefaultGameSameThread();
           return;
         }
       }
