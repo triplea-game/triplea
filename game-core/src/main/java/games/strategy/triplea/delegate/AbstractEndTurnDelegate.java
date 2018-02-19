@@ -14,6 +14,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.Resource;
@@ -64,10 +65,20 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
    */
   public static IntegerMap<Resource> findEstimatedIncome(final PlayerID player, final GameData data) {
     final IntegerMap<Resource> resources = new IntegerMap<>();
-    final List<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
-    final int pusFromTerritories = getProduction(territories, data) * Properties.getPuMultiplier(data);
-    resources.add(new Resource(Constants.PUS, data), pusFromTerritories);
-    resources.add(EndTurnDelegate.getResourceProduction(territories, data));
+
+    // Only add territory resources if endTurn not endTurnNoPU
+    final Iterator<GameStep> it = data.getSequence().iterator();
+    while (it.hasNext()) {
+      final GameStep step = it.next();
+      if (player.equals(step.getPlayerId()) && step.getDelegate().getName().equals("endTurn")) {
+        final List<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
+        final int pusFromTerritories = getProduction(territories, data) * Properties.getPuMultiplier(data);
+        resources.add(new Resource(Constants.PUS, data), pusFromTerritories);
+        resources.add(EndTurnDelegate.getResourceProduction(territories, data));
+      }
+    }
+
+    // Add unit generated resources and NOs
     resources.add(EndTurnDelegate.findUnitCreatedResources(player, data));
     final IDelegateBridge bridge = new ObjectiveDummyDelegateBridge(data);
     final int pusFromNationalObjectives = EndTurnDelegate.findNationalObjectivePus(player, data, bridge);
