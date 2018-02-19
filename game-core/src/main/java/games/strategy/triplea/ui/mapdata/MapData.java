@@ -24,8 +24,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
@@ -263,46 +268,56 @@ public class MapData implements Closeable {
     return decorations;
   }
 
-  public double getDefaultUnitScale() {
-    if (mapProperties.getProperty(PROPERTY_UNITS_SCALE) == null) {
-      return 1.0;
+  private <T> T getProperty(
+      final String name,
+      final Supplier<T> defaultValueSupplier,
+      final Function<String, T> parser) {
+    return getProperty(mapProperties, name, defaultValueSupplier, parser);
+  }
+
+  @VisibleForTesting
+  static <T> T getProperty(
+      final Properties properties,
+      final String name,
+      final Supplier<T> defaultValueSupplier,
+      final Function<String, T> parser) {
+    final @Nullable String encodedValue = properties.getProperty(name);
+    if (encodedValue == null) {
+      return defaultValueSupplier.get();
     }
+
     try {
-      return Double.parseDouble(mapProperties.getProperty(PROPERTY_UNITS_SCALE));
+      return parser.apply(encodedValue);
     } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_SCALE, e);
-      return 1.0;
+      ClientLogger.logQuietly("Failed to parse map property: " + name, e);
+      return defaultValueSupplier.get();
     }
+  }
+
+  private double getDoubleProperty(final String name, final Supplier<Double> defaultValueSupplier) {
+    return getProperty(name, defaultValueSupplier, Double::parseDouble);
+  }
+
+  private int getIntegerProperty(final String name, final Supplier<Integer> defaultValueSupplier) {
+    return getProperty(name, defaultValueSupplier, Integer::parseInt);
+  }
+
+  public double getDefaultUnitScale() {
+    return getDoubleProperty(PROPERTY_UNITS_SCALE, () -> 1.0);
   }
 
   /**
    * Does not take account of any scaling.
    */
   public int getDefaultUnitWidth() {
-    if (mapProperties.getProperty(PROPERTY_UNITS_WIDTH) == null) {
-      return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-    }
-    try {
-      return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_WIDTH));
-    } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_WIDTH, e);
-      return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-    }
+    return getIntegerProperty(PROPERTY_UNITS_WIDTH, () -> UnitImageFactory.DEFAULT_UNIT_ICON_SIZE);
   }
 
   /**
    * Does not take account of any scaling.
    */
   public int getDefaultUnitHeight() {
-    if (mapProperties.getProperty(PROPERTY_UNITS_HEIGHT) == null) {
-      return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-    }
-    try {
-      return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_HEIGHT));
-    } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_HEIGHT, e);
-      return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-    }
+    return getIntegerProperty(PROPERTY_UNITS_HEIGHT, () -> UnitImageFactory.DEFAULT_UNIT_ICON_SIZE);
   }
 
   /**
@@ -310,15 +325,7 @@ public class MapData implements Closeable {
    */
   public int getDefaultUnitCounterOffsetWidth() {
     // if it is not set, divide by 4 so that it is roughly centered
-    if (mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH) == null) {
-      return getDefaultUnitWidth() / 4;
-    }
-    try {
-      return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH));
-    } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_COUNTER_OFFSET_WIDTH, e);
-      return getDefaultUnitWidth() / 4;
-    }
+    return getIntegerProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH, () -> getDefaultUnitWidth() / 4);
   }
 
   /**
@@ -326,15 +333,7 @@ public class MapData implements Closeable {
    */
   public int getDefaultUnitCounterOffsetHeight() {
     // put at bottom of unit, if not set
-    if (mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT) == null) {
-      return getDefaultUnitHeight();
-    }
-    try {
-      return Integer.parseInt(mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT));
-    } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly("Failed to parse map property: " + PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT, e);
-      return getDefaultUnitHeight();
-    }
+    return getIntegerProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT, this::getDefaultUnitHeight);
   }
 
   public int getDefaultUnitsStackSize() {
