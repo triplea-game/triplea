@@ -92,13 +92,6 @@ public class BattleTracker implements Serializable {
     return getPendingBattle(t, bombing, null) != null;
   }
 
-  /**
-   * add to the conquered.
-   */
-  void addToConquered(final Collection<Territory> territories) {
-    m_conquered.addAll(territories);
-  }
-
   void addToConquered(final Territory territory) {
     m_conquered.add(territory);
   }
@@ -1048,21 +1041,6 @@ public class BattleTracker implements Serializable {
       m_pendingBattles.remove(battle);
       m_foughBattles.add(battle.getTerritory());
     }
-  }
-
-  /**
-   * Marks the set of territories as having been the source of a naval
-   * bombardment.
-   *
-   * @param territories
-   *        a collection of territories
-   */
-  public void addPreviouslyNavalBombardmentSource(final Collection<Territory> territories) {
-    m_bombardedFromTerritories.addAll(territories);
-  }
-
-  public boolean wasNavalBombardmentSource(final Territory territory) {
-    return m_bombardedFromTerritories.contains(territory);
   }
 
   private static boolean isPacificTheater(final GameData data) {
