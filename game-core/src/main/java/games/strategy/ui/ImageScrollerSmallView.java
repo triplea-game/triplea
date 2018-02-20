@@ -95,14 +95,6 @@ public class ImageScrollerSmallView extends JComponent {
     return getInsets().top + getInsets().bottom;
   }
 
-  void setCoords(final int x, final int y) {
-    model.set(x, y);
-  }
-
-  public Dimension getImageDimensions() {
-    return Util.getDimension(image, this);
-  }
-
   @Override
   public void paintComponent(final Graphics g) {
     g.drawImage(image, 0, 0, this);
