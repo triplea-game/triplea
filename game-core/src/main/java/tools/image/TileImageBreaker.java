@@ -31,7 +31,6 @@ import tools.util.ToolLogger;
 public class TileImageBreaker {
   private static String location = null;
   private static final JFrame observer = new JFrame();
-  private boolean baseMap;
   private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
@@ -96,7 +95,7 @@ public class TileImageBreaker {
         final GraphicsConfiguration localGraphicSystem =
             GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         final BufferedImage relief = localGraphicSystem.createCompatibleImage(TileManager.TILE_SIZE,
-            TileManager.TILE_SIZE, baseMap ? Transparency.BITMASK : Transparency.TRANSLUCENT);
+            TileManager.TILE_SIZE, Transparency.TRANSLUCENT);
         relief.getGraphics().drawImage(map, 0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE, bounds.x, bounds.y,
             bounds.x + TileManager.TILE_SIZE, bounds.y + TileManager.TILE_SIZE, observer);
 
