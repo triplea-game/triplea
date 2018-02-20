@@ -412,7 +412,7 @@ public class Route implements Serializable, Iterable<Territory> {
     final Set<Unit> units = new HashSet<>(unitsAll);
 
     units.removeAll(CollectionUtils.getMatches(unitsAll,
-        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(unitsAll, route, currentPlayer, data, true)));
+        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(unitsAll, currentPlayer, data, true)));
     final ResourceCollection movementCharge = new ResourceCollection(data);
     for (final Unit unit : units) {
       movementCharge.add(route.getMovementFuelCostCharge(unit, data));
