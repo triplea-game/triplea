@@ -43,7 +43,7 @@ public class PoliticsPanel extends ActionPanel {
   private JButton selectPoliticalActionButton = null;
   private JButton doneButton = null;
   private PoliticalActionAttachment choice = null;
-  private TripleAFrame parent = null;
+  private TripleAFrame parent;
   private boolean firstRun = true;
   protected List<PoliticalActionAttachment> validPoliticalActions = null;
 

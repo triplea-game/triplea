@@ -82,7 +82,7 @@ public class HistoryLog extends JFrame {
   public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerID> playersAllowed) {
     HistoryNode curNode = data.getHistory().getLastNode();
     Step stepNode = null;
-    Step turnStartNode = null;
+    Step turnStartNode;
     final PlayerID curPlayer;
     final Collection<PlayerID> players = new HashSet<>();
     if (playersAllowed != null) {

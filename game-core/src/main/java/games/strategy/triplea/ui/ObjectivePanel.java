@@ -116,7 +116,7 @@ public class ObjectivePanel extends AbstractStatPanel {
   class ObjectiveTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = 2259315408905271333L;
     private static final int COLUMNS_TOTAL = 2;
-    private boolean isDirty = true;
+    private boolean isDirty;
     private String[][] collectedData;
     final Map<String, List<String>> sections = new LinkedHashMap<>();
     private Instant timestamp = Instant.EPOCH;

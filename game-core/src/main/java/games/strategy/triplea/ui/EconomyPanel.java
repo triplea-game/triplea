@@ -43,7 +43,7 @@ public class EconomyPanel extends AbstractStatPanel {
 
   class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = 5197895788633898324L;
-    private boolean isDirty = true;
+    private boolean isDirty;
     private String[][] collectedData;
 
     public ResourceTableModel() {

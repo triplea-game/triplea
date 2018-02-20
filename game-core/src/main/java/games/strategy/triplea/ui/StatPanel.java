@@ -168,7 +168,7 @@ public class StatPanel extends AbstractStatPanel {
   class StatTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = -6156153062049822444L;
     /* Flag to indicate whether data needs to be recalculated */
-    private boolean isDirty = true;
+    private boolean isDirty;
     /* Column Header Names */
     /* Underlying data for the table */
     private String[][] collectedData;
@@ -293,9 +293,9 @@ public class StatPanel extends AbstractStatPanel {
     /* Underlying data for the table */
     private final String[][] data;
     /* Convenience mapping of country names -> col */
-    private Map<String, Integer> colMap = null;
+    private final Map<String, Integer> colMap;
     /* Convenience mapping of technology names -> row */
-    private Map<String, Integer> rowMap = null;
+    private final Map<String, Integer> rowMap;
 
     public TechTableModel() {
       gameData.addDataChangeListener(this);

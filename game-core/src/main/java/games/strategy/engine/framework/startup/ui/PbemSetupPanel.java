@@ -382,7 +382,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     private final File file;
     private final Object mutex = new Object();
 
-    Map<String, IBean> map = new HashMap<>();
+    Map<String, IBean> map;
 
     LocalBeanCache() {
       file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
