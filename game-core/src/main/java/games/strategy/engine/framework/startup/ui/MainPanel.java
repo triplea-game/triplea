@@ -23,7 +23,6 @@ import javax.swing.border.EtchedBorder;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.ui.SwingAction;
@@ -192,10 +191,10 @@ public class MainPanel extends JPanel implements Observer {
   private static void play(final ISetupPanel gameSetupPanel, final SetupPanelModel gameTypePanelModel,
       final MainPanel mainPanel) {
     gameSetupPanel.preStartGame();
-    final ILauncher launcher = gameTypePanelModel.getPanel().getLauncher();
-    if (launcher != null) {
-      launcher.launch(mainPanel);
-    }
+
+    gameTypePanelModel.getPanel().getLauncher()
+        .ifPresent(launcher -> launcher.launch(mainPanel));
+
     gameSetupPanel.postStartGame();
   }
 

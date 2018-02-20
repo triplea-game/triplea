@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
+import java.util.Optional;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -66,7 +67,7 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
   public void postStartGame() {}
 
   @Override
-  public ILauncher getLauncher() {
+  public Optional<ILauncher> getLauncher() {
     throw new IllegalStateException("NOt implemented");
   }
 

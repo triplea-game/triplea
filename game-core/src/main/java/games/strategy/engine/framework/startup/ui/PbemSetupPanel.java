@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -341,7 +342,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    * Called when the user hits play.
    */
   @Override
-  public ILauncher getLauncher() {
+  public Optional<ILauncher> getLauncher() {
     // update local cache and write to disk before game starts
     final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
     if (poster != null) {
@@ -369,7 +370,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     final PlayerListing pl =
         new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
-    return new LocalLauncher(gameSelectorModel, randomSource, pl);
+    return Optional.of(new LocalLauncher(gameSelectorModel, randomSource, pl));
   }
 
   /**
