@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -107,8 +107,7 @@ public class GameData implements Serializable {
   private transient volatile boolean testLockIsHeld = false;
   private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
-  // TODO: change to Map/HashMap upon next incompatible release
-  private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<>();
+  private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
   /** Creates new GameData. */
