@@ -458,8 +458,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
 
     // Check if any repaired units change into different unit types
-    for (final Territory territory : damagedMap.keySet()) {
-      repairedChangeInto(damagedMap.get(territory), territory, bridge);
+    for (final Entry<Territory, Set<Unit>> territorySetEntry : damagedMap.entrySet()) {
+      repairedChangeInto(territorySetEntry.getValue(), territorySetEntry.getKey(), bridge);
     }
   }
 

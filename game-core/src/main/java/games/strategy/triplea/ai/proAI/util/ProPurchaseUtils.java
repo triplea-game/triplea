@@ -107,8 +107,9 @@ public class ProPurchaseUtils {
           currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
         }
         currentlyBuilt += CollectionUtils.countMatches(unitsToPlace, unitTypeOwnedBy);
-        for (final Territory t : purchaseTerritories.keySet()) {
-          for (final ProPlaceTerritory placeTerritory : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+        for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+            .entrySet()) {
+          for (final ProPlaceTerritory placeTerritory : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
             currentlyBuilt += CollectionUtils.countMatches(placeTerritory.getPlaceUnits(), unitTypeOwnedBy);
           }
         }
@@ -134,17 +135,17 @@ public class ProPurchaseUtils {
     }
     final Map<ProPurchaseOption, Double> purchasePercentages = new LinkedHashMap<>();
     double upperBound = 0.0;
-    for (final ProPurchaseOption ppo : purchaseEfficiencies.keySet()) {
-      final double chance = purchaseEfficiencies.get(ppo) / totalEfficiency * 100;
+    for (final Map.Entry<ProPurchaseOption, Double> proPurchaseOptionDoubleEntry : purchaseEfficiencies.entrySet()) {
+      final double chance = proPurchaseOptionDoubleEntry.getValue() / totalEfficiency * 100;
       upperBound += chance;
-      purchasePercentages.put(ppo, upperBound);
-      ProLogger.trace(ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound=" + upperBound);
+      purchasePercentages.put(proPurchaseOptionDoubleEntry.getKey(), upperBound);
+      ProLogger.trace((proPurchaseOptionDoubleEntry.getKey()).getUnitType().getName() + ", probability=" + chance + ", upperBound=" + upperBound);
     }
     final double randomNumber = Math.random() * 100;
     ProLogger.trace("Random number: " + randomNumber);
-    for (final ProPurchaseOption ppo : purchasePercentages.keySet()) {
-      if (randomNumber <= purchasePercentages.get(ppo)) {
-        return Optional.of(ppo);
+    for (final Map.Entry<ProPurchaseOption, Double> proPurchaseOptionDoubleEntry : purchasePercentages.entrySet()) {
+      if (randomNumber <= proPurchaseOptionDoubleEntry.getValue()) {
+        return Optional.of(proPurchaseOptionDoubleEntry.getKey());
       }
     }
     return Optional.of(purchasePercentages.keySet().iterator().next());
@@ -349,8 +350,9 @@ public class ProPurchaseUtils {
     if (purchaseTerritories == null) {
       return placeUnits;
     }
-    for (final Territory purchaseTerritory : purchaseTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories()) {
+    for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+        .entrySet()) {
+      for (final ProPlaceTerritory ppt : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
         if (t.equals(ppt.getTerritory())) {
           placeUnits.addAll(ppt.getPlaceUnits());
         }

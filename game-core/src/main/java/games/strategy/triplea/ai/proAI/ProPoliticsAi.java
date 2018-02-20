@@ -93,9 +93,10 @@ class ProPoliticsAi {
 
       // Find attack options per war action
       final Map<PoliticalActionAttachment, Double> attackPercentageMap = new HashMap<>();
-      for (final PoliticalActionAttachment action : enemyMap.keySet()) {
+      for (final Map.Entry<PoliticalActionAttachment, List<PlayerID>> politicalActionAttachmentListEntry : enemyMap
+          .entrySet()) {
         int count = 0;
-        final List<PlayerID> enemyPlayers = enemyMap.get(action);
+        final List<PlayerID> enemyPlayers = politicalActionAttachmentListEntry.getValue();
         for (final ProTerritory patd : attackOptions) {
           if (Matches.isTerritoryOwnedBy(enemyPlayers).test(patd.getTerritory())
               || Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(enemyPlayers)).test(patd.getTerritory())) {
@@ -103,7 +104,7 @@ class ProPoliticsAi {
           }
         }
         final double attackPercentage = count / (attackOptions.size() + 1.0);
-        attackPercentageMap.put(action, attackPercentage);
+        attackPercentageMap.put(politicalActionAttachmentListEntry.getKey(), attackPercentage);
         ProLogger.trace(enemyPlayers + ", count=" + count + ", attackPercentage=" + attackPercentage);
       }
 

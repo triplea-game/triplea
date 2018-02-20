@@ -34,18 +34,18 @@ public class ProMoveUtils {
 
     // Find all amphib units
     final Set<Unit> amphibUnits = new HashSet<>();
-    for (final Territory t : attackMap.keySet()) {
-      amphibUnits.addAll(attackMap.get(t).getAmphibAttackMap().keySet());
-      for (final Unit transport : attackMap.get(t).getAmphibAttackMap().keySet()) {
-        amphibUnits.addAll(attackMap.get(t).getAmphibAttackMap().get(transport));
+    for (final Map.Entry<Territory, ProTerritory> territoryProTerritoryEntry : attackMap.entrySet()) {
+      amphibUnits.addAll(territoryProTerritoryEntry.getValue().getAmphibAttackMap().keySet());
+      for (final Unit transport : territoryProTerritoryEntry.getValue().getAmphibAttackMap().keySet()) {
+        amphibUnits.addAll(territoryProTerritoryEntry.getValue().getAmphibAttackMap().get(transport));
       }
     }
 
     // Loop through all territories to attack
-    for (final Territory t : attackMap.keySet()) {
+    for (final Map.Entry<Territory, ProTerritory> territoryProTerritoryEntry : attackMap.entrySet()) {
 
       // Loop through each unit that is attacking the current territory
-      for (final Unit u : attackMap.get(t).getUnits()) {
+      for (final Unit u : territoryProTerritoryEntry.getValue().getUnits()) {
 
         // Skip amphib units
         if (amphibUnits.contains(u)) {
@@ -54,7 +54,7 @@ public class ProMoveUtils {
 
         // Skip if unit is already in move to territory
         final Territory startTerritory = ProData.unitTerritoryMap.get(u);
-        if (startTerritory == null || startTerritory.equals(t)) {
+        if (startTerritory == null || startTerritory.equals(territoryProTerritoryEntry.getKey())) {
           continue;
         }
 
@@ -77,22 +77,22 @@ public class ProMoveUtils {
         if (unitList.stream().anyMatch(Matches.unitIsSea())) {
 
           // Sea unit (including carriers with planes)
-          route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
+          route = data.getMap().getRoute_IgnoreEnd(startTerritory, territoryProTerritoryEntry.getKey(),
               ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
         } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsLand())) {
 
           // Land unit
-          route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches
+          route = data.getMap().getRoute_IgnoreEnd(startTerritory, territoryProTerritoryEntry.getKey(), ProMatches
               .territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove, new ArrayList<>()));
         } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
 
           // Air unit
-          route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
+          route = data.getMap().getRoute_IgnoreEnd(startTerritory, territoryProTerritoryEntry.getKey(),
               ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove));
         }
         if (route == null) {
           ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
-              + ": route is null " + startTerritory + " to " + t + ", units=" + unitList);
+              + ": route is null " + startTerritory + " to " + territoryProTerritoryEntry.getKey() + ", units=" + unitList);
         }
         moveRoutes.add(route);
       }
@@ -106,21 +106,21 @@ public class ProMoveUtils {
     final GameData data = ProData.getData();
 
     // Loop through all territories to attack
-    for (final Territory t : attackMap.keySet()) {
+    for (final Map.Entry<Territory, ProTerritory> territoryProTerritoryEntry : attackMap.entrySet()) {
 
       // Loop through each amphib attack map
-      final Map<Unit, List<Unit>> amphibAttackMap = attackMap.get(t).getAmphibAttackMap();
-      for (final Unit transport : amphibAttackMap.keySet()) {
-        int movesLeft = TripleAUnit.get(transport).getMovementLeft();
-        Territory transportTerritory = ProData.unitTerritoryMap.get(transport);
+      final Map<Unit, List<Unit>> amphibAttackMap = territoryProTerritoryEntry.getValue().getAmphibAttackMap();
+      for (final Map.Entry<Unit, List<Unit>> unitListEntry : amphibAttackMap.entrySet()) {
+        int movesLeft = TripleAUnit.get(unitListEntry.getKey()).getMovementLeft();
+        Territory transportTerritory = ProData.unitTerritoryMap.get(unitListEntry.getKey());
 
         // Check if units are already loaded or not
         final List<Unit> loadedUnits = new ArrayList<>();
         final List<Unit> remainingUnitsToLoad = new ArrayList<>();
-        if (TransportTracker.isTransporting(transport)) {
-          loadedUnits.addAll(amphibAttackMap.get(transport));
+        if (TransportTracker.isTransporting(unitListEntry.getKey())) {
+          loadedUnits.addAll(unitListEntry.getValue());
         } else {
-          remainingUnitsToLoad.addAll(amphibAttackMap.get(transport));
+          remainingUnitsToLoad.addAll(unitListEntry.getValue());
         }
 
         // Load units and move transport
@@ -132,7 +132,7 @@ public class ProMoveUtils {
             for (final Unit amphibUnit : remainingUnitsToLoad) {
               if (data.getMap().getDistance(transportTerritory, ProData.unitTerritoryMap.get(amphibUnit)) == 1) {
                 moveUnits.add(Collections.singletonList(amphibUnit));
-                transportsToLoad.add(Collections.singletonList(transport));
+                transportsToLoad.add(Collections.singletonList(unitListEntry.getKey()));
                 final Route route = new Route(ProData.unitTerritoryMap.get(amphibUnit), transportTerritory);
                 moveRoutes.add(route);
                 unitsToRemove.add(amphibUnit);
@@ -145,9 +145,11 @@ public class ProMoveUtils {
           }
 
           // Move transport if I'm not already at the end or out of moves
-          final Territory unloadTerritory = attackMap.get(t).getTransportTerritoryMap().get(transport);
-          int distanceFromEnd = data.getMap().getDistance(transportTerritory, t);
-          if (t.isWater()) {
+          final Territory unloadTerritory = territoryProTerritoryEntry.getValue().getTransportTerritoryMap().get(
+              unitListEntry.getKey());
+          int distanceFromEnd = data.getMap().getDistance(transportTerritory,
+              territoryProTerritoryEntry.getKey());
+          if ((territoryProTerritoryEntry.getKey()).isWater()) {
             distanceFromEnd++;
           }
           if (movesLeft > 0 && (distanceFromEnd > 1 || !remainingUnitsToLoad.isEmpty()
@@ -159,7 +161,7 @@ public class ProMoveUtils {
             int maxDistanceFromEnd = Integer.MIN_VALUE; // Used to move to farthest away loading territory first
             for (final Territory neighbor : neighbors) {
               if (MoveValidator.validateCanal(new Route(transportTerritory, neighbor),
-                  Collections.singletonList(transport), player, data) != null) {
+                  Collections.singletonList(unitListEntry.getKey()), player, data) != null) {
                 continue;
               }
               int distanceFromUnloadTerritory = 0;
@@ -167,9 +169,10 @@ public class ProMoveUtils {
                 distanceFromUnloadTerritory = data.getMap().getDistance_IgnoreEndForCondition(neighbor, unloadTerritory,
                     ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
               }
-              int neighborDistanceFromEnd = data.getMap().getDistance_IgnoreEndForCondition(neighbor, t,
+              int neighborDistanceFromEnd = data.getMap().getDistance_IgnoreEndForCondition(neighbor,
+                  territoryProTerritoryEntry.getKey(),
                   ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
-              if (t.isWater()) {
+              if ((territoryProTerritoryEntry.getKey()).isWater()) {
                 neighborDistanceFromEnd++;
               }
               int maxUnitDistance = 0;
@@ -193,7 +196,7 @@ public class ProMoveUtils {
             }
             if (territoryToMoveTo != null) {
               final List<Unit> unitsToMove = new ArrayList<>();
-              unitsToMove.add(transport);
+              unitsToMove.add(unitListEntry.getKey());
               unitsToMove.addAll(loadedUnits);
               moveUnits.add(unitsToMove);
               transportsToLoad.add(null);
@@ -205,18 +208,19 @@ public class ProMoveUtils {
           movesLeft--;
         }
         if (!remainingUnitsToLoad.isEmpty()) {
-          ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName() + ": " + t
+          ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName() + ": " + territoryProTerritoryEntry
+              .getKey()
               + ", remainingUnitsToLoad=" + remainingUnitsToLoad);
         }
 
         // Set territory transport is moving to
-        attackMap.get(t).getTransportTerritoryMap().put(transport, transportTerritory);
+        territoryProTerritoryEntry.getValue().getTransportTerritoryMap().put(unitListEntry.getKey(), transportTerritory);
 
         // Unload transport
-        if (!loadedUnits.isEmpty() && !t.isWater()) {
+        if (!loadedUnits.isEmpty() && !(territoryProTerritoryEntry.getKey()).isWater()) {
           moveUnits.add(loadedUnits);
           transportsToLoad.add(null);
-          final Route route = new Route(transportTerritory, t);
+          final Route route = new Route(transportTerritory, (Territory) territoryProTerritoryEntry.getKey());
           moveRoutes.add(route);
         }
       }
@@ -229,11 +233,11 @@ public class ProMoveUtils {
     final GameData data = ProData.getData();
 
     // Loop through all territories to attack
-    for (final Territory t : attackMap.keySet()) {
+    for (final Map.Entry<Territory, ProTerritory> territoryProTerritoryEntry : attackMap.entrySet()) {
 
       // Loop through each unit that is attacking the current territory
-      for (final Unit u : attackMap.get(t).getBombardTerritoryMap().keySet()) {
-        final Territory bombardFromTerritory = attackMap.get(t).getBombardTerritoryMap().get(u);
+      for (final Unit u : territoryProTerritoryEntry.getValue().getBombardTerritoryMap().keySet()) {
+        final Territory bombardFromTerritory = territoryProTerritoryEntry.getValue().getBombardTerritoryMap().get(u);
 
         // Skip if unit is already in move to territory
         final Territory startTerritory = ProData.unitTerritoryMap.get(u);
@@ -265,14 +269,14 @@ public class ProMoveUtils {
     final GameData data = ProData.getData();
 
     // Loop through all territories to attack
-    for (final Territory t : attackMap.keySet()) {
+    for (final Map.Entry<Territory, ProTerritory> territoryProTerritoryEntry : attackMap.entrySet()) {
 
       // Loop through each unit that is attacking the current territory
-      for (final Unit u : attackMap.get(t).getBombers()) {
+      for (final Unit u : territoryProTerritoryEntry.getValue().getBombers()) {
 
         // Skip if unit is already in move to territory
         final Territory startTerritory = ProData.unitTerritoryMap.get(u);
-        if (startTerritory == null || startTerritory.equals(t)) {
+        if (startTerritory == null || startTerritory.equals(territoryProTerritoryEntry.getKey())) {
           continue;
         }
 
@@ -284,7 +288,7 @@ public class ProMoveUtils {
         // Determine route and add to move list
         Route route = null;
         if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
-          route = data.getMap().getRoute_IgnoreEnd(startTerritory, t,
+          route = data.getMap().getRoute_IgnoreEnd(startTerritory, territoryProTerritoryEntry.getKey(),
               ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
         }
         moveRoutes.add(route);

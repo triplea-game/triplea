@@ -88,13 +88,13 @@ public class ConnectionFinder {
     Map<String, List<Polygon>> mapOfPolygons = null;
     try (InputStream in = new FileInputStream(polyFile)) {
       mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(in);
-      for (final String territoryName : mapOfPolygons.keySet()) {
-        final List<Polygon> listOfPolygons = mapOfPolygons.get(territoryName);
+      for (final Map.Entry<String, List<Polygon>> stringListEntry : mapOfPolygons.entrySet()) {
+        final List<Polygon> listOfPolygons = stringListEntry.getValue();
         final List<Area> listOfAreas = new ArrayList<>();
         for (final Polygon p : listOfPolygons) {
           listOfAreas.add(new Area(p));
         }
-        territoryAreas.put(territoryName, listOfAreas);
+        territoryAreas.put(stringListEntry.getKey(), listOfAreas);
       }
     } catch (final IOException e) {
       ToolLogger.error("Failed to load polygons: " + polyFile.getAbsolutePath(), e);

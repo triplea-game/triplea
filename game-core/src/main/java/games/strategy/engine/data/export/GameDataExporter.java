@@ -163,8 +163,8 @@ public class GameDataExporter {
   }
 
   private void printEditableProperties(final Map<String, IEditableProperty> edProperties) {
-    for (final String property : edProperties.keySet()) {
-      printEditableProperty(edProperties.get(property));
+    for (final Map.Entry<String, IEditableProperty> stringIEditablePropertyEntry : edProperties.entrySet()) {
+      printEditableProperty(stringIEditablePropertyEntry.getValue());
     }
   }
 

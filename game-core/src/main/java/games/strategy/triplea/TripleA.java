@@ -52,18 +52,18 @@ public class TripleA implements IGameLoader {
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames) {
     final Set<IGamePlayer> players = new HashSet<>();
-    for (final String name : playerNames.keySet()) {
-      final String type = playerNames.get(name);
+    for (final Map.Entry<String, String> stringStringEntry : playerNames.entrySet()) {
+      final String type = stringStringEntry.getValue();
       if (type.equals(WEAK_COMPUTER_PLAYER_TYPE)) {
-        players.add(new WeakAi(name, type));
+        players.add(new WeakAi(stringStringEntry.getKey(), type));
       } else if (type.equals(FAST_COMPUTER_PLAYER_TYPE)) {
-        players.add(new FastAi(name, type));
+        players.add(new FastAi(stringStringEntry.getKey(), type));
       } else if (type.equals(PRO_COMPUTER_PLAYER_TYPE)) {
-        players.add(new ProAi(name, type));
+        players.add(new ProAi(stringStringEntry.getKey(), type));
       } else if (type.equals(DOESNOTHINGAI_COMPUTER_PLAYER_TYPE)) {
-        players.add(new DoesNothingAi(name, type));
+        players.add(new DoesNothingAi(stringStringEntry.getKey(), type));
       } else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE)) {
-        final TripleAPlayer player = new TripleAPlayer(name, type);
+        final TripleAPlayer player = new TripleAPlayer(stringStringEntry.getKey(), type);
         players.add(player);
       } else {
         throw new IllegalStateException("Player type not recognized:" + type);

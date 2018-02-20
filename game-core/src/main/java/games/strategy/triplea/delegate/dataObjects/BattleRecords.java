@@ -146,36 +146,37 @@ public class BattleRecords implements Serializable {
   }
 
   public void addRecord(final BattleRecords other) {
-    for (final PlayerID p : other.m_records.keySet()) {
-      final HashMap<GUID, BattleRecord> currentRecord = m_records.get(p);
+    for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> playerIDHashMapEntry : other.m_records.entrySet()) {
+      final HashMap<GUID, BattleRecord> currentRecord = m_records.get(playerIDHashMapEntry.getKey());
       if (currentRecord != null) {
         // this only comes up if we use edit mode to create an attack for a player who's already had their turn and
         // therefore already has
         // their record.
-        final HashMap<GUID, BattleRecord> additionalRecords = other.m_records.get(p);
+        final HashMap<GUID, BattleRecord> additionalRecords = playerIDHashMapEntry.getValue();
         for (final Entry<GUID, BattleRecord> entry : additionalRecords.entrySet()) {
           final GUID guid = entry.getKey();
           final BattleRecord br = entry.getValue();
           if (currentRecord.containsKey(guid)) {
-            throw new IllegalStateException("Should not be adding battle record for player " + p.getName()
+            throw new IllegalStateException("Should not be adding battle record for player " + (playerIDHashMapEntry
+                .getKey()).getName()
                 + " when they are already on the record. " + "Trying to add: " + br.toString());
           }
           currentRecord.put(guid, br);
         }
-        m_records.put(p, currentRecord);
+        m_records.put(playerIDHashMapEntry.getKey(), currentRecord);
       } else {
-        m_records.put(p, other.m_records.get(p));
+        m_records.put(playerIDHashMapEntry.getKey(), playerIDHashMapEntry.getValue());
       }
     }
   }
 
   public void removeRecord(final BattleRecords other) {
-    for (final PlayerID p : other.m_records.keySet()) {
-      final HashMap<GUID, BattleRecord> currentRecord = m_records.get(p);
+    for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> playerIDHashMapEntry : other.m_records.entrySet()) {
+      final HashMap<GUID, BattleRecord> currentRecord = m_records.get(playerIDHashMapEntry.getKey());
       if (currentRecord == null) {
         throw new IllegalStateException("Trying to remove a player records but records do not exist");
       }
-      final HashMap<GUID, BattleRecord> toRemoveRecords = other.m_records.get(p);
+      final HashMap<GUID, BattleRecord> toRemoveRecords = playerIDHashMapEntry.getValue();
       for (final Entry<GUID, BattleRecord> entry : toRemoveRecords.entrySet()) {
         final GUID guid = entry.getKey();
         if (!currentRecord.containsKey(guid)) {

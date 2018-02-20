@@ -92,8 +92,8 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     if (players == null || players.isEmpty()) {
       return false;
     }
-    for (final String player : players.keySet()) {
-      if (players.get(player) == null) {
+    for (final Map.Entry<String, String> stringStringEntry : players.entrySet()) {
+      if (stringStringEntry.getValue() == null) {
         return false;
       }
     }

@@ -49,11 +49,11 @@ public class NonFightingBattle extends DependentBattle {
   public Change addAttackChange(final Route route, final Collection<Unit> units,
       final HashMap<Unit, HashSet<Unit>> targets) {
     final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
-    for (final Unit unit : addedTransporting.keySet()) {
-      if (m_dependentUnits.get(unit) != null) {
-        m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
+    for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : addedTransporting.entrySet()) {
+      if (m_dependentUnits.get(unitCollectionEntry.getKey()) != null) {
+        m_dependentUnits.get(unitCollectionEntry.getKey()).addAll(unitCollectionEntry.getValue());
       } else {
-        m_dependentUnits.put(unit, addedTransporting.get(unit));
+        m_dependentUnits.put(unitCollectionEntry.getKey(), unitCollectionEntry.getValue());
       }
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
@@ -166,12 +166,12 @@ public class NonFightingBattle extends DependentBattle {
    * Add dependent Units. Uninformative comment to suppress checkstyle warning.
    */
   public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
-    for (final Unit holder : dependencies.keySet()) {
-      final Collection<Unit> transporting = dependencies.get(holder);
-      if (m_dependentUnits.get(holder) != null) {
-        m_dependentUnits.get(holder).addAll(transporting);
+    for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : dependencies.entrySet()) {
+      final Collection<Unit> transporting = unitCollectionEntry.getValue();
+      if (m_dependentUnits.get(unitCollectionEntry.getKey()) != null) {
+        m_dependentUnits.get(unitCollectionEntry.getKey()).addAll(transporting);
       } else {
-        m_dependentUnits.put(holder, new LinkedHashSet<>(transporting));
+        m_dependentUnits.put(unitCollectionEntry.getKey(), new LinkedHashSet<>(transporting));
       }
     }
   }

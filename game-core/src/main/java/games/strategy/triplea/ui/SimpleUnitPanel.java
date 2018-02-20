@@ -3,8 +3,8 @@ package games.strategy.triplea.ui;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.BoxLayout;
@@ -63,18 +63,18 @@ public class SimpleUnitPanel extends JPanel {
   public void setUnitsFromRepairRuleMap(final HashMap<Unit, IntegerMap<RepairRule>> units, final PlayerID player,
       final GameData data) {
     removeAll();
-    final Set<Unit> entries = units.keySet();
-    for (final Unit unit : entries) {
-      final IntegerMap<RepairRule> rules = units.get(unit);
+    for (final Map.Entry<Unit, IntegerMap<RepairRule>> unitIntegerMapEntry : units.entrySet()) {
+      final IntegerMap<RepairRule> rules = unitIntegerMapEntry.getValue();
       final TreeSet<RepairRule> repairRules = new TreeSet<>(repairRuleComparator);
       repairRules.addAll(rules.keySet());
       for (final RepairRule repairRule : repairRules) {
         final int quantity = rules.getInt(repairRule);
         if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
           // check to see if the repair rule matches the damaged unit
-          if (unit.getType().equals((repairRule.getResults().keySet().iterator().next()))) {
-            addUnits(player, quantity, unit.getType(), Matches.unitHasTakenSomeBombingUnitDamage().test(unit),
-                Matches.unitIsDisabled().test(unit));
+          if ((unitIntegerMapEntry.getKey()).getType().equals((repairRule.getResults().keySet().iterator().next()))) {
+            addUnits(player, quantity, (unitIntegerMapEntry.getKey()).getType(), Matches.unitHasTakenSomeBombingUnitDamage().test(
+                unitIntegerMapEntry.getKey()),
+                Matches.unitIsDisabled().test(unitIntegerMapEntry.getKey()));
           }
         }
       }

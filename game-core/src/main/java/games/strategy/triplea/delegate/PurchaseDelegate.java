@@ -283,13 +283,14 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
   private static IntegerMap<Unit> getUnitRepairs(final Map<Unit, IntegerMap<RepairRule>> repairRules) {
     final IntegerMap<Unit> repairMap = new IntegerMap<>();
-    for (final Unit u : repairRules.keySet()) {
-      final IntegerMap<RepairRule> rules = repairRules.get(u);
+    for (final Entry<Unit, IntegerMap<RepairRule>> unitIntegerMapEntry : repairRules.entrySet()) {
+      final IntegerMap<RepairRule> rules = unitIntegerMapEntry.getValue();
       final TreeSet<RepairRule> repRules = new TreeSet<>(repairRuleComparator);
       repRules.addAll(rules.keySet());
       for (final RepairRule repairRule : repRules) {
-        final int quantity = rules.getInt(repairRule) * repairRule.getResults().getInt(u.getType());
-        repairMap.add(u, quantity);
+        final int quantity = rules.getInt(repairRule) * repairRule.getResults().getInt((unitIntegerMapEntry
+            .getKey()).getType());
+        repairMap.add(unitIntegerMapEntry.getKey(), quantity);
       }
     }
     return repairMap;
@@ -309,11 +310,10 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
   private IntegerMap<Resource> getRepairCosts(final Map<Unit, IntegerMap<RepairRule>> repairRules,
       final PlayerID player) {
-    final Collection<Unit> units = repairRules.keySet();
     final IntegerMap<Resource> costs = new IntegerMap<>();
-    for (final Unit u : units) {
-      for (final RepairRule rule : repairRules.get(u).keySet()) {
-        costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
+    for (final Entry<Unit, IntegerMap<RepairRule>> unitIntegerMapEntry : repairRules.entrySet()) {
+      for (final RepairRule rule : unitIntegerMapEntry.getValue().keySet()) {
+        costs.addMultiple(rule.getCosts(), unitIntegerMapEntry.getValue().getInt(rule));
       }
     }
     final double discount = TechAbilityAttachment.getRepairDiscount(player, getData());

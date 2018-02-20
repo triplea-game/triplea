@@ -249,16 +249,16 @@ final class ViewMenu extends JMenu {
     final ButtonGroup mapButtonGroup = new ButtonGroup();
     final Map<String, String> skins = AbstractUiContext.getSkins(frame.getGame().getData());
     mapSubMenu.setEnabled(skins.size() > 1);
-    for (final String key : skins.keySet()) {
-      final JMenuItem mapMenuItem = new JRadioButtonMenuItem(key);
+    for (final Map.Entry<String, String> stringStringEntry : skins.entrySet()) {
+      final JMenuItem mapMenuItem = new JRadioButtonMenuItem(stringStringEntry.getKey());
       mapButtonGroup.add(mapMenuItem);
       mapSubMenu.add(mapMenuItem);
-      if (skins.get(key).equals(AbstractUiContext.getMapDir())) {
+      if (stringStringEntry.getValue().equals(AbstractUiContext.getMapDir())) {
         mapMenuItem.setSelected(true);
       }
       mapMenuItem.addActionListener(e -> {
         try {
-          frame.updateMap(skins.get(key));
+          frame.updateMap(stringStringEntry.getValue());
           if (uiContext.getMapData().getHasRelief()) {
             showMapDetails.setSelected(true);
           }

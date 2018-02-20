@@ -217,9 +217,9 @@ public class PolygonGrabber extends JFrame {
           bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics g = imageCopy.getGraphics();
       g.drawImage(bufferedImage, 0, 0, null);
-      for (final String territoryName : centers.keySet()) {
-        final Point center = centers.get(territoryName);
-        ToolLogger.info("Detecting Polygon for:" + territoryName);
+      for (final Entry<String, Point> stringPointEntry : centers.entrySet()) {
+        final Point center = stringPointEntry.getValue();
+        ToolLogger.info("Detecting Polygon for:" + stringPointEntry.getKey());
         final Polygon p = findPolygon(center.x, center.y);
         // test if the poly contains the center point (this often fails when there is an island right above (because
         // findPolygon will grab
@@ -251,7 +251,7 @@ public class PolygonGrabber extends JFrame {
         }
         final List<Polygon> polys = new ArrayList<>();
         polys.add(p);
-        polygons.put(territoryName, polys);
+        polygons.put(stringPointEntry.getKey(), polys);
       }
       g.dispose();
       imageCopy.flush();

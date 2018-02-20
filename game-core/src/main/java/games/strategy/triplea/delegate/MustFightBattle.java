@@ -200,18 +200,18 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Map<Unit, Collection<Unit>> dependencies = TransportTracker.transporting(units);
     if (!isAlliedAirIndependent()) {
       dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
-      for (final Unit carrier : dependencies.keySet()) {
-        final UnitAttachment ua = UnitAttachment.get(carrier.getType());
+      for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : dependencies.entrySet()) {
+        final UnitAttachment ua = UnitAttachment.get((unitCollectionEntry.getKey()).getType());
         if (ua.getCarrierCapacity() == -1) {
           continue;
         }
-        final Collection<Unit> fighters = dependencies.get(carrier);
+        final Collection<Unit> fighters = unitCollectionEntry.getValue();
         // Dependencies count both land and air units. Land units could be allied or owned, while air is just allied
         // since owned already launched at beginning of turn
         fighters.retainAll(CollectionUtils.getMatches(fighters, Matches.unitIsAir()));
         for (final Unit fighter : fighters) {
           // Set transportedBy for fighter
-          change.add(ChangeFactory.unitPropertyChange(fighter, carrier, TripleAUnit.TRANSPORTED_BY));
+          change.add(ChangeFactory.unitPropertyChange(fighter, unitCollectionEntry.getKey(), TripleAUnit.TRANSPORTED_BY));
         }
         // remove transported fighters from battle display
         m_attackingUnits.removeAll(fighters);
@@ -235,12 +235,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
-    for (final Unit holder : dependencies.keySet()) {
-      final Collection<Unit> transporting = dependencies.get(holder);
-      if (m_dependentUnits.get(holder) != null) {
-        m_dependentUnits.get(holder).addAll(transporting);
+    for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : dependencies.entrySet()) {
+      final Collection<Unit> transporting = unitCollectionEntry.getValue();
+      if (m_dependentUnits.get(unitCollectionEntry.getKey()) != null) {
+        m_dependentUnits.get(unitCollectionEntry.getKey()).addAll(transporting);
       } else {
-        m_dependentUnits.put(holder, new LinkedHashSet<>(transporting));
+        m_dependentUnits.put(unitCollectionEntry.getKey(), new LinkedHashSet<>(transporting));
       }
     }
   }

@@ -321,10 +321,10 @@ public class ClientModel implements IMessengerErrorListener {
     }
     objectStreamFactory.setData(data);
     final Map<String, String> playerMapping = new HashMap<>();
-    for (final String player : playersToNodes.keySet()) {
-      final String playedBy = playersToNodes.get(player);
+    for (final Map.Entry<String, String> stringStringEntry : playersToNodes.entrySet()) {
+      final String playedBy = stringStringEntry.getValue();
       if (playedBy.equals(messenger.getLocalNode().getName())) {
-        playerMapping.put(player, IGameLoader.CLIENT_PLAYER_TYPE);
+        playerMapping.put(stringStringEntry.getKey(), IGameLoader.CLIENT_PLAYER_TYPE);
       }
     }
     final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);

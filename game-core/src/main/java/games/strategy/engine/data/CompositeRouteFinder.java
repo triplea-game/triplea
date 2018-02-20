@@ -110,10 +110,10 @@ public class CompositeRouteFinder {
    */
   private int getTerScore(final Territory ter) {
     int bestMatchingScore = Integer.MAX_VALUE;
-    for (final Predicate<Territory> match : matches.keySet()) {
-      final int score = matches.get(match);
+    for (final Map.Entry<Predicate<Territory>, Integer> predicateIntegerEntry : matches.entrySet()) {
+      final int score = predicateIntegerEntry.getValue();
       if (score < bestMatchingScore) { // If this is a 'better' match
-        if (match.test(ter)) {
+        if ((predicateIntegerEntry.getKey()).test(ter)) {
           bestMatchingScore = score;
         }
       }

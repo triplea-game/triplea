@@ -133,9 +133,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private Unit getTarget(final Unit attacker) {
-    for (final Unit target : m_targets.keySet()) {
-      if (m_targets.get(target).contains(attacker)) {
-        return target;
+    for (final Entry<Unit, HashSet<Unit>> unitHashSetEntry : m_targets.entrySet()) {
+      if (unitHashSetEntry.getValue().contains(attacker)) {
+        return unitHashSetEntry.getKey();
       }
     }
     throw new IllegalStateException("Unit " + attacker.getType().getName() + " has no target");
@@ -148,13 +148,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (targets == null) {
       return ChangeFactory.EMPTY_CHANGE;
     }
-    for (final Unit target : targets.keySet()) {
-      HashSet<Unit> currentAttackers = m_targets.get(target);
+    for (final Entry<Unit, HashSet<Unit>> unitHashSetEntry : targets.entrySet()) {
+      HashSet<Unit> currentAttackers = m_targets.get(unitHashSetEntry.getKey());
       if (currentAttackers == null) {
         currentAttackers = new HashSet<>();
       }
-      currentAttackers.addAll(targets.get(target));
-      m_targets.put(target, currentAttackers);
+      currentAttackers.addAll(unitHashSetEntry.getValue());
+      m_targets.put(unitHashSetEntry.getKey(), currentAttackers);
     }
     return ChangeFactory.EMPTY_CHANGE;
   }

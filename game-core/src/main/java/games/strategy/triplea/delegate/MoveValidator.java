@@ -547,9 +547,9 @@ public class MoveValidator {
       }
 
       // Ensure all air transports are included
-      for (final Unit airTransport : newDependents.keySet()) {
-        if (!units.contains(airTransport)) {
-          for (final Unit unit : newDependents.get(airTransport)) {
+      for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : newDependents.entrySet()) {
+        if (!units.contains(unitCollectionEntry.getKey())) {
+          for (final Unit unit : unitCollectionEntry.getValue()) {
             if (units.contains(unit)) {
               result.addDisallowedUnit("Not all units have enough movement", unit);
             }
@@ -1206,11 +1206,11 @@ public class MoveValidator {
       // airTransports);
       final Map<Unit, Unit> airTransportsAndParatroops =
           TransportUtils.mapTransportsToLoad(paratroopsRequiringTransport, airTransports);
-      for (final Unit paratroop : airTransportsAndParatroops.keySet()) {
-        if (Matches.unitHasMoved().test(paratroop)) {
-          result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
+      for (final Map.Entry<Unit, Unit> unitUnitEntry : airTransportsAndParatroops.entrySet()) {
+        if (Matches.unitHasMoved().test(unitUnitEntry.getKey())) {
+          result.addDisallowedUnit("Cannot paratroop units that have already moved", unitUnitEntry.getKey());
         }
-        final Unit transport = airTransportsAndParatroops.get(paratroop);
+        final Unit transport = unitUnitEntry.getValue();
         if (Matches.unitHasMoved().test(transport)) {
           result.addDisallowedUnit("Cannot move then transport paratroops", transport);
         }
@@ -1319,13 +1319,13 @@ public class MoveValidator {
 
   private static void addToMapping(final Map<Unit, Collection<Unit>> mapping,
       final Map<Unit, Collection<Unit>> newMapping) {
-    for (final Unit key : newMapping.keySet()) {
-      if (mapping.containsKey(key)) {
-        final Collection<Unit> heldUnits = mapping.get(key);
-        heldUnits.addAll(newMapping.get(key));
-        mapping.put(key, heldUnits);
+    for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : newMapping.entrySet()) {
+      if (mapping.containsKey(unitCollectionEntry.getKey())) {
+        final Collection<Unit> heldUnits = mapping.get(unitCollectionEntry.getKey());
+        heldUnits.addAll(unitCollectionEntry.getValue());
+        mapping.put(unitCollectionEntry.getKey(), heldUnits);
       } else {
-        mapping.put(key, newMapping.get(key));
+        mapping.put(unitCollectionEntry.getKey(), unitCollectionEntry.getValue());
       }
     }
   }

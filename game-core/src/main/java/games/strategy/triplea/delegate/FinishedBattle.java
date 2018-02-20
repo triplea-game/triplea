@@ -66,11 +66,11 @@ public class FinishedBattle extends AbstractBattle {
   public Change addAttackChange(final Route route, final Collection<Unit> units,
       final HashMap<Unit, HashSet<Unit>> targets) {
     final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
-    for (final Unit unit : addedTransporting.keySet()) {
-      if (m_dependentUnits.get(unit) != null) {
-        m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
+    for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : addedTransporting.entrySet()) {
+      if (m_dependentUnits.get(unitCollectionEntry.getKey()) != null) {
+        m_dependentUnits.get(unitCollectionEntry.getKey()).addAll(unitCollectionEntry.getValue());
       } else {
-        m_dependentUnits.put(unit, addedTransporting.get(unit));
+        m_dependentUnits.put(unitCollectionEntry.getKey(), unitCollectionEntry.getValue());
       }
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
@@ -119,8 +119,8 @@ public class FinishedBattle extends AbstractBattle {
         m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();
       }
     }
-    for (final Unit dependence : m_dependentUnits.keySet()) {
-      final Collection<Unit> dependent = m_dependentUnits.get(dependence);
+    for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : m_dependentUnits.entrySet()) {
+      final Collection<Unit> dependent = unitCollectionEntry.getValue();
       dependent.removeAll(units);
     }
   }

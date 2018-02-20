@@ -445,13 +445,17 @@ public class DiceRoll implements Externalizable {
         new IntegerMap<>(supportLeftEnemy);
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendlyRolls =
         new HashMap<>();
-    for (final UnitSupportAttachment usa : supportUnitsLeftFriendly.keySet()) {
-      supportUnitsLeftFriendlyRolls.put(usa, new LinkedIntegerMap<>(supportUnitsLeftFriendly.get(usa)));
+    for (final Entry<UnitSupportAttachment, LinkedIntegerMap<Unit>> unitSupportAttachmentLinkedIntegerMapEntry : supportUnitsLeftFriendly
+        .entrySet()) {
+      supportUnitsLeftFriendlyRolls.put(unitSupportAttachmentLinkedIntegerMapEntry.getKey(), new LinkedIntegerMap<>(
+          unitSupportAttachmentLinkedIntegerMapEntry.getValue()));
     }
     final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemyRolls =
         new HashMap<>();
-    for (final UnitSupportAttachment usa : supportUnitsLeftEnemy.keySet()) {
-      supportUnitsLeftEnemyRolls.put(usa, new LinkedIntegerMap<>(supportUnitsLeftEnemy.get(usa)));
+    for (final Entry<UnitSupportAttachment, LinkedIntegerMap<Unit>> unitSupportAttachmentLinkedIntegerMapEntry : supportUnitsLeftEnemy
+        .entrySet()) {
+      supportUnitsLeftEnemyRolls.put(unitSupportAttachmentLinkedIntegerMapEntry.getKey(), new LinkedIntegerMap<>(
+          unitSupportAttachmentLinkedIntegerMapEntry.getValue()));
     }
     final int diceSides = data.getDiceSides();
     for (final Unit current : unitsGettingPowerFor) {

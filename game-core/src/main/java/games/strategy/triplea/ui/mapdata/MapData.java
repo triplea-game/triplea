@@ -262,8 +262,8 @@ public class MapData implements Closeable {
   private Map<Image, List<Point>> loadDecorations() throws IOException {
     final Map<Image, List<Point>> decorations = new HashMap<>();
     final Map<String, List<Point>> points = readPointsOneToMany(optionalResource(DECORATIONS_FILE));
-    for (final String name : points.keySet()) {
-      loadImage("misc/" + name).ifPresent(img -> decorations.put(img, points.get(name)));
+    for (final Map.Entry<String, List<Point>> stringListEntry : points.entrySet()) {
+      loadImage("misc/" + stringListEntry.getKey()).ifPresent(img -> decorations.put(img, stringListEntry.getValue()));
     }
     return decorations;
   }
