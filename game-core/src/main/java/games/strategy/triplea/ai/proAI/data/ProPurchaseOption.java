@@ -43,11 +43,9 @@ public class ProPurchaseOption {
   private final boolean isDestroyer;
   private final boolean isTransport;
   private final boolean isCarrier;
-  private final int transportCapacity;
   private final int carrierCapacity;
   private final double transportEfficiency;
-  private final double carrierEfficiency;
-  private double costPerHitPoint;
+  private final double costPerHitPoint;
   private final double hitPointEfficiency;
   private final double attackEfficiency;
   private final double defenseEfficiency;
@@ -82,10 +80,8 @@ public class ProPurchaseOption {
     isDestroyer = unitAttachment.getIsDestroyer();
     isTransport = unitAttachment.getTransportCapacity() > 0;
     isCarrier = unitAttachment.getCarrierCapacity() > 0;
-    transportCapacity = unitAttachment.getTransportCapacity() * quantity;
     carrierCapacity = unitAttachment.getCarrierCapacity() * quantity;
     transportEfficiency = (double) unitAttachment.getTransportCapacity() / cost;
-    carrierEfficiency = (double) unitAttachment.getCarrierCapacity() / cost;
     if (hitPoints == 0) {
       costPerHitPoint = Double.POSITIVE_INFINITY;
     } else {
@@ -141,10 +137,6 @@ public class ProPurchaseOption {
     return quantity;
   }
 
-  public int getHitPoints() {
-    return hitPoints;
-  }
-
   public double getAttack() {
     return attack;
   }
@@ -173,16 +165,8 @@ public class ProPurchaseOption {
     return transportEfficiency;
   }
 
-  public double getTransportEfficiency(final GameData data) {
+  public double getTransportEfficiencyRatio() {
     return Math.pow(transportEfficiency, 30) / quantity;
-  }
-
-  public double getCarrierEfficiency() {
-    return carrierEfficiency;
-  }
-
-  public double getHitPointEfficiency() {
-    return hitPointEfficiency;
   }
 
   public double getAttackEfficiency() {
@@ -197,14 +181,6 @@ public class ProPurchaseOption {
     return unitType;
   }
 
-  public int getTransportCapacity() {
-    return transportCapacity;
-  }
-
-  public int getCarrierCapacity() {
-    return carrierCapacity;
-  }
-
   public int getTransportCost() {
     return transportCost;
   }
@@ -215,10 +191,6 @@ public class ProPurchaseOption {
 
   public boolean isAir() {
     return isAir;
-  }
-
-  public void setCostPerHitPoint(final double costPerHitPoint) {
-    this.costPerHitPoint = costPerHitPoint;
   }
 
   public double getCostPerHitPoint() {

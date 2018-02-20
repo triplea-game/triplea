@@ -12,9 +12,9 @@ import games.strategy.triplea.delegate.Matches;
 
 public class ProPurchaseTerritory {
 
-  private Territory territory;
+  private final Territory territory;
   private int unitProduction;
-  private List<ProPlaceTerritory> canPlaceTerritories;
+  private final List<ProPlaceTerritory> canPlaceTerritories;
 
   public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player,
       final int unitProduction) {
@@ -65,10 +65,6 @@ public class ProPurchaseTerritory {
     return territory + " | unitProduction=" + unitProduction + " | placeTerritories=" + canPlaceTerritories;
   }
 
-  public void setTerritory(final Territory territory) {
-    this.territory = territory;
-  }
-
   public int getUnitProduction() {
     return unitProduction;
   }
@@ -79,9 +75,5 @@ public class ProPurchaseTerritory {
 
   public List<ProPlaceTerritory> getCanPlaceTerritories() {
     return canPlaceTerritories;
-  }
-
-  public void setCanPlaceTerritories(final List<ProPlaceTerritory> canPlaceTerritories) {
-    this.canPlaceTerritories = canPlaceTerritories;
   }
 }

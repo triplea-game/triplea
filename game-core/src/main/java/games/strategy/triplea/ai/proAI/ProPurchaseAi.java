@@ -1485,7 +1485,7 @@ class ProPurchaseAi {
                 transportUnitsToPlace, purchaseTerritories);
             final Map<ProPurchaseOption, Double> transportEfficiencies = new HashMap<>();
             for (final ProPurchaseOption ppo : seaTransportPurchaseOptionsForTerritory) {
-              transportEfficiencies.put(ppo, ppo.getTransportEfficiency(data));
+              transportEfficiencies.put(ppo, ppo.getTransportEfficiencyRatio());
             }
             final Optional<ProPurchaseOption> optionalSelectedOption =
                 ProPurchaseUtils.randomizePurchaseOption(transportEfficiencies, "Sea Transport");
