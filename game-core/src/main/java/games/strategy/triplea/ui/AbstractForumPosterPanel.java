@@ -58,11 +58,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel {
 
   protected abstract IAbstractForumPosterDelegate getForumPosterDelegate();
 
-  protected abstract boolean postTurnSummary(final PBEMMessagePoster poster, final boolean includeSaveGame);
-
   protected abstract boolean getHasPostedTurnSummary();
-
-  protected abstract void setHasPostedTurnSummary(boolean posted);
 
   protected abstract boolean skipPosting();
 
