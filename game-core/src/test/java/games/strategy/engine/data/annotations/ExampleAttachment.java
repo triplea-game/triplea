@@ -120,6 +120,10 @@ public class ExampleAttachment extends DefaultAttachment {
     return givesMovement;
   }
 
+  public void clearGivesMovement() {
+    givesMovement.clear();
+  }
+
   public void resetGivesMovement() {
     givesMovement = new IntegerMap<>();
   }
