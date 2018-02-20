@@ -54,7 +54,7 @@ public class SetupFrame extends JPanel {
     });
     runButton.setText("Generate the Files");
     runButton.addActionListener(e -> {
-      if (!outField.getText().equals("")) {
+      if (!outField.getText().isEmpty()) {
         outDir = new File(outField.getText());
         final PrintGenerationData printData = new PrintGenerationData();
         printData.setOutDir(outDir);

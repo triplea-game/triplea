@@ -154,7 +154,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   private static ClientProps getProps(final Component ui) {
     if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")
-        && System.getProperty(TRIPLEA_STARTED, "").equals("")) {
+        && System.getProperty(TRIPLEA_STARTED, "").isEmpty()) {
       final ClientProps props = new ClientProps();
       props.setHost(System.getProperty(TRIPLEA_HOST));
       props.setName(System.getProperty(TRIPLEA_NAME));

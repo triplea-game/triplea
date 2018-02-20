@@ -214,7 +214,7 @@ public class HistoryLog extends JFrame {
               continue;
             }
             final String diceMsg1 = title.substring(0, title.indexOf(':') + 1);
-            if (diceMsg1.equals("")) {
+            if (diceMsg1.isEmpty()) {
               // tech roll
               logWriter.println(indent + moreIndent + title);
             } else {

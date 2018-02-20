@@ -649,7 +649,7 @@ public class TripleAFrame extends MainGameFrame {
     }
     status.setText(msg);
 
-    if (!msg.equals("") && image.isPresent()) {
+    if (!msg.isEmpty() && image.isPresent()) {
       status.setIcon(new ImageIcon(image.get()));
     } else {
       status.setIcon(null);

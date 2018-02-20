@@ -201,7 +201,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   private Optional<ServerConnectionProps> getServerProps(final Component ui) {
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
-        && System.getProperty(TRIPLEA_STARTED, "").equals("")) {
+        && System.getProperty(TRIPLEA_STARTED, "").isEmpty()) {
       final ServerConnectionProps props = new ServerConnectionProps();
       props.setName(System.getProperty(TRIPLEA_NAME));
       props.setPort(Integer.parseInt(System.getProperty(TRIPLEA_PORT)));

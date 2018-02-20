@@ -1009,7 +1009,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean canInvadeFrom(final Unit transport) {
-    if (m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0].equals("")
+    if (m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0].isEmpty()
         || m_canInvadeOnlyFrom[0].equals("all")) {
       return true;
     }
@@ -2828,13 +2828,13 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException("Restricted transports cannot have attack or defense, " + thisErrorMsg());
     }
     if (m_isConstruction
-        && (m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals("")
+        && (m_constructionType == null || m_constructionType.equals("none") || m_constructionType.isEmpty()
             || m_constructionsPerTerrPerTypePerTurn < 0 || m_maxConstructionsPerTypePerTerr < 0)) {
       throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType "
           + "and maxConstructionsPerType, " + thisErrorMsg());
     }
     if (!m_isConstruction
-        && (!(m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals(""))
+        && (!(m_constructionType == null || m_constructionType.equals("none") || m_constructionType.isEmpty())
             || m_constructionsPerTerrPerTypePerTurn >= 0 || m_maxConstructionsPerTypePerTerr >= 0)) {
       throw new GameParseException("Constructions must have isConstruction true, " + thisErrorMsg());
     }
