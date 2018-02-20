@@ -170,26 +170,26 @@ final class ExportMenu extends JMenu {
       for (int i = 0; i < players.length; i++) {
         players[i] = clone.getPlayerList().getPlayerId(players[i].getName());
       }
-      text.append(defaultFileName + ",");
+      text.append(defaultFileName).append(",");
       text.append("\n");
       text.append("TripleA Engine Version: ,");
-      text.append(ClientContext.engineVersion() + ",");
+      text.append(ClientContext.engineVersion()).append(",");
       text.append("\n");
       text.append("Game Name: ,");
-      text.append(gameData.getGameName() + ",");
+      text.append(gameData.getGameName()).append(",");
       text.append("\n");
       text.append("Game Version: ,");
-      text.append(gameData.getGameVersion() + ",");
+      text.append(gameData.getGameVersion()).append(",");
       text.append("\n");
       text.append("\n");
       text.append("Current Round: ,");
-      text.append(currentRound + ",");
+      text.append(currentRound).append(",");
       text.append("\n");
       text.append("Number of Players: ,");
-      text.append(statPanel.getPlayers().size() + ",");
+      text.append(statPanel.getPlayers().size()).append(",");
       text.append("\n");
       text.append("Number of Alliances: ,");
-      text.append(statPanel.getAlliances().size() + ",");
+      text.append(statPanel.getAlliances().size()).append(",");
       text.append("\n");
       text.append("\n");
       text.append("Turn Order: ,");
@@ -221,7 +221,7 @@ final class ExportMenu extends JMenu {
       text.append("Resource Chart: ,");
       text.append("\n");
       for (final Resource resource : gameData.getResourceList().getResources()) {
-        text.append(resource.getName() + ",");
+        text.append(resource.getName()).append(",");
         text.append("\n");
       }
       // if short, we won't both showing production and unit info
