@@ -2793,7 +2793,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
     return attachmentSetters;
   }
 

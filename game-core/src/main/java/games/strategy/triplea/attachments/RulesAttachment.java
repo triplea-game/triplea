@@ -1268,7 +1268,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
     return attachmentSetters;
   }
 

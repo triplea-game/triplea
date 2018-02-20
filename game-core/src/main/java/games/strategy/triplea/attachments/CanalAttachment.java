@@ -192,7 +192,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap() {
+  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
     return attachmentSetters;
   }
 

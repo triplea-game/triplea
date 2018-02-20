@@ -26,5 +26,5 @@ public interface IAttachment extends Serializable {
 
   void setName(String name);
 
-  Map<String, Function<IAttachment, AttachmentProperty<?>>> getAttachmentMap();
+  Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap();
 }
