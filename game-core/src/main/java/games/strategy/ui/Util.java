@@ -2,7 +2,6 @@ package games.strategy.ui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
@@ -15,7 +14,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +53,6 @@ public final class Util {
    */
   public static BufferedImage createImage(final int width, final int height, final boolean needAlpha) {
     return new BufferedImage(width, height, needAlpha ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
-  }
-
-  public static Dimension getDimension(final Image anImage, final ImageObserver obs) {
-    return new Dimension(anImage.getWidth(obs), anImage.getHeight(obs));
   }
 
   public static void center(final Window w) {
