@@ -257,10 +257,6 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       this.costs = costs;
     }
 
-    public UnitCostComparator(final PlayerID player, final GameData data) {
-      costs = TuvUtils.getCostsForTuv(player, data);
-    }
-
     @Override
     public int compare(final Unit u1, final Unit u2) {
       return costs.getInt(u1.getType()) - costs.getInt(u2.getType());

@@ -182,10 +182,6 @@ abstract class AbstractBattle implements IBattle {
     return m_battleSite;
   }
 
-  public final Collection<TerritoryEffect> getTerritoryEffects() {
-    return m_territoryEffects;
-  }
-
   @Override
   public PlayerID getAttacker() {
     return m_attacker;
