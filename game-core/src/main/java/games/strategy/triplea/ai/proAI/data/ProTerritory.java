@@ -20,9 +20,9 @@ import games.strategy.util.CollectionUtils;
 
 public class ProTerritory {
 
-  private Territory territory;
-  private List<Unit> maxUnits;
-  private List<Unit> units;
+  private final Territory territory;
+  private final List<Unit> maxUnits;
+  private final List<Unit> units;
   private List<Unit> bombers;
   private ProBattleResult maxBattleResult;
   private double value;
@@ -32,14 +32,14 @@ public class ProTerritory {
   private double strengthEstimate;
 
   // Amphib variables
-  private List<Unit> maxAmphibUnits;
-  private Map<Unit, List<Unit>> amphibAttackMap;
+  private final List<Unit> maxAmphibUnits;
+  private final Map<Unit, List<Unit>> amphibAttackMap;
   private final Map<Unit, Territory> transportTerritoryMap;
   private boolean needAmphibUnits;
   private boolean strafing;
-  private Map<Unit, Boolean> isTransportingMap;
-  private Set<Unit> maxBombardUnits;
-  private Map<Unit, Set<Territory>> bombardOptionsMap;
+  private final Map<Unit, Boolean> isTransportingMap;
+  private final Set<Unit> maxBombardUnits;
+  private final Map<Unit, Set<Territory>> bombardOptionsMap;
   private final Map<Unit, Territory> bombardTerritoryMap;
 
   // Determine territory to attack variables
@@ -47,7 +47,7 @@ public class ProTerritory {
   private ProBattleResult battleResult;
 
   // Non-combat move variables
-  private List<Unit> cantMoveUnits;
+  private final List<Unit> cantMoveUnits;
   private List<Unit> maxEnemyUnits;
   private Set<Unit> maxEnemyBombardUnits;
   private ProBattleResult minBattleResult;
@@ -56,7 +56,7 @@ public class ProTerritory {
   private double loadValue;
 
   // Scramble variables
-  private List<Unit> maxScrambleUnits;
+  private final List<Unit> maxScrambleUnits;
 
   public ProTerritory(final Territory territory) {
     this.territory = territory;
@@ -174,16 +174,8 @@ public class ProTerritory {
     this.maxUnits.add(unit);
   }
 
-  public void setTerritory(final Territory territory) {
-    this.territory = territory;
-  }
-
   public Territory getTerritory() {
     return territory;
-  }
-
-  public void setMaxUnits(final List<Unit> units) {
-    this.maxUnits = units;
   }
 
   public List<Unit> getMaxUnits() {
@@ -198,10 +190,6 @@ public class ProTerritory {
     return value;
   }
 
-  public void setUnits(final List<Unit> units) {
-    this.units = units;
-  }
-
   public List<Unit> getUnits() {
     return units;
   }
@@ -212,10 +200,6 @@ public class ProTerritory {
 
   public boolean isCanHold() {
     return canHold;
-  }
-
-  public void setMaxAmphibUnits(final List<Unit> maxAmphibUnits) {
-    this.maxAmphibUnits = maxAmphibUnits;
   }
 
   public List<Unit> getMaxAmphibUnits() {
@@ -240,10 +224,6 @@ public class ProTerritory {
 
   public Map<Unit, List<Unit>> getAmphibAttackMap() {
     return amphibAttackMap;
-  }
-
-  public void setAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap) {
-    this.amphibAttackMap = amphibAttackMap;
   }
 
   public void putAllAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap) {
@@ -304,10 +284,6 @@ public class ProTerritory {
     return sb.toString();
   }
 
-  public void setCantMoveUnits(final List<Unit> cantMoveUnits) {
-    this.cantMoveUnits = cantMoveUnits;
-  }
-
   public List<Unit> getCantMoveUnits() {
     return cantMoveUnits;
   }
@@ -364,10 +340,6 @@ public class ProTerritory {
     return loadValue;
   }
 
-  public void setIsTransportingMap(final Map<Unit, Boolean> isTransportingMap) {
-    this.isTransportingMap = isTransportingMap;
-  }
-
   public Map<Unit, Boolean> getIsTransportingMap() {
     return isTransportingMap;
   }
@@ -384,20 +356,12 @@ public class ProTerritory {
     return bombardTerritoryMap;
   }
 
-  public void setMaxBombardUnits(final Set<Unit> maxBombardUnits) {
-    this.maxBombardUnits = maxBombardUnits;
-  }
-
   public Set<Unit> getMaxBombardUnits() {
     return maxBombardUnits;
   }
 
   void addMaxBombardUnit(final Unit unit) {
     this.maxBombardUnits.add(unit);
-  }
-
-  public void setBombardOptionsMap(final Map<Unit, Set<Territory>> bombardOptionsMap) {
-    this.bombardOptionsMap = bombardOptionsMap;
   }
 
   public Map<Unit, Set<Territory>> getBombardOptionsMap() {
@@ -430,19 +394,11 @@ public class ProTerritory {
     return maxBattleResult;
   }
 
-  public void setMaxScrambleUnits(final List<Unit> maxScrambleUnits) {
-    this.maxScrambleUnits = maxScrambleUnits;
-  }
-
   public List<Unit> getMaxScrambleUnits() {
     return maxScrambleUnits;
   }
 
   public List<Unit> getBombers() {
     return bombers;
-  }
-
-  public void setBombers(final List<Unit> bombers) {
-    this.bombers = bombers;
   }
 }

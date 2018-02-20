@@ -185,24 +185,12 @@ public class ProPurchaseOptionMap {
     return seaTransportOptions;
   }
 
-  public List<ProPurchaseOption> getSeaCarrierOptions() {
-    return seaCarrierOptions;
-  }
-
-  public List<ProPurchaseOption> getSeaSubOptions() {
-    return seaSubOptions;
-  }
-
   public List<ProPurchaseOption> getAaOptions() {
     return aaOptions;
   }
 
   public List<ProPurchaseOption> getFactoryOptions() {
     return factoryOptions;
-  }
-
-  public List<ProPurchaseOption> getSpecialOptions() {
-    return specialOptions;
   }
 
   private static void logOptions(final List<ProPurchaseOption> purchaseOptions, final String name) {

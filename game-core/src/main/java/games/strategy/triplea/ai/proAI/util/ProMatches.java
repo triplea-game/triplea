@@ -1,6 +1,5 @@
 package games.strategy.triplea.ai.proAI.util;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -519,35 +518,6 @@ public class ProMatches {
           .and(Matches.unitHasMovementLeft())
           .and(Matches.unitIsBeingTransported().negate())
           .test(u);
-    };
-  }
-
-  /**
-   * Check what units a territory can produce.
-   *
-   * @param t territory we are testing for required units
-   * @return whether the territory contains one of the required combinations of units
-   */
-  public static Predicate<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory t) {
-    return unitWhichRequiresUnits -> {
-      if (!Matches.unitRequiresUnitsOnCreation().test(unitWhichRequiresUnits)) {
-        return true;
-      }
-      final Collection<Unit> unitsAtStartOfTurnInProducer = t.getUnits().getUnits();
-      if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer)
-          .test(unitWhichRequiresUnits)) {
-        return true;
-      }
-      if (t.isWater() && Matches.unitIsSea().test(unitWhichRequiresUnits)) {
-        for (final Territory neighbor : t.getData().getMap().getNeighbors(t, Matches.territoryIsLand())) {
-          final Collection<Unit> unitsAtStartOfTurnInCurrent = neighbor.getUnits().getUnits();
-          if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
-              .test(unitWhichRequiresUnits)) {
-            return true;
-          }
-        }
-      }
-      return false;
     };
   }
 }

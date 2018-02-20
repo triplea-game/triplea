@@ -8,12 +8,12 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
 public class ProPlaceTerritory {
-  private Territory territory;
+  private final Territory territory;
   private List<Unit> defendingUnits;
   private ProBattleResult minBattleResult;
   private double defenseValue;
   private double strategicValue;
-  private List<Unit> placeUnits;
+  private final List<Unit> placeUnits;
   private boolean canHold;
 
   ProPlaceTerritory(final Territory territory) {
@@ -48,10 +48,6 @@ public class ProPlaceTerritory {
     return territory;
   }
 
-  public void setTerritory(final Territory territory) {
-    this.territory = territory;
-  }
-
   public List<Unit> getDefendingUnits() {
     return defendingUnits;
   }
@@ -78,10 +74,6 @@ public class ProPlaceTerritory {
 
   public List<Unit> getPlaceUnits() {
     return placeUnits;
-  }
-
-  public void setPlaceUnits(final List<Unit> placeUnits) {
-    this.placeUnits = placeUnits;
   }
 
   public void setMinBattleResult(final ProBattleResult minBattleResult) {
