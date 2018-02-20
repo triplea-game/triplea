@@ -7,7 +7,6 @@ import java.util.Map;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -16,9 +15,6 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
 public class HeadlessDisplay implements ITripleADisplay {
 
   public HeadlessDisplay() {}
-
-  @Override
-  public void initialize(final IDisplayBridge bridge) {}
 
   @Override
   public void shutDown() {}

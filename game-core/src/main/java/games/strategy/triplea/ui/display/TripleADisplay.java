@@ -7,7 +7,6 @@ import java.util.Map;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
@@ -23,9 +22,6 @@ public class TripleADisplay implements ITripleADisplay {
   public TripleADisplay(final TripleAFrame ui) {
     this.ui = ui;
   }
-
-  @Override
-  public void initialize(final IDisplayBridge bridge) {}
 
   // TODO: unit_dependents and battleTitle are both likely not used, they have been removed
   // from BattlePane().showBattle( .. ) already
