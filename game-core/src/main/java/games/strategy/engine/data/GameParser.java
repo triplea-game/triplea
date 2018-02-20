@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -1260,7 +1261,10 @@ public final class GameParser {
       final String value = current.getAttribute("value");
       final String count = current.getAttribute("count");
       final String itemValues = (count.length() > 0 ? count + ":" : "") + value;
-      attachmentMap.get(name).apply(attachment).setValue(itemValues);
+      Optional.ofNullable(attachmentMap.get(name))
+          .orElseThrow(() -> new GameParseException("Missing property definition for option: " + name))
+          .apply(attachment)
+          .setValue(itemValues);
 
       options.add(Tuple.of(name, itemValues));
     }
