@@ -50,26 +50,6 @@ public class Unit extends GameDataComponent {
     return (UnitAttachment) m_type.getAttachment("unitAttachment");
   }
 
-  /**
-   * @deprecated DO NOT USE THIS METHOD if at all possible. It is very slow.
-   *             This can return null if the unit is not in any territories.
-   *             A unit just created, or held by a player after purchasing may not be in a territory.
-   *             A unit can be in exactly 2 territories, if the unit is in the process of moving from one territory to
-   *             another. This
-   *             method will just
-   *             return the first territory found.
-   *             A unit should never be in more than 2 territories.
-   */
-  @Deprecated
-  protected Territory getTerritoryUnitIsIn() {
-    for (final Territory t : this.getData().getMap().getTerritories()) {
-      if (t.getUnits().getUnits().contains(this)) {
-        return t;
-      }
-    }
-    return null;
-  }
-
   public int getHits() {
     return m_hits;
   }
@@ -119,9 +99,6 @@ public class Unit extends GameDataComponent {
               + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName()) + " owned by " + (m_owner == null
                   ? "UNKNOWN OWNER"
                   : m_owner.getName())
-              + " in territory: " + ((this.getData() != null && this.getData().getMap() != null)
-                  ? getTerritoryUnitIsIn()
-                  : "UNKNOWN TERRITORY")
               + " with id: " + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return 0;
@@ -138,9 +115,6 @@ public class Unit extends GameDataComponent {
               + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName()) + " owned by " + (m_owner == null
                   ? "UNKNOWN OWNER"
                   : m_owner.getName())
-              + " in territory: " + ((this.getData() != null && this.getData().getMap() != null)
-                  ? getTerritoryUnitIsIn()
-                  : "UNKNOWN TERRITORY")
               + " with id: " + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return text;
