@@ -107,7 +107,6 @@ public class GameData implements Serializable {
   private transient volatile boolean testLockIsHeld = false;
   private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
-  // TODO: change to Map/HashMap upon next incompatible release
   private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
