@@ -15,7 +15,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 
@@ -193,10 +192,6 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
 
   public static BattleTracker getBattleTracker(final GameData data) {
     return DelegateFinder.battleDelegate(data).getBattleTracker();
-  }
-
-  protected boolean isWW2V2() {
-    return Properties.getWW2V2(getData());
   }
 
   @Override
