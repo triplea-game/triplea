@@ -26,9 +26,7 @@ public final class MapDownloadListSort {
     // When we see a header, we'll sort this list, add it
     // to the return values, and then clear it.
     final List<DownloadFileDescription> maps = new ArrayList<>();
-    for (final DownloadFileDescription download : downloads) {
-      maps.add(download);
-    }
+    maps.addAll(downloads);
 
     // in case the file does not end with a header, sort and add any remaining maps
     if (!maps.isEmpty()) {

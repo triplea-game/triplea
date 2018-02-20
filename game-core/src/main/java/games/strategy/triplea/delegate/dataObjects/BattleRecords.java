@@ -69,9 +69,7 @@ public class BattleRecords implements Serializable {
   public static Collection<BattleRecord> getAllRecords(final BattleRecords brs) {
     final Collection<BattleRecord> records = new ArrayList<>();
     for (final HashMap<GUID, BattleRecord> playerMap : brs.m_records.values()) {
-      for (final BattleRecord r : playerMap.values()) {
-        records.add(r);
-      }
+      records.addAll(playerMap.values());
     }
     return records;
   }

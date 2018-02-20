@@ -229,9 +229,7 @@ public class WeakAi extends AbstractAi {
     final List<Unit> units = new ArrayList<>();
     for (final Unit transport : transportsToLoad) {
       final Collection<Unit> landunits = TransportTracker.transporting(transport);
-      for (final Unit u : landunits) {
-        units.add(u);
-      }
+      units.addAll(landunits);
     }
     return units;
   }
