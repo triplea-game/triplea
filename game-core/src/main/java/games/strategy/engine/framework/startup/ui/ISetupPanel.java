@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import java.util.List;
 import java.util.Observer;
+import java.util.Optional;
 
 import javax.swing.Action;
 
@@ -44,7 +45,7 @@ public interface ISetupPanel {
 
   void postStartGame();
 
-  ILauncher getLauncher();
+  Optional<ILauncher> getLauncher();
 
   List<Action> getUserActions();
 }
