@@ -41,8 +41,7 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void leaveDelegateExecution() {
-  }
+  public void leaveDelegateExecution() {}
 
   @Override
   public Properties getStepProperties() {
@@ -96,8 +95,7 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void enterDelegateExecution() {
-  }
+  public void enterDelegateExecution() {}
 
   @Override
   public void addChange(final Change change) {
@@ -106,6 +104,5 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void stopGameSequence() {
-  }
+  public void stopGameSequence() {}
 }
