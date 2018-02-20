@@ -435,14 +435,14 @@
     <br>
     <br>
 - mapName: Another World
-  mapCategory: GOOD
+  mapCategory: BEST
   url: https://raw.githubusercontent.com/triplea-maps/another_world/master.zip
-  version: 3.7
+  version: 1
   img: https://raw.githubusercontent.com/triplea-maps/another_world/master/description/map_with_sea_zone_names.png
   description: |
     <br><b><em>by BeornTheBold</em></b>
     <br>
-    <br>This is an 18 player map with all players neutral to each other at the start.  Players can change their political
+    <br>This is an 18 player FFA map with all players neutral to each other at the start.  Players can change their political
     <br>stance toward other nations, from neutral to cooperative, friendly, aligned and allied or to uncooperative,
     <br>unfriendly, hostile, and permanent war.  Every nation starts with the same units but a different geographic
     <br>in a completely custom world.
