@@ -85,7 +85,7 @@
 - mapName: Total World War
   mapCategory: BEST
   url: https://github.com/triplea-maps/total_world_war/archive/master.zip
-  version: 2
+  version: 2.1
   img: https://raw.githubusercontent.com/triplea-maps/total_world_war/master/description/TripleA_total_world_war_mini.png
   description: |
     <br><em><b style="font-size: x-large;">Created by Rolf Larsson and Hepster</b></em>
@@ -179,7 +179,7 @@
 - mapName: Civil War
   mapCategory: BEST
   url: https://github.com/triplea-maps/civil_war/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://cloud.githubusercontent.com/assets/12397753/18229195/05ef3d68-7224-11e6-9698-f21923d51858.png
   description: |
     <br>Civil_War
@@ -236,7 +236,7 @@
 - mapName: The Rising Sun
   mapCategory: BEST
   url: https://github.com/triplea-maps/the_rising_sun/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/the_rising_sun/master/description/TripleA_the_rising_sun_mini.png
   description: |
     <br>
@@ -708,7 +708,7 @@
 - mapName: Dragon War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/dragon_war/archive/master.zip
-  version: 4
+  version: 4.1
   img: https://raw.githubusercontent.com/triplea-maps/dragon_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -834,7 +834,7 @@
 - mapName: Pacific Challenge
   mapCategory: GOOD
   url: https://github.com/triplea-maps/pacific_challenge/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/pacific_challenge/master/description/TripleA_pacific_challenge_mini.png
   description: |
     <br>
@@ -858,7 +858,7 @@
     <br>
 - mapName: NWO Variants
   url: https://github.com/triplea-maps/nwo_variants/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/nwo_variants/master/description/TripleA_new_world_order_mini.png
   description: |
     <br>
@@ -1141,7 +1141,7 @@
 - mapName: New World Order Lebowski Edition
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/new_world_order_lebowski_edition/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/new_world_order_lebowski_edition/master/description/TripleA_nwo_1939_lebowski_mini.png
   description: |
     <br>
@@ -1202,7 +1202,7 @@
 - mapName: Atari
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/atari/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/atari/master/description/TripleA_atari_mini2.png
   description: |
     <br>
@@ -1221,7 +1221,7 @@
     <br>A mod of ATARI
     <br>Hybrid rules.
     <br>
-  version: 1
+  version: 1.1
 - mapName: Eastern Front
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/eastern_front/archive/master.zip
@@ -1268,7 +1268,7 @@
 - mapName: Tactics Campaign
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/tactics_campaign/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/tactics_campaign/master/description/TripleA_tactics_campaign_mini2.png
   description: |
     <br> by sieg
@@ -1380,7 +1380,7 @@
 - mapName: War of the Lance
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/war_of_the_lance/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/war_of_the_lance/master/description/TripleA_war_of_the_lance_mini.png
   description: |
     <br>
@@ -1624,7 +1624,7 @@
 - mapName: Total Ancient War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/total_ancient_war/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/total_ancient_war/master/description/TripleA_total_ancient_war_mini.png
   description: |
     <br>
@@ -1680,7 +1680,7 @@
 - mapName: New World Order 1915Lebowski
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/new_world_order1915lebowski/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/new_world_order1915lebowski/master/description/TripleA_nwo_1915_lebowski_mini.png
   description: |
     <br>
@@ -1691,7 +1691,7 @@
 - mapName: Stellar Forces
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/stellar_forces/archive/master.zip
-  version: 1
+  version: 1.1
   img: https://raw.githubusercontent.com/triplea-maps/stellar_forces/master/description/TripleA_stellar_forces_mini.png
   description: |
     <br>
@@ -1703,7 +1703,7 @@
 - mapName: Pacific
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/pacific/archive/master.zip
-  version: 2
+  version: 2.1
   img: https://raw.githubusercontent.com/triplea-maps/pacific/master/description/TripleA_pacific_mini.png
   description: |
     <br>
@@ -1745,7 +1745,7 @@
   description: |
     <br>HexGlobe10 is a 4 player game with no alliances.
     <br>
-  version: 1
+  version: 1.1
 - mapName: Domination 1914 No Mans Land
   mapCategory: GOOD
   url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
