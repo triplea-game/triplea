@@ -9,4 +9,10 @@ import games.strategy.engine.message.IChannelSubscribor;
  */
 public interface IDisplay extends IChannelSubscribor {
   void shutDown();
+
+  /**
+   * @deprecated Kept around for backwards compatibility.
+   */
+  @Deprecated
+  default void initialize(IDisplayBridge bridge) {}
 }
