@@ -483,7 +483,7 @@ public class GameRunner {
 
   public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent) {
     final GameDescription.GameStatus status = description.getStatus();
-    if (GameDescription.GameStatus.LAUNCHING.equals(status)) {
+    if (GameDescription.GameStatus.LAUNCHING == status) {
       return;
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());

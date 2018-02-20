@@ -230,7 +230,7 @@ abstract class AbstractBattle implements IBattle {
     }
     final IBattle other = (IBattle) o;
     return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun()
-        && other.getBattleType().equals(this.getBattleType());
+        && other.getBattleType() == this.getBattleType();
   }
 
   @Override

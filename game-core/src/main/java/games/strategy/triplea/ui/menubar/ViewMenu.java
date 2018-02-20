@@ -488,7 +488,7 @@ final class ViewMenu extends JMenu {
     return createRadioButtonItem(text, group, e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
       frame.getMapPanel().resetMap();
-    }, setting.equals(drawMode));
+    }, setting == drawMode);
   }
 
   private static JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group,

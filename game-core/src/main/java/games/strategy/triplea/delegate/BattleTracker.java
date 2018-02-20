@@ -934,7 +934,7 @@ public class BattleTracker implements Serializable {
   public IBattle getPendingBattle(final Territory t, final boolean bombing, final BattleType type) {
     for (final IBattle battle : m_pendingBattles) {
       if (battle.getTerritory().equals(t) && battle.isBombingRun() == bombing) {
-        if (type == null || type.equals(battle.getBattleType())) {
+        if (type == null || type == battle.getBattleType()) {
           return battle;
         }
       }
@@ -957,7 +957,7 @@ public class BattleTracker implements Serializable {
   Collection<IBattle> getPendingBattles(final Territory t, final BattleType type) {
     final Collection<IBattle> battles = new HashSet<>();
     for (final IBattle battle : m_pendingBattles) {
-      if (battle.getTerritory().equals(t) && (type == null || type.equals(battle.getBattleType()))) {
+      if (battle.getTerritory().equals(t) && (type == null || type == battle.getBattleType())) {
         battles.add(battle);
       }
     }
