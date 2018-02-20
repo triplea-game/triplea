@@ -113,20 +113,18 @@ public class TripleADisplay implements ITripleADisplay {
       boolean isHost = false;
       boolean isClient = false;
       boolean isObserver = true;
-      if (doNotIncludeHost || doNotIncludeClients || doNotIncludeObservers) {
-        for (final IGamePlayer player : ui.getLocalPlayers().getLocalPlayers()) {
-          // if we have any local players, we are not an observer
-          isObserver = false;
-          if (player instanceof TripleAPlayer) {
-            if (IGameLoader.CLIENT_PLAYER_TYPE.equals(player.getType())) {
-              isClient = true;
-            } else {
-              isHost = true;
-            }
+      for (final IGamePlayer player : ui.getLocalPlayers().getLocalPlayers()) {
+        // if we have any local players, we are not an observer
+        isObserver = false;
+        if (player instanceof TripleAPlayer) {
+          if (IGameLoader.CLIENT_PLAYER_TYPE.equals(player.getType())) {
+            isClient = true;
           } else {
-            // AIs are run by the host machine
             isHost = true;
           }
+        } else {
+          // AIs are run by the host machine
+          isHost = true;
         }
       }
       if ((doNotIncludeHost && isHost) || (doNotIncludeClients && isClient) || (doNotIncludeObservers && isObserver)) {
