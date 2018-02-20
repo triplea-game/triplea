@@ -271,7 +271,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         text.append(" and ");
       }
     }
-    final String transcriptText = player.getName() + " discover " + text.toString();
+    final String transcriptText = player.getName() + " discover " + text;
     if (advances.size() > 0) {
       bridge.getHistoryWriter().startEvent(transcriptText);
       // play a sound
