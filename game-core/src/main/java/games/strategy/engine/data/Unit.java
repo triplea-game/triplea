@@ -161,7 +161,7 @@ public class Unit extends GameDataComponent {
     private static boolean shownError = false;
 
     private static void printError(final String errorMessage) {
-      if (shownError == false) {
+      if (!shownError) {
         shownError = true;
         System.err.println(errorMessage);
       }

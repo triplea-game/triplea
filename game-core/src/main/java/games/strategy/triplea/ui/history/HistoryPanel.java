@@ -378,7 +378,7 @@ public class HistoryPanel extends JPanel {
       rect.setRect(0, rect.getY(), rect.getWidth(), rect.getHeight());
       tree.scrollRectToVisible(rect);
     } else {
-      if (mouseWasOverPanel == false) {
+      if (!mouseWasOverPanel) {
         // save the lock property so that we can undo it
 
         TreePath root = parent;

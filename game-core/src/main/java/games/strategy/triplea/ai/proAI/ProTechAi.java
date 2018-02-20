@@ -84,7 +84,6 @@ final class ProTechAi {
   private static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
       final PlayerID player) {
     final boolean transportsFirst = false;
-    final boolean ignoreOnlyPlanes = true;
 
     PlayerID enemyPlayer = null;
     final List<PlayerID> enemyPlayers = getEnemyPlayers(data, player);
@@ -245,7 +244,7 @@ final class ProTechAi {
         }
       }
       strength = seaStrength + blitzStrength + firstStrength + secondStrength;
-      if (!ignoreOnlyPlanes || strength > 0.0F) {
+      if (strength > 0.0F) {
         strength += airStrength;
       }
       if (onWater) {
