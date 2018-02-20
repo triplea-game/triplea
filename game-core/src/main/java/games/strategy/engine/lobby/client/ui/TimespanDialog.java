@@ -87,7 +87,7 @@ public final class TimespanDialog extends JDialog {
   }
 
   private void updateComponents() {
-    durationSpinner.setEnabled(!TimeUnit.FOREVER.equals(timeUnitComboBox.getSelectedItem()));
+    durationSpinner.setEnabled(TimeUnit.FOREVER != timeUnitComboBox.getSelectedItem());
   }
 
   Optional<Timespan> open() {
@@ -106,7 +106,7 @@ public final class TimespanDialog extends JDialog {
   }
 
   private enum Result {
-    OK, CANCEL;
+    OK, CANCEL
   }
 
   /**
