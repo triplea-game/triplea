@@ -48,7 +48,6 @@ public class StatPanel extends AbstractStatPanel {
   private final TechTableModel techModel;
   protected IStat[] stats;
   private JTable statsTable;
-  private Image statsImage = null;
   protected final Map<PlayerID, ImageIcon> mapPlayerImage = new HashMap<>();
   protected UiContext uiContext;
 
@@ -72,9 +71,6 @@ public class StatPanel extends AbstractStatPanel {
 
       @Override
       public void print(final Graphics g) {
-        if (statsImage != null) {
-          g.drawImage(statsImage, 0, 0, null, null);
-        }
         super.print(g);
       }
     };
@@ -111,14 +107,6 @@ public class StatPanel extends AbstractStatPanel {
     techModel.setGameData(data);
     dataModel.gameDataChanged(null);
     techModel.gameDataChanged(null);
-  }
-
-  public void setStatsBgImage(final Image image) {
-    statsImage = image;
-  }
-
-  public JTable getStatsTable() {
-    return statsTable;
   }
 
   /**
