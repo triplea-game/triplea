@@ -402,7 +402,7 @@ public class GameDataExporter {
       if (TechAdvance.class.isAssignableFrom(attachTo.getClass())) {
         type = "technology";
       }
-      if (type.equals("")) {
+      if (type.isEmpty()) {
         throw new AttachmentExportException("no attachmentType known for " + attachTo.getClass().getCanonicalName());
       }
       if (attachmentOptions.length() > 0) {

@@ -49,7 +49,7 @@ public class TooltipProperties {
   public String getToolTip(final UnitType ut, final PlayerID playerId) {
     final String tooltip = properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + "."
         + (playerId == null ? PlayerID.NULL_PLAYERID.getName() : playerId.getName()), "");
-    return (tooltip == null || tooltip.equals(""))
+    return (tooltip == null || tooltip.isEmpty())
         ? properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName(), "")
         : tooltip;
   }

@@ -84,7 +84,7 @@ public class ReliefImageBreaker {
 
     // ask user where the map is
     final String mapDir = getMapDirectory();
-    if (mapDir == null || mapDir.equals("")) {
+    if (mapDir == null || mapDir.isEmpty()) {
       ToolLogger.info("You need to specify a map name for this to work");
       ToolLogger.info("Shutting down");
       System.exit(0);

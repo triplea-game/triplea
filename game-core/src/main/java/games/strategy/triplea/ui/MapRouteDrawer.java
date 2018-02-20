@@ -324,7 +324,7 @@ public class MapRouteDrawer {
     textG2D.setColor(Color.YELLOW);
     textG2D.setFont(new Font("Dialog", Font.BOLD, 20));
     final int textThicknessOffset = textG2D.getFontMetrics().stringWidth(curMovement) / 2;
-    final boolean distanceTooBig = maxMovement.equals("");
+    final boolean distanceTooBig = maxMovement.isEmpty();
     textG2D.drawString(
         curMovement,
         distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 10,
