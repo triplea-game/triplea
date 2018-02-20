@@ -85,7 +85,7 @@ public class AiUtils {
         // 2 points since we can absorb a hit
         strength += 2;
         // two hit
-        strength += 1.5 * unitAttachment.getHitPoints();
+        strength += 1.5f * unitAttachment.getHitPoints();
         // the number of pips on the dice
         if (attacking) {
           strength += unitAttachment.getAttack(u.getOwner());
@@ -96,7 +96,7 @@ public class AiUtils {
           // a unit with attack of 0 isnt worth much
           // we dont want transports to try and gang up on subs
           if (unitAttachment.getAttack(u.getOwner()) == 0) {
-            strength -= 1.2;
+            strength -= 1.2f;
           }
         }
       }
