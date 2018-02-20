@@ -371,10 +371,6 @@ public class MapData implements Closeable {
         Math.min(256, Integer.parseInt(mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_Y, "0"))));
   }
 
-  public boolean getHasMapBlends() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_MAPBLENDS, "false"));
-  }
-
   public String getMapBlendMode() {
     return String.valueOf(mapProperties.getProperty(PROPERTY_MAP_MAPBLENDMODE, "normal"));
   }
@@ -731,14 +727,6 @@ public class MapData implements Closeable {
 
   public Optional<Image> getWarningImage() {
     return loadImage("misc/warning.gif");
-  }
-
-  public Optional<Image> getInfoImage() {
-    return loadImage("misc/information.gif");
-  }
-
-  public Optional<Image> getHelpImage() {
-    return loadImage("misc/help.gif");
   }
 
   private Optional<Image> loadImage(final String imageName) {
