@@ -13,53 +13,17 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 
 public class ResourceImageFactory {
-  public static final int DEFAULT_RESOURCE_ICON_SIZE = 12;
-  public static final int LARGE_RESOURCE_ICON_SIZE = 24;
   private static final String FILE_NAME_BASE = "resources/";
   // maps Point -> Icon
   private final Map<String, ImageIcon> icons = new HashMap<>();
-  // Scaling factor for images
-  private double scaleFactor;
   private ResourceLoader resourceLoader;
 
   /** Creates new ResourceImageFactory. */
   public ResourceImageFactory() {}
 
-  public void setResourceLoader(final ResourceLoader loader, final double scaleFactor) {
-    this.scaleFactor = scaleFactor;
+  public void setResourceLoader(final ResourceLoader loader) {
     resourceLoader = loader;
     clearImageCache();
-  }
-
-  /**
-   * Set the scaling factor.
-   */
-  public void setScaleFactor(final double scaleFactor) {
-    if (this.scaleFactor != scaleFactor) {
-      this.scaleFactor = scaleFactor;
-      clearImageCache();
-    }
-  }
-
-  /**
-   * Return the scaling factor.
-   */
-  public double getScaleFactor() {
-    return scaleFactor;
-  }
-
-  /**
-   * Return the width of scaled.
-   */
-  public int getUnitImageWidth(final boolean large) {
-    return (int) (scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));
-  }
-
-  /**
-   * Return the height of scaled.
-   */
-  public int getUnitImageHeight(final boolean large) {
-    return (int) (scaleFactor * (large ? LARGE_RESOURCE_ICON_SIZE : DEFAULT_RESOURCE_ICON_SIZE));
   }
 
   // Clear the image and icon cache
