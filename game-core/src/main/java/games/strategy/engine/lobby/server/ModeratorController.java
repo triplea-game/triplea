@@ -330,7 +330,7 @@ public class ModeratorController extends AbstractModeratorController {
     } else if (MacFinder.isValidHashedMacAddress(mac)) {
       builder.append(MacFinder.trimHashedMacAddressPrefix(mac));
     } else {
-      builder.append(mac + " (Invalid)");
+      builder.append(mac).append(" (Invalid)");
     }
     builder.append("\r\nAliases: ").append(getAliasesFor(node));
     return builder.toString();
