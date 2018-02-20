@@ -33,7 +33,6 @@ public class ProData {
   public static boolean isSimulation = false;
   public static double winPercentage = 95;
   public static double minWinPercentage = 75;
-  public static boolean areNeutralsPassableByAir = false;
   public static Territory myCapital = null;
   public static List<Territory> myUnitTerritories = new ArrayList<>();
   public static Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
@@ -60,7 +59,6 @@ public class ProData {
       winPercentage = 90;
       minWinPercentage = 65;
     }
-    areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data) && !Properties.getNeutralsImpassable(data));
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     myUnitTerritories =
         CollectionUtils.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));

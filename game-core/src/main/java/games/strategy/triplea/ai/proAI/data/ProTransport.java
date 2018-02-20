@@ -10,9 +10,9 @@ import games.strategy.engine.data.Unit;
 
 public class ProTransport {
 
-  private Unit transport;
-  private Map<Territory, Set<Territory>> transportMap;
-  private Map<Territory, Set<Territory>> seaTransportMap;
+  private final Unit transport;
+  private final Map<Territory, Set<Territory>> transportMap;
+  private final Map<Territory, Set<Territory>> seaTransportMap;
 
   ProTransport(final Unit transport) {
     this.transport = transport;
@@ -44,24 +44,12 @@ public class ProTransport {
     }
   }
 
-  public void setTransport(final Unit transport) {
-    this.transport = transport;
-  }
-
   public Unit getTransport() {
     return transport;
   }
 
-  public void setTransportMap(final Map<Territory, Set<Territory>> transportMap) {
-    this.transportMap = transportMap;
-  }
-
   public Map<Territory, Set<Territory>> getTransportMap() {
     return transportMap;
-  }
-
-  public void setSeaTransportMap(final Map<Territory, Set<Territory>> seaTransportMap) {
-    this.seaTransportMap = seaTransportMap;
   }
 
   public Map<Territory, Set<Territory>> getSeaTransportMap() {
