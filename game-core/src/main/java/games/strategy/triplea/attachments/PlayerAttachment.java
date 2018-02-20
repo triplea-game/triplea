@@ -31,8 +31,7 @@ import games.strategy.util.Triple;
 @MapSupport
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1880755875866426270L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   /**
    * Convenience method. can be null
@@ -600,7 +599,7 @@ public class PlayerAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("vps", ofCast(a -> AttachmentProperty.of(a::setVps, a::setVps, a::getVps, a::resetVps)))
         .put("captureVps",
@@ -692,7 +691,7 @@ public class PlayerAttachment extends DefaultAttachment {
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

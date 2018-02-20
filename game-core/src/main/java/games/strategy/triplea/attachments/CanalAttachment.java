@@ -25,8 +25,7 @@ import games.strategy.util.CollectionUtils;
 @MapSupport
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   private String m_canalName = null;
   private Set<Territory> m_landTerritories = null;
@@ -173,7 +172,7 @@ public class CanalAttachment extends DefaultAttachment {
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("canalName", ofCast(a -> AttachmentProperty.of(a::setCanalName, a::getCanalName, a::resetCanalName)))
         .put("landTerritories",
@@ -193,7 +192,7 @@ public class CanalAttachment extends DefaultAttachment {
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

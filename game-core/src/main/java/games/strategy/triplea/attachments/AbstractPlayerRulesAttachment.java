@@ -27,8 +27,7 @@ import games.strategy.util.IntegerMap;
  */
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
   // These variables are related to a "rulesAttachment" that changes certain rules for the attached player. They are
   // not related to
@@ -338,7 +337,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     validateNames(m_movementRestrictionTerritories);
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("movementRestrictionType",
             ofCast(a -> AttachmentProperty.of(
@@ -412,7 +411,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
                 a::setMaxPlacePerTerritory,
                 a::getMaxPlacePerTerritory,
                 a::resetMaxPlacePerTerritory)))
-        .putAll(AbstractRulesAttachment.attachmentSetters)
+        .putAll(AbstractRulesAttachment.propertyMap)
         .build();
   }
 

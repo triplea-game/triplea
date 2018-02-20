@@ -22,8 +22,7 @@ import games.strategy.triplea.delegate.TechAdvance;
 @MapSupport
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   // attaches to a PlayerID
   public static TechAttachment get(final PlayerID id) {
@@ -426,7 +425,7 @@ public class TechAttachment extends DefaultAttachment {
   }
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("techCost",
             ofCast(a -> AttachmentProperty.of(
@@ -523,7 +522,7 @@ public class TechAttachment extends DefaultAttachment {
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

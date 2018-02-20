@@ -19,6 +19,8 @@ import games.strategy.triplea.MapSupport;
 @MapSupport
 public class RelationshipTypeAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -4367286684249791984L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
+
   public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
   public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
   public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;
@@ -27,8 +29,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
   public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
   public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
 
   private String m_archeType = ARCHETYPE_WAR;
   // private final String m_helpsDefendAtSea = PROPERTY_DEFAULT;
@@ -413,7 +413,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("archeType",
             ofCast(a -> AttachmentProperty.of(
@@ -492,7 +492,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

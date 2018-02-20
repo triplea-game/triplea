@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -34,25 +34,21 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
+
   private List<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
 
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
 
   public UserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
   public static Collection<UserActionAttachment> getUserActionAttachments(final PlayerID player) {
-    final ArrayList<UserActionAttachment> returnList = new ArrayList<>();
-    final Map<String, IAttachment> map = player.getAttachments();
-    for (final Entry<String, IAttachment> entry : map.entrySet()) {
-      final IAttachment a = entry.getValue();
-      if (a.getName().startsWith(Constants.USERACTION_ATTACHMENT_PREFIX) && a instanceof UserActionAttachment) {
-        returnList.add((UserActionAttachment) a);
-      }
-    }
-    return returnList;
+    return player.getAttachments().values().stream()
+        .filter(a -> a.getName().startsWith(Constants.USERACTION_ATTACHMENT_PREFIX))
+        .filter(UserActionAttachment.class::isInstance)
+        .map(UserActionAttachment.class::cast)
+        .collect(Collectors.toList());
   }
 
   static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
@@ -183,7 +179,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     super.validate(data);
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("activateTrigger",
             ofCast(a -> AttachmentProperty.of(
@@ -191,13 +187,13 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
                 a::setActivateTrigger,
                 a::getActivateTrigger,
                 a::resetActivateTrigger)))
-        .putAll(AbstractUserActionAttachment.attachmentSetters)
+        .putAll(AbstractUserActionAttachment.propertyMap)
         .build();
   }
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

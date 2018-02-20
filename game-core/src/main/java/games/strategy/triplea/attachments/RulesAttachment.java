@@ -48,8 +48,7 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   // condition for having techs
   private List<TechAdvance> m_techs = null;
@@ -1167,7 +1166,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_enemyPresenceTerritories);
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("techs",
             ofCast(a -> AttachmentProperty.of(
@@ -1263,13 +1262,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                 a::setUnitPresence,
                 a::getUnitPresence,
                 a::resetUnitPresence)))
-        .putAll(AbstractPlayerRulesAttachment.attachmentSetters)
+        .putAll(AbstractPlayerRulesAttachment.propertyMap)
         .build();
   }
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

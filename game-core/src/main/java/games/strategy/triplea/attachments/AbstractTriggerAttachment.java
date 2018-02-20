@@ -28,8 +28,7 @@ import games.strategy.util.Tuple;
 
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 5866039180681962697L;
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
@@ -313,7 +312,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("uses",
             ofCast(a -> AttachmentProperty.of(
@@ -347,7 +346,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
                 a::setTrigger,
                 a::getTrigger,
                 a::resetTrigger)))
-        .putAll(AbstractConditionsAttachment.attachmentSetters)
+        .putAll(AbstractConditionsAttachment.propertyMap)
         .build();
   }
 

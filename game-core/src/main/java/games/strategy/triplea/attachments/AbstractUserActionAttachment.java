@@ -24,9 +24,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 3569461523853104614L;
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
 
 
   public AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -213,7 +212,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("text",
             ofCast(a -> AttachmentProperty.of(
@@ -245,7 +244,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
                 a::setActionAccept,
                 a::getActionAccept,
                 a::resetActionAccept)))
-        .putAll(AbstractConditionsAttachment.attachmentSetters)
+        .putAll(AbstractConditionsAttachment.propertyMap)
         .build();
   }
 

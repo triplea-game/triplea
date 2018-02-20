@@ -32,8 +32,7 @@ import games.strategy.util.CollectionUtils;
 @MapSupport
 public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
 
   // list of relationship changes to be performed if this action is performed sucessfully
@@ -157,7 +156,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("relationshipChange",
             ofCast(a -> AttachmentProperty.of(
@@ -165,13 +164,13 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
                 a::setRelationshipChange,
                 a::getRelationshipChange,
                 a::resetRelationshipChange)))
-        .putAll(AbstractUserActionAttachment.attachmentSetters)
+        .putAll(AbstractUserActionAttachment.propertyMap)
         .build();
   }
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

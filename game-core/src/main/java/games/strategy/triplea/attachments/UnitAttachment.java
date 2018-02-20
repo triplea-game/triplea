@@ -51,8 +51,7 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class UnitAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2946748686268541820L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   /**
    * Convenience method.
@@ -3521,7 +3520,7 @@ public class UnitAttachment extends DefaultAttachment {
   public void setIsMechanized(final String s) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("isAir",
             ofCast(a -> AttachmentProperty.of(
@@ -4130,7 +4129,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

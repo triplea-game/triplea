@@ -30,15 +30,14 @@ import games.strategy.triplea.formatter.MyFormatter;
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition {
   private static final long serialVersionUID = -9008441256118867078L;
-  public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
-  public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
   protected static final String AND = "AND";
   protected static final String OR = "OR";
   protected static final String XOR = "XOR";
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
+  public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
+  public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
 
   // list of conditions that this condition can
   protected List<RulesAttachment> m_conditions = new ArrayList<>();
@@ -400,7 +399,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("conditions",
             ofCast(a -> AttachmentProperty.of(

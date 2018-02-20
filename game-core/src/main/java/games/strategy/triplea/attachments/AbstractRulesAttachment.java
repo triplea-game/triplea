@@ -32,8 +32,8 @@ import games.strategy.util.CollectionUtils;
  */
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
+
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
   // purposes of m_objectiveValue
@@ -437,7 +437,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     return territories;
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("countEach", ofCast(a -> AttachmentProperty.of(a::getCountEach)))
         .put("eachMultiple", ofCast(a -> AttachmentProperty.of(a::getEachMultiple)))
@@ -478,7 +478,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
                 a::getGameProperty,
                 a::resetGameProperty)))
         .put("rounds", ofCast(a -> AttachmentProperty.of(a::setRounds, a::setRounds)))
-        .putAll(AbstractConditionsAttachment.attachmentSetters)
+        .putAll(AbstractConditionsAttachment.propertyMap)
         .build();
   }
 

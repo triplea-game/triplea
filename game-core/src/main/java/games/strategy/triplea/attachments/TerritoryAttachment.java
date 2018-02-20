@@ -32,8 +32,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 @MapSupport
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
@@ -827,7 +826,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("capital",
             ofCast(a -> AttachmentProperty.of(
@@ -942,7 +941,7 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

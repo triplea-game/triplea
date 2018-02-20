@@ -60,8 +60,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final long serialVersionUID = -3327739180569606093L;
   private static final String PREFIX_CLEAR = "-clear-";
   private static final String PREFIX_RESET = "-reset-";
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   private ProductionFrontier m_frontier = null;
   private List<String> m_productionRule = null;
@@ -2612,7 +2611,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     super.validate(data);
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("frontier",
             ofCast(a -> AttachmentProperty.of(
@@ -2788,13 +2787,13 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                 a::setTerritoryEffectProperty,
                 a::getTerritoryEffectProperty,
                 a::resetTerritoryEffectProperty)))
-        .putAll(AbstractTriggerAttachment.attachmentSetters)
+        .putAll(AbstractTriggerAttachment.propertyMap)
         .build();
   }
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

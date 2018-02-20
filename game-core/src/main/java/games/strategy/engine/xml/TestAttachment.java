@@ -15,8 +15,7 @@ import games.strategy.engine.data.annotations.InternalDoNotExport;
 
 public class TestAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 4886924951201479496L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   private String m_value;
 
@@ -60,7 +59,7 @@ public class TestAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("value", ofCast(a -> AttachmentProperty.of(a::setValue, a::getValue, a::resetValue)))
         .build();
@@ -68,7 +67,7 @@ public class TestAttachment extends DefaultAttachment {
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

@@ -40,9 +40,7 @@ import games.strategy.util.IntegerMap;
 @MapSupport
 public class TechAbilityAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1866305599625384294L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
-
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   /**
    * Convenience method.
@@ -1354,7 +1352,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("attackBonus",
             ofCast(a -> AttachmentProperty.of(
@@ -1505,7 +1503,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(

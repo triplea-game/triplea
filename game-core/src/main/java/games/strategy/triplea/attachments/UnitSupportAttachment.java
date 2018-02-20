@@ -29,8 +29,7 @@ import games.strategy.triplea.MapSupport;
 @MapSupport
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> attachmentSetters =
-      getPopulatedAttachmentMap();
+  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   private Set<UnitType> m_unitType = null;
   @InternalDoNotExport
@@ -425,7 +424,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> getPopulatedAttachmentMap() {
+  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
     return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
         .put("unitType",
             ofCast(a -> AttachmentProperty.of(
@@ -495,7 +494,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   @Override
   public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return attachmentSetters;
+    return propertyMap;
   }
 
   private static Function<IAttachment, AttachmentProperty<?>> ofCast(
