@@ -98,29 +98,28 @@ class EngineVersionProperties {
   }
 
   private String getOutOfDateMessage() {
-    final StringBuilder text = new StringBuilder("<html>");
-    text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
-    text.append("<br />Your current version: ").append(ClientContext.engineVersion().getExactVersion());
-    text.append("<br />Latest version available for download: ").append(getLatestVersionOut());
-    text.append("<br /><br />Click to download: <a class=\"external\" href=\"").append(getLinkToDownloadLatestVersion())
-        .append("\">").append(getLinkToDownloadLatestVersion()).append("</a>");
-    text.append("<br />Backup Mirror: <a class=\"external\" href=\"").append(getLinkAltToDownloadLatestVersion())
-        .append("\">").append(getLinkAltToDownloadLatestVersion()).append("</a>");
-    text.append("<br /><br />Please note that installing a new version of TripleA will not remove any old copies of ")
-        .append("TripleA.");
-    text.append("<br />So be sure to either manually uninstall all older versions of TripleA, or change your ")
-        .append("shortcuts to the new TripleA.");
-    text.append("<br /><br />What is new:<br />");
-    text.append("</html>");
-    return text.toString();
+    final String text = "<html>" + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
+        + "<br />Your current version: " + ClientContext.engineVersion().getExactVersion()
+        + "<br />Latest version available for download: " + getLatestVersionOut()
+        + "<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion()
+        + "\">" + getLinkToDownloadLatestVersion() + "</a>"
+        + "<br />Backup Mirror: <a class=\"external\" href=\"" + getLinkAltToDownloadLatestVersion()
+        + "\">" + getLinkAltToDownloadLatestVersion() + "</a>"
+        + "<br /><br />Please note that installing a new version of TripleA will not remove any old copies of "
+        + "TripleA."
+        + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your "
+        + "shortcuts to the new TripleA."
+        + "<br /><br />What is new:<br />"
+        + "</html>";
+    return text;
   }
 
   private String getOutOfDateReleaseUpdates() {
-    final StringBuilder text = new StringBuilder("<html><body>");
-    text.append("Link to full Change Log:<br /><a class=\"external\" href=\"").append(getChangeLogLink()).append("\">")
-        .append(getChangeLogLink()).append("</a><br />");
-    text.append("</body></html>");
-    return text.toString();
+    final String text =
+        "<html><body>" + "Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">"
+            + getChangeLogLink() + "</a><br />"
+            + "</body></html>";
+    return text;
   }
 
   Component getOutOfDateComponent() {

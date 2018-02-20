@@ -515,18 +515,17 @@ public class HeadlessGameServer {
   }
 
   public void printThreadDumpsAndStatus() {
-    final StringBuilder sb = new StringBuilder();
-    sb.append("Dump to Log:");
-    sb.append("\n\nStatus:\n");
-    sb.append(getStatus());
-    sb.append("\n\nServer:\n");
-    sb.append(getServerModel());
-    sb.append("\n\n");
-    sb.append(DebugUtils.getThreadDumps());
-    sb.append("\n\n");
-    sb.append(DebugUtils.getMemory());
-    sb.append("\n\nDump finished.\n");
-    System.out.println(sb.toString());
+    final String sb = "Dump to Log:"
+        + "\n\nStatus:\n"
+        + getStatus()
+        + "\n\nServer:\n"
+        + getServerModel()
+        + "\n\n"
+        + DebugUtils.getThreadDumps()
+        + "\n\n"
+        + DebugUtils.getMemory()
+        + "\n\nDump finished.\n";
+    System.out.println(sb);
   }
 
   synchronized void shutdown() {

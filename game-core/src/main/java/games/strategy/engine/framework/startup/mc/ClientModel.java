@@ -471,16 +471,15 @@ public class ClientModel implements IMessengerErrorListener {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder();
-    sb.append("ClientModel GameData:").append(gameDataOnStartup == null ? "null" : gameDataOnStartup.getGameName())
-        .append("\n");
-    sb.append("Connected:").append(messenger == null ? "null" : messenger.isConnected()).append("\n");
-    sb.append(messenger);
-    sb.append("\n");
-    sb.append(remoteMessenger);
-    sb.append("\n");
-    sb.append(channelMessenger);
-    return sb.toString();
+    final String sb = "ClientModel GameData:" + (gameDataOnStartup == null ? "null" : gameDataOnStartup.getGameName())
+        + "\n"
+        + "Connected:" + (messenger == null ? "null" : messenger.isConnected()) + "\n"
+        + messenger
+        + "\n"
+        + remoteMessenger
+        + "\n"
+        + channelMessenger;
+    return sb;
   }
 
   static class ClientProps {

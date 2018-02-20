@@ -108,11 +108,10 @@ public class UnitCategory implements Comparable<UnitCategory> {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder();
-    sb.append("Entry type:").append(type.getName()).append(" owner:").append(owner.getName()).append(" damaged:")
-        .append(damaged).append(" bombingUnitDamage:").append(bombingDamage).append(" disabled:").append(disabled)
-        .append(" dependents:").append(dependents).append(" movement:").append(movement);
-    return sb.toString();
+    final String sb = "Entry type:" + type.getName() + " owner:" + owner.getName() + " damaged:"
+        + damaged + " bombingUnitDamage:" + bombingDamage + " disabled:" + disabled
+        + " dependents:" + dependents + " movement:" + movement;
+    return sb;
   }
 
   /**
