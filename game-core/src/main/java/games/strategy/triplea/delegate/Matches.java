@@ -1459,7 +1459,7 @@ public final class Matches {
    *         (also tests for para-troopers, and for dependent allied fighters sitting as cargo on a ship)
    */
   public static Predicate<Unit> unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(final Collection<Unit> units,
-      final Route route, final PlayerID currentPlayer, final GameData data,
+      final PlayerID currentPlayer, final GameData data,
       final boolean forceLoadParatroopersIfPossible) {
     return dependent -> {
       // transported on a sea transport

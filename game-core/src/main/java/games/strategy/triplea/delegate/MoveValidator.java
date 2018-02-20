@@ -134,7 +134,7 @@ public class MoveValidator {
       final PlayerID player, final MoveValidationResult result) {
     if (!units.isEmpty() && !getEditMode(data)) {
       final Collection<Unit> matches = CollectionUtils.getMatches(units,
-          Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data, true).negate());
+          Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, player, data, true).negate());
       if (matches.isEmpty() || !matches.stream().allMatch(Matches.unitIsOwnedBy(player))) {
         result.setError("Player, " + player.getName() + ", is not owner of all the units: "
             + MyFormatter.unitsToTextNoOwner(units));
@@ -1466,7 +1466,7 @@ public class MoveValidator {
     // we don't want to look at the dependents
     final Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent =
         new ArrayList<>(CollectionUtils.getMatches(units,
-            Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, defaultRoute, player, data, true)
+            Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, player, data, true)
                 .negate()));
     boolean mustGoLand = false;
     boolean mustGoSea = false;

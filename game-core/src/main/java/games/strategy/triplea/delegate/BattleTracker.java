@@ -376,7 +376,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     final GameData data = bridge.getData();
     final Collection<Unit> canConquer = CollectionUtils.getMatches(units,
-        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).negate());
+        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, id, data, false).negate());
     if (canConquer.stream().noneMatch(Matches.unitIsNotAir())) {
       return;
     }

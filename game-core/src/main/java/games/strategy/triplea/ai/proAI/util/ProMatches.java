@@ -414,7 +414,7 @@ public class ProMatches {
     final Predicate<Unit> alliedUnitMatch = Matches.unitIsOwnedBy(player).negate()
         .and(Matches.isUnitAllied(player, data))
         .and(Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
-            t.getUnits().getUnits(), null, player, data, false).negate());
+            t.getUnits().getUnits(), player, data, false).negate());
     return myUnitHasNoMovementMatch.or(alliedUnitMatch);
   }
 
