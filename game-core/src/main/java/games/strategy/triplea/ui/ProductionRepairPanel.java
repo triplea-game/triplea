@@ -267,10 +267,6 @@ public class ProductionRepairPanel extends JPanel {
       setBorder(new EtchedBorder());
     }
 
-    public int getRepairResults() {
-      return repairResults;
-    }
-
     IntegerMap<Resource> getCost() {
       return cost;
     }
