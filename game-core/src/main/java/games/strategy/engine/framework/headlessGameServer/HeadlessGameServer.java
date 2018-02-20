@@ -454,10 +454,6 @@ public class HeadlessGameServer {
     return game;
   }
 
-  public boolean isShutDown() {
-    return shutDown;
-  }
-
   private static synchronized void restartLobbyWatcher(
       final SetupPanelModel setupPanelModel, final ServerGame serverGame) {
     try {
