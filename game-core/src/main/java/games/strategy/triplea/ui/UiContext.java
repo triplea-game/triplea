@@ -46,11 +46,11 @@ public interface UiContext {
     DISABLED, ENABLED
   }
 
-  default JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data) {
-    return createUnitImageJLabel(type, player, data, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
+  default JLabel createUnitImageJLabel(final UnitType type, final PlayerID player) {
+    return createUnitImageJLabel(type, player, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
   }
 
-  JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
+  JLabel createUnitImageJLabel(final UnitType type, final PlayerID player,
       final UnitDamage damaged,
       final UnitEnable disabled);
 

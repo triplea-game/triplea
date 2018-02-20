@@ -196,11 +196,11 @@ public class BattleDisplay extends JPanel {
     }
     for (final UnitCategory category : UnitSeperator.categorize(killedUnits, dependentsMap, false, false)) {
       final JPanel panel = new JPanel();
-      JLabel unit = uiContext.createUnitImageJLabel(category.getType(), category.getOwner(), gameData);
+      JLabel unit = uiContext.createUnitImageJLabel(category.getType(), category.getOwner());
       panel.add(unit);
       panel.add(new JLabel("x " + category.getUnits().size()));
       for (final UnitOwner owner : category.getDependents()) {
-        unit = uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner(), gameData);
+        unit = uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner());
         panel.add(unit);
         // TODO this size is of the transport collection size, not the transportED collection size.
         panel.add(new JLabel("x " + category.getUnits().size()));
@@ -919,7 +919,7 @@ public class BattleDisplay extends JPanel {
         final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
         panel.add(unit);
         for (final UnitOwner owner : category.getDependents()) {
-          unit.add(uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner(), data));
+          unit.add(uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner()));
         }
         panel.add(new JLabel("x " + category.getUnits().size()));
         if (damaged) {
