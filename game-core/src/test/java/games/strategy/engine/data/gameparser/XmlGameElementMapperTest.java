@@ -24,7 +24,6 @@ import games.strategy.triplea.delegate.BattleDelegate;
  */
 public class XmlGameElementMapperTest {
   private static final String NAME_THAT_DOES_NOT_EXIST = "this is surely not a valid identifier";
-  private static final String CANAL_ATTACHMENT_NAME = "CanalAttachment";
 
   private XmlGameElementMapper testObj;
 
@@ -69,8 +68,7 @@ public class XmlGameElementMapperTest {
 
   @Test
   public void getAttachmentHappyCase() {
-    final Optional<IAttachment> resultObject =
-        testObj.getAttachment(CANAL_ATTACHMENT_NAME, "", null, null);
+    final Optional<IAttachment> resultObject = testObj.getAttachment("CanalAttachment", "", null, null);
     assertThat(resultObject.isPresent(), is(true));
     assertThat(resultObject.get(), instanceOf(CanalAttachment.class));
   }
