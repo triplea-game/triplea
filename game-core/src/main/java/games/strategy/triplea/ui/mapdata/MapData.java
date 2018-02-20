@@ -268,6 +268,13 @@ public class MapData implements Closeable {
     return decorations;
   }
 
+  /**
+   * returns the named property, or null.
+   */
+  public String getProperty(final String propertiesKey) {
+    return mapProperties.getProperty(propertiesKey);
+  }
+
   private <T> T getProperty(
       final String name,
       final Supplier<T> defaultValueSupplier,
@@ -471,13 +478,6 @@ public class MapData implements Closeable {
     }
     playerColors.put(playerName, color);
     return color;
-  }
-
-  /**
-   * returns the named property, or null.
-   */
-  public String getProperty(final String propertiesKey) {
-    return mapProperties.getProperty(propertiesKey);
   }
 
   /**
