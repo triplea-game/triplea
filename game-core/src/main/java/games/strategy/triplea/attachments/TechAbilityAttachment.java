@@ -6,11 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
-
-import java.util.Set;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.AttachmentProperty;
