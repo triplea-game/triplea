@@ -243,7 +243,7 @@ public class AirBattle extends AbstractBattle {
         if (!m_isOver) {
           m_steps = determineStepStrings(false);
           final ITripleADisplay display = getDisplay(bridge);
-          display.listBattleSteps(m_battleID, m_steps);
+          display.listBattleSteps(m_steps);
           m_round++;
           // continue fighting
           // the recursive step
@@ -383,7 +383,7 @@ public class AirBattle extends AbstractBattle {
     bridge.getHistoryWriter().addChildToEvent(text);
     m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
         m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
-    getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
+    getDisplay(bridge).battleEnd("Air Battle over");
     m_isOver = true;
     m_battleTracker.removeBattle(AirBattle.this);
   }
@@ -432,7 +432,7 @@ public class AirBattle extends AbstractBattle {
     final PlayerID retreatingPlayer = defender ? m_defender : m_attacker;
     final String text = retreatingPlayer.getName() + " retreat?";
     final String step = defender ? DEFENDERS_WITHDRAW : ATTACKERS_WITHDRAW;
-    getDisplay(bridge).gotoBattleStep(m_battleID, step);
+    getDisplay(bridge).gotoBattleStep(step);
     final Territory retreatTo =
         getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, false, m_battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
@@ -446,9 +446,8 @@ public class AirBattle extends AbstractBattle {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker);
       }
       retreat(units, defender, bridge);
-      final String messageShort = retreatingPlayer.getName() + " retreats";
       final String messageLong = retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
-      getDisplay(bridge).notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
+      getDisplay(bridge).notifyRetreat(messageLong, step, retreatingPlayer);
     }
   }
 
@@ -468,11 +467,10 @@ public class AirBattle extends AbstractBattle {
   }
 
   private void showBattle(final IDelegateBridge bridge) {
-    final String title = "Air Battle in " + m_battleSite.getName();
-    getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits, null, null, null,
-        Collections.emptyMap(), m_attacker, m_defender, isAmphibious(), getBattleType(),
+    getDisplay(bridge).showBattle(m_battleID, m_battleSite, m_attackingUnits, m_defendingUnits, null, null, null,
+        m_attacker, m_defender, isAmphibious(), getBattleType(),
         Collections.emptySet());
-    getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
+    getDisplay(bridge).listBattleSteps(m_steps);
   }
 
   class InterceptorsLaunch implements IExecutable {
@@ -519,7 +517,7 @@ public class AirBattle extends AbstractBattle {
         beingRemoved.removeAll(interceptors);
         m_defendingUnits.addAll(interceptors);
       }
-      getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, beingRemoved, null, null);
+      getDisplay(bridge).changedUnitsNotification(m_defender, beingRemoved, null, null);
       if (groundedPlanesRetreated) {
         // this removes them from the subsequent normal battle. (do not use this for bombing battles)
         retreat(beingRemoved, true, bridge);
@@ -719,7 +717,7 @@ public class AirBattle extends AbstractBattle {
 
   private static void notifyCasualties(final GUID battleId, final IDelegateBridge bridge, final String stepName,
       final DiceRoll dice, final PlayerID hitPlayer, final PlayerID firingPlayer, final CasualtyDetails details) {
-    getDisplay(bridge).casualtyNotification(battleId, stepName, dice, hitPlayer, details.getKilled(),
+    getDisplay(bridge).casualtyNotification(stepName, dice, hitPlayer, details.getKilled(),
         details.getDamaged(), Collections.emptyMap());
     // execute in a seperate thread to allow either player to click continue first.
     final Thread t = new Thread(() -> {

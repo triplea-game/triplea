@@ -283,12 +283,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     removeUnitsThatNoLongerExist();
     if (m_stack.isExecuting()) {
       final ITripleADisplay display = getDisplay(bridge);
-      display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
+      display.showBattle(m_battleID, m_battleSite,
           removeNonCombatants(m_attackingUnits, true, false, false, false),
           removeNonCombatants(m_defendingUnits, false, false, false, false),
-          m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
+          m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_attacker, m_defender,
           isAmphibious(), getBattleType(), m_amphibiousLandAttackers);
-      display.listBattleSteps(m_battleID, m_stepStrings);
+      display.listBattleSteps(m_stepStrings);
       m_stack.execute(bridge);
       return;
     }
@@ -316,12 +316,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     updateDefendingAaUnits();
     m_stepStrings = determineStepStrings(true);
     final ITripleADisplay display = getDisplay(bridge);
-    display.showBattle(m_battleID, m_battleSite, getBattleTitle(),
+    display.showBattle(m_battleID, m_battleSite,
         removeNonCombatants(m_attackingUnits, true, false, false, false),
         removeNonCombatants(m_defendingUnits, false, false, false, false),
-        m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
+        m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_attacker, m_defender,
         isAmphibious(), getBattleType(), m_amphibiousLandAttackers);
-    display.listBattleSteps(m_battleID, m_stepStrings);
+    display.listBattleSteps(m_stepStrings);
     if (!m_headless) {
       // take the casualties with least movement first
       if (isAmphibious()) {
@@ -878,7 +878,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           updateDefendingAaUnits();
           m_stepStrings = determineStepStrings(false);
           final ITripleADisplay display = getDisplay(bridge);
-          display.listBattleSteps(m_battleID, m_stepStrings);
+          display.listBattleSteps(m_stepStrings);
           // continue fighting the recursive steps
           // this should always be the base of the stack
           // when we execute the loop, it will populate the stack with the battle steps
@@ -1320,7 +1320,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         step = m_attacker.getName() + ATTACKER_WITHDRAW;
       }
     }
-    getDisplay(bridge).gotoBattleStep(m_battleID, step);
+    getDisplay(bridge).gotoBattleStep(step);
     final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID,
         (submerge || canDefendingSubsSubmergeOrRetreat), m_battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo) && !subs) {
@@ -1341,14 +1341,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
         submergeUnits(units, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " submerges subs";
-        getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
+        getDisplay(bridge).notifyRetreat(messageShort, step, retreatingPlayer);
       } else if (planes) {
         if (!m_headless) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker);
         }
         retreatPlanes(units, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " retreats planes";
-        getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
+        getDisplay(bridge).notifyRetreat(messageShort, step, retreatingPlayer);
       } else if (partialAmphib) {
         if (!m_headless) {
           if (units.stream().anyMatch(Matches.unitIsSea())) {
@@ -1363,7 +1363,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         units = CollectionUtils.getMatches(units, Matches.unitWasNotAmphibious());
         retreatUnitsAndPlanes(units, retreatTo, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " retreats non-amphibious units";
-        getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
+        getDisplay(bridge).notifyRetreat(messageShort, step, retreatingPlayer);
       } else {
         if (!m_headless) {
           if (units.stream().anyMatch(Matches.unitIsSea())) {
@@ -1375,7 +1375,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           }
         }
         retreatUnits(units, retreatTo, defender, bridge);
-        final String messageShort = retreatingPlayer.getName() + " retreats";
         final String messageLong;
         if (subs) {
           messageLong = retreatingPlayer.getName() + " retreats subs to " + retreatTo.getName();
@@ -1386,7 +1385,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         } else {
           messageLong = retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
         }
-        getDisplay(bridge).notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
+        getDisplay(bridge).notifyRetreat(messageLong, step, retreatingPlayer);
       }
     }
   }
@@ -1466,7 +1465,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         defenderWins(bridge);
       }
     } else {
-      getDisplay(bridge).notifyRetreat(m_battleID, retreating);
+      getDisplay(bridge).notifyRetreat(retreating);
     }
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(retreating));
   }
@@ -1483,7 +1482,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     units.removeAll(submerging);
     unitsRetreated.addAll(submerging);
     if (!units.isEmpty() && !m_isOver) {
-      getDisplay(bridge).notifyRetreat(m_battleID, submerging);
+      getDisplay(bridge).notifyRetreat(submerging);
     }
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(submerging));
   }
@@ -1527,7 +1526,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         defenderWins(bridge);
       }
     } else {
-      getDisplay(bridge).notifyRetreat(m_battleID, retreating);
+      getDisplay(bridge).notifyRetreat(retreating);
     }
   }
 
@@ -1567,7 +1566,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         defenderWins(bridge);
       }
     } else {
-      getDisplay(bridge).notifyRetreat(m_battleID, retreating);
+      getDisplay(bridge).notifyRetreat(retreating);
     }
   }
 
@@ -1623,14 +1622,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void checkSuicideUnits(final IDelegateBridge bridge) {
     if (isDefendingSuicideAndMunitionUnitsDoNotFire()) {
       final List<Unit> deadUnits = CollectionUtils.getMatches(m_attackingUnits, Matches.unitIsSuicide());
-      getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
+      getDisplay(bridge).deadUnitNotification(m_attacker, deadUnits, m_dependentUnits);
       remove(deadUnits, bridge, m_battleSite, false);
     } else {
       final List<Unit> deadUnits = new ArrayList<>();
       deadUnits.addAll(CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSuicide()));
       deadUnits.addAll(CollectionUtils.getMatches(m_attackingUnits, Matches.unitIsSuicide()));
-      getDisplay(bridge).deadUnitNotification(m_battleID, m_attacker, deadUnits, m_dependentUnits);
-      getDisplay(bridge).deadUnitNotification(m_battleID, m_defender, deadUnits, m_dependentUnits);
+      getDisplay(bridge).deadUnitNotification(m_attacker, deadUnits, m_dependentUnits);
+      getDisplay(bridge).deadUnitNotification(m_defender, deadUnits, m_dependentUnits);
       remove(deadUnits, bridge, m_battleSite, null);
     }
   }
@@ -1882,7 +1881,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final IDelegateBridge bridge) {
     if (firingUnits.stream().anyMatch(Matches.unitIsSuicideOnHit()) && hits > 0) {
       final List<Unit> units = firingUnits.stream().limit(hits).collect(Collectors.toList());
-      getDisplay(bridge).deadUnitNotification(m_battleID, defender ? m_defender : m_attacker, units, m_dependentUnits);
+      getDisplay(bridge).deadUnitNotification(defender ? m_defender : m_attacker, units, m_dependentUnits);
       remove(units, bridge, m_battleSite, defender);
     }
   }
@@ -2173,7 +2172,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if (m_headless) {
         return;
       }
-      getDisplay(bridge).casualtyNotification(m_battleID,
+      getDisplay(bridge).casualtyNotification(
           (m_defending ? m_attacker.getName() : m_defender.getName()) + REMOVE_PREFIX + currentTypeAa
               + CASUALTIES_SUFFIX,
           m_dice, (m_defending ? m_attacker : m_defender), new ArrayList<>(m_casualties.getKilled()),
@@ -2257,10 +2256,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     m_attackingUnits = notRemovedAttacking;
     if (!m_headless) {
       if (!toRemoveDefending.isEmpty()) {
-        getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, toRemoveDefending, null, null);
+        getDisplay(bridge).changedUnitsNotification(m_defender, toRemoveDefending, null, null);
       }
       if (!toRemoveAttacking.isEmpty()) {
-        getDisplay(bridge).changedUnitsNotification(m_battleID, m_attacker, toRemoveAttacking, null, null);
+        getDisplay(bridge).changedUnitsNotification(m_attacker, toRemoveAttacking, null, null);
       }
     }
   }
@@ -2404,14 +2403,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       bridge.addChange(ChangeFactory.addUnits(m_battleSite, unitsToAdd));
       bridge.addChange(ChangeFactory.markNoMovementChange(unitsToAdd));
       units.addAll(unitsToAdd);
-      getDisplay(bridge).changedUnitsNotification(m_battleID, unitsToRemove.get(0).getOwner(), unitsToRemove,
+      getDisplay(bridge).changedUnitsNotification(unitsToRemove.get(0).getOwner(), unitsToRemove,
           unitsToAdd, null);
     }
   }
 
   private void defenderWins(final IDelegateBridge bridge) {
     m_whoWon = WhoWon.DEFENDER;
-    getDisplay(bridge).battleEnd(m_battleID, m_defender.getName() + " win");
+    getDisplay(bridge).battleEnd(m_defender.getName() + " win");
     if (Properties.getAbandonedTerritoriesMayBeTakenOverImmediately(m_data)) {
       if (CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
         final List<Unit> allyOfAttackerUnits = m_battleSite.getUnits().getMatches(Matches.unitIsNotInfrastructure());
@@ -2446,7 +2445,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private void nobodyWins(final IDelegateBridge bridge) {
     m_whoWon = WhoWon.DRAW;
-    getDisplay(bridge).battleEnd(m_battleID, "Stalemate");
+    getDisplay(bridge).battleEnd("Stalemate");
     bridge.getHistoryWriter()
         .addChildToEvent(m_defender.getName() + " and " + m_attacker.getName() + " reach a stalemate");
     m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
@@ -2461,7 +2460,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private void attackerWins(final IDelegateBridge bridge) {
     m_whoWon = WhoWon.ATTACKER;
-    getDisplay(bridge).battleEnd(m_battleID, m_attacker.getName() + " win");
+    getDisplay(bridge).battleEnd(m_attacker.getName() + " win");
     if (m_headless) {
       return;
     }
