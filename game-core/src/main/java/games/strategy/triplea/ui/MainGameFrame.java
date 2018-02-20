@@ -18,7 +18,7 @@ public abstract class MainGameFrame extends JFrame {
     localPlayers = players;
     setIconImage(GameRunner.getGameIcon(this));
     // 200 size is pretty arbitrary, goal is to not allow users to shrink window down to nothing.
-    setMinimumSize(new Dimension(200,200));
+    setMinimumSize(new Dimension(200, 200));
   }
 
   public abstract IGame getGame();

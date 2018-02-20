@@ -14,5 +14,5 @@ public interface IDisplay extends IChannelSubscribor {
    * @deprecated Kept around for backwards compatibility.
    */
   @Deprecated
-  default void initialize(IDisplayBridge bridge) {}
+  default void initialize(final IDisplayBridge bridge) {}
 }
