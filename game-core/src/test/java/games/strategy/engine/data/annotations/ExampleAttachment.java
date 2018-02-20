@@ -94,13 +94,13 @@ public class ExampleAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public IntegerMap<UnitType> createGivesMovement(final String value) {
-    final IntegerMap<UnitType> givesMovement = this.givesMovement == null ? new IntegerMap<>() : this.givesMovement;
+  public void setGivesMovement(final String value) {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
       throw new IllegalStateException("Unit Attachments: givesMovement cannot be empty or have more than two fields");
     }
-    final String unitTypeToProduce = s[1];
+    final String unitTypeToProduce;
+    unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
     if (ut == null) {
@@ -109,7 +109,6 @@ public class ExampleAttachment extends DefaultAttachment {
     // we should allow positive and negative numbers, since you can give bonuses to units or take away a unit's movement
     final int n = getInt(s[0]);
     givesMovement.add(ut, n);
-    return givesMovement;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -147,7 +146,7 @@ public class ExampleAttachment extends DefaultAttachment {
         .put("givesMovement",
             ofCast(a -> AttachmentProperty.of(
                 a::setGivesMovement,
-                a::createGivesMovement,
+                a::setGivesMovement,
                 a::getGivesMovement,
                 a::resetGivesMovement)))
         .build();
