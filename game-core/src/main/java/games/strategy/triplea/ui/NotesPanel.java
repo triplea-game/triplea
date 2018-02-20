@@ -40,8 +40,4 @@ public class NotesPanel extends JPanel {
     scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
     add(scroll);
   }
-
-  public boolean isEmpty() {
-    return gameNotesPane == null || gameNotesPane.getText() == null || gameNotesPane.getText().length() <= 0;
-  }
 }

@@ -193,12 +193,4 @@ public class Tile {
   public Rectangle getBounds() {
     return bounds;
   }
-
-  public int getX() {
-    return x;
-  }
-
-  public int getY() {
-    return y;
-  }
 }
