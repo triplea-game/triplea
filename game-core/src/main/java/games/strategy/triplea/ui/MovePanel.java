@@ -212,7 +212,7 @@ public class MovePanel extends AbstractMovePanel {
         final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
         capacityMap.add(transport, TransportUtils.getTransportCost(transporting));
       }
-      boolean hasChanged = false;
+      boolean hasChanged;
       final Comparator<Unit> increasingCapacityComparator =
           UnitComparator.getIncreasingCapacityComparator(sortedTransports);
 

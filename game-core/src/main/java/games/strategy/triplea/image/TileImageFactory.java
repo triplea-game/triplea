@@ -31,13 +31,13 @@ public final class TileImageFactory {
   private final Object mutex = new Object();
   // one instance in the application
   private static final String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
-  private static boolean showReliefImages = true;
+  private static boolean showReliefImages;
   private static final String SHOW_MAP_BLENDS_PREFERENCE = "ShowBlends";
-  private static boolean showMapBlends = false;
+  private static boolean showMapBlends;
   private static final String SHOW_MAP_BLEND_MODE = "BlendMode";
-  private static String showMapBlendMode = "normal";
+  private static String showMapBlendMode;
   private static final String SHOW_MAP_BLEND_ALPHA = "BlendAlpha";
-  private static float showMapBlendAlpha = 1.0f;
+  private static float showMapBlendAlpha;
   private final Composite composite = AlphaComposite.Src;
   private static final GraphicsConfiguration configuration =
       GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();

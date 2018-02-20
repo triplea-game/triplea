@@ -9,7 +9,7 @@ public class ChangeAttachmentChange extends Change {
   private final Object newValue;
   private final Object oldValue;
   private final String property;
-  private boolean clearFirst = false;
+  private final boolean clearFirst;
 
   public Attachable getAttachedTo() {
     return attachedTo;

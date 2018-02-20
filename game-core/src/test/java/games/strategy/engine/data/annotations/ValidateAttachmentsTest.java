@@ -358,7 +358,7 @@ public class ValidateAttachmentsTest extends AbstractClientSettingTestCase {
           final Constructor<? extends IAttachment> constructor =
               clazz.getConstructor(IAttachment.attachmentConstructorParameter);
           final IAttachment attachment = constructor.newInstance("testAttachment", null, null);
-          Object value = null;
+          final Object value;
           if (field.getType().equals(Integer.TYPE)) {
             value = 5;
           } else if (field.getType().equals(Boolean.TYPE)) {

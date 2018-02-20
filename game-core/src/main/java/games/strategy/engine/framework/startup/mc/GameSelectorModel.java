@@ -28,7 +28,7 @@ public class GameSelectorModel extends Observable {
   private String gameName = "";
   private String gameVersion = "";
   private String gameRound = "";
-  private String fileName = "";
+  private String fileName;
   private boolean canSelect = true;
   private boolean isHostHeadlessBot = false;
   // just for host bots, so we can get the actions for loading/saving games on the bots
