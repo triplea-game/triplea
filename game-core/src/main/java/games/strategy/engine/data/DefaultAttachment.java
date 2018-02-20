@@ -99,7 +99,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     for (int i = 1; i < allowedValues.length; ++i) {
       sb.append(" or ").append(allowedValues[i]);
     }
-    return new IllegalArgumentException(sb.toString() + " ([Not Allowed] Given: " + givenValue + ")");
+    return new IllegalArgumentException(sb + " ([Not Allowed] Given: " + givenValue + ")");
   }
 
   protected String thisErrorMsg() {

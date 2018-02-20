@@ -257,7 +257,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
         }
         sb.append(c);
       }
-      extra = extra + " (" + sb.toString() + ")";
+      extra = extra + " (" + sb + ")";
     }
     if (extra.length() == 0) {
       return node.getName();

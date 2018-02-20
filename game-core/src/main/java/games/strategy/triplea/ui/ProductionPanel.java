@@ -275,7 +275,7 @@ public class ProductionPanel extends JPanel {
       }
       final JLabel label =
           icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);
-      final String toolTipText = "<html>" + tooltip.toString() + "</html>";
+      final String toolTipText = "<html>" + tooltip + "</html>";
       info.setToolTipText(toolTipText);
       label.setToolTipText(toolTipText);
       final int space = 8;
