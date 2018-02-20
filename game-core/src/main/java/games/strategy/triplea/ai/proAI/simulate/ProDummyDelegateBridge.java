@@ -16,7 +16,6 @@ import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.proAI.ProAi;
-import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
@@ -29,7 +28,6 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   private final DelegateHistoryWriter writer = new DelegateHistoryWriter(new ProDummyGameModifiedChannel());
   private final GameData gameData;
   private final CompositeChange allChanges = new CompositeChange();
-  private MustFightBattle battle = null;
 
   public ProDummyDelegateBridge(final ProAi proAi, final PlayerID player, final GameData data) {
     this.proAi = proAi;
@@ -43,7 +41,8 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void leaveDelegateExecution() {}
+  public void leaveDelegateExecution() {
+  }
 
   @Override
   public Properties getStepProperties() {
@@ -97,7 +96,8 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void enterDelegateExecution() {}
+  public void enterDelegateExecution() {
+  }
 
   @Override
   public void addChange(final Change change) {
@@ -106,13 +106,6 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public void stopGameSequence() {}
-
-  public MustFightBattle getBattle() {
-    return battle;
-  }
-
-  public void setBattle(final MustFightBattle battle) {
-    this.battle = battle;
+  public void stopGameSequence() {
   }
 }

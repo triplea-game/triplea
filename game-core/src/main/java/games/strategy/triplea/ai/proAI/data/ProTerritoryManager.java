@@ -237,10 +237,6 @@ public class ProTerritoryManager {
     return attackOptions;
   }
 
-  public ProMyMoveOptions getPotentialAttackOptions() {
-    return potentialAttackOptions;
-  }
-
   public ProMyMoveOptions getDefendOptions() {
     return defendOptions;
   }
