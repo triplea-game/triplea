@@ -221,7 +221,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
+        getDisplay(bridge).gotoBattleStep(RAID);
         if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
           bridge.getHistoryWriter()
               .addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidTotal
@@ -292,7 +292,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void endBeforeRolling(final IDelegateBridge bridge) {
-    getDisplay(bridge).battleEnd(m_battleID, "Bombing raid does no damage");
+    getDisplay(bridge).battleEnd("Bombing raid does no damage");
     m_whoWon = WhoWon.DRAW;
     m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
     m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
@@ -303,13 +303,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void end(final IDelegateBridge bridge) {
     if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
-      getDisplay(bridge).battleEnd(m_battleID,
+      getDisplay(bridge).battleEnd(
           "Raid causes " + m_bombingRaidTotal + " damage total."
               + (m_bombingRaidDamage.size() > 1
                   ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false))
                   : ""));
     } else {
-      getDisplay(bridge).battleEnd(m_battleID,
+      getDisplay(bridge).battleEnd(
           "Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
     }
     if (m_bombingRaidTotal > 0) {
@@ -326,11 +326,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void showBattle(final IDelegateBridge bridge) {
-    final String title = "Bombing raid in " + m_battleSite.getName();
-    getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits, null, null, null,
-        Collections.emptyMap(), m_attacker, m_defender, isAmphibious(), getBattleType(),
+    getDisplay(bridge).showBattle(m_battleID, m_battleSite, m_attackingUnits, m_defendingUnits, null, null, null,
+        m_attacker, m_defender, isAmphibious(), getBattleType(),
         Collections.emptySet());
-    getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
+    getDisplay(bridge).listBattleSteps(m_steps);
   }
 
   class FireAA implements IExecutable {
@@ -498,7 +497,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void notifyAaHits(final IDelegateBridge bridge, final DiceRoll dice, final CasualtyDetails casualties,
       final String currentTypeAa) {
-    getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAa + CASUALTIES_SUFFIX, dice,
+    getDisplay(bridge).casualtyNotification( REMOVE_PREFIX + currentTypeAa + CASUALTIES_SUFFIX, dice,
         m_attacker, new ArrayList<>(casualties.getKilled()), new ArrayList<>(casualties.getDamaged()),
         Collections.emptyMap());
     final Thread t = new Thread(() -> {
@@ -789,7 +788,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
           final int totalDamage = taUnit.getUnitDamage() + currentUnitCost;
           // display the results
-          getDisplay(bridge).bombingResults(m_battleID, dice, currentUnitCost);
+          getDisplay(bridge).bombingResults(dice, currentUnitCost);
           if (currentUnitCost > 0) {
             bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
           }
@@ -813,7 +812,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // Record PUs lost
         DelegateFinder.moveDelegate(m_data).pusLost(m_battleSite, cost);
         cost *= Properties.getPuMultiplier(m_data);
-        getDisplay(bridge).bombingResults(m_battleID, dice, cost);
+        getDisplay(bridge).bombingResults(dice, cost);
         if (cost > 0) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
         }

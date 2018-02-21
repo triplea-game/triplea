@@ -26,10 +26,10 @@ public class TripleADisplay implements ITripleADisplay {
   // TODO: unit_dependents and battleTitle are both likely not used, they have been removed
   // from BattlePane().showBattle( .. ) already
   @Override
-  public void showBattle(final GUID battleId, final Territory location, final String battleTitle,
+  public void showBattle(final GUID battleId, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-      final Map<Unit, Collection<Unit>> unitDependents, final PlayerID attacker, final PlayerID defender,
+      final PlayerID attacker, final PlayerID defender,
       final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
     ui.getBattlePanel().showBattle(battleId, location, attackingUnits, defendingUnits, killedUnits,
         attackingWaitingToDie, defendingWaitingToDie, attacker, defender, isAmphibious, battleType,
@@ -37,40 +37,40 @@ public class TripleADisplay implements ITripleADisplay {
   }
 
   @Override
-  public void listBattleSteps(final GUID battleId, final List<String> steps) {
+  public void listBattleSteps(final List<String> steps) {
     ui.getBattlePanel().listBattle(steps);
   }
 
   @Override
-  public void casualtyNotification(final GUID battleId, final String step, final DiceRoll dice, final PlayerID player,
+  public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     ui.getBattlePanel().casualtyNotification(step, dice, player, killed, damaged, dependents);
   }
 
   @Override
-  public void deadUnitNotification(final GUID battleId, final PlayerID player, final Collection<Unit> killed,
+  public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     ui.getBattlePanel().deadUnitNotification(player, killed, dependents);
   }
 
   @Override
-  public void changedUnitsNotification(final GUID battleId, final PlayerID player, final Collection<Unit> removedUnits,
+  public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
     ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits);
   }
 
   @Override
-  public void battleEnd(final GUID battleId, final String message) {
+  public void battleEnd(final String message) {
     ui.getBattlePanel().battleEndMessage(message);
   }
 
   @Override
-  public void bombingResults(final GUID battleId, final List<Die> dice, final int cost) {
+  public void bombingResults(final List<Die> dice, final int cost) {
     ui.getBattlePanel().bombingResults(dice, cost);
   }
 
   @Override
-  public void notifyRetreat(final String shortMessage, final String message, final String step,
+  public void notifyRetreat(final String message, final String step,
       final PlayerID retreatingPlayer) {
     // we just told the game to retreat, so we already know
     if (ui.getLocalPlayers().playing(retreatingPlayer)) {
@@ -80,7 +80,7 @@ public class TripleADisplay implements ITripleADisplay {
   }
 
   @Override
-  public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating) {
+  public void notifyRetreat(final Collection<Unit> retreating) {
     ui.getBattlePanel().notifyRetreat(retreating);
   }
 
@@ -90,7 +90,7 @@ public class TripleADisplay implements ITripleADisplay {
   }
 
   @Override
-  public void gotoBattleStep(final GUID battleId, final String step) {
+  public void gotoBattleStep(final String step) {
     ui.getBattlePanel().gotoStep(step);
   }
 
