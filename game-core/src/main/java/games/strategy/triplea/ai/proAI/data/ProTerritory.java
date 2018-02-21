@@ -23,7 +23,7 @@ public class ProTerritory {
   private final Territory territory;
   private final List<Unit> maxUnits;
   private final List<Unit> units;
-  private List<Unit> bombers;
+  private final List<Unit> bombers;
   private ProBattleResult maxBattleResult;
   private double value;
   private double seaValue;

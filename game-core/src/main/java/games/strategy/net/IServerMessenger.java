@@ -46,7 +46,8 @@ public interface IServerMessenger extends IMessenger {
   /**
    * @return The hashed MAC address for the user with the specified name or {@code null} if unknown.
    */
-  @Nullable String getPlayerMac(String name);
+  @Nullable
+  String getPlayerMac(String name);
 
   void notifyUsernameMutingOfPlayer(String username, Instant muteExpires);
 
