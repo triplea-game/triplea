@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
@@ -17,7 +16,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -32,7 +30,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 @MapSupport
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
@@ -826,126 +823,121 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("capital",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCapital,
-                a::setCapital,
-                a::getCapital,
-                a::resetCapital)))
+            AttachmentProperty.of(
+                this::setCapital,
+                this::setCapital,
+                this::getCapital,
+                this::resetCapital))
         .put("originalFactory",
-            ofCast(a -> AttachmentProperty.of(
-                a::setOriginalFactory,
-                a::setOriginalFactory,
-                a::getOriginalFactory,
-                a::resetOriginalFactory)))
+            AttachmentProperty.of(
+                this::setOriginalFactory,
+                this::setOriginalFactory,
+                this::getOriginalFactory,
+                this::resetOriginalFactory))
         .put("production",
-            ofCast(a -> AttachmentProperty.of(
-                a::setProduction,
-                a::setProduction,
-                a::getProduction,
-                a::resetProduction)))
+            AttachmentProperty.of(
+                this::setProduction,
+                this::setProduction,
+                this::getProduction,
+                this::resetProduction))
         .put("victoryCity",
-            ofCast(a -> AttachmentProperty.of(
-                a::setVictoryCity,
-                a::setVictoryCity,
-                a::getVictoryCity,
-                a::resetVictoryCity)))
+            AttachmentProperty.of(
+                this::setVictoryCity,
+                this::setVictoryCity,
+                this::getVictoryCity,
+                this::resetVictoryCity))
         .put("isImpassable",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsImpassable,
-                a::setIsImpassable,
-                a::getIsImpassable,
-                a::resetIsImpassable)))
+            AttachmentProperty.of(
+                this::setIsImpassable,
+                this::setIsImpassable,
+                this::getIsImpassable,
+                this::resetIsImpassable))
         .put("originalOwner",
-            ofCast(a -> AttachmentProperty.of(
-                a::setOriginalOwner,
-                a::setOriginalOwner,
-                a::getOriginalOwner,
-                a::resetOriginalOwner)))
+            AttachmentProperty.of(
+                this::setOriginalOwner,
+                this::setOriginalOwner,
+                this::getOriginalOwner,
+                this::resetOriginalOwner))
         .put("convoyRoute",
-            ofCast(a -> AttachmentProperty.of(
-                a::setConvoyRoute,
-                a::setConvoyRoute,
-                a::getConvoyRoute,
-                a::resetConvoyRoute)))
+            AttachmentProperty.of(
+                this::setConvoyRoute,
+                this::setConvoyRoute,
+                this::getConvoyRoute,
+                this::resetConvoyRoute))
         .put("convoyAttached",
-            ofCast(a -> AttachmentProperty.of(
-                a::setConvoyAttached,
-                a::setConvoyAttached,
-                a::getConvoyAttached,
-                a::resetConvoyAttached)))
+            AttachmentProperty.of(
+                this::setConvoyAttached,
+                this::setConvoyAttached,
+                this::getConvoyAttached,
+                this::resetConvoyAttached))
         .put("changeUnitOwners",
-            ofCast(a -> AttachmentProperty.of(
-                a::setChangeUnitOwners,
-                a::setChangeUnitOwners,
-                a::getChangeUnitOwners,
-                a::resetChangeUnitOwners)))
+            AttachmentProperty.of(
+                this::setChangeUnitOwners,
+                this::setChangeUnitOwners,
+                this::getChangeUnitOwners,
+                this::resetChangeUnitOwners))
         .put("captureUnitOnEnteringBy",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCaptureUnitOnEnteringBy,
-                a::setCaptureUnitOnEnteringBy,
-                a::getCaptureUnitOnEnteringBy,
-                a::resetCaptureUnitOnEnteringBy)))
+            AttachmentProperty.of(
+                this::setCaptureUnitOnEnteringBy,
+                this::setCaptureUnitOnEnteringBy,
+                this::getCaptureUnitOnEnteringBy,
+                this::resetCaptureUnitOnEnteringBy))
         .put("navalBase",
-            ofCast(a -> AttachmentProperty.of(
-                a::setNavalBase,
-                a::setNavalBase,
-                a::getNavalBase,
-                a::resetNavalBase)))
+            AttachmentProperty.of(
+                this::setNavalBase,
+                this::setNavalBase,
+                this::getNavalBase,
+                this::resetNavalBase))
         .put("airBase",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirBase,
-                a::setAirBase,
-                a::getAirBase,
-                a::resetAirBase)))
+            AttachmentProperty.of(
+                this::setAirBase,
+                this::setAirBase,
+                this::getAirBase,
+                this::resetAirBase))
         .put("kamikazeZone",
-            ofCast(a -> AttachmentProperty.of(
-                a::setKamikazeZone,
-                a::setKamikazeZone,
-                a::getKamikazeZone,
-                a::resetKamikazeZone)))
+            AttachmentProperty.of(
+                this::setKamikazeZone,
+                this::setKamikazeZone,
+                this::getKamikazeZone,
+                this::resetKamikazeZone))
         .put("unitProduction",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitProduction,
-                a::setUnitProduction,
-                a::getUnitProduction,
-                a::resetUnitProduction)))
+            AttachmentProperty.of(
+                this::setUnitProduction,
+                this::setUnitProduction,
+                this::getUnitProduction,
+                this::resetUnitProduction))
         .put("blockadeZone",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBlockadeZone,
-                a::setBlockadeZone,
-                a::getBlockadeZone,
-                a::resetBlockadeZone)))
+            AttachmentProperty.of(
+                this::setBlockadeZone,
+                this::setBlockadeZone,
+                this::getBlockadeZone,
+                this::resetBlockadeZone))
         .put("territoryEffect",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTerritoryEffect,
-                a::setTerritoryEffect,
-                a::getTerritoryEffect,
-                a::resetTerritoryEffect)))
+            AttachmentProperty.of(
+                this::setTerritoryEffect,
+                this::setTerritoryEffect,
+                this::getTerritoryEffect,
+                this::resetTerritoryEffect))
         .put("whenCapturedByGoesTo",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWhenCapturedByGoesTo,
-                a::setWhenCapturedByGoesTo,
-                a::getWhenCapturedByGoesTo,
-                a::resetWhenCapturedByGoesTo)))
+            AttachmentProperty.of(
+                this::setWhenCapturedByGoesTo,
+                this::setWhenCapturedByGoesTo,
+                this::getWhenCapturedByGoesTo,
+                this::resetWhenCapturedByGoesTo))
         .put("resources",
-            ofCast(a -> AttachmentProperty.of(
-                a::setResources,
-                a::setResources,
-                a::getResources,
-                a::resetResources)))
+            AttachmentProperty.of(
+                this::setResources,
+                this::setResources,
+                this::getResources,
+                this::resetResources))
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<TerritoryAttachment, AttachmentProperty<?>> function) {
-    return function.compose(TerritoryAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

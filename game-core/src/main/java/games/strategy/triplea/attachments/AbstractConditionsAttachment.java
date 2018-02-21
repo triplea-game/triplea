@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -16,7 +15,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -35,7 +33,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   protected static final String XOR = "XOR";
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
   public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
   public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
 
@@ -399,49 +396,44 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("conditions",
-            ofCast(a -> AttachmentProperty.of(
-                a::setConditions,
-                a::setConditions,
-                a::getConditions,
-                a::resetConditions)))
+            AttachmentProperty.of(
+                this::setConditions,
+                this::setConditions,
+                this::getConditions,
+                this::resetConditions))
         .put("conditionType",
-            ofCast(a -> AttachmentProperty.of(
-                a::setConditionType,
-                a::setConditionType,
-                a::getConditionType,
-                a::resetConditionType)))
+            AttachmentProperty.of(
+                this::setConditionType,
+                this::setConditionType,
+                this::getConditionType,
+                this::resetConditionType))
         .put("invert",
-            ofCast(a -> AttachmentProperty.of(
-                a::setInvert,
-                a::setInvert,
-                a::getInvert,
-                a::resetInvert)))
+            AttachmentProperty.of(
+                this::setInvert,
+                this::setInvert,
+                this::getInvert,
+                this::resetInvert))
         .put("chance",
-            ofCast(a -> AttachmentProperty.of(
-                a::setChance,
-                a::setChance,
-                a::getChance,
-                a::resetChance)))
+            AttachmentProperty.of(
+                this::setChance,
+                this::setChance,
+                this::getChance,
+                this::resetChance))
         .put("chanceIncrementOnFailure",
-            ofCast(a -> AttachmentProperty.of(
-                a::setChanceIncrementOnFailure,
-                a::setChanceIncrementOnFailure,
-                a::getChanceIncrementOnFailure,
-                a::resetChanceIncrementOnFailure)))
+            AttachmentProperty.of(
+                this::setChanceIncrementOnFailure,
+                this::setChanceIncrementOnFailure,
+                this::getChanceIncrementOnFailure,
+                this::resetChanceIncrementOnFailure))
         .put("chanceDecrementOnSuccess",
-            ofCast(a -> AttachmentProperty.of(
-                a::setChanceDecrementOnSuccess,
-                a::setChanceDecrementOnSuccess,
-                a::getChanceDecrementOnSuccess,
-                a::resetChanceDecrementOnSuccess)))
+            AttachmentProperty.of(
+                this::setChanceDecrementOnSuccess,
+                this::setChanceDecrementOnSuccess,
+                this::getChanceDecrementOnSuccess,
+                this::resetChanceDecrementOnSuccess))
         .build();
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<AbstractConditionsAttachment, AttachmentProperty<?>> function) {
-    return function.compose(AbstractConditionsAttachment.class::cast);
   }
 }

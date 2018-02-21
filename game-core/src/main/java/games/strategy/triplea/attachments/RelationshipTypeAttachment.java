@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -10,7 +9,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
@@ -19,7 +17,6 @@ import games.strategy.triplea.MapSupport;
 @MapSupport
 public class RelationshipTypeAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -4367286684249791984L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
   public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
@@ -413,90 +410,85 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("archeType",
-            ofCast(a -> AttachmentProperty.of(
-                a::setArcheType,
-                a::setArcheType,
-                a::getArcheType,
-                a::resetArcheType)))
+            AttachmentProperty.of(
+                this::setArcheType,
+                this::setArcheType,
+                this::getArcheType,
+                this::resetArcheType))
         .put("canMoveLandUnitsOverOwnedLand",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanMoveLandUnitsOverOwnedLand,
-                a::setCanMoveLandUnitsOverOwnedLand,
-                a::getCanMoveLandUnitsOverOwnedLand,
-                a::resetCanMoveLandUnitsOverOwnedLand)))
+            AttachmentProperty.of(
+                this::setCanMoveLandUnitsOverOwnedLand,
+                this::setCanMoveLandUnitsOverOwnedLand,
+                this::getCanMoveLandUnitsOverOwnedLand,
+                this::resetCanMoveLandUnitsOverOwnedLand))
         .put("canMoveAirUnitsOverOwnedLand",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanMoveAirUnitsOverOwnedLand,
-                a::setCanMoveAirUnitsOverOwnedLand,
-                a::getCanMoveAirUnitsOverOwnedLand,
-                a::resetCanMoveAirUnitsOverOwnedLand)))
+            AttachmentProperty.of(
+                this::setCanMoveAirUnitsOverOwnedLand,
+                this::setCanMoveAirUnitsOverOwnedLand,
+                this::getCanMoveAirUnitsOverOwnedLand,
+                this::resetCanMoveAirUnitsOverOwnedLand))
         .put("alliancesCanChainTogether",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAlliancesCanChainTogether,
-                a::setAlliancesCanChainTogether,
-                a::getAlliancesCanChainTogether,
-                a::resetAlliancesCanChainTogether)))
+            AttachmentProperty.of(
+                this::setAlliancesCanChainTogether,
+                this::setAlliancesCanChainTogether,
+                this::getAlliancesCanChainTogether,
+                this::resetAlliancesCanChainTogether))
         .put("isDefaultWarPosition",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsDefaultWarPosition,
-                a::setIsDefaultWarPosition,
-                a::getIsDefaultWarPosition,
-                a::resetIsDefaultWarPosition)))
+            AttachmentProperty.of(
+                this::setIsDefaultWarPosition,
+                this::setIsDefaultWarPosition,
+                this::getIsDefaultWarPosition,
+                this::resetIsDefaultWarPosition))
         .put("upkeepCost",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUpkeepCost,
-                a::setUpkeepCost,
-                a::getUpkeepCost,
-                a::resetUpkeepCost)))
+            AttachmentProperty.of(
+                this::setUpkeepCost,
+                this::setUpkeepCost,
+                this::getUpkeepCost,
+                this::resetUpkeepCost))
         .put("canLandAirUnitsOnOwnedLand",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanLandAirUnitsOnOwnedLand,
-                a::setCanLandAirUnitsOnOwnedLand,
-                a::getCanLandAirUnitsOnOwnedLand,
-                a::resetCanLandAirUnitsOnOwnedLand)))
+            AttachmentProperty.of(
+                this::setCanLandAirUnitsOnOwnedLand,
+                this::setCanLandAirUnitsOnOwnedLand,
+                this::getCanLandAirUnitsOnOwnedLand,
+                this::resetCanLandAirUnitsOnOwnedLand))
         .put("canTakeOverOwnedTerritory",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanTakeOverOwnedTerritory,
-                a::setCanTakeOverOwnedTerritory,
-                a::getCanTakeOverOwnedTerritory,
-                a::resetCanTakeOverOwnedTerritory)))
+            AttachmentProperty.of(
+                this::setCanTakeOverOwnedTerritory,
+                this::setCanTakeOverOwnedTerritory,
+                this::getCanTakeOverOwnedTerritory,
+                this::resetCanTakeOverOwnedTerritory))
         .put("givesBackOriginalTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setGivesBackOriginalTerritories,
-                a::setGivesBackOriginalTerritories,
-                a::getGivesBackOriginalTerritories,
-                a::resetGivesBackOriginalTerritories)))
+            AttachmentProperty.of(
+                this::setGivesBackOriginalTerritories,
+                this::setGivesBackOriginalTerritories,
+                this::getGivesBackOriginalTerritories,
+                this::resetGivesBackOriginalTerritories))
         .put("canMoveIntoDuringCombatMove",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanMoveIntoDuringCombatMove,
-                a::setCanMoveIntoDuringCombatMove,
-                a::getCanMoveIntoDuringCombatMove,
-                a::resetCanMoveIntoDuringCombatMove)))
+            AttachmentProperty.of(
+                this::setCanMoveIntoDuringCombatMove,
+                this::setCanMoveIntoDuringCombatMove,
+                this::getCanMoveIntoDuringCombatMove,
+                this::resetCanMoveIntoDuringCombatMove))
         .put("canMoveThroughCanals",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanMoveThroughCanals,
-                a::setCanMoveThroughCanals,
-                a::getCanMoveThroughCanals,
-                a::resetCanMoveThroughCanals)))
+            AttachmentProperty.of(
+                this::setCanMoveThroughCanals,
+                this::setCanMoveThroughCanals,
+                this::getCanMoveThroughCanals,
+                this::resetCanMoveThroughCanals))
         .put("rocketsCanFlyOver",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRocketsCanFlyOver,
-                a::setRocketsCanFlyOver,
-                a::getRocketsCanFlyOver,
-                a::resetRocketsCanFlyOver)))
+            AttachmentProperty.of(
+                this::setRocketsCanFlyOver,
+                this::setRocketsCanFlyOver,
+                this::getRocketsCanFlyOver,
+                this::resetRocketsCanFlyOver))
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<RelationshipTypeAttachment, AttachmentProperty<?>> function) {
-    return function.compose(RelationshipTypeAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

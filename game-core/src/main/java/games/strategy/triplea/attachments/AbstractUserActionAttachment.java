@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -12,7 +11,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -24,7 +22,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 3569461523853104614L;
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
 
 
@@ -212,44 +209,40 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("text",
-            ofCast(a -> AttachmentProperty.of(
-                a::setText,
-                a::setText,
-                a::getText,
-                a::resetText)))
+            AttachmentProperty.of(
+                this::setText,
+                this::setText,
+                this::getText,
+                this::resetText))
         .put("costPU",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCostPU,
-                a::setCostPU,
-                a::getCostPU,
-                a::resetCostPU)))
+            AttachmentProperty.of(
+                this::setCostPU,
+                this::setCostPU,
+                this::getCostPU,
+                this::resetCostPU))
         .put("attemptsPerTurn",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttemptsPerTurn,
-                a::setAttemptsPerTurn,
-                a::getAttemptsPerTurn,
-                a::resetAttemptsPerTurn)))
+            AttachmentProperty.of(
+                this::setAttemptsPerTurn,
+                this::setAttemptsPerTurn,
+                this::getAttemptsPerTurn,
+                this::resetAttemptsPerTurn))
         .put("attemptsLeftThisTurn",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttemptsLeftThisTurn,
-                a::setAttemptsLeftThisTurn,
-                a::getAttemptsLeftThisTurn,
-                a::resetAttemptsLeftThisTurn)))
+            AttachmentProperty.of(
+                this::setAttemptsLeftThisTurn,
+                this::setAttemptsLeftThisTurn,
+                this::getAttemptsLeftThisTurn,
+                this::resetAttemptsLeftThisTurn))
         .put("actionAccept",
-            ofCast(a -> AttachmentProperty.of(
-                a::setActionAccept,
-                a::setActionAccept,
-                a::getActionAccept,
-                a::resetActionAccept)))
-        .putAll(AbstractConditionsAttachment.propertyMap)
+            AttachmentProperty.of(
+                this::setActionAccept,
+                this::setActionAccept,
+                this::getActionAccept,
+                this::resetActionAccept))
+        .putAll(super.createPropertyMap())
         .build();
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<AbstractUserActionAttachment, AttachmentProperty<?>> function) {
-    return function.compose(AbstractUserActionAttachment.class::cast);
   }
 }

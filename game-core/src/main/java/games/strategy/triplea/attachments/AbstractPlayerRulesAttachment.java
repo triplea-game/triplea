@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -9,7 +8,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -27,7 +25,6 @@ import games.strategy.util.IntegerMap;
  */
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
   // These variables are related to a "rulesAttachment" that changes certain rules for the attached player. They are
   // not related to
@@ -337,86 +334,82 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     validateNames(m_movementRestrictionTerritories);
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("movementRestrictionType",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMovementRestrictionType,
-                a::setMovementRestrictionType,
-                a::getMovementRestrictionType,
-                a::resetMovementRestrictionType)))
+            AttachmentProperty.of(
+                this::setMovementRestrictionType,
+                this::setMovementRestrictionType,
+                this::getMovementRestrictionType,
+                this::resetMovementRestrictionType))
         .put("movementRestrictionTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMovementRestrictionTerritories,
-                a::setMovementRestrictionTerritories,
-                a::getMovementRestrictionTerritories,
-                a::resetMovementRestrictionTerritories)))
+            AttachmentProperty.of(
+                this::setMovementRestrictionTerritories,
+                this::setMovementRestrictionTerritories,
+                this::getMovementRestrictionTerritories,
+                this::resetMovementRestrictionTerritories))
         .put("placementAnyTerritory",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlacementAnyTerritory,
-                a::setPlacementAnyTerritory,
-                a::getPlacementAnyTerritory,
-                a::resetPlacementAnyTerritory)))
+            AttachmentProperty.of(
+                this::setPlacementAnyTerritory,
+                this::setPlacementAnyTerritory,
+                this::getPlacementAnyTerritory,
+                this::resetPlacementAnyTerritory))
         .put("placementAnySeaZone",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlacementAnySeaZone,
-                a::setPlacementAnySeaZone,
-                a::getPlacementAnySeaZone,
-                a::resetPlacementAnySeaZone)))
+            AttachmentProperty.of(
+                this::setPlacementAnySeaZone,
+                this::setPlacementAnySeaZone,
+                this::getPlacementAnySeaZone,
+                this::resetPlacementAnySeaZone))
         .put("placementCapturedTerritory",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlacementCapturedTerritory,
-                a::setPlacementCapturedTerritory,
-                a::getPlacementCapturedTerritory,
-                a::resetPlacementCapturedTerritory)))
+            AttachmentProperty.of(
+                this::setPlacementCapturedTerritory,
+                this::setPlacementCapturedTerritory,
+                this::getPlacementCapturedTerritory,
+                this::resetPlacementCapturedTerritory))
         .put("unlimitedProduction",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnlimitedProduction,
-                a::setUnlimitedProduction,
-                a::getUnlimitedProduction,
-                a::resetUnlimitedProduction)))
+            AttachmentProperty.of(
+                this::setUnlimitedProduction,
+                this::setUnlimitedProduction,
+                this::getUnlimitedProduction,
+                this::resetUnlimitedProduction))
         .put("placementInCapitalRestricted",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlacementInCapitalRestricted,
-                a::setPlacementInCapitalRestricted,
-                a::getPlacementInCapitalRestricted,
-                a::resetPlacementInCapitalRestricted)))
+            AttachmentProperty.of(
+                this::setPlacementInCapitalRestricted,
+                this::setPlacementInCapitalRestricted,
+                this::getPlacementInCapitalRestricted,
+                this::resetPlacementInCapitalRestricted))
         .put("dominatingFirstRoundAttack",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDominatingFirstRoundAttack,
-                a::setDominatingFirstRoundAttack,
-                a::getDominatingFirstRoundAttack,
-                a::resetDominatingFirstRoundAttack)))
+            AttachmentProperty.of(
+                this::setDominatingFirstRoundAttack,
+                this::setDominatingFirstRoundAttack,
+                this::getDominatingFirstRoundAttack,
+                this::resetDominatingFirstRoundAttack))
         .put("negateDominatingFirstRoundAttack",
-            ofCast(a -> AttachmentProperty.of(
-                a::setNegateDominatingFirstRoundAttack,
-                a::setNegateDominatingFirstRoundAttack,
-                a::getNegateDominatingFirstRoundAttack,
-                a::resetNegateDominatingFirstRoundAttack)))
+            AttachmentProperty.of(
+                this::setNegateDominatingFirstRoundAttack,
+                this::setNegateDominatingFirstRoundAttack,
+                this::getNegateDominatingFirstRoundAttack,
+                this::resetNegateDominatingFirstRoundAttack))
         .put("productionPerXTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setProductionPerXTerritories,
-                a::setProductionPerXTerritories,
-                a::getProductionPerXTerritories,
-                a::resetProductionPerXTerritories)))
+            AttachmentProperty.of(
+                this::setProductionPerXTerritories,
+                this::setProductionPerXTerritories,
+                this::getProductionPerXTerritories,
+                this::resetProductionPerXTerritories))
         .put("placementPerTerritory",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlacementPerTerritory,
-                a::setPlacementPerTerritory,
-                a::getPlacementPerTerritory,
-                a::resetPlacementPerTerritory)))
+            AttachmentProperty.of(
+                this::setPlacementPerTerritory,
+                this::setPlacementPerTerritory,
+                this::getPlacementPerTerritory,
+                this::resetPlacementPerTerritory))
         .put("maxPlacePerTerritory",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMaxPlacePerTerritory,
-                a::setMaxPlacePerTerritory,
-                a::getMaxPlacePerTerritory,
-                a::resetMaxPlacePerTerritory)))
-        .putAll(AbstractRulesAttachment.propertyMap)
+            AttachmentProperty.of(
+                this::setMaxPlacePerTerritory,
+                this::setMaxPlacePerTerritory,
+                this::getMaxPlacePerTerritory,
+                this::resetMaxPlacePerTerritory))
+        .putAll(super.createPropertyMap())
         .build();
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<AbstractPlayerRulesAttachment, AttachmentProperty<?>> function) {
-    return function.compose(AbstractPlayerRulesAttachment.class::cast);
   }
 }

@@ -7,7 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
@@ -16,7 +15,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
@@ -32,8 +30,6 @@ import games.strategy.util.CollectionUtils;
 @MapSupport
 public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
-
 
   // list of relationship changes to be performed if this action is performed sucessfully
   private List<String> m_relationshipChange = new ArrayList<>();
@@ -155,26 +151,21 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     }
   }
 
-
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("relationshipChange",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRelationshipChange,
-                a::setRelationshipChange,
-                a::getRelationshipChange,
-                a::resetRelationshipChange)))
-        .putAll(AbstractUserActionAttachment.propertyMap)
+            AttachmentProperty.of(
+                this::setRelationshipChange,
+                this::setRelationshipChange,
+                this::getRelationshipChange,
+                this::resetRelationshipChange))
+        .putAll(super.createPropertyMap())
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<PoliticalActionAttachment, AttachmentProperty<?>> function) {
-    return function.compose(PoliticalActionAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

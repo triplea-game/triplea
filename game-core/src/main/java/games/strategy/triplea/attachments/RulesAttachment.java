@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -48,7 +47,6 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   // condition for having techs
   private List<TechAdvance> m_techs = null;
@@ -1166,113 +1164,109 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_enemyPresenceTerritories);
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("techs",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTechs,
-                a::setTechs,
-                a::getTechs,
-                a::resetTechs)))
+            AttachmentProperty.of(
+                this::setTechs,
+                this::setTechs,
+                this::getTechs,
+                this::resetTechs))
         .put("techCount",
-            ofCast(a -> AttachmentProperty.of(a::getTechCount)))
+            AttachmentProperty.of(this::getTechCount))
         .put("relationship",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRelationship,
-                a::setRelationship,
-                a::getRelationship,
-                a::resetRelationship)))
+            AttachmentProperty.of(
+                this::setRelationship,
+                this::setRelationship,
+                this::getRelationship,
+                this::resetRelationship))
         .put("atWarPlayers",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAtWarPlayers,
-                a::setAtWarPlayers,
-                a::getAtWarPlayers,
-                a::resetAtWarPlayers)))
+            AttachmentProperty.of(
+                this::setAtWarPlayers,
+                this::setAtWarPlayers,
+                this::getAtWarPlayers,
+                this::resetAtWarPlayers))
         .put("atWarCount",
-            ofCast(a -> AttachmentProperty.of(a::getAtWarCount)))
+            AttachmentProperty.of(this::getAtWarCount))
         .put("destroyedTUV",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDestroyedTUV,
-                a::setDestroyedTUV,
-                a::getDestroyedTUV,
-                a::resetDestroyedTUV)))
+            AttachmentProperty.of(
+                this::setDestroyedTUV,
+                this::setDestroyedTUV,
+                this::getDestroyedTUV,
+                this::resetDestroyedTUV))
         .put("battle",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBattle,
-                a::setBattle,
-                a::getBattle,
-                a::resetBattle)))
+            AttachmentProperty.of(
+                this::setBattle,
+                this::setBattle,
+                this::getBattle,
+                this::resetBattle))
         .put("alliedOwnershipTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAlliedOwnershipTerritories,
-                a::setAlliedOwnershipTerritories,
-                a::getAlliedOwnershipTerritories,
-                a::resetAlliedOwnershipTerritories)))
+            AttachmentProperty.of(
+                this::setAlliedOwnershipTerritories,
+                this::setAlliedOwnershipTerritories,
+                this::getAlliedOwnershipTerritories,
+                this::resetAlliedOwnershipTerritories))
         .put("directOwnershipTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDirectOwnershipTerritories,
-                a::setDirectOwnershipTerritories,
-                a::getDirectOwnershipTerritories,
-                a::resetDirectOwnershipTerritories)))
+            AttachmentProperty.of(
+                this::setDirectOwnershipTerritories,
+                this::setDirectOwnershipTerritories,
+                this::getDirectOwnershipTerritories,
+                this::resetDirectOwnershipTerritories))
         .put("alliedExclusionTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAlliedExclusionTerritories,
-                a::setAlliedExclusionTerritories,
-                a::getAlliedExclusionTerritories,
-                a::resetAlliedExclusionTerritories)))
+            AttachmentProperty.of(
+                this::setAlliedExclusionTerritories,
+                this::setAlliedExclusionTerritories,
+                this::getAlliedExclusionTerritories,
+                this::resetAlliedExclusionTerritories))
         .put("directExclusionTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDirectExclusionTerritories,
-                a::setDirectExclusionTerritories,
-                a::getDirectExclusionTerritories,
-                a::resetDirectExclusionTerritories)))
+            AttachmentProperty.of(
+                this::setDirectExclusionTerritories,
+                this::setDirectExclusionTerritories,
+                this::getDirectExclusionTerritories,
+                this::resetDirectExclusionTerritories))
         .put("enemyExclusionTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setEnemyExclusionTerritories,
-                a::setEnemyExclusionTerritories,
-                a::getEnemyExclusionTerritories,
-                a::resetEnemyExclusionTerritories)))
+            AttachmentProperty.of(
+                this::setEnemyExclusionTerritories,
+                this::setEnemyExclusionTerritories,
+                this::getEnemyExclusionTerritories,
+                this::resetEnemyExclusionTerritories))
         .put("enemySurfaceExclusionTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setEnemySurfaceExclusionTerritories,
-                a::setEnemySurfaceExclusionTerritories,
-                a::getEnemySurfaceExclusionTerritories,
-                a::resetEnemySurfaceExclusionTerritories)))
+            AttachmentProperty.of(
+                this::setEnemySurfaceExclusionTerritories,
+                this::setEnemySurfaceExclusionTerritories,
+                this::getEnemySurfaceExclusionTerritories,
+                this::resetEnemySurfaceExclusionTerritories))
         .put("directPresenceTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDirectPresenceTerritories,
-                a::setDirectPresenceTerritories,
-                a::getDirectPresenceTerritories,
-                a::resetDirectPresenceTerritories)))
+            AttachmentProperty.of(
+                this::setDirectPresenceTerritories,
+                this::setDirectPresenceTerritories,
+                this::getDirectPresenceTerritories,
+                this::resetDirectPresenceTerritories))
         .put("alliedPresenceTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAlliedPresenceTerritories,
-                a::setAlliedPresenceTerritories,
-                a::getAlliedPresenceTerritories,
-                a::resetAlliedPresenceTerritories)))
+            AttachmentProperty.of(
+                this::setAlliedPresenceTerritories,
+                this::setAlliedPresenceTerritories,
+                this::getAlliedPresenceTerritories,
+                this::resetAlliedPresenceTerritories))
         .put("enemyPresenceTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setEnemyPresenceTerritories,
-                a::setEnemyPresenceTerritories,
-                a::getEnemyPresenceTerritories,
-                a::resetEnemyPresenceTerritories)))
+            AttachmentProperty.of(
+                this::setEnemyPresenceTerritories,
+                this::setEnemyPresenceTerritories,
+                this::getEnemyPresenceTerritories,
+                this::resetEnemyPresenceTerritories))
         .put("unitPresence",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitPresence,
-                a::setUnitPresence,
-                a::getUnitPresence,
-                a::resetUnitPresence)))
-        .putAll(AbstractPlayerRulesAttachment.propertyMap)
+            AttachmentProperty.of(
+                this::setUnitPresence,
+                this::setUnitPresence,
+                this::getUnitPresence,
+                this::resetUnitPresence))
+        .putAll(super.createPropertyMap())
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<RulesAttachment, AttachmentProperty<?>> function) {
-    return function.compose(RulesAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

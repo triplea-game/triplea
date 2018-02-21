@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -23,7 +22,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -51,7 +49,6 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class UnitAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2946748686268541820L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   /**
    * Convenience method.
@@ -3520,620 +3517,615 @@ public class UnitAttachment extends DefaultAttachment {
   public void setIsMechanized(final String s) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("isAir",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsAir,
-                a::setIsAir,
-                a::getIsAir,
-                a::resetIsAir)))
+            AttachmentProperty.of(
+                this::setIsAir,
+                this::setIsAir,
+                this::getIsAir,
+                this::resetIsAir))
         .put("isSea",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsSea,
-                a::setIsSea,
-                a::getIsSea,
-                a::resetIsSea)))
+            AttachmentProperty.of(
+                this::setIsSea,
+                this::setIsSea,
+                this::getIsSea,
+                this::resetIsSea))
         .put("movement",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMovement,
-                a::setMovement,
-                a::getMovement,
-                a::resetMovement)))
+            AttachmentProperty.of(
+                this::setMovement,
+                this::setMovement,
+                this::getMovement,
+                this::resetMovement))
         .put("canBlitz",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanBlitz,
-                a::setCanBlitz,
-                a::getCanBlitz,
-                a::resetCanBlitz)))
+            AttachmentProperty.of(
+                this::setCanBlitz,
+                this::setCanBlitz,
+                this::getCanBlitz,
+                this::resetCanBlitz))
         .put("isKamikaze",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsKamikaze,
-                a::setIsKamikaze,
-                a::getIsKamikaze,
-                a::resetIsKamikaze)))
+            AttachmentProperty.of(
+                this::setIsKamikaze,
+                this::setIsKamikaze,
+                this::getIsKamikaze,
+                this::resetIsKamikaze))
         .put("canInvadeOnlyFrom",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanInvadeOnlyFrom,
-                a::setCanInvadeOnlyFrom,
-                a::getCanInvadeOnlyFrom,
-                a::resetCanInvadeOnlyFrom)))
+            AttachmentProperty.of(
+                this::setCanInvadeOnlyFrom,
+                this::setCanInvadeOnlyFrom,
+                this::getCanInvadeOnlyFrom,
+                this::resetCanInvadeOnlyFrom))
         .put("fuelCost",
-            ofCast(a -> AttachmentProperty.of(
-                a::setFuelCost,
-                a::setFuelCost,
-                a::getFuelCost,
-                a::resetFuelCost)))
+            AttachmentProperty.of(
+                this::setFuelCost,
+                this::setFuelCost,
+                this::getFuelCost,
+                this::resetFuelCost))
         .put("canNotMoveDuringCombatMove",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanNotMoveDuringCombatMove,
-                a::setCanNotMoveDuringCombatMove,
-                a::getCanNotMoveDuringCombatMove,
-                a::resetCanNotMoveDuringCombatMove)))
+            AttachmentProperty.of(
+                this::setCanNotMoveDuringCombatMove,
+                this::setCanNotMoveDuringCombatMove,
+                this::getCanNotMoveDuringCombatMove,
+                this::resetCanNotMoveDuringCombatMove))
         .put("movementLimit",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMovementLimit,
-                a::setMovementLimit,
-                a::getMovementLimit,
-                a::resetMovementLimit)))
+            AttachmentProperty.of(
+                this::setMovementLimit,
+                this::setMovementLimit,
+                this::getMovementLimit,
+                this::resetMovementLimit))
         .put("attack",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttack,
-                a::setAttack,
-                a::getAttack,
-                a::resetAttack)))
+            AttachmentProperty.of(
+                this::setAttack,
+                this::setAttack,
+                this::getAttack,
+                this::resetAttack))
         .put("defense",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDefense,
-                a::setDefense,
-                a::getDefense,
-                a::resetDefense)))
+            AttachmentProperty.of(
+                this::setDefense,
+                this::setDefense,
+                this::getDefense,
+                this::resetDefense))
         .put("isInfrastructure",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsInfrastructure,
-                a::setIsInfrastructure,
-                a::getIsInfrastructure,
-                a::resetIsInfrastructure)))
+            AttachmentProperty.of(
+                this::setIsInfrastructure,
+                this::setIsInfrastructure,
+                this::getIsInfrastructure,
+                this::resetIsInfrastructure))
         .put("canBombard",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanBombard,
-                a::setCanBombard,
-                a::getCanBombard,
-                a::resetCanBombard)))
+            AttachmentProperty.of(
+                this::setCanBombard,
+                this::setCanBombard,
+                this::getCanBombard,
+                this::resetCanBombard))
         .put("bombard",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBombard,
-                a::setBombard,
-                a::getBombard,
-                a::resetBombard)))
+            AttachmentProperty.of(
+                this::setBombard,
+                this::setBombard,
+                this::getBombard,
+                this::resetBombard))
         .put("isSub",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsSub,
-                a::setIsSub,
-                a::getIsSub,
-                a::resetIsSub)))
+            AttachmentProperty.of(
+                this::setIsSub,
+                this::setIsSub,
+                this::getIsSub,
+                this::resetIsSub))
         .put("isDestroyer",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsDestroyer,
-                a::setIsDestroyer,
-                a::getIsDestroyer,
-                a::resetIsDestroyer)))
+            AttachmentProperty.of(
+                this::setIsDestroyer,
+                this::setIsDestroyer,
+                this::getIsDestroyer,
+                this::resetIsDestroyer))
         .put("artillery",
-            ofCast(a -> AttachmentProperty.of(
-                a::setArtillery,
-                a::setArtillery,
-                a::getArtillery,
-                a::resetArtillery)))
+            AttachmentProperty.of(
+                this::setArtillery,
+                this::setArtillery,
+                this::getArtillery,
+                this::resetArtillery))
         .put("artillerySupportable",
-            ofCast(a -> AttachmentProperty.of(
-                a::setArtillerySupportable,
-                a::setArtillerySupportable,
-                a::getArtillerySupportable,
-                a::resetArtillerySupportable)))
+            AttachmentProperty.of(
+                this::setArtillerySupportable,
+                this::setArtillerySupportable,
+                this::getArtillerySupportable,
+                this::resetArtillerySupportable))
         .put("unitSupportCount",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitSupportCount,
-                a::setUnitSupportCount,
-                a::getUnitSupportCount,
-                a::resetUnitSupportCount)))
+            AttachmentProperty.of(
+                this::setUnitSupportCount,
+                this::setUnitSupportCount,
+                this::getUnitSupportCount,
+                this::resetUnitSupportCount))
         .put("isMarine",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsMarine,
-                a::setIsMarine,
-                a::getIsMarine,
-                a::resetIsMarine)))
+            AttachmentProperty.of(
+                this::setIsMarine,
+                this::setIsMarine,
+                this::getIsMarine,
+                this::resetIsMarine))
         .put("isSuicide",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsSuicide,
-                a::setIsSuicide,
-                a::getIsSuicide,
-                a::resetIsSuicide)))
+            AttachmentProperty.of(
+                this::setIsSuicide,
+                this::setIsSuicide,
+                this::getIsSuicide,
+                this::resetIsSuicide))
         .put("isSuicideOnHit",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsSuicideOnHit,
-                a::setIsSuicideOnHit,
-                a::getIsSuicideOnHit,
-                a::resetIsSuicideOnHit)))
+            AttachmentProperty.of(
+                this::setIsSuicideOnHit,
+                this::setIsSuicideOnHit,
+                this::getIsSuicideOnHit,
+                this::resetIsSuicideOnHit))
         .put("attackingLimit",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttackingLimit,
-                a::setAttackingLimit,
-                a::getAttackingLimit,
-                a::resetAttackingLimit)))
+            AttachmentProperty.of(
+                this::setAttackingLimit,
+                this::setAttackingLimit,
+                this::getAttackingLimit,
+                this::resetAttackingLimit))
         .put("attackRolls",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttackRolls,
-                a::setAttackRolls,
-                a::getAttackRolls,
-                a::resetAttackRolls)))
+            AttachmentProperty.of(
+                this::setAttackRolls,
+                this::setAttackRolls,
+                this::getAttackRolls,
+                this::resetAttackRolls))
         .put("defenseRolls",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDefenseRolls,
-                a::setDefenseRolls,
-                a::getDefenseRolls,
-                a::resetDefenseRolls)))
+            AttachmentProperty.of(
+                this::setDefenseRolls,
+                this::setDefenseRolls,
+                this::getDefenseRolls,
+                this::resetDefenseRolls))
         .put("chooseBestRoll",
-            ofCast(a -> AttachmentProperty.of(
-                a::setChooseBestRoll,
-                a::setChooseBestRoll,
-                a::getChooseBestRoll,
-                a::resetChooseBestRoll)))
+            AttachmentProperty.of(
+                this::setChooseBestRoll,
+                this::setChooseBestRoll,
+                this::getChooseBestRoll,
+                this::resetChooseBestRoll))
         .put("isCombatTransport",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsCombatTransport,
-                a::setIsCombatTransport,
-                a::getIsCombatTransport,
-                a::resetIsCombatTransport)))
+            AttachmentProperty.of(
+                this::setIsCombatTransport,
+                this::setIsCombatTransport,
+                this::getIsCombatTransport,
+                this::resetIsCombatTransport))
         .put("transportCapacity",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTransportCapacity,
-                a::setTransportCapacity,
-                a::getTransportCapacity,
-                a::resetTransportCapacity)))
+            AttachmentProperty.of(
+                this::setTransportCapacity,
+                this::setTransportCapacity,
+                this::getTransportCapacity,
+                this::resetTransportCapacity))
         .put("transportCost",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTransportCost,
-                a::setTransportCost,
-                a::getTransportCost,
-                a::resetTransportCost)))
+            AttachmentProperty.of(
+                this::setTransportCost,
+                this::setTransportCost,
+                this::getTransportCost,
+                this::resetTransportCost))
         .put("carrierCapacity",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCarrierCapacity,
-                a::setCarrierCapacity,
-                a::getCarrierCapacity,
-                a::resetCarrierCapacity)))
+            AttachmentProperty.of(
+                this::setCarrierCapacity,
+                this::setCarrierCapacity,
+                this::getCarrierCapacity,
+                this::resetCarrierCapacity))
         .put("carrierCost",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCarrierCost,
-                a::setCarrierCost,
-                a::getCarrierCost,
-                a::resetCarrierCost)))
+            AttachmentProperty.of(
+                this::setCarrierCost,
+                this::setCarrierCost,
+                this::getCarrierCost,
+                this::resetCarrierCost))
         .put("isAirTransport",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsAirTransport,
-                a::setIsAirTransport,
-                a::getIsAirTransport,
-                a::resetIsAirTransport)))
+            AttachmentProperty.of(
+                this::setIsAirTransport,
+                this::setIsAirTransport,
+                this::getIsAirTransport,
+                this::resetIsAirTransport))
         .put("isAirTransportable",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsAirTransportable,
-                a::setIsAirTransportable,
-                a::getIsAirTransportable,
-                a::resetIsAirTransportable)))
+            AttachmentProperty.of(
+                this::setIsAirTransportable,
+                this::setIsAirTransportable,
+                this::getIsAirTransportable,
+                this::resetIsAirTransportable))
         .put("isInfantry",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsInfantry,
-                a::setIsInfantry,
-                a::getIsInfantry,
-                a::resetIsInfantry)))
+            AttachmentProperty.of(
+                this::setIsInfantry,
+                this::setIsInfantry,
+                this::getIsInfantry,
+                this::resetIsInfantry))
         .put("isLandTransport",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsLandTransport,
-                a::setIsLandTransport,
-                a::getIsLandTransport,
-                a::resetIsLandTransport)))
+            AttachmentProperty.of(
+                this::setIsLandTransport,
+                this::setIsLandTransport,
+                this::getIsLandTransport,
+                this::resetIsLandTransport))
         .put("isLandTransportable",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsLandTransportable,
-                a::setIsLandTransportable,
-                a::getIsLandTransportable,
-                a::resetIsLandTransportable)))
+            AttachmentProperty.of(
+                this::setIsLandTransportable,
+                this::setIsLandTransportable,
+                this::getIsLandTransportable,
+                this::resetIsLandTransportable))
         .put("isAAforCombatOnly",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsAAforCombatOnly,
-                a::setIsAAforCombatOnly,
-                a::getIsAAforCombatOnly,
-                a::resetIsAAforCombatOnly)))
+            AttachmentProperty.of(
+                this::setIsAAforCombatOnly,
+                this::setIsAAforCombatOnly,
+                this::getIsAAforCombatOnly,
+                this::resetIsAAforCombatOnly))
         .put("isAAforBombingThisUnitOnly",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsAAforBombingThisUnitOnly,
-                a::setIsAAforBombingThisUnitOnly,
-                a::getIsAAforBombingThisUnitOnly,
-                a::resetIsAAforBombingThisUnitOnly)))
+            AttachmentProperty.of(
+                this::setIsAAforBombingThisUnitOnly,
+                this::setIsAAforBombingThisUnitOnly,
+                this::getIsAAforBombingThisUnitOnly,
+                this::resetIsAAforBombingThisUnitOnly))
         .put("isAAforFlyOverOnly",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsAAforFlyOverOnly,
-                a::setIsAAforFlyOverOnly,
-                a::getIsAAforFlyOverOnly,
-                a::resetIsAAforFlyOverOnly)))
+            AttachmentProperty.of(
+                this::setIsAAforFlyOverOnly,
+                this::setIsAAforFlyOverOnly,
+                this::getIsAAforFlyOverOnly,
+                this::resetIsAAforFlyOverOnly))
         .put("isRocket",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsRocket,
-                a::setIsRocket,
-                a::getIsRocket,
-                a::resetIsRocket)))
+            AttachmentProperty.of(
+                this::setIsRocket,
+                this::setIsRocket,
+                this::getIsRocket,
+                this::resetIsRocket))
         .put("attackAA",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttackAA,
-                a::setAttackAA,
-                a::getAttackAA,
-                a::resetAttackAA)))
+            AttachmentProperty.of(
+                this::setAttackAA,
+                this::setAttackAA,
+                this::getAttackAA,
+                this::resetAttackAA))
         .put("offensiveAttackAA",
-            ofCast(a -> AttachmentProperty.of(
-                a::setOffensiveAttackAA,
-                a::setOffensiveAttackAA,
-                a::getOffensiveAttackAA,
-                a::resetOffensiveAttackAA)))
+            AttachmentProperty.of(
+                this::setOffensiveAttackAA,
+                this::setOffensiveAttackAA,
+                this::getOffensiveAttackAA,
+                this::resetOffensiveAttackAA))
         .put("attackAAmaxDieSides",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttackAAmaxDieSides,
-                a::setAttackAAmaxDieSides,
-                a::getAttackAAmaxDieSides,
-                a::resetAttackAAmaxDieSides)))
+            AttachmentProperty.of(
+                this::setAttackAAmaxDieSides,
+                this::setAttackAAmaxDieSides,
+                this::getAttackAAmaxDieSides,
+                this::resetAttackAAmaxDieSides))
         .put("offensiveAttackAAmaxDieSides",
-            ofCast(a -> AttachmentProperty.of(
-                a::setOffensiveAttackAAmaxDieSides,
-                a::setOffensiveAttackAAmaxDieSides,
-                a::getOffensiveAttackAAmaxDieSides,
-                a::resetOffensiveAttackAAmaxDieSides)))
+            AttachmentProperty.of(
+                this::setOffensiveAttackAAmaxDieSides,
+                this::setOffensiveAttackAAmaxDieSides,
+                this::getOffensiveAttackAAmaxDieSides,
+                this::resetOffensiveAttackAAmaxDieSides))
         .put("maxAAattacks",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMaxAAattacks,
-                a::setMaxAAattacks,
-                a::getMaxAAattacks,
-                a::resetMaxAAattacks)))
+            AttachmentProperty.of(
+                this::setMaxAAattacks,
+                this::setMaxAAattacks,
+                this::getMaxAAattacks,
+                this::resetMaxAAattacks))
         .put("maxRoundsAA",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMaxRoundsAA,
-                a::setMaxRoundsAA,
-                a::getMaxRoundsAA,
-                a::resetMaxRoundsAA)))
+            AttachmentProperty.of(
+                this::setMaxRoundsAA,
+                this::setMaxRoundsAA,
+                this::getMaxRoundsAA,
+                this::resetMaxRoundsAA))
         .put("typeAA",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTypeAA,
-                a::setTypeAA,
-                a::getTypeAA,
-                a::resetTypeAA)))
+            AttachmentProperty.of(
+                this::setTypeAA,
+                this::setTypeAA,
+                this::getTypeAA,
+                this::resetTypeAA))
         .put("targetsAA",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTargetsAA,
-                a::setTargetsAA,
-                a::getTargetsAA,
-                a::resetTargetsAA)))
+            AttachmentProperty.of(
+                this::setTargetsAA,
+                this::setTargetsAA,
+                this::getTargetsAA,
+                this::resetTargetsAA))
         .put("mayOverStackAA",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMayOverStackAA,
-                a::setMayOverStackAA,
-                a::getMayOverStackAA,
-                a::resetMayOverStackAA)))
+            AttachmentProperty.of(
+                this::setMayOverStackAA,
+                this::setMayOverStackAA,
+                this::getMayOverStackAA,
+                this::resetMayOverStackAA))
         .put("damageableAA",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDamageableAA,
-                a::setDamageableAA,
-                a::getDamageableAA,
-                a::resetDamageableAA)))
+            AttachmentProperty.of(
+                this::setDamageableAA,
+                this::setDamageableAA,
+                this::getDamageableAA,
+                this::resetDamageableAA))
         .put("willNotFireIfPresent",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWillNotFireIfPresent,
-                a::setWillNotFireIfPresent,
-                a::getWillNotFireIfPresent,
-                a::resetWillNotFireIfPresent)))
+            AttachmentProperty.of(
+                this::setWillNotFireIfPresent,
+                this::setWillNotFireIfPresent,
+                this::getWillNotFireIfPresent,
+                this::resetWillNotFireIfPresent))
         .put("isStrategicBomber",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsStrategicBomber,
-                a::setIsStrategicBomber,
-                a::getIsStrategicBomber,
-                a::resetIsStrategicBomber)))
+            AttachmentProperty.of(
+                this::setIsStrategicBomber,
+                this::setIsStrategicBomber,
+                this::getIsStrategicBomber,
+                this::resetIsStrategicBomber))
         .put("bombingMaxDieSides",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBombingMaxDieSides,
-                a::setBombingMaxDieSides,
-                a::getBombingMaxDieSides,
-                a::resetBombingMaxDieSides)))
+            AttachmentProperty.of(
+                this::setBombingMaxDieSides,
+                this::setBombingMaxDieSides,
+                this::getBombingMaxDieSides,
+                this::resetBombingMaxDieSides))
         .put("bombingBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBombingBonus,
-                a::setBombingBonus,
-                a::getBombingBonus,
-                a::resetBombingBonus)))
+            AttachmentProperty.of(
+                this::setBombingBonus,
+                this::setBombingBonus,
+                this::getBombingBonus,
+                this::resetBombingBonus))
         .put("canIntercept",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanIntercept,
-                a::setCanIntercept,
-                a::getCanIntercept,
-                a::resetCanIntercept)))
+            AttachmentProperty.of(
+                this::setCanIntercept,
+                this::setCanIntercept,
+                this::getCanIntercept,
+                this::resetCanIntercept))
         .put("canEscort",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanEscort,
-                a::setCanEscort,
-                a::getCanEscort,
-                a::resetCanEscort)))
+            AttachmentProperty.of(
+                this::setCanEscort,
+                this::setCanEscort,
+                this::getCanEscort,
+                this::resetCanEscort))
         .put("canAirBattle",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanAirBattle,
-                a::setCanAirBattle,
-                a::getCanAirBattle,
-                a::resetCanAirBattle)))
+            AttachmentProperty.of(
+                this::setCanAirBattle,
+                this::setCanAirBattle,
+                this::getCanAirBattle,
+                this::resetCanAirBattle))
         .put("airDefense",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirDefense,
-                a::setAirDefense,
-                a::getAirDefense,
-                a::resetAirDefense)))
+            AttachmentProperty.of(
+                this::setAirDefense,
+                this::setAirDefense,
+                this::getAirDefense,
+                this::resetAirDefense))
         .put("airAttack",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirAttack,
-                a::setAirAttack,
-                a::getAirAttack,
-                a::resetAirAttack)))
+            AttachmentProperty.of(
+                this::setAirAttack,
+                this::setAirAttack,
+                this::getAirAttack,
+                this::resetAirAttack))
         .put("bombingTargets",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBombingTargets,
-                a::setBombingTargets,
-                a::getBombingTargets,
-                a::resetBombingTargets)))
+            AttachmentProperty.of(
+                this::setBombingTargets,
+                this::setBombingTargets,
+                this::getBombingTargets,
+                this::resetBombingTargets))
         .put("canProduceUnits",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanProduceUnits,
-                a::setCanProduceUnits,
-                a::getCanProduceUnits,
-                a::resetCanProduceUnits)))
+            AttachmentProperty.of(
+                this::setCanProduceUnits,
+                this::setCanProduceUnits,
+                this::getCanProduceUnits,
+                this::resetCanProduceUnits))
         .put("canProduceXUnits",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanProduceXUnits,
-                a::setCanProduceXUnits,
-                a::getCanProduceXUnits,
-                a::resetCanProduceXUnits)))
+            AttachmentProperty.of(
+                this::setCanProduceXUnits,
+                this::setCanProduceXUnits,
+                this::getCanProduceXUnits,
+                this::resetCanProduceXUnits))
         .put("createsUnitsList",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCreatesUnitsList,
-                a::setCreatesUnitsList,
-                a::getCreatesUnitsList,
-                a::resetCreatesUnitsList)))
+            AttachmentProperty.of(
+                this::setCreatesUnitsList,
+                this::setCreatesUnitsList,
+                this::getCreatesUnitsList,
+                this::resetCreatesUnitsList))
         .put("createsResourcesList",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCreatesResourcesList,
-                a::setCreatesResourcesList,
-                a::getCreatesResourcesList,
-                a::resetCreatesResourcesList)))
+            AttachmentProperty.of(
+                this::setCreatesResourcesList,
+                this::setCreatesResourcesList,
+                this::getCreatesResourcesList,
+                this::resetCreatesResourcesList))
         .put("hitPoints",
-            ofCast(a -> AttachmentProperty.of(
-                a::setHitPoints,
-                a::setHitPoints,
-                a::getHitPoints,
-                a::resetHitPoints)))
+            AttachmentProperty.of(
+                this::setHitPoints,
+                this::setHitPoints,
+                this::getHitPoints,
+                this::resetHitPoints))
         .put("canBeDamaged",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanBeDamaged,
-                a::setCanBeDamaged,
-                a::getCanBeDamaged,
-                a::resetCanBeDamaged)))
+            AttachmentProperty.of(
+                this::setCanBeDamaged,
+                this::setCanBeDamaged,
+                this::getCanBeDamaged,
+                this::resetCanBeDamaged))
         .put("maxDamage",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMaxDamage,
-                a::setMaxDamage,
-                a::getMaxDamage,
-                a::resetMaxDamage)))
+            AttachmentProperty.of(
+                this::setMaxDamage,
+                this::setMaxDamage,
+                this::getMaxDamage,
+                this::resetMaxDamage))
         .put("maxOperationalDamage",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMaxOperationalDamage,
-                a::setMaxOperationalDamage,
-                a::getMaxOperationalDamage,
-                a::resetMaxOperationalDamage)))
+            AttachmentProperty.of(
+                this::setMaxOperationalDamage,
+                this::setMaxOperationalDamage,
+                this::getMaxOperationalDamage,
+                this::resetMaxOperationalDamage))
         .put("canDieFromReachingMaxDamage",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanDieFromReachingMaxDamage,
-                a::setCanDieFromReachingMaxDamage,
-                a::getCanDieFromReachingMaxDamage,
-                a::resetCanDieFromReachingMaxDamage)))
+            AttachmentProperty.of(
+                this::setCanDieFromReachingMaxDamage,
+                this::setCanDieFromReachingMaxDamage,
+                this::getCanDieFromReachingMaxDamage,
+                this::resetCanDieFromReachingMaxDamage))
         .put("isConstruction",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsConstruction,
-                a::setIsConstruction,
-                a::getIsConstruction,
-                a::resetIsConstruction)))
+            AttachmentProperty.of(
+                this::setIsConstruction,
+                this::setIsConstruction,
+                this::getIsConstruction,
+                this::resetIsConstruction))
         .put("constructionType",
-            ofCast(a -> AttachmentProperty.of(
-                a::setConstructionType,
-                a::setConstructionType,
-                a::getConstructionType,
-                a::resetConstructionType)))
+            AttachmentProperty.of(
+                this::setConstructionType,
+                this::setConstructionType,
+                this::getConstructionType,
+                this::resetConstructionType))
         .put("constructionsPerTerrPerTypePerTurn",
-            ofCast(a -> AttachmentProperty.of(
-                a::setConstructionsPerTerrPerTypePerTurn,
-                a::setConstructionsPerTerrPerTypePerTurn,
-                a::getConstructionsPerTerrPerTypePerTurn,
-                a::resetConstructionsPerTerrPerTypePerTurn)))
+            AttachmentProperty.of(
+                this::setConstructionsPerTerrPerTypePerTurn,
+                this::setConstructionsPerTerrPerTypePerTurn,
+                this::getConstructionsPerTerrPerTypePerTurn,
+                this::resetConstructionsPerTerrPerTypePerTurn))
         .put("maxConstructionsPerTypePerTerr",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMaxConstructionsPerTypePerTerr,
-                a::setMaxConstructionsPerTypePerTerr,
-                a::getMaxConstructionsPerTypePerTerr,
-                a::resetMaxConstructionsPerTypePerTerr)))
+            AttachmentProperty.of(
+                this::setMaxConstructionsPerTypePerTerr,
+                this::setMaxConstructionsPerTypePerTerr,
+                this::getMaxConstructionsPerTypePerTerr,
+                this::resetMaxConstructionsPerTypePerTerr))
         .put("canOnlyBePlacedInTerritoryValuedAtX",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanOnlyBePlacedInTerritoryValuedAtX,
-                a::setCanOnlyBePlacedInTerritoryValuedAtX,
-                a::getCanOnlyBePlacedInTerritoryValuedAtX,
-                a::resetCanOnlyBePlacedInTerritoryValuedAtX)))
+            AttachmentProperty.of(
+                this::setCanOnlyBePlacedInTerritoryValuedAtX,
+                this::setCanOnlyBePlacedInTerritoryValuedAtX,
+                this::getCanOnlyBePlacedInTerritoryValuedAtX,
+                this::resetCanOnlyBePlacedInTerritoryValuedAtX))
         .put("requiresUnits",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRequiresUnits,
-                a::setRequiresUnits,
-                a::getRequiresUnits,
-                a::resetRequiresUnits)))
+            AttachmentProperty.of(
+                this::setRequiresUnits,
+                this::setRequiresUnits,
+                this::getRequiresUnits,
+                this::resetRequiresUnits))
         .put("consumesUnits",
-            ofCast(a -> AttachmentProperty.of(
-                a::setConsumesUnits,
-                a::setConsumesUnits,
-                a::getConsumesUnits,
-                a::resetConsumesUnits)))
+            AttachmentProperty.of(
+                this::setConsumesUnits,
+                this::setConsumesUnits,
+                this::getConsumesUnits,
+                this::resetConsumesUnits))
         .put("requiresUnitsToMove",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRequiresUnitsToMove,
-                a::setRequiresUnitsToMove,
-                a::getRequiresUnitsToMove,
-                a::resetRequiresUnitsToMove)))
+            AttachmentProperty.of(
+                this::setRequiresUnitsToMove,
+                this::setRequiresUnitsToMove,
+                this::getRequiresUnitsToMove,
+                this::resetRequiresUnitsToMove))
         .put("unitPlacementRestrictions",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitPlacementRestrictions,
-                a::setUnitPlacementRestrictions,
-                a::getUnitPlacementRestrictions,
-                a::resetUnitPlacementRestrictions)))
+            AttachmentProperty.of(
+                this::setUnitPlacementRestrictions,
+                this::setUnitPlacementRestrictions,
+                this::getUnitPlacementRestrictions,
+                this::resetUnitPlacementRestrictions))
         .put("maxBuiltPerPlayer",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMaxBuiltPerPlayer,
-                a::setMaxBuiltPerPlayer,
-                a::getMaxBuiltPerPlayer,
-                a::resetMaxBuiltPerPlayer)))
+            AttachmentProperty.of(
+                this::setMaxBuiltPerPlayer,
+                this::setMaxBuiltPerPlayer,
+                this::getMaxBuiltPerPlayer,
+                this::resetMaxBuiltPerPlayer))
         .put("placementLimit",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlacementLimit,
-                a::setPlacementLimit,
-                a::getPlacementLimit,
-                a::resetPlacementLimit)))
+            AttachmentProperty.of(
+                this::setPlacementLimit,
+                this::setPlacementLimit,
+                this::getPlacementLimit,
+                this::resetPlacementLimit))
         .put("canScramble",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanScramble,
-                a::setCanScramble,
-                a::getCanScramble,
-                a::resetCanScramble)))
+            AttachmentProperty.of(
+                this::setCanScramble,
+                this::setCanScramble,
+                this::getCanScramble,
+                this::resetCanScramble))
         .put("isAirBase",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIsAirBase,
-                a::setIsAirBase,
-                a::getIsAirBase,
-                a::resetIsAirBase)))
+            AttachmentProperty.of(
+                this::setIsAirBase,
+                this::setIsAirBase,
+                this::getIsAirBase,
+                this::resetIsAirBase))
         .put("maxScrambleDistance",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMaxScrambleDistance,
-                a::setMaxScrambleDistance,
-                a::getMaxScrambleDistance,
-                a::resetMaxScrambleDistance)))
+            AttachmentProperty.of(
+                this::setMaxScrambleDistance,
+                this::setMaxScrambleDistance,
+                this::getMaxScrambleDistance,
+                this::resetMaxScrambleDistance))
         .put("maxScrambleCount",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMaxScrambleCount,
-                a::setMaxScrambleCount,
-                a::getMaxScrambleCount,
-                a::resetMaxScrambleCount)))
+            AttachmentProperty.of(
+                this::setMaxScrambleCount,
+                this::setMaxScrambleCount,
+                this::getMaxScrambleCount,
+                this::resetMaxScrambleCount))
         .put("blockade",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBlockade,
-                a::setBlockade,
-                a::getBlockade,
-                a::resetBlockade)))
+            AttachmentProperty.of(
+                this::setBlockade,
+                this::setBlockade,
+                this::getBlockade,
+                this::resetBlockade))
         .put("repairsUnits",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRepairsUnits,
-                a::setRepairsUnits,
-                a::getRepairsUnits,
-                a::resetRepairsUnits)))
+            AttachmentProperty.of(
+                this::setRepairsUnits,
+                this::setRepairsUnits,
+                this::getRepairsUnits,
+                this::resetRepairsUnits))
         .put("givesMovement",
-            ofCast(a -> AttachmentProperty.of(
-                a::setGivesMovement,
-                a::setGivesMovement,
-                a::getGivesMovement,
-                a::resetGivesMovement)))
+            AttachmentProperty.of(
+                this::setGivesMovement,
+                this::setGivesMovement,
+                this::getGivesMovement,
+                this::resetGivesMovement))
         .put("destroyedWhenCapturedBy",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDestroyedWhenCapturedBy,
-                a::setDestroyedWhenCapturedBy,
-                a::getDestroyedWhenCapturedBy,
-                a::resetDestroyedWhenCapturedBy)))
+            AttachmentProperty.of(
+                this::setDestroyedWhenCapturedBy,
+                this::setDestroyedWhenCapturedBy,
+                this::getDestroyedWhenCapturedBy,
+                this::resetDestroyedWhenCapturedBy))
         .put("whenHitPointsDamagedChangesInto",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWhenHitPointsDamagedChangesInto,
-                a::setWhenHitPointsDamagedChangesInto,
-                a::getWhenHitPointsDamagedChangesInto,
-                a::resetWhenHitPointsDamagedChangesInto)))
+            AttachmentProperty.of(
+                this::setWhenHitPointsDamagedChangesInto,
+                this::setWhenHitPointsDamagedChangesInto,
+                this::getWhenHitPointsDamagedChangesInto,
+                this::resetWhenHitPointsDamagedChangesInto))
         .put("whenHitPointsRepairedChangesInto",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWhenHitPointsRepairedChangesInto,
-                a::setWhenHitPointsRepairedChangesInto,
-                a::getWhenHitPointsRepairedChangesInto,
-                a::resetWhenHitPointsRepairedChangesInto)))
+            AttachmentProperty.of(
+                this::setWhenHitPointsRepairedChangesInto,
+                this::setWhenHitPointsRepairedChangesInto,
+                this::getWhenHitPointsRepairedChangesInto,
+                this::resetWhenHitPointsRepairedChangesInto))
         .put("whenCapturedChangesInto",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWhenCapturedChangesInto,
-                a::setWhenCapturedChangesInto,
-                a::getWhenCapturedChangesInto,
-                a::resetWhenCapturedChangesInto)))
+            AttachmentProperty.of(
+                this::setWhenCapturedChangesInto,
+                this::setWhenCapturedChangesInto,
+                this::getWhenCapturedChangesInto,
+                this::resetWhenCapturedChangesInto))
         .put("whenCapturedSustainsDamage",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWhenCapturedSustainsDamage,
-                a::setWhenCapturedSustainsDamage,
-                a::getWhenCapturedSustainsDamage,
-                a::resetWhenCapturedSustainsDamage)))
+            AttachmentProperty.of(
+                this::setWhenCapturedSustainsDamage,
+                this::setWhenCapturedSustainsDamage,
+                this::getWhenCapturedSustainsDamage,
+                this::resetWhenCapturedSustainsDamage))
         .put("canBeCapturedOnEnteringBy",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanBeCapturedOnEnteringBy,
-                a::setCanBeCapturedOnEnteringBy,
-                a::getCanBeCapturedOnEnteringBy,
-                a::resetCanBeCapturedOnEnteringBy)))
+            AttachmentProperty.of(
+                this::setCanBeCapturedOnEnteringBy,
+                this::setCanBeCapturedOnEnteringBy,
+                this::getCanBeCapturedOnEnteringBy,
+                this::resetCanBeCapturedOnEnteringBy))
         .put("canBeGivenByTerritoryTo",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCanBeGivenByTerritoryTo,
-                a::setCanBeGivenByTerritoryTo,
-                a::getCanBeGivenByTerritoryTo,
-                a::resetCanBeGivenByTerritoryTo)))
+            AttachmentProperty.of(
+                this::setCanBeGivenByTerritoryTo,
+                this::setCanBeGivenByTerritoryTo,
+                this::getCanBeGivenByTerritoryTo,
+                this::resetCanBeGivenByTerritoryTo))
         .put("whenCombatDamaged",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWhenCombatDamaged,
-                a::setWhenCombatDamaged,
-                a::getWhenCombatDamaged,
-                a::resetWhenCombatDamaged)))
+            AttachmentProperty.of(
+                this::setWhenCombatDamaged,
+                this::setWhenCombatDamaged,
+                this::getWhenCombatDamaged,
+                this::resetWhenCombatDamaged))
         .put("receivesAbilityWhenWith",
-            ofCast(a -> AttachmentProperty.of(
-                a::setReceivesAbilityWhenWith,
-                a::setReceivesAbilityWhenWith,
-                a::getReceivesAbilityWhenWith,
-                a::resetReceivesAbilityWhenWith)))
+            AttachmentProperty.of(
+                this::setReceivesAbilityWhenWith,
+                this::setReceivesAbilityWhenWith,
+                this::getReceivesAbilityWhenWith,
+                this::resetReceivesAbilityWhenWith))
         .put("special",
-            ofCast(a -> AttachmentProperty.of(
-                a::setSpecial,
-                a::setSpecial,
-                a::getSpecial,
-                a::resetSpecial)))
+            AttachmentProperty.of(
+                this::setSpecial,
+                this::setSpecial,
+                this::getSpecial,
+                this::resetSpecial))
         .put("tuv",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTuv,
-                a::setTuv,
-                a::getTuv,
-                a::resetTuv)))
+            AttachmentProperty.of(
+                this::setTuv,
+                this::setTuv,
+                this::getTuv,
+                this::resetTuv))
         .put("isFactory",
-            ofCast(a -> AttachmentProperty.<Boolean>of(
-                a::setIsFactory,
-                a::setIsFactory)))
+            AttachmentProperty.<Boolean>of(
+                this::setIsFactory,
+                this::setIsFactory))
         .put("isAA",
-            ofCast(a -> AttachmentProperty.<Boolean>of(
-                a::setIsAA,
-                a::setIsAA)))
+            AttachmentProperty.<Boolean>of(
+                this::setIsAA,
+                this::setIsAA))
         .put("destroyedWhenCapturedFrom",
-            ofCast(a -> AttachmentProperty.of(a::setDestroyedWhenCapturedFrom, a::setDestroyedWhenCapturedFrom)))
+            AttachmentProperty.of(this::setDestroyedWhenCapturedFrom, this::setDestroyedWhenCapturedFrom))
         .put("unitPlacementOnlyAllowedIn",
-            ofCast(a -> AttachmentProperty.of(a::setUnitPlacementOnlyAllowedIn, a::setUnitPlacementOnlyAllowedIn)))
-        .put("isAAmovement", ofCast(a -> AttachmentProperty.<Boolean>of(a::setIsAAmovement, a::setIsAAmovement)))
-        .put("isTwoHit", ofCast(a -> AttachmentProperty.<Boolean>of(a::setIsTwoHit, a::setIsTwoHit)))
+            AttachmentProperty.of(this::setUnitPlacementOnlyAllowedIn, this::setUnitPlacementOnlyAllowedIn))
+        .put("isAAmovement", AttachmentProperty.<Boolean>of(this::setIsAAmovement, this::setIsAAmovement))
+        .put("isTwoHit", AttachmentProperty.<Boolean>of(this::setIsTwoHit, this::setIsTwoHit))
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<UnitAttachment, AttachmentProperty<?>> function) {
-    return function.compose(UnitAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -15,7 +14,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -31,7 +29,6 @@ import games.strategy.util.Triple;
 @MapSupport
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1880755875866426270L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   /**
    * Convenience method. can be null
@@ -599,103 +596,98 @@ public class PlayerAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
-        .put("vps", ofCast(a -> AttachmentProperty.of(a::setVps, a::setVps, a::getVps, a::resetVps)))
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("vps", AttachmentProperty.of(this::setVps, this::setVps, this::getVps, this::resetVps))
         .put("captureVps",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCaptureVps,
-                a::setCaptureVps,
-                a::getCaptureVps,
-                a::resetCaptureVps)))
+            AttachmentProperty.of(
+                this::setCaptureVps,
+                this::setCaptureVps,
+                this::getCaptureVps,
+                this::resetCaptureVps))
         .put("retainCapitalNumber",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRetainCapitalNumber,
-                a::setRetainCapitalNumber,
-                a::getRetainCapitalNumber,
-                a::resetRetainCapitalNumber)))
+            AttachmentProperty.of(
+                this::setRetainCapitalNumber,
+                this::setRetainCapitalNumber,
+                this::getRetainCapitalNumber,
+                this::resetRetainCapitalNumber))
         .put("retainCapitalProduceNumber",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRetainCapitalProduceNumber,
-                a::setRetainCapitalProduceNumber,
-                a::getRetainCapitalProduceNumber,
-                a::resetRetainCapitalProduceNumber)))
+            AttachmentProperty.of(
+                this::setRetainCapitalProduceNumber,
+                this::setRetainCapitalProduceNumber,
+                this::getRetainCapitalProduceNumber,
+                this::resetRetainCapitalProduceNumber))
         .put("giveUnitControl",
-            ofCast(a -> AttachmentProperty.of(
-                a::setGiveUnitControl,
-                a::setGiveUnitControl,
-                a::getGiveUnitControl,
-                a::resetGiveUnitControl)))
+            AttachmentProperty.of(
+                this::setGiveUnitControl,
+                this::setGiveUnitControl,
+                this::getGiveUnitControl,
+                this::resetGiveUnitControl))
         .put("captureUnitOnEnteringBy",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCaptureUnitOnEnteringBy,
-                a::setCaptureUnitOnEnteringBy,
-                a::getCaptureUnitOnEnteringBy,
-                a::resetCaptureUnitOnEnteringBy)))
+            AttachmentProperty.of(
+                this::setCaptureUnitOnEnteringBy,
+                this::setCaptureUnitOnEnteringBy,
+                this::getCaptureUnitOnEnteringBy,
+                this::resetCaptureUnitOnEnteringBy))
         .put("shareTechnology",
-            ofCast(a -> AttachmentProperty.of(
-                a::setShareTechnology,
-                a::setShareTechnology,
-                a::getShareTechnology,
-                a::resetShareTechnology)))
+            AttachmentProperty.of(
+                this::setShareTechnology,
+                this::setShareTechnology,
+                this::getShareTechnology,
+                this::resetShareTechnology))
         .put("helpPayTechCost",
-            ofCast(a -> AttachmentProperty.of(
-                a::setHelpPayTechCost,
-                a::setHelpPayTechCost,
-                a::getHelpPayTechCost,
-                a::resetHelpPayTechCost)))
+            AttachmentProperty.of(
+                this::setHelpPayTechCost,
+                this::setHelpPayTechCost,
+                this::getHelpPayTechCost,
+                this::resetHelpPayTechCost))
         .put("destroysPUs",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDestroysPUs,
-                a::setDestroysPUs,
-                a::getDestroysPUs,
-                a::resetDestroysPUs)))
+            AttachmentProperty.of(
+                this::setDestroysPUs,
+                this::setDestroysPUs,
+                this::getDestroysPUs,
+                this::resetDestroysPUs))
         .put("immuneToBlockade",
-            ofCast(a -> AttachmentProperty.of(
-                a::setImmuneToBlockade,
-                a::setImmuneToBlockade,
-                a::getImmuneToBlockade,
-                a::resetImmuneToBlockade)))
+            AttachmentProperty.of(
+                this::setImmuneToBlockade,
+                this::setImmuneToBlockade,
+                this::getImmuneToBlockade,
+                this::resetImmuneToBlockade))
         .put("suicideAttackResources",
-            ofCast(a -> AttachmentProperty.of(
-                a::setSuicideAttackResources,
-                a::setSuicideAttackResources,
-                a::getSuicideAttackResources,
-                a::resetSuicideAttackResources)))
+            AttachmentProperty.of(
+                this::setSuicideAttackResources,
+                this::setSuicideAttackResources,
+                this::getSuicideAttackResources,
+                this::resetSuicideAttackResources))
         .put("suicideAttackTargets",
-            ofCast(a -> AttachmentProperty.of(
-                a::setSuicideAttackTargets,
-                a::setSuicideAttackTargets,
-                a::getSuicideAttackTargets,
-                a::resetSuicideAttackTargets)))
+            AttachmentProperty.of(
+                this::setSuicideAttackTargets,
+                this::setSuicideAttackTargets,
+                this::getSuicideAttackTargets,
+                this::resetSuicideAttackTargets))
         .put("placementLimit",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlacementLimit,
-                a::setPlacementLimit,
-                a::getPlacementLimit,
-                a::resetPlacementLimit)))
+            AttachmentProperty.of(
+                this::setPlacementLimit,
+                this::setPlacementLimit,
+                this::getPlacementLimit,
+                this::resetPlacementLimit))
         .put("movementLimit",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMovementLimit,
-                a::setMovementLimit,
-                a::getMovementLimit,
-                a::resetMovementLimit)))
+            AttachmentProperty.of(
+                this::setMovementLimit,
+                this::setMovementLimit,
+                this::getMovementLimit,
+                this::resetMovementLimit))
         .put("attackingLimit",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttackingLimit,
-                a::setAttackingLimit,
-                a::getAttackingLimit,
-                a::resetAttackingLimit)))
+            AttachmentProperty.of(
+                this::setAttackingLimit,
+                this::setAttackingLimit,
+                this::getAttackingLimit,
+                this::resetAttackingLimit))
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<PlayerAttachment, AttachmentProperty<?>> function) {
-    return function.compose(PlayerAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

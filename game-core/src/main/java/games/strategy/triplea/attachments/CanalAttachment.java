@@ -3,7 +3,6 @@ package games.strategy.triplea.attachments;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
@@ -13,7 +12,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -25,7 +23,6 @@ import games.strategy.util.CollectionUtils;
 @MapSupport
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   private String m_canalName = null;
   private Set<Territory> m_landTerritories = null;
@@ -172,31 +169,26 @@ public class CanalAttachment extends DefaultAttachment {
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
-        .put("canalName", ofCast(a -> AttachmentProperty.of(a::setCanalName, a::getCanalName, a::resetCanalName)))
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("canalName", AttachmentProperty.of(this::setCanalName, this::getCanalName, this::resetCanalName))
         .put("landTerritories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setLandTerritories,
-                a::setLandTerritories,
-                a::getLandTerritories,
-                a::resetLandTerritories)))
+            AttachmentProperty.of(
+                this::setLandTerritories,
+                this::setLandTerritories,
+                this::getLandTerritories,
+                this::resetLandTerritories))
         .put("excludedUnits",
-            ofCast(a -> AttachmentProperty.of(
-                a::setExcludedUnits,
-                a::setExcludedUnits,
-                a::getExcludedUnits,
-                a::resetExcludedUnits)))
+            AttachmentProperty.of(
+                this::setExcludedUnits,
+                this::setExcludedUnits,
+                this::getExcludedUnits,
+                this::resetExcludedUnits))
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<CanalAttachment, AttachmentProperty<?>> function) {
-    return function.compose(CanalAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

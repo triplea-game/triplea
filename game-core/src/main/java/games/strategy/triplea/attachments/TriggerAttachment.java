@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableMap;
@@ -60,7 +59,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final long serialVersionUID = -3327739180569606093L;
   private static final String PREFIX_CLEAR = "-clear-";
   private static final String PREFIX_RESET = "-reset-";
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   private ProductionFrontier m_frontier = null;
   private List<String> m_productionRule = null;
@@ -2611,193 +2609,188 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     super.validate(data);
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("frontier",
-            ofCast(a -> AttachmentProperty.of(
-                a::setFrontier,
-                a::setFrontier,
-                a::getFrontier,
-                a::resetFrontier)))
+            AttachmentProperty.of(
+                this::setFrontier,
+                this::setFrontier,
+                this::getFrontier,
+                this::resetFrontier))
         .put("productionRule",
-            ofCast(a -> AttachmentProperty.of(
-                a::setProductionRule,
-                a::setProductionRule,
-                a::getProductionRule,
-                a::resetProductionRule)))
+            AttachmentProperty.of(
+                this::setProductionRule,
+                this::setProductionRule,
+                this::getProductionRule,
+                this::resetProductionRule))
         .put("tech",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTech,
-                a::setTech,
-                a::getTech,
-                a::resetTech)))
+            AttachmentProperty.of(
+                this::setTech,
+                this::setTech,
+                this::getTech,
+                this::resetTech))
         .put("availableTech",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAvailableTech,
-                a::setAvailableTech,
-                a::getAvailableTech,
-                a::resetAvailableTech)))
+            AttachmentProperty.of(
+                this::setAvailableTech,
+                this::setAvailableTech,
+                this::getAvailableTech,
+                this::resetAvailableTech))
         .put("placement",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlacement,
-                a::setPlacement,
-                a::getPlacement,
-                a::resetPlacement)))
+            AttachmentProperty.of(
+                this::setPlacement,
+                this::setPlacement,
+                this::getPlacement,
+                this::resetPlacement))
         .put("removeUnits",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRemoveUnits,
-                a::setRemoveUnits,
-                a::getRemoveUnits,
-                a::resetRemoveUnits)))
+            AttachmentProperty.of(
+                this::setRemoveUnits,
+                this::setRemoveUnits,
+                this::getRemoveUnits,
+                this::resetRemoveUnits))
         .put("purchase",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPurchase,
-                a::setPurchase,
-                a::getPurchase,
-                a::resetPurchase)))
+            AttachmentProperty.of(
+                this::setPurchase,
+                this::setPurchase,
+                this::getPurchase,
+                this::resetPurchase))
         .put("resource",
-            ofCast(a -> AttachmentProperty.of(
-                a::setResource,
-                a::setResource,
-                a::getResource,
-                a::resetResource)))
+            AttachmentProperty.of(
+                this::setResource,
+                this::setResource,
+                this::getResource,
+                this::resetResource))
         .put("resourceCount",
-            ofCast(a -> AttachmentProperty.of(
-                a::setResourceCount,
-                a::setResourceCount,
-                a::getResourceCount,
-                a::resetResourceCount)))
+            AttachmentProperty.of(
+                this::setResourceCount,
+                this::setResourceCount,
+                this::getResourceCount,
+                this::resetResourceCount))
         .put("support",
-            ofCast(a -> AttachmentProperty.of(
-                a::setSupport,
-                a::setSupport,
-                a::getSupport,
-                a::resetSupport)))
+            AttachmentProperty.of(
+                this::setSupport,
+                this::setSupport,
+                this::getSupport,
+                this::resetSupport))
         .put("relationshipChange",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRelationshipChange,
-                a::setRelationshipChange,
-                a::getRelationshipChange,
-                a::resetRelationshipChange)))
+            AttachmentProperty.of(
+                this::setRelationshipChange,
+                this::setRelationshipChange,
+                this::getRelationshipChange,
+                this::resetRelationshipChange))
         .put("victory",
-            ofCast(a -> AttachmentProperty.of(
-                a::setVictory,
-                a::setVictory,
-                a::getVictory,
-                a::resetVictory)))
+            AttachmentProperty.of(
+                this::setVictory,
+                this::setVictory,
+                this::getVictory,
+                this::resetVictory))
         .put("activateTrigger",
-            ofCast(a -> AttachmentProperty.of(
-                a::setActivateTrigger,
-                a::setActivateTrigger,
-                a::getActivateTrigger,
-                a::resetActivateTrigger)))
+            AttachmentProperty.of(
+                this::setActivateTrigger,
+                this::setActivateTrigger,
+                this::getActivateTrigger,
+                this::resetActivateTrigger))
         .put("changeOwnership",
-            ofCast(a -> AttachmentProperty.of(
-                a::setChangeOwnership,
-                a::setChangeOwnership,
-                a::getChangeOwnership,
-                a::resetChangeOwnership)))
+            AttachmentProperty.of(
+                this::setChangeOwnership,
+                this::setChangeOwnership,
+                this::getChangeOwnership,
+                this::resetChangeOwnership))
         .put("unitType",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitType,
-                a::setUnitType,
-                a::getUnitType,
-                a::resetUnitType)))
+            AttachmentProperty.of(
+                this::setUnitType,
+                this::setUnitType,
+                this::getUnitType,
+                this::resetUnitType))
         .put("unitAttachmentName",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitAttachmentName,
-                a::setUnitAttachmentName,
-                a::getUnitAttachmentName,
-                a::resetUnitAttachmentName)))
+            AttachmentProperty.of(
+                this::setUnitAttachmentName,
+                this::setUnitAttachmentName,
+                this::getUnitAttachmentName,
+                this::resetUnitAttachmentName))
         .put("unitProperty",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitProperty,
-                a::setUnitProperty,
-                a::getUnitProperty,
-                a::resetUnitProperty)))
+            AttachmentProperty.of(
+                this::setUnitProperty,
+                this::setUnitProperty,
+                this::getUnitProperty,
+                this::resetUnitProperty))
         .put("territories",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTerritories,
-                a::setTerritories,
-                a::getTerritories,
-                a::resetTerritories)))
+            AttachmentProperty.of(
+                this::setTerritories,
+                this::setTerritories,
+                this::getTerritories,
+                this::resetTerritories))
         .put("territoryAttachmentName",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTerritoryAttachmentName,
-                a::setTerritoryAttachmentName,
-                a::getTerritoryAttachmentName,
-                a::resetTerritoryAttachmentName)))
+            AttachmentProperty.of(
+                this::setTerritoryAttachmentName,
+                this::setTerritoryAttachmentName,
+                this::getTerritoryAttachmentName,
+                this::resetTerritoryAttachmentName))
         .put("territoryProperty",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTerritoryProperty,
-                a::setTerritoryProperty,
-                a::getTerritoryProperty,
-                a::resetTerritoryProperty)))
+            AttachmentProperty.of(
+                this::setTerritoryProperty,
+                this::setTerritoryProperty,
+                this::getTerritoryProperty,
+                this::resetTerritoryProperty))
         .put("players",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlayers,
-                a::setPlayers,
-                a::getPlayers,
-                a::resetPlayers)))
+            AttachmentProperty.of(
+                this::setPlayers,
+                this::setPlayers,
+                this::getPlayers,
+                this::resetPlayers))
         .put("playerAttachmentName",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlayerAttachmentName,
-                a::setPlayerAttachmentName,
-                a::getPlayerAttachmentName,
-                a::resetPlayerAttachmentName)))
+            AttachmentProperty.of(
+                this::setPlayerAttachmentName,
+                this::setPlayerAttachmentName,
+                this::getPlayerAttachmentName,
+                this::resetPlayerAttachmentName))
         .put("playerProperty",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlayerProperty,
-                a::setPlayerProperty,
-                a::getPlayerProperty,
-                a::resetPlayerProperty)))
+            AttachmentProperty.of(
+                this::setPlayerProperty,
+                this::setPlayerProperty,
+                this::getPlayerProperty,
+                this::resetPlayerProperty))
         .put("relationshipTypes",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRelationshipTypes,
-                a::setRelationshipTypes,
-                a::getRelationshipTypes,
-                a::resetRelationshipTypes)))
+            AttachmentProperty.of(
+                this::setRelationshipTypes,
+                this::setRelationshipTypes,
+                this::getRelationshipTypes,
+                this::resetRelationshipTypes))
         .put("relationshipTypeAttachmentName",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRelationshipTypeAttachmentName,
-                a::setRelationshipTypeAttachmentName,
-                a::getRelationshipTypeAttachmentName,
-                a::resetRelationshipTypeAttachmentName)))
+            AttachmentProperty.of(
+                this::setRelationshipTypeAttachmentName,
+                this::setRelationshipTypeAttachmentName,
+                this::getRelationshipTypeAttachmentName,
+                this::resetRelationshipTypeAttachmentName))
         .put("relationshipTypeProperty",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRelationshipTypeProperty,
-                a::setRelationshipTypeProperty,
-                a::getRelationshipTypeProperty,
-                a::resetRelationshipTypeProperty)))
+            AttachmentProperty.of(
+                this::setRelationshipTypeProperty,
+                this::setRelationshipTypeProperty,
+                this::getRelationshipTypeProperty,
+                this::resetRelationshipTypeProperty))
         .put("territoryEffects",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTerritoryEffects,
-                a::setTerritoryEffects,
-                a::getTerritoryEffects,
-                a::resetTerritoryEffects)))
+            AttachmentProperty.of(
+                this::setTerritoryEffects,
+                this::setTerritoryEffects,
+                this::getTerritoryEffects,
+                this::resetTerritoryEffects))
         .put("territoryEffectAttachmentName",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTerritoryEffectAttachmentName,
-                a::setTerritoryEffectAttachmentName,
-                a::getTerritoryEffectAttachmentName,
-                a::resetTerritoryEffectAttachmentName)))
+            AttachmentProperty.of(
+                this::setTerritoryEffectAttachmentName,
+                this::setTerritoryEffectAttachmentName,
+                this::getTerritoryEffectAttachmentName,
+                this::resetTerritoryEffectAttachmentName))
         .put("territoryEffectProperty",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTerritoryEffectProperty,
-                a::setTerritoryEffectProperty,
-                a::getTerritoryEffectProperty,
-                a::resetTerritoryEffectProperty)))
-        .putAll(AbstractTriggerAttachment.propertyMap)
+            AttachmentProperty.of(
+                this::setTerritoryEffectProperty,
+                this::setTerritoryEffectProperty,
+                this::getTerritoryEffectProperty,
+                this::resetTerritoryEffectProperty))
+        .putAll(super.createPropertyMap())
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<TriggerAttachment, AttachmentProperty<?>> function) {
-    return function.compose(TriggerAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
@@ -16,7 +15,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -34,7 +32,6 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   private List<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
 
@@ -179,25 +176,21 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     super.validate(data);
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("activateTrigger",
-            ofCast(a -> AttachmentProperty.of(
-                a::setActivateTrigger,
-                a::setActivateTrigger,
-                a::getActivateTrigger,
-                a::resetActivateTrigger)))
-        .putAll(AbstractUserActionAttachment.propertyMap)
+            AttachmentProperty.of(
+                this::setActivateTrigger,
+                this::setActivateTrigger,
+                this::getActivateTrigger,
+                this::resetActivateTrigger))
+        .putAll(super.createPropertyMap())
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<UserActionAttachment, AttachmentProperty<?>> function) {
-    return function.compose(UserActionAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

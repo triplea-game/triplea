@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -17,7 +16,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
@@ -32,7 +30,6 @@ import games.strategy.util.CollectionUtils;
  */
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
@@ -437,53 +434,49 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     return territories;
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
-        .put("countEach", ofCast(a -> AttachmentProperty.of(a::getCountEach)))
-        .put("eachMultiple", ofCast(a -> AttachmentProperty.of(a::getEachMultiple)))
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("countEach", AttachmentProperty.of(this::getCountEach))
+        .put("eachMultiple", AttachmentProperty.of(this::getEachMultiple))
         .put("players",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlayers,
-                a::setPlayers,
-                a::getPlayers,
-                a::resetPlayers)))
+            AttachmentProperty.of(
+                this::setPlayers,
+                this::setPlayers,
+                this::getPlayers,
+                this::resetPlayers))
         .put("objectiveValue",
-            ofCast(a -> AttachmentProperty.of(
-                a::setObjectiveValue,
-                a::setObjectiveValue,
-                a::getObjectiveValue,
-                a::resetObjectiveValue)))
+            AttachmentProperty.of(
+                this::setObjectiveValue,
+                this::setObjectiveValue,
+                this::getObjectiveValue,
+                this::resetObjectiveValue))
         .put("uses",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUses,
-                a::setUses,
-                a::getUses,
-                a::resetUses)))
+            AttachmentProperty.of(
+                this::setUses,
+                this::setUses,
+                this::getUses,
+                this::resetUses))
         .put("turns",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTurns,
-                a::setTurns,
-                a::getTurns,
-                a::resetTurns)))
+            AttachmentProperty.of(
+                this::setTurns,
+                this::setTurns,
+                this::getTurns,
+                this::resetTurns))
         .put("switch",
-            ofCast(a -> AttachmentProperty.of(
-                a::setSwitch,
-                a::setSwitch,
-                a::getSwitch,
-                a::resetSwitch)))
+            AttachmentProperty.of(
+                this::setSwitch,
+                this::setSwitch,
+                this::getSwitch,
+                this::resetSwitch))
         .put("gameProperty",
-            ofCast(a -> AttachmentProperty.of(
-                a::setGameProperty,
-                a::setGameProperty,
-                a::getGameProperty,
-                a::resetGameProperty)))
-        .put("rounds", ofCast(a -> AttachmentProperty.of(a::setRounds, a::setRounds)))
-        .putAll(AbstractConditionsAttachment.propertyMap)
+            AttachmentProperty.of(
+                this::setGameProperty,
+                this::setGameProperty,
+                this::getGameProperty,
+                this::resetGameProperty))
+        .put("rounds", AttachmentProperty.of(this::setRounds, this::setRounds))
+        .putAll(super.createPropertyMap())
         .build();
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<AbstractRulesAttachment, AttachmentProperty<?>> function) {
-    return function.compose(AbstractRulesAttachment.class::cast);
   }
 }

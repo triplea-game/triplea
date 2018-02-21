@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -14,7 +13,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -26,7 +24,6 @@ import games.strategy.util.IntegerMap;
 @MapSupport
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<>();
   private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<>();
@@ -202,42 +199,37 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("combatDefenseEffect",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCombatDefenseEffect,
-                a::setCombatDefenseEffect,
-                a::getCombatDefenseEffect,
-                a::resetCombatDefenseEffect)))
+            AttachmentProperty.of(
+                this::setCombatDefenseEffect,
+                this::setCombatDefenseEffect,
+                this::getCombatDefenseEffect,
+                this::resetCombatDefenseEffect))
         .put("combatOffenseEffect",
-            ofCast(a -> AttachmentProperty.of(
-                a::setCombatOffenseEffect,
-                a::setCombatOffenseEffect,
-                a::getCombatOffenseEffect,
-                a::resetCombatOffenseEffect)))
+            AttachmentProperty.of(
+                this::setCombatOffenseEffect,
+                this::setCombatOffenseEffect,
+                this::getCombatOffenseEffect,
+                this::resetCombatOffenseEffect))
         .put("noBlitz",
-            ofCast(a -> AttachmentProperty.of(
-                a::setNoBlitz,
-                a::setNoBlitz,
-                a::getNoBlitz,
-                a::resetNoBlitz)))
+            AttachmentProperty.of(
+                this::setNoBlitz,
+                this::setNoBlitz,
+                this::getNoBlitz,
+                this::resetNoBlitz))
         .put("unitsNotAllowed",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitsNotAllowed,
-                a::setUnitsNotAllowed,
-                a::getUnitsNotAllowed,
-                a::resetUnitsNotAllowed)))
+            AttachmentProperty.of(
+                this::setUnitsNotAllowed,
+                this::setUnitsNotAllowed,
+                this::getUnitsNotAllowed,
+                this::resetUnitsNotAllowed))
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<TerritoryEffectAttachment, AttachmentProperty<?>> function) {
-    return function.compose(TerritoryEffectAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

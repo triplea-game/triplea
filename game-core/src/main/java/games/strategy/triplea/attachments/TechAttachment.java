@@ -2,7 +2,6 @@ package games.strategy.triplea.attachments;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -10,7 +9,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -22,7 +20,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 @MapSupport
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   // attaches to a PlayerID
   public static TechAttachment get(final PlayerID id) {
@@ -425,108 +422,103 @@ public class TechAttachment extends DefaultAttachment {
   }
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("techCost",
-            ofCast(a -> AttachmentProperty.of(
-                a::setTechCost,
-                a::setTechCost,
-                a::getTechCost,
-                a::resetTechCost)))
+            AttachmentProperty.of(
+                this::setTechCost,
+                this::setTechCost,
+                this::getTechCost,
+                this::resetTechCost))
         .put("heavyBomber",
-            ofCast(a -> AttachmentProperty.of(
-                a::setHeavyBomber,
-                a::setHeavyBomber,
-                a::getHeavyBomber,
-                a::resetHeavyBomber)))
+            AttachmentProperty.of(
+                this::setHeavyBomber,
+                this::setHeavyBomber,
+                this::getHeavyBomber,
+                this::resetHeavyBomber))
         .put("longRangeAir",
-            ofCast(a -> AttachmentProperty.of(
-                a::setLongRangeAir,
-                a::setLongRangeAir,
-                a::getLongRangeAir,
-                a::resetLongRangeAir)))
+            AttachmentProperty.of(
+                this::setLongRangeAir,
+                this::setLongRangeAir,
+                this::getLongRangeAir,
+                this::resetLongRangeAir))
         .put("jetPower",
-            ofCast(a -> AttachmentProperty.of(
-                a::setJetPower,
-                a::setJetPower,
-                a::getJetPower,
-                a::resetJetPower)))
+            AttachmentProperty.of(
+                this::setJetPower,
+                this::setJetPower,
+                this::getJetPower,
+                this::resetJetPower))
         .put("rocket",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRocket,
-                a::setRocket,
-                a::getRocket,
-                a::resetRocket)))
+            AttachmentProperty.of(
+                this::setRocket,
+                this::setRocket,
+                this::getRocket,
+                this::resetRocket))
         .put("industrialTechnology",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIndustrialTechnology,
-                a::setIndustrialTechnology,
-                a::getIndustrialTechnology,
-                a::resetIndustrialTechnology)))
+            AttachmentProperty.of(
+                this::setIndustrialTechnology,
+                this::setIndustrialTechnology,
+                this::getIndustrialTechnology,
+                this::resetIndustrialTechnology))
         .put("superSub",
-            ofCast(a -> AttachmentProperty.of(
-                a::setSuperSub,
-                a::setSuperSub,
-                a::getSuperSub,
-                a::resetSuperSub)))
+            AttachmentProperty.of(
+                this::setSuperSub,
+                this::setSuperSub,
+                this::getSuperSub,
+                this::resetSuperSub))
         .put("destroyerBombard",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDestroyerBombard,
-                a::setDestroyerBombard,
-                a::getDestroyerBombard,
-                a::resetDestroyerBombard)))
+            AttachmentProperty.of(
+                this::setDestroyerBombard,
+                this::setDestroyerBombard,
+                this::getDestroyerBombard,
+                this::resetDestroyerBombard))
         .put("improvedArtillerySupport",
-            ofCast(a -> AttachmentProperty.of(
-                a::setImprovedArtillerySupport,
-                a::setImprovedArtillerySupport,
-                a::getImprovedArtillerySupport,
-                a::resetImprovedArtillerySupport)))
+            AttachmentProperty.of(
+                this::setImprovedArtillerySupport,
+                this::setImprovedArtillerySupport,
+                this::getImprovedArtillerySupport,
+                this::resetImprovedArtillerySupport))
         .put("paratroopers",
-            ofCast(a -> AttachmentProperty.of(
-                a::setParatroopers,
-                a::setParatroopers,
-                a::getParatroopers,
-                a::resetParatroopers)))
+            AttachmentProperty.of(
+                this::setParatroopers,
+                this::setParatroopers,
+                this::getParatroopers,
+                this::resetParatroopers))
         .put("increasedFactoryProduction",
-            ofCast(a -> AttachmentProperty.of(
-                a::setIncreasedFactoryProduction,
-                a::setIncreasedFactoryProduction,
-                a::getIncreasedFactoryProduction,
-                a::resetIncreasedFactoryProduction)))
+            AttachmentProperty.of(
+                this::setIncreasedFactoryProduction,
+                this::setIncreasedFactoryProduction,
+                this::getIncreasedFactoryProduction,
+                this::resetIncreasedFactoryProduction))
         .put("warBonds",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWarBonds,
-                a::setWarBonds,
-                a::getWarBonds,
-                a::resetWarBonds)))
+            AttachmentProperty.of(
+                this::setWarBonds,
+                this::setWarBonds,
+                this::getWarBonds,
+                this::resetWarBonds))
         .put("mechanizedInfantry",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMechanizedInfantry,
-                a::setMechanizedInfantry,
-                a::getMechanizedInfantry,
-                a::resetMechanizedInfantry)))
+            AttachmentProperty.of(
+                this::setMechanizedInfantry,
+                this::setMechanizedInfantry,
+                this::getMechanizedInfantry,
+                this::resetMechanizedInfantry))
         .put("aARadar",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAARadar,
-                a::setAARadar,
-                a::getAARadar,
-                a::resetAARadar)))
+            AttachmentProperty.of(
+                this::setAARadar,
+                this::setAARadar,
+                this::getAARadar,
+                this::resetAARadar))
         .put("shipyards",
-            ofCast(a -> AttachmentProperty.of(
-                a::setShipyards,
-                a::setShipyards,
-                a::getShipyards,
-                a::resetShipyards)))
+            AttachmentProperty.of(
+                this::setShipyards,
+                this::setShipyards,
+                this::getShipyards,
+                this::resetShipyards))
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<TechAttachment, AttachmentProperty<?>> function) {
-    return function.compose(TechAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

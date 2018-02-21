@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -16,7 +15,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -40,7 +38,6 @@ import games.strategy.util.IntegerMap;
 @MapSupport
 public class TechAbilityAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1866305599625384294L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   /**
    * Convenience method.
@@ -1352,162 +1349,157 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("attackBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttackBonus,
-                a::setAttackBonus,
-                a::getAttackBonus,
-                a::resetAttackBonus)))
+            AttachmentProperty.of(
+                this::setAttackBonus,
+                this::setAttackBonus,
+                this::getAttackBonus,
+                this::resetAttackBonus))
         .put("defenseBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDefenseBonus,
-                a::setDefenseBonus,
-                a::getDefenseBonus,
-                a::resetDefenseBonus)))
+            AttachmentProperty.of(
+                this::setDefenseBonus,
+                this::setDefenseBonus,
+                this::getDefenseBonus,
+                this::resetDefenseBonus))
         .put("movementBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMovementBonus,
-                a::setMovementBonus,
-                a::getMovementBonus,
-                a::resetMovementBonus)))
+            AttachmentProperty.of(
+                this::setMovementBonus,
+                this::setMovementBonus,
+                this::getMovementBonus,
+                this::resetMovementBonus))
         .put("radarBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRadarBonus,
-                a::setRadarBonus,
-                a::getRadarBonus,
-                a::resetRadarBonus)))
+            AttachmentProperty.of(
+                this::setRadarBonus,
+                this::setRadarBonus,
+                this::getRadarBonus,
+                this::resetRadarBonus))
         .put("airAttackBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirAttackBonus,
-                a::setAirAttackBonus,
-                a::getAirAttackBonus,
-                a::resetAirAttackBonus)))
+            AttachmentProperty.of(
+                this::setAirAttackBonus,
+                this::setAirAttackBonus,
+                this::getAirAttackBonus,
+                this::resetAirAttackBonus))
         .put("airDefenseBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirDefenseBonus,
-                a::setAirDefenseBonus,
-                a::getAirDefenseBonus,
-                a::resetAirDefenseBonus)))
+            AttachmentProperty.of(
+                this::setAirDefenseBonus,
+                this::setAirDefenseBonus,
+                this::getAirDefenseBonus,
+                this::resetAirDefenseBonus))
         .put("productionBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setProductionBonus,
-                a::setProductionBonus,
-                a::getProductionBonus,
-                a::resetProductionBonus)))
+            AttachmentProperty.of(
+                this::setProductionBonus,
+                this::setProductionBonus,
+                this::getProductionBonus,
+                this::resetProductionBonus))
         .put("minimumTerritoryValueForProductionBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setMinimumTerritoryValueForProductionBonus,
-                a::setMinimumTerritoryValueForProductionBonus,
-                a::getMinimumTerritoryValueForProductionBonus,
-                a::resetMinimumTerritoryValueForProductionBonus)))
+            AttachmentProperty.of(
+                this::setMinimumTerritoryValueForProductionBonus,
+                this::setMinimumTerritoryValueForProductionBonus,
+                this::getMinimumTerritoryValueForProductionBonus,
+                this::resetMinimumTerritoryValueForProductionBonus))
         .put("repairDiscount",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRepairDiscount,
-                a::setRepairDiscount,
-                a::getRepairDiscount,
-                a::resetRepairDiscount)))
+            AttachmentProperty.of(
+                this::setRepairDiscount,
+                this::setRepairDiscount,
+                this::getRepairDiscount,
+                this::resetRepairDiscount))
         .put("warBondDiceSides",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWarBondDiceSides,
-                a::setWarBondDiceSides,
-                a::getWarBondDiceSides,
-                a::resetWarBondDiceSides)))
+            AttachmentProperty.of(
+                this::setWarBondDiceSides,
+                this::setWarBondDiceSides,
+                this::getWarBondDiceSides,
+                this::resetWarBondDiceSides))
         .put("warBondDiceNumber",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWarBondDiceNumber,
-                a::setWarBondDiceNumber,
-                a::getWarBondDiceNumber,
-                a::resetWarBondDiceNumber)))
+            AttachmentProperty.of(
+                this::setWarBondDiceNumber,
+                this::setWarBondDiceNumber,
+                this::getWarBondDiceNumber,
+                this::resetWarBondDiceNumber))
         .put("rocketDiceNumber",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRocketDiceNumber,
-                a::setRocketDiceNumber,
-                a::getRocketDiceNumber,
-                a::resetRocketDiceNumber)))
+            AttachmentProperty.of(
+                this::setRocketDiceNumber,
+                this::setRocketDiceNumber,
+                this::getRocketDiceNumber,
+                this::resetRocketDiceNumber))
         .put("rocketDistance",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRocketDistance,
-                a::setRocketDistance,
-                a::getRocketDistance,
-                a::resetRocketDistance)))
+            AttachmentProperty.of(
+                this::setRocketDistance,
+                this::setRocketDistance,
+                this::getRocketDistance,
+                this::resetRocketDistance))
         .put("rocketNumberPerTerritory",
-            ofCast(a -> AttachmentProperty.of(
-                a::setRocketNumberPerTerritory,
-                a::setRocketNumberPerTerritory,
-                a::getRocketNumberPerTerritory,
-                a::resetRocketNumberPerTerritory)))
+            AttachmentProperty.of(
+                this::setRocketNumberPerTerritory,
+                this::setRocketNumberPerTerritory,
+                this::getRocketNumberPerTerritory,
+                this::resetRocketNumberPerTerritory))
         .put("unitAbilitiesGained",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitAbilitiesGained,
-                a::setUnitAbilitiesGained,
-                a::getUnitAbilitiesGained,
-                a::resetUnitAbilitiesGained)))
+            AttachmentProperty.of(
+                this::setUnitAbilitiesGained,
+                this::setUnitAbilitiesGained,
+                this::getUnitAbilitiesGained,
+                this::resetUnitAbilitiesGained))
         .put("airborneForces",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirborneForces,
-                a::setAirborneForces,
-                a::getAirborneForces,
-                a::resetAirborneForces)))
+            AttachmentProperty.of(
+                this::setAirborneForces,
+                this::setAirborneForces,
+                this::getAirborneForces,
+                this::resetAirborneForces))
         .put("airborneCapacity",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirborneCapacity,
-                a::setAirborneCapacity,
-                a::getAirborneCapacity,
-                a::resetAirborneCapacity)))
+            AttachmentProperty.of(
+                this::setAirborneCapacity,
+                this::setAirborneCapacity,
+                this::getAirborneCapacity,
+                this::resetAirborneCapacity))
         .put("airborneTypes",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirborneTypes,
-                a::setAirborneTypes,
-                a::getAirborneTypes,
-                a::resetAirborneTypes)))
+            AttachmentProperty.of(
+                this::setAirborneTypes,
+                this::setAirborneTypes,
+                this::getAirborneTypes,
+                this::resetAirborneTypes))
         .put("airborneDistance",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirborneDistance,
-                a::setAirborneDistance,
-                a::getAirborneDistance,
-                a::resetAirborneDistance)))
+            AttachmentProperty.of(
+                this::setAirborneDistance,
+                this::setAirborneDistance,
+                this::getAirborneDistance,
+                this::resetAirborneDistance))
         .put("airborneBases",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirborneBases,
-                a::setAirborneBases,
-                a::getAirborneBases,
-                a::resetAirborneBases)))
+            AttachmentProperty.of(
+                this::setAirborneBases,
+                this::setAirborneBases,
+                this::getAirborneBases,
+                this::resetAirborneBases))
         .put("airborneTargettedByAA",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAirborneTargettedByAA,
-                a::setAirborneTargettedByAA,
-                a::getAirborneTargettedByAA,
-                a::resetAirborneTargettedByAA)))
+            AttachmentProperty.of(
+                this::setAirborneTargettedByAA,
+                this::setAirborneTargettedByAA,
+                this::getAirborneTargettedByAA,
+                this::resetAirborneTargettedByAA))
         .put("attackRollsBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setAttackRollsBonus,
-                a::setAttackRollsBonus,
-                a::getAttackRollsBonus,
-                a::resetAttackRollsBonus)))
+            AttachmentProperty.of(
+                this::setAttackRollsBonus,
+                this::setAttackRollsBonus,
+                this::getAttackRollsBonus,
+                this::resetAttackRollsBonus))
         .put("defenseRollsBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDefenseRollsBonus,
-                a::setDefenseRollsBonus,
-                a::getDefenseRollsBonus,
-                a::resetDefenseRollsBonus)))
+            AttachmentProperty.of(
+                this::setDefenseRollsBonus,
+                this::setDefenseRollsBonus,
+                this::getDefenseRollsBonus,
+                this::resetDefenseRollsBonus))
         .put("bombingBonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBombingBonus,
-                a::setBombingBonus,
-                a::getBombingBonus,
-                a::resetBombingBonus)))
+            AttachmentProperty.of(
+                this::setBombingBonus,
+                this::setBombingBonus,
+                this::getBombingBonus,
+                this::resetBombingBonus))
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<TechAbilityAttachment, AttachmentProperty<?>> function) {
-    return function.compose(TechAbilityAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

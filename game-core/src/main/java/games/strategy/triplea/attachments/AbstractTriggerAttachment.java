@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableMap;
@@ -14,7 +13,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -28,7 +26,6 @@ import games.strategy.util.Tuple;
 
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 5866039180681962697L;
-  protected static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
@@ -312,46 +309,42 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     }
   }
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("uses",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUses,
-                a::setUses,
-                a::getUses,
-                a::resetUses)))
+            AttachmentProperty.of(
+                this::setUses,
+                this::setUses,
+                this::getUses,
+                this::resetUses))
         .put("usedThisRound",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUsedThisRound,
-                a::setUsedThisRound,
-                a::getUsedThisRound,
-                a::resetUsedThisRound)))
+            AttachmentProperty.of(
+                this::setUsedThisRound,
+                this::setUsedThisRound,
+                this::getUsedThisRound,
+                this::resetUsedThisRound))
         .put("notification",
-            ofCast(a -> AttachmentProperty.of(
-                a::setNotification,
-                a::setNotification,
-                a::getNotification,
-                a::resetNotification)))
+            AttachmentProperty.of(
+                this::setNotification,
+                this::setNotification,
+                this::getNotification,
+                this::resetNotification))
         .put("when",
-            ofCast(a -> AttachmentProperty.of(
-                a::setWhen,
-                a::setWhen,
-                a::getWhen,
-                a::resetWhen)))
+            AttachmentProperty.of(
+                this::setWhen,
+                this::setWhen,
+                this::getWhen,
+                this::resetWhen))
         .put("trigger",
-            ofCast(a -> AttachmentProperty.of(
+            AttachmentProperty.of(
                 l -> {
                   throw new IllegalStateException("Can't set trigger directly");
                 },
-                a::setTrigger,
-                a::getTrigger,
-                a::resetTrigger)))
-        .putAll(AbstractConditionsAttachment.propertyMap)
+                this::setTrigger,
+                this::getTrigger,
+                this::resetTrigger))
+        .putAll(super.createPropertyMap())
         .build();
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<AbstractTriggerAttachment, AttachmentProperty<?>> function) {
-    return function.compose(AbstractTriggerAttachment.class::cast);
   }
 }

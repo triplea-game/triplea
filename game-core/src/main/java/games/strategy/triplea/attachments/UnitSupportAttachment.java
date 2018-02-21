@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -18,7 +17,6 @@ import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -29,7 +27,6 @@ import games.strategy.triplea.MapSupport;
 @MapSupport
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
-  private static final Map<String, Function<IAttachment, AttachmentProperty<?>>> propertyMap = createPropertyMap();
 
   private Set<UnitType> m_unitType = null;
   @InternalDoNotExport
@@ -424,81 +421,70 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private static Map<String, Function<IAttachment, AttachmentProperty<?>>> createPropertyMap() {
-    return ImmutableMap.<String, Function<IAttachment, AttachmentProperty<?>>>builder()
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("unitType",
-            ofCast(a -> AttachmentProperty.of(
-                a::setUnitType,
-                a::setUnitType,
-                a::getUnitType,
-                a::resetUnitType)))
-        .put("offence",
-            ofCast(a -> AttachmentProperty.of(a::getOffence)))
-        .put("defence",
-            ofCast(a -> AttachmentProperty.of(a::getDefence)))
-        .put("roll",
-            ofCast(a -> AttachmentProperty.of(a::getRoll)))
-        .put("strength",
-            ofCast(a -> AttachmentProperty.of(a::getStrength)))
+            AttachmentProperty.of(
+                this::setUnitType,
+                this::setUnitType,
+                this::getUnitType,
+                this::resetUnitType))
+        .put("offence", AttachmentProperty.of(this::getOffence))
+        .put("defence", AttachmentProperty.of(this::getDefence))
+        .put("roll", AttachmentProperty.of(this::getRoll))
+        .put("strength", AttachmentProperty.of(this::getStrength))
         .put("bonus",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBonus,
-                a::setBonus,
-                a::getBonus,
-                a::resetBonus)))
+            AttachmentProperty.of(
+                this::setBonus,
+                this::setBonus,
+                this::getBonus,
+                this::resetBonus))
         .put("number",
-            ofCast(a -> AttachmentProperty.of(
-                a::setNumber,
-                a::setNumber,
-                a::getNumber,
-                a::resetNumber)))
-        .put("allied",
-            ofCast(a -> AttachmentProperty.of(a::getAllied)))
-        .put("enemy",
-            ofCast(a -> AttachmentProperty.of(a::getEnemy)))
+            AttachmentProperty.of(
+                this::setNumber,
+                this::setNumber,
+                this::getNumber,
+                this::resetNumber))
+        .put("allied", AttachmentProperty.of(this::getAllied))
+        .put("enemy", AttachmentProperty.of(this::getEnemy))
         .put("bonusType",
-            ofCast(a -> AttachmentProperty.of(
-                a::setBonusType,
-                a::setBonusType,
-                a::getBonusType,
-                a::resetBonusType)))
+            AttachmentProperty.of(
+                this::setBonusType,
+                this::setBonusType,
+                this::getBonusType,
+                this::resetBonusType))
         .put("players",
-            ofCast(a -> AttachmentProperty.of(
-                a::setPlayers,
-                a::setPlayers,
-                a::getPlayers,
-                a::resetPlayers)))
+            AttachmentProperty.of(
+                this::setPlayers,
+                this::setPlayers,
+                this::getPlayers,
+                this::resetPlayers))
         .put("impArtTech",
-            ofCast(a -> AttachmentProperty.of(
-                a::setImpArtTech,
-                a::setImpArtTech,
-                a::getImpArtTech,
-                a::resetImpArtTech)))
+            AttachmentProperty.of(
+                this::setImpArtTech,
+                this::setImpArtTech,
+                this::getImpArtTech,
+                this::resetImpArtTech))
         .put("dice",
-            ofCast(a -> AttachmentProperty.of(
-                a::setDice,
-                a::getDice,
-                a::resetDice)))
+            AttachmentProperty.of(
+                this::setDice,
+                this::getDice,
+                this::resetDice))
         .put("side",
-            ofCast(a -> AttachmentProperty.of(
-                a::setSide,
-                a::getSide,
-                a::resetSide)))
+            AttachmentProperty.of(
+                this::setSide,
+                this::getSide,
+                this::resetSide))
         .put("faction",
-            ofCast(a -> AttachmentProperty.of(
-                a::setFaction,
-                a::getFaction,
-                a::resetFaction)))
+            AttachmentProperty.of(
+                this::setFaction,
+                this::getFaction,
+                this::resetFaction))
         .build();
   }
 
   @Override
-  public Map<String, Function<IAttachment, AttachmentProperty<?>>> getPropertyMap() {
-    return propertyMap;
-  }
-
-  private static Function<IAttachment, AttachmentProperty<?>> ofCast(
-      final Function<UnitSupportAttachment, AttachmentProperty<?>> function) {
-    return function.compose(UnitSupportAttachment.class::cast);
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }
