@@ -188,9 +188,8 @@ public class UnifiedMessenger {
   }
 
   public void removeImplementor(final String name, final Object implementor) {
-    final EndPoint endPoint;
     synchronized (endPointMutex) {
-      endPoint = localEndPoints.get(name);
+      final EndPoint endPoint = localEndPoints.get(name);
       if (endPoint == null) {
         throw new IllegalStateException("No end point for:" + name);
       }

@@ -164,9 +164,8 @@ public abstract class TechAdvance extends NamedAttachable {
       throw new IllegalArgumentException(s + " is not a valid technology");
     }
     final TechAdvance ta;
-    final Constructor<? extends TechAdvance> constructor;
     try {
-      constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
+      final Constructor<? extends TechAdvance> constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
       ta = constructor.newInstance(data);
     } catch (final Exception e) {
       throw new IllegalStateException(s + " is not a valid technology or could not be instantiated", e);
@@ -190,8 +189,8 @@ public abstract class TechAdvance extends NamedAttachable {
    * @return first is air&naval, second is land&production.
    */
   private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data) {
-    List<TechAdvance> allAdvances;
     data.acquireReadLock();
+    List<TechAdvance> allAdvances;
     try {
       allAdvances = new ArrayList<>(data.getTechnologyFrontier().getTechs());
     } finally {

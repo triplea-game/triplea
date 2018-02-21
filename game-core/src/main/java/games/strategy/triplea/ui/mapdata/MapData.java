@@ -238,11 +238,10 @@ public class MapData implements Closeable {
   }
 
   private Optional<Image> loadTerritoryNameImage(final String imageName) {
-    Optional<Image> img;
     try {
       // try first file names that have underscores instead of spaces
       final String normalizedName = imageName.replace(' ', '_');
-      img = loadImage(constructTerritoryNameImagePath(normalizedName));
+      Optional<Image> img = loadImage(constructTerritoryNameImagePath(normalizedName));
       if (!img.isPresent()) {
         img = loadImage(constructTerritoryNameImagePath(imageName));
       }
@@ -414,10 +413,10 @@ public class MapData implements Closeable {
   private void initializeContains() {
     contains = new HashMap<>();
     for (final String seaTerritory : getTerritories()) {
-      final List<String> contained = new ArrayList<>();
       if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
         continue;
       }
+      final List<String> contained = new ArrayList<>();
       for (final String landTerritory : getTerritories()) {
         if (Util.isTerritoryNameIndicatingWater(landTerritory)) {
           continue;
@@ -439,9 +438,8 @@ public class MapData implements Closeable {
   }
 
   public Color getColorProperty(final String propertiesKey) throws IllegalStateException {
-    final String colorString;
     if (mapProperties.getProperty(propertiesKey) != null) {
-      colorString = mapProperties.getProperty(propertiesKey);
+      final String colorString = mapProperties.getProperty(propertiesKey);
       if (colorString.length() != 6) {
         throw new IllegalStateException("Colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
       }
@@ -460,9 +458,9 @@ public class MapData implements Closeable {
       return playerColors.get(playerName);
     }
     // look in map.properties
-    final String propertiesKey = PROPERTY_COLOR_PREFIX + playerName;
     Color color;
     try {
+      final String propertiesKey = PROPERTY_COLOR_PREFIX + playerName;
       color = getColorProperty(propertiesKey);
     } catch (final Exception e) {
       throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");

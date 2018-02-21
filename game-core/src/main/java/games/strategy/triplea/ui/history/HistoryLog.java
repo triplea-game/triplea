@@ -81,14 +81,12 @@ public class HistoryLog extends JFrame {
 
   public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerID> playersAllowed) {
     HistoryNode curNode = data.getHistory().getLastNode();
-    Step stepNode = null;
-    Step turnStartNode = null;
-    final PlayerID curPlayer;
     final Collection<PlayerID> players = new HashSet<>();
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
     }
     // find Step node, if exists in this path
+    Step stepNode = null;
     while (curNode != null) {
       if (curNode instanceof Step) {
         stepNode = (Step) curNode;
@@ -97,11 +95,12 @@ public class HistoryLog extends JFrame {
       curNode = (HistoryNode) curNode.getPreviousNode();
     }
     if (stepNode != null) {
-      curPlayer = stepNode.getPlayerId();
+      final PlayerID curPlayer = stepNode.getPlayerId();
       if (players.isEmpty()) {
         players.add(curPlayer);
       }
       // get first step for this turn
+      Step turnStartNode = null;
       while (true) {
         turnStartNode = stepNode;
         stepNode = (Step) stepNode.getPreviousSibling();

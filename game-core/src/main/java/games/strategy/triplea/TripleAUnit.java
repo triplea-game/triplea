@@ -423,7 +423,6 @@ public class TripleAUnit extends Unit {
     if (!Matches.unitCanProduceUnits().test(u)) {
       return 0;
     }
-    int productionCapacity;
     final UnitAttachment ua = UnitAttachment.get(u.getType());
     final TripleAUnit taUnit = (TripleAUnit) u;
     final TerritoryAttachment ta = TerritoryAttachment.get(producer);
@@ -433,6 +432,7 @@ public class TripleAUnit extends Unit {
       territoryProduction = ta.getProduction();
       territoryUnitProduction = ta.getUnitProduction();
     }
+    int productionCapacity;
     if (accountForDamage) {
       if (Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         if (ua.getCanProduceXUnits() < 0) {

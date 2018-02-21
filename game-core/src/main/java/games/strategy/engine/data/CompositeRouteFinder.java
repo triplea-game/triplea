@@ -40,7 +40,6 @@ public class CompositeRouteFinder {
         CollectionUtils.getMatches(map.getTerritories(), t -> matches.keySet().stream().anyMatch(p -> p.test(t))));
     final Map<Territory, Integer> terScoreMap = createScoreMap();
     final Map<Territory, Integer> routeScoreMap = new HashMap<>();
-    int bestRouteToEndScore = Integer.MAX_VALUE;
     final Map<Territory, Territory> previous = new HashMap<>();
     List<Territory> routeLeadersToProcess = new ArrayList<>();
     for (final Territory ter : map.getNeighbors(start, Matches.territoryIsInList(allMatchingTers))) {
@@ -49,6 +48,7 @@ public class CompositeRouteFinder {
       routeLeadersToProcess.add(ter);
       previous.put(ter, start);
     }
+    int bestRouteToEndScore = Integer.MAX_VALUE;
     while (routeLeadersToProcess.size() > 0) {
       final List<Territory> newLeaders = new ArrayList<>();
       for (final Territory oldLeader : routeLeadersToProcess) {

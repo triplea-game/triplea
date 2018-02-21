@@ -678,9 +678,8 @@ public class PolygonGrabber extends JFrame {
                 + "and removing any anti-aliasing.");
         return null;
       }
-      int tempDirection;
       for (int i = 2; i >= -3; i--) { // was -4
-        tempDirection = (currentDirection + i) % 8;
+        int tempDirection = (currentDirection + i) % 8;
         if (tempDirection < 0) {
           tempDirection += 8;
         }

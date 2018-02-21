@@ -667,11 +667,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(final Territory t, final GameData data) {
-    final Set<Territory> territories = new HashSet<>();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null || !ta.getConvoyRoute()) {
       return null;
     }
+    final Set<Territory> territories = new HashSet<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment cta = TerritoryAttachment.get(current);
       if (cta == null || !cta.getConvoyRoute()) {

@@ -31,9 +31,9 @@ public class DiceImageFactory {
   private final Map<Integer, Image> imagesIgnored = new HashMap<>();
 
   public DiceImageFactory(final ResourceLoader loader, final int diceSides) {
-    final int pipSize = 6;
     this.diceSides = Math.max(6, diceSides);
     resourceLoader = loader;
+    final int pipSize = 6;
     generateDice(pipSize, Color.black, images);
     generateDice(pipSize, Color.red, imagesHit);
     generateDice(pipSize, IGNORED, imagesIgnored);

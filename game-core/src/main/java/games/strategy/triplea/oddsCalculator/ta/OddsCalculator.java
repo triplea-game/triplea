@@ -320,7 +320,6 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     if (ool == null || ool.trim().length() == 0) {
       return null;
     }
-    final List<Tuple<Integer, UnitType>> map = new ArrayList<>();
     final String[] sections;
     if (ool.contains(OOL_SEPARATOR)) {
       sections = ool.trim().split(OOL_SEPARATOR_REGEX);
@@ -328,6 +327,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       sections = new String[1];
       sections[0] = ool.trim();
     }
+    final List<Tuple<Integer, UnitType>> map = new ArrayList<>();
     for (final String section : sections) {
       if (section.length() == 0) {
         continue;

@@ -109,8 +109,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("attackBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -158,8 +157,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("defenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -207,8 +205,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("movementBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -256,8 +253,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("radarBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -305,8 +301,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("airAttackBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -354,8 +349,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("airDefenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -403,8 +397,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("productionBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -600,8 +593,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length != 2) {
       throw new GameParseException("rocketDiceNumber must have two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -730,8 +722,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
       throw new GameParseException(
           "unitAbilitiesGained must list the unit type, then all abilities gained" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[0];
+    final String unitType = s[0];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -817,8 +808,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("airborneCapacity cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -1054,8 +1044,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("attackRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -1103,8 +1092,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("defenseRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {
@@ -1144,8 +1132,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("bombingBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitType;
-    unitType = s[1];
+    final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
     if (ut == null) {

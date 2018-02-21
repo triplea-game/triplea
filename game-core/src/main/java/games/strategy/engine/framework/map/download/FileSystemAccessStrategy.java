@@ -40,8 +40,6 @@ class FileSystemAccessStrategy {
   private static Runnable createRemoveMapAction(final List<DownloadFileDescription> maps,
       final DefaultListModel<String> listModel) {
     return () -> {
-      final List<DownloadFileDescription> fails = new ArrayList<>();
-      final List<DownloadFileDescription> deletes = new ArrayList<>();
 
       // delete the map files
       for (final DownloadFileDescription map : maps) {
@@ -57,6 +55,8 @@ class FileSystemAccessStrategy {
       Interruptibles.sleep(10);
 
       // check our work, see if we actuall deleted stuff
+      final List<DownloadFileDescription> deletes = new ArrayList<>();
+      final List<DownloadFileDescription> fails = new ArrayList<>();
       for (final DownloadFileDescription map : maps) {
         if (map.getInstallLocation().exists()) {
           fails.add(map);

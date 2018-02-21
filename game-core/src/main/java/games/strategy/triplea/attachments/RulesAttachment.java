@@ -557,10 +557,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       return;
     }
     final String[] s = players.split(":");
-    int count = -1;
     if (s.length < 1) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
     }
+    int count = -1;
     try {
       count = getInt(s[0]);
       m_atWarCount = count;
@@ -600,10 +600,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       return;
     }
     final String[] s = newTechs.split(":");
-    int count = -1;
     if (s.length < 1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
     }
+    int count = -1;
     try {
       count = getInt(s[0]);
       m_techCount = count;
@@ -926,12 +926,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    */
   private boolean checkUnitPresence(final Collection<Territory> territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
-    int numberMet = 0;
-    boolean satisfied = false;
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
+    boolean satisfied = false;
+    int numberMet = 0;
     for (final Territory terr : territories) {
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("direct")) {
@@ -994,13 +994,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    */
   private boolean checkUnitExclusions(final Collection<Territory> territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
-    int numberMet = 0;
-    boolean satisfied = false;
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
     // Go through the owned territories and see if there are any units owned by allied/enemy based on exclType
+    boolean satisfied = false;
+    int numberMet = 0;
     for (final Territory terr : territories) {
       // get all the units in the territory
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());

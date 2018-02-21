@@ -23,8 +23,8 @@ public class PlayerOrderComparator implements Comparator<PlayerID> {
     if (p1.equals(p2)) {
       return 0;
     }
-    final GameSequence sequence;
     gameData.acquireReadLock();
+    final GameSequence sequence;
     try {
       sequence = gameData.getSequence();
     } finally {
@@ -34,8 +34,8 @@ public class PlayerOrderComparator implements Comparator<PlayerID> {
       if (s.getPlayerId() == null) {
         continue;
       }
-      final IDelegate delegate;
       gameData.acquireReadLock();
+      final IDelegate delegate;
       try {
         delegate = s.getDelegate();
       } finally {

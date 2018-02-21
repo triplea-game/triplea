@@ -46,8 +46,8 @@ public class TuvUtils {
    * @return a map of unit types to PU cost
    */
   public static IntegerMap<UnitType> getCostsForTuv(final PlayerID player, final GameData data) {
-    final Resource pus;
     data.acquireReadLock();
+    final Resource pus;
     try {
       pus = data.getResourceList().getResource(Constants.PUS);
     } finally {
@@ -97,8 +97,8 @@ public class TuvUtils {
    * Therefore, this map should NOT be used for Purchasing information!
    */
   private static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
-    final Resource pus;
     data.acquireReadLock();
+    final Resource pus;
     try {
       pus = data.getResourceList().getResource(Constants.PUS);
     } finally {

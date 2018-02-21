@@ -24,8 +24,7 @@ public class SelectGameWindow {
   public static Runnable openSelectGameWindow(final LaunchScreen previousScreen, final StagingScreen stagingScreen) {
     return () -> {
       try {
-        final GameChooserEntry entry;
-        entry = GameChooser.chooseGame(
+        final GameChooserEntry entry = GameChooser.chooseGame(
             JOptionPane.getFrameForComponent(null),
             ClientSetting.SELECTED_GAME_LOCATION.value());
         if (entry != null) {

@@ -323,11 +323,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       setTerritoryCount(String.valueOf(allTerrs.size()));
       return allTerrs;
     } else { // The list just contained 1 territory
-      final Set<Territory> terr = new HashSet<>();
       final Territory t = data.getMap().getTerritory(name);
       if (t == null) {
         throw new IllegalStateException("No territory called:" + name + thisErrorMsg());
       }
+      final Set<Territory> terr = new HashSet<>();
       terr.add(t);
       setTerritoryCount(String.valueOf(1));
       return terr;

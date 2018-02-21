@@ -139,7 +139,6 @@ public class ObjectivePanel extends AbstractStatPanel {
           FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
       final List<String> sectionsSorters = new ArrayList<>();
-      final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
       // do sections first
       for (final Entry<Object, Object> entry : op.entrySet()) {
         final String fileKey = (String) entry.getKey();
@@ -166,6 +165,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         sectionsUnsorted.put(key[1], Arrays.asList(value.split(";")));
       }
       Collections.sort(sectionsSorters);
+      final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
       for (final String section : sectionsSorters) {
         final String key = section.split(";")[1];
         sections.put(key, sectionsUnsorted.get(key));

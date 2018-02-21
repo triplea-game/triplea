@@ -198,7 +198,6 @@ public class RocketsFireHelper {
         Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate()));
     final Collection<Unit> enemyTargetsTotal =
         CollectionUtils.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).negate());
-    final Collection<Unit> targets = new ArrayList<>();
     final Collection<Unit> rockets;
     // attackFrom could be null if WW2V1
     if (attackFrom == null) {
@@ -212,7 +211,7 @@ public class RocketsFireHelper {
     if (numberOfAttacks <= 0) {
       return;
     }
-    final String transcript;
+    final Collection<Unit> targets = new ArrayList<>();
     if (damageFromBombingDoneToUnits) {
       // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc
       // etc.
@@ -248,6 +247,7 @@ public class RocketsFireHelper {
     final boolean doNotUseBombingBonus =
         !Properties.getUseBombingMaxDiceSidesAndBonus(data) || rockets == null;
     int cost = 0;
+    final String transcript;
     if (!Properties.getLowLuckDamageOnly(data)) {
       if (doNotUseBombingBonus || rockets == null) {
         // no low luck, and no bonus, so just roll based on the map's dice sides

@@ -112,8 +112,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   @Override
   public Collection<PoliticalActionAttachment> getValidActions() {
     final GameData data = bridge.getData();
-    final HashMap<ICondition, Boolean> testedConditions;
     data.acquireReadLock();
+    final HashMap<ICondition, Boolean> testedConditions;
     try {
       testedConditions = getTestedConditions();
     } finally {

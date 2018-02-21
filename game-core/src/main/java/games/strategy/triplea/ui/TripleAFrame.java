@@ -380,8 +380,8 @@ public class TripleAFrame extends MainGameFrame {
         notesPanel.removeNotes();
       }
       if (pane.getComponentAt(sel).equals(editPanel)) {
-        final PlayerID player1;
         data.acquireReadLock();
+        final PlayerID player1;
         try {
           player1 = data.getSequence().getStep().getPlayerId();
         } finally {

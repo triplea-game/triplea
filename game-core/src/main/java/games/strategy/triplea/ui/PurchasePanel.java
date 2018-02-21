@@ -155,8 +155,8 @@ public class PurchasePanel extends ActionPanel {
     // give a warning if the
     // player tries to produce too much
     if (isWW2V2() || isRestrictedPurchase()) {
-      int totalProd = 0;
       getData().acquireReadLock();
+      int totalProd = 0;
       try {
         for (final Territory t : CollectionUtils.getMatches(getData().getMap().getTerritories(),
             Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getCurrentPlayer()))) {

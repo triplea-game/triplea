@@ -112,10 +112,10 @@ public class Chat {
   }
 
   private static LinkedHashSet<String> getTagText(final Tag tag) {
-    final LinkedHashSet<String> tagText = new LinkedHashSet<>();
     if (tag == Tag.NONE) {
       return null;
     }
+    final LinkedHashSet<String> tagText = new LinkedHashSet<>();
     if (tag == Tag.MODERATOR) {
       tagText.add(TAG_MODERATOR);
     }

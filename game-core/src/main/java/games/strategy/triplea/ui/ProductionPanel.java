@@ -145,10 +145,10 @@ public class ProductionPanel extends JPanel {
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
     final int availHeight = screenResolution.height - 80;
     final int availWidth = screenResolution.width - 30;
-    final int availHeightRules = availHeight - 116;
-    final int availWidthRules = availWidth - 16;
     final JScrollPane scroll = new JScrollPane(panel);
     scroll.setBorder(BorderFactory.createEmptyBorder());
+    final int availWidthRules = availWidth - 16;
+    final int availHeightRules = availHeight - 116;
     scroll
         .setPreferredSize(
             new Dimension(

@@ -571,9 +571,7 @@ public class BattleCalculator {
   }
 
   private static List<Unit> killAmphibiousFirst(final List<Unit> killed, final Collection<Unit> targets) {
-    final Collection<Unit> allAmphibUnits = new ArrayList<>();
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
-    final Collection<UnitType> amphibTypes = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
     final Predicate<Unit> match = Matches.unitIsLand().and(Matches.unitWasNotAmphibious());
     killedNonAmphibUnits.addAll(CollectionUtils.getMatches(killed, match));
@@ -582,9 +580,11 @@ public class BattleCalculator {
       return killed;
     }
     // Get a list of all units that are amphibious and remove those that are killed
+    final Collection<Unit> allAmphibUnits = new ArrayList<>();
     allAmphibUnits.addAll(CollectionUtils.getMatches(targets, Matches.unitWasAmphibious()));
     allAmphibUnits.removeAll(CollectionUtils.getMatches(killed, Matches.unitWasAmphibious()));
     // Get a collection of the unit types of the amphib units
+    final Collection<UnitType> amphibTypes = new ArrayList<>();
     for (final Unit unit : allAmphibUnits) {
       final UnitType ut = unit.getType();
       if (!amphibTypes.contains(ut)) {
@@ -719,7 +719,6 @@ public class BattleCalculator {
     Collections.reverse(sortedUnitsList);
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =
         new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, true);
-    final List<Unit> sortedWellEnoughUnitsList = new ArrayList<>();
     final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap = new HashMap<>();
     final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap = new HashMap<>();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(
@@ -727,6 +726,7 @@ public class BattleCalculator {
         territoryEffects, amphibious, amphibiousLandAttackers, unitSupportPowerMap, unitSupportRollsMap);
     // Sort units starting with weakest for finding the worst units
     Collections.reverse(sortedUnitsList);
+    final List<Unit> sortedWellEnoughUnitsList = new ArrayList<>();
     for (int i = 0; i < sortedUnitsList.size(); ++i) {
       // Loop through all target units to find the best unit to take as casualty
       Unit worstUnit = null;

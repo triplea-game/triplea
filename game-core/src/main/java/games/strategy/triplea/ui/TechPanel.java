@@ -179,7 +179,6 @@ public class TechPanel extends ActionPanel {
     final TechnologyFrontier category = list.getSelectedValue();
 
     final int pus = currentPlayer.getResources().getQuantity(Constants.PUS);
-    final String message = "Purchase Tech Tokens";
     // see if anyone will help us to pay
     Collection<PlayerID> helpPay;
     final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
@@ -189,6 +188,7 @@ public class TechPanel extends ActionPanel {
       helpPay = null;
     }
     final TechTokenPanel techTokenPanel = new TechTokenPanel(pus, currTokens, currentPlayer, helpPay);
+    final String message = "Purchase Tech Tokens";
     final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message,
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
     if (choice != JOptionPane.OK_OPTION) {
