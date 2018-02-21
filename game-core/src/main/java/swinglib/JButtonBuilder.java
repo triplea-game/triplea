@@ -24,7 +24,6 @@ public class JButtonBuilder {
   private String title;
   private String toolTip;
   private Runnable actionListener;
-  private final boolean visible = true;
   private boolean enabled = false;
   private boolean selected = false;
   private int biggerFont = 0;
@@ -49,7 +48,6 @@ public class JButtonBuilder {
       button.setToolTipText(toolTip);
     }
     button.addActionListener(e -> actionListener.run());
-    button.setVisible(visible);
     button.setEnabled(enabled);
 
     if (biggerFont > 0) {
