@@ -10,15 +10,6 @@ import games.strategy.engine.framework.system.SystemProperties;
 public class FileSave {
   private File file = null;
 
-  /**
-   * Creates a file selection dialog starting at the current working directory. The user will specify what directory or
-   * folder they want
-   * their files to be saved in.
-   */
-  public FileSave(final String title, final String name) {
-    this(title, name, new File(SystemProperties.getUserDir()));
-  }
-
   public FileSave(final String title, final String name, final File currentDirectory) {
     this(title, name, currentDirectory, JFileChooser.DIRECTORIES_ONLY, null, new FileFilter() {
       @Override

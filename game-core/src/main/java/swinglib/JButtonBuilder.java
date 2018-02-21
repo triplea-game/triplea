@@ -24,7 +24,6 @@ public class JButtonBuilder {
   private String title;
   private String toolTip;
   private Runnable actionListener;
-  private boolean visible = true;
   private boolean enabled = false;
   private boolean selected = false;
   private int biggerFont = 0;
@@ -49,7 +48,6 @@ public class JButtonBuilder {
       button.setToolTipText(toolTip);
     }
     button.addActionListener(e -> actionListener.run());
-    button.setVisible(visible);
     button.setEnabled(enabled);
 
     if (biggerFont > 0) {
@@ -122,17 +120,6 @@ public class JButtonBuilder {
   public JButtonBuilder actionListener(final Runnable actionListener) {
     this.actionListener = checkNotNull(actionListener);
     enabled = true;
-    return this;
-  }
-
-
-
-  /**
-   * Toggles whether the button is visible on screen or not.
-   * TODO: does an invisible component take up space?
-   */
-  public JButtonBuilder visible(final boolean visible) {
-    this.visible = visible;
     return this;
   }
 
