@@ -86,9 +86,7 @@ public class PbemDiceRoller implements IRandomSource {
     for (final Frame frame : frames) {
       // find the window with focus, failing that, get something that is
       // visible
-      if (frame.isFocused()) {
-        focusedFrame = frame;
-      } else if (focusedFrame == null && frame.isVisible()) {
+      if (frame.isFocused() || focusedFrame == null && frame.isVisible()) {
         focusedFrame = frame;
       }
     }

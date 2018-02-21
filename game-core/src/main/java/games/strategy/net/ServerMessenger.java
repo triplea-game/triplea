@@ -299,10 +299,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     if (msg.getMessage() instanceof HubInvoke) { // Chat messages are always HubInvoke's
       if (isLobby() && ((HubInvoke) msg.getMessage()).call.getRemoteName().equals("_ChatCtrl_LOBBY_CHAT")) {
         final String realName = msg.getFrom().getName().split(" ")[0];
-        if (isUsernameMuted(realName)) {
-          bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
-          return;
-        } else if (isMacMuted(getPlayerMac(msg.getFrom().getName()))) {
+        if (isUsernameMuted(realName) || isMacMuted(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
         }

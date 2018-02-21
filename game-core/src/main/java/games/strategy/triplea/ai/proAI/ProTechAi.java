@@ -290,9 +290,8 @@ final class ProTechAi {
     if (units.isEmpty()) {
       return strength;
     }
-    if (attacking && units.stream().noneMatch(Matches.unitHasAttackValueOfAtLeast(1))) {
-      return strength;
-    } else if (!attacking && units.stream().noneMatch(Matches.unitHasDefendValueOfAtLeast(1))) {
+    if (attacking && units.stream().noneMatch(Matches.unitHasAttackValueOfAtLeast(1)) || !attacking && units.stream()
+        .noneMatch(Matches.unitHasDefendValueOfAtLeast(1))) {
       return strength;
     }
     for (final Unit u : units) {
@@ -495,9 +494,8 @@ final class ProTechAi {
       }
     }
     for (final Unit u : unitDistance.keySet()) {
-      if (lz != null && Matches.unitHasEnoughMovementForRoute(checked).test(u)) {
-        units.add(u);
-      } else if (ac != null && Matches.unitCanLandOnCarrier().test(u)
+      if (lz != null && Matches.unitHasEnoughMovementForRoute(checked).test(u) || ac != null && Matches
+          .unitCanLandOnCarrier().test(u)
           && Matches.unitHasEnoughMovementForRoute(checked).test(u)) {
         units.add(u);
       }
