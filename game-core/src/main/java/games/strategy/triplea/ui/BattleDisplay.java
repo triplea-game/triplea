@@ -72,6 +72,7 @@ import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 import games.strategy.util.CollectionUtils;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 
 /**
@@ -281,15 +282,12 @@ public class BattleDisplay extends JPanel {
 
     try {
       // wait for the button to be pressed.
-      continueLatch.await();
-    } catch (final InterruptedException ie) {
-      Thread.currentThread().interrupt();
+      Interruptibles.await(continueLatch);
     } finally {
       mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
   }
-
 
   void endBattle(final String message, final Window enclosingFrame) {
     steps.walkToLastStep();
@@ -340,9 +338,7 @@ public class BattleDisplay extends JPanel {
     SwingUtilities.invokeLater(() -> action.actionPerformed(null));
     mapPanel.getUiContext().addShutdownLatch(latch);
     try {
-      latch.await();
-    } catch (final InterruptedException e1) {
-      Thread.currentThread().interrupt();
+      Interruptibles.await(latch);
     } finally {
       mapPanel.getUiContext().removeShutdownLatch(latch);
     }
@@ -398,9 +394,7 @@ public class BattleDisplay extends JPanel {
     SwingUtilities.invokeLater(() -> action.actionPerformed(null));
     mapPanel.getUiContext().addShutdownLatch(latch);
     try {
-      latch.await();
-    } catch (final InterruptedException e1) {
-      Thread.currentThread().interrupt();
+      Interruptibles.await(latch);
     } finally {
       mapPanel.getUiContext().removeShutdownLatch(latch);
     }
@@ -525,9 +519,7 @@ public class BattleDisplay extends JPanel {
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
     try {
-      continueLatch.await();
-    } catch (final InterruptedException ex) {
-      Thread.currentThread().interrupt();
+      Interruptibles.await(continueLatch);
     } finally {
       mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     }

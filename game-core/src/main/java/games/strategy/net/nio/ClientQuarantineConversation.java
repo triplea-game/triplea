@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
+import games.strategy.util.Interruptibles;
 
 /**
  * Client-side implementation of {@link QuarantineConversation}.
@@ -71,18 +72,13 @@ public class ClientQuarantineConversation extends QuarantineConversation {
    * Prompts the user to enter their credentials.
    */
   public void showCredentials() {
-    /*
-     * We need to do this in the thread that created the socket, since
-     * the thread that creates the socket will often be, or will block the
-     * swing event thread, but the getting of a username/password
-     * must be done in the swing event thread.
-     * So we have complex code to switch back and forth.
-     */
-    try {
-      showLatch.await();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    // We need to do this in the thread that created the socket, since
+    // the thread that creates the socket will often be, or will block the
+    // swing event thread, but the getting of a username/password
+    // must be done in the swing event thread.
+    // So we have complex code to switch back and forth.
+    Interruptibles.await(showLatch);
+
     if (login != null && challengeProperties != null) {
       try {
         if (isClosed) {
@@ -106,11 +102,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           if (challenge != null) {
             challengeProperties = challenge;
             showLatch.countDown();
-            try {
-              doneShowLatch.await();
-            } catch (final InterruptedException e) {
-              Thread.currentThread().interrupt();
-            }
+            Interruptibles.await(doneShowLatch);
             if (isClosed) {
               return Action.NONE;
             }

@@ -3,6 +3,7 @@ package games.strategy.util;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -41,6 +42,20 @@ public final class Interruptibles {
       runnable.run();
       return null;
     }).completed;
+  }
+
+  /**
+   * Causes the current thread to wait for the specified latch to count down to zero or until the thread is interrupted.
+   *
+   * @param latch The latch to await.
+   *
+   * @return {@code true} if the latch counted down to zero; otherwise {@code false} if the current thread was
+   *         interrupted before the latch counted down to zero.
+   */
+  public static boolean await(final CountDownLatch latch) {
+    checkNotNull(latch);
+
+    return await(() -> latch.await());
   }
 
   /**
