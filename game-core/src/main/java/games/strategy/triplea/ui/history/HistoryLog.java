@@ -278,7 +278,8 @@ public class HistoryLog extends JFrame {
                 } else if (title.startsWith("Battle casualty summary:")) {
                   // logWriter.println(indent+"CAS1: "+title);
                   logWriter.println(
-                      indent + conquerStr.toString() + ". Battle score " + title.substring(title.indexOf("for attacker is")));
+                      indent + conquerStr.toString() + ". Battle score "
+                          + title.substring(title.indexOf("for attacker is")));
                   conquerStr = new StringBuilder();
                   // separate units by player and show casualty summary
                   final IntegerMap<PlayerID> unitCount = new IntegerMap<>();
