@@ -105,9 +105,7 @@ public class GameStepPropertiesHelper {
         return Boolean.parseBoolean(prop);
       } else if (isNonCombatDelegate(data)) {
         return true;
-      } else if (isCombatDelegate(data)) {
-        return false;
-      } else if (doNotThrowErrorIfNotMoveDelegate) {
+      } else if (isCombatDelegate(data) || doNotThrowErrorIfNotMoveDelegate) {
         return false;
       } else {
         throw new IllegalStateException("Cannot determine combat or not: " + data.getSequence().getStep().getName());

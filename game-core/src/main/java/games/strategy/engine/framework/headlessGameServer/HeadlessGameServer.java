@@ -652,11 +652,8 @@ public class HeadlessGameServer {
    */
   public Chat getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
-    if (model instanceof ServerSetupPanel) {
-      return model.getChatPanel().getChat();
-    } else if (model instanceof ClientSetupPanel) {
-      return model.getChatPanel().getChat();
-    } else if (model instanceof HeadlessServerSetup) {
+    if (model instanceof ServerSetupPanel || model instanceof ClientSetupPanel
+        || model instanceof HeadlessServerSetup) {
       return model.getChatPanel().getChat();
     } else {
       return null;
