@@ -1,8 +1,10 @@
 package games.strategy.triplea.printgenerator;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,7 +31,7 @@ class UnitInformation {
     data = printData.getData();
     printData.getOutDir().mkdir();
     final File outFile = new File(printData.getOutDir(), "General Information.csv");
-    try (FileWriter unitInformation = new FileWriter(outFile)) {
+    try (Writer unitInformation = Files.newBufferedWriter(outFile.toPath(), StandardCharsets.UTF_8)) {
       for (int i = 0; i < 8; i++) {
         unitInformation.write(",");
       }

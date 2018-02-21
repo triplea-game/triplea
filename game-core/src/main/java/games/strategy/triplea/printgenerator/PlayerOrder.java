@@ -1,9 +1,11 @@
 package games.strategy.triplea.printgenerator;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -47,7 +49,10 @@ class PlayerOrder {
     }
     printData.getOutDir().mkdir();
     final File outFile = new File(printData.getOutDir(), "General Information.csv");
-    try (Writer turnWriter = new FileWriter(outFile, true)) {
+    try (Writer turnWriter = Files.newBufferedWriter(
+        outFile.toPath(),
+        StandardCharsets.UTF_8,
+        StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
       turnWriter.write("Turn Order\r\n");
       int count = 1;
       for (final PlayerID currentPlayerId : removeDups(playerSet)) {
