@@ -1047,11 +1047,7 @@ public class TripleAFrame extends MainGameFrame {
         tabsPanel.setSelectedIndex(0);
         latch1.countDown();
       });
-      try {
-        latch1.await();
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      Interruptibles.await(latch1);
     }
     actionButtons.changeToPickTerritoryAndUnits(player);
     final Tuple<Territory, Set<Unit>> territoryAndUnits =
@@ -1066,11 +1062,7 @@ public class TripleAFrame extends MainGameFrame {
         }
         latch2.countDown();
       });
-      try {
-        latch2.await();
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      Interruptibles.await(latch2);
     }
     if (actionButtons != null && actionButtons.getCurrent() != null) {
       actionButtons.getCurrent().setActive(false);
@@ -1150,13 +1142,8 @@ public class TripleAFrame extends MainGameFrame {
       });
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    try {
-      continueLatch.await();
-    } catch (final InterruptedException ex) {
-      Thread.currentThread().interrupt();
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
-    }
+    Interruptibles.await(continueLatch);
+    mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
   }
 
@@ -1239,13 +1226,8 @@ public class TripleAFrame extends MainGameFrame {
       });
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    try {
-      continueLatch.await();
-    } catch (final InterruptedException ex) {
-      Thread.currentThread().interrupt();
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
-    }
+    Interruptibles.await(continueLatch);
+    mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
   }
 
@@ -1315,13 +1297,8 @@ public class TripleAFrame extends MainGameFrame {
       });
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    try {
-      continueLatch.await();
-    } catch (final InterruptedException ex) {
-      Thread.currentThread().interrupt();
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
-    }
+    Interruptibles.await(continueLatch);
+    mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
   }
 

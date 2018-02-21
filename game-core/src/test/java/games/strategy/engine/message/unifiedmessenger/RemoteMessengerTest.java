@@ -269,12 +269,8 @@ public class RemoteMessengerTest {
       final IFoo foo = new IFoo() {
         @Override
         public void foo() {
-          try {
-            started.set(true);
-            latch.await();
-          } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-          }
+          started.set(true);
+          Interruptibles.await(latch);
         }
       };
       clientRemoteMessenger.registerRemote(foo, test);

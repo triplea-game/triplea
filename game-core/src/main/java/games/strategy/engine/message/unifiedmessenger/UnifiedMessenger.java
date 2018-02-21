@@ -28,6 +28,7 @@ import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
+import games.strategy.util.Interruptibles;
 
 /**
  * A messenger general enough that both Channel and Remote messenger can be
@@ -121,11 +122,7 @@ public class UnifiedMessenger {
     final Invoke invoke = new HubInvoke(methodCallId, true, remoteCall);
     send(invoke, messenger.getServerNode());
 
-    try {
-      latch.await();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    Interruptibles.await(latch);
 
     synchronized (pendingLock) {
       final RemoteMethodCallResults methodCallResults = results.remove(methodCallId);

@@ -23,6 +23,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.util.CountUpAndDownLatch;
+import games.strategy.util.Interruptibles;
 
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up the run count
@@ -166,11 +167,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           }
           // the last one will use our already copied data from above, without copying it again
           workers.add(new OddsCalculator(newData, true));
-          try {
-            workerLatch.await();
-          } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-          }
+          Interruptibles.await(workerLatch);
         }
       } finally {
         newData.releaseReadLock();

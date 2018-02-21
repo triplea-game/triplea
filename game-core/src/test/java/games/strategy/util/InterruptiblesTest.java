@@ -3,9 +3,12 @@ package games.strategy.util;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.Mockito.verify;
 
+import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
@@ -88,6 +91,32 @@ public final class InterruptiblesTest {
       assertThrows(IllegalStateException.class, () -> Interruptibles.awaitResult(() -> {
         throw new IllegalStateException();
       }));
+    }
+  }
+
+  @Nested
+  public final class AwaitCountDownLatchTest {
+    @Test
+    public void shouldWaitUntilLatchCountIsZero() {
+      final CountDownLatch latch = new CountDownLatch(0);
+
+      assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> {
+        assertThat(Interruptibles.await(latch), is(true));
+      });
+    }
+  }
+
+  @Nested
+  public final class JoinTest {
+    @Test
+    public void shouldWaitUntilThreadIsDead() {
+      final Thread thread = new Thread(() -> {
+      });
+      thread.start();
+
+      assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> {
+        assertThat(Interruptibles.join(thread), is(true));
+      });
     }
   }
 

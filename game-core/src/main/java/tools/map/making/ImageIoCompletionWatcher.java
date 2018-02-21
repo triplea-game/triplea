@@ -4,6 +4,8 @@ import java.awt.Image;
 import java.awt.image.ImageObserver;
 import java.util.concurrent.CountDownLatch;
 
+import games.strategy.util.Interruptibles;
+
 /**
  * Code originally contributed by "Thomas Carvin".
  */
@@ -14,11 +16,7 @@ public class ImageIoCompletionWatcher implements ImageObserver {
   public ImageIoCompletionWatcher() {}
 
   public void waitForCompletion() {
-    try {
-      countDownLatch.await();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+    Interruptibles.await(countDownLatch);
   }
 
   @Override
