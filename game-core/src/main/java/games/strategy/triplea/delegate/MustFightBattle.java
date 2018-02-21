@@ -41,6 +41,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
 
@@ -2191,9 +2192,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       t.start();
       try {
         bridge.leaveDelegateExecution();
-        t.join();
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
+        Interruptibles.join(t);
       } finally {
         bridge.enterDelegateExecution();
       }

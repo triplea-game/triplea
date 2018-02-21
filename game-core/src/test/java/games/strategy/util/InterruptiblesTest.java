@@ -107,6 +107,20 @@ public final class InterruptiblesTest {
   }
 
   @Nested
+  public final class JoinTest {
+    @Test
+    public void shouldWaitUntilThreadIsDead() {
+      final Thread thread = new Thread(() -> {
+      });
+      thread.start();
+
+      assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> {
+        assertThat(Interruptibles.join(thread), is(true));
+      });
+    }
+  }
+
+  @Nested
   public final class SleepTest {
     @Test
     public void shouldThrowExceptionWhenMillisIsNegative() {

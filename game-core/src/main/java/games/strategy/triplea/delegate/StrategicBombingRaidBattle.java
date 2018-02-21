@@ -41,6 +41,7 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Interruptibles;
 
 public class StrategicBombingRaidBattle extends AbstractBattle implements BattleStepStrings {
   private static final long serialVersionUID = 8490171037606078890L;
@@ -518,9 +519,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     attacker.confirmOwnCasualties(m_battleID, "Press space to continue");
     try {
       bridge.leaveDelegateExecution();
-      t.join();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
+      Interruptibles.join(t);
     } finally {
       bridge.enterDelegateExecution();
     }

@@ -55,7 +55,7 @@ public final class Interruptibles {
   public static boolean await(final CountDownLatch latch) {
     checkNotNull(latch);
 
-    return await(() -> latch.await());
+    return await(latch::await);
   }
 
   /**
@@ -79,6 +79,20 @@ public final class Interruptibles {
       Thread.currentThread().interrupt();
       return new Result<>(false, Optional.empty());
     }
+  }
+
+  /**
+   * Waits for the specified thread to die.
+   *
+   * @param thread The thread to await.
+   *
+   * @return {@code true} if the thread died; otherwise {@code false} if the current thread was interrupted before the
+   *         thread died.
+   */
+  public static boolean join(final Thread thread) {
+    checkNotNull(thread);
+
+    return await(thread::join);
   }
 
   /**

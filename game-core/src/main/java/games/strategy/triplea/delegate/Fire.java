@@ -17,6 +17,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.util.CollectionUtils;
+import games.strategy.util.Interruptibles;
 
 public class Fire implements IExecutable {
 
@@ -187,9 +188,7 @@ public class Fire implements IExecutable {
     }
     try {
       bridge.leaveDelegateExecution();
-      t.join();
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
+      Interruptibles.join(t);
     } finally {
       bridge.enterDelegateExecution();
     }
