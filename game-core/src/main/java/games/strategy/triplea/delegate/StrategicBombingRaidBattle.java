@@ -517,12 +517,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     t.start();
     final ITripleAPlayer attacker = (ITripleAPlayer) bridge.getRemotePlayer(m_attacker);
     attacker.confirmOwnCasualties(m_battleID, "Press space to continue");
-    try {
-      bridge.leaveDelegateExecution();
-      Interruptibles.join(t);
-    } finally {
-      bridge.enterDelegateExecution();
-    }
+    bridge.leaveDelegateExecution();
+    Interruptibles.join(t);
+    bridge.enterDelegateExecution();
   }
 
   private void removeAaHits(final IDelegateBridge bridge, final CasualtyDetails casualties,

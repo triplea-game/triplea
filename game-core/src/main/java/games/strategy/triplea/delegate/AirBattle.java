@@ -732,12 +732,9 @@ public class AirBattle extends AbstractBattle {
     }, "Click to continue waiter");
     t.start();
     getRemote(hitPlayer, bridge).confirmOwnCasualties(battleId, "Press space to continue");
-    try {
-      bridge.leaveDelegateExecution();
-      Interruptibles.join(t);
-    } finally {
-      bridge.enterDelegateExecution();
-    }
+    bridge.leaveDelegateExecution();
+    Interruptibles.join(t);
+    bridge.enterDelegateExecution();
   }
 
   private void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge,

@@ -2190,12 +2190,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
       }, "click to continue waiter");
       t.start();
-      try {
-        bridge.leaveDelegateExecution();
-        Interruptibles.join(t);
-      } finally {
-        bridge.enterDelegateExecution();
-      }
+      bridge.leaveDelegateExecution();
+      Interruptibles.join(t);
+      bridge.enterDelegateExecution();
     }
   }
 

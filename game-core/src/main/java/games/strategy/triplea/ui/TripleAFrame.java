@@ -1142,11 +1142,8 @@ public class TripleAFrame extends MainGameFrame {
       });
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    try {
-      Interruptibles.await(continueLatch);
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
-    }
+    Interruptibles.await(continueLatch);
+    mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
   }
 
@@ -1229,11 +1226,8 @@ public class TripleAFrame extends MainGameFrame {
       });
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    try {
-      Interruptibles.await(continueLatch);
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
-    }
+    Interruptibles.await(continueLatch);
+    mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
   }
 
@@ -1303,11 +1297,8 @@ public class TripleAFrame extends MainGameFrame {
       });
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    try {
-      Interruptibles.await(continueLatch);
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
-    }
+    Interruptibles.await(continueLatch);
+    mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
   }
 

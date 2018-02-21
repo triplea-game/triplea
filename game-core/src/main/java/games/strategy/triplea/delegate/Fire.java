@@ -186,12 +186,9 @@ public class Fire implements IExecutable {
     if (m_confirmOwnCasualties) {
       AbstractBattle.getRemote(m_hitPlayer, bridge).confirmOwnCasualties(m_battleID, "Press space to continue");
     }
-    try {
-      bridge.leaveDelegateExecution();
-      Interruptibles.join(t);
-    } finally {
-      bridge.enterDelegateExecution();
-    }
+    bridge.leaveDelegateExecution();
+    Interruptibles.join(t);
+    bridge.enterDelegateExecution();
   }
 
   /**

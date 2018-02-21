@@ -280,12 +280,9 @@ public class BattleDisplay extends JPanel {
       }, maxWaitTime);
     }
 
-    try {
-      // wait for the button to be pressed.
-      Interruptibles.await(continueLatch);
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
-    }
+    // wait for the button to be pressed.
+    Interruptibles.await(continueLatch);
+    mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
   }
 
@@ -337,11 +334,8 @@ public class BattleDisplay extends JPanel {
     SwingUtilities.invokeLater(() -> actionButton.setAction(action));
     SwingUtilities.invokeLater(() -> action.actionPerformed(null));
     mapPanel.getUiContext().addShutdownLatch(latch);
-    try {
-      Interruptibles.await(latch);
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(latch);
-    }
+    Interruptibles.await(latch);
+    mapPanel.getUiContext().removeShutdownLatch(latch);
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
     return retreatTo[0];
   }
@@ -393,11 +387,8 @@ public class BattleDisplay extends JPanel {
     SwingUtilities.invokeLater(() -> actionButton.setAction(action));
     SwingUtilities.invokeLater(() -> action.actionPerformed(null));
     mapPanel.getUiContext().addShutdownLatch(latch);
-    try {
-      Interruptibles.await(latch);
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(latch);
-    }
+    Interruptibles.await(latch);
+    mapPanel.getUiContext().removeShutdownLatch(latch);
     SwingUtilities.invokeLater(() -> actionButton.setAction(nullAction));
     return retreatTo[0];
   }
@@ -518,11 +509,8 @@ public class BattleDisplay extends JPanel {
       });
     });
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
-    try {
-      Interruptibles.await(continueLatch);
-    } finally {
-      mapPanel.getUiContext().removeShutdownLatch(continueLatch);
-    }
+    Interruptibles.await(continueLatch);
+    mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return casualtyDetails.get();
   }
 
