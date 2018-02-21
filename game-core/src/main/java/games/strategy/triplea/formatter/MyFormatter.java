@@ -166,13 +166,9 @@ public class MyFormatter {
     if (listOfArrays == null) {
       return "null";
     }
-    String toText = "[";
-    for (final String[] s : listOfArrays) {
-      toText += Arrays.toString(s);
-      toText += ",";
-    }
-    toText += "]";
-    return toText;
+    return listOfArrays.stream()
+        .map(Arrays::toString)
+        .collect(Collectors.joining(",","[","]"));
   }
 
   public static String asDice(final DiceRoll roll) {

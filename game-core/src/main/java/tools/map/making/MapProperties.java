@@ -93,11 +93,11 @@ public class MapProperties {
   }
 
   private static String colorToHex(final Color color) {
-    String hexString = Integer.toHexString(color.getRGB() & 0x00FFFFFF);
+    final StringBuilder hexString = new StringBuilder(Integer.toHexString(color.getRGB() & 0x00FFFFFF));
     while (hexString.length() < 6) {
-      hexString = "0" + hexString;
+      hexString.insert(0, "0");
     }
-    return hexString;
+    return hexString.toString();
   }
 
   public double getUnitsScale() {

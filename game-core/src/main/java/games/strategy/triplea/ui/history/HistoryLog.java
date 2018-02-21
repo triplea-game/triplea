@@ -189,7 +189,7 @@ public class HistoryLog extends JFrame {
     final Map<String, Double> hitDifferentialMap = new HashMap<>();
     do {
       // keep track of conquered territory during combat
-      String conquerStr = "";
+      StringBuilder conquerStr = new StringBuilder();
       final Enumeration<?> nodeEnum = curNode.preorderEnumeration();
       while (nodeEnum.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
@@ -271,8 +271,9 @@ public class HistoryLog extends JFrame {
                 } else if (title.startsWith("Battle casualty summary:")) {
                   // logWriter.println(indent+"CAS1: "+title);
                   logWriter.println(
-                      indent + conquerStr + ". Battle score " + title.substring(title.indexOf("for attacker is")));
-                  conquerStr = "";
+                      indent + conquerStr.toString() + ". Battle score "
+                          + title.substring(title.indexOf("for attacker is")));
+                  conquerStr = new StringBuilder();
                   // separate units by player and show casualty summary
                   final IntegerMap<PlayerID> unitCount = new IntegerMap<>();
                   unitCount.add(unit.getOwner(), 1);
@@ -287,8 +288,8 @@ public class HistoryLog extends JFrame {
                 } else if (title.matches(".*? placed in .*") || title.matches(".* owned by the \\w+ retreated to .*")) {
                   logWriter.println(indent + title);
                 } else if (title.matches("\\w+ win")) {
-                  conquerStr =
-                      title + conquerStr + " with " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails) + " remaining";
+                  conquerStr = new StringBuilder(
+                      title + conquerStr + " with " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails) + " remaining");
                 } else {
                   logWriter.println(indent + title);
                 }
@@ -299,7 +300,7 @@ public class HistoryLog extends JFrame {
             } else {
               // empty collection of something
               if (title.matches("\\w+ win")) {
-                conquerStr = title + conquerStr + " with no units remaining";
+                conquerStr = new StringBuilder(title + conquerStr + " with no units remaining");
               } else {
                 // empty collection of unhandled objects
                 logWriter.println(indent + title);
@@ -332,7 +333,7 @@ public class HistoryLog extends JFrame {
                 final String str = moveList.remove(moveList.size() - 1);
                 moveList.add(str + "\n  " + indent + title.replaceAll(" takes ", " take "));
               } else {
-                conquerStr += title.replaceAll("^\\w+ takes ", ", taking ");
+                conquerStr.append(title.replaceAll("^\\w+ takes ", ", taking "));
               }
             } else if (title.matches("\\w+ spend \\d+ on tech rolls")) {
               logWriter.println(indent + title);

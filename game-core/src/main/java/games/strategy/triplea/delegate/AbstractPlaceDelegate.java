@@ -576,7 +576,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return canProduce(producers.iterator().next(), to, units, player);
     }
     final Collection<Territory> failingProducers = new ArrayList<>();
-    String error = "";
+    final StringBuilder error = new StringBuilder();
     for (final Territory producer : producers) {
       final String errorP = canProduce(producer, to, units, player);
       if (errorP != null) {
@@ -584,12 +584,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         // do not include the error for same territory, if water, because users do not want to see this error report for
         // 99.9% of games
         if (!(producer.equals(to) && producer.isWater())) {
-          error += ", " + errorP;
+          error.append(", ").append(errorP);
         }
       }
     }
     if (producers.size() == failingProducers.size()) {
-      return "Adjacent territories to " + to.getName() + " cannot produce, due to: \n " + error.replaceFirst(", ", "");
+      return "Adjacent territories to " + to.getName() + " cannot produce, due to: \n " + error.toString()
+          .replaceFirst(", ", "");
     }
     return null;
   }
