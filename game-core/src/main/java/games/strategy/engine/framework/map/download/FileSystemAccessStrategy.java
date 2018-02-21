@@ -99,10 +99,9 @@ class FileSystemAccessStrategy {
 
   private static void showDialog(final String message, final List<DownloadFileDescription> mapList,
       final Function<DownloadFileDescription, String> outputFunction) {
-    final StringBuilder sb = new StringBuilder("<html>" + message + "<br /> " + formatMapList(mapList, outputFunction));
-    sb.append("</html>");
 
-    SwingComponents.newMessageDialog(sb.toString());
+    SwingComponents.newMessageDialog(
+        "<html>" + message + "<br /> " + formatMapList(mapList, outputFunction) + "</html>");
   }
 
   private static String createDialogMessage(final String message, final List<DownloadFileDescription> mapList) {
