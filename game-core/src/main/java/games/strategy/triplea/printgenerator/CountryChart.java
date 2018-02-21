@@ -1,8 +1,11 @@
 package games.strategy.triplea.printgenerator;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,7 +46,10 @@ class CountryChart {
       availableUnits = gameData.getUnitTypeList().iterator();
     }
     final File outFile = new File(printData.getOutDir(), player.getName() + ".csv");
-    try (FileWriter countryFileWriter = new FileWriter(outFile, true)) {
+    try (Writer countryFileWriter = Files.newBufferedWriter(
+        outFile.toPath(),
+        StandardCharsets.UTF_8,
+        StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
       // Print Title
       final int numUnits = gameData.getUnitTypeList().size();
       for (int i = 0; i < numUnits / 2 - 1 + numUnits % 2; i++) {

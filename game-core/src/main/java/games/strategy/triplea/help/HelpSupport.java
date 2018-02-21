@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A class for loading help files from the data folder (merged with src at runtime).
@@ -12,7 +13,7 @@ public class HelpSupport {
   public static String loadHelp(final String fileName) {
     try {
       final InputStream is = HelpSupport.class.getResourceAsStream(fileName);
-      final BufferedReader br = new BufferedReader(new InputStreamReader(is));
+      final BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
       String line;
       final StringBuilder sb = new StringBuilder();
       while ((line = br.readLine()) != null) {

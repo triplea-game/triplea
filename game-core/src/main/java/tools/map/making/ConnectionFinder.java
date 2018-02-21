@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -188,9 +189,9 @@ public class ConnectionFinder {
       } else {
         try (OutputStream out = new FileOutputStream(fileName)) {
           if (territoryDefinitions != null) {
-            out.write(String.valueOf(territoryDefinitions).getBytes());
+            out.write(String.valueOf(territoryDefinitions).getBytes(StandardCharsets.UTF_8));
           }
-          out.write(String.valueOf(connectionsString).getBytes());
+          out.write(String.valueOf(connectionsString).getBytes(StandardCharsets.UTF_8));
         }
         ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
       }

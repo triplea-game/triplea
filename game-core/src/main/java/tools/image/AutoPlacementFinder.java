@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -97,7 +98,7 @@ public class AutoPlacementFinder {
           final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
           final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
           final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-          try (Scanner scanner = new Scanner(file)) {
+          try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
             while (scanner.hasNextLine()) {
               final String line = scanner.nextLine();
               if (line.contains(scaleProperty)) {
