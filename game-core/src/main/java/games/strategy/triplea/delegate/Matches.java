@@ -1471,8 +1471,8 @@ public final class Matches {
       final Map<Unit, Collection<Unit>> carrierMustMoveWith =
           MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer);
       if (carrierMustMoveWith != null) {
-        for (final Unit unit : carrierMustMoveWith.keySet()) {
-          if (carrierMustMoveWith.get(unit).contains(dependent)) {
+        for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : carrierMustMoveWith.entrySet()) {
+          if (unitCollectionEntry.getValue().contains(dependent)) {
             return true;
           }
         }

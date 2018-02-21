@@ -227,8 +227,8 @@ public class ProTerritory {
   }
 
   public void putAllAmphibAttackMap(final Map<Unit, List<Unit>> amphibAttackMap) {
-    for (final Unit u : amphibAttackMap.keySet()) {
-      putAmphibAttackMap(u, amphibAttackMap.get(u));
+    for (final Map.Entry<Unit, List<Unit>> unitListEntry : amphibAttackMap.entrySet()) {
+      putAmphibAttackMap(unitListEntry.getKey(), unitListEntry.getValue());
     }
   }
 

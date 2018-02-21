@@ -60,9 +60,9 @@ public class PlayerManager {
 
   public Set<String> getPlayedBy(final INode playerNode) {
     final Set<String> players = new HashSet<>();
-    for (final String player : playerMapping.keySet()) {
-      if (playerMapping.get(player).equals(playerNode)) {
-        players.add(player);
+    for (final Map.Entry<String, INode> stringINodeEntry : playerMapping.entrySet()) {
+      if (stringINodeEntry.getValue().equals(playerNode)) {
+        players.add(stringINodeEntry.getKey());
       }
     }
     return players;
@@ -81,9 +81,9 @@ public class PlayerManager {
   public PlayerID getRemoteOpponent(final INode localNode, final GameData data) {
     // find a local player
     PlayerID local = null;
-    for (final String player : playerMapping.keySet()) {
-      if (playerMapping.get(player).equals(localNode)) {
-        local = data.getPlayerList().getPlayerId(player);
+    for (final Map.Entry<String, INode> stringINodeEntry : playerMapping.entrySet()) {
+      if (stringINodeEntry.getValue().equals(localNode)) {
+        local = data.getPlayerList().getPlayerId(stringINodeEntry.getKey());
         break;
       }
     }

@@ -97,23 +97,24 @@ class ProPurchaseAi {
       ProLogger.debug("Factories that need repaired: " + unitsThatCanProduceNeedingRepair);
       final List<RepairRule> rrules = player.getRepairFrontier().getRules();
       for (final RepairRule rrule : rrules) {
-        for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet()) {
-          if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
+        for (final Map.Entry<Unit, Territory> unitTerritoryEntry : unitsThatCanProduceNeedingRepair.entrySet()) {
+          if (unitTerritoryEntry.getKey() == null || !(unitTerritoryEntry.getKey())
+              .getType().equals(rrule.getResults().keySet().iterator().next())) {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
-              .test(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
+              .test(unitTerritoryEntry.getValue())) {
             continue;
           }
-          final TripleAUnit taUnit = (TripleAUnit) fixUnit;
+          final TripleAUnit taUnit = (TripleAUnit) unitTerritoryEntry.getKey();
           final int diff = taUnit.getUnitDamage();
           if (diff > 0) {
             final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
             repairMap.add(rrule, diff);
             final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
-            repair.put(fixUnit, repairMap);
+            repair.put(unitTerritoryEntry.getKey(), repairMap);
             pusRemaining -= diff;
-            ProLogger.debug("Repairing factory=" + fixUnit + ", damage=" + diff + ", repairRule=" + rrule);
+            ProLogger.debug("Repairing factory=" + unitTerritoryEntry.getKey() + ", damage=" + diff + ", repairRule=" + rrule);
             purchaseDelegate.purchaseRepair(repair);
           }
         }
@@ -165,8 +166,9 @@ class ProPurchaseAi {
       ProLogger.info("Find strategic value for place territories");
       final Map<Territory, Double> territoryValueMap =
           ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), new ArrayList<>());
-      for (final Territory t : purchaseTerritories.keySet()) {
-        for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+      for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+          .entrySet()) {
+        for (final ProPlaceTerritory ppt : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
           ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
           ProLogger.debug(ppt.getTerritory() + ", strategicValue=" + territoryValueMap.get(ppt.getTerritory()));
         }
@@ -194,8 +196,9 @@ class ProPurchaseAi {
 
       // Check if no remaining PUs or no unit built this iteration
       int numUnits = 0;
-      for (final Territory t : purchaseTerritories.keySet()) {
-        numUnits += purchaseTerritories.get(t).getCanPlaceTerritories().get(0).getPlaceUnits().size();
+      for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+          .entrySet()) {
+        numUnits += territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories().get(0).getPlaceUnits().size();
       }
       if (resourceTracker.isEmpty() || numUnits == previousNumUnits) {
         break;
@@ -321,8 +324,9 @@ class ProPurchaseAi {
     if (purchaseTerritories != null) {
 
       // Place all units calculated during purchase phase (land then sea to reduce failed placements)
-      for (final Territory t : purchaseTerritories.keySet()) {
-        for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+      for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+          .entrySet()) {
+        for (final ProPlaceTerritory ppt : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
           if (!ppt.getTerritory().isWater()) {
             final Collection<Unit> myUnits = player.getUnits().getUnits();
             final List<Unit> unitsToPlace = new ArrayList<>();
@@ -339,8 +343,9 @@ class ProPurchaseAi {
           }
         }
       }
-      for (final Territory t : purchaseTerritories.keySet()) {
-        for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+      for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+          .entrySet()) {
+        for (final ProPlaceTerritory ppt : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
           if (ppt.getTerritory().isWater()) {
             final Collection<Unit> myUnits = player.getUnits().getUnits();
             final List<Unit> unitsToPlace = new ArrayList<>();
@@ -383,8 +388,9 @@ class ProPurchaseAi {
     ProLogger.info("Find strategic value for place territories");
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), new ArrayList<>());
-    for (final Territory t : placeNonConstructionTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : placeNonConstructionTerritories.get(t).getCanPlaceTerritories()) {
+    for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : placeNonConstructionTerritories
+        .entrySet()) {
+      for (final ProPlaceTerritory ppt : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
         ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
         ProLogger.debug(ppt.getTerritory() + ", strategicValue=" + territoryValueMap.get(ppt.getTerritory()));
       }
@@ -893,9 +899,12 @@ class ProPurchaseAi {
 
     // Only try to purchase a factory if all production was used in prioritized land territories
     for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
-      for (final Territory t : purchaseTerritories.keySet()) {
-        if (placeTerritory.getTerritory().equals(t) && purchaseTerritories.get(t).getRemainingUnitProduction() > 0) {
-          ProLogger.debug("Not purchasing a factory since remaining land production in " + t);
+      for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+          .entrySet()) {
+        if (placeTerritory.getTerritory().equals(territoryProPurchaseTerritoryEntry.getKey()) && territoryProPurchaseTerritoryEntry
+            .getValue().getRemainingUnitProduction() > 0) {
+          ProLogger.debug("Not purchasing a factory since remaining land production in " + territoryProPurchaseTerritoryEntry
+              .getKey());
           return;
         }
       }
@@ -1788,8 +1797,9 @@ class ProPurchaseAi {
     final IntegerMap<ProductionRule> purchaseMap = new IntegerMap<>();
     for (final ProPurchaseOption ppo : purchaseOptions.getAllOptions()) {
       int numUnits = 0;
-      for (final Territory t : purchaseTerritories.keySet()) {
-        for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+      for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+          .entrySet()) {
+        for (final ProPlaceTerritory ppt : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
           for (final Unit u : ppt.getPlaceUnits()) {
             if (u.getType().equals(ppo.getUnitType()) && !unplacedUnits.contains(u)) {
               numUnits++;
@@ -1917,15 +1927,16 @@ class ProPurchaseAi {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     // Add units to place territory
-    for (final Territory purchaseTerritory : purchaseTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories()) {
+    for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+        .entrySet()) {
+      for (final ProPlaceTerritory ppt : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
 
         // If place territory is equal to the current place territory and has remaining production
-        if (placeTerritory.equals(ppt) && purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction() > 0) {
+        if (placeTerritory.equals(ppt) && territoryProPurchaseTerritoryEntry.getValue().getRemainingUnitProduction() > 0) {
 
           // Place max number of units
           final int numUnits =
-              Math.min(purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction(), unitsToPlace.size());
+              Math.min(territoryProPurchaseTerritoryEntry.getValue().getRemainingUnitProduction(), unitsToPlace.size());
           final List<Unit> units = unitsToPlace.subList(0, numUnits);
           ppt.getPlaceUnits().addAll(units);
           units.clear();
@@ -1938,8 +1949,9 @@ class ProPurchaseAi {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     // Add units to place territory
-    for (final Territory purchaseTerritory : purchaseTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories()) {
+    for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+        .entrySet()) {
+      for (final ProPlaceTerritory ppt : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
 
         // If place territory is equal to the current place territory
         if (placeTerritory.equals(ppt)) {
@@ -1952,10 +1964,11 @@ class ProPurchaseAi {
   private static List<ProPurchaseTerritory> getPurchaseTerritories(final ProPlaceTerritory placeTerritory,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
     final List<ProPurchaseTerritory> territories = new ArrayList<>();
-    for (final Territory t : purchaseTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+    for (final Map.Entry<Territory, ProPurchaseTerritory> territoryProPurchaseTerritoryEntry : purchaseTerritories
+        .entrySet()) {
+      for (final ProPlaceTerritory ppt : territoryProPurchaseTerritoryEntry.getValue().getCanPlaceTerritories()) {
         if (placeTerritory.equals(ppt)) {
-          territories.add(purchaseTerritories.get(t));
+          territories.add(territoryProPurchaseTerritoryEntry.getValue());
         }
       }
     }

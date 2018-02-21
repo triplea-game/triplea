@@ -388,21 +388,22 @@ public class MovePerformer implements Serializable {
     // load the transports
     if (route.isLoad() || paratroopsLanding) {
       // mark transports as having transported
-      for (final Unit load : transporting.keySet()) {
-        final Unit transport = transporting.get(load);
-        if (!TransportTracker.transporting(transport).contains(load)) {
-          final Change change = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
+      for (final Entry<Unit, Unit> unitUnitEntry : transporting.entrySet()) {
+        final Unit transport = unitUnitEntry.getValue();
+        if (!TransportTracker.transporting(transport).contains(unitUnitEntry.getKey())) {
+          final Change change = TransportTracker.loadTransportChange((TripleAUnit) transport,
+              unitUnitEntry.getKey());
           m_currentMove.addChange(change);
           m_currentMove.load(transport);
           bridge.addChange(change);
         }
       }
       if (transporting.isEmpty()) {
-        for (final Unit airTransport : dependentAirTransportableUnits.keySet()) {
-          for (final Unit unit : dependentAirTransportableUnits.get(airTransport)) {
-            final Change change = TransportTracker.loadTransportChange((TripleAUnit) airTransport, unit);
+        for (final Entry<Unit, Collection<Unit>> unitCollectionEntry : dependentAirTransportableUnits.entrySet()) {
+          for (final Unit unit : unitCollectionEntry.getValue()) {
+            final Change change = TransportTracker.loadTransportChange((TripleAUnit) unitCollectionEntry.getKey(), unit);
             m_currentMove.addChange(change);
-            m_currentMove.load(airTransport);
+            m_currentMove.load(unitCollectionEntry.getKey());
             bridge.addChange(change);
           }
         }
@@ -415,8 +416,8 @@ public class MovePerformer implements Serializable {
       // if there are multiple units on a single transport, the transport will be in units list multiple times
       if (transporting.isEmpty()) {
         units.addAll(dependentAirTransportableUnits.keySet());
-        for (final Unit airTransport : dependentAirTransportableUnits.keySet()) {
-          units.addAll(dependentAirTransportableUnits.get(airTransport));
+        for (final Entry<Unit, Collection<Unit>> unitCollectionEntry : dependentAirTransportableUnits.entrySet()) {
+          units.addAll(unitCollectionEntry.getValue());
         }
       }
       // any pending battles in the unloading zone?

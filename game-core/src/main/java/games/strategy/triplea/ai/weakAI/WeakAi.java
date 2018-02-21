@@ -860,12 +860,13 @@ public class WeakAi extends AbstractAi {
       int i = 0;
       while (currentProduction < maxUnits && i < 2) {
         for (final RepairRule rrule : repairRules) {
-          for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet()) {
-            if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
+          for (final Map.Entry<Unit, Territory> unitTerritoryEntry : unitsThatCanProduceNeedingRepair.entrySet()) {
+            if (unitTerritoryEntry.getKey() == null || !(unitTerritoryEntry.getKey())
+                .getType().equals(rrule.getResults().keySet().iterator().next())) {
               continue;
             }
             if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(player, Matches.unitCanProduceUnitsAndCanBeDamaged())
-                .test(unitsThatCanProduceNeedingRepair.get(fixUnit))) {
+                .test(unitTerritoryEntry.getValue())) {
               continue;
             }
             // we will repair the first territories in the list as much as we can, until we fulfill the condition, then
@@ -874,10 +875,11 @@ public class WeakAi extends AbstractAi {
             if (currentProduction >= maxUnits) {
               continue;
             }
-            final TripleAUnit taUnit = (TripleAUnit) fixUnit;
+            final TripleAUnit taUnit = (TripleAUnit) unitTerritoryEntry.getKey();
             diff = taUnit.getUnitDamage();
-            final int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(fixUnit,
-                unitsThatCanProduceNeedingRepair.get(fixUnit), player, data, false, true) - diff;
+            final int unitProductionAllowNegative = TripleAUnit.getHowMuchCanUnitProduce(
+                unitTerritoryEntry.getKey(),
+                unitTerritoryEntry.getValue(), player, data, false, true) - diff;
             if (i == 0) {
               if (unitProductionAllowNegative < 0) {
                 diff = Math.min(diff, (maxUnits - currentProduction) - unitProductionAllowNegative);
@@ -893,7 +895,7 @@ public class WeakAi extends AbstractAi {
                 currentProduction += diff + unitProductionAllowNegative;
               }
               repairMap.add(rrule, diff);
-              repair.put(fixUnit, repairMap);
+              repair.put(unitTerritoryEntry.getKey(), repairMap);
               leftToSpend -= diff;
               purchaseDelegate.purchaseRepair(repair);
               repair.clear();

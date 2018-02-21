@@ -53,8 +53,8 @@ class LobbyGameTableModel extends AbstractTableModel {
 
     final Map<GUID, GameDescription> games =
         ((ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE)).listGames();
-    for (final GUID id : games.keySet()) {
-      updateGame(id, games.get(id));
+    for (final Map.Entry<GUID, GameDescription> guidGameDescriptionEntry : games.entrySet()) {
+      updateGame(guidGameDescriptionEntry.getKey(), guidGameDescriptionEntry.getValue());
     }
   }
 

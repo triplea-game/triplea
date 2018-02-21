@@ -196,10 +196,12 @@ public class TileManager {
         }
         // add the decorations
         final Map<Image, List<Point>> decorations = mapData.getDecorations();
-        for (final Image img : decorations.keySet()) {
-          for (final Point p : decorations.get(img)) {
-            final DecoratorDrawable drawable = new DecoratorDrawable(p, img);
-            final Rectangle bounds = new Rectangle(p.x, p.y, img.getWidth(null), img.getHeight(null));
+        for (final Map.Entry<Image, List<Point>> imageListEntry : decorations.entrySet()) {
+          for (final Point p : imageListEntry.getValue()) {
+            final DecoratorDrawable drawable = new DecoratorDrawable(p, imageListEntry.getKey());
+            final Rectangle bounds = new Rectangle(p.x, p.y, (imageListEntry.getKey()).getWidth(null), (imageListEntry
+                .getKey())
+                .getHeight(null));
             for (final Tile t : getTiles(bounds)) {
               t.addDrawable(drawable);
             }

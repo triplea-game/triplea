@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -65,12 +64,12 @@ public class ClientSetupPanel extends SetupPanel {
       disableable.clear();
     }
     playerRows = new ArrayList<>();
-    final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
-    for (final String name : playerNames) {
-      final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name),
-          IGameLoader.CLIENT_PLAYER_TYPE, enabledPlayers.get(name));
+    for (final Map.Entry<String, Collection<String>> stringCollectionEntry : playerNamesAndAlliancesInTurnOrder
+        .entrySet()) {
+      final PlayerRow playerRow = new PlayerRow(stringCollectionEntry.getKey(), stringCollectionEntry.getValue(),
+          IGameLoader.CLIENT_PLAYER_TYPE, enabledPlayers.get(stringCollectionEntry.getKey()));
       playerRows.add(playerRow);
-      playerRow.update(players.get(name), disableable.contains(name));
+      playerRow.update(players.get(stringCollectionEntry.getKey()), disableable.contains(stringCollectionEntry.getKey()));
     }
     layoutComponents();
   }

@@ -253,23 +253,23 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Predicate<Unit> ownedAndCanBombard = Matches.unitCanBombard(attacker).and(Matches.unitIsOwnedBy(attacker));
     final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
     final boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(getData());
-    for (final Territory t : adjBombardment.keySet()) {
-      if (!battleTracker.hasPendingBattle(t, false)) {
-        Collection<IBattle> battles = adjBombardment.get(t);
+    for (final Entry<Territory, Collection<IBattle>> territoryCollectionEntry : adjBombardment.entrySet()) {
+      if (!battleTracker.hasPendingBattle(territoryCollectionEntry.getKey(), false)) {
+        Collection<IBattle> battles = territoryCollectionEntry.getValue();
         battles = CollectionUtils.getMatches(battles, Matches.battleIsAmphibious());
         if (!battles.isEmpty()) {
-          final Collection<Unit> bombardUnits = t.getUnits().getMatches(ownedAndCanBombard);
+          final Collection<Unit> bombardUnits = (territoryCollectionEntry.getKey()).getUnits().getMatches(ownedAndCanBombard);
           final List<Unit> listedBombardUnits = new ArrayList<>();
           listedBombardUnits.addAll(bombardUnits);
           sortUnitsToBombard(listedBombardUnits, attacker);
           if (!bombardUnits.isEmpty()) {
             // ask if they want to bombard
-            if (!remotePlayer.selectShoreBombard(t)) {
+            if (!remotePlayer.selectShoreBombard(territoryCollectionEntry.getKey())) {
               continue;
             }
           }
           for (final Unit u : listedBombardUnits) {
-            final IBattle battle = selectBombardingBattle(u, t, battles);
+            final IBattle battle = selectBombardingBattle(u, territoryCollectionEntry.getKey(), battles);
             if (battle != null) {
               if (shoreBombardPerGroundUnitRestricted) {
                 if (battle.getAmphibiousLandAttackers().size() <= battle.getBombardingUnits().size()) {
@@ -684,21 +684,21 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final Map<Tuple<Territory, PlayerID>, Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> scramblersByTerritoryPlayer =
         new HashMap<>();
-    for (final Territory to : scrambleTerrs.keySet()) {
+    for (final Entry<Territory, Set<Territory>> territorySetEntry : scrambleTerrs.entrySet()) {
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers = new HashMap<>();
       // find who we should ask
       PlayerID defender = null;
-      if (battleTracker.hasPendingBattle(to, false)) {
-        defender = AbstractBattle.findDefender(to, player, data);
+      if (battleTracker.hasPendingBattle(territorySetEntry.getKey(), false)) {
+        defender = AbstractBattle.findDefender(territorySetEntry.getKey(), player, data);
       }
-      for (final Territory from : scrambleTerrs.get(to)) {
+      for (final Territory from : territorySetEntry.getValue()) {
         if (defender == null) {
           defender = AbstractBattle.findDefender(from, player, data);
         }
         // find how many is the max this territory can scramble
         final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
-        final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
+        final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, territorySetEntry.getKey(), Matches.territoryIsNotImpassable());
         final Collection<Unit> canScrambleAir = from.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)
             .and(Matches.unitCanScramble())
             .and(Matches.unitIsNotDisabled())
@@ -711,22 +711,22 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       if (defender == null || scramblers.isEmpty()) {
         continue;
       }
-      final Tuple<Territory, PlayerID> terrPlayer = Tuple.of(to, defender);
+      final Tuple<Territory, PlayerID> terrPlayer = Tuple.of(territorySetEntry.getKey(), defender);
       final Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>> tempScrambleList =
           scramblersByTerritoryPlayer.getOrDefault(terrPlayer, new ArrayList<>());
       tempScrambleList.add(scramblers);
       scramblersByTerritoryPlayer.put(terrPlayer, tempScrambleList);
     }
     // now scramble them
-    for (final Tuple<Territory, PlayerID> terrPlayer : scramblersByTerritoryPlayer.keySet()) {
-      final Territory to = terrPlayer.getFirst();
-      final PlayerID defender = terrPlayer.getSecond();
+    for (final Entry<Tuple<Territory, PlayerID>, Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> tupleCollectionEntry : scramblersByTerritoryPlayer
+        .entrySet()) {
+      final Territory to = (tupleCollectionEntry.getKey()).getFirst();
+      final PlayerID defender = (tupleCollectionEntry.getKey()).getSecond();
       if (defender == null || defender.isNull()) {
         continue;
       }
       boolean scrambledHere = false;
-      for (final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer
-          .get(terrPlayer)) {
+      for (final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers : tupleCollectionEntry.getValue()) {
         // verify that we didn't already scramble any of these units
         final Iterator<Territory> territoryIter = scramblers.keySet().iterator();
         while (territoryIter.hasNext()) {
@@ -748,23 +748,26 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (!scramblers.keySet().containsAll(toScramble.keySet())) {
           throw new IllegalStateException("Trying to scramble from illegal territory");
         }
-        for (final Territory t : scramblers.keySet()) {
-          if (toScramble.get(t) == null) {
+        for (final Entry<Territory, Tuple<Collection<Unit>, Collection<Unit>>> territoryTupleEntry : scramblers
+            .entrySet()) {
+          if (toScramble.get(territoryTupleEntry.getKey()) == null) {
             continue;
           }
-          if (toScramble.get(t).size() > getMaxScrambleCount(scramblers.get(t).getFirst())) {
-            throw new IllegalStateException("Trying to scramble " + toScramble.get(t).size() + " out of " + t.getName()
-                + ", but max allowed is " + scramblers.get(t).getFirst());
+          if (toScramble.get(territoryTupleEntry.getKey()).size() > getMaxScrambleCount(territoryTupleEntry.getValue().getFirst())) {
+            throw new IllegalStateException("Trying to scramble " + toScramble.get(
+                territoryTupleEntry.getKey()).size() + " out of " + (territoryTupleEntry
+                .getKey()).getName()
+                + ", but max allowed is " + territoryTupleEntry.getValue().getFirst());
           }
         }
         final CompositeChange change = new CompositeChange();
-        for (final Territory t : toScramble.keySet()) {
-          final Collection<Unit> scrambling = toScramble.get(t);
+        for (final Entry<Territory, Collection<Unit>> territoryCollectionEntry : toScramble.entrySet()) {
+          final Collection<Unit> scrambling = territoryCollectionEntry.getValue();
           if (scrambling == null || scrambling.isEmpty()) {
             continue;
           }
           int numberScrambled = scrambling.size();
-          final Collection<Unit> airbases = t.getUnits().getMatches(airbasesCanScramble);
+          final Collection<Unit> airbases = (territoryCollectionEntry.getKey()).getUnits().getMatches(airbasesCanScramble);
           final int maxCanScramble = getMaxScrambleCount(airbases);
           if (maxCanScramble != Integer.MAX_VALUE) {
             // TODO: maybe sort from biggest to smallest first?
@@ -787,13 +790,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             }
           }
           for (final Unit u : scrambling) {
-            change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
+            change.add(ChangeFactory.unitPropertyChange(u, territoryCollectionEntry.getKey(), TripleAUnit.ORIGINATED_FROM));
             change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
           }
           // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
-          change.add(ChangeFactory.moveUnits(t, to, scrambling));
+          change.add(ChangeFactory.moveUnits(territoryCollectionEntry.getKey(), to, scrambling));
           bridge.getHistoryWriter().startEvent(defender.getName() + " scrambles " + scrambling.size()
-              + " units out of " + t.getName() + " to defend against the attack in " + to.getName(), scrambling);
+              + " units out of " + (territoryCollectionEntry.getKey()).getName() + " to defend against the attack in " + to.getName(), scrambling);
           scrambledHere = true;
         }
         if (!change.isEmpty()) {

@@ -216,10 +216,10 @@ public class CenterPicker extends JFrame {
       public void paint(final Graphics g) {
         g.drawImage(image, 0, 0, this);
         g.setColor(Color.red);
-        for (final String centerName : centers.keySet()) {
-          final Point item = centers.get(centerName);
+        for (final Entry<String, Point> stringPointEntry : centers.entrySet()) {
+          final Point item = stringPointEntry.getValue();
           g.fillOval(item.x, item.y, 15, 15);
-          g.drawString(centerName, item.x + 17, item.y + 13);
+          g.drawString(stringPointEntry.getKey(), item.x + 17, item.y + 13);
         }
       }
     };

@@ -789,8 +789,8 @@ public class BattleTracker implements Serializable {
         final Map<String, Tuple<String, IntegerMap<UnitType>>> map =
             UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
         final PlayerID currentOwner = u.getOwner();
-        for (final String value : map.keySet()) {
-          final String[] s = value.split(":");
+        for (final Map.Entry<String, Tuple<String, IntegerMap<UnitType>>> stringTupleEntry : map.entrySet()) {
+          final String[] s = (stringTupleEntry.getKey()).split(":");
           if (!(s[0].equals("any") || data.getPlayerList().getPlayerId(s[0]).equals(currentOwner))) {
             continue;
           }
@@ -800,7 +800,7 @@ public class BattleTracker implements Serializable {
           }
           final CompositeChange changes = new CompositeChange();
           final Collection<Unit> toAdd = new ArrayList<>();
-          final Tuple<String, IntegerMap<UnitType>> toCreate = map.get(value);
+          final Tuple<String, IntegerMap<UnitType>> toCreate = stringTupleEntry.getValue();
           final boolean translateAttributes = toCreate.getFirst().equalsIgnoreCase("true");
           for (final UnitType ut : toCreate.getSecond().keySet()) {
             toAdd.addAll(ut.create(toCreate.getSecond().getInt(ut), newOwner));

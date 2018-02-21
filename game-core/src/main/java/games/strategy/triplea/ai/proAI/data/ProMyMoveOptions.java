@@ -29,8 +29,8 @@ public class ProMyMoveOptions {
 
   ProMyMoveOptions(final ProMyMoveOptions myMoveOptions) {
     this();
-    for (final Territory t : myMoveOptions.territoryMap.keySet()) {
-      territoryMap.put(t, new ProTerritory(myMoveOptions.territoryMap.get(t)));
+    for (final Map.Entry<Territory, ProTerritory> territoryProTerritoryEntry : myMoveOptions.territoryMap.entrySet()) {
+      territoryMap.put(territoryProTerritoryEntry.getKey(), new ProTerritory(territoryProTerritoryEntry.getValue()));
     }
     unitMoveMap.putAll(myMoveOptions.unitMoveMap);
     transportMoveMap.putAll(myMoveOptions.transportMoveMap);

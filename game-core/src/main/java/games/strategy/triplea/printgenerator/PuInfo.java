@@ -48,8 +48,8 @@ class PuInfo {
         for (final PlayerID currentPlayer : gameData.getPlayerList()) {
           resourceWriter.write(currentPlayer.getName());
           final Map<Resource, Integer> resourceMap = infoMap.get(currentPlayer);
-          for (final Resource currentResource : resourceMap.keySet()) {
-            final int amountResource = resourceMap.get(currentResource);
+          for (final Map.Entry<Resource, Integer> resourceIntegerEntry : resourceMap.entrySet()) {
+            final int amountResource = resourceIntegerEntry.getValue();
             resourceWriter.write("," + amountResource);
           }
           resourceWriter.write("\r\n");

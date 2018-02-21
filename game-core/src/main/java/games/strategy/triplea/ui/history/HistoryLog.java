@@ -398,9 +398,9 @@ public class HistoryLog extends JFrame {
     if (verbose) {
       logWriter.println("Combat Hit Differential Summary :");
       logWriter.println();
-      for (final String player : hitDifferentialMap.keySet()) {
-        logWriter.println(moreIndent + player + " : "
-            + String.format("%.2f", hitDifferentialMap.get(player)));
+      for (final Map.Entry<String, Double> stringDoubleEntry : hitDifferentialMap.entrySet()) {
+        logWriter.println(moreIndent + stringDoubleEntry.getKey() + " : "
+            + String.format("%.2f", stringDoubleEntry.getValue()));
       }
     }
     logWriter.println();

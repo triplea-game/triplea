@@ -99,57 +99,59 @@ public class ProSimulateTurnUtils {
 
     final Map<Territory, ProTerritory> result = new HashMap<>();
     final List<Unit> usedUnits = new ArrayList<>();
-    for (final Territory fromTerritory : moveMap.keySet()) {
-      final Territory toTerritory = toData.getMap().getTerritory(fromTerritory.getName());
+    for (final Entry<Territory, ProTerritory> territoryProTerritoryEntry : moveMap.entrySet()) {
+      final Territory toTerritory = toData.getMap().getTerritory((territoryProTerritoryEntry.getKey()).getName());
       final ProTerritory patd = new ProTerritory(toTerritory);
       result.put(toTerritory, patd);
-      final Map<Unit, List<Unit>> amphibAttackMap = moveMap.get(fromTerritory).getAmphibAttackMap();
-      final Map<Unit, Boolean> isTransportingMap = moveMap.get(fromTerritory).getIsTransportingMap();
-      final Map<Unit, Territory> transportTerritoryMap = moveMap.get(fromTerritory).getTransportTerritoryMap();
-      final Map<Unit, Territory> bombardMap = moveMap.get(fromTerritory).getBombardTerritoryMap();
-      ProLogger.debug("Transferring " + fromTerritory + " to " + toTerritory);
+      final Map<Unit, List<Unit>> amphibAttackMap = territoryProTerritoryEntry.getValue().getAmphibAttackMap();
+      final Map<Unit, Boolean> isTransportingMap = territoryProTerritoryEntry.getValue().getIsTransportingMap();
+      final Map<Unit, Territory> transportTerritoryMap = territoryProTerritoryEntry.getValue().getTransportTerritoryMap();
+      final Map<Unit, Territory> bombardMap = territoryProTerritoryEntry.getValue().getBombardTerritoryMap();
+      ProLogger.debug("Transferring " + territoryProTerritoryEntry.getKey() + " to " + toTerritory);
       final List<Unit> amphibUnits = new ArrayList<>();
-      for (final Unit transport : amphibAttackMap.keySet()) {
+      for (final Entry<Unit, List<Unit>> unitListEntry : amphibAttackMap.entrySet()) {
         final Unit toTransport;
         final List<Unit> toUnits = new ArrayList<>();
-        if (isTransportingMap.get(transport)) {
-          toTransport = transferLoadedTransport(transport, amphibAttackMap.get(transport), unitTerritoryMap, usedUnits,
+        if (isTransportingMap.get(unitListEntry.getKey())) {
+          toTransport = transferLoadedTransport(unitListEntry.getKey(), unitListEntry.getValue(), unitTerritoryMap, usedUnits,
               toData, player);
           toUnits.addAll(TransportTracker.transporting(toTransport));
         } else {
-          toTransport = transferUnit(transport, unitTerritoryMap, usedUnits, toData, player);
-          for (final Unit u : amphibAttackMap.get(transport)) {
+          toTransport = transferUnit(unitListEntry.getKey(), unitTerritoryMap, usedUnits, toData, player);
+          for (final Unit u : unitListEntry.getValue()) {
             final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
             toUnits.add(toUnit);
           }
         }
         patd.addUnits(toUnits);
         patd.putAmphibAttackMap(toTransport, toUnits);
-        amphibUnits.addAll(amphibAttackMap.get(transport));
-        if (transportTerritoryMap.get(transport) != null) {
+        amphibUnits.addAll(unitListEntry.getValue());
+        if (transportTerritoryMap.get(unitListEntry.getKey()) != null) {
           patd.getTransportTerritoryMap().put(toTransport,
-              toData.getMap().getTerritory(transportTerritoryMap.get(transport).getName()));
+              toData.getMap().getTerritory(transportTerritoryMap.get(unitListEntry.getKey()).getName()));
         }
-        ProLogger.trace("---Transferring transport=" + transport + " with units=" + amphibAttackMap.get(transport)
-            + " unloadTerritory=" + transportTerritoryMap.get(transport) + " to transport=" + toTransport
+        ProLogger.trace("---Transferring transport=" + unitListEntry.getKey() + " with units=" + unitListEntry
+            .getValue()
+            + " unloadTerritory=" + transportTerritoryMap.get(unitListEntry.getKey()) + " to transport=" + toTransport
             + " with units=" + toUnits + " unloadTerritory=" + patd.getTransportTerritoryMap().get(toTransport));
       }
-      for (final Unit u : moveMap.get(fromTerritory).getUnits()) {
+      for (final Unit u : territoryProTerritoryEntry.getValue().getUnits()) {
         if (!amphibUnits.contains(u)) {
           final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
           patd.addUnit(toUnit);
           ProLogger.trace("---Transferring unit " + u + " to " + toUnit);
         }
       }
-      for (final Unit u : moveMap.get(fromTerritory).getBombers()) {
+      for (final Unit u : territoryProTerritoryEntry.getValue().getBombers()) {
         final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
         patd.getBombers().add(toUnit);
         ProLogger.trace("---Transferring bomber " + u + " to " + toUnit);
       }
-      for (final Unit u : bombardMap.keySet()) {
-        final Unit toUnit = transferUnit(u, unitTerritoryMap, usedUnits, toData, player);
-        patd.getBombardTerritoryMap().put(toUnit, toData.getMap().getTerritory(bombardMap.get(u).getName()));
-        ProLogger.trace("---Transferring bombard=" + u + ", bombardFromTerritory=" + bombardMap.get(u) + " to bomard="
+      for (final Entry<Unit, Territory> unitTerritoryEntry : bombardMap.entrySet()) {
+        final Unit toUnit = transferUnit(unitTerritoryEntry.getKey(), unitTerritoryMap, usedUnits, toData, player);
+        patd.getBombardTerritoryMap().put(toUnit, toData.getMap().getTerritory(unitTerritoryEntry.getValue().getName()));
+        ProLogger.trace("---Transferring bombard=" + unitTerritoryEntry.getKey()
+            + ", bombardFromTerritory=" + unitTerritoryEntry.getValue() + " to bomard="
             + toUnit + ", bombardFromTerritory=" + patd.getBombardTerritoryMap().get(toUnit));
       }
     }

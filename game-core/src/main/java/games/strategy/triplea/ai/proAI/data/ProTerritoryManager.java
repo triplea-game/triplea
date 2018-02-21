@@ -115,38 +115,39 @@ public class ProTerritoryManager {
 
     // Determine if territory can be successfully attacked with max possible attackers
     final List<Territory> territoriesToRemove = new ArrayList<>();
-    for (final Territory t : attackMap.keySet()) {
-      final ProTerritory patd = attackMap.get(t);
+    for (final Map.Entry<Territory, ProTerritory> territoryProTerritoryEntry : attackMap.entrySet()) {
+      final ProTerritory patd = territoryProTerritoryEntry.getValue();
 
       // Check if I can win without amphib units and ignore AA since max units might have lots of planes
       List<Unit> defenders = CollectionUtils.getMatches(patd.getMaxEnemyDefenders(player, data),
           ProMatches.unitIsEnemyAndNotAa(player, data));
       if (isIgnoringRelationships) {
-        defenders = new ArrayList<>(t.getUnits().getUnits());
+        defenders = new ArrayList<>((territoryProTerritoryEntry.getKey()).getUnits().getUnits());
       }
-      patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, patd.getMaxUnits(), defenders, new HashSet<>()));
+      patd.setMaxBattleResult(calc.estimateAttackBattleResults(territoryProTerritoryEntry.getKey(), patd.getMaxUnits(), defenders, new HashSet<>()));
 
       // Add in amphib units if I can't win without them
       if (patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage && !patd.getMaxAmphibUnits().isEmpty()) {
         final Set<Unit> combinedUnits = new HashSet<>(patd.getMaxUnits());
         combinedUnits.addAll(patd.getMaxAmphibUnits());
-        patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, new ArrayList<>(combinedUnits), defenders,
+        patd.setMaxBattleResult(calc.estimateAttackBattleResults(territoryProTerritoryEntry.getKey(), new ArrayList<>(combinedUnits), defenders,
             patd.getMaxBombardUnits()));
         patd.setNeedAmphibUnits(true);
       }
 
       // Check strafing and using allied attack if enemy capital/factory
       boolean isEnemyCapitalOrFactory = false;
-      final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (!t.getOwner().isNull()
-          && ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand().test(t))) {
+      final TerritoryAttachment ta = TerritoryAttachment.get(territoryProTerritoryEntry.getKey());
+      if (!(territoryProTerritoryEntry.getKey()).getOwner().isNull()
+          && ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand().test(
+          territoryProTerritoryEntry.getKey()))) {
         isEnemyCapitalOrFactory = true;
       }
       if (patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage && isEnemyCapitalOrFactory
-          && alliedAttackOptions.getMax(t) != null) {
+          && alliedAttackOptions.getMax(territoryProTerritoryEntry.getKey()) != null) {
 
         // Check for allied attackers
-        final ProTerritory alliedAttack = alliedAttackOptions.getMax(t);
+        final ProTerritory alliedAttack = alliedAttackOptions.getMax(territoryProTerritoryEntry.getKey());
         final Set<Unit> alliedUnits = new HashSet<>(alliedAttack.getMaxUnits());
         alliedUnits.addAll(alliedAttack.getMaxAmphibUnits());
         if (!alliedUnits.isEmpty()) {
@@ -154,12 +155,14 @@ public class ProTerritoryManager {
           // Make sure allies' capital isn't next to territory
           final PlayerID alliedPlayer = alliedUnits.iterator().next().getOwner();
           final Territory capital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(alliedPlayer, data);
-          if (capital != null && !data.getMap().getNeighbors(capital).contains(t)) {
+          if (capital != null && !data.getMap().getNeighbors(capital).contains(
+              territoryProTerritoryEntry.getKey())) {
 
             // Get max enemy defenders
             final Set<Unit> additionalEnemyDefenders = new HashSet<>();
             final List<PlayerID> players = ProUtils.getOtherPlayersInTurnOrder(player);
-            for (final ProTerritory enemyDefendOption : enemyDefendOptions.getAll(t)) {
+            for (final ProTerritory enemyDefendOption : enemyDefendOptions.getAll(
+                territoryProTerritoryEntry.getKey())) {
               final Set<Unit> enemyUnits = new HashSet<>(enemyDefendOption.getMaxUnits());
               enemyUnits.addAll(enemyDefendOption.getMaxAmphibUnits());
               if (!enemyUnits.isEmpty()) {
@@ -174,7 +177,7 @@ public class ProTerritoryManager {
             final Set<Unit> enemyDefendersBeforeStrafe = new HashSet<>(defenders);
             enemyDefendersBeforeStrafe.addAll(additionalEnemyDefenders);
             final ProBattleResult result =
-                calc.estimateAttackBattleResults(t, new ArrayList<>(alliedUnits),
+                calc.estimateAttackBattleResults(territoryProTerritoryEntry.getKey(), new ArrayList<>(alliedUnits),
                     new ArrayList<>(enemyDefendersBeforeStrafe), alliedAttack.getMaxBombardUnits());
             if (result.getWinPercentage() < ProData.winPercentage) {
               patd.setStrafing(true);
@@ -182,16 +185,17 @@ public class ProTerritoryManager {
               // Try to strafe to allow allies to conquer territory
               final Set<Unit> combinedUnits = new HashSet<>(patd.getMaxUnits());
               combinedUnits.addAll(patd.getMaxAmphibUnits());
-              final ProBattleResult strafeResult = calc.callBattleCalculator(t, new ArrayList<>(combinedUnits),
+              final ProBattleResult strafeResult = calc.callBattleCalculator(
+                  territoryProTerritoryEntry.getKey(), new ArrayList<>(combinedUnits),
                   defenders, patd.getMaxBombardUnits(), true);
 
               // Check allied result with strafe
               final Set<Unit> enemyDefendersAfterStrafe = new HashSet<>(strafeResult.getAverageDefendersRemaining());
               enemyDefendersAfterStrafe.addAll(additionalEnemyDefenders);
-              patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, new ArrayList<>(alliedUnits),
+              patd.setMaxBattleResult(calc.estimateAttackBattleResults(territoryProTerritoryEntry.getKey(), new ArrayList<>(alliedUnits),
                   new ArrayList<>(enemyDefendersAfterStrafe), alliedAttack.getMaxBombardUnits()));
 
-              ProLogger.debug("Checking strafing territory: " + t + ", alliedPlayer="
+              ProLogger.debug("Checking strafing territory: " + territoryProTerritoryEntry.getKey() + ", alliedPlayer="
                   + alliedUnits.iterator().next().getOwner().getName() + ", maxWin%="
                   + patd.getMaxBattleResult().getWinPercentage() + ", maxAttackers=" + alliedUnits.size()
                   + ", maxDefenders=" + enemyDefendersAfterStrafe.size());
@@ -203,7 +207,7 @@ public class ProTerritoryManager {
       if (patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage
           || (patd.isStrafing() && (patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage
               || !patd.getMaxBattleResult().isHasLandUnitRemaining()))) {
-        territoriesToRemove.add(t);
+        territoriesToRemove.add(territoryProTerritoryEntry.getKey());
       }
     }
 
@@ -331,13 +335,13 @@ public class ProTerritoryManager {
     }
 
     // Find potential max units that can be scrambled to each territory
-    for (final Territory to : scrambleTerrs.keySet()) {
-      for (final Territory from : scrambleTerrs.get(to)) {
+    for (final Map.Entry<Territory, HashSet<Territory>> territoryHashSetEntry : scrambleTerrs.entrySet()) {
+      for (final Territory from : territoryHashSetEntry.getValue()) {
 
         // Find potential scramble units from territory
         final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
-        final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
+        final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, territoryHashSetEntry.getKey(), Matches.territoryIsNotImpassable());
         List<Unit> canScrambleAir = from.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)
             .and(Matches.unitCanScramble())
             .and(Matches.unitIsNotDisabled())
@@ -349,14 +353,14 @@ public class ProTerritoryManager {
           if (maxCanScramble < canScrambleAir.size()) {
             Collections.sort(canScrambleAir, (o1, o2) -> {
               final double strength1 =
-                  ProBattleUtils.estimateStrength(to, Collections.singletonList(o1), new ArrayList<>(), false);
+                  ProBattleUtils.estimateStrength(territoryHashSetEntry.getKey(), Collections.singletonList(o1), new ArrayList<>(), false);
               final double strength2 =
-                  ProBattleUtils.estimateStrength(to, Collections.singletonList(o2), new ArrayList<>(), false);
+                  ProBattleUtils.estimateStrength(territoryHashSetEntry.getKey(), Collections.singletonList(o2), new ArrayList<>(), false);
               return Double.compare(strength2, strength1);
             });
             canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
           }
-          moveMap.get(to).getMaxScrambleUnits().addAll(canScrambleAir);
+          moveMap.get(territoryHashSetEntry.getKey()).getMaxScrambleUnits().addAll(canScrambleAir);
         }
       }
     }
@@ -741,9 +745,9 @@ public class ProTerritoryManager {
       final Map<Unit, Set<Territory>> unitMoveMap2 = new HashMap<>();
       findNavalMoveOptions(player, myUnitTerritories, new HashMap<>(), unitMoveMap2, new HashMap<>(),
           Matches.territoryIsWater(), enemyTerritories, false, true);
-      for (final Unit u : unitMoveMap2.keySet()) {
-        if (Matches.unitIsCarrier().test(u)) {
-          possibleCarrierTerritories.addAll(unitMoveMap2.get(u));
+      for (final Map.Entry<Unit, Set<Territory>> unitSetEntry : unitMoveMap2.entrySet()) {
+        if (Matches.unitIsCarrier().test(unitSetEntry.getKey())) {
+          possibleCarrierTerritories.addAll(unitSetEntry.getValue());
         }
       }
       for (final Territory t : data.getMap().getTerritories()) {
@@ -966,13 +970,13 @@ public class ProTerritoryManager {
     for (final ProTransport proTransportData : transportMapList) {
       final Map<Territory, Set<Territory>> transportMap = proTransportData.getTransportMap();
       final List<Territory> transportTerritoriesToRemove = new ArrayList<>();
-      for (final Territory t : transportMap.keySet()) {
-        final Set<Territory> transportMoveTerritories = transportMap.get(t);
-        final Set<Territory> landMoveTerritories = landRoutesMap.get(t);
+      for (final Map.Entry<Territory, Set<Territory>> territorySetEntry : transportMap.entrySet()) {
+        final Set<Territory> transportMoveTerritories = territorySetEntry.getValue();
+        final Set<Territory> landMoveTerritories = landRoutesMap.get(territorySetEntry.getKey());
         if (landMoveTerritories != null) {
           transportMoveTerritories.removeAll(landMoveTerritories);
           if (transportMoveTerritories.isEmpty()) {
-            transportTerritoriesToRemove.add(t);
+            transportTerritoriesToRemove.add(territorySetEntry.getKey());
           }
         }
       }
@@ -985,13 +989,13 @@ public class ProTerritoryManager {
     for (final ProTransport proTransportData : transportMapList) {
       final Map<Territory, Set<Territory>> transportMap = proTransportData.getTransportMap();
       final Unit transport = proTransportData.getTransport();
-      for (final Territory moveTerritory : transportMap.keySet()) {
+      for (final Map.Entry<Territory, Set<Territory>> territorySetEntry : transportMap.entrySet()) {
 
         // Get units to transport
-        final Set<Territory> territoriesCanLoadFrom = transportMap.get(moveTerritory);
+        final Set<Territory> territoriesCanLoadFrom = territorySetEntry.getValue();
         List<Unit> alreadyAddedToMaxAmphibUnits = new ArrayList<>();
-        if (moveMap.containsKey(moveTerritory)) {
-          alreadyAddedToMaxAmphibUnits = moveMap.get(moveTerritory).getMaxAmphibUnits();
+        if (moveMap.containsKey(territorySetEntry.getKey())) {
+          alreadyAddedToMaxAmphibUnits = moveMap.get(territorySetEntry.getKey()).getMaxAmphibUnits();
         }
         List<Unit> amphibUnits = ProTransportUtils.getUnitsToTransportFromTerritories(player, transport,
             territoriesCanLoadFrom, alreadyAddedToMaxAmphibUnits);
@@ -1001,12 +1005,12 @@ public class ProTerritoryManager {
         }
 
         // Add amphib units to attack map
-        if (moveMap.containsKey(moveTerritory)) {
-          moveMap.get(moveTerritory).addMaxAmphibUnits(amphibUnits);
+        if (moveMap.containsKey(territorySetEntry.getKey())) {
+          moveMap.get(territorySetEntry.getKey()).addMaxAmphibUnits(amphibUnits);
         } else {
-          final ProTerritory moveTerritoryData = new ProTerritory(moveTerritory);
+          final ProTerritory moveTerritoryData = new ProTerritory(territorySetEntry.getKey());
           moveTerritoryData.addMaxAmphibUnits(amphibUnits);
-          moveMap.put(moveTerritory, moveTerritoryData);
+          moveMap.put(territorySetEntry.getKey(), moveTerritoryData);
         }
       }
     }

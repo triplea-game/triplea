@@ -619,9 +619,9 @@ public class MovePanel extends AbstractMovePanel {
     // First, load capable transports
     final Map<Unit, Unit> unitsToCapableTransports =
         TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, capableTransports);
-    for (final Unit unit : unitsToCapableTransports.keySet()) {
-      final Unit transport = unitsToCapableTransports.get(unit);
-      final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+    for (final Map.Entry<Unit, Unit> unitUnitEntry : unitsToCapableTransports.entrySet()) {
+      final Unit transport = unitUnitEntry.getValue();
+      final int unitCost = UnitAttachment.get((unitUnitEntry.getKey()).getType()).getTransportCost();
       availableCapacityMap.add(transport, (-1 * unitCost));
       defaultSelections.add(transport);
     }
@@ -630,9 +630,9 @@ public class MovePanel extends AbstractMovePanel {
     // Next, load allied transports
     final Map<Unit, Unit> unitsToAlliedTransports =
         TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, alliedTransports);
-    for (final Unit unit : unitsToAlliedTransports.keySet()) {
-      final Unit transport = unitsToAlliedTransports.get(unit);
-      final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+    for (final Map.Entry<Unit, Unit> unitUnitEntry : unitsToAlliedTransports.entrySet()) {
+      final Unit transport = unitUnitEntry.getValue();
+      final int unitCost = UnitAttachment.get((unitUnitEntry.getKey()).getType()).getTransportCost();
       availableCapacityMap.add(transport, (-1 * unitCost));
       defaultSelections.add(transport);
       useAlliedTransports = true;
@@ -645,9 +645,9 @@ public class MovePanel extends AbstractMovePanel {
     if (getSelectedEndpointTerritory() == null) {
       final Map<Unit, Unit> unitsToIncapableTransports =
           TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, incapableTransports);
-      for (final Unit unit : unitsToIncapableTransports.keySet()) {
-        final Unit transport = unitsToIncapableTransports.get(unit);
-        final int unitCost = UnitAttachment.get(unit.getType()).getTransportCost();
+      for (final Map.Entry<Unit, Unit> unitUnitEntry : unitsToIncapableTransports.entrySet()) {
+        final Unit transport = unitUnitEntry.getValue();
+        final int unitCost = UnitAttachment.get((unitUnitEntry.getKey()).getType()).getTransportCost();
         availableCapacityMap.add(transport, (-1 * unitCost));
         defaultSelections.add(transport);
       }
@@ -848,8 +848,8 @@ public class MovePanel extends AbstractMovePanel {
           final Collection<Unit> unitsToLoad =
               CollectionUtils.getMatches(route.getStart().getUnits().getUnits(), unitsToLoadMatch);
           unitsToLoad.removeAll(selectedUnits);
-          for (final Unit u : dependentUnits.keySet()) {
-            unitsToLoad.removeAll(dependentUnits.get(u));
+          for (final Map.Entry<Unit, Collection<Unit>> unitCollectionEntry : dependentUnits.entrySet()) {
+            unitsToLoad.removeAll(unitCollectionEntry.getValue());
           }
           // Get the potential air transports to load
           final Predicate<Unit> candidateAirTransportsMatch = Matches.unitIsAirTransport()
@@ -945,10 +945,10 @@ public class MovePanel extends AbstractMovePanel {
         final String action = "load";
         loadedUnits = userChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
         final Map<Unit, Unit> mapping = TransportUtils.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
-        for (final Unit unit : mapping.keySet()) {
+        for (final Map.Entry<Unit, Unit> unitUnitEntry : mapping.entrySet()) {
           final Collection<Unit> unitsColl = new ArrayList<>();
-          unitsColl.add(unit);
-          final Unit airTransport = mapping.get(unit);
+          unitsColl.add(unitUnitEntry.getKey());
+          final Unit airTransport = unitUnitEntry.getValue();
           if (dependentUnits.containsKey(airTransport)) {
             unitsColl.addAll(dependentUnits.get(airTransport));
           }

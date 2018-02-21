@@ -59,9 +59,10 @@ class ProScrambleAi {
     // Check if max defense is worse
     final Set<Unit> allScramblers = new HashSet<>();
     final Map<Territory, List<Unit>> possibleMaxScramblerMap = new HashMap<>();
-    for (final Territory t : possibleScramblers.keySet()) {
-      final int maxCanScramble = BattleDelegate.getMaxScrambleCount(possibleScramblers.get(t).getFirst());
-      List<Unit> canScrambleAir = new ArrayList<>(possibleScramblers.get(t).getSecond());
+    for (final Map.Entry<Territory, Tuple<Collection<Unit>, Collection<Unit>>> territoryTupleEntry : possibleScramblers
+        .entrySet()) {
+      final int maxCanScramble = BattleDelegate.getMaxScrambleCount(territoryTupleEntry.getValue().getFirst());
+      List<Unit> canScrambleAir = new ArrayList<>(territoryTupleEntry.getValue().getSecond());
       if (maxCanScramble < canScrambleAir.size()) {
         Collections.sort(canScrambleAir, (o1, o2) -> {
           final double strength1 =
@@ -73,7 +74,7 @@ class ProScrambleAi {
         canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
       }
       allScramblers.addAll(canScrambleAir);
-      possibleMaxScramblerMap.put(t, canScrambleAir);
+      possibleMaxScramblerMap.put(territoryTupleEntry.getKey(), canScrambleAir);
     }
     defenders.addAll(allScramblers);
     final ProBattleResult maxResult = calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
@@ -85,10 +86,10 @@ class ProScrambleAi {
 
     // Loop through all units and determine attack options
     final Map<Unit, Set<Territory>> unitDefendOptions = new HashMap<>();
-    for (final Territory t : possibleMaxScramblerMap.keySet()) {
+    for (final Map.Entry<Territory, List<Unit>> territoryListEntry : possibleMaxScramblerMap.entrySet()) {
       final Set<Territory> possibleTerritories =
-          data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, true));
-      possibleTerritories.add(t);
+          data.getMap().getNeighbors(territoryListEntry.getKey(), ProMatches.territoryCanMoveSeaUnits(player, data, true));
+      possibleTerritories.add(territoryListEntry.getKey());
       final Set<Territory> battleTerritories = new HashSet<>();
       for (final Territory possibleTerritory : possibleTerritories) {
         final IBattle possibleBattle =
@@ -97,7 +98,7 @@ class ProScrambleAi {
           battleTerritories.add(possibleTerritory);
         }
       }
-      for (final Unit u : possibleMaxScramblerMap.get(t)) {
+      for (final Unit u : territoryListEntry.getValue()) {
         unitDefendOptions.put(u, battleTerritories);
       }
     }
@@ -126,15 +127,16 @@ class ProScrambleAi {
 
     // Return units to scramble
     final HashMap<Territory, Collection<Unit>> scrambleMap = new HashMap<>();
-    for (final Territory t : possibleScramblers.keySet()) {
-      for (final Unit u : possibleScramblers.get(t).getSecond()) {
+    for (final Map.Entry<Territory, Tuple<Collection<Unit>, Collection<Unit>>> territoryTupleEntry : possibleScramblers
+        .entrySet()) {
+      for (final Unit u : territoryTupleEntry.getValue().getSecond()) {
         if (unitsToScramble.contains(u)) {
-          if (scrambleMap.containsKey(t)) {
-            scrambleMap.get(t).add(u);
+          if (scrambleMap.containsKey(territoryTupleEntry.getKey())) {
+            scrambleMap.get(territoryTupleEntry.getKey()).add(u);
           } else {
             final Collection<Unit> units = new ArrayList<>();
             units.add(u);
-            scrambleMap.put(t, units);
+            scrambleMap.put(territoryTupleEntry.getKey(), units);
           }
         }
       }

@@ -125,14 +125,14 @@ public class TuvUtils {
         differentCosts.put(ut, listTemp);
       }
     }
-    for (final UnitType ut : differentCosts.keySet()) {
+    for (final Entry<UnitType, List<Integer>> unitTypeListEntry : differentCosts.entrySet()) {
       int totalCosts = 0;
-      final List<Integer> costsForType = differentCosts.get(ut);
+      final List<Integer> costsForType = unitTypeListEntry.getValue();
       for (final int cost : costsForType) {
         totalCosts += cost;
       }
       final int averagedCost = (int) Math.round(((double) totalCosts / (double) costsForType.size()));
-      costs.put(ut, averagedCost);
+      costs.put(unitTypeListEntry.getKey(), averagedCost);
     }
     return costs;
   }
@@ -211,9 +211,9 @@ public class TuvUtils {
       }
       // since our production frontier may not cover all the units we control, and not the enemy units,
       // we will add any unit types not in our list, based on the list for everyone
-      for (final UnitType ut : average.keySet()) {
-        if (!current.keySet().contains(ut)) {
-          current.put(ut, average.get(ut));
+      for (final Entry<UnitType, ResourceCollection> unitTypeResourceCollectionEntry : average.entrySet()) {
+        if (!current.keySet().contains(unitTypeResourceCollectionEntry.getKey())) {
+          current.put(unitTypeResourceCollectionEntry.getKey(), unitTypeResourceCollectionEntry.getValue());
         }
       }
     }

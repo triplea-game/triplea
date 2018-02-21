@@ -1182,21 +1182,22 @@ public class TripleAFrame extends MainGameFrame {
       final JPanel panel2 = new JPanel();
       panel2.setBorder(BorderFactory.createEmptyBorder());
       panel2.setLayout(new FlowLayout());
-      for (final Territory from : possibleScramblers.keySet()) {
+      for (final Entry<Territory, Tuple<Collection<Unit>, Collection<Unit>>> territoryTupleEntry : possibleScramblers
+          .entrySet()) {
         final JPanel panelChooser = new JPanel();
         panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
         panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
-        final JLabel whereFrom = new JLabel("From: " + from.getName());
+        final JLabel whereFrom = new JLabel("From: " + (territoryTupleEntry.getKey()).getName());
         whereFrom.setHorizontalAlignment(SwingConstants.LEFT);
         whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
         panelChooser.add(whereFrom);
         panelChooser.add(new JLabel(" "));
-        final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
+        final Collection<Unit> possible = territoryTupleEntry.getValue().getSecond();
         final int maxAllowed =
-            Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
+            Math.min(BattleDelegate.getMaxScrambleCount(territoryTupleEntry.getValue().getFirst()), possible.size());
         final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
-        choosers.add(Tuple.of(from, chooser));
+        choosers.add(Tuple.of(territoryTupleEntry.getKey(), chooser));
         panelChooser.add(chooser);
         final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
         panel2.add(chooserScrollPane);

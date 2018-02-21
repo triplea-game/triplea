@@ -55,12 +55,12 @@ public class ProOtherMoveOptions {
     final Map<Territory, ProTerritory> result = new HashMap<>();
     final List<PlayerID> players = ProUtils.getOtherPlayersInTurnOrder(player);
     for (final Map<Territory, ProTerritory> moveMap : moveMaps) {
-      for (final Territory t : moveMap.keySet()) {
+      for (final Map.Entry<Territory, ProTerritory> territoryProTerritoryEntry : moveMap.entrySet()) {
 
         // Get current player
         final PlayerID movePlayer;
-        final Set<Unit> currentUnits = new HashSet<>(moveMap.get(t).getMaxUnits());
-        currentUnits.addAll(moveMap.get(t).getMaxAmphibUnits());
+        final Set<Unit> currentUnits = new HashSet<>(territoryProTerritoryEntry.getValue().getMaxUnits());
+        currentUnits.addAll(territoryProTerritoryEntry.getValue().getMaxAmphibUnits());
         if (!currentUnits.isEmpty()) {
           movePlayer = currentUnits.iterator().next().getOwner();
         } else {
@@ -69,27 +69,27 @@ public class ProOtherMoveOptions {
 
         // Skip if checking allied moves and their turn doesn't come before territory owner's
         if (ProData.getData().getRelationshipTracker().isAllied(player, movePlayer)
-            && !ProUtils.isPlayersTurnFirst(players, movePlayer, t.getOwner())) {
+            && !ProUtils.isPlayersTurnFirst(players, movePlayer, (territoryProTerritoryEntry.getKey()).getOwner())) {
           continue;
         }
 
         // Add to max move map if its empty or its strength is greater than existing
-        if (!result.containsKey(t)) {
-          result.put(t, moveMap.get(t));
+        if (!result.containsKey(territoryProTerritoryEntry.getKey())) {
+          result.put(territoryProTerritoryEntry.getKey(), territoryProTerritoryEntry.getValue());
         } else {
-          final Set<Unit> maxUnits = new HashSet<>(result.get(t).getMaxUnits());
-          maxUnits.addAll(result.get(t).getMaxAmphibUnits());
+          final Set<Unit> maxUnits = new HashSet<>(result.get(territoryProTerritoryEntry.getKey()).getMaxUnits());
+          maxUnits.addAll(result.get(territoryProTerritoryEntry.getKey()).getMaxAmphibUnits());
           double maxStrength = 0;
           if (!maxUnits.isEmpty()) {
-            maxStrength = ProBattleUtils.estimateStrength(t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
+            maxStrength = ProBattleUtils.estimateStrength(territoryProTerritoryEntry.getKey(), new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
           }
           final double currentStrength =
-              ProBattleUtils.estimateStrength(t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
+              ProBattleUtils.estimateStrength(territoryProTerritoryEntry.getKey(), new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
           final boolean currentHasLandUnits = currentUnits.stream().anyMatch(Matches.unitIsLand());
           final boolean maxHasLandUnits = maxUnits.stream().anyMatch(Matches.unitIsLand());
-          if ((currentHasLandUnits && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
-              || ((!maxHasLandUnits || t.isWater()) && currentStrength > maxStrength)) {
-            result.put(t, moveMap.get(t));
+          if ((currentHasLandUnits && ((!maxHasLandUnits && !(territoryProTerritoryEntry.getKey()).isWater()) || currentStrength > maxStrength))
+              || ((!maxHasLandUnits || (territoryProTerritoryEntry.getKey()).isWater()) && currentStrength > maxStrength)) {
+            result.put(territoryProTerritoryEntry.getKey(), territoryProTerritoryEntry.getValue());
           }
         }
       }
@@ -102,13 +102,13 @@ public class ProOtherMoveOptions {
 
     final Map<Territory, List<ProTerritory>> result = new HashMap<>();
     for (final Map<Territory, ProTerritory> moveMap : moveMapList) {
-      for (final Territory t : moveMap.keySet()) {
-        if (!result.containsKey(t)) {
+      for (final Map.Entry<Territory, ProTerritory> territoryProTerritoryEntry : moveMap.entrySet()) {
+        if (!result.containsKey(territoryProTerritoryEntry.getKey())) {
           final List<ProTerritory> list = new ArrayList<>();
-          list.add(moveMap.get(t));
-          result.put(t, list);
+          list.add(territoryProTerritoryEntry.getValue());
+          result.put(territoryProTerritoryEntry.getKey(), list);
         } else {
-          result.get(t).add(moveMap.get(t));
+          result.get(territoryProTerritoryEntry.getKey()).add(territoryProTerritoryEntry.getValue());
         }
       }
     }

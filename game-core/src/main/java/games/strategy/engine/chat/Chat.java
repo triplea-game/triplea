@@ -164,9 +164,9 @@ public class Chat {
    *        map from node to tag
    */
   private void assignNodeTags(final Map<INode, Tag> chatters) {
-    for (final INode node : chatters.keySet()) {
-      final Tag tag = chatters.get(node);
-      addToNotesMap(node, tag);
+    for (final Map.Entry<INode, Tag> iNodeTagEntry : chatters.entrySet()) {
+      final Tag tag = iNodeTagEntry.getValue();
+      addToNotesMap(iNodeTagEntry.getKey(), tag);
     }
   }
 
