@@ -515,7 +515,7 @@ public class HeadlessGameServer {
   }
 
   public void printThreadDumpsAndStatus() {
-    final String sb = "Dump to Log:"
+    System.out.println("Dump to Log:"
         + "\n\nStatus:\n"
         + getStatus()
         + "\n\nServer:\n"
@@ -524,8 +524,7 @@ public class HeadlessGameServer {
         + DebugUtils.getThreadDumps()
         + "\n\n"
         + DebugUtils.getMemory()
-        + "\n\nDump finished.\n";
-    System.out.println(sb);
+        + "\n\nDump finished.\n");
   }
 
   synchronized void shutdown() {

@@ -471,7 +471,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   @Override
   public String toString() {
-    final String sb = "ClientModel GameData:" + (gameDataOnStartup == null ? "null" : gameDataOnStartup.getGameName())
+    return "ClientModel GameData:" + (gameDataOnStartup == null ? "null" : gameDataOnStartup.getGameName())
         + "\n"
         + "Connected:" + (messenger == null ? "null" : messenger.isConnected()) + "\n"
         + messenger
@@ -479,7 +479,6 @@ public class ClientModel implements IMessengerErrorListener {
         + remoteMessenger
         + "\n"
         + channelMessenger;
-    return sb;
   }
 
   static class ClientProps {

@@ -98,7 +98,7 @@ class EngineVersionProperties {
   }
 
   private String getOutOfDateMessage() {
-    final String text = "<html>" + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
+    return "<html>" + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
         + "<br />Your current version: " + ClientContext.engineVersion().getExactVersion()
         + "<br />Latest version available for download: " + getLatestVersionOut()
         + "<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion()
@@ -111,15 +111,12 @@ class EngineVersionProperties {
         + "shortcuts to the new TripleA."
         + "<br /><br />What is new:<br />"
         + "</html>";
-    return text;
   }
 
   private String getOutOfDateReleaseUpdates() {
-    final String text =
-        "<html><body>" + "Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">"
+    return "<html><body>" + "Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">"
             + getChangeLogLink() + "</a><br />"
             + "</body></html>";
-    return text;
   }
 
   Component getOutOfDateComponent() {
