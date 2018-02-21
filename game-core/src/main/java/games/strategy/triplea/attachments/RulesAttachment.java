@@ -1123,7 +1123,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     if (count == 0) {
-      return count == found;
+      return 0 == found;
     }
     if (getCountEach()) {
       m_eachMultiple = found;
