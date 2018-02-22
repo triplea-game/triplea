@@ -45,12 +45,12 @@ public class AggregateResults implements Serializable {
   public BattleResults getBattleResultsClosestToAverage() {
     double closestBattleDif = Integer.MAX_VALUE;
     BattleResults closestBattle = null;
-    for (final BattleResults results : results) {
-      double dif = Math.abs(results.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft());
-      dif += Math.abs(results.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft());
+    for (final BattleResults result : results) {
+      double dif = Math.abs(result.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft());
+      dif += Math.abs(result.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft());
       if (dif < closestBattleDif) {
         closestBattleDif = dif;
-        closestBattle = results;
+        closestBattle = result;
       }
     }
     // can be null!
@@ -59,14 +59,14 @@ public class AggregateResults implements Serializable {
 
   public List<Unit> getAverageAttackingUnitsRemaining() {
     // can be null!
-    final BattleResults results = getBattleResultsClosestToAverage();
-    return results == null ? new ArrayList<>() : results.getRemainingAttackingUnits();
+    final BattleResults result = getBattleResultsClosestToAverage();
+    return result == null ? new ArrayList<>() : result.getRemainingAttackingUnits();
   }
 
   public List<Unit> getAverageDefendingUnitsRemaining() {
     // can be null!
-    final BattleResults results = getBattleResultsClosestToAverage();
-    return results == null ? new ArrayList<>() : results.getRemainingDefendingUnits();
+    final BattleResults result = getBattleResultsClosestToAverage();
+    return result == null ? new ArrayList<>() : result.getRemainingDefendingUnits();
   }
 
   double getAverageAttackingUnitsLeft() {
