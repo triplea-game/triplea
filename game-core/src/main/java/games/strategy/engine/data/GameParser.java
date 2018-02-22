@@ -590,12 +590,7 @@ public final class GameParser {
     } else {
       throw newGameParseException("diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
-    final int sizeY;
-    if (ys != null) {
-      sizeY = Integer.valueOf(ys);
-    } else {
-      sizeY = 0;
-    }
+    final int sizeY = (ys != null) ? Integer.valueOf(ys) : 0;
     final int sizeX = Integer.valueOf(xs);
     map.setGridDimensions(sizeX, sizeY);
     if (gridType.equals("square")) {
