@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  */
 @Deprecated
 public final class Md5Crypt {
-  public static final String MAGIC = "$1$";
+  private static final String MAGIC = "$1$";
   private static final Pattern ENCRYPTED_PASSWORD_PATTERN =
       Pattern.compile("^" + MAGIC.replace("$", "\\$") + "([\\.\\/a-zA-Z0-9]{1,8})\\$([\\.\\/a-zA-Z0-9]{22})$");
   private static final byte[] EMPTY_KEY_BYTES = new byte[0];
@@ -43,7 +43,7 @@ public final class Md5Crypt {
    * Encrypts the specified password using the specified salt.
    *
    * @param password The password to be encrypted.
-   * @param salt The salt. May begin with {@link #MAGIC} and end with a {@code $} followed by any number of characters.
+   * @param salt The salt. May begin with {@code $1$} and end with {@code $} followed by any number of characters.
    *        No more than eight characters will be used. If empty, a new random salt will be used.
    *
    * @return The encrypted password.
@@ -109,5 +109,18 @@ public final class Md5Crypt {
     final Matcher matcher = ENCRYPTED_PASSWORD_PATTERN.matcher(encryptedPassword);
     checkArgument(matcher.matches(), "'" + encryptedPassword + "' is not an MD5-crypted password");
     return matcher.group(1);
+  }
+
+  /**
+   * Indicates the specified value is a legal MD5-crypted password.
+   *
+   * @param value The value to test.
+   *
+   * @return {@code true} if the specified value is a legal MD5-crypted password; otherwise {@code false}.
+   */
+  public static boolean isLegalEncryptedPassword(final String value) {
+    checkNotNull(value);
+
+    return ENCRYPTED_PASSWORD_PATTERN.matcher(value).matches();
   }
 }
