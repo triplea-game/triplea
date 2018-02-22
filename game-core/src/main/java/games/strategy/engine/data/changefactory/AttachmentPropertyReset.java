@@ -4,7 +4,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
-import games.strategy.util.PropertyUtil;
 
 /**
  * Resets the value to the default value.
@@ -22,7 +21,7 @@ class AttachmentPropertyReset extends Change {
     }
     m_attachedTo = attachment.getAttachedTo();
     m_attachmentName = attachment.getName();
-    m_oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
+    m_oldValue = attachment.getPropertyMap().get(property).getValue();
     m_property = property;
   }
 
@@ -45,7 +44,7 @@ class AttachmentPropertyReset extends Change {
   @Override
   public void perform(final GameData data) {
     final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
-    PropertyUtil.reset(m_property, attachment);
+    attachment.getPropertyMap().get(m_property).resetValue();
   }
 
   @Override

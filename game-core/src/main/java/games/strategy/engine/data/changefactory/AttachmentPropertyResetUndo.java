@@ -4,7 +4,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
-import games.strategy.util.PropertyUtil;
 
 class AttachmentPropertyResetUndo extends Change {
   private static final long serialVersionUID = 5943939650116851332L;
@@ -32,7 +31,7 @@ class AttachmentPropertyResetUndo extends Change {
   @Override
   public void perform(final GameData data) {
     final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
-    PropertyUtil.set(m_property, m_newValue, attachment, false);
+    attachment.getPropertyMap().get(m_property).setObjectValue(m_newValue);
   }
 
   @Override

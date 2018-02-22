@@ -18,7 +18,6 @@ public class ObjectPropertyChange extends Change {
     m_object = object;
     m_property = property.intern();
     m_newValue = newValue;
-    // m_oldValue = PropertyUtil.get(property, object);
     m_oldValue = PropertyUtil.getPropertyFieldObject(property, object);
   }
 

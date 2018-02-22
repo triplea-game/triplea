@@ -21,29 +21,6 @@ public class PropertyUtil {
     }
   }
 
-  /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is
-   * actually adding things to a
-   * list rather than overwriting.
-   */
-  public static void set(final String propertyName, final Object value, final Object subject,
-      final boolean resetFirst) {
-    if (resetFirst) {
-      reset(propertyName, subject);
-    }
-    set(propertyName, value, subject);
-  }
-
-  public static void reset(final String propertyName, final Object subject) {
-    try {
-      final Method c = getResetter(propertyName, subject);
-      c.setAccessible(true);
-      c.invoke(subject);
-    } catch (final Exception e) {
-      throw new IllegalStateException("Could not reset property:" + propertyName + " subject:" + subject, e);
-    }
-  }
-
   private static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
       final boolean justFromSuper) {
     if (!justFromSuper) {
@@ -126,23 +103,5 @@ public class PropertyUtil {
       }
     }
     throw new IllegalStateException("No method called:" + setterName + " on:" + subject);
-  }
-
-  private static Method getResetter(final String propertyName, final Object subject) {
-    final String resetterName = "reset" + capitalizeFirstLetter(propertyName);
-    for (final Method c : subject.getClass().getMethods()) {
-      if (c.getName().equals(resetterName)) {
-        try {
-          return subject.getClass().getMethod(resetterName);
-        } catch (final NoSuchMethodException | NullPointerException e) {
-          // TODO: do not catch NPE, that is control flow by exception handling,
-          // instead detect the null value and return 'm' at that time.
-
-          // Go ahead and try the first one
-          return c;
-        }
-      }
-    }
-    throw new IllegalStateException("No method called:" + resetterName + " on:" + subject);
   }
 }

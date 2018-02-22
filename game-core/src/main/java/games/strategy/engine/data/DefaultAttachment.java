@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
-import games.strategy.util.PropertyUtil;
 
 /**
  * Contains some utility methods that subclasses can use to make writing attachments easier.
@@ -110,7 +109,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
    * @return null or the toString() of the field value.
    */
   public String getRawPropertyString(final String property) {
-    final Object obj = PropertyUtil.getPropertyFieldObject(property, this);
+    final Object obj = getPropertyMap().get(property);
     if (obj == null) {
       return null;
     }

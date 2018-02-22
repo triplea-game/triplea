@@ -13,6 +13,19 @@ public interface AttachmentProperty<T> {
 
   void setValue(T value) throws GameParseException;
 
+  @SuppressWarnings("unchecked")
+  default void setObjectValue(final Object o) {
+    try {
+      if (o instanceof String) {
+        setValue((String) o);
+      } else {
+        setValue((T) o);
+      }
+    } catch (GameParseException e) {
+      throw new IllegalStateException("Failed to set Attachment property", e);
+    }
+  }
+
   T getValue();
 
   void resetValue();
