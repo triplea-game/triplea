@@ -81,7 +81,7 @@ public final class FakeAttachment implements IAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("name", MutableProperty.of(this::setName, this::getName, () -> {
+        .put("name", MutableProperty.ofString(this::setName, this::getName, () -> {
         }))
         .build();
   }

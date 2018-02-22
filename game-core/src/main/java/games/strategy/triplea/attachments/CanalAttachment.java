@@ -172,7 +172,7 @@ public class CanalAttachment extends DefaultAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("canalName", MutableProperty.of(this::setCanalName, this::getCanalName, this::resetCanalName))
+        .put("canalName", MutableProperty.ofString(this::setCanalName, this::getCanalName, this::resetCanalName))
         .put("landTerritories",
             MutableProperty.of(
                 this::setLandTerritories,

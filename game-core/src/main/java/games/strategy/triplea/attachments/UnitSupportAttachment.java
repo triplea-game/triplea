@@ -466,17 +466,17 @@ public class UnitSupportAttachment extends DefaultAttachment {
                 this::getImpArtTech,
                 this::resetImpArtTech))
         .put("dice",
-            MutableProperty.of(
+            MutableProperty.ofString(
                 this::setDice,
                 this::getDice,
                 this::resetDice))
         .put("side",
-            MutableProperty.of(
+            MutableProperty.ofString(
                 this::setSide,
                 this::getSide,
                 this::resetSide))
         .put("faction",
-            MutableProperty.of(
+            MutableProperty.ofString(
                 this::setFaction,
                 this::getFaction,
                 this::resetFaction))

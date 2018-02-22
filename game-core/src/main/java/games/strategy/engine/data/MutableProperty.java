@@ -91,7 +91,7 @@ public class MutableProperty<T> {
   /**
    * Convenience method to create a generic String instance of this interface.
    */
-  public static MutableProperty<String> of(
+  public static MutableProperty<String> ofString(
       final ThrowingConsumer<String, Exception> setter,
       final Supplier<String> getter,
       final Runnable resetter) {

@@ -58,7 +58,7 @@ public class TestAttachment extends DefaultAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("value", MutableProperty.of(this::setValue, this::getValue, this::resetValue))
+        .put("value", MutableProperty.ofString(this::setValue, this::getValue, this::resetValue))
         .build();
   }
 }
