@@ -29,7 +29,7 @@ public class ChangeAttachmentChange extends Change {
     attachedTo = attachment.getAttachedTo();
     clearFirst = false;
     attachmentName = attachment.getName();
-    oldValue = attachment.getPropertyMap().get(property).getValue();
+    oldValue = attachment.getOrError(property).getValue();
     this.newValue = newValue;
     this.property = property;
   }
@@ -47,7 +47,7 @@ public class ChangeAttachmentChange extends Change {
     attachedTo = attachment.getAttachedTo();
     clearFirst = resetFirst;
     attachmentName = attachment.getName();
-    oldValue = attachment.getPropertyMap().get(property).getValue();
+    oldValue = attachment.getOrError(property).getValue();
     this.newValue = newValue;
     this.property = property;
   }
@@ -70,7 +70,7 @@ public class ChangeAttachmentChange extends Change {
   @Override
   public void perform(final GameData data) {
     final IAttachment attachment = attachedTo.getAttachment(attachmentName);
-    final AttachmentProperty<?> attachmentProperty = attachment.getPropertyMap().get(property);
+    final AttachmentProperty<?> attachmentProperty = attachment.getOrError(property);
     if (clearFirst) {
       attachmentProperty.resetValue();
     }
