@@ -142,11 +142,11 @@ public class ProductionPanel extends JPanel {
       panel.add(rules.get(x).getPanelComponent(), new GridBagConstraints(x / rows, (x % rows), 1, 1, 10, 10,
           GridBagConstraints.EAST, GridBagConstraints.BOTH, nullInsets, 0, 0));
     }
+    final JScrollPane scroll = new JScrollPane(panel);
+    scroll.setBorder(BorderFactory.createEmptyBorder());
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
     final int availHeight = screenResolution.height - 80;
     final int availWidth = screenResolution.width - 30;
-    final JScrollPane scroll = new JScrollPane(panel);
-    scroll.setBorder(BorderFactory.createEmptyBorder());
     final int availWidthRules = availWidth - 16;
     final int availHeightRules = availHeight - 116;
     scroll
