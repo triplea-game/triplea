@@ -652,24 +652,21 @@ public class HeadlessGameServer {
    */
   public Chat getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
-    if (model instanceof ServerSetupPanel || model instanceof ClientSetupPanel
-        || model instanceof HeadlessServerSetup) {
-      return model.getChatPanel().getChat();
-    } else {
-      return null;
-    }
+    return ((model instanceof ServerSetupPanel)
+        || (model instanceof ClientSetupPanel)
+        || (model instanceof HeadlessServerSetup))
+            ? model.getChatPanel().getChat()
+            : null;
   }
 
   /**
    * Launches a bot server. Most properties are passed via command line-like arguments.
    */
-  /*
-   * TODO: get properties from a configuration file instead of CLI.
-   */
   public static void main(final String[] args) {
     ClientSetting.initialize();
 
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
+    // TODO: get properties from a configuration file instead of CLI.
     if (!new ArgParser(getProperties()).handleCommandLineArgs(args)) {
       usage();
       return;
