@@ -9,9 +9,9 @@ import java.util.function.Supplier;
  */
 public interface ModifiableProperty<T> {
 
-  void setValue(String string) throws GameParseException;
+  void setValue(String string) throws Exception;
 
-  void setValue(T value) throws GameParseException;
+  void setValue(T value) throws Exception;
 
   @SuppressWarnings("unchecked")
   default void setObjectValue(final Object o) {
@@ -21,7 +21,7 @@ public interface ModifiableProperty<T> {
       } else {
         setValue((T) o);
       }
-    } catch (GameParseException e) {
+    } catch (final Exception e) {
       throw new IllegalStateException("Failed to set Attachment property", e);
     }
   }
@@ -34,19 +34,19 @@ public interface ModifiableProperty<T> {
    * Convenience method to create an instance of this interface.
    */
   static <T> ModifiableProperty<T> of(
-      final GameParsingConsumer<T> setter,
-      final GameParsingConsumer<String> stringSetter,
+      final ExceptionConsumer<T> setter,
+      final ExceptionConsumer<String> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
     return new ModifiableProperty<T>() {
 
       @Override
-      public void setValue(String string) throws GameParseException {
+      public void setValue(String string) throws Exception {
         stringSetter.accept(string);
       }
 
       @Override
-      public void setValue(T value) throws GameParseException {
+      public void setValue(T value) throws Exception {
         setter.accept(value);
       }
 
@@ -66,8 +66,8 @@ public interface ModifiableProperty<T> {
    * Convenience method to create an instance of this interface with no resetter.
    */
   static <T> ModifiableProperty<T> of(
-      final GameParsingConsumer<T> setter,
-      final GameParsingConsumer<String> stringSetter,
+      final ExceptionConsumer<T> setter,
+      final ExceptionConsumer<String> stringSetter,
       final Supplier<T> getter) {
     return of(setter, stringSetter, getter, () -> throwIllegalStateException("No Resetter"));
   }
@@ -76,7 +76,7 @@ public interface ModifiableProperty<T> {
    * Convenience method to create a generic String instance of this interface.
    */
   static ModifiableProperty<String> of(
-      final GameParsingConsumer<String> setter,
+      final ExceptionConsumer<String> setter,
       final Supplier<String> getter,
       final Runnable resetter) {
     return of(setter, setter, getter, resetter);
@@ -97,8 +97,8 @@ public interface ModifiableProperty<T> {
    * Convenience method to create an instance of this interface that only sets, but doesn't reset.
    */
   static <T> ModifiableProperty<T> of(
-      final GameParsingConsumer<T> setter,
-      final GameParsingConsumer<String> stringSetter) {
+      final ExceptionConsumer<T> setter,
+      final ExceptionConsumer<String> stringSetter) {
     return of(
         setter,
         stringSetter,
@@ -112,7 +112,7 @@ public interface ModifiableProperty<T> {
    * setter and getter. And no support for Strings as secondary setter.
    */
   static <T> ModifiableProperty<T> ofSimple(
-      final GameParsingConsumer<T> setter,
+      final ExceptionConsumer<T> setter,
       final Supplier<T> getter) {
     return of(setter,
         o -> throwIllegalStateException("No String Setter"),
@@ -145,8 +145,8 @@ public interface ModifiableProperty<T> {
    * @param <T> The type of Object to consume.
    */
   @FunctionalInterface
-  static interface GameParsingConsumer<T> {
-    void accept(T object) throws GameParseException;
+  static interface ExceptionConsumer<T> {
+    void accept(T object) throws Exception;
   }
 
   static <T> T throwIllegalStateException(final String text) {
