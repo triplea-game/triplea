@@ -2,6 +2,8 @@ package games.strategy.engine.data;
 
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 /**
  * A wrapper interface to Bundle setters, getters and resetters of the same field.
  *
@@ -15,14 +17,22 @@ public class MutableProperty<T> {
   private final Runnable resetter;
 
   private MutableProperty(
-      final ThrowingConsumer<T, Exception> setter,
-      final ThrowingConsumer<String, Exception> stringSetter,
-      final Supplier<T> getter,
-      final Runnable resetter) {
-    this.setter = setter;
-    this.stringSetter = stringSetter;
-    this.getter = getter;
-    this.resetter = resetter;
+      @Nullable final ThrowingConsumer<T, Exception> setter,
+      @Nullable final ThrowingConsumer<String, Exception> stringSetter,
+      @Nullable final Supplier<T> getter,
+      @Nullable final Runnable resetter) {
+    this.setter = setter != null ? setter : o -> {
+      throw new UnsupportedOperationException("No Setter has been defined!");
+    };
+    this.stringSetter = stringSetter != null ? stringSetter : s -> {
+      throw new UnsupportedOperationException("No String Setter has been defined!");
+    };
+    this.getter = getter != null ? getter : () -> {
+      throw new UnsupportedOperationException("No Getter has been defined!");
+    };
+    this.resetter = resetter != null ? resetter : () -> {
+      throw new UnsupportedOperationException("No Resetter has been defined!");
+    };
   }
 
   public void setValue(final String string) throws Exception {
@@ -75,7 +85,7 @@ public class MutableProperty<T> {
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter) {
-    return of(setter, stringSetter, getter, () -> throwIllegalStateException("No Resetter"));
+    return of(setter, stringSetter, getter, null);
   }
 
   /**
@@ -92,11 +102,7 @@ public class MutableProperty<T> {
    * Convenience method to create an instance of this interface that only gets.
    */
   public static <T, E extends Throwable> MutableProperty<T> of(final Supplier<T> getter) {
-    return of(
-        t -> throwIllegalStateException("No Setter"),
-        t -> throwIllegalStateException("No String Setter"),
-        getter,
-        () -> throwIllegalStateException("No Resetter"));
+    return of(null, null, getter, null);
   }
 
   /**
@@ -105,11 +111,7 @@ public class MutableProperty<T> {
   public static <T> MutableProperty<T> of(
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter) {
-    return of(
-        setter,
-        stringSetter,
-        () -> throwIllegalStateException("No Getter"),
-        () -> throwIllegalStateException("No Resetter"));
+    return of(setter, stringSetter, null, null);
   }
 
 
@@ -120,10 +122,7 @@ public class MutableProperty<T> {
   public static <T> MutableProperty<T> ofSimple(
       final ThrowingConsumer<T, Exception> setter,
       final Supplier<T> getter) {
-    return of(setter,
-        o -> throwIllegalStateException("No String Setter"),
-        getter,
-        () -> throwIllegalStateException("No Resetter"));
+    return of(setter, null, getter, null);
   }
 
 
@@ -132,11 +131,7 @@ public class MutableProperty<T> {
    * getter. And no support for setters of any kind.
    */
   public static <T> MutableProperty<T> ofSimple(final Supplier<T> getter) {
-    return ofSimple(e -> throwIllegalStateException("No Setter"), getter);
-  }
-
-  static <T> T throwIllegalStateException(final String text) {
-    throw new IllegalStateException(text);
+    return ofSimple(null, getter);
   }
 
   /**
