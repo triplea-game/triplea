@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableMap;
 
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -518,87 +518,87 @@ public class TripleAUnit extends Unit {
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("transportedBy",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setTransportedBy,
                 this::getTransportedBy))
         .put("unloaded",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setUnloaded,
                 this::getUnloaded))
         .put("wasLoadedThisTurn",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setWasLoadedThisTurn,
                 this::getWasLoadedThisTurn))
         .put("unloadedTo",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setUnloadedTo,
                 this::getUnloadedTo))
         .put("wasUnloadedInCombatPhase",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setWasUnloadedInCombatPhase,
                 this::getWasUnloadedInCombatPhase))
         .put("alreadyMoved",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setAlreadyMoved,
                 this::getAlreadyMoved))
         .put("bonusMovement",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setBonusMovement,
                 this::getBonusMovement))
         .put("unitDamage",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setUnitDamage,
                 this::getUnitDamage))
         .put("submerged",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setSubmerged,
                 this::getSubmerged))
         .put("originalOwner",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setOriginalOwner,
                 this::getOriginalOwner))
         .put("wasInCombat",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setWasInCombat,
                 this::getWasInCombat))
         .put("wasLoadedAfterCombat",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setWasLoadedAfterCombat,
                 this::getWasLoadedAfterCombat))
         .put("wasAmphibious",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setWasAmphibious,
                 this::getWasAmphibious))
         .put("originatedFrom",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setOriginatedFrom,
                 this::getOriginatedFrom))
         .put("wasScrambled",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setWasScrambled,
                 this::getWasScrambled))
         .put("maxScrambleCount",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setMaxScrambleCount,
                 this::getMaxScrambleCount))
         .put("wasInAirBattle",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setWasInAirBattle,
                 this::getWasInAirBattle))
         .put("disabled",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setDisabled,
                 this::getDisabled))
         .put("launched",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setLaunched,
                 this::getLaunched))
         .put("airborne",
-            AttachmentProperty.ofSimple(
+            ModifiableProperty.ofSimple(
                 this::setAirborne,
                 this::getAirborne))
         .build();

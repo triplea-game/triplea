@@ -7,7 +7,7 @@ import java.util.function.Supplier;
  *
  * @param <T> The type of the field to set, get and reset.
  */
-public interface AttachmentProperty<T> {
+public interface ModifiableProperty<T> {
 
   void setValue(String string) throws GameParseException;
 
@@ -33,12 +33,12 @@ public interface AttachmentProperty<T> {
   /**
    * Convenience method to create an instance of this interface.
    */
-  static <T> AttachmentProperty<T> of(
+  static <T> ModifiableProperty<T> of(
       final GameParsingConsumer<T> setter,
       final GameParsingConsumer<String> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
-    return new AttachmentProperty<T>() {
+    return new ModifiableProperty<T>() {
 
       @Override
       public void setValue(String string) throws GameParseException {
@@ -65,7 +65,7 @@ public interface AttachmentProperty<T> {
   /**
    * Convenience method to create an instance of this interface with no resetter.
    */
-  static <T> AttachmentProperty<T> of(
+  static <T> ModifiableProperty<T> of(
       final GameParsingConsumer<T> setter,
       final GameParsingConsumer<String> stringSetter,
       final Supplier<T> getter) {
@@ -75,7 +75,7 @@ public interface AttachmentProperty<T> {
   /**
    * Convenience method to create a generic String instance of this interface.
    */
-  static AttachmentProperty<String> of(
+  static ModifiableProperty<String> of(
       final GameParsingConsumer<String> setter,
       final Supplier<String> getter,
       final Runnable resetter) {
@@ -85,7 +85,7 @@ public interface AttachmentProperty<T> {
   /**
    * Convenience method to create an instance of this interface that only gets.
    */
-  static <T> AttachmentProperty<T> of(final Supplier<T> getter) {
+  static <T> ModifiableProperty<T> of(final Supplier<T> getter) {
     return of(
         t -> throwIllegalStateException("No Setter"),
         t -> throwIllegalStateException("No String Setter"),
@@ -96,7 +96,7 @@ public interface AttachmentProperty<T> {
   /**
    * Convenience method to create an instance of this interface that only sets, but doesn't reset.
    */
-  static <T> AttachmentProperty<T> of(
+  static <T> ModifiableProperty<T> of(
       final GameParsingConsumer<T> setter,
       final GameParsingConsumer<String> stringSetter) {
     return of(
@@ -111,7 +111,7 @@ public interface AttachmentProperty<T> {
    * Convenience method to create an instance of this interface that just contains a direct
    * setter and getter. And no support for Strings as secondary setter.
    */
-  static <T> AttachmentProperty<T> ofSimple(
+  static <T> ModifiableProperty<T> ofSimple(
       final GameParsingConsumer<T> setter,
       final Supplier<T> getter) {
     return of(setter,
@@ -124,14 +124,14 @@ public interface AttachmentProperty<T> {
   /**
    * Convenience method to create an instance of this interface with no resetter.
    */
-  static <T> AttachmentProperty<T> ofSimple(final Supplier<T> getter) {
+  static <T> ModifiableProperty<T> ofSimple(final Supplier<T> getter) {
     return ofSimple(e -> throwIllegalStateException("No Setter"), getter);
   }
 
   /**
    * Convenience method to create an instance of this interface that only sets via the string value.
    */
-  static <T> AttachmentProperty<T> ofWriteOnlyString(final GameParsingConsumer<String> stringSetter) {
+  static <T> ModifiableProperty<T> ofWriteOnlyString(final GameParsingConsumer<String> stringSetter) {
     return of(
         t -> throwIllegalStateException("No Setter"),
         stringSetter,

@@ -1249,7 +1249,7 @@ public final class GameParser {
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
       throws GameParseException {
-    final Map<String, AttachmentProperty<?>> attachmentMap = attachment.getPropertyMap();
+    final Map<String, ModifiableProperty<?>> attachmentMap = attachment.getPropertyMap();
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // find the setter

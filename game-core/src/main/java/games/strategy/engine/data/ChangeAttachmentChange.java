@@ -70,7 +70,7 @@ public class ChangeAttachmentChange extends Change {
   @Override
   public void perform(final GameData data) {
     final IAttachment attachment = attachedTo.getAttachment(attachmentName);
-    final AttachmentProperty<?> attachmentProperty = attachment.getOrError(property);
+    final ModifiableProperty<?> attachmentProperty = attachment.getOrError(property);
     if (clearFirst) {
       attachmentProperty.resetValue();
     }

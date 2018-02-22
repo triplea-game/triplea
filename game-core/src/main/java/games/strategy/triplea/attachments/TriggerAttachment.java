@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -2605,179 +2605,179 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .putAll(super.createPropertyMap())
         .put("frontier",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setFrontier,
                 this::setFrontier,
                 this::getFrontier,
                 this::resetFrontier))
         .put("productionRule",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setProductionRule,
                 this::setProductionRule,
                 this::getProductionRule,
                 this::resetProductionRule))
         .put("tech",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTech,
                 this::setTech,
                 this::getTech,
                 this::resetTech))
         .put("availableTech",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAvailableTech,
                 this::setAvailableTech,
                 this::getAvailableTech,
                 this::resetAvailableTech))
         .put("placement",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setPlacement,
                 this::setPlacement,
                 this::getPlacement,
                 this::resetPlacement))
         .put("removeUnits",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRemoveUnits,
                 this::setRemoveUnits,
                 this::getRemoveUnits,
                 this::resetRemoveUnits))
         .put("purchase",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setPurchase,
                 this::setPurchase,
                 this::getPurchase,
                 this::resetPurchase))
         .put("resource",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setResource,
                 this::setResource,
                 this::getResource,
                 this::resetResource))
         .put("resourceCount",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setResourceCount,
                 this::setResourceCount,
                 this::getResourceCount,
                 this::resetResourceCount))
         .put("support",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setSupport,
                 this::setSupport,
                 this::getSupport,
                 this::resetSupport))
         .put("relationshipChange",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRelationshipChange,
                 this::setRelationshipChange,
                 this::getRelationshipChange,
                 this::resetRelationshipChange))
         .put("victory",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setVictory,
                 this::setVictory,
                 this::getVictory,
                 this::resetVictory))
         .put("activateTrigger",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setActivateTrigger,
                 this::setActivateTrigger,
                 this::getActivateTrigger,
                 this::resetActivateTrigger))
         .put("changeOwnership",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setChangeOwnership,
                 this::setChangeOwnership,
                 this::getChangeOwnership,
                 this::resetChangeOwnership))
         .put("unitType",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUnitType,
                 this::setUnitType,
                 this::getUnitType,
                 this::resetUnitType))
         .put("unitAttachmentName",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUnitAttachmentName,
                 this::setUnitAttachmentName,
                 this::getUnitAttachmentName,
                 this::resetUnitAttachmentName))
         .put("unitProperty",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUnitProperty,
                 this::setUnitProperty,
                 this::getUnitProperty,
                 this::resetUnitProperty))
         .put("territories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTerritories,
                 this::setTerritories,
                 this::getTerritories,
                 this::resetTerritories))
         .put("territoryAttachmentName",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTerritoryAttachmentName,
                 this::setTerritoryAttachmentName,
                 this::getTerritoryAttachmentName,
                 this::resetTerritoryAttachmentName))
         .put("territoryProperty",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTerritoryProperty,
                 this::setTerritoryProperty,
                 this::getTerritoryProperty,
                 this::resetTerritoryProperty))
         .put("players",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("playerAttachmentName",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setPlayerAttachmentName,
                 this::setPlayerAttachmentName,
                 this::getPlayerAttachmentName,
                 this::resetPlayerAttachmentName))
         .put("playerProperty",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setPlayerProperty,
                 this::setPlayerProperty,
                 this::getPlayerProperty,
                 this::resetPlayerProperty))
         .put("relationshipTypes",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRelationshipTypes,
                 this::setRelationshipTypes,
                 this::getRelationshipTypes,
                 this::resetRelationshipTypes))
         .put("relationshipTypeAttachmentName",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRelationshipTypeAttachmentName,
                 this::setRelationshipTypeAttachmentName,
                 this::getRelationshipTypeAttachmentName,
                 this::resetRelationshipTypeAttachmentName))
         .put("relationshipTypeProperty",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRelationshipTypeProperty,
                 this::setRelationshipTypeProperty,
                 this::getRelationshipTypeProperty,
                 this::resetRelationshipTypeProperty))
         .put("territoryEffects",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTerritoryEffects,
                 this::setTerritoryEffects,
                 this::getTerritoryEffects,
                 this::resetTerritoryEffects))
         .put("territoryEffectAttachmentName",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTerritoryEffectAttachmentName,
                 this::setTerritoryEffectAttachmentName,
                 this::getTerritoryEffectAttachmentName,
                 this::resetTerritoryEffectAttachmentName))
         .put("territoryEffectProperty",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTerritoryEffectProperty,
                 this::setTerritoryEffectProperty,
                 this::getTerritoryEffectProperty,
@@ -2786,7 +2786,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return createPropertyMap();
   }
 }

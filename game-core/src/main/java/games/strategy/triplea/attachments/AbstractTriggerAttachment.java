@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -310,35 +310,35 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .putAll(super.createPropertyMap())
         .put("uses",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("usedThisRound",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUsedThisRound,
                 this::setUsedThisRound,
                 this::getUsedThisRound,
                 this::resetUsedThisRound))
         .put("notification",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setNotification,
                 this::setNotification,
                 this::getNotification,
                 this::resetNotification))
         .put("when",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setWhen,
                 this::setWhen,
                 this::getWhen,
                 this::resetWhen))
         .put("trigger",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 l -> {
                   throw new IllegalStateException("Can't set trigger directly");
                 },

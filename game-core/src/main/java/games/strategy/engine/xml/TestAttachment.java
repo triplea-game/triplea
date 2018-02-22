@@ -5,7 +5,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -56,14 +56,14 @@ public class TestAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .put("value", AttachmentProperty.of(this::setValue, this::getValue, this::resetValue))
+  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+        .put("value", ModifiableProperty.of(this::setValue, this::getValue, this::resetValue))
         .build();
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return createPropertyMap();
   }
 }

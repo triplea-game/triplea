@@ -6,7 +6,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -422,94 +422,94 @@ public class TechAttachment extends DefaultAttachment {
   }
 
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("techCost",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTechCost,
                 this::setTechCost,
                 this::getTechCost,
                 this::resetTechCost))
         .put("heavyBomber",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setHeavyBomber,
                 this::setHeavyBomber,
                 this::getHeavyBomber,
                 this::resetHeavyBomber))
         .put("longRangeAir",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setLongRangeAir,
                 this::setLongRangeAir,
                 this::getLongRangeAir,
                 this::resetLongRangeAir))
         .put("jetPower",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setJetPower,
                 this::setJetPower,
                 this::getJetPower,
                 this::resetJetPower))
         .put("rocket",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRocket,
                 this::setRocket,
                 this::getRocket,
                 this::resetRocket))
         .put("industrialTechnology",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setIndustrialTechnology,
                 this::setIndustrialTechnology,
                 this::getIndustrialTechnology,
                 this::resetIndustrialTechnology))
         .put("superSub",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setSuperSub,
                 this::setSuperSub,
                 this::getSuperSub,
                 this::resetSuperSub))
         .put("destroyerBombard",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setDestroyerBombard,
                 this::setDestroyerBombard,
                 this::getDestroyerBombard,
                 this::resetDestroyerBombard))
         .put("improvedArtillerySupport",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setImprovedArtillerySupport,
                 this::setImprovedArtillerySupport,
                 this::getImprovedArtillerySupport,
                 this::resetImprovedArtillerySupport))
         .put("paratroopers",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setParatroopers,
                 this::setParatroopers,
                 this::getParatroopers,
                 this::resetParatroopers))
         .put("increasedFactoryProduction",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setIncreasedFactoryProduction,
                 this::setIncreasedFactoryProduction,
                 this::getIncreasedFactoryProduction,
                 this::resetIncreasedFactoryProduction))
         .put("warBonds",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setWarBonds,
                 this::setWarBonds,
                 this::getWarBonds,
                 this::resetWarBonds))
         .put("mechanizedInfantry",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setMechanizedInfantry,
                 this::setMechanizedInfantry,
                 this::getMechanizedInfantry,
                 this::resetMechanizedInfantry))
         .put("aARadar",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAARadar,
                 this::setAARadar,
                 this::getAARadar,
                 this::resetAARadar))
         .put("shipyards",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setShipyards,
                 this::setShipyards,
                 this::getShipyards,
@@ -518,7 +518,7 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return createPropertyMap();
   }
 }

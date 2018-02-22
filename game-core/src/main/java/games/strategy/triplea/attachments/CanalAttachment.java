@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -169,17 +169,17 @@ public class CanalAttachment extends DefaultAttachment {
     }
   }
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .put("canalName", AttachmentProperty.of(this::setCanalName, this::getCanalName, this::resetCanalName))
+  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+        .put("canalName", ModifiableProperty.of(this::setCanalName, this::getCanalName, this::resetCanalName))
         .put("landTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setLandTerritories,
                 this::setLandTerritories,
                 this::getLandTerritories,
                 this::resetLandTerritories))
         .put("excludedUnits",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setExcludedUnits,
                 this::setExcludedUnits,
                 this::getExcludedUnits,
@@ -188,7 +188,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return createPropertyMap();
   }
 }

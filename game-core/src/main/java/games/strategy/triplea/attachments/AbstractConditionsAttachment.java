@@ -11,7 +11,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -396,40 +396,40 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
   }
 
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("conditions",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setConditions,
                 this::setConditions,
                 this::getConditions,
                 this::resetConditions))
         .put("conditionType",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setConditionType,
                 this::setConditionType,
                 this::getConditionType,
                 this::resetConditionType))
         .put("invert",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setInvert,
                 this::setInvert,
                 this::getInvert,
                 this::resetInvert))
         .put("chance",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setChance,
                 this::setChance,
                 this::getChance,
                 this::resetChance))
         .put("chanceIncrementOnFailure",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setChanceIncrementOnFailure,
                 this::setChanceIncrementOnFailure,
                 this::getChanceIncrementOnFailure,
                 this::resetChanceIncrementOnFailure))
         .put("chanceDecrementOnSuccess",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setChanceDecrementOnSuccess,
                 this::setChanceDecrementOnSuccess,
                 this::getChanceDecrementOnSuccess,

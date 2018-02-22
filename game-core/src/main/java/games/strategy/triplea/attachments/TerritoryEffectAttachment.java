@@ -9,7 +9,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -199,28 +199,28 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("combatDefenseEffect",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setCombatDefenseEffect,
                 this::setCombatDefenseEffect,
                 this::getCombatDefenseEffect,
                 this::resetCombatDefenseEffect))
         .put("combatOffenseEffect",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setCombatOffenseEffect,
                 this::setCombatOffenseEffect,
                 this::getCombatOffenseEffect,
                 this::resetCombatOffenseEffect))
         .put("noBlitz",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setNoBlitz,
                 this::setNoBlitz,
                 this::getNoBlitz,
                 this::resetNoBlitz))
         .put("unitsNotAllowed",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUnitsNotAllowed,
                 this::setUnitsNotAllowed,
                 this::getUnitsNotAllowed,
@@ -229,7 +229,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return createPropertyMap();
   }
 }

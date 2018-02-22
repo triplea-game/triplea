@@ -8,7 +8,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
@@ -210,35 +210,35 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .putAll(super.createPropertyMap())
         .put("text",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setText,
                 this::setText,
                 this::getText,
                 this::resetText))
         .put("costPU",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setCostPU,
                 this::setCostPU,
                 this::getCostPU,
                 this::resetCostPU))
         .put("attemptsPerTurn",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAttemptsPerTurn,
                 this::setAttemptsPerTurn,
                 this::getAttemptsPerTurn,
                 this::resetAttemptsPerTurn))
         .put("attemptsLeftThisTurn",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAttemptsLeftThisTurn,
                 this::setAttemptsLeftThisTurn,
                 this::getAttemptsLeftThisTurn,
                 this::resetAttemptsLeftThisTurn))
         .put("actionAccept",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setActionAccept,
                 this::setActionAccept,
                 this::getActionAccept,

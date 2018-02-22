@@ -11,7 +11,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -1349,148 +1349,148 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
   }
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("attackBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAttackBonus,
                 this::setAttackBonus,
                 this::getAttackBonus,
                 this::resetAttackBonus))
         .put("defenseBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setDefenseBonus,
                 this::setDefenseBonus,
                 this::getDefenseBonus,
                 this::resetDefenseBonus))
         .put("movementBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setMovementBonus,
                 this::setMovementBonus,
                 this::getMovementBonus,
                 this::resetMovementBonus))
         .put("radarBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRadarBonus,
                 this::setRadarBonus,
                 this::getRadarBonus,
                 this::resetRadarBonus))
         .put("airAttackBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAirAttackBonus,
                 this::setAirAttackBonus,
                 this::getAirAttackBonus,
                 this::resetAirAttackBonus))
         .put("airDefenseBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAirDefenseBonus,
                 this::setAirDefenseBonus,
                 this::getAirDefenseBonus,
                 this::resetAirDefenseBonus))
         .put("productionBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setProductionBonus,
                 this::setProductionBonus,
                 this::getProductionBonus,
                 this::resetProductionBonus))
         .put("minimumTerritoryValueForProductionBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::getMinimumTerritoryValueForProductionBonus,
                 this::resetMinimumTerritoryValueForProductionBonus))
         .put("repairDiscount",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRepairDiscount,
                 this::setRepairDiscount,
                 this::getRepairDiscount,
                 this::resetRepairDiscount))
         .put("warBondDiceSides",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setWarBondDiceSides,
                 this::setWarBondDiceSides,
                 this::getWarBondDiceSides,
                 this::resetWarBondDiceSides))
         .put("warBondDiceNumber",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setWarBondDiceNumber,
                 this::setWarBondDiceNumber,
                 this::getWarBondDiceNumber,
                 this::resetWarBondDiceNumber))
         .put("rocketDiceNumber",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRocketDiceNumber,
                 this::setRocketDiceNumber,
                 this::getRocketDiceNumber,
                 this::resetRocketDiceNumber))
         .put("rocketDistance",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRocketDistance,
                 this::setRocketDistance,
                 this::getRocketDistance,
                 this::resetRocketDistance))
         .put("rocketNumberPerTerritory",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRocketNumberPerTerritory,
                 this::setRocketNumberPerTerritory,
                 this::getRocketNumberPerTerritory,
                 this::resetRocketNumberPerTerritory))
         .put("unitAbilitiesGained",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUnitAbilitiesGained,
                 this::setUnitAbilitiesGained,
                 this::getUnitAbilitiesGained,
                 this::resetUnitAbilitiesGained))
         .put("airborneForces",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAirborneForces,
                 this::setAirborneForces,
                 this::getAirborneForces,
                 this::resetAirborneForces))
         .put("airborneCapacity",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAirborneCapacity,
                 this::setAirborneCapacity,
                 this::getAirborneCapacity,
                 this::resetAirborneCapacity))
         .put("airborneTypes",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAirborneTypes,
                 this::setAirborneTypes,
                 this::getAirborneTypes,
                 this::resetAirborneTypes))
         .put("airborneDistance",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAirborneDistance,
                 this::setAirborneDistance,
                 this::getAirborneDistance,
                 this::resetAirborneDistance))
         .put("airborneBases",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAirborneBases,
                 this::setAirborneBases,
                 this::getAirborneBases,
                 this::resetAirborneBases))
         .put("airborneTargettedByAA",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAirborneTargettedByAA,
                 this::setAirborneTargettedByAA,
                 this::getAirborneTargettedByAA,
                 this::resetAirborneTargettedByAA))
         .put("attackRollsBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAttackRollsBonus,
                 this::setAttackRollsBonus,
                 this::getAttackRollsBonus,
                 this::resetAttackRollsBonus))
         .put("defenseRollsBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setDefenseRollsBonus,
                 this::setDefenseRollsBonus,
                 this::getDefenseRollsBonus,
                 this::resetDefenseRollsBonus))
         .put("bombingBonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setBombingBonus,
                 this::setBombingBonus,
                 this::getBombingBonus,
@@ -1499,7 +1499,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return createPropertyMap();
   }
 }

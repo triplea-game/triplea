@@ -13,7 +13,7 @@ import java.util.stream.StreamSupport;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -421,62 +421,62 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("unitType",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUnitType,
                 this::setUnitType,
                 this::getUnitType,
                 this::resetUnitType))
-        .put("offence", AttachmentProperty.of(this::getOffence))
-        .put("defence", AttachmentProperty.of(this::getDefence))
-        .put("roll", AttachmentProperty.of(this::getRoll))
-        .put("strength", AttachmentProperty.of(this::getStrength))
+        .put("offence", ModifiableProperty.of(this::getOffence))
+        .put("defence", ModifiableProperty.of(this::getDefence))
+        .put("roll", ModifiableProperty.of(this::getRoll))
+        .put("strength", ModifiableProperty.of(this::getStrength))
         .put("bonus",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setBonus,
                 this::setBonus,
                 this::getBonus,
                 this::resetBonus))
         .put("number",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setNumber,
                 this::setNumber,
                 this::getNumber,
                 this::resetNumber))
-        .put("allied", AttachmentProperty.of(this::getAllied))
-        .put("enemy", AttachmentProperty.of(this::getEnemy))
+        .put("allied", ModifiableProperty.of(this::getAllied))
+        .put("enemy", ModifiableProperty.of(this::getEnemy))
         .put("bonusType",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setBonusType,
                 this::setBonusType,
                 this::getBonusType,
                 this::resetBonusType))
         .put("players",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("impArtTech",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setImpArtTech,
                 this::setImpArtTech,
                 this::getImpArtTech,
                 this::resetImpArtTech))
         .put("dice",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setDice,
                 this::getDice,
                 this::resetDice))
         .put("side",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setSide,
                 this::getSide,
                 this::resetSide))
         .put("faction",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setFaction,
                 this::getFaction,
                 this::resetFaction))
@@ -484,7 +484,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return createPropertyMap();
   }
 }

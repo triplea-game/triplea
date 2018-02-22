@@ -15,7 +15,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -1165,99 +1165,99 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .putAll(super.createPropertyMap())
         .put("techs",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTechs,
                 this::setTechs,
                 this::getTechs,
                 this::resetTechs))
         .put("techCount",
-            AttachmentProperty.of(this::getTechCount))
+            ModifiableProperty.of(this::getTechCount))
         .put("relationship",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRelationship,
                 this::setRelationship,
                 this::getRelationship,
                 this::resetRelationship))
         .put("atWarPlayers",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAtWarPlayers,
                 this::setAtWarPlayers,
                 this::getAtWarPlayers,
                 this::resetAtWarPlayers))
         .put("atWarCount",
-            AttachmentProperty.of(this::getAtWarCount))
+            ModifiableProperty.of(this::getAtWarCount))
         .put("destroyedTUV",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setDestroyedTUV,
                 this::setDestroyedTUV,
                 this::getDestroyedTUV,
                 this::resetDestroyedTUV))
         .put("battle",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setBattle,
                 this::setBattle,
                 this::getBattle,
                 this::resetBattle))
         .put("alliedOwnershipTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAlliedOwnershipTerritories,
                 this::setAlliedOwnershipTerritories,
                 this::getAlliedOwnershipTerritories,
                 this::resetAlliedOwnershipTerritories))
         .put("directOwnershipTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setDirectOwnershipTerritories,
                 this::setDirectOwnershipTerritories,
                 this::getDirectOwnershipTerritories,
                 this::resetDirectOwnershipTerritories))
         .put("alliedExclusionTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAlliedExclusionTerritories,
                 this::setAlliedExclusionTerritories,
                 this::getAlliedExclusionTerritories,
                 this::resetAlliedExclusionTerritories))
         .put("directExclusionTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setDirectExclusionTerritories,
                 this::setDirectExclusionTerritories,
                 this::getDirectExclusionTerritories,
                 this::resetDirectExclusionTerritories))
         .put("enemyExclusionTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setEnemyExclusionTerritories,
                 this::setEnemyExclusionTerritories,
                 this::getEnemyExclusionTerritories,
                 this::resetEnemyExclusionTerritories))
         .put("enemySurfaceExclusionTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setEnemySurfaceExclusionTerritories,
                 this::setEnemySurfaceExclusionTerritories,
                 this::getEnemySurfaceExclusionTerritories,
                 this::resetEnemySurfaceExclusionTerritories))
         .put("directPresenceTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setDirectPresenceTerritories,
                 this::setDirectPresenceTerritories,
                 this::getDirectPresenceTerritories,
                 this::resetDirectPresenceTerritories))
         .put("alliedPresenceTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAlliedPresenceTerritories,
                 this::setAlliedPresenceTerritories,
                 this::getAlliedPresenceTerritories,
                 this::resetAlliedPresenceTerritories))
         .put("enemyPresenceTerritories",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setEnemyPresenceTerritories,
                 this::setEnemyPresenceTerritories,
                 this::getEnemyPresenceTerritories,
                 this::resetEnemyPresenceTerritories))
         .put("unitPresence",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUnitPresence,
                 this::setUnitPresence,
                 this::getUnitPresence,
@@ -1266,7 +1266,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return createPropertyMap();
   }
 }

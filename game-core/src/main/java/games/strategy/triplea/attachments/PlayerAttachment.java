@@ -10,7 +10,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -596,89 +596,89 @@ public class PlayerAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .put("vps", AttachmentProperty.of(this::setVps, this::setVps, this::getVps, this::resetVps))
+  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+        .put("vps", ModifiableProperty.of(this::setVps, this::setVps, this::getVps, this::resetVps))
         .put("captureVps",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setCaptureVps,
                 this::setCaptureVps,
                 this::getCaptureVps,
                 this::resetCaptureVps))
         .put("retainCapitalNumber",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRetainCapitalNumber,
                 this::setRetainCapitalNumber,
                 this::getRetainCapitalNumber,
                 this::resetRetainCapitalNumber))
         .put("retainCapitalProduceNumber",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setRetainCapitalProduceNumber,
                 this::setRetainCapitalProduceNumber,
                 this::getRetainCapitalProduceNumber,
                 this::resetRetainCapitalProduceNumber))
         .put("giveUnitControl",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setGiveUnitControl,
                 this::setGiveUnitControl,
                 this::getGiveUnitControl,
                 this::resetGiveUnitControl))
         .put("captureUnitOnEnteringBy",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("shareTechnology",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setShareTechnology,
                 this::setShareTechnology,
                 this::getShareTechnology,
                 this::resetShareTechnology))
         .put("helpPayTechCost",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setHelpPayTechCost,
                 this::setHelpPayTechCost,
                 this::getHelpPayTechCost,
                 this::resetHelpPayTechCost))
         .put("destroysPUs",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setDestroysPUs,
                 this::setDestroysPUs,
                 this::getDestroysPUs,
                 this::resetDestroysPUs))
         .put("immuneToBlockade",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setImmuneToBlockade,
                 this::setImmuneToBlockade,
                 this::getImmuneToBlockade,
                 this::resetImmuneToBlockade))
         .put("suicideAttackResources",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setSuicideAttackResources,
                 this::setSuicideAttackResources,
                 this::getSuicideAttackResources,
                 this::resetSuicideAttackResources))
         .put("suicideAttackTargets",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setSuicideAttackTargets,
                 this::setSuicideAttackTargets,
                 this::getSuicideAttackTargets,
                 this::resetSuicideAttackTargets))
         .put("placementLimit",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setPlacementLimit,
                 this::setPlacementLimit,
                 this::getPlacementLimit,
                 this::resetPlacementLimit))
         .put("movementLimit",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setMovementLimit,
                 this::setMovementLimit,
                 this::getMovementLimit,
                 this::resetMovementLimit))
         .put("attackingLimit",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setAttackingLimit,
                 this::setAttackingLimit,
                 this::getAttackingLimit,
@@ -687,7 +687,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return createPropertyMap();
   }
 }

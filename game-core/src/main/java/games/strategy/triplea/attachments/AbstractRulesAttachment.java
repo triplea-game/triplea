@@ -12,7 +12,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
@@ -435,48 +435,48 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .putAll(super.createPropertyMap())
-        .put("countEach", AttachmentProperty.of(this::getCountEach))
-        .put("eachMultiple", AttachmentProperty.of(this::getEachMultiple))
+        .put("countEach", ModifiableProperty.of(this::getCountEach))
+        .put("eachMultiple", ModifiableProperty.of(this::getEachMultiple))
         .put("players",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("objectiveValue",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setObjectiveValue,
                 this::setObjectiveValue,
                 this::getObjectiveValue,
                 this::resetObjectiveValue))
         .put("uses",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("turns",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setTurns,
                 this::setTurns,
                 this::getTurns,
                 this::resetTurns))
         .put("switch",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setSwitch,
                 this::setSwitch,
                 this::getSwitch,
                 this::resetSwitch))
         .put("gameProperty",
-            AttachmentProperty.of(
+            ModifiableProperty.of(
                 this::setGameProperty,
                 this::setGameProperty,
                 this::getGameProperty,
                 this::resetGameProperty))
-        .put("rounds", AttachmentProperty.of(this::setRounds, this::setRounds))
+        .put("rounds", ModifiableProperty.of(this::setRounds, this::setRounds))
         .build();
   }
 }
