@@ -13,9 +13,11 @@ interface DynamicallyModifiable {
 
   /**
    * A fail-fast convenience method for {@code object.getPropertyMap().get(property)}.
+   * 
+   * @throws IllegalArgumentException If the property doesn't exist.
    */
   default MutableProperty<?> getOrError(final String property) {
     return Optional.ofNullable(getPropertyMap().get(property))
-        .orElseThrow(() -> new IllegalStateException("Missing property definition for option: " + property));
+        .orElseThrow(() -> new IllegalArgumentException("Missing property definition for option: " + property));
   }
 }

@@ -7,17 +7,37 @@ import java.util.function.Supplier;
  *
  * @param <T> The type of the field to set, get and reset.
  */
-public interface MutableProperty<T> {
+public class MutableProperty<T> {
 
-  void setValue(String string) throws Exception;
+  private final ThrowingConsumer<T, Exception> setter;
+  private final ThrowingConsumer<String, Exception> stringSetter;
+  private final Supplier<T> getter;
+  private final Runnable resetter;
 
-  void setValue(T value) throws Exception;
+  private MutableProperty(
+      final ThrowingConsumer<T, Exception> setter,
+      final ThrowingConsumer<String, Exception> stringSetter,
+      final Supplier<T> getter,
+      final Runnable resetter) {
+    this.setter = setter;
+    this.stringSetter = stringSetter;
+    this.getter = getter;
+    this.resetter = resetter;
+  }
+
+  public void setValue(final String string) throws Exception {
+    stringSetter.accept(string);
+  }
+
+  public void setValue(final T value) throws Exception {
+    setter.accept(value);
+  };
 
   /**
    * Calls the appropriate {@link MutableProperty#setValue} method.
    */
   @SuppressWarnings("unchecked")
-  default void setObjectValue(final Object o) {
+  public void setObjectValue(final Object o) {
     try {
       if (o instanceof String) {
         setValue((String) o);
@@ -25,52 +45,35 @@ public interface MutableProperty<T> {
         setValue((T) o);
       }
     } catch (final Exception e) {
-      throw new IllegalStateException("Failed to set Attachment property", e);
+      throw new IllegalStateException(e);
     }
   }
 
-  T getValue();
+  public T getValue() {
+    return getter.get();
+  };
 
-  void resetValue();
+  public void resetValue() {
+    resetter.run();
+  };
 
   /**
    * Convenience method to create an instance of this interface.
    */
-  static <T> MutableProperty<T> of(
-      final ExceptionConsumer<T> setter,
-      final ExceptionConsumer<String> stringSetter,
+  public static <T> MutableProperty<T> of(
+      final ThrowingConsumer<T, Exception> setter,
+      final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
-    return new MutableProperty<T>() {
-
-      @Override
-      public void setValue(String string) throws Exception {
-        stringSetter.accept(string);
-      }
-
-      @Override
-      public void setValue(T value) throws Exception {
-        setter.accept(value);
-      }
-
-      @Override
-      public T getValue() {
-        return getter.get();
-      }
-
-      @Override
-      public void resetValue() {
-        resetter.run();
-      }
-    };
+    return new MutableProperty<>(setter, stringSetter, getter, resetter);
   }
 
   /**
    * Convenience method to create an instance of this interface with no resetter.
    */
-  static <T> MutableProperty<T> of(
-      final ExceptionConsumer<T> setter,
-      final ExceptionConsumer<String> stringSetter,
+  public static <T> MutableProperty<T> of(
+      final ThrowingConsumer<T, Exception> setter,
+      final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter) {
     return of(setter, stringSetter, getter, () -> throwIllegalStateException("No Resetter"));
   }
@@ -78,8 +81,8 @@ public interface MutableProperty<T> {
   /**
    * Convenience method to create a generic String instance of this interface.
    */
-  static MutableProperty<String> of(
-      final ExceptionConsumer<String> setter,
+  public static MutableProperty<String> of(
+      final ThrowingConsumer<String, Exception> setter,
       final Supplier<String> getter,
       final Runnable resetter) {
     return of(setter, setter, getter, resetter);
@@ -88,7 +91,7 @@ public interface MutableProperty<T> {
   /**
    * Convenience method to create an instance of this interface that only gets.
    */
-  static <T> MutableProperty<T> of(final Supplier<T> getter) {
+  public static <T, E extends Throwable> MutableProperty<T> of(final Supplier<T> getter) {
     return of(
         t -> throwIllegalStateException("No Setter"),
         t -> throwIllegalStateException("No String Setter"),
@@ -99,9 +102,9 @@ public interface MutableProperty<T> {
   /**
    * Convenience method to create an instance of this interface that only sets, but doesn't reset.
    */
-  static <T> MutableProperty<T> of(
-      final ExceptionConsumer<T> setter,
-      final ExceptionConsumer<String> stringSetter) {
+  public static <T> MutableProperty<T> of(
+      final ThrowingConsumer<T, Exception> setter,
+      final ThrowingConsumer<String, Exception> stringSetter) {
     return of(
         setter,
         stringSetter,
@@ -114,8 +117,8 @@ public interface MutableProperty<T> {
    * Convenience method to create an instance of this interface that just contains a direct
    * setter and getter. And no support for Strings as secondary setter.
    */
-  static <T> MutableProperty<T> ofSimple(
-      final ExceptionConsumer<T> setter,
+  public static <T> MutableProperty<T> ofSimple(
+      final ThrowingConsumer<T, Exception> setter,
       final Supplier<T> getter) {
     return of(setter,
         o -> throwIllegalStateException("No String Setter"),
@@ -128,7 +131,7 @@ public interface MutableProperty<T> {
    * Convenience method to create an instance of this interface that just contains a
    * getter. And no support for setters of any kind.
    */
-  static <T> MutableProperty<T> ofSimple(final Supplier<T> getter) {
+  public static <T> MutableProperty<T> ofSimple(final Supplier<T> getter) {
     return ofSimple(e -> throwIllegalStateException("No Setter"), getter);
   }
 
@@ -139,7 +142,7 @@ public interface MutableProperty<T> {
   /**
    * Convenience method to create an instance of this interface that only sets via the string value.
    */
-  static <T> ModifiableProperty<T> ofWriteOnlyString(final ExceptionConsumer<String> stringSetter) {
+  public static <T> MutableProperty<T> ofWriteOnlyString(final ThrowingConsumer<String, Exception> stringSetter) {
     return of(
         t -> throwIllegalStateException("No Setter"),
         stringSetter,
@@ -151,9 +154,10 @@ public interface MutableProperty<T> {
    * A Consumer capable of throwing a GameParseException.
    *
    * @param <T> The type of Object to consume.
+   * @param <E> The type of Throwable to throw.
    */
   @FunctionalInterface
-  static interface ExceptionConsumer<T> {
-    void accept(T object) throws Exception;
+  public interface ThrowingConsumer<T, E extends Throwable> {
+    void accept(T object) throws E;
   }
 }
