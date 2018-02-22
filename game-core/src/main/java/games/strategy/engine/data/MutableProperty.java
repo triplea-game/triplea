@@ -107,7 +107,7 @@ public class MutableProperty<T> {
   /**
    * Convenience method to create an instance of this interface that only gets.
    */
-  public static <T, E extends Throwable> MutableProperty<T> of(final Supplier<T> getter) {
+  public static <T> MutableProperty<T> of(final Supplier<T> getter) {
     return of(noSetter(), noStringSetter(), getter, noResetter());
   }
 
