@@ -2,6 +2,8 @@ package games.strategy.engine.data;
 
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A wrapper interface to Bundle setters, getters and resetters of the same field.
  *
@@ -19,10 +21,10 @@ public class MutableProperty<T> {
       final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
-    this.setter = setter;
-    this.stringSetter = stringSetter;
-    this.getter = getter;
-    this.resetter = resetter;
+    this.setter = checkNotNull(setter);
+    this.stringSetter = checkNotNull(stringSetter);
+    this.getter = checkNotNull(getter);
+    this.resetter = checkNotNull(resetter);
   }
 
   private static <T> ThrowingConsumer<T, Exception> noSetter() {
