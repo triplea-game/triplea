@@ -55,9 +55,7 @@ import tools.util.ToolLogger;
  * - a list of centers - this is used to guess the territory name and to verify the
  * - territory name entered
  * Outputs - a list of polygons for each country
- * @deprecated Not pretty, meant only for one time use.
  */
-@Deprecated
 public class PolygonGrabber extends JFrame {
   private static final long serialVersionUID = 6381498094805120687L;
   private static boolean islandMode;
