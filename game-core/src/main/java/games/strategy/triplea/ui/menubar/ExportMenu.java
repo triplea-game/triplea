@@ -156,10 +156,9 @@ final class ExportMenu extends JMenu {
       return;
     }
     final StringBuilder text = new StringBuilder(1000);
-    final GameData clone;
     try {
       gameData.acquireReadLock();
-      clone = GameDataUtils.cloneGameData(gameData);
+      final GameData clone = GameDataUtils.cloneGameData(gameData);
       final IStat[] stats = statPanel.getStats();
       // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech
       // tokens or # techs, etc.

@@ -90,9 +90,8 @@ public class Vault {
   }
 
   private byte[] secretKeyToBytes(final SecretKey key) {
-    final DESKeySpec ks;
     try {
-      ks = (DESKeySpec) secretKeyFactory.getKeySpec(key, DESKeySpec.class);
+      final DESKeySpec ks = (DESKeySpec) secretKeyFactory.getKeySpec(key, DESKeySpec.class);
       return ks.getKey();
     } catch (final GeneralSecurityException e) {
       throw new IllegalStateException(e.getMessage());

@@ -197,24 +197,22 @@ public class ProBattleUtils {
       landDistance = 10;
     }
     final int enemyDistance = Math.max(3, (landDistance + 1));
-    final int alliedDistance = (enemyDistance + 1) / 2;
     final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, enemyDistance);
     final List<Territory> nearbyLandTerritories =
         CollectionUtils.getMatches(nearbyTerritories, Matches.territoryIsLand());
     final Set<Territory> nearbyEnemySeaTerritories =
         data.getMap().getNeighbors(t, enemyDistance, Matches.territoryIsWater());
     nearbyEnemySeaTerritories.add(t);
+    final int alliedDistance = (enemyDistance + 1) / 2;
     final Set<Territory> nearbyAlliedSeaTerritories =
         data.getMap().getNeighbors(t, alliedDistance, Matches.territoryIsWater());
     nearbyAlliedSeaTerritories.add(t);
-    final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
     final List<Unit> enemyUnitsInLandTerritories = new ArrayList<>();
-    final List<Unit> myUnitsInSeaTerritories = new ArrayList<>();
-    final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<>();
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
       enemyUnitsInLandTerritories
           .addAll(nearbyLandTerritory.getUnits().getMatches(ProMatches.unitIsEnemyAir(player, data)));
     }
+    final List<Unit> enemyUnitsInSeaTerritories = new ArrayList<>();
     for (final Territory nearbySeaTerritory : nearbyEnemySeaTerritories) {
       final List<Unit> enemySeaUnits =
           nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsEnemyNotLand(player, data));
@@ -233,6 +231,8 @@ public class ProBattleUtils {
         enemyUnitsInSeaTerritories.addAll(enemySeaUnits);
       }
     }
+    final List<Unit> alliedUnitsInSeaTerritories = new ArrayList<>();
+    final List<Unit> myUnitsInSeaTerritories = new ArrayList<>();
     for (final Territory nearbySeaTerritory : nearbyAlliedSeaTerritories) {
       myUnitsInSeaTerritories.addAll(nearbySeaTerritory.getUnits().getMatches(ProMatches.unitIsOwnedNotLand(player)));
       myUnitsInSeaTerritories.addAll(ProPurchaseUtils.getPlaceUnits(nearbySeaTerritory, purchaseTerritories));

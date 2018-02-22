@@ -70,6 +70,9 @@ public final class HelpMenu extends JMenu {
     final String moveSelectionHelpTitle = "Movement/Selection Help";
     add(SwingAction.of(moveSelectionHelpTitle, e -> {
       // html formatted string
+      final JEditorPane editorPane = new JEditorPane();
+      editorPane.setEditable(false);
+      editorPane.setContentType("text/html");
       final String hints = "<b> Selecting Units</b><br>" + "Left click on a unit stack to select 1 unit.<br>"
           + "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
           + "CTRL-Left click on a unit stack to select all units of that type in the stack.<br>"
@@ -108,9 +111,6 @@ public final class HelpMenu extends JMenu {
           + "Press 'u' while mousing over a unit to undo all moves that unit has made (beta).<br>"
           + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the "
           + "map to the territory panel.<br>";
-      final JEditorPane editorPane = new JEditorPane();
-      editorPane.setEditable(false);
-      editorPane.setContentType("text/html");
       editorPane.setText(hints);
       final JScrollPane scroll = new JScrollPane(editorPane);
       JOptionPane.showMessageDialog(null, scroll, moveSelectionHelpTitle, JOptionPane.PLAIN_MESSAGE);
@@ -119,10 +119,6 @@ public final class HelpMenu extends JMenu {
 
   static String getUnitStatsTable(final GameData gameData, final UiContext uiContext) {
     // html formatted string
-    int i = 0;
-    final String color1 = "ABABAB";
-    final String color2 = "BDBDBD";
-    final String color3 = "FEECE2";
     final StringBuilder hints = new StringBuilder();
     hints.append("<html>");
     hints.append("<head><style>th, tr{color:black}</style></head>");
@@ -132,6 +128,10 @@ public final class HelpMenu extends JMenu {
           TuvUtils.getResourceCostsForTuv(gameData, true);
       final Map<PlayerID, List<UnitType>> playerUnitTypes =
           UnitType.getAllPlayerUnitsWithImages(gameData, uiContext, true);
+      final String color3 = "FEECE2";
+      final String color2 = "BDBDBD";
+      final String color1 = "ABABAB";
+      int i = 0;
       for (final Map.Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {
         final PlayerID player = entry.getKey();
         hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");

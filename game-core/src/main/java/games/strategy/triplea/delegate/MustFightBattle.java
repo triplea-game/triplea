@@ -360,7 +360,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Set<PlayerID> playerSet = m_battleSite.getUnits().getPlayersWithUnits();
     // find all attacking players (unsorted)
     final Collection<PlayerID> attackers = new ArrayList<>();
-    final Collection<Unit> allAttackingUnits = new ArrayList<>();
     for (final PlayerID current : playerSet) {
       if (m_data.getRelationshipTracker().isAllied(m_attacker, current) || current.equals(m_attacker)) {
         attackers.add(current);
@@ -368,6 +367,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final StringBuilder transcriptText = new StringBuilder();
     // find all attacking units (unsorted)
+    final Collection<Unit> allAttackingUnits = new ArrayList<>();
     for (final Iterator<PlayerID> attackersIter = attackers.iterator(); attackersIter.hasNext();) {
       final PlayerID current = attackersIter.next();
       final String delim;
@@ -402,7 +402,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // find all defending players (unsorted)
     final Collection<PlayerID> defenders = new ArrayList<>();
-    final Collection<Unit> allDefendingUnits = new ArrayList<>();
     for (final PlayerID current : playerSet) {
       if (m_data.getRelationshipTracker().isAllied(m_defender, current) || current.equals(m_defender)) {
         defenders.add(current);
@@ -410,16 +409,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final StringBuilder transcriptBuilder = new StringBuilder();
     // find all defending units (unsorted)
+    final Collection<Unit> allDefendingUnits = new ArrayList<>();
     for (final Iterator<PlayerID> defendersIter = defenders.iterator(); defendersIter.hasNext();) {
       final PlayerID current = defendersIter.next();
-      final Collection<Unit> defendingUnits;
       final String delim;
       if (defendersIter.hasNext()) {
         delim = "; ";
       } else {
         delim = "";
       }
-      defendingUnits = CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsOwnedBy(current));
+      final Collection<Unit> defendingUnits =
+          CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsOwnedBy(current));
       transcriptBuilder
           .append(current.getName())
           .append(" defend with ")
@@ -1256,16 +1256,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private void queryRetreat(final boolean defender, final RetreatType retreatType, final IDelegateBridge bridge,
       Collection<Territory> availableTerritories) {
-    final boolean subs;
-    final boolean planes;
-    final boolean partialAmphib;
-    planes = retreatType == RetreatType.PLANES;
-    subs = retreatType == RetreatType.SUBS;
+    final boolean planes = retreatType == RetreatType.PLANES;
+    final boolean subs = retreatType == RetreatType.SUBS;
     final boolean canSubsSubmerge = canSubsSubmerge();
-    final boolean submerge = subs && canSubsSubmerge;
     final boolean canDefendingSubsSubmergeOrRetreat =
         subs && defender && Properties.getSubmarinesDefendingMaySubmergeOrRetreat(m_data);
-    partialAmphib = retreatType == RetreatType.PARTIAL_AMPHIB;
+    final boolean partialAmphib = retreatType == RetreatType.PARTIAL_AMPHIB;
+    final boolean submerge = subs && canSubsSubmerge;
     if (availableTerritories.isEmpty() && !(submerge || canDefendingSubsSubmergeOrRetreat)) {
       return;
     }
@@ -1429,9 +1426,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     units = CollectionUtils.getMatches(units, Matches.unitIsTransport());
     final Collection<Unit> retreated = getTransportDependents(units);
     if (!retreated.isEmpty()) {
-      Territory retreatedFrom;
       for (final Unit unit : units) {
-        retreatedFrom = TransportTracker.getTerritoryTransportHasUnloadedTo(unit);
+        final Territory retreatedFrom = TransportTracker.getTerritoryTransportHasUnloadedTo(unit);
         if (retreatedFrom != null) {
           reLoadTransports(units, change);
           change.add(ChangeFactory.moveUnits(retreatedFrom, retreatTo, retreated));

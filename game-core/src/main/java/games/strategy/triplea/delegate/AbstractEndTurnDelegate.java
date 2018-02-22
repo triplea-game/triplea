@@ -156,10 +156,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       // now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including
       // NOs)
       final int currentPUs = player.getResources().getQuantity(pus);
-      final float gainedPus = Math.max(0, currentPUs - leftOverPUs);
       int relationshipUpkeepCostFlat = 0;
       int relationshipUpkeepCostPercentage = 0;
-      int relationshipUpkeepTotalCost = 0;
       for (final Relationship r : data.getRelationshipTracker().getRelationships(player)) {
         final String[] upkeep = r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost().split(":");
         if (upkeep.length == 1 || upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_FLAT)) {
@@ -169,7 +167,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         }
       }
       relationshipUpkeepCostPercentage = Math.min(100, relationshipUpkeepCostPercentage);
+      int relationshipUpkeepTotalCost = 0;
       if (relationshipUpkeepCostPercentage != 0) {
+        final float gainedPus = Math.max(0, currentPUs - leftOverPUs);
         relationshipUpkeepTotalCost += Math.round(gainedPus * (relationshipUpkeepCostPercentage) / 100f);
       }
       if (relationshipUpkeepCostFlat != 0) {
@@ -248,8 +248,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return 0;
     }
     final String annotation = player.getName() + " rolling to resolve War Bonds: ";
-    final DiceRoll dice;
-    dice = DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
+    final DiceRoll dice = DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int total = 0;
     for (int i = 0; i < dice.size(); i++) {
       total += dice.getDie(i).getValue() + 1;
@@ -408,11 +407,11 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       if (maxLoss <= 0) {
         continue;
       }
-      int loss = 0;
       final Collection<Unit> enemies = CollectionUtils.getMatches(b.getUnits().getUnits(), enemyUnits);
       if (enemies.isEmpty()) {
         continue;
       }
+      int loss = 0;
       if (rollDiceForBlockadeDamage) {
         int numberOfDice = 0;
         for (final Unit u : enemies) {

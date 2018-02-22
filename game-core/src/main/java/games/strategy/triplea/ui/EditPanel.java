@@ -199,8 +199,8 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final Resource pus;
         getData().acquireReadLock();
+        final Resource pus;
         try {
           pus = getData().getResourceList().getResource(Constants.PUS);
         } finally {
@@ -211,7 +211,6 @@ class EditPanel extends ActionPanel {
           return;
         }
         final int oldTotal = player.getResources().getQuantity(pus);
-        int newTotal = oldTotal;
         final JTextField pusField = new JTextField(String.valueOf(oldTotal), 4);
         pusField.setMaximumSize(pusField.getPreferredSize());
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(pusField),
@@ -220,6 +219,7 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
+        int newTotal = oldTotal;
         try {
           newTotal = Integer.parseInt(pusField.getText());
         } catch (final Exception e) {
@@ -249,8 +249,8 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final Collection<TechAdvance> techs;
         getData().acquireReadLock();
+        final Collection<TechAdvance> techs;
         try {
           techs = TechnologyDelegate.getAvailableTechs(player, data);
         } finally {
@@ -296,8 +296,8 @@ class EditPanel extends ActionPanel {
           cancelEditAction.actionPerformed(null);
           return;
         }
-        final Collection<TechAdvance> techs;
         getData().acquireReadLock();
+        final Collection<TechAdvance> techs;
         try {
           techs = TechTracker.getCurrentTechAdvances(player, data);
           // there is no way to "undo" these two techs, so do not allow them to be removed

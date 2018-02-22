@@ -76,7 +76,6 @@ public class AutoPlacementFinder {
    * Will calculate the placements on the map automatically.
    */
   static void calculate() {
-    final Map<String, List<Point>> placements = new HashMap<>();
     // ask user where the map is
     final String mapDir = mapFolderLocation == null ? getMapDirectory() : mapFolderLocation.getName();
     if (mapDir == null) {
@@ -95,10 +94,10 @@ public class AutoPlacementFinder {
           int width = unitWidth;
           int height = unitHeight;
           boolean found = false;
-          final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
-          final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
-          final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
           try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
+            final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
+            final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
+            final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
             while (scanner.hasNextLine()) {
               final String line = scanner.nextLine();
               if (line.contains(scaleProperty)) {
@@ -198,6 +197,7 @@ public class AutoPlacementFinder {
     textOptionPane.show();
     textOptionPane.appendNewLine("Place Dimensions in pixels, being used: " + placeWidth + "x" + placeHeight + "\r\n");
     textOptionPane.appendNewLine("Calculating, this may take a while...\r\n");
+    final Map<String, List<Point>> placements = new HashMap<>();
     for (final String name : mapData.getTerritories()) {
       final List<Point> points;
       if (mapData.hasContainedTerritory(name)) {

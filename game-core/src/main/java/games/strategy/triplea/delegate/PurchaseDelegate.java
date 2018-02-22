@@ -185,7 +185,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     final Collection<Unit> totalUnits = new ArrayList<>();
     final Collection<UnitType> totalUnitTypes = new ArrayList<>();
     final Collection<Resource> totalResources = new ArrayList<>();
-    final Collection<NamedAttachable> totalAll = new ArrayList<>();
     final CompositeChange changes = new CompositeChange();
     // add changes for added resources
     // and find all added units
@@ -208,6 +207,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
         }
       }
     }
+    final Collection<NamedAttachable> totalAll = new ArrayList<>();
     totalAll.addAll(totalUnitTypes);
     totalAll.addAll(totalResources);
     // add changes for added units

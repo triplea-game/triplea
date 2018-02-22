@@ -56,7 +56,6 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
    * @return the collection of available dice rollers
    */
   public static Collection<PropertiesDiceRoller> loadFromFile() {
-    final List<PropertiesDiceRoller> rollers = new ArrayList<>();
     final File f = new File(ClientFileSystemHelper.getRootFolder(), "dice_servers");
     if (!f.exists()) {
       throw new IllegalStateException("No dice server folder:" + f);
@@ -65,8 +64,8 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     for (final File file : FileUtils.listFiles(f)) {
       if (!file.isDirectory() && file.getName().endsWith(".properties")) {
         try {
-          final Properties props = new Properties();
           try (InputStream fin = new FileInputStream(file)) {
+            final Properties props = new Properties();
             props.load(fin);
             propFiles.add(props);
           }
@@ -80,6 +79,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       final int n2 = Integer.parseInt(o2.getProperty("order"));
       return n1 - n2;
     });
+    final List<PropertiesDiceRoller> rollers = new ArrayList<>();
     for (final Properties prop : propFiles) {
       rollers.add(new PropertiesDiceRoller(prop));
     }

@@ -76,8 +76,6 @@ public final class Util {
   public static Image getBanner(final String text) {
     final int w = 400;
     final int h = 60;
-    final float loginStringX = w * .05f;
-    final float loginStringY = h * .75f;
     final BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     final Graphics2D g2 = img.createGraphics();
     final Font font = new Font("Arial Bold", Font.PLAIN, 36);
@@ -104,6 +102,8 @@ public final class Util {
     g2.fill(curveShape);
     // g2.setPaint(Color.white);
     originalGraphics.setColor(Color.WHITE);
+    final float loginStringY = h * .75f;
+    final float loginStringX = w * .05f;
     originalGraphics.drawString(text, loginStringX, loginStringY);
     return img;
   }

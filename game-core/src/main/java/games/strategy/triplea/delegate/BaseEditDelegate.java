@@ -85,9 +85,9 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   // Otherwise, we'll log a new event.
   void logEvent(final String message, final Object renderingObject) {
     // find last event node
-    boolean foundChild = false;
     final GameData gameData = getData();
     gameData.acquireReadLock();
+    boolean foundChild = false;
     try {
       HistoryNode curNode = gameData.getHistory().getLastNode();
       while (!(curNode instanceof Step) && !(curNode instanceof Event)) {

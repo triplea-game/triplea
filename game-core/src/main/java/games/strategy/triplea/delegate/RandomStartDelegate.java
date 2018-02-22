@@ -122,10 +122,9 @@ public class RandomStartDelegate extends BaseTripleADelegate {
             + picked.getName() + " with units " + MyFormatter.unitsToTextNoOwner(unitsToPlace), picked);
         bridge.addChange(change);
       } else {
-        Tuple<Territory, Set<Unit>> pick;
         Set<Unit> unitsToPlace;
         while (true) {
-          pick = getRemotePlayer(currentPickingPlayer).pickTerritoryAndUnits(
+          final Tuple<Territory, Set<Unit>> pick = getRemotePlayer(currentPickingPlayer).pickTerritoryAndUnits(
               new ArrayList<>(allPickableTerritories),
               new ArrayList<>(currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
           picked = pick.getFirst();
@@ -169,11 +168,10 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         currentPickingPlayer = playersCanPick.get(0);
       }
       final List<Territory> territoriesToPickFrom = data.getMap().getTerritoriesOwnedBy(currentPickingPlayer);
-      Tuple<Territory, Set<Unit>> pick;
       Territory picked;
       Set<Unit> unitsToPlace;
       while (true) {
-        pick = getRemotePlayer(currentPickingPlayer).pickTerritoryAndUnits(
+        final Tuple<Territory, Set<Unit>> pick = getRemotePlayer(currentPickingPlayer).pickTerritoryAndUnits(
             new ArrayList<>(territoriesToPickFrom),
             new ArrayList<>(currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
         picked = pick.getFirst();

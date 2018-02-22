@@ -297,8 +297,6 @@ public final class GameParser {
       if (url == null) {
         throw new RuntimeException(String.format("Map: %s, Could not find in classpath %s", mapName, dtdFile));
       }
-      final String dtdSystem = url.toExternalForm();
-      final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
       final DocumentBuilder builder = factory.newDocumentBuilder();
       builder.setErrorHandler(new ErrorHandler() {
         @Override
@@ -316,6 +314,8 @@ public final class GameParser {
           errorsSax.add(exception);
         }
       });
+      final String dtdSystem = url.toExternalForm();
+      final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
       return builder.parse(input, system);
     } catch (final IOException | ParserConfigurationException e) {
       throw new IllegalStateException("Error parsing: " + mapName, e);
@@ -590,20 +590,14 @@ public final class GameParser {
     } else {
       throw newGameParseException("diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
+    final int sizeY = (ys != null) ? Integer.valueOf(ys) : 0;
     final int sizeX = Integer.valueOf(xs);
-    final int sizeY;
-    if (ys != null) {
-      sizeY = Integer.valueOf(ys);
-    } else {
-      sizeY = 0;
-    }
     map.setGridDimensions(sizeX, sizeY);
     if (gridType.equals("square")) {
       // Add territories
       for (int y = 0; y < sizeY; y++) {
         for (int x = 0; x < sizeX; x++) {
-          final boolean isWater;
-          isWater = water.contains(x + "-" + y);
+          final boolean isWater = water.contains(x + "-" + y);
           map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data, x, y));
         }
       }
@@ -644,8 +638,8 @@ public final class GameParser {
       // Add territories
       for (int y = 0; y < sizeY; y++) {
         for (int x = 0; x < sizeX; x++) {
-          final boolean isWater = false;
           if (!water.contains(x + "-" + y)) {
+            final boolean isWater = false;
             map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data, x, y));
           }
         }

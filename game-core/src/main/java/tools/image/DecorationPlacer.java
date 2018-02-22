@@ -500,8 +500,8 @@ public class DecorationPlacer extends JFrame {
   }
 
   private void topLeftOrBottomLeft() {
-    final Object[] options = {"Point is Top Left", "Point is Bottom Left"};
     ToolLogger.info("Select Show images from top left or bottom left point?");
+    final Object[] options = {"Point is Top Left", "Point is Bottom Left"};
     showFromTopLeft = JOptionPane.showOptionDialog(this,
         "Are the images shown from the top left, or from the bottom left point? \r\n"
             + "All images are shown from the top left, except for 'name_place.txt', 'pu_place.txt', and "
@@ -520,10 +520,8 @@ public class DecorationPlacer extends JFrame {
     currentImagePoints = new HashMap<>();
     currentSelectedImage = null;
     selectImagePointType();
-    final Object[] miscOrNamesOptions = {"Folder Full of Images", "Text File Full of Points"};
-    final Object[] pointsAreNamesOptions = {"Points end in .png", "Points do NOT end in .png"};
-    final Object[] fillAllOptions = {"Fill In All Territories", "Let Me Select Territories"};
     ToolLogger.info("Select Folder full of images OR Text file full of points?");
+    final Object[] miscOrNamesOptions = {"Folder Full of Images", "Text File Full of Points"};
     if (JOptionPane.showOptionDialog(this,
         "Are you doing a folder full of different images (decorations.txt [misc] and name_place.txt [territoryNames]) "
             + "\r\n"
@@ -546,6 +544,7 @@ public class DecorationPlacer extends JFrame {
       // image based on some
       // in game property in the game data.
       ToolLogger.info("Points end in .png OR they do not?");
+      final Object[] pointsAreNamesOptions = {"Points end in .png", "Points do NOT end in .png"};
       fillCurrentImagePointsBasedOnImageFolder(JOptionPane.showOptionDialog(this,
           "Does the text file use the exact image file name, including the .png extension (decorations.txt) \r\n"
               + "Or does the text file not use the full file name with no extension, just a territory name "
@@ -562,6 +561,7 @@ public class DecorationPlacer extends JFrame {
       // blockade.txt and
       // kamikaze_place.txt and capitols.txt will only have a small number of territories
       ToolLogger.info("Select Fill in all territories OR let you select them?");
+      final Object[] fillAllOptions = {"Fill In All Territories", "Let Me Select Territories"};
       fillCurrentImagePointsBasedOnTextFile(JOptionPane.showOptionDialog(this,
           "Are you going to do a point for every single territory (pu_place.txt) \r\n"
               + "Or are you going to do just a few territories (capitols.txt, convoy.txt, vc.txt, etc, most others) ? "

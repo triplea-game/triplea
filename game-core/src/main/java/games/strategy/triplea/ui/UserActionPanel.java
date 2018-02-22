@@ -121,8 +121,8 @@ public class UserActionPanel extends ActionPanel {
       final JPanel userChoicePanel = new JPanel();
       userChoicePanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
       userChoicePanel.setLayout(new GridBagLayout());
-      int row = 0;
 
+      int row = 0;
       final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
       choiceScroll.setBorder(BorderFactory.createEtchedBorder());
       choiceScroll.setPreferredSize(getUserActionScrollPanePreferredSize(choiceScroll));

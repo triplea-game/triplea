@@ -235,10 +235,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // TODO remove the reference to the constant.japanese- replace with a rule
         if (isPacificTheater() || isSbrVictoryPoints()) {
           if (m_defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
-            final Change changeVp;
             final PlayerAttachment pa = PlayerAttachment.get(m_defender);
             if (pa != null) {
-              changeVp =
+              final Change changeVp =
                   ChangeFactory.attachmentPropertyChange(pa, ((-(m_bombingRaidTotal / 10)) + pa.getVps()), "vps");
               bridge.addChange(changeVp);
               bridge.getHistoryWriter().addChildToEvent("Bombing raid costs " + (m_bombingRaidTotal / 10) + " "
@@ -705,8 +704,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       // limit to maxDamage
       for (final Unit attacker : m_attackingUnits) {
         final UnitAttachment ua = UnitAttachment.get(attacker.getType());
-        final int rolls;
-        rolls = BattleCalculator.getRolls(attacker, m_attacker, false, true, m_territoryEffects);
+        final int rolls = BattleCalculator.getRolls(attacker, m_attacker, false, true, m_territoryEffects);
         int costThisUnit = 0;
         if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
           // LHTR means we select the best Dice roll for the unit

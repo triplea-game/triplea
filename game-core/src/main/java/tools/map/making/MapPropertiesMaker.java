@@ -296,7 +296,6 @@ public class MapPropertiesMaker extends JFrame {
   }
 
   private void loadProperties() {
-    final Properties properties = new Properties();
     ToolLogger.info("Load a properties file");
     final String centerName =
         new FileOpen("Load A Properties File", mapFolderLocation, ".properties").getPathString();
@@ -304,6 +303,7 @@ public class MapPropertiesMaker extends JFrame {
       return;
     }
     try (InputStream in = new FileInputStream(centerName)) {
+      final Properties properties = new Properties();
       properties.load(in);
     } catch (final IOException e) {
       ToolLogger.error("Failed to load map properties: " + centerName, e);

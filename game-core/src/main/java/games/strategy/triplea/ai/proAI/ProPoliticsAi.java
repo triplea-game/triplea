@@ -42,7 +42,6 @@ class ProPoliticsAi {
     final double round = data.getSequence().getRound();
     final ProTerritoryManager territoryManager = new ProTerritoryManager(calc);
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
-    final List<PoliticalActionAttachment> results = new ArrayList<>();
     ProLogger.info("Politics for " + player.getName());
 
     // Find valid war actions
@@ -84,6 +83,7 @@ class ProPoliticsAi {
     }
     ProLogger.debug("Neutral options: " + neutralMap);
     ProLogger.debug("Enemy options: " + enemyMap);
+    final List<PoliticalActionAttachment> results = new ArrayList<>();
     if (!enemyMap.isEmpty()) {
 
       // Find all attack options

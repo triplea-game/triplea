@@ -38,7 +38,6 @@ public class FastOddsEstimator implements IOddsCalculator {
   public AggregateResults calculate() {
     final double winPercentage = ProBattleUtils.estimateStrengthDifference(location, new ArrayList<>(attackingUnits),
         new ArrayList<>(defendingUnits));
-    final int battleRoundsFought = 3;
     List<Unit> remainingAttackingUnits = new ArrayList<>();
     List<Unit> remainingDefendingUnits = new ArrayList<>();
     if (winPercentage > 50) {
@@ -52,6 +51,7 @@ public class FastOddsEstimator implements IOddsCalculator {
       final int numRemainingUnits = (int) Math.ceil(defendingUnits.size() * (50 - Math.max(0, winPercentage)) / 50);
       remainingDefendingUnits = remainingDefendingUnits.subList(0, numRemainingUnits);
     }
+    final int battleRoundsFought = 3;
     return new AggregateEstimate(battleRoundsFought, winPercentage / 100, remainingAttackingUnits,
         remainingDefendingUnits);
   }

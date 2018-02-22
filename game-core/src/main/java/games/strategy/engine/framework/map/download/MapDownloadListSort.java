@@ -20,8 +20,6 @@ public final class MapDownloadListSort {
   public static List<DownloadFileDescription> sortByMapName(final List<DownloadFileDescription> downloads) {
     checkNotNull(downloads);
 
-    final List<DownloadFileDescription> returnList = new ArrayList<>();
-
     // Until we see a header, save each map to this List.
     // When we see a header, we'll sort this list, add it
     // to the return values, and then clear it.
@@ -29,6 +27,7 @@ public final class MapDownloadListSort {
     maps.addAll(downloads);
 
     // in case the file does not end with a header, sort and add any remaining maps
+    final List<DownloadFileDescription> returnList = new ArrayList<>();
     if (!maps.isEmpty()) {
       returnList.addAll(sort(maps));
     }

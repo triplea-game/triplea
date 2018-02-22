@@ -129,10 +129,10 @@ public class History extends DefaultTreeModel {
       while (changes.size() > lastChange) {
         changes.remove(lastChange);
       }
-      final List<HistoryNode> nodesToRemove = new ArrayList<>();
       final Enumeration<?> enumeration = ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
       enumeration.nextElement();
       boolean startRemoving = false;
+      final List<HistoryNode> nodesToRemove = new ArrayList<>();
       while (enumeration.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) enumeration.nextElement();
         if (node instanceof IndexedHistoryNode) {

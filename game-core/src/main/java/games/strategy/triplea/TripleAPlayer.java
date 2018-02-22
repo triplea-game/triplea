@@ -111,8 +111,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
     // We should never touch the game data directly. All changes to game data are done through the remote,
     // which then changes the game using the DelegateBridge -> change factory
     ui.requiredTurnSeries(getPlayerId());
-    boolean badStep = false;
     enableEditModeMenu();
+    boolean badStep = false;
     if (name.endsWith("Tech")) {
       tech();
     } else if (name.endsWith("TechActivation")) {

@@ -63,11 +63,11 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate {
     final Collection<UnitType> unitTypes = new ArrayList<>(productionPerXTerritories.keySet());
     for (final UnitType ut : unitTypes) {
       int unitCount = 0;
-      int terrCount = 0;
       final int prodPerXTerrs = productionPerXTerritories.getInt(ut);
       if (isPacific) {
         unitCount += getBurmaRoad(player);
       }
+      int terrCount = 0;
       for (final Territory current : territories) {
         if (!isProductionPerValuedTerritoryRestricted()) {
           terrCount++;

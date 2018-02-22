@@ -115,8 +115,7 @@ public class TripleA implements IGameLoader {
       connectPlayers(players, null);
     } else {
       SwingAction.invokeAndWait(() -> {
-        final TripleAFrame frame;
-        frame = new TripleAFrame(game, localPlayers);
+        final TripleAFrame frame = new TripleAFrame(game, localPlayers);
         display = new TripleADisplay(frame);
         game.addDisplay(display);
         soundChannel = new DefaultSoundChannel(localPlayers);
