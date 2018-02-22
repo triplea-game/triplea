@@ -148,7 +148,7 @@ public class ProPurchaseOption {
         + " | isCarrier=" + isCarrier;
   }
 
-  public double getTransportEfficiency(final GameData data) {
+  public double getTransportEfficiencyRatio() {
     return Math.pow(transportEfficiency, 30) / quantity;
   }
 
