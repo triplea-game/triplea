@@ -12,10 +12,10 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;

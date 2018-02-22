@@ -6,9 +6,9 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;

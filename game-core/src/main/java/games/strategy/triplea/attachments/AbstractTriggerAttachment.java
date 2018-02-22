@@ -9,10 +9,10 @@ import java.util.function.Predicate;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.ModifiableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;

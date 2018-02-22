@@ -13,6 +13,9 @@ public interface ModifiableProperty<T> {
 
   void setValue(T value) throws Exception;
 
+  /**
+   * Calls the appropriate {@link ModifiableProperty#setValue} method.
+   */
   @SuppressWarnings("unchecked")
   default void setObjectValue(final Object o) {
     try {
