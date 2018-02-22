@@ -1,8 +1,8 @@
 package games.strategy.engine.data;
 
-import java.util.function.Supplier;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.function.Supplier;
 
 /**
  * A wrapper interface to Bundle setters, getters and resetters of the same field.
@@ -105,16 +105,6 @@ public class MutableProperty<T> {
   }
 
   /**
-   * Convenience method to create a generic String instance of this interface.
-   */
-  public static MutableProperty<String> ofString(
-      final ThrowingConsumer<String, Exception> setter,
-      final Supplier<String> getter,
-      final Runnable resetter) {
-    return of(setter, setter, getter, resetter);
-  }
-
-  /**
    * Convenience method to create an instance of this interface that only gets.
    */
   public static <T, E extends Throwable> MutableProperty<T> of(final Supplier<T> getter) {
@@ -128,6 +118,16 @@ public class MutableProperty<T> {
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter) {
     return of(setter, stringSetter, noGetter(), noResetter());
+  }
+
+  /**
+   * Convenience method to create a generic String instance of this interface.
+   */
+  public static MutableProperty<String> ofString(
+      final ThrowingConsumer<String, Exception> setter,
+      final Supplier<String> getter,
+      final Runnable resetter) {
+    return of(setter, setter, getter, resetter);
   }
 
   /**
