@@ -210,9 +210,9 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @Override
-  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+        .putAll(super.getPropertyMap())
         .put("text",
             ModifiableProperty.of(
                 this::setText,

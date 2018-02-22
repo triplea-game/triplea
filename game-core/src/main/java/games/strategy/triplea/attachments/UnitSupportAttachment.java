@@ -420,8 +420,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-
-  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("unitType",
             ModifiableProperty.of(
@@ -481,10 +481,5 @@ public class UnitSupportAttachment extends DefaultAttachment {
                 this::getFaction,
                 this::resetFaction))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

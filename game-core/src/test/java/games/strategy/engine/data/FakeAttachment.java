@@ -78,15 +78,11 @@ public final class FakeAttachment implements IAttachment {
     throw new UnsupportedOperationException();
   }
 
-  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("name", ModifiableProperty.of(this::setName, this::getName, () -> {
         }))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

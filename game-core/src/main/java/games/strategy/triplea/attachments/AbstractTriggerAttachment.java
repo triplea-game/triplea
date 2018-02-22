@@ -310,9 +310,9 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @Override
-  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+        .putAll(super.getPropertyMap())
         .put("uses",
             ModifiableProperty.of(
                 this::setUses,

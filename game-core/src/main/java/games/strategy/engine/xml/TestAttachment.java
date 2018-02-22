@@ -55,15 +55,10 @@ public class TestAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-
-  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("value", ModifiableProperty.of(this::setValue, this::getValue, this::resetValue))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

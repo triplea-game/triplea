@@ -173,9 +173,9 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
 
   @Override
   @Override
-  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+        .putAll(super.getPropertyMap())
         .put("activateTrigger",
             ModifiableProperty.of(
                 this::setActivateTrigger,
@@ -183,10 +183,5 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
                 this::getActivateTrigger,
                 this::resetActivateTrigger))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

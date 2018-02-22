@@ -595,8 +595,8 @@ public class PlayerAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-
-  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("vps", ModifiableProperty.of(this::setVps, this::setVps, this::getVps, this::resetVps))
         .put("captureVps",
@@ -684,10 +684,5 @@ public class PlayerAttachment extends DefaultAttachment {
                 this::getAttackingLimit,
                 this::resetAttackingLimit))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

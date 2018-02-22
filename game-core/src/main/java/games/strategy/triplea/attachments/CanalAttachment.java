@@ -169,7 +169,8 @@ public class CanalAttachment extends DefaultAttachment {
     }
   }
 
-  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("canalName", ModifiableProperty.of(this::setCanalName, this::getCanalName, this::resetCanalName))
         .put("landTerritories",
@@ -185,10 +186,5 @@ public class CanalAttachment extends DefaultAttachment {
                 this::getExcludedUnits,
                 this::resetExcludedUnits))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

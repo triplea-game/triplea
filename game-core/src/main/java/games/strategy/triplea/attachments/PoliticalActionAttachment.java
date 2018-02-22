@@ -152,9 +152,9 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+        .putAll(super.getPropertyMap())
         .put("relationshipChange",
             ModifiableProperty.of(
                 this::setRelationshipChange,
@@ -162,10 +162,5 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
                 this::getRelationshipChange,
                 this::resetRelationshipChange))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

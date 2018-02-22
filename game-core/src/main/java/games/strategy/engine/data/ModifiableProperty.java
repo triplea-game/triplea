@@ -139,7 +139,7 @@ public interface ModifiableProperty<T> {
   /**
    * Convenience method to create an instance of this interface that only sets via the string value.
    */
-  static <T> ModifiableProperty<T> ofWriteOnlyString(final GameParsingConsumer<String> stringSetter) {
+  static <T> ModifiableProperty<T> ofWriteOnlyString(final ExceptionConsumer<String> stringSetter) {
     return of(
         t -> throwIllegalStateException("No Setter"),
         stringSetter,

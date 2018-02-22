@@ -435,9 +435,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
-  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+        .putAll(super.getPropertyMap())
         .put("countEach", ModifiableProperty.of(this::getCountEach))
         .put("eachMultiple", ModifiableProperty.of(this::getEachMultiple))
         .put("players",

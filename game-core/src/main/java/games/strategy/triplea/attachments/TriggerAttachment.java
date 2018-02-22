@@ -2605,9 +2605,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+        .putAll(super.getPropertyMap())
         .put("frontier",
             ModifiableProperty.of(
                 this::setFrontier,
@@ -2783,10 +2784,5 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                 this::getTerritoryEffectProperty,
                 this::resetTerritoryEffectProperty))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

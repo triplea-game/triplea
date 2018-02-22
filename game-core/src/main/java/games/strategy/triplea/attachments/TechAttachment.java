@@ -421,8 +421,8 @@ public class TechAttachment extends DefaultAttachment {
     return ta.getParatroopers();
   }
 
-
-  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("techCost",
             ModifiableProperty.of(
@@ -515,10 +515,5 @@ public class TechAttachment extends DefaultAttachment {
                 this::getShipyards,
                 this::resetShipyards))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

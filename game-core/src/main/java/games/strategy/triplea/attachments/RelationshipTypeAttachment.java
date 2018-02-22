@@ -410,7 +410,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("archeType",
             ModifiableProperty.of(
@@ -485,10 +486,5 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
                 this::getRocketsCanFlyOver,
                 this::resetRocketsCanFlyOver))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

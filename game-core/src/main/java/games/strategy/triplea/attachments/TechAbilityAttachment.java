@@ -1349,7 +1349,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
   }
 
-  private Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("attackBonus",
             ModifiableProperty.of(
@@ -1496,10 +1497,5 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 this::getBombingBonus,
                 this::resetBombingBonus))
         .build();
-  }
-
-  @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

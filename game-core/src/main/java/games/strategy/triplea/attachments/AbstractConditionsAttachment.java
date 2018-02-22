@@ -396,7 +396,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
   }
 
-  protected Map<String, ModifiableProperty<?>> createPropertyMap() {
+  @Override
+  public Map<String, ModifiableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, ModifiableProperty<?>>builder()
         .put("conditions",
             ModifiableProperty.of(
