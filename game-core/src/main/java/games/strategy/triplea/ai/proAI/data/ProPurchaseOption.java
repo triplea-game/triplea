@@ -64,8 +64,6 @@ public class ProPurchaseOption {
   @Getter
   private final boolean isCarrier;
   @Getter
-  private final int transportCapacity;
-  @Getter
   private final int carrierCapacity;
   @Getter
   private final double transportEfficiency;
@@ -110,7 +108,6 @@ public class ProPurchaseOption {
     isDestroyer = unitAttachment.getIsDestroyer();
     isTransport = unitAttachment.getTransportCapacity() > 0;
     isCarrier = unitAttachment.getCarrierCapacity() > 0;
-    transportCapacity = unitAttachment.getTransportCapacity() * quantity;
     carrierCapacity = unitAttachment.getCarrierCapacity() * quantity;
     transportEfficiency = (double) unitAttachment.getTransportCapacity() / cost;
     if (hitPoints == 0) {
