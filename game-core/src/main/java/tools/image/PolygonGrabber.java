@@ -424,9 +424,7 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * doneCurrentGroup()
-   * Does something with respect to check if the name
-   * of a territory is valid or not.
+   * Does something with respect to check if the name of a territory is valid or not.
    */
   private void doneCurrentGroup() {
     final JTextField text = new JTextField();
@@ -452,7 +450,7 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * Guess the country name based on the location of the previous centers
+   * Guess the country name based on the location of the previous centers.
    */
   private void guessCountryName(final JTextField text, final Iterable<Entry<String, Point>> centersiter) {
     final List<String> options = new ArrayList<>();
@@ -506,7 +504,7 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * Checks if the given x/y coordinate point is inbounds or not
+   * Checks if the given x/y coordinate point is inbounds or not.
    */
   private boolean inBounds(final int x, final int y) {
     return x >= 0 && x < bufferedImage.getWidth(null) && y >= 0 && y < bufferedImage.getHeight(null);
@@ -517,7 +515,7 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * Moves to a specified direction
+   * Moves to a specified direction.
    * Directions
    * 0 - North
    * 1 - North east
