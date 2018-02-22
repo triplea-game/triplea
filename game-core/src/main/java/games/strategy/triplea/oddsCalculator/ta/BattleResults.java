@@ -9,13 +9,17 @@ import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
+import lombok.Getter;
 
 public class BattleResults extends GameDataComponent {
   private static final long serialVersionUID = 1381361441940258702L;
 
-  private final int m_battleRoundsFought;
-  final List<Unit> m_remainingAttackingUnits;
-  final List<Unit> m_remainingDefendingUnits;
+  @Getter
+  private final int battleRoundsFought;
+  @Getter
+  final List<Unit> remainingAttackingUnits;
+  @Getter
+  final List<Unit> remainingDefendingUnits;
   private final WhoWon m_whoWon;
 
   // FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also causes problems with
@@ -28,9 +32,9 @@ public class BattleResults extends GameDataComponent {
    */
   public BattleResults(final IBattle battle, final GameData data) {
     super(data);
-    m_battleRoundsFought = battle.getBattleRound();
-    m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
-    m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
+    battleRoundsFought = battle.getBattleRound();
+    remainingAttackingUnits = battle.getRemainingAttackingUnits();
+    remainingDefendingUnits = battle.getRemainingDefendingUnits();
     m_whoWon = battle.getWhoWon();
     if (m_whoWon == WhoWon.NOTFINISHED) {
       throw new IllegalStateException("Battle not finished yet: " + battle);
@@ -42,30 +46,19 @@ public class BattleResults extends GameDataComponent {
    */
   public BattleResults(final IBattle battle, final WhoWon scriptedWhoWon, final GameData data) {
     super(data);
-    m_battleRoundsFought = battle.getBattleRound();
-    m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
-    m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
+    battleRoundsFought = battle.getBattleRound();
+    remainingAttackingUnits = battle.getRemainingAttackingUnits();
+    remainingDefendingUnits = battle.getRemainingDefendingUnits();
     m_whoWon = scriptedWhoWon;
   }
 
-  public List<Unit> getRemainingAttackingUnits() {
-    return m_remainingAttackingUnits;
-  }
-
-  public List<Unit> getRemainingDefendingUnits() {
-    return m_remainingDefendingUnits;
-  }
 
   public int getAttackingCombatUnitsLeft() {
-    return CollectionUtils.countMatches(m_remainingAttackingUnits, Matches.unitIsNotInfrastructure());
+    return CollectionUtils.countMatches(remainingAttackingUnits, Matches.unitIsNotInfrastructure());
   }
 
   public int getDefendingCombatUnitsLeft() {
-    return CollectionUtils.countMatches(m_remainingDefendingUnits, Matches.unitIsNotInfrastructure());
-  }
-
-  public int getBattleRoundsFought() {
-    return m_battleRoundsFought;
+    return CollectionUtils.countMatches(remainingDefendingUnits, Matches.unitIsNotInfrastructure());
   }
 
   // These could easily screw up an AI into thinking it has won when it really hasn't. Must make sure we only count

@@ -19,6 +19,10 @@ https://github.com/triplea-game/triplea/tree/master/eclipse/format
 Useful:
   - [EGit in Eclipse](http://www.eclipse.org/egit/) - with [tutorial](http://www.vogella.com/tutorials/EclipseGit/article.html)
 
+Lombok:
+  - install lombok plugin with gradle, run `./gradlew installLombok`
+  - enable annotation processing: https://stackoverflow.com/questions/43404891/how-to-configure-java-annotation-processors-in-eclipse
+  
 Checkstyle:
  
 The [Eclipse Checkstyle plugin](http://eclipse-cs.sourceforge.net) integrates Checkstyle into the Eclipse IDE and notifies you of violations in real time.
@@ -47,7 +51,11 @@ Plugins:
     - after install finish configuration in: **Other Settings > Checkstyle** 
   - *Save Actions*
     - configure in settings to add 'final' to local variables and class variables.
+  - *Lombok*
   - Method ordering: ![keep_dependents_first](https://user-images.githubusercontent.com/12397753/27557429-72fb899c-5a6e-11e7-8f9f-59cc508ba86c.png)
+
+Lombok:
+ - requires annotation processing to be turned on (settings > 'annotation processing')
 
 # Team Communication
 

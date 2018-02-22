@@ -27,12 +27,40 @@ public class RouteCalculatorTest {
   public void testRouteTranslation() {
     final Point2D[] inputArray = new Point2D[] {point(1, 4), point(1001, 1001), point(600, 600)};
     assertArrayEquals(new Point2D[] {point(1, 4), point(1, 1), point(-400, -400)},
-        new RouteCalculator(true, true, 1000, 1000).getTranslatedRoute(inputArray));
+        RouteCalculator.builder()
+            .isInfiniteY(true)
+            .isInfiniteX(true)
+            .mapWidth(1000)
+            .mapHeight(1000)
+            .build()
+            .getTranslatedRoute(inputArray));
+
     assertArrayEquals(new Point2D[] {point(1, 4), point(1, 1001), point(-400, 600)},
-        new RouteCalculator(true, false, 1000, 1000).getTranslatedRoute(inputArray));
+        RouteCalculator.builder()
+            .isInfiniteX(true)
+            .isInfiniteY(false)
+            .mapWidth(1000)
+            .mapHeight(1000)
+            .build()
+            .getTranslatedRoute(inputArray));
+
     assertArrayEquals(new Point2D[] {point(1, 4), point(1001, 1), point(600, -400)},
-        new RouteCalculator(false, true, 1000, 1000).getTranslatedRoute(inputArray));
-    assertArrayEquals(inputArray, new RouteCalculator(false, false, 1000, 1000).getTranslatedRoute(inputArray));
+        RouteCalculator.builder()
+            .isInfiniteX(false)
+            .isInfiniteY(true)
+            .mapWidth(1000)
+            .mapHeight(1000)
+            .build()
+            .getTranslatedRoute(inputArray));
+
+    assertArrayEquals(inputArray,
+        RouteCalculator.builder()
+            .isInfiniteX(false)
+            .isInfiniteY(false)
+            .mapWidth(1000)
+            .mapHeight(1000)
+            .build()
+            .getTranslatedRoute(inputArray));
   }
 
   private static Point2D point(final double x, final double y) {
@@ -73,8 +101,13 @@ public class RouteCalculatorTest {
 
   private static void checkPoints(final int offset, final List<Point2D> expected, final boolean isInfiniteX,
       final boolean isInfiniteY) {
-    final List<Point2D> calculatedPoints =
-        new RouteCalculator(isInfiniteX, isInfiniteY, 1000, 1000).getPossiblePoints(new Point2D.Double());
+    final List<Point2D> calculatedPoints = RouteCalculator.builder()
+        .isInfiniteX(isInfiniteX)
+        .isInfiniteY(isInfiniteY)
+        .mapWidth(1000)
+        .mapHeight(1000)
+        .build()
+        .getPossiblePoints(new Point2D.Double());
     assertEquals(expected.size(), calculatedPoints.size() + offset);
     for (final Point2D point : calculatedPoints) {
       assertTrue(expected.contains(point));
@@ -93,7 +126,13 @@ public class RouteCalculatorTest {
     final Point2D[] s = new Point2D[] {point(0, 1000), point(1, 1001)};
     final Point2D[] se = new Point2D[] {point(1000, 1000), point(1001, 1001)};
 
-    final List<Point2D[]> points = new RouteCalculator(true, true, 1000, 1000).getAllPoints(input);
+    final List<Point2D[]> points = RouteCalculator.builder()
+        .isInfiniteX(true)
+        .isInfiniteY(true)
+        .mapHeight(1000)
+        .mapWidth(1000)
+        .build()
+        .getAllPoints(input);
     // This may be changed along with the RouteCalculator#getPossiblePoints method
     assertArrayEquals(input, points.get(0));
     assertArrayEquals(nw, points.get(1));
@@ -108,7 +147,13 @@ public class RouteCalculatorTest {
 
   @Test
   public void testGetAllNormalizedLines() {
-    final RouteCalculator routeCalculator = new RouteCalculator(true, true, 1000, 1000);
+    final RouteCalculator routeCalculator = RouteCalculator.builder()
+        .isInfiniteX(true)
+        .isInfiniteY(true)
+        .mapHeight(1000)
+        .mapWidth(1000)
+        .build();
+
     final double[] testData = new double[1000];
     Arrays.setAll(testData, Double::valueOf);
     final List<Path2D> paths = routeCalculator.getAllNormalizedLines(testData, testData);

@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -46,10 +44,14 @@ public class MapRouteDrawer {
   private final MapPanel mapPanel;
 
   MapRouteDrawer(final MapPanel mapPanel, final MapData mapData) {
-    routeCalculator = new RouteCalculator(mapData.scrollWrapX(), mapData.scrollWrapY(), mapPanel.getImageWidth(),
-        mapPanel.getImageHeight());
-    this.mapData = checkNotNull(mapData);
-    this.mapPanel = checkNotNull(mapPanel);
+    routeCalculator = RouteCalculator.builder()
+        .isInfiniteX(mapData.scrollWrapX())
+        .isInfiniteY(mapData.scrollWrapY())
+        .mapWidth(mapPanel.getImageWidth())
+        .mapHeight(mapPanel.getImageHeight())
+        .build();
+    this.mapData = mapData;
+    this.mapPanel = mapPanel;
   }
 
   /**

@@ -17,6 +17,12 @@ import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
+@AllArgsConstructor(access =  AccessLevel.PRIVATE)
+@Builder
 public class RouteCalculator {
 
   public final boolean isInfiniteY;
@@ -24,14 +30,6 @@ public class RouteCalculator {
 
   private final int mapWidth;
   private final int mapHeight;
-
-  public RouteCalculator(final boolean isInfiniteX, final boolean isInfiniteY, final int mapWidth,
-      final int mapHeight) {
-    this.isInfiniteX = isInfiniteX;
-    this.isInfiniteY = isInfiniteY;
-    this.mapWidth = mapWidth;
-    this.mapHeight = mapHeight;
-  }
 
   /**
    * Algorithm for finding the shortest path for the given Route.

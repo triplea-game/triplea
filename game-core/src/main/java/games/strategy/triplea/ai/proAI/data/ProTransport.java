@@ -7,7 +7,10 @@ import java.util.Set;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class ProTransport {
 
   private final Unit transport;
@@ -43,17 +46,4 @@ public class ProTransport {
       }
     }
   }
-
-  public Unit getTransport() {
-    return transport;
-  }
-
-  public Map<Territory, Set<Territory>> getTransportMap() {
-    return transportMap;
-  }
-
-  public Map<Territory, Set<Territory>> getSeaTransportMap() {
-    return seaTransportMap;
-  }
-
 }
