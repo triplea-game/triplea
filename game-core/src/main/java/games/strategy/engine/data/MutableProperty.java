@@ -41,7 +41,7 @@ public class MutableProperty<T> {
 
   public void setValue(final T value) throws Exception {
     setter.accept(value);
-  };
+  }
 
   /**
    * Calls the appropriate {@link MutableProperty#setValue} method.
@@ -61,11 +61,11 @@ public class MutableProperty<T> {
 
   public T getValue() {
     return getter.get();
-  };
+  }
 
   public void resetValue() {
     resetter.run();
-  };
+  }
 
   /**
    * Convenience method to create an instance of this interface.
