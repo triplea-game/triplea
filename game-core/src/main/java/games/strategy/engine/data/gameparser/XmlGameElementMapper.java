@@ -70,8 +70,6 @@ public class XmlGameElementMapper {
   // these keys are package protected to allow test to have access to known good keys
   @VisibleForTesting
   static final String BATTLE_DELEGATE_NAME = "games.strategy.triplea.delegate.BattleDelegate";
-  @VisibleForTesting
-  static final String CANAL_ATTACHMENT_NAME = "games.strategy.triplea.attachments.CanalAttachment";
 
   /* Maps a name (given as an XML attribute value) to a supplier function that creates the corresponding delegate */
   private final ImmutableMap<String, Supplier<IDelegate>> delegateMap =
@@ -107,45 +105,45 @@ public class XmlGameElementMapper {
    */
   private final ImmutableMap<String, Function<AttachmentData, IAttachment>> attachmentMap =
       ImmutableMap.<String, Function<AttachmentData, IAttachment>>builder()
-          .put(CANAL_ATTACHMENT_NAME, attachmentData -> new CanalAttachment(attachmentData.name,
+          .put("CanalAttachment", attachmentData -> new CanalAttachment(attachmentData.name,
               attachmentData.attachable, attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.PlayerAttachment",
+          .put("PlayerAttachment",
               attachmentData -> new PlayerAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.PoliticalActionAttachment",
+          .put("PoliticalActionAttachment",
               attachmentData -> new PoliticalActionAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.RelationshipTypeAttachment",
+          .put("RelationshipTypeAttachment",
               attachmentData -> new RelationshipTypeAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.RulesAttachment",
+          .put("RulesAttachment",
               attachmentData -> new RulesAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.TechAbilityAttachment",
+          .put("TechAbilityAttachment",
               attachmentData -> new TechAbilityAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.TechAttachment",
+          .put("TechAttachment",
               attachmentData -> new TechAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.TerritoryAttachment",
+          .put("TerritoryAttachment",
               attachmentData -> new TerritoryAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.TerritoryEffectAttachment",
+          .put("TerritoryEffectAttachment",
               attachmentData -> new TerritoryEffectAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.TriggerAttachment",
+          .put("TriggerAttachment",
               attachmentData -> new TriggerAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.UnitAttachment",
+          .put("UnitAttachment",
               attachmentData -> new UnitAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.UnitSupportAttachment",
+          .put("UnitSupportAttachment",
               attachmentData -> new UnitSupportAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.triplea.attachments.UserActionAttachment",
+          .put("UserActionAttachment",
               attachmentData -> new UserActionAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("games.strategy.engine.xml.TestAttachment", attachmentData -> new TestAttachment(attachmentData.name,
+          .put("TestAttachment", attachmentData -> new TestAttachment(attachmentData.name,
               attachmentData.attachable, attachmentData.gameData))
           .build();
 
@@ -185,11 +183,12 @@ public class XmlGameElementMapper {
 
   public Optional<IAttachment> getAttachment(final String javaClass, final String name, final Attachable attachable,
       final GameData data) {
-    if (!attachmentMap.containsKey(javaClass)) {
+    final String bareName = javaClass.replaceAll("^games\\.strategy\\.(?:triplea\\.attachments|engine\\.xml)\\.", "");
+    if (!attachmentMap.containsKey(bareName)) {
       handleMissingObjectError("attachment", javaClass);
       return Optional.empty();
     }
-    final Function<AttachmentData, IAttachment> attachmentFactoryFunction = attachmentMap.get(javaClass);
+    final Function<AttachmentData, IAttachment> attachmentFactoryFunction = attachmentMap.get(bareName);
     return Optional.of(attachmentFactoryFunction.apply(new AttachmentData(name, attachable, data)));
   }
 }
