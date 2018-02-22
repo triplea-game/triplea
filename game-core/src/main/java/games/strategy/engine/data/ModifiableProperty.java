@@ -122,10 +122,15 @@ public interface ModifiableProperty<T> {
 
 
   /**
-   * Convenience method to create an instance of this interface with no resetter.
+   * Convenience method to create an instance of this interface that just contains a
+   * getter. And no support for setters of any kind.
    */
   static <T> ModifiableProperty<T> ofSimple(final Supplier<T> getter) {
     return ofSimple(e -> throwIllegalStateException("No Setter"), getter);
+  }
+
+  static <T> T throwIllegalStateException(final String text) {
+    throw new IllegalStateException(text);
   }
 
   /**
@@ -147,9 +152,5 @@ public interface ModifiableProperty<T> {
   @FunctionalInterface
   static interface ExceptionConsumer<T> {
     void accept(T object) throws Exception;
-  }
-
-  static <T> T throwIllegalStateException(final String text) {
-    throw new IllegalStateException(text);
   }
 }

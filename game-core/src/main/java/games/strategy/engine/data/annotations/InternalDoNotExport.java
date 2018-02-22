@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation that marks a method setter or field as being only used within this class and any class that extends it,
- * and NOT being used through reflection by the GameParser (through the xml) and also not by PropertyUtil (through the
+ * and NOT being used by the GameParser (through the xml) and also not by PropertyUtil (through the
  * ChangeFactory).
  *
  * <p>
