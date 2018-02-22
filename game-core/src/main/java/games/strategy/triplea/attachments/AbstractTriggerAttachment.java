@@ -312,6 +312,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   @Override
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
         .put("uses",
             AttachmentProperty.of(
                 this::setUses,
@@ -344,7 +345,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
                 this::setTrigger,
                 this::getTrigger,
                 this::resetTrigger))
-        .putAll(super.createPropertyMap())
         .build();
   }
 }

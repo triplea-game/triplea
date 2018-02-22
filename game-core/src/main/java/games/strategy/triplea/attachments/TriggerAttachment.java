@@ -2611,6 +2611,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
         .put("frontier",
             AttachmentProperty.of(
                 this::setFrontier,
@@ -2785,7 +2786,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                 this::setTerritoryEffectProperty,
                 this::getTerritoryEffectProperty,
                 this::resetTerritoryEffectProperty))
-        .putAll(super.createPropertyMap())
         .build();
   }
 

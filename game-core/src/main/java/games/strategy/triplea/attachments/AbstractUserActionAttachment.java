@@ -212,6 +212,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   @Override
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
         .put("text",
             AttachmentProperty.of(
                 this::setText,
@@ -242,7 +243,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
                 this::setActionAccept,
                 this::getActionAccept,
                 this::resetActionAccept))
-        .putAll(super.createPropertyMap())
         .build();
   }
 }

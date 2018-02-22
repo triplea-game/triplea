@@ -437,6 +437,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   @Override
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
         .put("countEach", AttachmentProperty.of(this::getCountEach))
         .put("eachMultiple", AttachmentProperty.of(this::getEachMultiple))
         .put("players",
@@ -476,7 +477,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
                 this::getGameProperty,
                 this::resetGameProperty))
         .put("rounds", AttachmentProperty.of(this::setRounds, this::setRounds))
-        .putAll(super.createPropertyMap())
         .build();
   }
 }

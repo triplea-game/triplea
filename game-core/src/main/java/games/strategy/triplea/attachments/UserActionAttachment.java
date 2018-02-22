@@ -179,13 +179,13 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   @Override
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
         .put("activateTrigger",
             AttachmentProperty.of(
                 this::setActivateTrigger,
                 this::setActivateTrigger,
                 this::getActivateTrigger,
                 this::resetActivateTrigger))
-        .putAll(super.createPropertyMap())
         .build();
   }
 

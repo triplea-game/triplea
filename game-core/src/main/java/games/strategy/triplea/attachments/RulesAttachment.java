@@ -1167,6 +1167,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   @Override
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
         .put("techs",
             AttachmentProperty.of(
                 this::setTechs,
@@ -1261,7 +1262,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                 this::setUnitPresence,
                 this::getUnitPresence,
                 this::resetUnitPresence))
-        .putAll(super.createPropertyMap())
         .build();
   }
 

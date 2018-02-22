@@ -337,6 +337,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   @Override
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
         .put("movementRestrictionType",
             AttachmentProperty.of(
                 this::setMovementRestrictionType,
@@ -409,7 +410,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
                 this::setMaxPlacePerTerritory,
                 this::getMaxPlacePerTerritory,
                 this::resetMaxPlacePerTerritory))
-        .putAll(super.createPropertyMap())
         .build();
   }
 }

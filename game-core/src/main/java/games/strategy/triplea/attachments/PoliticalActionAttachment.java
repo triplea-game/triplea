@@ -154,13 +154,13 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   @Override
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
         .put("relationshipChange",
             AttachmentProperty.of(
                 this::setRelationshipChange,
                 this::setRelationshipChange,
                 this::getRelationshipChange,
                 this::resetRelationshipChange))
-        .putAll(super.createPropertyMap())
         .build();
   }
 
