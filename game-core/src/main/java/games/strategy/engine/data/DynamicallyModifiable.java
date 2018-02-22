@@ -16,7 +16,7 @@ interface DynamicallyModifiable {
    * 
    * @throws IllegalArgumentException If the property doesn't exist.
    */
-  default MutableProperty<?> getOrError(final String property) {
+  default MutableProperty<?> getPropertyOrThrow(final String property) {
     return Optional.ofNullable(getPropertyMap().get(property))
         .orElseThrow(() -> new IllegalArgumentException("Missing property definition for option: " + property));
   }

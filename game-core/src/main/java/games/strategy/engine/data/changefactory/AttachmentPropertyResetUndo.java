@@ -31,7 +31,7 @@ class AttachmentPropertyResetUndo extends Change {
   @Override
   public void perform(final GameData data) {
     final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
-    attachment.getOrError(m_property).setObjectValue(m_newValue);
+    attachment.getPropertyOrThrow(m_property).setObjectValue(m_newValue);
   }
 
   @Override

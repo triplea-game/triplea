@@ -21,7 +21,7 @@ class AttachmentPropertyReset extends Change {
     }
     m_attachedTo = attachment.getAttachedTo();
     m_attachmentName = attachment.getName();
-    m_oldValue = attachment.getOrError(property).getValue();
+    m_oldValue = attachment.getPropertyOrThrow(property).getValue();
     m_property = property;
   }
 
@@ -44,7 +44,7 @@ class AttachmentPropertyReset extends Change {
   @Override
   public void perform(final GameData data) {
     final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
-    attachment.getOrError(m_property).resetValue();
+    attachment.getPropertyOrThrow(m_property).resetValue();
   }
 
   @Override

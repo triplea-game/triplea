@@ -18,7 +18,7 @@ public class ObjectPropertyChange extends Change {
     m_object = object;
     m_property = property.intern();
     m_newValue = newValue;
-    m_oldValue = object.getOrError(property).getValue();
+    m_oldValue = object.getPropertyOrThrow(property).getValue();
   }
 
   private ObjectPropertyChange(final Unit object, final String property, final Object newValue,
@@ -42,7 +42,7 @@ public class ObjectPropertyChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    m_object.getOrError(m_property).setObjectValue(m_newValue);
+    m_object.getPropertyOrThrow(m_property).setObjectValue(m_newValue);
   }
 
   @Override
