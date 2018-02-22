@@ -97,9 +97,8 @@ public class InGameLobbyWatcher {
     // add them as temporary properties (in case we load an old savegame and need them again)
     System.setProperty(LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
     System.setProperty(LOBBY_PORT + GameRunner.OLD_EXTENSION, port);
-
-    System.setProperty(LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION,
-        System.getProperty(LOBBY_GAME_HOSTED_BY));
+    final String hostedBy = System.getProperty(LOBBY_GAME_HOSTED_BY);
+    System.setProperty(LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
     final IConnectionLogin login = new IConnectionLogin() {
       @Override
       public Map<String, String> getProperties(final Map<String, String> challengeProperties) {
