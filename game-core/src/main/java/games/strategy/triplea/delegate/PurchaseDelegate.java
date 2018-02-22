@@ -309,11 +309,10 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
   private IntegerMap<Resource> getRepairCosts(final Map<Unit, IntegerMap<RepairRule>> repairRules,
       final PlayerID player) {
-    final Collection<Unit> units = repairRules.keySet();
     final IntegerMap<Resource> costs = new IntegerMap<>();
-    for (final Unit u : units) {
-      for (final RepairRule rule : repairRules.get(u).keySet()) {
-        costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
+    for (final IntegerMap<RepairRule> map : repairRules.values()) {
+      for (final RepairRule rule : map.keySet()) {
+        costs.addMultiple(rule.getCosts(), map.getInt(rule));
       }
     }
     final double discount = TechAbilityAttachment.getRepairDiscount(player, getData());

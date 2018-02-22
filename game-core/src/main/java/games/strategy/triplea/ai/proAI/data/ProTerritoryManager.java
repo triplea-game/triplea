@@ -122,7 +122,7 @@ public class ProTerritoryManager {
       List<Unit> defenders = CollectionUtils.getMatches(patd.getMaxEnemyDefenders(player, data),
           ProMatches.unitIsEnemyAndNotAa(player, data));
       if (isIgnoringRelationships) {
-        defenders = new ArrayList<>(t.getUnits().getUnits());
+        defenders = new ArrayList<>(t.getUnits());
       }
       patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, patd.getMaxUnits(), defenders, new HashSet<>()));
 

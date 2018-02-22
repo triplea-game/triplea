@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -578,23 +579,21 @@ class ProCombatMoveAi {
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Find maximum defenders for each transport territory
-    final List<Territory> clearedTerritories = new ArrayList<>();
-    for (final Territory t : attackMap.keySet()) {
-      if (!attackMap.get(t).getUnits().isEmpty()) {
-        clearedTerritories.add(t);
-      }
-    }
+    final List<Territory> clearedTerritories = attackMap.entrySet().stream()
+        .filter(e -> !e.getValue().getUnits().isEmpty())
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
     territoryManager.populateDefenseOptions(clearedTerritories);
     final Map<Territory, ProTerritory> defendMap = territoryManager.getDefendOptions().getTerritoryMap();
 
     // Remove units that have already attacked
     final Set<Unit> alreadyAttackedWithUnits = new HashSet<>();
-    for (final Territory t : attackMap.keySet()) {
-      alreadyAttackedWithUnits.addAll(attackMap.get(t).getUnits());
-      alreadyAttackedWithUnits.addAll(attackMap.get(t).getAmphibAttackMap().keySet());
+    for (final ProTerritory t : attackMap.values()) {
+      alreadyAttackedWithUnits.addAll(t.getUnits());
+      alreadyAttackedWithUnits.addAll(t.getAmphibAttackMap().keySet());
     }
-    for (final Territory t : defendMap.keySet()) {
-      defendMap.get(t).getMaxUnits().removeAll(alreadyAttackedWithUnits);
+    for (final ProTerritory t : defendMap.values()) {
+      t.getMaxUnits().removeAll(alreadyAttackedWithUnits);
     }
 
     // Loop through all prioritized territories
@@ -700,15 +699,15 @@ class ProCombatMoveAi {
           tryToAttackTerritories(prioritizedTerritories, alreadyMovedUnits);
 
       // Clear bombers
-      for (final Territory t : attackMap.keySet()) {
-        attackMap.get(t).getBombers().clear();
+      for (final ProTerritory t : attackMap.values()) {
+        t.getBombers().clear();
       }
 
       // Get all units that have already moved
       final Set<Unit> alreadyAttackedWithUnits = new HashSet<>();
-      for (final Territory t : attackMap.keySet()) {
-        alreadyAttackedWithUnits.addAll(attackMap.get(t).getUnits());
-        alreadyAttackedWithUnits.addAll(attackMap.get(t).getAmphibAttackMap().keySet());
+      for (final ProTerritory t : attackMap.values()) {
+        alreadyAttackedWithUnits.addAll(t.getUnits());
+        alreadyAttackedWithUnits.addAll(t.getAmphibAttackMap().keySet());
       }
 
       // Check to see if any territories can be bombed
@@ -978,12 +977,12 @@ class ProCombatMoveAi {
     final List<ProTransport> transportMapList = territoryManager.getAttackOptions().getTransportList();
 
     // Reset lists
-    for (final Territory t : attackMap.keySet()) {
-      attackMap.get(t).getUnits().clear();
-      attackMap.get(t).getBombardTerritoryMap().clear();
-      attackMap.get(t).getAmphibAttackMap().clear();
-      attackMap.get(t).getTransportTerritoryMap().clear();
-      attackMap.get(t).setBattleResult(null);
+    for (final ProTerritory t : attackMap.values()) {
+      t.getUnits().clear();
+      t.getBombardTerritoryMap().clear();
+      t.getAmphibAttackMap().clear();
+      t.getTransportTerritoryMap().clear();
+      t.setBattleResult(null);
     }
 
     // Loop through all units and determine attack options
@@ -1296,9 +1295,10 @@ class ProCombatMoveAi {
 
             // Get all units that have already attacked
             final List<Unit> alreadyAttackedWithUnits = new ArrayList<>(alreadyMovedUnits);
-            for (final Territory t2 : attackMap.keySet()) {
-              alreadyAttackedWithUnits.addAll(attackMap.get(t2).getUnits());
-            }
+            alreadyAttackedWithUnits.addAll(attackMap.values().stream()
+                .map(ProTerritory::getUnits)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()));
 
             // Find units that haven't attacked and can be transported
             for (final ProTransport proTransportData : transportMapList) {
@@ -1365,9 +1365,9 @@ class ProCombatMoveAi {
 
     // Get all units that have already moved
     final Set<Unit> alreadyAttackedWithUnits = new HashSet<>();
-    for (final Territory t : attackMap.keySet()) {
-      alreadyAttackedWithUnits.addAll(attackMap.get(t).getUnits());
-      alreadyAttackedWithUnits.addAll(attackMap.get(t).getAmphibAttackMap().keySet());
+    for (final ProTerritory t : attackMap.values()) {
+      alreadyAttackedWithUnits.addAll(t.getUnits());
+      alreadyAttackedWithUnits.addAll(t.getAmphibAttackMap().keySet());
     }
 
     // Loop through all my bombard units and see which can bombard
@@ -1480,8 +1480,8 @@ class ProCombatMoveAi {
       for (final Territory t : territoriesAdjacentToCapital) {
         defenders.addAll(t.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, false)));
       }
-      for (final Territory t : attackMap.keySet()) {
-        defenders.removeAll(attackMap.get(t).getUnits());
+      for (final ProTerritory t : attackMap.values()) {
+        defenders.removeAll(t.getUnits());
       }
 
       // Determine counter attack results to see if I can hold it

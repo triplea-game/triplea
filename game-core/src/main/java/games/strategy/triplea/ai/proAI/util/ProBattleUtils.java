@@ -138,8 +138,8 @@ public class ProBattleUtils {
       for (final Territory nearbyTerritory : nearbyTerritoriesForAllied) {
         alliedUnits.addAll(nearbyTerritory.getUnits().getMatches(Matches.isUnitAllied(player, data)));
       }
-      for (final Territory purchaseTerritory : purchaseTerritories.keySet()) {
-        for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories()) {
+      for (final ProPurchaseTerritory purchaseTerritory : purchaseTerritories.values()) {
+        for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
           if (nearbyTerritoriesForAllied.contains(ppt.getTerritory())) {
             alliedUnits.addAll(ppt.getPlaceUnits());
           }

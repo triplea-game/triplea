@@ -1471,10 +1471,8 @@ public final class Matches {
       final Map<Unit, Collection<Unit>> carrierMustMoveWith =
           MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer);
       if (carrierMustMoveWith != null) {
-        for (final Unit unit : carrierMustMoveWith.keySet()) {
-          if (carrierMustMoveWith.get(unit).contains(dependent)) {
-            return true;
-          }
+        if (carrierMustMoveWith.values().stream().anyMatch(c -> c.contains(dependent))) {
+          return true;
         }
       }
       // paratrooper on an air transport

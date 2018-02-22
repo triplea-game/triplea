@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.swing.Action;
@@ -320,13 +321,9 @@ public class ClientModel implements IMessengerErrorListener {
       return;
     }
     objectStreamFactory.setData(data);
-    final Map<String, String> playerMapping = new HashMap<>();
-    for (final String player : playersToNodes.keySet()) {
-      final String playedBy = playersToNodes.get(player);
-      if (playedBy.equals(messenger.getLocalNode().getName())) {
-        playerMapping.put(player, IGameLoader.CLIENT_PLAYER_TYPE);
-      }
-    }
+    final Map<String, String> playerMapping = playersToNodes.entrySet().stream()
+        .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
+        .collect(Collectors.toMap(Map.Entry::getKey, e -> IGameLoader.CLIENT_PLAYER_TYPE));
     final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
     final Messengers messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
     game = new ClientGame(data, playerSet, players, messengers);
