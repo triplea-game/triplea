@@ -146,7 +146,7 @@ public class IntTextField extends JTextField {
         if (offs == 0) {
           if (min < 0) {
             if (str.equals("-")) {
-              super.insertString(offs, str, a);
+              super.insertString(0, str, a);
             }
           }
         }

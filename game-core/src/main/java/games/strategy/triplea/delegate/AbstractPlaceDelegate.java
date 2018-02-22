@@ -1177,7 +1177,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
                     unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
               }
               if (potential == -1) {
-                currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, potential);
+                currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, -1);
                 productionThatCanBeTakenOverFromThisPlacement = maxProductionThatCanBeTakenOverFromThisPlacement;
                 break;
               }
