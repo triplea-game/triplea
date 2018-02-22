@@ -297,7 +297,6 @@ public final class GameParser {
       if (url == null) {
         throw new RuntimeException(String.format("Map: %s, Could not find in classpath %s", mapName, dtdFile));
       }
-      final String dtdSystem = url.toExternalForm();
       final DocumentBuilder builder = factory.newDocumentBuilder();
       builder.setErrorHandler(new ErrorHandler() {
         @Override
@@ -315,6 +314,7 @@ public final class GameParser {
           errorsSax.add(exception);
         }
       });
+      final String dtdSystem = url.toExternalForm();
       final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
       return builder.parse(input, system);
     } catch (final IOException | ParserConfigurationException e) {
