@@ -652,12 +652,11 @@ public class HeadlessGameServer {
    */
   public Chat getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
-    if (model instanceof ServerSetupPanel || model instanceof ClientSetupPanel
-        || model instanceof HeadlessServerSetup) {
-      return model.getChatPanel().getChat();
-    } else {
-      return null;
-    }
+    return ((model instanceof ServerSetupPanel)
+        || (model instanceof ClientSetupPanel)
+        || (model instanceof HeadlessServerSetup))
+            ? model.getChatPanel().getChat()
+            : null;
   }
 
   /**

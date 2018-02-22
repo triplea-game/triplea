@@ -528,11 +528,9 @@ public class GameRunner {
    */
   public static Optional<Chat> getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
-    if (model instanceof ServerSetupPanel || model instanceof ClientSetupPanel) {
-      return Optional.ofNullable(model.getChatPanel().getChat());
-    } else {
-      return Optional.empty();
-    }
+    return ((model instanceof ServerSetupPanel) || (model instanceof ClientSetupPanel))
+      ? Optional.ofNullable(model.getChatPanel().getChat())
+      : Optional.empty();
   }
 
   /**
